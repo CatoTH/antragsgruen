@@ -9,10 +9,7 @@ use app\models\db\{Amendment, AmendmentSection, User};
 
 $consultation = $amendment->getMyConsultation();
 
-if ($amendment->hasAlternativeProposaltext(true) && (
-        $amendment->isProposalPublic() || User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS) ||
-        ($amendment->proposalFeedbackHasBeenRequested() && $amendment->iAmInitiator())
-    )) {
+if ($amendment->hasVisibleAlternativeProposaltext()) {
     $hasProposedChange = true;
     $reference         = $amendment->getAlternativeProposaltextReference();
     if ($reference) {

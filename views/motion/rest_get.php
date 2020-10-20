@@ -8,6 +8,14 @@ use app\models\db\{Amendment, ISupporter, MotionSection, MotionSupporter};
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
 
+$proposedProcedure = null;
+if ($motion->isProposalPublic() && $motion->proposalStatus) {
+    $proposedProcedure = [
+        'status_id' => $motion->proposalStatus,
+        'status_title' => $motion->getFormattedProposalStatus(true),
+    ];
+}
+
 $json = [
     'id' => $motion->id,
     'agenda_item' => ($motion->agendaItem ? $motion->agendaItem->title : null),
@@ -40,6 +48,7 @@ $json = [
             'html' => $section->getSectionType()->getMotionPlainHtml(),
         ];
     }, $motion->getSortedSections(true)),
+    'proposed_procedure' => $proposedProcedure,
     'amendment_links' => array_map(function (Amendment $amendment) {
         return [
             'id' => $amendment->id,

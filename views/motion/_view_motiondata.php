@@ -1,13 +1,14 @@
 <?php
 
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Motion, MotionSupporter, User};
+use app\models\db\{Motion, MotionSupporter, User, Consultation};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 /**
  * @var Yii\web\View $this
  * @var Motion $motion
+ * @var Consultation $consultation
  * @var int[] $openedComments
  * @var null|string $supportStatus
  * @var bool $consolidatedAmendments

@@ -1098,6 +1098,15 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
+    public function hasVisibleAlternativeProposaltext(): bool
+    {
+        return ($this->hasAlternativeProposaltext(true) && (
+            $this->isProposalPublic() ||
+            User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CHANGE_PROPOSALS) ||
+            ($this->proposalFeedbackHasBeenRequested() && $this->iAmInitiator())
+        ));
+    }
+
     /*
      * Returns the modification proposed and the amendment to which the modification was directly proposed
      * (which has not to be this very amendment, in case this amendment is obsoleted by another amendment)

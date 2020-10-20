@@ -4,11 +4,48 @@
  * @var \app\models\db\Amendment $amendment
  */
 
-use app\models\db\{AmendmentSection, AmendmentSupporter, ISupporter};
+use app\models\db\{Amendment, AmendmentSection, AmendmentSupporter, ISupporter};
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
 
 $motion = $amendment->getMyMotion();
+
+$proposedProcedure = null;
+if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
+    $proposedProcedure = [
+        'status_id' => $amendment->proposalStatus,
+        'status_title' => $amendment->getFormattedProposalStatus(true),
+        'sections' => [],
+    ];
+    if ($amendment->hasVisibleAlternativeProposaltext()) {
+        $hasProposedChange = true;
+        $reference = $amendment->getAlternativeProposaltextReference();
+        if ($reference) {
+            /** @var Amendment $referenceAmendment */
+            $referenceAmendment = $reference['amendment'];
+            /** @var Amendment $reference */
+            $reference = $reference['modification'];
+
+            /** @var AmendmentSection[] $sections */
+            $sections = $reference->getSortedSections(false);
+            foreach ($sections as $section) {
+                if ($referenceAmendment->id === $amendment->id) {
+                    $prefix = Yii::t('amend', 'pprocedure_title_own');
+                } else {
+                    $prefix = Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->titlePrefix;
+                }
+                if ($section->getSectionType()->isEmpty()) {
+                    continue;
+                }
+                $proposedProcedure['sections'][] = [
+                    'type' => ISectionType::typeIdToApi($section->getSettings()->type),
+                    'title' => $prefix . ': ' . $section->getSettings()->title,
+                    'html' => $section->getSectionType()->getAmendmentPlainHtml(),
+                ];
+            }
+        }
+    }
+}
 
 $json = [
     'id' => $amendment->id,
@@ -51,6 +88,7 @@ $json = [
             'html' => $section->getSectionType()->getAmendmentPlainHtml(),
         ];
     }, $amendment->getSortedSections(true)),
+    'proposed_procedure' => $proposedProcedure,
     'url_json' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'rest')),
     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)),
 ];

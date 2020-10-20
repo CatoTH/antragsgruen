@@ -23,6 +23,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/MotionShow');
 $layout->loadFuelux();
+$consultation = $motion->getMyConsultation();
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));

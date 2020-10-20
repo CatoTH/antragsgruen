@@ -278,6 +278,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MotionSection'
+        proposed_procedure:
+          $ref: '#/components/schemas/MotionProposedProcedure'
         amendment_links:
           type: array
           items:
@@ -343,6 +345,12 @@ components:
         initiators_html:
           type: string
           example: "Testuser 1"
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmendmentSection'
+        proposed_procedure:
+          $ref: '#/components/schemas/AmendmentProposedProcedure'
         url_json:
           type: string
           example: https://test.antragsgruen.de/consultation/rest/123-motion/amendment/42
@@ -383,6 +391,50 @@ components:
         html:
           type: string
           example: "<strong>This is the motion text</strong>"
+    AmendmentSection:
+      properties:
+        type:
+          type: string
+          example: TextSimple
+          enum:
+            - Title
+            - TextSimple
+            - TextHTML
+            - Image
+            - TabularData
+            - PDFAttachment
+            - PDFAlternative
+        title:
+          type: string
+          example: Motion text
+        html:
+          type: string
+          example: "<h3>Antragstext</h3><h4 class=\"lineSummary\">Von Zeile 23 bis 26:</h4><div><p>Dolor lorem. <ins style=\"color:#008000;text-decoration:underline;\">Bavaria</ins> ipsum dolor</p></div>"
+    AmendmentProposedProcedure:
+      description: this object is only set if the proposed procedure exists and is public; otherwise the field is "null"
+      properties:
+        status_id:
+          type: number
+          example: 6
+          description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
+        status_title:
+          type: string
+          example: Modifizierte Übernahme
+        sections:
+          type: array
+          description: The proposed changed version of amendment sections; if there are propsed changes
+          items:
+            $ref: '#/components/schemas/AmendmentSection'
+    MotionProposedProcedure:
+      description: this object is only set if the proposed procedure exists and is public; otherwise the field is "null"
+      properties:
+        status_id:
+          type: number
+          example: 6
+          description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
+        status_title:
+          type: string
+          example: Modifizierte Übernahme
     ErrorNotFound:
       properties:
         success:
