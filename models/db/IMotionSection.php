@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\exceptions\Internal;
-use app\models\sectionTypes\{Image, ISectionType, TabularData, TextHTML, TextSimple, Title, PDF};
+use app\models\sectionTypes\{Image, ISectionType, TabularData, TextHTML, TextSimple, Title, PDF, VideoEmbed};
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
@@ -43,6 +43,8 @@ abstract class IMotionSection extends ActiveRecord
                 return new PDF($this);
             case ISectionType::TYPE_PDF_ALTERNATIVE:
                 return new PDF($this);
+            case ISectionType::TYPE_VIDEO_EMBED:
+                return new VideoEmbed($this);
         }
         throw new Internal('Unknown Field Type: ' . $this->getSettings()->type);
     }

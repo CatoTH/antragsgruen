@@ -12,6 +12,7 @@ const SUPPORTER_ONLY_INITIATOR = 0;
 const SUPPORTER_GIVEN_BY_INITIATOR = 1;
 const SUPPORTER_COLLECTING_SUPPORTERS = 2;
 
+// Synchronize with ISectionType
 const TYPE_TITLE = 0;
 const TYPE_TEXT_SIMPLE = 1;
 const TYPE_TEXT_HTML = 2;
@@ -19,6 +20,7 @@ const TYPE_IMAGE = 3;
 const TYPE_TABULAR = 4;
 const TYPE_PDF_ATTACHMENT = 5;
 const TYPE_PDF_ALTERNATIVE = 6;
+const TYPE_VIDEO_EMBED = 7;
 
 class MotionTypeEdit {
     private motionsHaveSupporters: boolean;
@@ -240,7 +242,7 @@ class MotionTypeEdit {
         $list.on('change', '.sectionType', function () {
             let $li = $(this).parents('li').first(),
                 val = parseInt($(this).val() as string);
-            $li.removeClass('title textHtml textSimple image tabularData pdfAlternative pdfAttachment');
+            $li.removeClass('title textHtml textSimple image tabularData pdfAlternative pdfAttachment videoEmbed');
             if (val === TYPE_TITLE) {
                 $li.addClass('title');
             } else if (val === TYPE_TEXT_SIMPLE) {
@@ -258,6 +260,8 @@ class MotionTypeEdit {
                 $li.addClass('pdfAttachment');
             } else if (val === TYPE_PDF_ALTERNATIVE) {
                 $li.addClass('pdfAlternative');
+            } else if (val === TYPE_VIDEO_EMBED) {
+                $li.addClass('videoEmbed');
             }
         });
         $list.find('.sectionType').trigger('change');

@@ -28,14 +28,12 @@ class PDF extends ISectionType
         }
 
         $params = [
-            'motion/viewpdf',
-            'motionSlug' => $section->getMotion()->getMotionSlug(),
             'sectionId'  => $section->sectionId
         ];
         if ($showAlways) {
             $params['showAlways'] = $section->getShowAlwaysToken();
         }
-        $url    = UrlHelper::createUrl($params, $motion->getMyConsultation());
+        $url    = UrlHelper::createMotionUrl($motion, 'viewpdf', $params);
         if ($absolute) {
             $url = UrlHelper::absolutizeLink($url);
         }
@@ -174,7 +172,7 @@ class PDF extends ISectionType
             if (str_replace('pdf', '', strtolower($title)) == strtolower($title)) {
                 $title .= ' [PDF]';
             }
-            $pdf->writeHTML('<h3>' . $title . '</h3>');
+            $pdfLayout->printSectionHeading($title);
         }
 
         $data = $this->section->getData();

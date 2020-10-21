@@ -11,7 +11,7 @@ use app\models\notifications\{AmendmentProposedProcedure,
     AmendmentSubmitted as AmendmentSubmittedNotification,
     AmendmentWithdrawn as AmendmentWithdrawnNotification};
 use app\models\policies\{All, IPolicy};
-use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
+use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple, VideoEmbed};
 use app\models\supportTypes\SupportBase;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;

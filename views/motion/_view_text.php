@@ -32,7 +32,12 @@ if ($useCache) {
 
 
 $titleSection = $motion->getTitleSection();
+
+// Hint: Once a PDF or a Video comes in, we don't use two-column mode anymore, as that would look strange
+// Hence, once that happens, everything goes into the "bottom" variable
 $main = $right = '';
+$bottom = '';
+
 foreach ($sections as $i => $section) {
     $renderedText = \app\models\layoutHooks\Layout::renderMotionSection($section, $motion);
     if ($renderedText !== null) {
@@ -40,7 +45,6 @@ foreach ($sections as $i => $section) {
         continue;
     }
 
-    /** @var \app\models\db\MotionSection $section */
     $sectionType = $section->getSettings()->type;
     if ($section->getSectionType()->isEmpty()) {
         continue;
@@ -58,24 +62,30 @@ foreach ($sections as $i => $section) {
         continue;
     }
 
-    if ($section->isLayoutRight()) {
+    if ($section->isLayoutRight() && $bottom === '') {
         $right .= '<section class="sectionType' . $sectionType . '" aria-label="' . Html::encode($section->getSectionTitle()) . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
     } else {
-        $main .= '<section class="motionTextHolder sectionType' . $sectionType;
+        $sectionText = '<section class="motionTextHolder sectionType' . $sectionType;
         if ($motion->getMyConsultation()->getSettings()->lineLength > 80) {
-            $main .= ' smallFont';
+            $sectionText .= ' smallFont';
         }
-        $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '" aria-labelledby="section_' . $section->sectionId . '_title">';
+        $sectionText .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '" aria-labelledby="section_' . $section->sectionId . '_title">';
         if (!in_array($sectionType, [ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_IMAGE])) {
-            $main .= '<h3 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h3>';
+            $sectionText .= '<h3 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h3>';
         }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-        $main   .= $section->getSectionType()->showMotionView($commentForm, $commOp);
+        $sectionText   .= $section->getSectionType()->showMotionView($commentForm, $commOp);
 
-        $main .= '</section>';
+        $sectionText .= '</section>';
+
+        if ($bottom !== '' || in_array($sectionType, [ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_VIDEO_EMBED])) {
+            $bottom .= $sectionText;
+        } else {
+            $main .= $sectionText;
+        }
     }
 }
 
@@ -88,6 +98,9 @@ if ($right === '') {
     $out .= '</div><div class="col-md-4 motionRightCol">';
     $out .= $right;
     $out .= '</div></div>';
+}
+if ($bottom !== '') {
+    $out .= $bottom;
 }
 
 if ($useCache) {

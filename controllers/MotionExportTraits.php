@@ -81,6 +81,7 @@ trait MotionExportTraits
 
                 \yii::$app->response->format = Response::FORMAT_RAW;
                 \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+                \yii::$app->response->headers->add('Content-Disposition', 'inline');
                 if (!$this->layoutParams->isRobotsIndex($this->action)) {
                     \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
                 }

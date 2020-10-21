@@ -13,7 +13,7 @@ use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
-use app\models\sectionTypes\{Image, ISectionType, PDF};
+use app\models\sectionTypes\{Image, ISectionType, PDF, VideoEmbed};
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
