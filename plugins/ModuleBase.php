@@ -5,6 +5,7 @@ namespace app\plugins;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\models\db\{Amendment, Consultation, Motion, Site};
 use app\models\layoutHooks\Hooks;
+use app\models\settings\IMotionStatus;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\base\{Action, Module};
@@ -175,5 +176,13 @@ class ModuleBase extends Module
 
     public static function setAmendmentExtraSettingsFromForm(Amendment $amendment, array $post): void
     {
+    }
+
+    /**
+     * @return IMotionStatus[]
+     */
+    public static function getAdditionalIMotionStatuses(): array
+    {
+        return [];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\models\settings\{AntragsgruenApp, VotingData};
+use app\models\settings\{AntragsgruenApp, IMotionStatus, VotingData};
 use app\models\siteSpecificBehavior\Permissions;
 use app\components\{Tools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
@@ -125,42 +125,12 @@ abstract class IMotion extends ActiveRecord
      */
     public static function getStatusNames(bool $includeAdminInvisibles = false)
     {
-        $statuses = [
-            static::STATUS_WITHDRAWN                    => \Yii::t('structure', 'STATUS_WITHDRAWN'),
-            static::STATUS_DRAFT                        => \Yii::t('structure', 'STATUS_DRAFT'),
-            static::STATUS_SUBMITTED_UNSCREENED         => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
-            static::STATUS_SUBMITTED_UNSCREENED_CHECKED => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED_CHECKED'),
-            static::STATUS_SUBMITTED_SCREENED           => \Yii::t('structure', 'STATUS_SUBMITTED_SCREENED'),
-            static::STATUS_ACCEPTED                     => \Yii::t('structure', 'STATUS_ACCEPTED'),
-            static::STATUS_REJECTED                     => \Yii::t('structure', 'STATUS_REJECTED'),
-            static::STATUS_MODIFIED_ACCEPTED            => \Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED'),
-            static::STATUS_MODIFIED                     => \Yii::t('structure', 'STATUS_MODIFIED'),
-            static::STATUS_ADOPTED                      => \Yii::t('structure', 'STATUS_ADOPTED'),
-            static::STATUS_COMPLETED                    => \Yii::t('structure', 'STATUS_COMPLETED'),
-            static::STATUS_REFERRED                     => \Yii::t('structure', 'STATUS_REFERRED'),
-            static::STATUS_VOTE                         => \Yii::t('structure', 'STATUS_VOTE'),
-            static::STATUS_PAUSED                       => \Yii::t('structure', 'STATUS_PAUSED'),
-            static::STATUS_MISSING_INFORMATION          => \Yii::t('structure', 'STATUS_MISSING_INFORMATION'),
-            static::STATUS_DISMISSED                    => \Yii::t('structure', 'STATUS_DISMISSED'),
-            static::STATUS_COLLECTING_SUPPORTERS        => \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'),
-            static::STATUS_DRAFT_ADMIN                  => \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
-            static::STATUS_PROCESSED                    => \Yii::t('structure', 'STATUS_PROCESSED'),
-            static::STATUS_WITHDRAWN_INVISIBLE          => \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
-            static::STATUS_OBSOLETED_BY                 => \Yii::t('structure', 'STATUS_OBSOLETED_BY'),
-            static::STATUS_CUSTOM_STRING                => \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
-            static::STATUS_INLINE_REPLY                 => \Yii::t('structure', 'STATUS_INLINE_REPLY'),
-            static::STATUS_RESOLUTION_PRELIMINARY       => \Yii::t('structure', 'STATUS_RESOLUTION_PRELIMINARY'),
-            static::STATUS_RESOLUTION_FINAL             => \Yii::t('structure', 'STATUS_RESOLUTION_FINAL'),
-            static::STATUS_MOVED                        => \Yii::t('structure', 'STATUS_MOVED'),
-        ];
-        if ($includeAdminInvisibles) {
-            $propName = \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT');
+        $statuses = [];
 
-            // Keep in Sync with static::getStatusesInvisibleForAdmins
-            $statuses[static::STATUS_DELETED]                     = \Yii::t('structure', 'STATUS_DELETED');
-            $statuses[static::STATUS_MERGING_DRAFT_PUBLIC]        = \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC');
-            $statuses[static::STATUS_MERGING_DRAFT_PRIVATE]       = \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE');
-            $statuses[static::STATUS_PROPOSED_MODIFIED_AMENDMENT] = $propName;
+        foreach (IMotionStatus::getAllStatuses() as $status) {
+            if ($includeAdminInvisibles || !$status->adminInvisible) {
+                $statuses[$status->id] = $status->name;
+            }
         }
 
         return $statuses;
@@ -171,24 +141,13 @@ abstract class IMotion extends ActiveRecord
      */
     public static function getStatusesAsVerbs()
     {
-        $return = static::getStatusNames();
-        foreach (
-            [
-                static::STATUS_DELETED           => \Yii::t('structure', 'STATUSV_DELETED'),
-                static::STATUS_WITHDRAWN         => \Yii::t('structure', 'STATUSV_WITHDRAWN'),
-                static::STATUS_ACCEPTED          => \Yii::t('structure', 'STATUSV_ACCEPTED'),
-                static::STATUS_REJECTED          => \Yii::t('structure', 'STATUSV_REJECTED'),
-                static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'STATUSV_MODIFIED_ACCEPTED'),
-                static::STATUS_MODIFIED          => \Yii::t('structure', 'STATUSV_MODIFIED'),
-                static::STATUS_ADOPTED           => \Yii::t('structure', 'STATUSV_ADOPTED'),
-                static::STATUS_REFERRED          => \Yii::t('structure', 'STATUSV_REFERRED'),
-                static::STATUS_VOTE              => \Yii::t('structure', 'STATUSV_VOTE'),
-            ] as $statusId => $statusName
-        ) {
-            $return[$statusId] = $statusName;
+        $statuses = [];
+
+        foreach (IMotionStatus::getAllStatuses() as $status) {
+            $statuses[$status->id] = ($status->nameVerb ? $status->nameVerb : $status->name);
         }
 
-        return $return;
+        return $statuses;
     }
 
     /**
@@ -249,13 +208,15 @@ abstract class IMotion extends ActiveRecord
      */
     public static function getStatusesInvisibleForAdmins()
     {
-        // Keep in sync with getStatusNames::$includeAdminInvisibles
-        return [
-            static::STATUS_DELETED,
-            static::STATUS_MERGING_DRAFT_PUBLIC,
-            static::STATUS_MERGING_DRAFT_PRIVATE,
-            static::STATUS_PROPOSED_MODIFIED_AMENDMENT,
-        ];
+        $statuses = [];
+
+        foreach (IMotionStatus::getAllStatuses() as $status) {
+            if ($status->adminInvisible) {
+                $statuses[] = $status->id;
+            }
+        }
+
+        return $statuses;
     }
 
     /**

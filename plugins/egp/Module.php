@@ -4,6 +4,7 @@ namespace app\plugins\egp;
 
 use app\components\UrlHelper;
 use app\models\db\{AmendmentSupporter, Consultation, Motion, MotionSupporter, Site};
+use app\models\settings\IMotionStatus;
 use app\plugins\egp\pdf\Egp;
 use app\plugins\ModuleBase;
 use yii\base\Event;
@@ -100,5 +101,22 @@ class Module extends ModuleBase
         return \Yii::$app->controller->renderPartial(
             '@app/plugins/egp/views/admin/consultation_settings', ['consultation' => $consultation]
         );
+    }
+
+    /**
+     * @return IMotionStatus[]
+     */
+    public static function getAdditionalIMotionStatuses(): array
+    {
+        return [
+            new IMotionStatus(100, 'CAS accepted'),
+            new IMotionStatus(101, 'CAS accepted as amended'),
+            new IMotionStatus(102, 'CAS rejected'),
+            new IMotionStatus(103, 'CAS rejected in favour of other'),
+            new IMotionStatus(104, 'VOTE'),
+            new IMotionStatus(105, 'VOTE on CAS AM as amended'),
+            new IMotionStatus(106, 'Falls in favour of other'),
+            new IMotionStatus(107, 'CAS withdrawn'),
+        ];
     }
 }
