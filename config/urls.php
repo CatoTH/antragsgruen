@@ -90,6 +90,7 @@ $urlRules = [
     $dom                                           => 'consultation/home',
 
     $domv . 'rest'                                                        => 'consultation/rest',
+    $domv . 'rest/proposed-procedure'                                     => 'consultation/proposed-procedure-rest',
     $domv . 'rest/motion/<motionSlug:[^\/]+>'                             => '/motion/rest',
     $domv . 'rest/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>' => '/amendment/rest',
 ];

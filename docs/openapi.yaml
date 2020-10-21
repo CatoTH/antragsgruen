@@ -49,6 +49,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
+  /{consultationPath}/proposed_procedure:
+    get:
+      summary: Gets the public proposed procedure of this consultation
+      parameters:
+        - in: path
+          name: consultationPath
+          required: true
+          example: std-parteitag
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The proposed procedure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProposedProcedure'
+        '403':
+          description: The REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiDisabled'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
   /{consultationPath}/rest/motion/{motionSlug}:
     get:
       summary: Details of this motion
@@ -435,6 +464,36 @@ components:
         status_title:
           type: string
           example: Modifizierte Übernahme
+    ProposedProcedure:
+      description: ...
+      properties:
+        proposed_procedure:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProposedProcedureOuterBlock'
+    ProposedProcedureOuterBlock:
+      description: An outer proposed procedure block
+      properties:
+        title:
+          type: string
+          example: "Abstimmung: Wohnen"
+        voting_blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProposedProcedureVotingBlock'
+    ProposedProcedureVotingBlock:
+      description: A voting block
+      properties:
+        id:
+          type: string
+          example: "19"
+          description: ID or null
+        title:
+          type: string
+          example: "Abstimmung: Wohnungstausch"
+          description: title or null
+        #items:
+        #  type: @TODO
     ErrorNotFound:
       properties:
         success:

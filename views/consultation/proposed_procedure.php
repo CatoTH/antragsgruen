@@ -15,8 +15,8 @@ $layout            = $controller->layoutParams;
 $layout->fullWidth = true;
 $layout->loadBootstrapToggle();
 
-$this->title = \Yii::t('con', 'proposal_title');
-$layout->addBreadcrumb(\Yii::t('con', 'proposal_bc'));
+$this->title = Yii::t('con', 'proposal_title');
+$layout->addBreadcrumb(Yii::t('con', 'proposal_bc'));
 
 $iAmAdmin  = User::havePrivilege($controller->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 $reloadUrl = \app\components\UrlHelper::createUrl('consultation/proposed-procedure-ajax');
@@ -33,7 +33,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
         <section class="proposedProcedureToolbar toolbarBelowTitle fuelux">
             <div class="left">
                 <div class="currentDate">
-                    <?= \Yii::t('con', 'proposal_updated') ?>:
+                    <?= Yii::t('con', 'proposal_updated') ?>:
                     <span class="date"><?= date('H:i:s') ?></span>
                 </div>
             </div>
@@ -43,8 +43,8 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
                     <label class="sr-only" for="autoUpdateToggle"></label>
                     <input type="checkbox" id="autoUpdateToggle"
                            data-onstyle="success" data-size="normal" data-toggle="toggle"
-                           data-on="<?= Html::encode(\Yii::t('con', 'proposal_autoupdate')) ?>"
-                           data-off="<?= Html::encode(\Yii::t('con', 'proposal_autoupdate')) ?>">
+                           data-on="<?= Html::encode(Yii::t('con', 'proposal_autoupdate')) ?>"
+                           data-off="<?= Html::encode(Yii::t('con', 'proposal_autoupdate')) ?>">
                 </div>
                 <div class="fullscreenToggle">
                     <button class="btn btn-default" type="button" data-antragsgruen-widget="frontend/FullscreenToggle">

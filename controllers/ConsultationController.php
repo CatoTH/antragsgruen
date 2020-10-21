@@ -360,16 +360,19 @@ class ConsultationController extends Base
         ]);
     }
 
-    public function actionCollecting()
+    /**
+     * @return string
+     */
+    public function actionProposedProcedureRest()
     {
-        if (!$this->consultation->getSettings()->collectingPage) {
-            return $this->showErrorpage(404, 'This site is not available');
-        }
+        $this->handleRestHeaders();
 
-        $this->layout = 'column2';
-        $this->consultationSidebar($this->consultation);
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
+        $proposalFactory = new Factory($this->consultation, false);
 
-        return $this->render('collecting');
+        return $this->returnRestResponse(200, $this->renderPartial('proposed_procedure_rest_get', [
+            'proposedAgenda' => $proposalFactory->create(),
+        ]));
     }
 
     /**
@@ -391,6 +394,18 @@ class ConsultationController extends Base
             'html'    => $html,
             'date'    => date('H:i:s'),
         ]);
+    }
+
+    public function actionCollecting()
+    {
+        if (!$this->consultation->getSettings()->collectingPage) {
+            return $this->showErrorpage(404, 'This site is not available');
+        }
+
+        $this->layout = 'column2';
+        $this->consultationSidebar($this->consultation);
+
+        return $this->render('collecting');
     }
 
     /**
