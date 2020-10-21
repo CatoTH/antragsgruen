@@ -22,7 +22,7 @@ class MessageSource extends \yii\i18n\MessageSource
             $this->on(self::EVENT_MISSING_TRANSLATION, function ($event) {
                 /** \yii\i18n\MissingTranslationEvent $event */
                 /** @var AntragsgruenApp $params */
-                $params = \Yii::$app->params;
+                $params = Yii::$app->params;
                 $fp     = fopen($params->getTmpDir() . 'missing-translations.log', 'a');
                 fwrite($fp, $event->language . ' - ' . $event->category . ' - ' . $event->message . "\n");
                 fclose($fp);
@@ -35,7 +35,7 @@ class MessageSource extends \yii\i18n\MessageSource
      */
     public static function getTranslatableCategories()
     {
-        if (\Yii::$app->language == 'de') {
+        if (Yii::$app->language == 'de') {
             $categories = [
                 'base'      => 'Basis-Layout',
                 'structure' => 'Interne Bezeichnungen',
@@ -85,7 +85,7 @@ class MessageSource extends \yii\i18n\MessageSource
     public static function getLanguageVariants($language)
     {
         /** @var AntragsgruenApp $params */
-        $params        = \Yii::$app->params;
+        $params        = Yii::$app->params;
         $localMessages = (isset($params->localMessages[$language]) ? $params->localMessages[$language] : []);
         if ($language === 'de') {
             return array_merge([
@@ -95,7 +95,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'de-bdk'             => 'BDK',
                 'de-neos'            => 'NEOS',
             ], $localMessages);
-        };
+        }
         if ($language === 'en') {
             return array_merge([
                 'en-uk'       => 'English (UK)',
@@ -234,7 +234,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 $transMessages = $this->loadMessagesFromFile($baseFile);
                 return array_merge($origMessages, $transMessages);
             }
-        };
+        }
 
         $languages    = explode(',', $consultation->wordingBase);
         $baseMessages = $extMessages = [];
