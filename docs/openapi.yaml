@@ -49,7 +49,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
-  /{consultationPath}/proposed_procedure:
+  /{consultationPath}/rest/proposed-procedure:
     get:
       summary: Gets the public proposed procedure of this consultation
       parameters:
@@ -492,8 +492,41 @@ components:
           type: string
           example: "Abstimmung: Wohnungstausch"
           description: title or null
-        #items:
-        #  type: @TODO
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProposedProcedureVotingItem'
+    ProposedProcedureVotingItem:
+      description: An individual item (motion or amendment) in a voting block
+      properties:
+        type:
+          type: string
+          example: "Amendment"
+          enum:
+            - Motion
+            - Amendment
+        id:
+          type: number
+          example: 23
+          description: the ID of the motion or amendment
+        prefix:
+          type: string
+          example: "W-01-035-3"
+        title_with_prefix:
+          type: string
+          example: "W-01-035-3: Recht auf Wohnen"
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/consultation/rest/123-motion/amendment/42
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion/42
+        initiators_html:
+          type: string
+          example: "Testuser 1"
+        procedure:
+          type: string
+          example: "<p>Abstimmung (Angenommen)</p><p class=\"explanation\">Das Thema der Abstimmung wird an mehreren Stellen im Antrag beantragt. Die Antragskommission schlägt vor, eine Abstimmung zwischen W-01-034-2 und W-01-035 durchzuführen. Wenn W-01-034-2 angenommen wird, sind W-01-433 und W-01-599 in den Beschlusstext übernommen. Wenn W-01-035 angenommen wird, werden die beiden Anträge W-01-433 und W-01-599 nicht in den Beschlusstext übernommen.</p>"
     ErrorNotFound:
       properties:
         success:
