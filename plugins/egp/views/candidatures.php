@@ -5,6 +5,7 @@ use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\PDF;
+use app\models\sectionTypes\VideoEmbed;
 use yii\helpers\Html;
 
 /**
@@ -55,6 +56,8 @@ usort($motions, function (Motion $motion1, Motion $motion2) {
                 $image = null;
                 /** @var \app\models\db\MotionSection[] $pdfs */
                 $pdfs = [];
+                /** @var \app\models\db\MotionSection[] $videos */
+                $videos = [];
                 /** @var \app\models\db\MotionSection|null $nominatedBy */
                 $nominatedBy = null;
                 foreach ($motion->sections as $section) {
@@ -65,6 +68,8 @@ usort($motions, function (Motion $motion1, Motion $motion2) {
                         $pdfs[] = $section;
                     } elseif ($settings->type === ISectionType::TYPE_PDF_ALTERNATIVE) {
                         $pdfs[] = $section;
+                    } elseif ($settings->type === ISectionType::TYPE_VIDEO_EMBED) {
+                        $videos[] = $section;
                     } elseif ($settings->type === ISectionType::TYPE_TITLE && stripos($settings->title, 'Nominated') !== false) {
                         $nominatedBy = $section;
                     }
@@ -105,12 +110,21 @@ usort($motions, function (Motion $motion1, Motion $motion2) {
                                 echo Html::a(Html::encode($pdf->getSettings()->title), $sectionType->getPdfUrl());
                                 echo '</li>';
                             }
+                            foreach ($videos as $video) {
+                                echo '<li>';
+                                /** @var VideoEmbed $sectionType */
+                                $sectionType = $video->getSectionType();
+                                echo Html::a(Html::encode($video->getSettings()->title), $sectionType->getVideoUrl());
+                                echo '</li>';
+                            }
                             ?>
                         </ul>
+                        <!--
                         <a href="<?= Html::encode(\app\components\UrlHelper::createMotionUrl($motion)) ?>">
                             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                             Show full candidacy
                         </a>
+                        -->
                     </div>
                 </li>
             <?php

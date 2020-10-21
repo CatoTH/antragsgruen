@@ -418,6 +418,15 @@ body > footer.footer {
     width: 100%;
   }
   > ul > li {
+    padding-bottom: 40px;
+    padding-top: 40px;
+    border-bottom: solid 1px #57b45f88;
+    &:first-child {
+      padding-top: 20px;
+    }
+    &:last-child {
+      border-bottom: none;
+    }
     @media screen and (min-width: 800px) {
       display: flex;
       flex-direction: row;
