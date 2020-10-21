@@ -30,7 +30,7 @@ $I->gotoMotionList();
 
 $I->click('.adminMotionTable .amendment1 .actionCol .dropdown-toggle');
 $I->click('.adminMotionTable .amendment1 .actionCol .asTemplate');
-$I->see('Änderungsantrag zu A2 stellen', 'h1');
+$I->see('Änderungsantrag zu A2: O’zapft is! stellen', 'h1');
 
 $I->seeInField('#initiatorPrimaryName', 'Tester');
 $I->see('Oamoi a Maß', '.ice-ins');

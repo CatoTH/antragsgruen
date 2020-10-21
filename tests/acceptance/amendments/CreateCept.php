@@ -20,7 +20,7 @@ $I->see(mb_strtoupper('Änderungsantrag stellen'), '.sidebarActions');
 $I->click('.sidebarActions .amendmentCreate a');
 
 $I->see('Antrag', '.breadcrumb');
-$I->see(mb_strtoupper('Änderungsantrag zu A2 stellen'), 'h1');
+$I->see(mb_strtoupper('Änderungsantrag zu A2: O’zapft is! stellen'), 'h1');
 $I->seeInField('#sections_1', 'O’zapft is!');
 $I->see('woschechta Bayer', '#section_holder_2');
 
@@ -90,7 +90,7 @@ $I->see(mb_strtoupper('Änderungsantrag bestätigen'), 'h1');
 $I->wantTo('not confirm the amendment, instead correcting a mistake');
 
 $I->submitForm('#amendmentConfirmForm', [], 'modify');
-$I->see(mb_strtoupper('Änderungsantrag zu A2 stellen'), 'h1');
+$I->see(mb_strtoupper('Änderungsantrag zu A2: O’zapft is! stellen'), 'h1');
 $I->seeInField(['name' => 'Initiator[primaryName]'], 'My company');
 $I->seeInField(['name' => 'Initiator[contactName]'], 'MeinKontakt');
 $I->seeInField(['name' => 'Initiator[resolutionDate]'], '12.01.2015');

@@ -16,7 +16,7 @@ $I->gotoConsultationHome();
 $I->loginAsStdUser();
 $I->click('.myAmendmentList .amendment2');
 $I->click('.sidebarActions .edit a');
-$I->see('Änderungsantrag zu A3 bearbeiten', 'h1');
+$I->see('Änderungsantrag zu A3: Textformatierungen bearbeiten', 'h1');
 $I->executeJS('window.amendText = CKEDITOR.instances.sections_2_wysiwyg.getData();');
 $I->executeJS('window.amendText = window.amendText + "<p>attach some new text at the end</p>";');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(window.amendText);');

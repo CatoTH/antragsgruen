@@ -17,7 +17,7 @@ $I->wantTo('still see it as an admin');
 $I->gotoConsultationHome()->gotoMotionView(3);
 $I->seeElement('.amendmentCreate a');
 $I->click('.amendmentCreate a');
-$I->see('Änderungsantrag zu A3 stellen', 'h1');
+$I->see('Änderungsantrag zu A3: Textformatierungen stellen', 'h1');
 
 $I->wantTo('get an error as a normal user');
 $I->logout();

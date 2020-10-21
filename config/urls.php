@@ -94,6 +94,10 @@ $urlRules = [
     $domv . 'rest/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>' => '/amendment/rest',
 ];
 
+if (YII_ENV === 'test') {
+    $urlRules[$domv . 'test/<action:[^\/]+>'] = '/test/index';
+}
+
 foreach ($params->getPluginClasses() as $pluginClass) {
     $urlRules = array_merge($urlRules, $pluginClass::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld));
 }
