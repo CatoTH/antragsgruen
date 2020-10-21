@@ -7,6 +7,7 @@
 - Tabular data sections now skip empty fields when displaying them.
 - In the "Create a motion" form, every motion type can now have an own explanation text at the top of the page, instead of the default "Motion or amendment?" one.
 - A new motion section type is implemented: Video Embeds. Using it, users can add links to Videos, for example to support their candidature. If it's a video hosted on Vimeo, Youtube or Facebook, it will be embedded into the application, otherwise a link is shown.
+- Applications / Candidatures are now only shown in two-column mode until the first embedded PDF or Video appears. It then switches into single-column-layout to make the PDF/video better readable/watchable.
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
