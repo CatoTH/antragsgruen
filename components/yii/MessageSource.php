@@ -100,6 +100,7 @@ class MessageSource extends \yii\i18n\MessageSource
             return array_merge([
                 'en-uk'       => 'English (UK)',
                 'en-congress' => 'Convention',
+                'en-egp' => 'EGP',
             ], $localMessages);
         }
         if ($language === 'fr') {

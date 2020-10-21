@@ -148,7 +148,8 @@ echo $controller->showErrors();
                 Yii::t('admin', 'motion_type_explan_label'),
                 $motionType->getSettingsObj()->hasCreateExplanation,
                 'typeHasCreateExplanation'
-            );
+            ) . ' ';
+            echo HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_explan_hint'));
             ?>
             <div id="typeCreateExplanationHolder" class="wysiwyg-textarea" data-full-html="0">
                 <textarea title="<?= Html::encode(Yii::t('admin', 'motion_type_explan')) ?>" name="type[createExplanation]"
