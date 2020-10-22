@@ -393,6 +393,12 @@ body > footer.footer {
   }
 }
 
+.motionEditForm {
+  label.optional::after, .optional.label::after {
+    content: none;
+  }
+}
+
 .egpCandidatures {
   color: #333;
   font-family: Helvetica,Arial,sans-serif;
