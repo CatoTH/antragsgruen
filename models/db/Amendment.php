@@ -1098,12 +1098,12 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    public function hasVisibleAlternativeProposaltext(): bool
+    public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
     {
         return ($this->hasAlternativeProposaltext(true) && (
             $this->isProposalPublic() ||
             User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CHANGE_PROPOSALS) ||
-            ($this->proposalFeedbackHasBeenRequested() && $this->iAmInitiator())
+            ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
         ));
     }
 

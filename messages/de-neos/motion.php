@@ -36,7 +36,7 @@ Mit freundlichen Grüßen,
 Das Antragsschmiede-Team',
 	'proposal_email_other' => 'Hallo %NAME_GIVEN%,
 
-die Programmkommission einen Verfahrensvorschlag für deinen Antrag erarbeitet.
+die Programmkommission hat einen Verfahrensvorschlag für deinen Antrag erarbeitet.
 
 Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:
 %LINK%

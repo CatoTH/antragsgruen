@@ -347,7 +347,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
                                     "Mit freundlichen Grüßen,\n" .
                                     "  Das Antragsgrün-Team",
     'proposal_email_other'       => "Hallo %NAME_GIVEN%,\n\n" .
-                                    "die Programmkommission einen Verfahrensvorschlag für deinen Änderungsantrag erarbeitet.\n\n" .
+                                    "die Programmkommission hat einen Verfahrensvorschlag für deinen Änderungsantrag erarbeitet.\n\n" .
                                     "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
                                     "Hinweis: wenn du den eben genannten Link weiterleitest, kann die empfangende Person den Vorschlag damit ebenfalls einsehen und ggf. bestätigen.\n\n" .
                                     "Mit freundlichen Grüßen,\n" .

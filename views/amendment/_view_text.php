@@ -3,13 +3,14 @@
 /**
  * @var Yii\web\View $this
  * @var Amendment $amendment
+ * @var string $procedureToken
  */
 
-use app\models\db\{Amendment, AmendmentSection, User};
+use app\models\db\{Amendment, AmendmentSection};
 
 $consultation = $amendment->getMyConsultation();
 
-if ($amendment->hasVisibleAlternativeProposaltext()) {
+if ($amendment->hasVisibleAlternativeProposaltext($procedureToken)) {
     $hasProposedChange = true;
     $reference         = $amendment->getAlternativeProposaltextReference();
     if ($reference) {

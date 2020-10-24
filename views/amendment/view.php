@@ -148,7 +148,7 @@ if ($amendment->status === Amendment::STATUS_DRAFT) {
     <?php
 }
 
-echo $this->render('_view_text', ['amendment' => $amendment]);
+echo $this->render('_view_text', ['amendment' => $amendment, 'procedureToken' => $procedureToken]);
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
 $supporters    = $amendment->getSupporters();
