@@ -248,7 +248,7 @@ $handledSiteSettings = [];
             echo Yii::t('admin', 'con_rest_api_enabled');
             echo ' ' . HTMLTools::getTooltipIcon(Yii::t('admin', 'con_rest_api_hint'));
             echo '</label><div class="apiBaseUrl">';
-            $baseUrl = UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/rest'));
+            $baseUrl = UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/rest-site'));
             $urlLink = '<a href="' . Html::encode($baseUrl) . '">' . Html::encode($baseUrl) . '</a>';
             echo str_replace('%URL%', $urlLink, Yii::t('admin', 'con_rest_api_url'));
             echo '</div></div>';

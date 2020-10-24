@@ -94,6 +94,7 @@ class UrlHelper
             trim($route[0], '/'),
             [
                 'consultation/home',
+                'consultation/rest-site',
                 'admin/index/admins',
                 'admin/index/consultations',
                 'pages/css',
