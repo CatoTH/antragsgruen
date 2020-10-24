@@ -70,7 +70,7 @@ class IndexController extends AdminBase
 
             $model->setSettings($settings);
 
-            if (preg_match('/^[\w_-]+$/i', $data['urlPath'])) {
+            if (preg_match('/^[\w_-]+$/i', $data['urlPath']) && trim($data['urlPath']) !== 'rest') {
                 $model->urlPath = $data['urlPath'];
             } else {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'con_url_path_err'));
