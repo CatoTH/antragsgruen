@@ -44,7 +44,7 @@ class AmendmentPublished
             return;
         }
         $initiator = $this->amendment->getInitiators();
-        if (count($initiator) === 0 || $initiator[0]->getContactOrUserEmail()) {
+        if (count($initiator) === 0 || !$initiator[0]->getContactOrUserEmail()) {
             return;
         }
 

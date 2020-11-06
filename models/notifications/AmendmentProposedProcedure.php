@@ -22,7 +22,7 @@ class AmendmentProposedProcedure
     public function __construct(Amendment $amendment, ?string $text = null, ?string $fromName = null, ?string $replyTo = null)
     {
         $initiator = $amendment->getInitiators();
-        if (count($initiator) === 0 || $initiator[0]->getContactOrUserEmail()) {
+        if (count($initiator) === 0 || !$initiator[0]->getContactOrUserEmail()) {
             return;
         }
 

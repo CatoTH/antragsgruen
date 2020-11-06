@@ -22,7 +22,7 @@ class MotionProposedProcedure
     public function __construct(Motion $motion, ?string $text = '', ?string $fromName = null, ?string $replyTo = null)
     {
         $initiator = $motion->getInitiators();
-        if (count($initiator) === 0 || $initiator[0]->getContactOrUserEmail()) {
+        if (count($initiator) === 0 || !$initiator[0]->getContactOrUserEmail()) {
             return;
         }
 

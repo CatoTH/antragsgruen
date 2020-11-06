@@ -41,7 +41,7 @@ class MotionPublished
             return;
         }
         $initiator = $this->motion->getInitiators();
-        if (count($initiator) === 0 || $initiator[0]->getContactOrUserEmail()) {
+        if (count($initiator) === 0 || !$initiator[0]->getContactOrUserEmail()) {
             return;
         }
 
