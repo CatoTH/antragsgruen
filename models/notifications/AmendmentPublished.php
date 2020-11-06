@@ -44,7 +44,7 @@ class AmendmentPublished
             return;
         }
         $initiator = $this->amendment->getInitiators();
-        if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
+        if (count($initiator) === 0 || $initiator[0]->getContactOrUserEmail()) {
             return;
         }
 
@@ -78,13 +78,13 @@ class AmendmentPublished
             MailTools::sendWithLog(
                 EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                 $this->consultation,
-                trim($initiator[0]->contactEmail),
+                trim($initiator[0]->getContactOrUserEmail()),
                 null,
                 \Yii::t('amend', 'published_email_title'),
                 $plain,
                 $html
             );
-            $this->alreadyNotified[] = strtolower($initiator[0]->contactEmail);
+            $this->alreadyNotified[] = strtolower($initiator[0]->getContactOrUserEmail());
         } catch (MailNotSent $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
             \yii::$app->session->setFlash('error', $errMsg);

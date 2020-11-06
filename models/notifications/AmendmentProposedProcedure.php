@@ -22,7 +22,7 @@ class AmendmentProposedProcedure
     public function __construct(Amendment $amendment, ?string $text = null, ?string $fromName = null, ?string $replyTo = null)
     {
         $initiator = $amendment->getInitiators();
-        if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
+        if (count($initiator) === 0 || $initiator[0]->getContactOrUserEmail()) {
             return;
         }
 
@@ -37,7 +37,7 @@ class AmendmentProposedProcedure
         MailTools::sendWithLog(
             EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
             $amendment->getMyConsultation(),
-            trim($initiator[0]->contactEmail),
+            trim($initiator[0]->getContactOrUserEmail()),
             null,
             str_replace('%PREFIX%', $amendment->getShortTitle(), \Yii::t('amend', 'proposal_email_title')),
             $text,

@@ -22,7 +22,7 @@ class MotionProposedProcedure
     public function __construct(Motion $motion, ?string $text = '', ?string $fromName = null, ?string $replyTo = null)
     {
         $initiator = $motion->getInitiators();
-        if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
+        if (count($initiator) === 0 || $initiator[0]->getContactOrUserEmail()) {
             return;
         }
 
@@ -37,7 +37,7 @@ class MotionProposedProcedure
         MailTools::sendWithLog(
             EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
             $motion->getMyConsultation(),
-            trim($initiator[0]->contactEmail),
+            trim($initiator[0]->getContactOrUserEmail()),
             null,
             str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('motion', 'proposal_email_title')),
             $text,

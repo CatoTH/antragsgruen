@@ -91,6 +91,17 @@ abstract class ISupporter extends ActiveRecord
         }
     }
 
+    public function getContactOrUserEmail(): ?string
+    {
+        if ($this->contactEmail) {
+            return $this->contactEmail;
+        }
+        if ($this->user && $this->user->email && $this->user->emailConfirmed) {
+            return $this->user->email;
+        }
+        return null;
+    }
+
     /**
      * @param array $values
      * @param bool $safeOnly

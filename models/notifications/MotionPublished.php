@@ -41,7 +41,7 @@ class MotionPublished
             return;
         }
         $initiator = $this->motion->getInitiators();
-        if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
+        if (count($initiator) === 0 || $initiator[0]->getContactOrUserEmail()) {
             return;
         }
 
@@ -74,12 +74,12 @@ class MotionPublished
             $plain = $plainBase . "\n\n" . HTMLTools::toPlainText($motionHtml);
         }
 
-        if (count($initiator) > 0 && $initiator[0]->contactEmail !== '') {
+        if (count($initiator) > 0 && $initiator[0]->getContactOrUserEmail()) {
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                     $this->consultation,
-                    trim($initiator[0]->contactEmail),
+                    trim($initiator[0]->getContactOrUserEmail()),
                     null,
                     \Yii::t('motion', 'published_email_title'),
                     $plain,
