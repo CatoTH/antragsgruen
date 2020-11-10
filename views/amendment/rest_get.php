@@ -17,7 +17,7 @@ if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
         'status_title' => $amendment->getFormattedProposalStatus(true),
         'sections' => [],
     ];
-    if ($amendment->hasVisibleAlternativeProposaltext()) {
+    if ($amendment->hasVisibleAlternativeProposaltext(null)) {
         $hasProposedChange = true;
         $reference = $amendment->getAlternativeProposaltextReference();
         if ($reference) {
