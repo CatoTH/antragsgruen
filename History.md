@@ -8,6 +8,7 @@
 - In the "Create a motion" form, every motion type can now have an own explanation text at the top of the page, instead of the default "Motion or amendment?" one.
 - A new motion section type is implemented: Video Embeds. Using it, users can add links to Videos, for example to support their candidature. If it's a video hosted on Vimeo, Youtube or Facebook, it will be embedded into the application, otherwise a link is shown.
 - Applications / Candidatures are now only shown in two-column mode until the first embedded PDF or Video appears. It then switches into single-column-layout to make the PDF/video better readable/watchable.
+- The URL slug of a motion can now be changed on the admin page.
 - Bugfix: If e-mail-notifcations about published motions for the initiating users are set up, but the submission form does not explicitly ask for an e-mail-address, no e-mail was sent. Now, it is sent to the e-mail-address of the user account.
 - Bugfix: if the link to a proposed procedure was forwarded, only the proposed status and the accept button was shown, not the modified text of an amendment.
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.

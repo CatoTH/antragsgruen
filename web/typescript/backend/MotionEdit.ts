@@ -28,32 +28,41 @@ export class MotionEdit {
             this.loadAmendmentCollisions();
         });
 
-        $("#motionUpdateForm").submit(function () {
+        $("#motionUpdateForm").on("submit", function () {
             $(".amendmentCollisionsHolder .amendmentOverrideBlock > .texteditor").each(function () {
                 let text = CKEDITOR.instances[$(this).attr("id")].getData();
                 $(this).parents(".amendmentOverrideBlock").find("> textarea").val(text);
             });
         });
 
-        $(".motionDeleteForm").submit((ev, data) => {
+        $(".motionDeleteForm").on("submit", (ev, data) => {
             this.onSubmitDeleteForm(ev, data);
         });
 
         this.initVotingFunctions();
+        this.initSlug();
 
         new MotionSupporterEdit($("#motionSupporterHolder"));
+    }
+
+    private initSlug() {
+        $('.urlSlugHolder .shower a').on("click", (ev) => {
+            ev.preventDefault();
+            $('.urlSlugHolder .shower').addClass('hidden');
+            $('.urlSlugHolder .holder').removeClass('hidden');
+        });
     }
 
     private initVotingFunctions() {
         const $closer = $(".votingResultCloser"),
             $opener = $(".votingResultOpener"),
             $inputRows = $(".contentVotingResult, .contentVotingResultComment");
-        $opener.click(() => {
+        $opener.on("click", () => {
             $closer.removeClass("hidden");
             $opener.addClass("hidden");
             $inputRows.removeClass("hidden");
         });
-        $closer.click(() => {
+        $closer.on("click", () => {
             $closer.addClass("hidden");
             $opener.removeClass("hidden");
             $inputRows.addClass("hidden");
@@ -81,7 +90,7 @@ export class MotionEdit {
                 ckeditor = new AntragsgruenEditor($textarea.attr("id")),
                 editor = ckeditor.getEditor();
 
-            $textarea.parents("form").submit(() => {
+            $textarea.parents("form").on("submit", () => {
                 $textarea.parent().find("textarea").val(editor.getData());
             });
         });

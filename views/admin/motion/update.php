@@ -156,6 +156,23 @@ if (count($consultation->agendaItems) > 0) {
     </div>
 
     <div class="form-group">
+        <div class="col-md-3 control-label"><?= Yii::t('admin', 'motion_url_slug') ?>:</div>
+        <div class="col-md-9 urlSlugHolder">
+            <div class="shower">
+                <?= Html::encode($motion->slug) ?>
+                [<a href="#"><?= Yii::t('admin', 'motion_url_change') ?></a>]
+            </div>
+            <div class="holder hidden">
+                <label for="motionSlug" class="sr-only"><?= Yii::t('admin', 'motion_url_path') ?></label>
+                <input type="text" required name="motion[slug]"
+                       value="<?= Html::encode($motion->slug) ?>" class="form-control"
+                       pattern="[\w_-]+" id="motionSlug">
+                <small><?= Yii::t('admin', 'motion_url_path_hint') ?></small>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="col-md-3 control-label" for="motionTitlePrefix"><?= Yii::t('admin', 'motion_prefix') ?>:</label>
         <div class="col-md-4"><?php
             echo Html::textInput('motion[titlePrefix]', $motion->titlePrefix, [

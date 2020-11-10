@@ -527,6 +527,21 @@ class MotionController extends AdminBase
             $motion->agendaItemId = (isset($modat['agendaItemId']) ? intval($modat['agendaItemId']) : null);
             $motion->nonAmendable = (isset($modat['nonAmendable']) ? 1 : 0);
 
+
+            if (isset($modat['slug']) && preg_match('/^[\w_-]+$/i', $modat['slug'])) {
+                $collision = false;
+                foreach ($motion->getMyConsultation()->motions as $otherMotion) {
+                    if (strtolower($otherMotion->slug) === strtolower($modat['slug']) && $otherMotion->id !== $motion->id) {
+                        $collision = true;
+                    }
+                }
+                if ($collision) {
+                    \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_url_path_err'));
+                } else {
+                    $motion->slug = strtolower($modat['slug']);
+                }
+            }
+
             $roundedDate = Tools::dateBootstraptime2sql($modat['dateCreation']);
             if (substr($roundedDate, 0, 16) !== substr($motion->dateCreation, 0, 16)) {
                 $motion->dateCreation = $roundedDate;
