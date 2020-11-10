@@ -220,6 +220,13 @@ components:
         title_with_prefix:
           type: string
           example: "A1: Pure title of the motion"
+        status_id:
+          type: number
+          example: 3
+          description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
+        status_title:
+          type: string
+          example: Eingereicht
         initiators_html:
           type: string
           example: "Testuser 1"
@@ -327,6 +334,13 @@ components:
         prefix:
           type: string
           example: Ä1
+        status_id:
+          type: number
+          example: 3
+          description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
+        status_title:
+          type: string
+          example: Eingereicht
         initiators_html:
           type: string
           example: "Testuser 1"

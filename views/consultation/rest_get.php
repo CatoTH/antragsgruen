@@ -16,11 +16,15 @@ $json = [
             'title' => $motion->title,
             'title_with_intro' => $motion->getTitleWithIntro(),
             'title_with_prefix' => $motion->getTitleWithPrefix(),
+            'status_id' => $motion->status,
+            'status_title' => $motion->getFormattedStatus(),
             'initiators_html' => $motion->getInitiatorsStr(),
             'amendment_links' => array_map(function (Amendment $amendment) {
                 return [
                     'id' => $amendment->id,
                     'prefix' => $amendment->titlePrefix,
+                    'status_id' => $amendment->status,
+                    'status_title' => $amendment->getFormattedStatus(),
                     'initiators_html' => $amendment->getInitiatorsStr(),
                     'url_json' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'rest')),
                     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)),

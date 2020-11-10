@@ -54,6 +54,8 @@ $json = [
             'id' => $amendment->id,
             'prefix' => $amendment->titlePrefix,
             'initiators_html' => $amendment->getInitiatorsStr(),
+            'status_id' => $amendment->status,
+            'status_title' => $amendment->getFormattedStatus(),
             'url_json' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'rest')),
             'url_html' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)),
         ];
