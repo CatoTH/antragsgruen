@@ -331,7 +331,7 @@ class IndexController extends AdminBase
                     }
                 }
             }
-            $consultation->refresh();
+            $motionType->refresh();
             \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 

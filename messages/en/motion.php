@@ -148,9 +148,9 @@ return [
     'pdf_current'               => 'Current PDF',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
-    'create_explanation'        => 'Here you can create a motion with no reference to another motion. ' .
-                                   'If you want to amend an existing motion instead, please open that motion first and choose "Create amendment" on the sidebar to the right',
-    'create_explanation_title'  => 'Motion or amendment?',
+    'create_explanation'        => '<div style="font-weight: bold; text-decoration: underline;">Motion or amendment?</div>
+                                   Here you can create a motion with no reference to another motion.
+                                   If you want to amend an existing motion instead, please open that motion first and choose "Create amendment" on the sidebar to the right',
 
     'support_collect_status' => 'Currently',
     'support_collect_min'    => 'min.',

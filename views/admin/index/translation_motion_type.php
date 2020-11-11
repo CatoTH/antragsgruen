@@ -22,16 +22,54 @@ $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('
 $layout->addBreadcrumb(Yii::t('admin', 'bread_language'));
 $layout->bodyCssClasses[] = 'adminTranslationForm';
 
+$existingTranslations = [];
+foreach ($motionType->consultationTexts as $consultationText) {
+    if (!isset($existingTranslations[$consultationText->category])) {
+        $existingTranslations[$consultationText->category] = [];
+    }
+    $existingTranslations[$consultationText->category][$consultationText->textId] = $consultationText;
+}
+
+echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminForm form-horizontal']);
+
 ?>
 
-<h1><?= Html::encode($this->title) ?></h1>
-<div class="content">
+    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="content">
+        <div class="alert alert-info"><?= Yii::t('admin', 'translating_motion_hint') ?></div>
+        <?php
+        echo $controller->showErrors();
+        ?>
+    </div>
 
-    <div class="alert alert-info"><?= Yii::t('admin', 'translating_motion_hint') ?></div>
+<?php
 
-    <?php
-    foreach ($motionType->consultationTexts as $consultationText) {
-        echo $consultationText->title;
+
+foreach (MessageSource::getMotionTypeChangableTexts() as $categoryId => $textIds) {
+    echo '<h2 class="green">' . Html::encode(MessageSource::getTranslatableCategories()[$categoryId]) . '</h2><div class="content">';
+
+    foreach ($textIds as $textId) {
+        /** @var \app\models\db\ConsultationText|null $existingText */
+        $existingText = (isset($existingTranslations[$categoryId]) && $existingTranslations[$categoryId][$textId] ? $existingTranslations[$categoryId][$textId] : null);
+        $value = ($existingText ? $existingText->text : '');
+        $htmlId = 'string' . $categoryId;
+        ?>
+        <div class="form-group">
+            <label class="col-sm-6 control-label" for="<?= $htmlId ?>">
+                <span class="description"><?= nl2br(Html::encode(Yii::t($categoryId, $textId))) ?></span>
+                <span class="identifier"><?= Html::encode($textId) ?></span>
+            </label>
+            <div class="col-sm-6">
+                <?= HTMLTools::smallTextarea('categories[' . $categoryId . '][' . $textId . ']', ['class' => 'form-control', 'id' => $htmlId], $value) ?>
+            </div>
+        </div>
+        <?php
     }
-    ?>
-</div>
+    echo '</div>';
+}
+
+echo '<div class="saveholder">
+<button type="submit" name="save" class="btn btn-primary">' . Yii::t('base', 'save') . '</button>
+</div>';
+
+echo Html::endForm();

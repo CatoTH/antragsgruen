@@ -44,10 +44,7 @@ $publicPolicies = [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN, IPolicy::POLI
 if ($form->motionType->getSettingsObj()->hasCreateExplanation) {
     echo $form->motionType->getSettingsObj()->createExplanation . '<br><br>';
 } elseif (in_array($form->motionType->policyAmendments, $publicPolicies)) {
-    echo '<div style="font-weight: bold; text-decoration: underline;">' .
-        Yii::t('motion', 'create_explanation_title') . '</div>' .
-        str_replace('%HOME%', UrlHelper::homeUrl(), Yii::t('motion', 'create_explanation')) .
-        '<br><br>';
+    echo str_replace('%HOME%', UrlHelper::homeUrl(), Yii::t('motion', 'create_explanation')) . '<br><br>';
 }
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */

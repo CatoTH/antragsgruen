@@ -12,9 +12,6 @@ class MessageSource extends \yii\i18n\MessageSource
     public $basePath = '@app/messages';
     public $fileMap;
 
-    /**
-     * Initializes this component.
-     */
     public function init()
     {
         parent::init();
@@ -30,12 +27,9 @@ class MessageSource extends \yii\i18n\MessageSource
         }
     }
 
-    /**
-     * @return array
-     */
-    public static function getTranslatableCategories()
+    public static function getTranslatableCategories(): array
     {
-        if (Yii::$app->language == 'de') {
+        if (Yii::$app->language === 'de') {
             $categories = [
                 'base'      => 'Basis-Layout',
                 'structure' => 'Interne Bezeichnungen',
@@ -78,11 +72,7 @@ class MessageSource extends \yii\i18n\MessageSource
         return $categories;
     }
 
-    /**
-     * @param string $language
-     * @return array
-     */
-    public static function getLanguageVariants($language)
+    public static function getLanguageVariants(string $language): array
     {
         /** @var AntragsgruenApp $params */
         $params        = Yii::$app->params;
@@ -111,15 +101,21 @@ class MessageSource extends \yii\i18n\MessageSource
         return [];
     }
 
-    /**
-     * @return array
-     */
-    public static function getBaseLanguages()
+    public static function getBaseLanguages(): array
     {
         return [
             'de' => 'Deutsch',
             'en' => 'English',
             'fr' => 'Français',
+        ];
+    }
+
+    public static function getMotionTypeChangableTexts(): array
+    {
+        return [
+            'motion' => [
+                'create_explanation',
+            ],
         ];
     }
 
@@ -130,7 +126,7 @@ class MessageSource extends \yii\i18n\MessageSource
      * @param string $language the target language
      * @return string path to message file
      */
-    protected function getMessageFilePath($category, $language)
+    protected function getMessageFilePath(string $category, string $language): string
     {
         $messageFile = Yii::getAlias($this->basePath) . "/$language/";
 
@@ -157,7 +153,7 @@ class MessageSource extends \yii\i18n\MessageSource
      * @param $messageFile string path to message file
      * @return array|null array of messages or null if file not found
      */
-    protected function loadMessagesFromFile($messageFile)
+    protected function loadMessagesFromFile(string $messageFile): ?array
     {
         if (is_file($messageFile)) {
             $messages = include($messageFile);
@@ -177,17 +173,12 @@ class MessageSource extends \yii\i18n\MessageSource
      * @return array
      * @throws Internal
      */
-    public function getBaseMessages($category, $language)
+    public function getBaseMessages(string $category, string $language): array
     {
         return $this->loadMessages($category, $language, false);
     }
 
-    /**
-     * @param string $category
-     * @param string $language
-     * @return array
-     */
-    public function getBaseMessagesWithHints($category, $language)
+    public function getBaseMessagesWithHints(string $category, string $language): array
     {
         $messages = $this->loadMessagesRaw($category, $language, false);
         return array_map(function ($textId, $entry) {
@@ -204,13 +195,7 @@ class MessageSource extends \yii\i18n\MessageSource
         }, array_keys($messages), $messages);
     }
 
-    /**
-     * @param string $category
-     * @param string $language
-     * @param bool $withConsultationStrings
-     * @return array
-     */
-    private function loadMessagesRaw($category, $language, $withConsultationStrings)
+    private function loadMessagesRaw(string $category, string $language, bool $withConsultationStrings): array
     {
         $categories = static::getTranslatableCategories();
         if (!isset($categories[$category])) {
@@ -274,7 +259,7 @@ class MessageSource extends \yii\i18n\MessageSource
      * @return array
      * @throws Internal
      */
-    protected function loadMessages($category, $language, $withConsultationStrings = true)
+    protected function loadMessages($category, $language, bool $withConsultationStrings = true): array
     {
         return array_map(function ($entry) {
             if (is_array($entry)) {

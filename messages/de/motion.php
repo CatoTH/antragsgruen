@@ -171,10 +171,10 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'pdf_current'                        => 'Aktuelles PDF',
     'max_len_hint'                       => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
     'max_len_alert'                      => 'Der Text ist zu lang!',
-    'create_explanation'                 => 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
+    'create_explanation'                 => '<div style="font-weight: bold; text-decoration: underline;">Antrag oder Änderungsantrag?</div>
+        Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
         Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>
         bitte zuerst den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
-    'create_explanation_title'           => 'Antrag oder Änderungsantrag?',
     'support_collect_explanation_title'  => 'Einen Antrag gemeinschaftlich stellen',
     'support_collect_explanation'        => 'Ein Antrag, der nicht von Parteigremien gestellt wird, kann gemäß unserer Statuten auch gemeinschaftlich von %MIN+1% Mitgliedern gestellt werden. Um einen solchen Antrag zu stellen und offiziell bei der Antragskommission einzureichen, gehe bitte wie folgt vor:<br>
 <ol>
