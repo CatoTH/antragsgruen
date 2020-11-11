@@ -63,6 +63,13 @@ foreach (MessageSource::getTranslatableCategories() as $catId => $catName) {
     }
 }
 
+echo '<br><br>';
+echo Yii::t('admin', 'translation_motion_types') . ': ';
+foreach ($consultation->motionTypes as $motionType) {
+    $url = UrlHelper::createUrl(['admin/index/translation-motion-type', 'motionTypeId' => $motionType->id]);
+    echo Html::a('<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' . Html::encode($motionType->titlePlural), $url) . ' ';
+}
+
 
 echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminForm form-horizontal']);
 echo '<input type="hidden" name="category" value="' . Html::encode($category) . '">';

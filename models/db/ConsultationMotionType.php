@@ -108,8 +108,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getConsultationTexts()
     {
-        return $this->hasMany(ConsultationText::class, ['motionTypeId' => 'id'])
-            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+        return $this->hasMany(ConsultationText::class, ['motionTypeId' => 'id']);
     }
 
     /**
