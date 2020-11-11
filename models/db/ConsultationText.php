@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
  * @package app\models\db
  *
  * @property int $id
+ * @property int $motionTypeId
  * @property int $consultationId
  * @property int $siteId
  * @property string $category
@@ -19,6 +20,7 @@ use yii\db\ActiveRecord;
  * @property string $text
  * @property string $editDate
  *
+ * @property ConsultationMotionType
  * @property Consultation $consultation
  * @property Site $site
  */
@@ -33,6 +35,14 @@ class ConsultationText extends ActiveRecord
         $app = \Yii::$app->params;
 
         return $app->tablePrefix . 'consultationText';
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMotionType()
+    {
+        return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
     /**

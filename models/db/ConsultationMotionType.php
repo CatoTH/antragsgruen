@@ -42,6 +42,7 @@ use yii\db\ActiveRecord;
  *
  * @property ConsultationSettingsMotionSection[] $motionSections
  * @property Motion[] $motions
+ * @property ConsultationText[] $consultationTexts
  * @property ConsultationAgendaItem[] $agendaItems
  * @property TexTemplate $texTemplate
  */
@@ -99,6 +100,15 @@ class ConsultationMotionType extends ActiveRecord
     public function getMotions()
     {
         return $this->hasMany(Motion::class, ['motionTypeId' => 'id'])
+            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getConsultationTexts()
+    {
+        return $this->hasMany(ConsultationText::class, ['motionTypeId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
