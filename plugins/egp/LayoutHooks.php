@@ -12,6 +12,8 @@ use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
+    const CANDIDATURE_TYPES = [3];
+
     public function beginPage(string $before): string
     {
         return '';
@@ -24,6 +26,14 @@ class LayoutHooks extends Hooks
             $str .= '<div class="hidden-xs">';
             $str .= implode('', $this->layout->menusHtml);
             $str .= '</div>';
+
+            /** @var Base $controller */
+            $controller = \Yii::$app->controller;
+            // Back link to candidature page
+            if ($controller->route === 'motion/view' && $controller->motion && in_array($controller->motion->motionTypeId, static::CANDIDATURE_TYPES)) {
+                $candidatureUrl = UrlHelper::createUrl(['/egp/candidatures/index', 'motionTypeId' => $controller->motion->motionTypeId]);
+                $str = preg_replace('/(<li class="back">.*href=")[^"]*(".*<\/li>)/siuU', '$1 ' . $candidatureUrl . '$2', $str);
+            }
         }
         $str .= $this->layout->postSidebarHtml;
 
@@ -33,6 +43,22 @@ class LayoutHooks extends Hooks
     public function logoRow(string $before): string
     {
         return '';
+    }
+
+    public function breadcrumbs(string $before): string
+    {
+        /** @var Base $controller */
+        $controller = \Yii::$app->controller;
+
+        // Back link to candidature page
+        if ($controller->route === 'motion/view' && $controller->motion && in_array($controller->motion->motionTypeId, static::CANDIDATURE_TYPES)) {
+            $lastBreadcrumb = array_pop($this->layout->breadcrumbs);
+            $candidatureUrl = UrlHelper::createUrl(['/egp/candidatures/index', 'motionTypeId' => $controller->motion->motionTypeId]);
+            $this->layout->breadcrumbs[$candidatureUrl] = 'Candidatures';
+            $this->layout->breadcrumbs[] = $lastBreadcrumb;
+        }
+
+        return parent::breadcrumbs($before);
     }
 
     public function beforeContent(string $before): string

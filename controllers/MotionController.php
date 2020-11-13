@@ -37,6 +37,7 @@ class MotionController extends Base
         $this->layout = 'column2';
 
         $motion = $this->getMotionWithCheck($motionSlug);
+        $this->motion = $motion;
         if (User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
         } else {

@@ -31,6 +31,7 @@ class AmendmentController extends Base
     public function actionPdf($motionSlug, $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        $this->amendment = $amendment;
         if (!$amendment) {
             return '';
         }
@@ -106,6 +107,7 @@ class AmendmentController extends Base
     public function actionOdt($motionSlug, $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        $this->amendment = $amendment;
         if (!$amendment) {
             return '';
         }
@@ -137,6 +139,7 @@ class AmendmentController extends Base
 
         try {
             $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
+            $this->amendment = $amendment;
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
         }
@@ -161,6 +164,7 @@ class AmendmentController extends Base
         $this->layout = 'column2';
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, 'view');
+        $this->amendment = $amendment;
         if (!$amendment) {
             return '';
         }
@@ -212,6 +216,7 @@ class AmendmentController extends Base
     public function actionAjaxDiff($motionSlug, $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        $this->amendment = $amendment;
         if (!$amendment) {
             return '';
         }
@@ -481,6 +486,7 @@ class AmendmentController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        $this->amendment = $amendment;
         if (!$amendment) {
             \Yii::$app->response->statusCode = 404;
             return 'Amendment not found';
@@ -631,6 +637,7 @@ class AmendmentController extends Base
     public function actionEditProposedChange($motionSlug, $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        $this->amendment = $amendment;
         if (!$amendment) {
             \Yii::$app->response->statusCode = 404;
             return 'Amendment not found';
@@ -694,6 +701,7 @@ class AmendmentController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        $this->amendment = $amendment;
         if (!$amendment) {
             \Yii::$app->response->statusCode = 404;
             return 'Amendment not found';

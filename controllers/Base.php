@@ -21,6 +21,12 @@ class Base extends Controller
     /** @var null|Consultation */
     public $consultation = null;
 
+    /** @var null|Motion */
+    public $motion = null;
+
+    /** @var null|Amendment */
+    public $amendment = null;
+
     /** @var null|Site */
     public $site = null;
 

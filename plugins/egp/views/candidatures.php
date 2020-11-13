@@ -119,12 +119,10 @@ usort($motions, function (Motion $motion1, Motion $motion2) {
                             }
                             ?>
                         </ul>
-                        <!--
                         <a href="<?= Html::encode(\app\components\UrlHelper::createMotionUrl($motion)) ?>">
                             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                             Show full candidacy
                         </a>
-                        -->
                     </div>
                 </li>
             <?php

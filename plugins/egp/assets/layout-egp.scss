@@ -240,9 +240,11 @@ $grid-float-breakpoint: $container-md - 32px !default; // $screen-md-min;
     font-weight: normal;
     text-transform: none;
     margin: 0;
-    color: #0a321e;
+    .pseudoLink {
+      color: #46962b;
+    }
     a, a:link, a:visited {
-      color: #0a321e;
+      color: #46962b;
     }
 }
 
