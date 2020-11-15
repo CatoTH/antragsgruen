@@ -59,7 +59,7 @@ $json = [
             'url_json' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'rest')),
             'url_html' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)),
         ];
-    }, $motion->getVisibleAmendments()),
+    }, $motion->getVisibleAmendmentsSorted()),
     'url_json' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)),
 ];
