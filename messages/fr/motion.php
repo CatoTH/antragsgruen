@@ -112,9 +112,9 @@ return [
     'submitted_adminnoti_body'  => "Une motion a été retirée.\nTitre : %TITLE%\nAuteur : %INITIATOR%\nLien: %LINK%",
     'max_len_hint'              => 'Maximum %LEN% signes (actuellement : %COUNT%)',
     'max_len_alert'             => 'Le texte est trop long !',
-    'create_explanation'        => 'Tu peux ici créer une motion indépendante d\' une autre motion. ' .
-                                   'Si tu souhaites amender une motion déjà déposée, tu dois d\'abord ouvrir cette motion et cliquer sur "Créer un amendement" dans la barre latérale à droite.',
-    'create_explanation_title'  => 'Motion ou amendement ?',
+    'create_explanation'        => '<div style="font-weight: bold; text-decoration: underline;">Motion ou amendement ?</div>
+                                   Tu peux ici créer une motion indépendante d\' une autre motion.
+                                   Si tu souhaites amender une motion déjà déposée, tu dois d\'abord ouvrir cette motion et cliquer sur "Créer un amendement" dans la barre latérale à droite.',
 
     'support_collect_status' => 'Actuellement',
     'support_collect_min'    => 'Min.',

@@ -42,6 +42,7 @@ use yii\db\ActiveRecord;
  *
  * @property ConsultationSettingsMotionSection[] $motionSections
  * @property Motion[] $motions
+ * @property ConsultationText[] $consultationTexts
  * @property ConsultationAgendaItem[] $agendaItems
  * @property TexTemplate $texTemplate
  */
@@ -100,6 +101,14 @@ class ConsultationMotionType extends ActiveRecord
     {
         return $this->hasMany(Motion::class, ['motionTypeId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getConsultationTexts()
+    {
+        return $this->hasMany(ConsultationText::class, ['motionTypeId' => 'id']);
     }
 
     /**
@@ -399,5 +408,15 @@ class ConsultationMotionType extends ActiveRecord
             }
         }
         return $compatible;
+    }
+
+    public function getConsultationTextWithFallback(string $category, string $key): ?string {
+        foreach ($this->consultationTexts as $consultationText) {
+            if ($consultationText->category === $category && $consultationText->textId === $key) {
+                return $consultationText->text;
+            }
+        }
+
+        return \Yii::t($category, $key);
     }
 }

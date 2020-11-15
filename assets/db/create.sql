@@ -313,6 +313,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationSettingsTag` (
 
 CREATE TABLE `###TABLE_PREFIX###consultationText` (
   `id`             int(11)      NOT NULL,
+  `motionTypeId`   int(11)           DEFAULT NULL,
   `consultationId` int(11)           DEFAULT NULL,
   `siteId`         int(11)           DEFAULT NULL,
   `category`       varchar(20)  NOT NULL,
@@ -791,7 +792,8 @@ ALTER TABLE `###TABLE_PREFIX###consultationText`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId`),
   ADD KEY `fk_texts_consultationIdx` (`consultationId`),
-  ADD KEY `consultation_text_site` (`siteId`);
+  ADD KEY `consultation_text_site` (`siteId`),
+  ADD KEY `fk_text_motion_type` (`motionTypeId`);
 
 --
 -- Indexes for table `consultationUserPrivilege`
@@ -1177,12 +1179,9 @@ ALTER TABLE `###TABLE_PREFIX###consultationSettingsTag`
 -- Constraints for table `consultationText`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationText`
-  ADD CONSTRAINT `fk_consultation_text_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`)
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_consultation_text_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_text_motion_type` FOREIGN KEY (`motionTypeId`) REFERENCES `###TABLE_PREFIX###consultationMotionType` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationUserPrivilege`

@@ -295,6 +295,50 @@ class IndexController extends AdminBase
     }
 
     /**
+     * @param int $motionTypeId
+     * @return string
+     * @throws \Throwable
+     */
+    public function actionTranslationMotionType($motionTypeId)
+    {
+        $consultation = $this->consultation;
+        $motionType = $consultation->getMotionType(intval($motionTypeId));
+
+        if ($this->isPostSet('save')) {
+            foreach (\Yii::$app->request->post('categories', []) as $categoryId => $strings) {
+                foreach ($strings as $key => $val) {
+                    $key = urldecode($key);
+                    $found = false;
+                    foreach ($motionType->consultationTexts as $text) {
+                        if ($text->category === $categoryId && $text->textId === $key) {
+                            if ($val === '') {
+                                $text->delete();
+                            } else {
+                                $text->text = HTMLTools::cleanHtmlTranslationString($val);
+                                $text->save();
+                            }
+                            $found = true;
+                        }
+                    }
+                    if (!$found && $val !== '') {
+                        $text = new ConsultationText();
+                        $text->motionTypeId = $motionTypeId;
+                        $text->category = $categoryId;
+                        $text->textId = $key;
+                        $text->text = HTMLTools::cleanHtmlTranslationString($val);
+                        $text->editDate = date('Y-m-d H:i:s');
+                        $text->save();
+                    }
+                }
+            }
+            $motionType->refresh();
+            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+        }
+
+        return $this->render('translation_motion_type', ['motionType' => $motionType]);
+    }
+
+    /**
      * @return string
      * @throws \app\models\exceptions\Internal
      * @throws \yii\base\ExitException
