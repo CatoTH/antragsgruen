@@ -22,7 +22,6 @@ $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadFuelux();
-$layout->loadCKEditor();
 $layout->addAMDModule('backend/MotionTypeEdit');
 
 $myUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
@@ -138,29 +137,6 @@ echo $controller->showErrors();
     </div>
 
     <div class="form-group">
-        <div class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_explan') ?>
-        </div>
-        <div class="col-md-8">
-            <?php
-            echo HTMLTools::labeledCheckbox(
-                'type[hasCreateExplanation]',
-                Yii::t('admin', 'motion_type_explan_label'),
-                $motionType->getSettingsObj()->hasCreateExplanation,
-                'typeHasCreateExplanation'
-            ) . ' ';
-            echo HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_explan_hint'));
-            ?>
-            <div id="typeCreateExplanationHolder" class="wysiwyg-textarea" data-full-html="0">
-                <textarea title="<?= Html::encode(Yii::t('admin', 'motion_type_explan')) ?>" name="type[createExplanation]"
-                    ><?= Html::encode($motionType->getSettingsObj()->createExplanation) ?></textarea>
-                <div class="texteditor motionTextFormattings boxed" id="typeCreateExplanation_wysiwyg"
-                    ><?= $motionType->getSettingsObj()->createExplanation ?></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group">
         <label class="col-md-4 control-label" for="typeProposedProcedure">
             <?= Yii::t('admin', 'motion_type_proposed') ?>
         </label>
@@ -192,6 +168,13 @@ echo $controller->showErrors();
         </div>
     </div>
 <?php
+
+$furtherTranslation = UrlHelper::createUrl(['admin/index/translation-motion-type', 'motionTypeId' => $motionType->id]);
+echo Html::a(
+    '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Yii::t('admin', 'motion_type_translations'),
+    $furtherTranslation,
+    ['class' => 'motionTypeTranslations']
+);
 
 
 echo $this->render('_type_policy', ['motionType' => $motionType]);

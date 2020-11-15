@@ -9,7 +9,6 @@
 use app\models\db\ConsultationMotionType;
 use app\components\{HTMLTools, yii\MessageSource, UrlHelper};
 use yii\helpers\Html;
-use yii\i18n\I18N;
 
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
@@ -52,7 +51,7 @@ foreach (MessageSource::getMotionTypeChangableTexts() as $categoryId => $textIds
         /** @var \app\models\db\ConsultationText|null $existingText */
         $existingText = (isset($existingTranslations[$categoryId]) && $existingTranslations[$categoryId][$textId] ? $existingTranslations[$categoryId][$textId] : null);
         $value = ($existingText ? $existingText->text : '');
-        $htmlId = 'string' . $categoryId;
+        $htmlId = 'string_' . $categoryId . '_' . $textId;
         ?>
         <div class="form-group">
             <label class="col-sm-6 control-label" for="<?= $htmlId ?>">

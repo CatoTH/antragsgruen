@@ -41,11 +41,8 @@ echo '<div class="form content hideIfEmpty">';
 echo $controller->showErrors();
 
 $publicPolicies = [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_WURZELWERK];
-if ($form->motionType->getSettingsObj()->hasCreateExplanation) {
-    echo $form->motionType->getSettingsObj()->createExplanation . '<br><br>';
-} elseif (in_array($form->motionType->policyAmendments, $publicPolicies)) {
-    echo str_replace('%HOME%', UrlHelper::homeUrl(), Yii::t('motion', 'create_explanation')) . '<br><br>';
-}
+echo str_replace('%HOME%', UrlHelper::homeUrl(), $form->motionType->getConsultationTextWithFallback('motion', 'create_explanation')) . '<br><br>';
+
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
     $supp = $form->motionType->getMotionSupportTypeClass();

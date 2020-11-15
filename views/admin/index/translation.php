@@ -66,8 +66,11 @@ foreach (MessageSource::getTranslatableCategories() as $catId => $catName) {
 echo '<br><br>';
 echo Yii::t('admin', 'translation_motion_types') . ': ';
 foreach ($consultation->motionTypes as $motionType) {
-    $url = UrlHelper::createUrl(['admin/index/translation-motion-type', 'motionTypeId' => $motionType->id]);
-    echo Html::a('<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' . Html::encode($motionType->titlePlural), $url) . ' ';
+    echo Html::a(
+        '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' . Html::encode($motionType->titlePlural),
+        UrlHelper::createUrl(['admin/index/translation-motion-type', 'motionTypeId' => $motionType->id]),
+        ['class' => 'motionTypeTranslation' . $motionType->id]
+    ) . ' ';
 }
 
 

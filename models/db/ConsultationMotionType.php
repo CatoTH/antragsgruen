@@ -409,4 +409,14 @@ class ConsultationMotionType extends ActiveRecord
         }
         return $compatible;
     }
+
+    public function getConsultationTextWithFallback(string $category, string $key): ?string {
+        foreach ($this->consultationTexts as $consultationText) {
+            if ($consultationText->category === $category && $consultationText->textId === $key) {
+                return $consultationText->text;
+            }
+        }
+
+        return \Yii::t($category, $key);
+    }
 }
