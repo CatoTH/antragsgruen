@@ -5,7 +5,7 @@
 - The pink deadline circle on the consultation is now also shown if multiple motion types with the same deadline exist.
 - First, small beginnings of a REST API are implemented, currently with read-only access. It can be enabled in the site component settings. The documentation can be found at [docs/openapi.yaml](docs/openapi.yaml)
 - Tabular data sections now skip empty fields when displaying them.
-- In the "Create a motion" form, every motion type can now have an own explanation text at the top of the page, instead of the default "Motion or amendment?" one.
+- Some texts can now be changed per motion type, to change the wording depending on context. For example, in the "Create a motion" form, instead of the default "Motion or amendment?" text, there can be different explanations for different motion or application types.
 - A new motion section type is implemented: Video Embeds. Using it, users can add links to Videos, for example to support their candidature. If it's a video hosted on Vimeo, Youtube or Facebook, it will be embedded into the application, otherwise a link is shown.
 - Applications / Candidatures are now only shown in two-column mode until the first embedded PDF or Video appears. It then switches into single-column-layout to make the PDF/video better readable/watchable.
 - The URL slug of a motion can now be changed on the admin page.
