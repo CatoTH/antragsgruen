@@ -23,7 +23,6 @@
     "ext-fileinfo": "*",
     "ext-intl": "*",
     "ext-curl": "*",
-    "fxp/composer-asset-plugin": "~1.4.1",
     "yiisoft/yii2": "~2.0.15",
     "yiisoft/yii2-authclient": "^2.2.4",
     "tecnickcom/tcpdf": "^6.3",
@@ -44,7 +43,6 @@
     "codeception/codeception": "^4.0.0",
     "codeception/specify": "^1.2.0",
     "codeception/verify": "^1.2.0",
-    "bower-asset/yii2-pjax": "^2.0.3.9999999-dev",
     "codeception/module-asserts": "^1.1",
     "codeception/module-webdriver": "^1.0",
     "codeception/module-yii2": "^1.1"
@@ -63,20 +61,7 @@
     "platform": {
       "php": "7.1.32"
     },
-    "optimize-autoloader": true,
-    "fxp-asset": {
-      "installer-paths": {
-        "npm-asset-library": "vendor/npm",
-        "bower-asset-library": "web/js/bower"
-      },
-      "respositories": [
-        {
-          "name": "Sortable",
-          "type": "bower-vcs",
-          "url": "https://github.com/RubaXa/Sortable"
-        }
-      ]
-    }
+    "optimize-autoloader": true
   },
   "extra": {
     "yii\\composer\\Installer::postCreateProject": {
@@ -88,5 +73,11 @@
         }
       ]
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
 }

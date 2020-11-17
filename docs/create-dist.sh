@@ -33,7 +33,6 @@ rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/p
 cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.4.5"
 ./composer.phar install --no-dev
 
 rm -R local dist updates docker-vagrant .DS_Store .idea tsconfig.json package.json gulpfile.js
@@ -63,7 +62,6 @@ rm -R vendor/doctrine/lexer/tests
 rm -R vendor/ezyang/htmlpurifier/tests
 rm -R vendor/yiisoft/yii2/test
 rm -R vendor/mailjet/mailjet-apiv3-php/test
-rm -R vendor/fxp/composer-asset-plugin/Tests
 rm -R vendor/scssphp/scssphp/bin
 rm -R vendor/cebe/markdown/bin
 rm -R vendor/yiisoft/yii2/i18n/migrations
