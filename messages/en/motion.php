@@ -129,7 +129,7 @@ return [
     'err_withdraw_permission'   => 'Not allowed to withdraw this motion.',
     'err_not_found'             => 'Motion not found.',
     'err_not_visible_title'     => 'Not visible',
-    'err_not_visible'           => 'This amendment is not a viewable entry.',
+    'err_not_visible'           => 'This motion is not public.',
     'err_draft_not_found'       => 'There is not work-in-progress draft.',
     'info_draft_admin'          => 'Draft - only visible for admins',
     'withdraw_done'             => 'The motion has been withdrawn.',

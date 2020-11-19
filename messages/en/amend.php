@@ -164,7 +164,7 @@ return [
     'err_withdraw_forbidden'            => 'No permission to withdraw this amendment.',
     'err_edit_forbidden'                => 'Not allowed to edit this amendment.',
     'err_not_visible_title'             => 'Not accessible',
-    'err_not_visible'                   => 'This amendment is not a viewable entry.',
+    'err_not_visible'                   => 'This amendment is not public.',
     'withdraw_done'                     => 'The amendment has been withdrawn.',
     'withdraw_bread'                    => 'Withdraw',
     'withdraw'                          => 'Withdraw',
