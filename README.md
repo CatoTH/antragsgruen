@@ -164,7 +164,7 @@ For command line commands, you can set this variable like this:
 
 #### Using the same database, plugin configuration and a site manager
 
-[Antragsgruen.de](https://www.antragsgruen.de/) uses a site manager module on the home page that allows users to create their own sites using a web form. This is done using the ``multisideMode`` and a plugin for the site manager. Relevant entries in the ``config.json`` for this are:
+[Antragsgruen.de](https://antragsgruen.de/) uses a site manager module on the home page that allows users to create their own sites using a web form. This is done using the ``multisideMode`` and a plugin for the site manager. Relevant entries in the ``config.json`` for this are:
 
 ```json
 {

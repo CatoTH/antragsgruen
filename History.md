@@ -2,6 +2,7 @@
 
 ### Version 4.6.3 [not released yet]
 
+- Bugfix: Merging amendments into a motion failed if previously an amendment for that motion was deleted that had a modified version.
 - Resuming a previously saved draft when merging amendments into an motion could fail if in the meantime an amendment has been hadded.
 - Compatibility with PHP 8 / Composer 2.
 
