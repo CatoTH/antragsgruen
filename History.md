@@ -11,6 +11,7 @@
 - The URL slug of a motion can now be changed on the admin page.
 - Bugfix: If e-mail-notifcations about published motions for the initiating users are set up, but the submission form does not explicitly ask for an e-mail-address, no e-mail was sent. Now, it is sent to the e-mail-address of the user account.
 - Bugfix: if the link to a proposed procedure was forwarded, only the proposed status and the accept button was shown, not the modified text of an amendment.
+- Bugfix: Merging amendments into a motion failed if previously an amendment for that motion was deleted that had a modified version.
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
