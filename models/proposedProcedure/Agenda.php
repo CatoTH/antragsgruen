@@ -36,6 +36,9 @@ class Agenda
         $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $votingBlock->title;
         $block = new AgendaVoting($title, $votingBlock);
         foreach ($votingBlock->motions as $motion) {
+            if (!$motion->isVisibleForAdmins()) {
+                continue;
+            }
             if ($motion->isProposalPublic() || $includeInvisible) {
                 $block->items[]   = $motion;
                 $handledMotions[] = $motion->id;
@@ -52,6 +55,9 @@ class Agenda
             }
         }
         foreach ($votingBlock->amendments as $vAmendment) {
+            if (!$vAmendment->isVisibleForAdmins()) {
+                continue;
+            }
             if (!in_array($vAmendment->id, $handledAmends) && ($vAmendment->isProposalPublic() || $includeInvisible)) {
                 $block->items[]  = $vAmendment;
                 $handledAmends[] = $vAmendment->id;

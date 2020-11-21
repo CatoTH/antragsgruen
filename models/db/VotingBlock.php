@@ -41,7 +41,8 @@ class VotingBlock extends ActiveRecord
      */
     public function getAmendments()
     {
-        return $this->hasMany(Amendment::class, ['votingBlockId' => 'id']);
+        return $this->hasMany(Amendment::class, ['votingBlockId' => 'id'])
+            ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
     /**
@@ -49,6 +50,7 @@ class VotingBlock extends ActiveRecord
      */
     public function getMotions()
     {
-        return $this->hasMany(Motion::class, ['votingBlockId' => 'id']);
+        return $this->hasMany(Motion::class, ['votingBlockId' => 'id'])
+            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 }
