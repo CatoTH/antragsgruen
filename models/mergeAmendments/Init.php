@@ -126,6 +126,9 @@ class Init
 
     public function getAffectingAmendments(array $allAmendingIds, array $amendmentsById): array
     {
+        // Must match merging.php: $amendments = $motion->getVisibleAmendmentsSorted();
+        $hiddenStatuses = $this->motion->getMyConsultation()->getInvisibleAmendmentStatuses(true);
+
         /** @var Amendment[] $modUs */
         $modUs = [];
         /** @var Amendment[] $normalAmendments */
@@ -141,7 +144,7 @@ class Init
         foreach ($modUs as $amendment) {
             // ModUs that modify a paragraph unaffected by the original amendment.
             // We need to check that the original amendment is not deleted though.
-            if ($amendment->proposalReferencedBy && $amendment->proposalReferencedBy->status !== Amendment::STATUS_DELETED) {
+            if ($amendment->proposalReferencedBy && !in_array($amendment->proposalReferencedBy->status, $hiddenStatuses)) {
                 $normalAmendments[$amendment->proposalReferencedBy->id] = $amendment->proposalReferencedBy;
             }
         }
