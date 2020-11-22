@@ -474,8 +474,8 @@ class ConsultationController extends Base
             }
         }
         if ($unassignedQueue === null) {
-            $speechQueue = SpeechQueue::createWithSubqueues($this->consultation);
-            $speechQueue->save();
+            $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation);
+            $unassignedQueue->save();
         }
 
         return $this->render('@app/views/speech/admin-singlepage', ['queue' => $unassignedQueue]);

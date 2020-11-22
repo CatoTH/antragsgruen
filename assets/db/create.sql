@@ -607,11 +607,8 @@ CREATE TABLE `###TABLE_PREFIX###speechQueue` (
   `consultationId` int(11) NOT NULL,
   `agendaItemId` int(11) DEFAULT NULL,
   `motionId` int(11) DEFAULT NULL,
-  `quotaByTime` tinyint(4) NOT NULL DEFAULT 0,
-  `quotaOrder` tinyint(4) NOT NULL DEFAULT 0,
   `isActive` tinyint(4) NOT NULL DEFAULT 0,
-  `isOpen` tinyint(4) NOT NULL DEFAULT 0,
-  `isModerated` tinyint(4) NOT NULL DEFAULT 0
+  `settings` TEXT NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -625,6 +622,7 @@ CREATE TABLE `###TABLE_PREFIX###speechQueueItem` (
   `queueId` int(11) NOT NULL,
   `subqueueId` int(11) DEFAULT NULL,
   `userId` int(11) DEFAULT NULL,
+  `userToken` VARCHAR(32) NULL DEFAULT NULL,
   `name` text NOT NULL,
   `position` int(11) NULL DEFAULT NULL,
   `dateApplied` timestamp NULL DEFAULT NULL,

@@ -16,6 +16,7 @@ return [
     'waiting_aria_x'     => 'Wartelisten für Redebeiträge',
     'waiting_list_1'     => 'Warteliste',
     'waiting_list_x'     => 'Wartelisten',
+    'waiting_list'       => 'Warteliste',
     'persons_waiting_1'  => '1 Person steht auf der Warteliste',
     'persons_waiting_x'  => '%NUM% Personen stehen auf der Warteliste',
     'apply'              => 'Bewerben',

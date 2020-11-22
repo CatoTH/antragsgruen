@@ -299,7 +299,7 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
 
                     widget.queue = data['queue'];
 
-                    if (data['sidebar']) {
+                    if (data['sidebar'] && data['sidebar'][0] !== '') {
                         document.getElementById('sidebar').childNodes.item(0).innerHTML = data['sidebar'][0];
                         // @TODO Secondary sidebar
                     }

@@ -16,6 +16,7 @@ return [
     'waiting_aria_x'     => 'Waiting lists',
     'waiting_list_1'     => 'Waiting list',
     'waiting_list_x'     => 'Waiting lists',
+    'waiting_list'       => 'Waiting list',
     'persons_waiting_1'  => '1 person is on the waiting list',
     'persons_waiting_x'  => '%NUM% persons are on the waiting list',
     'apply'              => 'Apply',
