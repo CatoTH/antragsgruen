@@ -2,17 +2,13 @@
 
 namespace unit;
 
-use app\components\HTMLTools;
 use app\components\MotionSorter;
-use Yii;
 use Codeception\Specify;
 
 class MotionSortTest extends TestBase
 {
     use Specify;
 
-    /**
-     */
     public function testStd()
     {
         $orig   = [
