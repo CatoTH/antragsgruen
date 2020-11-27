@@ -3,6 +3,7 @@
 ### Version 4.6.3 [not released yet]
 
 - Resuming a previously saved draft when merging amendments into an motion could fail if in the meantime an amendment has been hadded.
+- Compatibility with PHP 8 / Composer 2.
 
 ### Version 4.6.2 (2020-09-26)
 
