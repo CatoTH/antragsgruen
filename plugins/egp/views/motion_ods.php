@@ -56,7 +56,7 @@ $doc->setPreSaveHook(function (DOMDocument $doc) {
     $frame->setAttribute('draw:name', 'EGP Logo');
     $frame->setAttribute('draw:style-name', 'gr1');
     $frame->setAttribute('draw:text-style-name', 'P1');
-    $frame->setAttribute('svg:width', '7.451cm');
+    $frame->setAttribute('svg:width', '9.083cm');
     $frame->setAttribute('svg:height', '4cm');
     $frame->setAttribute('svg:x', '2.2cm');
     $frame->setAttribute('svg:y', '0.645cm');
@@ -109,9 +109,10 @@ $doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, '№');
 $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 
 $doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, Yii::t('export', 'initiator'));
+$doc->setCellStyle(2, $COL_INITIATOR, ['fo:wrap-option' => 'wrap'], []);
 $doc->setColumnWidth($COL_INITIATOR, 6);
 
-$doc->setCell(2, $COL_UNCHANGED, Spreadsheet::TYPE_TEXT, 'Unchanged text');
+$doc->setCell(2, $COL_UNCHANGED, Spreadsheet::TYPE_TEXT, 'Original text');
 $doc->setColumnWidth($COL_UNCHANGED, 10);
 
 $doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, 'Proposed amendment');
@@ -163,6 +164,7 @@ foreach ($amendments as $amendment) {
 
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
+    $doc->setCellStyle($row, $COL_INITIATOR, ['fo:wrap-option' => 'wrap'], []);
     $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_HTML, implode("<br>", $initiatorContacts));
     $doc->setCell($row, $COL_STATUS, Spreadsheet::TYPE_HTML, $amendment->getFormattedStatus());
     $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
