@@ -27,6 +27,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 -->
 <html dir="ltr" mozdisallowselectionprint>
   <head>
+      <base href="<?=$pdfjsPath?>">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="google" content="notranslate">
@@ -61,6 +62,9 @@ See https://github.com/adobe-type-tools/cmap-resources
             <button id="viewAttachments" class="toolbarButton" title="Show Attachments" tabindex="4" data-l10n-id="attachments">
                <span data-l10n-id="attachments_label">Attachments</span>
             </button>
+            <button id="viewLayers" class="toolbarButton" title="Show Layers (double-click to reset all layers to the default state)" tabindex="5" data-l10n-id="layers">
+               <span data-l10n-id="layers_label">Layers</span>
+            </button>
           </div>
         </div>
         <div id="sidebarContent">
@@ -69,6 +73,8 @@ See https://github.com/adobe-type-tools/cmap-resources
           <div id="outlineView" class="hidden">
           </div>
           <div id="attachmentsView" class="hidden">
+          </div>
+          <div id="layersView" class="hidden">
           </div>
         </div>
         <div id="sidebarResizer" class="hidden"></div>
@@ -207,7 +213,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                     <span data-l10n-id="next_label">Next</span>
                   </button>
                 </div>
-                <input type="number" id="pageNumber" class="toolbarField pageNumber" title="Page" value="1" size="4" min="1" tabindex="15" data-l10n-id="page">
+                <input type="number" id="pageNumber" class="toolbarField pageNumber" title="Page" value="1" size="4" min="1" tabindex="15" data-l10n-id="page" autocomplete="off">
                 <span id="numPages" class="toolbarLabel"></span>
               </div>
               <div id="toolbarViewerRight">
