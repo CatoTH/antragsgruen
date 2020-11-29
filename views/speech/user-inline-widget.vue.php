@@ -46,7 +46,7 @@ ob_start();
             </div>
 
             <button class="btn btn-default btn-xs" type="button"
-                    v-if="!queue.haveApplied && showApplicationForm !== queue.subqueues[0].id"
+                    v-if="queue.isOpen && !queue.haveApplied && showApplicationForm !== queue.subqueues[0].id"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
                 <?= Yii::t('speech', 'apply') ?>
