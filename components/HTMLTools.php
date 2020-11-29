@@ -281,6 +281,7 @@ class HTMLTools
         $html = preg_replace("/\\n+/siu", "\n", $html);
         $html = str_replace("<p><br>\n", "<p>", $html);
         $html = str_replace("<br>\n</p>", "</p>", $html);
+        $html = str_replace("<br>\n ", "<br>\n", $html);
         $html = str_replace('&nbsp;', ' ', $html);
 
         $html = static::cleanMessedUpHtmlCharacters($html);

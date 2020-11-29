@@ -99,10 +99,18 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    public function testStripLeadingSpaces()
+    public function testStripLeadingSpaces1()
     {
         $orig   = '<p> Test 123 </p>';
         $expect = '<p>Test 123</p>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testStripLeadingSpaces2()
+    {
+        $orig   = '<p>Test1<br><br> Test2</p>';
+        $expect = '<p>Test1<br>' . "\n" . '<br>' . "\n" . 'Test2</p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }
