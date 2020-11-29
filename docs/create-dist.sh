@@ -25,7 +25,7 @@ if [[ ! -d ./local/antragsgruen-$ANTRAGSGRUEN_VERSION ]]; then
     exit
 fi
 
-npm install
+npm ci
 gulp
 
 rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
@@ -66,6 +66,7 @@ rm -R vendor/scssphp/scssphp/bin
 rm -R vendor/cebe/markdown/bin
 rm -R vendor/yiisoft/yii2/i18n/migrations
 rm -R vendor/yiisoft/yii2/log/migrations
+rm -R vendor/bower-asset
 find vendor -type l -exec rm {} \;
 rm -R vendor/cebe/markdown/tests
 rm -R tests/

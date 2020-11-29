@@ -15,12 +15,12 @@
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
-### Version 4.6.3 [not released yet]
+### Version 4.6.3 (2020-11-29)
 
+- Compatibility with PHP 8 / Composer 2.
 - Bugfix: Merging amendments into a motion failed if previously an amendment for that motion was deleted that had a modified version.
 - Bugfix: When deleting an amendment after adding it to a proposed procedure's voting block, it remained visible within the proposed procedure.
 - Resuming a previously saved draft when merging amendments into an motion could fail if in the meantime an amendment has been hadded.
-- Compatibility with PHP 8 / Composer 2.
 
 ### Version 4.6.2 (2020-09-26)
 
