@@ -2,6 +2,8 @@
 
 namespace unit;
 
+use app\models\layoutHooks\StdHooks;
+use app\models\settings\Layout;
 use app\models\db\{Consultation, IMotion};
 use app\models\forms\AdminMotionFilterForm;
 use Codeception\Specify;
@@ -9,6 +11,16 @@ use Codeception\Specify;
 class AdminMotionFilterFormTest extends DBTestBase
 {
     use Specify;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        // Necessary so that all rendering hooks are registered
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(5);
+        \app\models\layoutHooks\Layout::addHook(new StdHooks(new Layout(), $consultation));
+    }
 
     /**
      * @param IMotion[] $motions
@@ -23,9 +35,7 @@ class AdminMotionFilterFormTest extends DBTestBase
         return $out;
     }
 
-    /**
-     */
-    public function testFilter()
+    public function testFilter(): void
     {
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(5);
@@ -56,9 +66,7 @@ class AdminMotionFilterFormTest extends DBTestBase
 
     }
 
-    /**
-     */
-    public function testSort()
+    public function testSort(): void
     {
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(5);
