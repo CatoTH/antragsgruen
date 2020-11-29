@@ -46,8 +46,15 @@ abstract class IPDFLayout
         return $pdfClasses;
     }
 
+    /** @var null|array */
+    private static $_availableClassesWithLatex = null;
+    
     public static function getAvailableClassesWithLatex(): array
     {
+        if (static::$_availableClassesWithLatex) {
+            return static::$_availableClassesWithLatex;
+        }
+
         $return = [];
         foreach (static::getAvailableTcpdfClasses() as $data) {
             $return['php' . $data['id']] = $data;
@@ -70,6 +77,8 @@ abstract class IPDFLayout
                 ];
             }
         }
+
+        static::$_availableClassesWithLatex = $return;
 
         return $return;
     }
