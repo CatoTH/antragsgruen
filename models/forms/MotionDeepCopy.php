@@ -115,9 +115,13 @@ class MotionDeepCopy
             $newAmendment->motionId = $newMotion->id;
             $newAmendment->cache    = '';
 
-            $oldTitlePre               = $oldMotion->titlePrefix . '-';
-            $newTitlePre               = $newMotion->titlePrefix . '-';
-            $newAmendment->titlePrefix = str_replace($oldTitlePre, $newTitlePre, $amendment->titlePrefix);
+            $oldTitlePre = $oldMotion->titlePrefix . '-';
+            $newTitlePre = $newMotion->titlePrefix . '-';
+            if ($amendment->titlePrefix) {
+                $newAmendment->titlePrefix = str_replace($oldTitlePre, $newTitlePre, $amendment->titlePrefix);
+            } else {
+                $newAmendment->titlePrefix = null;
+            }
 
             $newAmendment->save();
             $amendmentIdMapping[$amendment->id] = $newAmendment->id;
