@@ -92,10 +92,10 @@ class AmendmentLineNumberingTest extends DBTestBase
     public function testSection1Wording()
     {
         $diff = $this->getSectionDiff(3, 2);
-        $this->assertContains('Nach Zeile 9 einfügen', TextSimple::formatDiffGroup([$diff[0]]));
-        $this->assertContains('In Zeile 14 löschen', TextSimple::formatDiffGroup([$diff[1]]));
-        $this->assertContains('In Zeile 31 einfügen:', TextSimple::formatDiffGroup([$diff[2]]));
-        $this->assertContains('In Zeile 35 löschen:', TextSimple::formatDiffGroup([$diff[3]]));
+        $this->assertStringContainsString('Nach Zeile 9 einfügen', TextSimple::formatDiffGroup([$diff[0]]));
+        $this->assertStringContainsString('In Zeile 14 löschen', TextSimple::formatDiffGroup([$diff[1]]));
+        $this->assertStringContainsString('In Zeile 31 einfügen:', TextSimple::formatDiffGroup([$diff[2]]));
+        $this->assertStringContainsString('In Zeile 35 löschen:', TextSimple::formatDiffGroup([$diff[3]]));
     }
 
 
@@ -113,9 +113,9 @@ class AmendmentLineNumberingTest extends DBTestBase
     public function testSection2Wording()
     {
         $diff = $this->getSectionDiff(3, 4);
-        $this->assertContains('Vor Zeile 36 einfügen', TextSimple::formatDiffGroup([$diff[0]], '', '', 36));
-        $this->assertContains('Nach Zeile 42 einfügen', TextSimple::formatDiffGroup([$diff[1]], '', '', 36));
-        $this->assertContains('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
+        $this->assertStringContainsString('Vor Zeile 36 einfügen', TextSimple::formatDiffGroup([$diff[0]], '', '', 36));
+        $this->assertStringContainsString('Nach Zeile 42 einfügen', TextSimple::formatDiffGroup([$diff[1]], '', '', 36));
+        $this->assertStringContainsString('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
     }
 
     public function testInvisibleSpaces()

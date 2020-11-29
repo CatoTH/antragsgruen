@@ -236,8 +236,8 @@ class AffectedLinesFilterTest extends TestBase
         ];
         $filtered = AffectedLinesFilter::groupAffectedDiffBlocks($orig);
 
-        $this->assertContains('Von Zeile 16 bis 18 löschen', TextSimple::formatDiffGroup($filtered));
-        $this->assertContains('In Zeile 20 löschen', TextSimple::formatDiffGroup($filtered));
+        $this->assertStringContainsString('Von Zeile 16 bis 18 löschen', TextSimple::formatDiffGroup($filtered));
+        $this->assertStringContainsString('In Zeile 20 löschen', TextSimple::formatDiffGroup($filtered));
     }
 
     public function testNestedLists()

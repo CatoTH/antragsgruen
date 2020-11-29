@@ -11,7 +11,7 @@ class TestBase extends \Codeception\TestCase\Test
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -20,7 +20,7 @@ class TestBase extends \Codeception\TestCase\Test
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->destroyApplication();
         parent::tearDown();
