@@ -457,7 +457,7 @@ class MotionController extends Base
         }
 
         if (count($motion->speechQueues) === 0) {
-            $speechQueue = SpeechQueue::createWithSubqueues($this->consultation);
+            $speechQueue = SpeechQueue::createWithSubqueues($this->consultation, false);
             $speechQueue->motionId = $motion->id;
             $speechQueue->save();
         } else {

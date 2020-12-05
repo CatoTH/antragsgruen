@@ -12,7 +12,7 @@ use yii\db\IntegrityException;
 /**
  * @property Site $site
  * @property Consultation $consultation
- * @method render(string $view, array $options)
+ * @method render(string $view, array $options = [])
  * @method isPostSet(string $name)
  * @method AntragsgruenApp getParams()
  */
@@ -36,7 +36,7 @@ trait SiteAccessTrait
 
             $this->consultation->refresh();
             $this->site->refresh();
-        } catch (IntegrityException $e) {
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (IntegrityException $e) {
             if (mb_strpos($e->getMessage(), 1062) !== false) {
                 $str = str_replace('%username%', $username, \Yii::t('admin', 'siteacc_admin_add_had'));
                 \Yii::$app->session->setFlash('success_login', $str);
@@ -128,7 +128,6 @@ trait SiteAccessTrait
             $newUser->organizationIds = '';
             $newUser->save();
         }
-        /** @var User $newUser */
         $this->linkConsultationAdmin($newUser, $username);
     }
 
@@ -157,7 +156,6 @@ trait SiteAccessTrait
             $authText = \Yii::t('admin', 'siteacc_mail_youracc');
             $authText = str_replace('%EMAIL%', $email, $authText);
         }
-        /** @var User $newUser */
         $this->linkConsultationAdmin($newUser, $email);
 
         $subject = \Yii::t('admin', 'sitacc_admmail_subj');
@@ -355,10 +353,9 @@ trait SiteAccessTrait
     }
 
     /**
-     * @return string
-     * @throws \Exception
+     * @throws \yii\base\Exception|\Throwable
      */
-    public function actionSiteaccess()
+    public function actionSiteaccess(): string
     {
         $site = $this->site;
         $con  = $this->consultation;

@@ -195,13 +195,25 @@ $handledSiteSettings = [];
             <div class="speechLists">
                 <?php
                 $boolSettingRow($settings, 'hasSpeechLists', $handledSettings, Yii::t('admin', 'con_speech_lists'));
-                $speechSubqueues       = ($settings->speechListSubqueues ? $settings->speechListSubqueues : []);
-                $name1                 = (count($speechSubqueues) > 0 ? $speechSubqueues[0] : Yii::t('speech', 'subqueue_female'));
-                $name2                 = (count($speechSubqueues) > 1 ? $speechSubqueues[1] : Yii::t('speech', 'subqueue_male'));
+                $speechSubqueues = ($settings->speechListSubqueues ? $settings->speechListSubqueues : []);
+                $name1 = (count($speechSubqueues) > 0 ? $speechSubqueues[0] : Yii::t('speech', 'subqueue_female'));
+                $name2 = (count($speechSubqueues) > 1 ? $speechSubqueues[1] : Yii::t('speech', 'subqueue_male'));
                 $handledSettings[] = 'speechRequiresLogin';
                 $speechAdminUrl = UrlHelper::createUrl(['consultation/admin-speech']);
+                $offerSpeechListActivate = (count($consultation->speechQueues) === 0);
                 ?>
                 <fieldset class="quotas">
+                    <?php
+                    if ($offerSpeechListActivate) {
+                        ?>
+                        <label class="activateFirstSpeechList">
+                        <?= Html::checkbox('speechActivateFirstList', true, ['id' => 'activateFirstSpeechList']) ?>
+                        <?= Yii::t('admin', 'con_speech_active_first') ?>
+                        <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_speech_active_hint')) ?>
+                        </label><br>
+                        <?php
+                    }
+                    ?>
                     <label class="loginForApply">
                         <?= Html::checkbox('settings[speechRequiresLogin]', $settings->speechRequiresLogin, ['id' => 'speechRequiresLogin']) ?>
                         <?= Yii::t('admin', 'con_speech_login') ?>

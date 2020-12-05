@@ -456,7 +456,7 @@ class ConsultationController extends Base
         }
     }
 
-    public function actionAdminSpeech()
+    public function actionAdminSpeech(): string
     {
         $this->layout = 'column2';
 
@@ -474,7 +474,7 @@ class ConsultationController extends Base
             }
         }
         if ($unassignedQueue === null) {
-            $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation);
+            $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation, false);
             $unassignedQueue->save();
         }
 

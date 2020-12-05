@@ -3,7 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\{HTMLTools, Tools, updater\UpdateChecker, UrlHelper};
-use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, User};
+use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\AdminTodoItem;
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
@@ -19,10 +19,7 @@ class IndexController extends AdminBase
         User::PRIVILEGE_SITE_ADMIN,
     ];
 
-    /**
-     * @return string
-     */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         if ($this->isPostSet('flushCaches') && User::currentUserIsSuperuser()) {
             $this->consultation->flushCacheWithChildren(null);
@@ -43,14 +40,7 @@ class IndexController extends AdminBase
         );
     }
 
-    /**
-     * @return string
-     * @throws FormError
-     * @throws \Exception
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function actionConsultation()
+    public function actionConsultation(): string
     {
         $model = $this->consultation;
 
@@ -101,13 +91,7 @@ class IndexController extends AdminBase
         return $this->render('consultation_settings', ['consultation' => $this->consultation, 'locale' => $locale]);
     }
 
-    /**
-     * @return string
-     * @throws FormError
-     * @throws \Exception
-     * @throws \yii\db\StaleObjectException
-     */
-    public function actionAppearance()
+    public function actionAppearance(): string
     {
         $model = $this->consultation;
 
@@ -144,6 +128,11 @@ class IndexController extends AdminBase
                 foreach ($this->consultation->speechQueues as $speechQueue) {
                     $speechQueue->setSubqueueConfiguration($subqueues);
                 }
+                if (count($this->consultation->speechQueues) === 0 && isset($post['speechActivateFirstList'])) {
+                    $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation, true);
+                    $unassignedQueue->save();
+                }
+
                 $settings->speechListSubqueues = $subqueues;
             }
 
@@ -161,7 +150,6 @@ class IndexController extends AdminBase
                 }
             }
             $model->setSettings($settings);
-
 
             if ($model->save()) {
                 $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
@@ -182,23 +170,14 @@ class IndexController extends AdminBase
         return $this->render('appearance', ['consultation' => $this->consultation]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionTodo()
+    public function actionTodo(): string
     {
         $todo = AdminTodoItem::getConsultationTodos($this->consultation);
 
         return $this->render('todo', ['todo' => $todo]);
     }
 
-    /**
-     * @param Consultation $consultation
-     * @throws \Exception
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    private function saveTags(Consultation $consultation)
+    private function saveTags(Consultation $consultation): void
     {
         if (!$this->isPostSet('tags')) {
             return;
@@ -248,7 +227,6 @@ class IndexController extends AdminBase
                 if (!$tag) {
                     continue;
                 }
-                /** @var ConsultationSettingsTag $tag */
                 $tag->position = $pos;
                 $tag->save();
             }
@@ -265,14 +243,7 @@ class IndexController extends AdminBase
         $consultation->refresh();
     }
 
-    /**
-     * @param string $category
-     * @return string
-     * @throws \Exception
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function actionTranslation($category = 'base')
+    public function actionTranslation(string $category = 'base'): string
     {
         $consultation = $this->consultation;
 
@@ -315,11 +286,9 @@ class IndexController extends AdminBase
     }
 
     /**
-     * @param int $motionTypeId
-     * @return string
      * @throws \Throwable
      */
-    public function actionTranslationMotionType($motionTypeId)
+    public function actionTranslationMotionType(string $motionTypeId): string
     {
         $consultation = $this->consultation;
         $motionType = $consultation->getMotionType(intval($motionTypeId));
@@ -364,7 +333,7 @@ class IndexController extends AdminBase
      * @throws \yii\base\ExitException
      * @throws \Exception
      */
-    public function actionSiteconsultations()
+    public function actionSiteconsultations(): string
     {
         $site = $this->site;
 
@@ -448,10 +417,7 @@ class IndexController extends AdminBase
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionOpenslidesusers()
+    public function actionOpenslidesusers(): string
     {
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'text/csv');
@@ -476,12 +442,7 @@ class IndexController extends AdminBase
         ]);
     }
 
-    /**
-     * @param string $default
-     *
-     * @return string
-     */
-    public function actionTheming($default = 'layout-classic')
+    public function actionTheming(string $default = 'layout-classic'): string
     {
         $siteSettings = $this->site->getSettings();
         $stylesheet   = $siteSettings->getStylesheet();
@@ -550,11 +511,7 @@ class IndexController extends AdminBase
         return $this->render('theming', ['stylesheet' => $stylesheet, 'default' => $default]);
     }
 
-    /**
-     * @return mixed
-     * @throws \Throwable
-     */
-    public function actionFiles()
+    public function actionFiles(): string
     {
         $msgSuccess = '';
         $msgError   = '';
@@ -600,11 +557,7 @@ class IndexController extends AdminBase
         ]);
     }
 
-    /**
-     * @throws \yii\base\ExitException
-     * @return string
-     */
-    public function actionCheckUpdates()
+    public function actionCheckUpdates(): string
     {
         if (!User::currentUserIsSuperuser()) {
             $this->showErrorpage(403, 'Only admins are allowed to access this page.');
@@ -613,12 +566,7 @@ class IndexController extends AdminBase
         return $this->renderPartial('index_updates');
     }
 
-    /**
-     * @return string
-     * @throws \yii\base\ExitException
-     * @throws \yii\base\Exception
-     */
-    public function actionGotoUpdate()
+    public function actionGotoUpdate(): string
     {
         if (!UpdateChecker::isUpdaterAvailable()) {
             $this->showErrorpage(403, 'The updater can only be used with downloaded packages.');
@@ -631,7 +579,6 @@ class IndexController extends AdminBase
 
         $form      = new AntragsgruenUpdateModeForm();
         $updateKey = $form->activateUpdate();
-
 
         return $this->redirect($this->getParams()->resourceBase . 'update.php?set_key=' . $updateKey);
     }

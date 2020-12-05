@@ -158,13 +158,13 @@ class SpeechQueue extends ActiveRecord
         }
     }
 
-    public static function createWithSubqueues(Consultation $consultation): SpeechQueue
+    public static function createWithSubqueues(Consultation $consultation, bool $activate): SpeechQueue
     {
         $queue                 = new SpeechQueue();
         $queue->consultationId = $consultation->id;
         $queue->motionId       = null;
         $queue->agendaItemId   = null;
-        $queue->isActive       = 0;
+        $queue->isActive       = ($activate ? 1 : 0);
         $queue->settings       = null;
         $queue->save();
 
