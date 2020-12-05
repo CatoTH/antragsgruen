@@ -128,12 +128,7 @@ class Title extends ISectionType
         $pdf->Ln(7);
     }
 
-    /**
-     * @param CommentForm|null $commentForm
-     * @param int[] $openedComments
-     * @return string
-     */
-    public function showMotionView($commentForm, $openedComments)
+    public function showMotionView(?CommentForm $commentForm, array $openedComments): string
     {
         return (new View())->render(
             '@app/views/motion/showTitleSection',
@@ -226,11 +221,7 @@ class Title extends ISectionType
         $odt->addHtmlTextBlock('<p>' . Html::encode($section->data) . '</p>', false);
     }
 
-    /**
-     * @param $text
-     * @return bool
-     */
-    public function matchesFulltextSearch($text)
+    public function matchesFulltextSearch(string $text): bool
     {
         return (mb_stripos($this->section->getData(), $text) !== false);
     }

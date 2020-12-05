@@ -145,12 +145,7 @@ class TextHTML extends Text
         $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO
     }
 
-    /**
-     * @param $text
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function matchesFulltextSearch($text)
+    public function matchesFulltextSearch(string $text): bool
     {
         $data = strip_tags($this->section->getData());
         return (mb_stripos($data, $text) !== false);

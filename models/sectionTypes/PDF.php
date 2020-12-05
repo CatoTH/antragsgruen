@@ -13,12 +13,7 @@ use CatoTH\HTML2OpenDocument\Text;
 
 class PDF extends ISectionType
 {
-    /**
-     * @param bool $absolute
-     * @param bool $showAlways
-     * @return null|string
-     */
-    public function getPdfUrl($absolute = false, $showAlways = false)
+    public function getPdfUrl(bool $absolute = false, bool $showAlways = false): ?string
     {
         /** @var MotionSection $section */
         $section = $this->section;
@@ -344,12 +339,7 @@ class PDF extends ISectionType
         $odt->addHtmlTextBlock('[PDF]', false);
     }
 
-    /**
-     * @param $text
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function matchesFulltextSearch($text)
+    public function matchesFulltextSearch(string $text): bool
     {
         return false;
     }

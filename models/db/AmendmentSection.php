@@ -215,7 +215,7 @@ class AmendmentSection extends IMotionSection
      * @param string[] $origParagraphs
      * @param bool $splitListItems
      * @param int
-     * @return MotionSectionParagraphAmendment[]
+     * @return string[]
      */
     public function diffStrToOrigParagraphs($origParagraphs, $splitListItems, $formatting)
     {

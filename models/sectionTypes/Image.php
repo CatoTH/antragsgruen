@@ -12,12 +12,7 @@ use CatoTH\HTML2OpenDocument\Text;
 
 class Image extends ISectionType
 {
-    /**
-     * @param bool $absolute
-     * @param bool $showAlways
-     * @return null|string
-     */
-    public function getImageUrl($absolute = false, $showAlways = false)
+    public function getImageUrl(bool $absolute = false, bool $showAlways = false): ?string
     {
         /** @var MotionSection $section */
         $section = $this->section;
@@ -43,11 +38,7 @@ class Image extends ISectionType
         return $url;
     }
 
-    /**
-     * @param string $mime
-     * @return string|null
-     */
-    public static function getFileExtensionFromMimeType($mime)
+    public static function getFileExtensionFromMimeType(string $mime): ?string
     {
         switch ($mime) {
             case 'image/png':
@@ -99,13 +90,7 @@ class Image extends ISectionType
         return $this->getMotionFormField();
     }
 
-    /**
-     * @param string $filename
-     * @param string $targetType
-     * @return string
-     * @throws Internal
-     */
-    public static function getOptimizedImage($filename, $targetType)
+    public static function getOptimizedImage(string $filename, string $targetType): string
     {
         /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
@@ -122,20 +107,15 @@ class Image extends ISectionType
         return $converted;
     }
 
-    /**
+    /*
      * If the image is more than twice as big as the specified size, it is reduced to this size.
      * A slightly exceeding size is tolerated, as reducing the size is rather comptation intensive.
      *
      * Hint: this function returns the raw image data, not the base64-encoded version.
      *
      * This only is performed if ImageMagick is installed and configured.
-     *
-     * @param int $width
-     * @param int $height
-     * @param string $fileExtension
-     * @return string
      */
-    public function resizeIfMassivelyTooBig($width, $height, $fileExtension)
+    public function resizeIfMassivelyTooBig(int $width, int $height, string $fileExtension): string
     {
         $metadata = json_decode($this->section->metadata, true);
         if ($metadata['width'] < $width * 2 && $metadata['height'] < $height * 2) {
@@ -381,12 +361,7 @@ class Image extends ISectionType
         }
     }
 
-    /**
-     * @param $text
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function matchesFulltextSearch($text)
+    public function matchesFulltextSearch(string $text): bool
     {
         return false;
     }

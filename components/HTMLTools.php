@@ -608,7 +608,7 @@ class HTMLTools
      * @return string[]
      * @throws Internal
      */
-    public static function sectionSimpleHTML($html, $splitListItems = true)
+    public static function sectionSimpleHTML(string $html, bool $splitListItems = true): array
     {
         $cacheFunc = 'sectionSimpleHTML';
         $cacheDeps = [$html, $splitListItems];

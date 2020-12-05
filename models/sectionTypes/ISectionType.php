@@ -44,7 +44,7 @@ abstract class ISectionType
     /**
      * @return string[]
      */
-    public static function getTypes()
+    public static function getTypes(): array
     {
         return [
             static::TYPE_TITLE           => \yii::t('structure', 'section_title'),
@@ -164,17 +164,14 @@ abstract class ISectionType
     /**
      * @param CommentForm|null $commentForm
      * @param int[] $openedComments
+     *
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @noinspection PhpUnusedParameterInspection
      */
-    public function showMotionView($commentForm, $openedComments)
+    public function showMotionView(?CommentForm $commentForm, array $openedComments): string
     {
         return $this->getSimple(false);
     }
 
-    /**
-     * @param $text
-     * @return bool
-     */
-    abstract public function matchesFulltextSearch($text);
+    abstract public function matchesFulltextSearch(string $text): bool;
 }

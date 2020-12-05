@@ -58,12 +58,7 @@ class TextSimple extends Text
         }
     }
 
-    /**
-     * @param bool $fixedWidth
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getTextAmendmentFormFieldSingleParagraph($fixedWidth)
+    public function getTextAmendmentFormFieldSingleParagraph(bool $fixedWidth): string
     {
         /** @var AmendmentSection $amSection */
         $amSection = $this->section;
@@ -357,7 +352,7 @@ class TextSimple extends Text
      * @param int[] $openedComments
      * @return string
      */
-    public function showMotionView($commentForm, $openedComments)
+    public function showMotionView(?CommentForm  $commentForm, array $openedComments): string
     {
         return (new View())->render(
             '@app/views/motion/showSimpleTextSection',
@@ -375,13 +370,10 @@ class TextSimple extends Text
         return ($this->section->getData() === '');
     }
 
-    /**
+    /*
      * Workaround for https://github.com/CatoTH/antragsgruen/issues/137#issuecomment-305686868
-     *
-     * @param string $text
-     * @return string
      */
-    public static function stripAfterInsertedNewlines($text)
+    public static function stripAfterInsertedNewlines(string $text): string
     {
         return preg_replace_callback('/((<br>\s*)+<\/ins>)(?<rest>.*)(?<end><\/[a-z]+>*)$/siu', function ($match) {
             $rest = $match['rest'];
@@ -393,14 +385,7 @@ class TextSimple extends Text
         }, $text);
     }
 
-    /**
-     * @param array $diffGroups
-     * @param string $wrapStart
-     * @param string $wrapEnd
-     * @param int $firstLineOfSection
-     * @return string
-     */
-    public static function formatDiffGroup($diffGroups, $wrapStart = '', $wrapEnd = '', $firstLineOfSection = -1)
+    public static function formatDiffGroup(array $diffGroups, string $wrapStart = '', string $wrapEnd = '', int $firstLineOfSection = -1): string
     {
         $out = '';
         foreach ($diffGroups as $diff) {
@@ -659,7 +644,8 @@ class TextSimple extends Text
 
         $unchanged = [];
         foreach ($diffGroups as $diffGroup) {
-            $unchanged[] = LineSplitter::extractLines($originalData, $lineLength, $firstLine, $diffGroup['lineFrom'], $diffGroup['lineTo']);
+            $lineFrom = ($diffGroup['lineFrom'] > 0 ? $diffGroup['lineFrom'] : 1);
+            $unchanged[] = LineSplitter::extractLines($originalData, $lineLength, $firstLine, $lineFrom, $diffGroup['lineTo']);
         }
 
         return implode('<br><br>', $unchanged);
@@ -738,26 +724,13 @@ class TextSimple extends Text
         }
     }
 
-    /**
-     * @param $text
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function matchesFulltextSearch($text)
+    public function matchesFulltextSearch(string $text): bool
     {
         $data = strip_tags($this->section->getData());
         return (mb_stripos($data, $text) !== false);
     }
 
-    /**
-     * @param string $originalText
-     * @param string $newText
-     * @param int $firstLine
-     * @param int $lineLength
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function formatAmendmentForOds($originalText, $newText, $firstLine, $lineLength)
+    public static function formatAmendmentForOds(string $originalText, string $newText, int $firstLine, int $lineLength): string
     {
         $formatter = new AmendmentSectionFormatter();
         $formatter->setTextOriginal($originalText);
@@ -765,7 +738,7 @@ class TextSimple extends Text
         $formatter->setFirstLineNo($firstLine);
         $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
 
-        $diff = static::formatDiffGroup($diffGroups);
+        $diff = static::formatDiffGroup($diffGroups, '', '', $firstLine);
         $diff = str_replace('<h4', '<br><h4', $diff);
         $diff = str_replace('</h4>', '</h4><br>', $diff);
         if (mb_substr($diff, 0, 4) == '<br>') {

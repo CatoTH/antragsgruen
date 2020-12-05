@@ -8,12 +8,7 @@ use yii\helpers\Html;
 
 abstract class Text extends ISectionType
 {
-    /**
-     * @param bool $fullHtml
-     * @param bool $fixedWidth
-     * @return string
-     */
-    protected function getTextMotionFormField($fullHtml, $fixedWidth)
+    protected function getTextMotionFormField(bool $fullHtml, bool $fixedWidth): string
     {
         $type   = $this->section->getSettings();
         $formId = $type->id;
@@ -62,14 +57,7 @@ abstract class Text extends ISectionType
         return $str;
     }
 
-    /**
-     * @param bool $fullHtml
-     * @param string $data
-     * @param bool $fixedWidth
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    protected function getTextAmendmentFormField($fullHtml, $data, $fixedWidth)
+    protected function getTextAmendmentFormField(bool $fullHtml, string $data, bool $fixedWidth): string
     {
         /** @var AmendmentSection $section */
         $section      = $this->section;

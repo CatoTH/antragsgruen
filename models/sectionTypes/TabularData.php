@@ -301,12 +301,7 @@ class TabularData extends ISectionType
         $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
     }
 
-    /**
-     * @param $text
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function matchesFulltextSearch($text)
+    public function matchesFulltextSearch(string $text): bool
     {
         $type   = $this->section->getSettings();
         $data   = json_decode($this->section->getData(), true);

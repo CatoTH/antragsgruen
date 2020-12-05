@@ -215,12 +215,7 @@ class VideoEmbed extends ISectionType
         $odt->addHtmlTextBlock('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>', false);
     }
 
-    /**
-     * @param $text
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function matchesFulltextSearch($text)
+    public function matchesFulltextSearch(string $text): bool
     {
         return false;
     }
