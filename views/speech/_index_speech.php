@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use app\models\db\User;
 use yii\helpers\Html;
 
@@ -14,8 +15,9 @@ if (!$queue) {
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$layout     = $controller->layoutParams;
-$user       = User::getCurrentUser();
+$cosultation = $controller->consultation;
+$layout = $controller->layoutParams;
+$user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
 $layout->loadVue();
@@ -54,6 +56,16 @@ if ($user) {
 >
     <h2 class="green" id="speechListUserTitle"><?= Yii::t('speech', 'user_section_title') ?></h2>
     <div class="content">
+        <?php
+        $user = User::getCurrentUser();
+        if ($user && $user->hasPrivilege($cosultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+            $url = UrlHelper::createUrl(['consultation/admin-speech']);
+            echo '<a href="' . Html::encode($url) . '" class="speechAdminLink">';
+            echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
+            echo Yii::t('speech', 'goto_admin');
+            echo '</a>';
+        }
+        ?>
         <div class="currentSpeechList"></div>
     </div>
 </section>

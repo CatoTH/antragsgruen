@@ -7,6 +7,7 @@ return [
 
     'title_plain'        => 'Speaking list',
     'title_to'           => 'Speaking list of %TITLE%',
+    'goto_admin'         => 'Manage speaking list',
     'user_section_title' => 'Speaking list',
     'current'            => 'Currently',
     'current_nobody'     => 'nobody',

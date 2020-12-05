@@ -255,6 +255,10 @@
 
 
 .currentSpeechInline {
+  .speechAdminLink {
+    float: right;
+  }
+
   .activeSpeaker {
     @if ($font-size-base < 16) {
       font-size: 16px;

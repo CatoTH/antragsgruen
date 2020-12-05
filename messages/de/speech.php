@@ -7,6 +7,7 @@ return [
 
     'title_plain'        => 'Allgemeine Redeliste',
     'title_to'           => 'Redeliste zu %TITLE%',
+    'goto_admin'         => 'Redeliste verwalten',
     'user_section_title' => 'Redeliste',
     'current'            => 'Aktuell',
     'current_nobody'     => 'niemand',

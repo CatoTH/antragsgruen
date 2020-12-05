@@ -199,6 +199,7 @@ $handledSiteSettings = [];
                 $name1                 = (count($speechSubqueues) > 0 ? $speechSubqueues[0] : Yii::t('speech', 'subqueue_female'));
                 $name2                 = (count($speechSubqueues) > 1 ? $speechSubqueues[1] : Yii::t('speech', 'subqueue_male'));
                 $handledSettings[] = 'speechRequiresLogin';
+                $speechAdminUrl = UrlHelper::createUrl(['consultation/admin-speech']);
                 ?>
                 <fieldset class="quotas">
                     <label class="loginForApply">
@@ -225,6 +226,12 @@ $handledSiteSettings = [];
                         </span>
                         <span class="sr-only"><?= str_replace('%no%', 2, Yii::t('admin', 'con_speech_quota_name')) ?></span>
                     </label>
+
+                    <br>
+                    <a href="<?= Html::encode($speechAdminUrl) ?>">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <?= Yii::t('speech', 'goto_admin') ?>
+                    </a>
                 </fieldset>
             </div>
             <?php
