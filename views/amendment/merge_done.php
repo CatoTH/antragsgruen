@@ -14,6 +14,7 @@ $this->title = Yii::t('amend', 'merge1_done_title');
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
+$consultation = $controller->consultation;
 $layout     = $controller->layoutParams;
 
 $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));

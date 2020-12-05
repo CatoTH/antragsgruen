@@ -32,7 +32,7 @@ Installation
 #### Requirements:
 
 - A MySQL-database
-- PHP >= 7.1. Recommended: 7.2+. Required packages for Debian Linux:
+- PHP >= 7.2. Recommended: 7.4+. Required packages for Debian Linux:
 
 ```bash
 # Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):

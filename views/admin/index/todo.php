@@ -11,12 +11,12 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('admin', 'todo_title');
+$this->title = Yii::t('admin', 'todo_title');
 $layout->addCSS('css/backend.css');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_todo'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_todo'));
 
 
-echo '<h1>' . \Yii::t('admin', 'index_todo') . '</h1>';
+echo '<h1>' . Yii::t('admin', 'index_todo') . '</h1>';
 echo '<div class="content adminTodo">';
 
 if (count($todo) > 0) {

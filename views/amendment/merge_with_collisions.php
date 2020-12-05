@@ -25,11 +25,11 @@ $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
 if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
     $layout->addBreadcrumb($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
 } else {
-    $layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
+    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 }
-$layout->addBreadcrumb(\Yii::t('amend', 'merge1_title'));
+$layout->addBreadcrumb(Yii::t('amend', 'merge1_title'));
 
-$this->title = $amendment->getTitle() . ': ' . \Yii::t('amend', 'merge1_title');
+$this->title = $amendment->getTitle() . ': ' . Yii::t('amend', 'merge1_title');
 
 /** @var Amendment[] $otherAmendments */
 $otherAmendments = [];
@@ -46,19 +46,19 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
     <div id="MergeSingleWizard" class="wizard">
         <ul class="steps">
             <li data-target="#step1" class="goto_step1">
-                <?= \Yii::t('amend', 'merge1_step1_title') ?><span class="chevron"></span>
+                <?= Yii::t('amend', 'merge1_step1_title') ?><span class="chevron"></span>
             </li>
             <?php
             if ($needsCollisionCheck) {
                 ?>
                 <li data-target="#step2" class="goto_step2">
-                    <?= \Yii::t('amend', 'merge1_step2_title') ?><span class="chevron"></span>
+                    <?= Yii::t('amend', 'merge1_step2_title') ?><span class="chevron"></span>
                 </li>
                 <?php
             }
             ?>
             <li data-target="#step3" class="goto_step3">
-                <?= \Yii::t('amend', 'merge1_step3_title') ?><span class="chevron"></span>
+                <?= Yii::t('amend', 'merge1_step3_title') ?><span class="chevron"></span>
             </li>
         </ul>
     </div>

@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /**
  * @var \app\models\db\Amendment $amendment
  * @var bool $adminEdit
+ * @var \app\models\settings\Layout $layout
  */
 
 $html        = '<ul class="sidebarActions" aria-label="' . Html::encode(Yii::t('amend', 'sidebar_title_aria')) . '">';

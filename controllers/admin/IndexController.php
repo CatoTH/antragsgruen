@@ -587,7 +587,8 @@ class IndexController extends AdminBase
     public function actionCheckUpdates()
     {
         if (!User::currentUserIsSuperuser()) {
-            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+            $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+            return '';
         }
         return $this->renderPartial('index_updates');
     }
@@ -600,10 +601,12 @@ class IndexController extends AdminBase
     public function actionGotoUpdate()
     {
         if (!UpdateChecker::isUpdaterAvailable()) {
-            return $this->showErrorpage(403, 'The updater can only be used with downloaded packages.');
+            $this->showErrorpage(403, 'The updater can only be used with downloaded packages.');
+            return '';
         }
         if (!User::currentUserIsSuperuser()) {
-            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+            $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+            return '';
         }
 
         $form      = new AntragsgruenUpdateModeForm();

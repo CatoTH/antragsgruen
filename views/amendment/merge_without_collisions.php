@@ -25,11 +25,11 @@ $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
 if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
     $layout->addBreadcrumb($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
 } else {
-    $layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
+    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 }
-$layout->addBreadcrumb(\Yii::t('amend', 'merge1_title'));
+$layout->addBreadcrumb(Yii::t('amend', 'merge1_title'));
 
-$this->title = $amendment->getTitle() . ': ' . \Yii::t('amend', 'merge1_title');
+$this->title = $amendment->getTitle() . ': ' . Yii::t('amend', 'merge1_title');
 
 
 $fixedWidthSections = [];

@@ -12,14 +12,14 @@ use yii\helpers\Html;
 
 if (count($collisions) == 0) {
     echo '<div class="content">';
-    echo '<div class="alert alert-success">' . \Yii::t('amend', 'merge1_no_collisions') . '</div>';
+    echo '<div class="alert alert-success">' . Yii::t('amend', 'merge1_no_collisions') . '</div>';
     echo '</div>';
     return;
 }
 
 ?>
     <div class="content">
-        <div class="alert alert-danger"><?= \Yii::t('amend', 'merge1_collision_intro') ?></div>
+        <div class="alert alert-danger"><?= Yii::t('amend', 'merge1_collision_intro') ?></div>
     </div>
 <?php
 
@@ -38,30 +38,30 @@ foreach ($collisions as $amendmentId => $sections) {
         '</h2>';
     echo '<div class="content">';
     echo '<div class="amendmentBy">' .
-        '(' . \Yii::t('amend', 'merge1_submitted_by') . ': ' . Html::encode($amendment->getInitiatorsStr()) . ', ' .
-        \Yii::t('amend', 'merge1_submitted_on') . ': ' . Tools::formatMysqlDate($amendment->getDate()) . ')</div>';
+        '(' . Yii::t('amend', 'merge1_submitted_by') . ': ' . Html::encode($amendment->getInitiatorsStr()) . ', ' .
+        Yii::t('amend', 'merge1_submitted_on') . ': ' . Tools::formatMysqlDate($amendment->getDate()) . ')</div>';
     foreach ($sections as $sectionId => $paragraphs) {
         foreach ($paragraphs as $paragraphNo => $para) {
             echo '<section class="amendmentOverrideBlock">';
             if ($para['lineFrom'] == $para['lineTo']) {
-                $tpl = \Yii::t('amend', 'merge1_changein_1');
+                $tpl = Yii::t('amend', 'merge1_changein_1');
             } else {
-                $tpl = \Yii::t('amend', 'merge1_changein_x');
+                $tpl = Yii::t('amend', 'merge1_changein_x');
             }
             echo '<h3>' . str_replace(['%LINEFROM%', '%LINETO%'], [$para['lineFrom'], $para['lineTo']], $tpl) . '</h3>';
 
             $classes = 'text motionTextFormattings ' . (in_array($sectionId, $fixedWidthSections) ? ' fixedWidthFont' : '');
 
-            echo '<label>' . \Yii::t('amend', 'merge1_manual_changes') . '</label>';
+            echo '<label>' . Yii::t('amend', 'merge1_manual_changes') . '</label>';
             echo '<div class="motionTextHolder"><div class="paragraph"><div class="' . $classes . '">' .
                 $para['motionNewDiff'] . '</div></div></div>';
 
-            echo '<label>' . str_replace('%AMEND%', $amendment->titlePrefix, \Yii::t('amend', 'merge1_manual_amend')) .
+            echo '<label>' . str_replace('%AMEND%', $amendment->titlePrefix, Yii::t('amend', 'merge1_manual_amend')) .
                 '</label>';
             echo '<div class="motionTextHolder"><div class="paragraph"><div class="' . $classes . '">' .
                 $para['amendmentDiff'] . '</div></div></div>';
 
-            echo '<label>' . str_replace('%AMEND%', $amendment->titlePrefix, \Yii::t('amend', 'merge1_manual_new')) .
+            echo '<label>' . str_replace('%AMEND%', $amendment->titlePrefix, Yii::t('amend', 'merge1_manual_new')) .
                 '</label>';
             echo '<textarea name="amendmentOverride[' . $amendmentId . '][' . $sectionId . '][' . $paragraphNo . ']" ';
             echo 'value="" class=""></textarea>';
@@ -69,7 +69,7 @@ foreach ($collisions as $amendmentId => $sections) {
             if (in_array($sectionId, $fixedWidthSections)) {
                 echo 'fixedWidthFont ';
             }
-            echo 'motionTextFormattings texteditor texteditorBox" title="' . \Yii::t('amend', 'merge1_modify_title') . '">';
+            echo 'motionTextFormattings texteditor texteditorBox" title="' . Yii::t('amend', 'merge1_modify_title') . '">';
             echo $para['text'];
             echo '</div></section>';
         }
