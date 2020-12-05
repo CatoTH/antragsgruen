@@ -12,7 +12,7 @@ $client = new \GuzzleHttp\Client([
 
 // Default: API is disabled
 
-$request = $client->get('std-parteitag/rest');
+$request = $client->get('rest/std-parteitag');
 
 $I->assertEquals(403, $request->getStatusCode());
 $I->assertJsonStringEqualsJsonString('{"success":false,"message":"API disabled"}', $request->getBody()->getContents());
@@ -27,7 +27,7 @@ $I->submitForm('#consultationAppearanceForm', [], 'save');
 
 // Check that the API is now returning the correct result
 
-$request = $client->get('std-parteitag/rest');
+$request = $client->get('rest/std-parteitag');
 
 $I->assertEquals(200, $request->getStatusCode());
 $I->assertJsonStringEqualsJsonString('{
@@ -51,7 +51,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Tester",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/321-o-zapft-is/amendment/1",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/321-o-zapft-is/amendment/1",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/321-o-zapft-is/amendment/1"
                 },
                 {
@@ -60,7 +60,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Testadmin",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/321-o-zapft-is/amendment/3",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/321-o-zapft-is/amendment/3",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/321-o-zapft-is/amendment/3"
                 },
                 {
@@ -69,7 +69,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Tester",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/321-o-zapft-is/amendment/270",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/321-o-zapft-is/amendment/270",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/321-o-zapft-is/amendment/270"
                 },
                 {
@@ -78,7 +78,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Luca Lischke",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/321-o-zapft-is/amendment/272",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/321-o-zapft-is/amendment/272",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/321-o-zapft-is/amendment/272"
                 },
                 {
@@ -87,7 +87,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Luca Lischke",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/321-o-zapft-is/amendment/273",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/321-o-zapft-is/amendment/273",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/321-o-zapft-is/amendment/273"
                 },
                 {
@@ -96,7 +96,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Tester",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/321-o-zapft-is/amendment/274",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/321-o-zapft-is/amendment/274",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/321-o-zapft-is/amendment/274"
                 },
                 {
@@ -105,11 +105,11 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Testuser",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/321-o-zapft-is/amendment/276",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/321-o-zapft-is/amendment/276",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/321-o-zapft-is/amendment/276"
                 }
             ],
-            "url_json": "' . $baseUri . 'std-parteitag/rest/motion/321-o-zapft-is",
+            "url_json": "' . $baseUri . 'rest/std-parteitag/motion/321-o-zapft-is",
             "url_html": "' . $baseUri . 'std-parteitag/motion/321-o-zapft-is"
         },
         {
@@ -129,11 +129,11 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Testuser (beschlossen am: 17.07.2015)",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/123-textformatierungen/amendment/2",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/123-textformatierungen/amendment/2",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/123-textformatierungen/amendment/2"
                 }
             ],
-            "url_json": "' . $baseUri . 'std-parteitag/rest/motion/123-textformatierungen",
+            "url_json": "' . $baseUri . 'rest/std-parteitag/motion/123-textformatierungen",
             "url_html": "' . $baseUri . 'std-parteitag/motion/123-textformatierungen"
         },
         {
@@ -147,7 +147,7 @@ $I->assertJsonStringEqualsJsonString('{
             "status_title": "Eingereicht",
             "initiators_html": "Testuser",
             "amendment_links": [],
-            "url_json": "' . $baseUri . 'std-parteitag/rest/motion/58",
+            "url_json": "' . $baseUri . 'rest/std-parteitag/motion/58",
             "url_html": "' . $baseUri . 'std-parteitag/motion/58"
         },
         {
@@ -161,7 +161,7 @@ $I->assertJsonStringEqualsJsonString('{
             "status_title": "Eingereicht",
             "initiators_html": "Tester",
             "amendment_links": [],
-            "url_json": "' . $baseUri . 'std-parteitag/rest/motion/114",
+            "url_json": "' . $baseUri . 'rest/std-parteitag/motion/114",
             "url_html": "' . $baseUri . 'std-parteitag/motion/114"
         },
         {
@@ -181,11 +181,11 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Testuser",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/115/amendment/277",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/115/amendment/277",
                     "url_html": "' . $baseUri . 'std-parteitag/motion/115/amendment/277"
                 }
             ],
-            "url_json": "' . $baseUri . 'std-parteitag/rest/motion/115",
+            "url_json": "' . $baseUri . 'rest/std-parteitag/motion/115",
             "url_html": "' . $baseUri . 'std-parteitag/motion/115"
         },
         {
@@ -205,11 +205,11 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Mover (Moving)",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/Moving_test-47262/amendment/278",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Moving_test-47262/amendment/278",
                     "url_html": "' . $baseUri . 'std-parteitag/Moving_test-47262/278"
                 }
             ],
-            "url_json": "' . $baseUri . 'std-parteitag/rest/motion/Moving_test-47262",
+            "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Moving_test-47262",
             "url_html": "' . $baseUri . 'std-parteitag/Moving_test-47262"
         },
         {
@@ -229,7 +229,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Testuser",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/Testing_proposed_changes-630/amendment/279",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/279",
                     "url_html": "' . $baseUri . 'std-parteitag/Testing_proposed_changes-630/279"
                 },
                 {
@@ -238,7 +238,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Testuser",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/Testing_proposed_changes-630/amendment/280",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/280",
                     "url_html": "' . $baseUri . 'std-parteitag/Testing_proposed_changes-630/280"
                 },
                 {
@@ -247,7 +247,7 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Testuser (Test)",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/Testing_proposed_changes-630/amendment/281",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/281",
                     "url_html": "' . $baseUri . 'std-parteitag/Testing_proposed_changes-630/281"
                 },
                 {
@@ -256,14 +256,14 @@ $I->assertJsonStringEqualsJsonString('{
                     "status_id": 3,
                     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
                     "initiators_html": "Testuser",
-                    "url_json": "' . $baseUri . 'std-parteitag/rest/motion/Testing_proposed_changes-630/amendment/283",
+                    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/283",
                     "url_html": "' . $baseUri . 'std-parteitag/Testing_proposed_changes-630/283"
                 }
             ],
-            "url_json": "' . $baseUri . 'std-parteitag/rest/motion/Testing_proposed_changes-630",
+            "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Testing_proposed_changes-630",
             "url_html": "' . $baseUri . 'std-parteitag/Testing_proposed_changes-630"
         }
     ],
-    "url_json": "' . $baseUri . 'std-parteitag/rest",
+    "url_json": "' . $baseUri . 'rest/std-parteitag",
     "url_html": "' . $baseUri . 'std-parteitag"
 }', $request->getBody()->getContents());

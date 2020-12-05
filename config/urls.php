@@ -17,6 +17,9 @@ $domamend     = $domv . '<motionSlug:[^\/]+[^\/]+\-\d+>/<amendmentId:\d+>';
 $dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
 $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
+$restBase = $dom . 'rest';
+$restBaseCon = $restBase . '/<consultationPath:[\w_-]+>';
+
 $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax|del-agenda-item-ajax|save-agenda-order-ajax';
 $consultationPaths    .= '|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
@@ -68,7 +71,7 @@ $urlRules = [
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
-    $dom . 'rest'                             => 'consultation/rest-site',
+    $restBase                                 => 'consultation/rest-site',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',
@@ -89,10 +92,10 @@ $urlRules = [
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
 
-    $domv . 'rest'                                                        => 'consultation/rest',
-    $domv . 'rest/proposed-procedure'                                     => 'consultation/proposed-procedure-rest',
-    $domv . 'rest/motion/<motionSlug:[^\/]+>'                             => '/motion/rest',
-    $domv . 'rest/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>' => '/amendment/rest',
+    $restBaseCon                                                             => 'consultation/rest',
+    $restBaseCon . '/proposed-procedure'                                     => 'consultation/proposed-procedure-rest',
+    $restBaseCon . '/motion/<motionSlug:[^\/]+>'                             => '/motion/rest',
+    $restBaseCon . '/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>' => '/amendment/rest',
 ];
 
 if (YII_ENV === 'test') {

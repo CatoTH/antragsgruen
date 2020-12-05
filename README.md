@@ -302,6 +302,14 @@ The most frequent use case for plugins are custom themes / layouts. You can deve
 A hint regarding the AGPL license and themes: custom stylesheets and images and changes to the standard stylesheets of
 Antragsgrün do not have to be redistributed under an AGPL license like other changes to the Antragsgrün codebase.
 
+## REST-API
+
+An optional API is under development for Antragsgrün, extended by functionality as needed by external applications. Currently, starting with version 4.7.0, it gives read-only access to consultations, motions, amendments and the proposed procedure of consultations.
+
+The API is disabled by default and can be enabled under "Settings" -> "Appearance and components of this site" -> "Enable the REST-API".
+
+All endpoints of the API are located under `/rest`. A OpenAPI-based description of the API can be found at [docs/openapi.yaml](docs/openapi.yaml). A [SwaggerUI](https://swagger.io/tools/swagger-ui/)-based viewer of the documentation can be installed by uploading the [swagger_ui](plugins/swagger_ui) plugin to `/plugins/` and adding it to the list of plugins in `config/config.json`.
+
 ## Testing
 
 #### Installation

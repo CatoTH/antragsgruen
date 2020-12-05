@@ -20,7 +20,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiDisabled'
-  /{consultationPath}/rest:
+  /rest/{consultationPath}:
     get:
       summary: Overview over this consultation, with links to motions and amendments.
       parameters:
@@ -49,7 +49,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
-  /{consultationPath}/rest/proposed-procedure:
+  /rest/{consultationPath}/proposed-procedure:
     get:
       summary: Gets the public proposed procedure of this consultation
       parameters:
@@ -78,7 +78,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
-  /{consultationPath}/rest/motion/{motionSlug}:
+  /rest/{consultationPath}/motion/{motionSlug}:
     get:
       summary: Details of this motion
       description: The URL of this endpoint is not 100% predictable - please only use the links provided by the consultation index
@@ -114,7 +114,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
-  /{consultationPath}/rest/motion/{motionSlug}/amendment/{amendmentId}:
+  /rest/{consultationPath}/motion/{motionSlug}/amendment/{amendmentId}:
     get:
       summary: Details of this motion
       description: The URL of this endpoint is not 100% predictable - please only use the links provided by the consultation index
@@ -178,7 +178,7 @@ components:
             example: consultation
           url_json:
             type: string
-            example: https://test.antragsgruen.de/consultation/rest
+            example: https://test.antragsgruen.de/rest/consultation
           url_html:
             type: string
             example: https://test.antragsgruen.de/consultation
@@ -196,7 +196,7 @@ components:
             $ref: '#/components/schemas/MotionLinkWithAmendmentLinks'
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/rest
+          example: https://test.antragsgruen.de/rest/consultation
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation
@@ -236,7 +236,7 @@ components:
             $ref: '#/components/schemas/AmendmentLink'
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/rest/123-motion
+          example: https://test.antragsgruen.de/rest/consultation/123-motion
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
@@ -265,7 +265,7 @@ components:
           example: "Testuser 1"
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/rest/123-motion
+          example: https://test.antragsgruen.de/rest/consultation/123-motion
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
@@ -322,7 +322,7 @@ components:
             $ref: '#/components/schemas/AmendmentLink'
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/rest/123-motion
+          example: https://test.antragsgruen.de/rest/consultation/123-motion
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
@@ -346,7 +346,7 @@ components:
           example: "Testuser 1"
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/rest/123-motion/amendment/42
+          example: https://test.antragsgruen.de/rest/consultation/123-motion/amendment/42
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion/42
@@ -396,7 +396,7 @@ components:
           $ref: '#/components/schemas/AmendmentProposedProcedure'
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/rest/123-motion/amendment/42
+          example: https://test.antragsgruen.de/rest/consultation/123-motion/amendment/42
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion/42
@@ -531,7 +531,7 @@ components:
           example: "W-01-035-3: Recht auf Wohnen"
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/rest/123-motion/amendment/42
+          example: https://test.antragsgruen.de/rest/consultation/123-motion/amendment/42
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion/42

@@ -12,7 +12,7 @@ $client = new \GuzzleHttp\Client([
 
 // Default: API is disabled
 
-$request = $client->get('std-parteitag/rest/motion/Testing_proposed_changes-630/amendment/283');
+$request = $client->get('rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/283');
 
 $I->assertEquals(403, $request->getStatusCode());
 $I->assertJsonStringEqualsJsonString('{"success":false,"message":"API disabled"}', $request->getBody()->getContents());
@@ -27,8 +27,9 @@ $I->submitForm('#consultationAppearanceForm', [], 'save');
 
 // Check that the API is now returning the correct result
 
-$request = $client->get('std-parteitag/rest/motion/Testing_proposed_changes-630/amendment/283');
+$request = $client->get('rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/283');
 
+$baseUri = 'http://antragsgruen-test.local/stdparteitag/'; // "stdparteitag" is the subdomain
 $I->assertEquals(200, $request->getStatusCode());
 $I->assertJsonStringEqualsJsonString('{
     "id": 283,
@@ -46,8 +47,8 @@ $I->assertJsonStringEqualsJsonString('{
         "title_with_intro": "Testing proposed changes",
         "title_with_prefix": "A8: Testing proposed changes",
         "initiators_html": "Testuser",
-        "url_json": "http://antragsgruen-test.local/stdparteitag/std-parteitag/rest/motion/Testing_proposed_changes-630",
-        "url_html": "http://antragsgruen-test.local/stdparteitag/std-parteitag/Testing_proposed_changes-630"
+        "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Testing_proposed_changes-630",
+        "url_html": "' . $baseUri . 'std-parteitag/Testing_proposed_changes-630"
     },
     "supporters": [],
     "initiators": [
@@ -71,6 +72,6 @@ $I->assertJsonStringEqualsJsonString('{
         }
     ],
     "proposed_procedure": null,
-    "url_json": "http://antragsgruen-test.local/stdparteitag/std-parteitag/rest/motion/Testing_proposed_changes-630/amendment/283",
-    "url_html": "http://antragsgruen-test.local/stdparteitag/std-parteitag/Testing_proposed_changes-630/283"
+    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/283",
+    "url_html": "' . $baseUri . 'std-parteitag/Testing_proposed_changes-630/283"
 }', $request->getBody()->getContents());

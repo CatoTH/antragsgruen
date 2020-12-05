@@ -12,7 +12,7 @@ $client = new \GuzzleHttp\Client([
 
 // Default: API is disabled
 
-$request = $client->get('std-parteitag/rest/motion/Moving_test-47262/amendment/278');
+$request = $client->get('rest/std-parteitag/motion/Moving_test-47262/amendment/278');
 
 $I->assertEquals(403, $request->getStatusCode());
 $I->assertJsonStringEqualsJsonString('{"success":false,"message":"API disabled"}', $request->getBody()->getContents());
@@ -27,9 +27,11 @@ $I->submitForm('#consultationAppearanceForm', [], 'save');
 
 // Check that the API is now returning the correct result
 
-$request = $client->get('std-parteitag/rest/motion/Moving_test-47262/amendment/278');
+$request = $client->get('rest/std-parteitag/motion/Moving_test-47262/amendment/278');
 
 $I->assertEquals(200, $request->getStatusCode());
+
+$baseUri = 'http://antragsgruen-test.local/stdparteitag/'; // "stdparteitag" is the subdomain
 $I->assertJsonStringEqualsJsonString('{
     "id": 278,
     "prefix": "\u00c41",
@@ -46,8 +48,8 @@ $I->assertJsonStringEqualsJsonString('{
         "title_with_intro": "Moving test",
         "title_with_prefix": "A7: Moving test",
         "initiators_html": "Testuser (Anonymous)",
-        "url_json": "http://antragsgruen-test.local/stdparteitag/std-parteitag/rest/motion/Moving_test-47262",
-        "url_html": "http://antragsgruen-test.local/stdparteitag/std-parteitag/Moving_test-47262"
+        "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Moving_test-47262",
+        "url_html": "' . $baseUri . 'std-parteitag/Moving_test-47262"
     },
     "supporters": [],
     "initiators": [
@@ -71,6 +73,6 @@ $I->assertJsonStringEqualsJsonString('{
         }
     ],
     "proposed_procedure": null,
-    "url_json": "http://antragsgruen-test.local/stdparteitag/std-parteitag/rest/motion/Moving_test-47262/amendment/278",
-    "url_html": "http://antragsgruen-test.local/stdparteitag/std-parteitag/Moving_test-47262/278"
+    "url_json": "' . $baseUri . 'rest/std-parteitag/motion/Moving_test-47262/amendment/278",
+    "url_html": "' . $baseUri . 'std-parteitag/Moving_test-47262/278"
 }', $request->getBody()->getContents());
