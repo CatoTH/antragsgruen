@@ -45,7 +45,7 @@ ob_start();
     </div>
 
     <main class="content">
-        <section class="previousSpeakers" :class="{previousShown: showPreviousList}">
+        <section class="previousSpeakers" :class="{previousShown: showPreviousList, invisible: !hasPreviousSpeakers}">
             <header>
                 <?= Yii::t('speech', 'admin_prev_speakers') ?>: {{ previousSpeakers.length }}
 
@@ -74,6 +74,8 @@ ob_start();
 
         <ol class="slots" aria-label="<?= Yii::t('speech', 'speaking_list') ?>">
             <li v-if="activeSlot" class="slotEntry slotActive active">
+                <span class="glyphicon glyphicon-comment iconBackground" aria-hidden="true"></span>
+
                 <div class="status statusActive">
                     <?= Yii::t('speech', 'admin_running') ?>:
                 </div>
@@ -95,16 +97,20 @@ ob_start();
                 </div>
             </li>
             <li v-if="!activeSlot" class="slotEntry slotActive inactive">
+                <span class="glyphicon glyphicon-comment iconBackground" aria-hidden="true"></span>
+
                 <div class="status statusActive">
                     <?= Yii::t('speech', 'admin_running') ?>:
                 </div>
 
-                <div class="name">
+                <div class="nameNobody">
                     <?= Yii::t('speech', 'admin_running_nobody') ?>
                 </div>
             </li>
 
             <li v-for="slot in sortedQueue" class="slotEntry">
+                <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
+
                 <div class="name">
                     {{ slot.name }}
                 </div>
@@ -125,12 +131,14 @@ ob_start();
             <li class="slotPlaceholder active" tabindex="0" v-if="slotProposal"
                 @click="addItemToSlotsAndStart(slotProposal)"
                 @keyup.enter="addItemToSlotsAndStart(slotProposal)">
-                <div class="title"><?= Yii::t('speech', 'admin_start_proposal') ?>:</div>
+                <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
+                <div class="title"><?= Yii::t('speech', 'admin_next') ?>:</div>
                 <div class="name">{{ slotProposal.name }}</div>
             </li>
             <li class="slotPlaceholder inactive" v-if="!slotProposal">
+                <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
                 <div class="title"><?= Yii::t('speech', 'admin_start_proposal') ?>:</div>
-                <div class="nobody"><?= Yii::t('speech', 'admin_proposal_nobody') ?></div>
+                <div class="nameNobody"><?= Yii::t('speech', 'admin_proposal_nobody') ?></div>
             </li>
         </ol>
 
@@ -174,6 +182,11 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                     const date2 = new Date(slot2.dateStopped);
                     return date1.getTime() - date2.getTime();
                 });
+            },
+            hasPreviousSpeakers: function () {
+                return this.queue.slots.filter(function (slot) {
+                    return slot.dateStopped !== null;
+                }).length > 0;
             },
             sortedQueue: function () {
                 return this.queue.slots.filter(function (slot) {

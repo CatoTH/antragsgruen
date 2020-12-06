@@ -23,6 +23,7 @@ return [
     'apply'              => 'Apply',
     'apply_name'         => 'Name',
     'apply_do'           => 'Apply',
+    'apply_closed'       => 'The speaking list is not opened',
     'applied'            => 'Applied',
     'applied_aria'       => 'You applied to speak',
     'apply_revoke'       => 'Withdraw',
@@ -52,6 +53,13 @@ return [
     'admin_back_to_wait'     => 'Back to the waiting list',
     'admin_start_proposal'   => 'Start proposal',
     'admin_proposal_nobody'  => 'No proposal',
+
+    'admin_subq_start' => 'Start speaking',
+    'admin_subq_move_1' => 'Move to the other list',
+    'admin_subq_move_x' => 'Move to another list',
+    'admin_subq_no_applic' => 'no applications',
+    'admin_subq_add' => 'Add',
+    'admin_subq_name' => 'Name',
 
     'sidebar_title'  => 'All speaking lists',
     'sidebar_active' => 'Active speaking list',

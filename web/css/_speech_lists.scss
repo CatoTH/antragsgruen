@@ -1,3 +1,5 @@
+@import "variables";
+
 #sidebar {
   #sidebarOtherQueues {
     padding-right: 15px; // Same as padding-left
@@ -21,7 +23,7 @@
 }
 
 .speechAdmin {
-  $slotWidth: 240px;
+  $slotWidth: 300px;
   $markerWidth: 500px;
 
   $backgroundInactive: #f0f0f0;
@@ -60,11 +62,15 @@
   .previousSpeakers {
     margin: 0 auto;
     width: 400px;
-    border: solid 1px $borderInactive;
-    background-color: $backgroundInactive;
+    border: dotted 1px $borderInactive;
+    //background-color: $backgroundInactive;
+
+    &.invisible {
+      visibility: hidden;
+    }
 
     > header {
-      background-color: $backgroundInactive;
+      //background-color: $backgroundInactive;
       padding: 5px;
       position: relative;
 
@@ -115,18 +121,15 @@
   }
 
   .slotEntry {
-    margin: 10px 0;
+    margin: 15px 0 0 0;
     border: solid 1px $borderInactive;
     border-radius: 3px;
     background-color: $backgroundInactive;
-    min-height: 75px;
+    min-height: 85px;
     padding: 10px;
     position: relative;
     text-align: center;
-
-    .name {
-      font-weight: bold;
-    }
+    z-index: 1;
 
     .statusActive {
       font-style: italic;
@@ -143,19 +146,26 @@
     }
 
     &.slotActive {
-      background-color: #d3ffd3;
+      background-color: #afa;
     }
   }
 
   .slotPlaceholder {
     position: relative;
-    margin: 10px 0;
+    margin: 0 15px 0 15px;
     border: dotted 1px $borderInactive;
-    border-radius: 3px;
     background-color: $backgroundInactive;
-    min-height: 60px;
+    min-height: 85px;
     padding: 10px;
     text-align: center;
+
+    &:nth-child(2) {
+      margin-top: -5px;
+    }
+    &:last-of-type {
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+    }
 
     .title {
       font-style: italic;
@@ -167,8 +177,33 @@
 
       &:hover, &:focus {
         background-color: darken($backgroundInactive, 5%);
+        z-index: 1;
+        border-radius: 3px;
       }
     }
+  }
+
+  .name {
+    font-weight: bold;
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+  }
+  .nameNobody {
+    font-style: italic;
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+  }
+
+  .iconBackground {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    font-size: 50px;
+    opacity: 0.15;
   }
 
   .isUpcoming:before {
@@ -259,12 +294,20 @@
     float: right;
   }
 
+  .leftIcon {
+    top: 4px;
+    font-size: 18px;
+    margin-right: 4px;
+  }
+
   .activeSpeaker {
     @if ($font-size-base < 16) {
       font-size: 16px;
       line-height: 1.5em;
     }
-    font-weight: bold;
+    .name {
+      font-weight: bold;
+    }
   }
 
   .upcomingSpeaker {
@@ -311,9 +354,28 @@
   }
 
   .waitingSingle {
-    margin-top: 10px;
+    margin-top: 30px;
+
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+        line-height: 1.5em;
+      }
+    }
+
+    .apply {
+      margin-left: 25px;
+      .notPossible {
+        font-style: italic;
+        font-size: 0.8em;
+      }
+    }
+    .applyOpener {
+      margin-top: 10px;
+    }
 
     form {
+      margin-top: 10px;
       display: inline-block;
       vertical-align: middle;
     }
@@ -435,10 +497,6 @@
     .title {
       font-weight: bold;
     }
-
-    .nobody {
-      font-style: italic;
-    }
   }
 
   .waitingMultiple {
@@ -486,6 +544,7 @@
       font-weight: bold;
       margin-right: 7px;
     }
+
 
     .number {
       font-size: 0.8em;

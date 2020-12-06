@@ -6,9 +6,14 @@ ob_start();
 ?>
 
 <article class="speechUser">
-    <div v-if="activeSpeaker" class="activeSpeaker">
-        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-        <?= Yii::t('speech', 'current') ?>: {{ activeSpeaker.name }}
+    <div class="activeSpeaker">
+        <span class="glyphicon glyphicon-comment leftIcon" aria-hidden="true"></span>
+        <span v-if="activeSpeaker" class="existing">
+            <?= Yii::t('speech', 'current') ?>: <span class="name">{{ activeSpeaker.name }}</span>
+        </span>
+        <span v-if="!activeSpeaker" class="notExisting">
+            <?= Yii::t('speech', 'current_nobody') ?>
+        </span>
     </div>
     <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
@@ -29,8 +34,8 @@ ob_start();
 
     <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" aria-label="<?= Yii::t('speech', 'waiting_aria_1') ?>">
         <header>
-            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-            <?= Yii::t('speech', 'waiting_list') ?>
+            <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
+            <?= Yii::t('speech', 'waiting_list') ?>:
 
             <span class="number">
                 {{ queue.subqueues[0].numApplied }}
@@ -44,8 +49,13 @@ ob_start();
                     <span class="withdrawLabel"><?= Yii::t('speech', 'apply_revoke') ?></span>
                 </button>
             </div>
+        </header>
 
-            <button class="btn btn-default btn-xs" type="button"
+        <div class="apply">
+            <div class="notPossible" v-if="!queue.isOpen">
+                <?= Yii::t('speech', 'apply_closed') ?>
+            </div>
+            <button class="btn btn-default btn-xs applyOpener" type="button"
                     v-if="queue.isOpen && !queue.haveApplied && showApplicationForm !== queue.subqueues[0].id"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
@@ -60,18 +70,18 @@ ob_start();
                     </span>
                 </div>
             </form>
-        </header>
+        </div>
     </section>
 
     <section class="waiting waitingMultiple" v-if="queue.subqueues.length > 1" aria-label="<?= Yii::t('speech', 'waiting_aria_x') ?>">
         <header>
-            <span class="glyphicon glyphicon-time"></span>
+            <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
             <?= Yii::t('speech', 'waiting_list_x') ?>
         </header>
         <div class="waitingSubqueues">
             <div v-for="subqueue in queue.subqueues" class="subqueue">
                 <div class="name">
-                    {{ subqueue.name }}
+                    {{ subqueue.name }}:
                 </div>
                 <div class="applied">
                     <span class="number">
