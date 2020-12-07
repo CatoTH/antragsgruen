@@ -45,7 +45,7 @@ if ($form->singleMotion) {
         <button type="submit" class="btn btn-primary">
             <?php
             if ($form->singleMotion) {
-                if ($form->wording == SiteCreateForm::WORDING_MANIFESTO) {
+                if ($form->functionality == SiteCreateForm::FUNCTIONALITY_MANIFESTO) {
                     echo \Yii::t('wizard', 'created_goto_manifesto');
                 } else {
                     echo \Yii::t('wizard', 'created_goto_motion');

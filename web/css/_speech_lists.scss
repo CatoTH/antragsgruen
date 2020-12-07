@@ -147,6 +147,7 @@
 
     &.slotActive {
       background-color: #afa;
+      box-shadow: 0 3px 3px rgba(0,0,0,0.25);
     }
   }
 
@@ -179,6 +180,7 @@
         background-color: darken($backgroundInactive, 5%);
         z-index: 1;
         border-radius: 3px;
+        box-shadow: 0 0 4px rgba(0,0,0,0.25);
       }
     }
   }
@@ -260,6 +262,7 @@
 
     &:hover, &:focus {
       background-color: darken($backgroundInactive, 5%);
+      box-shadow: 0 0 4px rgba(0,0,0,0.25);
     }
   }
 

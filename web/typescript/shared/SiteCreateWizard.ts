@@ -1,6 +1,6 @@
 interface WizardState {
     language: string;
-    wording: number;
+    functionality: number[];
     singleMotion: number;
     motionsInitiatedBy: number;
     motionsDeadlineExists: number;
@@ -43,7 +43,18 @@ class SiteCreateWizard {
         } else {
             return defaultVal;
         }
-    };
+    }
+
+    getCheckboxValues(fieldsetClass: string, defaultVals: any): any {
+        let inputs = this.$root.find("fieldset." + fieldsetClass).find("input:checked").toArray();
+        if (inputs.length > 0) {
+            return inputs.map((element: HTMLElement) => {
+                return parseInt(element.getAttribute('value'), 10);
+            });
+        } else {
+            return defaultVals;
+        }
+    }
 
     getWizardState(): WizardState {
         const parseNullableNumber = (val: string): number => {
@@ -56,7 +67,7 @@ class SiteCreateWizard {
 
         return {
             language: this.getRadioValue('language', null),
-            wording: this.getRadioValue('wording', 1),
+            functionality: this.getCheckboxValues('functionality', []),
             singleMotion: this.getRadioValue('singleMotion', 0),
             motionsInitiatedBy: this.getRadioValue('motionWho', 1),
             motionsDeadlineExists: this.getRadioValue('motionDeadline', 0),
@@ -83,6 +94,7 @@ class SiteCreateWizard {
 
     showPanel($panel: JQuery) {
         this.data = this.getWizardState();
+        console.log(this.data);
 
         let step = $panel.data("tab");
         this.$root.find(".wizard .steps li").removeClass("active");
@@ -117,7 +129,7 @@ class SiteCreateWizard {
         this.data = this.getWizardState();
 
         switch (this.$activePanel.attr("id")) {
-            case 'panelPurpose':
+            case 'panelFunctionality':
                 return "#panelSingleMotion";
             case 'panelLanguage':
                 return "#panelSingleMotion";
@@ -223,6 +235,14 @@ class SiteCreateWizard {
             $fieldset.find(".radio-label").removeClass("active");
             let $active = $fieldset.find(".radio-label input:checked");
             $active.parents(".radio-label").first().addClass("active");
+        }).trigger("change");
+        $form.find(".checkbox-label input").on("change", function () {
+            let $this = $(this);
+            if ($this.prop("checked")) {
+                $this.parents(".checkbox-label").first().addClass("active");
+            } else {
+                $this.parents(".checkbox-label").first().removeClass("active");
+            }
         }).trigger("change");
 
         $form.find("fieldset.wording input").on("change", function () {

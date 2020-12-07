@@ -29,9 +29,12 @@ class SiteCreateForm extends Model
     public $subdomain;
     public $organization;
 
-    const WORDING_MOTIONS   = 1;
-    const WORDING_MANIFESTO = 2;
-    public $wording = 1;
+    const FUNCTIONALITY_MOTIONS   = 1;
+    const FUNCTIONALITY_MANIFESTO = 2;
+    const FUNCTIONALITY_APPLICATIONS = 3;
+    const FUNCTIONALITY_AGENDA = 4;
+    const FUNCTIONALITY_SPEECH_LISTS = 5;
+    public $functionality = [1];
     public $language;
 
     /** @var bool */
@@ -105,7 +108,7 @@ class SiteCreateForm extends Model
     {
         parent::setAttributes($values, $safeOnly);
 
-        $this->wording               = (isset($values['wording']) ? IntVal($values['wording']) : 1);
+        $this->functionality = array_map('intval', $values['functionality'] ?? [static::FUNCTIONALITY_MOTIONS]);
         $this->singleMotion          = ($values['singleMotion'] == 1);
         $this->hasAmendments         = ($values['hasAmendments'] == 1);
         $this->amendSinglePara       = ($values['amendSinglePara'] == 1);
@@ -133,12 +136,7 @@ class SiteCreateForm extends Model
         $this->openNow         = ($values['openNow'] == 1);
     }
 
-    /**
-     * @param User $user
-     * @return Site
-     * @throws FormError
-     */
-    public function createSite(User $user)
+    public function createSite(User $user): Site
     {
         $site               = new Site();
         $site->title        = $this->title;
@@ -164,12 +162,16 @@ class SiteCreateForm extends Model
      * @throws FormError
      * @throws \Exception
      */
-    public function createConsultation(Consultation $con)
+    public function createConsultation(Consultation $con): void
     {
         $con->amendmentNumbering = 0;
         $con->dateCreation       = date('Y-m-d H:i:s');
         if ($this->language === 'de') {
-            $con->wordingBase = ($this->wording == static::WORDING_MANIFESTO ? 'de-programm' : 'de-parteitag');
+            if (in_array(static::FUNCTIONALITY_MANIFESTO, $this->functionality) && !in_array(static::FUNCTIONALITY_MOTIONS, $this->functionality)) {
+                $con->wordingBase = 'de-programm';
+            } else {
+                $con->wordingBase = 'de-parteitag';
+            }
         } else {
             $con->wordingBase = \Yii::$app->language;
         }
@@ -204,12 +206,13 @@ class SiteCreateForm extends Model
      * @param User $user
      * @throws FormError
      */
-    public function createMotionTypes(Consultation $con, User $user)
+    public function createMotionTypes(Consultation $con, User $user): void
     {
-        if ($this->wording == static::WORDING_MANIFESTO) {
+        if (in_array(static::FUNCTIONALITY_MANIFESTO, $this->functionality)) {
             $type = $this->doCreateManifestoType($con);
             $this->doCreateManifestoSections($type);
-        } else {
+        }
+        if (in_array(static::FUNCTIONALITY_MOTIONS, $this->functionality)) {
             $type = $this->doCreateMotionType($con);
             $this->doCreateMotionSections($type);
         }

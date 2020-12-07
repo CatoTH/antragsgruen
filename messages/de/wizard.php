@@ -14,11 +14,14 @@ return [
     'prev'   => 'Zurück',
     'finish' => 'Fertig / Seite anlegen',
 
-    'purpose_title'          => 'Was soll diskutiert werden?',
-    'purpose_desc'           => 'Das wirkt sich ausschließlich auf das &quot;Wording&quot; aus.',
-    'purpose_motions'        => 'Anträge',
-    'purpose_manifesto'      => 'Programm',
-    'purpose_manifesto_desc' => '(Wahl-/Partei-)',
+    'functionality_title'          => 'Welche Bestandteile soll die Seite haben?',
+    'functionality_desc'           => 'Es können beliebig viele Punkte ausgewählt werden.<br>Alles lässt sich auch nachträglich (de)aktivieren.',
+    'functionality_motions'        => 'Anträge',
+    'functionality_manifesto_desc' => '(Wahl-/Partei-)',
+    'functionality_manifesto'      => 'Programm',
+    'functionality_applications'   => 'Bewerbungen',
+    'functionality_agenda'         => 'Tagesordnung',
+    'functionality_speech'         => 'Redelisten',
 
     'language_title' => 'Sprache der Benutzeroberfläche?',
 
