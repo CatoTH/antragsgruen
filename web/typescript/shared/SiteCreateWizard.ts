@@ -16,13 +16,20 @@ interface WizardState {
     amendmentDeadline: string;
     amendScreening: number;
     hasComments: number;
-    hasAgenda: number;
+    applicationType: number;
     openNow: number;
     title: string;
     organization: string;
     subdomain: string;
     contact: string;
 }
+
+// Sync with SiteCreateForm.php
+const FUNCTIONALITY_MOTIONS = 1;
+const FUNCTIONALITY_MANIFESTO = 2;
+const FUNCTIONALITY_APPLICATIONS = 3;
+const FUNCTIONALITY_AGENDA = 4;
+const FUNCTIONALITY_SPEECH_LISTS = 5;
 
 class SiteCreateWizard {
     private firstPanel: string;
@@ -83,7 +90,7 @@ class SiteCreateWizard {
             amendmentDeadline: this.$root.find("fieldset.amendmentDeadline .date input").val() as string,
             amendScreening: this.getRadioValue('amendScreening', 1),
             hasComments: this.getRadioValue('hasComments', 1),
-            hasAgenda: this.getRadioValue('hasAgenda', 0),
+            applicationType: this.getRadioValue('applicationType', 1),
             openNow: this.getRadioValue('openNow', 0),
             title: $("#siteTitle").val() as string,
             organization: $("#siteOrganization").val() as string,
@@ -125,63 +132,47 @@ class SiteCreateWizard {
         }
     };
 
+    private hasMotionlikeType (data: WizardState) {
+        console.log(data, data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1);
+        return data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1;
+    }
+
+    public panelConditions = {
+        panelFunctionality: () => true,
+        panelSingleMotion: (data: WizardState) => this.hasMotionlikeType(data),
+        panelMotionWho: (data: WizardState) => this.hasMotionlikeType(data) && !data.singleMotion,
+        panelMotionDeadline: (data: WizardState) => this.hasMotionlikeType(data) && !data.singleMotion && data.motionsInitiatedBy != 1, // MOTION_INITIATED_ADMINS
+        panelMotionScreening: (data: WizardState) => this.hasMotionlikeType(data) && !data.singleMotion && data.motionsInitiatedBy != 1, // MOTION_INITIATED_ADMINS
+        panelNeedsSupporters: (data: WizardState) => this.hasMotionlikeType(data) && !data.singleMotion && data.motionsInitiatedBy != 1, // MOTION_INITIATED_ADMINS
+        panelHasAmendments: (data: WizardState) => this.hasMotionlikeType(data),
+        panelAmendSinglePara: (data: WizardState) => this.hasMotionlikeType(data),
+        panelAmendWho: (data: WizardState) => this.hasMotionlikeType(data),
+        panelAmendDeadline: (data: WizardState) => this.hasMotionlikeType(data) && data.amendmentInitiatedBy != 1, // MOTION_INITIATED_ADMINS,
+        panelAmendMerging: (data: WizardState) => this.hasMotionlikeType(data) && data.amendmentInitiatedBy,
+        panelAmendScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.amendmentInitiatedBy,
+        panelComments: (data: WizardState) => this.hasMotionlikeType(data),
+        panelApplicationType: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_APPLICATIONS) !== -1,
+        panelOpenNow: () => true,
+        panelSiteData: () => true,
+    };
+
     getNextPanel(): string {
         this.data = this.getWizardState();
-
-        switch (this.$activePanel.attr("id")) {
-            case 'panelFunctionality':
-                return "#panelSingleMotion";
-            case 'panelLanguage':
-                return "#panelSingleMotion";
-            case 'panelSingleMotion':
-                if (this.data.singleMotion == 1) {
-                    return "#panelHasAmendments";
-                } else {
-                    return "#panelMotionWho";
+        const currPanel = this.$activePanel.attr("id"),
+            allPanelIds = Object.keys(this.panelConditions);
+        let foundCurr = false;
+        for (let i = 0; i < allPanelIds.length; i++) {
+            if (allPanelIds[i] === currPanel) {
+                // We ignore all steps previous to the current one
+                foundCurr = true;
+            } else if (foundCurr) {
+                // Once we found the current one, we take the first step where the condition is met
+                if (this.panelConditions[allPanelIds[i]](this.data)) {
+                    return '#' + allPanelIds[i];
                 }
-            case 'panelMotionWho':
-                if (this.data.motionsInitiatedBy == 1) { // MOTION_INITIATED_ADMINS
-                    return "#panelHasAmendments";
-                } else {
-                    return "#panelMotionDeadline";
-                }
-            case 'panelMotionDeadline':
-                return "#panelMotionScreening";
-            case 'panelMotionScreening':
-                return "#panelNeedsSupporters";
-            case 'panelNeedsSupporters':
-                return "#panelHasAmendments";
-            case 'panelHasAmendments':
-                if (this.data.hasAmendments == 1) {
-                    return "#panelAmendSinglePara";
-                } else {
-                    return "#panelComments";
-                }
-            case 'panelAmendSinglePara':
-                return "#panelAmendWho";
-            case 'panelAmendWho':
-                if (this.data.amendmentInitiatedBy == 1) { // MOTION_INITIATED_ADMINS
-                    return "#panelComments";
-                } else {
-                    return "#panelAmendDeadline";
-                }
-            case 'panelAmendDeadline':
-                return '#panelAmendMerging';
-            case 'panelAmendMerging':
-                return "#panelAmendScreening";
-            case 'panelAmendScreening':
-                return "#panelComments";
-            case 'panelComments':
-                if (this.data.singleMotion == 1) {
-                    return "#panelOpenNow";
-                } else {
-                    return "#panelAgenda";
-                }
-            case 'panelAgenda':
-                return "#panelOpenNow";
-            case 'panelOpenNow':
-                return "#panelSiteData";
+            }
         }
+        console.error("Could not found the next panel for " + currPanel + ", data: ", this.data);
     }
 
     subdomainChange(ev) {

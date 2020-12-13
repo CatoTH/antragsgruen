@@ -3,10 +3,12 @@
 namespace app\models\forms;
 
 use app\components\Tools;
+use app\models\motionTypeTemplates\Application;
+use app\models\motionTypeTemplates\Manifesto;
+use app\models\motionTypeTemplates\PDFApplication;
 use app\models\db\{Consultation,
     ConsultationAgendaItem,
     ConsultationMotionType,
-    ConsultationSettingsMotionSection,
     ConsultationText,
     Motion,
     MotionSupporter,
@@ -14,26 +16,26 @@ use app\models\db\{Consultation,
     User};
 use app\models\exceptions\FormError;
 use app\models\policies\IPolicy;
-use app\models\sectionTypes\ISectionType;
-use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType};
+use app\models\settings\{AntragsgruenApp, InitiatorForm};
 use app\models\supportTypes\SupportBase;
 use yii\base\Model;
 use yii\helpers\Html;
 
 class SiteCreateForm extends Model
 {
-
     /** @var string */
     public $contact;
     public $title;
     public $subdomain;
     public $organization;
 
+    // Sync with SiteCreateWizard.ts
     const FUNCTIONALITY_MOTIONS   = 1;
     const FUNCTIONALITY_MANIFESTO = 2;
     const FUNCTIONALITY_APPLICATIONS = 3;
     const FUNCTIONALITY_AGENDA = 4;
     const FUNCTIONALITY_SPEECH_LISTS = 5;
+
     public $functionality = [1];
     public $language;
 
@@ -51,6 +53,9 @@ class SiteCreateForm extends Model
     const MOTION_INITIATED_ADMINS    = 1;
     const MOTION_INITIATED_LOGGED_IN = 2;
     const MOTION_INITIATED_ALL       = 3;
+
+    /** @var int */
+    public $applicationType = 1;
 
     /** @var null|\DateTime */
     public $motionDeadline = null;
@@ -132,7 +137,6 @@ class SiteCreateForm extends Model
         $this->needsSupporters = ($values['needsSupporters'] == 1);
         $this->minSupporters   = IntVal($values['minSupporters']);
         $this->hasComments     = ($values['hasComments'] == 1);
-        $this->hasAgenda       = ($values['hasAgenda'] == 1);
         $this->openNow         = ($values['openNow'] == 1);
     }
 
@@ -158,7 +162,6 @@ class SiteCreateForm extends Model
     }
 
     /**
-     * @param Consultation $con
      * @throws FormError
      * @throws \Exception
      */
@@ -202,22 +205,32 @@ class SiteCreateForm extends Model
     }
 
     /**
-     * @param Consultation $con
-     * @param User $user
      * @throws FormError
      */
     public function createMotionTypes(Consultation $con, User $user): void
     {
+        $type = null;
+
+        if (in_array(static::FUNCTIONALITY_APPLICATIONS, $this->functionality)) {
+            if ($this->applicationType == 2) {
+                $type = Application::doCreateApplicationType($con);
+                Application::doCreateApplicationSections($type);
+            } else {
+                $type = PDFApplication::doCreateApplicationType($con);
+                PDFApplication::doCreateApplicationSections($type);
+            }
+        }
         if (in_array(static::FUNCTIONALITY_MANIFESTO, $this->functionality)) {
             $type = $this->doCreateManifestoType($con);
-            $this->doCreateManifestoSections($type);
+            Manifesto::doCreateManifestoSections($type);
         }
         if (in_array(static::FUNCTIONALITY_MOTIONS, $this->functionality)) {
             $type = $this->doCreateMotionType($con);
-            $this->doCreateMotionSections($type);
+            $this->doFixApplicationMotionType($type);
+            \app\models\motionTypeTemplates\Motion::doCreateMotionSections($type);
         }
 
-        if ($this->singleMotion) {
+        if ($this->singleMotion && $type) {
             $motion                 = new Motion();
             $motion->title          = '';
             $motion->titlePrefix    = '';
@@ -259,7 +272,7 @@ class SiteCreateForm extends Model
      * @throws FormError
      * @throws \Exception
      */
-    public function createWithoutSite(User $currentUser, $site, $con, $setDefault = true)
+    public function createWithoutSite(User $currentUser, $site, $con, $setDefault = true): Consultation
     {
         $this->createConsultation($con);
         if ($setDefault) {
@@ -268,7 +281,7 @@ class SiteCreateForm extends Model
 
         $this->createMotionTypes($con, $currentUser);
 
-        if ($this->hasAgenda) {
+        if (in_array(static::FUNCTIONALITY_AGENDA, $this->functionality)) {
             $this->createAgenda($con);
         }
 
@@ -278,12 +291,10 @@ class SiteCreateForm extends Model
     }
 
     /**
-     * @param User $currentUser
-     * @return Consultation
      * @throws FormError
      * @throws \Exception
      */
-    public function create(User $currentUser)
+    public function create(User $currentUser): Consultation
     {
         if (!Site::isSubdomainAvailable($this->subdomain)) {
             throw new FormError(\Yii::t('manager', 'site_err_subdomain'));
@@ -316,21 +327,13 @@ class SiteCreateForm extends Model
 
 
     /**
-     * @param Consultation $consultation
-     * @return ConsultationMotionType
      * @throws FormError
      */
-    private function doCreateManifestoType(Consultation $consultation)
+    private function doCreateManifestoType(Consultation $consultation): ConsultationMotionType
     {
-        /** @var AntragsgruenApp $config */
-        $config = \Yii::$app->params;
+        $type = Manifesto::doCreateManifestoType($consultation);
 
-        $type                 = new ConsultationMotionType();
-        $type->consultationId = $consultation->id;
-        $type->titleSingular  = \Yii::t('structure', 'preset_manifesto_singular');
-        $type->titlePlural    = \Yii::t('structure', 'preset_manifesto_plural');
-        $type->createTitle    = \Yii::t('structure', 'preset_manifesto_call');
-        $type->position       = 0;
+        $type->sidebarCreateButton = 1;
         if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
             $type->policyMotions = IPolicy::POLICY_ADMINS;
         } elseif ($this->motionsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
@@ -363,12 +366,6 @@ class SiteCreateForm extends Model
         }
         $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
-        $type->texTemplateId               = ($config->xelatexPath || $config->lualatexPath ? 1 : null);
-        $type->amendmentMultipleParagraphs = 1;
-        $type->motionLikesDislikes         = 0;
-        $type->amendmentLikesDislikes      = 0;
-        $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
-        $type->sidebarCreateButton         = 1;
 
         $initiatorSettings              = new InitiatorForm(null);
         $initiatorSettings->type        = SupportBase::ONLY_INITIATOR;
@@ -381,11 +378,6 @@ class SiteCreateForm extends Model
             $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
         }
         $type->supportTypeMotions = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
-        $type->supportTypeAmendments     = null;
-        $type->supportType               = 0; // @TODO Remove after database fields have been deleted
-        $type->supportTypeSettings       = ''; // @TODO Remove after database fields have been deleted
-
-        $type->setSettingsObj(new MotionType(null));
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
@@ -399,59 +391,13 @@ class SiteCreateForm extends Model
     }
 
     /**
-     * @param ConsultationMotionType $motionType
-     */
-    private function doCreateManifestoSections(ConsultationMotionType $motionType)
-    {
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TITLE;
-        $section->position      = 0;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_manifesto_title');
-        $section->required      = 1;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 1;
-        $section->positionRight = 0;
-        $section->settings      = null;
-        $section->save();
-
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
-        $section->position      = 1;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_manifesto_text');
-        $section->required      = 1;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 1;
-        $section->lineNumbers   = 1;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_MOTION;
-        $section->hasAmendments = 1;
-        $section->positionRight = 0;
-        $section->settings      = null;
-        $section->save();
-    }
-
-    /**
-     * @param Consultation $consultation
-     * @return ConsultationMotionType
      * @throws FormError
      */
-    private function doCreateMotionType(Consultation $consultation)
+    private function doCreateMotionType(Consultation $consultation): ConsultationMotionType
     {
-        /** @var AntragsgruenApp $config */
-        $config = \Yii::$app->params;
+        $type = \app\models\motionTypeTemplates\Motion::doCreateMotionType($consultation);
 
-        $type                 = new ConsultationMotionType();
-        $type->consultationId = $consultation->id;
-        $type->titleSingular  = \Yii::t('structure', 'preset_motion_singular');
-        $type->titlePlural    = \Yii::t('structure', 'preset_motion_plural');
-        $type->createTitle    = \Yii::t('structure', 'preset_motion_call');
-        $type->position       = 0;
+        $type->sidebarCreateButton = 1;
         if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
             $type->policyMotions = IPolicy::POLICY_ADMINS;
         } elseif ($this->motionsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
@@ -484,12 +430,7 @@ class SiteCreateForm extends Model
         }
         $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
-        $type->texTemplateId               = ($config->xelatexPath || $config->lualatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
-        $type->motionLikesDislikes         = 0;
-        $type->amendmentLikesDislikes      = 0;
-        $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
-        $type->sidebarCreateButton         = 1;
 
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
@@ -502,11 +443,6 @@ class SiteCreateForm extends Model
             $initiatorSettings->type = SupportBase::ONLY_INITIATOR;
         }
         $type->supportTypeMotions    = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
-        $type->supportTypeAmendments = null;
-        $type->supportType           = 0; // @TODO Remove after database fields have been deleted
-        $type->supportTypeSettings   = ''; // @TODO Remove after database fields have been deleted
-
-        $type->setSettingsObj(new MotionType(null));
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
@@ -519,64 +455,13 @@ class SiteCreateForm extends Model
         return $type;
     }
 
-    /**
-     * @param ConsultationMotionType $motionType
-     */
-    private function doCreateMotionSections(ConsultationMotionType $motionType)
+    private function doFixApplicationMotionType(ConsultationMotionType $motionType): void
     {
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TITLE;
-        $section->position      = 0;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_motion_title');
-        $section->required      = 1;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 1;
-        $section->positionRight = 0;
-        $section->settings      = null;
-        $section->save();
-
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
-        $section->position      = 1;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_motion_text');
-        $section->required      = 1;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 1;
-        $section->lineNumbers   = 1;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_MOTION;
-        $section->hasAmendments = 1;
-        $section->positionRight = 0;
-        $section->settings      = null;
-        $section->save();
-
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
-        $section->position      = 2;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_motion_reason');
-        $section->required      = 0;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 0;
-        $section->positionRight = 0;
-        $section->settings      = null;
-        $section->save();
+        $motionType->sidebarCreateButton = 1;
+        $motionType->save();
     }
 
-    /**
-     * @param Consultation $consultation
-     */
-    private function createAgenda(Consultation $consultation)
+    private function createAgenda(Consultation $consultation): void
     {
         $item                 = new ConsultationAgendaItem();
         $item->consultationId = $consultation->id;
@@ -640,11 +525,9 @@ class SiteCreateForm extends Model
     }
 
     /**
-     * @var Site $site
-     * @param Consultation $consultation
      * @throws FormError
      */
-    private function createPageData(Site $site, Consultation $consultation)
+    private function createPageData(Site $site, Consultation $consultation): void
     {
         $contactHtml               = nl2br(Html::encode($site->contact));
         $legalText                 = new ConsultationText();
@@ -677,9 +560,7 @@ class SiteCreateForm extends Model
         }
     }
 
-    /**
-     */
-    public function setSandboxParams()
+    public function setSandboxParams(): void
     {
         $this->contact      = \Yii::t('wizard', 'sandbox_dummy_contact');
         $this->organization = \Yii::t('wizard', 'sandbox_dummy_orga');
@@ -688,10 +569,7 @@ class SiteCreateForm extends Model
         $this->openNow      = true;
     }
 
-    /**
-     * @return User
-     */
-    public function createSandboxUser()
+    public function createSandboxUser(): User
     {
         if (\Yii::$app->user) {
             \Yii::$app->user->logout();

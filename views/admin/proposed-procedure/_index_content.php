@@ -48,7 +48,7 @@ foreach ($proposedAgenda as $proposedItem) {
         <h2 class="green">
             <?php
             if (!$expandAll) {
-                echo '<span class="glyphicon glyphicon-chevron-down"></span> ';
+                echo '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span> ';
             }
             ?>
             <?= Html::encode($proposedItem->title) ?>

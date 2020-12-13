@@ -83,10 +83,12 @@ return [
     'comments_no'    => 'Nein',
     'comments_yes'   => 'Ja',
 
-    'agenda_title' => 'Gibt es eine Tagesordnung?',
-    'agenda_desc'  => 'Auf der Startseite kann dann eine Tagesordnung festgelegt werden',
-    'agenda_no'    => 'Nein',
-    'agenda_yes'   => 'Ja',
+    'applicationtype_title' => 'Art der Bewerbungen',
+    'applicationtype_desc' => 'In welcher Form können die Bewerbungen eingereicht werden?',
+    'applicationtype_text' => 'Formular',
+    'applicationtype_text_desc' => 'Text, Foto, Persönliche Angaben',
+    'applicationtype_pdf' => 'PDF',
+    'applicationtype_pdf_desc' => 'Ein fertiges PDF wird hochgeladen',
 
     'opennow_title' => 'Die Seite sofort veröffentlichen?',
     'opennow_desc'  => 'Oder zuerst im Wartungsmodus belassen?',

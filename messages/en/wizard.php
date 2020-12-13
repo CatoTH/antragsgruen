@@ -80,10 +80,12 @@ return [
     'comments_no'    => 'No',
     'comments_yes'   => 'Yes',
 
-    'agenda_title' => 'Is there a formal agenda?',
-    'agenda_desc'  => 'If so, it can be specified on the home page',
-    'agenda_no'    => 'No',
-    'agenda_yes'   => 'Yes',
+    'applicationtype_title' => 'Type of applications',
+    'applicationtype_desc' => 'In which format are applications / candidatures submitted?',
+    'applicationtype_text' => 'Form',
+    'applicationtype_text_desc' => 'Text, photo, personal data',
+    'applicationtype_pdf' => 'PDF',
+    'applicationtype_pdf_desc' => 'A ready-layouted PDF can be uploaded',
 
     'opennow_title' => 'Publish this site immediately?',
     'opennow_desc'  => 'If not, it will be created in maintenance mode',
