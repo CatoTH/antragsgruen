@@ -6,14 +6,7 @@ use app\components\Tools;
 use app\models\motionTypeTemplates\Application;
 use app\models\motionTypeTemplates\Manifesto;
 use app\models\motionTypeTemplates\PDFApplication;
-use app\models\db\{Consultation,
-    ConsultationAgendaItem,
-    ConsultationMotionType,
-    ConsultationText,
-    Motion,
-    MotionSupporter,
-    Site,
-    User};
+use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationText, Motion, MotionSupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\policies\IPolicy;
 use app\models\settings\{AntragsgruenApp, InitiatorForm};
@@ -46,6 +39,7 @@ class SiteCreateForm extends Model
     public $amendMerging    = false;
     public $motionScreening = true;
     public $amendScreening  = true;
+    public $speechQuotas    = false;
 
     /** @var int */
     public $motionsInitiatedBy    = 2;
@@ -67,8 +61,6 @@ class SiteCreateForm extends Model
 
     /** @var bool */
     public $hasComments = false;
-    public $hasAgenda   = false;
-
     public $openNow = false;
 
     /** @var Consultation|null */
@@ -78,10 +70,6 @@ class SiteCreateForm extends Model
     /** @var Motion|null */
     public $motion;
 
-    /**
-     * SiteCreateForm constructor.
-     * @param array $config
-     */
     public function __construct(array $config = [])
     {
         parent::__construct($config);
@@ -120,23 +108,26 @@ class SiteCreateForm extends Model
         $this->motionScreening       = ($values['motionScreening'] == 1);
         $this->amendScreening        = ($values['amendScreening'] == 1);
         $this->amendMerging          = ($values['amendMerging'] == 1);
-        $this->motionsInitiatedBy    = IntVal($values['motionsInitiatedBy']);
-        $this->amendmentsInitiatedBy = IntVal($values['amendInitiatedBy']);
+        $this->motionsInitiatedBy    = intval($values['motionsInitiatedBy']);
+        $this->amendmentsInitiatedBy = intval($values['amendInitiatedBy']);
         if ($values['motionsDeadlineExists']) {
             $deadline = Tools::dateBootstraptime2sql($values['motionsDeadline']);
             if ($deadline) {
+                /** @noinspection PhpUnhandledExceptionInspection */
                 $this->motionDeadline = new \DateTime($deadline);
             }
         }
         if ($values['amendDeadlineExists']) {
             $deadline = Tools::dateBootstraptime2sql($values['amendDeadline']);
             if ($deadline) {
+                /** @noinspection PhpUnhandledExceptionInspection */
                 $this->amendmentDeadline = new \DateTime($deadline);
             }
         }
         $this->needsSupporters = ($values['needsSupporters'] == 1);
-        $this->minSupporters   = IntVal($values['minSupporters']);
+        $this->minSupporters   = intval($values['minSupporters']);
         $this->hasComments     = ($values['hasComments'] == 1);
+        $this->speechQuotas    = ($values['speechQuotas'] == 1);
         $this->openNow         = ($values['openNow'] == 1);
     }
 
@@ -159,6 +150,31 @@ class SiteCreateForm extends Model
         $site->link('admins', $user);
 
         return $site;
+    }
+
+    /**
+     * @throws FormError
+     * @throws \Exception
+     */
+    public function createConsultationWithSubtypes(User $currentUser, Site $site, Consultation  $con, bool $setDefault): Consultation
+    {
+        $this->createConsultation($con);
+        if ($setDefault) {
+            $site->link('currentConsultation', $con);
+        }
+
+        $this->createMotionTypes($con, $currentUser);
+
+        if (in_array(static::FUNCTIONALITY_AGENDA, $this->functionality)) {
+            $this->createAgenda($con);
+        }
+        if (in_array(static::FUNCTIONALITY_SPEECH_LISTS, $this->functionality)) {
+            $this->createSpeechList($con);
+        }
+
+        $this->createPageData($site, $con);
+
+        return $con;
     }
 
     /**
@@ -191,7 +207,7 @@ class SiteCreateForm extends Model
         } else {
             $settings->screeningAmendments = $this->amendScreening;
         }
-        if ($this->hasAgenda) {
+        if (in_array(static::FUNCTIONALITY_AGENDA, $this->functionality)) {
             $settings->startLayoutType = \app\models\settings\Consultation::START_LAYOUT_AGENDA_LONG;
         } else {
             $settings->startLayoutType = \app\models\settings\Consultation::START_LAYOUT_STD;
@@ -202,6 +218,32 @@ class SiteCreateForm extends Model
             throw new FormError($con->getErrors());
         }
         $this->consultation = $con;
+    }
+
+    /**
+     * @throws FormError
+     * @throws \Exception
+     */
+    public function create(User $currentUser): Consultation
+    {
+        if (!Site::isSubdomainAvailable($this->subdomain)) {
+            throw new FormError(\Yii::t('manager', 'site_err_subdomain'));
+        }
+        if (!$this->validate()) {
+            throw new FormError($this->getErrors());
+        }
+        $site = $this->createSite($currentUser);
+
+        $con             = new Consultation();
+        $con->siteId     = $site->id;
+        $con->title      = $this->title;
+        $con->titleShort = mb_substr($this->title, 0, Consultation::TITLE_SHORT_MAX_LEN);
+        $con->urlPath    = $this->subdomain;
+        $con->adminEmail = $currentUser->email;
+
+        $this->createConsultationWithSubtypes($currentUser, $site, $con, true);
+
+        return $con;
     }
 
     /**
@@ -262,69 +304,6 @@ class SiteCreateForm extends Model
             $this->consultation->save();
         }
     }
-
-    /**
-     * @param User $currentUser
-     * @param Site $site
-     * @param Consultation $con
-     * @param bool $setDefault
-     * @return Consultation
-     * @throws FormError
-     * @throws \Exception
-     */
-    public function createWithoutSite(User $currentUser, $site, $con, $setDefault = true): Consultation
-    {
-        $this->createConsultation($con);
-        if ($setDefault) {
-            $site->link('currentConsultation', $con);
-        }
-
-        $this->createMotionTypes($con, $currentUser);
-
-        if (in_array(static::FUNCTIONALITY_AGENDA, $this->functionality)) {
-            $this->createAgenda($con);
-        }
-
-        $this->createPageData($site, $con);
-
-        return $con;
-    }
-
-    /**
-     * @throws FormError
-     * @throws \Exception
-     */
-    public function create(User $currentUser): Consultation
-    {
-        if (!Site::isSubdomainAvailable($this->subdomain)) {
-            throw new FormError(\Yii::t('manager', 'site_err_subdomain'));
-        }
-        if (!$this->validate()) {
-            throw new FormError($this->getErrors());
-        }
-        $site = $this->createSite($currentUser);
-
-        $con             = new Consultation();
-        $con->siteId     = $site->id;
-        $con->title      = $this->title;
-        $con->titleShort = mb_substr($this->title, 0, Consultation::TITLE_SHORT_MAX_LEN);
-        $con->urlPath    = $this->subdomain;
-        $con->adminEmail = $currentUser->email;
-        $this->createConsultation($con);
-
-        $site->link('currentConsultation', $con);
-
-        $this->createMotionTypes($con, $currentUser);
-
-        if ($this->hasAgenda) {
-            $this->createAgenda($con);
-        }
-
-        $this->createPageData($site, $con);
-
-        return $con;
-    }
-
 
     /**
      * @throws FormError
@@ -522,6 +501,27 @@ class SiteCreateForm extends Model
         $item->code           = '#';
         $item->title          = \Yii::t('structure', 'preset_party_misc');
         $item->save();
+    }
+
+    private function createSpeechList(Consultation $consultation): void
+    {
+        if ($this->speechQuotas) {
+            $subqueues = [
+                \Yii::t('speech', 'subqueue_female'),
+                \Yii::t('speech', 'subqueue_male'),
+            ];
+        } else {
+            $subqueues = [];
+        }
+
+        $settings = $consultation->getSettings();
+        $settings->hasSpeechLists = true;
+        $settings->speechListSubqueues = $subqueues;
+        $consultation->setSettings($settings);
+        $consultation->save();
+
+        $unassignedQueue = SpeechQueue::createWithSubqueues($consultation, true);
+        $unassignedQueue->save();
     }
 
     /**

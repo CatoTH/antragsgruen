@@ -17,6 +17,7 @@ interface WizardState {
     amendScreening: number;
     hasComments: number;
     applicationType: number;
+    panelSpeechQuotas: number;
     openNow: number;
     title: string;
     organization: string;
@@ -91,6 +92,7 @@ class SiteCreateWizard {
             amendScreening: this.getRadioValue('amendScreening', 1),
             hasComments: this.getRadioValue('hasComments', 1),
             applicationType: this.getRadioValue('applicationType', 1),
+            panelSpeechQuotas: this.getRadioValue('speechQuotas', 1),
             openNow: this.getRadioValue('openNow', 0),
             title: $("#siteTitle").val() as string,
             organization: $("#siteOrganization").val() as string,
@@ -152,6 +154,7 @@ class SiteCreateWizard {
         panelAmendScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.amendmentInitiatedBy,
         panelComments: (data: WizardState) => this.hasMotionlikeType(data),
         panelApplicationType: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_APPLICATIONS) !== -1,
+        panelSpeechQuotas: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_SPEECH_LISTS) !== -1,
         panelOpenNow: () => true,
         panelSiteData: () => true,
     };
@@ -172,7 +175,7 @@ class SiteCreateWizard {
                 }
             }
         }
-        console.error("Could not found the next panel for " + currPanel + ", data: ", this.data);
+        console.error("Could not find the next panel for " + currPanel + ", data: ", this.data);
     }
 
     subdomainChange(ev) {

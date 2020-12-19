@@ -50,6 +50,7 @@ $t = function ($string) {
     <?= $this->render('amend_merging', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('comments', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('application_type', ['model' => $model, 't' => $t, 'mode' => $mode]) ?>
+    <?= $this->render('speech_quotas', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('opennow', ['model' => $model, 't' => $t]) ?>
     <?php
     switch ($mode) {

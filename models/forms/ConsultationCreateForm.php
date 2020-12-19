@@ -157,7 +157,7 @@ class ConsultationCreateForm extends Model
         $con->dateCreation = date('Y-m-d H:i:s');
         $con->adminEmail   = $user->email;
 
-        $this->siteCreateWizard->createWithoutSite($user, $this->site, $con, $this->setAsDefault);
+        $this->siteCreateWizard->createConsultationWithSubtypes($user, $this->site, $con, $this->setAsDefault);
     }
 
     /**

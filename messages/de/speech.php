@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'subqueue_male'   => 'Männer',
+    'subqueue_male'   => 'Offen / Männer',
     'subqueue_female' => 'Frauen',
     'speaking_list'   => 'Redeliste',
 

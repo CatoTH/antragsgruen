@@ -90,6 +90,11 @@ return [
     'applicationtype_pdf' => 'PDF',
     'applicationtype_pdf_desc' => 'Ein fertiges PDF wird hochgeladen',
 
+    'speech_quotas_title' => 'Quotierte Redelisten',
+    'speech_quotas_desc' => 'Getrennte Frauen- und offene/Männer-Listen, abwechselnde Redebeiträge',
+    'speech_quotas_no' => 'Nein',
+    'speech_quotas_yes' => 'Ja',
+
     'opennow_title' => 'Die Seite sofort veröffentlichen?',
     'opennow_desc'  => 'Oder zuerst im Wartungsmodus belassen?',
     'opennow_no'    => 'Zuerst in den Wartungsmodus',
