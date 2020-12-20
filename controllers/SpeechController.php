@@ -9,6 +9,8 @@ use yii\web\Response;
 
 class SpeechController extends Base
 {
+    // *** Shared methods ***
+
     private function getError(string $message): string
     {
         return json_encode([
@@ -27,6 +29,8 @@ class SpeechController extends Base
 
         return null;
     }
+
+    // *** User-facing methods ***
 
     public function actionGetQueue(string $queueId)
     {
@@ -138,23 +142,32 @@ class SpeechController extends Base
         return $this->returnRestResponse(200, $responseJson);
     }
 
+    // *** Admin-facing methods ***
 
-    public function actionGetQueueAdmin(string $queueId)
+    private function getQueueAndCheckMethodAndPermission(string $queueId): SpeechQueue
     {
-        $this->handleRestHeaders(['GET'], true);
-
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->returnRestResponse(403, $this->getError('Missing privileges'));
+            $this->returnRestResponse(403, $this->getError('Missing privileges'));
+            die();
         }
 
         $queue = $this->getQueue(intval($queueId));
         if (!$queue) {
-            return $this->returnRestResponse(404, $this->getError('Queue not found'));
+            $this->returnRestResponse(404, $this->getError('Queue not found'));
+            die();
         }
+
+        return $queue;
+    }
+
+    public function actionGetQueueAdmin(string $queueId)
+    {
+        $this->handleRestHeaders(['GET'], true);
+        $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
 
         $jsonResponse = json_encode($queue->getAdminApiObject());
         return $this->returnRestResponse(200, $jsonResponse);
@@ -163,19 +176,7 @@ class SpeechController extends Base
     public function actionPostQueueSettings(string $queueId)
     {
         $this->handleRestHeaders(['POST'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        $user = User::getCurrentUser();
-        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->returnRestResponse(403, $this->getError('Missing privileges'));
-        }
-
-        $queue = $this->getQueue(intval($queueId));
-        if (!$queue) {
-            return $this->returnRestResponse(404, $this->getError('Queue not found'));
-        }
+        $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
 
         $settings                   = $queue->getSettings();
         $settings->isOpen           = (intval(\Yii::$app->request->post('is_open')) > 0);
@@ -201,22 +202,25 @@ class SpeechController extends Base
         return $this->returnRestResponse(200, $jsonResponse);
     }
 
+    public function actionAdminQueueReset(string $queueId)
+    {
+        $this->handleRestHeaders(['POST'], true);
+        $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
+
+        foreach ($queue->items as $item) {
+            $item->delete();
+        }
+
+        $queue->refresh();
+        $jsonResponse = json_encode($queue->getAdminApiObject());
+        return $this->returnRestResponse(200, $jsonResponse);
+    }
+
     public function actionPostItemOperation(string $queueId, string $itemId, string $op)
     {
         $this->handleRestHeaders(['POST'], true);
+        $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        $user = User::getCurrentUser();
-        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->returnRestResponse(403, $this->getError('Missing privileges'));
-        }
-
-        $queue = $this->getQueue(intval($queueId));
-        if (!$queue) {
-            return $this->returnRestResponse(404, $this->getError('Queue not found'));
-        }
         $item = $queue->getItemById(intval($itemId));
         if (!$item) {
             return $this->returnRestResponse(404, $this->getError('Item not found'));
@@ -296,19 +300,7 @@ class SpeechController extends Base
     public function actionAdminCreateItem(string $queueId)
     {
         $this->handleRestHeaders(['POST'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        $user = User::getCurrentUser();
-        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->returnRestResponse(403, $this->getError('Missing privileges'));
-        }
-
-        $queue = $this->getQueue(intval($queueId));
-        if (!$queue) {
-            return $this->returnRestResponse(404, $this->getError('Queue not found'));
-        }
+        $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
 
         if (\Yii::$app->request->post('subqueue')) {
             $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('subqueue')));

@@ -2,9 +2,11 @@
 ob_start();
 ?>
 
-<section class="subqueue" aria-label="Warteliste {{ subqueue.name }}">
-    <header v-if="subqueue.name !== 'default'">{{ subqueue.name }}</header>
-    <header v-if="subqueue.name === 'default'"><?= Yii::t('speech', 'waiting_list') ?></header>
+<section class="subqueue" aria-label="<?= Yii::t('speech', 'waiting_list') ?> {{ subqueue.name }}"
+    :class="{ positionLeft: (position === 'left'), positionRight: (position === 'right') }"
+>
+    <header v-if="subqueue.name !== 'default'">{{ subqueue.name }} {{ position }}</header>
+    <header v-if="subqueue.name === 'default'"><?= Yii::t('speech', 'waiting_list') ?> {{ position }}</header>
 
     <ul class="subqueueItems">
         <li v-for="item in subqueue.applied" class="subqueueItem" tabindex="0"
@@ -16,16 +18,17 @@ ob_start();
 
             <div class="operations" v-if="otherSubqueues.length > 0">
                 <button class="link moveSubqueue" type="button" v-if="otherSubqueues.length === 1" ref="otherQueue"
-                        title="In die andere Warteliste verschieben"
+                        title="<?= Yii::t('speech', 'admin_subq_move_1') ?>"
                         v-on:click="moveToSubqueue($event, item, otherSubqueues[0])"
                 >
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" v-if="position === 'right'"></span>
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" v-if="position === 'left'"></span>
                     <span class="sr-only"><?= Yii::t('speech', 'admin_subq_move_1') ?></span>
                 </button>
 
                 <div class="btn-group" v-if="otherSubqueues.length > 1" ref="otherQueues">
                     <button class="link moveSubqueue dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                            title="In eine andere Warteliste verschieben"
+                            title="<?= Yii::t('speech', 'admin_subq_move_x') ?>"
                     >
                         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                         <span class="sr-only"><?= Yii::t('speech', 'admin_subq_move_x') ?></span>
@@ -45,7 +48,7 @@ ob_start();
     </div>
 
     <section class="subqueueAdder">
-        <button class="link" type="button" v-if="!adderOpened" v-on:click="openAdder()" v-on:keyup.enter="openAdder()">
+        <button class="link adderOpener" type="button" v-if="!adderOpened" v-on:click="openAdder()" v-on:keyup.enter="openAdder()">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             <?= Yii::t('speech', 'admin_subq_add') ?>
         </button>
@@ -53,7 +56,7 @@ ob_start();
             <label v-bind:for="'subqueueAdderName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'admin_subq_name') ?></label>
             <div class="input-group">
                 <input type="text" class="form-control" ref="adderNameInput" v-model="adderName" v-bind:id="'subqueueAdderName' + subqueue.id"
-                       required placeholder="Name">
+                       required placeholder="<?= Yii::t('speech', 'admin_subq_name') ?>" title="<?= Yii::t('speech', 'admin_subq_name') ?>">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'admin_subq_add') ?></button>
                 </span>
@@ -69,7 +72,7 @@ $html = ob_get_clean();
 <script>
     Vue.component('speech-admin-subqueue', {
         template: <?= json_encode($html) ?>,
-        props: ['subqueue', 'allSubqueues'],
+        props: ['subqueue', 'allSubqueues', 'position'],
         data() {
             return {
                 adderOpened: false,

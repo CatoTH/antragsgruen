@@ -53,6 +53,8 @@ return [
     'admin_back_to_wait'     => 'Back to the waiting list',
     'admin_start_proposal'   => 'Start proposal',
     'admin_proposal_nobody'  => 'No proposal',
+    'admin_reset'            => 'Reset / empty speaking list',
+    'admin_reset_dialog'     => 'Do you want to reset the whole speaking list, including the history of previous speakers?',
 
     'admin_subq_start' => 'Start speaking',
     'admin_subq_move_1' => 'Move to the other list',

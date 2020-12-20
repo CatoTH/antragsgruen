@@ -53,6 +53,8 @@ return [
     'admin_back_to_wait'     => 'Zurück auf die Warteliste',
     'admin_start_proposal'   => 'Vorschlag starten',
     'admin_proposal_nobody'  => 'Kein Vorschlag',
+    'admin_reset'            => 'Redeliste leeren / zurücksetzen',
+    'admin_reset_dialog'     => 'Willst du die komplette Liste inklusive der bisherigen Sprecher*innen zurücksetzen?',
 
     'admin_subq_start' => 'Redebeitrag starten',
     'admin_subq_move_1' => 'In die andere Warteliste verschieben',

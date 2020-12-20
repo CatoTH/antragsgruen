@@ -143,15 +143,23 @@ ob_start();
         </ol>
 
         <div class="subqueues">
-            <speech-admin-subqueue v-for="subqueue in queue.subqueues"
+            <speech-admin-subqueue v-for="(subqueue, index) in queue.subqueues"
                                    :subqueue="subqueue"
                                    :allSubqueues="queue.subqueues"
+                                   :position="index > 0 ? 'right' : 'left'"
                                    @add-item-to-slots-and-start="addItemToSlotsAndStart"
                                    @add-item-to-subqueue="addItemToSubqueue"
                                    @move-item-to-subqueue="moveItemToSubqueue"
             ></speech-admin-subqueue>
         </div>
     </main>
+
+    <section class="queueResetSection">
+        <button type="button" class="btn btn-link btn-danger" @click="resetQueue()">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            <?= Yii::t('speech', 'admin_reset') ?>
+        </button>
+    </section>
 </article>
 
 <?php
@@ -159,6 +167,7 @@ $html             = ob_get_clean();
 $setStatusUrl     = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
 $itemPerformOpUrl = UrlHelper::createUrl(['/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
 $createItemUrl    = UrlHelper::createUrl(['/speech/admin-create-item', 'queueId' => 'QUEUEID']);
+$resetQueueUrl    = UrlHelper::createUrl(['/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
 $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 ?>
 
@@ -166,7 +175,9 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
     const pollUrl = <?= json_encode($pollUrl) ?>;
     const setStatusUrl = <?= json_encode($setStatusUrl) ?>;
     const createItemUrl = <?= json_encode($createItemUrl) ?>;
+    const resetQueueUrl = <?= json_encode($resetQueueUrl) ?>;
     const itemPerformOperationUrl = <?= json_encode($itemPerformOpUrl) ?>;
+    const resetConfirmation = <?= json_encode(Yii::t('speech', 'admin_reset_dialog')) ?>;
 
     Vue.component('speech-admin-widget', {
         template: <?= json_encode($html) ?>,
@@ -295,6 +306,18 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             setActive: function () {
               this.queue.is_active = true;
               this.settingsChanged();
+            },
+            resetQueue: function () {
+                const widget = this;
+                bootbox.confirm(resetConfirmation, function(result) {
+                    if (result) {
+                        $.post(resetQueueUrl.replace(/QUEUEID/, widget.queue.id), { _csrf: widget.csrf }, function (data) {
+                            widget.queue = data;
+                        }).catch(function (err) {
+                            alert(err.responseText);
+                        });
+                    }
+                });
             },
             settingsChanged: function () {
                 const widget = this;

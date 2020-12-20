@@ -85,7 +85,7 @@ ob_start();
                 </div>
                 <div class="applied">
                     <span class="number">
-                        {{ subqueue.numApplied }}
+                        {{ subqueue.num_applied }}
                     </span>
 
                     <div v-if="subqueue.have_applied" class="appliedMe">

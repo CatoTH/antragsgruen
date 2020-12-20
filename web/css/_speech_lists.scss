@@ -240,6 +240,13 @@
     .empty {
       font-style: italic;
     }
+
+    .subqueueAdder {
+      margin-top: 10px;
+      .adderOpener {
+        margin-left: 20px;
+      }
+    }
   }
 
   .subqueueItems {
@@ -268,11 +275,7 @@
 
   .operations {
     position: absolute;
-    left: 0;
     bottom: 0;
-    border-right: solid 1px $borderInactive;
-    border-top: solid 1px $borderInactive;
-    border-top-right-radius: 3px;
 
     .moveSubqueue, .removeSlot {
       padding: 0 5px;
@@ -288,6 +291,22 @@
     .removeSlot {
       color: $colorDelLink;
     }
+  }
+  .subqueue.positionLeft .operations {
+    right: 0;
+    border-left: solid 1px $borderInactive;
+    border-top: solid 1px $borderInactive;
+    border-top-left-radius: 3px;
+  }
+  .subqueue.positionRight .operations {
+    left: 0;
+    border-right: solid 1px $borderInactive;
+    border-top: solid 1px $borderInactive;
+    border-top-right-radius: 3px;
+  }
+
+  .queueResetSection {
+    text-align: right;
   }
 }
 
@@ -555,7 +574,6 @@
       font-weight: bold;
       margin-right: 7px;
     }
-
 
     .number {
       font-size: 0.8em;
