@@ -354,6 +354,14 @@
         line-height: 1.5em;
       }
     }
+
+    .notPossible {
+      line-height: 35px;
+      vertical-align: middle;
+      margin-left: 27px;
+      font-style: italic;
+      font-size: 0.8em;
+    }
   }
 
   .waitingSingle {
@@ -396,7 +404,7 @@
   }
 
   .waitingSubqueues {
-    margin-left: 20px;
+    margin-left: 26px;
     display: table;
 
     > * {

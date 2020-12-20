@@ -249,12 +249,12 @@ class Base extends Controller
         return parent::render($view, $params);
     }
 
-    public function handleRestHeaders(): void
+    public function handleRestHeaders(array $allowedMethods, bool $alwaysEnabled = false): void
     {
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
 
-        if (!$this->site->getSettings()->apiEnabled) {
+        if (!$this->site->getSettings()->apiEnabled && !$alwaysEnabled) {
             $this->returnRestResponseFromException(new \Exception('API disabled', 403));
             Yii::$app->end();
         }
@@ -270,8 +270,13 @@ class Base extends Controller
                 Yii::$app->response->headers->add('Access-Control-Allow-Origin', Yii::$app->request->origin);
             }
         }
+        Yii::$app->response->headers->add('Access-Control-Allow-Methods', implode(', ', $allowedMethods));
 
         if (Yii::$app->request->method === 'OPTIONS') {
+            Yii::$app->end();
+        }
+        if (!in_array(Yii::$app->request->method, $allowedMethods)) {
+            $this->returnRestResponseFromException(new \Exception('Method not allowed', 405));
             Yii::$app->end();
         }
     }
@@ -282,8 +287,8 @@ class Base extends Controller
         $this->layoutParams->robotsNoindex = true;
         Yii::$app->response->format = Response::FORMAT_RAW;
         Yii::$app->response->headers->add('Content-Type', 'application/json');
-        Yii::$app->response->statusCode    = $statusCode;
-        Yii::$app->response->content       = $json;
+        Yii::$app->response->statusCode = $statusCode;
+        Yii::$app->response->content = $json;
         Yii::$app->end();
 
         return null;

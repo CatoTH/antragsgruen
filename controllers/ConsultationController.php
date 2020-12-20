@@ -364,7 +364,7 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedureRest()
     {
-        $this->handleRestHeaders();
+        $this->handleRestHeaders(['GET']);
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         $proposalFactory = new Factory($this->consultation, false);
@@ -412,7 +412,7 @@ class ConsultationController extends Base
      */
     public function actionRest()
     {
-        $this->handleRestHeaders();
+        $this->handleRestHeaders(['GET']);
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
@@ -424,7 +424,7 @@ class ConsultationController extends Base
      */
     public function actionRestSite()
     {
-        $this->handleRestHeaders();
+        $this->handleRestHeaders(['GET']);
 
         return $this->returnRestResponse(200, $this->renderPartial('rest_site_get', ['site' => $this->site]));
     }

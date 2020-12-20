@@ -216,16 +216,16 @@ class SpeechQueue extends ActiveRecord
             }
             if ($item->position === null) {
                 $obj['applied'][] = [
-                    'id'        => $item->id,
-                    'name'      => $item->name,
-                    'userId'    => $item->userId,
-                    'appliedAt' => $item->getDateApplied()->format('c'),
+                    'id'         => $item->id,
+                    'name'       => $item->name,
+                    'user_id'    => $item->userId,
+                    'applied_at' => $item->getDateApplied()->format('c'),
                 ];
             } else {
                 $obj['onlist'][] = [
                     'id'       => $item->id,
                     'name'     => $item->name,
-                    'userId'   => $item->userId,
+                    'user_id'  => $item->userId,
                     'position' => $item->position,
                 ];
             }
@@ -266,17 +266,17 @@ class SpeechQueue extends ActiveRecord
             }
             $subqueue = ($item->subqueueId ? $this->getSubqueueById($item->subqueueId) : null);
             $slots[]  = [
-                'id'          => $item->id,
-                'subqueue'    => [
+                'id'           => $item->id,
+                'subqueue'     => [
                     'id'   => ($subqueue ? $subqueue->id : null),
                     'name' => ($subqueue ? $subqueue->name : 'default'),
                 ],
-                'name'        => $item->name,
-                'userId'      => $item->userId,
-                'position'    => $item->position,
-                'dateStarted' => ($item->getDateStarted() ? $item->getDateStarted()->format('c') : null),
-                'dateStopped' => ($item->getDateStopped() ? $item->getDateStopped()->format('c') : null),
-                'dateApplied' => ($item->getDateApplied() ? $item->getDateApplied()->format('c') : null),
+                'name'         => $item->name,
+                'user_id'      => $item->userId,
+                'position'     => $item->position,
+                'date_started' => ($item->getDateStarted() ? $item->getDateStarted()->format('c') : null),
+                'date_stopped' => ($item->getDateStopped() ? $item->getDateStopped()->format('c') : null),
+                'date_applied' => ($item->getDateApplied() ? $item->getDateApplied()->format('c') : null),
             ];
         }
         usort($slots, function (array $entry1, array $entry2) {
@@ -296,22 +296,22 @@ class SpeechQueue extends ActiveRecord
         }
 
         return [
-            'id'              => $this->id,
-            'isActive'        => !!$this->isActive,
-            'settings'        => $this->getSettings()->getAdminApiObject(),
-            'subqueues'       => $this->getAdminApiSubqueues(),
-            'slots'           => $this->getActiveSlots(),
-            'otherActiveName' => $otherActiveName,
+            'id'                => $this->id,
+            'is_active'         => !!$this->isActive,
+            'settings'          => $this->getSettings()->getAdminApiObject(),
+            'subqueues'         => $this->getAdminApiSubqueues(),
+            'slots'             => $this->getActiveSlots(),
+            'other_active_name' => $otherActiveName,
         ];
     }
 
     private function getUserApiSubqueue(?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser): array
     {
         $obj = [
-            'id'          => ($subqueue ? $subqueue->id : null),
-            'name'        => ($subqueue ? $subqueue->name : 'default'),
-            'numApplied'  => 0,
-            'haveApplied' => false, // true if a user (matching userID or userToken) is on the list, but has not spoken yet (including assigned places)
+            'id'           => ($subqueue ? $subqueue->id : null),
+            'name'         => ($subqueue ? $subqueue->name : 'default'),
+            'num_applied'  => 0,
+            'have_applied' => false, // true if a user (matching userID or userToken) is on the list, but has not spoken yet (including assigned places)
         ];
 
         foreach ($this->items as $item) {
@@ -319,10 +319,10 @@ class SpeechQueue extends ActiveRecord
                 continue;
             }
             if (!$item->dateStarted && $item->isMe($user, $cookieUser)) {
-                $obj['haveApplied'] = true;
+                $obj['have_applied'] = true;
             }
             if ($item->position === null) {
-                $obj['numApplied']++;
+                $obj['num_applied']++;
             }
         }
 
@@ -363,12 +363,12 @@ class SpeechQueue extends ActiveRecord
         }
 
         return [
-            'id'                  => $this->id,
-            'isOpen'              => $this->getSettings()->isOpen,
-            'haveApplied'         => $haveApplied,
-            'subqueues'           => $this->getUserApiSubqueues($user, $cookieUser),
-            'slots'               => $this->getActiveSlots(),
-            'speechRequiresLogin' => $this->getMyConsultation()->getSettings()->speechRequiresLogin,
+            'id'                    => $this->id,
+            'is_open'               => $this->getSettings()->isOpen,
+            'have_applied'          => $haveApplied,
+            'subqueues'             => $this->getUserApiSubqueues($user, $cookieUser),
+            'slots'                 => $this->getActiveSlots(),
+            'speech_requires_login' => $this->getMyConsultation()->getSettings()->speechRequiresLogin,
         ];
     }
 }

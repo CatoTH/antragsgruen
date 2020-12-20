@@ -135,7 +135,7 @@ class AmendmentController extends Base
      */
     public function actionRest($motionSlug, $amendmentId)
     {
-        $this->handleRestHeaders();
+        $this->handleRestHeaders(['GET']);
 
         try {
             $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);

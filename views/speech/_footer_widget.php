@@ -24,24 +24,24 @@ $layout->addVueTemplate('@app/views/speech/user-footer-widget.vue.php');
 $initData = $queue->getUserApiObject($user, $cookieUser);
 if ($user) {
     $userData = [
-        'loggedIn' => true,
-        'id'       => $user->id,
-        'token'    => null,
-        'name'     => $user->name,
+        'logged_in' => true,
+        'id'        => $user->id,
+        'token'     => null,
+        'name'      => $user->name,
     ];
 } elseif ($cookieUser) {
     $userData = [
-        'loggedIn' => true,
-        'id'       => null,
-        'token'    => $cookieUser->userToken,
-        'name'     => $user->name,
+        'logged_in' => true,
+        'id'        => null,
+        'token'     => $cookieUser->userToken,
+        'name'      => $user->name,
     ];
 } else {
     $userData = [
-        'loggedIn' => false,
-        'id'       => null,
-        'token'    => null,
-        'name'     => '',
+        'logged_in' => false,
+        'id'        => null,
+        'token'     => null,
+        'name'      => '',
     ];
 }
 

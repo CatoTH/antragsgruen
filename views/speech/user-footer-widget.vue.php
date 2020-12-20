@@ -38,7 +38,7 @@ ob_start();
 
     <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" aria-label="<?= Yii::t('speech', 'waiting_aria_1') ?>">
         <header>
-            <div v-if="queue.subqueues[0].haveApplied" class="appliedMe">
+            <div v-if="queue.subqueues[0].have_applied" class="appliedMe">
                 <span class="label label-success" aria-label="<?= Yii::t('speech', 'applied_aria') ?>"><?= Yii::t('speech', 'applied') ?></span>
                 <button type="button" class="btn btn-link btnWithdraw" @click="removeMeFromQueue($event)"
                         title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
@@ -48,12 +48,12 @@ ob_start();
             </div>
 
             <button class="btn btn-default btn-xs" type="button"
-                    v-if="!queue.haveApplied && showApplicationForm !== queue.subqueues[0].id"
+                    v-if="!queue.have_applied && showApplicationForm !== queue.subqueues[0].id"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
                 <?= Yii::t('speech', 'apply') ?>
             </button>
-            <form @submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].haveApplied && showApplicationForm === queue.subqueues[0].id">
+            <form @submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].have_applied && showApplicationForm === queue.subqueues[0].id">
                 <label :for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
                     <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id"
@@ -76,9 +76,9 @@ ob_start();
                 {{ subqueue.name }}
             </div>
 
-            <div class="number" :aria-label="numAppliedTitle(subqueue)" :title="numAppliedTitle(subqueue)">{{ subqueue.numApplied }}</div>
+            <div class="number" :aria-label="numAppliedTitle(subqueue)" :title="numAppliedTitle(subqueue)">{{ subqueue.num_applied }}</div>
 
-            <div v-if="subqueue.haveApplied" class="appliedMe">
+            <div v-if="subqueue.have_applied" class="appliedMe">
                 <span class="label label-success" aria-label="<?= Yii::t('speech', 'applied_aria') ?>"><?= Yii::t('speech', 'applied') ?></span>
                 <button type="button" class="btn btn-link btnWithdraw" @click="removeMeFromQueue($event)"
                         title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
@@ -88,12 +88,12 @@ ob_start();
             </div>
 
             <button class="btn btn-default btn-xs applyBtn" type="button"
-                    v-if="queue.isOpen && !queue.haveApplied && showApplicationForm !== subqueue.id"
+                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id"
                     @click="onShowApplicationForm($event, subqueue)"
             >
                 <?= Yii::t('speech', 'apply') ?>
             </button>
-            <form @submit="register($event, subqueue)" v-if="queue.isOpen && !queue.haveApplied && showApplicationForm === subqueue.id">
+            <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">
                 <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
                     <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
@@ -109,17 +109,20 @@ ob_start();
 
 <?php
 $html          = ob_get_clean();
-$pollUrl       = UrlHelper::createUrl('speech/poll');
+$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueId' => 'QUEUEID']);
 $registerUrl   = UrlHelper::createUrl('speech/register');
 $unregisterUrl = UrlHelper::createUrl('speech/unregister');
 ?>
 
 <script>
+    const pollUrl = <?= json_encode($pollUrl) ?>;
+    const registerUrl = <?= json_encode($registerUrl) ?>;
+    const unregisterUrl = <?= json_encode($unregisterUrl) ?>;
+
     Vue.component('speech-user-footer-widget', {
         template: <?= json_encode($html) ?>,
         props: ['queue', 'csrf', 'user', 'title'],
         data() {
-            console.log(JSON.parse(JSON.stringify(this.queue)));
             return {
                 registerName: this.user.name,
                 showApplicationForm: false, // "null" is already taken by the default form
@@ -129,13 +132,13 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
         computed: {
             activeSpeaker: function () {
                 const active = this.queue.slots.filter(function (slot) {
-                    return slot.dateStopped === null && slot.dateStarted !== null;
+                    return slot.date_stopped === null && slot.date_started !== null;
                 });
                 return (active.length > 0 ? active[0] : null);
             },
             upcomingSpeakers: function () {
                 return this.queue.slots.filter(function (slot) {
-                    return slot.dateStopped === null && slot.dateStarted === null;
+                    return slot.date_stopped === null && slot.date_started === null;
                 });
             }
         },
@@ -144,19 +147,19 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
                 return slot.userId === this.user.id;
             },
             numAppliedTitle: function (subqueue) {
-                if (subqueue.numApplied === 1) {
+                if (subqueue.num_applied === 1) {
                     const msg = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>;
                     return msg;
                 } else {
                     const msg = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>;
-                    return msg.replace(/%NUM%/, subqueue.numApplied);
+                    return msg.replace(/%NUM%/, subqueue.num_applied);
                 }
             },
             register: function ($event, subqueue) {
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(<?= json_encode($registerUrl) ?>, {
+                $.post(registerUrl, {
                     queue: this.queue.id,
                     subqueue: subqueue.id,
                     username: this.registerName,
@@ -185,7 +188,7 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(<?= json_encode($unregisterUrl) ?>, {
+                $.post(unregisterUrl, {
                     queue: this.queue.id,
                     _csrf: this.csrf,
                 }, function (data) {
@@ -201,11 +204,10 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
             },
             reloadData: function () {
                 const widget = this;
-                $.get(<?= json_encode($pollUrl) ?>, {queue: widget.queue.id}, function (data) {
-                    if (!data['success']) {
-                        return;
-                    }
-                    widget.queue = data['queue'];
+                $.get(pollUrl.replace(/QUEUEID/, widget.queue.id), function (data) {
+                    widget.queue = data;
+                }).catch(function(err) {
+                    console.error("Could not load speech queue data from backend", err);
                 });
             },
             startPolling: function () {

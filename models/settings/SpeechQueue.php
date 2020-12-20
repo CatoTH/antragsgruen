@@ -11,6 +11,9 @@ class SpeechQueue implements \JsonSerializable
 
     public function getAdminApiObject(): array
     {
-        return $this->jsonSerialize();
+        return [
+            'is_open' => $this->isOpen,
+            'prefer_nonspeaker' => $this->preferNonspeaker,
+        ];
     }
 }

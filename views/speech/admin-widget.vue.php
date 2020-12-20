@@ -7,7 +7,7 @@ ob_start();
 
 <article class="speechAdmin">
     <div class="toolbarBelowTitle settings">
-        <div class="settingsActive" v-if="queue.isActive">
+        <div class="settingsActive" v-if="queue.is_active">
             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
             <?= Yii::t('speech', 'admin_is_active') ?>
 
@@ -15,15 +15,15 @@ ob_start();
                 <?= Yii::t('speech', 'admin_deactivate') ?>
             </button>
         </div>
-        <div class="settingsActive" v-if="!queue.isActive">
+        <div class="settingsActive" v-if="!queue.is_active">
             <span class="inactive"><?= Yii::t('speech', 'admin_is_inactive') ?></span>
             <button class="btn btn-xs btn-default" type="button" @click="setActive()">
                 <?= Yii::t('speech', 'admin_activate') ?>
             </button>
             <span v-if="queue.otherActiveName" class="deactivateOthers">(<?= Yii::t('speech', 'admin_deactivate_other') ?>)</span>
         </div>
-        <label class="settingsOpen" v-if="queue.isActive">
-            <input type="checkbox" v-model="queue.settings.isOpen" @change="settingsChanged()">
+        <label class="settingsOpen" v-if="queue.is_active">
+            <input type="checkbox" v-model="queue.settings.is_open" @change="settingsChanged()">
             <?= Yii::t('speech', 'admin_setting_open') ?>
         </label>
         <div class="settingsPolicy">
@@ -35,7 +35,7 @@ ob_start();
                 <ul class="dropdown-menu">
                     <li class="checkbox">
                         <label @click="$event.stopPropagation()">
-                            <input type="checkbox" class="preferNonspeaker" v-model="queue.settings.preferNonspeaker" @change="settingsChanged()">
+                            <input type="checkbox" class="preferNonspeaker" v-model="queue.settings.prefer_nonspeaker" @change="settingsChanged()">
                             <?= Yii::t('speech', 'admin_prefer_nonspeak') ?>
                         </label>
                     </li>
@@ -156,18 +156,20 @@ ob_start();
 
 <?php
 $html             = ob_get_clean();
-$setStatusUrl     = UrlHelper::createUrl('speech/admin-setstatus');
+$setStatusUrl     = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
 $itemSetStatusUrl = UrlHelper::createUrl('speech/admin-item-setstatus');
 $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
-$pollUrl          = UrlHelper::createUrl('speech/admin-poll');
+$pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 ?>
 
 <script>
+    const pollUrl = <?= json_encode($pollUrl) ?>;
+    const setStatusUrl = <?= json_encode($setStatusUrl) ?>;
+
     Vue.component('speech-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['queue', 'csrf'],
         data() {
-            console.log(JSON.parse(JSON.stringify(this.queue)));
             return {
                 showPreviousList: false,
                 pollingId: null
@@ -176,28 +178,28 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
         computed: {
             previousSpeakers: function () {
                 return this.queue.slots.filter(function (slot) {
-                    return slot.dateStopped !== null;
+                    return slot.date_stopped !== null;
                 }).sort(function (slot1, slot2) {
-                    const date1 = new Date(slot1.dateStopped);
-                    const date2 = new Date(slot2.dateStopped);
+                    const date1 = new Date(slot1.date_stopped);
+                    const date2 = new Date(slot2.date_stopped);
                     return date1.getTime() - date2.getTime();
                 });
             },
             hasPreviousSpeakers: function () {
                 return this.queue.slots.filter(function (slot) {
-                    return slot.dateStopped !== null;
+                    return slot.date_stopped !== null;
                 }).length > 0;
             },
             sortedQueue: function () {
                 return this.queue.slots.filter(function (slot) {
-                    return slot.dateStarted === null;
+                    return slot.date_started === null;
                 }).sort(function (slot1, slot2) {
                     return slot1.position - slot2.position;
                 });
             },
             activeSlot: function () {
                 const active = this.queue.slots.filter(function (slot) {
-                    return slot.dateStarted !== null && slot.dateStopped === null;
+                    return slot.date_started !== null && slot.date_stopped === null;
                 });
                 return active.length > 0 ? active[0] : null;
             },
@@ -230,7 +232,7 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                     return null;
                 }
 
-                if (this.queue.settings.preferNonspeaker) {
+                if (this.queue.settings.prefer_nonspeaker) {
                     // @TODO respect user ID + name
                     return chosenQueue.applied[0];
                 } else {
@@ -289,27 +291,21 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                 this._setStatus(item.id, "move", {newSubqueueId: newSubqueue.id});
             },
             setInactive: function () {
-              this.queue.isActive = false;
+              this.queue.is_active = false;
               this.settingsChanged();
             },
             setActive: function () {
-              this.queue.isActive = true;
+              this.queue.is_active = true;
               this.settingsChanged();
             },
             settingsChanged: function () {
                 const widget = this;
-                $.post(<?= json_encode($setStatusUrl) ?>, {
-                    queue: this.queue.id,
-                    isActive: (this.queue.isActive ? 1 : 0),
-                    isOpen: (this.queue.settings.isOpen ? 1 : 0),
-                    preferNonspeaker: (this.queue.settings.preferNonspeaker ? 1 : 0),
+                $.post(setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
+                    is_active: (this.queue.is_active ? 1 : 0),
+                    is_open: (this.queue.settings.is_open ? 1 : 0),
+                    prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
                     _csrf: this.csrf,
                 }, function (data) {
-                    if (!data['success']) {
-                        alert(data['message']);
-                        return;
-                    }
-
                     widget.queue = data['queue'];
 
                     if (data['sidebar'] && data['sidebar'][0] !== '') {
@@ -340,11 +336,10 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
             },
             reloadData: function () {
                 const widget = this;
-                $.get(<?= json_encode($pollUrl) ?>, {queue: widget.queue.id}, function (data) {
-                    if (!data['success']) {
-                        return;
-                    }
-                    widget.queue = data['queue'];
+                $.get(pollUrl.replace(/QUEUEID/, widget.queue.id), function (data) {
+                    widget.queue = data;
+                }).catch(function(err) {
+                    console.error("Could not load speech queue data from backend", err);
                 });
             },
             startPolling: function () {

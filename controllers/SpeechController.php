@@ -28,23 +28,23 @@ class SpeechController extends Base
         return null;
     }
 
-    public function actionPoll()
+    public function actionGetQueue(string $queueId)
     {
+        $this->handleRestHeaders(['GET'], true);
+
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user       = User::getCurrentUser();
         $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
 
-        $queue = $this->getQueue(intval(\Yii::$app->request->get('queue')));
+        $queue = $this->getQueue(intval($queueId));
         if (!$queue) {
-            return $this->getError('Queue not found');
+            return $this->returnRestResponse(404, $this->getError('Queue not found'));
         }
 
-        return json_encode([
-            'success' => true,
-            'queue'   => $queue->getUserApiObject($user, $cookieUser),
-        ]);
+        $responseJson = json_encode($queue->getUserApiObject($user, $cookieUser));
+        return $this->returnRestResponse(200, $responseJson);
     }
 
     public function actionRegister()
@@ -139,48 +139,50 @@ class SpeechController extends Base
     }
 
 
-    public function actionAdminPoll()
+    public function actionGetQueueAdmin(string $queueId)
     {
+        $this->handleRestHeaders(['GET'], true);
+
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->getError('Missing privileges');
+            return $this->returnRestResponse(403, $this->getError('Missing privileges'));
         }
 
-        $queue = $this->getQueue(intval(\Yii::$app->request->get('queue')));
+        $queue = $this->getQueue(intval($queueId));
         if (!$queue) {
-            return $this->getError('Queue not found');
+            return $this->returnRestResponse(404, $this->getError('Queue not found'));
         }
 
-        return json_encode([
-            'success' => true,
-            'queue'   => $queue->getAdminApiObject(),
-        ]);
+        $jsonResponse = json_encode($queue->getAdminApiObject());
+        return $this->returnRestResponse(200, $jsonResponse);
     }
 
-    public function actionAdminSetstatus()
+    public function actionPostQueueSettings(string $queueId)
     {
+        $this->handleRestHeaders(['POST'], true);
+
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->getError('Missing privileges');
+            return $this->returnRestResponse(403, $this->getError('Missing privileges'));
         }
 
-        $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
+        $queue = $this->getQueue(intval($queueId));
         if (!$queue) {
-            return $this->getError('Queue not found');
+            return $this->returnRestResponse(404, $this->getError('Queue not found'));
         }
 
         $settings                   = $queue->getSettings();
-        $settings->isOpen           = (intval(\Yii::$app->request->post('isOpen')) > 0);
-        $settings->preferNonspeaker = (intval(\Yii::$app->request->post('preferNonspeaker')) > 0);
+        $settings->isOpen           = (intval(\Yii::$app->request->post('is_open')) > 0);
+        $settings->preferNonspeaker = (intval(\Yii::$app->request->post('prefer_nonspeaker')) > 0);
         $queue->setSettings($settings);
 
-        $queue->isActive = (intval(\Yii::$app->request->post('isActive')) > 0 ? 1 : 0);
+        $queue->isActive = (intval(\Yii::$app->request->post('is_active')) > 0 ? 1 : 0);
         $queue->save();
 
         if ($queue->isActive) {
@@ -192,11 +194,11 @@ class SpeechController extends Base
             }
         }
 
-        return json_encode([
-            'success' => true,
+        $jsonResponse = json_encode([
             'queue'   => $queue->getAdminApiObject(),
             'sidebar' => LayoutHelper::getSidebars($this->consultation, $queue),
         ]);
+        return $this->returnRestResponse(200, $jsonResponse);
     }
 
     public function actionAdminItemSetstatus()

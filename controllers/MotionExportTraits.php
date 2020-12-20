@@ -308,7 +308,7 @@ trait MotionExportTraits
      */
     public function actionRest($motionSlug)
     {
-        $this->handleRestHeaders();
+        $this->handleRestHeaders(['GET']);
 
         try {
             $motion = $this->getMotionWithCheck($motionSlug, true);
