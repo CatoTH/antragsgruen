@@ -47,30 +47,32 @@ class SpeechController extends Base
         return $this->returnRestResponse(200, $responseJson);
     }
 
-    public function actionRegister()
+    public function actionRegister(string $queueId)
     {
+        $this->handleRestHeaders(['POST'], true);
+
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         if (!$user) {
             if ($this->consultation->getSettings()->speechRequiresLogin) {
-                return $this->getError('Not logged in');
+                return $this->returnRestResponse(401, $this->getError('Not logged in'));
             } elseif (\Yii::$app->request->post('username')) {
                 $cookieUser = CookieUser::getFromCookieOrCreate(\Yii::$app->request->post('username'));
             } else {
-                return $this->getError('No name provided');
+                return $this->returnRestResponse(400, $this->getError('No name provided'));
             }
         } else {
             $cookieUser = null;
         }
 
-        $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
+        $queue = $this->getQueue(intval($queueId));
         if (!$queue) {
-            return $this->getError('Queue not found');
+            $this->returnRestResponse(404, $this->getError('Queue not found'));
         }
         if (!$queue->getSettings()->isOpen) {
-            return $this->getError(\Yii::t('speech', 'err_permission_apply'));
+            return $this->returnRestResponse(403, $this->getError(\Yii::t('speech', 'err_permission_apply')));
         }
         if (count($queue->subqueues) > 0) {
             // Providing a subqueue is necessary if there are some; otherwise, it goes into the "default" subqueue
@@ -78,7 +80,7 @@ class SpeechController extends Base
             if ($subqueue) {
                 $subqueueId = $subqueue->id;
             } else {
-                return $this->getError('No subqueue provided');
+                return $this->returnRestResponse(400, $this->getError('No subqueue provided'));
             }
         } else {
             $subqueueId = null;
@@ -101,23 +103,23 @@ class SpeechController extends Base
         $item->dateStopped = null;
         $item->save();
 
-        return json_encode([
-            'success' => true,
-            'queue'   => $queue->getUserApiObject($user, $cookieUser),
-        ]);
+        $responseJson = json_encode($queue->getUserApiObject($user, $cookieUser));
+        return $this->returnRestResponse(200, $responseJson);
     }
 
-    public function actionUnregister()
+    public function actionUnregister(string $queueId)
     {
+        $this->handleRestHeaders(['POST'], true);
+
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         $cookieUser = CookieUser::getFromCookieOrCache();
 
-        $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
+        $queue = $this->getQueue(intval($queueId));
         if (!$queue) {
-            return $this->getError('Queue not found');
+            return $this->returnRestResponse(404, $this->getError('Queue not found'));
         }
 
         foreach ($queue->items as $item) {
@@ -132,10 +134,8 @@ class SpeechController extends Base
         }
         $queue->refresh();
 
-        return json_encode([
-            'success' => true,
-            'queue'   => $queue->getUserApiObject($user, $cookieUser),
-        ]);
+        $responseJson = json_encode($queue->getUserApiObject($user, $cookieUser));
+        return $this->returnRestResponse(200, $responseJson);
     }
 
 
@@ -201,23 +201,28 @@ class SpeechController extends Base
         return $this->returnRestResponse(200, $jsonResponse);
     }
 
-    public function actionAdminItemSetstatus()
+    public function actionPostItemOperation(string $queueId, string $itemId, string $op)
     {
+        $this->handleRestHeaders(['POST'], true);
+
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->getError('Missing privileges');
+            return $this->returnRestResponse(403, $this->getError('Missing privileges'));
         }
 
-        $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
+        $queue = $this->getQueue(intval($queueId));
         if (!$queue) {
-            return $this->getError('Queue not found');
+            return $this->returnRestResponse(404, $this->getError('Queue not found'));
         }
-        $item = $queue->getItemById(intval(\Yii::$app->request->post('item')));
+        $item = $queue->getItemById(intval($itemId));
+        if (!$item) {
+            return $this->returnRestResponse(404, $this->getError('Item not found'));
+        }
 
-        switch (\Yii::$app->request->post('op')) {
+        switch ($op) {
             case "set-slot":
                 $maxPosition = 0;
                 foreach ($queue->items as $cmpItem) {
@@ -284,25 +289,25 @@ class SpeechController extends Base
                 break;
         }
 
-        return json_encode([
-            'success' => true,
-            'queue'   => $queue->getAdminApiObject(),
-        ]);
+        $responseJson = json_encode($queue->getAdminApiObject());
+        return $this->returnRestResponse(200, $responseJson);
     }
 
-    public function actionAdminCreateItem()
+    public function actionAdminCreateItem(string $queueId)
     {
+        $this->handleRestHeaders(['POST'], true);
+
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->getError('Missing privileges');
+            return $this->returnRestResponse(403, $this->getError('Missing privileges'));
         }
 
-        $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
+        $queue = $this->getQueue(intval($queueId));
         if (!$queue) {
-            return $this->getError('Queue not found');
+            return $this->returnRestResponse(404, $this->getError('Queue not found'));
         }
 
         if (\Yii::$app->request->post('subqueue')) {
@@ -311,12 +316,12 @@ class SpeechController extends Base
             $subqueue = null;
         }
         if (count($queue->subqueues) > 0 && !$subqueue) {
-            return $this->getError('No subqueue given');
+            return $this->returnRestResponse(400, $this->getError('No subqueue given'));
         }
 
         $name = trim(\Yii::$app->request->post('name'));
         if (!$name) {
-            return $this->getError('No name entered');
+            return $this->returnRestResponse(400, $this->getError('No name entered'));
         }
 
         $item              = new SpeechQueueItem();
@@ -328,9 +333,7 @@ class SpeechController extends Base
         $item->dateApplied = date('Y-m-d H:i:s');
         $item->save();
 
-        return json_encode([
-            'success' => true,
-            'queue'   => $queue->getAdminApiObject(),
-        ]);
+        $responseJson = json_encode($queue->getAdminApiObject());
+        return $this->returnRestResponse(200, $responseJson);
     }
 }

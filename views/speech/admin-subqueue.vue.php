@@ -78,7 +78,6 @@ $html = ob_get_clean();
         },
         computed: {
             otherSubqueues: function () {
-                console.log("allSubqueues:", this.subqueue.id);
                 const mySubqueueId = this.subqueue.id;
                 return this.allSubqueues.filter(function (subqueue) {
                     return subqueue.id && subqueue.id !== mySubqueueId

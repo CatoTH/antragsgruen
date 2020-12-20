@@ -157,14 +157,16 @@ ob_start();
 <?php
 $html             = ob_get_clean();
 $setStatusUrl     = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
-$itemSetStatusUrl = UrlHelper::createUrl('speech/admin-item-setstatus');
-$createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
+$itemPerformOpUrl = UrlHelper::createUrl(['/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
+$createItemUrl    = UrlHelper::createUrl(['/speech/admin-create-item', 'queueId' => 'QUEUEID']);
 $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 ?>
 
 <script>
     const pollUrl = <?= json_encode($pollUrl) ?>;
     const setStatusUrl = <?= json_encode($setStatusUrl) ?>;
+    const createItemUrl = <?= json_encode($createItemUrl) ?>;
+    const itemPerformOperationUrl = <?= json_encode($itemPerformOpUrl) ?>;
 
     Vue.component('speech-admin-widget', {
         template: <?= json_encode($html) ?>,
@@ -241,24 +243,20 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             }
         },
         methods: {
-            _setStatus: function (id, op, additionalProps) {
+            _performOperation: function (itemId, op, additionalProps) {
                 let postData = {
-                    queue: this.queue.id,
-                    item: id,
-                    op,
                     _csrf: this.csrf,
                 };
                 if (additionalProps) {
                     postData = Object.assign(postData, additionalProps);
                 }
                 const widget = this;
-                $.post(<?= json_encode($itemSetStatusUrl) ?>, postData, function (data) {
-                    if (!data['success']) {
-                        alert(data['message']);
-                        return;
-                    }
-
-                    widget.queue = data['queue'];
+                const url = itemPerformOperationUrl
+                    .replace(/QUEUEID/, widget.queue.id)
+                    .replace(/ITEMID/, itemId)
+                    .replace(/OPERATION/, op);
+                $.post(url, postData, function (data) {
+                    widget.queue = data;
                 }).catch(function (err) {
                     alert(err.responseText);
                 });
@@ -270,25 +268,25 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             },
             startSlot: function ($event, slot) {
                 $event.preventDefault();
-                this._setStatus(slot.id, "start");
+                this._performOperation(slot.id, "start");
             },
             stopSlot: function ($event, slot) {
                 $event.preventDefault();
-                this._setStatus(slot.id, "stop");
+                this._performOperation(slot.id, "stop");
             },
             removeSlot: function ($event, slot) {
                 $event.preventDefault();
-                this._setStatus(slot.id, "unset-slot");
+                this._performOperation(slot.id, "unset-slot");
             },
             // Not used currently
             addItemToSlots: function (item) {
-                this._setStatus(item.id, "set-slot");
+                this._performOperation(item.id, "set-slot");
             },
             addItemToSlotsAndStart: function (item) {
-                this._setStatus(item.id, "set-slot-and-start");
+                this._performOperation(item.id, "set-slot-and-start");
             },
             moveItemToSubqueue: function (item, newSubqueue) {
-                this._setStatus(item.id, "move", {newSubqueueId: newSubqueue.id});
+                this._performOperation(item.id, "move", {newSubqueueId: newSubqueue.id});
             },
             setInactive: function () {
               this.queue.is_active = false;
@@ -318,18 +316,12 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             },
             addItemToSubqueue: function (subqueue, itemName) {
                 const widget = this;
-                $.post(<?= json_encode($createItemUrl) ?>, {
-                    queue: this.queue.id,
+                $.post(createItemUrl.replace(/QUEUEID/, widget.queue.id), {
                     subqueue: subqueue.id,
                     name: itemName,
                     _csrf: this.csrf,
                 }, function (data) {
-                    if (!data['success']) {
-                        alert(data['message']);
-                        return;
-                    }
-
-                    widget.queue = data['queue'];
+                    widget.queue = data;
                 }).catch(function (err) {
                     alert(err.responseText);
                 });

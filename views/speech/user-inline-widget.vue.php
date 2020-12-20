@@ -126,8 +126,8 @@ ob_start();
 <?php
 $html          = ob_get_clean();
 $pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueId' => 'QUEUEID']);
-$registerUrl   = UrlHelper::createUrl('speech/register');
-$unregisterUrl = UrlHelper::createUrl('speech/unregister');
+$registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
+$unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
 ?>
 
 <script>
@@ -166,18 +166,12 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(registerUrl, {
-                    queue: this.queue.id,
+                $.post(registerUrl.replace(/QUEUEID/, widget.queue.id), {
                     subqueue: subqueue.id,
                     username: this.registerName,
                     _csrf: this.csrf,
                 }, function (data) {
-                    if (!data['success']) {
-                        alert(data['message']);
-                        return;
-                    }
-
-                    widget.queue = data['queue'];
+                    widget.queue = data;
                     widget.showApplicationForm = false;
                 }).catch(function (err) {
                     alert(err.responseText);
@@ -195,16 +189,10 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(unregisterUrl, {
-                    queue: this.queue.id,
+                $.post(unregisterUrl.replace(/QUEUEID/, widget.queue.id), {
                     _csrf: this.csrf,
                 }, function (data) {
-                    if (!data['success']) {
-                        alert(data['message']);
-                        return;
-                    }
-
-                    widget.queue = data['queue'];
+                    widget.queue = data;
                 }).catch(function (err) {
                     alert(err.responseText);
                 });
