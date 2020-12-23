@@ -14,10 +14,16 @@ $I->seeElement('.siteCreateForm');
 $I->submitForm('.siteCreateForm', [], '');
 
 $I->wantTo('click through the wizard');
-$I->see('Was soll diskutiert werden?', '#panelPurpose');
+$I->see('Welche Bestandteile soll die Seite haben?', '#panelFunctionality');
 
-$I->click('#panelPurpose .value-manifesto');
-$I->click('#panelPurpose button.btn-next');
+$I->seeElement('.checkbox-label.value-motion.active');
+$I->dontSeeElement('.checkbox-label.value-manifesto.active');
+$I->clickJS('.checkbox-label.value-motion');
+$I->clickJS('.checkbox-label.value-manifesto');
+$I->wait(0.2);
+$I->dontSeeElement('.checkbox-label.value-motion.active');
+$I->seeElement('.checkbox-label.value-manifesto.active');
+$I->click('#panelFunctionality button.btn-next');
 
 $I->click('#panelSingleMotion .value-1');
 $I->click('#panelSingleMotion button.btn-next');

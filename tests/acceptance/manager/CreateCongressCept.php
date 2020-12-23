@@ -1,5 +1,6 @@
 <?php
 
+use app\models\forms\SiteCreateForm;
 use app\tests\_pages\ManagerStartPage;
 
 /** @var \Codeception\Scenario $scenario */
@@ -14,10 +15,14 @@ $I->seeElement('.siteCreateForm');
 $I->submitForm('.siteCreateForm', [], '');
 
 $I->wantTo('click through the wizard');
-$I->see('Was soll diskutiert werden?', '#panelPurpose');
 
-$I->click('#panelPurpose .value-motion');
-$I->click('#panelPurpose button.btn-next');
+$I->see('Welche Bestandteile soll die Seite haben?', '#panelFunctionality');
+$I->seeElement('.checkbox-label.value-motion.active');
+$I->dontSeeElement('.checkbox-label.value-agenda.active');
+$I->clickJS('.checkbox-label.value-agenda');
+$I->wait(0.2);
+$I->seeElement('.checkbox-label.value-agenda.active');
+$I->click('#panelFunctionality button.btn-next');
 
 $I->click('#panelSingleMotion .value-0');
 $I->click('#panelSingleMotion button.btn-next');
@@ -57,9 +62,6 @@ $I->click('#panelAmendScreening button.btn-next');
 
 $I->click('#panelComments .value-1');
 $I->click('#panelComments button.btn-next');
-
-$I->click('#panelAgenda .value-1');
-$I->click('#panelAgenda button.btn-next');
 
 $I->click('#panelOpenNow .value-0');
 $I->click('#panelOpenNow button.btn-next');

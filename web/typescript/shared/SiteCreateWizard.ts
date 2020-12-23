@@ -76,24 +76,24 @@ class SiteCreateWizard {
         return {
             language: this.getRadioValue('language', null),
             functionality: this.getCheckboxValues('functionality', []),
-            singleMotion: this.getRadioValue('singleMotion', 0),
-            motionsInitiatedBy: this.getRadioValue('motionWho', 1),
-            motionsDeadlineExists: this.getRadioValue('motionDeadline', 0),
+            singleMotion: parseInt(this.getRadioValue('singleMotion', 0), 10),
+            motionsInitiatedBy: parseInt(this.getRadioValue('motionWho', 1), 10),
+            motionsDeadlineExists: parseInt(this.getRadioValue('motionDeadline', 0), 10),
             motionsDeadline: this.$root.find("fieldset.motionDeadline .date input").val() as string,
-            motionScreening: this.getRadioValue('motionScreening', 1),
-            needsSupporters: this.getRadioValue('needsSupporters', 0),
+            motionScreening: parseInt(this.getRadioValue('motionScreening', 1), 10),
+            needsSupporters: parseInt(this.getRadioValue('needsSupporters', 0), 10),
             minSupporters: parseNullableNumber(this.$root.find("input.minSupporters").val() as string),
-            hasAmendments: this.getRadioValue('hasAmendments', 1),
-            amendSinglePara: this.getRadioValue('amendSinglePara', 0),
-            amendMerging: this.getRadioValue('amendMerging', 0),
-            amendmentInitiatedBy: this.getRadioValue('amendmentWho', 1),
-            amendmentDeadlineExists: this.getRadioValue('amendmentDeadline', 0),
+            hasAmendments: parseInt(this.getRadioValue('hasAmendments', 1), 10),
+            amendSinglePara: parseInt(this.getRadioValue('amendSinglePara', 0), 10),
+            amendMerging: parseInt(this.getRadioValue('amendMerging', 0), 10),
+            amendmentInitiatedBy: parseInt(this.getRadioValue('amendmentWho', 1), 10),
+            amendmentDeadlineExists: parseInt(this.getRadioValue('amendmentDeadline', 0), 10),
             amendmentDeadline: this.$root.find("fieldset.amendmentDeadline .date input").val() as string,
-            amendScreening: this.getRadioValue('amendScreening', 1),
-            hasComments: this.getRadioValue('hasComments', 1),
-            applicationType: this.getRadioValue('applicationType', 1),
-            panelSpeechQuotas: this.getRadioValue('speechQuotas', 1),
-            openNow: this.getRadioValue('openNow', 0),
+            amendScreening: parseInt(this.getRadioValue('amendScreening', 1), 10),
+            hasComments: parseInt(this.getRadioValue('hasComments', 1), 10),
+            applicationType: parseInt(this.getRadioValue('applicationType', 1), 10),
+            panelSpeechQuotas: parseInt(this.getRadioValue('speechQuotas', 1), 10),
+            openNow: parseInt(this.getRadioValue('openNow', 0), 10),
             title: $("#siteTitle").val() as string,
             organization: $("#siteOrganization").val() as string,
             subdomain: $("#siteSubdomain").val() as string,
@@ -103,7 +103,6 @@ class SiteCreateWizard {
 
     showPanel($panel: JQuery) {
         this.data = this.getWizardState();
-        console.log(this.data);
 
         let step = $panel.data("tab");
         this.$root.find(".wizard .steps li").removeClass("active");
@@ -135,23 +134,22 @@ class SiteCreateWizard {
     };
 
     private hasMotionlikeType (data: WizardState) {
-        console.log(data, data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1);
         return data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1;
     }
 
     public panelConditions = {
         panelFunctionality: () => true,
         panelSingleMotion: (data: WizardState) => this.hasMotionlikeType(data),
-        panelMotionWho: (data: WizardState) => this.hasMotionlikeType(data) && !data.singleMotion,
-        panelMotionDeadline: (data: WizardState) => this.hasMotionlikeType(data) && !data.singleMotion && data.motionsInitiatedBy != 1, // MOTION_INITIATED_ADMINS
-        panelMotionScreening: (data: WizardState) => this.hasMotionlikeType(data) && !data.singleMotion && data.motionsInitiatedBy != 1, // MOTION_INITIATED_ADMINS
-        panelNeedsSupporters: (data: WizardState) => this.hasMotionlikeType(data) && !data.singleMotion && data.motionsInitiatedBy != 1, // MOTION_INITIATED_ADMINS
+        panelMotionWho: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0,
+        panelMotionDeadline: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0 && data.motionsInitiatedBy !== 1, // MOTION_INITIATED_ADMINS
+        panelMotionScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0 && data.motionsInitiatedBy !== 1, // MOTION_INITIATED_ADMINS
+        panelNeedsSupporters: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0 && data.motionsInitiatedBy !== 1, // MOTION_INITIATED_ADMINS
         panelHasAmendments: (data: WizardState) => this.hasMotionlikeType(data),
-        panelAmendSinglePara: (data: WizardState) => this.hasMotionlikeType(data),
-        panelAmendWho: (data: WizardState) => this.hasMotionlikeType(data),
-        panelAmendDeadline: (data: WizardState) => this.hasMotionlikeType(data) && data.amendmentInitiatedBy != 1, // MOTION_INITIATED_ADMINS,
-        panelAmendMerging: (data: WizardState) => this.hasMotionlikeType(data) && data.amendmentInitiatedBy,
-        panelAmendScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.amendmentInitiatedBy,
+        panelAmendSinglePara: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1,
+        panelAmendWho: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1,
+        panelAmendDeadline: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1, // MOTION_INITIATED_ADMINS,
+        panelAmendMerging: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1,
+        panelAmendScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1,
         panelComments: (data: WizardState) => this.hasMotionlikeType(data),
         panelApplicationType: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_APPLICATIONS) !== -1,
         panelSpeechQuotas: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_SPEECH_LISTS) !== -1,
@@ -163,6 +161,7 @@ class SiteCreateWizard {
         this.data = this.getWizardState();
         const currPanel = this.$activePanel.attr("id"),
             allPanelIds = Object.keys(this.panelConditions);
+
         let foundCurr = false;
         for (let i = 0; i < allPanelIds.length; i++) {
             if (allPanelIds[i] === currPanel) {
@@ -239,8 +238,8 @@ class SiteCreateWizard {
             }
         }).trigger("change");
 
-        $form.find("fieldset.wording input").on("change", function () {
-            let wording = $form.find("fieldset.wording input:checked").data("wording-name");
+        $form.find("fieldset.functionality input").on("change", function () {
+            let wording = $form.find("fieldset.functionality input:checked").data("wording-name");
             $form.removeClass("wording_motion").removeClass("wording_manifesto").addClass("wording_" + wording);
         }).trigger("change");
 
