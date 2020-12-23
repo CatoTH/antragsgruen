@@ -108,6 +108,7 @@ class SiteCreateForm extends Model
         $this->motionScreening       = ($values['motionScreening'] == 1);
         $this->amendScreening        = ($values['amendScreening'] == 1);
         $this->amendMerging          = ($values['amendMerging'] == 1);
+        $this->applicationType       = intval($values['applicationType']);
         $this->motionsInitiatedBy    = intval($values['motionsInitiatedBy']);
         $this->amendmentsInitiatedBy = intval($values['amendInitiatedBy']);
         if ($values['motionsDeadlineExists']) {
@@ -255,12 +256,13 @@ class SiteCreateForm extends Model
 
         if (in_array(static::FUNCTIONALITY_APPLICATIONS, $this->functionality)) {
             if ($this->applicationType == 2) {
-                $type = Application::doCreateApplicationType($con);
-                Application::doCreateApplicationSections($type);
-            } else {
                 $type = PDFApplication::doCreateApplicationType($con);
                 PDFApplication::doCreateApplicationSections($type);
+            } else {
+                $type = Application::doCreateApplicationType($con);
+                Application::doCreateApplicationSections($type);
             }
+            $this->doFixApplicationMotionType($type);
         }
         if (in_array(static::FUNCTIONALITY_MANIFESTO, $this->functionality)) {
             $type = $this->doCreateManifestoType($con);
@@ -268,7 +270,6 @@ class SiteCreateForm extends Model
         }
         if (in_array(static::FUNCTIONALITY_MOTIONS, $this->functionality)) {
             $type = $this->doCreateMotionType($con);
-            $this->doFixApplicationMotionType($type);
             \app\models\motionTypeTemplates\Motion::doCreateMotionSections($type);
         }
 

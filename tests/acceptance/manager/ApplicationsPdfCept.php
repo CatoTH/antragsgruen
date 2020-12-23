@@ -17,50 +17,16 @@ $I->wantTo('click through the wizard');
 
 $I->see('Welche Bestandteile soll die Seite haben?', '#panelFunctionality');
 $I->seeElement('.checkbox-label.value-motion.active');
-$I->dontSeeElement('.checkbox-label.value-agenda.active');
-$I->clickJS('.checkbox-label.value-agenda');
+$I->dontSeeElement('.checkbox-label.value-applications.active');
+$I->clickJS('.checkbox-label.value-motion');
+$I->clickJS('.checkbox-label.value-applications');
 $I->wait(0.2);
-$I->seeElement('.checkbox-label.value-agenda.active');
+$I->dontSeeElement('.checkbox-label.value-motion.active');
+$I->seeElement('.checkbox-label.value-applications.active');
 $I->click('#panelFunctionality button.btn-next');
 
-$I->click('#panelSingleMotion .value-0');
-$I->click('#panelSingleMotion button.btn-next');
-
-$I->click('#panelMotionWho .value-3');
-$I->click('#panelMotionWho button.btn-next');
-
-$I->click('#panelMotionDeadline .value-1');
-$I->fillField('#panelMotionDeadline .value-1 .date input', '30.12.2028 20:00');
-$I->click('#panelMotionDeadline button.btn-next');
-
-$I->click('#panelMotionScreening .value-1');
-$I->click('#panelMotionScreening button.btn-next');
-
-$I->click('#panelNeedsSupporters .value-1');
-$I->fillField('#panelNeedsSupporters .value-1 .description input', 1);
-$I->click('#panelNeedsSupporters button.btn-next');
-
-$I->click('#panelHasAmendments .value-1');
-$I->click('#panelHasAmendments button.btn-next');
-
-$I->click('#panelAmendSinglePara .value-1');
-$I->click('#panelAmendSinglePara button.btn-next');
-
-$I->click('#panelAmendWho .value-3');
-$I->click('#panelAmendWho button.btn-next');
-
-$I->click('#panelAmendDeadline .value-1');
-$I->fillField('#panelAmendDeadline .value-1 .date input', '30.11.2026 20:00');
-$I->click('#panelAmendDeadline button.btn-next');
-
-$I->click('#panelAmendMerging .value-1');
-$I->click('#panelAmendMerging button.btn-next');
-
-$I->click('#panelAmendScreening .value-1');
-$I->click('#panelAmendScreening button.btn-next');
-
-$I->click('#panelComments .value-1');
-$I->click('#panelComments button.btn-next');
+$I->click('#panelApplicationType .value-2');
+$I->click('#panelApplicationType button.btn-next');
 
 $I->click('#panelOpenNow .value-0');
 $I->click('#panelOpenNow button.btn-next');
@@ -89,8 +55,10 @@ $I->submitForm('.createdForm', [], '');
 
 $I->see('Hallo auf Antragsgrün');
 $I->see('Test-Congress', 'h1');
-$I->see('Tagesordnung', '.agendaItem');
-$I->see('30.12.2028, 20:00', '.contentPageWelcome');
+
+$I->see('Bewerben', '#sidebar .createMotion');
+$I->click('#sidebar .createMotion');
+$I->seeElement('.type5');
 
 $I->logout();
 $I->dontSee('Hallo auf Antragsgrün');

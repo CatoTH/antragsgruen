@@ -3,7 +3,7 @@
 ## Version 4.7.0 [not released yet]
 
 - WARNING: if you are using a PHP 7.1 or older, then update to PHP 7.3 or newer first before installing this update!
-- The wizard for creating new sites and consultations now also offers to create PDF/Text-based applications and speking lists.
+- The wizard for creating new sites and consultations now also offers to create PDF/Text-based applications and speaking lists.
 - A new motion section type is implemented: Video Embeds. Using it, users can add links to Videos, for example to support their candidature. If it's a video hosted on Vimeo, Youtube or Facebook, it will be embedded into the application, otherwise a link is shown.
 - The pink deadline circle on the consultation is now also shown if multiple motion types with the same deadline exist.
 - First, small beginnings of a REST API are implemented, currently with read-only access. It can be enabled in the site component settings. The documentation can be found at [docs/openapi.yaml](docs/openapi.yaml)
