@@ -6,7 +6,9 @@ return [
     'speaking_list'   => 'Redeliste',
 
     'title_plain'        => 'Allgemeine Redeliste',
+    'title_plain_short'  => 'Redeliste',
     'title_to'           => 'Redeliste zu %TITLE%',
+    'title_to_short'     => '%TITLE%',
     'goto_admin'         => 'Redeliste verwalten',
     'user_section_title' => 'Redeliste',
     'current'            => 'Laufender Redebeitrag',
@@ -28,6 +30,11 @@ return [
     'applied_aria'       => 'Du hast dich für einen Platz auf der Redeliste beworben',
     'apply_revoke'       => 'Zurückziehen',
     'apply_revoke_aria'  => 'Die Bewerbung zurückziehen',
+
+    'footer_title_plain'    => 'Redeliste',
+    'footer_title_to'       => '%TITLE%',
+    'footer_current'        => 'Aktuell',
+    'footer_current_nobody' => 'Niemand',
 
     'err_permission_admin' => 'Keine Berechtigung zum Bearbeiten der Redeliste',
     'err_permission_apply' => 'Die Redeliste ist geschlossen',

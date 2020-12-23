@@ -126,7 +126,8 @@ if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
 
 $hasPp          = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox  = ($hasPp && !$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS));
-$hasSpeechLists = $consultation->getSettings()->hasSpeechLists;
+//$hasSpeechLists = $consultation->getSettings()->hasSpeechLists;
+$hasSpeechLists = false;
 if ($hasPpAdminbox || $hasSpeechLists) {
     echo '<div class="proposedChangesOpener">';
     if ($hasPpAdminbox) {

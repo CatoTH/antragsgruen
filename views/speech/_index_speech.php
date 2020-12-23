@@ -15,7 +15,7 @@ if (!$queue) {
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$cosultation = $controller->consultation;
+$consultation = $controller->consultation;
 $layout = $controller->layoutParams;
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
@@ -58,7 +58,7 @@ if ($user) {
     <div class="content">
         <?php
         $user = User::getCurrentUser();
-        if ($user && $user->hasPrivilege($cosultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+        if ($user && $user->hasPrivilege($consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
             $url = UrlHelper::createUrl(['consultation/admin-speech']);
             echo '<a href="' . Html::encode($url) . '" class="speechAdminLink">';
             echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';

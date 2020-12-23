@@ -1,22 +1,28 @@
 <?php
 
 use app\components\UrlHelper;
+use yii\helpers\Html;
 
 ob_start();
 ?>
 
 <article class="speechUser">
-    <header class="widgetTitle">{{ title }}</header>
+    <header class="widgetTitle">
+        {{ title }}
+        <a v-if="adminUrl" :href="adminUrl" class="speechAdminLink">
+            <span class="glyphicon glyphicon-wrench" title="<?= Html::encode(Yii::t('speech', 'goto_admin')) ?>" aria-label="<?= Html::encode(Yii::t('speech', 'goto_admin')) ?>"></span>
+        </a>
+    </header>
 
     <div class="activeSpeaker">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-        <span class="title"><?= Yii::t('speech', 'current') ?>:</span>
+        <span class="title"><?= Yii::t('speech', 'footer_current') ?>:</span>
         <span class="name" v-if="activeSpeaker">
             {{ activeSpeaker.name }}
             <span class="label label-success" v-if="isMe(activeSpeaker)"><?= Yii::t('speech', 'you') ?></span>
         </span>
         <span class="nobody" v-if="!activeSpeaker">
-            <?= Yii::t('speech', 'current_nobody') ?>
+            <?= Yii::t('speech', 'footer_current_nobody') ?>
         </span>
     </div>
     <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
@@ -67,18 +73,15 @@ ob_start();
     </section>
 
     <section class="waiting waitingMultiple" v-if="queue.subqueues.length > 1" aria-label="<?= Yii::t('speech', 'waiting_aria_x') ?>">
-        <header>
-            <span class="glyphicon glyphicon-time"></span>
-            <?= Yii::t('speech', 'waiting_list_x') ?>
-        </header>
         <div v-for="subqueue in queue.subqueues" class="subqueue">
-            <div class="name">
+            <div class="name" v-if="showApplicationForm !== subqueue.id">
+                <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'waiting_list') ?>"></span>
                 {{ subqueue.name }}
             </div>
 
-            <div class="number" :aria-label="numAppliedTitle(subqueue)" :title="numAppliedTitle(subqueue)">{{ subqueue.num_applied }}</div>
+            <div class="number" v-if="showApplicationForm !== subqueue.id" :aria-label="numAppliedTitle(subqueue)" :title="numAppliedTitle(subqueue)">{{ subqueue.num_applied }}</div>
 
-            <div v-if="subqueue.have_applied" class="appliedMe">
+            <div v-if="subqueue.have_applied && showApplicationForm !== subqueue.id" class="appliedMe">
                 <span class="label label-success" aria-label="<?= Yii::t('speech', 'applied_aria') ?>"><?= Yii::t('speech', 'applied') ?></span>
                 <button type="button" class="btn btn-link btnWithdraw" @click="removeMeFromQueue($event)"
                         title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
@@ -110,8 +113,8 @@ ob_start();
 <?php
 $html          = ob_get_clean();
 $pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueId' => 'QUEUEID']);
-$registerUrl   = UrlHelper::createUrl('speech/register');
-$unregisterUrl = UrlHelper::createUrl('speech/unregister');
+$registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
+$unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
 ?>
 
 <script>
@@ -121,7 +124,7 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
 
     Vue.component('speech-user-footer-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf', 'user', 'title'],
+        props: ['queue', 'csrf', 'user', 'title', 'adminUrl'],
         data() {
             return {
                 registerName: this.user.name,
@@ -159,18 +162,12 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(registerUrl, {
-                    queue: this.queue.id,
+                $.post(registerUrl.replace(/QUEUEID/, widget.queue.id), {
                     subqueue: subqueue.id,
                     username: this.registerName,
                     _csrf: this.csrf,
                 }, function (data) {
-                    if (!data['success']) {
-                        alert(data['message']);
-                        return;
-                    }
-
-                    widget.queue = data['queue'];
+                    widget.queue = data;
                     widget.showApplicationForm = false;
                 }).catch(function (err) {
                     alert(err.responseText);
@@ -188,16 +185,10 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(unregisterUrl, {
-                    queue: this.queue.id,
+                $.post(unregisterUrl.replace(/QUEUEID/, widget.queue.id), {
                     _csrf: this.csrf,
                 }, function (data) {
-                    if (!data['success']) {
-                        alert(data['message']);
-                        return;
-                    }
-
-                    widget.queue = data['queue'];
+                    widget.queue = data;
                 }).catch(function (err) {
                     alert(err.responseText);
                 });

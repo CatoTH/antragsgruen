@@ -29,6 +29,11 @@ return [
     'apply_revoke'       => 'Withdraw',
     'apply_revoke_aria'  => 'Withdraw the application',
 
+    'footer_title_plain'    => 'Speaking list',
+    'footer_title_to'       => '%TITLE%',
+    'footer_current'        => 'Currenty',
+    'footer_current_nobody' => 'Nobody',
+
     'err_permission_admin' => 'No permision to edit this speaking list',
     'err_permission_apply' => 'The speaking list is closed',
 

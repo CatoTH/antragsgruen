@@ -1194,13 +1194,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function getActiveSpeechQueue(): ?SpeechQueue
     {
-        foreach ($this->speechQueues as $queue) {
-            if ($queue->isActive) {
-                return $queue;
-            }
-        }
-
-        return null;
+        return $this->getMyConsultation()->getActiveSpeechQueue();
     }
 
     public function getUserdataExportObject(): array

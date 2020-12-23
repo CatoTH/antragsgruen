@@ -508,6 +508,10 @@
     margin: 0;
     padding: 5px 10px;
     background-color: #eee;
+
+    .speechAdminLink {
+      float: right;
+    }
   }
 
   .activeSpeaker {
@@ -553,11 +557,6 @@
       display: inline-block;
       vertical-align: middle;
     }
-
-    .appliedMe {
-      display: inline-block;
-      vertical-align: middle;
-    }
   }
 
   .subqueue {
@@ -597,13 +596,18 @@
       margin-right: 10px;
     }
 
-    .appliedMe {
-      display: inline-block;
-    }
-
     form {
-      margin-left: 10px;
       max-width: 200px;
+    }
+  }
+
+  .appliedMe {
+    display: inline-block;
+    vertical-align: middle;
+    .btnWithdraw {
+      font-weight: normal;
+      padding: 0 5px;
+      font-size: 75%; // Same as the .label next to it
     }
   }
 }

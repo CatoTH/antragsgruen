@@ -12,6 +12,7 @@ export class CurrentSpeechList {
             user: $element.data('user'),
             csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
             title: $element.data('title'),
+            adminUrl: $element.data('admin-url'),
         };
         if ($element.hasClass('currentSpeechInline')) {
             this.widget = new Vue({
@@ -24,7 +25,7 @@ export class CurrentSpeechList {
             this.widget = new Vue({
                 el: $vueEl[0],
                 template: `
-                    <speech-user-footer-widget :queue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-footer-widget>`,
+                    <speech-user-footer-widget :queue="queue" :user="user" :csrf="csrf" :title="title" :adminUrl="adminUrl"></speech-user-footer-widget>`,
                 data
             });
         }
