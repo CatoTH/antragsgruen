@@ -93,13 +93,13 @@ class IndexController extends AdminBase
 
     public function actionAppearance(): string
     {
-        $model = $this->consultation;
+        $consultation = $this->consultation;
 
         if ($this->isPostSet('save')) {
             $post = \Yii::$app->request->post();
 
             $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
-            $settings      = $model->getSettings();
+            $settings      = $consultation->getSettings();
 
             if (isset($settingsInput['translationService']) && isset($post['translationSpecificService'])) {
                 if (in_array($post['translationSpecificService'], ['google', 'bing'])) {
@@ -128,10 +128,6 @@ class IndexController extends AdminBase
                 foreach ($this->consultation->speechQueues as $speechQueue) {
                     $speechQueue->setSubqueueConfiguration($subqueues);
                 }
-                if (count($this->consultation->speechQueues) === 0 && isset($post['speechActivateFirstList'])) {
-                    $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation, true);
-                    $unassignedQueue->save();
-                }
 
                 $settings->speechListSubqueues = $subqueues;
             }
@@ -149,21 +145,29 @@ class IndexController extends AdminBase
                     \yii::$app->session->setFlash('error', $e->getMessage());
                 }
             }
-            $model->setSettings($settings);
+            $consultation->setSettings($settings);
 
-            if ($model->save()) {
+            if ($consultation->save()) {
+                if (isset($settingsInput['hasSpeechLists']) && $settingsInput['hasSpeechLists']) {
+                    // Creating speech subquees needs to be done after $consultation->setSettings, so that the subqueue configuration is already set
+                    if (count($this->consultation->speechQueues) === 0 && isset($post['speechActivateFirstList'])) {
+                        $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation, true);
+                        $unassignedQueue->save();
+                    }
+                }
+                
                 $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
-                $siteSettings  = $model->site->getSettings();
+                $siteSettings  = $consultation->site->getSettings();
                 $siteSettings->saveForm($settingsInput, $post['siteSettingsFields']);
-                $model->site->setSettings($siteSettings);
-                $model->site->save();
+                $consultation->site->setSettings($siteSettings);
+                $consultation->site->save();
 
                 $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
                 $this->layoutParams->setLayout($siteSettings->siteLayout);
 
                 \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
             } else {
-                \yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($model->getErrors()));
+                \yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($consultation->getErrors()));
             }
         }
 
