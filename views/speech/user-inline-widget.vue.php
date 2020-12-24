@@ -37,9 +37,12 @@ ob_start();
             <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
             <?= Yii::t('speech', 'waiting_list') ?>:
 
-            <span class="number">
+            <span class="number" title="<?= Yii::t('speech', 'persons_waiting') ?>">
                 {{ queue.subqueues[0].num_applied }}
             </span>
+            <ol class="nameList" v-if="queue.subqueues[0].applied && queue.subqueues[0].applied.length > 0" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                <li v-for="applied in queue.subqueues[0].applied">{{ applied.name }}</li>
+            </ol>
 
             <div v-if="queue.subqueues[0].have_applied" class="appliedMe">
                 <span class="label label-success"><?= Yii::t('speech', 'applied') ?></span>
@@ -84,9 +87,20 @@ ob_start();
                     {{ subqueue.name }}:
                 </div>
                 <div class="applied">
-                    <span class="number">
+                    <button class="btn btn-default btn-xs" type="button"
+                            v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id"
+                            @click="onShowApplicationForm($event, subqueue)"
+                    >
+                        <?= Yii::t('speech', 'apply') ?>
+                    </button>
+
+                    <span class="number" v-if="showApplicationForm !== subqueue.id" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                        <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'persons_waiting') ?>"></span>
                         {{ subqueue.num_applied }}
                     </span>
+                    <ol class="nameList" v-if="subqueue.applied && subqueue.applied.length > 0 && showApplicationForm !== subqueue.id" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                        <li v-for="applied in subqueue.applied">{{ applied.name }}</li>
+                    </ol>
 
                     <div v-if="subqueue.have_applied" class="appliedMe">
                         <span class="label label-success"><?= Yii::t('speech', 'applied') ?></span>
@@ -97,12 +111,6 @@ ob_start();
                         </button>
                     </div>
 
-                    <button class="btn btn-default btn-xs" type="button"
-                            v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id"
-                            @click="onShowApplicationForm($event, subqueue)"
-                    >
-                        <?= Yii::t('speech', 'apply') ?>
-                    </button>
                     <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">
                         <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                         <div class="input-group">

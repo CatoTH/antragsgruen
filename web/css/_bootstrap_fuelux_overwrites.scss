@@ -266,4 +266,12 @@ legend, .legend {
       padding: 0 0 0 30px;
     }
   }
+  li.link {
+    span.icon {
+      margin-left: -10px;
+    }
+    a {
+      color: $link-color;
+    }
+  }
 }

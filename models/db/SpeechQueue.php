@@ -323,12 +323,17 @@ class SpeechQueue extends ActiveRecord
 
     private function getUserApiSubqueue(?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser): array
     {
+        $showNames = $this->getSettings()->showNames;
+
         $obj = [
             'id'           => ($subqueue ? $subqueue->id : null),
             'name'         => ($subqueue ? $subqueue->name : 'default'),
             'num_applied'  => 0,
             'have_applied' => false, // true if a user (matching userID or userToken) is on the list, but has not spoken yet (including assigned places)
         ];
+        if ($showNames) {
+            $obj['applied'] = [];
+        }
 
         foreach ($this->items as $item) {
             if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
@@ -339,6 +344,14 @@ class SpeechQueue extends ActiveRecord
             }
             if ($item->position === null) {
                 $obj['num_applied']++;
+                if ($showNames) {
+                    $obj['applied'][] = [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                        'user_id' => $item->userId,
+                        'applied_at' => $item->getDateApplied()->format('c'),
+                    ];
+                }
             }
         }
 

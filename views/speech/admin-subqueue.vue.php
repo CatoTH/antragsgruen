@@ -5,8 +5,8 @@ ob_start();
 <section class="subqueue" aria-label="<?= Yii::t('speech', 'waiting_list') ?> {{ subqueue.name }}"
     :class="{ positionLeft: (position === 'left'), positionRight: (position === 'right') }"
 >
-    <header v-if="subqueue.name !== 'default'">{{ subqueue.name }} {{ position }}</header>
-    <header v-if="subqueue.name === 'default'"><?= Yii::t('speech', 'waiting_list') ?> {{ position }}</header>
+    <header v-if="subqueue.name !== 'default'">{{ subqueue.name }}</header>
+    <header v-if="subqueue.name === 'default'"><?= Yii::t('speech', 'waiting_list') ?></header>
 
     <ul class="subqueueItems">
         <li v-for="item in subqueue.applied" class="subqueueItem" tabindex="0"

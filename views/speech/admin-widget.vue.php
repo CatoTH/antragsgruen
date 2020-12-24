@@ -1,8 +1,10 @@
 <?php
 
 use app\components\UrlHelper;
+use yii\helpers\Html;
 
 ob_start();
+$componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpeechLists';
 ?>
 
 <article class="speechAdmin">
@@ -20,7 +22,7 @@ ob_start();
             <button class="btn btn-xs btn-default" type="button" @click="setActive()">
                 <?= Yii::t('speech', 'admin_activate') ?>
             </button>
-            <span v-if="queue.otherActiveName" class="deactivateOthers">(<?= Yii::t('speech', 'admin_deactivate_other') ?>)</span>
+            <span v-if="queue.other_active_name" class="deactivateOthers">(<?= Yii::t('speech', 'admin_deactivate_other') ?>)</span>
         </div>
         <label class="settingsOpen" v-if="queue.is_active">
             <input type="checkbox" v-model="queue.settings.is_open" @change="settingsChanged()">
@@ -38,6 +40,12 @@ ob_start();
                             <input type="checkbox" class="preferNonspeaker" v-model="queue.settings.prefer_nonspeaker" @change="settingsChanged()">
                             <?= Yii::t('speech', 'admin_prefer_nonspeak') ?>
                         </label>
+                    </li>
+                    <li class="link">
+                        <a href="<?= Html::encode($componentAdminLink) ?>">
+                            <span class="icon glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <?= Yii::t('speech', 'admin_goto_components') ?>
+                        </a>
                     </li>
                 </ul>
             </div>
