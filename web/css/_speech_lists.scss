@@ -141,13 +141,33 @@
 
     .start, .stop {
       position: absolute;
-      bottom: 5px;
+      top: 23px;
       right: 5px;
     }
 
     &.slotActive {
       background-color: #afa;
       box-shadow: 0 3px 3px rgba(0,0,0,0.25);
+    }
+
+    .operations {
+      left: 0;
+      border-right: solid 1px $borderInactive;
+      border-top: solid 1px $borderInactive;
+      border-top-right-radius: 3px;
+    }
+  }
+
+  .operationsIndicator {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    border-top: solid 1px #bdbdbd;
+    padding: 0 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+
+    &.operationStart {
+      color: green;
     }
   }
 
@@ -181,6 +201,17 @@
         z-index: 1;
         border-radius: 3px;
         box-shadow: 0 0 4px rgba(0,0,0,0.25);
+      }
+    }
+
+    .operationsIndicator {
+        right: 0;
+        border-left: solid 1px #bdbdbd;
+        border-top-left-radius: 3px;
+    }
+    &:hover, &:focus {
+      .operationsIndicator {
+        display: block;
       }
     }
   }
@@ -259,17 +290,29 @@
     margin: 10px 0;
     border: solid 1px $borderInactive;
     border-radius: 3px;
-    background-color: $backgroundInactive;
     min-height: 60px;
-    padding: 10px;
-    cursor: pointer;
     position: relative;
 
-    @include outlineOnFocusHasBorder();
+    .starter {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      padding: 10px;
+      cursor: pointer;
+      background-color: $backgroundInactive;
 
-    &:hover, &:focus {
-      background-color: darken($backgroundInactive, 5%);
-      box-shadow: 0 0 4px rgba(0,0,0,0.25);
+      @include outlineOnFocusHasBorder();
+
+      &:hover, &:focus {
+        background-color: darken($backgroundInactive, 5%);
+        box-shadow: 0 0 4px rgba(0,0,0,0.25);
+
+        .operationsIndicator {
+          display: block;
+        }
+      }
     }
   }
 
@@ -284,7 +327,7 @@
       @include outlineOnFocusHasBorder();
 
       &:hover, &:focus {
-        background-color: transparent;
+        background-color: darken($backgroundInactive, 5%);
       }
     }
 
@@ -302,6 +345,18 @@
     left: 0;
     border-right: solid 1px $borderInactive;
     border-top: solid 1px $borderInactive;
+    border-top-right-radius: 3px;
+  }
+
+  .subqueue.positionRight .operationsIndicator {
+    right: 0;
+    border-left: solid 1px #bdbdbd;
+    border-top-left-radius: 3px;
+  }
+
+  .subqueue.positionLeft .operationsIndicator {
+    left: 0;
+    border-right: solid 1px #bdbdbd;
     border-top-right-radius: 3px;
   }
 

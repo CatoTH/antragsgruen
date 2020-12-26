@@ -142,6 +142,11 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                 <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
                 <div class="title"><?= Yii::t('speech', 'admin_next') ?>:</div>
                 <div class="name">{{ slotProposal.name }}</div>
+
+                <div class="operationsIndicator operationStart">
+                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                    <span><?= Yii::t('speech', 'admin_start') ?></span>
+                </div>
             </li>
             <li class="slotPlaceholder inactive" v-if="!slotProposal">
                 <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>

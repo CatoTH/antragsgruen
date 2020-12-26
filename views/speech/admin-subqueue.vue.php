@@ -9,12 +9,18 @@ ob_start();
     <header v-if="subqueue.name === 'default'"><?= Yii::t('speech', 'waiting_list') ?></header>
 
     <ul class="subqueueItems">
-        <li v-for="item in subqueue.applied" class="subqueueItem" tabindex="0"
-            v-on:click="onItemSelected($event, item)"
-            v-on:keyup.enter="onItemSelected($event, item)"
-            title="<?= Yii::t('speech', 'admin_subq_start') ?>" aria-label="<?= Yii::t('speech', 'admin_subq_start') ?>"
-        >
-            {{ item.name }}
+        <li v-for="item in subqueue.applied" class="subqueueItem">
+            <div class="starter" tabindex="0"
+                v-on:click="onItemSelected($event, item)"
+                v-on:keyup.enter="onItemSelected($event, item)"
+                title="<?= Yii::t('speech', 'admin_subq_start') ?>" aria-label="<?= Yii::t('speech', 'admin_subq_start') ?>">
+                {{ item.name }}
+
+                <div class="operationsIndicator operationStart">
+                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                    <span><?= Yii::t('speech', 'admin_start') ?></span>
+                </div>
+            </div>
 
             <div class="operations" v-if="otherSubqueues.length > 0">
                 <button class="link moveSubqueue" type="button" v-if="otherSubqueues.length === 1" ref="otherQueue"
