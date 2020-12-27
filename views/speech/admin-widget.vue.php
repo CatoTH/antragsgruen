@@ -7,7 +7,7 @@ ob_start();
 $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpeechLists';
 ?>
 
-<article class="speechAdmin">
+<article class="speechAdmin" :class="{dragging: dragging}">
     <div class="toolbarBelowTitle settings">
         <div class="settingsActive" v-if="queue.is_active">
             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -137,8 +137,8 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
             </li>
 
             <li class="slotPlaceholder active" tabindex="0" v-if="slotProposal"
-                @click="addItemToSlotsAndStart(slotProposal)"
-                @keyup.enter="addItemToSlotsAndStart(slotProposal)">
+                @click="addItemToSlotsAndStart(slotProposal.id)"
+                @keyup.enter="addItemToSlotsAndStart(slotProposal.id)">
                 <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
                 <div class="title"><?= Yii::t('speech', 'admin_next') ?>:</div>
                 <div class="name">{{ slotProposal.name }}</div>
@@ -163,6 +163,9 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                                    @add-item-to-slots-and-start="addItemToSlotsAndStart"
                                    @add-item-to-subqueue="addItemToSubqueue"
                                    @move-item-to-subqueue="moveItemToSubqueue"
+                                   @item-drag-start="itemDragStart"
+                                   @item-drag-end="itemDragEnd"
+                                   ref="subqueueWidgets"
             ></speech-admin-subqueue>
         </div>
     </main>
@@ -198,7 +201,8 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
         data() {
             return {
                 showPreviousList: false,
-                pollingId: null
+                pollingId: null,
+                dragging: false
             };
         },
         computed: {
@@ -306,11 +310,24 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             addItemToSlots: function (item) {
                 this._performOperation(item.id, "set-slot");
             },
-            addItemToSlotsAndStart: function (item) {
-                this._performOperation(item.id, "set-slot-and-start");
+            addItemToSlotsAndStart: function (itemId) {
+                this._performOperation(itemId, "set-slot-and-start");
             },
-            moveItemToSubqueue: function (item, newSubqueue) {
-                this._performOperation(item.id, "move", {newSubqueueId: newSubqueue.id});
+            moveItemToSubqueue: function (itemId, newSubqueueId, position) {
+                this._performOperation(itemId, "move", {newSubqueueId, position});
+                this.itemDragEnd();
+            },
+            itemDragStart: function (itemId) {
+                this.dragging = true;
+                this.$refs.subqueueWidgets.forEach(subqueue => {
+                    subqueue.onWidgetDragStart.bind(subqueue)(itemId);
+                });
+            },
+            itemDragEnd: function () {
+                this.dragging = false;
+                this.$refs.subqueueWidgets.forEach(subqueue => {
+                    subqueue.onWidgetDragEnd.bind(subqueue)();
+                });
             },
             setInactive: function () {
               this.queue.is_active = false;

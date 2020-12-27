@@ -165,6 +165,7 @@
     border-top: solid 1px #bdbdbd;
     padding: 0 5px;
     background-color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
 
     &.operationStart {
       color: green;
@@ -269,14 +270,14 @@
     }
 
     .empty {
+      margin: 5px 0 25px 0;
       font-style: italic;
+      text-align: center;
     }
 
     .subqueueAdder {
       margin-top: 10px;
-      .adderOpener {
-        margin-left: 20px;
-      }
+      text-align: center;
     }
   }
 
@@ -287,7 +288,7 @@
   }
 
   .subqueueItem {
-    margin: 10px 0;
+    margin: 0;
     border: solid 1px $borderInactive;
     border-radius: 3px;
     min-height: 60px;
@@ -362,6 +363,46 @@
 
   .queueResetSection {
     text-align: right;
+  }
+
+  .dropPlaceholder {
+    margin: 3px 0;
+    border: dotted 1px transparent;
+    border-radius: 3px;
+    position: relative;
+
+    .dropAdditionalSpace {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -20px;
+      bottom: -20px;
+      z-index: 100;
+      display: none;
+    }
+
+    .hoveredIndicator {
+      visibility: hidden;
+      text-align: center;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: bold;
+    }
+
+    &.hoverable.hovered {
+      background-color: darken($backgroundInactive, 5%);
+      .hoveredIndicator {
+        visibility: visible;
+      }
+    }
+  }
+  &.dragging {
+    .dropPlaceholder.hoverable {
+      border: dotted 1px $borderInactive;
+      .dropAdditionalSpace {
+        display: block;
+      }
+    }
   }
 }
 
