@@ -317,7 +317,6 @@ class SiteCreateWizard {
         $(window).on("hashchange", (ev) => {
             ev.preventDefault();
             let hash;
-            console.log(window.location.hash, this.firstPanel);
             if (window.location.hash === '' || parseInt(window.location.hash.substring(1)) === 0) {
                 hash = this.firstPanel;
             } else {

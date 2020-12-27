@@ -14,7 +14,7 @@ ob_start();
                 <div class="dropAdditionalSpace"
                      @dragenter="onPlaceholderDragEnter($event, index)" @dragleave="onPlaceholderDragLeave($event, index)"
                      @drop="onPlaceholderDrop($event, index)" @dragover.prevent></div>
-                <div class="hoveredIndicator">Hierher verschieben</div>
+                <div class="hoveredIndicator"><?= Yii::t('speech', 'admin_move_here') ?></div>
             </li>
             <li class="subqueueItem" draggable="true" @dragstart="onItemDragStart($event, item)" @dragend="onItemDragEnd($event, item)">
                 <div class="starter" tabindex="0"
@@ -62,7 +62,7 @@ ob_start();
                  @dragenter="onPlaceholderDragEnter($event, subqueue.applied.length)" @dragleave="onPlaceholderDragLeave($event, subqueue.applied.length)"
                  @drop="onPlaceholderDrop($event, subqueue.applied.length)" @dragover.prevent
             ></div>
-            <div class="hoveredIndicator">Hierher verschieben</div>
+            <div class="hoveredIndicator"><?= Yii::t('speech', 'admin_move_here') ?></div>
         </li>
     </ul>
 
