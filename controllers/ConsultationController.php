@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\components\{DateTools, RSSExporter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentComment, IComment, IRSSItem, Motion, Consultation, MotionComment, User, UserNotification};
+use app\models\db\{Amendment, AmendmentComment, IComment, IRSSItem, Motion, Consultation, MotionComment, SpeechQueue, User, UserNotification};
 use app\models\exceptions\Internal;
 use app\models\forms\ConsultationActivityFilterForm;
 use app\models\proposedProcedure\Factory;
@@ -323,7 +323,6 @@ class ConsultationController extends Base
                 'myself'       => $myself,
                 'myMotions'    => $myMotions,
                 'myAmendments' => $myAmendments,
-                'admin'        => User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
             ]
         );
     }
@@ -365,7 +364,7 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedureRest()
     {
-        $this->handleRestHeaders();
+        $this->handleRestHeaders(['GET']);
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         $proposalFactory = new Factory($this->consultation, false);
@@ -413,7 +412,7 @@ class ConsultationController extends Base
      */
     public function actionRest()
     {
-        $this->handleRestHeaders();
+        $this->handleRestHeaders(['GET']);
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
@@ -425,7 +424,7 @@ class ConsultationController extends Base
      */
     public function actionRestSite()
     {
-        $this->handleRestHeaders();
+        $this->handleRestHeaders(['GET']);
 
         return $this->returnRestResponse(200, $this->renderPartial('rest_site_get', ['site' => $this->site]));
     }
@@ -455,5 +454,30 @@ class ConsultationController extends Base
             default:
                 return json_encode(['success' => false, 'error' => 'No operation given']);
         }
+    }
+
+    public function actionAdminSpeech(): string
+    {
+        $this->layout = 'column2';
+
+        $user = User::getCurrentUser();
+        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        $unassignedQueue = null;
+        foreach ($this->consultation->speechQueues as $queue) {
+            if ($unassignedQueue === null && $queue->motionId === null && $queue->agendaItemId === null) {
+                $unassignedQueue = $queue;
+            }
+        }
+        if ($unassignedQueue === null) {
+            $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation, false);
+            $unassignedQueue->save();
+        }
+
+        return $this->render('@app/views/speech/admin-singlepage', ['queue' => $unassignedQueue]);
     }
 }

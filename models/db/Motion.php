@@ -50,6 +50,7 @@ use yii\helpers\Html;
  * @property Motion[] $replacedByMotions
  * @property VotingBlock $votingBlock
  * @property User $responsibilityUser
+ * @property SpeechQueue[] $speechQueues
  */
 class Motion extends IMotion implements IRSSItem
 {
@@ -275,6 +276,14 @@ class Motion extends IMotion implements IRSSItem
     public function getReplacedByMotions()
     {
         return $this->hasMany(Motion::class, ['parentMotionId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSpeechQueues()
+    {
+        return $this->hasMany(SpeechQueue::class, ['motionId' => 'id']);
     }
 
     /**
@@ -1181,6 +1190,11 @@ class Motion extends IMotion implements IRSSItem
         } else {
             return 0;
         }
+    }
+
+    public function getActiveSpeechQueue(): ?SpeechQueue
+    {
+        return $this->getMyConsultation()->getActiveSpeechQueue();
     }
 
     public function getUserdataExportObject(): array

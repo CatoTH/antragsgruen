@@ -1,5 +1,6 @@
 <?php
 return [
+    'edit_welcome'         => 'Edit introduction',
     'start_motion'         => 'Create new document',
     'new_motions'          => 'New motions',
     'new_amendments'       => 'New amendments',

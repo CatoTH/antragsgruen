@@ -3,20 +3,18 @@
 namespace app\models\motionTypeTemplates;
 
 use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection};
-use app\models\settings\{InitiatorForm, MotionType};
+use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType};
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
 
 trait Manifesto
 {
-    /**
-     * @param Consultation $consultation
-     * @return ConsultationMotionType
-     * @throws \Exception
-     */
-    public static function doCreateManifestoType(Consultation $consultation)
+    public static function doCreateManifestoType(Consultation $consultation): ConsultationMotionType
     {
+        /** @var AntragsgruenApp $config */
+        $config = \Yii::$app->params;
+
         $type                               = new ConsultationMotionType();
         $type->consultationId               = $consultation->id;
         $type->titleSingular                = \Yii::t('structure', 'preset_manifesto_singular');
@@ -29,7 +27,7 @@ trait Manifesto
         $type->policySupportMotions         = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments      = IPolicy::POLICY_NOBODY;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
-        $type->texTemplateId                = 1;
+        $type->texTemplateId                = ($config->xelatexPath || $config->lualatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs  = 1;
         $type->motionLikesDislikes          = 0;
         $type->amendmentLikesDislikes       = 0;
@@ -53,10 +51,7 @@ trait Manifesto
         return $type;
     }
 
-    /**
-     * @param ConsultationMotionType $motionType
-     */
-    public static function doCreateManifestoSections(ConsultationMotionType $motionType)
+    public static function doCreateManifestoSections(ConsultationMotionType $motionType): void
     {
         $section                = new ConsultationSettingsMotionSection();
         $section->motionTypeId  = $motionType->id;

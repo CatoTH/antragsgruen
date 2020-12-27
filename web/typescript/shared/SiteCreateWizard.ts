@@ -1,6 +1,6 @@
 interface WizardState {
     language: string;
-    wording: number;
+    functionality: number[];
     singleMotion: number;
     motionsInitiatedBy: number;
     motionsDeadlineExists: number;
@@ -16,13 +16,21 @@ interface WizardState {
     amendmentDeadline: string;
     amendScreening: number;
     hasComments: number;
-    hasAgenda: number;
+    applicationType: number;
+    panelSpeechQuotas: number;
     openNow: number;
     title: string;
     organization: string;
     subdomain: string;
     contact: string;
 }
+
+// Sync with SiteCreateForm.php
+const FUNCTIONALITY_MOTIONS = 1;
+const FUNCTIONALITY_MANIFESTO = 2;
+const FUNCTIONALITY_APPLICATIONS = 3;
+const FUNCTIONALITY_AGENDA = 4;
+const FUNCTIONALITY_SPEECH_LISTS = 5;
 
 class SiteCreateWizard {
     private firstPanel: string;
@@ -43,7 +51,18 @@ class SiteCreateWizard {
         } else {
             return defaultVal;
         }
-    };
+    }
+
+    getCheckboxValues(fieldsetClass: string, defaultVals: any): any {
+        let inputs = this.$root.find("fieldset." + fieldsetClass).find("input:checked").toArray();
+        if (inputs.length > 0) {
+            return inputs.map((element: HTMLElement) => {
+                return parseInt(element.getAttribute('value'), 10);
+            });
+        } else {
+            return defaultVals;
+        }
+    }
 
     getWizardState(): WizardState {
         const parseNullableNumber = (val: string): number => {
@@ -56,24 +75,25 @@ class SiteCreateWizard {
 
         return {
             language: this.getRadioValue('language', null),
-            wording: this.getRadioValue('wording', 1),
-            singleMotion: this.getRadioValue('singleMotion', 0),
-            motionsInitiatedBy: this.getRadioValue('motionWho', 1),
-            motionsDeadlineExists: this.getRadioValue('motionDeadline', 0),
+            functionality: this.getCheckboxValues('functionality', []),
+            singleMotion: parseInt(this.getRadioValue('singleMotion', 0), 10),
+            motionsInitiatedBy: parseInt(this.getRadioValue('motionWho', 1), 10),
+            motionsDeadlineExists: parseInt(this.getRadioValue('motionDeadline', 0), 10),
             motionsDeadline: this.$root.find("fieldset.motionDeadline .date input").val() as string,
-            motionScreening: this.getRadioValue('motionScreening', 1),
-            needsSupporters: this.getRadioValue('needsSupporters', 0),
+            motionScreening: parseInt(this.getRadioValue('motionScreening', 1), 10),
+            needsSupporters: parseInt(this.getRadioValue('needsSupporters', 0), 10),
             minSupporters: parseNullableNumber(this.$root.find("input.minSupporters").val() as string),
-            hasAmendments: this.getRadioValue('hasAmendments', 1),
-            amendSinglePara: this.getRadioValue('amendSinglePara', 0),
-            amendMerging: this.getRadioValue('amendMerging', 0),
-            amendmentInitiatedBy: this.getRadioValue('amendmentWho', 1),
-            amendmentDeadlineExists: this.getRadioValue('amendmentDeadline', 0),
+            hasAmendments: parseInt(this.getRadioValue('hasAmendments', 1), 10),
+            amendSinglePara: parseInt(this.getRadioValue('amendSinglePara', 0), 10),
+            amendMerging: parseInt(this.getRadioValue('amendMerging', 0), 10),
+            amendmentInitiatedBy: parseInt(this.getRadioValue('amendmentWho', 1), 10),
+            amendmentDeadlineExists: parseInt(this.getRadioValue('amendmentDeadline', 0), 10),
             amendmentDeadline: this.$root.find("fieldset.amendmentDeadline .date input").val() as string,
-            amendScreening: this.getRadioValue('amendScreening', 1),
-            hasComments: this.getRadioValue('hasComments', 1),
-            hasAgenda: this.getRadioValue('hasAgenda', 0),
-            openNow: this.getRadioValue('openNow', 0),
+            amendScreening: parseInt(this.getRadioValue('amendScreening', 1), 10),
+            hasComments: parseInt(this.getRadioValue('hasComments', 1), 10),
+            applicationType: parseInt(this.getRadioValue('applicationType', 1), 10),
+            panelSpeechQuotas: parseInt(this.getRadioValue('speechQuotas', 1), 10),
+            openNow: parseInt(this.getRadioValue('openNow', 0), 10),
             title: $("#siteTitle").val() as string,
             organization: $("#siteOrganization").val() as string,
             subdomain: $("#siteSubdomain").val() as string,
@@ -113,63 +133,48 @@ class SiteCreateWizard {
         }
     };
 
+    private hasMotionlikeType (data: WizardState) {
+        return data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1;
+    }
+
+    public panelConditions = {
+        panelFunctionality: () => true,
+        panelSingleMotion: (data: WizardState) => this.hasMotionlikeType(data),
+        panelMotionWho: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0,
+        panelMotionDeadline: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0 && data.motionsInitiatedBy !== 1, // MOTION_INITIATED_ADMINS
+        panelMotionScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0 && data.motionsInitiatedBy !== 1, // MOTION_INITIATED_ADMINS
+        panelNeedsSupporters: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0 && data.motionsInitiatedBy !== 1, // MOTION_INITIATED_ADMINS
+        panelHasAmendments: (data: WizardState) => this.hasMotionlikeType(data),
+        panelAmendSinglePara: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1,
+        panelAmendWho: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1,
+        panelAmendDeadline: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1, // MOTION_INITIATED_ADMINS,
+        panelAmendMerging: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1,
+        panelAmendScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1,
+        panelComments: (data: WizardState) => this.hasMotionlikeType(data),
+        panelApplicationType: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_APPLICATIONS) !== -1,
+        panelSpeechQuotas: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_SPEECH_LISTS) !== -1,
+        panelOpenNow: () => true,
+        panelSiteData: () => true,
+    };
+
     getNextPanel(): string {
         this.data = this.getWizardState();
+        const currPanel = this.$activePanel.attr("id"),
+            allPanelIds = Object.keys(this.panelConditions);
 
-        switch (this.$activePanel.attr("id")) {
-            case 'panelPurpose':
-                return "#panelSingleMotion";
-            case 'panelLanguage':
-                return "#panelSingleMotion";
-            case 'panelSingleMotion':
-                if (this.data.singleMotion == 1) {
-                    return "#panelHasAmendments";
-                } else {
-                    return "#panelMotionWho";
+        let foundCurr = false;
+        for (let i = 0; i < allPanelIds.length; i++) {
+            if (allPanelIds[i] === currPanel) {
+                // We ignore all steps previous to the current one
+                foundCurr = true;
+            } else if (foundCurr) {
+                // Once we found the current one, we take the first step where the condition is met
+                if (this.panelConditions[allPanelIds[i]](this.data)) {
+                    return '#' + allPanelIds[i];
                 }
-            case 'panelMotionWho':
-                if (this.data.motionsInitiatedBy == 1) { // MOTION_INITIATED_ADMINS
-                    return "#panelHasAmendments";
-                } else {
-                    return "#panelMotionDeadline";
-                }
-            case 'panelMotionDeadline':
-                return "#panelMotionScreening";
-            case 'panelMotionScreening':
-                return "#panelNeedsSupporters";
-            case 'panelNeedsSupporters':
-                return "#panelHasAmendments";
-            case 'panelHasAmendments':
-                if (this.data.hasAmendments == 1) {
-                    return "#panelAmendSinglePara";
-                } else {
-                    return "#panelComments";
-                }
-            case 'panelAmendSinglePara':
-                return "#panelAmendWho";
-            case 'panelAmendWho':
-                if (this.data.amendmentInitiatedBy == 1) { // MOTION_INITIATED_ADMINS
-                    return "#panelComments";
-                } else {
-                    return "#panelAmendDeadline";
-                }
-            case 'panelAmendDeadline':
-                return '#panelAmendMerging';
-            case 'panelAmendMerging':
-                return "#panelAmendScreening";
-            case 'panelAmendScreening':
-                return "#panelComments";
-            case 'panelComments':
-                if (this.data.singleMotion == 1) {
-                    return "#panelOpenNow";
-                } else {
-                    return "#panelAgenda";
-                }
-            case 'panelAgenda':
-                return "#panelOpenNow";
-            case 'panelOpenNow':
-                return "#panelSiteData";
+            }
         }
+        console.error("Could not find the next panel for " + currPanel + ", data: ", this.data);
     }
 
     subdomainChange(ev) {
@@ -224,9 +229,17 @@ class SiteCreateWizard {
             let $active = $fieldset.find(".radio-label input:checked");
             $active.parents(".radio-label").first().addClass("active");
         }).trigger("change");
+        $form.find(".checkbox-label input").on("change", function () {
+            let $this = $(this);
+            if ($this.prop("checked")) {
+                $this.parents(".checkbox-label").first().addClass("active");
+            } else {
+                $this.parents(".checkbox-label").first().removeClass("active");
+            }
+        }).trigger("change");
 
-        $form.find("fieldset.wording input").on("change", function () {
-            let wording = $form.find("fieldset.wording input:checked").data("wording-name");
+        $form.find("fieldset.functionality input").on("change", function () {
+            let wording = $form.find("fieldset.functionality input:checked").data("wording-name");
             $form.removeClass("wording_motion").removeClass("wording_manifesto").addClass("wording_" + wording);
         }).trigger("change");
 
@@ -304,7 +317,7 @@ class SiteCreateWizard {
         $(window).on("hashchange", (ev) => {
             ev.preventDefault();
             let hash;
-            if (parseInt(window.location.hash.substring(1)) === 0) {
+            if (window.location.hash === '' || parseInt(window.location.hash.substring(1)) === 0) {
                 hash = this.firstPanel;
             } else {
                 hash = "#panel" + window.location.hash.substring(1);

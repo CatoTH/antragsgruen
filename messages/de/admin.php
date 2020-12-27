@@ -199,6 +199,12 @@ return [
     'con_pdf_intro_place'     => 'Mitgliederversammlung des Lorem Ipsum e.V.',
     'con_prefix_hide'         => '<strong>Antragskürzel verstecken</strong><br>
 <small class="conPrefixHide">Antragskürzel müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann, werden aber nicht mehr angezeigt.</small>',
+    'con_speech_lists'        => '<strong>Redelisten</strong> anbieten',
+    'con_speech_quotas'       => 'Quotierte Redelisten',
+    'con_speech_quota_name'   => 'Name der %no%. Unterliste',
+    'con_speech_active_first' => 'Redeliste sofort sichtbar machen',
+    'con_speech_active_hint'  => 'Die Redeliste wird sofort auf der Startseite sichtbar. Allerdings können Nutzer*innen sich trotzdem erst bewerben, nachdem die Redeliste unter "Redeliste verwalten" explizit geöffnet wurde.',
+    'con_speech_login'        => 'Nur Eingeloggte dürfen sich auf die Redeliste bewerben',
     'con_fb_img'              => 'Facebook-Bild',
     'con_logo_url'            => 'Logo',
     'con_logo_url_upload'     => 'Neues Logo hochladen',

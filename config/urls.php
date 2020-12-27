@@ -22,9 +22,9 @@ $restBaseCon = $restBase . '/<consultationPath:[\w_-]+>';
 
 $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax|del-agenda-item-ajax|save-agenda-order-ajax';
 $consultationPaths    .= '|feeds|feedall|feedmotions|feedamendments|feedcomments';
-$consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
+$consultationPaths    .= '|admin-speech|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
-$motionPaths          .= '|withdraw|view-changes|view-changes-odt|save-proposal-status|del-proposal-comment';
+$motionPaths          .= '|admin-speech|withdraw|view-changes|view-changes-odt|save-proposal-status|del-proposal-comment';
 $motionPaths          .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm|merge-amendments-paragraph-ajax|merge-amendments-status-ajax';
 $motionPaths          .= '|merge-amendments-init-pdf|merge-amendments-draft-pdf';
 $motionPaths          .= '|merge-amendments-public|merge-amendments-public-ajax|save-merging-draft';
@@ -92,10 +92,18 @@ $urlRules = [
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
 
-    $restBaseCon                                                             => 'consultation/rest',
-    $restBaseCon . '/proposed-procedure'                                     => 'consultation/proposed-procedure-rest',
-    $restBaseCon . '/motion/<motionSlug:[^\/]+>'                             => '/motion/rest',
-    $restBaseCon . '/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>' => '/amendment/rest',
+    $restBaseCon                                                                     => 'consultation/rest',
+    $restBaseCon . '/proposed-procedure'                                             => 'consultation/proposed-procedure-rest',
+    $restBaseCon . '/motion/<motionSlug:[^\/]+>'                                     => '/motion/rest',
+    $restBaseCon . '/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>'         => '/amendment/rest',
+    $restBaseCon . '/speech/<queueId:[^\/]+>'                                        => '/speech/get-queue',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/item'                                   => '/speech/register',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/unregister'                             => '/speech/unregister',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin'                                  => '/speech/get-queue-admin',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/settings'                         => '/speech/post-queue-settings',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/reset'                            => '/speech/admin-queue-reset',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item'                             => '/speech/admin-create-item',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
 ];
 
 if (YII_ENV === 'test') {

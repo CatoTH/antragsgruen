@@ -14,11 +14,14 @@ return [
     'prev'   => 'Zurück',
     'finish' => 'Fertig / Seite anlegen',
 
-    'purpose_title'          => 'Was soll diskutiert werden?',
-    'purpose_desc'           => 'Das wirkt sich ausschließlich auf das &quot;Wording&quot; aus.',
-    'purpose_motions'        => 'Anträge',
-    'purpose_manifesto'      => 'Programm',
-    'purpose_manifesto_desc' => '(Wahl-/Partei-)',
+    'functionality_title'          => 'Welche Bestandteile soll die Seite haben?',
+    'functionality_desc'           => 'Es können beliebig viele Punkte ausgewählt werden.<br>Alles lässt sich auch nachträglich (de)aktivieren.',
+    'functionality_motions'        => 'Anträge',
+    'functionality_manifesto_desc' => '(Wahl-/Partei-)',
+    'functionality_manifesto'      => 'Programm',
+    'functionality_applications'   => 'Bewerbungen',
+    'functionality_agenda'         => 'Tagesordnung',
+    'functionality_speech'         => 'Redelisten',
 
     'language_title' => 'Sprache der Benutzeroberfläche?',
 
@@ -80,10 +83,17 @@ return [
     'comments_no'    => 'Nein',
     'comments_yes'   => 'Ja',
 
-    'agenda_title' => 'Gibt es eine Tagesordnung?',
-    'agenda_desc'  => 'Auf der Startseite kann dann eine Tagesordnung festgelegt werden',
-    'agenda_no'    => 'Nein',
-    'agenda_yes'   => 'Ja',
+    'applicationtype_title' => 'Art der Bewerbungen',
+    'applicationtype_desc' => 'In welcher Form können die Bewerbungen eingereicht werden?',
+    'applicationtype_text' => 'Formular',
+    'applicationtype_text_desc' => 'Text, Foto, Persönliche Angaben',
+    'applicationtype_pdf' => 'PDF',
+    'applicationtype_pdf_desc' => 'Ein fertiges PDF wird hochgeladen',
+
+    'speech_quotas_title' => 'Quotierte Redelisten',
+    'speech_quotas_desc' => 'Getrennte Frauen- und offene/Männer-Listen, abwechselnde Redebeiträge',
+    'speech_quotas_no' => 'Nein',
+    'speech_quotas_yes' => 'Ja',
 
     'opennow_title' => 'Die Seite sofort veröffentlichen?',
     'opennow_desc'  => 'Oder zuerst im Wartungsmodus belassen?',

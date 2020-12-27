@@ -1,0 +1,2 @@
+define(["require","exports"],function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.SpeechListEdit=void 0;var i=function(e){this.$element=e,this.widget=new Vue({el:this.$element.find(".speechAdmin")[0],template:'<speech-admin-widget v-bind:queue="queue" v-bind:csrf="csrf"></speech-admin-widget>',data:{queue:e.data("queue"),user:e.data("user"),csrf:$("head").find("meta[name=csrf-token]").attr("content")}})};t.SpeechListEdit=i});
+//# sourceMappingURL=SpeechListEdit.js.map

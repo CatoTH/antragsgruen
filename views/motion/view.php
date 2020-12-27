@@ -49,6 +49,12 @@ if ($motion->isResolution()) {
     echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 }
 
+if ($consultation->getSettings()->hasSpeechLists) {
+    // Should be after h1 (because of CSS border-radius to .well :first-child),
+    // but rather early in the context (because it should be easy reachable using keyboard / tabindex)
+    echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
+}
+
 echo $layout->getMiniMenu('motionSidebarSmall');
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
@@ -60,11 +66,11 @@ echo $controller->showErrors(true);
 if ($supportCollectingStatus) {
     echo '<div class="content" style="margin-top: 0;">';
     echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
-    $supportType  = $motion->motionType->getMotionSupportTypeClass();
-    $min          = $supportType->getSettingsObj()->minSupporters;
-    $minAll       = $min + 1;
-    $curr         = count($motion->getSupporters());
-    $currAll      = $curr + count($motion->getInitiators());
+    $supportType   = $motion->motionType->getMotionSupportTypeClass();
+    $min           = $supportType->getSettingsObj()->minSupporters;
+    $minAll        = $min + 1;
+    $curr          = count($motion->getSupporters());
+    $currAll       = $curr + count($motion->getInitiators());
     $missingFemale = $motion->getMissingSupporterCountByGender($supportType, 'female');
     if ($curr >= $min && !$missingFemale) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_reached_hint'));
@@ -118,17 +124,32 @@ if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
     <?php
 }
 
-if ($motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
-    if (!$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+$hasPp          = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
+$hasPpAdminbox  = ($hasPp && !$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS));
+//$hasSpeechLists = $consultation->getSettings()->hasSpeechLists;
+$hasSpeechLists = false;
+if ($hasPpAdminbox || $hasSpeechLists) {
+    echo '<div class="proposedChangesOpener">';
+    if ($hasPpAdminbox) {
         ?>
-        <div class="proposedChangesOpener">
-            <button class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-                <?= Yii::t('amend', 'proposal_open') ?>
-            </button>
-        </div>
+        <button class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            <?= Yii::t('amend', 'proposal_open') ?>
+        </button>
         <?php
-
+    }
+    if ($hasSpeechLists) {
+        ?>
+        <a href="<?= Html::encode(UrlHelper::createMotionUrl($motion, 'admin-speech')) ?>" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            <?= str_replace('%TITLE%', $motion->titlePrefix, Yii::t('speech', 'admin_title_to')) ?>
+        </a>
+        <?php
+    }
+    echo '</div>';
+}
+if ($hasPp) {
+    if ($hasPpAdminbox) {
         echo $this->render('_set_proposed_procedure', ['motion' => $motion, 'msgAlert' => null]);
     }
     if ($motion->proposalFeedbackHasBeenRequested() && $motion->canSeeProposedProcedure($procedureToken)) {

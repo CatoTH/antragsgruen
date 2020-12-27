@@ -28,6 +28,7 @@ $brand-primary: $colorRed;
 $brand-success: $colorRed;
 $text-color: rgb(72, 70, 73);
 $btn-success-bg: $colorRed;
+$label-success-bg: $btn-success-bg;
 
 $headingFont: "FiraSans", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
@@ -72,6 +73,7 @@ $createMotionBtnColor: $colorRed;
 @import "base_layout";
 @import "contentpage";
 @import "consultation_motion_list";
+@import "speech_lists";
 @import "motions";
 @import "proposed_procedure";
 @import "styles";

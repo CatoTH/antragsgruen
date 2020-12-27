@@ -1,17 +1,27 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\User;
 use yii\helpers\Html;
 
-echo '<div class="content contentPage contentPageWelcome">';
+/**
+ * @var \app\models\db\Consultation $consultation
+ */
+
+$contentAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT);
+
+$preWelcome = \app\models\layoutHooks\Layout::getConsultationPreWelcome();
+
+echo '<div class="content contentPage contentPageWelcome' . ($preWelcome ? ' hasDeadline' : '') . '">';
 
 echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::homeUrl()]);
 
-echo \app\models\layoutHooks\Layout::getConsultationPreWelcome();
+echo $preWelcome;
 
 $pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
 $saveUrl  = $pageData->getSaveUrl();
-if ($admin) {
+
+if ($contentAdmin) {
     echo Html::beginForm($saveUrl, 'post', [
         'data-upload-url'          => $pageData->getUploadUrl(),
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
@@ -19,7 +29,10 @@ if ($admin) {
         'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
         'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
     ]);
-    echo '<a href="#" class="editCaller">' . Yii::t('base', 'edit') . '</a><br>';
+    echo '<button type="button" class="btn btn-sm btn-link editCaller">';
+    echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ';
+    echo Yii::t('con', 'edit_welcome');
+    echo '</button><br>';
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';
@@ -37,7 +50,7 @@ $files = $consultation->getDownloadableFiles();
             echo '<li data-id="' . Html::encode($file->id) . '">';
             $title = '<span class="glyphicon glyphicon-download-alt"></span> <span class="title">' . Html::encode($file->title) . '</span>';
             echo Html::a($title, $file->getUrl());
-            if ($admin) {
+            if ($contentAdmin) {
                 echo '<button type="button" class="btn btn-link deleteFile">';
                 echo '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>';
                 echo '<span class="sr-only">' . str_replace('%TITLE%', $file->title, Yii::t('admin', 'files_download_del')) . '</span>';
@@ -46,7 +59,7 @@ $files = $consultation->getDownloadableFiles();
             echo '</li>';
         }
         echo '</ul>';
-        if ($admin) {
+        if ($contentAdmin) {
             ?>
             <div class="downloadableFilesUpload hidden">
                 <h3><?= Yii::t('admin', 'files_download_new') ?>:</h3>
@@ -71,7 +84,7 @@ $files = $consultation->getDownloadableFiles();
     </div>
 <?php
 
-if ($admin) {
+if ($contentAdmin) {
     ?>
     <div class="textSaver hidden">
         <button class="btn btn-primary" type="submit">

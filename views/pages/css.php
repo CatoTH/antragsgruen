@@ -21,6 +21,7 @@ $veraSansPath: "./fonts/BitstreamVeraSansMono";
 
 ' . $stylesheetSettings->toScssVariables(\app\models\settings\Stylesheet::DEFAULTS_LAYOUT_CLASSIC) . '
 $colorLinksFooter: $colorLinks;
+$label-success-bg: $btn-success-bg;
 
 $screen-md-min: ($container-md + 90px) !default; // Extra spacing for the "create motion button"
 $mainContentWidth: $container-md - $sidebarWidth !default;
@@ -45,6 +46,7 @@ $icon-font-path: "./fonts/";
 @import "base_layout";
 @import "contentpage";
 @import "consultation_motion_list";
+@import "speech_lists";
 @import "motions";
 @import "proposed_procedure";
 @import "styles";

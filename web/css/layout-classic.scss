@@ -21,6 +21,7 @@ $colorMagenta: rgb(212, 0, 116);
 $brand-primary: $colorMagenta;
 $text-color: rgb(72, 70, 73);
 $btn-success-bg: #2c882c;
+$label-success-bg: $btn-success-bg;
 
 $table-border-color: $colorGreenLight;
 $headingFont: "Open Sans", sans-serif;
@@ -61,6 +62,7 @@ $createMotionBtnColor: $colorMagenta;
 @import "base_layout";
 @import "contentpage";
 @import "consultation_motion_list";
+@import "speech_lists";
 @import "motions";
 @import "proposed_procedure";
 @import "styles";

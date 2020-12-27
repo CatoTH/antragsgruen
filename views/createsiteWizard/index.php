@@ -9,12 +9,12 @@
 use yii\helpers\Html;
 
 $t = function ($string) {
-    return \Yii::t('wizard', $string);
+    return Yii::t('wizard', $string);
 };
 
 
 ?>
-<div id="SiteCreateWizard" class="wizard" data-mode="<?= Html::encode($mode) ?>" data-init-step="#panelPurpose">
+<div id="SiteCreateWizard" class="wizard" data-mode="<?= Html::encode($mode) ?>" data-init-step="#panelFunctionality">
     <ul class="steps">
         <li data-target="#stepPurpose" class="stepPurpose">
             <?= $t('step_purpose') ?>
@@ -36,7 +36,7 @@ $t = function ($string) {
     </ul>
 </div>
 <div class="content">
-    <?= $this->render('purpose', ['model' => $model, 'errors' => $errors, 't' => $t]) ?>
+    <?= $this->render('functionality', ['model' => $model, 'errors' => $errors, 't' => $t]) ?>
     <?= $this->render('single_motion', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('motion_who', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('motion_deadline', ['model' => $model, 't' => $t]) ?>
@@ -49,7 +49,8 @@ $t = function ($string) {
     <?= $this->render('amend_screening', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amend_merging', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('comments', ['model' => $model, 't' => $t]) ?>
-    <?= $this->render('agenda', ['model' => $model, 't' => $t, 'mode' => $mode]) ?>
+    <?= $this->render('application_type', ['model' => $model, 't' => $t, 'mode' => $mode]) ?>
+    <?= $this->render('speech_quotas', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('opennow', ['model' => $model, 't' => $t]) ?>
     <?php
     switch ($mode) {

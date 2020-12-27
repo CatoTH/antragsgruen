@@ -14,11 +14,14 @@ return [
     'prev'   => 'Back',
     'finish' => 'Ready / Create site',
 
-    'purpose_title'          => 'What will be discussed?',
-    'purpose_desc'           => 'This only affects the wording.',
-    'purpose_motions'        => 'Motions',
-    'purpose_manifesto'      => 'Manifesto',
-    'purpose_manifesto_desc' => '&nbsp;',
+    'functionality_title'          => 'Which functionality should the site provide?',
+    'functionality_desc'           => 'You can select multiple options.<br>Everything can also be (de-)activated after creating the site.',
+    'functionality_motions'        => 'Motions',
+    'functionality_manifesto_desc' => '',
+    'functionality_manifesto'      => 'Manifesto',
+    'functionality_applications'   => 'Candidatures',
+    'functionality_agenda'         => 'An agenda',
+    'functionality_speech'         => 'Speaking lists',
 
     'language_title' => 'Language of the site',
 
@@ -80,10 +83,17 @@ return [
     'comments_no'    => 'No',
     'comments_yes'   => 'Yes',
 
-    'agenda_title' => 'Is there a formal agenda?',
-    'agenda_desc'  => 'If so, it can be specified on the home page',
-    'agenda_no'    => 'No',
-    'agenda_yes'   => 'Yes',
+    'applicationtype_title' => 'Type of applications',
+    'applicationtype_desc' => 'In which format are applications / candidatures submitted?',
+    'applicationtype_text' => 'Form',
+    'applicationtype_text_desc' => 'Text, photo, personal data',
+    'applicationtype_pdf' => 'PDF',
+    'applicationtype_pdf_desc' => 'A ready-layouted PDF can be uploaded',
+
+    'speech_quotas_title' => 'Quoted speaking lists',
+    'speech_quotas_desc' => 'Two alternating lists for women and men',
+    'speech_quotas_no' => 'No',
+    'speech_quotas_yes' => 'Yes',
 
     'opennow_title' => 'Publish this site immediately?',
     'opennow_desc'  => 'If not, it will be created in maintenance mode',

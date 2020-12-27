@@ -3,7 +3,7 @@ use yii\helpers\Html;
 
 /**
  * @var \app\models\forms\AntragsgruenInitSite $model
- * @var \Callable $t
+ * @var Callable $t
  */
 
 ?>
@@ -60,9 +60,13 @@ use yii\helpers\Html;
         </div>
     </fieldset>
     <div class="navigation">
-        <button class="btn btn-lg btn-prev"><span class="icon-chevron-left"></span> <?= $t('prev') ?></button>
+        <button class="btn btn-lg btn-prev">
+            <span class="icon-chevron-left" aria-hidden="true"></span>
+            <?= $t('prev') ?>
+        </button>
         <button type="submit" class="btn btn-lg btn-next btn-primary" name="create">
-            <span class="icon-chevron-right"></span> <?= $t('finish') ?>
+            <span class="icon-chevron-right" aria-hidden="true"></span>
+            <?= $t('finish') ?>
         </button>
     </div>
 </div>

@@ -10,12 +10,7 @@ use app\models\supportTypes\SupportBase;
 
 trait PDFApplication
 {
-    /**
-     * @param Consultation $consultation
-     * @return ConsultationMotionType
-     * @throws \Exception
-     */
-    public static function doCreateApplicationType(Consultation $consultation)
+    public static function doCreateApplicationType(Consultation $consultation): ConsultationMotionType
     {
         $type                               = new ConsultationMotionType();
         $type->consultationId               = $consultation->id;
@@ -52,10 +47,7 @@ trait PDFApplication
         return $type;
     }
 
-    /**
-     * @param ConsultationMotionType $motionType
-     */
-    public static function doCreateApplicationSections(ConsultationMotionType $motionType)
+    public static function doCreateApplicationSections(ConsultationMotionType $motionType): void
     {
         $section                = new ConsultationSettingsMotionSection();
         $section->motionTypeId  = $motionType->id;

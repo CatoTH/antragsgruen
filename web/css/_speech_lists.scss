@@ -1,0 +1,743 @@
+@import "variables";
+
+#sidebar {
+  #sidebarOtherQueues {
+    padding-right: 15px; // Same as padding-left
+  }
+
+  .otherQueues {
+    .active {
+      position: relative;
+
+      .glyphicon {
+        position: absolute;
+        left: 15px;
+        top: 3px;
+      }
+    }
+    .activeLabel {
+      font-size: 0.9em;
+      font-style: italic;
+    }
+  }
+}
+
+.speechAdmin {
+  $slotWidth: 300px;
+  $markerWidth: 500px;
+
+  $backgroundInactive: #f0f0f0;
+  $borderInactive: darken($backgroundInactive, 20%);
+
+  .settings {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 5px;
+
+    > * {
+      flex: 1;
+    }
+
+    .settingsOpen, .settingsActive {
+      line-height: 35px;
+      font-weight: normal;
+      margin-bottom: 0;
+    }
+
+    .inactive {
+      font-weight: bold;
+      color: red;
+    }
+
+    .settingsPolicy {
+      text-align: right;
+    }
+
+    .deactivateOthers {
+      font-size: 0.8em;
+      font-style: italic;
+    }
+  }
+
+  .previousSpeakers {
+    margin: 0 auto;
+    width: 400px;
+    border: dotted 1px $borderInactive;
+    //background-color: $backgroundInactive;
+
+    &.invisible {
+      visibility: hidden;
+    }
+
+    > header {
+      //background-color: $backgroundInactive;
+      padding: 5px;
+      position: relative;
+
+      .btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-weight: normal;
+      }
+    }
+
+    &.previousShown > header {
+      background-color: darken($backgroundInactive, 5%);
+
+      .btn-link {
+        color: darken($link-color, 10%);
+      }
+    }
+
+    .previousLists {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+
+    .previousList {
+      flex: 1;
+
+      header {
+        text-align: center;
+
+        span {
+          border-bottom: solid 1px grey;
+        }
+      }
+
+      ol {
+        text-align: left;
+      }
+    }
+  }
+
+  .slots, .previousList {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0;
+    width: $slotWidth;
+  }
+
+  .slotEntry {
+    margin: 15px 0 0 0;
+    border: solid 1px $borderInactive;
+    border-radius: 3px;
+    background-color: $backgroundInactive;
+    min-height: 85px;
+    padding: 10px;
+    position: relative;
+    text-align: center;
+    z-index: 1;
+
+    .statusActive {
+      font-style: italic;
+    }
+
+    .statusUpcoming {
+      font-style: italic;
+    }
+
+    .start, .stop {
+      position: absolute;
+      top: 23px;
+      right: 5px;
+    }
+
+    &.slotActive {
+      background-color: #afa;
+      box-shadow: 0 3px 3px rgba(0,0,0,0.25);
+    }
+
+    .operations {
+      left: 0;
+      border-right: solid 1px $borderInactive;
+      border-top: solid 1px $borderInactive;
+      border-top-right-radius: 3px;
+    }
+  }
+
+  .operationsIndicator {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    border-top: solid 1px #bdbdbd;
+    padding: 0 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+
+    &.operationStart {
+      color: green;
+    }
+  }
+
+  .slotPlaceholder {
+    position: relative;
+    margin: 0 15px 0 15px;
+    border: dotted 1px $borderInactive;
+    background-color: $backgroundInactive;
+    min-height: 85px;
+    padding: 10px;
+    text-align: center;
+
+    &:nth-child(2) {
+      margin-top: -5px;
+    }
+    &:last-of-type {
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+    }
+
+    .title {
+      font-style: italic;
+    }
+
+    &.active {
+      @include outlineOnFocusHasBorder();
+      cursor: pointer;
+
+      &:hover, &:focus {
+        background-color: darken($backgroundInactive, 5%);
+        z-index: 1;
+        border-radius: 3px;
+        box-shadow: 0 0 4px rgba(0,0,0,0.25);
+      }
+    }
+
+    .operationsIndicator {
+        right: 0;
+        border-left: solid 1px #bdbdbd;
+        border-top-left-radius: 3px;
+    }
+    &:hover, &:focus {
+      .operationsIndicator {
+        display: block;
+      }
+    }
+  }
+
+  .name {
+    font-weight: bold;
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+  }
+  .nameNobody {
+    font-style: italic;
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+  }
+
+  .iconBackground {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    font-size: 50px;
+    opacity: 0.15;
+  }
+
+  .isUpcoming:before {
+    content: '';
+    position: absolute;
+    height: 1px;
+    width: $markerWidth;
+    top: -6px;
+    left: ($slotWidth - $markerWidth) / 2;
+    border-bottom: dotted 1px gray;
+  }
+
+  .subqueues {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 50px;
+  }
+
+  .subqueue {
+    width: 230px;
+
+    > header {
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: solid 3px lightgrey;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    .empty {
+      margin: 5px 0 25px 0;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .subqueueAdder {
+      margin-top: 10px;
+      text-align: center;
+    }
+  }
+
+  .subqueueItems {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  .subqueueItem {
+    margin: 0;
+    border: solid 1px $borderInactive;
+    border-radius: 3px;
+    min-height: 60px;
+    position: relative;
+
+    .starter {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      padding: 10px;
+      cursor: pointer;
+      background-color: $backgroundInactive;
+
+      @include outlineOnFocusHasBorder();
+
+      &:hover, &:focus {
+        background-color: darken($backgroundInactive, 5%);
+        box-shadow: 0 0 4px rgba(0,0,0,0.25);
+
+        .operationsIndicator {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .operations {
+    position: absolute;
+    bottom: 0;
+
+    .moveSubqueue, .removeSlot {
+      padding: 0 5px;
+      background-color: rgba(255, 255, 255, 0.5);
+
+      @include outlineOnFocusHasBorder();
+
+      &:hover, &:focus {
+        background-color: darken($backgroundInactive, 5%);
+      }
+    }
+
+    .removeSlot {
+      color: $colorDelLink;
+    }
+  }
+  .subqueue.positionLeft .operations {
+    right: 0;
+    border-left: solid 1px $borderInactive;
+    border-top: solid 1px $borderInactive;
+    border-top-left-radius: 3px;
+  }
+  .subqueue.positionRight .operations {
+    left: 0;
+    border-right: solid 1px $borderInactive;
+    border-top: solid 1px $borderInactive;
+    border-top-right-radius: 3px;
+  }
+
+  .subqueue.positionRight .operationsIndicator {
+    right: 0;
+    border-left: solid 1px #bdbdbd;
+    border-top-left-radius: 3px;
+  }
+
+  .subqueue.positionLeft .operationsIndicator {
+    left: 0;
+    border-right: solid 1px #bdbdbd;
+    border-top-right-radius: 3px;
+  }
+
+  .queueResetSection {
+    text-align: right;
+  }
+
+  .dropPlaceholder {
+    margin: 3px 0;
+    border: dotted 1px transparent;
+    border-radius: 3px;
+    position: relative;
+
+    .dropAdditionalSpace {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -20px;
+      bottom: -20px;
+      z-index: 100;
+      display: none;
+    }
+
+    .hoveredIndicator {
+      visibility: hidden;
+      text-align: center;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: bold;
+    }
+
+    &.hoverable.hovered {
+      background-color: darken($backgroundInactive, 5%);
+      .hoveredIndicator {
+        visibility: visible;
+      }
+    }
+  }
+  &.dragging {
+    .dropPlaceholder.hoverable {
+      border: dotted 1px $borderInactive;
+      .dropAdditionalSpace {
+        display: block;
+      }
+    }
+  }
+}
+
+
+.currentSpeechInline {
+  .speechAdminLink {
+    float: right;
+  }
+
+  .leftIcon {
+    top: 4px;
+    font-size: 18px;
+    margin-right: 4px;
+  }
+
+  .activeSpeaker {
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+    .name {
+      font-weight: bold;
+    }
+  }
+
+  .upcomingSpeaker {
+    margin-top: 20px;
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+  }
+
+  .upcomingSpeakerList {
+    list-style-type: none;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+
+    > * {
+      display: inline;
+
+      &:before {
+        content: ', ';
+        display: inline;
+      }
+
+      &:first-child:before {
+        content: '';
+      }
+    }
+
+    .label {
+      margin-left: 5px;
+    }
+  }
+
+  .waitingMultiple {
+    margin-top: 20px;
+
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+        line-height: 1.5em;
+      }
+    }
+
+    .notPossible {
+      line-height: 35px;
+      vertical-align: middle;
+      margin-left: 27px;
+      font-style: italic;
+      font-size: 0.8em;
+    }
+  }
+
+  .waitingSingle {
+    margin-top: 30px;
+
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+        line-height: 1.5em;
+      }
+    }
+
+    .apply {
+      margin-left: 25px;
+      .notPossible {
+        font-style: italic;
+        font-size: 0.8em;
+      }
+    }
+    .applyOpener {
+      margin-top: 10px;
+    }
+
+    form {
+      margin-top: 10px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  .appliedMe {
+    display: inline-block;
+    vertical-align: middle;
+
+    .btnWithdraw {
+      font-weight: normal;
+      padding: 0 5px;
+      font-size: 75%; // Same as the .label next to it
+    }
+  }
+
+  .waitingSubqueues {
+    margin-left: 26px;
+    display: table;
+
+    > * {
+      display: table-row;
+    }
+
+    .name {
+      display: table-cell;
+      width: 200px;
+      line-height: 35px;
+      vertical-align: middle;
+    }
+
+    .applied {
+      display: table-cell;
+      line-height: 35px;
+      vertical-align: middle;
+
+      button {
+        margin-right: 15px;
+      }
+
+      .number {
+        display: inline-block;
+        margin-right: 7px;
+      }
+
+      form {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+
+    .appliedMe {
+      display: inline-block;
+    }
+  }
+
+  .nameList {
+    display: inline-block;
+    list-style: none;
+    margin: 0 10px 0 0;
+    padding: 0;
+    font-size: 0;
+
+    &:before {
+      display: inline-block;
+      content: '(';
+      font-size: 12px;
+    }
+
+    &:after {
+      display: inline-block;
+      content: ')';
+      font-size: 12px;
+    }
+
+    > li {
+      font-size: 12px;
+      display: inline-block;
+      &:not(:first-child):before {
+        display: inline-block;
+        content: ',';
+        padding-right: 5px;
+      }
+    }
+  }
+}
+
+
+.currentSpeechFooter {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  padding: 0;
+  background: white;
+  border: solid 1px #ccc;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+
+  *:fullscreen & {
+    display: none;
+  }
+
+  *:-webkit-full-screen & {
+    display: none;
+  }
+
+  *:-moz-full-screen & {
+    display: none;
+  }
+
+  *:-ms-fullscreen & {
+    display: none;
+  }
+
+
+  body.fullscreen & {
+    display: none;
+  }
+
+  $speechLineHeight: 35px;
+
+  .speechUser {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .widgetTitle {
+    flex-basis: 150px;
+    font-size: 16px;
+    line-height: $speechLineHeight;
+    vertical-align: middle;
+    margin: 0;
+    padding: 5px 10px;
+    background-color: #eee;
+
+    .speechAdminLink {
+      float: right;
+    }
+  }
+
+  .activeSpeaker {
+    flex-grow: 1;
+    flex-basis: 30%;
+    padding: 5px 10px;
+
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+    }
+    line-height: $speechLineHeight;
+
+    .label {
+      vertical-align: middle;
+    }
+
+    .title {
+      font-weight: bold;
+    }
+  }
+
+  .waitingMultiple {
+    display: flex;
+    flex-grow: 1;
+    flex-basis: 50%;
+    flex-direction: row;
+    padding: 5px 10px;
+
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+      }
+      line-height: $speechLineHeight;
+    }
+  }
+
+  .waitingSingle {
+    padding: 5px 10px;
+    flex-basis: 50%;
+    flex-grow: 1;
+
+    form {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  .subqueue {
+    display: flex;
+    flex-direction: row;
+    margin: 0 10px;
+    padding: 0 0 0 10px;
+    background-color: #eee;
+    border-radius: 3px;
+    line-height: $speechLineHeight - 2px;
+    vertical-align: middle;
+
+    .name {
+      font-weight: bold;
+      margin-right: 7px;
+    }
+
+    .number {
+      font-size: 0.8em;
+
+      &:before {
+        content: '(';
+        display: inline-block;
+      }
+
+      &:after {
+        content: ')';
+        display: inline-block;
+        margin-right: 10px;
+      }
+    }
+
+    .applyBtn {
+      line-height: 20px;
+      height: 23px;
+      margin-top: 5px;
+      margin-right: 10px;
+    }
+
+    form {
+      max-width: 200px;
+    }
+  }
+
+  .appliedMe {
+    display: inline-block;
+    vertical-align: middle;
+    .btnWithdraw {
+      font-weight: normal;
+      padding: 0 5px;
+      font-size: 75%; // Same as the .label next to it
+    }
+  }
+}

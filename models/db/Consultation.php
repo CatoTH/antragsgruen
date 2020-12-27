@@ -37,6 +37,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationUserPrivilege[] $userPrivileges
  * @property ConsultationFile[] $files
  * @property ConsultationLog[] $logEntries
+ * @property SpeechQueue[] $speechQueues
  * @property UserNotification[] $userNotifications
  * @property VotingBlock[] $votingBlocks
  */
@@ -368,6 +369,36 @@ class Consultation extends ActiveRecord
     {
         return $this->hasMany(ConsultationMotionType::class, ['consultationId' => 'id'])
             ->andWhere(ConsultationMotionType::tableName() . '.status != ' . ConsultationMotionType::STATUS_DELETED);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSpeechQueues()
+    {
+        return $this->hasMany(SpeechQueue::class, ['consultationId' => 'id']);
+    }
+
+    public function getActiveSpeechQueue(): ?SpeechQueue
+    {
+        $firstActive = null;
+        $firstActiveWithNoAssignment = null;
+        foreach ($this->speechQueues as $speechQueue) {
+            if ($speechQueue->isActive) {
+                if ($firstActive === null) {
+                    $firstActive = $speechQueue;
+                }
+                if ($firstActiveWithNoAssignment === null && $speechQueue->motionId === null || $speechQueue->agendaItemId === null) {
+                    $firstActiveWithNoAssignment = $speechQueue;
+                }
+            }
+        }
+
+        if ($firstActiveWithNoAssignment) {
+            return $firstActiveWithNoAssignment;
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -18,8 +18,14 @@
 .contentPageWelcome {
   overflow: auto;
 
+  &.hasDeadline {
+    min-height: 135px; // Spacing for the deadline circle
+  }
+
   .editCaller {
     float: right;
+    margin-left: 10px;
+    font-weight: normal;
   }
 }
 
@@ -60,7 +66,7 @@
   line-height: 17px;
   text-transform: uppercase;
   color: #fff;
-  margin-left: 40px;
+  margin-left: 30px;
   @include border-radius(90px);
 }
 

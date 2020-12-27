@@ -237,6 +237,18 @@ label.legend {
   .apiBaseUrl {
     padding-left: 20px;
   }
+
+  .speechLists {
+    .quotas {
+      padding-left: 20px;
+      label {
+        margin-right: 20px;
+      }
+    }
+    .quotaSelector {
+      vertical-align: top;
+    }
+  }
 }
 
 #consultationSettingsForm {
