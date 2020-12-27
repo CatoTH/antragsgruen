@@ -217,37 +217,95 @@ class SpeechQueue extends ActiveRecord
         return null;
     }
 
-    private function getAdminApiSubqueue(?SpeechSubqueue $subqueue): array
+    public function createItemOnAppliedList(string $name, ?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser): SpeechQueueItem
     {
-        $obj = [
-            'id'      => ($subqueue ? $subqueue->id : null),
-            'name'    => ($subqueue ? $subqueue->name : 'default'),
-            'applied' => [],
-            'onlist'  => [],
-        ];
+        $position = -1;
+        foreach ($this->items as $item) {
+            if ($item->position <= $position) {
+                $position = $item->position - 1;
+            }
+        }
 
+        $item              = new SpeechQueueItem();
+        $item->queueId     = $this->id;
+        $item->subqueueId  = ($subqueue ? $subqueue->id : null);
+        $item->userId      = ($user ? $user->id : null);
+        $item->userToken   = ($cookieUser ? $cookieUser->userToken : null);
+        $item->name        = $name;
+        $item->position    = $position;
+        $item->dateApplied = date('Y-m-d H:i:s');
+        $item->dateStarted = null;
+        $item->dateStopped = null;
+        $item->save();
+
+        $this->refresh();
+
+        return $item;
+    }
+
+    /**
+     * @return SpeechQueueItem[]
+     */
+    public function getItemsOnList(?SpeechSubqueue $subqueue): array
+    {
+        $itemsOnList = [];
         foreach ($this->items as $item) {
             if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
                 continue;
             }
-            if ($item->position === null) {
-                $obj['applied'][] = [
-                    'id'         => $item->id,
-                    'name'       => $item->name,
-                    'user_id'    => $item->userId,
-                    'applied_at' => $item->getDateApplied()->format('c'),
-                ];
-            } else {
-                $obj['onlist'][] = [
-                    'id'       => $item->id,
-                    'name'     => $item->name,
-                    'user_id'  => $item->userId,
-                    'position' => $item->position,
-                ];
+            if ($item->position > 0) {
+                $itemsOnList[] = $item;
             }
         }
+        usort($itemsOnList, function (SpeechQueueItem $item1, SpeechQueueItem $item2): int {
+            return $item1->position <=> $item2->position;
+        });
+        return $itemsOnList;
+    }
 
-        return $obj;
+    /**
+     * @return SpeechQueueItem[]
+     */
+    public function getAppliedItems(?SpeechSubqueue $subqueue): array
+    {
+        $itemsApplied = [];
+        foreach ($this->items as $item) {
+            if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
+                continue;
+            }
+            if ($item->position < 0) {
+                $itemsApplied[] = $item;
+            }
+        }
+        usort($itemsApplied, function (SpeechQueueItem $item1, SpeechQueueItem $item2): int {
+            // Numbers are reversed, hence e.g. -5 should come before -7
+            return $item2->position <=> $item1->position;
+        });
+        return $itemsApplied;
+    }
+
+    private function getAdminApiSubqueue(?SpeechSubqueue $subqueue): array
+    {
+        return [
+            'id' => ($subqueue ? $subqueue->id : null),
+            'name' => ($subqueue ? $subqueue->name : 'default'),
+            'onlist' => array_map(function (SpeechQueueItem $item): array {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'user_id' => $item->userId,
+                    'position' => $item->position,
+                ];
+            }, $this->getItemsOnList($subqueue)),
+            'applied' => array_map(function (SpeechQueueItem $item): array {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'user_id' => $item->userId,
+                    'applied_at' => $item->getDateApplied()->format('c'),
+                ];
+            }, $this->getAppliedItems($subqueue)),
+        ];
     }
 
     private function getAdminApiSubqueues(): array
@@ -262,7 +320,7 @@ class SpeechQueue extends ActiveRecord
         // and only afterwards subqueues are created. In this case, there will be a placeholder "default" queue.
         $usersWithoutSubqueue = 0;
         foreach ($this->items as $item) {
-            if ($item->subqueueId === null && $item->position === null) {
+            if ($item->subqueueId === null && $item->position < 0) {
                 $usersWithoutSubqueue++;
             }
         }
@@ -277,7 +335,7 @@ class SpeechQueue extends ActiveRecord
     {
         $slots = [];
         foreach ($this->items as $item) {
-            if ($item->position === null) {
+            if ($item->position === null || $item->position < 0) {
                 continue;
             }
             $subqueue = ($item->subqueueId ? $this->getSubqueueById($item->subqueueId) : null);
@@ -324,35 +382,30 @@ class SpeechQueue extends ActiveRecord
     private function getUserApiSubqueue(?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser): array
     {
         $showNames = $this->getSettings()->showNames;
+        $appliedItems = $this->getAppliedItems($subqueue);
 
         $obj = [
             'id'           => ($subqueue ? $subqueue->id : null),
             'name'         => ($subqueue ? $subqueue->name : 'default'),
-            'num_applied'  => 0,
+            'num_applied'  => count($appliedItems),
             'have_applied' => false, // true if a user (matching userID or userToken) is on the list, but has not spoken yet (including assigned places)
         ];
-        if ($showNames) {
-            $obj['applied'] = [];
-        }
 
-        foreach ($this->items as $item) {
-            if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
-                continue;
-            }
+        foreach ($appliedItems as $item) {
             if (!$item->dateStarted && $item->isMe($user, $cookieUser)) {
                 $obj['have_applied'] = true;
             }
-            if ($item->position === null) {
-                $obj['num_applied']++;
-                if ($showNames) {
-                    $obj['applied'][] = [
-                        'id' => $item->id,
-                        'name' => $item->name,
-                        'user_id' => $item->userId,
-                        'applied_at' => $item->getDateApplied()->format('c'),
-                    ];
-                }
-            }
+        }
+
+        if ($showNames) {
+            $obj['applied'] = array_map(function (SpeechQueueItem $item): array {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'user_id' => $item->userId,
+                    'applied_at' => $item->getDateApplied()->format('c'),
+                ];
+            }, $appliedItems);
         }
 
         return $obj;
@@ -370,7 +423,7 @@ class SpeechQueue extends ActiveRecord
         // and only afterwards subqueues are created. In this case, there will be a placeholder "default" queue.
         $usersWithoutSubqueue = 0;
         foreach ($this->items as $item) {
-            if ($item->subqueueId === null && $item->position === null) {
+            if ($item->subqueueId === null && $item->position < 0) {
                 $usersWithoutSubqueue++;
             }
         }

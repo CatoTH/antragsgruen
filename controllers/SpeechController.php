@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\components\CookieUser;
 use app\views\speech\LayoutHelper;
-use app\models\db\{SpeechQueue, SpeechQueueItem, User};
+use app\models\db\{SpeechQueue, User};
 use yii\web\Response;
 
 class SpeechController extends Base
@@ -81,31 +81,20 @@ class SpeechController extends Base
         if (count($queue->subqueues) > 0) {
             // Providing a subqueue is necessary if there are some; otherwise, it goes into the "default" subqueue
             $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('subqueue')));
-            if ($subqueue) {
-                $subqueueId = $subqueue->id;
-            } else {
+            if (!$subqueue) {
                 return $this->returnRestResponse(400, $this->getError('No subqueue provided'));
             }
         } else {
-            $subqueueId = null;
+            $subqueue = null;
         }
+
         if (\Yii::$app->request->post('username')) {
             $name = trim(\Yii::$app->request->post('username'));
         } else {
             $name = $user->name;
         }
 
-        $item              = new SpeechQueueItem();
-        $item->queueId     = $queue->id;
-        $item->subqueueId  = $subqueueId;
-        $item->userId      = ($user ? $user->id : null);
-        $item->userToken   = ($cookieUser ? $cookieUser->userToken : null);
-        $item->name        = $name;
-        $item->position    = null;
-        $item->dateApplied = date('Y-m-d H:i:s');
-        $item->dateStarted = null;
-        $item->dateStopped = null;
-        $item->save();
+        $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser);
 
         $responseJson = json_encode($queue->getUserApiObject($user, $cookieUser));
         return $this->returnRestResponse(200, $responseJson);
@@ -283,12 +272,28 @@ class SpeechController extends Base
                 $item->save();
                 break;
             case "move":
+                $newPosition = \Yii::$app->request->post('position');
                 if (\Yii::$app->request->post('newSubqueueId')) {
                     $subqueue         = $queue->getSubqueueById(intval(\Yii::$app->request->post('newSubqueueId')));
                     $item->subqueueId = $subqueue->id;
                 } else {
+                    $subqueue = null;
                     $item->subqueueId = null;
                 }
+
+                foreach ($queue->getAppliedItems($subqueue) as $pos => $otherItem) {
+                    if ($otherItem->id === $item->id) {
+                        continue;
+                    }
+                    if ($pos < $newPosition) {
+                        $otherItem->position = -1 * $pos - 1;
+                    } else {
+                        $otherItem->position = -1 * $pos - 2;
+                    }
+                    $otherItem->save();
+                }
+
+                $item->position = -1 * $newPosition - 1;
                 $item->save();
                 break;
         }
@@ -316,14 +321,7 @@ class SpeechController extends Base
             return $this->returnRestResponse(400, $this->getError('No name entered'));
         }
 
-        $item              = new SpeechQueueItem();
-        $item->queueId     = $queue->id;
-        $item->subqueueId  = ($subqueue ? $subqueue->id : null);
-        $item->userId      = null;
-        $item->name        = $name;
-        $item->position    = null;
-        $item->dateApplied = date('Y-m-d H:i:s');
-        $item->save();
+        $queue->createItemOnAppliedList($name, $subqueue, null, null);
 
         $responseJson = json_encode($queue->getAdminApiObject());
         return $this->returnRestResponse(200, $responseJson);

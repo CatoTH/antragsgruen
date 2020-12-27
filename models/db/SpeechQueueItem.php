@@ -13,7 +13,8 @@ use yii\db\ActiveRecord;
  * @property int|null $userId
  * @property string|null $userToken
  * @property string $name
- * @property int|null $position - null if the user has only applied; >0 once assigned to a speaking slot
+ * @property int $position - >0 once assigned to a speaking slot (smaller numbers refer to higher positions)
+ *                                <0 if the user has only applied (higher, less-negative numbers refer to higher positions)
  * @property string|null $dateApplied
  * @property string|null $dateStarted - the exact time when the speaking has started
  * @property string|null $dateStopped - the exact time when the speaking has stopped; relevant when queue-based timing information is calculated
