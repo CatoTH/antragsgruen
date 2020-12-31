@@ -98,7 +98,7 @@ if ($myself) {
                 echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';
                 echo count($motion->getSupporters());
                 echo ' <small>(' . Yii::t('motion', 'support_collect_min') . ': ';
-                echo $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
+                echo $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
                 echo ')</small></div>';
             }
             echo "</li>\n";
@@ -140,8 +140,11 @@ if ($consultation->getSettings()->hasSpeechLists) {
     echo $this->render('@app/views/speech/_index_speech', ['queue' => $queue]);
 }
 
-echo $this->render($consultation->getSettings()->getStartLayoutView(), [
-    'consultation' => $consultation,
-    'layout'       => $layout,
-    'admin'        => $contentAdmin,
-]);
+
+if (count($consultation->motionTypes) > 0) {
+    echo $this->render($consultation->getSettings()->getStartLayoutView(), [
+        'consultation' => $consultation,
+        'layout' => $layout,
+        'admin' => $contentAdmin,
+    ]);
+}
