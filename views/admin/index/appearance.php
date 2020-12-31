@@ -222,7 +222,7 @@ $handledSiteSettings = [];
                         <?= Html::checkbox('hasMultipleSpeechLists', (count($speechSubqueues) > 1), ['id' => 'hasMultipleSpeechLists']) ?>
                         <?= Yii::t('admin', 'con_speech_quotas') ?>
                     </label>
-                    <label class="quotaName">
+                    <label class="quotaName quotaName0">
                         <span class="input-group">
                             <span class="input-group-addon">1.</span>
                             <input name="multipleSpeechListNames[]" value="<?= Html::encode($name1) ?>" class="form-control"
@@ -230,7 +230,7 @@ $handledSiteSettings = [];
                         </span>
                         <span class="sr-only"><?= str_replace('%no%', 1, Yii::t('admin', 'con_speech_quota_name')) ?></span>
                     </label>
-                    <label class="quotaName">
+                    <label class="quotaName quotaName1">
                         <span class="input-group">
                             <span class="input-group-addon">2.</span>
                             <input name="multipleSpeechListNames[]" value="<?= Html::encode($name2) ?>" class="form-control"

@@ -350,6 +350,7 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 });
             },
             settingsChanged: function () {
+                console.log("settingsChanged");
                 const widget = this;
                 $.post(setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
                     is_active: (this.queue.is_active ? 1 : 0),
