@@ -90,10 +90,15 @@ return [
     'applicationtype_pdf' => 'PDF',
     'applicationtype_pdf_desc' => 'Ein fertiges PDF wird hochgeladen',
 
-    'speech_quotas_title' => 'Quotierte Redelisten',
+    'speech_quotas_title' => 'Quotierte Redelisten?',
     'speech_quotas_desc' => 'Getrennte Frauen- und offene/Männer-Listen, abwechselnde Redebeiträge',
     'speech_quotas_no' => 'Nein',
     'speech_quotas_yes' => 'Ja',
+
+    'speech_login_title' => 'Login für Redelisten nötig?',
+    'speech_login_desc' => 'Muss man sich registrieren, um sich auf die Redeliste zu schreiben?',
+    'speech_login_no' => 'Nein',
+    'speech_login_yes' => 'Ja',
 
     'opennow_title' => 'Die Seite sofort veröffentlichen?',
     'opennow_desc'  => 'Oder zuerst im Wartungsmodus belassen?',

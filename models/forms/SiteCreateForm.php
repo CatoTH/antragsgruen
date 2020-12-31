@@ -39,6 +39,7 @@ class SiteCreateForm extends Model
     public $amendMerging    = false;
     public $motionScreening = true;
     public $amendScreening  = true;
+    public $speechLogin     = false;
     public $speechQuotas    = false;
 
     /** @var int */
@@ -129,6 +130,7 @@ class SiteCreateForm extends Model
         $this->minSupporters   = intval($values['minSupporters']);
         $this->hasComments     = ($values['hasComments'] == 1);
         $this->speechQuotas    = ($values['speechQuotas'] == 1);
+        $this->speechLogin     = ($values['speechLogin'] == 1);
         $this->openNow         = ($values['openNow'] == 1);
     }
 
@@ -518,6 +520,7 @@ class SiteCreateForm extends Model
         $settings = $consultation->getSettings();
         $settings->hasSpeechLists = true;
         $settings->speechListSubqueues = $subqueues;
+        $settings->speechRequiresLogin = $this->speechLogin;
         $consultation->setSettings($settings);
         $consultation->save();
 

@@ -17,7 +17,8 @@ interface WizardState {
     amendScreening: number;
     hasComments: number;
     applicationType: number;
-    panelSpeechQuotas: number;
+    speechQuotas: number;
+    speechLogin: number;
     openNow: number;
     title: string;
     organization: string;
@@ -92,7 +93,8 @@ class SiteCreateWizard {
             amendScreening: parseInt(this.getRadioValue('amendScreening', 1), 10),
             hasComments: parseInt(this.getRadioValue('hasComments', 1), 10),
             applicationType: parseInt(this.getRadioValue('applicationType', 1), 10),
-            panelSpeechQuotas: parseInt(this.getRadioValue('speechQuotas', 1), 10),
+            speechQuotas: parseInt(this.getRadioValue('speechQuotas', 1), 10),
+            speechLogin: parseInt(this.getRadioValue('speechLogin', 1), 10),
             openNow: parseInt(this.getRadioValue('openNow', 0), 10),
             title: $("#siteTitle").val() as string,
             organization: $("#siteOrganization").val() as string,
@@ -152,6 +154,7 @@ class SiteCreateWizard {
         panelAmendScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1,
         panelComments: (data: WizardState) => this.hasMotionlikeType(data),
         panelApplicationType: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_APPLICATIONS) !== -1,
+        panelSpeechLogin: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_SPEECH_LISTS) !== -1,
         panelSpeechQuotas: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_SPEECH_LISTS) !== -1,
         panelOpenNow: () => true,
         panelSiteData: () => true,

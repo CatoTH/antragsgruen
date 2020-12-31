@@ -95,6 +95,11 @@ return [
     'speech_quotas_no' => 'No',
     'speech_quotas_yes' => 'Yes',
 
+    'speech_login_title' => 'Login for speaking lists',
+    'speech_login_desc' => 'Is registering necessary to apply for the speaking list?',
+    'speech_login_no' => 'No',
+    'speech_login_yes' => 'Yes',
+
     'opennow_title' => 'Publish this site immediately?',
     'opennow_desc'  => 'If not, it will be created in maintenance mode',
     'opennow_no'    => 'Start in maintenance mode',
