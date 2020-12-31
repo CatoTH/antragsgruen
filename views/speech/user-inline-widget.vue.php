@@ -1,6 +1,9 @@
 <?php
 
 use app\components\UrlHelper;
+use yii\helpers\Html;
+
+$loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
 
 ob_start();
 ?>
@@ -60,10 +63,16 @@ ob_start();
             </div>
             <button class="btn btn-default btn-xs applyOpener" type="button"
                     v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id"
+                    :disabled="loginWarning"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
                 <?= Yii::t('speech', 'apply') ?>
             </button>
+            <a href="<?= Html::encode($loginUrl) ?>" class="loginWarning" v-if="loginWarning">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <?= Yii::t('speech', 'login_warning') ?>
+            </a>
+
             <form @submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].have_applied && showApplicationForm === queue.subqueues[0].id">
                 <label :for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
@@ -89,10 +98,15 @@ ob_start();
                 <div class="applied">
                     <button class="btn btn-default btn-xs" type="button"
                             v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id"
+                            :disabled="loginWarning"
                             @click="onShowApplicationForm($event, subqueue)"
                     >
                         <?= Yii::t('speech', 'apply') ?>
                     </button>
+                    <a href="<?= Html::encode($loginUrl) ?>" class="loginWarning" v-if="loginWarning">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <?= Yii::t('speech', 'login_warning') ?>
+                    </a>
 
                     <span class="number" v-if="showApplicationForm !== subqueue.id" title="<?= Yii::t('speech', 'persons_waiting') ?>">
                         <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'persons_waiting') ?>"></span>
@@ -164,6 +178,9 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                 return this.queue.slots.filter(function (slot) {
                     return slot.date_stopped === null && slot.date_started === null;
                 });
+            },
+            loginWarning: function () {
+                return this.queue.requires_login && !this.user.logged_in;
             }
         },
         methods: {

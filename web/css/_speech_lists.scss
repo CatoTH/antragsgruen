@@ -500,6 +500,12 @@
       margin-top: 10px;
     }
 
+    .loginWarning {
+      display: inline-block;
+      font-size: 0.8em;
+      white-space: nowrap;
+    }
+
     form {
       margin-top: 10px;
       display: inline-block;
@@ -555,6 +561,14 @@
 
     .appliedMe {
       display: inline-block;
+    }
+
+    .loginWarning {
+      display: inline-block;
+      margin-left: -15px;
+      font-size: 0.8em;
+      margin-right: 15px;
+      white-space: nowrap;
     }
   }
 
@@ -739,5 +753,12 @@
       padding: 0 5px;
       font-size: 75%; // Same as the .label next to it
     }
+  }
+
+  .loginWarning {
+    display: inline-block;
+    font-size: 0.8em;
+    margin-right: 15px;
+    white-space: nowrap;
   }
 }

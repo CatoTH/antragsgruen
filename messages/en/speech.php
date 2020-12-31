@@ -13,6 +13,7 @@ return [
     'current_nobody'     => 'nobody',
     'next_speaker'       => 'Next speaker',
     'you'                => 'You',
+    'login_warning'      => 'Log in',
     'waiting_aria_1'     => 'Waiting list',
     'waiting_aria_x'     => 'Waiting lists',
     'waiting_list_1'     => 'Waiting list',
