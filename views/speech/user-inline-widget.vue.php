@@ -128,7 +128,7 @@ ob_start();
                     <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">
                         <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                         <div class="input-group">
-                            <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
+                            <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInputs">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                             </span>
@@ -207,7 +207,11 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
 
                 this.showApplicationForm = subqueue.id;
                 this.$nextTick(function () {
-                    this.$refs.adderNameInput[0].focus();
+                    if (this.$refs.adderNameInputs) {
+                        this.$refs.adderNameInputs[0].focus();
+                    } else {
+                        this.$refs.adderNameInput.focus();
+                    }
                 });
             },
             removeMeFromQueue: function ($event) {
