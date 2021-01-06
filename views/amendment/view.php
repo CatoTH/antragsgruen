@@ -67,7 +67,9 @@ if ($supportCollectingStatus) {
     echo '<div class="alert alert-info supportCollectionHint" role="alert">';
     $supportType   = $amendment->getMyMotionType()->getAmendmentSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
+    $minAll        = $min + 1;
     $curr          = count($amendment->getSupporters());
+    $currAll       = $curr + count($motion->getInitiators());
     $missingFemale = $amendment->getMissingSupporterCountByGender($supportType, 'female');
     if ($curr >= $min && !$missingFemale) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('amend', 'support_collection_reached_hint'));
@@ -75,6 +77,11 @@ if ($supportCollectingStatus) {
         $minFemale = $supportType->getSettingsObj()->minSupportersFemale;
         if ($minFemale) {
             $currFemale = $amendment->getSupporterCountByGender('female');
+            echo str_replace(
+                ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
+                [$min, $curr, $minAll, $currAll, $minFemale, $currFemale],
+                Yii::t('motion', 'support_collection_hint_female')
+            );
             echo str_replace(
                 ['%MIN%', '%CURR%', '%MIN_F%', '%CURR_F%'],
                 [$min, $curr, $minFemale, $currFemale],
