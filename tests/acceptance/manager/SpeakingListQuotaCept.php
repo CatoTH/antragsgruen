@@ -44,6 +44,9 @@ $I->click('#panelHasAmendments button.btn-next');
 $I->click('#panelComments .value-1');
 $I->click('#panelComments button.btn-next');
 
+$I->click('#panelSpeechLogin .value-0');
+$I->click('#panelSpeechLogin button.btn-next');
+
 $I->click('#panelSpeechQuotas .value-1');
 $I->click('#panelSpeechQuotas button.btn-next');
 
