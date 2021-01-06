@@ -23,10 +23,11 @@ $I->dontSeeElement('.settingsTypeTemplate');
 $I->seeElement('.settingsTypeWizard');
 
 
-$I->see('Was soll diskutiert werden?', '#panelPurpose');
+$I->see('Welche Bestandteile soll die Seite haben?', '#panelFunctionality');
 
-$I->click('#panelPurpose .value-motion');
-$I->click('#panelPurpose button.btn-next');
+$I->seeElement('.checkbox-label.value-motion.active');
+$I->clickJS('.checkbox-label.value-agenda');
+$I->click('#panelFunctionality button.btn-next');
 
 $I->click('#panelSingleMotion .value-0');
 $I->click('#panelSingleMotion button.btn-next');
@@ -67,9 +68,6 @@ $I->click('#panelAmendScreening button.btn-next');
 $I->click('#panelComments .value-1');
 $I->click('#panelComments button.btn-next');
 
-$I->click('#panelAgenda .value-1');
-$I->click('#panelAgenda button.btn-next');
-
 $I->click('#panelOpenNow .value-0');
 $I->click('#panelOpenNow button.btn-next');
 
@@ -106,6 +104,10 @@ $I->openPage(SiteHomePage::class, [
     'subdomain' => 'stdparteitag'
 ]);
 $I->see('Neue Veranstaltung 1', 'h1');
+
+$I->see('Wahl: 1. Vorsitzende');
+$I->see('3. Sonstiges');
+
 
 $I->logout();
 $I->dontSee('Neue Veranstaltung 1', 'h1');

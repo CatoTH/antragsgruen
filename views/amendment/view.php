@@ -82,11 +82,6 @@ if ($supportCollectingStatus) {
                 [$min, $curr, $minAll, $currAll, $minFemale, $currFemale],
                 Yii::t('motion', 'support_collection_hint_female')
             );
-            echo str_replace(
-                ['%MIN%', '%CURR%', '%MIN_F%', '%CURR_F%'],
-                [$min, $curr, $minFemale, $currFemale],
-                Yii::t('motion', 'support_collection_hint_female')
-            );
         } else {
             echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('amend', 'support_collection_hint'));
         }
