@@ -258,9 +258,15 @@ class Base extends Controller
             $this->returnRestResponseFromException(new \Exception('API disabled', 403));
             Yii::$app->end();
         }
-        if ($this->consultation && ($this->consultation->urlPath === null || $this->consultation->dateDeletion || $this->consultation->getSettings()->maintenanceMode)) {
+        if ($this->consultation && ($this->consultation->urlPath === null || $this->consultation->dateDeletion)) {
             $this->returnRestResponseFromException(new \Exception('Consultation not found', 404));
             Yii::$app->end();
+        }
+        if ($this->consultation && $this->consultation->getSettings()->maintenanceMode && !$alwaysEnabled) {
+            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+                $this->returnRestResponseFromException(new \Exception('Consultation in maintenance mode', 404));
+                Yii::$app->end();
+            }
         }
 
         if ($this->site->getSettings()->apiCorsOrigins) {
