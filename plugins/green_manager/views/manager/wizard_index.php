@@ -1,14 +1,13 @@
 <?php
 
+$t = function (string $string): string {
+    return Yii::t('wizard', $string);
+};
+
 /**
  * @var string[] $errors
  * @var \app\models\forms\SiteCreateForm $model
  */
-
-$t = function ($string) {
-    return \Yii::t('wizard', $string);
-};
-
 
 ?>
 <div id="SiteCreateWizard" class="wizard" data-mode="site" data-init-step="#panelLanguage">
@@ -32,6 +31,7 @@ $t = function ($string) {
 </div>
 <div class="content">
     <?= $this->render('wizard_language', ['model' => $model, 't' => $t, 'errors' => $errors]) ?>
+    <?= $this->render('@app/views/createsiteWizard/functionality', ['model' => $model, 't' => $t, 'errors' => []]) ?>
     <?= $this->render('@app/views/createsiteWizard/single_motion', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/motion_who', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/motion_deadline', ['model' => $model, 't' => $t]) ?>
@@ -44,7 +44,9 @@ $t = function ($string) {
     <?= $this->render('@app/views/createsiteWizard/amend_screening', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/amend_merging', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/comments', ['model' => $model, 't' => $t]) ?>
-    <?= $this->render('@app/views/createsiteWizard/agenda', ['model' => $model, 't' => $t, 'mode' => 'site']) ?>
+    <?= $this->render('@app/views/createsiteWizard/application_type', ['model' => $model, 't' => $t, 'mode' => 'site']) ?>
+    <?= $this->render('@app/views/createsiteWizard/speech_login', ['model' => $model, 't' => $t]) ?>
+    <?= $this->render('@app/views/createsiteWizard/speech_quotas', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/opennow', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('wizard_subdomain', ['model' => $model, 't' => $t]) ?>
 </div>

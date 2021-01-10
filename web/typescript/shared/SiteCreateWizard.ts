@@ -140,6 +140,7 @@ class SiteCreateWizard {
     }
 
     public panelConditions = {
+        panelLanguage: () => this.firstPanel === '#panelLanguage',
         panelFunctionality: () => true,
         panelSingleMotion: (data: WizardState) => this.hasMotionlikeType(data),
         panelMotionWho: (data: WizardState) => this.hasMotionlikeType(data) && data.singleMotion === 0,

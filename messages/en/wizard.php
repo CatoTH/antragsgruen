@@ -17,7 +17,7 @@ return [
     'functionality_title'          => 'Which functionality should the site provide?',
     'functionality_desc'           => 'You can select multiple options.<br>Everything can also be (de-)activated after creating the site.',
     'functionality_motions'        => 'Motions',
-    'functionality_manifesto_desc' => '',
+    'functionality_manifesto_desc' => '&nbsp;',
     'functionality_manifesto'      => 'Manifesto',
     'functionality_applications'   => 'Candidatures',
     'functionality_agenda'         => 'An agenda',

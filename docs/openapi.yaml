@@ -81,7 +81,7 @@ paths:
   /rest/{consultationPath}/motion/{motionSlug}:
     get:
       summary: Details of this motion
-      description: The URL of this endpoint is not 100% predictable - please only use the links provided by the consultation index
+      description: The URL of this endpoint is not 100% predictable (because of motionSlug) - please only use the links provided by the consultation index
       parameters:
         - in: path
           name: consultationPath
@@ -116,8 +116,8 @@ paths:
                 $ref: '#/components/schemas/ErrorNotFound'
   /rest/{consultationPath}/motion/{motionSlug}/amendment/{amendmentId}:
     get:
-      summary: Details of this motion
-      description: The URL of this endpoint is not 100% predictable - please only use the links provided by the consultation index
+      summary: Details of this amendment
+      description: The URL of this endpoint is not 100% predictable (because of motionSlug) - please only use the links provided by the consultation index
       parameters:
         - in: path
           name: consultationPath

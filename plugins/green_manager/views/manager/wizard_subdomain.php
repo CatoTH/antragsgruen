@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 /**
  * @var \app\models\forms\SiteCreateForm $model
- * @var \Callable $t
+ * @var Callable $t
  */
 
 ?>
@@ -44,7 +44,7 @@ use yii\helpers\Html;
                 <?php
 
                 /** @var \app\models\settings\AntragsgruenApp $params */
-                $params     = \yii::$app->params;
+                $params     = Yii::$app->params;
                 $requestUrl = \app\components\UrlHelper::createUrl(['manager/check-subdomain', 'test' => 'SUBDOMAIN']);
                 $input      = '<div class="form-group has-feedback">';
                 $opts       = ['id' => 'siteSubdomain', 'class' => 'form-control', 'data-query-url' => $requestUrl, 'required' => 'required'];
@@ -111,7 +111,7 @@ use yii\helpers\Html;
     <div class="navigation">
         <button class="btn btn-lg btn-prev"><span class="icon-chevron-left"></span> <?= $t('prev') ?></button>
         <button type="submit" class="btn btn-lg btn-next btn-primary" name="create">
-            <span class="icon-chevron-right"></span> <?= $t('finish') ?>
+            <span class="icon-chevron-right" aria-hidden="true"></span> <?= $t('finish') ?>
         </button>
     </div>
 </div>

@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /**
  * @var string[] $errors
  * @var SiteCreateForm $model
- * @var \Callable $t
+ * @var Callable $t
  */
 
 ?>
@@ -25,12 +25,12 @@ use yii\helpers\Html;
             <?php
             foreach (\app\components\yii\MessageSource::getBaseLanguages() as $key => $name) {
                 ?>
-                <label class="radio-label value-motion">
+                <label class="radio-checkbox-label radio-label value-motion">
                     <span class="title"><?= Html::encode($name) ?></span>
                     <span class="description"></span>
                     <span class="input">
-                    <?= Html::radio('SiteCreateForm[language]', $model->language === $key, ['value' => $key]); ?>
-                </span>
+                        <?= Html::radio('SiteCreateForm[language]', $model->language === $key, ['value' => $key]); ?>
+                    </span>
                 </label>
                 <?php
             }
@@ -38,7 +38,9 @@ use yii\helpers\Html;
         </div>
     </fieldset>
     <div class="navigation">
-        <button class="btn btn-lg btn-next btn-primary"><span class="icon-chevron-right"></span> <?= $t('next') ?>
+        <button class="btn btn-lg btn-next btn-primary">
+            <span class="icon-chevron-right" aria-hidden="true"></span>
+            <?= $t('next') ?>
         </button>
     </div>
 </div>
