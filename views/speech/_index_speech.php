@@ -49,7 +49,7 @@ if ($user) {
 
 ?>
 <section aria-labelledby="speechListUserTitle"
-         data-antragsgruen-widget="Frontend/CurrentSpeechList" class="currentSpeechInline"
+         data-antragsgruen-widget="frontend/CurrentSpeechList" class="currentSpeechInline"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"

@@ -41,7 +41,7 @@ if ($queue->motion) {
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="manageSpeechQueue">
-    <section data-antragsgruen-widget="Backend/SpeechListEdit"
+    <section data-antragsgruen-widget="backend/SpeechListEdit"
              data-queue="<?= Html::encode(json_encode($initData)) ?>">
         <div class="speechAdmin"></div>
     </section>

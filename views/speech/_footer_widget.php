@@ -56,7 +56,7 @@ if ($user && $user->hasPrivilege($consultation, User::PRIVILEGE_SPEECH_QUEUES)) 
 
 ?>
 <section aria-labelledby="speechListUserTitle"
-         data-antragsgruen-widget="Frontend/CurrentSpeechList" class="currentSpeechFooter"
+         data-antragsgruen-widget="frontend/CurrentSpeechList" class="currentSpeechFooter"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitleShort()) ?>"
