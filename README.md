@@ -35,9 +35,9 @@ Installation
 - PHP >= 7.2. Recommended: 7.4+. Required packages for Debian Linux:
 
 ```bash
-# Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):
-apt-get install php7.4 php7.4-cli php7.4-fpm php7.4-intl php7.4-json php7.4-gd \
-                php7.4-mysql php7.4-opcache php7.4-curl php7.4-xml php7.4-mbstring php7.4-zip
+# Using PHP8-packages from [deb.sury.org](https://deb.sury.org/):
+apt-get install php8.0 php8.0-cli php8.0-fpm php8.0-intl php8.0-gd php8.0-mysql \
+                php8.0-opcache php8.0-curl php8.0-xml php8.0-mbstring php8.0-zip
 ```
 
 - Apache or nginx. Example files are provided here:
