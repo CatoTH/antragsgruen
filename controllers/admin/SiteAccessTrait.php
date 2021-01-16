@@ -72,7 +72,7 @@ trait SiteAccessTrait
             $user->save();
         }
 
-        $permissions = \Yii::$app->request->post('adminTypes');
+        $permissions = \Yii::$app->request->post('adminTypes', []);
         foreach ($permissions as $userId => $types) {
             if ($userId === User::getCurrentUser()->id) {
                 continue;
