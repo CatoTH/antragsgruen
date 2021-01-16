@@ -76,8 +76,17 @@ class ConsultationMotionType extends ActiveRecord
     public function setAttributes($values, $safeOnly = true)
     {
         parent::setAttributes($values, $safeOnly);
-        if (strlen($this->motionPrefix) > 0) {
-            $this->motionPrefix = substr($this->motionPrefix, 0, 10);
+        if (mb_strlen($this->motionPrefix) > 0) {
+            $this->motionPrefix = mb_substr($this->motionPrefix, 0, 10);
+        }
+        if (mb_strlen($this->titleSingular) > 100) {
+            $this->titleSingular = mb_substr($this->titleSingular, 0, 100);
+        }
+        if (mb_strlen($this->titlePlural) > 100) {
+            $this->titlePlural = mb_substr($this->titlePlural, 0, 100);
+        }
+        if (mb_strlen($this->createTitle) > 200) {
+            $this->createTitle = mb_substr($this->createTitle, 0, 200);
         }
     }
 

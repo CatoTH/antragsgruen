@@ -92,7 +92,8 @@ class MotionController extends AdminBase
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
+            $this->showErrorpage(404, $e->getMessage());
+            return;
         }
         if ($this->isPostSet('delete')) {
             if ($motionType->isDeletable()) {
