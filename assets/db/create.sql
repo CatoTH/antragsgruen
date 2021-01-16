@@ -349,10 +349,10 @@ CREATE TABLE `###TABLE_PREFIX###consultationUserPrivilege` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `emailBlacklist`
+-- Table structure for table `emailBlocklist`
 --
 
-CREATE TABLE `###TABLE_PREFIX###emailBlacklist` (
+CREATE TABLE `###TABLE_PREFIX###emailBlocklist` (
   `emailHash` VARCHAR(32) NOT NULL
 )
   ENGINE = InnoDB
@@ -850,9 +850,9 @@ ALTER TABLE `###TABLE_PREFIX###consultationUserPrivilege`
   ADD KEY `consultationId` (`consultationId`);
 
 --
--- Indexes for table `emailBlacklist`
+-- Indexes for table `emailBlocklist`
 --
-ALTER TABLE `###TABLE_PREFIX###emailBlacklist`
+ALTER TABLE `###TABLE_PREFIX###emailBlocklist`
   ADD PRIMARY KEY (`emailHash`);
 
 --

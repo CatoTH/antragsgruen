@@ -4,7 +4,7 @@ return [
     'my_acc_bread'              => 'Einstellungen',
     'email_address'             => 'E-Mail-Adresse',
     'email_address_new'         => 'Neue E-Mail-Adresse',
-    'email_blacklist'           => 'Jeglichen Mail-Versand an diese Adresse unterbinden',
+    'email_blocklist'           => 'Jeglichen Mail-Versand an diese Adresse unterbinden',
     'email_unconfirmed'         => 'unbestätigt',
     'pwd_confirm'               => 'Passwort bestätigen',
     'pwd_change'                => 'Passwort ändern',
@@ -150,7 +150,7 @@ return [
     'no_noti_unchanged'    => 'Benachrichtigungen unverändert lassen',
     'no_noti_consultation' => 'Benachrichtigungen dieser Veranstaltung (%NAME%) abbestellen',
     'no_noti_all'          => 'Alle Antragsgrün-Benachrichtigungen abbestellen',
-    'no_noti_blacklist'    => 'Grundsätzlich keine E-Mails mehr an meine E-Mail-Adresse <small>(auch keine Passwort-Wiederherstellungs-Mails etc.)</small>',
+    'no_noti_blocklist'    => 'Grundsätzlich keine E-Mails mehr an meine E-Mail-Adresse <small>(auch keine Passwort-Wiederherstellungs-Mails etc.)</small>',
     'no_noti_save'         => 'Speichern',
 
     'notification_title' => 'E-Mail-Benachrichtigungen',

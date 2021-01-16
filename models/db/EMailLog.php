@@ -5,8 +5,6 @@ namespace app\models\db;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property int $fromSiteId
  * @property string $toEmail
@@ -42,7 +40,7 @@ class EMailLog extends ActiveRecord
     const TYPE_COMMENT_NOTIFICATION_USER    = 14;
 
     const STATUS_SENT              = 0;
-    const STATUS_SKIPPED_BLACKLIST = 1;
+    const STATUS_SKIPPED_BLOCKLIST = 1;
     const STATUS_DELIVERY_ERROR    = 2;
     const STATUS_SKIPPED_OTHER     = 3;
 
@@ -94,16 +92,13 @@ class EMailLog extends ActiveRecord
     {
         return [
             static::STATUS_SENT              => 'Verschickt',
-            static::STATUS_SKIPPED_BLACKLIST => 'Nicht verschickt (E-Mail-Blacklist)',
+            static::STATUS_SKIPPED_BLOCKLIST => 'Nicht verschickt (E-Mail-Blocklist)',
             static::STATUS_DELIVERY_ERROR    => 'Versandfehler',
             static::STATUS_SKIPPED_OTHER     => 'Übersprungen',
         ];
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
@@ -127,10 +122,7 @@ class EMailLog extends ActiveRecord
         return $this->hasOne(Site::class, ['id' => 'fromSiteId']);
     }
 
-    /**
-     * @return array
-     */
-    public function getUserdataExportObject()
+    public function getUserdataExportObject(): array
     {
         $types = $this->getTypes();
         return [

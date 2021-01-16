@@ -29,7 +29,7 @@ DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationFile`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationSubscription`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###siteAdmin`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###emailLog`;
-DROP TABLE IF EXISTS `###TABLE_PREFIX###emailBlacklist`;
+DROP TABLE IF EXISTS `###TABLE_PREFIX###emailBlocklist`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationOdtTemplate`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationLatexTemplate`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationAgendaItem`;

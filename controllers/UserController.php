@@ -3,9 +3,9 @@
 namespace app\controllers;
 
 use app\components\{ConsultationAccessPassword, Tools, UrlHelper, WurzelwerkSamlClient};
-use app\models\db\{AmendmentSupporter, ConsultationUserPrivilege, EMailBlacklist, MotionSupporter, User, UserNotification};
+use app\models\db\{AmendmentSupporter, ConsultationUserPrivilege, EMailBlocklist, MotionSupporter, User, UserNotification};
 use app\models\events\UserEvent;
-use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent};
+use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;
@@ -37,12 +37,7 @@ class UserController extends Base
         Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
     }
 
-    /**
-     * @param string $backUrl
-     * @return int|string
-     * @throws \yii\base\ExitException
-     */
-    public function actionLoginsaml($backUrl = '')
+    public function actionLoginsaml(string $backUrl = ''): string
     {
         /** @var AntragsgruenApp $params */
         $params = Yii::$app->params;
@@ -62,7 +57,7 @@ class UserController extends Base
 
             $this->redirect($backUrl);
         } catch (\Exception $e) {
-            return $this->showErrorpage(
+            $this->showErrorpage(
                 500,
                 Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
             );
@@ -197,12 +192,7 @@ class UserController extends Base
         );
     }
 
-    /**
-     * @param string $backUrl
-     * @return int|string
-     * @throws \yii\base\ExitException
-     */
-    private function logoutSaml($backUrl = '')
+    private function logoutSaml(string $backUrl = ''): string
     {
         try {
             /** @var AntragsgruenApp $params */
@@ -230,22 +220,17 @@ class UserController extends Base
                 $samlClient->logout();
                 $this->redirect($backUrl);
             }
-            return '';
         } catch (\Exception $e) {
-            return $this->showErrorpage(
+            $this->showErrorpage(
                 500,
                 Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
             );
         }
+        return '';
     }
 
 
-    /**
-     * @param string $backUrl
-     * @return int|string
-     * @throws \yii\base\ExitException
-     */
-    public function actionLogout($backUrl)
+    public function actionLogout(string $backUrl = ''): string
     {
         /** @var AntragsgruenApp $params */
         $params = Yii::$app->params;
@@ -263,13 +248,7 @@ class UserController extends Base
         }
     }
 
-    /**
-     * @param string $email
-     * @param string $code
-     * @return string
-     * @throws \app\models\exceptions\ServerConfiguration
-     */
-    public function actionRecovery($email = '', $code = '')
+    public function actionRecovery(string $email = '', string $code = ''): string
     {
         if ($this->isPostSet('send')) {
             /** @var User $user */
@@ -283,10 +262,7 @@ class UserController extends Base
                     $user->sendRecoveryMail();
                     $msg = Yii::t('user', 'pwd_recovery_sent');
                     Yii::$app->session->setFlash('success', $msg);
-                } catch (MailNotSent $e) {
-                    $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                    Yii::$app->session->setFlash('error', $errMsg);
-                } catch (FormError $e) {
+                } catch (MailNotSent | ServerConfiguration | FormError $e) {
                     $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                     Yii::$app->session->setFlash('error', $errMsg);
                 }
@@ -338,12 +314,7 @@ class UserController extends Base
         return $this->redirect(UrlHelper::createUrl('user/myaccount'));
     }
 
-    /**
-     * @return string
-     * @throws FormError
-     * @throws \app\models\exceptions\ServerConfiguration
-     */
-    public function actionMyaccount()
+    public function actionMyaccount(): string
     {
         $this->forceLogin();
 
@@ -360,7 +331,7 @@ class UserController extends Base
                     try {
                         $user->sendEmailChangeMail($changeRequested);
                         Yii::$app->session->setFlash('success', Yii::t('user', 'emailchange_sent'));
-                    } catch (MailNotSent $e) {
+                    } catch (MailNotSent | ServerConfiguration $e) {
                         $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                         Yii::$app->session->setFlash('error', $errMsg);
                     }
@@ -386,11 +357,11 @@ class UserController extends Base
 
             $user->save();
 
-            if ($user->email != '' && $user->emailConfirmed) {
-                if (isset($post['emailBlacklist'])) {
-                    EMailBlacklist::addToBlacklist($user->email);
+            if ($user->email && $user->emailConfirmed) {
+                if (isset($post['emailBlocklist'])) {
+                    EMailBlocklist::addToBlocklist($user->email);
                 } else {
-                    EMailBlacklist::removeFromBlacklist($user->email);
+                    EMailBlocklist::removeFromBlocklist($user->email);
                 }
             }
 
@@ -405,7 +376,7 @@ class UserController extends Base
                         try {
                             $user->sendEmailChangeMail($post['email']);
                             Yii::$app->session->setFlash('success', Yii::t('user', 'emailchange_sent'));
-                        } catch (MailNotSent $e) {
+                        } catch (MailNotSent | ServerConfiguration $e) {
                             $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                             Yii::$app->session->setFlash('error', $errMsg);
                         }
@@ -428,29 +399,24 @@ class UserController extends Base
         }
 
         if ($user->email != '' && $user->emailConfirmed) {
-            $emailBlacklisted = EMailBlacklist::isBlacklisted($user->email);
+            $emailBlocked = EMailBlocklist::isBlocked($user->email);
         } else {
-            $emailBlacklisted = false;
+            $emailBlocked = false;
         }
 
         return $this->render('my_account', [
-            'user'             => $user,
-            'emailBlacklisted' => $emailBlacklisted,
-            'pwMinLen'         => $pwMinLen,
+            'user' => $user,
+            'emailBlocked' => $emailBlocked,
+            'pwMinLen' => $pwMinLen,
         ]);
     }
 
-    /**
-     * @param string $code
-     * @return string
-     * @throws \Exception
-     * @throws \Throwable
-     */
-    public function actionEmailblacklist($code)
+    public function actionEmailblocklist(string $code): string
     {
         $user = User::getUserByUnsubscribeCode($code);
         if (!$user) {
-            return $this->showErrorpage(403, Yii::t('user', 'err_user_acode_notfound'));
+            $this->showErrorpage(403, Yii::t('user', 'err_user_acode_notfound'));
+            return '';
         }
 
         if ($this->isPostSet('save')) {
@@ -464,30 +430,26 @@ class UserController extends Base
 
             if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] === 'all') {
                 foreach ($user->notifications as $noti) {
+                    /** @noinspection PhpUnhandledExceptionInspection */
                     $noti->delete();
                 }
             }
 
-            if (isset($post['emailBlacklist'])) {
-                EMailBlacklist::addToBlacklist($user->email);
+            if (isset($post['emailBlocklist'])) {
+                EMailBlocklist::addToBlocklist($user->email);
             } else {
-                EMailBlacklist::removeFromBlacklist($user->email);
+                EMailBlocklist::removeFromBlocklist($user->email);
             }
 
             Yii::$app->session->setFlash('success', Yii::t('base', 'saved'));
         }
 
-        return $this->render('email_blacklist', [
-            'user'          => $user,
-            'consultation'  => $this->consultation,
-            'isBlacklisted' => EMailBlacklist::isBlacklisted($user->email),
+        return $this->render('email_blocklist', [
+            'isBlocked' => EMailBlocklist::isBlocked($user->email),
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionDataExport()
+    public function actionDataExport(): string
     {
         $this->forceLogin();
         $user = User::getCurrentUser();
@@ -562,10 +524,7 @@ class UserController extends Base
         return json_encode($data);
     }
 
-    /**
-     * @return string
-     */
-    public function actionConsultationaccesserror()
+    public function actionConsultationaccesserror(): string
     {
         $user = User::getCurrentUser();
 

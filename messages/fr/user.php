@@ -4,7 +4,7 @@ return [
     'my_acc_bread'              => 'Paramètres',
     'email_address'             => 'Addresse email',
     'email_address_new'         => 'Nouvelle adresse email',
-    'email_blacklist'           => 'Bloquer tous les emails de ce compte',
+    'email_blocklist'           => 'Bloquer tous les emails de ce compte',
     'email_unconfirmed'         => 'non-confirmé',
     'pwd_confirm'               => 'Confirmer le mot-de-passe',
     'pwd_change'                => 'Changer le mot de passe',
@@ -126,6 +126,6 @@ return [
     'no_noti_unchanged'    => 'Laisser les notifications comme elles sont',
     'no_noti_consultation' => 'Se désinscire des notifications de cette consultation (%NAME%)',
     'no_noti_all'          => 'Se désinscrire de toutes les notifications',
-    'no_noti_blacklist'    => 'Aucun email du tout<small>(y compris les emails de récupération de mot de passe, etc.)</small>',
+    'no_noti_blocklist'    => 'Aucun email du tout<small>(y compris les emails de récupération de mot de passe, etc.)</small>',
     'no_noti_save'         => 'Enregistrer',
 ];

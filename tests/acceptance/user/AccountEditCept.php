@@ -29,7 +29,7 @@ $I->seeBootboxDialog('Die beiden Passwörter stimmen nicht überein');
 $I->acceptBootboxConfirm();
 
 $I->fillField('#userPwd2', '1234');
-$I->checkOption('input[name=emailBlacklist]');
+$I->checkOption('input[name=emailBlocklist]');
 $I->submitForm('.userAccountForm', [], 'save');
 $I->see('Gespeichert.');
 
@@ -55,11 +55,11 @@ $I->see('Willkommen!');
 $I->click('#myAccountLink');
 
 $I->seeInField('#userName', 'My new name');
-$I->seeCheckboxIsChecked('input[name=emailBlacklist]');
+$I->seeCheckboxIsChecked('input[name=emailBlocklist]');
 
-$I->uncheckOption('input[name=emailBlacklist]');
+$I->uncheckOption('input[name=emailBlocklist]');
 
 $I->submitForm('.userAccountForm', [], 'save');
 $I->see('Gespeichert.');
 
-$I->dontSeeCheckboxIsChecked('input[name=emailBlacklist]');
+$I->dontSeeCheckboxIsChecked('input[name=emailBlocklist]');

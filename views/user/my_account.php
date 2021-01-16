@@ -7,7 +7,7 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var User $user
- * @var bool $emailBlacklisted
+ * @var bool $emailBlocked
  * @var int $pwMinLen
  */
 
@@ -76,7 +76,7 @@ if ($externalAuthenticator === null) {
         }
 
         echo '<div class="checkbox">
-        <label>' . Html::checkbox('emailBlacklist', $emailBlacklisted) . Yii::t('user', 'email_blacklist') . '</label>
+        <label>' . Html::checkbox('emailBlocklist', $emailBlocked) . Yii::t('user', 'email_blocklist') . '</label>
       </div>';
 
         echo '</div>

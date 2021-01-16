@@ -2,7 +2,7 @@
 
 namespace app\components\mail;
 
-use app\models\db\{Consultation, EMailBlacklist, EMailLog};
+use app\models\db\{Consultation, EMailBlocklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
 
 class Mailjet extends Base
@@ -73,8 +73,8 @@ class Mailjet extends Base
         if (YII_ENV === 'test' || mb_strpos($toEmail, '@example.org') !== false) {
             return EMailLog::STATUS_SKIPPED_OTHER;
         }
-        if (EMailBlacklist::isBlacklisted($toEmail)) {
-            return EMailLog::STATUS_SKIPPED_BLACKLIST;
+        if (EMailBlocklist::isBlocked($toEmail)) {
+            return EMailLog::STATUS_SKIPPED_BLOCKLIST;
         }
 
         $message['To'] = [

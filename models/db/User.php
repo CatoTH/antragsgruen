@@ -4,7 +4,7 @@ namespace app\models\db;
 
 use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, WurzelwerkSamlClient, mail\Tools as MailTools};
 use app\models\events\UserEvent;
-use app\models\exceptions\{FormError, MailNotSent};
+use app\models\exceptions\{FormError, MailNotSent, ServerConfiguration};
 use app\models\settings\AntragsgruenApp;
 use yii\db\{ActiveRecord, Expression};
 use yii\web\IdentityInterface;
@@ -541,7 +541,6 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $subject
      * @param string $text
      * @param int $mailType
-     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function notificationEmail(Consultation $consultation, $subject, $text, $mailType)
     {
@@ -549,14 +548,14 @@ class User extends ActiveRecord implements IdentityInterface
             return;
         }
         $code         = $this->getNotificationUnsubscribeCode();
-        $blacklistUrl = UrlHelper::createUrl(['user/emailblacklist', 'code' => $code]);
-        $blacklistUrl = UrlHelper::absolutizeLink($blacklistUrl);
+        $blocklistUrl = UrlHelper::createUrl(['user/emailblocklist', 'code' => $code]);
+        $blocklistUrl = UrlHelper::absolutizeLink($blocklistUrl);
         $salutation   = str_replace('%NAME%', $this->name, \Yii::t('user', 'noti_greeting') . "\n\n");
-        $sig          = "\n\n" . \Yii::t('user', 'noti_bye') . "\n" . $blacklistUrl;
+        $sig          = "\n\n" . \Yii::t('user', 'noti_bye') . "\n" . $blocklistUrl;
         $text         = $salutation . $text . $sig;
         try {
             MailTools::sendWithLog($mailType, $consultation, $this->email, $this->id, $subject, $text);
-        } catch (MailNotSent $e) {
+        } catch (MailNotSent | ServerConfiguration $e) {
             \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
     }
