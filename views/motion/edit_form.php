@@ -46,10 +46,10 @@ echo str_replace('%HOME%', UrlHelper::homeUrl(), $form->motionType->getConsultat
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
     $supp = $form->motionType->getMotionSupportTypeClass();
-    $str = Yii::t('motion', 'support_collect_explanation');
+    $str = $form->motionType->getConsultationTextWithFallback('motion', 'support_collect_explanation');
     $str = str_replace('%MIN%', $supp->getSettingsObj()->minSupporters, $str);
     $str = str_replace('%MIN+1%', ($supp->getSettingsObj()->minSupporters + 1), $str);
-    $title = Yii::t('motion', 'support_collect_explanation_title');
+    $title = $form->motionType->getConsultationTextWithFallback('motion', 'support_collect_explanation_title');
 
     if (trim($title) !== '' || trim($str) !== '') {
         echo '<div style="font-weight: bold; text-decoration: underline;">' .

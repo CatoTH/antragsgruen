@@ -49,7 +49,7 @@ foreach (MessageSource::getMotionTypeChangableTexts() as $categoryId => $textIds
 
     foreach ($textIds as $textId) {
         /** @var \app\models\db\ConsultationText|null $existingText */
-        $existingText = (isset($existingTranslations[$categoryId]) && $existingTranslations[$categoryId][$textId] ? $existingTranslations[$categoryId][$textId] : null);
+        $existingText = $existingTranslations[$categoryId][$textId] ?? null;
         $value = ($existingText ? $existingText->text : '');
         $htmlId = 'string_' . $categoryId . '_' . $textId;
         ?>

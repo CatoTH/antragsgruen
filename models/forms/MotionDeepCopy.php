@@ -19,7 +19,7 @@ class MotionDeepCopy
 {
     public static function copyMotion(Motion $motion, ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, string $newPrefix): Motion
     {
-        $newConsultation = $motionType->getMyConsultation();
+        $newConsultation = $motionType->getConsultation();
         $slug = $motion->slug;
 
         if ($motion->consultationId === $newConsultation->id) {

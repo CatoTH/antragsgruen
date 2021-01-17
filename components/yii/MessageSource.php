@@ -116,6 +116,33 @@ class MessageSource extends \yii\i18n\MessageSource
         return [
             'motion' => [
                 'create_explanation',
+                'support_collect_explanation',
+                'support_collect_explanation_title',
+                'confirmed_support_phase',
+                'confirmed_support_phase_addfemale',
+                'confirmed_support_phase_ww',
+                'submitted_screening_email',
+                'submitted_screening_email_subject',
+                'submitted_supp_phase_email',
+                'submitted_supp_phase_email_subject',
+                'submitted_adminnoti_title',
+                'submitted_adminnoti_body',
+                'support_reached_email_subject',
+                'support_reached_email_body',
+                'back_to_motion',
+            ],
+            'amend' => [
+                'create_explanation',
+                'support_collect_explanation',
+                'support_collect_explanation_title',
+                'submitted_screening_email',
+                'submitted_screening_email_subject',
+                'submitted_supp_phase_email',
+                'submitted_supp_phase_email_subject',
+                'submitted_adminnoti_title',
+                'submitted_adminnoti_body',
+                'support_reached_email_subject',
+                'support_reached_email_body',
             ],
         ];
     }

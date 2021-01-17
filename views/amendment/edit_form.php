@@ -15,7 +15,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$multipleParagraphs = $form->motion->motionType->amendmentMultipleParagraphs;
+$motionType = $form->motion->getMyMotionType();
+$multipleParagraphs = $motionType->amendmentMultipleParagraphs;
 
 if ($form->motion->titlePrefix !== '') {
     if ($consultation->getSettings()->hideTitlePrefix) {
@@ -37,7 +38,7 @@ if ($form->motion->titlePrefix !== '') {
 $layout->robotsNoindex = true;
 $layout->loadCKEditor();
 $layout->loadFuelux();
-$layout->addBreadcrumb($form->motion->motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
+$layout->addBreadcrumb($motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
 $layout->addBreadcrumb(Yii::t('amend', $mode === 'create' ? 'amendment_create' : 'amendment_edit'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
@@ -45,30 +46,27 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
 echo '<div class="form content">';
 
 echo '<br><div class="alert alert-info">';
-echo Yii::t('amend', 'create_explanation');
+echo $motionType->getConsultationTextWithFallback('amend', 'create_explanation');
 echo '</div><br style="clear: both;">';
 
 
 echo $controller->showErrors();
 
-if ($form->motion->motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
+if ($motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
-    $supp = $form->motion->motionType->getAmendmentSupportTypeClass();
-    $str  = Yii::t('amend', 'support_collect_explanation');
+    $supp = $motionType->getAmendmentSupportTypeClass();
+    $str  = $motionType->getConsultationTextWithFallback('amend', 'support_collect_explanation');
     $str  = str_replace('%MIN%', $supp->getSettingsObj()->minSupporters, $str);
     $str  = str_replace('%MIN+1%', ($supp->getSettingsObj()->minSupporters + 1), $str);
 
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
-        Yii::t('amend', 'support_collect_explanation_title') . '</div>' .
+        $motionType->getConsultationTextWithFallback('amend', 'support_collect_explanation_title') . '</div>' .
         $str . '<br><br>';
 }
 
-$amendmentPolicy = $form->motion->motionType->getAmendmentPolicy();
+$amendmentPolicy = $motionType->getAmendmentPolicy();
 if (!in_array($amendmentPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
-    echo '<div>
-                <legend>' . Yii::t('amend', 'amendment_requirement'), '</legend>
-            </div>';
-
+    echo '<div><legend>' . Yii::t('amend', 'amendment_requirement'), '</legend></div>';
     echo $amendmentPolicy->getOnCreateDescription();
 }
 

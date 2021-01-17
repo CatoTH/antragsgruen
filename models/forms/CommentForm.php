@@ -150,15 +150,13 @@ class CommentForm extends Model
         }
     }
 
-    /**
-     */
     public function saveNotificationSettings()
     {
         $user = User::getCurrentUser();
         if (!$user) {
             return;
         }
-        $consultation = $this->motionType->getMyConsultation();
+        $consultation = $this->motionType->getConsultation();
         if ($this->notifications) {
             UserNotification::addCommentNotification($user, $consultation, $this->notificationsettings);
         } else {
@@ -167,14 +165,12 @@ class CommentForm extends Model
     }
 
     /**
-     * @param Motion $motion
-     * @return MotionComment
      * @throws Access
      * @throws DB
      * @throws FormError
      * @throws Internal
      */
-    public function saveMotionCommentWithChecks(Motion $motion)
+    public function saveMotionCommentWithChecks(Motion $motion): MotionComment
     {
         $this->checkWritePermissions();
 
@@ -213,14 +209,12 @@ class CommentForm extends Model
 
 
     /**
-     * @param Amendment $amendment
-     * @return AmendmentComment
      * @throws Access
      * @throws DB
      * @throws FormError
      * @throws Internal
      */
-    public function saveAmendmentCommentWithChecks(Amendment $amendment)
+    public function saveAmendmentCommentWithChecks(Amendment $amendment): AmendmentComment
     {
         $this->checkWritePermissions();
 
@@ -256,16 +250,12 @@ class CommentForm extends Model
         return $comment;
     }
 
-    /**
-     * @param bool $skipError
-     * @return string
-     */
-    public function renderFormOrErrorMessage($skipError = false)
+    public function renderFormOrErrorMessage(bool $skipError = false): string
     {
         if ($this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
             return \Yii::$app->controller->renderPartial('@app/views/motion/_comment_form', [
                 'form'         => $this,
-                'consultation' => $this->motionType->getMyConsultation(),
+                'consultation' => $this->motionType->getConsultation(),
                 'paragraphNo'  => $this->paragraphNo,
                 'sectionId'    => $this->sectionId,
                 'isReplyTo'    => $this->replyTo,

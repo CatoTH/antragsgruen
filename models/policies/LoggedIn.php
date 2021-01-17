@@ -88,7 +88,7 @@ class LoggedIn extends IPolicy
         }
 
         if ($allowAdmins && User::getCurrentUser()) {
-            if (User::havePrivilege($this->motionType->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+            if (User::havePrivilege($this->motionType->getConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
                 return true;
             }
         }

@@ -14,7 +14,12 @@ use yii\helpers\Html;
 
 $controller = $this->context;
 
-$this->title = Yii::t('motion', $mode === 'create' ? 'Start a Motion' : 'Edit Motion');
+$typeName = $motion->getMyMotionType()->titleSingular;
+if ($mode === 'create') {
+    $this->title = $typeName;
+} else {
+    $this->title = str_replace('%TYPE%', $typeName, Yii::t('motion', 'motion_edit'));
+}
 
 $controller->layoutParams->robotsNoindex = true;
 $controller->layoutParams->addBreadcrumb($this->title);

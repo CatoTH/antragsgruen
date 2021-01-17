@@ -15,11 +15,12 @@ $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('motion', 'edit_done');
 
+$motionType = $motion->getMyMotionType();
 $layout->robotsNoindex = true;
 if ($motion->titlePrefix) {
     $layout->addBreadcrumb($motion->titlePrefix, UrlHelper::createMotionUrl($motion));
 } else {
-    $layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMotionUrl($motion));
+    $layout->addBreadcrumb($motionType->titleSingular, UrlHelper::createMotionUrl($motion));
 }
 $layout->addBreadcrumb(Yii::t('motion', 'edit_bread'));
 
@@ -31,7 +32,7 @@ echo '<div class="alert alert-success" role="alert">';
 echo Yii::t('motion', 'edit_done_msg');
 echo '</div>';
 
+$backMsg = $motionType->getConsultationTextWithFallback('motion', 'back_to_motion');
 echo Html::beginForm(UrlHelper::createMotionUrl($motion), 'post', ['id' => 'motionConfirmedForm']);
-echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . Yii::t('motion', 'back_to_motion') .
-    '</button></p>';
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . $backMsg . '</button></p>';
 echo Html::endForm();

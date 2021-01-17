@@ -20,17 +20,18 @@ class MotionSubmitted extends Base implements IEmailAdmin
     public function getEmailAdminText(): string
     {
         // @TODO Use different texts depending on the status
-
+        $motionType = $this->motion->getMyMotionType();
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
         return str_replace(
             ['%TITLE%', '%LINK%', '%INITIATOR%'],
             [$this->motion->getTitleWithIntro(), $motionLink, $this->motion->getInitiatorsStr()],
-            \Yii::t('motion', 'submitted_adminnoti_body')
+            $motionType->getConsultationTextWithFallback('motion', 'submitted_adminnoti_body')
         );
     }
 
     public function getEmailAdminSubject(): string
     {
-        return \Yii::t('motion', 'submitted_adminnoti_title');
+        $motionType = $this->motion->getMyMotionType();
+        return $motionType->getConsultationTextWithFallback('motion', 'submitted_adminnoti_title');
     }
 }

@@ -178,11 +178,10 @@ class MotionMover
     private function moveToConsultation(ConsultationMotionType $motionType, string $titlePrefix): Motion
     {
         $oldConsultation              = $this->motion->getMyConsultation();
-        $newConsultation              = $motionType->getMyConsultation();
+        $newConsultation              = $motionType->getConsultation();
         $this->motion->agendaItemId   = null;
         $this->motion->titlePrefix    = $titlePrefix;
         $this->motion->consultationId = $newConsultation->id;
-        /** @noinspection PhpUnhandledExceptionInspection */
         $this->motion->setMotionType($motionType);
 
         $oldConsultation->flushMotionCache();

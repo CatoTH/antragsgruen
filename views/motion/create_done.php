@@ -11,12 +11,16 @@ use yii\helpers\Html;
  * @var \app\controllers\Base $controller
  */
 
-$this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
+$typeName = $motion->getMyMotionType()->titleSingular;
+if ($mode === 'create') {
+    $this->title = $typeName;
+} else {
+    $this->title = str_replace('%TYPE%', $typeName, Yii::t('motion', 'motion_edit'));
+}
 
 $controller = $this->context;
 $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
 
-$typeName = $motion->getMyMotionType()->titleSingular;
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'submitted_create')) . '</h1>';
     $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_create'));
@@ -37,13 +41,15 @@ if ($motion->isInScreeningProcess()) {
     echo Yii::t('motion', 'confirmed_screening');
 }
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-    $supportType   = $motion->motionType->getMotionSupportTypeClass();
+    $supportType   = $motion->getMyMotionType()->getMotionSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
-    $msg           = str_replace(['%TITLE%', '%MIN%'], [$motion->getMyMotionType()->titleSingular, $min], Yii::t('motion', 'confirmed_support_phase'));
+    $msgTpl        = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'confirmed_support_phase');
+    $msg           = str_replace(['%TITLE%', '%MIN%'], [$typeName, $min], $msgTpl);
     $requirement   = '';
     $missingFemale = $motion->getMissingSupporterCountByGender($supportType, 'female');
     if ($missingFemale > 0) {
-        $requirement = str_replace('%MIN%', $missingFemale, Yii::t('motion', 'confirmed_support_phase_addfemale'));
+        $requirementTpl = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'confirmed_support_phase_addfemale');
+        $requirement = str_replace('%MIN%', $missingFemale, $requirementTpl);
     }
     $msg = str_replace('%ADD_REQUIREMENT%', $requirement, $msg);
 
@@ -78,7 +84,7 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     <?php
     if ($motion->motionType->policySupportMotions === \app\models\policies\IPolicy::POLICY_WURZELWERK) {
         echo '<div class="alert alert-info">';
-        echo Yii::t('motion', 'confirmed_support_phase_ww');
+        echo $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'confirmed_support_phase_ww');
         echo '</div>';
     }
 }

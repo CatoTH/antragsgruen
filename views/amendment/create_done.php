@@ -14,6 +14,7 @@ use yii\helpers\Html;
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 $controller  = $this->context;
 $motion      = $amendment->getMyMotion();
+$motionType  = $amendment->getMyMotionType();
 
 $controller->layoutParams->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createAmendmentUrl($amendment));
@@ -37,13 +38,15 @@ if ($amendment->isInScreeningProcess()) {
     echo Yii::t('amend', 'confirmed_screening');
 }
 if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
-    $supportType   = $amendment->getMyMotionType()->getAmendmentSupportTypeClass();
+    $supportType   = $motionType->getAmendmentSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
-    $msg           = str_replace('%MIN%', $min, Yii::t('amend', 'confirmed_support_phase'));
+    $msgTpl        = $motionType->getConsultationTextWithFallback('amend', 'confirmed_support_phase');
+    $msg           = str_replace('%MIN%', $min, $msgTpl);
     $requirement   = '';
     $missingFemale = $amendment->getMissingSupporterCountByGender($supportType, 'female');
     if ($missingFemale > 0) {
-        $requirement = str_replace('%MIN%', $missingFemale, Yii::t('amend', 'confirmed_support_phase_addfemale'));
+        $requirementTpl = $motionType->getConsultationTextWithFallback('amend', 'confirmed_support_phase_addfemale');
+        $requirement = str_replace('%MIN%', $missingFemale, $requirementTpl);
     }
     $msg = str_replace('%ADD_REQUIREMENT%', $requirement, $msg);
 
@@ -76,13 +79,12 @@ if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
         <div class="hidden clipboard-done"><?= Yii::t('motion', 'copy_to_clipboard_done') ?></div>
     </div>
     <?php
-    if ($motion->motionType->policySupportMotions === \app\models\policies\IPolicy::POLICY_WURZELWERK) {
+    if ($motionType->policySupportMotions === \app\models\policies\IPolicy::POLICY_WURZELWERK) {
         echo '<div class="alert alert-info">';
         echo Yii::t('amend', 'confirmed_support_phase_ww');
         echo '</div>';
     }
 }
 
-echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . Yii::t('amend', 'sidebar_back') .
-     '</button></p>';
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . Yii::t('amend', 'sidebar_back') . '</button></p>';
 echo Html::endForm();

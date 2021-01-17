@@ -63,10 +63,7 @@ class ConsultationMotionType extends ActiveRecord
 
     protected $deadlinesObject = null;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
@@ -90,10 +87,7 @@ class ConsultationMotionType extends ActiveRecord
         }
     }
 
-    /**
-     * @return Consultation
-     */
-    public function getConsultation()
+    public function getConsultation(): Consultation
     {
         $current = Consultation::getCurrent();
         if ($current && $current->id === $this->consultationId) {
@@ -196,16 +190,6 @@ class ConsultationMotionType extends ActiveRecord
     {
         $settings = $this->getAmendmentSupporterSettings();
         return SupportBase::getImplementation($settings, $this);
-    }
-
-    public function getMyConsultation(): Consultation
-    {
-        $current = Consultation::getCurrent();
-        if ($current && $current->id === $this->consultationId) {
-            return $current;
-        } else {
-            return Consultation::findOne($this->consultationId);
-        }
     }
 
     public function getPDFLayoutClass(): ?IPDFLayout
@@ -365,11 +349,9 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @param bool $withdrawnAreVisible
-     *
      * @return Motion[]
      */
-    public function getVisibleMotions($withdrawnAreVisible = true)
+    public function getVisibleMotions(bool $withdrawnAreVisible = true): array
     {
         $return = [];
         foreach ($this->motions as $motion) {
@@ -408,10 +390,10 @@ class ConsultationMotionType extends ActiveRecord
     /**
      * @return ConsultationMotionType[]
      */
-    public function getCompatibleMotionTypes()
+    public function getCompatibleMotionTypes(): array
     {
         $compatible = [];
-        foreach ($this->getMyConsultation()->motionTypes as $motionType) {
+        foreach ($this->getConsultation()->motionTypes as $motionType) {
             if ($motionType->isCompatibleTo($this)) {
                 $compatible[] = $motionType;
             }

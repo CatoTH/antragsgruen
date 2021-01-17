@@ -138,7 +138,7 @@ $type = ConsultationMotionType::DEADLINE_COMMENTS;
     <?= HTMLTools::labeledCheckbox(
         'activateDeadlineDebugMode',
         Yii::t('admin', 'motion_deadline_debug'),
-        DateTools::isDeadlineDebugModeActive($motionType->getMyConsultation()),
+        DateTools::isDeadlineDebugModeActive($motionType->getConsultation()),
         'deadlineDebugMode'
     ) ?>
 </div>

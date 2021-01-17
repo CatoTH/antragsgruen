@@ -5,35 +5,35 @@ namespace app\components;
 use app\components\mail\Tools as MailTools;
 use app\models\db\{Amendment, EMailLog, Motion};
 use app\models\exceptions\MailNotSent;
+use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
 
 class EmailNotifications
 {
     /**
-     * @param Motion $motion
-     *
-     * @throws \app\models\exceptions\Internal
+     * @throws \app\models\exceptions\Internal|\app\models\exceptions\ServerConfiguration
      */
-    public static function sendMotionSubmissionConfirm(Motion $motion)
+    public static function sendMotionSubmissionConfirm(Motion $motion): void
     {
         if (!$motion->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
             return;
         }
 
+        $motionType = $motion->getMyMotionType();
         $initiator = $motion->getInitiators();
         if (count($initiator) > 0 && trim($initiator[0]->contactEmail) !== '') {
             if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-                $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
+                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
                 $min        = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
                 $emailText  = str_replace('%MIN%', $min, $emailText);
-                $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
+                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
             } else {
-                $emailText  = \Yii::t('motion', 'submitted_screening_email');
-                $emailTitle = \Yii::t('motion', 'submitted_screening_email_subject');
+                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email');
+                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email_subject');
             }
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
             $plain      = $emailText;
-            $motionHtml = '<h1>' . Html::encode($motion->getMyMotionType()->titleSingular) . ': ';
+            $motionHtml = '<h1>' . Html::encode($motionType->titleSingular) . ': ';
             $motionHtml .= Html::encode($motion->title);
             $motionHtml .= '</h1>';
 
@@ -71,15 +71,12 @@ class EmailNotifications
         }
     }
 
-    /**
-     * @param Motion $motion
-     */
-    public static function sendMotionSupporterMinimumReached(Motion $motion)
+    public static function sendMotionSupporterMinimumReached(Motion $motion): void
     {
         $initiator = $motion->getInitiators();
         if (count($initiator) > 0 && trim($initiator[0]->contactEmail) !== '') {
-            $emailText  = \Yii::t('motion', 'support_reached_email_body');
-            $emailTitle = \Yii::t('motion', 'support_reached_email_subject');
+            $emailText  = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'support_reached_email_body');
+            $emailTitle = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'support_reached_email_subject');
 
             $emailText = str_replace('%TITLE%', $motion->getTitleWithPrefix(), $emailText);
             $emailText = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $emailText);
@@ -100,17 +97,15 @@ class EmailNotifications
                     $plain,
                     $html
                 );
-            } catch (MailNotSent $e) {
+            } catch (MailNotSent | ServerConfiguration $e) {
             }
         }
     }
 
     /**
-     * @param Amendment $amendment
-     *
      * @throws \app\models\exceptions\Internal
      */
-    public static function sendAmendmentSubmissionConfirm(Amendment $amendment)
+    public static function sendAmendmentSubmissionConfirm(Amendment $amendment): void
     {
         if (!$amendment->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
             return;
@@ -120,13 +115,13 @@ class EmailNotifications
         $motionType = $amendment->getMyMotion()->getMyMotionType();
         if (count($initiator) > 0 && $initiator[0]->contactEmail) {
             if ($amendment->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-                $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
+                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
                 $min        = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
                 $emailText  = str_replace('%MIN%', $min, $emailText);
-                $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
+                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
             } else {
-                $emailText  = \Yii::t('amend', 'submitted_screening_email');
-                $emailTitle = \Yii::t('amend', 'submitted_screening_email_subject');
+                $emailText  = $motionType->getConsultationTextWithFallback('amend', 'submitted_screening_email');
+                $emailTitle = $motionType->getConsultationTextWithFallback('amend', 'submitted_screening_email_subject');
             }
             $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
             $plain         = $emailText;
@@ -158,20 +153,17 @@ class EmailNotifications
                     $plain,
                     $html
                 );
-            } catch (MailNotSent $e) {
+            } catch (MailNotSent | ServerConfiguration $e) {
             }
         }
     }
 
-    /**
-     * @param Amendment $amendment
-     */
-    public static function sendAmendmentSupporterMinimumReached(Amendment $amendment)
+    public static function sendAmendmentSupporterMinimumReached(Amendment $amendment): void
     {
         $initiator = $amendment->getInitiators();
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            $emailText  = \Yii::t('motion', 'support_reached_email_body');
-            $emailTitle = \Yii::t('motion', 'support_reached_email_subject');
+            $emailText  = $amendment->getMyMotionType()->getConsultationTextWithFallback('amend', 'support_reached_email_body');
+            $emailTitle = $amendment->getMyMotionType()->getConsultationTextWithFallback('amend', 'support_reached_email_subject');
 
             $emailText = str_replace('%TITLE%', $amendment->getTitle(), $emailText);
             $emailText = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $emailText);

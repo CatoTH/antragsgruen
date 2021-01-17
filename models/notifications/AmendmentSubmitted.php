@@ -13,7 +13,7 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
     public function __construct(Amendment $amendment)
     {
         $this->amendment       = $amendment;
-        $this->consultation = $amendment->getMyMotion()->getMyConsultation();
+        $this->consultation = $amendment->getMyConsultation();
 
         parent::__construct();
     }
@@ -26,12 +26,12 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
         return str_replace(
             ['%TITLE%', '%LINK%', '%INITIATOR%'],
             [$this->amendment->getTitle(), $amendmentLink, $this->amendment->getInitiatorsStr()],
-            \Yii::t('amend', 'submitted_adminnoti_body')
+            $this->amendment->getMyMotionType()->getConsultationTextWithFallback('amend', 'submitted_adminnoti_body')
         );
     }
 
     public function getEmailAdminSubject(): string
     {
-        return \Yii::t('amend', 'submitted_adminnoti_title');
+        return $this->amendment->getMyMotionType()->getConsultationTextWithFallback('amend', 'submitted_adminnoti_title');
     }
 }
