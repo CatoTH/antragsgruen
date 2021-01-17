@@ -79,8 +79,8 @@ trait ConsultationAgendaTrait
         }
 
         if ($data['type'] === 'agendaItem') {
-            $item->title = $data['title'];
-            $item->code  = $data['code'];
+            $item->title = mb_substr($data['title'], 0, 250);
+            $item->code  = mb_substr($data['code'], 0, 20);
             if (isset($data['time']) && preg_match('/^\d\d:\d\d$/siu', $data['time'])) {
                 $item->time = $data['time'];
             } else {
