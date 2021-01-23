@@ -40,7 +40,7 @@ class DefaultBehavior
      */
     public static function getSortedMotionsSort($prefix1, $prefix2)
     {
-        return MotionSorter::getSortedMotionsSort($prefix1, $prefix2);
+        return MotionSorter::getSortedMotionsSort($prefix1 ?? '', $prefix2 ?? '');
     }
 
     /**

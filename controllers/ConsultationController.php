@@ -461,7 +461,7 @@ class ConsultationController extends Base
         $this->layout = 'column2';
 
         $user = User::getCurrentUser();
-        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));

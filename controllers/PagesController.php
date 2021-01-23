@@ -10,14 +10,12 @@ use yii\web\{NotFoundHttpException, Response};
 
 class PagesController extends Base
 {
-    /**
-     * @return string
-     * @throws Access
-     */
-    public function actionListPages()
+    public function actionListPages(): string
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
-            throw new Access('No permissions to edit this page');
+            $this->showErrorpage(403, 'No permissions to edit this page');
+
+            return '';
         }
 
         if (\Yii::$app->request->post('create')) {
@@ -47,12 +45,7 @@ class PagesController extends Base
         return $this->render('list');
     }
 
-    /**
-     * @param string $pageSlug
-     *
-     * @return string
-     */
-    public function actionShowPage($pageSlug)
+    public function actionShowPage(string $pageSlug): string
     {
         $pageData = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
 
@@ -61,7 +54,7 @@ class PagesController extends Base
         $allowedPages = ['maintenance', 'legal', 'privacy'];
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
             if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
-                return false;
+                $this->showErrorpage(404, 'Page not found');
             }
         }
 
@@ -69,12 +62,9 @@ class PagesController extends Base
     }
 
     /**
-     * @param string $pageSlug
-     *
-     * @return ConsultationText|null
      * @throws Access
      */
-    protected function getPageForEdit($pageSlug)
+    protected function getPageForEdit(string $pageSlug): ?ConsultationText
     {
         if (\Yii::$app->request->get('pageId')) {
             $page = ConsultationText::findOne(\Yii::$app->request->get('pageId'));
@@ -105,12 +95,9 @@ class PagesController extends Base
     }
 
     /**
-     * @param string $pageSlug
-     *
-     * @return string
      * @throws Access
      */
-    public function actionSavePage($pageSlug)
+    public function actionSavePage(string $pageSlug): string
     {
         $page = $this->getPageForEdit($pageSlug);
 
@@ -190,7 +177,7 @@ class PagesController extends Base
         return json_encode($result);
     }
 
-    private function handleDownloadableFiles(array $post)
+    private function handleDownloadableFiles(array $post): array
     {
         $result = [];
         if (isset($post['uploadDownloadableFile']) && strlen($post['uploadDownloadableFile']) > 0) {
@@ -211,7 +198,7 @@ class PagesController extends Base
         return $result;
     }
 
-    public function actionDeleteFile()
+    public function actionDeleteFile(): string
     {
         $fileId = intval(\Yii::$app->request->post('id'));
         foreach ($this->consultation->files as $file) {
@@ -250,18 +237,12 @@ class PagesController extends Base
     }
 
 
-    /**
-     * @return string
-     */
-    public function actionMaintenance()
+    public function actionMaintenance(): string
     {
         return $this->renderContentPage('maintenance');
     }
 
-    /**
-     * @return string
-     */
-    public function actionLegal()
+    public function actionLegal(): string
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
@@ -276,10 +257,9 @@ class PagesController extends Base
     }
 
     /**
-     * @return string
      * @throws Access
      */
-    public function actionUpload()
+    public function actionUpload(): string
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to upload files');
@@ -308,11 +288,9 @@ class PagesController extends Base
     }
 
     /**
-     * @return string
      * @throws Access
-     * @throws \Throwable
      */
-    public function actionBrowseImages()
+    public function actionBrowseImages(): string
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to upload files');

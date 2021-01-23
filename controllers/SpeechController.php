@@ -139,7 +139,7 @@ class SpeechController extends Base
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
-        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
             $this->returnRestResponse(403, $this->getError('Missing privileges'));
             die();
         }

@@ -253,7 +253,7 @@ class MotionSorter
             return Amendment::sortByLineNumbers($consultation, $amendments);
         } else {
             usort($amendments, function (Amendment $am1, Amendment $am2) {
-                return static::getSortedMotionsSort($am1->titlePrefix, $am2->titlePrefix);
+                return static::getSortedMotionsSort($am1->titlePrefix ?? '', $am2->titlePrefix ?? '');
             });
             return $amendments;
         }

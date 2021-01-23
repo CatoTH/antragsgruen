@@ -48,7 +48,7 @@ class Tools
         if ($locale === 'de') {
             $pattern = '/^(?<day>\\d{1,2})\.(?<month>\\d{1,2})\.(?<year>\\d{4}) ' .
                        '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
-            if (preg_match($pattern, $time, $matches)) {
+            if (preg_match($pattern, $time, $matches) && $matches['year'] > 1970) {
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
                     $matches['year'],
@@ -61,7 +61,7 @@ class Tools
         } elseif ($locale === 'fr') {
             $pattern = '/^(?<day>\\d{1,2})\/(?<month>\\d{1,2})\/(?<year>\\d{4}) ' .
                        '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
-            if (preg_match($pattern, $time, $matches)) {
+            if (preg_match($pattern, $time, $matches) && $matches['year'] > 1970) {
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
                     $matches['year'],
@@ -74,7 +74,7 @@ class Tools
         } elseif ($locale === 'en') {
             $pattern = '/^(?<month>\\d{1,2})\/(?<day>\\d{1,2})\/(?<year>\\d{4}) ' .
                        '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2}) (?<ampm>am|pm)$/i';
-            if (preg_match($pattern, $time, $matches)) {
+            if (preg_match($pattern, $time, $matches) && $matches['year'] > 1970) {
                 if (intval($matches['hour']) === 12) {
                     $hours = (strtolower($matches['ampm']) === 'pm' ? 12 : 0);
                 } else {

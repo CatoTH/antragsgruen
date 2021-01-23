@@ -165,31 +165,19 @@ class Base extends Controller
         return $response;
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    protected function isPostSet($name)
+    protected function isPostSet(string $name): bool
     {
         $post = Yii::$app->request->post();
         return isset($post[$name]);
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    protected function isGetSet($name)
+    protected function isGetSet(string $name): bool
     {
         $get = Yii::$app->request->get();
         return isset($get[$name]);
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public function isRequestSet($name)
+    public function isRequestSet(string $name): bool
     {
         return $this->isPostSet($name) || $this->isGetSet($name);
     }
@@ -212,11 +200,7 @@ class Base extends Controller
         return $default;
     }
 
-    /**
-     * @param string $pageKey
-     * @return string
-     */
-    public function renderContentPage($pageKey)
+    public function renderContentPage(string $pageKey): string
     {
         if ($this->consultation) {
             $admin = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
@@ -307,10 +291,7 @@ class Base extends Controller
         ]));
     }
 
-    /**
-     * @return AntragsgruenApp
-     */
-    public function getParams()
+    public function getParams(): AntragsgruenApp
     {
         /** @var AntragsgruenApp $app */
         $app = Yii::$app->params;
@@ -336,10 +317,9 @@ class Base extends Controller
 
 
     /**
-     * @return bool
      * @throws \yii\base\ExitException
      */
-    public function testMaintenanceMode()
+    public function testMaintenanceMode(): bool
     {
         if ($this->consultation == null) {
             return false;
@@ -354,10 +334,9 @@ class Base extends Controller
     }
 
     /**
-     * @return bool
      * @throws \yii\base\ExitException
      */
-    public function testSiteForcedLogin()
+    public function testSiteForcedLogin(): bool
     {
         if ($this->consultation === null) {
             return false;
