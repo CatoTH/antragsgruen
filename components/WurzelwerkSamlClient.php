@@ -60,9 +60,9 @@ class WurzelwerkSamlClient implements ClientInterface
     public function getOrCreateUser()
     {
         $email         = $this->params[static::PARAM_EMAIL][0];
-        $givenname     = $this->params[static::PARAM_GIVEN_NAME][0];
-        $familyname    = $this->params[static::PARAM_FAMILY_NAME][0];
-        $organizations = ($this->params[static::PARAM_ORGANIZATION] ? $this->params[static::PARAM_ORGANIZATION] : []);
+        $givenname     = (isset($this->params[static::PARAM_GIVEN_NAME]) ? $this->params[static::PARAM_GIVEN_NAME][0] : '');
+        $familyname    = (isset($this->params[static::PARAM_FAMILY_NAME]) ? $this->params[static::PARAM_FAMILY_NAME][0] : '');
+        $organizations = (isset($this->params[static::PARAM_ORGANIZATION]) ? $this->params[static::PARAM_ORGANIZATION] : []);
         $username      = $this->params[static::PARAM_USERNAME][0];
         $auth          = User::wurzelwerkId2Auth($username);
 
