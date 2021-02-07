@@ -1,7 +1,8 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{Motion, MotionComment, MotionSupporter, User};
+use app\models\sectionTypes\ISectionType;
+use app\models\db\{Consultation, Motion, MotionComment, MotionSupporter, User};
 use app\models\forms\CommentForm;
 use app\models\policies\{IPolicy, Nobody};
 use app\views\motion\LayoutHelper;
@@ -10,6 +11,7 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var Motion $motion
+ * @var Consultation $consultation
  * @var int[] $openedComments
  * @var string|null $adminEdit
  * @var null|string $supportStatus
@@ -36,6 +38,14 @@ if ($motion->isResolution()) {
     $this->title = $motion->getTitleWithIntro() . ' (' . $motion->getMyConsultation()->title . ')';
 } else {
     $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ')';
+}
+
+foreach ($motion->getActiveSections(ISectionType::TYPE_IMAGE) as $image) {
+    if ($layout->ogImage === '') {
+        /** @var \app\models\sectionTypes\Image $imageType */
+        $imageType = $image->getSectionType();
+        $layout->ogImage = $imageType->getImageUrl(true);
+    }
 }
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
