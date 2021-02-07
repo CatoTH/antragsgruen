@@ -54,7 +54,7 @@ export class MoveMotion {
         let isEnabled = true;
 
         let consultationId;
-        if (this.$form.find('input[name=target]:checked').val() === 'consultation') {
+        if (this.$form.find('input[name=target]:checked').val() === 'consultation' && this.$form.find('input[name=consultation]').length > 0) {
             consultationId = parseInt(this.$form.find('input[name=consultation]').val() as string);
         } else {
             consultationId = null;
