@@ -72,7 +72,8 @@ foreach ($layout->feeds as $title => $url) {
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
-if ($layout->ogImage !== '') {
+$forbidRobots = ($controller->consultation && $controller->consultation->getSettings()->robotsPolicy === \app\models\settings\Consultation::ROBOTS_NONE);
+if ($layout->ogImage !== '' && !$forbidRobots) {
     echo '<meta property="og:image" content="' . Html::encode($layout->ogImage) . '">' . "\n";
 }
 
@@ -85,7 +86,7 @@ echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>'
 
 echo \app\models\layoutHooks\Layout::favicons();
 
-echo $this->head();
+$this->head();
 
 echo \app\models\layoutHooks\Layout::endOfHead($controller->consultation);
 echo '</head>';
