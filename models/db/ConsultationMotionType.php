@@ -30,8 +30,6 @@ use yii\db\ActiveRecord;
  * @property int $initiatorsCanMergeAmendments
  * @property int $motionLikesDislikes
  * @property int $amendmentLikesDislikes
- * @property int $supportType @TODO Obsolete, remove database fields with next major version
- * @property string $supportTypeSettings @TODO Obsolete, remove database fields with next major version
  * @property string $supportTypeMotions
  * @property string $supportTypeAmendments
  * @property int $amendmentMultipleParagraphs

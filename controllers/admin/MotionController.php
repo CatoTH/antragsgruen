@@ -301,8 +301,6 @@ class MotionController extends AdminBase
                     $initiatorSettings->contactName    = InitiatorForm::CONTACT_NONE;
                     $initiatorSettings->contactPhone   = InitiatorForm::CONTACT_OPTIONAL;
                     $initiatorSettings->contactEmail   = InitiatorForm::CONTACT_OPTIONAL;
-                    $motionType->supportType           = 0; // @TODO Remove after database fields are deleted
-                    $motionType->supportTypeSettings   = ''; // @TODO Remove after database fields are deleted
                     $motionType->supportTypeMotions    = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
                     $motionType->supportTypeAmendments = null;
 

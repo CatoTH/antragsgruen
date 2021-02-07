@@ -41,8 +41,6 @@ trait Manifesto
         $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
         $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
         $type->supportTypeAmendments     = null;
-        $type->supportType               = 0; // @TODO Remove after database fields have been deleted
-        $type->supportTypeSettings       = ''; // @TODO Remove after database fields have been deleted
 
         $type->setSettingsObj(new MotionType(null));
 

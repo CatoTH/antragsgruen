@@ -20,8 +20,6 @@ use yii\db\ActiveRecord;
  * @property string $title
  * @property string $titleShort
  * @property string $wordingBase
- * @property string $eventDateFrom
- * @property string $eventDateTo
  * @property string $adminEmail
  * @property string $dateCreation
  * @property string $dateDeletion
@@ -85,8 +83,7 @@ class Consultation extends ActiveRecord
     {
         return [
             [['title', 'dateCreation'], 'required'],
-            [['title', 'titleShort', 'eventDateFrom', 'eventDateTo'], 'safe'],
-            [['adminEmail', 'wordingBase', 'amendmentNumbering'], 'safe'],
+            [['title', 'titleShort', 'adminEmail', 'wordingBase', 'amendmentNumbering'], 'safe'],
             ['!urlPath', 'match', 'pattern' => '/^[\w_-]+$/i'],
         ];
     }
