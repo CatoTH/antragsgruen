@@ -4,6 +4,7 @@ namespace app\components;
 
 use app\components\mail\Tools as MailTools;
 use app\models\db\{Amendment, EMailLog, Motion};
+use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
@@ -11,7 +12,7 @@ use yii\helpers\Html;
 class EmailNotifications
 {
     /**
-     * @throws \app\models\exceptions\Internal|\app\models\exceptions\ServerConfiguration
+     * @throws Internal|ServerConfiguration
      */
     public static function sendMotionSubmissionConfirm(Motion $motion): void
     {
@@ -103,7 +104,7 @@ class EmailNotifications
     }
 
     /**
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
     public static function sendAmendmentSubmissionConfirm(Amendment $amendment): void
     {
@@ -158,6 +159,9 @@ class EmailNotifications
         }
     }
 
+    /**
+     * @throws ServerConfiguration
+     */
     public static function sendAmendmentSupporterMinimumReached(Amendment $amendment): void
     {
         $initiator = $amendment->getInitiators();

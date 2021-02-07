@@ -13,10 +13,6 @@ use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
 use yii\web\{NotFoundHttpException, Response};
 
-/**
- * Class AmendmentController
- * @package app\controllers
- */
 class AmendmentController extends Base
 {
     use AmendmentActionsTrait;
@@ -190,7 +186,7 @@ class AmendmentController extends Base
 
         try {
             $this->performShowActions($amendment, $commentId, $amendmentViewParams);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
@@ -361,7 +357,6 @@ class AmendmentController extends Base
      * @return string
      * @throws \app\models\exceptions\Internal
      * @throws \app\models\exceptions\NotAmendable
-     * @throws \yii\base\ExitException
      */
     public function actionCreate($motionSlug, $cloneFrom = 0)
     {
@@ -376,7 +371,8 @@ class AmendmentController extends Base
                 $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
                 return $this->redirect($loginUrl);
             } else {
-                return $this->showErrorpage(403, \Yii::t('amend', 'err_create_permission'));
+                $this->showErrorpage(403, \Yii::t('amend', 'err_create_permission'));
+                return '';
             }
         }
 

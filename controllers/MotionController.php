@@ -107,11 +107,9 @@ class MotionController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     *
      * @return string
      */
-    public function actionViewChanges($motionSlug)
+    public function actionViewChanges(string $motionSlug)
     {
         $this->layout = 'column2';
 
@@ -141,27 +139,23 @@ class MotionController extends Base
         ]);
     }
 
-    /**
-     * @param string $motionSlug
-     * @param string $fromMode
-     *
-     * @return string
-     */
-    public function actionCreatedone($motionSlug, $fromMode)
+    public function actionCreatedone(string $motionSlug, string $fromMode): string
     {
         $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
 
         return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
     }
 
     /**
-     * @param string $motionSlug
-     * @param string $fromMode
-     *
      * @return string
      * @throws Internal
      */
-    public function actionCreateconfirm($motionSlug, $fromMode)
+    public function actionCreateconfirm(string $motionSlug, string $fromMode)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion || $motion->status !== Motion::STATUS_DRAFT) {
@@ -201,12 +195,10 @@ class MotionController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     *
      * @return string
      * @throws FormError
      */
-    public function actionEdit($motionSlug)
+    public function actionEdit(string $motionSlug)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {

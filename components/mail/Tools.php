@@ -42,30 +42,20 @@ class Tools
     }
 
     /**
-     * @param int $mailType
-     * @param Consultation|null $fromConsultation
-     * @param string $toEmail
-     * @param null|int $toPersonId
-     * @param string $subject
-     * @param string $textPlain
-     * @param string $textHtml
-     * @param null|array $noLogReplaces
-     * @param string|null $fromName
-     * @param string|null $replyTo
      * @throws MailNotSent
      * @throws ServerConfiguration
      */
     public static function sendWithLog(
-        $mailType,
-        $fromConsultation,
-        $toEmail,
-        $toPersonId,
-        $subject,
-        $textPlain,
-        $textHtml = '',
-        $noLogReplaces = null,
-        $fromName = null,
-        $replyTo = null
+        int $mailType,
+        ?Consultation $fromConsultation,
+        string $toEmail,
+        ?int $toPersonId,
+        string $subject,
+        string $textPlain,
+        string $textHtml = '',
+        ?array $noLogReplaces = null,
+        ?string $fromName = null,
+        ?string $replyTo = null
     ) {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
@@ -138,7 +128,6 @@ class Tools
 
         if ($exception) {
             \Yii::error($exception->getMessage());
-            /** @var \Exception $exception */
             throw new MailNotSent($exception->getMessage());
         }
 

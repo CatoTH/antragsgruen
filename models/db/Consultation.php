@@ -180,7 +180,7 @@ class Consultation extends ActiveRecord
             if (is_numeric($motionSlug) && $motion->id === intval($motionSlug) && $motion->status !== Motion::STATUS_DELETED) {
                 return $motion;
             }
-            if (!is_numeric($motionSlug) && $motion->slug === $motionSlug && $motion->status !== Motion::STATUS_DELETED) {
+            if (!is_numeric($motionSlug) && mb_strtolower($motion->slug) === mb_strtolower($motionSlug) && $motion->status !== Motion::STATUS_DELETED) {
                 return $motion;
             }
         }

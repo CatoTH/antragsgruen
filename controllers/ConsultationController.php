@@ -429,10 +429,7 @@ class ConsultationController extends Base
         return $this->returnRestResponse(200, $this->renderPartial('rest_site_get', ['site' => $this->site]));
     }
 
-    /**
-     * @return string
-     */
-    public function actionDebugbarAjax()
+    public function actionDebugbarAjax(): string
     {
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
