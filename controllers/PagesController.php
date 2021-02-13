@@ -10,12 +10,12 @@ use yii\web\{NotFoundHttpException, Response};
 
 class PagesController extends Base
 {
-    public function actionListPages(): string
+    public function actionListPages(): Response
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             $this->showErrorpage(403, 'No permissions to edit this page');
 
-            return '';
+            return \Yii::$app->response;
         }
 
         if (\Yii::$app->request->post('create')) {
@@ -42,7 +42,8 @@ class PagesController extends Base
             }
         }
 
-        return $this->render('list');
+        \Yii::$app->response->data = $this->render('list');
+        return \Yii::$app->response;
     }
 
     public function actionShowPage(string $pageSlug): string
@@ -55,6 +56,7 @@ class PagesController extends Base
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
             if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
                 $this->showErrorpage(404, 'Page not found');
+                return '';
             }
         }
 
