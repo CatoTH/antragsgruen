@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.7.0 [not released yet]
+## Version 4.7.0 (2021-02-13)
 
 - WARNING: if you are using a PHP 7.1 or older, then update to PHP 7.3 or newer first before installing this update!
 - Speaking lists for live events can now be administered.
