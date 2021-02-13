@@ -542,7 +542,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $text
      * @param int $mailType
      */
-    public function notificationEmail(Consultation $consultation, $subject, $text, $mailType)
+    public function notificationEmail(Consultation $consultation, $subject, $text, $mailType): void
     {
         if ($this->email == '' || !$this->emailConfirmed) {
             return;
@@ -567,10 +567,9 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @param Consultation|null $consultation
      * @param int|int[] $privilege
-     * @return bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function hasPrivilege($consultation, $privilege)
+    public function hasPrivilege($consultation, $privilege): bool
     {
         if (!$consultation) {
             return false;
@@ -635,10 +634,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
-    /**
-     * @return int
-     */
-    public function getAuthType()
+    public function getAuthType(): int
     {
         if ($this->isWurzelwerkUser()) {
             return \app\models\settings\Site::LOGIN_WURZELWERK;
@@ -665,6 +661,9 @@ class User extends ActiveRecord implements IdentityInterface
                 throw new FormError(\Yii::t('user', 'err_recover_mail_sent'));
             }
         }
+        if ($this->email === null) {
+            return;
+        }
 
         $recoveryToken       = rand(1000000, 9999999);
         $this->recoveryAt    = date('Y-m-d H:i:s');
@@ -682,10 +681,9 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param string $token
-     * @return bool
      * @throws FormError
      */
-    public function checkRecoveryToken($token)
+    public function checkRecoveryToken($token): bool
     {
         if ($this->recoveryAt) {
             $recTs = Tools::dateSql2timestamp($this->recoveryAt);
@@ -706,7 +704,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param int $timestamp
      * @return string
      */
-    public function createEmailChangeToken($newEmail, $timestamp)
+    public function createEmailChangeToken($newEmail, $timestamp): string
     {
         if (YII_ENV == 'test' && mb_strpos($newEmail, '@example.org') !== false) {
             return 'testCode';
@@ -778,10 +776,7 @@ class User extends ActiveRecord implements IdentityInterface
         $this->save();
     }
 
-    /**
-     * @return string|null
-     */
-    public function getChangeRequestedEmailAddress()
+    public function getChangeRequestedEmailAddress(): ?string
     {
         if (!$this->emailChangeAt) {
             return null;
@@ -793,10 +788,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->emailChange;
     }
 
-    /**
-     * @return array
-     */
-    public function getUserdataExportObject()
+    public function getUserdataExportObject(): array
     {
         switch ($this->status) {
             case static::STATUS_CONFIRMED:
@@ -825,8 +817,6 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    /**
-     */
     public function deleteAccount()
     {
         $this->name            = '';

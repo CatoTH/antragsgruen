@@ -36,7 +36,7 @@ if ($user) {
         'logged_in' => true,
         'id'        => null,
         'token'     => $cookieUser->userToken,
-        'name'      => $user->name,
+        'name'      => $cookieUser->name,
     ];
 } else {
     $userData = [
