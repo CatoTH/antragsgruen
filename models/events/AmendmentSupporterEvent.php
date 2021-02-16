@@ -10,9 +10,13 @@ class AmendmentSupporterEvent extends Event
     /** @var AmendmentSupporter */
     public $supporter;
 
-    public function __construct(AmendmentSupporter $supporter)
+    /** @var bool */
+    public $hadEnoughSupportersBefore;
+
+    public function __construct(AmendmentSupporter $supporter, bool $hadEnoughSupportersBefore)
     {
         parent::__construct([]);
         $this->supporter = $supporter;
+        $this->hadEnoughSupportersBefore = $hadEnoughSupportersBefore;
     }
 }

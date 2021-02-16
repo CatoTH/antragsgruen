@@ -94,6 +94,8 @@ class MotionSupporter extends ISupporter
      */
     public static function createSupport(Motion $motion, $user, $name, $orga, $role, $gender = '')
     {
+        $hadEnoughSupportersBefore = $motion->hasEnoughSupporters($motion->getMyMotionType()->getMotionSupportTypeClass());
+
         $maxPos = 0;
         if ($user) {
             foreach ($motion->motionSupporters as $supp) {
@@ -132,7 +134,7 @@ class MotionSupporter extends ISupporter
         $motion->refresh();
         $motion->flushViewCache();
 
-        $support->trigger(MotionSupporter::EVENT_SUPPORTED, new MotionSupporterEvent($support));
+        $support->trigger(MotionSupporter::EVENT_SUPPORTED, new MotionSupporterEvent($support, $hadEnoughSupportersBefore));
     }
 
     public static function checkOfficialSupportNumberReached(MotionSupporterEvent $event): void
@@ -143,9 +145,9 @@ class MotionSupporter extends ISupporter
         }
         /** @var Motion $motion */
         $motion = $support->getIMotion();
-
         $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
-        if (count($motion->getSupporters()) == $supportType->getSettingsObj()->minSupporters) {
+
+        if (!$event->hadEnoughSupportersBefore && $motion->hasEnoughSupporters($supportType)) {
             EmailNotifications::sendMotionSupporterMinimumReached($motion);
         }
     }

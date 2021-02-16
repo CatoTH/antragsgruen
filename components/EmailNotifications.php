@@ -159,9 +159,6 @@ class EmailNotifications
         }
     }
 
-    /**
-     * @throws ServerConfiguration
-     */
     public static function sendAmendmentSupporterMinimumReached(Amendment $amendment): void
     {
         $initiator = $amendment->getInitiators();
@@ -188,7 +185,7 @@ class EmailNotifications
                     $plain,
                     $html
                 );
-            } catch (MailNotSent $e) {
+            } catch (MailNotSent | ServerConfiguration $e) {
             }
         }
     }

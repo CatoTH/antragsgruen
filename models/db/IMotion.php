@@ -713,6 +713,13 @@ abstract class IMotion extends ActiveRecord
         return max($minSupporters - $found, 0);
     }
 
+    public function hasEnoughSupporters(SupportBase $supportType): bool {
+        $min           = $supportType->getSettingsObj()->minSupporters;
+        $curr          = count($this->getSupporters());
+        $missingFemale = $this->getMissingSupporterCountByGender($supportType, 'female');
+        return ($curr >= $min && !$missingFemale);
+    }
+
     /**
      * @param int[] $types
      * @param string $sort

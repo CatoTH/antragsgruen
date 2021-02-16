@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.7.1 [not released yet]
+
+- Bugfix: If a woman quota was set up in the support collection phase, the notification e-mail to the initiator about the minimum number of supporters did not take into account this quota.
+
 ## Version 4.7.0 (2021-02-13)
 
 - WARNING: if you are using a PHP 7.1 or older, then update to PHP 7.3 or newer first before installing this update!

@@ -86,6 +86,8 @@ class AmendmentSupporter extends ISupporter
 
     public static function createSupport(Amendment $amendment, ?User $user, string $name, string $orga, string $role, string $gender = ''): void
     {
+        $hadEnoughSupportersBefore = $amendment->hasEnoughSupporters($amendment->getMyMotionType()->getAmendmentSupportTypeClass());
+
         $maxPos = 0;
         if ($user) {
             foreach ($amendment->amendmentSupporters as $supp) {
@@ -124,7 +126,7 @@ class AmendmentSupporter extends ISupporter
         $amendment->refresh();
         $amendment->flushCacheWithChildren(null);
 
-        $support->trigger(AmendmentSupporter::EVENT_SUPPORTED, new AmendmentSupporterEvent($support));
+        $support->trigger(AmendmentSupporter::EVENT_SUPPORTED, new AmendmentSupporterEvent($support, $hadEnoughSupportersBefore));
     }
 
     public static function checkOfficialSupportNumberReached(AmendmentSupporterEvent $event): void
@@ -135,10 +137,9 @@ class AmendmentSupporter extends ISupporter
         }
         /** @var Amendment $amendment */
         $amendment = $support->getIMotion();
+        $supportType = $amendment->getMyMotionType()->getAmendmentSupportTypeClass();
 
-        $supportType = $amendment->getMyMotionType()->getMotionSupportTypeClass();
-
-        if (count($amendment->getSupporters()) == $supportType->getSettingsObj()->minSupporters) {
+        if (!$event->hadEnoughSupportersBefore && $amendment->hasEnoughSupporters($supportType)) {
             EmailNotifications::sendAmendmentSupporterMinimumReached($amendment);
         }
     }

@@ -6,15 +6,13 @@ use app\components\mail\Tools;
 use app\models\db\Consultation;
 use app\models\db\EMailLog;
 use app\models\exceptions\MailNotSent;
+use app\models\exceptions\ServerConfiguration;
 
 abstract class Base
 {
     /** @var Consultation $consultation */
     protected $consultation;
 
-    /**
-     * Base constructor.
-     */
     public function __construct()
     {
         $this->send();
@@ -37,7 +35,7 @@ abstract class Base
                     $maildata->getEmailAdminSubject(),
                     $maildata->getEmailAdminText()
                 );
-            } catch (MailNotSent $e) {
+            } catch (MailNotSent | ServerConfiguration $e) {
                 $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                 \yii::$app->session->setFlash('error', $errMsg);
             }

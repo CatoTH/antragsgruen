@@ -10,9 +10,13 @@ class MotionSupporterEvent extends Event
     /** @var MotionSupporter */
     public $supporter;
 
-    public function __construct(MotionSupporter $supporter)
+    /** @var bool */
+    public $hadEnoughSupportersBefore;
+
+    public function __construct(MotionSupporter $supporter, bool $hadEnoughSupportersBefore)
     {
         parent::__construct([]);
         $this->supporter = $supporter;
+        $this->hadEnoughSupportersBefore = $hadEnoughSupportersBefore;
     }
 }
