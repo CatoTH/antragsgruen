@@ -106,7 +106,7 @@ trait ConsultationAgendaTrait
             LayoutHelper::showAgendaItem($item, $this->consultation, true);
             $newHtml = ob_get_clean();
         } elseif ($data['type'] === 'date') {
-            $item->title = $data['title'];
+            $item->title = mb_substr($data['title'], 0, 250);
             if (isset($data['date']) && preg_match('/^\d{4}\-\d{2}\-\d{2}$/siu', $data['date'])) {
                 $item->time = $data['date'];
             } else {
