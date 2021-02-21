@@ -3,6 +3,7 @@
 ### Version 4.7.1 [not released yet]
 
 - Bugfix: If a woman quota was set up in the support collection phase, the notification e-mail to the initiator about the minimum number of supporters did not take into account this quota.
+- Bugfix: A motion creation bug was fixed that happened if an organization list drop-down was set up and the "Wurzelwerk / Grünes Netz"-login was used.
 
 ## Version 4.7.0 (2021-02-13)
 

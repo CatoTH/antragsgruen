@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\db\User;
 use yii\web\Response;
 
 class TestController extends Base
@@ -23,6 +24,8 @@ class TestController extends Base
         switch ($action) {
             case 'set-amendment-status':
                 return $this->actionSetAmendmentStatus();
+            case 'set-user-fixed-data':
+                return $this->actionSetUserFixedData();
         }
 
         return json_encode(['success' => false, 'message' => 'Unknown action: ' . $action]);
@@ -48,6 +51,23 @@ id=270&status=3
 
         $amendment->status = intval($status);
         $amendment->save();
+
+        return json_encode(['success' => true]);
+    }
+
+    private function actionSetUserFixedData()
+    {
+        $user = User::findOne(['email' => \Yii::$app->request->post('email')]);
+        if (!$user) {
+            file_put_contents('/tmp/fixed.log', 'not found');
+            return json_encode(['success' => false, 'message' => 'user not found']);
+        }
+        $user->fixedData = (\Yii::$app->request->post('fixed') ? 1 : 0);
+        $user->nameFamily = \Yii::$app->request->post('nameFamily');
+        $user->nameGiven = \Yii::$app->request->post('nameGiven');
+        $user->name = \Yii::$app->request->post('nameGiven') . ' ' . \Yii::$app->request->post('nameFamily');
+        $user->organization = \Yii::$app->request->post('organisation');
+        $user->save();
 
         return json_encode(['success' => true]);
     }

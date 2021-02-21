@@ -49,4 +49,17 @@ class TestApi extends \Codeception\Module
 
         $this->assertTrue($ret['success']);
     }
+
+    public function apiSetUserFixedData($subdomain, $consultationUrl, $email, $nameGiven, $nameFamily, $organisation, $fixed)
+    {
+        $ret = $this->executeCall($subdomain, $consultationUrl, 'set-user-fixed-data', [
+            'email'     => $email,
+            'nameGiven' => $nameGiven,
+            'nameFamily' => $nameFamily,
+            'organisation' => $organisation,
+            'fixed' => $fixed,
+        ]);
+
+        $this->assertTrue($ret['success']);
+    }
 }

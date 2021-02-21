@@ -84,7 +84,6 @@ export class InitiatorForm {
     private setOrgaNameFromSelect() {
         if (this.$initiatorData.find('#initiatorPrimaryOrgaName').hasClass('hidden')) {
             // If a organization list is provided, but selecting organizations is disabled for this specific motion type, then this should prevent some edge cases
-            // @TODO Write a test case for this
             return;
         }
         const $selectedOrga = this.$initiatorData.find("#initiatorPrimaryOrgaName") as any;
