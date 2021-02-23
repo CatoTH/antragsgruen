@@ -109,6 +109,10 @@ class ConsultationSettingsMotionSection extends ActiveRecord
             $this->data = null;
         }
 
+        if (mb_strlen($this->title) > 100) {
+            $this->title = mb_substr($this->title, 0, 100);
+        }
+
         $settings = $this->getSettingsObj();
         if (isset($data['imgMaxWidth']) && $data['imgMaxWidth'] > 0) {
             $settings->imgMaxWidth = floatval($data['imgMaxWidth']);
