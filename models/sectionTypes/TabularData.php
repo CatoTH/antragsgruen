@@ -255,8 +255,8 @@ class TabularData extends ISectionType
             if ($isRight) {
                 $content->textRight .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}';
                 $content->textRight .= "\\newline\n";
-                $content->textRight .= '\vspace{0.2cm}';
                 $content->textRight .= Exporter::encodePlainString($rowData);
+                $content->textRight .= '\vspace{0.2cm}';
                 $content->textRight .= "\\newline\n";
             } else {
                 $content->textMain .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}';
