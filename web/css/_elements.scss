@@ -37,12 +37,12 @@ a {
   }
 }
 
-del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted {
+del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted, h1.deleted, h2.deleted, h3.deleted, h4.deleted, h5.deleted {
   color: #880000;
   text-decoration: line-through;
 }
 
-ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted, div.inserted, p.inserted {
+ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted, div.inserted, p.inserted, h1.inserted, h2.inserted, h3.inserted, h4.inserted, h5.inserted {
   color: #008800;
   text-decoration: underline;
 }
