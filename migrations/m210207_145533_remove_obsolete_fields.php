@@ -12,10 +12,15 @@ class m210207_145533_remove_obsolete_fields extends Migration
      */
     public function safeUp()
     {
-        $this->dropColumn('consultationMotionType', 'supportType');
-        $this->dropColumn('consultationMotionType', 'supportTypeSettings');
-        $this->dropColumn('consultation', 'eventDateFrom');
-        $this->dropColumn('consultation', 'eventDateTo');
+        $table = Yii::$app->db->schema->getTableSchema('consultationMotionType');
+        if (isset($table->columns['supportType'])) {
+            $this->dropColumn('consultationMotionType', 'supportType');
+            $this->dropColumn('consultationMotionType', 'supportTypeSettings');
+            $this->dropColumn('consultation', 'eventDateFrom');
+            $this->dropColumn('consultation', 'eventDateTo');
+        } else {
+            echo "Skipped dropping columns supportType, supportTypeSettings, eventDateFrom, eventDateTo, as they did not exist\n";
+        }
     }
 
     /**
