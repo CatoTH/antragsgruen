@@ -580,12 +580,7 @@ trait MotionActionsTrait
         if (\Yii::$app->request->post('setProposerHasAccepted')) {
             $motion->proposalUserStatus = Motion::STATUS_ACCEPTED;
             $motion->save();
-            ConsultationLog::log(
-                $motion->getMyConsultation(),
-                User::getCurrentUser()->id,
-                ConsultationLog::MOTION_ACCEPT_PROPOSAL,
-                $motion->id
-            );
+            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id);
             $response['success'] = true;
             $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                 'motion'   => $motion,

@@ -7,19 +7,15 @@ use app\models\exceptions\FormError;
 
 trait JsonConfigTrait
 {
-    /**
-     * @param string|null $data
-     */
-    public function __construct($data)
+    public function __construct(?string $data)
     {
         $this->setPropertiesFromJSON($data);
     }
 
     /**
-     * @param string $data
      * @throws ConfigurationError
      */
-    protected function setPropertiesFromJSON($data)
+    protected function setPropertiesFromJSON(?string $data)
     {
         if (!$data) {
             return;
@@ -51,11 +47,9 @@ trait JsonConfigTrait
     }
 
     /**
-     * @param array $formdata
-     * @param array $affectedFields
      * @throws FormError
      */
-    public function saveForm($formdata, $affectedFields)
+    public function saveForm(array $formdata, array $affectedFields): void
     {
         $fields = get_object_vars($this);
         foreach ($affectedFields as $key) {

@@ -191,6 +191,8 @@ return [
     'activity_MOTION_COMMENT'             => '###USER### hat den <strong>Antrag kommentiert</strong>',
     'activity_MOTION_SCREEN'              => 'Der <strong>Antrag</strong> wurde <strong>veröffentlicht</strong>',
     'activity_MOTION_SUPPORT'             => '###USER### hat den <strong>Antrag unterstützt</strong>',
+    'activity_MOTION_PUBLISH_PROPOSAL'    => '###USER### hat den <strong>Verfahrensvorschlag veröffentlicht</strong>',
+    'activity_MOTION_SET_PROPOSAL'        => '###USER### hat den <strong>Verfahrensvorschlag bearbeitet</strong>',
     'activity_AMENDMENT_PUBLISH'          => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### eingereicht</strong>',
     'activity_AMENDMENT_CHANGE'           => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### überarbeitet</strong>',
     'activity_AMENDMENT_DELETE'           => '###USER### hat einen <strong>Änderungsantrag ###AMENDMENT### gelöscht</strong>',
@@ -199,6 +201,8 @@ return [
     'activity_AMENDMENT_COMMENT'          => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### kommentiert</strong>',
     'activity_AMENDMENT_SCREEN'           => 'Der <strong>Änderungsantrag ###AMENDMENT###</strong> wurde <strong>veröffentlicht</strong>',
     'activity_AMENDMENT_SUPPORT'          => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### unterstützt</strong>',
+    'activity_AMENDMENT_PUBLISH_PROPOSAL' => '###USER### hat den <strong>Verfahrensvorschlag zu ###AMENDMENT### veröffentlicht</strong>',
+    'activity_AMENDMENT_SET_PROPOSAL'     => '###USER### hat den <strong>Verfahrensvorschlag zu ###AMENDMENT### bearbeitet</strong>',
 
     'remaining_over'    => 'vorbei',
     'remaining_days'    => 'Tage',

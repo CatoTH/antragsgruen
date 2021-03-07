@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.8.0 [not released yet]
+
+- Admins can now see an activity log for each motion and amendment, chronologically listing all relevant events for it (supports, comments, proposed procedure changes etc.)
+
 ### Version 4.7.1 [not released yet]
 
 - Bugfix: If a woman quota was set up in the support collection phase, the notification e-mail to the initiator about the minimum number of supporters did not take into account this quota.

@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\consultationLog\ProposedProcedureChange;
 use app\components\{HTMLTools, Tools, UrlHelper, EmailNotifications};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, User, VotingBlock};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\{FormError, MailNotSent, NotFound};
+use app\models\exceptions\{MailNotSent, NotFound};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
@@ -336,7 +337,7 @@ class AmendmentController extends Base
                 } else {
                     return $this->render('edit_done', ['amendment' => $amendment]);
                 }
-            } catch (FormError $e) {
+            } catch (\Throwable $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
@@ -406,7 +407,7 @@ class AmendmentController extends Base
                     'draftId'     => $this->getRequestValue('draftId'),
                 ];
                 return $this->redirect(UrlHelper::createUrl($nextUrl));
-            } catch (FormError $e) {
+            } catch (\Throwable $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
         } elseif ($cloneFrom > 0) {
@@ -494,18 +495,27 @@ class AmendmentController extends Base
 
         $response = [];
         $msgAlert = null;
+        $ppChanges = new ProposedProcedureChange(null);
 
         if (\Yii::$app->request->post('setStatus', null) !== null) {
-            $setStatus = IntVal(\Yii::$app->request->post('setStatus'));
+            $setStatus = intval(\Yii::$app->request->post('setStatus'));
             if ($amendment->proposalStatus !== $setStatus) {
+                $ppChanges->setProposalStatusChanges($amendment->proposalStatus, $setStatus);
                 if ($amendment->proposalUserStatus !== null) {
                     $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                 }
                 $amendment->proposalUserStatus = null;
             }
             $amendment->proposalStatus  = $setStatus;
+
+            $ppChanges->setProposalCommentChanges($amendment->proposalComment, \Yii::$app->request->post('proposalComment', ''));
             $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
-            $amendment->votingStatus    = \Yii::$app->request->post('votingStatus', '');
+
+            $newVotingStatus = (\Yii::$app->request->post('votingStatus', null) !== null ? intval(\Yii::$app->request->post('votingStatus', null)) : null);
+            $ppChanges->setProposalVotingStatusChanges($amendment->votingStatus, $newVotingStatus);
+            $amendment->votingStatus = $newVotingStatus;
+
+            $proposalExplanationPre = $amendment->proposalExplanation;
             if (\Yii::$app->request->post('proposalExplanation', null) !== null) {
                 if (trim(\Yii::$app->request->post('proposalExplanation', '') === '')) {
                     $amendment->proposalExplanation = null;
@@ -515,12 +525,16 @@ class AmendmentController extends Base
             } else {
                 $amendment->proposalExplanation = null;
             }
+            $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $amendment->proposalExplanation);
+
             if (\Yii::$app->request->post('visible', 0)) {
                 $amendment->setProposalPublished();
             } else {
                 $amendment->proposalVisibleFrom = null;
             }
-            $votingBlockId            = \Yii::$app->request->post('votingBlockId', null);
+
+            $votingBlockId = \Yii::$app->request->post('votingBlockId', null);
+            $votingBlockPre = $amendment->votingBlockId;
             $amendment->votingBlockId = null;
             if ($votingBlockId === 'NEW') {
                 $title = trim(\Yii::$app->request->post('votingBlockTitle', ''));
@@ -538,6 +552,11 @@ class AmendmentController extends Base
                 if ($votingBlock) {
                     $amendment->votingBlockId = $votingBlock->id;
                 }
+            }
+            $ppChanges->setVotingBlockChanges($votingBlockPre, $amendment->votingBlockId);
+
+            if ($ppChanges->hasChanges()) {
+                ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendment->id, $ppChanges->jsonSerialize());
             }
 
             $response['success'] = false;
@@ -582,12 +601,7 @@ class AmendmentController extends Base
             $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
             $amendment->save();
             $amendment->flushCacheItems(['procedure']);
-            ConsultationLog::log(
-                $amendment->getMyConsultation(),
-                User::getCurrentUser()->id,
-                ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL,
-                $amendment->id
-            );
+            ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id);
             $response['success'] = true;
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,

@@ -54,8 +54,8 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_CHANGE           = 25;
     const AMENDMENT_SUPPORT          = 33;
     const AMENDMENT_SUPPORT_FINISH   = 34;
-    const AMENDMENT_SET_PROPOSAL     = 35;
-    const AMENDMENT_NOTIFY_PROPOSAL  = 36;
+    const AMENDMENT_SET_PROPOSAL     = 37;
+    const AMENDMENT_NOTIFY_PROPOSAL  = 38;
     const AMENDMENT_ACCEPT_PROPOSAL  = 32;
     const AMENDMENT_PUBLISH_PROPOSAL = 29;
 
@@ -218,6 +218,13 @@ class ConsultationLog extends ActiveRecord
 
     public static function log(Consultation $consultation, ?int $userId, int $type, int $typeRefId, ?array $data = null): void
     {
+        if (is_array($data)) {
+            foreach ($data as $key => $val) {
+                if ($val === null) {
+                    unset($data[$key]);
+                }
+            }
+        }
         $log = new static();
         $log->userId = $userId;
         $log->consultationId = $consultation->id;
@@ -508,6 +515,17 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SUPPORT');
                 $str = $this->formatLogEntryAmendment($str);
                 $str = $this->formatLogEntryUser($str, '');
+                return $str;
+            case static::AMENDMENT_PUBLISH_PROPOSAL:
+                $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH_PROPOSAL');
+                $str = $this->formatLogEntryUser($str, '');
+                $str = $this->formatLogEntryAmendment($str);
+                return $str;
+            case static::AMENDMENT_SET_PROPOSAL:
+                $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
+                $str = $this->formatLogEntryUser($str, '');
+                $str = $this->formatLogEntryAmendment($str);
+                // @TODO More detailed output
                 return $str;
             default:
                 return $this->actionType;
