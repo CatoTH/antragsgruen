@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\consultationLog\ProposedProcedureChange;
 use app\models\notifications\MotionProposedProcedure;
 use app\components\{Tools, UrlHelper, EmailNotifications};
 use app\models\db\{ConsultationLog, IComment, IMotion, Motion, MotionAdminComment, MotionComment, MotionSupporter, User, Consultation, VotingBlock};
@@ -496,18 +497,27 @@ trait MotionActionsTrait
 
         $response = [];
         $msgAlert = null;
+        $ppChanges = new ProposedProcedureChange(null);
 
         if (\Yii::$app->request->post('setStatus', null) !== null) {
             $setStatus = IntVal(\Yii::$app->request->post('setStatus'));
             if ($motion->proposalStatus !== $setStatus) {
+                $ppChanges->setProposalStatusChanges($motion->proposalStatus, $setStatus);
                 if ($motion->proposalUserStatus !== null) {
                     $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                 }
                 $motion->proposalUserStatus = null;
             }
             $motion->proposalStatus  = $setStatus;
+
+            $ppChanges->setProposalCommentChanges($motion->proposalComment, \Yii::$app->request->post('proposalComment', ''));
             $motion->proposalComment = \Yii::$app->request->post('proposalComment', '');
-            $motion->votingStatus    = \Yii::$app->request->post('votingStatus', '');
+
+            $newVotingStatus = (\Yii::$app->request->post('votingStatus', null) !== null ? intval(\Yii::$app->request->post('votingStatus', null)) : null);
+            $ppChanges->setProposalVotingStatusChanges($motion->votingStatus, $newVotingStatus);
+            $motion->votingStatus = $newVotingStatus;
+
+            $proposalExplanationPre = $motion->proposalExplanation;
             if (\Yii::$app->request->post('proposalExplanation', null) !== null) {
                 if (trim(\Yii::$app->request->post('proposalExplanation', '') === '')) {
                     $motion->proposalExplanation = null;
@@ -517,12 +527,16 @@ trait MotionActionsTrait
             } else {
                 $motion->proposalExplanation = null;
             }
+            $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $motion->proposalExplanation);
+
             if (\Yii::$app->request->post('visible', 0)) {
                 $motion->setProposalPublished();
             } else {
                 $motion->proposalVisibleFrom = null;
             }
-            $votingBlockId         = \Yii::$app->request->post('votingBlockId', null);
+
+            $votingBlockId = \Yii::$app->request->post('votingBlockId', null);
+            $votingBlockPre = $motion->votingBlockId;
             $motion->votingBlockId = null;
             if ($votingBlockId === 'NEW') {
                 $title = trim(\Yii::$app->request->post('votingBlockTitle', ''));
@@ -540,6 +554,11 @@ trait MotionActionsTrait
                 if ($votingBlock) {
                     $motion->votingBlockId = $votingBlock->id;
                 }
+            }
+            $ppChanges->setVotingBlockChanges($votingBlockPre, $motion->votingBlockId);
+
+            if ($ppChanges->hasChanges()) {
+                ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
             }
 
             $response['success'] = false;

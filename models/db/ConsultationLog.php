@@ -470,6 +470,15 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_MOTION_SUPPORT');
                 $str = $this->formatLogEntryUser($str, '');
                 return $str;
+            case static::MOTION_PUBLISH_PROPOSAL:
+                $str = \Yii::t('structure', 'activity_MOTION_PUBLISH_PROPOSAL');
+                $str = $this->formatLogEntryUser($str, '');
+                return $str;
+            case static::MOTION_SET_PROPOSAL:
+                $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
+                $str = $this->formatLogEntryUser($str, '');
+                // @TODO More detailed output
+                return $str;
             case static::AMENDMENT_PUBLISH:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
                 $str = $this->formatLogEntryAmendment($str);
