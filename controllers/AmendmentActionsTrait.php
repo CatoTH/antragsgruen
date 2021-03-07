@@ -203,7 +203,7 @@ trait AmendmentActionsTrait
         }
 
         $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga, $gender);
-        ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $amendment->id);
+        ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SUPPORT, $amendment->id);
     }
 
     /**
@@ -301,7 +301,7 @@ trait AmendmentActionsTrait
         }
 
         $consultation = $amendment->getMyConsultation();
-        ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_SUPPORT_FINISH, $amendment->id);
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_SUPPORT_FINISH, $amendment->id);
         \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_finish_done'));
     }
 

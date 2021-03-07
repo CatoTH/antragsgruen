@@ -55,17 +55,11 @@ class ConsultationActivityFilterForm extends Model
         }
 
         if ($this->filterForMotionId) {
-            $entries = ConsultationLog::getLogForMotion($this->consultation->id, $this->filterForMotionId);
+            $entries = ConsultationLog::getLogForMotion($this->consultation->id, $this->filterForMotionId, $this->showUserInvisibleEvents);
         } elseif ($this->filterForAmendmentId) {
-            $entries = ConsultationLog::getLogForAmendment($this->consultation->id, $this->filterForAmendmentId);
+            $entries = ConsultationLog::getLogForAmendment($this->consultation->id, $this->filterForAmendmentId, $this->showUserInvisibleEvents);
         } else {
-            $entries = ConsultationLog::getLogForConsultation($this->consultation->id);
-        }
-
-        if (!$this->showUserInvisibleEvents) {
-            $entries = array_filter($entries, function (ConsultationLog $entry) {
-                return !in_array($entry->actionType, ConsultationLog::$USER_INVISIBLE_EVENTS);
-            });
+            $entries = ConsultationLog::getLogForConsultation($this->consultation->id, $this->showUserInvisibleEvents);
         }
 
         $this->loadedEntries = $entries;

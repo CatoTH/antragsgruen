@@ -50,13 +50,71 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_UNLIKE           = 22;
     const AMENDMENT_DISLIKE          = 23;
     const AMENDMENT_CHANGE           = 25;
+    const AMENDMENT_SUPPORT          = 33;
+    const AMENDMENT_SUPPORT_FINISH   = 34;
     const AMENDMENT_PUBLISH_PROPOSAL = 29;
     const AMENDMENT_ACCEPT_PROPOSAL  = 32;
 
-    public static $MOTION_ACTION_TYPES    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 24, 26, 27, 30, 31];
-    public static $AMENDMENT_ACTION_TYPES = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 28, 29, 32];
+    public static $MOTION_ACTION_TYPES    = [
+        self::MOTION_PUBLISH,
+        self::MOTION_WITHDRAW,
+        self::MOTION_DELETE,
+        self::MOTION_DELETE_PUBLISHED,
+        self::MOTION_SCREEN,
+        self::MOTION_UNSCREEN,
+        self::MOTION_COMMENT,
+        self::MOTION_COMMENT_DELETE,
+        self::MOTION_COMMENT_SCREEN,
+        self::MOTION_LIKE,
+        self::MOTION_UNLIKE,
+        self::MOTION_DISLIKE,
+        self::MOTION_CHANGE,
+        self::MOTION_SUPPORT,
+        self::MOTION_SUPPORT_FINISH,
+        self::MOTION_PUBLISH_PROPOSAL,
+        self::MOTION_ACCEPT_PROPOSAL,
+    ];
 
-    public static $USER_INVISIBLE_EVENTS = [29, 6, 19, 15, 2, 24, 26, 21, 22, 23, 8, 9, 10, 31, 32];
+    public static $AMENDMENT_ACTION_TYPES = [
+        self::AMENDMENT_PUBLISH,
+        self::AMENDMENT_WITHDRAW,
+        self::AMENDMENT_DELETE,
+        self::AMENDMENT_DELETE_PUBLISHED,
+        self::AMENDMENT_SCREEN,
+        self::AMENDMENT_UNSCREEN,
+        self::AMENDMENT_COMMENT,
+        self::AMENDMENT_COMMENT_DELETE,
+        self::AMENDMENT_COMMENT_SCREEN,
+        self::AMENDMENT_LIKE,
+        self::AMENDMENT_UNLIKE,
+        self::AMENDMENT_DISLIKE,
+        self::AMENDMENT_CHANGE,
+        self::AMENDMENT_SUPPORT,
+        self::AMENDMENT_SUPPORT_FINISH,
+        self::AMENDMENT_PUBLISH_PROPOSAL,
+        self::AMENDMENT_ACCEPT_PROPOSAL,
+    ];
+
+    public static $USER_INVISIBLE_EVENTS = [
+        self::MOTION_PUBLISH_PROPOSAL,
+        self::AMENDMENT_PUBLISH_PROPOSAL,
+        self::MOTION_COMMENT_DELETE,
+        self::AMENDMENT_COMMENT_DELETE,
+        self::MOTION_DELETE,
+        self::AMENDMENT_DELETE,
+        self::MOTION_SUPPORT,
+        self::MOTION_SUPPORT_FINISH,
+        self::AMENDMENT_SUPPORT,
+        self::AMENDMENT_SUPPORT_FINISH,
+        self::MOTION_LIKE,
+        self::MOTION_UNLIKE,
+        self::MOTION_DISLIKE,
+        self::AMENDMENT_LIKE,
+        self::AMENDMENT_UNLIKE,
+        self::AMENDMENT_DISLIKE,
+        self::MOTION_ACCEPT_PROPOSAL,
+        self::AMENDMENT_ACCEPT_PROPOSAL,
+    ];
 
     /** @var null|Motion */
     private $motion = null;
@@ -98,30 +156,39 @@ class ConsultationLog extends ActiveRecord
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
-    public static function getLogForConsultation(int $consultationId): array
+    public static function getLogForConsultation(int $consultationId, bool $showUserInvisible): array
     {
         $query = static::find();
         $query->where(['consultationId' => $consultationId]);
+        if (!$showUserInvisible) {
+            $query->andWhere(['NOT IN', 'actionType', static::$USER_INVISIBLE_EVENTS]);
+        }
         $query->orderBy('actionTime DESC');
         return $query->all();
     }
 
-    public static function getLogForMotion(int $consultationId, int $motionId): array
+    public static function getLogForMotion(int $consultationId, int $motionId, bool $showUserInvisible): array
     {
         $query = static::find();
         $query->where(['consultationId' => $consultationId]);
         $query->andWhere(['actionReferenceId' => $motionId]);
-        // @TODO Additional filtering by type
+        if (!$showUserInvisible) {
+            $query->andWhere(['NOT IN', 'actionType', static::$USER_INVISIBLE_EVENTS]);
+        }
+        $query->andWhere(['IN', 'actionType', static::$MOTION_ACTION_TYPES]);
         $query->orderBy('actionTime DESC');
         return $query->all();
     }
 
-    public static function getLogForAmendment(int $consultationId, int $amendmentId): array
+    public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible): array
     {
         $query = static::find();
         $query->where(['consultationId' => $consultationId]);
         $query->andWhere(['actionReferenceId' => $amendmentId]);
-        // @TODO Additional filtering by type
+        if (!$showUserInvisible) {
+            $query->andWhere(['NOT IN', 'actionType', static::$USER_INVISIBLE_EVENTS]);
+        }
+        $query->andWhere(['IN', 'actionType', static::$AMENDMENT_ACTION_TYPES]);
         $query->orderBy('actionTime DESC');
         return $query->all();
     }
@@ -202,6 +269,8 @@ class ConsultationLog extends ActiveRecord
             case static::AMENDMENT_UNLIKE:
             case static::AMENDMENT_DISLIKE:
             case static::AMENDMENT_CHANGE:
+            case static::AMENDMENT_SUPPORT:
+            case static::AMENDMENT_SUPPORT_FINISH:
                 $this->amendmentId = $this->actionReferenceId;
                 $this->amendment   = Amendment::findOne($this->actionReferenceId);
                 if ($this->amendment) {
@@ -255,9 +324,9 @@ class ConsultationLog extends ActiveRecord
             case static::MOTION_UNSCREEN:
             case static::MOTION_LIKE:
             case static::MOTION_UNLIKE:
-            case static::MOTION_SUPPORT:
             case static::MOTION_ACCEPT_PROPOSAL:
             case static::MOTION_PUBLISH_PROPOSAL:
+            case static::MOTION_SUPPORT:
             case static::MOTION_SUPPORT_FINISH:
                 if ($this->motion) {
                     return UrlHelper::createMotionUrl($this->motion);
@@ -276,6 +345,8 @@ class ConsultationLog extends ActiveRecord
             case static::AMENDMENT_CHANGE:
             case static::AMENDMENT_ACCEPT_PROPOSAL:
             case static::AMENDMENT_PUBLISH_PROPOSAL:
+            case static::AMENDMENT_SUPPORT:
+            case static::AMENDMENT_SUPPORT_FINISH:
                 if ($this->amendment && $this->amendment->getMyMotion()) {
                     return UrlHelper::createAmendmentUrl($this->amendment);
                 } else {
