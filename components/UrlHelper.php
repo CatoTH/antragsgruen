@@ -213,7 +213,7 @@ class UrlHelper
         }
     }
 
-    public static function createWurzelwerkLoginUrl(string $route): string
+    public static function createGruenesNetzLoginUrl(string $route): string
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;

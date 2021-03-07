@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, WurzelwerkSamlClient, mail\Tools as MailTools};
+use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, GruenesNetzSamlClient, mail\Tools as MailTools};
 use app\models\events\UserEvent;
 use app\models\exceptions\{FormError, MailNotSent, ServerConfiguration};
 use app\models\settings\AntragsgruenApp;
@@ -315,8 +315,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         if ($this->organizationIds) {
             $organizationIds = json_decode($this->organizationIds, true);
-            if ($this->isWurzelwerkUser() || true) {
-                $organizationIds = WurzelwerkSamlClient::resolveOrganizationIds($organizationIds);
+            if ($this->isGruenesNetzUser() || true) {
+                $organizationIds = GruenesNetzSamlClient::resolveOrganizationIds($organizationIds);
             }
             return $organizationIds;
         } else {
@@ -426,7 +426,7 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
-    public function getWurzelwerkName(): ?string
+    public function getGruenesNetzName(): ?string
     {
         if (preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches)) {
             return $matches[1];
@@ -437,7 +437,7 @@ class User extends ActiveRecord implements IdentityInterface
         return null;
     }
 
-    public function isWurzelwerkUser(): bool
+    public function isGruenesNetzUser(): bool
     {
         if (preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth)) {
             return true;
@@ -448,7 +448,7 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
-    public static function wurzelwerkId2Auth(string $username): string
+    public static function gruenesNetzId2Auth(string $username): string
     {
         return 'openid:https://service.gruene.de/openid/' . $username;
     }
@@ -623,8 +623,8 @@ class User extends ActiveRecord implements IdentityInterface
             case 'email':
                 return 'E-Mail: ' . $authparts[1];
             case 'openid':
-                if ($this->isWurzelwerkUser()) {
-                    return 'Grünes Netz: ' . $this->getWurzelwerkName();
+                if ($this->isGruenesNetzUser()) {
+                    return 'Grünes Netz: ' . $this->getGruenesNetzName();
                 } else {
                     return $this->auth;
                 }
@@ -636,8 +636,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getAuthType(): int
     {
-        if ($this->isWurzelwerkUser()) {
-            return \app\models\settings\Site::LOGIN_WURZELWERK;
+        if ($this->isGruenesNetzUser()) {
+            return \app\models\settings\Site::LOGIN_GRUENES_NETZ;
         }
         $authparts = explode(':', $this->auth);
         switch ($authparts[0]) {

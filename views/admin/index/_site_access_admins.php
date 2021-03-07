@@ -6,6 +6,7 @@ use yii\helpers\Html;
 
 /**
  * @var array $admins
+ * @var \yii\web\Controller $controller
  */
 $hasProposedProcedures = $controller->consultation->hasProposedProcedures();
 
@@ -109,7 +110,7 @@ $hasProposedProcedures = $controller->consultation->hasProposedProcedures();
         <div class="row">
             <div class="col-md-3 admin-type">
                 <?= HTMLTools::fueluxSelectbox('addType', [
-                    'wurzelwerk' => Yii::t('admin', 'siteacc_add_ww') . ':',
+                    'gruenesnetz' => Yii::t('admin', 'siteacc_add_ww') . ':',
                     'email'      => Yii::t('admin', 'siteacc_add_email') . ':',
                 ]) ?>
             </div>

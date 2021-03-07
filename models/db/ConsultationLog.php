@@ -350,8 +350,8 @@ class ConsultationLog extends ActiveRecord
         if ($this->user) {
             if ($this->user->name) {
                 $name = $this->user->name;
-            } elseif ($this->user->isWurzelwerkUser()) {
-                $name = $this->user->getWurzelwerkName();
+            } elseif ($this->user->isGruenesNetzUser()) {
+                $name = $this->user->getGruenesNetzName();
             } else {
                 $name = $fallback;
             }

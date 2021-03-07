@@ -8,7 +8,7 @@ use SimpleSAML\Auth\Simple;
 use yii\authclient\ClientInterface;
 use app\models\db\User;
 
-class WurzelwerkSamlClient implements ClientInterface
+class GruenesNetzSamlClient implements ClientInterface
 {
     const PARAM_EMAIL        = 'gmnMail';
     const PARAM_USERNAME     = 'urn:oid:0.9.2342.19200300.100.1.1';
@@ -21,9 +21,6 @@ class WurzelwerkSamlClient implements ClientInterface
 
     private $params;
 
-    /**
-     * WurzelwerkSimplesamlClient constructor.
-     */
     public function __construct()
     {
 
@@ -64,7 +61,7 @@ class WurzelwerkSamlClient implements ClientInterface
         $familyname    = (isset($this->params[static::PARAM_FAMILY_NAME]) ? $this->params[static::PARAM_FAMILY_NAME][0] : '');
         $organizations = (isset($this->params[static::PARAM_ORGANIZATION]) ? $this->params[static::PARAM_ORGANIZATION] : []);
         $username      = $this->params[static::PARAM_USERNAME][0];
-        $auth          = User::wurzelwerkId2Auth($username);
+        $auth          = User::gruenesNetzId2Auth($username);
 
         /** @var User $user */
         $user = User::findOne(['auth' => $auth]);
@@ -102,9 +99,6 @@ class WurzelwerkSamlClient implements ClientInterface
         return $user;
     }
 
-    /**
-     *
-     */
     public function logout()
     {
         if ($this->auth->isAuthenticated()) {

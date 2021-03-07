@@ -116,12 +116,12 @@ trait SiteAccessTrait
         }
     }
 
-    private function addAdminWurzelwerk(string $username): void
+    private function addAdminGruenesNetz(string $username): void
     {
-        $newUser = User::findOne(['auth' => User::wurzelwerkId2Auth($username)]);
+        $newUser = User::findOne(['auth' => User::gruenesNetzId2Auth($username)]);
         if (!$newUser) {
             $newUser                  = new User();
-            $newUser->auth            = User::wurzelwerkId2Auth($username);
+            $newUser->auth            = User::gruenesNetzId2Auth($username);
             $newUser->status          = User::STATUS_CONFIRMED;
             $newUser->name            = '';
             $newUser->email           = '';
@@ -413,8 +413,8 @@ trait SiteAccessTrait
 
         if ($this->isPostSet('addAdmin')) {
             switch ($post['addType']) {
-                case 'wurzelwerk':
-                    $this->addAdminWurzelwerk($post['addUsername']);
+                case 'gruenesnetz':
+                    $this->addAdminGruenesNetz($post['addUsername']);
                     break;
                 case 'email':
                     $this->addAdminEmail($post['addUsername']);

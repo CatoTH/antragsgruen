@@ -5,7 +5,7 @@ namespace app\models\policies;
 use app\components\DateTools;
 use app\models\db\{ConsultationMotionType, User};
 
-class Wurzelwerk extends IPolicy
+class GruenesNetz extends IPolicy
 {
     public static function getPolicyID(): int
     {
@@ -69,6 +69,6 @@ class Wurzelwerk extends IPolicy
         if ($allowAdmins && $user->hasPrivilege($this->motionType->getConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }
-        return $user->isWurzelwerkUser();
+        return $user->isGruenesNetzUser();
     }
 }

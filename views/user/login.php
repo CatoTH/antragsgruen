@@ -222,7 +222,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
 
 
 if ($params->isSamlActive()) {
-    $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
+    $hide_ww_login = !in_array(SiteSettings::LOGIN_GRUENES_NETZ, $loginMethods);
     echo '<section class="loginSimplesaml">';
     if ($hide_ww_login) {
         echo '<div class="content">
@@ -231,7 +231,7 @@ if ($params->isSamlActive()) {
     <div id="admin_login_saml" class="hidden">';
     }
 
-    echo '<h2 class="green">&quot;Grünes Netz&quot;-Login (Wurzelwerk)</h2>
+    echo '<h2 class="green">&quot;Grünes Netz&quot;-Login</h2>
     <div class="content row">';
 
     $action = $params->domainPlain . 'loginsaml';
@@ -246,9 +246,9 @@ if ($params->isSamlActive()) {
 
     echo Html::endForm();
     echo '<div id="loginSamlHint">
-    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://saml.gruene.de/" umgeleitet,
+    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter „https://saml.gruene.de/” umgeleitet,
     die vom Bundesverband betrieben wird.<br>Dort musst du dein Benutzer*innenname/Passwort des Grünen Netzes
-    (Wurzelwerk) eingeben. Dein Passwort bleibt dabei geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
+    eingeben. Dein Passwort bleibt dabei geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
     <br><br>
     <strong>Zugangsdaten vergessen?</strong> Klicke auf „Einloggen” und auf der folgenden Seite auf „Passwort vergessen?”.
         </div>

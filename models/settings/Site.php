@@ -15,18 +15,26 @@ class Site implements \JsonSerializable
     public $apiEnabled = false;
 
     /** @var int[] */
-    public $loginMethods = [0, 1, 3];
+    public $loginMethods = [
+        self::LOGIN_STD,
+        self::LOGIN_GRUENES_NETZ,
+        self::LOGIN_EXTERNAL,
+    ];
 
     /** @var array */
     public $stylesheetSettings = [];
     public $apiCorsOrigins = [];
 
-    const LOGIN_STD        = 0;
-    const LOGIN_WURZELWERK = 1;
-    const LOGIN_EXTERNAL   = 3;
-    const LOGIN_SAML       = 4;
+    const LOGIN_STD = 0;
+    const LOGIN_GRUENES_NETZ = 1;
+    const LOGIN_EXTERNAL = 3;
+    const LOGIN_SAML = 4;
 
-    public static $SITE_MANAGER_LOGIN_METHODS = [0, 1, 3];
+    public static $SITE_MANAGER_LOGIN_METHODS = [
+        self::LOGIN_STD,
+        self::LOGIN_GRUENES_NETZ,
+        self::LOGIN_EXTERNAL,
+    ];
 
     public function getStylesheet(): Stylesheet
     {

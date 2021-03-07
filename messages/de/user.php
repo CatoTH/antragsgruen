@@ -21,9 +21,9 @@ return [
     'err_invalid_email'         => 'Die angegebene E-Mail-Adresse enthält einen Fehler',
     'err_unknown'               => 'Es trat leider ein unvorhergesehener Fehler auf',
     'err_unknown_ww_repeat'     => 'Es trat ein unbekannter Fehler auf.' . "\n" .
-        'Falls du versucht hast, dich mit deinen Wurzelwerk-Zugangsdaten einzuloggen, ' .
+        'Falls du versucht hast, dich mit deinen Grünen-Netz-Zugangsdaten einzuloggen, ' .
         'versuch es einfach noch ein zweites Mal - möglicherweise war das nur ' .
-        'ein temporärer Fehler seitens des Wurzelwerks.',
+        'ein temporärer Fehler seitens des Grünen Netzes.',
     'err_no_recovery'           => 'Es wurde kein Wiederherstellungs-Antrag innerhalb der letzten 24 Stunden gestellt.',
     'err_change_toolong'        => 'Die Änderungsanfrage ist schon zu lange her; ' .
         'bitte fordere eine neue Änderung an und rufe den Link innerhalb von 24 Stunden auf',

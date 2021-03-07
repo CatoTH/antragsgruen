@@ -43,7 +43,7 @@ $I->wantTo('Go to admin administration');
 $I->gotoStdAdminPage()->gotoSiteAccessPage();
 
 
-$I->executeJS('$("input[name=addType]").val("wurzelwerk");');
+$I->executeJS('$("input[name=addType]").val("gruenesnetz");');
 $I->fillField('#addUsername', 'HoesslTo');
 $I->submitForm('#adminAddForm', [], 'addAdmin');
 $I->see('HoesslTo');

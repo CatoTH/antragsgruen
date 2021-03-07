@@ -20,7 +20,7 @@ class AdminController extends Controller
             if (mb_strpos($auth, '@') !== false) {
                 $auth = 'email:' . $auth;
             } else {
-                $auth = User::wurzelwerkId2Auth($auth);
+                $auth = User::gruenesNetzId2Auth($auth);
             }
         }
         /** @var User $user */

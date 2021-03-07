@@ -31,5 +31,5 @@ return [
     'email_confirmed'     => 'E-Mail-Adresse bestätigt',
     'email_not_confirmed' => 'E-Mail-Adresse nicht bestätigt',
     'contact_show'        => 'Kontaktdaten',
-    'ww_profile'          => 'Wurzelwerk-Profil',
+    'ww_profile'          => 'Grünes-Netz-Profil',
 ];

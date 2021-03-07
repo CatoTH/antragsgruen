@@ -111,8 +111,8 @@ $conPwd = new \app\components\ConsultationAccessPassword($consultation);
         </div>
         <?php
         if ($controller->getParams()->isSamlActive()) {
-            $method = SiteSettings::LOGIN_WURZELWERK;
-            echo '<div class="checkbox wurzelwerk"><label>' .
+            $method = SiteSettings::LOGIN_GRUENES_NETZ;
+            echo '<div class="checkbox gruenesnetz"><label>' .
                 Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) .
                 ' ' . Yii::t('admin', 'siteacc_ww') .
                 '</label></div>';

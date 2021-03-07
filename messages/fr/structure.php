@@ -8,12 +8,12 @@ return [
     'section_pdf_attachment' => 'Fichier PDF',
 
     'policy_deadline_over'    => 'La date-limite est passée',
-    'policy_ww_title'         => 'Wurzelwerk-Users',
-    'policy_ww_desc'          => 'Wurzelwerk-Users',
-    'policy_ww_motion_denied' => 'Seuls les utilisateurs de Wurzelwerk peuvent créer des motions.',
-    'policy_ww_amend_denied'  => 'Seuls les utilisateurs de Wurzelwerk peuvent créer des amendements.',
-    'policy_ww_comm_denied'   => 'Seuls les utilisateurs de Wurzelwerk peuvent commenter',
-    'policy_ww_supp_denied'   => 'Seuls les utilisateurs de Wurzelwerk peuvent soutenir',
+    'policy_ww_title'         => 'Grünes-Netz-Users',
+    'policy_ww_desc'          => 'Grünes-Netz-Users',
+    'policy_ww_motion_denied' => 'Seuls les utilisateurs de Grünes Netz peuvent créer des motions.',
+    'policy_ww_amend_denied'  => 'Seuls les utilisateurs de Grünes Netz peuvent créer des amendements.',
+    'policy_ww_comm_denied'   => 'Seuls les utilisateurs de Grünes Netz peuvent commenter',
+    'policy_ww_supp_denied'   => 'Seuls les utilisateurs de Grünes Netz peuvent soutenir',
 
     'policy_admin_title'         => 'Admins',
     'policy_admin_desc'          => 'Admins',

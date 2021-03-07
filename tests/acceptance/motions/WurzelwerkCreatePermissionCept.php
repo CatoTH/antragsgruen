@@ -30,7 +30,7 @@ $I->see('Keine Berechtigung zum Anlegen von Anträgen');
 $I->wantTo('check that I can create a motion as a Wurzelwerk-user');
 $I->logout();
 $I->gotoConsultationHome(true, '1laenderrat2015', '1laenderrat2015');
-$I->loginAsWurzelwerkUser();
+$I->loginAsGruenesNetzUser();
 $I->seeElement('#sidebar .createMotion');
 $I->click('#sidebar .createMotion');
 $I->see(mb_strtoupper('Antrag stellen'), 'h1');

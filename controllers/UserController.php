@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\{ConsultationAccessPassword, Tools, UrlHelper, WurzelwerkSamlClient};
+use app\components\{ConsultationAccessPassword, Tools, UrlHelper, GruenesNetzSamlClient};
 use app\models\db\{AmendmentSupporter, ConsultationUserPrivilege, EMailBlocklist, MotionSupporter, User, UserNotification};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
@@ -50,7 +50,7 @@ class UserController extends Base
         }
 
         try {
-            $samlClient = new WurzelwerkSamlClient();
+            $samlClient = new GruenesNetzSamlClient();
             $samlClient->requireAuth();
 
             $this->loginUser($samlClient->getOrCreateUser());
@@ -211,12 +211,12 @@ class UserController extends Base
                 $this->redirect($params->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
             } elseif ($backSubdomain) {
                 // Second step: we are on the main domain. Logout and redirect to the subdomain
-                $samlClient = new WurzelwerkSamlClient();
+                $samlClient = new GruenesNetzSamlClient();
                 $samlClient->logout();
                 $this->redirect($backUrl);
             } else {
                 // No subdomain is involved, local logout on the main domain
-                $samlClient = new WurzelwerkSamlClient();
+                $samlClient = new GruenesNetzSamlClient();
                 $samlClient->logout();
                 $this->redirect($backUrl);
             }

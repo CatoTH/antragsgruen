@@ -30,6 +30,6 @@ return [
     'fullTextSyntax'      => 'Name 1, Org 1; Name 2, Org 2; Name 3; ...',
     'email_confirmed'     => 'E-mail address confirmed',
     'email_not_confirmed' => 'E-mail address not confirmed',
-    'ww_profile'          => 'Wurzelwerk-Profile',
+    'ww_profile'          => 'Grünes-Netz-Profile',
     'contact_show'        => 'Contact data',
 ];

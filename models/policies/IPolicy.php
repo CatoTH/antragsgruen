@@ -13,7 +13,7 @@ abstract class IPolicy
     const POLICY_ALL          = 1;
     const POLICY_LOGGED_IN    = 2;
     const POLICY_ADMINS       = 3;
-    const POLICY_WURZELWERK   = 4;
+    const POLICY_GRUENES_NETZ = 4;
     const POLICY_ORGANIZATION = 5;
 
     /**
@@ -31,7 +31,7 @@ abstract class IPolicy
         /** @var AntragsgruenApp $params */
         $params = \yii::$app->params;
         if ($params->isSamlActive()) {
-            $policies[static::POLICY_WURZELWERK] = Wurzelwerk::class;
+            $policies[static::POLICY_GRUENES_NETZ] = GruenesNetz::class;
         }
 
         $site = UrlHelper::getCurrentSite();

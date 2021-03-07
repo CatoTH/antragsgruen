@@ -1,4 +1,4 @@
-#loginWurzelwerkHint, #loginSamlHint, .login_saml .privacyHint {
+#loginSamlHint, .login_saml .privacyHint {
   border-left: solid 1px #808080;
   padding-left: 10px;
   margin-left: 20px;
@@ -20,13 +20,6 @@
     float: left;
     margin-right: 30px;
   }
-}
-
-#loginWurzelwerkForgot {
-  font-size: 0.8em;
-  margin-top: -7px;
-  display: inline-block;
-  margin-bottom: 10px;
 }
 
 .loginUsername {

@@ -40,7 +40,7 @@ echo '<div class="form content hideIfEmpty">';
 
 echo $controller->showErrors();
 
-$publicPolicies = [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_WURZELWERK];
+$publicPolicies = [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_GRUENES_NETZ];
 echo str_replace('%HOME%', UrlHelper::homeUrl(), $form->motionType->getConsultationTextWithFallback('motion', 'create_explanation')) . '<br><br>';
 
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {

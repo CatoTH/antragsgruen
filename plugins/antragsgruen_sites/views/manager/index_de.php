@@ -128,7 +128,7 @@ $params = \Yii::$app->params;
             Dazu kannst du das Formular unter
             "<a href="#opensource" onClick="$('#asGreenMember').scrollintoview({top_offset: -50}); return false;">Als
                 Grünen-Mitglied nutzen</a>" nutzen und es dir innerhalb von zwei, drei Minuten selbst einrichten.
-            Benötigt wird nur ein Zugang beim Grünen Netz bzw. beim Wurzelwerk.<br>
+            Benötigt wird nur ein Zugang beim Grünen Netz.<br>
             Die oben genannte Hosting-Gebühr entfällt in diesem Fall - wir bitten aber dennoch um einen freiwilligen Beitrag,
             um Antragsgrün weiter betreiben zu können.
         </p>
@@ -164,7 +164,7 @@ $params = \Yii::$app->params;
         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Seite anlegen</button></form>';
     } else {
         echo Html::beginForm(
-            UrlHelper::createWurzelwerkLoginUrl('manager/createsite'),
+            UrlHelper::createGruenesNetzLoginUrl('manager/createsite'),
             'post',
             [
                 'class' => 'form-inline login_saml',
@@ -173,7 +173,7 @@ $params = \Yii::$app->params;
         );
         echo '
         Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
-    &quot;Grünes Netz&quot;-Account (Wurzelwerk) ein.<br><br>';
+    &quot;Grünes Netz&quot;-Account ein.<br><br>';
         echo '<button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
 
         echo '<div class="privacyHint"><strong>Erklärung / Datenschutz:</strong><br>

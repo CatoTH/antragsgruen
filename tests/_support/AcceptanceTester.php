@@ -276,23 +276,17 @@ class AcceptanceTester extends \Codeception\Actor
         return $this->loginWithData('fixedadmin@example.org', 'testadmin');
     }
 
-    /**
-     *
-     */
-    public function loginAsWurzelwerkUser()
+    public function loginAsGruenesNetzUser()
     {
         $this->see('LOGIN', '#loginLink');
         $this->click('#loginLink');
 
         $this->see('LOGIN', 'h1');
-        $this->fillField('#wurzelwerkAccount', 'DoeJane');
-        $this->submitForm('#wurzelwerkLoginForm', [], 'wurzelwerkLogin');
+        $this->fillField('#gruenesNetzAccount', 'DoeJane');
+        $this->submitForm('#gruenesNetzLoginForm', [], 'gruenesNetzLogin');
         $this->seeElement('#logoutLink');
     }
 
-    /**
-     *
-     */
     public function logout()
     {
         $this->see('LOGOUT', '#logoutLink');

@@ -27,6 +27,6 @@ return [
     'fullTextSyntax'      => 'Nom 1, Org 1; Nom 2, Org 2; Nom 3; ...',
     'email_confirmed'     => 'Adresse email confirmée',
     'email_not_confirmed' => 'Adresse non confirmée',
-    'ww_profile'          => 'Profil Wurzelwerk',
+    'ww_profile'          => 'Profil Grünes Netz',
     'contact_show'        => 'Informations de Contact',
 ];
