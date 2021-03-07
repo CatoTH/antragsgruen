@@ -210,8 +210,9 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
+        // Hint: the SELECT is not auto-initialized, for that takes rather long when there are many amendments
         $attrs = ['id' => 'obsoletedByAmendment'];
-        echo HTMLTools::fueluxSelectbox('obsoletedByAmendment', $options, $preObsoletedBy, $attrs);
+        echo HTMLTools::fueluxSelectbox('obsoletedByAmendment', $options, $preObsoletedBy, $attrs, false, null, false);
         ?>
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">

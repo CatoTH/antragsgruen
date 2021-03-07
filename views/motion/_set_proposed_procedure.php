@@ -206,8 +206,9 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
             $options[$otherAmend->id] = $otherAmend->getTitle();
         }
     }
+    // Hint: the SELECT is not auto-initialized, for that takes rather long when there are many amendments
     $attrs = ['id' => 'obsoletedByAmendment'];
-    echo HTMLTools::fueluxSelectbox('obsoletedByMotion', $options, $preObsoletedBy, $attrs);
+    echo HTMLTools::fueluxSelectbox('obsoletedByMotion', $options, $preObsoletedBy, $attrs, false, null, false);
     ?>
 </section>
 <section class="statusDetails status_<?= Motion::STATUS_REFERRED ?>">

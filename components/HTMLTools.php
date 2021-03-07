@@ -865,7 +865,7 @@ class HTMLTools
      * @param string|null $btnSize [lg, sm, xs]
      * @return string
      */
-    public static function fueluxSelectbox($formName, $options, $selected = '', $attributes = [], $fullSize = false, $btnSize = null)
+    public static function fueluxSelectbox($formName, $options, $selected = '', $attributes = [], $fullSize = false, $btnSize = null, bool $autoInit = true)
     {
         $btnSize = ($btnSize ? ' btn-' . $btnSize : '');
 
@@ -877,7 +877,10 @@ class HTMLTools
             $classes .= ' ' . $attributes['class'];
             unset($attributes['class']);
         }
-        $str = '<div class="' . $classes . '" data-resize="auto" data-initialize="selectlist"';
+        $str = '<div class="' . $classes . '" data-resize="auto"';
+        if ($autoInit) {
+            $str .= ' data-initialize="selectlist"';
+        }
         foreach ($attributes as $attrName => $attrVal) {
             $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
         }

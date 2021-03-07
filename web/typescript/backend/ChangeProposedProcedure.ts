@@ -36,7 +36,7 @@ export class ChangeProposedProcedure {
     }
 
     private initOpener() {
-        this.$openerBtn.click(() => {
+        this.$openerBtn.on('click', () => {
             this.$widget.removeClass('hidden');
             this.$openerBtn.addClass('hidden');
             localStorage.setItem('proposed_procedure_enabled', '1');
@@ -163,13 +163,17 @@ export class ChangeProposedProcedure {
     }
 
     private statusChanged() {
-        let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
+        let newVal = parseInt(this.$widget.find('.statusForm input[type=radio]:checked').val() as string, 10);
         this.$statusDetails.addClass('hidden');
-        this.$statusDetails.filter('.status_' + newVal).removeClass('hidden');
-        if (newVal == 0) {
+        this.$statusDetails.filter('.status_' + newVal.toString(10)).removeClass('hidden');
+        if (newVal === 0) {
             this.$widget.addClass('noStatus');
         } else {
             this.$widget.removeClass('noStatus');
+        }
+        if (newVal === STATUS_OBSOLETED_BY) {
+            // this operation takes a long time, so we only do it when actually needed
+            this.$widget.find('#obsoletedByAmendment').selectlist();
         }
     }
 
