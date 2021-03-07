@@ -35,8 +35,10 @@ class ConsultationLog extends ActiveRecord
     const MOTION_CHANGE              = 12;
     const MOTION_SUPPORT             = 24;
     const MOTION_SUPPORT_FINISH      = 26;
-    const MOTION_PUBLISH_PROPOSAL    = 30;
+    const MOTION_SET_PROPOSAL        = 35;
+    const MOTION_NOTIFY_PROPOSAL     = 36;
     const MOTION_ACCEPT_PROPOSAL     = 31;
+    const MOTION_PUBLISH_PROPOSAL    = 30;
     const AMENDMENT_PUBLISH          = 13;
     const AMENDMENT_WITHDRAW         = 14;
     const AMENDMENT_DELETE           = 15;
@@ -52,8 +54,10 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_CHANGE           = 25;
     const AMENDMENT_SUPPORT          = 33;
     const AMENDMENT_SUPPORT_FINISH   = 34;
-    const AMENDMENT_PUBLISH_PROPOSAL = 29;
+    const AMENDMENT_SET_PROPOSAL     = 35;
+    const AMENDMENT_NOTIFY_PROPOSAL  = 36;
     const AMENDMENT_ACCEPT_PROPOSAL  = 32;
+    const AMENDMENT_PUBLISH_PROPOSAL = 29;
 
     public static $MOTION_ACTION_TYPES    = [
         self::MOTION_PUBLISH,
@@ -71,8 +75,10 @@ class ConsultationLog extends ActiveRecord
         self::MOTION_CHANGE,
         self::MOTION_SUPPORT,
         self::MOTION_SUPPORT_FINISH,
-        self::MOTION_PUBLISH_PROPOSAL,
+        self::MOTION_SET_PROPOSAL,
+        self::MOTION_NOTIFY_PROPOSAL,
         self::MOTION_ACCEPT_PROPOSAL,
+        self::MOTION_PUBLISH_PROPOSAL,
     ];
 
     public static $AMENDMENT_ACTION_TYPES = [
@@ -91,13 +97,13 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_CHANGE,
         self::AMENDMENT_SUPPORT,
         self::AMENDMENT_SUPPORT_FINISH,
-        self::AMENDMENT_PUBLISH_PROPOSAL,
+        self::AMENDMENT_SET_PROPOSAL,
+        self::AMENDMENT_NOTIFY_PROPOSAL,
         self::AMENDMENT_ACCEPT_PROPOSAL,
+        self::AMENDMENT_PUBLISH_PROPOSAL,
     ];
 
     public static $USER_INVISIBLE_EVENTS = [
-        self::MOTION_PUBLISH_PROPOSAL,
-        self::AMENDMENT_PUBLISH_PROPOSAL,
         self::MOTION_COMMENT_DELETE,
         self::AMENDMENT_COMMENT_DELETE,
         self::MOTION_DELETE,
@@ -112,8 +118,14 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_LIKE,
         self::AMENDMENT_UNLIKE,
         self::AMENDMENT_DISLIKE,
+        self::MOTION_SET_PROPOSAL,
+        self::MOTION_NOTIFY_PROPOSAL,
         self::MOTION_ACCEPT_PROPOSAL,
+        self::MOTION_PUBLISH_PROPOSAL,
+        self::AMENDMENT_SET_PROPOSAL,
+        self::AMENDMENT_NOTIFY_PROPOSAL,
         self::AMENDMENT_ACCEPT_PROPOSAL,
+        self::AMENDMENT_PUBLISH_PROPOSAL,
     ];
 
     /** @var null|Motion */
@@ -244,64 +256,41 @@ class ConsultationLog extends ActiveRecord
         if ($this->motion) {
             return;
         }
-        switch ($this->actionType) {
-            case static::MOTION_PUBLISH:
-            case static::MOTION_CHANGE:
-            case static::MOTION_WITHDRAW:
-            case static::MOTION_DELETE:
-            case static::MOTION_DELETE_PUBLISHED:
-            case static::MOTION_SCREEN:
-            case static::MOTION_UNSCREEN:
-            case static::MOTION_LIKE:
-            case static::MOTION_UNLIKE:
-            case static::MOTION_SUPPORT:
-            case static::MOTION_SUPPORT_FINISH:
-                $this->motionId = $this->actionReferenceId;
-                $this->motion   = Motion::findOne($this->actionReferenceId);
-                break;
-            case static::AMENDMENT_PUBLISH:
-            case static::AMENDMENT_WITHDRAW:
-            case static::AMENDMENT_DELETE:
-            case static::AMENDMENT_DELETE_PUBLISHED:
-            case static::AMENDMENT_SCREEN:
-            case static::AMENDMENT_UNSCREEN:
-            case static::AMENDMENT_LIKE:
-            case static::AMENDMENT_UNLIKE:
-            case static::AMENDMENT_DISLIKE:
-            case static::AMENDMENT_CHANGE:
-            case static::AMENDMENT_SUPPORT:
-            case static::AMENDMENT_SUPPORT_FINISH:
-                $this->amendmentId = $this->actionReferenceId;
-                $this->amendment   = Amendment::findOne($this->actionReferenceId);
+
+        if (in_array($this->actionType, [static::MOTION_COMMENT, static::MOTION_COMMENT_SCREEN])) {
+            $this->motionComment = MotionComment::findOne($this->actionReferenceId);
+            if ($this->motionComment) {
+                $this->motion = $this->motionComment->getIMotion();
+                $this->motionId = $this->motionComment->motionId;
+            }
+
+        } elseif (in_array($this->actionType, static::$MOTION_ACTION_TYPES)) {
+            $this->motionId = $this->actionReferenceId;
+            $this->motion   = Motion::findOne($this->actionReferenceId);
+
+        } elseif (in_array($this->actionType, [static::AMENDMENT_COMMENT, static::AMENDMENT_COMMENT_SCREEN])) {
+            $this->amendmentComment = AmendmentComment::findOne($this->actionReferenceId);
+            if ($this->amendmentComment) {
+                $this->amendment = $this->amendmentComment->getIMotion();
+                $this->amendmentId = $this->amendmentComment->amendmentId;
                 if ($this->amendment) {
+                    $this->motion = $this->amendment->getMyMotion();
                     $this->motionId = $this->amendment->motionId;
-                    $this->motion   = $this->amendment->getMyMotion();
-                } else {
-                    $this->motion = static::amendmentId2Motion($this->actionReferenceId);
-                    if ($this->motion) {
-                        $this->motionId = $this->motion->id;
-                    }
                 }
-                break;
-            case static::MOTION_COMMENT:
-            case static::MOTION_COMMENT_SCREEN:
-                $this->motionComment = MotionComment::findOne($this->actionReferenceId);
-                if ($this->motionComment) {
-                    $this->motion   = $this->motionComment->getIMotion();
-                    $this->motionId = $this->motionComment->motionId;
+            }
+
+        } elseif (in_array($this->actionType, static::$AMENDMENT_ACTION_TYPES)) {
+            $this->amendmentId = $this->actionReferenceId;
+            $this->amendment = Amendment::findOne($this->actionReferenceId);
+            if ($this->amendment) {
+                $this->motionId = $this->amendment->motionId;
+                $this->motion = $this->amendment->getMyMotion();
+            } else {
+                $this->motion = static::amendmentId2Motion($this->actionReferenceId);
+                if ($this->motion) {
+                    $this->motionId = $this->motion->id;
                 }
-                break;
-            case static::AMENDMENT_COMMENT:
-            case static::AMENDMENT_COMMENT_SCREEN:
-                $this->amendmentComment = AmendmentComment::findOne($this->actionReferenceId);
-                if ($this->amendmentComment) {
-                    $this->amendment   = $this->amendmentComment->getIMotion();
-                    $this->amendmentId = $this->amendmentComment->amendmentId;
-                    if ($this->amendment) {
-                        $this->motion   = $this->amendment->getMyMotion();
-                        $this->motionId = $this->amendment->motionId;
-                    }
-                }
+            }
         }
     }
 
@@ -314,62 +303,30 @@ class ConsultationLog extends ActiveRecord
         if ($this->amendment && !$this->amendment->isVisible()) {
             return null;
         }
-        switch ($this->actionType) {
-            case static::MOTION_PUBLISH:
-            case static::MOTION_CHANGE:
-            case static::MOTION_WITHDRAW:
-            case static::MOTION_DELETE:
-            case static::MOTION_DELETE_PUBLISHED:
-            case static::MOTION_SCREEN:
-            case static::MOTION_UNSCREEN:
-            case static::MOTION_LIKE:
-            case static::MOTION_UNLIKE:
-            case static::MOTION_ACCEPT_PROPOSAL:
-            case static::MOTION_PUBLISH_PROPOSAL:
-            case static::MOTION_SUPPORT:
-            case static::MOTION_SUPPORT_FINISH:
-                if ($this->motion) {
-                    return UrlHelper::createMotionUrl($this->motion);
-                } else {
-                    return null;
-                }
-            case static::AMENDMENT_PUBLISH:
-            case static::AMENDMENT_WITHDRAW:
-            case static::AMENDMENT_DELETE:
-            case static::AMENDMENT_DELETE_PUBLISHED:
-            case static::AMENDMENT_SCREEN:
-            case static::AMENDMENT_UNSCREEN:
-            case static::AMENDMENT_LIKE:
-            case static::AMENDMENT_UNLIKE:
-            case static::AMENDMENT_DISLIKE:
-            case static::AMENDMENT_CHANGE:
-            case static::AMENDMENT_ACCEPT_PROPOSAL:
-            case static::AMENDMENT_PUBLISH_PROPOSAL:
-            case static::AMENDMENT_SUPPORT:
-            case static::AMENDMENT_SUPPORT_FINISH:
-                if ($this->amendment && $this->amendment->getMyMotion()) {
-                    return UrlHelper::createAmendmentUrl($this->amendment);
-                } else {
-                    return null;
-                }
-            case static::MOTION_COMMENT:
-            case static::MOTION_COMMENT_SCREEN:
-                if ($this->motionComment && $this->motionComment->getIMotion()) {
-                    return UrlHelper::createMotionCommentUrl($this->motionComment);
-                } else {
-                    return null;
-                }
-            case static::AMENDMENT_COMMENT:
-            case static::AMENDMENT_COMMENT_SCREEN:
-                if ($this->amendmentComment && $this->amendmentComment->getIMotion() &&
-                    $this->amendmentComment->getIMotion()->getMyMotion()) {
-                    return UrlHelper::createAmendmentCommentUrl($this->amendmentComment);
-                } else {
-                    return null;
-                }
-            default:
+
+        if (in_array($this->actionType, [static::MOTION_COMMENT, static::MOTION_COMMENT_SCREEN])) {
+            if ($this->motionComment && $this->motionComment->getIMotion()) {
+                return UrlHelper::createMotionCommentUrl($this->motionComment);
+            } else {
                 return null;
+            }
+
+        } elseif (in_array($this->actionType, static::$MOTION_ACTION_TYPES)) {
+            return ($this->motion ? UrlHelper::createMotionUrl($this->motion) : null);
+
+        } elseif (in_array($this->actionType, [static::AMENDMENT_COMMENT, static::AMENDMENT_COMMENT_SCREEN])) {
+            if ($this->amendmentComment && $this->amendmentComment->getIMotion() &&
+                $this->amendmentComment->getIMotion()->getMyMotion()) {
+                return UrlHelper::createAmendmentCommentUrl($this->amendmentComment);
+            } else {
+                return null;
+            }
+
+        } elseif (in_array($this->actionType, static::$AMENDMENT_ACTION_TYPES)) {
+            return ($this->amendment && $this->amendment->getMyMotion() ? UrlHelper::createAmendmentUrl($this->amendment) : null);
         }
+
+        return null;
     }
 
     public function getMotion(): ?Motion
@@ -502,6 +459,10 @@ class ConsultationLog extends ActiveRecord
                 return $str;
             case static::MOTION_UNSCREEN:
                 return null;
+            case static::MOTION_SUPPORT:
+                $str = \Yii::t('structure', 'activity_MOTION_SUPPORT');
+                $str = $this->formatLogEntryUser($str, '');
+                return $str;
             case static::AMENDMENT_PUBLISH:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
                 $str = $this->formatLogEntryAmendment($str);
@@ -543,6 +504,11 @@ class ConsultationLog extends ActiveRecord
                 return $str;
             case static::AMENDMENT_UNSCREEN:
                 return null;
+            case static::AMENDMENT_SUPPORT:
+                $str = \Yii::t('structure', 'activity_AMENDMENT_SUPPORT');
+                $str = $this->formatLogEntryAmendment($str);
+                $str = $this->formatLogEntryUser($str, '');
+                return $str;
             default:
                 return $this->actionType;
         }

@@ -327,20 +327,36 @@ class ConsultationController extends Base
         );
     }
 
-    /**
-     * @param int $page
-     *
-     * @return string
-     */
-    public function actionActivitylog($page = 0)
+    public function actionActivitylog(string $page = "0", ?string $showAll = null, ?string $amendmentId = null, ?string $motionId = null): string
     {
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
+        $motion = null;
+        $amendment = null;
+
         $form = new ConsultationActivityFilterForm($this->consultation);
         $form->setPage(intval($page));
 
-        return $this->render('activity_log', ['form' => $form]);
+        if ($amendmentId) {
+            $amendment = $this->consultation->getAmendment($amendmentId);
+            if (!$amendment) {
+                return $this->showErrorpage(404, 'Amendment not found');
+            }
+            $form->setFilterForAmendmentId(intval($amendmentId));
+        } elseif ($motionId) {
+            $motion = $this->consultation->getMotion($motionId);
+            if (!$motion) {
+                return $this->showErrorpage(404, 'Motion not found');
+            }
+            $form->setFilterForMotionId(intval($motionId));
+        }
+
+        if ($showAll && User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+            $form->setShowUserInvisibleEvents(true);
+        }
+
+        return $this->render('activity_log', ['form' => $form, 'motion' => $motion, 'amendment' => $amendment]);
     }
 
     /**

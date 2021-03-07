@@ -190,6 +190,7 @@ return [
     'activity_MOTION_WITHDRAW'            => 'The motion was <strong>withdrawn</strong>.',
     'activity_MOTION_COMMENT'             => '###USER### <strong>commented on the motion</strong>',
     'activity_MOTION_SCREEN'              => 'The <strong>motion was published</strong>',
+    'activity_MOTION_SUPPORT'             => '###USER### <strong>supported the motion</strong>',
     'activity_AMENDMENT_PUBLISH'          => '###USER### <strong>submitted the amendment ###AMENDMENT###</strong>',
     'activity_AMENDMENT_CHANGE'           => '###USER### <strong>edited the amendment ###AMENDMENT###</strong>',
     'activity_AMENDMENT_DELETE'           => '###USER### <strong>deleted the amendment ###AMENDMENT###</strong>',
@@ -197,6 +198,7 @@ return [
     'activity_AMENDMENT_WITHDRAW'         => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>withdrawn</strong>.',
     'activity_AMENDMENT_COMMENT'          => '###USER### <strong>commented on the amendment ###AMENDMENT###</strong>',
     'activity_AMENDMENT_SCREEN'           => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>published</strong>',
+    'activity_AMENDMENT_SUPPORT'          => '###USER### <strong>supported the amendment ###AMENDMENT###</strong>',
 
     'remaining_over'    => 'over',
     'remaining_days'    => 'days',

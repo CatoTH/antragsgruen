@@ -377,6 +377,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'tabulardatatype_integer'    => 'Zahl',
     'tabulardatatype_date'       => 'Datum',
     'internal_note'              => 'Interne Notiz',
+    'show_activity'              => 'Aktivitäts-Protokoll',
     'amend_edit_title'           => 'Änderungsantrag bearbeiten',
     'amend_show'                 => 'Änderungsantrag anzeigen',
     'amend_del'                  => 'Änderungsantrag löschen',

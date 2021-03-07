@@ -31,6 +31,11 @@ $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
 $html .= '<span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('admin', 'motion_show') . '</a></li>';
 
+$activityUrl = UrlHelper::createUrl(['/consultation/activitylog', 'motionId' => $motion->id, 'showAll' => true]);
+$html     .= '<li><a href="' . Html::encode($activityUrl) . '" class="activity">';
+$html     .= '<span class="fontello fontello-globe" aria-hidden="true"></span>' .
+             Yii::t('admin', 'show_activity') . '</a></li>';
+
 $cloneUrl = UrlHelper::createUrl(['motion/create', 'cloneFrom' => $motion->id]);
 $html     .= '<li><a href="' . Html::encode($cloneUrl) . '" class="clone">';
 $html     .= '<span class="icon glyphicon glyphicon-duplicate" aria-hidden="true"></span>' .

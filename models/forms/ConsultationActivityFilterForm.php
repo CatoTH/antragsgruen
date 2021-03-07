@@ -45,6 +45,16 @@ class ConsultationActivityFilterForm extends Model
         return $this;
     }
 
+    public function setFilterForMotionId(?int $filterForMotionId): void
+    {
+        $this->filterForMotionId = $filterForMotionId;
+    }
+
+    public function setFilterForAmendmentId(?int $filterForAmendmentId): void
+    {
+        $this->filterForAmendmentId = $filterForAmendmentId;
+    }
+
     /**
      * @return ConsultationLog[]
      */

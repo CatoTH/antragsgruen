@@ -375,6 +375,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'tabulardatatype_integer'     => 'Number',
     'tabulardatatype_date'        => 'Date',
     'internal_note'               => 'Internal note',
+    'show_activity'               => 'Activity log',
     'amend_edit_title'            => 'Edit amendment',
     'amend_show'                  => 'Show amendment',
     'amend_del'                   => 'Delete amendment',

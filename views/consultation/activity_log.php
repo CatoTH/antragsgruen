@@ -3,18 +3,31 @@
 /**
  * @var yii\web\View $this
  * @var \app\models\forms\ConsultationActivityFilterForm $form
+ * @var \app\models\db\Motion|null $motion
+ * @var \app\models\db\Amendment|null $amendment
  */
 
-use app\components\Tools;
+use app\components\{Tools, UrlHelper};
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 
-$consultation = \app\components\UrlHelper::getCurrentConsultation();
+$consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'activity_bc');
 
 $layout = $controller->layoutParams;
+if ($motion) {
+    $motionUrl = UrlHelper::createMotionUrl($motion);
+    $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
+}
+if ($amendment) {
+    $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
+    $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionUrl);
+
+    $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
+    $layout->addBreadcrumb($amendment->titlePrefix, $amendmentUrl);
+}
 $layout->addBreadcrumb(Yii::t('con', 'activity_bc'));
 
 echo '<h1>' . Html::encode(Yii::t('con', 'activity_title')) . '</h1>';
