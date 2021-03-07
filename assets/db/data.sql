@@ -75,7 +75,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m200621_063838_amendmentMotionExtraData', '1592721950'),
   ('m201111_193448_consultation_text_per_motion_type', '1605123408'),
   ('m200329_135701_speech_list', '1585492187'),
-  ('m210116_080438_rename_email_blocklist', '1610784771')
+  ('m210116_080438_rename_email_blocklist', '1610784771'),
+  ('m210207_145533_remove_obsolete_fields', '1615109742')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;
