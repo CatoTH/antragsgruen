@@ -201,7 +201,8 @@ CREATE TABLE `###TABLE_PREFIX###consultationLog` (
   `consultationId`    INT(11)     NOT NULL,
   `actionType`        SMALLINT(6) NOT NULL,
   `actionReferenceId` INT(11)     NOT NULL,
-  `actionTime`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `actionTime`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data`              TEXT NULL DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -797,7 +798,8 @@ ALTER TABLE `###TABLE_PREFIX###consultationFile`
 ALTER TABLE `###TABLE_PREFIX###consultationLog`
   ADD PRIMARY KEY (`id`),
   ADD KEY `userId` (`userId`),
-  ADD KEY `consultationId` (`consultationId`, `actionTime`) USING BTREE;
+  ADD KEY `consultationId` (`consultationId`, `actionTime`) USING BTREE,
+  ADD KEY `actionReferenceId` (`actionReferenceId`,`actionTime`);
 
 --
 -- Indexes for table `consultationMotionType`

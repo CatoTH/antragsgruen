@@ -14,9 +14,18 @@ class ConsultationActivityFilterForm extends Model
     /** @var Consultation */
     private $consultation;
 
+    /** @var null|int */
+    private $filterForMotionId = null;
+
+    /** @var null|int */
+    private $filterForAmendmentId = null;
+
     private $entriesPerPage          = 20;
     private $page                    = 0;
     private $showUserInvisibleEvents = false;
+
+    /** @var null|ConsultationLog[] */
+    private $loadedEntries = null;
 
     public function __construct(Consultation $consultation)
     {
@@ -24,53 +33,56 @@ class ConsultationActivityFilterForm extends Model
         $this->consultation = $consultation;
     }
 
-    /**
-     * @param int $page
-     */
-    public function setPage($page)
+    public function setPage(int $page): self
     {
-        $this->page = IntVal($page);
+        $this->page = $page;
+        return $this;
     }
 
-    /**
-     * @param bool $show
-     */
-    public function setShowUserInvisibleEvents($show)
+    public function setShowUserInvisibleEvents(bool $show): self
     {
-        $this->showUserInvisibleEvents = ($show == true);
+        $this->showUserInvisibleEvents = $show;
+        return $this;
     }
 
     /**
      * @return ConsultationLog[]
      */
-    public function getAllLogEntries()
+    public function getAllLogEntries(): array
     {
-        $entries = $this->consultation->logEntries;
+        if ($this->loadedEntries) {
+            return $this->loadedEntries;
+        }
+
+        if ($this->filterForMotionId) {
+            $entries = ConsultationLog::getLogForMotion($this->consultation->id, $this->filterForMotionId);
+        } elseif ($this->filterForAmendmentId) {
+            $entries = ConsultationLog::getLogForAmendment($this->consultation->id, $this->filterForAmendmentId);
+        } else {
+            $entries = ConsultationLog::getLogForConsultation($this->consultation->id);
+        }
+
         if (!$this->showUserInvisibleEvents) {
             $entries = array_filter($entries, function (ConsultationLog $entry) {
                 return !in_array($entry->actionType, ConsultationLog::$USER_INVISIBLE_EVENTS);
             });
         }
+
+        $this->loadedEntries = $entries;
+
         return $entries;
     }
 
     /**
      * @return ConsultationLog[]
      */
-    public function getLogEntries()
+    public function getLogEntries(): array
     {
         $entries = $this->getAllLogEntries();
-        usort($entries, function (ConsultationLog $el1, ConsultationLog $el2) {
-            return -1 * Tools::compareSqlTimes($el1->actionTime, $el2->actionTime);
-        });
         return array_slice($entries, $this->page * $this->entriesPerPage, $this->entriesPerPage);
     }
 
-    /**
-     * @param string $urlBase
-     * @return string
-     */
-    public function getPagination($urlBase)
+    public function getPagination(string $urlBase): string
     {
         $entries = count($this->getAllLogEntries());
         if ($entries <= $this->entriesPerPage) {

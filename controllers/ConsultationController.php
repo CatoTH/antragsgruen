@@ -73,7 +73,7 @@ class ConsultationController extends Base
         $this->consultationSidebar($this->consultation);
 
         $form = new ConsultationActivityFilterForm($this->consultation);
-        $form->setPage($page);
+        $form->setPage(intval($page));
 
         return $this->render('feeds', [
             'admin' => User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
@@ -338,7 +338,7 @@ class ConsultationController extends Base
         $this->consultationSidebar($this->consultation);
 
         $form = new ConsultationActivityFilterForm($this->consultation);
-        $form->setPage($page);
+        $form->setPage(intval($page));
 
         return $this->render('activity_log', ['form' => $form]);
     }

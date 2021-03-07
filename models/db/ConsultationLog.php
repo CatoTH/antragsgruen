@@ -2,8 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{Tools, UrlHelper};
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
@@ -14,6 +13,7 @@ use yii\helpers\Html;
  * @property int $actionType
  * @property int $actionReferenceId
  * @property string $actionTime
+ * @property string|null $data
  *
  * @property Consultation $consultation
  * @property User $user
@@ -98,6 +98,34 @@ class ConsultationLog extends ActiveRecord
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
+    public static function getLogForConsultation(int $consultationId): array
+    {
+        $query = static::find();
+        $query->where(['consultationId' => $consultationId]);
+        $query->orderBy('actionTime DESC');
+        return $query->all();
+    }
+
+    public static function getLogForMotion(int $consultationId, int $motionId): array
+    {
+        $query = static::find();
+        $query->where(['consultationId' => $consultationId]);
+        $query->andWhere(['actionReferenceId' => $motionId]);
+        // @TODO Additional filtering by type
+        $query->orderBy('actionTime DESC');
+        return $query->all();
+    }
+
+    public static function getLogForAmendment(int $consultationId, int $amendmentId): array
+    {
+        $query = static::find();
+        $query->where(['consultationId' => $consultationId]);
+        $query->andWhere(['actionReferenceId' => $amendmentId]);
+        // @TODO Additional filtering by type
+        $query->orderBy('actionTime DESC');
+        return $query->all();
+    }
+
     /**
      * @return array
      */
@@ -109,46 +137,28 @@ class ConsultationLog extends ActiveRecord
         ];
     }
 
-    /**
-     * @param Consultation $consultation
-     * @param int|null $userId
-     * @param int $type
-     * @param int $typeRefId
-     */
-    public static function log(Consultation $consultation, $userId, $type, $typeRefId)
+    public static function log(Consultation $consultation, ?int $userId, int $type, int $typeRefId, ?array $data = null): void
     {
-        $log                    = new static();
-        $log->userId            = $userId;
-        $log->consultationId    = $consultation->id;
-        $log->actionType        = $type;
+        $log = new static();
+        $log->userId = $userId;
+        $log->consultationId = $consultation->id;
+        $log->actionType = $type;
         $log->actionReferenceId = $typeRefId;
-        $log->actionTime        = date('Y-m-d H:i:s');
+        $log->actionTime = date('Y-m-d H:i:s');
+        $log->data = ($data ? json_encode($data) : null);
         $log->save();
     }
 
-    /**
-     * @param Consultation $consultation
-     * @param int $type
-     * @param int $typeRefId
-     */
-    public static function logCurrUser(Consultation $consultation, $type, $typeRefId)
+    public static function logCurrUser(Consultation $consultation, int $type, int $typeRefId, ?array $data = null): void
     {
         $user = User::getCurrentUser();
-
-        $log                    = new static();
-        $log->userId            = ($user ? $user->id : null);
-        $log->consultationId    = $consultation->id;
-        $log->actionType        = $type;
-        $log->actionReferenceId = $typeRefId;
-        $log->actionTime        = date('Y-m-d H:i:s');
-        $log->save();
+        static::log($consultation, ($user ? $user->id : null), $type, $typeRefId, $data);
     }
 
     /**
-     * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function getTimeAgoFormatted()
+    public function getTimeAgoFormatted(): string
     {
         $time = time() - Tools::dateSql2timestamp($this->actionTime);
         if ($time < 60) {
@@ -254,7 +264,6 @@ class ConsultationLog extends ActiveRecord
                 } else {
                     return null;
                 }
-                break;
             case static::AMENDMENT_PUBLISH:
             case static::AMENDMENT_WITHDRAW:
             case static::AMENDMENT_DELETE:
@@ -272,7 +281,6 @@ class ConsultationLog extends ActiveRecord
                 } else {
                     return null;
                 }
-                break;
             case static::MOTION_COMMENT:
             case static::MOTION_COMMENT_SCREEN:
                 if ($this->motionComment && $this->motionComment->getIMotion()) {
@@ -280,7 +288,6 @@ class ConsultationLog extends ActiveRecord
                 } else {
                     return null;
                 }
-                break;
             case static::AMENDMENT_COMMENT:
             case static::AMENDMENT_COMMENT_SCREEN:
                 if ($this->amendmentComment && $this->amendmentComment->getIMotion() &&
@@ -289,7 +296,6 @@ class ConsultationLog extends ActiveRecord
                 } else {
                     return null;
                 }
-                break;
             default:
                 return null;
         }
