@@ -7,24 +7,28 @@ use app\models\exceptions\FormError;
 
 trait JsonConfigTrait
 {
-    public function __construct(?string $data)
+    /**
+     * @var null|string|array @data
+     */
+    public function __construct($data)
     {
         $this->setPropertiesFromJSON($data);
     }
 
     /**
+     * @var null|string|array @data
      * @throws ConfigurationError
      */
-    protected function setPropertiesFromJSON(?string $data)
+    protected function setPropertiesFromJSON($data)
     {
         if (!$data) {
             return;
         }
-        $data    = str_replace("\r", "", $data);
-        $data    = str_replace(chr(194) . chr(160), " ", $data);
         if (is_array($data)) {
             $dataArr = $data;
         } else {
+            $data    = str_replace("\r", "", $data);
+            $data    = str_replace(chr(194) . chr(160), " ", $data);
             $dataArr = json_decode($data, true);
         }
         if ($dataArr === null) {
