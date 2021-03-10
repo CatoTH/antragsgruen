@@ -106,14 +106,40 @@ if (!$settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
 
 if ($adminMode) {
     ?>
-    <div class="form-group">
+    <div class="form-group initiatorCurrentUsername">
         <label class="col-sm-3 control-label" for="initiatorName"><?= Yii::t('initiator', 'username') ?></label>
-        <div class="col-sm-4">
+        <div class="col-sm-6 username">
             <?php
             if ($initiator->user) {
                 echo Html::encode($initiator->user->getAuthName());
             }
-            ?></div>
+            ?>
+            <button class="btn-link btnEdit" type="button">
+                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                <span class="sr-only"><?= Yii::t('base', 'edit') ?></span>
+            </button>
+        </div>
+    </div>
+    <div class="form-group initiatorSetUsername hidden">
+        <label class="col-sm-3 control-label" for="initiatorName"><?= Yii::t('initiator', 'username') ?></label>
+        <?php
+        $loginTypes = [
+            'email' => Yii::t('admin', 'siteacc_add_email') . ':',
+        ];
+        if ($controller->getParams()->isSamlActive()) {
+            $loginTypes['gruenesnetz'] = Yii::t('admin', 'siteacc_add_ww') . ':';
+        }
+        ?>
+        <div class="col-md-3 admin-type">
+            <input type="hidden" name="initiatorSet" value="">
+            <?= HTMLTools::fueluxSelectbox('initiatorSetType', $loginTypes) ?>
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="initiatorSetUsername" id="initiatorSetUsername" class="form-control"
+                   value="<?= Html::encode($initiator->user ? $initiator->user->getAuthUsername() : '') ?>"
+                   title="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_title')) ?>"
+                   placeholder="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_place')) ?>">
+        </div>
     </div>
     <?php
 }

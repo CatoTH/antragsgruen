@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Site;
 use app\components\{Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment, AmendmentSupporter, User};
 use app\models\events\AmendmentEvent;
@@ -180,6 +181,38 @@ class AmendmentController extends AdminBase
         $amendment->refresh();
     }
 
+    private function saveAmendmentInitiator(Amendment $motion): void
+    {
+        if (\Yii::$app->request->post('initiatorSet') !== '1') {
+            return;
+        }
+        $setType = \Yii::$app->request->post('initiatorSetType');
+        $setUsername = \Yii::$app->request->post('initiatorSetUsername');
+
+        switch ($setType) {
+            case 'email':
+                $user = User::findByAuthTypeAndName(Site::LOGIN_STD, $setUsername);
+                break;
+            case 'gruenesnetz':
+                $user = User::findByAuthTypeAndName(Site::LOGIN_GRUENES_NETZ, $setUsername);
+                break;
+            default:
+                $user = null;
+        }
+
+        if ($setUsername && !$user) {
+            \yii::$app->session->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
+            return;
+        }
+
+        foreach ($motion->getInitiators() as $initiator) {
+            $initiator->userId = ($user ? $user->id : null);
+            $initiator->save();
+            $initiator->refresh();
+        }
+        $motion->refresh();
+    }
+
     /**
      * @param int $amendmentId
      *
@@ -207,8 +240,6 @@ class AmendmentController extends AdminBase
         $this->layout = 'column2';
 
         $post = \Yii::$app->request->post();
-        $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
-        $form->setAdminMode(true);
 
         if ($this->isPostSet('screen') && $amendment->isInScreeningProcess()) {
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
@@ -235,6 +266,8 @@ class AmendmentController extends AdminBase
             if (!isset($post['edittext'])) {
                 unset($post['sections']);
             }
+            $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
+            $form->setAdminMode(true);
             $form->setAttributes([$post, $_FILES]);
 
             $votingData = $amendment->getVotingData();
@@ -271,12 +304,15 @@ class AmendmentController extends AdminBase
             $amendment->save();
 
             $this->saveAmendmentSupporters($amendment);
+            $this->saveAmendmentInitiator($amendment);
 
             $amendment->flushCache(true);
             $amendment->refresh();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
         }
 
+        $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
+        $form->setAdminMode(true);
         return $this->render('update', ['amendment' => $amendment, 'form' => $form]);
     }
 

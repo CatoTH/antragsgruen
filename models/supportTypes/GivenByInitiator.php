@@ -6,34 +6,22 @@ use app\models\db\User;
 
 class GivenByInitiator extends SupportBase
 {
-    /**
-     * @return string
-     */
-    public static function getTitle()
+    public static function getTitle(): string
     {
         return \Yii::t('structure', 'supp_given_by_initiator');
     }
 
-    /**
-     * @return bool
-     */
-    public static function hasInitiatorGivenSupporters()
+    public static function hasInitiatorGivenSupporters(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function collectSupportersBeforePublication()
+    public static function collectSupportersBeforePublication(): bool
     {
         return false;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasFullTextSupporterField()
+    public function hasFullTextSupporterField(): bool
     {
         return User::havePrivilege($this->motionType->getConsultation(), User::PRIVILEGE_ANY);
     }

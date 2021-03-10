@@ -105,14 +105,18 @@ $hasProposedProcedures = $controller->consultation->hasProposedProcedures();
 
         <?php
         echo Html::beginForm('', 'post', ['id' => 'adminAddForm', 'class' => 'adminForm form-horizontal']);
+
+        $loginTypes = [
+            'email' => Yii::t('admin', 'siteacc_add_email') . ':',
+        ];
+        if ($controller->getParams()->isSamlActive()) {
+            $loginTypes['gruenesnetz'] = Yii::t('admin', 'siteacc_add_ww') . ':';
+        }
         ?>
         <h4><?= Yii::t('admin', 'siteacc_admins_add') ?></h4>
         <div class="row">
             <div class="col-md-3 admin-type">
-                <?= HTMLTools::fueluxSelectbox('addType', [
-                    'gruenesnetz' => Yii::t('admin', 'siteacc_add_ww') . ':',
-                    'email'      => Yii::t('admin', 'siteacc_add_email') . ':',
-                ]) ?>
+                <?= HTMLTools::fueluxSelectbox('addType', $loginTypes) ?>
             </div>
             <div class="col-md-4">
                 <input type="text" name="addUsername" value="" id="addUsername" class="form-control"

@@ -2,7 +2,8 @@
 
 ## Version 4.8.0 [not released yet]
 
-- Admins can now see an activity log for each motion and amendment, chronologically listing all relevant events for it (supports, comments, proposed procedure changes etc.)
+- Admins can now see an activity log for each motion and amendment, chronologically listing all relevant events for it (supports, comments, proposed procedure changes etc.).
+- Admins can now assign motions and amendments to user accounts, e.g. when the motion was created by an admin or an anonymous user before creating an account.
 
 ### Version 4.7.1 [not released yet]
 

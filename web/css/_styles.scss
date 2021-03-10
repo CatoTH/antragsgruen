@@ -323,6 +323,21 @@
     &.type-organization .only-organization {
       display: inherit;
     }
+
+    .initiatorCurrentUsername {
+      .username {
+        padding-top: 7px;
+      }
+      .btnEdit {
+        display: inline;
+      }
+    }
+
+    .initiatorSetUsername {
+      .btn {
+        text-align: left;
+      }
+    }
   }
 
   .supporterRow, .initiatorRow {

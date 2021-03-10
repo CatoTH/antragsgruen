@@ -63,7 +63,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return string[]
      */
-    public static function getStatuses()
+    public static function getStatuses(): array
     {
         return [
             1  => \Yii::t('structure', 'user_status_1'),
@@ -108,6 +108,20 @@ class User extends ActiveRecord implements IdentityInterface
         return $user->id === $currentUser->id;
     }
 
+    public static function findByAuthTypeAndName(int $authType, ?string $authName): ?User {
+        if ($authName === null) {
+            return null;
+        }
+        switch ($authType) {
+            case \app\models\settings\Site::LOGIN_STD:
+                return User::findOne(['auth' => 'email:' . $authName]);
+            case \app\models\settings\Site::LOGIN_GRUENES_NETZ:
+                return User::findOne(['auth' => static::gruenesNetzId2Auth($authName)]);
+            default:
+                return null;
+        }
+    }
+
     /**
      * @param Consultation|null $consultation
      * @param int|int[] $privilege
@@ -122,10 +136,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $user->hasPrivilege($consultation, $privilege);
     }
 
-    /**
-     * @return bool
-     */
-    public static function currentUserIsSuperuser()
+    public static function currentUserIsSuperuser(): bool
     {
         $user = User::getCurrentUser();
         if (!$user) {
@@ -628,9 +639,18 @@ class User extends ActiveRecord implements IdentityInterface
                 } else {
                     return $this->auth;
                 }
-                break;
             default:
                 return $this->auth;
+        }
+    }
+
+    public function getAuthUsername(): string
+    {
+        $authparts = explode(':', $this->auth);
+        if (count($authparts) === 2) {
+            return $authparts[1];
+        } else {
+            return $this->auth;
         }
     }
 

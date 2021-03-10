@@ -10,7 +10,7 @@ use app\models\forms\{DeadlineForm, MotionEditForm, MotionMover};
 use app\models\motionTypeTemplates\{Application as ApplicationTemplate, Motion as MotionTemplate, PDFApplication as PDFApplicationTemplate};
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType};
+use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType, Site};
 use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
@@ -346,11 +346,9 @@ class MotionController extends AdminBase
     }
 
     /**
-     * @param Motion $motion
-     *
      * @throws \Throwable
      */
-    private function saveMotionSupporters(Motion $motion)
+    private function saveMotionSupporters(Motion $motion): void
     {
         $names         = \Yii::$app->request->post('supporterName', []);
         $orgas         = \Yii::$app->request->post('supporterOrga', []);
@@ -392,6 +390,38 @@ class MotionController extends AdminBase
             }
         }
 
+        $motion->refresh();
+    }
+
+    private function saveMotionInitiator(Motion $motion): void
+    {
+        if (\Yii::$app->request->post('initiatorSet') !== '1') {
+            return;
+        }
+        $setType = \Yii::$app->request->post('initiatorSetType');
+        $setUsername = \Yii::$app->request->post('initiatorSetUsername');
+
+        switch ($setType) {
+            case 'email':
+                $user = User::findByAuthTypeAndName(Site::LOGIN_STD, $setUsername);
+                break;
+            case 'gruenesnetz':
+                $user = User::findByAuthTypeAndName(Site::LOGIN_GRUENES_NETZ, $setUsername);
+                break;
+            default:
+                $user = null;
+        }
+
+        if ($setUsername && !$user) {
+            \yii::$app->session->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
+            return;
+        }
+
+        foreach ($motion->getInitiators() as $initiator) {
+            $initiator->userId = ($user ? $user->id : null);
+            $initiator->save();
+            $initiator->refresh();
+        }
         $motion->refresh();
     }
 
@@ -449,9 +479,6 @@ class MotionController extends AdminBase
         $this->layout = 'column2';
         $post         = \Yii::$app->request->post();
 
-        $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
-        $form->setAdminMode(true);
-
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
             if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
@@ -482,6 +509,8 @@ class MotionController extends AdminBase
             }
 
             try {
+                $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
+                $form->setAdminMode(true);
                 $form->setAttributes([$post, $_FILES]);
 
                 $votingData = $motion->getVotingData();
@@ -593,11 +622,14 @@ class MotionController extends AdminBase
             }
 
             $this->saveMotionSupporters($motion);
+            $this->saveMotionInitiator($motion);
 
             $motion->flushCache(true);
             \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
+        $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
+        $form->setAdminMode(true);
         return $this->render('update', ['motion' => $motion, 'form' => $form]);
     }
 

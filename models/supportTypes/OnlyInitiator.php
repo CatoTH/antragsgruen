@@ -4,25 +4,17 @@ namespace app\models\supportTypes;
 
 class OnlyInitiator extends SupportBase
 {
-    /**
-     * @return string
-     */
-    public static function getTitle()
+    public static function getTitle(): string
     {
         return \Yii::t('structure', 'supp_only_initiators');
     }
 
-    /**
-     * @return bool
-     */
-    public static function hasInitiatorGivenSupporters()
+    public static function hasInitiatorGivenSupporters(): bool
     {
         return false;
     }
 
-    /**
-     */
-    protected function fixSettings()
+    protected function fixSettings(): void
     {
         $this->settingsObject->minSupporters       = 0;
         $this->settingsObject->allowMoreSupporters = false;

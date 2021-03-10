@@ -118,7 +118,7 @@ trait SiteAccessTrait
 
     private function addAdminGruenesNetz(string $username): void
     {
-        $newUser = User::findOne(['auth' => User::gruenesNetzId2Auth($username)]);
+        $newUser = User::findByAuthTypeAndName(\app\models\settings\Site::LOGIN_GRUENES_NETZ, $username);
         if (!$newUser) {
             $newUser                  = new User();
             $newUser->auth            = User::gruenesNetzId2Auth($username);
@@ -137,7 +137,7 @@ trait SiteAccessTrait
      */
     private function addAdminEmail($email)
     {
-        $newUser = User::findOne(['auth' => 'email:' . $email]);
+        $newUser = User::findByAuthTypeAndName(\app\models\settings\Site::LOGIN_STD, $email);
         if (!$newUser) {
             $newPassword              = User::createPassword();
             $newUser                  = new User();

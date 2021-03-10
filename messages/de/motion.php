@@ -154,6 +154,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'err_not_visible_title'              => 'Nicht sichtbar',
     'err_not_visible'                    => 'Dies ist kein regulär anzeigbarer Antrag.',
     'err_draft_not_found'                => 'Es gibt keinen Bearbeitungs-Zwischenstand.',
+    'err_user_not_found'                 => 'Benutzer*in nicht gefunden',
     'info_draft_admin'                   => 'Entwurf - nur für Admins sichtbar',
     'withdraw_done'                      => 'Der Antrag wurde zurückgezogen.',
     'withdraw_bread'                     => 'Zurückziehen',

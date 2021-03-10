@@ -37,7 +37,7 @@ export class InitiatorForm {
 
     private wasPerson: boolean = false;
 
-    constructor($widget: JQuery) {
+    constructor(private $widget: JQuery) {
         this.$editforms = $widget.parents('form').first();
         this.$supporterData = $widget.find('.supporterData');
         this.$initiatorData = $widget.find('.initiatorData');
@@ -73,6 +73,8 @@ export class InitiatorForm {
         if (this.$supporterData.length > 0 && this.$supporterData.data('min-supporters') > 0) {
             this.initMinSupporters();
         }
+
+        this.initAdminSetUser();
 
         this.$editforms.on("submit", this.submit.bind(this));
     }
@@ -289,5 +291,13 @@ export class InitiatorForm {
                 bootbox.alert(__t('std', 'missing_gender'));
             }
         }
+    }
+
+    private initAdminSetUser() {
+        this.$widget.find(".initiatorCurrentUsername .btnEdit").on("click", () => {
+            this.$widget.find("input[name=initiatorSet]").val("1");
+            this.$widget.find(".initiatorCurrentUsername").addClass('hidden');
+            this.$widget.find(".initiatorSetUsername").removeClass('hidden');
+        });
     }
 }

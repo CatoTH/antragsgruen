@@ -12,11 +12,7 @@ use yii\helpers\Html;
  */
 
 
-/**
- * @param ISupporter $supporter
- * @return string
- */
-$getSupporterRow = function (ISupporter $supporter) use ($settings) {
+$getSupporterRow = function (ISupporter $supporter) use ($settings): string {
     $str = '<li><div class="supporterRow">';
     $str .= '<input type="hidden" name="supporterId[]" value="' . Html::encode($supporter->id) . '">';
 

@@ -4,17 +4,9 @@ namespace app\models\supportTypes;
 
 use app\components\Tools;
 use app\controllers\Base;
-use app\models\db\Amendment;
-use app\models\db\AmendmentSupporter;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ISupporter;
-use app\models\db\Motion;
-use app\models\db\MotionSupporter;
-use app\models\db\User;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
-use app\models\forms\AmendmentEditForm;
-use app\models\forms\MotionEditForm;
+use app\models\db\{Amendment, AmendmentSupporter, ConsultationMotionType, ISupporter, Motion, MotionSupporter, User};
+use app\models\exceptions\{FormError, Internal};
+use app\models\forms\{AmendmentEditForm, MotionEditForm};
 use app\models\settings\InitiatorForm;
 use yii\web\View;
 
@@ -39,9 +31,9 @@ abstract class SupportBase
     protected $motionType;
 
     /**
-     * @return SupportBase[]
+     * @return SupportBase[]|string[]
      */
-    public static function getImplementations()
+    public static function getImplementations(): array
     {
         return [
             static::ONLY_INITIATOR        => OnlyInitiator::class,
@@ -51,12 +43,9 @@ abstract class SupportBase
     }
 
     /**
-     * @param InitiatorForm $settings
-     * @param ConsultationMotionType $motionType
-     * @return SupportBase
      * @throws Internal
      */
-    public static function getImplementation(InitiatorForm $settings, ConsultationMotionType $motionType)
+    public static function getImplementation(InitiatorForm $settings, ConsultationMotionType $motionType): SupportBase
     {
         switch ($settings->type) {
             case static::ONLY_INITIATOR:
@@ -73,7 +62,7 @@ abstract class SupportBase
     /**
      * @return string[]
      */
-    public static function getGenderSelection()
+    public static function getGenderSelection(): array
     {
         return [
             'female'  => \Yii::t('structure', 'gender_female'),
@@ -95,66 +84,42 @@ abstract class SupportBase
         return $this->settingsObject;
     }
 
-    /**
-     * @param InitiatorForm $settings
-     */
-    public function setSettingsObj(InitiatorForm $settings)
+    public function setSettingsObj(InitiatorForm $settings): void
     {
         $this->settingsObject = $settings;
         $this->fixSettings();
     }
 
-    /**
-     */
     protected function fixSettings()
     {
     }
 
-    /**
-     * @return string
-     */
-    public static function getTitle()
+    public static function getTitle(): string
     {
         return '';
     }
 
-    /**
-     * @param bool $set
-     */
-    public function setAdminMode($set)
+    public function setAdminMode(bool $set): void
     {
         $this->adminMode = $set;
     }
 
-    /**
-     * @return bool
-     */
-    public static function collectSupportersBeforePublication()
+    public static function collectSupportersBeforePublication(): bool
     {
         return false;
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public function isValidName($name)
+    public function isValidName(string $name): bool
     {
         return (trim($name) !== '');
     }
 
-    /**
-     * @return bool
-     */
-    public static function hasInitiatorGivenSupporters()
+    public static function hasInitiatorGivenSupporters(): bool
     {
         return false;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasFullTextSupporterField()
+    public function hasFullTextSupporterField(): bool
     {
         return false;
     }
@@ -163,7 +128,7 @@ abstract class SupportBase
      * @param ISupporter $model
      * @return ISupporter[]
      */
-    protected function parseSupporters(ISupporter $model)
+    protected function parseSupporters(ISupporter $model): array
     {
         $ret  = [];
         $post = \Yii::$app->request->post();
@@ -191,7 +156,7 @@ abstract class SupportBase
     /**
      * @throws FormError
      */
-    public function validateMotion()
+    public function validateMotion(): void
     {
         $post = \Yii::$app->request->post();
         if (!isset($post['Initiator'])) {
@@ -267,16 +232,15 @@ abstract class SupportBase
     /**
      * @throws FormError
      */
-    public function validateAmendment()
+    public function validateAmendment(): void
     {
         $this->validateMotion();
     }
 
     /**
-     * @param Motion $motion
      * @throws \Throwable
      */
-    public function submitMotion(Motion $motion)
+    public function submitMotion(Motion $motion): void
     {
         $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
         if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
@@ -292,7 +256,6 @@ abstract class SupportBase
         $supporters = $this->getMotionSupporters($motion);
         foreach ($supporters as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
-                /** @var MotionSupporter $sup */
                 $sup->motionId = $motion->id;
                 $sup->save();
             }
@@ -301,10 +264,9 @@ abstract class SupportBase
 
 
     /**
-     * @param Amendment $amendment
      * @throws \Throwable
      */
-    public function submitAmendment(Amendment $amendment)
+    public function submitAmendment(Amendment $amendment): void
     {
         $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
         if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
@@ -320,7 +282,6 @@ abstract class SupportBase
         $supporters = $this->getAmendmentSupporters($amendment);
         foreach ($supporters as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
-                /** @var AmendmentSupporter $sup */
                 $sup->amendmentId = $amendment->id;
                 $sup->save();
             }
@@ -329,13 +290,9 @@ abstract class SupportBase
 
 
     /**
-     * @param ConsultationMotionType $motionType
-     * @param MotionEditForm $editForm
-     * @param Base $controller
-     * @return string
      * @throws \Exception
      */
-    public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm, Base $controller)
+    public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm, Base $controller): string
     {
         $view           = new View();
         $initiator      = null;
@@ -384,13 +341,9 @@ abstract class SupportBase
     }
 
     /**
-     * @param ConsultationMotionType $motionType
-     * @param AmendmentEditForm $editForm
-     * @param Base $controller
-     * @return string
      * @throws \Exception
      */
-    public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller)
+    public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller): string
     {
         $view           = new View();
         $initiator      = null;
@@ -431,10 +384,9 @@ abstract class SupportBase
     }
 
     /**
-     * @param Motion $motion
      * @return MotionSupporter[]
      */
-    public function getMotionSupporters(Motion $motion)
+    public function getMotionSupporters(Motion $motion): array
     {
         /** @var MotionSupporter[] $return */
         $return = [];
@@ -538,10 +490,9 @@ abstract class SupportBase
     }
 
     /**
-     * @param Amendment $amendment
      * @return AmendmentSupporter[]
      */
-    public function getAmendmentSupporters(Amendment $amendment)
+    public function getAmendmentSupporters(Amendment $amendment): array
     {
         /** @var AmendmentSupporter[] $return */
         $return = [];
