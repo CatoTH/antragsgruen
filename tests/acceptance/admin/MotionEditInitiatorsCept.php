@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('edit an initiator');
+$I->wantTo('edit an initiator, try setting an invalid user');
 $I->loginAndGotoMotionList('bdk', 'bdk')->gotoMotionEdit(4);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->fillField('#initiatorPrimaryName', 'Another test user');
@@ -12,18 +12,20 @@ $I->fillField('#initiatorOrga', 'KV Test');
 $I->fillField('#initiatorEmail', 'test2@example.org');
 $I->fillField('#initiatorPhone', '01234567');
 
-/*
-$I->dontSeeElement('.initiatorData .initiatorRow');
-$I->executeJS('$(".initiatorData .adderRow a").click();');
-$I->seeElement('.initiatorData .initiatorRow');
-$I->fillField('.initiatorData .initiatorRow .name', 'My Friend');
-$I->fillField('.initiatorData .initiatorRow .organization', 'Her KV');
-*/
-
+$I->dontSeeElement('.initiatorSetUsername');
+$I->clickJS('.initiatorCurrentUsername .btnEdit');
+$I->wait(0.2);
+$I->dontSeeElement('.initiatorCurrentUsername');
+$I->seeElement('.initiatorSetUsername');
+$I->fillField('#initiatorSetUsername', 'invalid@example.org');
 
 $I->submitForm('#motionUpdateForm', [], 'save');
 
-$I->wantTo('confirm the changes are saved');
+$I->see('Benutzer*in nicht gefunden', '.alert');
+$I->see('E-Mail: testuser@example.org', '.supporterForm');
+
+
+$I->wantTo('confirm the changes are saved, unassign the user');
 
 $page = $I->gotoMotionList()->gotoMotionEdit(4);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
@@ -32,9 +34,23 @@ $I->seeInField('#initiatorOrga', 'KV Test');
 $I->seeInField('#initiatorEmail', 'test2@example.org');
 $I->seeInField('#initiatorPhone', '01234567');
 
-/*
-$I->seeElement('.initiatorData .initiatorRow');
-$I->seeInField('.initiatorData .initiatorRow .name', 'My Friend');
-$I->seeInField('.initiatorData .initiatorRow .organization', 'Her KV');
-*/
+$I->clickJS('.initiatorCurrentUsername .btnEdit');
+$I->wait(0.2);
+$I->seeElement('.initiatorSetUsername');
+$I->fillField('#initiatorSetUsername', '');
 
+$I->submitForm('#motionUpdateForm', [], 'save');
+
+$I->dontSee('E-Mail: testuser@example.org', '.supporterForm');
+
+
+$I->wantTo('assign the user again');
+
+$I->clickJS('.initiatorCurrentUsername .btnEdit');
+$I->wait(0.2);
+$I->seeElement('.initiatorSetUsername');
+$I->fillField('#initiatorSetUsername', 'testuser@example.org');
+
+$I->submitForm('#motionUpdateForm', [], 'save');
+
+$I->see('E-Mail: testuser@example.org', '.supporterForm');
