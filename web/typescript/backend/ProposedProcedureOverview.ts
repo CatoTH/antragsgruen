@@ -46,7 +46,9 @@ export class ProposedProcedureOverview {
         };
         $.post($checkbox.data('save-url'), data, (ret) => {
             if (!ret['success']) {
-                alert(ret['error']);
+                if (ret['error']) {
+                    alert(ret['error']);
+                }
                 return;
             }
         });
@@ -91,7 +93,9 @@ export class ProposedProcedureOverview {
         };
         $.post($commentTd.data('post-url'), data, (ret) => {
             if (!ret['success']) {
-                alert(ret['error']);
+                if (ret['error']) {
+                    alert(ret['error']);
+                }
                 return;
             }
             let $comment = $commentTd.find('.template').clone();
@@ -131,7 +135,9 @@ export class ProposedProcedureOverview {
             url: this.updateUrl,
             success: (data: ReloadResult) => {
                 if (!data.success) {
-                    alert(data.error);
+                    if (data.error) {
+                        alert(data.error);
+                    }
                     return;
                 }
                 this.$dateField.text(data.date);

@@ -19,7 +19,9 @@ export class ProposedProcedureOverview {
     private reload() {
         $.get(this.updateUrl, (data: ReloadResult) => {
             if (!data.success) {
-                alert(data.error);
+                if (data.error) {
+                    alert(data.error);
+                }
                 return;
             }
             this.$dateField.text(data.date);
@@ -49,7 +51,7 @@ export class ProposedProcedureOverview {
         this.updateUrl = this.$widget.data('reload-url');
 
         let $toggle = this.$updateWidget.find('#autoUpdateToggle');
-        $toggle.change(() => {
+        $toggle.on("change", () => {
             let active: boolean = $toggle.prop('checked');
             if (active) {
                 this.reload();
