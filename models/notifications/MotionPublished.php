@@ -85,10 +85,7 @@ class MotionPublished
                     $plain,
                     $html
                 );
-            } catch (MailNotSent $e) {
-                $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                \yii::$app->session->setFlash('error', $errMsg);
-            } catch (ServerConfiguration $e) {
+            } catch (MailNotSent | ServerConfiguration $e) {
                 $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                 \yii::$app->session->setFlash('error', $errMsg);
             }

@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\{EmailNotifications, UrlHelper};
+use app\components\UrlHelper;
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSupporter, ConsultationLog, IComment, Consultation, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{DB, FormError, Internal};
@@ -296,8 +296,6 @@ trait AmendmentActionsTrait
 
         if ($amendment->status === Amendment::STATUS_SUBMITTED_SCREENED) {
             $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
-        } else {
-            EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
         }
 
         $consultation = $amendment->getMyConsultation();

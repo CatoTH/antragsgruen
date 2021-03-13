@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\notifications\MotionProposedProcedure;
-use app\components\{Tools, UrlHelper, EmailNotifications};
+use app\components\{Tools, UrlHelper};
 use app\models\db\{ConsultationLog, IComment, IMotion, Motion, MotionAdminComment, MotionComment, MotionSupporter, User, Consultation, VotingBlock};
 use app\models\exceptions\{DB, FormError, Internal, MailNotSent};
 use app\models\forms\CommentForm;
@@ -42,7 +42,6 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @param array $viewParameters
      */
     private function writeComment(Motion $motion, &$viewParameters)
@@ -86,7 +85,6 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @param int $commentId
      * @throws DB
      * @throws Internal
@@ -112,7 +110,6 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @param int $commentId
      * @throws Internal
      */
@@ -142,7 +139,6 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @param int $commentId
      * @throws Internal
      */
@@ -192,7 +188,6 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @throws FormError
      * @throws Internal
      */
@@ -293,11 +288,7 @@ trait MotionActionsTrait
         \Yii::$app->session->setFlash('success', \Yii::t('motion', 'neutral_done'));
     }
 
-    /**
-     * @param Motion $motion
-     * @throws Internal
-     */
-    private function motionSupportFinish(Motion $motion)
+    private function motionSupportFinish(Motion $motion): void
     {
         if (!$motion->canFinishSupportCollection()) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'support_finish_err'));
@@ -308,8 +299,6 @@ trait MotionActionsTrait
 
         if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
             $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
-        } else {
-            EmailNotifications::sendMotionSubmissionConfirm($motion);
         }
 
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT_FINISH, $motion->id);

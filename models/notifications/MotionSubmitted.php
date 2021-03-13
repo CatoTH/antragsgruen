@@ -2,8 +2,10 @@
 
 namespace app\models\notifications;
 
-use app\components\UrlHelper;
-use app\models\db\Motion;
+use app\components\{HTMLTools, UrlHelper, mail\Tools};
+use app\models\db\{EMailLog, Motion};
+use app\models\exceptions\{MailNotSent, ServerConfiguration};
+use yii\helpers\Html;
 
 class MotionSubmitted extends Base implements IEmailAdmin
 {
@@ -15,6 +17,12 @@ class MotionSubmitted extends Base implements IEmailAdmin
         $this->consultation = $motion->getMyConsultation();
 
         parent::__construct();
+    }
+
+    public function send(): void
+    {
+        parent::send(); // This sends the admin-email
+        $this->sendInitiatorConfirmation();
     }
 
     public function getEmailAdminText(): string
@@ -33,5 +41,67 @@ class MotionSubmitted extends Base implements IEmailAdmin
     {
         $motionType = $this->motion->getMyMotionType();
         return $motionType->getConsultationTextWithFallback('motion', 'submitted_adminnoti_title');
+    }
+
+    public function sendInitiatorConfirmation(): void
+    {
+        if ($this->motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
+            // The user will receive a "MotionPublished" notification through the "published_first"-handler
+            return;
+        }
+        if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
+            return;
+        }
+
+        $motionType = $this->motion->getMyMotionType();
+        $initiator = $this->motion->getInitiators();
+        if (count($initiator) > 0 && trim($initiator[0]->contactEmail) !== '') {
+            if ($this->motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
+                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
+                $min        = $this->motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
+                $emailText  = str_replace('%MIN%', $min, $emailText);
+                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
+            } else {
+                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email');
+                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email_subject');
+            }
+            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
+            $plain      = $emailText;
+            $motionHtml = '<h1>' . Html::encode($motionType->titleSingular) . ': ';
+            $motionHtml .= Html::encode($this->motion->title);
+            $motionHtml .= '</h1>';
+
+            $sections = $this->motion->getSortedSections(true);
+            foreach ($sections as $section) {
+                $motionHtml   .= '<div>';
+                $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
+                $typedSection = $section->getSectionType();
+                $typedSection->setAbsolutizeLinks(true);
+                $motionHtml .= $typedSection->getMotionEmailHtml();
+                $motionHtml .= '</div>';
+            }
+
+            $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+            $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
+
+            $plain = str_replace('%LINK%', $motionLink, $plain);
+            $html  = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
+
+            $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
+            $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
+
+            try {
+                Tools::sendWithLog(
+                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                    $this->consultation,
+                    trim($initiator[0]->contactEmail),
+                    null,
+                    $emailTitle,
+                    $plain,
+                    $html
+                );
+            } catch (MailNotSent | ServerConfiguration $e) {
+            }
+        }
     }
 }

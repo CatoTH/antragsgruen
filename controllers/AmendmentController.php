@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
-use app\components\{HTMLTools, Tools, UrlHelper, EmailNotifications};
+use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, User, VotingBlock};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{MailNotSent, NotFound};
@@ -273,8 +273,6 @@ class AmendmentController extends Base
 
             if ($amendment->status === Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
-            } else {
-                EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
             }
 
             return $this->redirect(UrlHelper::createAmendmentUrl($amendment, 'createdone', ['fromMode' => $fromMode]));

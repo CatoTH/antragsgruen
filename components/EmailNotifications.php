@@ -11,67 +11,6 @@ use yii\helpers\Html;
 
 class EmailNotifications
 {
-    /**
-     * @throws Internal|ServerConfiguration
-     */
-    public static function sendMotionSubmissionConfirm(Motion $motion): void
-    {
-        if (!$motion->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-            return;
-        }
-
-        $motionType = $motion->getMyMotionType();
-        $initiator = $motion->getInitiators();
-        if (count($initiator) > 0 && trim($initiator[0]->contactEmail) !== '') {
-            if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
-                $min        = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-                $emailText  = str_replace('%MIN%', $min, $emailText);
-                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
-            } else {
-                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email');
-                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email_subject');
-            }
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-            $plain      = $emailText;
-            $motionHtml = '<h1>' . Html::encode($motionType->titleSingular) . ': ';
-            $motionHtml .= Html::encode($motion->title);
-            $motionHtml .= '</h1>';
-
-            $sections = $motion->getSortedSections(true);
-            foreach ($sections as $section) {
-                $motionHtml   .= '<div>';
-                $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                $typedSection = $section->getSectionType();
-                $typedSection->setAbsolutizeLinks(true);
-                $motionHtml .= $typedSection->getMotionEmailHtml();
-                $motionHtml .= '</div>';
-            }
-
-            $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-            $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
-
-            $plain = str_replace('%LINK%', $motionLink, $plain);
-            $html  = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
-
-            $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
-            $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
-
-            try {
-                MailTools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $motion->getMyConsultation(),
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    $emailTitle,
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-            }
-        }
-    }
-
     public static function sendMotionSupporterMinimumReached(Motion $motion): void
     {
         $initiator = $motion->getInitiators();

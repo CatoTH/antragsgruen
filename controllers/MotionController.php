@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\{UrlHelper, EmailNotifications};
+use app\components\UrlHelper;
 use app\models\db\{Amendment,
     ConsultationAgendaItem,
     ConsultationLog,
@@ -173,8 +173,6 @@ class MotionController extends Base
 
             if ($motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
-            } else {
-                EmailNotifications::sendMotionSubmissionConfirm($motion);
             }
 
             if (User::getCurrentUser()) {
