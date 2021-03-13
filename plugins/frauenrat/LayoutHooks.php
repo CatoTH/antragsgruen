@@ -259,7 +259,7 @@ class LayoutHooks extends Hooks
 .motionDataTable tr:last-child th, .motionDataTable tr:last-child td { padding-bottom: 0; }
 .motionDataTable .selectlist .btn { border: none; font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif; font-size: 18px; margin-left: -5px; }
 #sidebar .back { display: none; }
-.sectionMyMotions, .sectionMyAmendments, .sectionResolutions, .sectionAgenda { display: none; }
+.sectionMyMotions, .sectionMyAmendments, .sectionAgenda { display: none; }
 </style>
 <script>
 $(function() {
@@ -301,7 +301,7 @@ $(function() {
         ]);
 
         return '<a href="' . Html::encode($pdfLink) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">' .
-               '<span class="glyphicon glyphicon-download-alt"></span> Antragsbuch herunterladen</a>';
+               '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Antragsbuch herunterladen</a>';
     }
 
     public function getAmendmentBookmarkName(string $before, Amendment $amendment): string

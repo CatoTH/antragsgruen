@@ -66,7 +66,7 @@ export class AntragsgruenEditor {
         this.maxLenOnChange();
     }
 
-    private static createConfig(title: string, noStrike: boolean, trackChanged: boolean, allowDiffFormattings: boolean, enterMode: any): any {
+    private static createConfig(title: string, noStrike: boolean, trackChanged: boolean, allowDiffFormattings: boolean, autocolorize: boolean, enterMode: any): any {
         let ckeditorConfig = {
             coreStyles_strike: {
                 element: 'span',
@@ -89,6 +89,7 @@ export class AntragsgruenEditor {
                 {name: 'insert'},
                 {name: 'styles'},
                 {name: 'colors'},
+                {name: 'autocolorize'},
                 {name: 'others'}
             ],
             removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext,magicline,liststyle',
@@ -101,6 +102,7 @@ export class AntragsgruenEditor {
 
         let strikeEl = (noStrike ? '' : ' s'),
             strikeClass = (noStrike ? '' : ',strike'),
+            autocolorizeClass = (autocolorize ? ',adminTyped' : ''),
             allowedContent = '';
 
         if (trackChanged || allowDiffFormattings) {
@@ -112,7 +114,7 @@ export class AntragsgruenEditor {
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'div [data-*](collidingParagraph,hasCollisions,moved);' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead,moved){border,margin,padding};' +
-                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
+                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript' + autocolorizeClass + ');' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
                 'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
         } else {
@@ -123,7 +125,7 @@ export class AntragsgruenEditor {
                 'h2 h3 h4;' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +
-                'span(underline' + strikeClass + ',subscript,superscript);' +
+                'span(underline' + strikeClass + ',subscript,superscript' + autocolorizeClass + ');' +
                 'a[href];';
         }
 
@@ -137,6 +139,9 @@ export class AntragsgruenEditor {
             ckeditorConfig['removePlugins'] += ',undo';
         } else {
             ckeditorConfig['removePlugins'] += ',lite';
+        }
+        if (autocolorize) {
+            ckeditorConfig['extraPlugins'] += ',autocolorize';
         }
         ckeditorConfig['allowedContent'] = allowedContent;
         // ckeditorConfig.pasteFilter = allowedContent; // Seems to break copy/pasting some <strong> formatting in 4.5.11
@@ -173,6 +178,7 @@ export class AntragsgruenEditor {
             (this.$el.data("no-strike") == '1'),
             (this.$el.data('track-changed') == '1'),
             (this.$el.data('allow-diff-formattings') == '1'),
+            (this.$el.data('autocolorize') == '1'),
             (this.$el.data('enter-mode') == 'br' ? CKEDITOR.ENTER_BR : CKEDITOR.ENTER_P)
         );
 

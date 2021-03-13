@@ -4,6 +4,7 @@
 
 - Admins can now see an activity log for each motion and amendment, chronologically listing all relevant events for it (supports, comments, proposed procedure changes etc.).
 - Admins can now assign motions and amendments to user accounts, e.g. when the motion was created by an admin or an anonymous user before creating an account.
+- When merging amendments into a motion, text entered by the admins can now optionally be receive a blue color, to distinguish admin-entered text from the base motion or changes made by the amendments.
 
 ### Version 4.7.1 [not released yet]
 

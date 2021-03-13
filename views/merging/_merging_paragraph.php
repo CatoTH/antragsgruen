@@ -73,7 +73,7 @@ echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' 
             if ($section->getSettings()->fixedWidth) {
                 echo ' fixedWidthFont';
             }
-            ?>" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
+            ?>" data-allow-diff-formattings="1" data-autocolorize="1" id="<?= $htmlId ?>_wysiwyg" title="">
                 <?= $draftParagraph->text ?>
             </div>
         </div>
