@@ -6,11 +6,7 @@ use app\models\settings\Layout;
 
 class LayoutSettings extends Layout
 {
-    /**
-     * @param string $title
-     * @return string
-     */
-    public function formatTitle($title)
+    public function formatTitle(string $title): string
     {
         if (stripos($title, 'NEOS Antragsschmiede') === false) {
             if ($title === '') {

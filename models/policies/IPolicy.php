@@ -29,7 +29,7 @@ abstract class IPolicy
         ];
 
         /** @var AntragsgruenApp $params */
-        $params = \yii::$app->params;
+        $params = \Yii::$app->params;
         if ($params->isSamlActive()) {
             $policies[static::POLICY_GRUENES_NETZ] = GruenesNetz::class;
         }

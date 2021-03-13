@@ -132,8 +132,8 @@ class Tools
         }
 
         if (YII_ENV === 'test') {
-            $pre = \yii::$app->session->getFlash('email', '');
-            \yii::$app->session->setFlash('email', $pre . 'E-Mail sent to: ' . $toEmail . " (Type $mailType)\n");
+            $pre = \Yii::$app->session->getFlash('email', '');
+            \Yii::$app->session->setFlash('email', $pre . 'E-Mail sent to: ' . $toEmail . " (Type $mailType)\n");
         }
     }
 }

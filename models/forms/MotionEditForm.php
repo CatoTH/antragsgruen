@@ -265,7 +265,7 @@ class MotionEditForm extends Model
 
     /**
      * @throws FormError
-     * @throws \yii\base\Exception
+     * @throws \Yii\base\Exception
      * @return Motion
      */
     public function createMotion()

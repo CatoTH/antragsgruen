@@ -84,7 +84,7 @@ class User extends ActiveRecord implements IdentityInterface
             } else {
                 return \Yii::$app->user->identity;
             }
-        } catch (\yii\base\UnknownPropertyException $e) {
+        } catch (\Yii\base\UnknownPropertyException $e) {
             // Can happen with console commands
             return null;
         }
@@ -143,7 +143,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
         /** @var AntragsgruenApp $params */
-        $params = \yii::$app->params;
+        $params = \Yii::$app->params;
         return in_array($user->id, $params->adminUserIds);
     }
 
@@ -159,7 +159,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotionComments()
     {
@@ -167,7 +167,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotionSupports()
     {
@@ -175,7 +175,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getAmendmentComments()
     {
@@ -183,7 +183,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getAmendmentSupports()
     {
@@ -191,7 +191,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getEmailLogs()
     {
@@ -199,7 +199,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getLogEntries()
     {
@@ -207,7 +207,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getAdminSites()
     {
@@ -215,7 +215,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getConsultationPrivileges()
     {
@@ -223,7 +223,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getNotifications()
     {
@@ -295,7 +295,7 @@ class User extends ActiveRecord implements IdentityInterface
      * Finds an identity by the given token.
      * @param mixed $token the token to be looked for
      * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
-     * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be
+     * For example, [[\Yii\filters\auth\HttpBearerAuth]] will set this parameter to be
      * `yii\filters\auth\HttpBearerAuth`.
      * @return IdentityInterface the identity object that matches the given token.
      * Null should be returned if such an identity cannot be found
@@ -368,7 +368,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @param bool $insert
      * @return bool
-     * @throws \yii\base\Exception
+     * @throws \Yii\base\Exception
      */
     public function beforeSave($insert)
     {
@@ -401,7 +401,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @return string
-     * @throws \yii\base\Exception
+     * @throws \Yii\base\Exception
      */
     public static function createPassword()
     {
@@ -567,7 +567,7 @@ class User extends ActiveRecord implements IdentityInterface
         try {
             MailTools::sendWithLog($mailType, $consultation, $this->email, $this->id, $subject, $text);
         } catch (MailNotSent | ServerConfiguration $e) {
-            \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+            \Yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
     }
 
@@ -587,7 +587,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         /** @var AntragsgruenApp $params */
-        $params = \yii::$app->params;
+        $params = \Yii::$app->params;
         if (in_array($this->id, $params->adminUserIds)) {
             return true;
         }

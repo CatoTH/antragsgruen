@@ -24,10 +24,10 @@ class AmendmentController extends AdminBase
     {
         $withdrawn = (IntVal($withdrawn) === 1);
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list', [
             'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
@@ -49,10 +49,10 @@ class AmendmentController extends AdminBase
         $maxLen       = IntVal($maxLen);
         $textCombined = (IntVal($textCombined) === 1);
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list_short', [
             'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
@@ -96,10 +96,10 @@ class AmendmentController extends AdminBase
             }
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments_pdf.zip');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/zip');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments_pdf.zip');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $zip->getContentAndFlush();
     }
@@ -121,10 +121,10 @@ class AmendmentController extends AdminBase
             }
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments_odt.zip');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/zip');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments_odt.zip');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $zip->getContentAndFlush();
     }
@@ -134,7 +134,7 @@ class AmendmentController extends AdminBase
      *
      * @throws \Exception
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws \Yii\db\StaleObjectException
      */
     private function saveAmendmentSupporters(Amendment $amendment)
     {
@@ -201,7 +201,7 @@ class AmendmentController extends AdminBase
         }
 
         if ($setUsername && !$user) {
-            \yii::$app->session->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
             return;
         }
 
@@ -220,8 +220,8 @@ class AmendmentController extends AdminBase
      * @throws \Exception
      * @throws \Throwable
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
-     * @throws \yii\db\StaleObjectException
+     * @throws \Yii\base\ExitException
+     * @throws \Yii\db\StaleObjectException
      */
     public function actionUpdate($amendmentId)
     {
@@ -243,20 +243,20 @@ class AmendmentController extends AdminBase
 
         if ($this->isPostSet('screen') && $amendment->isInScreeningProcess()) {
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
                 $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
                 $amendment->titlePrefix = $post['titlePrefix'];
                 $amendment->save();
                 $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
-                \yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_screened'));
+                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_screened'));
             }
         }
 
         if ($this->isPostSet('delete')) {
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_deleted'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
 
             return '';
@@ -292,7 +292,7 @@ class AmendmentController extends AdminBase
             }
 
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
                 $amendment->titlePrefix = $post['amendment']['titlePrefix'];
             }
@@ -308,7 +308,7 @@ class AmendmentController extends AdminBase
 
             $amendment->flushCache(true);
             $amendment->refresh();
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
         }
 
         $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
@@ -321,10 +321,10 @@ class AmendmentController extends AdminBase
      */
     public function actionOpenslides()
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'text/csv');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=Amendments.csv');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'text/csv');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=Amendments.csv');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $amendments = [];
         foreach ($this->consultation->getVisibleMotionsSorted(false) as $motion) {

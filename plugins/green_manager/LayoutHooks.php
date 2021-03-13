@@ -30,7 +30,7 @@ class LayoutHooks extends Hooks
         $out      .= '<li>' . Html::a('FAQ', $faqLink, ['id' => 'freeHostingLink']) . '</li>';
 
         if (!User::getCurrentUser()) {
-            $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => \yii::$app->request->url]);
+            $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => \Yii::$app->request->url]);
             $loginTitle = \Yii::t('base', 'menu_login');
             $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) .
                 '</li>';
@@ -43,7 +43,7 @@ class LayoutHooks extends Hooks
             );
             $out  .= '<li>' . $link . '</li>';
 
-            $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => \yii::$app->request->url]);
+            $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => \Yii::$app->request->url]);
             $logoutTitle = \Yii::t('base', 'menu_logout');
             $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink']) . '</li>';
         }

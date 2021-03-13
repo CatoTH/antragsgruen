@@ -46,8 +46,8 @@ trait MotionMergingTrait
      */
     public function actionMergeAmendmentsPublicAjax($motionSlug)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
@@ -78,8 +78,8 @@ trait MotionMergingTrait
      */
     public function actionMergeAmendmentsParagraphAjax($motionSlug, $sectionId, $paragraphNo, $amendments = '')
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -130,8 +130,8 @@ trait MotionMergingTrait
 
     public function actionMergeAmendmentsStatusAjax(string $motionSlug, string $knownAmendments): string
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -220,10 +220,10 @@ trait MotionMergingTrait
         }
 
         $filename                    = $motion->getFilenameBase(false) . '-Merging-Draft.pdf';
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
 
         return $this->render('@app/views/merging/merging_draft_pdf', ['motion' => $motion, 'draft' => $draft]);
     }
@@ -304,10 +304,10 @@ trait MotionMergingTrait
         }
 
         $filename                    = $motion->getFilenameBase(false) . '-Merging-Selection.pdf';
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
 
         return $this->render('@app/views/merging/init_pdf', [
             'motion'     => $motion,
@@ -404,7 +404,7 @@ trait MotionMergingTrait
                 return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm'));
             }
         } catch (\Exception $e) {
-            \yii::$app->session->setFlash('error', $e->getMessage());
+            \Yii::$app->session->setFlash('error', $e->getMessage());
         }
 
         if ($resumeDraft && !\Yii::$app->request->post('discard', 0) && count($resumeDraft->sections) === 1) {
@@ -429,8 +429,8 @@ trait MotionMergingTrait
      */
     public function actionSaveMergingDraft($motionSlug)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {

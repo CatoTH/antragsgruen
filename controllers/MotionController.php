@@ -89,7 +89,7 @@ class MotionController extends Base
         try {
             $this->performShowActions($motion, $commentId, $motionViewParams);
         } catch (\Exception $e) {
-            \yii::$app->session->setFlash('error', $e->getMessage());
+            \Yii::$app->session->setFlash('error', $e->getMessage());
         }
 
         $supportStatus = '';

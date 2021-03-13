@@ -77,7 +77,7 @@ class MotionController extends AdminBase
      * @return string
      * @throws FormError
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionType($motionTypeId)
     {
@@ -183,7 +183,7 @@ class MotionController extends AdminBase
 
             DateTools::setDeadlineDebugMode($this->consultation, $this->isPostSet('activateDeadlineDebugMode'));
 
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
 
             foreach ($this->consultation->getMotionsOfType($motionType) as $motion) {
@@ -236,7 +236,7 @@ class MotionController extends AdminBase
         }
 
         if ($this->isRequestSet('msg') && $this->getRequestValue('msg') === 'created') {
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
         }
 
         return $this->render('type', [
@@ -247,7 +247,7 @@ class MotionController extends AdminBase
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      * @throws \Exception
      */
     public function actionTypecreate()
@@ -413,7 +413,7 @@ class MotionController extends AdminBase
         }
 
         if ($setUsername && !$user) {
-            \yii::$app->session->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
             return;
         }
 
@@ -464,8 +464,8 @@ class MotionController extends AdminBase
      * @throws \Exception
      * @throws \Throwable
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
-     * @throws \yii\db\StaleObjectException
+     * @throws \Yii\base\ExitException
+     * @throws \Yii\db\StaleObjectException
      */
     public function actionUpdate($motionId)
     {
@@ -481,20 +481,20 @@ class MotionController extends AdminBase
 
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
             if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $post['titlePrefix'];
                 $motion->save();
                 $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
-                \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_screened'));
+                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_screened'));
             }
         }
 
         if ($this->isPostSet('delete')) {
             $motion->setDeleted();
             $motion->flushCacheStart(['lines']);
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_deleted'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
 
             return '';
@@ -599,7 +599,7 @@ class MotionController extends AdminBase
             }
 
             if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->titlePrefix = $post['motion']['titlePrefix'];
             }
@@ -625,7 +625,7 @@ class MotionController extends AdminBase
             $this->saveMotionInitiator($motion);
 
             $motion->flushCache(true);
-            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
@@ -693,8 +693,8 @@ class MotionController extends AdminBase
             $result = (count($existingMotion) === 0);
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         return json_encode($result);
     }

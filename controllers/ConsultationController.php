@@ -14,13 +14,13 @@ class ConsultationController extends Base
     use ConsultationAgendaTrait;
 
     /**
-     * @param \yii\base\Action $action
+     * @param \Yii\base\Action $action
      *
      * @return bool
      * @throws \Exception
      * @throws Internal
-     * @throws \yii\base\ExitException
-     * @throws \yii\web\BadRequestHttpException
+     * @throws \Yii\base\ExitException
+     * @throws \Yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
     {
@@ -37,13 +37,13 @@ class ConsultationController extends Base
     /**
      * @return string
      * @throws Internal
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionSearch()
     {
         $query = $this->getRequestValue('query');
         if (!$query || trim($query) == '') {
-            \yii::$app->session->setFlash('error', \Yii::t('con', 'search_no_query'));
+            \Yii::$app->session->setFlash('error', \Yii::t('con', 'search_no_query'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -96,17 +96,17 @@ class ConsultationController extends Base
             $feed->setImage('/img/logo.png');
         }
         $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_motions'));
-        $feed->setLanguage(\yii::$app->language);
+        $feed->setLanguage(\Yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedmotions')));
         foreach ($newest as $motion) {
             $motion->addToFeed($feed);
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/xml');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $feed->getFeed();
@@ -127,17 +127,17 @@ class ConsultationController extends Base
             $feed->setImage('/img/logo.png');
         }
         $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_amendments'));
-        $feed->setLanguage(\yii::$app->language);
+        $feed->setLanguage(\Yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedamendments')));
         foreach ($newest as $amend) {
             $amend->addToFeed($feed);
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/xml');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $feed->getFeed();
@@ -157,17 +157,17 @@ class ConsultationController extends Base
             $feed->setImage('/img/logo.png');
         }
         $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_comments'));
-        $feed->setLanguage(\yii::$app->language);
+        $feed->setLanguage(\Yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedcomments')));
         foreach ($newest as $comm) {
             $comm->addToFeed($feed);
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/xml');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $feed->getFeed();
@@ -196,7 +196,7 @@ class ConsultationController extends Base
             $feed->setImage('/img/logo.png');
         }
         $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_all'));
-        $feed->setLanguage(\yii::$app->language);
+        $feed->setLanguage(\Yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedall')));
 
@@ -205,10 +205,10 @@ class ConsultationController extends Base
             $item->addToFeed($feed);
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/xml');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $feed->getFeed();
@@ -276,7 +276,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionHome()
     {
@@ -289,7 +289,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionIndex()
     {
@@ -395,8 +395,8 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedureAjax()
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $proposalFactory = new Factory($this->consultation, false);
 
@@ -447,8 +447,8 @@ class ConsultationController extends Base
 
     public function actionDebugbarAjax(): string
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         switch (\Yii::$app->request->post('action')) {
             case 'close':

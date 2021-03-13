@@ -13,7 +13,7 @@ class ZipWriter
     public function __construct()
     {
         /** @var \app\models\settings\AntragsgruenApp $params */
-        $params        = \yii::$app->params;
+        $params        = \Yii::$app->params;
         $this->zipFile = $params->getTmpDir() . uniqid('zip-');
         $this->archive = new \ZipArchive();
         if ($this->archive->open($this->zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {

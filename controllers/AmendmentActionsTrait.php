@@ -68,9 +68,9 @@ trait AmendmentActionsTrait
             $comment = $commentForm->saveAmendmentCommentWithChecks($amendment);
 
             if ($comment->status === AmendmentComment::STATUS_SCREENING) {
-                \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
+                \Yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
             } else {
-                \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created'));
+                \Yii::$app->session->setFlash('screening', \Yii::t('comment', 'created'));
             }
 
             $this->redirect(UrlHelper::createAmendmentCommentUrl($comment));
@@ -389,13 +389,13 @@ trait AmendmentActionsTrait
      * @param int $amendmentId
      * @return string
      * @throws \Exception
-     * @throws \yii\db\StaleObjectException
+     * @throws \Yii\db\StaleObjectException
      * @throws \Throwable
      */
     public function actionDelProposalComment($motionSlug, $amendmentId)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {

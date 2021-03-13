@@ -21,7 +21,7 @@ class AmendmentAdminComment extends IAdminComment
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getAmendment()
     {

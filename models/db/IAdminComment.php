@@ -24,7 +24,7 @@ abstract class IAdminComment extends ActiveRecord
     const SORT_ASC = 'asc';
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getUser()
     {

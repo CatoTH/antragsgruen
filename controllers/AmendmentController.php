@@ -38,11 +38,11 @@ class AmendmentController extends Base
         }
 
         $filename                    = $amendment->getFilenameBase(false) . '.pdf';
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
@@ -56,7 +56,7 @@ class AmendmentController extends Base
     /**
      * @param int $withdrawn
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionPdfcollection($withdrawn = 0)
     {
@@ -78,10 +78,10 @@ class AmendmentController extends Base
             $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
@@ -114,11 +114,11 @@ class AmendmentController extends Base
         }
 
         $filename                    = $amendment->getFilenameBase(false) . '.odt';
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
-        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $this->renderPartial('view_odt', ['amendment' => $amendment]);
@@ -188,7 +188,7 @@ class AmendmentController extends Base
         try {
             $this->performShowActions($amendment, $commentId, $amendmentViewParams);
         } catch (\Throwable $e) {
-            \yii::$app->session->setFlash('error', $e->getMessage());
+            \Yii::$app->session->setFlash('error', $e->getMessage());
         }
 
         $supportStatus = '';
@@ -473,12 +473,12 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionSaveProposalStatus($motionSlug, $amendmentId)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
@@ -640,7 +640,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionEditProposedChange($motionSlug, $amendmentId)
     {
@@ -701,12 +701,12 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionEditProposedChangeCheck($motionSlug, $amendmentId)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
@@ -760,7 +760,7 @@ class AmendmentController extends Base
      *
      * @param string $prefix1
      * @param string $prefix2
-     * @return \yii\console\Response|Response
+     * @return \Yii\console\Response|Response
      * @throws NotFoundHttpException
      */
     public function actionGotoPrefix($prefix1, $prefix2)

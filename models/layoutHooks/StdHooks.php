@@ -287,7 +287,7 @@ class StdHooks extends Hooks
                 if (get_class($controller) === UserController::class) {
                     $backUrl = UrlHelper::createUrl('/consultation/index');
                 } else {
-                    $backUrl = \yii::$app->request->url;
+                    $backUrl = \Yii::$app->request->url;
                 }
                 $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => $backUrl]);
                 $loginTitle = \Yii::t('base', 'menu_login');
@@ -305,7 +305,7 @@ class StdHooks extends Hooks
                 if (get_class($controller) === UserController::class) {
                     $backUrl = UrlHelper::createUrl('/consultation/index');
                 } else {
-                    $backUrl = \yii::$app->request->url;
+                    $backUrl = \Yii::$app->request->url;
                 }
                 $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => $backUrl]);
                 $logoutTitle = \Yii::t('base', 'menu_logout');

@@ -21,7 +21,7 @@ class Assets extends AssetBundle
     public static $myBaseUrl = null;
 
     /**
-     * @param \yii\web\View $view
+     * @param \Yii\web\View $view
      * @return AssetBundle
      */
     public static function register($view)

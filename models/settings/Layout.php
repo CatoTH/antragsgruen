@@ -200,7 +200,7 @@ class Layout
     {
         if (!$this->consultation) {
             /** @var AntragsgruenApp $params */
-            $params = \yii::$app->params;
+            $params = \Yii::$app->params;
             $lang   = explode('-', $params->baseLanguage);
             if (isset(MessageSource::getBaseLanguages()[$lang[0]])) {
                 return $lang[0];
@@ -221,7 +221,7 @@ class Layout
     {
         if (!$this->consultation) {
             /** @var AntragsgruenApp $params */
-            $params = \yii::$app->params;
+            $params = \Yii::$app->params;
             $lang   = explode('-', $params->baseLanguage);
             if ($params->baseLanguage == 'en-gb') {
                 return 'en-gb';
@@ -343,8 +343,8 @@ class Layout
     public static function resourceUrl(string $url): string
     {
         /** @var AntragsgruenApp $params */
-        $params   = \yii::$app->params;
-        $absolute = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR .
+        $params   = \Yii::$app->params;
+        $absolute = \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR .
             str_replace('/', DIRECTORY_SEPARATOR, $url);
         $mtime    = (file_exists($absolute) ? filemtime($absolute) : 0);
         $age      = time() - $mtime;
@@ -364,7 +364,7 @@ class Layout
     public function getAMDLoader(): string
     {
         /** @var AntragsgruenApp $params */
-        $params       = \yii::$app->params;
+        $params       = \Yii::$app->params;
         $resourceBase = $params->resourceBase;
         $module       = $this->resourceUrl('js/build/Antragsgruen.js');
         $src          = $this->resourceUrl('npm/require.js');

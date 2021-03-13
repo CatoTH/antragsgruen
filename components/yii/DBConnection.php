@@ -22,7 +22,7 @@ class DBConnection extends \yii\db\Connection
                 echo '<a href="https://github.com/CatoTH/antragsgruen">bugreport</a>.';
             } else {
                 $view = new View();
-                echo \yii::$app->controller->renderContent(
+                echo \Yii::$app->controller->renderContent(
                     $view->render(
                         '@app/views/errors/error',
                         [
@@ -30,11 +30,11 @@ class DBConnection extends \yii\db\Connection
                             'message'    => 'An error ocurred when connecting to the database.',
                             'httpStatus' => 500,
                         ],
-                        \yii::$app->controller
+                        \Yii::$app->controller
                     )
                 );
             }
-            \yii::$app->end(500);
+            \Yii::$app->end(500);
         }
     }
 }

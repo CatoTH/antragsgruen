@@ -43,7 +43,7 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -51,7 +51,7 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getUser()
     {
@@ -158,8 +158,6 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @param User $user
-     * @param Consultation $consultation
      * @param int $type
      * @param int|null $refId
      * @return UserNotification
@@ -168,7 +166,7 @@ class UserNotification extends ActiveRecord
     {
         $noti = static::getNotification($user, $consultation, $type, $refId);
         if (!$noti) {
-            $noti                          = new static();
+            $noti                          = new UserNotification();
             $noti->consultationId          = $consultation->id;
             $noti->userId                  = $user->id;
             $noti->notificationType        = $type;
@@ -182,8 +180,6 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @param User $user
-     * @param Consultation $consultation
      * @param int $commentSetting
      */
     public static function addCommentNotification(User $user, Consultation $consultation, $commentSetting)

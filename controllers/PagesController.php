@@ -173,8 +173,8 @@ class PagesController extends Base
 
         $page->save();
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         return json_encode($result);
     }
@@ -209,8 +209,8 @@ class PagesController extends Base
             }
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         return json_encode([
             'success' => true,
@@ -220,10 +220,10 @@ class PagesController extends Base
     /**
      * @param string $pageSlug
      *
-     * @return \yii\console\Response|Response
+     * @return \Yii\console\Response|Response
      * @throws Access
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws \Yii\db\StaleObjectException
      */
     public function actionDeletePage($pageSlug)
     {
@@ -267,8 +267,8 @@ class PagesController extends Base
             throw new Access('No permissions to upload files');
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         try {
             $user = User::getCurrentUser();
@@ -352,22 +352,22 @@ class PagesController extends Base
             throw new NotFoundHttpException('file not found', 404);
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', $file->mimetype);
-        \yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
-        \yii::$app->response->headers->set('Pragma', 'cache');
-        \yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', $file->mimetype);
+        \Yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        \Yii::$app->response->headers->set('Pragma', 'cache');
+        \Yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
         return $file->data;
     }
 
     public function actionCss(): string
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'text/css');
-        \yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
-        \yii::$app->response->headers->set('Pragma', 'cache');
-        \yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'text/css');
+        \Yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        \Yii::$app->response->headers->set('Pragma', 'cache');
+        \Yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
         $stylesheetSettings = $this->site->getSettings()->getStylesheet();
         $file               = ConsultationFile::findStylesheetCache($this->site, $stylesheetSettings);

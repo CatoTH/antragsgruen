@@ -12,7 +12,7 @@ class MotionController extends Base
      * @param string $motionSlug
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionSaveTag($motionSlug)
     {
@@ -42,7 +42,7 @@ class MotionController extends Base
      * @param string $motionSlug
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionSaveProposal($motionSlug)
     {

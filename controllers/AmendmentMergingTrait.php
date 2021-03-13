@@ -183,8 +183,9 @@ trait AmendmentMergingTrait
                     ['newMotionId' => $newMotion->id]
                 ));
             } else {
-                return $this->showErrorpage(500, 'An internal consistance error occurred. ' .
+                $this->showErrorpage(500, 'An internal consistance error occurred. ' .
                     'This should never happen and smells like an error in the system.');
+                return '';
             }
         }
 

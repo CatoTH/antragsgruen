@@ -141,7 +141,7 @@ class LineSplitter
                 /** @var \DOMElement $child */
                 if (in_array($child->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
                     if ($inlineTextSpool != '') {
-                        $spl = new static($inlineTextSpool, $lineLength);
+                        $spl = new LineSplitter($inlineTextSpool, $lineLength);
                         $arr = $spl->splitLines();
                         foreach ($arr as $newEl) {
                             $out[] = $prependLines . $newEl;
@@ -167,7 +167,7 @@ class LineSplitter
             }
         }
         if ($inlineTextSpool != '') {
-            $spl = new static($inlineTextSpool, $lineLength);
+            $spl = new LineSplitter($inlineTextSpool, $lineLength);
             $arr = $spl->splitLines();
             foreach ($arr as $newEl) {
                 $out[] = $prependLines . $newEl;
@@ -208,7 +208,7 @@ class LineSplitter
 
         $dom = HTMLTools::html2DOM($html);
         if (is_a($dom, \DOMText::class)) {
-            $spl = new static($html, $lineLength);
+            $spl = new LineSplitter($html, $lineLength);
             $result = $spl->splitLines();
         } else {
             $result = static::splitHtmlToLinesInt($dom, $lineLength, $prependLines);

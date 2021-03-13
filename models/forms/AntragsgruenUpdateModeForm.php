@@ -21,7 +21,7 @@ class AntragsgruenUpdateModeForm extends SiteCreateForm
     }
 
     /**
-     * @throws \yii\base\Exception
+     * @throws \Yii\base\Exception
      * @return string
      */
     public function activateUpdate()

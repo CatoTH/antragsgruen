@@ -16,6 +16,7 @@ if (count($motions) === 0) {
     return;
 }
 
+$lastPhase = null;
 if ($statusClustering) {
     $lastPhase = 0;
 

@@ -38,7 +38,7 @@ class ConsultationUserPrivilege extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -46,7 +46,7 @@ class ConsultationUserPrivilege extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getUser()
     {
@@ -74,7 +74,7 @@ class ConsultationUserPrivilege extends ActiveRecord
      * @param string $emailText
      * @param string|null $setPwd
      * @throws AlreadyExists
-     * @throws \yii\base\Exception
+     * @throws \Yii\base\Exception
      */
     public static function createWithUserEmail(Consultation $consultation, $email, $name, $emailText, $setPwd = null)
     {

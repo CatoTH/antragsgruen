@@ -14,7 +14,7 @@ class BackendController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      * @throws \app\models\exceptions\MailNotSent
      * @throws \app\models\exceptions\ServerConfiguration
      */

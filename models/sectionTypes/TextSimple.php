@@ -429,11 +429,11 @@ class TextSimple extends Text
                 }
             } else {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
-                    $out .= \yii::t('diff', 'line_to');
+                    $out .= \Yii::t('diff', 'line_to');
                 } elseif ($hasDelete) {
-                    $out .= \yii::t('diff', 'line_to_del');
+                    $out .= \Yii::t('diff', 'line_to_del');
                 } elseif ($hasInsert) {
-                    $out .= \yii::t('diff', 'line_to_ins');
+                    $out .= \Yii::t('diff', 'line_to_ins');
                 }
             }
             $lineFrom = ($diff['lineFrom'] < $firstLineOfSection ? $firstLineOfSection : $diff['lineFrom']);

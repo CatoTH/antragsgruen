@@ -9,7 +9,7 @@ use app\models\sectionTypes\VideoEmbed;
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var ConsultationAgendaItem|null $agendaItem
  * @var ConsultationMotionType|null $motionType
  * @var Motion[] $motions

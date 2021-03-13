@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
- * @var \yii\web\View $this
+ * @var \Yii\web\View $this
  * @var SiteCreateForm $form
  * @var string $loginId
  * @var string $loginCode

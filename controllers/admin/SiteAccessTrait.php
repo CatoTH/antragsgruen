@@ -133,7 +133,7 @@ trait SiteAccessTrait
 
     /**
      * @param string $email
-     * @throws \yii\base\Exception
+     * @throws \Yii\base\Exception
      */
     private function addAdminEmail($email)
     {
@@ -167,7 +167,7 @@ trait SiteAccessTrait
             MailTools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $consultation, $email, $newUser->id, $subject, $text);
         } catch (MailNotSent $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-            \yii::$app->session->setFlash('error', $errMsg);
+            \Yii::$app->session->setFlash('error', $errMsg);
         }
     }
 
@@ -353,7 +353,7 @@ trait SiteAccessTrait
     }
 
     /**
-     * @throws \yii\base\Exception|\Throwable
+     * @throws \Yii\base\Exception|\Throwable
      */
     public function actionSiteaccess(): string
     {
@@ -404,9 +404,9 @@ trait SiteAccessTrait
 
 
             if ($site->save() && $con->save()) {
-                \yii::$app->session->setFlash('success_login', \Yii::t('base', 'saved'));
+                \Yii::$app->session->setFlash('success_login', \Yii::t('base', 'saved'));
             } else {
-                \yii::$app->session->setFlash('error_login', 'An error occurred: ' . print_r($site->getErrors(), true));
+                \Yii::$app->session->setFlash('error_login', 'An error occurred: ' . print_r($site->getErrors(), true));
             }
             $site->refresh();
         }

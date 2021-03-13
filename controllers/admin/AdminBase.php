@@ -13,10 +13,10 @@ class AdminBase extends Base
     ];
 
     /**
-     * @param \yii\base\Action $action
+     * @param \Yii\base\Action $action
      *
      * @return bool
-     * @throws \yii\web\BadRequestHttpException
+     * @throws \Yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
     {
@@ -51,7 +51,7 @@ class AdminBase extends Base
             return;
         }
 
-        if (\yii::$app->request->get('activate') === 'procedure') {
+        if (\Yii::$app->request->get('activate') === 'procedure') {
             foreach ($this->consultation->motionTypes as $motionType) {
                 $settings                       = $motionType->getSettingsObj();
                 $settings->hasProposedProcedure = true;
@@ -61,7 +61,7 @@ class AdminBase extends Base
 
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_functions_activated'));
         }
-        if (\yii::$app->request->get('activate') === 'responsibilities') {
+        if (\Yii::$app->request->get('activate') === 'responsibilities') {
             foreach ($this->consultation->motionTypes as $motionType) {
                 $settings                      = $motionType->getSettingsObj();
                 $settings->hasResponsibilities = true;

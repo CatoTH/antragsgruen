@@ -2,10 +2,10 @@
 use app\components\Diff\SingleAmendmentMergeViewParagraphData;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
-use yii\helpers\Html;
+use Yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \Yii\web\View $this
  * @var Amendment $amendment
  * @var \app\models\db\Consultation $consultation
  * @var SingleAmendmentMergeViewParagraphData[][] $paragraphSections

@@ -30,7 +30,7 @@ class SpeechSubqueue extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getQueue()
     {

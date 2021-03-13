@@ -239,9 +239,9 @@ class Tools
         if ($mysqldate === null || strlen($mysqldate) === 0) {
             return '-';
         } elseif (substr($mysqldate, 0, 10) === date('Y-m-d', $currentTs) && $allowRelativeDates) {
-            return \yii::t('base', 'Today');
+            return \Yii::t('base', 'Today');
         } elseif (substr($mysqldate, 0, 10) === date('Y-m-d', $currentTs - 3600 * 24) && $allowRelativeDates) {
-            return \yii::t('base', 'Yesterday');
+            return \Yii::t('base', 'Yesterday');
         }
 
         $date = explode('-', substr($mysqldate, 0, 10));
@@ -266,9 +266,9 @@ class Tools
         if ($mysqldate === null || strlen($mysqldate) === 0) {
             return '-';
         } elseif (substr($mysqldate, 0, 10) === date('Y-m-d', $currentTs) && $allowRelativeDates) {
-            return \yii::t('base', 'Today');
+            return \Yii::t('base', 'Today');
         } elseif (substr($mysqldate, 0, 10) === date('Y-m-d', $currentTs - 3600 * 24) && $allowRelativeDates) {
-            return \yii::t('base', 'Yesterday');
+            return \Yii::t('base', 'Yesterday');
         }
 
         if ($locale === null) {

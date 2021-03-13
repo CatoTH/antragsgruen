@@ -96,7 +96,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotions()
     {
@@ -105,7 +105,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getConsultationTexts()
     {
@@ -113,7 +113,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getTexTemplate()
     {
@@ -121,7 +121,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotionSections()
     {
@@ -131,7 +131,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getAgendaItems()
     {
@@ -206,7 +206,7 @@ class ConsultationMotionType extends ActiveRecord
         if ($layoutDef && $layoutDef['odtTemplate']) {
             return $layoutDef['odtTemplate'];
         } else {
-            $dir = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+            $dir = \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
             return $dir . 'OpenOffice-Template-Std.odt';
         }
     }

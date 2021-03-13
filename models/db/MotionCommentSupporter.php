@@ -29,7 +29,7 @@ class MotionCommentSupporter extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotionComment()
     {

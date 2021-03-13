@@ -12,7 +12,7 @@ class MotionController extends Base
      * @param string $motionSlug
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionOds($motionSlug)
     {
@@ -28,10 +28,10 @@ class MotionController extends Base
             return 'Not permitted to change the tag';
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('@app/plugins/egp/views/motion_ods', [
             'motion' => $motion,

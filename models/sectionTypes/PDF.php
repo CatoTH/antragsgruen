@@ -157,7 +157,7 @@ class PDF extends ISectionType
         }
 
         /** @var AntragsgruenApp $params */
-        $params = \yii::$app->params;
+        $params = \Yii::$app->params;
 
         $abs = 5;
         $pdf->setY($pdf->getY() + $abs);

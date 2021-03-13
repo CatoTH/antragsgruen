@@ -17,7 +17,7 @@ class ModuleBase extends Module
     {
         parent::init();
 
-        if (\Yii::$app instanceof \yii\console\Application) {
+        if (\Yii::$app instanceof \Yii\console\Application) {
             /** @noinspection PhpUnhandledExceptionInspection */
             $ref                       = new \ReflectionClass($this);
             $this->controllerNamespace = $ref->getNamespaceName() . '\\commands';

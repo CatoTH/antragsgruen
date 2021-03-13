@@ -152,7 +152,7 @@ class ConsultationLog extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -160,7 +160,7 @@ class ConsultationLog extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getUser()
     {
@@ -225,7 +225,7 @@ class ConsultationLog extends ActiveRecord
                 }
             }
         }
-        $log = new static();
+        $log = new ConsultationLog();
         $log->userId = $userId;
         $log->consultationId = $consultation->id;
         $log->actionType = $type;

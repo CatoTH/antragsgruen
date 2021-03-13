@@ -38,7 +38,7 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotionType()
     {
@@ -46,7 +46,7 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -54,7 +54,7 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getSite()
     {

@@ -119,7 +119,7 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getComments()
     {

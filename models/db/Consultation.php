@@ -89,7 +89,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getSite()
     {
@@ -119,7 +119,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotions()
     {
@@ -259,7 +259,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getTexts()
     {
@@ -267,7 +267,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getOdtTemplates()
     {
@@ -275,7 +275,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getAgendaItems()
     {
@@ -283,7 +283,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getUserPrivileges()
     {
@@ -291,7 +291,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getFiles()
     {
@@ -322,7 +322,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getTags()
     {
@@ -330,7 +330,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getVotingBlocks()
     {
@@ -352,7 +352,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getLogEntries()
     {
@@ -360,7 +360,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotionTypes()
     {
@@ -369,7 +369,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getSpeechQueues()
     {
@@ -399,7 +399,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getUserNotifications()
     {

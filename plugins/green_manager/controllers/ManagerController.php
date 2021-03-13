@@ -29,8 +29,8 @@ class ManagerController extends Base
      */
     public function actionCheckSubdomain($test)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $available = Site::isSubdomainAvailable($test);
         return json_encode([

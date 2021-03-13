@@ -68,12 +68,12 @@ trait MotionActionsTrait
             $comment = $commentForm->saveMotionCommentWithChecks($motion);
 
             if ($comment->status === MotionComment::STATUS_SCREENING) {
-                \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
+                \Yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
             } else {
-                \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created'));
+                \Yii::$app->session->setFlash('screening', \Yii::t('comment', 'created'));
             }
             $this->redirect(UrlHelper::createMotionCommentUrl($comment));
-            \yii::$app->end();
+            \Yii::$app->end();
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
             if (!isset($viewParameters['openedComments'][$commentForm->sectionId])) {
@@ -386,7 +386,7 @@ trait MotionActionsTrait
         $motion->refresh();
 
         $this->redirect(UrlHelper::createMotionCommentUrl($comment));
-        \yii::$app->end();
+        \Yii::$app->end();
     }
 
     /**
@@ -436,12 +436,12 @@ trait MotionActionsTrait
      * @param string $motionSlug
      * @return string
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws \Yii\db\StaleObjectException
      */
     public function actionDelProposalComment($motionSlug)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $motion = $this->getMotionWithCheck($motionSlug);
         if (!$motion) {
@@ -465,8 +465,8 @@ trait MotionActionsTrait
      */
     public function actionSaveProposalStatus($motionSlug)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {

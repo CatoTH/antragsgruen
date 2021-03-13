@@ -47,14 +47,14 @@ abstract class ISectionType
     public static function getTypes(): array
     {
         return [
-            static::TYPE_TITLE           => \yii::t('structure', 'section_title'),
-            static::TYPE_TEXT_SIMPLE     => \yii::t('structure', 'section_text'),
-            static::TYPE_TEXT_HTML       => \yii::t('structure', 'section_html'),
-            static::TYPE_IMAGE           => \yii::t('structure', 'section_image'),
-            static::TYPE_TABULAR         => \yii::t('structure', 'section_tabular'),
-            static::TYPE_PDF_ATTACHMENT  => \yii::t('structure', 'section_pdf_attachment'),
-            static::TYPE_PDF_ALTERNATIVE => \yii::t('structure', 'section_pdf_alternative'),
-            static::TYPE_VIDEO_EMBED     => \yii::t('structure', 'section_video_embed'),
+            static::TYPE_TITLE           => \Yii::t('structure', 'section_title'),
+            static::TYPE_TEXT_SIMPLE     => \Yii::t('structure', 'section_text'),
+            static::TYPE_TEXT_HTML       => \Yii::t('structure', 'section_html'),
+            static::TYPE_IMAGE           => \Yii::t('structure', 'section_image'),
+            static::TYPE_TABULAR         => \Yii::t('structure', 'section_tabular'),
+            static::TYPE_PDF_ATTACHMENT  => \Yii::t('structure', 'section_pdf_attachment'),
+            static::TYPE_PDF_ALTERNATIVE => \Yii::t('structure', 'section_pdf_alternative'),
+            static::TYPE_VIDEO_EMBED     => \Yii::t('structure', 'section_video_embed'),
         ];
     }
 

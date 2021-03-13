@@ -59,7 +59,7 @@ class AmendmentSupporter extends ISupporter
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getAmendment()
     {

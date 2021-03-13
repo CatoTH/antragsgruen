@@ -63,7 +63,7 @@ class IndexController extends AdminBase
             if (preg_match('/^[\w_-]+$/i', $data['urlPath']) && trim($data['urlPath']) !== 'rest') {
                 $model->urlPath = $data['urlPath'];
             } else {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'con_url_path_err'));
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'con_url_path_err'));
             }
 
             if ($model->save()) {
@@ -82,9 +82,9 @@ class IndexController extends AdminBase
                 }
 
                 $model->flushCacheWithChildren(['lines']);
-                \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+                \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
             } else {
-                \yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($model->getErrors()));
+                \Yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($model->getErrors()));
             }
         }
 
@@ -142,7 +142,7 @@ class IndexController extends AdminBase
                     $file              = ConsultationFile::uploadImage($this->consultation, 'newLogo', $user);
                     $settings->logoUrl = $file->getUrl();
                 } catch (FormError $e) {
-                    \yii::$app->session->setFlash('error', $e->getMessage());
+                    \Yii::$app->session->setFlash('error', $e->getMessage());
                 }
             }
             $consultation->setSettings($settings);
@@ -155,7 +155,7 @@ class IndexController extends AdminBase
                         $unassignedQueue->save();
                     }
                 }
-                
+
                 $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
                 $siteSettings  = $consultation->site->getSettings();
                 $siteSettings->saveForm($settingsInput, $post['siteSettingsFields']);
@@ -165,9 +165,9 @@ class IndexController extends AdminBase
                 $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
                 $this->layoutParams->setLayout($siteSettings->siteLayout);
 
-                \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+                \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
             } else {
-                \yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($consultation->getErrors()));
+                \Yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($consultation->getErrors()));
             }
         }
 
@@ -254,7 +254,7 @@ class IndexController extends AdminBase
         if ($this->isPostSet('save') && $this->isPostSet('wordingBase')) {
             $consultation->wordingBase = \Yii::$app->request->post('wordingBase');
             $consultation->save();
-            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         if ($this->isPostSet('save') && $this->isPostSet('string')) {
@@ -283,7 +283,7 @@ class IndexController extends AdminBase
                 }
             }
             $consultation->refresh();
-            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('translation', ['consultation' => $consultation, 'category' => $category]);
@@ -325,7 +325,7 @@ class IndexController extends AdminBase
                 }
             }
             $motionType->refresh();
-            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('translation_motion_type', ['motionType' => $motionType]);
@@ -334,7 +334,7 @@ class IndexController extends AdminBase
     /**
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      * @throws \Exception
      */
     public function actionSiteconsultations(): string
@@ -366,11 +366,11 @@ class IndexController extends AdminBase
             }
             try {
                 $form->createConsultation();
-                \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_new_created'));
+                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_new_created'));
 
                 $form = new ConsultationCreateForm($site);
             } catch (FormError $e) {
-                \yii::$app->session->setFlash('error', $e->getMessage());
+                \Yii::$app->session->setFlash('error', $e->getMessage());
             }
             $this->site->refresh();
         }
@@ -386,7 +386,7 @@ class IndexController extends AdminBase
                             $site->status = Site::STATUS_ACTIVE;
                         }
                         $site->save();
-                        \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_std_set_done'));
+                        \Yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_std_set_done'));
                     }
                 }
             }
@@ -397,7 +397,7 @@ class IndexController extends AdminBase
                 $keys = array_keys($post['delete']);
                 if ($consultation->id === $keys[0] && $site->currentConsultationId !== $consultation->id) {
                     $consultation->setDeleted();
-                    \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_delete_done'));
+                    \Yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_delete_done'));
                     if ($this->consultation->id === $consultation->id) {
                         $fallback = $this->site->currentConsultation->urlPath;
 
@@ -423,10 +423,10 @@ class IndexController extends AdminBase
 
     public function actionOpenslidesusers(): string
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'text/csv');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=Participants.csv');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'text/csv');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=Participants.csv');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         /** @var ISupporter[] $users */
         $users = [];
@@ -483,7 +483,7 @@ class IndexController extends AdminBase
 
                                 $stylesheet->$key = $file->getUrl();
                             } catch (FormError $e) {
-                                \yii::$app->session->setFlash('error', $e->getMessage());
+                                \Yii::$app->session->setFlash('error', $e->getMessage());
                             }
                         }
                         break;

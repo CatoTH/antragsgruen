@@ -32,19 +32,21 @@ class ManagerController extends Base
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionSiteconfig()
     {
         if (!User::currentUserIsSuperuser()) {
-            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+            $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+            return '';
         }
 
         $configfile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.json';
         $config     = $this->getParams();
 
         if ($config->multisiteMode) {
-            return $this->showErrorpage(500, 'This configuration tool can only be used for single-site installations.');
+            $this->showErrorpage(500, 'This configuration tool can only be used for single-site installations.');
+            return '';
         }
 
         $post = \Yii::$app->request->post();
@@ -102,7 +104,7 @@ class ManagerController extends Base
             fwrite($file, json_encode($config, JSON_PRETTY_PRINT));
             fclose($file);
 
-            \yii::$app->session->setFlash('success', \Yii::t('manager', 'saved'));
+            \Yii::$app->session->setFlash('success', \Yii::t('manager', 'saved'));
         }
 
         $editable = is_writable($configfile);
@@ -123,12 +125,13 @@ class ManagerController extends Base
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionUserlist()
     {
         if (!User::currentUserIsSuperuser()) {
-            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+            $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+            return '';
         }
 
         if ($this->isPostSet('deleteUser')) {

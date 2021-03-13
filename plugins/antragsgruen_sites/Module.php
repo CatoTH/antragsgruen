@@ -23,8 +23,8 @@ class Module extends ModuleBase
     }
 
     /**
-     * @param \yii\web\Controller $controller
-     * @return \yii\web\AssetBundle[]|string[]
+     * @param \Yii\web\Controller $controller
+     * @return \Yii\web\AssetBundle[]|string[]
      */
     public static function getActiveAssetBundles(\Yii\web\Controller $controller)
     {

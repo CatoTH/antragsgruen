@@ -44,8 +44,8 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionIndexAjax($agendaItemId = 0, $expandId = null)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
@@ -95,10 +95,10 @@ class ProposedProcedureController extends AdminBase
         }
         $filename .= '.ods';
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . rawurlencode($filename));
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . rawurlencode($filename));
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods', [
             'proposedAgenda' => $proposalFactory->create(),
@@ -116,8 +116,8 @@ class ProposedProcedureController extends AdminBase
         $motionId = \Yii::$app->request->post('id');
         $text     = \Yii::$app->request->post('comment');
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
@@ -157,8 +157,8 @@ class ProposedProcedureController extends AdminBase
         $amendmentId = \Yii::$app->request->post('id');
         $text        = \Yii::$app->request->post('comment');
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getAmendment($amendmentId);
         if (!$motion) {
@@ -196,8 +196,8 @@ class ProposedProcedureController extends AdminBase
     {
         $motionId = \Yii::$app->request->post('id');
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
@@ -226,8 +226,8 @@ class ProposedProcedureController extends AdminBase
     {
         $amendmentId = \Yii::$app->request->post('id');
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
@@ -257,8 +257,8 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionSaveResponsibility(string $type, string $id)
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         /** @var null|IMotion $imotion */
         $imotion = null;

@@ -106,7 +106,7 @@ class EMailLog extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getUser()
     {
@@ -115,7 +115,7 @@ class EMailLog extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getFromSite()
     {

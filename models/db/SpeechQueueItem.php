@@ -36,7 +36,7 @@ class SpeechQueueItem extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getSpeechQueue()
     {
@@ -44,7 +44,7 @@ class SpeechQueueItem extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getUser()
     {

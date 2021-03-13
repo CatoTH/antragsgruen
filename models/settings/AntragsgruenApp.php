@@ -85,13 +85,13 @@ class AntragsgruenApp implements \JsonSerializable
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws \Yii\db\Exception
      */
     public static function flushAllCaches(): void
     {
         $tables = ['amendment', 'amendmentSection', 'motion', 'motionSection'];
         foreach ($tables as $table) {
-            $command = \yii::$app->db->createCommand();
+            $command = \Yii::$app->db->createCommand();
             $command->setSql('UPDATE `' . $table . '` SET cache = ""');
             $command->execute();
         }

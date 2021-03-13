@@ -49,7 +49,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getCurrentConsultation()
     {
@@ -57,7 +57,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getConsultations()
     {
@@ -65,7 +65,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getTexTemplates()
     {
@@ -73,7 +73,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getFiles()
     {
@@ -92,7 +92,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getAdmins()
     {
@@ -101,7 +101,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getTexts()
     {
@@ -221,7 +221,7 @@ class Site extends ActiveRecord
             }
         }
         /** @var AntragsgruenApp $params */
-        $params = \yii::$app->params;
+        $params = \Yii::$app->params;
         return in_array($user->id, $params->adminUserIds);
     }
 

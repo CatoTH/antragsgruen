@@ -5,7 +5,7 @@ use app\models\db\Consultation;
 use app\models\settings\Layout;
 
 /**
- * @var \yii\web\View $this
+ * @var \Yii\web\View $this
  * @var Consultation $consultation
  * @var Layout $layout
  * @var bool $admin

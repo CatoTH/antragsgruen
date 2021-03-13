@@ -101,9 +101,7 @@ class AntragsgruenInitDb extends Model
             isset($_ENV['ANTRAGSGRUEN_MYSQL_HOST']) && isset($_ENV['ANTRAGSGRUEN_MYSQL_DB']);
     }
 
-    /**
-     */
-    private function setMysqlFromEnv()
+    private function setMysqlFromEnv(): void
     {
         $this->sqlUsername = $_ENV['ANTRAGSGRUEN_MYSQL_USER'];
         $this->sqlPassword = $_ENV['ANTRAGSGRUEN_MYSQL_PASSWORD'];
@@ -175,18 +173,14 @@ class AntragsgruenInitDb extends Model
         throw new Internal('Unknown SQL Type');
     }
 
-    /**
-     */
-    public function overwriteYiiConnection()
+    public function overwriteYiiConnection(): void
     {
         $connConfig          = $this->getDBConfig();
         $connConfig['class'] = Connection::class;
-        \yii::$app->set('db', $connConfig);
+        \Yii::$app->set('db', $connConfig);
     }
 
-    /**
-     */
-    public function overwritePrettyUrls()
+    public function overwritePrettyUrls(): void
     {
         \Yii::$app->urlManager->enablePrettyUrl = $this->prettyUrls;
     }
@@ -205,7 +199,7 @@ class AntragsgruenInitDb extends Model
             $connection = new Connection($connConfig);
             $connection->createCommand('SHOW TABLES')->queryAll();
             return true;
-        } catch (\yii\db\Exception $e) {
+        } catch (\Yii\db\Exception $e) {
             switch ($e->getCode()) {
                 case 1044:
                     $message = 'The database login is correct, however I could not connect to the actual database.
@@ -241,11 +235,7 @@ class AntragsgruenInitDb extends Model
         }
     }
 
-
-    /**
-     * @return bool
-     */
-    public function tablesAreCreated()
+    public function tablesAreCreated(): bool
     {
         try {
             $connConfig = $this->getDBConfig();
@@ -258,14 +248,12 @@ class AntragsgruenInitDb extends Model
                 }
             }
             return $found;
-        } catch (\yii\db\Exception $e) {
+        } catch (\Yii\db\Exception $e) {
             return false;
         }
     }
 
-    /**
-     */
-    public function createTables()
+    public function createTables(): void
     {
         $connConfig = $this->getDBConfig();
         $connection = new Connection($connConfig);
@@ -287,26 +275,17 @@ class AntragsgruenInitDb extends Model
         $command->execute();
     }
 
-    /**
-     * @return bool
-     */
-    public function isConfigured()
+    public function isConfigured(): bool
     {
         return file_exists($this->configFile) && $this->tablesAreCreated();
     }
 
-    /**
-     * @return bool
-     */
-    public function hasAdminAccount()
+    public function hasAdminAccount(): bool
     {
         return (count($this->adminIds) > 0);
     }
 
-    /**
-     * @return null|User
-     */
-    public function getAdminUser()
+    public function getAdminUser(): ?User
     {
         if (count($this->adminIds) == 0) {
             return null;
@@ -315,9 +294,7 @@ class AntragsgruenInitDb extends Model
     }
 
 
-    /**
-     */
-    public function createOrUpdateAdminAccount()
+    public function createOrUpdateAdminAccount(): void
     {
         /** @var User|null $user */
         $user = User::findOne(['auth' => 'email:' . $this->adminUsername]);
@@ -336,9 +313,7 @@ class AntragsgruenInitDb extends Model
         }
     }
 
-    /**
-     */
-    public function createAdminAccount()
+    public function createAdminAccount(): void
     {
         $user                  = new User();
         $user->auth            = 'email:' . $this->adminUsername;
@@ -357,10 +332,9 @@ class AntragsgruenInitDb extends Model
     }
 
     /**
-     * @param AntragsgruenApp $config
      * @throws Internal
      */
-    protected function setConfigValues(AntragsgruenApp $config)
+    protected function setConfigValues(AntragsgruenApp $config): void
     {
         $config->dbConnection = $this->getDBConfig();
         $config->adminUserIds = $this->adminIds;

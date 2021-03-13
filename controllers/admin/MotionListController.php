@@ -22,7 +22,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $motion->setScreened();
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened'));
         }
         if ($this->isRequestSet('motionUnscreen')) {
             $motion = $this->consultation->getMotion($this->getRequestValue('motionUnscreen'));
@@ -30,7 +30,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $motion->setUnscreened();
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened'));
         }
         if ($this->isRequestSet('motionDelete')) {
             $motion = $this->consultation->getMotion($this->getRequestValue('motionDelete'));
@@ -38,7 +38,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $motion->setDeleted();
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted'));
         }
 
         if (!$this->isRequestSet('motions') || !$this->isRequestSet('save')) {
@@ -52,7 +52,7 @@ class MotionListController extends AdminBase
                 }
                 $motion->setScreened();
             }
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened_pl'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened_pl'));
         }
 
         if ($this->isRequestSet('unscreen')) {
@@ -63,7 +63,7 @@ class MotionListController extends AdminBase
                 }
                 $motion->setUnscreened();
             }
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened_pl'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened_pl'));
         }
 
         if ($this->isRequestSet('delete')) {
@@ -74,7 +74,7 @@ class MotionListController extends AdminBase
                 }
                 $motion->setDeleted();
             }
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted_pl'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted_pl'));
         }
     }
 
@@ -89,7 +89,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $amendment->setScreened();
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened'));
         }
         if ($this->isRequestSet('amendmentUnscreen')) {
             $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentUnscreen'));
@@ -97,7 +97,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $amendment->setUnscreened();
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
         }
         if ($this->isRequestSet('amendmentDelete')) {
             $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentDelete'));
@@ -105,7 +105,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $amendment->setDeleted();
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted'));
         }
         if (!$this->isRequestSet('amendments') || !$this->isRequestSet('save')) {
             return;
@@ -118,7 +118,7 @@ class MotionListController extends AdminBase
                 }
                 $amendment->setScreened();
             }
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened_pl'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened_pl'));
         }
 
         if ($this->isRequestSet('unscreen')) {
@@ -129,7 +129,7 @@ class MotionListController extends AdminBase
                 }
                 $amendment->setUnscreened();
             }
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened_pl'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened_pl'));
         }
 
         if ($this->isRequestSet('delete')) {
@@ -140,7 +140,7 @@ class MotionListController extends AdminBase
                 }
                 $amendment->setDeleted();
             }
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted_pl'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted_pl'));
         }
     }
 
@@ -156,14 +156,14 @@ class MotionListController extends AdminBase
                 }
                 $amendment->setProposalPublished();
             }
-            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_proposal_published_pl'));
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_proposal_published_pl'));
         }
     }
 
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionIndex()
     {
@@ -208,10 +208,10 @@ class MotionListController extends AdminBase
     {
         // @TODO: support filtering for motion types and withdrawn motions
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list_all', [
             'items' => $this->consultation->getAgendaWithMotions(),
@@ -224,7 +224,7 @@ class MotionListController extends AdminBase
      * @param int $withdrawn
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionMotionOdslist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
@@ -234,13 +234,14 @@ class MotionListController extends AdminBase
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
+            $this->showErrorpage(404, $e->getMessage());
+            return '';
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $motions = [];
         foreach ($this->consultation->getVisibleMotionsSorted($withdrawn) as $motion) {
@@ -262,15 +263,16 @@ class MotionListController extends AdminBase
      * @param int $withdrawn
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionMotionExcellist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
         $motionTypeId = intval($motionTypeId);
 
         if (!AntragsgruenApp::hasPhpExcel()) {
-            return $this->showErrorpage(500, 'The Excel package has not been installed. ' .
+            $this->showErrorpage(500, 'The Excel package has not been installed. ' .
                                              'To install it, execute "./composer.phar require phpoffice/phpexcel".');
+            return '';
         }
 
         $withdrawn = ($withdrawn == 1);
@@ -278,16 +280,17 @@ class MotionListController extends AdminBase
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
+            $this->showErrorpage(404, $e->getMessage());
+            return '';
         }
 
         defined('PCLZIP_TEMPORARY_DIR') or define('PCLZIP_TEMPORARY_DIR', $this->getParams()->getTmpDir());
 
         $excelMime                   = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', $excelMime);
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', $excelMime);
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         error_reporting(E_ALL & ~E_DEPRECATED); // PHPExcel ./. PHP 7
 
@@ -310,7 +313,7 @@ class MotionListController extends AdminBase
      * @param int $version
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionMotionOpenslides($motionTypeId, $version = 1)
     {
@@ -319,14 +322,15 @@ class MotionListController extends AdminBase
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
+            $this->showErrorpage(404, $e->getMessage());
+            return '';
         }
 
         $filename                    = rawurlencode($motionType->titlePlural);
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'text/csv');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . $filename . '.csv');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'text/csv');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . $filename . '.csv');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $motions = [];
         foreach ($this->consultation->getVisibleMotionsSorted(false) as $motion) {
@@ -351,7 +355,7 @@ class MotionListController extends AdminBase
      * @param int $withdrawn
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      * @throws \app\models\exceptions\Internal
      */
     public function actionMotionPdfziplist($motionTypeId = 0, $withdrawn = 0)
@@ -366,10 +370,12 @@ class MotionListController extends AdminBase
                 $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
             if (count($motions) == 0) {
-                return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+                $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+                return '';
             }
         } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
+            $this->showErrorpage(404, $e->getMessage());
+            return '';
         }
 
         $zip      = new ZipWriter();
@@ -383,10 +389,10 @@ class MotionListController extends AdminBase
             $zip->addFile($motion->getFilenameBase(false) . '.pdf', $file);
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_pdf.zip');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/zip');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_pdf.zip');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $zip->getContentAndFlush();
     }
@@ -396,7 +402,7 @@ class MotionListController extends AdminBase
      * @param int $withdrawn
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionMotionOdtziplist($motionTypeId = 0, $withdrawn = 0)
     {
@@ -410,10 +416,12 @@ class MotionListController extends AdminBase
                 $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
             if (count($motions) == 0) {
-                return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+                $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+                return '';
             }
         } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
+            $this->showErrorpage(404, $e->getMessage());
+            return '';
         }
 
         $zip = new ZipWriter();
@@ -422,10 +430,10 @@ class MotionListController extends AdminBase
             $zip->addFile($motion->getFilenameBase(false) . '.odt', $content);
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_odt.zip');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/zip');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_odt.zip');
+        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $zip->getContentAndFlush();
     }

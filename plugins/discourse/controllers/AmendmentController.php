@@ -15,7 +15,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Yii\base\ExitException
      */
     public function actionGotoDiscourse(string $motionSlug, $amendmentId)
     {

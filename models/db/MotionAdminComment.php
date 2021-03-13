@@ -21,7 +21,7 @@ class MotionAdminComment extends IAdminComment
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotion()
     {

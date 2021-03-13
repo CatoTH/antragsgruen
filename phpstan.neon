@@ -5,6 +5,7 @@ parameters:
       - views/motion/LayoutHelper.php
       - views/amendment/LayoutHelper.php
       - views/speech/LayoutHelper.php
+      - views/consultation/LayoutHelper.php
       - config/defines.php
     paths:
       - models

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\plugins\swagger_ui\controllers;
 
 use app\components\UrlHelper;
-use \app\controllers\Base;
+use app\controllers\Base;
 use app\plugins\swagger_ui\Assets;
 use yii\web\Response;
 
@@ -25,8 +25,8 @@ class SwaggeruiController extends Base
 
     public function actionOpenapi()
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'text/yaml');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'text/yaml');
 
         return file_get_contents(__DIR__ . '/../../../docs/openapi.yaml');
     }

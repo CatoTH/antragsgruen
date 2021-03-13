@@ -53,8 +53,8 @@ trait ConsultationAgendaTrait
             return $this->showErrorpage(403, 'No access');
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $itemId = intval($itemId);
         $data   = json_decode(\Yii::$app->request->post('data'), true);
@@ -137,8 +137,8 @@ trait ConsultationAgendaTrait
             return $this->showErrorpage(403, 'No access');
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $itemId = intval($itemId);
         /** @var ConsultationAgendaItem $item */
@@ -160,8 +160,8 @@ trait ConsultationAgendaTrait
             return $this->showErrorpage(403, 'No access');
         }
 
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $data = json_decode(\Yii::$app->request->post('data'), true);
 

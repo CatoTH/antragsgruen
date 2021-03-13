@@ -40,7 +40,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -58,7 +58,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getParentItem()
     {
@@ -66,7 +66,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getChildItems()
     {
@@ -74,7 +74,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotionType()
     {
@@ -99,7 +99,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return \Yii\db\ActiveQuery
      */
     public function getMotions()
     {

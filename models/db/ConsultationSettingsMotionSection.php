@@ -57,12 +57,12 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         ];
     }
 
-    public function getSections(): \yii\db\ActiveQuery
+    public function getSections(): \Yii\db\ActiveQuery
     {
         return $this->hasMany(MotionSection::class, ['sectionId' => 'id']);
     }
 
-    public function getMotionType(): \yii\db\ActiveQuery
+    public function getMotionType(): \Yii\db\ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }

@@ -823,7 +823,7 @@ class Diff
      */
     public static function computeAffectedParagraphs($referenceParas, $newParas, $diffFormatting)
     {
-        $diff          = new static();
+        $diff          = new Diff();
         $diffParas     = $diff->compareHtmlParagraphs($referenceParas, $newParas, $diffFormatting);
         $affectedParas = [];
         foreach ($diffParas as $paraNo => $para) {
