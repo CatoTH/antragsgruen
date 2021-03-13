@@ -696,7 +696,7 @@ abstract class IMotion extends ActiveRecord
         $found   = 0;
         foreach ($allSupporters as $supporter) {
             /** @var ISupporter $supporter */
-            if ($supporter->getExtraDataEntry('gender') === $gender) {
+            if ($supporter->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER) === $gender) {
                 $found++;
             }
         }

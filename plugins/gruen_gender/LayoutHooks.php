@@ -25,7 +25,7 @@ class LayoutHooks extends Hooks
 
         $women = 0;
         foreach ($supporters as $supporter) {
-            if ($supporter->getExtraDataEntry('gender') === 'female') {
+            if ($supporter->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER) === 'female') {
                 $women++;
             }
         }

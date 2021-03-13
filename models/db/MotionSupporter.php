@@ -69,30 +69,19 @@ class MotionSupporter extends ISupporter
     /**
      * @return int[]
      */
-    public static function getMyAnonymousSupportIds()
+    public static function getMyAnonymousSupportIds(): array
     {
         return \Yii::$app->session->get('anonymous_motion_supports', []);
     }
 
-    /**
-     * @param MotionSupporter $support
-     */
-    public static function addAnonymouslySupportedMotion($support)
+    public static function addAnonymouslySupportedMotion(MotionSupporter $support): void
     {
         $pre   = \Yii::$app->session->get('anonymous_motion_supports', []);
-        $pre[] = IntVal($support->id);
+        $pre[] = intval($support->id);
         \Yii::$app->session->set('anonymous_motion_supports', $pre);
     }
 
-    /**
-     * @param Motion $motion
-     * @param User|null $user
-     * @param string $name
-     * @param string $orga
-     * @param int $role
-     * @param string $gender
-     */
-    public static function createSupport(Motion $motion, $user, $name, $orga, $role, $gender = '')
+    public static function createSupport(Motion $motion, ?User $user, string $name, string $orga, string $role, string $gender = ''): void
     {
         $hadEnoughSupportersBefore = $motion->hasEnoughSupporters($motion->getMyMotionType()->getMotionSupportTypeClass());
 
@@ -117,14 +106,14 @@ class MotionSupporter extends ISupporter
         }
 
         $support               = new MotionSupporter();
-        $support->motionId     = IntVal($motion->id);
-        $support->userId       = ($user ? IntVal($user->id) : null);
+        $support->motionId     = intval($motion->id);
+        $support->userId       = ($user ? intval($user->id) : null);
         $support->name         = $name;
         $support->organization = $orga;
         $support->position     = $maxPos + 1;
         $support->role         = $role;
         $support->dateCreation = date('Y-m-d H:i:s');
-        $support->setExtraDataEntry('gender', ($gender !== '' ? $gender : null));
+        $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, ($gender !== '' ? $gender : null));
         $support->save();
 
         if (!$user) {
@@ -165,10 +154,7 @@ class MotionSupporter extends ISupporter
         ];
     }
 
-    /**
-     * @return IMotion
-     */
-    public function getIMotion()
+    public function getIMotion(): IMotion
     {
         if (Consultation::getCurrent()) {
             $motion = Consultation::getCurrent()->getMotion($this->motionId);

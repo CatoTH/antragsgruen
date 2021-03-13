@@ -166,16 +166,10 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
-     * @param string $role
-     * @param string $string
-     * @param string $name
-     * @param string $orga
-     * @param string $gender
      * @throws FormError
      * @throws Internal
      */
-    private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '', $gender = '')
+    private function motionLikeDislike(Motion $motion, string $role, string $string, string $name = '', string $orga = '', string $gender = '')
     {
         $currentUser = User::getCurrentUser();
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {

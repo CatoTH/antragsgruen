@@ -133,7 +133,7 @@ class Tools
 
         if (YII_ENV === 'test') {
             $pre = \yii::$app->session->getFlash('email', '');
-            \yii::$app->session->setFlash('email', $pre . 'E-Mail sent to: ' . $toEmail . "\n");
+            \yii::$app->session->setFlash('email', $pre . 'E-Mail sent to: ' . $toEmail . " (Type $mailType)\n");
         }
     }
 }

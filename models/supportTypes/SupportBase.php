@@ -429,6 +429,9 @@ abstract class SupportBase
                 $init               = new MotionSupporter();
                 $init->dateCreation = date('Y-m-d H:i:s');
                 $init->userId       = $userId;
+                if ($otherInitiator) {
+                    $init->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, true);
+                }
             }
         }
 
@@ -535,6 +538,9 @@ abstract class SupportBase
                 $init               = new AmendmentSupporter();
                 $init->dateCreation = date('Y-m-d H:i:s');
                 $init->userId       = $userId;
+                if ($otherInitiator) {
+                    $init->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, true);
+                }
             }
         }
 

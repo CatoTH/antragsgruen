@@ -127,7 +127,8 @@ class InstallationController extends Base
             $url = Url::toRoute('manager/siteconfig');
             $msg .= Html::a(Yii::t('manager', 'created_goon_std_config'), $url, ['class' => 'btn btn-primary']);
             $msg = str_replace('%FILE%', Html::encode($installFile), $msg);
-            return $this->showErrorpage(403, $msg);
+            $this->showErrorpage(403, $msg);
+            return '';
         }
 
         if (file_exists($configFile)) {

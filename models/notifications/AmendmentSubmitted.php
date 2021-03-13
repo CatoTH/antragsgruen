@@ -7,6 +7,7 @@ use app\components\mail\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\EMailLog;
+use app\models\db\ISupporter;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
@@ -56,51 +57,56 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
         if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
             return;
         }
+        if (count($this->amendment->getInitiators()) === 0) {
+            return;
+        }
 
-        $initiator  = $this->amendment->getInitiators();
-        $motionType = $this->amendment->getMyMotion()->getMyMotionType();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail) {
-            if ($this->amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
-                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
-                $min        = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
-                $emailText  = str_replace('%MIN%', $min, $emailText);
-                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
-            } else {
-                $emailText  = $motionType->getConsultationTextWithFallback('amend', 'submitted_screening_email');
-                $emailTitle = $motionType->getConsultationTextWithFallback('amend', 'submitted_screening_email_subject');
-            }
-            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
-            $plain         = $emailText;
-            $amendmentHtml = '<h1>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h1>';
+        $motionType = $this->amendment->getMyMotionType();
+        $initiator  = $this->amendment->getInitiators()[0];
+        if (!$initiator->getContactOrUserEmail() || $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, false)) {
+            return;
+        }
 
-            $sections = $this->amendment->getSortedSections(true);
-            foreach ($sections as $section) {
-                $amendmentHtml .= '<div>';
-                $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-                $amendmentHtml .= '</div>';
-            }
+        if ($this->amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
+            $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
+            $min        = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
+            $emailText  = str_replace('%MIN%', $min, $emailText);
+            $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
+        } else {
+            $emailText  = $motionType->getConsultationTextWithFallback('amend', 'submitted_screening_email');
+            $emailTitle = $motionType->getConsultationTextWithFallback('amend', 'submitted_screening_email_subject');
+        }
+        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
+        $plain         = $emailText;
+        $amendmentHtml = '<h1>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h1>';
 
-            $html  = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-            $plain .= "\n\n" . HTMLTools::toPlainText($amendmentHtml);
+        $sections = $this->amendment->getSortedSections(true);
+        foreach ($sections as $section) {
+            $amendmentHtml .= '<div>';
+            $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
+            $amendmentHtml .= '</div>';
+        }
 
-            $plain = str_replace('%LINK%', $amendmentLink, $plain);
-            $html  = str_replace('%LINK%', Html::a(Html::encode($amendmentLink), $amendmentLink), $html);
+        $html  = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
+        $plain .= "\n\n" . HTMLTools::toPlainText($amendmentHtml);
 
-            $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
-            $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
+        $plain = str_replace('%LINK%', $amendmentLink, $plain);
+        $html  = str_replace('%LINK%', Html::a(Html::encode($amendmentLink), $amendmentLink), $html);
 
-            try {
-                Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $this->consultation,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    $emailTitle,
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent | ServerConfiguration $e) {
-            }
+        $plain = str_replace('%NAME_GIVEN%', $initiator->getGivenNameOrFull(), $plain);
+        $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator->getGivenNameOrFull()), $html);
+
+        try {
+            Tools::sendWithLog(
+                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                $this->consultation,
+                trim($initiator->getContactOrUserEmail()),
+                null,
+                $emailTitle,
+                $plain,
+                $html
+            );
+        } catch (MailNotSent | ServerConfiguration $e) {
         }
     }
 }

@@ -69,15 +69,12 @@ class AmendmentSupporter extends ISupporter
     /**
      * @return int[]
      */
-    public static function getMyAnonymousSupportIds()
+    public static function getMyAnonymousSupportIds(): array
     {
         return \Yii::$app->session->get('anonymous_amendment_supports', []);
     }
 
-    /**
-     * @param AmendmentSupporter $support
-     */
-    public static function addAnonymouslySupportedAmendment($support)
+    public static function addAnonymouslySupportedAmendment(AmendmentSupporter $support)
     {
         $pre   = \Yii::$app->session->get('anonymous_amendment_supports', []);
         $pre[] = IntVal($support->id);
@@ -116,7 +113,7 @@ class AmendmentSupporter extends ISupporter
         $support->position     = $maxPos + 1;
         $support->role         = $role;
         $support->dateCreation = date('Y-m-d H:i:s');
-        $support->setExtraDataEntry('gender', ($gender !== '' ? $gender : null));
+        $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, ($gender !== '' ? $gender : null));
         $support->save();
 
         if (!$user) {
@@ -157,10 +154,7 @@ class AmendmentSupporter extends ISupporter
         ];
     }
 
-    /**
-     * @return IMotion
-     */
-    public function getIMotion()
+    public function getIMotion(): IMotion
     {
         $amendment = Consultation::getCurrent()->getAmendment($this->amendmentId);
         if ($amendment) {

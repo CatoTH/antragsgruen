@@ -6,7 +6,7 @@ use app\components\mail\Tools as MailTools;
 use app\models\exceptions\ServerConfiguration;
 use app\models\layoutHooks\Layout;
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, EMailLog, UserNotification};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, EMailLog, ISupporter, UserNotification};
 use app\models\exceptions\MailNotSent;
 use yii\helpers\Html;
 
@@ -36,15 +36,19 @@ class AmendmentPublished
      * ("Send a confirmation e-mail to the proposer of a motion when it is published")
      *
      * This notification is sent to the contact e-mail-address entered when creating the motion,
-     * regardless if this amendment was created by a registered user or not
+     * regardless if this amendment was created by a registered user or not.
+     * (But not if it was created by an admin in the name of this user)
      */
-    private function notifyInitiators()
+    private function notifyInitiators(): void
     {
         if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
             return;
         }
-        $initiator = $this->amendment->getInitiators();
-        if (count($initiator) === 0 || !$initiator[0]->getContactOrUserEmail()) {
+        if (count($this->amendment->getInitiators()) === 0) {
+            return;
+        }
+        $initiator = $this->amendment->getInitiators()[0];
+        if (!$initiator->getContactOrUserEmail() || $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, false)) {
             return;
         }
 
@@ -57,7 +61,7 @@ class AmendmentPublished
             $motionTitle   = $this->amendment->getMyMotion()->getTitleWithPrefix();
             $plain         = str_replace(
                 ['%LINK%', '%MOTION%', '%NAME_GIVEN%'],
-                [$amendmentLink, $motionTitle, $initiator[0]->getGivenNameOrFull()],
+                [$amendmentLink, $motionTitle, $initiator->getGivenNameOrFull()],
                 \Yii::t('amend', 'published_email_body')
             );
 
@@ -78,17 +82,14 @@ class AmendmentPublished
             MailTools::sendWithLog(
                 EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                 $this->consultation,
-                trim($initiator[0]->getContactOrUserEmail()),
+                trim($initiator->getContactOrUserEmail()),
                 null,
                 \Yii::t('amend', 'published_email_title'),
                 $plain,
                 $html
             );
-            $this->alreadyNotified[] = strtolower($initiator[0]->getContactOrUserEmail());
-        } catch (MailNotSent $e) {
-            $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-            \yii::$app->session->setFlash('error', $errMsg);
-        } catch (ServerConfiguration $e) {
+            $this->alreadyNotified[] = strtolower($initiator->getContactOrUserEmail());
+        } catch (MailNotSent | ServerConfiguration $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
             \yii::$app->session->setFlash('error', $errMsg);
         }
@@ -98,7 +99,7 @@ class AmendmentPublished
      * Sent to to the initiator of the motion that is affected by this amendment
      * Only sent if the initiator is a registered user with confirmed e-mail and enabled notifications
      */
-    private function notifyMotionInitiators()
+    private function notifyMotionInitiators(): void
     {
         $motion    = $this->amendment->getMyMotion();
         $initiator = $motion->getInitiators();

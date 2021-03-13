@@ -4,7 +4,7 @@ namespace app\models\notifications;
 
 use app\models\exceptions\ServerConfiguration;
 use app\models\layoutHooks\Layout;
-use app\models\db\{Consultation, EMailLog, Motion};
+use app\models\db\{Consultation, EMailLog, ISupporter, Motion};
 use app\components\{mail\Tools as MailTools, HTMLTools, UrlHelper};
 use app\models\exceptions\MailNotSent;
 use yii\helpers\Html;
@@ -29,19 +29,23 @@ class MotionPublished
     }
 
     /**
-     * Sent to to the initiator of the amendments, if this option is enabled by the administrator
+     * Sent to to the initiator of the motion, if this option is enabled by the administrator
      * ("Send a confirmation e-mail to the proposer of a motion when it is published")
      *
      * This notification is sent to the contact e-mail-address entered when creating the motion,
-     * regardless if this amendment was created by a registered user or not
+     * regardless if it was created by a registered user or not.
+     * (But not if it was created by an admin in the name of this user)
      */
-    private function notifyInitiators()
+    private function notifyInitiators(): void
     {
         if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
             return;
         }
-        $initiator = $this->motion->getInitiators();
-        if (count($initiator) === 0 || !$initiator[0]->getContactOrUserEmail()) {
+        if (count($this->motion->getInitiators()) === 0) {
+            return;
+        }
+        $initiator = $this->motion->getInitiators()[0];
+        if (!$initiator->getContactOrUserEmail() || $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, false)) {
             return;
         }
 
@@ -66,7 +70,7 @@ class MotionPublished
 
             $plainBase = str_replace(
                 ['%LINK%', '%NAME_GIVEN%', '%TITLE%'],
-                [$motionLink, $initiator[0]->getGivenNameOrFull(), $this->motion->getTitleWithPrefix()],
+                [$motionLink, $initiator->getGivenNameOrFull(), $this->motion->getTitleWithPrefix()],
                 \Yii::t('motion', 'published_email_body')
             );
 
@@ -74,22 +78,19 @@ class MotionPublished
             $plain = $plainBase . "\n\n" . HTMLTools::toPlainText($motionHtml);
         }
 
-        if (count($initiator) > 0 && $initiator[0]->getContactOrUserEmail()) {
-            try {
-                MailTools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $this->consultation,
-                    trim($initiator[0]->getContactOrUserEmail()),
-                    null,
-                    \Yii::t('motion', 'published_email_title'),
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent | ServerConfiguration $e) {
-                $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                \yii::$app->session->setFlash('error', $errMsg);
-            }
+        try {
+            MailTools::sendWithLog(
+                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                $this->consultation,
+                trim($initiator->getContactOrUserEmail()),
+                null,
+                \Yii::t('motion', 'published_email_title'),
+                $plain,
+                $html
+            );
+        } catch (MailNotSent | ServerConfiguration $e) {
+            $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+            \yii::$app->session->setFlash('error', $errMsg);
         }
     }
-
 }

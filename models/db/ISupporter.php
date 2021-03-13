@@ -32,6 +32,9 @@ abstract class ISupporter extends ActiveRecord
     const PERSON_NATURAL      = 0;
     const PERSON_ORGANIZATION = 1;
 
+    const EXTRA_DATA_FIELD_GENDER = 'gender';
+    const EXTRA_DATA_FIELD_CREATED_BY_ADMIN = 'createdByAdmin';
+
     /**
      * @return string[]
      */
@@ -110,15 +113,14 @@ abstract class ISupporter extends ActiveRecord
     {
         parent::setAttributes($values, $safeOnly);
         if (!isset($values['extraData']) || $values['extraData'] === null) {
-            $this->setExtraDataEntry('gender', (isset($values['gender']) ? $values['gender'] : null));
+            $this->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, (isset($values['gender']) ? $values['gender'] : null));
         }
-        $this->personType = IntVal($this->personType);
-        $this->position   = IntVal($this->position);
-        $this->userId     = ($this->userId === null ? null : IntVal($this->userId));
+        $this->personType = intval($this->personType);
+        $this->position   = intval($this->position);
+        $this->userId     = ($this->userId === null ? null : intval($this->userId));
     }
 
     /**
-     * @param string $name
      * @param null|mixed $default
      * @return mixed
      */
@@ -133,10 +135,9 @@ abstract class ISupporter extends ActiveRecord
     }
 
     /**
-     * @param string $name
      * @param mixed $value
      */
-    public function setExtraDataEntry(string $name, $value)
+    public function setExtraDataEntry(string $name, $value): void
     {
         $arr = json_decode($this->extraData, true);
         if (!$arr) {
@@ -150,8 +151,5 @@ abstract class ISupporter extends ActiveRecord
         $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
     }
 
-    /**
-     * @return IMotion
-     */
-    abstract public function getIMotion();
+    abstract public function getIMotion(): IMotion;
 }

@@ -3,7 +3,7 @@
 namespace app\models\notifications;
 
 use app\components\{HTMLTools, UrlHelper, mail\Tools};
-use app\models\db\{EMailLog, Motion};
+use app\models\db\{EMailLog, ISupporter, Motion};
 use app\models\exceptions\{MailNotSent, ServerConfiguration};
 use yii\helpers\Html;
 
@@ -52,56 +52,62 @@ class MotionSubmitted extends Base implements IEmailAdmin
         if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
             return;
         }
+        if (count($this->motion->getInitiators()) === 0) {
+            return;
+        }
 
         $motionType = $this->motion->getMyMotionType();
-        $initiator = $this->motion->getInitiators();
-        if (count($initiator) > 0 && trim($initiator[0]->contactEmail) !== '') {
-            if ($this->motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
-                $min        = $this->motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-                $emailText  = str_replace('%MIN%', $min, $emailText);
-                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
-            } else {
-                $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email');
-                $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email_subject');
-            }
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
-            $plain      = $emailText;
-            $motionHtml = '<h1>' . Html::encode($motionType->titleSingular) . ': ';
-            $motionHtml .= Html::encode($this->motion->title);
-            $motionHtml .= '</h1>';
+        $initiator = $this->motion->getInitiators()[0];
 
-            $sections = $this->motion->getSortedSections(true);
-            foreach ($sections as $section) {
-                $motionHtml   .= '<div>';
-                $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                $typedSection = $section->getSectionType();
-                $typedSection->setAbsolutizeLinks(true);
-                $motionHtml .= $typedSection->getMotionEmailHtml();
-                $motionHtml .= '</div>';
-            }
+        if (!$initiator->getContactOrUserEmail() || $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, false)) {
+            return;
+        }
 
-            $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-            $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
+        if ($this->motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
+            $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
+            $min        = $this->motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
+            $emailText  = str_replace('%MIN%', $min, $emailText);
+            $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
+        } else {
+            $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email');
+            $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email_subject');
+        }
+        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
+        $plain      = $emailText;
+        $motionHtml = '<h1>' . Html::encode($motionType->titleSingular) . ': ';
+        $motionHtml .= Html::encode($this->motion->title);
+        $motionHtml .= '</h1>';
 
-            $plain = str_replace('%LINK%', $motionLink, $plain);
-            $html  = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
+        $sections = $this->motion->getSortedSections(true);
+        foreach ($sections as $section) {
+            $motionHtml   .= '<div>';
+            $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
+            $typedSection = $section->getSectionType();
+            $typedSection->setAbsolutizeLinks(true);
+            $motionHtml .= $typedSection->getMotionEmailHtml();
+            $motionHtml .= '</div>';
+        }
 
-            $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
-            $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
+        $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+        $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
 
-            try {
-                Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $this->consultation,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    $emailTitle,
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent | ServerConfiguration $e) {
-            }
+        $plain = str_replace('%LINK%', $motionLink, $plain);
+        $html  = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
+
+        $plain = str_replace('%NAME_GIVEN%', $initiator->getGivenNameOrFull(), $plain);
+        $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator->getGivenNameOrFull()), $html);
+
+        try {
+            Tools::sendWithLog(
+                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                $this->consultation,
+                trim($initiator->getContactOrUserEmail()),
+                null,
+                $emailTitle,
+                $plain,
+                $html
+            );
+        } catch (MailNotSent | ServerConfiguration $e) {
         }
     }
 }

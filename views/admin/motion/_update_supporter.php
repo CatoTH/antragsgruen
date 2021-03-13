@@ -40,7 +40,7 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
         $str .= \app\components\HTMLTools::fueluxSelectbox(
             'supporterGender[]',
             $genderChoices,
-            $supporter->getExtraDataEntry('gender'),
+            $supporter->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER),
             [],
             true
         );

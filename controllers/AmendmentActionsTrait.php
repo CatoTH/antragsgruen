@@ -207,16 +207,10 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
-     * @param string $role
-     * @param string $string
-     * @param string $name
-     * @param string $orga
-     * @param string $gender
      * @throws FormError
      * @throws Internal
      */
-    private function amendmentLikeDislike(Amendment $amendment, $role, $string, $name = '', $orga = '', $gender = '')
+    private function amendmentLikeDislike(Amendment $amendment, string $role, string $string, string $name = '', string $orga = '', string $gender = ''): void
     {
         $currentUser = User::getCurrentUser();
         if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
