@@ -46,7 +46,8 @@
     "codeception/verify": "^1.2.0",
     "codeception/module-asserts": "^1.1",
     "codeception/module-webdriver": "^1.0",
-    "codeception/module-yii2": "^1.1"
+    "codeception/module-yii2": "^1.1",
+    "phpstan/phpstan": "^0.12.81"
   },
   "autoload": {
     "psr-4": {

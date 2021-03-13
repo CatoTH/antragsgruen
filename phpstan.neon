@@ -1,0 +1,15 @@
+parameters:
+    scanDirectories:
+      - vendor
+    scanFiles:
+      - views/motion/LayoutHelper.php
+      - views/amendment/LayoutHelper.php
+      - views/speech/LayoutHelper.php
+      - config/defines.php
+    paths:
+      - models
+      - controllers
+      - components
+      - commands
+      - plugins
+      - views\pdfLayouts
