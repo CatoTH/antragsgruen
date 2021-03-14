@@ -306,15 +306,14 @@ class TabularData extends ISectionType
         $type   = $this->section->getSettings();
         $data   = json_decode($this->section->getData(), true);
         $rows   = static::getTabularDataRowsFromData($type->data);
-        $return = '';
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
                 continue;
             }
             if (mb_stripos($rowData, $text) !== false) {
-                return false;
+                return true;
             }
         }
-        return $return;
+        return false;
     }
 }

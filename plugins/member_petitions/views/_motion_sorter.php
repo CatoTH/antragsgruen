@@ -9,7 +9,7 @@ use yii\helpers\Html;
 /**
  * @var \app\models\db\Consultation[] $myConsultations
  * @var string $bold
- * @var \Yii\web\View $this
+ * @var \yii\web\View $this
  */
 
 // Yes, this is far from elegant...

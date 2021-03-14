@@ -5,6 +5,7 @@ namespace app\plugins\member_petitions\commands;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\Motion;
+use app\models\settings\AntragsgruenApp;
 use app\plugins\member_petitions\Tools;
 use yii\console\Controller;
 
@@ -34,7 +35,9 @@ class TimeoutController extends Controller
      */
     public function actionTimeout()
     {
-        \Yii::$app->urlManager->baseUrl = \Yii::$app->params->domainPlain;
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        \Yii::$app->urlManager->baseUrl = $app->domainPlain;
 
         echo "Timeouting the following petitions:\n";
         foreach ($this->getConsultations() as $consultation) {

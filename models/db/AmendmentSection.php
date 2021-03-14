@@ -15,8 +15,6 @@ use app\models\sectionTypes\ISectionType;
  * @property string $dataRaw
  * @property string $cache
  * @property string $metadata
- *
- * @property AmendmentSection
  */
 class AmendmentSection extends IMotionSection
 {
@@ -214,7 +212,7 @@ class AmendmentSection extends IMotionSection
      *
      * @param string[] $origParagraphs
      * @param bool $splitListItems
-     * @param int
+     * @param int $formatting
      * @return string[]
      */
     public function diffStrToOrigParagraphs($origParagraphs, $splitListItems, $formatting)

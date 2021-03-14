@@ -9,13 +9,13 @@ use yii\db\ActiveRecord;
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $motionTypeId
  * @property int $type
  * @property int $position
  * @property int $status
  * @property string $title
- * @property string $data
+ * @property string|null $data
  * @property int $fixedWidth
  * @property int $maxLen
  * @property int $required
@@ -57,12 +57,12 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         ];
     }
 
-    public function getSections(): \Yii\db\ActiveQuery
+    public function getSections(): \yii\db\ActiveQuery
     {
         return $this->hasMany(MotionSection::class, ['sectionId' => 'id']);
     }
 
-    public function getMotionType(): \Yii\db\ActiveQuery
+    public function getMotionType(): \yii\db\ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }

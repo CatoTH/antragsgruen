@@ -36,11 +36,9 @@ class AntragsgruenInitSite extends SiteCreateForm
         }
     }
 
-    /**
-     * @return Site|null
-     */
-    public function getDefaultSite()
+    public function getDefaultSite(): ?Site
     {
+        /** @var Site[] $sites */
         $sites = Site::find()->all();
         if (count($sites) > 0) {
             return $sites[0];

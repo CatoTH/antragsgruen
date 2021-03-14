@@ -8,19 +8,14 @@ use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * Class IMotionSection
- * @package app\models\db
  * @property string $data
- * @property string $dataRaw
+ * @property string|null $dataRaw
  * @property int $sectionId
  * @property string $metadata
  */
 abstract class IMotionSection extends ActiveRecord
 {
-    /**
-     * @return ConsultationSettingsMotionSection
-     */
-    abstract public function getSettings();
+    abstract public function getSettings(): ?ConsultationSettingsMotionSection;
 
     /**
      * @return ISectionType

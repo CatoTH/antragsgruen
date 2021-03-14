@@ -23,10 +23,10 @@ class Module extends ModuleBase
     }
 
     /**
-     * @param \Yii\web\Controller $controller
-     * @return \Yii\web\AssetBundle[]|string[]
+     * @param \yii\web\Controller $controller
+     * @return \yii\web\AssetBundle[]|string[]
      */
-    public static function getActiveAssetBundles(\Yii\web\Controller $controller)
+    public static function getActiveAssetBundles(\yii\web\Controller $controller)
     {
         if (strpos($controller->route, 'antragsgruen_sites') === 0) {
             return [

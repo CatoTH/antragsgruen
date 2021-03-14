@@ -7,10 +7,10 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var Site[] $site
- * @var \app\controllers\Base $controller
  */
 
 $this->title = 'Antragsgrün - Motion.Tools - Managing motions and amendments online';
+/** @var \app\controllers\Base $controller */
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://motion.tools/';

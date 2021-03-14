@@ -90,7 +90,6 @@ abstract class ISectionType
 
     protected function getFormLabel(): string
     {
-        /** @var MotionSection $section */
         $type = $this->section->getSettings();
         $str  = '<label for="sections_' . $type->id . '"';
         if ($type->required) {
@@ -109,7 +108,7 @@ abstract class ISectionType
     abstract public function getAmendmentFormField(): string;
 
     /**
-     * @param $data
+     * @param string $data
      * @throws FormError
      */
     abstract public function setMotionData($data);

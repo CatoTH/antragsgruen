@@ -38,7 +38,6 @@ class PDF extends ISectionType
 
     public function getMotionFormField(): string
     {
-        /** @var MotionSection $section */
         $type = $this->section->getSettings();
         $url  = $this->getPdfUrl();
         $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_PDF_ATTACHMENT . '">';

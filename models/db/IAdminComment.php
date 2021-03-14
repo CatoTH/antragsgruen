@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $userId
  * @property int $status
  * @property string $dateCreation
@@ -24,7 +24,7 @@ abstract class IAdminComment extends ActiveRecord
     const SORT_ASC = 'asc';
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUser()
     {

@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var yii\web\View $this
  * @var \app\models\db\Motion $motion
  * @var \app\models\db\Motion $response
  */

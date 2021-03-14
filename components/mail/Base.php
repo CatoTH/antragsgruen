@@ -124,7 +124,7 @@ abstract class Base
      * @param \Swift_Message|array $message
      * @param string $toEmail
      *
-     * @return string
+     * @return int
      */
     public function send($message, $toEmail)
     {

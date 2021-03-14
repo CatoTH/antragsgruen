@@ -6,7 +6,7 @@ use yii\db\ActiveRecord;
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $consultationId
  * @property int $position
  * @property string $title
@@ -28,7 +28,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -36,7 +36,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotions()
     {

@@ -224,7 +224,7 @@ class DiffRenderer
 
     /**
      * @internal
-     * @param $text
+     * @param string $text
      * @param bool $inIns
      * @param bool $inDel
      * @param \DOMText|\DOMElement|null $lastEl

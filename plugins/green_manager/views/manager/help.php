@@ -5,10 +5,10 @@ use app\models\db\Site;
 /**
  * @var yii\web\View $this
  * @var Site[] $site
- * @var \app\controllers\Base $controller
  */
 
 $this->title = 'Discuss.green - The Green Online Motion Administration';
+/** @var \app\controllers\Base $controller */
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://discuss.green/help';

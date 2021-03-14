@@ -82,7 +82,7 @@ class ConsultationAccessPassword
     }
 
     /**
-     * @param $cookie
+     * @param string $cookie
      * @return bool
      */
     public function checkCookie($cookie)

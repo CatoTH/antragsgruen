@@ -87,7 +87,7 @@ class ArrayMatcher
      * @param string[] $arr1
      * @param string[] $arr2
      * @return int
-     * @throws
+     * @throws Internal
      */
     public function calcSimilarity($arr1, $arr2)
     {
@@ -281,8 +281,8 @@ class ArrayMatcher
     }
 
     /**
-     * @param string[]   $oldParagraphs
-     * @param string[]   $newParagraphs
+     * @param string[] $oldParagraphs
+     * @param string[] $newParagraphs
      * @return string[]
      * @throws Internal
      */

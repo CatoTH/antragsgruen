@@ -50,7 +50,7 @@ class Title extends ISectionType
     }
 
     /**
-     * @param $data
+     * @param string $data
      */
     public function setMotionData($data)
     {

@@ -227,8 +227,7 @@ class AmendmentController extends AdminBase
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-
-            return false;
+            return '';
         }
 
         $amendment = $this->consultation->getAmendment($amendmentId);

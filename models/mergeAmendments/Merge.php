@@ -25,6 +25,7 @@ class Merge
     public function getMergedMotionDraft(): ?Motion
     {
         $newTitlePrefix = $this->origMotion->getNewTitlePrefix();
+        /** @var Motion|null $newMotion */
         $newMotion      = Motion::find()
                                 ->where(['parentMotionId' => $this->origMotion->id])
                                 ->andWhere(['status' => Motion::STATUS_DRAFT])

@@ -34,7 +34,7 @@ class SpeechQueue extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -51,7 +51,7 @@ class SpeechQueue extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAgendaItem()
     {
@@ -59,7 +59,7 @@ class SpeechQueue extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotion()
     {
@@ -67,7 +67,7 @@ class SpeechQueue extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSubqueues()
     {
@@ -75,7 +75,7 @@ class SpeechQueue extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getItems()
     {

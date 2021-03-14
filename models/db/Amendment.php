@@ -19,9 +19,9 @@ use yii\helpers\Html;
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $motionId
- * @property string $titlePrefix
+ * @property string|null $titlePrefix
  * @property string $changeEditorial
  * @property string $changeText
  * @property string $changeExplanation

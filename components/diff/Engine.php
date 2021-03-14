@@ -13,7 +13,6 @@ Created by Stephen Morley - http://stephenmorley.org/ - and released under the
 terms of the CC0 1.0 Universal legal code:
 
 http://creativecommons.org/publicdomain/zero/1.0/legalcode
-
 */
 
 class Engine
@@ -36,7 +35,6 @@ class Engine
     {
         return $this->IGNORE_STR;
     }
-
 
     private function strCmp(string $str1, string $str2, bool $relaxedTags): bool
     {
@@ -180,11 +178,6 @@ class Engine
     }
 
 
-    /**
-     * @param $string1
-     * @param $string2
-     * @return array
-     */
     public function compareStrings(string $string1, string $string2): array
     {
         $sequence1 = preg_split('/\R/', $string1);

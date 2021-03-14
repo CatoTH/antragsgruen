@@ -15,7 +15,7 @@ use yii\db\ActiveRecord;
  * @property int|null $parentItemId
  * @property int $position
  * @property string $code
- * @property string $time
+ * @property string|null $time
  * @property string|null $title
  * @property int|null $motionTypeId
  * @property string|null $settings
@@ -40,7 +40,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -58,7 +58,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getParentItem()
     {
@@ -66,7 +66,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getChildItems()
     {
@@ -74,7 +74,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionType()
     {
@@ -99,7 +99,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotions()
     {

@@ -112,7 +112,7 @@ class TextSimple extends Text
     }
 
     /**
-     * @param $data
+     * @param string $data
      */
     public function setMotionData($data)
     {

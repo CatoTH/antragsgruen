@@ -22,7 +22,7 @@ class None extends Base
     /**
      * @param \Swift_Message $message
      * @param string $toEmail
-     * @return string
+     * @return int
      */
     public function send($message, $toEmail)
     {

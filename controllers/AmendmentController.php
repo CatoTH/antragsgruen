@@ -56,7 +56,6 @@ class AmendmentController extends Base
     /**
      * @param int $withdrawn
      * @return string
-     * @throws \Yii\base\ExitException
      */
     public function actionPdfcollection($withdrawn = 0)
     {
@@ -473,7 +472,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \Yii\base\ExitException
+     * @throws \yii\base\ExitException
      */
     public function actionSaveProposalStatus($motionSlug, $amendmentId)
     {
@@ -640,7 +639,6 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \Yii\base\ExitException
      */
     public function actionEditProposedChange($motionSlug, $amendmentId)
     {
@@ -701,7 +699,6 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \Yii\base\ExitException
      */
     public function actionEditProposedChangeCheck($motionSlug, $amendmentId)
     {
@@ -760,7 +757,7 @@ class AmendmentController extends Base
      *
      * @param string $prefix1
      * @param string $prefix2
-     * @return \Yii\console\Response|Response
+     * @return \yii\console\Response|Response
      * @throws NotFoundHttpException
      */
     public function actionGotoPrefix($prefix1, $prefix2)

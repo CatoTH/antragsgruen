@@ -43,7 +43,7 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -51,7 +51,7 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUser()
     {
@@ -137,13 +137,10 @@ class UserNotification extends ActiveRecord
     protected static $noticache = [];
 
     /**
-     * @param User $user
-     * @param Consultation $consultation
      * @param int $type
      * @param int|null $refId
-     * @return static|null
      */
-    public static function getNotification(User $user, Consultation $consultation, $type, $refId = null)
+    public static function getNotification(User $user, Consultation $consultation, $type, $refId = null): ?UserNotification
     {
         $key = $user->id . '-' . $consultation->id . '-' . $type . '-' . $refId;
         if (!array_key_exists($key, static::$noticache)) {
@@ -158,11 +155,10 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @param int $type
      * @param int|null $refId
      * @return UserNotification
      */
-    public static function addNotification(User $user, Consultation $consultation, $type, $refId = null)
+    public static function addNotification(User $user, Consultation $consultation, $type, $refId = null): UserNotification
     {
         $noti = static::getNotification($user, $consultation, $type, $refId);
         if (!$noti) {

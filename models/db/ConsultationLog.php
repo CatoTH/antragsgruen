@@ -152,7 +152,7 @@ class ConsultationLog extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -160,7 +160,7 @@ class ConsultationLog extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUser()
     {

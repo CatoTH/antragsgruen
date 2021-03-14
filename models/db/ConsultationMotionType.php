@@ -12,7 +12,7 @@ use yii\db\ActiveRecord;
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $consultationId
  * @property string $titleSingular
  * @property string $titlePlural
@@ -20,7 +20,7 @@ use yii\db\ActiveRecord;
  * @property string $motionPrefix
  * @property int $position
  * @property int $pdfLayout
- * @property int $texTemplateId
+ * @property int|null $texTemplateId
  * @property string $deadlines
  * @property int $policyMotions
  * @property int $policyAmendments
@@ -96,7 +96,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotions()
     {
@@ -105,7 +105,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultationTexts()
     {
@@ -113,7 +113,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getTexTemplate()
     {
@@ -121,7 +121,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionSections()
     {
@@ -131,7 +131,7 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAgendaItems()
     {

@@ -85,7 +85,7 @@ class AntragsgruenApp implements \JsonSerializable
     }
 
     /**
-     * @throws \Yii\db\Exception
+     * @throws \yii\db\Exception
      */
     public static function flushAllCaches(): void
     {

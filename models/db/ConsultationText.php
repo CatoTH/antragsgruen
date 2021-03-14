@@ -6,11 +6,9 @@ use app\components\UrlHelper;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
- * @property int $id
- * @property int $motionTypeId
- * @property int $consultationId
+ * @property int|null $id
+ * @property int|null $motionTypeId
+ * @property int|null $consultationId
  * @property int $siteId
  * @property string $category
  * @property string $textId
@@ -20,7 +18,7 @@ use yii\db\ActiveRecord;
  * @property string $text
  * @property string $editDate
  *
- * @property ConsultationMotionType
+ * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
  * @property Site $site
  */
@@ -38,7 +36,7 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionType()
     {
@@ -46,7 +44,7 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -54,7 +52,7 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSite()
     {
@@ -167,7 +165,7 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @param $pageKey
+     * @param string $pageKey
      *
      * @return ConsultationText
      */
@@ -331,7 +329,6 @@ class ConsultationText extends ActiveRecord
      */
     public static function getAllPages($site, $consultation)
     {
-        /** @var ConsultationText[] $text */
         $pages = ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null, 'category' => 'pagedata']);
         if ($consultation) {
             $pages = array_merge(

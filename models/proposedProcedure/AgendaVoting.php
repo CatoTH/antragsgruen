@@ -24,7 +24,7 @@ class AgendaVoting
     public function getId(): string
     {
         if ($this->voting) {
-            return $this->voting->id;
+            return (string)$this->voting->id;
         } else {
             return 'new';
         }

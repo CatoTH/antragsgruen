@@ -13,12 +13,12 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $currentConsultationId
  * @property int $public
- * @property string $subdomain
+ * @property string|null $subdomain
  * @property string $organization
  * @property string $title
  * @property string $titleShort
  * @property string $dateCreation
- * @property string $dateDeletion
+ * @property string|null $dateDeletion
  * @property string $settings
  * @property string $contact
  * @property int $status
@@ -28,7 +28,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationText[] $texts
  * @property ConsultationFile[] $files
  * @property User[] $admins
- * @property TexTemplate
+ * @property TexTemplate $texTemplates
  */
 class Site extends ActiveRecord
 {
@@ -49,7 +49,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getCurrentConsultation()
     {
@@ -57,7 +57,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultations()
     {
@@ -65,7 +65,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getTexTemplates()
     {
@@ -73,7 +73,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getFiles()
     {
@@ -92,7 +92,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAdmins()
     {
@@ -101,7 +101,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getTexts()
     {

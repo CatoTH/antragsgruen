@@ -480,7 +480,7 @@ class Base extends Controller
             if ($throwExceptions) {
                 throw new Internal(Yii::t('base', 'err_cons_not_site'), 400);
             }
-            Yii::$app->user->setFlash("error", Yii::t('base', 'err_cons_not_site'));
+            Yii::$app->session->setFlash("error", Yii::t('base', 'err_cons_not_site'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 

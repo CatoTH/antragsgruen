@@ -16,8 +16,8 @@ use yii\db\ActiveRecord;
  * @property string|null $title
  * @property int $filesize
  * @property string $mimetype
- * @property int $width
- * @property int $height
+ * @property int|null $width
+ * @property int|null $height
  * @property string $data
  * @property string $dataHash
  * @property string $dateCreation
@@ -40,7 +40,7 @@ class ConsultationFile extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -48,7 +48,7 @@ class ConsultationFile extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUploadedBy()
     {
@@ -65,7 +65,7 @@ class ConsultationFile extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSite()
     {

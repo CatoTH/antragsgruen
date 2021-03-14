@@ -13,15 +13,12 @@ use yii\db\{ActiveQueryInterface, ActiveRecord};
 use yii\helpers\Html;
 
 /**
- * Class IMotion
- * @package app\models\db
- *
  * @property string $titlePrefix
  * @property int $id
  * @property IMotionSection[] $sections
  * @property string $dateCreation
- * @property string $datePublication
- * @property string $dateResolution
+ * @property string|null $datePublication
+ * @property string|null $dateResolution
  * @property IComment[] $comments
  * @property int $status
  * @property int $proposalStatus
@@ -334,6 +331,8 @@ abstract class IMotion extends ActiveRecord
      */
     abstract public function getInitiators();
 
+    abstract public function iAmInitiator(): bool;
+
     /**
      * @return string
      */
@@ -604,7 +603,7 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
-     * @param $titlePrefix
+     * @param string $titlePrefix
      *
      * @return string
      */

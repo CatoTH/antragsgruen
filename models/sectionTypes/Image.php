@@ -55,7 +55,6 @@ class Image extends ISectionType
 
     public function getMotionFormField(): string
     {
-        /** @var MotionSection $section */
         $type = $this->section->getSettings();
         $url  = $this->getImageUrl();
         $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_IMAGE . '">';

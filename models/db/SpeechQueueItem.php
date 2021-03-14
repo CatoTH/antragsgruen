@@ -7,13 +7,13 @@ use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * @property int $id
+ * @property int|null $id
  * @property int $queueId
  * @property int|null $subqueueId - null if there are no subqueues and the default queue is used
  * @property int|null $userId
  * @property string|null $userToken
  * @property string $name
- * @property int $position - >0 once assigned to a speaking slot (smaller numbers refer to higher positions)
+ * @property int|null $position - >0 once assigned to a speaking slot (smaller numbers refer to higher positions)
  *                                <0 if the user has only applied (higher, less-negative numbers refer to higher positions)
  * @property string|null $dateApplied
  * @property string|null $dateStarted - the exact time when the speaking has started
@@ -36,7 +36,7 @@ class SpeechQueueItem extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSpeechQueue()
     {
@@ -44,7 +44,7 @@ class SpeechQueueItem extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUser()
     {

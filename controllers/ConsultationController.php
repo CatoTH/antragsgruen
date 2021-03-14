@@ -14,13 +14,13 @@ class ConsultationController extends Base
     use ConsultationAgendaTrait;
 
     /**
-     * @param \Yii\base\Action $action
+     * @param \yii\base\Action $action
      *
      * @return bool
      * @throws \Exception
      * @throws Internal
-     * @throws \Yii\base\ExitException
-     * @throws \Yii\web\BadRequestHttpException
+     * @throws \yii\base\ExitException
+     * @throws \yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
     {
@@ -37,7 +37,7 @@ class ConsultationController extends Base
     /**
      * @return string
      * @throws Internal
-     * @throws \Yii\base\ExitException
+     * @throws \yii\base\ExitException
      */
     public function actionSearch()
     {
@@ -276,7 +276,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \Yii\base\ExitException
+     * @throws \yii\base\ExitException
      */
     public function actionHome()
     {
@@ -289,7 +289,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \Yii\base\ExitException
+     * @throws \yii\base\ExitException
      */
     public function actionIndex()
     {

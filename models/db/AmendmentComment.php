@@ -2,15 +2,13 @@
 
 namespace app\models\db;
 
-use app\components\RSSExporter;
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{RSSExporter, Tools, UrlHelper};
 use yii\db\ActiveQuery;
 
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $userId
  * @property int $amendmentId
  * @property int $parentCommentId

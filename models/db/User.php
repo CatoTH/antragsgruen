@@ -21,15 +21,15 @@ use yii\web\IdentityInterface;
  * @property string $email
  * @property int $fixedData
  * @property int $emailConfirmed
- * @property string $auth
+ * @property string|null $auth
  * @property string $dateCreation
- * @property string $status
- * @property string $pwdEnc
- * @property string $authKey
- * @property string $recoveryToken
- * @property string $recoveryAt
- * @property string $emailChange
- * @property string $emailChangeAt
+ * @property int $status
+ * @property string|null $pwdEnc
+ * @property string|null $authKey
+ * @property string|null $recoveryToken
+ * @property string|null $recoveryAt
+ * @property string|null $emailChange
+ * @property string|null $emailChangeAt
  * @property string|null $settings
  *
  * @property null|AmendmentComment[] $amendmentComments
@@ -74,7 +74,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
-     * @return null|User|IdentityInterface
+     * @return null|User
      */
     public static function getCurrentUser()
     {
@@ -82,9 +82,11 @@ class User extends ActiveRecord implements IdentityInterface
             if (\Yii::$app->user->getIsGuest()) {
                 return null;
             } else {
-                return \Yii::$app->user->identity;
+                /** @var User $user */
+                $user = \Yii::$app->user->identity;
+                return $user;
             }
-        } catch (\Yii\base\UnknownPropertyException $e) {
+        } catch (\yii\base\UnknownPropertyException $e) {
             // Can happen with console commands
             return null;
         }
@@ -159,7 +161,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionComments()
     {
@@ -167,7 +169,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionSupports()
     {
@@ -175,7 +177,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAmendmentComments()
     {
@@ -183,7 +185,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAmendmentSupports()
     {
@@ -191,7 +193,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getEmailLogs()
     {
@@ -199,7 +201,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getLogEntries()
     {
@@ -207,7 +209,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAdminSites()
     {
@@ -215,7 +217,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultationPrivileges()
     {
@@ -223,7 +225,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getNotifications()
     {

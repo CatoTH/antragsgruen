@@ -13,10 +13,10 @@ class AdminBase extends Base
     ];
 
     /**
-     * @param \Yii\base\Action $action
+     * @param \yii\base\Action $action
      *
      * @return bool
-     * @throws \Yii\web\BadRequestHttpException
+     * @throws \yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
     {

@@ -220,10 +220,10 @@ class PagesController extends Base
     /**
      * @param string $pageSlug
      *
-     * @return \Yii\console\Response|Response
+     * @return \yii\console\Response|Response
      * @throws Access
      * @throws \Throwable
-     * @throws \Yii\db\StaleObjectException
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDeletePage($pageSlug)
     {

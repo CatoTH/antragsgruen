@@ -343,7 +343,7 @@ class IndexController extends AdminBase
 
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SITE_ADMIN)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return false;
+            return '';
         }
 
         $form           = new ConsultationCreateForm($site);

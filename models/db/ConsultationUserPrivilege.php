@@ -11,16 +11,14 @@ use app\models\notifications\UserAsksPermission;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int $userId
  * @property int $consultationId
- * @property string $privilegeView
- * @property string $privilegeCreate
- * @property string $adminSuper
- * @property string $adminContentEdit
- * @property string $adminScreen
- * @property string $adminProposals
+ * @property int $privilegeView
+ * @property int $privilegeCreate
+ * @property int $adminSuper
+ * @property int $adminContentEdit
+ * @property int $adminScreen
+ * @property int $adminProposals
  *
  * @property User $user
  * @property Consultation $consultation
@@ -38,7 +36,7 @@ class ConsultationUserPrivilege extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getConsultation()
     {
@@ -46,7 +44,7 @@ class ConsultationUserPrivilege extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUser()
     {

@@ -93,7 +93,7 @@ class GruenesNetzSamlClient implements ClientInterface
         }
 
         if (!$user->save()) {
-            throw new \Exception('Could not create user: ' . $user->getErrors());
+            throw new \Exception('Could not create user');
         }
 
         return $user;
@@ -202,7 +202,7 @@ class GruenesNetzSamlClient implements ClientInterface
     }
 
     /**
-     * @param $organizationIds
+     * @param int[] $organizationIds
      * @return string[]
      */
     public static function resolveOrganizationIds($organizationIds)

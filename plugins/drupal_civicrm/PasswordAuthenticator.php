@@ -110,6 +110,7 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
         }
 
         $auth    = $this->getAuthPrefix() . ':' . $user['uid'];
+        /** @var User|null $userObj */
         $userObj = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
         if (!$userObj) {
             $userObj                  = new User();

@@ -3,6 +3,7 @@
 namespace app\plugins\member_petitions\commands;
 
 use app\models\db\Consultation;
+use app\models\settings\AntragsgruenApp;
 use app\plugins\member_petitions\notifications\AdminResponseRequired;
 use app\plugins\member_petitions\notifications\DiscussionOver;
 use app\plugins\member_petitions\Tools;
@@ -74,7 +75,9 @@ class NotificationsController extends Controller
      */
     public function actionSend()
     {
-        \Yii::$app->urlManager->baseUrl = \Yii::$app->params->domainPlain;
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        \Yii::$app->urlManager->baseUrl = $app->domainPlain;
         $this->sendDiscussionOverNotifications();
         $this->sendAdminAnswerReminders();
     }

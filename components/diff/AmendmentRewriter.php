@@ -12,7 +12,7 @@ class AmendmentRewriter
      * @param string[] $oldParagraphs
      * @param string[] $newParagraphs
      * @param bool $asDiff
-     * @return \string[]
+     * @return string[]
      * @throws Internal
      */
     public static function computeAffectedParagraphs($oldParagraphs, $newParagraphs, $asDiff = false)
@@ -188,7 +188,7 @@ class AmendmentRewriter
      * @param boolean $asDiff
      * @param null|int[] $lineNumbers
      * @param bool $debug
-     * @return \string[]
+     * @return string[]
      */
     public static function getCollidingParagraphs(
         $motionOldHtml,

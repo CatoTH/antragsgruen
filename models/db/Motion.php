@@ -20,11 +20,11 @@ use yii\helpers\Html;
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $consultationId
  * @property int $motionTypeId
  * @property int $parentMotionId
- * @property int $agendaItemId
+ * @property int|null $agendaItemId
  * @property string $title
  * @property string $titlePrefix
  * @property int $status
@@ -33,7 +33,7 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property string $cache
  * @property int $textFixed
- * @property string $slug
+ * @property string|null $slug
  * @property int|null $responsibilityId
  * @property string|null $responsibilityComment
  * @property string|null $extraData
@@ -115,7 +115,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getComments()
     {
@@ -125,7 +125,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getPrivateComments()
     {
@@ -180,7 +180,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionSupporters()
     {
@@ -188,7 +188,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAmendments()
     {
@@ -197,7 +197,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getTags()
     {
@@ -206,7 +206,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSections()
     {
@@ -239,7 +239,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionType()
     {
@@ -247,7 +247,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAgendaItem()
     {
@@ -255,7 +255,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getReplacedMotion()
     {
@@ -263,7 +263,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getVotingBlock()
     {
@@ -271,7 +271,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getReplacedByMotions()
     {
@@ -279,7 +279,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSpeechQueues()
     {
@@ -287,7 +287,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getResponsibilityUser()
     {

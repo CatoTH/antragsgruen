@@ -66,7 +66,7 @@ class Mailjet extends Base
      * @param array $message
      * @param string $toEmail
      *
-     * @return string
+     * @return int
      */
     public function send($message, $toEmail)
     {

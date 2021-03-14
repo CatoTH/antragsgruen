@@ -9,13 +9,13 @@ use yii\base\Event;
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $amendmentId
  * @property int $position
- * @property int $userId
+ * @property int|null $userId
  * @property string $role
  * @property string $comment
- * @property string $personType
+ * @property int $personType
  * @property string $name
  * @property string $organization
  * @property string $resolutionDate
@@ -59,7 +59,7 @@ class AmendmentSupporter extends ISupporter
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAmendment()
     {

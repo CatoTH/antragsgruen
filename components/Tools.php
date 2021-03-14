@@ -225,7 +225,7 @@ class Tools
     public static function debugTime(string $name): void
     {
         list($usec, $sec) = explode(' ', microtime());
-        $time = sprintf('%14.0f', $sec * 10000 + $usec * 10000);
+        $time = sprintf('%14.0f', intval($sec) * 10000 + floatval($usec) * 10000);
         if (static::$last_time) {
             echo 'Time (' . $name . '): ' . ($time - static::$last_time) . ' (' . date('Y-m-d H:i:s') . ')<br>';
         }
@@ -380,7 +380,7 @@ class Tools
             return $size;
         } else {
             $value_length = strlen($size);
-            $qty          = substr($size, 0, $value_length - 1);
+            $qty          = floatval(substr($size, 0, $value_length - 1));
             $unit         = strtolower(substr($size, $value_length - 1));
             switch ($unit) {
                 case 'k':

@@ -30,9 +30,8 @@ class MergeSingleAmendmentForm extends Model
     public $paragraphs;
 
     /**
-     * @param Amendment $amendment
      * @param int $newStatus
-     * @param int $newTitlePrefix
+     * @param string $newTitlePrefix
      * @param array $paragraphs
      * @param array $otherAmendOverrides
      * @param array $otherAmendStatuses

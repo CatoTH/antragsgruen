@@ -5,7 +5,7 @@ use app\models\db\MotionSection;
 use yii\helpers\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var yii\web\View $this
  * @var \app\models\db\Motion $motion
  */
 

@@ -9,10 +9,10 @@ use yii\base\Event;
 /**
  * @package app\models\db
  *
- * @property int $id
+ * @property int|null $id
  * @property int $motionId
  * @property int $position
- * @property int $userId
+ * @property int|null $userId
  * @property string $role
  * @property string $comment
  * @property int $personType
@@ -59,7 +59,7 @@ class MotionSupporter extends ISupporter
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotion()
     {

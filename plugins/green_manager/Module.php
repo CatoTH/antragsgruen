@@ -34,7 +34,7 @@ class Module extends ModuleBase
 
     /**
      * @param Controller $controller
-     * @return \Yii\web\AssetBundle[]|string[]
+     * @return \yii\web\AssetBundle[]|string[]
      */
     public static function getActiveAssetBundles(Controller $controller)
     {

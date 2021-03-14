@@ -89,7 +89,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSite()
     {
@@ -119,7 +119,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotions()
     {
@@ -245,10 +245,9 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param $agendaItemId
-     * @return ConsultationAgendaItem|null
+     * @param int $agendaItemId
      */
-    public function getAgendaItem($agendaItemId)
+    public function getAgendaItem($agendaItemId): ?ConsultationAgendaItem
     {
         foreach ($this->agendaItems as $agendaItem) {
             if ($agendaItem->id == $agendaItemId) {
@@ -259,7 +258,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getTexts()
     {
@@ -267,7 +266,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getOdtTemplates()
     {
@@ -275,7 +274,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getAgendaItems()
     {
@@ -283,7 +282,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUserPrivileges()
     {
@@ -291,7 +290,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getFiles()
     {
@@ -322,7 +321,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getTags()
     {
@@ -330,7 +329,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getVotingBlocks()
     {
@@ -352,7 +351,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getLogEntries()
     {
@@ -360,7 +359,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionTypes()
     {
@@ -369,7 +368,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSpeechQueues()
     {
@@ -399,7 +398,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUserNotifications()
     {
@@ -725,10 +724,7 @@ class Consultation extends ActiveRecord
     {
         $ids    = [];
         $result = [];
-        /**
-         * @param $motion Motion
-         */
-        $addMotion = function ($motion) use (&$result) {
+        $addMotion = function (Motion $motion) use (&$result) {
             $result[] = $motion;
             $result   = array_merge($result, MotionSorter::getSortedAmendments($this, $motion->getVisibleAmendments()));
         };

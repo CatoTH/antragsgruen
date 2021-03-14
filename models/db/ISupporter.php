@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 /**
  * @property int $id
  * @property int $position
- * @property int $userId
+ * @property int|null $userId
  * @property string $role
  * @property string $comment
  * @property int $personType
@@ -49,7 +49,7 @@ abstract class ISupporter extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getUser()
     {

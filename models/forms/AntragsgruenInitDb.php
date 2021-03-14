@@ -199,7 +199,7 @@ class AntragsgruenInitDb extends Model
             $connection = new Connection($connConfig);
             $connection->createCommand('SHOW TABLES')->queryAll();
             return true;
-        } catch (\Yii\db\Exception $e) {
+        } catch (\yii\db\Exception $e) {
             switch ($e->getCode()) {
                 case 1044:
                     $message = 'The database login is correct, however I could not connect to the actual database.
@@ -248,7 +248,7 @@ class AntragsgruenInitDb extends Model
                 }
             }
             return $found;
-        } catch (\Yii\db\Exception $e) {
+        } catch (\yii\db\Exception $e) {
             return false;
         }
     }

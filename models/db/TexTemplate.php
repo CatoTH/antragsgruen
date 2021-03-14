@@ -29,7 +29,7 @@ class TexTemplate extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSite()
     {
@@ -37,7 +37,7 @@ class TexTemplate extends ActiveRecord
     }
 
     /**
-     * @return \Yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMotionTypes()
     {
