@@ -33,7 +33,7 @@
     "paragonie/sodium_compat": "^1.6",
     "scssphp/scssphp": "^1.2",
     "swiftmailer/swiftmailer": "^6.2",
-    "guzzlehttp/guzzle": "^6.5",
+    "guzzlehttp/guzzle": "^7.2",
     "simplesamlphp/simplesamlphp": "^1.19"
   },
   "require-dev": {
