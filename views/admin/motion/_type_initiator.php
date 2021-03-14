@@ -226,6 +226,21 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
+    <div class="form-group formGroupOfferNonPublic">
+        <div class="col-md-8 col-md-offset-4">
+            <input type="hidden" name="motionInitiatorSettingFields[]" value="offerNonPublicSupports">
+            <?php
+            echo HTMLTools::labeledCheckbox(
+                'motionInitiatorSettings[offerNonPublicSupports]',
+                Yii::t('admin', 'motion_type_nonpublicsupp_pub'),
+                $motionSettings->offerNonPublicSupports,
+                'typeOfferNonPublicSupports',
+                Yii::t('admin', 'motion_type_nonpublicsupp_pubh')
+            );
+            ?>
+        </div>
+    </div>
+
     <div class="form-group" id="typeHasOrgaRow">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="hasOrganizations">
@@ -460,6 +475,21 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 $amendmentSettings->allowSupportingAfterPublication,
                 'typeAllowSupportingAfterPublicationAmendment',
                 Yii::t('admin', 'motion_type_supp_after_pubh')
+            );
+            ?>
+        </div>
+    </div>
+
+    <div class="form-group formGroupOfferNonPublic">
+        <div class="col-md-8 col-md-offset-4">
+            <input type="hidden" name="amendmentInitiatorSettingFields[]" value="offerNonPublicSupports">
+            <?php
+            echo HTMLTools::labeledCheckbox(
+                'amendmentInitiatorSettings[offerNonPublicSupports]',
+                Yii::t('admin', 'motion_type_nonpublicsupp_pub'),
+                $amendmentSettings->offerNonPublicSupports,
+                'typeOfferNonPublicSupportsAmendment',
+                Yii::t('admin', 'motion_type_nonpublicsupp_pubh')
             );
             ?>
         </div>

@@ -81,7 +81,7 @@ class MotionSupporter extends ISupporter
         \Yii::$app->session->set('anonymous_motion_supports', $pre);
     }
 
-    public static function createSupport(Motion $motion, ?User $user, string $name, string $orga, string $role, string $gender = ''): void
+    public static function createSupport(Motion $motion, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false): void
     {
         $hadEnoughSupportersBefore = $motion->hasEnoughSupporters($motion->getMyMotionType()->getMotionSupportTypeClass());
 
@@ -114,6 +114,7 @@ class MotionSupporter extends ISupporter
         $support->role         = $role;
         $support->dateCreation = date('Y-m-d H:i:s');
         $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, ($gender !== '' ? $gender : null));
+        $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_NON_PUBLIC, $nonPublic);
         $support->save();
 
         if (!$user) {

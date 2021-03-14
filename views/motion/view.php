@@ -226,15 +226,17 @@ if (count($supporters) > 0 || $supportCollectingStatus ||
     $iAmSupporting        = false;
     $anonymouslySupported = MotionSupporter::getMyAnonymousSupportIds();
     if (count($supporters) > 0) {
-        echo '<ul>';
+        echo '<ul class="supportersList">';
         foreach ($supporters as $supp) {
-            /** @var MotionSupporter $supp */
             echo '<li>';
             if (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $anonymouslySupported)) {
                 echo '<span class="label label-info">' . Yii::t('motion', 'supporting_you') . '</span> ';
                 $iAmSupporting = true;
             }
             echo Html::encode($supp->getNameWithOrga());
+            if ($iAmSupporting && $supp->getExtraDataEntry(MotionSupporter::EXTRA_DATA_FIELD_NON_PUBLIC)) {
+                echo '<span class="nonPublic">(' . Yii::t('motion', 'supporting_you_nonpublic') . ')</span>';
+            }
             echo '</li>';
         }
         echo '</ul>';

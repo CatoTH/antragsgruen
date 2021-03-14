@@ -521,6 +521,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_allow_more_supp' => 'Allow more supporters than required',
     'motion_type_supp_after_pub'  => 'Allow officially supporting it after publication',
     'motion_type_supp_after_pubh' => 'For this to work, "official support" needs to be activated above',
+    'motion_type_nonpublicsupp_pub' => 'Allow non-public supporting',
+    'motion_type_nonpublicsupp_pubh' => 'Supporters can optionally hide their name from users that do not have an user account / are not logged in.',
     'motion_type_ask_orga'        => 'Ask for organizations at natural persons',
     'motion_type_same_amendment'  => 'Use same settings for amendments',
     'motion_type_pos'             => 'Position (in the PDF)',

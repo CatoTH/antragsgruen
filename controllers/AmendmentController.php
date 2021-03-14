@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, User, VotingBlock};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, ISupporter, User, VotingBlock};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{MailNotSent, NotFound};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
@@ -185,7 +185,7 @@ class AmendmentController extends Base
         ];
 
         try {
-            $this->performShowActions($amendment, $commentId, $amendmentViewParams);
+            $this->performShowActions($amendment, intval($commentId), $amendmentViewParams);
         } catch (\Throwable $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
         }
@@ -392,6 +392,9 @@ class AmendmentController extends Base
                         $suppNew->amendmentId  = $amendment->id;
                         $suppNew->extraData    = $supp->extraData;
                         $suppNew->dateCreation = date('Y-m-d H:i:s');
+                        if ($supp->isNonPublic()) {
+                            $suppNew->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, true);
+                        }
                         $suppNew->save();
                     }
                 }

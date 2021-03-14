@@ -1174,9 +1174,23 @@ blockquote + .privateParagraphNoteHolder {
     }
   }
 
+  .nonPublicBlock label {
+    margin-top: 10px;
+    font-weight: normal;
+  }
+
   .loggedOutWarning {
     font-size: 0.8em;
     margin-top: 6px;
     padding: 0 15px;
+  }
+}
+
+.supportersList {
+  .nonPublic {
+    display: inline-block;
+    margin-left: 15px;
+    font-size: 0.8em;
+    font-style: italic;
   }
 }

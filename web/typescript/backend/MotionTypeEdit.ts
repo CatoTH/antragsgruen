@@ -78,6 +78,13 @@ class MotionTypeEdit {
                 $form.find('.formGroupAllowMore').addClass('hidden');
                 this.motionsHaveSupporters = false;
             }
+
+            if (parseInt(selected as string, 10) === SUPPORTER_COLLECTING_SUPPORTERS) {
+                $form.find('.formGroupOfferNonPublic').removeClass('hidden');
+            } else {
+                $form.find('.formGroupOfferNonPublic').addClass('hidden');
+            }
+
             $initiatorGender.trigger('change');
             $supportAllowMore.trigger('change');
             this.setMaxPdfSupporters();

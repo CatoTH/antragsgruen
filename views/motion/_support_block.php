@@ -37,6 +37,19 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
                    value="<?= Html::encode($name) ?>"
                    title="<?= Html::encode(Yii::t('motion', 'support_name')) ?>"
                    placeholder="<?= Html::encode(Yii::t('motion', 'support_name')) ?>">
+            <?php
+            if ($settings->offerNonPublicSupports) {
+                ?>
+                <div class="nonPublicBlock">
+                    <label>
+                        <?= Html::checkbox('motionSupportPublic', true) ?>
+                        <?= Yii::t('motion', 'support_publicly') ?>
+                        <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('motion', 'support_publicly_hint')) ?>
+                    </label>
+                </div>
+                <?php
+            }
+            ?>
         </div>
         <?php
         if ($settings->hasOrganizations) {

@@ -453,6 +453,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_allow_more_supp' => 'Auch mehr Unterstützer*innen zulassen',
     'motion_type_supp_after_pub'  => 'Offizielles Unterstützen nach Veröffentlichung zulassen',
     'motion_type_supp_after_pubh' => 'Hierfür muss oben "Offiziell unterstützen" aktiviert werden, und festgelegt, wer Anträge unterstützen darf',
+    'motion_type_nonpublicsupp_pub' => 'Nicht-öffentliches unterstützen zulassen',
+    'motion_type_nonpublicsupp_pubh' => 'Unterstützer*innen bekommen die Möglichkeit, ihren Namen gegenüber Nicht-Eingeloggten zu verbergen.',
     'motion_type_ask_orga'        => 'Gremium/Organisation auch bei natürlichen Personen abfragen',
     'motion_type_same_amendment'  => 'Die selben Einstellungen auch für Änderungsanträge',
     'motion_type_created_msg'     => 'Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.',

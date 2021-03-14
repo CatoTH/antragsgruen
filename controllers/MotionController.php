@@ -8,6 +8,7 @@ use app\models\db\{Amendment,
     ConsultationLog,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
+    ISupporter,
     Motion,
     MotionSupporter,
     SpeechQueue,
@@ -87,8 +88,8 @@ class MotionController extends Base
         ];
 
         try {
-            $this->performShowActions($motion, $commentId, $motionViewParams);
-        } catch (\Exception $e) {
+            $this->performShowActions($motion, intval($commentId), $motionViewParams);
+        } catch (\Throwable $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
         }
 
@@ -351,6 +352,9 @@ class MotionController extends Base
                         $suppNew->motionId     = $motion->id;
                         $suppNew->extraData    = $supp->extraData;
                         $suppNew->dateCreation = date('Y-m-d H:i:s');
+                        if ($supp->isNonPublic()) {
+                            $suppNew->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, true);
+                        }
                         $suppNew->save();
                     }
                 }

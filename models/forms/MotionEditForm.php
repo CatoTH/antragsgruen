@@ -82,18 +82,12 @@ class MotionEditForm extends Model
         ];
     }
 
-    /**
-     * @param bool $set
-     */
-    public function setAdminMode($set)
+    public function setAdminMode(bool $set): void
     {
         $this->adminMode = $set;
     }
 
-    /**
-     * @param Motion $motion
-     */
-    public function cloneSupporters(Motion $motion)
+    public function cloneSupporters(Motion $motion): void
     {
         foreach ($motion->motionSupporters as $supp) {
             $suppNew = new MotionSupporter();
@@ -104,10 +98,7 @@ class MotionEditForm extends Model
         }
     }
 
-    /**
-     * @param Motion $motion
-     */
-    public function cloneMotionText(Motion $motion)
+    public function cloneMotionText(Motion $motion): void
     {
         /** @var MotionSection[] $byId */
         $byId = [];

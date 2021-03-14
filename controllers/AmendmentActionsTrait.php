@@ -19,13 +19,9 @@ trait AmendmentActionsTrait
 {
 
     /**
-     * @param Amendment $amendment
-     * @param int $commentId
-     * @param bool $needsScreeningRights
-     * @return AmendmentComment
      * @throws Internal
      */
-    private function getComment(Amendment $amendment, $commentId, $needsScreeningRights)
+    private function getComment(Amendment $amendment, int $commentId, bool $needsScreeningRights): AmendmentComment
     {
         /** @var AmendmentComment $comment */
         $comment = AmendmentComment::findOne($commentId);
@@ -40,11 +36,7 @@ trait AmendmentActionsTrait
         return $comment;
     }
 
-    /**
-     * @param Amendment $amendment
-     * @param array $viewParameters
-     */
-    private function writeComment(Amendment $amendment, &$viewParameters)
+    private function writeComment(Amendment $amendment, array &$viewParameters)
     {
         $postComment = \Yii::$app->request->post('comment');
 
@@ -85,12 +77,10 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
-     * @param int $commentId
      * @throws DB
      * @throws Internal
      */
-    private function deleteComment(Amendment $amendment, $commentId)
+    private function deleteComment(Amendment $amendment, int $commentId): void
     {
         $comment = $this->getComment($amendment, $commentId, false);
         if (!$comment->canDelete(User::getCurrentUser())) {
@@ -109,11 +99,9 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
-     * @param int $commentId
      * @throws Internal
      */
-    private function screenCommentAccept(Amendment $amendment, $commentId)
+    private function screenCommentAccept(Amendment $amendment, int $commentId): void
     {
         /** @var AmendmentComment $comment */
         $comment = AmendmentComment::findOne($commentId);
@@ -133,11 +121,9 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
-     * @param int $commentId
      * @throws Internal
      */
-    private function screenCommentReject(Amendment $amendment, $commentId)
+    private function screenCommentReject(Amendment $amendment, int $commentId): void
     {
         /** @var AmendmentComment $comment */
         $comment = AmendmentComment::findOne($commentId);
@@ -158,10 +144,9 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
      * @throws FormError
      */
-    private function amendmentSupport(Amendment $amendment)
+    private function amendmentSupport(Amendment $amendment): void
     {
         if (!$amendment->isSupportingPossibleAtThisStatus()) {
             throw new FormError('Not possible given the current amendment status');
@@ -173,9 +158,10 @@ trait AmendmentActionsTrait
             }
         }
         $supportClass = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
-        $role         = AmendmentSupporter::ROLE_SUPPORTER;
-        $user         = User::getCurrentUser();
-        $gender       = \Yii::$app->request->post('motionSupportGender', '');
+        $role = AmendmentSupporter::ROLE_SUPPORTER;
+        $user = User::getCurrentUser();
+        $gender = \Yii::$app->request->post('motionSupportGender', '');
+        $nonPublic = ($supportClass->getSettingsObj()->offerNonPublicSupports && \Yii::$app->request->post('motionSupportPublic') === null);
         if ($user && $user->fixedData) {
             $name = $user->name;
             $orga = $user->organization;
@@ -202,7 +188,7 @@ trait AmendmentActionsTrait
             $gender = '';
         }
 
-        $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga, $gender);
+        $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga, $gender, $nonPublic);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SUPPORT, $amendment->id);
     }
 
@@ -210,23 +196,22 @@ trait AmendmentActionsTrait
      * @throws FormError
      * @throws Internal
      */
-    private function amendmentLikeDislike(Amendment $amendment, string $role, string $string, string $name = '', string $orga = '', string $gender = ''): void
+    private function amendmentLikeDislike(Amendment $amendment, string $role, string $string, string $name = '', string $orga = '', string $gender = '', bool $nonPublic = false): void
     {
         $currentUser = User::getCurrentUser();
         if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this amendment is not possible');
         }
 
-        AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role, $gender);
+        AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role, $gender, $nonPublic);
 
         \Yii::$app->session->setFlash('success', $string);
     }
 
     /**
-     * @param Amendment $amendment
      * @throws FormError
      */
-    private function amendmentLike(Amendment $amendment)
+    private function amendmentLike(Amendment $amendment): void
     {
         if (!($amendment->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE)) {
             throw new FormError('Not supported');
@@ -237,10 +222,9 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
      * @throws FormError
      */
-    private function amendmentDislike(Amendment $amendment)
+    private function amendmentDislike(Amendment $amendment): void
     {
         if (!($amendment->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE)) {
             throw new FormError('Not supported');
@@ -252,10 +236,9 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
      * @throws FormError
      */
-    private function amendmentSupportRevoke(Amendment $amendment)
+    private function amendmentSupportRevoke(Amendment $amendment): void
     {
         $currentUser          = User::getCurrentUser();
         $anonymouslySupported = AmendmentSupporter::getMyAnonymousSupportIds();
@@ -276,10 +259,9 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
      * @throws Internal
      */
-    private function amendmentSupportFinish(Amendment $amendment)
+    private function amendmentSupportFinish(Amendment $amendment): void
     {
         if (!$amendment->canFinishSupportCollection()) {
             \Yii::$app->session->setFlash('error', \Yii::t('amend', 'support_finish_err'));
@@ -311,10 +293,9 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
      * @throws \Throwable
      */
-    private function savePrivateNote(Amendment $amendment)
+    private function savePrivateNote(Amendment $amendment): void
     {
         $user     = User::getCurrentUser();
         $noteText = trim(\Yii::$app->request->post('noteText', ''));
@@ -345,19 +326,13 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param Amendment $amendment
-     * @param int $commentId
-     * @param array $viewParameters
-     * @throws DB
-     * @throws FormError
-     * @throws Internal
      * @throws \Throwable
      */
-    private function performShowActions(Amendment $amendment, $commentId, &$viewParameters)
+    private function performShowActions(Amendment $amendment, int $commentId, array &$viewParameters): void
     {
         $post = \Yii::$app->request->post();
-        if ($commentId == 0 && isset($post['commentId'])) {
-            $commentId = IntVal($post['commentId']);
+        if ($commentId === 0 && isset($post['commentId'])) {
+            $commentId = intval($post['commentId']);
         }
         if (isset($post['deleteComment'])) {
             $this->deleteComment($amendment, $commentId);
