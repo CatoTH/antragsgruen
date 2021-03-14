@@ -167,4 +167,16 @@ class Consultation implements \JsonSerializable
     {
         return null;
     }
+
+    public function saveConsultationForm(array $formdata, array $affectedFields): void
+    {
+        if (in_array('forceMotion', $affectedFields)) {
+            if (isset($formdata['singleMotionMode'])) {
+                $formdata['forceMotion'] = (int)$formdata['forceMotion'];
+            } else {
+                $formdata['forceMotion'] = null;
+            }
+        }
+        $this->saveForm($formdata, $affectedFields);
+    }
 }
