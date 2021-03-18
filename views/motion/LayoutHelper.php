@@ -374,9 +374,9 @@ class LayoutHelper
 
     /**
      * @param ISupporter[] $supporters
-     * @param int[] $anonymouslySupported
+     * @param int[] $loginlessSupported
      */
-    public static function printSupporterList(array $supporters, int $currUserId, array $anonymouslySupported): bool
+    public static function printSupporterList(array $supporters, int $currUserId, array $loginlessSupported): bool
     {
         $iAmSupporting = false;
         $nonPublicSupportCount = 0;
@@ -385,7 +385,7 @@ class LayoutHelper
         if (count($supporters) > 0) {
             echo '<ul class="supportersList">';
             foreach ($supporters as $supp) {
-                $isMe = (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $anonymouslySupported));
+                $isMe = (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $loginlessSupported));
                 if ($currUserId === 0 && !$isMe) {
                     $nonPublicSupportCount++;
                     continue;

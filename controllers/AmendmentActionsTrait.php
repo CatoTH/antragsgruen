@@ -241,9 +241,9 @@ trait AmendmentActionsTrait
     private function amendmentSupportRevoke(Amendment $amendment): void
     {
         $currentUser          = User::getCurrentUser();
-        $anonymouslySupported = AmendmentSupporter::getMyAnonymousSupportIds();
+        $loginlessSupported = AmendmentSupporter::getMyLoginlessSupportIds();
         foreach ($amendment->amendmentSupporters as $supp) {
-            if (($currentUser && $supp->userId == $currentUser->id) || in_array($supp->id, $anonymouslySupported)) {
+            if (($currentUser && $supp->userId == $currentUser->id) || in_array($supp->id, $loginlessSupported)) {
                 if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
                     if (!$amendment->isSupportingPossibleAtThisStatus()) {
                         throw new FormError('Not possible given the current amendment status');

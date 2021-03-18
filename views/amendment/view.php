@@ -165,8 +165,8 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
     <h2 class="green" id="supportersTitle">' . Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
-    $anonymouslySupported = \app\models\db\AmendmentSupporter::getMyAnonymousSupportIds();
-    $iAmSupporting = MotionLayoutHelper::printSupporterList($supporters, $currUserId, $anonymouslySupported);
+    $loginlessSupported = \app\models\db\AmendmentSupporter::getMyLoginlessSupportIds();
+    $iAmSupporting = MotionLayoutHelper::printSupporterList($supporters, $currUserId, $loginlessSupported);
 
     echo '<br>';
     MotionLayoutHelper::printSupportingSection($amendment, $supportPolicy, $supportType, $iAmSupporting);

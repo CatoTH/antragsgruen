@@ -253,9 +253,9 @@ trait MotionActionsTrait
     private function motionSupportRevoke(Motion $motion): void
     {
         $currentUser          = User::getCurrentUser();
-        $anonymouslySupported = MotionSupporter::getMyAnonymousSupportIds();
+        $loginlessSupported = MotionSupporter::getMyLoginlessSupportIds();
         foreach ($motion->motionSupporters as $supp) {
-            if (($currentUser && $supp->userId === $currentUser->id) || in_array($supp->id, $anonymouslySupported)) {
+            if (($currentUser && $supp->userId === $currentUser->id) || in_array($supp->id, $loginlessSupported)) {
                 if ($supp->role === MotionSupporter::ROLE_SUPPORTER) {
                     if (!$motion->isSupportingPossibleAtThisStatus()) {
                         throw new FormError('Not possible given the current motion status');

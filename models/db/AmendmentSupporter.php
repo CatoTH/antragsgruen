@@ -69,15 +69,18 @@ class AmendmentSupporter extends ISupporter
     /**
      * @return int[]
      */
-    public static function getMyAnonymousSupportIds(): array
+    public static function getMyLoginlessSupportIds(): array
     {
-        return \Yii::$app->session->get('anonymous_amendment_supports', []);
+        return array_merge(
+            \Yii::$app->session->get('loginless_amendment_supports', []),
+            \Yii::$app->session->get('anonymous_amendment_supports', []) // @TODO After v4.8
+        );
     }
 
-    public static function addAnonymouslySupportedAmendment(AmendmentSupporter $support)
+    public static function addLoginlessSupportedAmendment(AmendmentSupporter $support)
     {
-        $pre   = \Yii::$app->session->get('anonymous_amendment_supports', []);
-        $pre[] = IntVal($support->id);
+        $pre   = static::getMyLoginlessSupportIds();
+        $pre[] = intval($support->id);
         \Yii::$app->session->set('anonymous_amendment_supports', $pre);
     }
 
@@ -95,7 +98,7 @@ class AmendmentSupporter extends ISupporter
                 }
             }
         } else {
-            $alreadySupported = static::getMyAnonymousSupportIds();
+            $alreadySupported = static::getMyLoginlessSupportIds();
             foreach ($amendment->amendmentSupporters as $supp) {
                 if (in_array($supp->id, $alreadySupported)) {
                     $amendment->unlink('amendmentSupporters', $supp, true);
@@ -118,7 +121,7 @@ class AmendmentSupporter extends ISupporter
         $support->save();
 
         if (!$user) {
-            static::addAnonymouslySupportedAmendment($support);
+            static::addLoginlessSupportedAmendment($support);
         }
 
         $amendment->refresh();

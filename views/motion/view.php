@@ -223,8 +223,8 @@ if (count($supporters) > 0 || $supportCollectingStatus ||
     <h2 class="green" id="supportersTitle">' . Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
-    $anonymouslySupported = MotionSupporter::getMyAnonymousSupportIds();
-    $iAmSupporting = LayoutHelper::printSupporterList($supporters, $currUserId, $anonymouslySupported);
+    $loginlessSupported = MotionSupporter::getMyLoginlessSupportIds();
+    $iAmSupporting = LayoutHelper::printSupporterList($supporters, $currUserId, $loginlessSupported);
 
     echo '<br>';
     LayoutHelper::printSupportingSection($motion, $supportPolicy, $supportType, $iAmSupporting);
