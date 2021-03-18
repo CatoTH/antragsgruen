@@ -222,7 +222,7 @@ class LayoutHelper
         $dislikes = $motion->getDislikes();
 
         $nobody = \Yii::t('structure', 'policy_nobody_supp_denied');
-        if (count($likes) == 0 && count($dislikes) == 0 && $cantSupportMsg == $nobody && !$canSupport) {
+        if (count($likes) === 0 && count($dislikes) === 0 && $cantSupportMsg === $nobody && !$canSupport) {
             return;
         }
 
@@ -358,6 +358,58 @@ class LayoutHelper
             </div>';
             }
         }
+    }
+
+    /**
+     * @param ISupporter[] $supporters
+     * @param int[] $anonymouslySupported
+     */
+    public static function printSupporterList(array $supporters, int $currUserId, array $anonymouslySupported): bool
+    {
+        $iAmSupporting = false;
+        $nonPublicSupportCount = 0;
+        $publicSupportCount = 0;
+
+        if (count($supporters) > 0) {
+            echo '<ul class="supportersList">';
+            foreach ($supporters as $supp) {
+                $isMe = (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $anonymouslySupported));
+                if ($currUserId === 0 && !$isMe) {
+                    $nonPublicSupportCount++;
+                    continue;
+                }
+                $publicSupportCount++;
+
+                echo '<li>';
+                if ($isMe) {
+                    echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
+                    $iAmSupporting = true;
+                }
+                echo Html::encode($supp->getNameWithOrga());
+                if ($iAmSupporting && $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC)) {
+                    echo '<span class="nonPublic">(' . \Yii::t('motion', 'supporting_you_nonpublic') . ')</span>';
+                }
+                echo '</li>';
+            }
+            if ($nonPublicSupportCount === 1) {
+                if ($publicSupportCount > 0) {
+                    echo '<li>' . \Yii::t('motion', 'supporting_nonpublic_more_1') . '</li>';
+                } else {
+                    echo '<li>' . \Yii::t('motion', 'supporting_nonpublic_1') . '</li>';
+                }
+            } elseif ($nonPublicSupportCount > 1) {
+                if ($publicSupportCount > 0) {
+                    echo '<li>' . str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_more_x')) . '</li>';
+                } else {
+                    echo '<li>' . str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_x')) . '</li>';
+                }
+            }
+            echo '</ul>';
+        } else {
+            echo '<em>' . \Yii::t('motion', 'supporting_none') . '</em><br>';
+        }
+
+        return $iAmSupporting;
     }
 
     /**

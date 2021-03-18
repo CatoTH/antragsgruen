@@ -165,26 +165,9 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
     <h2 class="green" id="supportersTitle">' . Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
-    $iAmSupporting        = false;
     $anonymouslySupported = \app\models\db\AmendmentSupporter::getMyAnonymousSupportIds();
-    if (count($supporters) > 0) {
-        echo '<ul class="supportersList">';
-        foreach ($supporters as $supp) {
-            echo '<li>';
-            if (($currUserId && $supp->userId == $currUserId) || in_array($supp->id, $anonymouslySupported)) {
-                echo '<span class="label label-info">' . Yii::t('amend', 'supporter_you') . '</span> ';
-                $iAmSupporting = true;
-            }
-            echo Html::encode($supp->getNameWithOrga());
-            if ($iAmSupporting && $supp->getExtraDataEntry(\app\models\db\AmendmentSupporter::EXTRA_DATA_FIELD_NON_PUBLIC)) {
-                echo '<span class="nonPublic">(' . Yii::t('motion', 'supporting_you_nonpublic') . ')</span>';
-            }
-            echo '</li>';
-        }
-        echo '</ul>';
-    } else {
-        echo '<em>' . Yii::t('amend', 'supporter_none') . '</em><br>';
-    }
+    $iAmSupporting = MotionLayoutHelper::printSupporterList($supporters, $currUserId, $anonymouslySupported);
+
     echo '<br>';
     MotionLayoutHelper::printSupportingSection($amendment, $supportPolicy, $supportType, $iAmSupporting);
     echo '</div></section>';
