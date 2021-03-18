@@ -41,7 +41,7 @@ if ($editUrl) {
 echo '</span></td>';
 echo '<td>' . Html::encode($motionStatuses[$entry->status]);
 if ($entry->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-    echo ' (' . count($entry->getSupporters()) . ')';
+    echo ' (' . count($entry->getSupporters(true)) . ')';
 }
 if ($entry->statusString !== null && $entry->statusString !== '') {
     echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';

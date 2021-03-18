@@ -345,7 +345,7 @@ class MotionController extends Base
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {
                     $adoptMotion = $this->consultation->getMotion($cloneFrom);
-                    foreach ($adoptMotion->getSupporters() as $supp) {
+                    foreach ($adoptMotion->getSupporters(true) as $supp) {
                         $suppNew = new MotionSupporter();
                         $suppNew->setAttributes($supp->getAttributes());
                         $suppNew->id           = null;

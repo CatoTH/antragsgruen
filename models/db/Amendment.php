@@ -557,7 +557,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return AmendmentSupporter[]
      */
-    public function getInitiators()
+    public function getInitiators(): array
     {
         $return = [];
         foreach ($this->amendmentSupporters as $supp) {
@@ -571,21 +571,40 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return AmendmentSupporter[]
      */
-    public function getSupporters()
+    public function getSupporters(bool $includeNonPublic = false): array
     {
         $return = [];
         foreach ($this->amendmentSupporters as $supp) {
             if ($supp->role === AmendmentSupporter::ROLE_SUPPORTER) {
-                $return[] = $supp;
+                if ($includeNonPublic || !$supp->isNonPublic()) {
+                    $return[] = $supp;
+                }
             }
         }
+        usort($return, function (AmendmentSupporter $supp1, AmendmentSupporter $supp2) {
+            if ($supp1->position > $supp2->position) {
+                return 1;
+            }
+            if ($supp1->position < $supp2->position) {
+                return -1;
+            }
+            if ($supp1->id > $supp2->id) {
+                return 1;
+            }
+            if ($supp1->id < $supp2->id) {
+                return -1;
+            }
+
+            return 0;
+        });
+
         return $return;
     }
 
     /**
      * @return AmendmentSupporter[]
      */
-    public function getLikes()
+    public function getLikes(): array
     {
         $return = [];
         foreach ($this->amendmentSupporters as $supp) {
@@ -599,7 +618,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return AmendmentSupporter[]
      */
-    public function getDislikes()
+    public function getDislikes(): array
     {
         $return = [];
         foreach ($this->amendmentSupporters as $supp) {

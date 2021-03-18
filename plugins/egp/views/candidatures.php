@@ -95,7 +95,7 @@ usort($motions, function (Motion $motion1, Motion $motion2) {
                         <div class="supportedByHolder">Supported by:
                             <ul>
                                 <?php
-                                foreach ($motion->getSupporters() as $supporter) {
+                                foreach ($motion->getSupporters(false) as $supporter) {
                                     echo '<li>' . Html::encode($supporter->organization) . '</li>';
                                 }
                                 ?>

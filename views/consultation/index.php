@@ -85,7 +85,7 @@ if ($myself) {
             echo '</div>';
             if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
                 echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';
-                echo count($motion->getSupporters());
+                echo count($motion->getSupporters(true));
                 echo ' <small>(' . Yii::t('motion', 'support_collect_min') . ': ';
                 echo $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
                 echo ')</small></div>';
@@ -112,7 +112,7 @@ if ($myself) {
             echo '</div>';
             if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
                 echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';
-                echo count($amendment->getSupporters());
+                echo count($amendment->getSupporters(true));
                 echo ' <small>(' . Yii::t('motion', 'support_collect_min') . ': ';
                 echo $amendment->getMyMotionType()->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
                 echo ')</small></div>';

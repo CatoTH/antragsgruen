@@ -50,7 +50,7 @@ if (count($motions) > 0) {
 
         echo '<p class="info">';
         $max   = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-        $curr  = count($motion->getSupporters());
+        $curr  = count($motion->getSupporters(true));
         echo str_replace(
             ['%INITIATOR%', '%CURR%'],
             [$motion->getInitiatorsStr(), $curr . ' / ' . $max],
@@ -102,7 +102,7 @@ if (count($motionsWithAmendments) > 0) {
             echo '<span class="date">' . Tools::formatMysqlDate($amendment->dateCreation) . '</span>' . "\n";
 
             $max = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-            $curr = count($amendment->getSupporters());
+            $curr = count($amendment->getSupporters(true));
             $title = str_replace(
                 ['%INITIATOR%', '%LINE%', '%CURR%'],
                 [$amendment->getInitiatorsStr(), $amendment->getFirstDiffLine(), $curr . ' / ' . $max],

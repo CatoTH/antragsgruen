@@ -13,7 +13,7 @@ use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
-use app\models\sectionTypes\{Image, ISectionType, PDF, VideoEmbed};
+use app\models\sectionTypes\{Image, ISectionType, PDF};
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
@@ -729,7 +729,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return MotionSupporter[]
      */
-    public function getInitiators()
+    public function getInitiators(): array
     {
         $return = [];
         foreach ($this->motionSupporters as $supp) {
@@ -744,12 +744,14 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return MotionSupporter[]
      */
-    public function getSupporters()
+    public function getSupporters(bool $includeNonPublic = false): array
     {
         $return = [];
         foreach ($this->motionSupporters as $supp) {
             if ($supp->role === MotionSupporter::ROLE_SUPPORTER) {
-                $return[] = $supp;
+                if ($includeNonPublic || !$supp->isNonPublic()) {
+                    $return[] = $supp;
+                }
             }
         }
         usort($return, function (MotionSupporter $supp1, MotionSupporter $supp2) {
@@ -775,7 +777,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return MotionSupporter[]
      */
-    public function getLikes()
+    public function getLikes(): array
     {
         $return = [];
         foreach ($this->motionSupporters as $supp) {
@@ -790,7 +792,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return MotionSupporter[]
      */
-    public function getDislikes()
+    public function getDislikes(): array
     {
         $return = [];
         foreach ($this->motionSupporters as $supp) {

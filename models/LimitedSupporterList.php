@@ -20,7 +20,7 @@ class LimitedSupporterList
     {
         $obj   = new LimitedSupporterList();
         $limit = $iMotion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->maxPdfSupporters;
-        foreach ($iMotion->getSupporters() as $supporter) {
+        foreach ($iMotion->getSupporters(true) as $supporter) {
             if ($supporter->isNonPublic()) {
                 $obj->nonPublicNum++;
             } elseif ($limit && count($obj->supporters) >= $limit) {

@@ -67,7 +67,7 @@ if ($supportCollectingStatus) {
     echo '<div class="alert alert-info supportCollectionHint" role="alert">';
     $supportType   = $amendment->getMyMotionType()->getAmendmentSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
-    $curr          = count($amendment->getSupporters());
+    $curr          = count($amendment->getSupporters(true));
     if ($amendment->hasEnoughSupporters($supportType)) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('amend', 'support_collection_reached_hint'));
     } else {
@@ -156,7 +156,7 @@ if ($amendment->status === Amendment::STATUS_DRAFT) {
 echo $this->render('_view_text', ['amendment' => $amendment, 'procedureToken' => $procedureToken]);
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
-$supporters    = $amendment->getSupporters();
+$supporters    = $amendment->getSupporters(true);
 $supportPolicy = $motion->motionType->getAmendmentSupportPolicy();
 $supportType   = $motion->motionType->getAmendmentSupportTypeClass();
 

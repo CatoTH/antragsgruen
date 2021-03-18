@@ -32,7 +32,8 @@ $json = [
             'name' => $supporter->name,
             'organization' => $supporter->organization,
         ];
-    }, $motion->getSupporters()),
+    }, $motion->getSupporters(false)),
+    // @TODO Support non-public supporters
     'initiators' => array_map(function (MotionSupporter $supporter) {
         return [
             'type' => ($supporter->personType === ISupporter::PERSON_ORGANIZATION ? 'organization' : 'person'),

@@ -78,7 +78,7 @@ if ($supportCollectingStatus) {
     echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
     $supportType   = $motion->motionType->getMotionSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
-    $curr          = count($motion->getSupporters());
+    $curr          = count($motion->getSupporters(true));
     if ($motion->hasEnoughSupporters($supportType)) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_reached_hint'));
     } else {
@@ -212,7 +212,7 @@ echo $viewText;
 <?php
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
-$supporters    = $motion->getSupporters();
+$supporters    = $motion->getSupporters(true);
 $supportType   = $motion->motionType->getMotionSupportTypeClass();
 $supportPolicy = $motion->motionType->getMotionSupportPolicy();
 

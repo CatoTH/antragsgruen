@@ -196,7 +196,7 @@ class Permissions
         if ($motion->isDeadlineOver()) {
             return false;
         }
-        $supporters    = count($motion->getSupporters());
+        $supporters    = count($motion->getSupporters(true));
         $minSupporters = $supportType->getSettingsObj()->minSupporters;
         if ($supporters >= $minSupporters && !$motion->getMissingSupporterCountByGender($supportType, 'female')) {
             return true;

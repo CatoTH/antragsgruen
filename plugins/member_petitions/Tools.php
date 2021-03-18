@@ -248,8 +248,8 @@ class Tools
 
         foreach ($site->consultations as $consultation) {
             foreach ($consultation->motions as $motion) {
-                foreach ($motion->getSupporters() as $supporter) {
-                    if ($supporter->userId == $user->id && !in_array($motion, $motions, true)) {
+                foreach ($motion->getSupporters(true) as $supporter) {
+                    if ($supporter->userId === $user->id && !in_array($motion, $motions, true)) {
                         $motions[] = $motion;
                     }
                 }
@@ -260,7 +260,6 @@ class Tools
     }
 
     /**
-     * @param IMotion $motion
      * @return bool
      */
     public static function canRespondToPetition(IMotion $motion)

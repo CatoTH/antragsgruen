@@ -193,7 +193,7 @@ trait MotionActionsTrait
         if (!$motion->isSupportingPossibleAtThisStatus()) {
             throw new FormError('Not possible given the current motion status');
         }
-        foreach ($motion->getSupporters() as $supporter) {
+        foreach ($motion->getSupporters(true) as $supporter) {
             if (User::getCurrentUser() && $supporter->userId === User::getCurrentUser()->id) {
                 \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_already'));
                 return;

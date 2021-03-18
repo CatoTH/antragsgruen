@@ -72,7 +72,8 @@ $json = [
             'name' => $supporter->name,
             'organization' => $supporter->organization,
         ];
-    }, $amendment->getSupporters()),
+    }, $amendment->getSupporters(false)),
+    // @TODO Support non-public supporters
     'initiators' => array_map(function (AmendmentSupporter $supporter) {
         return [
             'type' => ($supporter->personType === ISupporter::PERSON_ORGANIZATION ? 'organization' : 'person'),

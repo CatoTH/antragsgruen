@@ -329,13 +329,10 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return ISupporter[]
      */
-    abstract public function getInitiators();
+    abstract public function getInitiators(): array;
 
     abstract public function iAmInitiator(): bool;
 
-    /**
-     * @return string
-     */
     abstract public function getTitleWithPrefix(): string;
 
     public function isInitiatedByOrganization(): bool
@@ -384,17 +381,17 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return ISupporter[]
      */
-    abstract public function getSupporters();
+    abstract public function getSupporters(bool $includeNonPublic = false): array;
 
     /**
      * @return ISupporter[]
      */
-    abstract public function getLikes();
+    abstract public function getLikes(): array;
 
     /**
      * @return ISupporter[]
      */
-    abstract public function getDislikes();
+    abstract public function getDislikes(): array;
 
     /**
      * @return Consultation
@@ -665,7 +662,7 @@ abstract class IMotion extends ActiveRecord
     {
         $needsCollectionPhase = false;
         if ($supportBase->collectSupportersBeforePublication()) {
-            $supporters = $this->getSupporters();
+            $supporters = $this->getSupporters(true);
             $initiators = $this->getInitiators();
 
             $isOrganization = false;
@@ -691,7 +688,7 @@ abstract class IMotion extends ActiveRecord
 
     public function getSupporterCountByGender(string $gender): int
     {
-        $allSupporters = array_merge($this->getSupporters(), $this->getInitiators());
+        $allSupporters = array_merge($this->getSupporters(true), $this->getInitiators());
         $found   = 0;
         foreach ($allSupporters as $supporter) {
             /** @var ISupporter $supporter */
@@ -714,7 +711,7 @@ abstract class IMotion extends ActiveRecord
 
     public function hasEnoughSupporters(SupportBase $supportType): bool {
         $min           = $supportType->getSettingsObj()->minSupporters;
-        $curr          = count($this->getSupporters());
+        $curr          = count($this->getSupporters(true));
         $missingFemale = $this->getMissingSupporterCountByGender($supportType, 'female');
         return ($curr >= $min && !$missingFemale);
     }

@@ -117,7 +117,7 @@ foreach ($motions as $motion) {
         echo '<span class="phaseName">. ' . $motionPhaseName;
         if ($motion->status === IMotion::STATUS_COLLECTING_SUPPORTERS) {
             $max = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-            $curr = count($motion->getSupporters());
+            $curr = count($motion->getSupporters(true));
             echo ' (' . $curr . ' / ' . $max . ')';
         }
         echo '</span>';

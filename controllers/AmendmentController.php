@@ -385,7 +385,7 @@ class AmendmentController extends Base
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {
                     $adoptAmend = $this->consultation->getAmendment($cloneFrom);
-                    foreach ($adoptAmend->getSupporters() as $supp) {
+                    foreach ($adoptAmend->getSupporters(true) as $supp) {
                         $suppNew = new AmendmentSupporter();
                         $suppNew->setAttributes($supp->getAttributes());
                         $suppNew->id           = null;

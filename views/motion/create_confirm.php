@@ -96,7 +96,7 @@ if ($right === '') {
     <div class="webVersion motionTextHolder">
         <h3 class="green"><?= Yii::t('motion', 'initiators_head') ?></h3>
         <div class="content">
-            <ul <?= (count($motion->getSupporters()) + count($motion->getInitiators()) <= 1 ? 'style="list-style-type: none;"' : '') ?>>
+            <ul <?= (count($motion->getSupporters(true)) + count($motion->getInitiators()) <= 1 ? 'style="list-style-type: none;"' : '') ?>>
                 <?php
                 foreach ($motion->getInitiators() as $initiator) {
                     echo '<li>';
@@ -120,7 +120,7 @@ if ($right === '') {
                     echo '</li>';
                 }
 
-                foreach ($motion->getSupporters() as $unt) {
+                foreach ($motion->getSupporters(true) as $unt) {
                     echo '<li>' . $unt->getNameWithResolutionDate(true) . '</li>';
                 }
                 ?>

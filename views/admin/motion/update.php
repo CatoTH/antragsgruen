@@ -382,7 +382,7 @@ $initiatorClass->setAdminMode(true);
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
 echo $this->render('_update_supporter', [
-    'supporters'  => $motion->getSupporters(),
+    'supporters'  => $motion->getSupporters(true),
     'newTemplate' => new MotionSupporter(),
     'settings'    => $initiatorClass->getSettingsObj(),
 ]);

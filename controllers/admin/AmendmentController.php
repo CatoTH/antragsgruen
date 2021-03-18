@@ -145,7 +145,7 @@ class AmendmentController extends AdminBase
         $newSupporters = [];
         /** @var AmendmentSupporter[] $preSupporters */
         $preSupporters = [];
-        foreach ($amendment->getSupporters() as $supporter) {
+        foreach ($amendment->getSupporters(true) as $supporter) {
             $preSupporters[$supporter->id] = $supporter;
         }
         for ($i = 0; $i < count($names); $i++) {

@@ -151,7 +151,7 @@ trait AmendmentActionsTrait
         if (!$amendment->isSupportingPossibleAtThisStatus()) {
             throw new FormError('Not possible given the current amendment status');
         }
-        foreach ($amendment->getSupporters() as $supporter) {
+        foreach ($amendment->getSupporters(true) as $supporter) {
             if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
                 \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_already'));
                 return;
