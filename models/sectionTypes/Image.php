@@ -14,10 +14,19 @@ class Image extends ISectionType
 {
     public function getImageUrl(bool $absolute = false, bool $showAlways = false): ?string
     {
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $externallySavedData = ($app->binaryFilePath !== null && trim($app->binaryFilePath) !== '');
+
         /** @var MotionSection $section */
         $section = $this->section;
         $motion  = $section->getMotion();
-        if (!$motion || !$section->getData()) {
+        if (!$motion) {
+            return null;
+        }
+        if (!$externallySavedData && !$section->getData()) {
+            // If the data IS saved externally, we always create an URL, as it might be saved on a path
+            // not accessible by the current process.
             return null;
         }
 
