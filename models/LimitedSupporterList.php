@@ -8,47 +8,40 @@ use app\models\db\ISupporter;
 class LimitedSupporterList
 {
     /** @var ISupporter[] */
-    public $supporters;
+    public $supporters = [];
 
     /** @var int */
-    public $truncatedNum;
+    public $truncatedNum = 0;
 
-    public static function createFromIMotion(IMotion $iMotion)
+    /** @var int */
+    public $nonPublicNum = 0;
+
+    public static function createFromIMotion(IMotion $iMotion): self
     {
         $obj   = new LimitedSupporterList();
         $limit = $iMotion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->maxPdfSupporters;
-        if ($limit === null) {
-            $obj->supporters   = $iMotion->getSupporters();
-            $obj->truncatedNum = 0;
-        } else {
-            $obj->supporters = [];
-            $supporters      = $iMotion->getSupporters();
-            for ($i = 0; $i < $limit && $i < count($supporters); $i++) {
-                $obj->supporters[] = $supporters[$i];
-            }
-            if (count($supporters) > $limit) {
-                $obj->truncatedNum = count($supporters) - $limit;
+        foreach ($iMotion->getSupporters() as $supporter) {
+            if ($supporter->isNonPublic()) {
+                $obj->nonPublicNum++;
+            } elseif ($limit && count($obj->supporters) >= $limit) {
+                $obj->truncatedNum++;
             } else {
-                $obj->truncatedNum = 0;
+                $obj->supporters[] = $supporter;
             }
         }
 
         return $obj;
     }
 
-    /**
-     * @param string $limiter
-     *
-     * @return string
-     */
-    public function truncatedToString($limiter = '')
+    public function truncatedToString(string $limiter = ''): string
     {
-        if ($this->truncatedNum === 0) {
+        $skipped = $this->truncatedNum + $this->nonPublicNum;
+        if ($skipped === 0) {
             return '';
-        } elseif ($this->truncatedNum === 1) {
+        } elseif ($skipped === 1) {
             return trim($limiter) . ' ' . \Yii::t('export', 'truncated_supp_1');
         } else {
-            return trim($limiter) . ' ' . str_replace('%NUM%', $this->truncatedNum, \Yii::t('export', 'truncated_supp_x'));
+            return trim($limiter) . ' ' . str_replace('%NUM%', $skipped, \Yii::t('export', 'truncated_supp_x'));
         }
     }
 }

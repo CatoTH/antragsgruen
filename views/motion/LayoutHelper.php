@@ -175,6 +175,18 @@ class LayoutHelper
         foreach ($pdfAttachments as $section) {
             $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
         }
+
+        $limitedSupporters = LimitedSupporterList::createFromIMotion($motion);
+        if (count($limitedSupporters->supporters) > 0) {
+            $pdfLayout->printSectionHeading(\Yii::t('amend', 'supporters'));
+            $supportersStr = [];
+            foreach ($limitedSupporters->supporters as $supp) {
+                $supportersStr[] = Html::encode($supp->getNameWithOrga());
+            }
+            $listStr = implode(', ', $supportersStr) . $limitedSupporters->truncatedToString(',');
+            $pdf->writeHTMLCell(170, '', 27, '', $listStr, 0, 1, 0, true, '', true);
+            $pdf->Ln(7);
+        }
     }
 
     public static function createPdfTcpdf(Motion $motion): string
