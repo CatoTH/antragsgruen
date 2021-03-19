@@ -112,18 +112,12 @@ class AmendmentEditForm extends Model
         ];
     }
 
-    /**
-     * @param bool $set
-     */
-    public function setAdminMode($set)
+    public function setAdminMode(bool $set): void
     {
         $this->adminMode = $set;
     }
 
-    /**
-     * @param Amendment $amendment
-     */
-    public function cloneSupporters(Amendment $amendment)
+    public function cloneSupporters(Amendment $amendment): void
     {
         foreach ($amendment->amendmentSupporters as $supp) {
             $suppNew = new AmendmentSupporter();
@@ -134,10 +128,7 @@ class AmendmentEditForm extends Model
         }
     }
 
-    /**
-     * @param Amendment $amendment
-     */
-    public function cloneAmendmentText(Amendment $amendment)
+    public function cloneAmendmentText(Amendment $amendment): void
     {
         $this->reason    = $amendment->changeExplanation;
         $this->editorial = $amendment->changeEditorial;

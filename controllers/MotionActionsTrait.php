@@ -20,13 +20,9 @@ use yii\web\Response;
 trait MotionActionsTrait
 {
     /**
-     * @param Motion $motion
-     * @param int $commentId
-     * @param bool $needsScreeningRights
-     * @return MotionComment
      * @throws Internal
      */
-    private function getComment(Motion $motion, $commentId, $needsScreeningRights)
+    private function getComment(Motion $motion, int $commentId, bool $needsScreeningRights): MotionComment
     {
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
@@ -41,10 +37,7 @@ trait MotionActionsTrait
         return $comment;
     }
 
-    /**
-     * @param array $viewParameters
-     */
-    private function writeComment(Motion $motion, &$viewParameters)
+    private function writeComment(Motion $motion, array &$viewParameters): void
     {
         $postComment = \Yii::$app->request->post('comment');
 
@@ -85,11 +78,10 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param int $commentId
      * @throws DB
      * @throws Internal
      */
-    private function deleteComment(Motion $motion, $commentId)
+    private function deleteComment(Motion $motion, int $commentId): void
     {
         $comment = $this->getComment($motion, $commentId, false);
         if (!$comment->canDelete(User::getCurrentUser())) {
@@ -110,10 +102,9 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param int $commentId
      * @throws Internal
      */
-    private function screenCommentAccept(Motion $motion, $commentId)
+    private function screenCommentAccept(Motion $motion, int $commentId): void
     {
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
@@ -139,10 +130,9 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param int $commentId
      * @throws Internal
      */
-    private function screenCommentReject(Motion $motion, $commentId)
+    private function screenCommentReject(Motion $motion, int $commentId): void
     {
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
@@ -169,14 +159,14 @@ trait MotionActionsTrait
      * @throws FormError
      * @throws Internal
      */
-    private function motionLikeDislike(Motion $motion, string $role, string $string, string $name = '', string $orga = '', string $gender = '')
+    private function motionLikeDislike(Motion $motion, string $role, string $string, string $name = '', string $orga = '', string $gender = '', bool $nonPublic = false)
     {
         $currentUser = User::getCurrentUser();
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this motion is not possible');
         }
 
-        MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender);
+        MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender, $nonPublic);
 
         \Yii::$app->session->setFlash('success', $string);
     }
@@ -195,25 +185,25 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @throws FormError
      * @throws Internal
      */
-    private function motionSupport(Motion $motion)
+    private function motionSupport(Motion $motion): void
     {
         if (!$motion->isSupportingPossibleAtThisStatus()) {
             throw new FormError('Not possible given the current motion status');
         }
-        foreach ($motion->getSupporters() as $supporter) {
+        foreach ($motion->getSupporters(true) as $supporter) {
             if (User::getCurrentUser() && $supporter->userId === User::getCurrentUser()->id) {
                 \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_already'));
                 return;
             }
         }
         $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
-        $role        = MotionSupporter::ROLE_SUPPORTER;
-        $user        = User::getCurrentUser();
-        $gender      = \Yii::$app->request->post('motionSupportGender', '');
+        $role = MotionSupporter::ROLE_SUPPORTER;
+        $user = User::getCurrentUser();
+        $gender = \Yii::$app->request->post('motionSupportGender', '');
+        $nonPublic = ($supportType->getSettingsObj()->offerNonPublicSupports && \Yii::$app->request->post('motionSupportPublic') === null);
         if ($user && $user->fixedData) {
             $name = $user->name;
             $orga = $user->organization;
@@ -240,16 +230,15 @@ trait MotionActionsTrait
             $gender = '';
         }
 
-        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga, $gender);
+        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga, $gender, $nonPublic);
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
     }
 
     /**
-     * @param Motion $motion
      * @throws FormError
      * @throws Internal
      */
-    private function motionDislike(Motion $motion)
+    private function motionDislike(Motion $motion): void
     {
         if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE)) {
             throw new FormError('Not supported');
@@ -259,15 +248,14 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @throws FormError
      */
-    private function motionSupportRevoke(Motion $motion)
+    private function motionSupportRevoke(Motion $motion): void
     {
         $currentUser          = User::getCurrentUser();
-        $anonymouslySupported = MotionSupporter::getMyAnonymousSupportIds();
+        $loginlessSupported = MotionSupporter::getMyLoginlessSupportIds();
         foreach ($motion->motionSupporters as $supp) {
-            if (($currentUser && $supp->userId === $currentUser->id) || in_array($supp->id, $anonymouslySupported)) {
+            if (($currentUser && $supp->userId === $currentUser->id) || in_array($supp->id, $loginlessSupported)) {
                 if ($supp->role === MotionSupporter::ROLE_SUPPORTER) {
                     if (!$motion->isSupportingPossibleAtThisStatus()) {
                         throw new FormError('Not possible given the current motion status');
@@ -300,10 +288,9 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @throws Internal
      */
-    private function motionAddTag(Motion $motion)
+    private function motionAddTag(Motion $motion): void
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
@@ -316,10 +303,9 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @throws Internal
      */
-    private function motionDelTag(Motion $motion)
+    private function motionDelTag(Motion $motion): void
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
@@ -345,10 +331,9 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
      * @throws \Throwable
      */
-    private function savePrivateNote(Motion $motion)
+    private function savePrivateNote(Motion $motion): void
     {
         $user      = User::getCurrentUser();
         $noteText  = trim(\Yii::$app->request->post('noteText', ''));
@@ -390,18 +375,13 @@ trait MotionActionsTrait
     }
 
     /**
-     * @param Motion $motion
-     * @param int $commentId
-     * @param array $viewParameters
-     * @throws DB
-     * @throws FormError
-     * @throws Internal
+     * @throws \Throwable
      */
-    private function performShowActions(Motion $motion, $commentId, &$viewParameters)
+    private function performShowActions(Motion $motion, int $commentId, array &$viewParameters): void
     {
         $post = \Yii::$app->request->post();
-        if ($commentId == 0 && isset($post['commentId'])) {
-            $commentId = IntVal($post['commentId']);
+        if ($commentId === 0 && isset($post['commentId'])) {
+            $commentId = intval($post['commentId']);
         }
         if (isset($post['deleteComment'])) {
             $this->deleteComment($motion, $commentId);

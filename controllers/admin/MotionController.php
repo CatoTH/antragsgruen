@@ -357,7 +357,7 @@ class MotionController extends AdminBase
         $newSupporters = [];
         /** @var MotionSupporter[] $preSupporters */
         $preSupporters = [];
-        foreach ($motion->getSupporters() as $supporter) {
+        foreach ($motion->getSupporters(true) as $supporter) {
             $preSupporters[$supporter->id] = $supporter;
         }
         for ($i = 0; $i < count($names); $i++) {

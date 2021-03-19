@@ -69,19 +69,22 @@ class MotionSupporter extends ISupporter
     /**
      * @return int[]
      */
-    public static function getMyAnonymousSupportIds(): array
+    public static function getMyLoginlessSupportIds(): array
     {
-        return \Yii::$app->session->get('anonymous_motion_supports', []);
+        return array_merge(
+            \Yii::$app->session->get('loginless_motion_supports', []),
+            \Yii::$app->session->get('anonymous_motion_supports', []) // @TODO After v4.8
+        );
     }
 
-    public static function addAnonymouslySupportedMotion(MotionSupporter $support): void
+    public static function addLoginlessSupportedMotion(MotionSupporter $support): void
     {
-        $pre   = \Yii::$app->session->get('anonymous_motion_supports', []);
+        $pre   = static::getMyLoginlessSupportIds();
         $pre[] = intval($support->id);
-        \Yii::$app->session->set('anonymous_motion_supports', $pre);
+        \Yii::$app->session->set('loginless_motion_supports', $pre);
     }
 
-    public static function createSupport(Motion $motion, ?User $user, string $name, string $orga, string $role, string $gender = ''): void
+    public static function createSupport(Motion $motion, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false): void
     {
         $hadEnoughSupportersBefore = $motion->hasEnoughSupporters($motion->getMyMotionType()->getMotionSupportTypeClass());
 
@@ -95,7 +98,7 @@ class MotionSupporter extends ISupporter
                 }
             }
         } else {
-            $alreadySupported = static::getMyAnonymousSupportIds();
+            $alreadySupported = static::getMyLoginlessSupportIds();
             foreach ($motion->motionSupporters as $supp) {
                 if (in_array($supp->id, $alreadySupported)) {
                     $motion->unlink('motionSupporters', $supp, true);
@@ -114,10 +117,11 @@ class MotionSupporter extends ISupporter
         $support->role         = $role;
         $support->dateCreation = date('Y-m-d H:i:s');
         $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, ($gender !== '' ? $gender : null));
+        $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_NON_PUBLIC, $nonPublic);
         $support->save();
 
         if (!$user) {
-            static::addAnonymouslySupportedMotion($support);
+            static::addLoginlessSupportedMotion($support);
         }
 
         $motion->refresh();

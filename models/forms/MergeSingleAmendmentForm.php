@@ -2,7 +2,7 @@
 
 namespace app\models\forms;
 
-use app\models\db\{Amendment, Motion, MotionSection, MotionSupporter};
+use app\models\db\{Amendment, ISupporter, Motion, MotionSection, MotionSupporter};
 use app\models\events\MotionEvent;
 use app\models\exceptions\DB;
 use app\models\sectionTypes\ISectionType;
@@ -98,7 +98,6 @@ class MergeSingleAmendmentForm extends Model
     }
 
     /**
-     * @param string|null $previousSlug
      * @throws DB
      */
     private function createNewMotion(?string $previousSlug): void
@@ -129,6 +128,9 @@ class MergeSingleAmendmentForm extends Model
             $newSupporter->dateCreation = date('Y-m-d H:i:s');
             $newSupporter->id           = null;
             $newSupporter->motionId     = $this->newMotion->id;
+            if ($supporter->isNonPublic()) {
+                $newSupporter->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, true);
+            }
             if (!$newSupporter->save()) {
                 throw new DB($this->newMotion->getErrors());
             }

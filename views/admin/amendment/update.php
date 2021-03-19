@@ -319,7 +319,7 @@ $initiatorClass->setAdminMode(true);
 echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 
 echo $this->render('../motion/_update_supporter', [
-    'supporters'  => $amendment->getSupporters(),
+    'supporters'  => $amendment->getSupporters(true),
     'newTemplate' => new \app\models\db\AmendmentSupporter(),
     'settings'    => $initiatorClass->getSettingsObj(),
 ]);

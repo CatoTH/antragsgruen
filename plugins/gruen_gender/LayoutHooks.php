@@ -66,7 +66,7 @@ class LayoutHooks extends Hooks
         if (!$motion->isInitiatedByOrganization() && $collectionPhase) {
             $quota = $motion->getCacheItem('supporters.womanQuota');
             if ($quota === null) {
-                $persons = array_merge($motion->getInitiators(), $motion->getSupporters());
+                $persons = array_merge($motion->getInitiators(), $motion->getSupporters(true));
                 $quota   = $this->getWomensQuota($persons);
                 $motion->setCacheItem('supporters.womanQuota', $quota);
             }
@@ -84,7 +84,7 @@ class LayoutHooks extends Hooks
         if (!$amendment->isInitiatedByOrganization() && $collectionPhase) {
             $quota = $amendment->getCacheItem('supporters.womanQuota');
             if ($quota === null) {
-                $persons = array_merge($amendment->getInitiators(), $amendment->getSupporters());
+                $persons = array_merge($amendment->getInitiators(), $amendment->getSupporters(true));
                 $quota   = $this->getWomensQuota($persons);
                 $amendment->setCacheItem('supporters.womanQuota', $quota);
             }
@@ -104,11 +104,11 @@ class LayoutHooks extends Hooks
             $collectionPhase = $imotion->getMyMotionType()->getMotionSupportTypeClass()->collectSupportersBeforePublication();
         }
         if (!$imotion->isInitiatedByOrganization() && $collectionPhase) {
-            $persons = array_merge($imotion->getInitiators(), $imotion->getSupporters());
+            $persons = array_merge($imotion->getInitiators(), $imotion->getSupporters(true));
             $quota   = $this->getWomensQuota($persons);
             $before .= '<div class="moreSupporters">';
 
-            $num = count($imotion->getSupporters());
+            $num = count($imotion->getSupporters(true));
             $before .= '<a href="#supporters">';
             if ($num === 1) {
                 $before .= 'und 1 weitere Antragsteller*in';

@@ -55,7 +55,7 @@ echo '<div class="motionTextHolder">
 
         <div class="content">';
 
-if (count($amendment->getSupporters()) + count($amendment->getInitiators()) > 1) {
+if (count($amendment->getSupporters(true)) + count($amendment->getInitiators()) > 1) {
     echo '<ul>';
 } else {
     echo '<ul style="list-style-type: none;">';
@@ -82,7 +82,7 @@ foreach ($amendment->getInitiators() as $initiator) {
     echo '</li>';
 }
 
-foreach ($amendment->getSupporters() as $unt) {
+foreach ($amendment->getSupporters(true) as $unt) {
     echo '<li>' . $unt->getNameWithResolutionDate(true) . '</li>';
 }
 echo '

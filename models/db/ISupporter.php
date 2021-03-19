@@ -34,6 +34,7 @@ abstract class ISupporter extends ActiveRecord
 
     const EXTRA_DATA_FIELD_GENDER = 'gender';
     const EXTRA_DATA_FIELD_CREATED_BY_ADMIN = 'createdByAdmin';
+    const EXTRA_DATA_FIELD_NON_PUBLIC = 'nonPublic';
 
     /**
      * @return string[]
@@ -149,6 +150,11 @@ abstract class ISupporter extends ActiveRecord
             unset($arr[$name]);
         }
         $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
+    }
+
+    public function isNonPublic(): bool
+    {
+        return $this->getExtraDataEntry(static::EXTRA_DATA_FIELD_NON_PUBLIC, false);
     }
 
     abstract public function getIMotion(): IMotion;

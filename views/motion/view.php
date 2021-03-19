@@ -78,7 +78,7 @@ if ($supportCollectingStatus) {
     echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
     $supportType   = $motion->motionType->getMotionSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
-    $curr          = count($motion->getSupporters());
+    $curr          = count($motion->getSupporters(true));
     if ($motion->hasEnoughSupporters($supportType)) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_reached_hint'));
     } else {
@@ -212,7 +212,7 @@ echo $viewText;
 <?php
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
-$supporters    = $motion->getSupporters();
+$supporters    = $motion->getSupporters(true);
 $supportType   = $motion->motionType->getMotionSupportTypeClass();
 $supportPolicy = $motion->motionType->getMotionSupportPolicy();
 
@@ -223,24 +223,9 @@ if (count($supporters) > 0 || $supportCollectingStatus ||
     <h2 class="green" id="supportersTitle">' . Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
-    $iAmSupporting        = false;
-    $anonymouslySupported = MotionSupporter::getMyAnonymousSupportIds();
-    if (count($supporters) > 0) {
-        echo '<ul>';
-        foreach ($supporters as $supp) {
-            /** @var MotionSupporter $supp */
-            echo '<li>';
-            if (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $anonymouslySupported)) {
-                echo '<span class="label label-info">' . Yii::t('motion', 'supporting_you') . '</span> ';
-                $iAmSupporting = true;
-            }
-            echo Html::encode($supp->getNameWithOrga());
-            echo '</li>';
-        }
-        echo '</ul>';
-    } else {
-        echo '<em>' . Yii::t('motion', 'supporting_none') . '</em><br>';
-    }
+    $loginlessSupported = MotionSupporter::getMyLoginlessSupportIds();
+    $iAmSupporting = LayoutHelper::printSupporterList($supporters, $currUserId, $loginlessSupported);
+
     echo '<br>';
     LayoutHelper::printSupportingSection($motion, $supportPolicy, $supportType, $iAmSupporting);
     echo '</div></section>';

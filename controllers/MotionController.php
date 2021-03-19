@@ -8,6 +8,7 @@ use app\models\db\{Amendment,
     ConsultationLog,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
+    ISupporter,
     Motion,
     MotionSupporter,
     SpeechQueue,
@@ -87,8 +88,8 @@ class MotionController extends Base
         ];
 
         try {
-            $this->performShowActions($motion, $commentId, $motionViewParams);
-        } catch (\Exception $e) {
+            $this->performShowActions($motion, intval($commentId), $motionViewParams);
+        } catch (\Throwable $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
         }
 
@@ -344,13 +345,16 @@ class MotionController extends Base
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {
                     $adoptMotion = $this->consultation->getMotion($cloneFrom);
-                    foreach ($adoptMotion->getSupporters() as $supp) {
+                    foreach ($adoptMotion->getSupporters(true) as $supp) {
                         $suppNew = new MotionSupporter();
                         $suppNew->setAttributes($supp->getAttributes());
                         $suppNew->id           = null;
                         $suppNew->motionId     = $motion->id;
                         $suppNew->extraData    = $supp->extraData;
                         $suppNew->dateCreation = date('Y-m-d H:i:s');
+                        if ($supp->isNonPublic()) {
+                            $suppNew->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, true);
+                        }
                         $suppNew->save();
                     }
                 }
