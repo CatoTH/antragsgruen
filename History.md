@@ -6,6 +6,7 @@
 - Admins can now assign motions and amendments to user accounts, e.g. when the motion was created by an admin or an anonymous user before creating an account.
 - When merging amendments into a motion, text entered by the admins can now optionally receive a blue color, to distinguish admin-entered text from the base motion or changes made by the amendments.
 - If admins create a motion or amendment in behalf of an user, no confirmation mails about the submission is sent to the user anymore (if confirmation mails are activated in the first place).
+- When official supports are collected for a motion or amendments, it is now optionally possible to support them "non-publically". That is, only logged in users can see the names of those supports.
 
 ### Version 4.7.1 [not released yet]
 
