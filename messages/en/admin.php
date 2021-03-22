@@ -368,6 +368,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
                                      '<strong>Hint:</strong> Changes here only affect this one consultation.',
     'translating_none'            => 'No strings to translate',
     'translating_base'            => 'Base language',
+    'translation_motion_types'    => 'Texts of motion types',
     'translating_motion_types'    => 'Motion type specific texts',
     'translating_motion_type'     => 'Texts of the motion type',
     'translating_motion_hint'     => 'This page lets you edit text fragments that are specific for this particular motion type. If no text is entered here, then the default texts from the translation page will be taken instead.',
