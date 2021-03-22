@@ -76,11 +76,12 @@ echo $controller->showErrors(true);
 if ($supportCollectingStatus) {
     echo '<div class="content" style="margin-top: 0;">';
     echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
-    $supportType   = $motion->motionType->getMotionSupportTypeClass();
+    $supportType   = $motion->getMyMotionType()->getMotionSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
     $curr          = count($motion->getSupporters(true));
     if ($motion->hasEnoughSupporters($supportType)) {
-        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_reached_hint'));
+        $textTmpl = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'support_collection_reached_hint');
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], $textTmpl);
     } else {
         $minAll        = $min + 1;
         $currAll       = $curr + count($motion->getInitiators());
@@ -93,10 +94,11 @@ if ($supportCollectingStatus) {
                 Yii::t('motion', 'support_collection_hint_female')
             );
         } else {
-            echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_hint'));
+            $textTmpl = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'support_collection_hint');
+            echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], $textTmpl);
         }
 
-        if ($motion->motionType->policySupportMotions !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
+        if ($motion->getMyMotionType()->policySupportMotions !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
             $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
             echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
             echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
@@ -213,8 +215,8 @@ echo $viewText;
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
 $supporters    = $motion->getSupporters(true);
-$supportType   = $motion->motionType->getMotionSupportTypeClass();
-$supportPolicy = $motion->motionType->getMotionSupportPolicy();
+$supportType   = $motion->getMyMotionType()->getMotionSupportTypeClass();
+$supportPolicy = $motion->getMyMotionType()->getMotionSupportPolicy();
 
 
 if (count($supporters) > 0 || $supportCollectingStatus ||
@@ -238,7 +240,7 @@ if (!$motion->isResolution()) {
 echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 
 $amendments     = $motion->getVisibleAmendments();
-$nobodyCanAmend = ($motion->motionType->getAmendmentPolicy()->getPolicyID() === IPolicy::POLICY_NOBODY);
+$nobodyCanAmend = ($motion->getMyMotionType()->getAmendmentPolicy()->getPolicyID() === IPolicy::POLICY_NOBODY);
 if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
     echo '<section class="amendments" aria-labelledby="amendmentsTitle">' .
          '<h2 class="green" id="amendmentsTitle">' . Yii::t('amend', 'amendments') . '</h2>
@@ -264,7 +266,7 @@ $alternativeCommentView = \app\models\layoutHooks\Layout::getMotionAlternativeCo
 if ($alternativeCommentView) {
     echo $alternativeCommentView;
 }
-$nobodyCanComment = ($motion->motionType->getCommentPolicy()->getPolicyID() === Nobody::getPolicyID());
+$nobodyCanComment = ($motion->getMyMotionType()->getCommentPolicy()->getPolicyID() === Nobody::getPolicyID());
 if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution() && !$alternativeCommentView) {
     echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
     echo '<h2 class="green" id="commentsTitle">' . Yii::t('motion', 'comments') . '</h2>';

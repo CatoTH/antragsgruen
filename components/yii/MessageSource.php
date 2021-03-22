@@ -116,6 +116,8 @@ class MessageSource extends \yii\i18n\MessageSource
         return [
             'motion' => [
                 'create_explanation',
+                'support_collection_hint',
+                'support_collection_reached_hint',
                 'support_collect_explanation',
                 'support_collect_explanation_title',
                 'confirmed_support_phase',
@@ -133,6 +135,8 @@ class MessageSource extends \yii\i18n\MessageSource
             ],
             'amend' => [
                 'create_explanation',
+                'support_collection_hint',
+                'support_collection_reached_hint',
                 'support_collect_explanation',
                 'support_collect_explanation_title',
                 'submitted_screening_email',

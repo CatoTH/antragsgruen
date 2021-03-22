@@ -69,7 +69,8 @@ if ($supportCollectingStatus) {
     $min           = $supportType->getSettingsObj()->minSupporters;
     $curr          = count($amendment->getSupporters(true));
     if ($amendment->hasEnoughSupporters($supportType)) {
-        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('amend', 'support_collection_reached_hint'));
+        $textTmpl = $motion->getMyMotionType()->getConsultationTextWithFallback('amend', 'support_collection_reached_hint');
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], $textTmpl);
     } else {
         $minAll        = $min + 1;
         $currAll       = $curr + count($motion->getInitiators());
@@ -82,10 +83,11 @@ if ($supportCollectingStatus) {
                 Yii::t('motion', 'support_collection_hint_female')
             );
         } else {
-            echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('amend', 'support_collection_hint'));
+            $textTmpl = $motion->getMyMotionType()->getConsultationTextWithFallback('amend', 'support_collection_hint');
+            echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], $textTmpl);
         }
     }
-    if ($motion->motionType->policySupportAmendments !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
+    if ($motion->getMyMotionType()->policySupportAmendments !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
         $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
         echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
         echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
@@ -157,8 +159,8 @@ echo $this->render('_view_text', ['amendment' => $amendment, 'procedureToken' =>
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
 $supporters    = $amendment->getSupporters(true);
-$supportPolicy = $motion->motionType->getAmendmentSupportPolicy();
-$supportType   = $motion->motionType->getAmendmentSupportTypeClass();
+$supportPolicy = $motion->getMyMotionType()->getAmendmentSupportPolicy();
+$supportType   = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
 
 if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser()) {
     echo '<section class="supporters" id="supporters" aria-labelledby="supportersTitle">
