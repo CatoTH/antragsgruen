@@ -44,6 +44,8 @@ class Exporter
             "Ö"                      => "\\\"O",
             "Ü"                      => "\\\"U",
             "ß"                      => "\\ss{}",
+            "● "                      => "\\bullet\\hspace{5pt}", // Spacing after bullet seems to be rather unpredictable
+            "●"                      => "\\bullet",
         ];
         if ($textLineBreaks) {
             $replaces["\n"] = '\\linebreak{}' . "\n"; // Adding a {} at the end prevents broken LaTeX-Files if the next line begins with a "["
