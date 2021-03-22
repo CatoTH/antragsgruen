@@ -45,11 +45,11 @@ use yii\helpers\Html;
  * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
- * @property ConsultationAgendaItem $agendaItem
- * @property Motion $replacedMotion
+ * @property ConsultationAgendaItem|null $agendaItem
+ * @property Motion|null $replacedMotion
  * @property Motion[] $replacedByMotions
- * @property VotingBlock $votingBlock
- * @property User $responsibilityUser
+ * @property VotingBlock|null $votingBlock
+ * @property User|null $responsibilityUser
  * @property SpeechQueue[] $speechQueues
  */
 class Motion extends IMotion implements IRSSItem

@@ -97,7 +97,7 @@ class MotionMover
                 }
                 break;
             case 'consultation':
-                /** @var Consultation $consultation */
+                /** @var Consultation|null $consultation */
                 $consultation = null;
                 foreach ($this->getConsultationTargets() as $con) {
                     if ($con->id === intval($post['consultation'])) {
@@ -107,7 +107,7 @@ class MotionMover
                 if (!$consultation) {
                     throw new Inconsistency('Consultation not found');
                 }
-                /** @var ConsultationMotionType $motionType */
+                /** @var ConsultationMotionType|null $motionType */
                 $motionType = null;
                 foreach ($this->getCompatibleMotionTypes($consultation) as $type) {
                     if ($type->id === intval($post['motionType'][$consultation->id])) {

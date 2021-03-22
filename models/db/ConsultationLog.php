@@ -16,7 +16,7 @@ use yii\helpers\Html;
  * @property string|null $data
  *
  * @property Consultation $consultation
- * @property User $user
+ * @property User|null $user
  */
 class ConsultationLog extends ActiveRecord
 {
@@ -537,7 +537,7 @@ class ConsultationLog extends ActiveRecord
                 // @TODO More detailed output
                 return $str;
             default:
-                return $this->actionType;
+                return (string)$this->actionType;
         }
     }
 }

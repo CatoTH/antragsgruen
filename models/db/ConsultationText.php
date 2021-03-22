@@ -18,9 +18,9 @@ use yii\db\ActiveRecord;
  * @property string $text
  * @property string $editDate
  *
- * @property ConsultationMotionType $motionType
- * @property Consultation $consultation
- * @property Site $site
+ * @property ConsultationMotionType|null $motionType
+ * @property Consultation|null $consultation
+ * @property Site|null $site
  */
 class ConsultationText extends ActiveRecord
 {

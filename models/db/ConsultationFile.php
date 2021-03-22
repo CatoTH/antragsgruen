@@ -9,7 +9,7 @@ use yii\db\ActiveRecord;
 
 /**
  * @property int $id
- * @property int $consultationId
+ * @property int|null $consultationId
  * @property int $siteId
  * @property int|null $downloadPosition
  * @property string $filename

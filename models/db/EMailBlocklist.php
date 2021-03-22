@@ -34,7 +34,7 @@ class EMailBlocklist extends ActiveRecord
 
     public static function removeFromBlocklist(string $email): void
     {
-        /** @var EMailBlocklist $blocklist */
+        /** @var EMailBlocklist|null $blocklist */
         $blocklist = static::findOne(md5(mb_strtolower(trim($email))));
         if ($blocklist) {
             $blocklist->delete();
