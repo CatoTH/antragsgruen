@@ -117,7 +117,7 @@ If you encounter any problem using the web-based updater, please consult the [Up
 
 ## Deployment techniques
 
-### LaTeX/XeTeX-based PDF-rendering:
+### LaTeX/XeTeX-based PDF-rendering
 
 Necessary packets on Linux (Debian):
 ```bash
@@ -140,6 +140,14 @@ Add the following settings to your config.json (and adapt them to your needs):
 ```
 
 When LaTeX complains about `scrlayer2.sty` not found, executing the SQL statement `UPDATE texTemplate SET texLayout = REPLACE(texLayout, 'scrpage2', 'scrlayer-scrpage');` followed by clearing all caches (`./yii cache/flush-all`) should fix this problem.
+
+### PHP-Based PDF-Rendering
+
+The PHP-processes need writing permissions to the folder
+If this is not possible, you need to specify an alternative writable folder by hand by adding the following line to the beginning of `web/index.php`:
+```php
+define("K_PATH_FONTS", "/path/to/writable/directory/");
+```
 
 ### FPDI-PDF
 
