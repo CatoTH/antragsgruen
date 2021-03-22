@@ -5,6 +5,7 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  * @var \app\models\db\Motion|null $motion
  * @var \app\models\db\Amendment|null $amendment
+ * @var bool $showInvisible
  */
 
 use app\components\{Tools, UrlHelper};
@@ -42,7 +43,7 @@ if (count($entries) === 0) {
 
     echo '<ul class="list-group activityLog">';
     foreach ($entries as $entry) {
-        if ($entry->formatLogEntry() === null) {
+        if ($entry->formatLogEntry($showInvisible) === null) {
             // Deleted items; they break the pagination, but that's still better than eager-loading all dependant items
             continue;
         }
@@ -60,7 +61,7 @@ if (count($entries) === 0) {
             echo '<div class="motion">' . $motion->getEncodedTitleWithPrefix() . '</div>';
         }
 
-        echo '<div class="description">' . $entry->formatLogEntry() . '</div>';
+        echo '<div class="description">' . $entry->formatLogEntry($showInvisible) . '</div>';
 
         if ($link) {
             echo '</a>';

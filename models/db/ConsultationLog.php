@@ -414,13 +414,13 @@ class ConsultationLog extends ActiveRecord
         return ($row ? $row['titlePrefix'] : null);
     }
 
-    public function formatLogEntry(): ?string
+    public function formatLogEntry(bool $showInvisible = false): ?string
     {
         $this->setMotionData();
-        if ($this->motion && !$this->motion->isVisible()) {
+        if ($this->motion && !$showInvisible && !$this->motion->isVisible()) {
             return null;
         }
-        if ($this->amendment && !$this->amendment->isVisible()) {
+        if ($this->amendment && !$showInvisible && !$this->amendment->isVisible()) {
             return null;
         }
         switch ($this->actionType) {

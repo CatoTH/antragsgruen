@@ -352,11 +352,18 @@ class ConsultationController extends Base
             $form->setFilterForMotionId(intval($motionId));
         }
 
+        $showInvisible = false;
         if ($showAll && User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             $form->setShowUserInvisibleEvents(true);
+            $showInvisible = true;
         }
 
-        return $this->render('activity_log', ['form' => $form, 'motion' => $motion, 'amendment' => $amendment]);
+        return $this->render('activity_log', [
+            'form' => $form,
+            'motion' => $motion,
+            'amendment' => $amendment,
+            'showInvisible' => $showInvisible,
+        ]);
     }
 
     /**
