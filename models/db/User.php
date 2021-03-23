@@ -649,10 +649,17 @@ class User extends ActiveRecord implements IdentityInterface
     public function getAuthUsername(): string
     {
         $authparts = explode(':', $this->auth);
-        if (count($authparts) === 2) {
-            return $authparts[1];
-        } else {
-            return $this->auth;
+        switch ($authparts[0]) {
+            case 'email':
+                return $authparts[1] ?? '';
+            case 'openid':
+                if ($this->isGruenesNetzUser()) {
+                    return $this->getGruenesNetzName();
+                } else {
+                    return $this->auth;
+                }
+            default:
+                return $this->auth;
         }
     }
 

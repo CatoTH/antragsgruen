@@ -129,10 +129,15 @@ if ($adminMode) {
         if ($controller->getParams()->isSamlActive()) {
             $loginTypes['gruenesnetz'] = Yii::t('admin', 'siteacc_add_ww') . ':';
         }
+        if ($initiator->user && $initiator->user->getAuthType() === \app\models\settings\Site::LOGIN_GRUENES_NETZ) {
+            $logininit = 'gruenesnetz';
+        } else {
+            $logininit = 'email';
+        }
         ?>
         <div class="col-md-3 admin-type">
             <input type="hidden" name="initiatorSet" value="">
-            <?= HTMLTools::fueluxSelectbox('initiatorSetType', $loginTypes) ?>
+            <?= HTMLTools::fueluxSelectbox('initiatorSetType', $loginTypes, $logininit) ?>
         </div>
         <div class="col-md-4">
             <input type="text" name="initiatorSetUsername" id="initiatorSetUsername" class="form-control"
