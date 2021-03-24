@@ -1,3 +1,5 @@
+@import "variables";
+
 .motionMergeConfirmForm {
   .newMotionStatus, .newMotionInitiator {
     label {
@@ -579,7 +581,7 @@
         font-style: italic;
       }
     }
-    @media screen and (min-width: 1101px) {
+    @media screen and (min-width: $container-md + 101px) {
       h2 {
         border-bottom: solid 1px #ccc;
       }
@@ -599,7 +601,7 @@
         margin-top: 2px;
       }
     }
-    @media screen and (max-width: 1100px) {
+    @media screen and (max-width: $container-md + 100px) {
       right: 0;
       left: 0;
       width: 100%;

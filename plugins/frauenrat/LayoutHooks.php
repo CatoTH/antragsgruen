@@ -260,6 +260,8 @@ class LayoutHooks extends Hooks
 .motionDataTable .selectlist .btn { border: none; font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif; font-size: 18px; margin-left: -5px; }
 #sidebar .back { display: none; }
 .sectionMyMotions, .sectionMyAmendments, .sectionAgenda { display: none; }
+.motionList .motion > .title a, .motionList .motion > .title .motionLink { color: #0C2847; }
+.motionListBelowAgenda h4.amendments { color: #0071A6; }
 </style>
 <script>
 $(function() {
