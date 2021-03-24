@@ -110,7 +110,7 @@ return [
     'sitedata_sitetitle'      => 'Name der Veranstaltung / des Programms',
     'sitedata_organization'   => 'Name der veranstaltenden Organisation',
     'sitedata_subdomain'      => 'Internet-Adresse der Seite',
-    'sitedata_subdomain_hint' => 'Es sind nur Buchstaben, Zahlen, "_" und "-" möglich.',
+    'sitedata_subdomain_hint' => 'Es sind nur Buchstaben, Zahlen und "-" möglich.',
     'sitedata_contact'        => 'Kontaktadresse',
     'sitedata_contact_hint'   => 'Name, E-Mail, postalische Adresse fürs Impressum',
     'sitedata_subdomain_err'  => 'Die Subdomain "%SUBDOMAIN%" ist nicht verfügbar.',

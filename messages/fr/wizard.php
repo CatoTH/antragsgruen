@@ -90,7 +90,7 @@ return [
     'sitedata_sitetitle'      => 'Nom du site / de la consultation',
     'sitedata_organization'   => 'Nom de l\'organisation de la consultation',
     'sitedata_subdomain'      => 'URL du site',
-    'sitedata_subdomain_hint' => 'Seuls les lettres, les chiffres, "_" et "-" sont autorisés.',
+    'sitedata_subdomain_hint' => 'Seuls les lettres, les chiffres et "-" sont autorisés.',
     'sitedata_contact'        => 'Adresse de contact',
     'sitedata_contact_hint'   => 'Nom, email, adresse postale pour l\' imprint',
     'sitedata_subdomain_err'  => 'Le sous-domaine "%SUBDOMAIN%" n\'est pas disponible.',

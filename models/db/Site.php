@@ -152,11 +152,7 @@ class Site extends ActiveRecord
         $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
-    /**
-     * @param string $subdomain
-     * @return boolean
-     */
-    public static function isSubdomainAvailable($subdomain)
+    public static function isSubdomainAvailable(string $subdomain): bool
     {
         if ($subdomain == '') {
             return false;
@@ -164,6 +160,9 @@ class Site extends ActiveRecord
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if (in_array($subdomain, $params->blockedSubdomains)) {
+            return false;
+        }
+        if (!preg_match('/^[A-Za-z0-9]([A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/siu', $subdomain)) {
             return false;
         }
         $site = Site::findOne(['subdomain' => $subdomain]);

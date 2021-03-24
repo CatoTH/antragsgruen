@@ -110,7 +110,7 @@ return [
     'sitedata_sitetitle'      => 'Name of this site / this consultation',
     'sitedata_organization'   => 'Name of the organization of this consultation',
     'sitedata_subdomain'      => 'Site URL',
-    'sitedata_subdomain_hint' => 'Only letters, numbers, "_" and "-" are allowed.',
+    'sitedata_subdomain_hint' => 'Only letters, numbers and "-" are allowed.',
     'sitedata_contact'        => 'Contact address',
     'sitedata_contact_hint'   => 'Name, e-mail, postal address for the imprint',
     'sitedata_subdomain_err'  => 'The subdomain "%SUBDOMAIN%" is not available.',
