@@ -338,4 +338,19 @@ class HTML2TexTest extends TestBase
         $out = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
+
+    public function testDoubleBr()
+    {
+        $orig = '<p>First line<br>
+<br>
+Second line.</p>';
+        $expect = 'First line\newline
+\phantom{ }
+
+Second line.
+';
+
+        $out = Exporter::getMotionLinesToTeX([$orig]);
+        $this->assertEquals($expect, $out);
+    }
 }

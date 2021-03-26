@@ -87,6 +87,10 @@ class Exporter
         // \newline itself would break, \phantom{ }\newline would lead to two line number
         $str = preg_replace('/(\\}\s*)\\\\newline/siu', '$1\\phantom{ }', $str);
 
+        // \newline \newline makes paragraphs next to sidebars in application look awkward;
+        // the construct with \newline \phantom does not appear to have this issue, and still leaves empty line numbers intact
+        $str = str_replace("\\newline\n\\newline\n", "\\newline\n\\phantom{ }\n\n", $str);
+
         return $str;
     }
 
