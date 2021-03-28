@@ -54,8 +54,7 @@ class SectionMerger
     public function addAmendingParagraphs($amendmentId, $amendingParas)
     {
         $diff     = new Diff();
-        $amParams = ['amendmentId' => $amendmentId];
-        $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->paragraphStrings, $amendingParas, $amParams);
+        $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->paragraphStrings, $amendingParas, intval($amendmentId));
         $paraArr  = MovingParagraphDetector::markupWordArrays($paraArr);
 
         foreach ($paraArr as $paraNo => $wordArr) {

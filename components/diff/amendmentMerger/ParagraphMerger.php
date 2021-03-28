@@ -2,7 +2,7 @@
 
 namespace app\components\diff\amendmentMerger;
 
-use app\components\diff\{Diff, DiffRenderer};
+use app\components\diff\{DataTypes\DiffWord, Diff, DiffRenderer};
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use yii\helpers\Html;
@@ -32,12 +32,16 @@ class ParagraphMerger
         $this->diffs    = [];
     }
 
-    public function addAmendmentParagraph(int $amendmentId, array $wordArr): void
+    /**
+     * @param int $amendmentId
+     * @param DiffWord[] $wordArr
+     */
+    public function addAmendmentParagraph($amendmentId, $wordArr)
     {
         $hasChanges = false;
         $firstDiff  = null;
         for ($i = 0; $i < count($wordArr); $i++) {
-            if (isset($wordArr[$i]['amendmentId'])) {
+            if ($wordArr[$i]->amendmentId !== null) {
                 $hasChanges = true;
                 if ($firstDiff === null) {
                     $firstDiff = $i;
@@ -82,9 +86,9 @@ class ParagraphMerger
             }
 
             while ($wordNo >= 0) {
-                $str = explode("###DEL_", $this->diffs[$locAmendNo]->diff[$wordNo]['diff']);
+                $str = explode("###DEL_", $this->diffs[$locAmendNo]->diff[$wordNo]->diff);
                 if (count($str) > 1 && strpos($str[count($str) - 1], 'START') === 0) {
-                    return $this->diffs[$locAmendNo]->diff[$wordNo]['amendmentId'];
+                    return $this->diffs[$locAmendNo]->diff[$wordNo]->amendmentId;
                 }
                 if (count($str) > 1 && strpos($str[count($str) - 1], 'END') === 0) {
                     return null;
@@ -104,19 +108,19 @@ class ParagraphMerger
 
         foreach ($this->diffs as $locAmendNo => $changeSet) {
             if ($locAmendNo == $amendingNo) {
-                $amendmentId                      = $changeSet->diff[$wordNo]['amendmentId'];
-                $changeSet->diff[$wordNo]['diff'] = $changeSet->diff[$wordNo]['word'];
-                unset($changeSet->diff[$wordNo]['amendmentId']);
-                $changeSet->diff = $insertArr($changeSet->diff, $wordNo, [
-                    'word'        => '',
-                    'diff'        => $insert,
-                    'amendmentId' => $amendmentId,
-                ]);
+                $amendmentId                    = $changeSet->diff[$wordNo]->amendmentId;
+                $changeSet->diff[$wordNo]->diff = $changeSet->diff[$wordNo]->word;
+                $changeSet->diff[$wordNo]->amendmentId = null;
+
+                $toInsert = new DiffWord();
+                $toInsert->diff = $insert;
+                $toInsert->amendmentId = $amendmentId;
+                $changeSet->diff = $insertArr($changeSet->diff, $wordNo, $toInsert);
             } else {
-                $insertArrEl = ['word' => '', 'diff' => ''];
+                $insertArrEl = new DiffWord();
                 $preAm       = $pendingDeleteAmendment($locAmendNo, $wordNo);
                 if ($preAm !== null) {
-                    $insertArrEl['amendmentId'] = $preAm;
+                    $insertArrEl->amendmentId = $preAm;
                 }
                 $changeSet->diff = $insertArr($changeSet->diff, $wordNo, $insertArrEl);
             }
@@ -144,8 +148,8 @@ class ParagraphMerger
             $words     = count($changeSet->diff);
             for ($wordNo = 0; $wordNo < $words; $wordNo++) {
                 $word  = $changeSet->diff[$wordNo];
-                $split = explode('###INS_START###', $word['diff']);
-                if (count($split) === 2 && $split[0] == $word['word']) {
+                $split = explode('###INS_START###', $word->diff);
+                if (count($split) === 2 && $split[0] === $word->word) {
                     $this->moveInsertIntoOwnWord($changeSetNo, $wordNo, '###INS_START###' . $split[1]);
                     $changeSet = $this->diffs[$changeSetNo];
                     $wordNo++;
@@ -167,7 +171,7 @@ class ParagraphMerger
         $currGroupCollides = null;
 
         foreach ($changeSet->diff as $i => $token) {
-            if (isset($token['amendmentId'])) {
+            if ($token->amendmentId !== null) {
                 if ($currTokens === null) {
                     $currGroupCollides = false;
                     $currTokens        = [];
@@ -214,12 +218,12 @@ class ParagraphMerger
 
             foreach ($group['tokens'] as $i => $token) {
                 // Apply the changes to the paragraph
-                $words[$i]['modification'] = $token['diff'];
-                $words[$i]['modifiedBy']   = $token['amendmentId'];
+                $words[$i]['modification'] = $token->diff;
+                $words[$i]['modifiedBy']   = $token->amendmentId;
 
                 // Only the colliding changes are left in the changeset
-                unset($changeSet->diff[$i]['amendmentId']);
-                $changeSet->diff[$i]['diff'] = $changeSet->diff[$i]['word'];
+                $changeSet->diff[$i]->amendmentId = null;
+                $changeSet->diff[$i]->diff = $changeSet->diff[$i]->word;
             }
         }
 
@@ -425,9 +429,9 @@ class ParagraphMerger
                 ];
             }
             foreach ($changeSet->diff as $i => $token) {
-                if (isset($token['amendmentId'])) {
-                    $words[$i]['modification'] = $token['diff'];
-                    $words[$i]['modifiedBy']   = $token['amendmentId'];
+                if ($token->amendmentId !== null) {
+                    $words[$i]['modification'] = $token->diff;
+                    $words[$i]['modifiedBy']   = $token->amendmentId;
                 }
             }
             if ($stripDistantUnchangedWords) {

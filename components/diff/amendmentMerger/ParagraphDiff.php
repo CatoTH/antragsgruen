@@ -2,6 +2,8 @@
 
 namespace app\components\diff\amendmentMerger;
 
+use app\components\diff\DataTypes\DiffWord;
+
 class ParagraphDiff
 {
     /** @var int */
@@ -10,7 +12,7 @@ class ParagraphDiff
     /** @var int */
     public $amendment;
 
-    /** @var array */
+    /** @var DiffWord[] */
     public $diff;
 
     public function __construct(int $amendment, int $firstDiff, array $diff)
