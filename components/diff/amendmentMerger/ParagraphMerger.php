@@ -212,7 +212,7 @@ class ParagraphMerger
 
             foreach ($group['tokens'] as $i => $token) {
                 // Apply the changes to the paragraph
-                $words[$i]->modificationmodification = $token->diff;
+                $words[$i]->modification = $token->diff;
                 $words[$i]->modifiedBy = $token->amendmentId;
 
                 // Only the colliding changes are left in the changeset
@@ -356,6 +356,9 @@ class ParagraphMerger
         $this->merge();
 
         $words = $this->paraData->words;
+
+        var_dump($words);
+
         if ($stripDistantUnchangedWords) {
             $words = $this->stripDistantUnchangedWords($words, $stripDistantUnchangedWords);
         }

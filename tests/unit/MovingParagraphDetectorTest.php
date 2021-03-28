@@ -4,12 +4,9 @@ namespace unit;
 
 use app\components\diff\MovingParagraphDetector;
 use app\models\db\Motion;
-use app\models\db\MotionSection;
 
 class MovingParagraphDetectorTest extends DBTestBase
 {
-    /**
-     */
     public function testTest1()
     {
         $diffParas = [

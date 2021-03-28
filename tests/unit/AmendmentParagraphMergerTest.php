@@ -42,6 +42,6 @@ class AmendmentParagraphMergerTest extends TestBase
         $expected3->text = '</p>';
         $expected3->amendment = 0;
 
-        $this->assertEquals([$expected1, $expected2, $expected3], $grouped);
+        $this->assertEqualsCanonicalizing([$expected1, $expected2, $expected3], $grouped);
     }
 }
