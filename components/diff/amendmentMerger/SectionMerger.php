@@ -2,6 +2,7 @@
 
 namespace app\components\diff\amendmentMerger;
 
+use app\components\diff\DataTypes\GroupedParagraphData;
 use app\components\diff\Diff;
 use app\components\diff\MovingParagraphDetector;
 use app\components\HTMLTools;
@@ -54,8 +55,7 @@ class SectionMerger
     public function addAmendingParagraphs($amendmentId, $amendingParas)
     {
         $diff     = new Diff();
-        $amParams = ['amendmentId' => $amendmentId];
-        $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->paragraphStrings, $amendingParas, $amParams);
+        $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->paragraphStrings, $amendingParas, intval($amendmentId));
         $paraArr  = MovingParagraphDetector::markupWordArrays($paraArr);
 
         foreach ($paraArr as $paraNo => $wordArr) {
@@ -85,7 +85,7 @@ class SectionMerger
 
     /**
      * @param int $paraNo
-     * @return array
+     * @return GroupedParagraphData[]
      */
     public function getGroupedParagraphData($paraNo)
     {
@@ -94,7 +94,7 @@ class SectionMerger
 
     /**
      * @param int $paraNo
-     * @return array
+     * @return GroupedParagraphData[][]
      */
     public function getCollidingParagraphGroups($paraNo)
     {

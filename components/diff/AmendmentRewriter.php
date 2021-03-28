@@ -2,6 +2,7 @@
 
 namespace app\components\diff;
 
+use app\components\diff\DataTypes\DiffWord;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 
@@ -39,8 +40,8 @@ class AmendmentRewriter
     /**
      * AmendmentDiffMerger::moveInsertsIntoTheirOwnWords does about the same and should behave similarily
      *
-     * @param array $toCheckArr
-     * @param array $refArr
+     * @param DiffWord[][] $toCheckArr
+     * @param DiffWord[][] $refArr
      * @return array
      */
     private static function moveInsertsIntoTheirOwnWords($toCheckArr, $refArr)
@@ -52,12 +53,14 @@ class AmendmentRewriter
         $words = count($toCheckArr[0]);
         for ($i = 0; $i < $words; $i++) {
             $word  = $toCheckArr[0][$i];
-            $split = explode('###INS_START###', $word['diff']);
-            if (count($split) === 2 && $split[0] == $word['word']) {
-                $insEl = ['word' => '', 'diff' => '###INS_START###' . $split[1]];
+            $split = explode('###INS_START###', $word->diff);
+            if (count($split) === 2 && $split[0] == $word->word) {
+                $insEl = new DiffWord();
+                $insEl->diff = '###INS_START###' . $split[1];
+
                 $toCheckArr[0] = $insertArr($toCheckArr[0], $i, $insEl);
-                $toCheckArr[0][$i]['diff'] = $split[0];
-                $refArr[0] = $insertArr($refArr[0], $i, ['word' => '', 'diff' => '']);
+                $toCheckArr[0][$i]->diff = $split[0];
+                $refArr[0] = $insertArr($refArr[0], $i, new DiffWord());
                 $i++;
                 $words++;
             }
@@ -75,10 +78,10 @@ class AmendmentRewriter
     public static function createMerge($motionOldPara, $motionNewPara, $amendmentPara)
     {
         $diff           = new Diff();
-        $wordsNewMotion = $diff->compareHtmlParagraphsToWordArray([$motionOldPara], [$motionNewPara], []);
-        $wordsAmendment = $diff->compareHtmlParagraphsToWordArray([$motionOldPara], [$amendmentPara], []);
+        $wordsNewMotion = $diff->compareHtmlParagraphsToWordArray([$motionOldPara], [$motionNewPara]);
+        $wordsAmendment = $diff->compareHtmlParagraphsToWordArray([$motionOldPara], [$amendmentPara]);
 
-        if (count($wordsNewMotion) != count($wordsAmendment)) {
+        if (count($wordsNewMotion) !== count($wordsAmendment)) {
             throw new Internal('canRewrite: word arrays are inconsistent');
         }
 
@@ -89,8 +92,8 @@ class AmendmentRewriter
         list($wordsAmendment, $wordsNewMotion) = static::moveInsertsIntoTheirOwnWords($wordsAmendment, $wordsNewMotion);
 
         for ($i = 0; $i < count($wordsNewMotion[0]); $i++) {
-            $wordNewMotion = $wordsNewMotion[0][$i]['diff'];
-            $wordAmendment = $wordsAmendment[0][$i]['diff'];
+            $wordNewMotion = $wordsNewMotion[0][$i]->diff;
+            $wordAmendment = $wordsAmendment[0][$i]->diff;
 
             $hadDiff = false;
             if ($inDiffMotion && $inDiffAmendment && $wordNewMotion != $wordAmendment) {
@@ -118,7 +121,7 @@ class AmendmentRewriter
             } elseif (count($matchesAmend['mode']) > 0) {
                 $new[] = $wordAmendment;
             } else {
-                $new[] = $wordsNewMotion[0][$i]['word'];
+                $new[] = $wordsNewMotion[0][$i]->word;
             }
         }
 

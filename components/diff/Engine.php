@@ -1,6 +1,12 @@
-<?php
+<?php /** @noinspection PhpMissingReturnTypeInspection */
 
 namespace app\components\diff;
+
+use app\components\diff\DataTypes\InsDelGroup;
+
+/*
+ * Hint: type declarations are missing on purpose in this class, as they unfortunately slow down PHP.
+ */
 
 /*
 http://code.stephenmorley.org/php/diff-implementation/
@@ -26,17 +32,27 @@ class Engine
     private $IGNORE_STR = '';
 
 
-    public function setIgnoreStr(string $str): void
+    public function setIgnoreStr($str)
     {
         $this->IGNORE_STR = $str;
     }
 
-    public function getIgnoreStr(): string
+    /**
+     * @return string
+     */
+    public function getIgnoreStr()
     {
         return $this->IGNORE_STR;
     }
 
-    private function strCmp(string $str1, string $str2, bool $relaxedTags): bool
+    /**
+     * @param string $str1
+     * @param string $str2
+     * @param bool $relaxedTags
+     *
+     * @return bool
+     */
+    private function strCmp($str1, $str2, $relaxedTags)
     {
         if ($this->IGNORE_STR !== '') {
             $str1 = str_replace($this->IGNORE_STR, '', $str1);
@@ -75,7 +91,7 @@ class Engine
      *
      * @return int[]
      */
-    private function getArrayDiffStarts(array $strings1, array $strings2, bool $relaxedTags): array
+    private function getArrayDiffStarts($strings1, $strings2, $relaxedTags)
     {
         $start1 = 0;
         $start2 = 0;
@@ -113,7 +129,7 @@ class Engine
      *
      * @return int[]
      */
-    private function getArrayDiffEnds(array $strings1, array $strings2, int $start1, int $start2, bool $relaxedTags): array
+    private function getArrayDiffEnds($strings1, $strings2, $start1, $start2, $relaxedTags)
     {
         $end1   = count($strings1) - 1;
         $end2   = count($strings2) - 1;
@@ -142,7 +158,7 @@ class Engine
      * @param bool $relaxedTags (for matching LIs even when some attributes are different
      * @return array
      */
-    public function compareArrays(array $strings1, array $strings2, bool $relaxedTags): array
+    public function compareArrays($strings1, $strings2, $relaxedTags)
     {
         list($start1, $start2) = $this->getArrayDiffStarts($strings1, $strings2, $relaxedTags);
         list($end1, $end2) = $this->getArrayDiffEnds($strings1, $strings2, $start1, $start2, $relaxedTags);
@@ -177,8 +193,13 @@ class Engine
         return $diff;
     }
 
-
-    public function compareStrings(string $string1, string $string2): array
+    /**
+     * @param string $string1
+     * @param string $string2
+     *
+     * @return array
+     */
+    public function compareStrings($string1, $string2)
     {
         $sequence1 = preg_split('/\R/', $string1);
         $sequence2 = preg_split('/\R/', $string2);
@@ -186,17 +207,14 @@ class Engine
     }
 
     /**
-     * returns [
-     *   ["start" => 1, "end" => 4, "type" => Engine::INSERTED],
-     *   ["start" => 8, "end" => 10, "type" => Engine::DELETED], ...
-     * ]
-     *
      * @param array $diff
-     * @return array
+     * @return InsDelGroup[]
      */
     private static function findInsDelGroups($diff)
     {
+        /** @var InsDelGroup[] $groups */
         $groups       = [];
+
         $pendingSince = null;
         $pendingType  = null;
         for ($i = 0; $i < count($diff); $i++) {
@@ -205,46 +223,50 @@ class Engine
                     $pendingSince = $i;
                     $pendingType  = static::INSERTED;
                 } elseif ($pendingType != static::INSERTED) {
-                    $groups[]     = [
-                        'start' => $pendingSince,
-                        'end'   => $i - 1,
-                        'type'  => $pendingType,
-                    ];
+                    $group        = new InsDelGroup();
+                    $group->start = $pendingSince;
+                    $group->end   = $i - 1;
+                    $group->type  = $pendingType;
+                    $groups[] = $group;
+
                     $pendingSince = $i;
-                    $pendingType  = static::INSERTED;
+                    $pendingType = static::INSERTED;
                 }
             } elseif ($diff[$i][1] == static::DELETED) {
                 if (!$pendingSince) {
                     $pendingSince = $i;
                     $pendingType  = static::DELETED;
                 } elseif ($pendingType != static::DELETED) {
-                    $groups[]     = [
-                        'start' => $pendingSince,
-                        'end'   => $i - 1,
-                        'type'  => $pendingType,
-                    ];
+                    $group        = new InsDelGroup();
+                    $group->start = $pendingSince;
+                    $group->end   = $i - 1;
+                    $group->type  = $pendingType;
+                    $groups[] = $group;
+
                     $pendingSince = $i;
                     $pendingType  = static::DELETED;
                 }
             } else {
                 if ($pendingSince) {
-                    $groups[]     = [
-                        'start' => $pendingSince,
-                        'end'   => $i - 1,
-                        'type'  => $pendingType,
-                    ];
+                    $group        = new InsDelGroup();
+                    $group->start = $pendingSince;
+                    $group->end   = $i - 1;
+                    $group->type  = $pendingType;
+                    $groups[] = $group;
+
                     $pendingSince = null;
                     $pendingType  = null;
                 }
             }
         }
         if ($pendingSince) {
-            $groups[] = [
-                'start' => $pendingSince,
-                'end'   => $i - 1,
-                'type'  => $pendingType,
-            ];
+            $group        = new InsDelGroup();
+            $group->start = $pendingSince;
+            $group->end   = $i - 1;
+            $group->type  = $pendingType;
+            $groups[] = $group;
         }
+
         return $groups;
     }
 
@@ -264,9 +286,9 @@ class Engine
 
         $forwardShiftingTags = ['<p>', '<ul>', '<ol>', '<blockquote>'];
         foreach ($groups as $group) {
-            $start = $group['start'];
-            $end   = $group['end'];
-            if ($start == 0) {
+            $start = $group->start;
+            $end   = $group->end;
+            if ($start === 0) {
                 continue;
             }
             if ($diff[$start - 1][1] != static::UNMODIFIED) {
@@ -284,9 +306,9 @@ class Engine
 
         $backwardShiftingTags = ['</p>', '</ul>', '</ol>', '</blockquote>'];
         foreach ($groups as $group) {
-            $start = $group['start'];
-            $end   = $group['end'];
-            if ($end == count($diff) - 1) {
+            $start = $group->start;
+            $end   = $group->end;
+            if ($end === count($diff) - 1) {
                 continue;
             }
             if ($diff[$end + 1][1] != static::UNMODIFIED) {

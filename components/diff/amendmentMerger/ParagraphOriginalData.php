@@ -2,6 +2,8 @@
 
 namespace app\components\diff\amendmentMerger;
 
+use app\components\diff\DataTypes\ParagraphMergerWord;
+
 class ParagraphOriginalData
 {
     /** @var string */
@@ -10,19 +12,18 @@ class ParagraphOriginalData
     /** @var string[] */
     public $origTokenized;
 
-    /** @var array */
+    /** @var ParagraphMergerWord[] */
     public $words;
 
     /** @var ParagraphDiff[] */
     public $collidingParagraphs = [];
 
     /**
-     * ParagraphOriginalData constructor.
      * @param string $original
      * @param string[] $origTokenized
      * @param array $words
      */
-    public function __construct($original, array $origTokenized, array $words)
+    public function __construct($original, $origTokenized, $words)
     {
         $this->original      = $original;
         $this->origTokenized = $origTokenized;

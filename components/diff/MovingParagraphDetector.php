@@ -2,6 +2,8 @@
 
 namespace app\components\diff;
 
+use app\components\diff\DataTypes\DiffWord;
+
 class MovingParagraphDetector
 {
     private static $MOVING_PARTNER_COUNT = 1;
@@ -107,7 +109,7 @@ class MovingParagraphDetector
     }
 
     /**
-     * @param array $paras
+     * @param DiffWord[][] $paras
      * @return array
      */
     private static function extractInsertsFromArrays($paras)
@@ -115,8 +117,8 @@ class MovingParagraphDetector
         $inserts = [];
         foreach ($paras as $paraNo => $para) {
             foreach ($para as $wordNo => $word) {
-                if (strpos($word['diff'], '###INS_START###') !== false) {
-                    $insBlocks = explode('###INS_START###', $word['diff']);
+                if (strpos($word->diff, '###INS_START###') !== false) {
+                    $insBlocks = explode('###INS_START###', $word->diff);
                     for ($i = 1; $i < count($insBlocks); $i++) {
                         $txt = explode('###INS_END###', $insBlocks[$i]);
                         foreach (static::getBlocks($txt[0]) as $block) {
@@ -135,7 +137,7 @@ class MovingParagraphDetector
     }
 
     /**
-     * @param array $paras
+     * @param DiffWord[][] $paras
      * @return array
      */
     private static function extractDeletesFromArray($paras)
@@ -148,16 +150,16 @@ class MovingParagraphDetector
                 if ($currDelBlockStart === null) {
                     // If a DEL starts and ends at the same word, it only deletes a single word
                     // As we're only interested in larger deleted blocks, we can ignore those cases here
-                    if (strpos($word['diff'], '###DEL_START###') !== false &&
-                        strpos($word['diff'], '###DEL_END###') === false
+                    if (strpos($word->diff, '###DEL_START###') !== false &&
+                        strpos($word->diff, '###DEL_END###') === false
                     ) {
-                        $x                 = explode('###DEL_START###', $word['diff']);
+                        $x                 = explode('###DEL_START###', $word->diff);
                         $currDelBlock      = $x[1];
                         $currDelBlockStart = $wordNo;
                     }
                 } else {
-                    if (strpos($word['diff'], '###DEL_END###') !== false) {
-                        $x            = explode('###DEL_END###', $word['diff']);
+                    if (strpos($word->diff, '###DEL_END###') !== false) {
+                        $x            = explode('###DEL_END###', $word->diff);
                         $currDelBlock .= $x[0];
                         foreach (static::getBlocks($currDelBlock) as $block) {
                             $deletes[] = [
@@ -170,7 +172,7 @@ class MovingParagraphDetector
                         $currDelBlock      = null;
                         $currDelBlockStart = null;
                     } else {
-                        $currDelBlock .= $word['diff'];
+                        $currDelBlock .= $word->diff;
                     }
                 }
             }
@@ -180,7 +182,7 @@ class MovingParagraphDetector
     }
 
     /**
-     * @param array $paras
+     * @param DiffWord[][] $paras
      * @return array
      */
     public static function markupWordArrays($paras)
@@ -193,17 +195,17 @@ class MovingParagraphDetector
                 if (static::compareMovedParagraphs($insert['html'], $delete['html'])) {
                     $pairid = static::$MOVING_PARTNER_COUNT++;
                     for ($i = $insert['word_from']; $i <= $insert['word_to']; $i++) {
-                        $paras[$insert['para']][$i]['diff'] = static::addMarkup(
-                            $paras[$insert['para']][$i]['diff'],
-                            $paras[$insert['para']][$i]['diff'],
+                        $paras[$insert['para']][$i]->diff = static::addMarkup(
+                            $paras[$insert['para']][$i]->diff,
+                            $paras[$insert['para']][$i]->diff,
                             $delete['para'],
                             $pairid
                         );
                     }
                     for ($i = $delete['word_from']; $i <= $delete['word_to']; $i++) {
-                        $paras[$delete['para']][$i]['diff'] = static::addMarkup(
-                            $paras[$delete['para']][$i]['diff'],
-                            $paras[$delete['para']][$i]['diff'],
+                        $paras[$delete['para']][$i]->diff = static::addMarkup(
+                            $paras[$delete['para']][$i]->diff,
+                            $paras[$delete['para']][$i]->diff,
                             $insert['para'],
                             $pairid
                         );

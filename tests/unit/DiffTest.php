@@ -2,7 +2,7 @@
 
 namespace unit;
 
-use app\components\diff\{Diff, DiffRenderer, Engine};
+use app\components\diff\{DataTypes\DiffWord, Diff, DiffRenderer, Engine};
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 use Codeception\Specify;
@@ -108,6 +108,14 @@ class DiffTest extends TestBase
         $this->assertEquals($expect, $arr);
     }
 
+    private function assertDiffWordEquals($word, $diff, $amendmentId, $diffWord) {
+        $expexted = new DiffWord();
+        $expexted->word = $word;
+        $expexted->diff = $diff;
+        $expexted->amendmentId = $amendmentId;
+        $this->assertEqualsCanonicalizing($expexted, $diffWord);
+    }
+
     public function testInlineDiffToWordBased()
     {
         $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>'];
@@ -117,10 +125,8 @@ class DiffTest extends TestBase
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
             $this->assertEquals(2, count($arr));
             $elements = count($arr[0]);
-            $this->assertEquals(
-                ['word' => '</ul>', 'diff' => '</ul>###INS_START###<ul><li>Test2</li></ul>###INS_END###'],
-                $arr[0][$elements - 1]
-            );
+
+            $this->assertDiffWordEquals('</ul>', '</ul>###INS_START###<ul><li>Test2</li></ul>###INS_END###', null, $arr[0][$elements - 1]);
         } catch (Internal $e) {
             echo $e->getMessage();
             echo "\n";
@@ -162,10 +168,8 @@ class DiffTest extends TestBase
             echo "\n";
             die();
         }
-        $this->assertEquals(
-            ['word' => 'kjhkjh ', 'diff' => 'kjhkjh ###DEL_END######INS_START###45666 kjhkjh<br>###INS_END###'],
-            $words[0][5]
-        );
+
+        $this->assertDiffWordEquals('kjhkjh ', 'kjhkjh ###DEL_END######INS_START###45666 kjhkjh<br>###INS_END###', null, $words[0][5]);
 
 
         $orig = ['<ul><li>Wir sind Nummer 1</li></ul>'];
@@ -179,7 +183,7 @@ class DiffTest extends TestBase
             die();
         }
         $this->assertEquals(1, count($words));
-        $this->assertEquals('###INS_START###<ul><li>Wir bla bla</li></ul>###INS_END###<ul>', $words[0][0]['diff']);
+        $this->assertEquals('###INS_START###<ul><li>Wir bla bla</li></ul>###INS_END###<ul>', $words[0][0]->diff);
 
 
         $orig = ['Test1 Test 2 der Test 3 Test4'];
@@ -192,7 +196,7 @@ class DiffTest extends TestBase
             echo "\n";
             die();
         }
-        $this->assertEquals('###DEL_START###der###DEL_END######INS_START###die###INS_END### ', $words[0][3]['diff']);
+        $this->assertEquals('###DEL_START###der###DEL_END######INS_START###die###INS_END### ', $words[0][3]->diff);
 
 
         $orig = ['Test1 test123456test Test4'];
@@ -205,11 +209,9 @@ class DiffTest extends TestBase
             echo "\n";
             die();
         }
-        $this->assertEquals([
-            ['word' => 'Test1 ', 'diff' => 'Test1 '],
-            ['word' => 'test123456test ', 'diff' => 'test123###DEL_START###4###DEL_END###56test '],
-            ['word' => 'Test4', 'diff' => 'Test4'],
-        ], $words[0]);
+        $this->assertDiffWordEquals('Test1 ', 'Test1 ', null, $words[0][0]);
+        $this->assertDiffWordEquals('test123456test ', 'test123###DEL_START###4###DEL_END###56test ', null, $words[0][1]);
+        $this->assertDiffWordEquals('Test4', 'Test4', null, $words[0][2]);
 
 
         $orig = [
@@ -219,7 +221,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $new  = ['<p>Normaler Text wieder.</p>'];
         $diff = new Diff();
         try {
-            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new, ['amendmentId' => 1]);
+            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new, 1);
         } catch (Internal $e) {
             echo $e->getMessage();
             echo "\n";
@@ -237,17 +239,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         ];
         $diff = new Diff();
         try {
-            $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new, ['amendmentId' => 1]);
+            $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new, 1);
             $this->assertEquals(1, count($arr));
-            $this->assertEquals(
-                ['word' => '.', 'diff' => '.###DEL_END###', 'amendmentId' => 1], $arr[0][21]
-            );
-            $this->assertEquals(
-                ['word'        => '</p>',
-                 'diff'        => '</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###',
-                 'amendmentId' => 1
-                ], $arr[0][22]
-            );
+            $this->assertDiffWordEquals('.', '.###DEL_END###', 1, $arr[0][21]);
+            $this->assertDiffWordEquals('</p>', '</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###', 1, $arr[0][22]);
         } catch (Internal $e) {
             echo $e->getMessage();
             echo "\n";

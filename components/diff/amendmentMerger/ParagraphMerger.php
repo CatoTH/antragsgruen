@@ -1,8 +1,8 @@
-<?php
+<?php /** @noinspection PhpMissingReturnTypeInspection */
 
 namespace app\components\diff\amendmentMerger;
 
-use app\components\diff\{Diff, DiffRenderer};
+use app\components\diff\{DataTypes\DiffWord, DataTypes\GroupedParagraphData, DataTypes\ParagraphMergerWord, Diff, DiffRenderer};
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use yii\helpers\Html;
@@ -22,22 +22,24 @@ class ParagraphMerger
         $origTokenized = Diff::tokenizeLine($paragraphStr);
         $words         = [];
         foreach ($origTokenized as $x) {
-            $words[] = [
-                'orig'         => $x,
-                'modification' => null,
-                'modifiedBy'   => null,
-            ];
+            $word = new ParagraphMergerWord();
+            $word->orig = $x;
+            $words[] = $word;
         }
         $this->paraData = new ParagraphOriginalData($paragraphStr, $origTokenized, $words);
         $this->diffs    = [];
     }
 
-    public function addAmendmentParagraph(int $amendmentId, array $wordArr): void
+    /**
+     * @param int $amendmentId
+     * @param DiffWord[] $wordArr
+     */
+    public function addAmendmentParagraph($amendmentId, $wordArr)
     {
         $hasChanges = false;
         $firstDiff  = null;
         for ($i = 0; $i < count($wordArr); $i++) {
-            if (isset($wordArr[$i]['amendmentId'])) {
+            if ($wordArr[$i]->amendmentId !== null) {
                 $hasChanges = true;
                 if ($firstDiff === null) {
                     $firstDiff = $i;
@@ -82,9 +84,9 @@ class ParagraphMerger
             }
 
             while ($wordNo >= 0) {
-                $str = explode("###DEL_", $this->diffs[$locAmendNo]->diff[$wordNo]['diff']);
+                $str = explode("###DEL_", $this->diffs[$locAmendNo]->diff[$wordNo]->diff);
                 if (count($str) > 1 && strpos($str[count($str) - 1], 'START') === 0) {
-                    return $this->diffs[$locAmendNo]->diff[$wordNo]['amendmentId'];
+                    return $this->diffs[$locAmendNo]->diff[$wordNo]->amendmentId;
                 }
                 if (count($str) > 1 && strpos($str[count($str) - 1], 'END') === 0) {
                     return null;
@@ -96,27 +98,23 @@ class ParagraphMerger
         };
 
         $this->paraData->origTokenized = $insertArr($this->paraData->origTokenized, $wordNo, '');
-        $this->paraData->words         = $insertArr($this->paraData->words, $wordNo, [
-            'orig'         => '',
-            'modification' => null,
-            'modifiedBy'   => null,
-        ]);
+        $this->paraData->words         = $insertArr($this->paraData->words, $wordNo, new ParagraphMergerWord());
 
         foreach ($this->diffs as $locAmendNo => $changeSet) {
             if ($locAmendNo == $amendingNo) {
-                $amendmentId                      = $changeSet->diff[$wordNo]['amendmentId'];
-                $changeSet->diff[$wordNo]['diff'] = $changeSet->diff[$wordNo]['word'];
-                unset($changeSet->diff[$wordNo]['amendmentId']);
-                $changeSet->diff = $insertArr($changeSet->diff, $wordNo, [
-                    'word'        => '',
-                    'diff'        => $insert,
-                    'amendmentId' => $amendmentId,
-                ]);
+                $amendmentId                    = $changeSet->diff[$wordNo]->amendmentId;
+                $changeSet->diff[$wordNo]->diff = $changeSet->diff[$wordNo]->word;
+                $changeSet->diff[$wordNo]->amendmentId = null;
+
+                $toInsert = new DiffWord();
+                $toInsert->diff = $insert;
+                $toInsert->amendmentId = $amendmentId;
+                $changeSet->diff = $insertArr($changeSet->diff, $wordNo, $toInsert);
             } else {
-                $insertArrEl = ['word' => '', 'diff' => ''];
+                $insertArrEl = new DiffWord();
                 $preAm       = $pendingDeleteAmendment($locAmendNo, $wordNo);
                 if ($preAm !== null) {
-                    $insertArrEl['amendmentId'] = $preAm;
+                    $insertArrEl->amendmentId = $preAm;
                 }
                 $changeSet->diff = $insertArr($changeSet->diff, $wordNo, $insertArrEl);
             }
@@ -144,8 +142,8 @@ class ParagraphMerger
             $words     = count($changeSet->diff);
             for ($wordNo = 0; $wordNo < $words; $wordNo++) {
                 $word  = $changeSet->diff[$wordNo];
-                $split = explode('###INS_START###', $word['diff']);
-                if (count($split) === 2 && $split[0] == $word['word']) {
+                $split = explode('###INS_START###', $word->diff);
+                if (count($split) === 2 && $split[0] === $word->word) {
                     $this->moveInsertIntoOwnWord($changeSetNo, $wordNo, '###INS_START###' . $split[1]);
                     $changeSet = $this->diffs[$changeSetNo];
                     $wordNo++;
@@ -167,13 +165,13 @@ class ParagraphMerger
         $currGroupCollides = null;
 
         foreach ($changeSet->diff as $i => $token) {
-            if (isset($token['amendmentId'])) {
+            if ($token->amendmentId !== null) {
                 if ($currTokens === null) {
                     $currGroupCollides = false;
                     $currTokens        = [];
                 }
                 $currTokens[$i] = $token;
-                if ($this->paraData->words[$i]['modifiedBy'] > 0) {
+                if ($this->paraData->words[$i]->modifiedBy > 0) {
                     $currGroupCollides = true;
                 }
             } else {
@@ -214,12 +212,12 @@ class ParagraphMerger
 
             foreach ($group['tokens'] as $i => $token) {
                 // Apply the changes to the paragraph
-                $words[$i]['modification'] = $token['diff'];
-                $words[$i]['modifiedBy']   = $token['amendmentId'];
+                $words[$i]->modification = $token->diff;
+                $words[$i]->modifiedBy = $token->amendmentId;
 
                 // Only the colliding changes are left in the changeset
-                unset($changeSet->diff[$i]['amendmentId']);
-                $changeSet->diff[$i]['diff'] = $changeSet->diff[$i]['word'];
+                $changeSet->diff[$i]->amendmentId = null;
+                $changeSet->diff[$i]->diff = $changeSet->diff[$i]->word;
             }
         }
 
@@ -245,127 +243,89 @@ class ParagraphMerger
         $this->merged = true;
     }
 
-    public static function stripDistantUnchangedWords(array $words, int $maxDistance): array
+    /**
+     * @param ParagraphMergerWord[] $words
+     *
+     * @return GroupedParagraphData[]
+     */
+    public static function groupParagraphData($words)
     {
-        $distance = null;
-        $numWords = count($words);
-        foreach ($words as $i => $word) {
-            $words[$i]['distance'] = null;
-        }
-        for ($i = 0; $i < $numWords; $i++) {
-            if ($words[$i]['modification']) {
-                $distance = 0;
-            } else {
-                if ($distance === null) {
-                    continue;
-                }
-                if (trim(strip_tags($words[$i]['orig'])) != '') {
-                    $distance++;
-                }
-                $words[$i]['distance'] = $distance;
-            }
-        }
-        for ($i = $numWords - 1; $i >= 0; $i--) {
-            if ($words[$i]['modification']) {
-                $distance = 0;
-            } else {
-                if ($distance === null) {
-                    continue;
-                }
-                if (trim(strip_tags($words[$i]['orig'])) != '') {
-                    $distance++;
-                }
-                if ($words[$i]['distance'] === null || $words[$i]['distance'] > $distance) {
-                    $words[$i]['distance'] = $distance;
-                }
-            }
-        }
-
-        foreach ($words as $i => $word) {
-            if (strpos($word['orig'], '<') === false && trim($word['orig']) != '') {
-                if ($words[$i]['distance'] == ($maxDistance + 1)) {
-                    $words[$i]['orig'] = ' … ';
-                } elseif ($words[$i]['distance'] > ($maxDistance + 1)) {
-                    $words[$i]['orig'] = '';
-                }
-            }
-            unset($words[$i]['distance']);
-        }
-
-        return $words;
-    }
-
-    public static function groupParagraphData(array $words): array
-    {
+        /** @var GroupedParagraphData[] $groupedParaData */
         $groupedParaData  = [];
         $pending          = '';
         $pendingCurrAmend = 0;
-        $addToGrouped     = function ($pendingCurrAmend, $text) use (&$groupedParaData) {
-            $groupedParaData[] = [
-                'amendment' => $pendingCurrAmend,
-                //'text'      => static::cleanupParagraphData($text),
-                'text'      => $text,
-            ];
-        };
+
         foreach ($words as $word) {
-            if ($word['modifiedBy'] !== null) {
-                if ($pendingCurrAmend === 0 && !in_array($word['orig'], ['', '#', '##', '###'])) { // # would lead to conflicty with ###DEL_START### in the modification
-                    if (mb_strpos($word['modification'], $word['orig']) === 0) {
+            if ($word->modifiedBy !== null) {
+                if ($pendingCurrAmend === 0 && !in_array($word->orig, ['', '#', '##', '###'])) { // # would lead to conflicty with ###DEL_START### in the modification
+                    if (mb_strpos($word->modification, $word->orig) === 0) {
                         // The current word has an unchanged beginning + an insertion or deletion
                         // => the unchanged part will be added to the $pending queue (which will be added to $groupedParaData in the next "if" statement
-                        $shortened            = mb_substr($word['modification'], mb_strlen($word['orig']));
-                        $pending              .= $word['orig'];
-                        $word['modification'] = $shortened;
+                        $shortened            = mb_substr($word->modification, mb_strlen($word->orig));
+                        $pending              .= $word->orig;
+                        $word->modification = $shortened;
                     }
                 }
-                if ($word['modifiedBy'] !== $pendingCurrAmend) {
-                    $addToGrouped($pendingCurrAmend, $pending);
+                if ($word->modifiedBy !== $pendingCurrAmend) {
+                    $data = new GroupedParagraphData();
+                    $data->amendment = $pendingCurrAmend;
+                    $data->text = $pending;
+                    $groupedParaData[] = $data;
+
                     $pending          = '';
-                    $pendingCurrAmend = $word['modifiedBy'];
+                    $pendingCurrAmend = $word->modifiedBy;
                 }
-                $pending .= $word['modification'];
+                $pending .= $word->modification;
             } else {
                 if (0 !== $pendingCurrAmend) {
-                    $addToGrouped($pendingCurrAmend, $pending);
+                    $data = new GroupedParagraphData();
+                    $data->amendment = $pendingCurrAmend;
+                    $data->text = $pending;
+                    $groupedParaData[] = $data;
+
                     $pending          = '';
                     $pendingCurrAmend = 0;
                 }
-                $pending .= $word['orig'];
+                $pending .= $word->orig;
             }
         }
-        $addToGrouped($pendingCurrAmend, $pending);
+
+        $data = new GroupedParagraphData();
+        $data->amendment = $pendingCurrAmend;
+        $data->text = $pending;
+        $groupedParaData[] = $data;
+
         return $groupedParaData;
     }
 
-    public function getGroupedParagraphData(?int $stripDistantUnchangedWords = null): array
+    /**
+     * @return GroupedParagraphData[]
+     */
+    public function getGroupedParagraphData(): array
     {
         $this->merge();
 
         $words = $this->paraData->words;
-        if ($stripDistantUnchangedWords) {
-            $words = $this->stripDistantUnchangedWords($words, $stripDistantUnchangedWords);
-        }
 
         return static::groupParagraphData($words);
     }
 
     /**
      * @param Amendment[] $amendmentsById
-     * @param null|integer $stripDistantUnchangedWords
      * @return string
      */
-    public function getFormattedDiffText(array $amendmentsById, ?int $stripDistantUnchangedWords = null): string
+    public function getFormattedDiffText(array $amendmentsById): string
     {
         $CHANGESET_COUNTER = 0;
         $changeset         = [];
 
-        $groupedParaData = $this->getGroupedParagraphData($stripDistantUnchangedWords);
+        $groupedParaData = $this->getGroupedParagraphData();
         $paragraphText   = '';
         foreach ($groupedParaData as $part) {
-            $text = $part['text'];
+            $text = $part->text;
 
-            if ($part['amendment'] > 0) {
-                $amendmentId = $part['amendment'];
+            if ($part->amendment > 0) {
+                $amendmentId = $part->amendment;
                 $cid         = $CHANGESET_COUNTER++;
                 if (!isset($changeset[$amendmentId])) {
                     $changeset[$amendmentId] = [];
@@ -409,35 +369,35 @@ class ParagraphMerger
         return $this->paraData->collidingParagraphs;
     }
 
-    public function getCollidingParagraphGroups(?int $stripDistantUnchangedWords = null): array
+    /**
+     * @return GroupedParagraphData[][]
+     */
+    public function getCollidingParagraphGroups(): array
     {
         $this->merge();
 
         $grouped = [];
 
         foreach ($this->paraData->collidingParagraphs as $changeSet) {
+            /** @var ParagraphMergerWord[] $words */
             $words = [];
             foreach ($this->paraData->origTokenized as $token) {
-                $words[] = [
-                    'orig'         => $token,
-                    'modification' => null,
-                    'modifiedBy'   => null,
-                ];
+                $mergerWord = new ParagraphMergerWord();
+                $mergerWord->orig = $token;
+                $words[] = $mergerWord;
             }
+
             foreach ($changeSet->diff as $i => $token) {
-                if (isset($token['amendmentId'])) {
-                    $words[$i]['modification'] = $token['diff'];
-                    $words[$i]['modifiedBy']   = $token['amendmentId'];
+                if ($token->amendmentId !== null) {
+                    $words[$i]->modification = $token->diff;
+                    $words[$i]->modifiedBy   = $token->amendmentId;
                 }
-            }
-            if ($stripDistantUnchangedWords) {
-                $words = $this->stripDistantUnchangedWords($words, $stripDistantUnchangedWords);
             }
 
             $data = static::groupParagraphData($words);
             foreach ($data as $i => $dat) {
-                if ($dat['amendment'] == 0) {
-                    $data[$i]['text'] = static::stripUnchangedLiFromColliding($dat['text']);
+                if ($dat->amendment == 0) {
+                    $data[$i]->text = static::stripUnchangedLiFromColliding($dat->text);
                 }
             }
             $grouped[$changeSet->amendment] = $data;
@@ -446,6 +406,13 @@ class ParagraphMerger
         return $grouped;
     }
 
+    /**
+     * @param GroupedParagraphData[] $paraData
+     * @param Amendment $amendment
+     * @param Amendment[] $amendmentsById
+     *
+     * @return string
+     */
     public static function getFormattedCollision(array $paraData, Amendment $amendment, array $amendmentsById): string
     {
         $amendmentUrl      = UrlHelper::createAmendmentUrl($amendment);
@@ -453,10 +420,10 @@ class ParagraphMerger
         $CHANGESET_COUNTER = 0;
 
         foreach ($paraData as $part) {
-            $text = $part['text'];
+            $text = $part->text;
 
-            if ($part['amendment'] > 0) {
-                $amendment = $amendmentsById[$part['amendment']];
+            if ($part->amendment > 0) {
+                $amendment = $amendmentsById[$part->amendment];
                 $cid       = $CHANGESET_COUNTER++;
 
                 $mid  = $cid . '-' . $amendment->id;

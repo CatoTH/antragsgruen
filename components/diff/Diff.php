@@ -1,9 +1,14 @@
-<?php
+<?php /** @noinspection PhpMissingReturnTypeInspection */
 
 namespace app\components\diff;
 
+use app\components\diff\DataTypes\DiffWord;
 use app\components\HashedStaticCache;
 use app\models\exceptions\Internal;
+
+/*
+ * Hint: type declarations are missing on purpose in this class, as they unfortunately slow down PHP.
+ */
 
 class Diff
 {
@@ -17,8 +22,6 @@ class Diff
     /** @var Engine */
     private $engine;
 
-    /**
-     */
     public function __construct()
     {
         $this->engine = new Engine();
@@ -58,11 +61,7 @@ class Diff
         }
     }
 
-    /**
-     * @param string $line
-     * @return string
-     */
-    public static function normalizeForDiff($line)
+    public static function normalizeForDiff(string $line): string
     {
         return preg_replace("/<br>\\n+/siu", "<br>", $line);
     }
@@ -333,7 +332,13 @@ class Diff
         return ($nodeType1 !== $nodeType2);
     }
 
-    public function computeLineDiff(string $lineOld, string $lineNew): string
+    /**
+     * @param string $lineOld
+     * @param string $lineNew
+     *
+     * @return string
+     */
+    public function computeLineDiff($lineOld, $lineNew)
     {
         $computedStrs = [];
         $lineOld      = static::normalizeForDiff($lineOld);
@@ -498,6 +503,7 @@ class Diff
         if ($prefixLen < 40) {
             $prefix = '';
         } else {
+            /** @noinspection PhpStatementHasEmptyBodyInspection */
             if ($prefixLen > 0 && mb_substr($prefix, $prefixLen - 1, 1) === '.') {
                 // Leave it unchanged
             } elseif ($prefixLen > 40 && mb_strrpos($prefix, '. ') > $prefixLen - 40) {
@@ -640,17 +646,14 @@ class Diff
 
     /**
      * @param string $diff
-     * @param array $amParams
-     * @return array
+     * @param int|null $amendmentId
+     * @return DiffWord[]
      */
-    public function convertToWordArray($diff, $amParams)
+    public function convertToWordArray($diff, $amendmentId = null)
     {
         $splitChars        = [' ', '-', '>', '<', ':', '.'];
         $words             = [
-            0 => [
-                'word' => '',
-                'diff' => '',
-            ]
+            0 => new DiffWord(),
         ];
         $diffPartArr       = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
         $inDel             = $inIns = false;
@@ -658,28 +661,28 @@ class Diff
         $pendingOpeningDel = false;
         foreach ($diffPartArr as $diffPart) {
             if ($diffPart == '###INS_START###') {
-                $words[$originalWordPos]['diff'] .= $diffPart;
-                $words[$originalWordPos]         = array_merge($words[$originalWordPos], $amParams);
-                $inIns                           = true;
+                $words[$originalWordPos]->diff .= $diffPart;
+                $words[$originalWordPos]->amendmentId = $amendmentId;
+                $inIns = true;
             } elseif ($diffPart == '###INS_END###') {
-                $words[$originalWordPos]['diff'] .= $diffPart;
-                $words[$originalWordPos]         = array_merge($words[$originalWordPos], $amParams);
-                $inIns                           = false;
+                $words[$originalWordPos]->diff .= $diffPart;
+                $words[$originalWordPos]->amendmentId = $amendmentId;
+                $inIns = false;
             } elseif ($diffPart == '###DEL_START###') {
                 $inDel             = true;
                 $pendingOpeningDel = true;
             } elseif ($diffPart == '###DEL_END###') {
-                $words[$originalWordPos]['diff'] .= $diffPart;
-                $words[$originalWordPos]         = array_merge($words[$originalWordPos], $amParams);
-                $inDel                           = false;
+                $words[$originalWordPos]->diff .= $diffPart;
+                $words[$originalWordPos]->amendmentId = $amendmentId;
+                $inDel = false;
             } else {
                 $diffPartWords = static::tokenizeLine($diffPart);
                 if ($inIns) {
-                    $words[$originalWordPos]['diff'] .= implode('', $diffPartWords);
-                    $words[$originalWordPos]         = array_merge($words[$originalWordPos], $amParams);
+                    $words[$originalWordPos]->diff .= implode('', $diffPartWords);
+                    $words[$originalWordPos]->amendmentId = $amendmentId;
                 } elseif ($inDel) {
                     foreach ($diffPartWords as $diffPartWord) {
-                        $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
+                        $prevLastChar = mb_substr($words[$originalWordPos]->word, -1, 1);
                         $isNewWord    = (
                             in_array($prevLastChar, $splitChars) ||
                             (in_array($diffPartWord, $splitChars) && $diffPartWord != ' ' && $diffPartWord != '-') ||
@@ -687,22 +690,19 @@ class Diff
                         );
                         if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
-                            $words[$originalWordPos] = [
-                                'word' => '',
-                                'diff' => '',
-                            ];
+                            $words[$originalWordPos] = new DiffWord();
                         }
-                        $words[$originalWordPos]['word'] .= $diffPartWord;
+                        $words[$originalWordPos]->word .= $diffPartWord;
                         if ($pendingOpeningDel) {
-                            $words[$originalWordPos]['diff'] .= '###DEL_START###';
-                            $pendingOpeningDel               = false;
+                            $words[$originalWordPos]->diff .= '###DEL_START###';
+                            $pendingOpeningDel              = false;
                         }
-                        $words[$originalWordPos]['diff'] .= $diffPartWord;
-                        $words[$originalWordPos]         = array_merge($words[$originalWordPos], $amParams);
+                        $words[$originalWordPos]->diff .= $diffPartWord;
+                        $words[$originalWordPos]->amendmentId = $amendmentId;
                     }
                 } else {
                     foreach ($diffPartWords as $diffPartWord) {
-                        $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
+                        $prevLastChar = mb_substr($words[$originalWordPos]->word, -1, 1);
                         $isNewWord    = (
                             in_array($prevLastChar, $splitChars) ||
                             (in_array($diffPartWord, $splitChars) && $diffPartWord != ' ' && $diffPartWord != '-') ||
@@ -711,36 +711,33 @@ class Diff
 
                         if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
-                            $words[$originalWordPos] = [
-                                'word' => '',
-                                'diff' => '',
-                            ];
+                            $words[$originalWordPos] = new DiffWord();
                         }
-                        $words[$originalWordPos]['word'] .= $diffPartWord;
-                        $words[$originalWordPos]['diff'] .= $diffPartWord;
+                        $words[$originalWordPos]->word .= $diffPartWord;
+                        $words[$originalWordPos]->diff .= $diffPartWord;
                     }
                 }
             }
         }
 
         $first = array_shift($words);
-        if (count($words) == 0) {
+        if (count($words) === 0) {
             return [$first];
         } else {
-            $words[0]['diff'] = $first['diff'] . $words[0]['diff'];
+            $words[0]->diff = $first->diff . $words[0]->diff;
             return $words;
         }
     }
 
     /**
      * @param string $orig
-     * @param array $wordArr
+     * @param DiffWord[] $wordArr
      * @throws Internal
      */
     public function checkWordArrayConsistency($orig, $wordArr)
     {
         $origArr = self::tokenizeLine($orig);
-        if (count($origArr) == 0 && count($wordArr) == 1) {
+        if (count($origArr) === 0 && count($wordArr) === 1) {
             return;
         }
         for ($i = 0; $i < count($wordArr); $i++) {
@@ -749,14 +746,14 @@ class Diff
                 var_dump($origArr);
                 throw new Internal('Only exists in Diff-wordArray: ' . print_r($wordArr[$i]) . ' (Pos: ' . $i . ')');
             }
-            if ($origArr[$i] != $wordArr[$i]['word']) {
+            if ($origArr[$i] !== $wordArr[$i]->word) {
                 var_dump($wordArr);
                 var_dump($origArr);
                 throw new Internal('Inconsistency; first difference at pos: ' . $i .
-                    ' ("' . $origArr[$i] . '" vs. "' . $wordArr[$i]['word'] . '")');
+                    ' ("' . $origArr[$i] . '" vs. "' . $wordArr[$i]->word . '")');
             }
         }
-        if (count($wordArr) != count($origArr)) {
+        if (count($wordArr) !== count($origArr)) {
             var_dump($wordArr);
             var_dump($origArr);
             throw new Internal('Unequal size of arrays, but equal at beginning');
@@ -766,11 +763,11 @@ class Diff
     /**
      * @param string[] $referenceParas
      * @param string[] $newParas
-     * @param array $amParams
+     * @param int|null $amendmentId
      * @throws Internal
-     * @return array
+     * @return DiffWord[][]
      */
-    public function compareHtmlParagraphsToWordArray($referenceParas, $newParas, $amParams = [])
+    public function compareHtmlParagraphsToWordArray($referenceParas, $newParas, $amendmentId = null)
     {
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
@@ -779,34 +776,35 @@ class Diff
             throw new Internal('compareSectionedHtml: number of sections does not match');
         }
 
+        /** @var DiffWord[][] $diffSections */
         $diffSections  = [];
         $pendingInsert = '';
         for ($i = 0; $i < count($adjustedRef); $i++) {
             if ($adjustedRef[$i] === '###EMPTYINSERTED###') {
                 $diffLine  = $this->computeLineDiff('', $adjustedMatching[$i]);
-                $wordArray = $this->convertToWordArray($diffLine, $amParams);
-                if (count($wordArray) !== 1 || $wordArray[0]['word'] !== '') {
+                $wordArray = $this->convertToWordArray($diffLine, $amendmentId);
+                if (count($wordArray) !== 1 || $wordArray[0]->word !== '') {
                     throw new Internal('Inserted Paragraph Incosistency');
                 }
                 if (count($diffSections) === 0) {
-                    $pendingInsert .= $wordArray[0]['diff'];
+                    $pendingInsert .= $wordArray[0]->diff;
                 } else {
                     $last                                 = count($diffSections) - 1;
                     $lastEl                               = count($diffSections[$last]) - 1;
-                    $diffSections[$last][$lastEl]['diff'] .= $wordArray[0]['diff'];
-                    $diffSections[$last][$lastEl]         = array_merge($diffSections[$last][$lastEl], $amParams);
+                    $diffSections[$last][$lastEl]->diff .= $wordArray[0]->diff;
+                    $diffSections[$last][$lastEl]->amendmentId = $amendmentId;
                 }
             } else {
                 $origLine    = $adjustedRef[$i];
                 $matchingRow = str_replace('###EMPTYINSERTED###', '', $adjustedMatching[$i]);
                 $diffLine    = $this->computeLineDiff($origLine, $matchingRow);
-                $wordArray   = $this->convertToWordArray($diffLine, $amParams);
+                $wordArray   = $this->convertToWordArray($diffLine, $amendmentId);
 
                 $this->checkWordArrayConsistency($origLine, $wordArray);
                 if ($pendingInsert !== '') {
-                    $wordArray[0]['diff'] = $pendingInsert . $wordArray[0]['diff'];
-                    $wordArray[0]         = array_merge($wordArray[0], $amParams);
-                    $pendingInsert        = '';
+                    $wordArray[0]->diff = $pendingInsert . $wordArray[0]->diff;
+                    $wordArray[0]->amendmentId = $amendmentId;
+                    $pendingInsert      = '';
                 }
                 $diffSections[] = $wordArray;
             }
@@ -818,7 +816,7 @@ class Diff
      * @param array $referenceParas
      * @param array $newParas
      * @param int $diffFormatting
-     * @return array[]
+     * @return string[]
      * @throws Internal
      */
     public static function computeAffectedParagraphs($referenceParas, $newParas, $diffFormatting)
