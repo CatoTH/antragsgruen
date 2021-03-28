@@ -2,6 +2,7 @@
 
 namespace app\components\diff\amendmentMerger;
 
+use app\components\diff\DataTypes\GroupedParagraphData;
 use app\components\diff\Diff;
 use app\components\diff\MovingParagraphDetector;
 use app\components\HTMLTools;
@@ -84,7 +85,7 @@ class SectionMerger
 
     /**
      * @param int $paraNo
-     * @return array
+     * @return GroupedParagraphData[]
      */
     public function getGroupedParagraphData($paraNo)
     {

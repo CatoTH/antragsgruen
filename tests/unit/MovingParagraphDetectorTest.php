@@ -27,8 +27,6 @@ class MovingParagraphDetectorTest extends DBTestBase
         ], $markedUp);
     }
 
-    /**
-     */
     public function testTest2()
     {
         $movedParagraphInserted = [];
@@ -36,7 +34,6 @@ class MovingParagraphDetectorTest extends DBTestBase
 
         /** @var Motion $motion */
         $motion = Motion::findOne(117);
-        /** @var MotionSection $section */
         foreach ($motion->sections as $section) {
             if ($section->sectionId == 2) {
                 $amendments = [];
@@ -48,11 +45,11 @@ class MovingParagraphDetectorTest extends DBTestBase
                 foreach (array_keys($paragraphs) as $paragraphNo) {
                     $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
                     foreach ($groupedParaData as $group) {
-                        if (mb_strpos($group['text'], 'data-moving-partner-id') !== false) {
-                            if (mb_strpos($group['text'], '###INS_START###') !== false) {
+                        if (mb_strpos($group->text, 'data-moving-partner-id') !== false) {
+                            if (mb_strpos($group->text, '###INS_START###') !== false) {
                                 $movedParagraphInserted[] = $paragraphNo;
                             }
-                            if (mb_strpos($group['text'], '###DEL_START###') !== false) {
+                            if (mb_strpos($group->text, '###DEL_START###') !== false) {
                                 $movedParagraphDeleted[] = $paragraphNo;
                             }
                         }

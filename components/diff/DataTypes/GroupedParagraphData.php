@@ -5,14 +5,11 @@ namespace app\components\diff\DataTypes;
 // Pure data objects. They are more performant than using array/hashes.
 // Also, skipping the constructor and manually assigning the properties seems to increase performance a bit
 
-class DiffWord
+class GroupedParagraphData
 {
-    /** @var string */
-    public $word = '';
+    /** @var int - 0 for "no amendment" */
+    public $amendment;
 
     /** @var string */
-    public $diff = '';
-
-    /** @var null|int */
-    public $amendmentId = null;
+    public $text;
 }

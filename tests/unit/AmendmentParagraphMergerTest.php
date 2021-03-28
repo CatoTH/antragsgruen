@@ -3,54 +3,45 @@
 namespace unit;
 
 use app\components\diff\amendmentMerger\ParagraphMerger;
+use app\components\diff\DataTypes\GroupedParagraphData;
+use app\components\diff\DataTypes\ParagraphMergerWord;
 
 class AmendmentParagraphMergerTest extends TestBase
 {
+    private function getParagraphMergerWord($orig, $modification, $modifiedBy): ParagraphMergerWord
+    {
+        $data = new ParagraphMergerWord();
+        $data->orig = $orig;
+        $data->modification = $modification;
+        $data->modifiedBy = $modifiedBy;
+
+        return $data;
+    }
 
     public function testDeletedHash()
     {
         $words = [
-            [
-                'orig'         => 'werden',
-                'modification' => null,
-                'modifiedBy'   => null,
-            ],
-            [
-                'orig'         => '.',
-                'modification' => null,
-                'modifiedBy'   => null,
-            ],
-            [
-                'orig'         => '##', // This is a typo in the original motion that is supposed to be deleted in the amendment
-                'modification' => '###DEL_START####',
-                'modifiedBy'   => 27300,
-            ],
-            [
-                'orig'         => '</em>',
-                'modification' => '</em>###DEL_END###',
-                'modifiedBy'   => 27300,
-            ],
-            [
-                'orig'         => '</p>',
-                'modification' => null,
-                'modifiedBy'   => null,
-            ],
+            $this->getParagraphMergerWord('werden', null, null),
+            $this->getParagraphMergerWord('.', null, null),
+            $this->getParagraphMergerWord('##', '###DEL_START####', 27300),  // This is a typo in the original motion that is supposed to be deleted in the amendment
+            $this->getParagraphMergerWord('</em>', '</em>###DEL_END###', 27300),
+            $this->getParagraphMergerWord('</p>', null, null),
         ];
 
         $grouped = ParagraphMerger::groupParagraphData($words);
-        $this->assertEquals([
-            [
-                'amendment' => 0,
-                'text'      => 'werden.',
-            ],
-            [
-                'amendment' => 27300,
-                'text'      => '###DEL_START####</em>###DEL_END###',
-            ],
-            [
-                'amendment' => 0,
-                'text'      => '</p>',
-            ]
-        ], $grouped);
+
+        $expected1 = new GroupedParagraphData();
+        $expected1->text = 'werden.';
+        $expected1->amendment = 0;
+
+        $expected2 = new GroupedParagraphData();
+        $expected2->text = '###DEL_START####</em>###DEL_END###';
+        $expected2->amendment = 27300;
+
+        $expected3 = new GroupedParagraphData();
+        $expected3->text = '</p>';
+        $expected3->amendment = 0;
+
+        $this->assertEquals([$expected1, $expected2, $expected3], $grouped);
     }
 }
