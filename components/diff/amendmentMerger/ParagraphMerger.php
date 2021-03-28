@@ -243,56 +243,6 @@ class ParagraphMerger
         $this->merged = true;
     }
 
-    public static function stripDistantUnchangedWords(array $words, int $maxDistance): array
-    {
-        $distance = null;
-        $numWords = count($words);
-        foreach ($words as $i => $word) {
-            $words[$i]['distance'] = null;
-        }
-        for ($i = 0; $i < $numWords; $i++) {
-            if ($words[$i]['modification']) {
-                $distance = 0;
-            } else {
-                if ($distance === null) {
-                    continue;
-                }
-                if (trim(strip_tags($words[$i]['orig'])) != '') {
-                    $distance++;
-                }
-                $words[$i]['distance'] = $distance;
-            }
-        }
-        for ($i = $numWords - 1; $i >= 0; $i--) {
-            if ($words[$i]['modification']) {
-                $distance = 0;
-            } else {
-                if ($distance === null) {
-                    continue;
-                }
-                if (trim(strip_tags($words[$i]['orig'])) != '') {
-                    $distance++;
-                }
-                if ($words[$i]['distance'] === null || $words[$i]['distance'] > $distance) {
-                    $words[$i]['distance'] = $distance;
-                }
-            }
-        }
-
-        foreach ($words as $i => $word) {
-            if (strpos($word['orig'], '<') === false && trim($word['orig']) != '') {
-                if ($words[$i]['distance'] == ($maxDistance + 1)) {
-                    $words[$i]['orig'] = ' … ';
-                } elseif ($words[$i]['distance'] > ($maxDistance + 1)) {
-                    $words[$i]['orig'] = '';
-                }
-            }
-            unset($words[$i]['distance']);
-        }
-
-        return $words;
-    }
-
     /**
      * @param ParagraphMergerWord[] $words
      *
@@ -351,32 +301,25 @@ class ParagraphMerger
     /**
      * @return GroupedParagraphData[]
      */
-    public function getGroupedParagraphData(?int $stripDistantUnchangedWords = null): array
+    public function getGroupedParagraphData(): array
     {
         $this->merge();
 
         $words = $this->paraData->words;
-
-        var_dump($words);
-
-        if ($stripDistantUnchangedWords) {
-            $words = $this->stripDistantUnchangedWords($words, $stripDistantUnchangedWords);
-        }
 
         return static::groupParagraphData($words);
     }
 
     /**
      * @param Amendment[] $amendmentsById
-     * @param null|integer $stripDistantUnchangedWords
      * @return string
      */
-    public function getFormattedDiffText(array $amendmentsById, ?int $stripDistantUnchangedWords = null): string
+    public function getFormattedDiffText(array $amendmentsById): string
     {
         $CHANGESET_COUNTER = 0;
         $changeset         = [];
 
-        $groupedParaData = $this->getGroupedParagraphData($stripDistantUnchangedWords);
+        $groupedParaData = $this->getGroupedParagraphData();
         $paragraphText   = '';
         foreach ($groupedParaData as $part) {
             $text = $part->text;
@@ -429,7 +372,7 @@ class ParagraphMerger
     /**
      * @return GroupedParagraphData[][]
      */
-    public function getCollidingParagraphGroups(?int $stripDistantUnchangedWords = null): array
+    public function getCollidingParagraphGroups(): array
     {
         $this->merge();
 
@@ -449,9 +392,6 @@ class ParagraphMerger
                     $words[$i]->modification = $token->diff;
                     $words[$i]->modifiedBy   = $token->amendmentId;
                 }
-            }
-            if ($stripDistantUnchangedWords) {
-                $words = $this->stripDistantUnchangedWords($words, $stripDistantUnchangedWords);
             }
 
             $data = static::groupParagraphData($words);

@@ -113,7 +113,7 @@ class DiffTest extends TestBase
         $expexted->word = $word;
         $expexted->diff = $diff;
         $expexted->amendmentId = $amendmentId;
-        $this->assertEquals($expexted, $diffWord);
+        $this->assertEqualsCanonicalizing($expexted, $diffWord);
     }
 
     public function testInlineDiffToWordBased()

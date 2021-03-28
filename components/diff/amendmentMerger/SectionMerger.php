@@ -94,7 +94,7 @@ class SectionMerger
 
     /**
      * @param int $paraNo
-     * @return array
+     * @return GroupedParagraphData[][]
      */
     public function getCollidingParagraphGroups($paraNo)
     {
