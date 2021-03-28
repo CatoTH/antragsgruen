@@ -42,4 +42,4 @@ $I->see('(Nur für eingeloggte sichtbar)', '.supportersList');
 
 $I->logout();
 $I->dontSee('Testuser (Testorga)', '.supportersList');
-$I->see('1 Unterstützer*innen');
+$I->see('1 Unterstützer*in', '#supporters');

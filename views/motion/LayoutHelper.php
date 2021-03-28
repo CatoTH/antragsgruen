@@ -386,7 +386,7 @@ class LayoutHelper
             echo '<ul class="supportersList">';
             foreach ($supporters as $supp) {
                 $isMe = (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $loginlessSupported));
-                if ($currUserId === 0 && !$isMe) {
+                if ($currUserId === 0 && !$isMe && $supp->isNonPublic()) {
                     $nonPublicSupportCount++;
                     continue;
                 }
