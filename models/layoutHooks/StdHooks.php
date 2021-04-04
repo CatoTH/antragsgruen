@@ -242,9 +242,9 @@ class StdHooks extends Hooks
         }
         $initiator = $amendment->getInitiators()[0];
         if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
-            return ' <small>' . $initiator->organization . '</small>';
+            return ' <small>' . Html::encode($initiator->organization) . '</small>';
         } else {
-            return ' <small>' . $initiator->name . '</small>';
+            return ' <small>' . Html::encode($initiator->name) . '</small>';
         }
     }
 
