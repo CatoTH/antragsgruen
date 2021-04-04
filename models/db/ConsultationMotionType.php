@@ -10,8 +10,6 @@ use app\views\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $consultationId
  * @property string $titleSingular
@@ -19,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property string $createTitle
  * @property string $motionPrefix
  * @property int $position
+ * @property int $amendmentsOnly
  * @property int $pdfLayout
  * @property int|null $texTemplateId
  * @property string $deadlines
@@ -314,15 +313,15 @@ class ConsultationMotionType extends ActiveRecord
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'sidebarCreateButton'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'required'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'status'], 'required'],
-            [['amendmentMultipleParagraphs', 'position'], 'required'],
+            [['amendmentMultipleParagraphs', 'position', 'amendmentsOnly'], 'required'],
 
-            [['id', 'consultationId', 'position'], 'number'],
+            [['id', 'consultationId', 'position', 'amendmentsOnly'], 'number'],
             [['status', 'amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'number'],
             [['initiatorsCanMergeAmendments', 'pdfLayout', 'sidebarCreateButton'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
-            [['motionPrefix', 'position', 'supportTypeMotions', 'supportTypeAmendments'], 'safe'],
+            [['motionPrefix', 'position', 'amendmentsOnly', 'supportTypeMotions', 'supportTypeAmendments'], 'safe'],
             [['pdfLayout', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments'], 'safe'],
             [['sidebarCreateButton'], 'safe']
