@@ -2,6 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
+use app\components\diff\amendmentMerger\ParagraphDiff;
 use app\components\UrlHelper;
 use app\components\diff\amendmentMerger\ParagraphMerger;
 use app\models\db\{Amendment, Motion, MotionSection};
@@ -163,6 +164,13 @@ class Init
         return $paragraphMerger->getCollidingParagraphGroups();
     }
 
+    public function getParagraphCollidingAmendments(MotionSection $section, int $paragraphNo): array
+    {
+        $paragraphMerger = $this->getMergerForParagraph($section, $paragraphNo);
+
+        return $paragraphMerger->getCollidingAmendments();
+    }
+
     /**
      * @param MotionSection $section
      * @param int $paragraphNo
@@ -224,5 +232,13 @@ class Init
         }
 
         return $vueData;
+    }
+
+    /**
+     * @return ParagraphDiff[]
+     */
+    public function getParagraphDiffs(MotionSection $section, int $paragraphNo, array $amendmentsById): array
+    {
+        return $section->getAmendmentDiffMerger(array_keys($amendmentsById))->getAllParagraphDiffs($paragraphNo);
     }
 }

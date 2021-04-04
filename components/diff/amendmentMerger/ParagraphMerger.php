@@ -154,42 +154,56 @@ class ParagraphMerger
     }
 
 
-    /*
+    /**
      * Identify adjacent tokens that are about to be changed and check if any of the changes leads to a collision.
+     *
+     * @return ParagraphDiffGroup[]
      */
     private function groupChangeSet(ParagraphDiff $changeSet): array
     {
+        /** @var ParagraphDiffGroup[] $foundGroups */
         $foundGroups = [];
 
+        /** @var DiffWord[]|null $currTokens */
         $currTokens        = null;
         $currGroupCollides = null;
+        /** @var int[] $currCollisionIds */
+        $currCollisionIds = [];
 
         foreach ($changeSet->diff as $i => $token) {
             if ($token->amendmentId !== null) {
                 if ($currTokens === null) {
                     $currGroupCollides = false;
+                    $currCollisionIds = [];
                     $currTokens        = [];
                 }
                 $currTokens[$i] = $token;
                 if ($this->paraData->words[$i]->modifiedBy > 0) {
                     $currGroupCollides = true;
+                    if (!in_array($this->paraData->words[$i]->modifiedBy, $currCollisionIds)) {
+                        $currCollisionIds[] = $this->paraData->words[$i]->modifiedBy;
+                    }
                 }
             } else {
                 if ($currTokens !== null) {
-                    $foundGroups[]     = [
-                        'tokens'   => $currTokens,
-                        'collides' => $currGroupCollides
-                    ];
-                    $currTokens        = null;
+                    $foundGroup = new ParagraphDiffGroup();
+                    $foundGroup->tokens = $currTokens;
+                    $foundGroup->collides = $currGroupCollides;
+                    $foundGroup->collisionIds = $currCollisionIds;
+                    $foundGroups[] = $foundGroup;
+
+                    $currTokens = null;
                     $currGroupCollides = null;
+                    $currCollisionIds = [];
                 }
             }
         }
         if ($currTokens !== null) {
-            $foundGroups[] = [
-                'tokens'   => $currTokens,
-                'collides' => $currGroupCollides
-            ];
+            $foundGroup = new ParagraphDiffGroup();
+            $foundGroup->tokens = $currTokens;
+            $foundGroup->collides = $currGroupCollides;
+            $foundGroup->collisionIds = $currCollisionIds;
+            $foundGroups[] = $foundGroup;
         }
 
         return $foundGroups;
@@ -200,17 +214,20 @@ class ParagraphMerger
         $words = $this->paraData->words;
 
         $paragraphHadCollisions = false;
-        $groups                 = $this->groupChangeSet($changeSet);
+        $collisionIds = [];
+
+        $groups = $this->groupChangeSet($changeSet);
         foreach ($groups as $group) {
-            // Transfer the diff from the non-colliding groups to the merged diff and remove the from the changeset.
+            // Transfer the diff from the non-colliding groups to the merged diff and remove it from the changeset.
             // The changeset that remains will contain the un-mergable collisions
 
-            if ($group['collides']) {
+            if ($group->collides) {
                 $paragraphHadCollisions = true;
+                $collisionIds = array_merge($collisionIds, $group->collisionIds);
                 continue;
             }
 
-            foreach ($group['tokens'] as $i => $token) {
+            foreach ($group->tokens as $i => $token) {
                 // Apply the changes to the paragraph
                 $words[$i]->modification = $token->diff;
                 $words[$i]->modifiedBy = $token->amendmentId;
@@ -223,7 +240,8 @@ class ParagraphMerger
 
         $this->paraData->words = $words;
         if ($paragraphHadCollisions) {
-            $this->paraData->collidingParagraphs[] = $changeSet;
+            $collisionIds = array_unique($collisionIds);
+            $this->paraData->collidingParagraphs[] = new CollidingParagraphDiff($changeSet->amendment, $changeSet->firstDiff, $changeSet->diff, $collisionIds);
         }
     }
 
@@ -343,6 +361,24 @@ class ParagraphMerger
         return DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
     }
 
+    public function getShortenedFormattedDiffText(): string {
+        $groupedParaData = $this->getGroupedParagraphData();
+        $paragraphText   = '';
+        foreach ($groupedParaData as $part) {
+            if ($part->amendment === 0) {
+                continue;
+                // @TODO check if broken HTmL can happen, maybe show short parts of skipped parts
+            }
+            $text = $part->text;
+
+            $paragraphText .= $text;
+        }
+
+        $renderer = new DiffRenderer();
+        $renderer->setFormatting(DiffRenderer::FORMATTING_CLASSES_ARIA);
+        return $renderer->renderHtmlWithPlaceholders($paragraphText);
+    }
+
 
     /*
      * Somewhat special case: if two amendments are inserting a bullet point at the same place,
@@ -404,6 +440,18 @@ class ParagraphMerger
         }
 
         return $grouped;
+    }
+
+    public function getCollidingAmendments(): array
+    {
+        $this->merge();
+        $collisions = [];
+        foreach ($this->paraData->collidingParagraphs as $collision) {
+            foreach ($collision->collidingAmendmentIds as $collidingAmendmentId) {
+                $collisions[] = [$collision->amendment, $collidingAmendmentId];
+            }
+        }
+        return $collisions;
     }
 
     /**

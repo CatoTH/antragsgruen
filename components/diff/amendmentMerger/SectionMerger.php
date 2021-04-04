@@ -105,15 +105,17 @@ class SectionMerger
      * @param int $paraNo
      * @return int[]
      */
-    public function getAffectingAmendmentIds($paraNo)
+    public function getAffectingAmendmentIds(int $paraNo): array
     {
         return $this->paragraphs[$paraNo]->getAffectingAmendmentIds();
     }
 
-    /**
-     * @return boolean
-     */
-    public function hasCollidingParagraphs()
+    public function getShortenedParagraphDiff(int $paraNo): string
+    {
+        return $this->paragraphs[$paraNo]->getShortenedFormattedDiffText();
+    }
+
+    public function hasCollidingParagraphs(): bool
     {
         foreach ($this->paragraphs as $paragraph) {
             if (count($paragraph->getCollidingParagraphs()) > 0) {

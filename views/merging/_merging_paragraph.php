@@ -61,6 +61,62 @@ echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' 
             </div>
         </div>
     </div>
+<?php
+$affectingAmendmentIds = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo, array_keys($amendmentsById));
+if (count($affectingAmendmentIds) > 0) {
+    ?>
+    <section class="amendmentSelector">
+        <h3 class="title">Absatz <?= ($paragraphNo + 1) ?>: Original</h3>
+        <div class="original">
+            <?php
+            echo str_replace('###LINENUMBER###', '', implode('', $section->getTextParagraphLines()[$paragraphNo]));
+            ?>
+        </div>
+        <h3 class="amend">Absatz <?= ($paragraphNo + 1) ?>: Änderungsausträge auswählen</h3>
+        <ol>
+        <?php
+        foreach ($affectingAmendmentIds as $amendmentId) {
+            $amendment = $amendmentsById[$amendmentId];
+            $active = $form->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo);
+            ?>
+            <li>
+                <div class="selector">
+                    <input type="checkbox" name="selectedAmendments[<?=$section->sectionId?>][<?=$paragraphNo?>][<?=$amendmentId?>]"
+                           <?= ($active ? 'checked' : '') ?>
+                           id="selectedAmendment_<?= $section->sectionId . '_' . $paragraphNo . '_' . $amendmentId ?>">
+                </div>
+                <label class="name" for="selectedAmendment_<?= $section->sectionId . '_' . $paragraphNo . '_' . $amendmentId ?>">
+                    <?= Html::encode($amendment->titlePrefix) ?> (<?= Html::encode($amendment->getInitiatorsStr()) ?>)
+                </label>
+                <div class="text">
+                    <?= $section->getAmendmentDiffMerger([$amendmentId])->getShortenedParagraphDiff($paragraphNo) ?>
+                </div>
+            </li>
+            <?php
+        }
+        ?>
+        </ol>
+        <div class="selectActions">
+            <div class="statusIndicator">
+                <?php
+                $collisions = $form->getParagraphCollidingAmendments($section, $paragraphNo);
+                if (count($collisions) > 0) {
+                    $strs = [];
+                    foreach ($collisions as $collision) {
+                        $strs[] = $amendmentsById[$collision[0]]->titlePrefix . ' kollidiert mit ' . $amendmentsById[$collision[1]]->titlePrefix;
+                    }
+                    echo '<div class="alert alert-danger"><p>Kollisionen: ' . implode(', ', $strs) . '. Wenn beide ausgewählt werden, muss der Konflikt anschließend von Hand aufgelöst werden.</p></div>';
+                }
+                ?>
+            </div>
+            <div class="submit">
+                <button type="button" class="submitAccepted btn btn-primary">
+                    Auswahl übernehmen
+                </button>
+            </div>
+        </div>
+    </section>
+<?php } ?>
     <div class="form-group">
         <div class="wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0" data-unchanged="<?= Html::encode($draftParagraph->unchanged) ?>">
             <!--suppress HtmlFormInputWithoutLabel -->
