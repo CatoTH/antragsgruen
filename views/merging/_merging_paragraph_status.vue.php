@@ -26,7 +26,7 @@ ob_start();
         <input v-bind:name="nameBase + '[' + amendment.id + ']'" v-bind:value="active ? '1' : '0'"
                type="hidden" class="amendmentActive" v-bind:data-amendment-id="amendment.id">
         {{ amendment.titlePrefix }}
-        {{ amendment.bookmarkName }}
+        <span v-html="amendment.bookmarkName"></span>
     </button>
     <ul class="dropdown-menu dropdown-menu-right">
         <li>
