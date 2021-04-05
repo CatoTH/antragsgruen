@@ -538,7 +538,7 @@ class HTMLTools
                         } elseif ($child->nodeName === 'li') {
                             $lino = static::getNextLiCounter($child, $lino);
                             $value = $child->getAttribute('value');
-                            $newPre  = str_replace('#LINO#', $lino, $pre);
+                            $newPre  = str_replace('#LINO#', (string)$lino, $pre);
                             if ($value) {
                                 $newPre .= '<' . $child->nodeName . ' value="' . $value . '">';
                             } else {
@@ -722,8 +722,9 @@ class HTMLTools
         return $html;
     }
 
-
+    /** @var bool */
     private static $LINKS;
+    /** @var string[] */
     private static $LINK_CACHE;
 
     public static function toPlainText(string $html, bool $linksAtEnd = false): string

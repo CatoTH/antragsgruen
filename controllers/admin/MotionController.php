@@ -7,7 +7,12 @@ use app\models\db\{Consultation, ConsultationSettingsMotionSection, Consultation
 use app\models\exceptions\{ExceptionBase, FormError};
 use app\models\events\MotionEvent;
 use app\models\forms\{DeadlineForm, MotionEditForm, MotionMover};
-use app\models\motionTypeTemplates\{Application as ApplicationTemplate, Motion as MotionTemplate, PDFApplication as PDFApplicationTemplate};
+use app\models\motionTypeTemplates\{
+    Application as ApplicationTemplate,
+    Motion as MotionTemplate,
+    PDFApplication as PDFApplicationTemplate,
+    Statutes as StatutesTemplate
+};
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType, Site};
@@ -21,11 +26,9 @@ class MotionController extends AdminBase
     ];
 
     /**
-     * @param ConsultationMotionType $motionType
-     *
      * @throws FormError
      */
-    private function sectionsSave(ConsultationMotionType $motionType)
+    private function sectionsSave(ConsultationMotionType $motionType): void
     {
         $position = 0;
         if (!\Yii::$app->request->post('sections')) {
@@ -53,7 +56,7 @@ class MotionController extends AdminBase
         }
     }
 
-    private function sectionsDelete(ConsultationMotionType $motionType)
+    private function sectionsDelete(ConsultationMotionType $motionType): void
     {
         if (!$this->isPostSet('sectionsTodelete')) {
             return;
@@ -85,15 +88,14 @@ class MotionController extends AdminBase
 
         if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-
-            return false;
+            return '';
         }
 
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
             $this->showErrorpage(404, $e->getMessage());
-            return;
+            return '';
         }
         if ($this->isPostSet('delete')) {
             if ($motionType->isDeletable()) {
@@ -270,6 +272,9 @@ class MotionController extends AdminBase
             } elseif (isset($type['preset']) && $type['preset'] === 'pdfapplication') {
                 $motionType = PDFApplicationTemplate::doCreateApplicationType($this->consultation);
                 PDFApplicationTemplate::doCreateApplicationSections($motionType);
+            } elseif (isset($type['preset']) && $type['preset'] === 'statute') {
+                $motionType = StatutesTemplate::doCreateStatutesType($this->consultation);
+                StatutesTemplate::doCreateStatutesSections($motionType);
             } else {
                 $motionType = null;
                 foreach ($this->consultation->motionTypes as $cType) {

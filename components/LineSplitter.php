@@ -150,9 +150,9 @@ class LineSplitter
                         $inlineTextSpool = '';
                     }
                     if (in_array($child->nodeName, $veryBigElements)) {
-                        $arr = static::splitHtmlToLinesInt($child, floor($lineLength * 0.60), $prependLines);
+                        $arr = static::splitHtmlToLinesInt($child, intval(floor($lineLength * 0.60)), $prependLines);
                     } elseif (in_array($child->nodeName, $bigElements)) {
-                        $arr = static::splitHtmlToLinesInt($child, floor($lineLength * 0.75), $prependLines);
+                        $arr = static::splitHtmlToLinesInt($child, intval(floor($lineLength * 0.75)), $prependLines);
                     } elseif (in_array($child->nodeName, $indentedElements)) {
                         $arr = static::splitHtmlToLinesInt($child, $lineLength - 6, $prependLines);
                     } else {
