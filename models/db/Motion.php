@@ -601,7 +601,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return Motion[]
      */
-    public function getVisibleReplacedByMotions()
+    public function getVisibleReplacedByMotions(): array
     {
         $replacedByMotions = [];
         foreach ($this->replacedByMotions as $replMotion) {
@@ -613,12 +613,7 @@ class Motion extends IMotion implements IRSSItem
         return $replacedByMotions;
     }
 
-    /**
-     * @param boolean $onlyPublic
-     *
-     * @return Draft|null
-     */
-    public function getMergingDraft($onlyPublic)
+    public function getMergingDraft(bool $onlyPublic): ?Draft
     {
         if ($onlyPublic) {
             $status = [Motion::STATUS_MERGING_DRAFT_PUBLIC];
@@ -638,10 +633,7 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @return Motion|null
-     */
-    public function getMergingUnconfirmed()
+    public function getMergingUnconfirmed(): ?Motion
     {
         return Motion::findOne([
             'parentMotionId' => $this->id,
@@ -649,18 +641,12 @@ class Motion extends IMotion implements IRSSItem
         ]);
     }
 
-    /**
-     * @return bool
-     */
-    public function isResolution()
+    public function isResolution(): bool
     {
         return in_array($this->status, [static::STATUS_RESOLUTION_FINAL, static::STATUS_RESOLUTION_PRELIMINARY]);
     }
 
-    /**
-     * @return string
-     */
-    public function getIconCSSClass()
+    public function getIconCSSClass(): string
     {
         foreach ($this->tags as $tag) {
             return $tag->getCSSIconClass();
@@ -669,10 +655,7 @@ class Motion extends IMotion implements IRSSItem
         return 'glyphicon glyphicon-file';
     }
 
-    /**
-     * @return int
-     */
-    public function getNumberOfCountableLines()
+    public function getNumberOfCountableLines(): int
     {
         $cached = $this->getCacheItem('lines.getNumberOfCountableLines');
         if ($cached !== null) {
@@ -681,7 +664,6 @@ class Motion extends IMotion implements IRSSItem
 
         $num = 0;
         foreach ($this->getSortedSections() as $section) {
-            /** @var MotionSection $section */
             $num += $section->getNumberOfCountableLines();
         }
 
@@ -690,10 +672,7 @@ class Motion extends IMotion implements IRSSItem
         return $num;
     }
 
-    /**
-     * @return int
-     */
-    public function getFirstLineNumber()
+    public function getFirstLineNumber(): int
     {
         $cached = $this->getCacheItem('lines.getFirstLineNumber');
         if ($cached !== null) {
@@ -845,7 +824,7 @@ class Motion extends IMotion implements IRSSItem
             $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
         } else {
             $this->status = Motion::STATUS_SUBMITTED_SCREENED;
-            if ($this->statusString == '') {
+            if ($this->statusString === '' && !$this->getMyMotionType()->amendmentsOnly) {
                 $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
             }
         }
@@ -858,7 +837,7 @@ class Motion extends IMotion implements IRSSItem
     public function setScreened(): void
     {
         $this->status = Motion::STATUS_SUBMITTED_SCREENED;
-        if ($this->titlePrefix === '') {
+        if ($this->titlePrefix === '' && !$this->getMyMotionType()->amendmentsOnly) {
             $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
         }
         $this->save(true);
@@ -1109,8 +1088,6 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param ConsultationMotionType $motionType
-     *
      * @throws FormError
      */
     public function setMotionType(ConsultationMotionType $motionType)

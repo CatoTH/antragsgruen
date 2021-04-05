@@ -472,10 +472,7 @@ abstract class IMotion extends ActiveRecord
      */
     abstract public function getLikeDislikeSettings();
 
-    /**
-     * @return boolean
-     */
-    abstract public function isDeadlineOver();
+    abstract public function isDeadlineOver(): bool;
 
     abstract public function getLink(bool $absolute = false): string;
 
@@ -487,10 +484,7 @@ abstract class IMotion extends ActiveRecord
         return $this->dateCreation;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getDateTime()
+    public function getDateTime(): ?\DateTime
     {
         if ($this->dateCreation) {
             return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateCreation);
@@ -499,10 +493,7 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getPublicationDateTime()
+    public function getPublicationDateTime(): ?\DateTime
     {
         if ($this->datePublication) {
             return \DateTime::createFromFormat('Y-m-d H:i:s', $this->datePublication);
@@ -513,10 +504,7 @@ abstract class IMotion extends ActiveRecord
 
     abstract public function isSupportingPossibleAtThisStatus(): bool;
 
-    /**
-     * @return bool
-     */
-    public function proposalAllowsUserFeedback()
+    public function proposalAllowsUserFeedback(): bool
     {
         if ($this->proposalStatus === null) {
             return false;
@@ -525,20 +513,12 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function proposalFeedbackHasBeenRequested()
+    public function proposalFeedbackHasBeenRequested(): bool
     {
         return ($this->proposalAllowsUserFeedback() && $this->proposalNotification !== null);
     }
 
-    /**
-     * @param bool $includeExplanation
-     *
-     * @return string
-     */
-    public function getFormattedProposalStatus($includeExplanation = false)
+    public function getFormattedProposalStatus(bool $includeExplanation = false): string
     {
         if ($this->status === static::STATUS_WITHDRAWN) {
             return '<span class="withdrawn">' . \Yii::t('structure', 'STATUS_WITHDRAWN') . '</span>';
@@ -620,12 +600,7 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    /**
-     * @param bool $screeningAdmin
-     *
-     * @return int
-     */
-    public function getNumOfAllVisibleComments($screeningAdmin)
+    public function getNumOfAllVisibleComments(bool $screeningAdmin): int
     {
         return count(array_filter($this->comments, function (IComment $comment) use ($screeningAdmin) {
             return ($comment->status === IComment::STATUS_VISIBLE ||
@@ -634,13 +609,11 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
-     * @param bool $screeningAdmin
-     * @param int $paragraphNo
      * @param null|int $parentId - null == only root level comments
      *
      * @return IComment[]
      */
-    public function getVisibleComments($screeningAdmin, $paragraphNo, $parentId)
+    public function getVisibleComments(bool $screeningAdmin, int $paragraphNo, ?int $parentId): array
     {
         $statuses = [IComment::STATUS_VISIBLE];
         if ($screeningAdmin) {

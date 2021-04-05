@@ -859,9 +859,13 @@ class Amendment extends IMotion implements IRSSItem
             $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
         } else {
             $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
-            if ($this->titlePrefix == '') {
-                $numbering         = $this->getMyConsultation()->getAmendmentNumbering();
-                $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
+            if ($this->titlePrefix === '') {
+                if ($this->getMyMotionType()->amendmentsOnly) {
+                    $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->getMyMotionType()->id);
+                } else {
+                    $numbering = $this->getMyConsultation()->getAmendmentNumbering();
+                    $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
+                }
             }
         }
         $this->save();
@@ -873,8 +877,12 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix === '') {
-            $numbering         = $this->getMyConsultation()->getAmendmentNumbering();
-            $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
+            if ($this->getMyMotionType()->amendmentsOnly) {
+                $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->getMyMotionType()->id);
+            } else {
+                $numbering = $this->getMyConsultation()->getAmendmentNumbering();
+                $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
+            }
         }
         $this->save(true);
         $this->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($this));

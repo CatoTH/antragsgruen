@@ -421,8 +421,6 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $motionTypeId
-     * @return ConsultationMotionType
      * @throws NotFound
      */
     public function getMotionType(int $motionTypeId): ConsultationMotionType
@@ -612,24 +610,18 @@ class Consultation extends ActiveRecord
     public function getNextMotionPrefix(int $motionTypeId): string
     {
         $max_rev = 0;
-        /** @var ConsultationMotionType $motionType */
-        $motionType = null;
-        foreach ($this->motionTypes as $t) {
-            if ($t->id == $motionTypeId) {
-                $motionType = $t;
-            }
-        }
+        $motionType = $this->getMotionType($motionTypeId);
         $prefix = $motionType->motionPrefix;
-        if ($prefix == '') {
+        if ($prefix === '') {
             $prefix = 'A';
         }
         foreach ($this->motions as $motion) {
-            if ($motion->status != Motion::STATUS_DELETED) {
+            if ($motion->status !== Motion::STATUS_DELETED) {
                 if (mb_substr($motion->titlePrefix, 0, mb_strlen($prefix)) !== $prefix) {
                     continue;
                 }
                 $revs  = mb_substr($motion->titlePrefix, mb_strlen($prefix));
-                $revnr = IntVal($revs);
+                $revnr = intval($revs);
                 if ($revnr > $max_rev) {
                     $max_rev = $revnr;
                 }

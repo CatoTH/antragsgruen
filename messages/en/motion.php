@@ -53,6 +53,8 @@ return [
     'submitted_create'              => 'Created %TITLE%',
     'submitted_submit'              => 'Submitted %TITLE%',
     'submitted_publish'             => 'Published %TITLE%',
+    'created_statutes'              => 'Created statutes',
+    'created_statutes_done'         => 'The statutes have been saved. Users can now create amendments for them (if the permissions have been granted).',
     'created_bread_create'          => 'Created',
     'created_bread_submit'          => 'Submitted',
     'created_bread_publish'         => 'Published',

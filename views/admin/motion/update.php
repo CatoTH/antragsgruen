@@ -67,7 +67,7 @@ echo $controller->showErrors();
 if ($motion->isInScreeningProcess()) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
-    if ($newRev === '') {
+    if ($newRev === '' && !$motion->getMyMotionType()->amendmentsOnly) {
         $newRev = $motion->getMyConsultation()->getNextMotionPrefix($motion->motionTypeId);
     }
 

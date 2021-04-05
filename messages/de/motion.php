@@ -50,6 +50,8 @@ return [
     'submitted_create'                   => '%TITLE% angelegt',
     'submitted_submit'                   => '%TITLE% eingereicht',
     'submitted_publish'                  => '%TITLE% veröffentlicht',
+    'created_statutes'                   => 'Satzung gespeichert',
+    'created_statutes_done'              => 'Der Text der Satzung wurde gespeichert. Benutzer*innen können nun Änderungsanträge anlegen (sofern die Berechtigungen vergeben wurden).',
     'created_bread_create'               => 'Angelegt',
     'created_bread_submit'               => 'Eingereicht',
     'created_bread_publish'              => 'Veröffentlicht',
