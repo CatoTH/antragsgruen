@@ -98,6 +98,12 @@ return [
     'preset_motion_text'     => 'Antragstext',
     'preset_motion_reason'   => 'Begründung',
 
+    'preset_statutes_singular' => 'Satzungsänderungsantrag',
+    'preset_statutes_plural'   => 'Satzungsänderungsanträge',
+    'preset_statutes_call'     => 'Satzungsänderungsantrag',
+    'preset_statutes_title'    => 'Titel',
+    'preset_statutes_text'     => 'Satzungstext',
+
     'role_initiator' => 'Initiator*in',
     'role_supporter' => 'Unterstützer*in',
     'role_likes'     => 'Mag',

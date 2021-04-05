@@ -44,31 +44,40 @@ echo Html::beginForm('', 'post', [
         ?>
 
         <label class="typePreset"
-               data-label-single="<?= Yii::t('admin', 'motion_type_templ_motsingle') ?>"
-               data-label-plural="<?= Yii::t('admin', 'motion_type_templ_motplural') ?>"
-               data-label-cta="<?= Yii::t('admin', 'motion_type_templ_motcta') ?>">
+               data-label-single="<?= Yii::t('structure', 'preset_motion_singular') ?>"
+               data-label-plural="<?= Yii::t('structure', 'preset_motion_plural') ?>"
+               data-label-cta="<?= Yii::t('structure', 'preset_motion_call') ?>">
             <input type="radio" name="type[preset]" value="motion" class="presetMotion">
             <span><?= Yii::t('admin', 'motion_type_templ_motion') ?></span>
         </label>
         <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_motionh') ?></div>
 
         <label class="typePreset"
-               data-label-single="<?= Yii::t('admin', 'motion_type_templ_appsingle') ?>"
-               data-label-plural="<?= Yii::t('admin', 'motion_type_templ_appplural') ?>"
-               data-label-cta="<?= Yii::t('admin', 'motion_type_templ_appcta') ?>">
+               data-label-single="<?= Yii::t('structure', 'preset_app_singular') ?>"
+               data-label-plural="<?= Yii::t('structure', 'preset_app_plural') ?>"
+               data-label-cta="<?= Yii::t('structure', 'preset_app_call') ?>">
             <input type="radio" name="type[preset]" value="application" class="presetApplication">
             <span><?= Yii::t('admin', 'motion_type_templ_appl') ?></span>
         </label>
         <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_applh') ?></div>
 
         <label class="typePreset"
-               data-label-single="<?= Yii::t('admin', 'motion_type_templ_appsingle') ?>"
-               data-label-plural="<?= Yii::t('admin', 'motion_type_templ_appplural') ?>"
-               data-label-cta="<?= Yii::t('admin', 'motion_type_templ_appcta') ?>">
+               data-label-single="<?= Yii::t('structure', 'preset_app_singular') ?>"
+               data-label-plural="<?= Yii::t('structure', 'preset_app_plural') ?>"
+               data-label-cta="<?= Yii::t('structure', 'preset_app_call') ?>">
             <input type="radio" name="type[preset]" value="pdfapplication" class="presetPdfApplication">
             <span><?= Yii::t('admin', 'motion_type_templ_pdfappl') ?></span>
         </label>
         <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_pdfapplh') ?></div>
+
+        <label class="typePreset"
+               data-label-single="<?= Yii::t('structure', 'preset_statutes_singular') ?>"
+               data-label-plural="<?= Yii::t('structure', 'preset_statutes_plural') ?>"
+               data-label-cta="<?= Yii::t('structure', 'preset_statutes_call') ?>">
+            <input type="radio" name="type[preset]" value="statute" class="presetPdfStatute">
+            <span><?= Yii::t('admin', 'motion_type_templ_statute') ?></span>
+        </label>
+        <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_statuteh') ?></div>
 
         <label class="typePreset">
             <input type="radio" name="type[preset]" value="none" class="presetNone">
