@@ -58,7 +58,7 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
 echo '</div>';
 
 
-echo Html::beginForm(UrlHelper::createUrl('consultation/index'), 'post', ['id' => 'motionConfirmedForm']);
+echo Html::beginForm(UrlHelper::homeUrl(), 'post', ['id' => 'motionConfirmedForm']);
 
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     $controller->layoutParams->addJS('npm/clipboard.min.js');

@@ -15,9 +15,15 @@ $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendme
 $controller  = $this->context;
 $motion      = $amendment->getMyMotion();
 $motionType  = $amendment->getMyMotionType();
+$layout      = $controller->layoutParams;
 
-$controller->layoutParams->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
-$controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createAmendmentUrl($amendment));
+if (!$motion->getMyMotionType()->amendmentsOnly) {
+    $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
+    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
+} else {
+    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
+}
+
 if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . Yii::t('amend', 'submitted_create') . '</h1>';
     $controller->layoutParams->addBreadcrumb(Yii::t('amend', 'created_bread_create'));
@@ -55,7 +61,12 @@ if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
 
 echo '</div>';
 
-echo Html::beginForm(UrlHelper::createMotionUrl($amendment->getMyMotion()), 'post', ['id' => 'motionConfirmedForm']);
+if ($motionType->amendmentsOnly) {
+    $backUrl = UrlHelper::homeUrl();
+} else {
+    $backUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
+}
+echo Html::beginForm($backUrl, 'post', ['id' => 'motionConfirmedForm']);
 
 if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
     $controller->layoutParams->addJS('npm/clipboard.min.js');
@@ -86,5 +97,11 @@ if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
     }
 }
 
-echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . Yii::t('amend', 'sidebar_back') . '</button></p>';
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">';
+if ($motionType->amendmentsOnly) {
+    echo Yii::t('motion', 'back_start');
+} else {
+    echo Yii::t('amend', 'sidebar_back');
+}
+echo '</button></p>';
 echo Html::endForm();

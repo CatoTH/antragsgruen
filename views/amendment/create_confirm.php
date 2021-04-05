@@ -19,8 +19,12 @@ $motion     = $amendment->getMyMotion();
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
 $layout->robotsNoindex = true;
-$layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
-$layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
+if (!$motion->getMyMotionType()->amendmentsOnly) {
+    $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
+    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
+} else {
+    $layout->addBreadcrumb($motion->getMyMotionType()->titleSingular, UrlHelper::createAmendmentUrl($amendment, 'edit'));
+}
 $layout->addBreadcrumb(Yii::t('amend', 'confirm'));
 
 echo '<h1>' . Yii::t('amend', 'confirm_amendment') . '</h1>';
@@ -43,22 +47,21 @@ foreach ($sections as $section) {
 if ($amendment->changeExplanation !== '') {
     echo '<div class="motionTextHolder amendmentReasonHolder">';
     echo '<h3 class="green">' . Yii::t('amend', 'reason') . '</h3>';
-    echo '<div class="content">';
+    echo '<div class="paragraph"><div class="text">';
     echo $amendment->changeExplanation;
-    echo '</div>';
+    echo '</div></div>';
     echo '</div>';
 }
 
 
 echo '<div class="motionTextHolder">
         <h3 class="green">' . Yii::t('amend', 'initiators_title') . '</h3>
-
-        <div class="content">';
+        <div>';
 
 if (count($amendment->getSupporters(true)) + count($amendment->getInitiators()) > 1) {
     echo '<ul>';
 } else {
-    echo '<ul style="list-style-type: none;">';
+    echo '<ul class="onlyOneSupporter">';
 }
 foreach ($amendment->getInitiators() as $initiator) {
     echo '<li>';

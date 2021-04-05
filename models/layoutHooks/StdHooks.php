@@ -405,7 +405,7 @@ class StdHooks extends Hooks
         $htmlSmall = '';
 
         foreach ($motionTypes as $motionType) {
-            $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
+            $link        = $motionType->getCreateLink();
             $description = $motionType->createTitle;
 
             $html      .= '<a class="createMotion createMotion' . $motionType->id . '" ' .

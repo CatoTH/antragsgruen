@@ -20,15 +20,9 @@ $multipleParagraphs = $motionType->amendmentMultipleParagraphs;
 
 if ($form->motion->titlePrefix !== '') {
     if ($consultation->getSettings()->hideTitlePrefix) {
-        $title = Yii::t(
-            'amend',
-            $mode === 'create' ? 'amendment_create' : 'amendment_edit'
-        );
+        $title = Yii::t('amend', $mode === 'create' ? 'amendment_create' : 'amendment_edit');
     } else {
-        $title = Yii::t(
-            'amend',
-            $mode === 'create' ? 'amendment_create_x' : 'amendment_edit_x'
-        );
+        $title = Yii::t('amend', $mode === 'create' ? 'amendment_create_x' : 'amendment_edit_x');
     }
     $this->title = str_replace('%prefix%', $form->motion->getTitleWithPrefix(), $title);
 } else {
@@ -46,7 +40,11 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
 echo '<div class="form content">';
 
 echo '<br><div class="alert alert-info">';
-echo $motionType->getConsultationTextWithFallback('amend', 'create_explanation');
+if ($motionType->amendmentsOnly) {
+    echo $motionType->getConsultationTextWithFallback('amend', 'create_explanation_statutes');
+} else {
+    echo $motionType->getConsultationTextWithFallback('amend', 'create_explanation');
+}
 echo '</div><br style="clear: both;">';
 
 
