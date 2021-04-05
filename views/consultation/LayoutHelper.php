@@ -176,12 +176,13 @@ class LayoutHelper
         echo '<span class="code">' . Html::encode($agendaItem->code) . '</span> ';
         echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
 
-        if ($agendaItem->getMyMotionType() && $agendaItem->getMyMotionType()->getMotionPolicy()->checkCurrUserMotion(false, true)) {
+        if ($agendaItem->getMyMotionType() && $agendaItem->getMyMotionType()->amendmentsOnly &&
+            $agendaItem->getMyMotionType()->getMotionPolicy()->checkCurrUserMotion(false, true)) {
             $motionCreateLink = UrlHelper::createUrl(['motion/create', 'agendaItemId' => $agendaItem->id]);
             echo '<a href="' . Html::encode($motionCreateLink) . '" class="motionCreateLink btn btn-default btn-xs"';
-            echo ' title="' . Html::encode($agendaItem->title . ': ' . $agendaItem->motionType->createTitle) . '"';
+            echo ' title="' . Html::encode($agendaItem->title . ': ' . $agendaItem->getMyMotionType()->createTitle) . '"';
             echo ' rel="nofollow"><span class="glyphicon glyphicon-plus"></span> ';
-            echo nl2br(Html::encode($agendaItem->motionType->createTitle)) . '</a>';
+            echo nl2br(Html::encode($agendaItem->getMyMotionType()->createTitle)) . '</a>';
         }
 
         echo '</h3>';
@@ -271,10 +272,6 @@ class LayoutHelper
     }
 
     /**
-     * @param ConsultationAgendaItem $agendaItem
-     * @param Consultation $consultation
-     * @param bool $admin
-     *
      * @return int[]
      */
     public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): array
@@ -331,9 +328,6 @@ class LayoutHelper
 
     /**
      * @param ConsultationAgendaItem[] $items
-     * @param Consultation $consultation
-     * @param bool $admin
-     * @param bool $isRoot
      *
      * @return int[]
      */

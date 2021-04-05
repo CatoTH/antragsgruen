@@ -501,6 +501,21 @@
       }
     }
   }
+
+  .onlyOneSupporter {
+    list-style-type: none;
+    @media screen and (min-width: $screenMinWith) {
+      padding: 15px 10px 15px $fixedWidthTextStdPadding;
+    }
+    @media (max-width: $screenMinWith - 1) {
+      padding: 15px 10px 15px $fixedWidthTextStdPaddingSmall;
+    }
+    margin: 0;
+    > li {
+      padding: 0;
+      margin: 0;
+    }
+  }
 }
 
 .bookmarks {

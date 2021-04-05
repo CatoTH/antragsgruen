@@ -66,7 +66,7 @@ $btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONS
             <ul class="dropdown-menu" aria-labelledby="newMotionBtn">
                 <?php
                 foreach ($creatableMotions as $motionType) {
-                    $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
+                    $createUrl = $motionType->getCreateLink();
                     $cssClass  = 'createMotion' . $motionType->id;
                     $title     = Html::encode($motionType->titleSingular);
                     echo '<li>' . Html::a($title, $createUrl, ['class' => $cssClass]) . '</li>';

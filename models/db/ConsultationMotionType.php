@@ -377,10 +377,18 @@ class ConsultationMotionType extends ActiveRecord
         return $return;
     }
 
-    public function getCreateLink(): string
+    public function getCreateLink(): ?string
     {
         if ($this->amendmentsOnly) {
-            return UrlHelper::createUrl(['/motion/create', 'motionTypeId' => $this->id]); // @TODO One/multiple
+            $motions = $this->getAmendableOnlyMotions();
+            if (count($motions) === 1) {
+                return UrlHelper::createUrl(['/amendment/create', 'motionSlug' => $motions[0]->getMotionSlug()]);
+            } elseif (count($motions) > 1) {
+                // @TODO
+                return null;
+            } else {
+                return null;
+            }
         } else {
             return UrlHelper::createUrl(['/motion/create', 'motionTypeId' => $this->id]);
         }

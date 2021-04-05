@@ -97,8 +97,8 @@ if (count($motion->getSupporters(true)) + count($motion->getInitiators()) > 0) {
     ?>
     <div class="webVersion motionTextHolder">
         <h3 class="green"><?= Yii::t('motion', 'initiators_head') ?></h3>
-        <div class="content">
-            <ul <?= (count($motion->getSupporters(true)) + count($motion->getInitiators()) <= 1 ? 'style="list-style-type: none;"' : '') ?>>
+        <div class="paragraph">
+            <ul <?= (count($motion->getSupporters(true)) + count($motion->getInitiators()) <= 1 ? 'class="onlyOneSupporter"' : '') ?>>
                 <?php
                 foreach ($motion->getInitiators() as $initiator) {
                     echo '<li>';
