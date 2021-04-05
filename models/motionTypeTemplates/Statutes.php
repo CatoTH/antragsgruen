@@ -36,12 +36,15 @@ trait Statutes
         $type->sidebarCreateButton          = 1;
 
         $initiatorSettings               = new InitiatorForm(null);
+        $initiatorSettings->type         = SupportBase::NO_INITIATOR;
+        $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+
+        $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::ONLY_INITIATOR;
         $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
         $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
         $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
-        $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
-        $type->supportTypeAmendments     = null;
+        $type->supportTypeAmendments     = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
 
         $type->setSettingsObj(new MotionType(null));
 

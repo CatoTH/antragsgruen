@@ -315,7 +315,7 @@ class MotionController extends Base
         } catch (ExceptionBase $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::homeUrl());
         }
 
         /**

@@ -160,6 +160,11 @@ echo '</div>';
 $initiatorClass = $form->motionType->getMotionSupportTypeClass();
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
+if ($isAmendmentsOnly) {
+    $backUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $form->motionType->id]);
+} else {
+    $backUrl = UrlHelper::homeUrl();
+}
 ?>
 <section class="content saveCancelRow">
     <div class="saveCol">
@@ -169,7 +174,7 @@ echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
         </button>
     </div>
     <div class="cancelCol">
-        <a href="<?= Html::encode(UrlHelper::homeUrl()) ?>" id="cancel" class="btn">
+        <a href="<?= Html::encode($backUrl) ?>" id="cancel" class="btn">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
             <?= Yii::t('motion', 'back_start') ?>
         </a>
