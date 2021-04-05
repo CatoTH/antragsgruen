@@ -19,6 +19,7 @@ use yii\helpers\Html;
 
 $consultation = $amendment->getMyConsultation();
 $motion = $amendment->getMyMotion();
+$motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
@@ -35,8 +36,10 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
     $layout->addBreadcrumb($amendment->getShortTitle());
 } else {
-    $motionUrl = UrlHelper::createMotionUrl($motion);
-    $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
+    if (!$motionType->amendmentsOnly) {
+        $motionUrl = UrlHelper::createMotionUrl($motion);
+        $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
+    }
     if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
         $layout->addBreadcrumb($amendment->titlePrefix);
     } else {
