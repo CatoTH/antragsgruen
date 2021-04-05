@@ -1,7 +1,7 @@
 <?php
 
 use app\components\MotionSorter;
-use app\models\db\Consultation;
+use app\models\db\{Amendment, Consultation, Motion};
 use app\views\consultation\LayoutHelper;
 
 /**
@@ -21,7 +21,12 @@ $motions = MotionSorter::getSortedMotions($consultation, $motions);
 foreach ($motions as $name => $motns) {
     echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
     foreach ($motns as $motion) {
-        echo LayoutHelper::showMotion($motion, $consultation, false);
+        if (is_a($motion, Motion::class)) {
+            echo LayoutHelper::showMotion($motion, $consultation, false);
+        } else {
+            /** @var Amendment $motion */
+            echo LayoutHelper::showStatuteAmendment($motion, $consultation);
+        }
     }
     echo '</ul>';
 }

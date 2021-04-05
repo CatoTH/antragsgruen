@@ -84,6 +84,46 @@ class LayoutHelper
         return $return;
     }
 
+    private static function getStatuteAmendmentLineContent(Amendment $amendment, Consultation $consultation): string
+    {
+        $return = '';
+        $return .= '<p class="title">' . "\n";
+
+        $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
+        $return    .= '<a href="' . Html::encode($amendmentUrl) . '" class="amendmentLink' . $amendment->id . '">';
+
+        $return .= '<span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>';
+        if (!$consultation->getSettings()->hideTitlePrefix && trim($amendment->titlePrefix) !== '') {
+            $return .= '<span class="motionPrefix">' . Html::encode($amendment->titlePrefix) . '</span>';
+        }
+
+        $title  = (trim($amendment->getMyMotion()->title) === '' ? '-' : $amendment->getMyMotion()->title);
+        $return .= ' <span class="motionTitle">' . Html::encode($title) . '</span>';
+
+        $return .= '</a>';
+
+        $hasPDF = ($amendment->getMyMotionType()->getPDFLayoutClass() !== null);
+        if ($hasPDF && $amendment->status !== Motion::STATUS_MOVED) {
+            $html   = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> PDF';
+            $return .= Html::a($html, UrlHelper::createAmendmentUrl($amendment, 'pdf'), ['class' => 'pdfLink']);
+        }
+        $return .= "</p>\n";
+
+
+        $return .= '<p class="date"><span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
+                   Tools::formatMysqlDateWithAria($amendment->dateCreation) . '</p>' . "\n";
+
+        $return .= '<p class="info">';
+        $return .= Html::encode($amendment->getInitiatorsStr());
+        if ($amendment->status === Motion::STATUS_WITHDRAWN) {
+            $statusName = Html::encode($amendment->getStatusNames()[$amendment->status]);
+            $return     .= ' <span class="status">(' . $statusName . ')</span>';
+        }
+        $return .= '</p>';
+
+        return $return;
+    }
+
     public static function getMotionMovedStatusHtml(Motion $motion): string
     {
         $statusName = \Yii::t('motion', 'moved_to');
@@ -149,6 +189,32 @@ class LayoutHelper
             }
             $return .= '</ul>';
         }
+        $return .= '</li>' . "\n";
+
+        return $return;
+    }
+
+    public static function showStatuteAmendment(Amendment $amendment, Consultation $consultation): string
+    {
+        $return = '';
+
+        $classes = ['motion', 'amendmentRow' . $amendment->id];
+        if ($amendment->getMyMotionType()->getSettingsObj()->cssIcon) {
+            $classes[] = $amendment->getMyMotionType()->getSettingsObj()->cssIcon;
+        }
+
+        if ($amendment->status === Amendment::STATUS_WITHDRAWN) {
+            $classes[] = 'withdrawn';
+        }
+        if ($amendment->status === Amendment::STATUS_MOVED) {
+            $classes[] = 'moved';
+        }
+        if ($amendment->status === Amendment::STATUS_MODIFIED) {
+            $classes[] = 'modified';
+        }
+        $return .= '<li class="' . implode(' ', $classes) . '">';
+        $return .= static::getStatuteAmendmentLineContent($amendment, $consultation);
+        $return .= "<span class='clearfix'></span>\n";
         $return .= '</li>' . "\n";
 
         return $return;

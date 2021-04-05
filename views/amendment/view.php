@@ -24,13 +24,16 @@ $layout->addAMDModule('frontend/AmendmentShow');
 $layout->loadFuelux();
 $consultation = $amendment->getMyConsultation();
 $motion       = $amendment->getMyMotion();
+$motionType   = $motion->getMyMotionType();
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
     $layout->addBreadcrumb($amendment->getShortTitle());
 } else {
-    $motionUrl = UrlHelper::createMotionUrl($motion);
-    $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
+    if (!$motionType->amendmentsOnly) {
+        $motionUrl = UrlHelper::createMotionUrl($motion);
+        $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
+    }
     if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
         $layout->addBreadcrumb($amendment->titlePrefix);
     } else {

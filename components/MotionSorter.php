@@ -117,10 +117,10 @@ class MotionSorter
 
     /**
      * @param Consultation $consultation
-     * @param Motion[] $motions
-     * @return array|array[]
+     * @param IMotion[] $motions
+     * @return IMotion[]
      */
-    public static function getSortedMotionsStd(Consultation $consultation, $motions)
+    public static function getSortedMotionsStd(Consultation $consultation, $motions): array
     {
         $motionsSorted   = [];
         $motionsNoPrefix = [];
@@ -261,14 +261,18 @@ class MotionSorter
 
     /**
      * @param Motion[] $allMotions
-     * @return Motion[][]
+     * @return IMotion[][]
      */
     public static function getMotionsAndResolutions($allMotions)
     {
         $motions     = [];
         $resolutions = [];
         foreach ($allMotions as $mot) {
-            if ($mot->isResolution()) {
+            if ($mot->getMyMotionType()->amendmentsOnly) {
+                foreach ($mot->amendments as $amendment) {
+                    $motions[] = $amendment;
+                }
+            } elseif ($mot->isResolution()) {
                 if (count($mot->getVisibleReplacedByMotions()) === 0) {
                     $resolutions[] = $mot;
                 }
