@@ -16,12 +16,14 @@ foreach (IPolicy::getPolicies() as $policy) {
     $policies[$policy::getPolicyID()] = $policy::getPolicyName();
 }
 
+$hidenIfAmendmentsOnly = ($motionType->amendmentsOnly ? ' hidden' : '');
+
 ?>
 <h2 class="h3"><?= Yii::t('admin', 'motion_type_perm') ?></h2>
 
 <!-- Policy for creating motions -->
 
-<div class="form-group">
+<div class="form-group<?= $hidenIfAmendmentsOnly ?>">
     <label class="col-md-4 control-label" for="typePolicyMotions">
         <?= Yii::t('admin', 'motion_type_perm_motion') ?>
     </label>
@@ -41,7 +43,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 <!--Support policy for motions -->
 
 
-<div class="form-group">
+<div class="form-group<?= $hidenIfAmendmentsOnly ?>">
     <label class="col-md-4 control-label" for="typePolicySupportMotions">
         <?= Yii::t('admin', 'motion_type_perm_supp_mot') ?>
     </label>
@@ -61,7 +63,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <!--Support types for motions (Likes, Dislikes, Official support) -->
 
-<div class="form-group">
+<div class="form-group<?= $hidenIfAmendmentsOnly ?>">
     <fieldset class="col-md-8 col-md-offset-4 contactDetails motionSupportPolicy">
         <legend class="sr-only"><?= Yii::t('admin', 'motion_type_like_title') ?></legend>
         <div class="form-control">
@@ -203,7 +205,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <!-- Are initiators allowed to merge amendments into their motions -->
 
-<fieldset class="form-group initiatorsCanMergeRow">
+<fieldset class="form-group initiatorsCanMergeRow<?= $hidenIfAmendmentsOnly ?>">
     <legend class="col-md-4 control-label">
         <?= Yii::t('admin', 'motion_type_initiators_merge') ?>
     </legend>

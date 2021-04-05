@@ -185,6 +185,7 @@ return [
     'supp_only_initiators'    => 'Only proposer',
     'supp_given_by_initiator' => 'Supporters given by proposer',
     'supp_collect_before'     => 'Collecting phase before publication (not for organizations)',
+    'supp_no_initiator'       => 'No proposer',
 
     'activity_none'                       => 'No activity yet',
     'activity_someone'                    => 'Someone',

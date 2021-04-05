@@ -397,6 +397,10 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
 
     'motion_type_edit'            => 'Antragstyp bearbeiten',
     'motion_type_names'           => 'Bezeichnung',
+    'motion_type_amendonly_title' => 'Satzungsänderungsanträge: Basistexte',
+    'motion_type_amendonly_hint'  => 'Hier kann die Satzung (oder ähnliche Dokumente) hinterlegt werden, damit Mitglieder anschließend Änderungsanträge darauf stellen können. Die Satzung ist nicht als regulärer Antrag / Text sichtbar.',
+    'motion_type_amendonly_noyet' => 'Noch keine Satzung hinterlegt. Nutzer*innen können daher noch keine Änderungsanträge stellen.',
+    'motion_type_amendonly_new'   => 'Satzungstext anlegen',
     'motion_type_initiator'       => 'Antragsteller*in / Unterstützer*innen: Anträge',
     'motion_type_initiator_amend' => 'Antragsteller*in / Unterstützer*innen: Änderungsanträge',
     'motion_type_proposed'        => 'Verfahrensvorschläge',

@@ -43,9 +43,14 @@ foreach ($consultation->motionTypes as $type) {
         $hasPDF = true;
     }
 
-    if ($type->getMotionPolicy()->checkCurrUserMotion(false, true) && $type->sidebarCreateButton) {
+    if ($type->amendmentsOnly) {
+        $creatable = (count($type->getAmendableOnlyMotions(false, true)) > 0);
+    } else {
+        $creatable = $type->getMotionPolicy()->checkCurrUserMotion(false, true);
+    }
+    if ($creatable && $type->sidebarCreateButton) {
         $pinkButtonCreates[] = $type;
-    } elseif ($type->getMotionPolicy()->checkCurrUserMotion(false, true)) {
+    } elseif ($creatable) {
         $creatableTypes[] = $type;
     }
 }
@@ -72,10 +77,11 @@ if ($showCreate || count($pinkButtonCreates) > 0) {
       aria-expanded="false">' . Yii::t('con', 'create_new') . ' <span class="caret"></span></a>
                     <ul class="dropdown-menu">';
         foreach ($creatableTypes as $creatableType) {
-            $motionCreateLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $creatableType->id]);
-            $html             .= '<li class="createMotion' . $creatableType->id . '">';
-            $html             .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
-            $html             .= Html::encode($creatableType->titleSingular) . '</a></li>';
+            $motionCreateLink = $creatableType->getCreateLink();
+
+            $html .= '<li class="createMotion' . $creatableType->id . '">';
+            $html .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
+            $html .= Html::encode($creatableType->titleSingular) . '</a></li>';
 
             $htmlSmall .= '<li class="createMotion' . $creatableType->id . '">';
             $htmlSmall .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';

@@ -231,4 +231,6 @@ return [
     'goto_line'     => 'Go to line',
     'goto_line_go'  => 'Go',
     'goto_line_err' => 'Line not found',
+
+    'statutes_base_head' => 'Base text',
 ];

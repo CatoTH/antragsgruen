@@ -22,7 +22,7 @@ trait Statutes
         $type->createTitle                  = \Yii::t('structure', 'preset_statutes_call');
         $type->position                     = 0;
         $type->amendmentsOnly               = 1;
-        $type->policyMotions                = IPolicy::POLICY_ALL;
+        $type->policyMotions                = IPolicy::POLICY_ADMINS;
         $type->policyAmendments             = IPolicy::POLICY_ALL;
         $type->policyComments               = IPolicy::POLICY_ALL;
         $type->policySupportMotions         = IPolicy::POLICY_NOBODY;

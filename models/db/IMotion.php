@@ -21,20 +21,20 @@ use yii\helpers\Html;
  * @property string|null $dateResolution
  * @property IComment[] $comments
  * @property int $status
- * @property int $proposalStatus
- * @property int $proposalReferenceId
+ * @property int|null $proposalStatus
+ * @property int|null $proposalReferenceId
  * @property string|null $proposalVisibleFrom
- * @property string $proposalComment
+ * @property string|null $proposalComment
  * @property string|null $proposalNotification
- * @property int $proposalUserStatus
- * @property string $proposalExplanation
+ * @property int|null $proposalUserStatus
+ * @property string|null $proposalExplanation
  * @property string|null $votingBlockId
  * @property string|null $votingData
- * @property int $votingStatus
+ * @property int|null $votingStatus
  * @property int|null $responsibilityId
  * @property string|null $responsibilityComment
  * @property string|null $extraData
- * @property User $responsibilityUser
+ * @property User|null $responsibilityUser
  */
 abstract class IMotion extends ActiveRecord
 {

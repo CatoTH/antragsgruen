@@ -157,7 +157,7 @@ class UserController extends Base
         $msgError = '';
 
         if ($this->isRequestSet('email') && $this->isRequestSet('code')) {
-            /** @var User $user */
+            /** @var User|null $user */
             $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             if (!$user) {
                 $msgError = Yii::t('user', 'err_email_acc_notfound');
@@ -251,7 +251,7 @@ class UserController extends Base
     public function actionRecovery(string $email = '', string $code = ''): string
     {
         if ($this->isPostSet('send')) {
-            /** @var User $user */
+            /** @var User|null $user */
             $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             if (!$user) {
                 $msg = str_replace('%USER%', $this->getRequestValue('email'), Yii::t('user', 'err_user_notfound'));
@@ -270,14 +270,14 @@ class UserController extends Base
         }
 
         if ($this->isPostSet('recover')) {
-            /** @var User $user */
+            /** @var User|null $user */
             $user     = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
             if (!$user) {
                 $msg = str_replace('%USER%', $this->getRequestValue('email'), Yii::t('user', 'err_user_notfound'));
                 Yii::$app->session->setFlash('error', $msg);
             } elseif (mb_strlen($this->getRequestValue('newPassword')) < $pwMinLen) {
-                $msg = str_replace('%MINLEN%', $pwMinLen, Yii::t('user', 'err_pwd_length'));
+                $msg = str_replace('%MINLEN%', (string)$pwMinLen, Yii::t('user', 'err_pwd_length'));
                 Yii::$app->session->setFlash('error', $msg);
             } else {
                 $email = $this->getRequestValue('email');
@@ -349,7 +349,7 @@ class UserController extends Base
                     Yii::$app->session->setFlash('error', Yii::t('user', 'err_pwd_different'));
                 } elseif (mb_strlen($post['pwd']) < $pwMinLen) {
                     $msg = Yii::t('user', 'err_pwd_length');
-                    Yii::$app->session->setFlash('error', str_replace('%MINLEN%', $pwMinLen, $msg));
+                    Yii::$app->session->setFlash('error', str_replace('%MINLEN%', (string)$pwMinLen, $msg));
                 } else {
                     $user->pwdEnc = password_hash($post['pwd'], PASSWORD_DEFAULT);
                 }

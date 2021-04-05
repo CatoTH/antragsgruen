@@ -185,6 +185,7 @@ return [
     'supp_only_initiators'    => 'Nur die Antragsteller*in',
     'supp_given_by_initiator' => 'Von der Antragsteller*in angegeben',
     'supp_collect_before'     => 'Unterstützungs-Phase vor Veröffentlichung (außer bei Gremien)',
+    'supp_no_initiator'       => 'Keine Antragsteller*in',
 
     'activity_none'                       => 'Noch keine Aktivitäten',
     'activity_someone'                    => 'Ein*e Benutzer*in',

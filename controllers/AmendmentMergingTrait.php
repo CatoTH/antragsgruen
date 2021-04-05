@@ -80,7 +80,7 @@ trait AmendmentMergingTrait
     /**
      * @param string $motionSlug
      * @param int $amendmentId
-     * @param int $newMotionId
+     * @param string $newMotionId
      * @return string
      * @throws NotFound
      */

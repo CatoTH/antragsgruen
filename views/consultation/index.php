@@ -1,6 +1,5 @@
 <?php
 
-use app\components\Tools;
 use app\models\db\{Amendment, AmendmentSupporter, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 

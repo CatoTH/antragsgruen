@@ -249,7 +249,7 @@ class AmendmentController extends Base
     public function actionCreateconfirm($motionSlug, $amendmentId, $fromMode)
     {
         $motion = $this->consultation->getMotion($motionSlug);
-        /** @var Amendment $amendment */
+        /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne(
             [
                 'id'       => $amendmentId,
@@ -292,7 +292,7 @@ class AmendmentController extends Base
     public function actionEdit($motionSlug, $amendmentId)
     {
         $motion = $this->consultation->getMotion($motionSlug);
-        /** @var Amendment $amendment */
+        /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne(
             [
                 'id'       => $amendmentId,

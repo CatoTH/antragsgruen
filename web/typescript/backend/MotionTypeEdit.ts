@@ -11,6 +11,7 @@ const SUPPORTER_ONLY_INITIATOR = 0;
 // noinspection JSUnusedGlobalSymbols
 const SUPPORTER_GIVEN_BY_INITIATOR = 1;
 const SUPPORTER_COLLECTING_SUPPORTERS = 2;
+const SUPPORTER_NO_INITIATOR = 3;
 
 // Synchronize with ISectionType
 const TYPE_TITLE = 0;
@@ -55,72 +56,71 @@ class MotionTypeEdit {
 
         const $supportType = $form.find(".supportType");
         const $supportAllowMore = $form.find(".formGroupAllowMore input");
+        const $initiatorCanBePerson = $form.find(".contactDetails .initiatorCanBePerson input");
+        const $initiatorCanBeOrga = $form.find(".contactDetails .initiatorCanBeOrganization input");
+
+        let currentType = parseInt($supportType.find('input').val() as string, 10);
+
+        const visibilityRules = {
+            hasInitiator: () => (currentType !== SUPPORTER_NO_INITIATOR),
+            hasSupporters: () => (
+                currentType !== SUPPORTER_NO_INITIATOR &&
+                $supportType.find("li[data-value=\"" + currentType.toString(10) + "\"]").data("has-supporters")
+            ),
+            isCollectingSupporters: () => (currentType === SUPPORTER_COLLECTING_SUPPORTERS),
+            allowSupportAfterSubmission: () => (
+                (currentType === SUPPORTER_COLLECTING_SUPPORTERS || currentType === SUPPORTER_GIVEN_BY_INITIATOR) &&
+                $supportAllowMore.is(':checked')
+            ),
+            allowFemaleQuota: () => (
+                currentType === SUPPORTER_COLLECTING_SUPPORTERS &&
+                parseInt($initiatorGender.filter(":checked").val() as string, 10) !== CONTACT_NONE
+            ),
+            initiatorCanBePerson: () => (currentType !== SUPPORTER_NO_INITIATOR && $initiatorCanBePerson.prop("checked")),
+            initiatorCanBeOrga: () => (currentType !== SUPPORTER_NO_INITIATOR && $initiatorCanBeOrga.prop("checked")),
+        };
+
+        const recalcVisibilities = () => {
+            $form.find("[data-visibility]").each(function() {
+                const $this = $(this);
+                if (visibilityRules[$this.data('visibility')]()) {
+                    $this.removeClass('hidden');
+                } else {
+                    $this.addClass('hidden');
+                }
+            });
+        };
 
         $supportAllowMore.on('change', () => {
-            const selected = parseInt($supportType.find('input').val() as string, 10);
-            if ((selected === SUPPORTER_COLLECTING_SUPPORTERS || selected === SUPPORTER_GIVEN_BY_INITIATOR) && $supportAllowMore.is(':checked')) {
-                $form.find('.formGroupAllowAfterPub').removeClass('hidden');
-            } else {
-                $form.find('.formGroupAllowAfterPub').addClass('hidden');
-            }
+            recalcVisibilities();
         }).trigger('change');
 
         $supportType.on('changed.fu.selectlist', () => {
-            const selected = $supportType.find('input').val();
-            const hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
+            currentType = parseInt($supportType.find('input').val() as string, 10);
+            const hasSupporters = $supportType.find("li[data-value=\"" + currentType.toString(10) + "\"]").data("has-supporters");
+            recalcVisibilities();
 
-            if (hasSupporters) {
-                $form.find('.formGroupMinSupporters').removeClass('hidden');
-                $form.find('.formGroupAllowMore').removeClass('hidden');
-                this.motionsHaveSupporters = true;
-            } else {
-                $form.find('.formGroupMinSupporters').addClass('hidden');
-                $form.find('.formGroupAllowMore').addClass('hidden');
-                this.motionsHaveSupporters = false;
-            }
-
-            if (parseInt(selected as string, 10) === SUPPORTER_COLLECTING_SUPPORTERS) {
-                $form.find('.formGroupOfferNonPublic').removeClass('hidden');
-            } else {
-                $form.find('.formGroupOfferNonPublic').addClass('hidden');
-            }
+            this.motionsHaveSupporters = hasSupporters;
 
             $initiatorGender.trigger('change');
             $supportAllowMore.trigger('change');
             this.setMaxPdfSupporters();
         }).trigger('changed.fu.selectlist');
 
-        const $initiatorCanBePerson = $form.find("input[name=initiatorCanBePerson]");
-        const $initiatorCanBeOrga = $form.find("input[name=initiatorCanBeOrganization]");
         $initiatorCanBePerson.on("change", () => {
-            if ($initiatorCanBePerson.prop("checked")) {
-                $form.find(".formGroupGender").removeClass("hidden");
-            } else {
-                $form.find(".formGroupGender").addClass("hidden");
-                if (!$initiatorCanBeOrga.prop("checked")) {
-                    $initiatorCanBeOrga.prop("checked", true).trigger("change");
-                }
+            if (!$initiatorCanBePerson.prop("checked") && !$initiatorCanBeOrga.prop("checked")) {
+                $initiatorCanBeOrga.prop("checked", true).trigger("change");
             }
+            recalcVisibilities();
         });
         $initiatorCanBeOrga.on("change", () => {
-            if ($initiatorCanBeOrga.prop("checked")) {
-                $form.find(".formGroupResolutionDate").removeClass("hidden");
-            } else {
-                $form.find(".formGroupResolutionDate").addClass("hidden");
-                if (!$initiatorCanBePerson.prop("checked")) {
-                    $initiatorCanBePerson.prop("checked", true).trigger("change");
-                }
+            if (!$initiatorCanBeOrga.prop("checked") && !$initiatorCanBePerson.prop("checked")) {
+                $initiatorCanBePerson.prop("checked", true).trigger("change");
             }
+            recalcVisibilities();
         });
-
         $initiatorGender.on("change", () => {
-            const selected = parseInt($initiatorGender.filter(":checked").val() as string, 10);
-            const supportType = parseInt($supportType.find('input').val() as string, 10);
-            if (selected !== CONTACT_NONE && supportType === SUPPORTER_COLLECTING_SUPPORTERS) {
-                $form.find(".formGroupMinFemale").removeClass("hidden");
-            } else {
-                $form.find(".formGroupMinFemale").addClass("hidden");
-            }
+            recalcVisibilities();
         }).trigger("change");
     }
 
