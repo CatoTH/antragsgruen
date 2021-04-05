@@ -129,7 +129,6 @@ abstract class SupportBase
     }
 
     /**
-     * @param ISupporter $model
      * @return ISupporter[]
      */
     protected function parseSupporters(ISupporter $model): array

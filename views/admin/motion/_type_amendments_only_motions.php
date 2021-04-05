@@ -24,7 +24,8 @@ if (count($statutes) > 0) {
     echo '<ul>';
     foreach ($statutes as $statute) {
         echo '<li>';
-        echo Html::a(Html::encode($statute->title), UrlHelper::createMotionUrl($statute), ['class' => 'statute' . $statute->id]);
+        $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $statute->id]);
+        echo Html::a(Html::encode($statute->title), $editUrl, ['class' => 'statute' . $statute->id]);
         echo '</li>';
     }
     echo '</ul>';

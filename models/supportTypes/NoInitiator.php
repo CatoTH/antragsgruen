@@ -3,8 +3,10 @@
 namespace app\models\supportTypes;
 
 use app\controllers\Base;
+use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
+use app\models\db\Motion;
 
 class NoInitiator extends SupportBase
 {
@@ -32,5 +34,31 @@ class NoInitiator extends SupportBase
     public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller): string
     {
         return '';
+    }
+
+    public function validateMotion(): void
+    {
+    }
+
+    public function validateAmendment(): void
+    {
+    }
+
+    public function submitMotion(Motion $motion): void
+    {
+    }
+
+    public function submitAmendment(Amendment $amendment): void
+    {
+    }
+
+    public function getMotionSupporters(Motion $motion): array
+    {
+        return [];
+    }
+
+    public function getAmendmentSupporters(Amendment $amendment): array
+    {
+        return [];
     }
 }

@@ -45,9 +45,9 @@ echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->
     </section>
 
 <?php
-$pdfUrl    = UrlHelper::createMotionUrl($motion, 'pdf', ['showAlways' => $motion->getShowAlwaysToken()]);
+$pdfUrl = UrlHelper::createMotionUrl($motion, 'pdf', ['showAlways' => $motion->getShowAlwaysToken()]);
 $iframeUrl = UrlHelper::createMotionUrl($motion, 'embeddedpdf', ['file' => $pdfUrl]);
-$iframe    = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
+$iframe = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
 ?>
     <section class="pdfVersion" data-src="<?= Html::encode($iframe) ?>"></section>
 <?php
@@ -92,7 +92,9 @@ if ($right === '') {
     </div>
     <?php
 }
-?>
+
+if (count($motion->getSupporters(true)) + count($motion->getInitiators()) > 0) {
+    ?>
     <div class="webVersion motionTextHolder">
         <h3 class="green"><?= Yii::t('motion', 'initiators_head') ?></h3>
         <div class="content">
@@ -127,8 +129,11 @@ if ($right === '') {
             </ul>
         </div>
     </div>
+    <?php
+}
 
-<?= Html::beginForm('', 'post', ['id' => 'motionConfirmForm']) ?>
+echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
+?>
     <div class="content saveCancelRow">
         <div class="saveCol">
             <button type="submit" name="confirm" class="btn btn-success">
@@ -143,9 +148,10 @@ if ($right === '') {
             </button>
         </div>
     </div>
-<?= Html::endForm() ?>
 
 <?php
+echo Html::endForm();
+
 if ($deleteDraftId) {
     $controller->layoutParams->addOnLoadJS('localStorage.removeItem(' . json_encode($deleteDraftId) . ');');
 }

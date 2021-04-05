@@ -149,7 +149,11 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
+        if ($motion->getMyMotionType()->amendmentsOnly) {
+            return $this->render('create_done_amendments_only', ['motion' => $motion, 'mode' => $fromMode]);
+        } else {
+            return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
+        }
     }
 
     /**
