@@ -16,6 +16,7 @@ abstract class SupportBase
     const ONLY_INITIATOR        = 0;
     const GIVEN_BY_INITIATOR    = 1;
     const COLLECTING_SUPPORTERS = 2;
+    const NO_INITIATOR          = 3;
 
     const LIKEDISLIKE_LIKE    = 1;
     const LIKEDISLIKE_DISLIKE = 2;
@@ -39,6 +40,7 @@ abstract class SupportBase
             static::ONLY_INITIATOR        => OnlyInitiator::class,
             static::GIVEN_BY_INITIATOR    => GivenByInitiator::class,
             static::COLLECTING_SUPPORTERS => CollectBeforePublish::class,
+            static::NO_INITIATOR          => NoInitiator::class,
         ];
     }
 
@@ -54,6 +56,8 @@ abstract class SupportBase
                 return new GivenByInitiator($motionType, $settings);
             case static::COLLECTING_SUPPORTERS:
                 return new CollectBeforePublish($motionType, $settings);
+            case static::NO_INITIATOR:
+                return new NoInitiator($motionType, $settings);
             default:
                 throw new Internal('Supporter form type not found');
         }

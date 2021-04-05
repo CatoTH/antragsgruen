@@ -23,7 +23,7 @@ trait AmendmentActionsTrait
      */
     private function getComment(Amendment $amendment, int $commentId, bool $needsScreeningRights): AmendmentComment
     {
-        /** @var AmendmentComment $comment */
+        /** @var AmendmentComment|null $comment */
         $comment = AmendmentComment::findOne($commentId);
         if (!$comment || $comment->amendmentId != $amendment->id || $comment->status != IComment::STATUS_VISIBLE) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
@@ -103,7 +103,7 @@ trait AmendmentActionsTrait
      */
     private function screenCommentAccept(Amendment $amendment, int $commentId): void
     {
-        /** @var AmendmentComment $comment */
+        /** @var AmendmentComment|null $comment */
         $comment = AmendmentComment::findOne($commentId);
         if (!$comment || $comment->amendmentId !== $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
@@ -125,7 +125,7 @@ trait AmendmentActionsTrait
      */
     private function screenCommentReject(Amendment $amendment, int $commentId): void
     {
-        /** @var AmendmentComment $comment */
+        /** @var AmendmentComment|null $comment */
         $comment = AmendmentComment::findOne($commentId);
         if (!$comment || $comment->amendmentId != $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));

@@ -26,13 +26,13 @@ class TextSimple extends Text
 
     public function getMotionFormField(): string
     {
-        return $this->getTextMotionFormField(false, $this->section->getSettings()->fixedWidth);
+        return $this->getTextMotionFormField(false, !!$this->section->getSettings()->fixedWidth);
     }
 
     public function getAmendmentFormField(): string
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
-        $fixedWidth                           = $this->section->getSettings()->fixedWidth;
+        $fixedWidth                           = !!$this->section->getSettings()->fixedWidth;
 
         $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
         if ($this->forceMultipleParagraphs !== null) {
@@ -123,7 +123,7 @@ class TextSimple extends Text
 
     public function deleteMotionData()
     {
-        $this->section->setData(null);
+        $this->section->setData('');
         $this->section->dataRaw = null;
     }
 
@@ -414,7 +414,7 @@ class TextSimple extends Text
                     $out .= \Yii::t('diff', 'after_line_del');
                 } elseif ($hasInsert) {
                     if ($diff['lineTo'] < $firstLineOfSection) {
-                        $out .= str_replace('#LINE#', ($diff['lineTo'] + 1), \Yii::t('diff', 'pre_line_ins'));
+                        $out .= str_replace('#LINE#', (string)($diff['lineTo'] + 1), \Yii::t('diff', 'pre_line_ins'));
                     } else {
                         $out .= \Yii::t('diff', 'after_line_ins');
                     }
@@ -437,7 +437,7 @@ class TextSimple extends Text
                 }
             }
             $lineFrom = ($diff['lineFrom'] < $firstLineOfSection ? $firstLineOfSection : $diff['lineFrom']);
-            $out      = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $lineFrom], $out) . '</h4>';
+            $out      = str_replace(['#LINETO#', '#LINEFROM#'], [(string)$diff['lineTo'], (string)$lineFrom], $out) . '</h4>';
             $out      .= '<div>';
             if ($text[0] != '<') {
                 $out .= '<p>' . $text . '</p>';
@@ -495,9 +495,9 @@ class TextSimple extends Text
         $section  = $this->section;
         $settings = $section->getSettings();
 
-        $hasLineNumbers = $settings->lineNumbers;
+        $hasLineNumbers = !!$settings->lineNumbers;
         $lineLength     = ($hasLineNumbers ? $consultation->getSettings()->lineLength : 0);
-        $fixedWidth     = $settings->fixedWidth;
+        $fixedWidth     = !!$settings->fixedWidth;
         $firstLine      = $section->getFirstLineNumber();
 
         if ($settings->printTitle) {

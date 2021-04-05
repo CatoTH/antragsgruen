@@ -13,13 +13,13 @@ class TextHTML extends Text
 {
     public function getMotionFormField(): string
     {
-        return $this->getTextMotionFormField(true, $this->section->getSettings()->fixedWidth);
+        return $this->getTextMotionFormField(true, !!$this->section->getSettings()->fixedWidth);
     }
 
     public function getAmendmentFormField(): string
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
-        $fixedWidth                           = $this->section->getSettings()->fixedWidth;
+        $fixedWidth                           = !!$this->section->getSettings()->fixedWidth;
 
         $pre = ($this->section->dataRaw ? $this->section->dataRaw : $this->section->getData());
         return $this->getTextAmendmentFormField(true, $pre, $fixedWidth);

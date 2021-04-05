@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\{DateTools, Tools};
+use app\components\{DateTools, Tools, UrlHelper};
 use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
@@ -357,6 +357,33 @@ class ConsultationMotionType extends ActiveRecord
             }
         }
         return $return;
+    }
+
+    /**
+     * @return Motion[]
+     */
+    public function getAmendableOnlyMotions(bool $allowAdmins = true, bool $assumeLoggedIn = false): array
+    {
+        $return = [];
+        foreach ($this->motions as $motion) {
+            if (in_array($motion->status, $this->getConsultation()->getUnreadableStatuses())) {
+                continue;
+            }
+            if (!$this->getAmendmentPolicy()->checkCurrUserMotion($allowAdmins, $assumeLoggedIn)) {
+                continue;
+            }
+            $return[] = $motion;
+        }
+        return $return;
+    }
+
+    public function getCreateLink(): string
+    {
+        if ($this->amendmentsOnly) {
+            return UrlHelper::createUrl(['/motion/create', 'motionTypeId' => $this->id]); // @TODO One/multiple
+        } else {
+            return UrlHelper::createUrl(['/motion/create', 'motionTypeId' => $this->id]);
+        }
     }
 
     public function isCompatibleTo(ConsultationMotionType $cmpMotionType): bool
