@@ -86,10 +86,10 @@ echo Html::beginForm('', 'post', [
     'data-antragsgruen-widget' => 'frontend/MotionEditForm'
 ]);
 
-echo '<div class="content fuelux">';
+echo '<div class="content">';
 
 if (count($form->motionType->agendaItems) > 0) {
-    echo '<fieldset class="form-group">';
+    echo '<fieldset class="form-group fuelux">';
     echo '<legend class="legend">' . Yii::t('motion', 'agenda_item') . '</label>';
     if ($form->agendaItem) {
         echo '<div>' . Html::encode($form->agendaItem->title) . '</div>';

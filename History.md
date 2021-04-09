@@ -6,6 +6,7 @@
 - Bugfix: A motion creation bug was fixed that happened if an organization list drop-down was set up and the "Wurzelwerk / Grünes Netz"-login was used.
 - Bugfix: When using LaTeX-based PDF-rendering for applications, the tabular data to the right part of the page looked strange when having multiple lines
 - Bugfix: If an amendment changed big parts of an intermediate headline in a motion text, the change was not correctly indicated using the red and green text colors.
+- Bugfix: Selecting multiple topics / tags for motions did not work.
 
 ## Version 4.7.0 (2021-02-13)
 
