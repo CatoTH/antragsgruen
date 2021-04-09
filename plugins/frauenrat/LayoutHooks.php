@@ -303,7 +303,7 @@ $(function() {
         ]);
 
         return '<a href="' . Html::encode($pdfLink) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">' .
-               '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Antragsbuch herunterladen</a>';
+               '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Antragsspiegel herunterladen</a>';
     }
 
     public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
