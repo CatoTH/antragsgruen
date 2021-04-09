@@ -47,6 +47,7 @@ class Consultation implements \JsonSerializable
     public $amendmentBookmarksWithNames = false;
     public $hasSpeechLists = false;
     public $speechRequiresLogin = false;
+    public $allowMultipleTags = false;
 
     /** @var null|int */
     public $forceMotion = null;
@@ -65,7 +66,6 @@ class Consultation implements \JsonSerializable
     public $commentsSupportable = false;
     public $screeningMotionsShown = false;
     public $initiatorsMayReject = false;
-    public $allowMultipleTags = false;
     public $odtExportHasLineNumers = true;
     public $pProcedureExpandAll = true; // If false: only show max. 1 section in the internal proposed procedure
 
