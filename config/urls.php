@@ -71,7 +71,20 @@ $urlRules = [
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
-    $restBase                                 => 'consultation/rest-site',
+
+    $restBase                                                                        => 'consultation/rest-site',
+    $restBaseCon                                                                     => 'consultation/rest',
+    $restBaseCon . '/proposed-procedure'                                             => 'consultation/proposed-procedure-rest',
+    $restBaseCon . '/motion/<motionSlug:[^\/]+>'                                     => '/motion/rest',
+    $restBaseCon . '/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>'         => '/amendment/rest',
+    $restBaseCon . '/speech/<queueId:[^\/]+>'                                        => '/speech/get-queue',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/item'                                   => '/speech/register',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/unregister'                             => '/speech/unregister',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin'                                  => '/speech/get-queue-admin',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/settings'                         => '/speech/post-queue-settings',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/reset'                            => '/speech/admin-queue-reset',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item'                             => '/speech/admin-create-item',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',
@@ -91,19 +104,6 @@ $urlRules = [
     $dommotionOld . '/amendment/create'            => 'amendment/create',
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
-
-    $restBaseCon                                                                     => 'consultation/rest',
-    $restBaseCon . '/proposed-procedure'                                             => 'consultation/proposed-procedure-rest',
-    $restBaseCon . '/motion/<motionSlug:[^\/]+>'                                     => '/motion/rest',
-    $restBaseCon . '/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>'         => '/amendment/rest',
-    $restBaseCon . '/speech/<queueId:[^\/]+>'                                        => '/speech/get-queue',
-    $restBaseCon . '/speech/<queueId:[^\/]+>/item'                                   => '/speech/register',
-    $restBaseCon . '/speech/<queueId:[^\/]+>/unregister'                             => '/speech/unregister',
-    $restBaseCon . '/speech/<queueId:[^\/]+>/admin'                                  => '/speech/get-queue-admin',
-    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/settings'                         => '/speech/post-queue-settings',
-    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/reset'                            => '/speech/admin-queue-reset',
-    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item'                             => '/speech/admin-create-item',
-    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
 ];
 
 if (YII_ENV === 'test') {
