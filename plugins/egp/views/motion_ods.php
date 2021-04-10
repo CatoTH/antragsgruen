@@ -28,6 +28,7 @@ $doc = new Spreadsheet([
     'tmpPath' => $params->getTmpDir(),
     'trustHtml' => true,
     'templateFile' => __DIR__ . '/../assets/template.ods',
+    'colorIns' => '#0000ff',
 ]);
 
 $doc->setPreSaveHook(function (DOMDocument $doc) {
@@ -78,6 +79,7 @@ $currCol = $firstCol = 1;
 
 $COL_PREFIX = $currCol++;
 $COL_INITIATOR = $currCol++;
+$COL_SUPPORTER = $currCol++;
 $COL_UNCHANGED = $currCol++;
 $COL_CHANGE = $currCol++;
 $COL_REASON = $currCol++;
@@ -111,6 +113,10 @@ $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 $doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, Yii::t('export', 'initiator'));
 $doc->setCellStyle(2, $COL_INITIATOR, ['fo:wrap-option' => 'wrap'], []);
 $doc->setColumnWidth($COL_INITIATOR, 6);
+
+$doc->setCell(2, $COL_SUPPORTER, Spreadsheet::TYPE_TEXT, Yii::t('motion', 'supporters_heading'));
+$doc->setCellStyle(2, $COL_SUPPORTER, ['fo:wrap-option' => 'wrap'], []);
+$doc->setColumnWidth($COL_SUPPORTER, 6);
 
 $doc->setCell(2, $COL_UNCHANGED, Spreadsheet::TYPE_TEXT, 'Original text');
 $doc->setColumnWidth($COL_UNCHANGED, 10);
@@ -160,11 +166,18 @@ foreach ($amendments as $amendment) {
             $initiatorContacts[] = Html::encode($supp->contactPhone);
         }
     }
+    $supporterNames = [];
+    foreach ($amendment->getSupporters(true) as $supporter) {
+        $supporterNames[] = $supporter->getNameWithOrga();
+    }
+
     $firstLine = $amendment->getFirstDiffLine();
 
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
     $doc->setCellStyle($row, $COL_INITIATOR, ['fo:wrap-option' => 'wrap'], []);
+    $doc->setCell($row, $COL_SUPPORTER, Spreadsheet::TYPE_TEXT, implode(', ', $supporterNames));
+    $doc->setCellStyle($row, $COL_SUPPORTER, ['fo:wrap-option' => 'wrap'], []);
     $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_HTML, implode("<br>", $initiatorContacts));
     $doc->setCell($row, $COL_STATUS, Spreadsheet::TYPE_HTML, $amendment->getFormattedStatus());
     $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
