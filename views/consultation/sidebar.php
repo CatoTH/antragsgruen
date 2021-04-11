@@ -201,7 +201,9 @@ if ($hasPDF) {
 
     $hasResolutions = false;
     foreach ($consultation->motions as $motion) {
-        if (in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY])) {
+        $isResolution = in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY]);
+        $typeHasPdf = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
+        if ($isResolution && $typeHasPdf) {
             $hasResolutions = $motion->motionTypeId;
         }
     }

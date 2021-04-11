@@ -17,6 +17,7 @@
 - Bugfix: If an amendment changed big parts of an intermediate headline in a motion text, the change was not correctly indicated using the red and green text colors.
 - Bugfix: Selecting multiple topics / tags for motions did not work.
 - Bugfix: The REST API did not work if the consultation path had a dash in it, followed by a number.
+- Bugfix: A (broken) link to a resolution PDF was shown on the home page, even if no PDF was activated for this motion type.
 
 ## Version 4.7.0 (2021-02-13)
 
