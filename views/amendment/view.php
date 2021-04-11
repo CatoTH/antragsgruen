@@ -162,7 +162,7 @@ $supporters    = $amendment->getSupporters(true);
 $supportPolicy = $motion->getMyMotionType()->getAmendmentSupportPolicy();
 $supportType   = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
 
-if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser()) {
+if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser(false)) {
     echo '<section class="supporters" id="supporters" aria-labelledby="supportersTitle">
     <h2 class="green" id="supportersTitle">' . Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';

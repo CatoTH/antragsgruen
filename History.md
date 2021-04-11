@@ -18,6 +18,7 @@
 - Bugfix: Selecting multiple topics / tags for motions did not work.
 - Bugfix: The REST API did not work if the consultation path had a dash in it, followed by a number.
 - Bugfix: A (broken) link to a resolution PDF was shown on the home page, even if no PDF was activated for this motion type.
+- Bugfix: The supporting section of motions / amendments was partially shown to admins even if it was activated for nobody.
 
 ## Version 4.7.0 (2021-02-13)
 
