@@ -121,6 +121,11 @@
         font-weight: normal;
         margin-top: 5px;
       }
+      &.three-lines-title {
+        .title {
+          margin-top: 0;
+        }
+      }
       &.description-first {
         .description {
           margin-top: 40px;

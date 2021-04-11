@@ -22,6 +22,7 @@ return [
     'functionality_applications'   => 'Bewerbungen',
     'functionality_agenda'         => 'Tagesordnung',
     'functionality_speech'         => 'Redelisten',
+    'functionality_statute_amendments' => 'Satzungs-<br>änderungs-<br>anträge',
 
     'language_title' => 'Sprache der Benutzeroberfläche?',
 

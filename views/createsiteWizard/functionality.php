@@ -66,6 +66,17 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
+            <label class="radio-checkbox-label checkbox-label three-lines-title value-statute">
+                <span class="description">&nbsp;</span>
+                <span class="title"><?=$t('functionality_statute_amendments')?></span>
+                <span class="input">
+                    <?= Html::checkbox(
+                        'SiteCreateForm[functionality][]',
+                        in_array(SiteCreateForm::FUNCTIONALITY_STATUTE_AMENDMENTS, $model->functionality),
+                        ['value' => SiteCreateForm::FUNCTIONALITY_STATUTE_AMENDMENTS]
+                    ); ?>
+                </span>
+            </label>
             <label class="radio-checkbox-label checkbox-label description-first value-speech">
                 <span class="description">&nbsp;</span>
                 <span class="title"><?=$t('functionality_speech')?></span>

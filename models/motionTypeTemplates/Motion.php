@@ -21,6 +21,7 @@ trait Motion
         $type->titlePlural                  = \Yii::t('structure', 'preset_motion_plural');
         $type->createTitle                  = \Yii::t('structure', 'preset_motion_call');
         $type->position                     = 0;
+        $type->amendmentsOnly               = 0;
         $type->policyMotions                = IPolicy::POLICY_ALL;
         $type->policyAmendments             = IPolicy::POLICY_ALL;
         $type->policyComments               = IPolicy::POLICY_ALL;
