@@ -160,9 +160,9 @@ $supporters    = $amendment->getSupporters();
 $supportPolicy = $motion->motionType->getAmendmentSupportPolicy();
 $supportType   = $motion->motionType->getAmendmentSupportTypeClass();
 
-if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser()) {
-    echo '<section class="supporters" id="supporters">
-    <h2 class="green">' . Yii::t('motion', 'supporters_heading') . '</h2>
+if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser(false)) {
+    echo '<section class="supporters" id="supporters" aria-labelledby="supportersTitle">
+    <h2 class="green" id="supportersTitle">' . Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
     $iAmSupporting        = false;

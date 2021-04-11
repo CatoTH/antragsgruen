@@ -69,22 +69,15 @@ class LayoutHelper
         return implode(', ', $inits);
     }
 
-    /**
-     * @param Motion $motion
-     *
-     * @return string
-     */
-    public static function getViewCacheKey(Motion $motion) {
+    public static function getViewCacheKey(Motion $motion): string {
         return 'motion_view3_' . $motion->id;
     }
 
     /**
-     * @param Motion $motion
-     * @return Content
      * @throws \app\models\exceptions\Internal
      * @throws \Exception
      */
-    public static function renderTeX(Motion $motion)
+    public static function renderTeX(Motion $motion): Content
     {
         $content                  = new Content();
         $content->template        = $motion->getMyMotionType()->texTemplate->texContent;
@@ -209,7 +202,7 @@ class LayoutHelper
             return;
         }
 
-        $canSupport = $policy->checkCurrUser();
+        $canSupport = $policy->checkCurrUser(false);
         foreach ($motion->getInitiators() as $supp) {
             if ($user && $supp->userId === $user->id) {
                 $canSupport = false;

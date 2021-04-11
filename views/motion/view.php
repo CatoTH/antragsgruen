@@ -216,7 +216,6 @@ $supporters    = $motion->getSupporters();
 $supportType   = $motion->motionType->getMotionSupportTypeClass();
 $supportPolicy = $motion->motionType->getMotionSupportPolicy();
 
-
 if (count($supporters) > 0 || $supportCollectingStatus ||
     ($supportPolicy->checkCurrUser(false) && !$motion->isResolution())) {
     echo '<section class="supporters" id="supporters" aria-labelledby="supportersTitle">
