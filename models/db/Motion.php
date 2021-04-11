@@ -136,13 +136,7 @@ class Motion extends IMotion implements IRSSItem
                     ->andWhere(MotionComment::tableName() . '.userId = ' . IntVal($userId));
     }
 
-    /**
-     * @param int|null $sectionId
-     * @param int $paragraphNo
-     *
-     * @return MotionComment|null
-     */
-    public function getPrivateComment($sectionId, $paragraphNo)
+    public function getPrivateComment(?int $sectionId, int $paragraphNo): ?MotionComment
     {
         if (!User::getCurrentUser()) {
             return null;
@@ -294,10 +288,7 @@ class Motion extends IMotion implements IRSSItem
         return $this->hasOne(User::class, ['id' => 'responsibilityId']);
     }
 
-    /**
-     * @return Consultation
-     */
-    public function getMyConsultation()
+    public function getMyConsultation(): ?Consultation
     {
         $current = Consultation::getCurrent();
         if ($current && $current->getMotion($this->id)) {
@@ -305,6 +296,16 @@ class Motion extends IMotion implements IRSSItem
         } else {
             return Consultation::findOne($this->consultationId);
         }
+    }
+
+    public function getMyAgendaItem(): ?ConsultationAgendaItem
+    {
+        return $this->agendaItem;
+    }
+
+    public function getMyTags(): array
+    {
+        return $this->tags;
     }
 
     /**
@@ -419,18 +420,15 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return string ("A1new")
      */
-    public function getNewTitlePrefix()
+    public function getNewTitlePrefix(): string
     {
         return static::getNewTitlePrefixInternal($this->titlePrefix);
     }
 
     /**
-     * @param bool $includeWithdrawn
-     * @param bool $ifMotionIsMoved
-     *
      * @return Amendment[]
      */
-    public function getVisibleAmendments($includeWithdrawn = true, $ifMotionIsMoved = true)
+    public function getVisibleAmendments(bool $includeWithdrawn = true, bool $ifMotionIsMoved = true): array
     {
         if (!$ifMotionIsMoved && $this->status === Motion::STATUS_MOVED) {
             return [];
@@ -468,12 +466,10 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param boolean $includeVoted
      * @param null|int[] $exclude
-     *
      * @return Amendment[]
      */
-    public function getAmendmentsProposedToBeIncluded($includeVoted, $exclude = null)
+    public function getAmendmentsProposedToBeIncluded(bool $includeVoted, ?array $exclude = null): array
     {
         $amendments = [];
         foreach ($this->amendments as $amendment) {
@@ -496,12 +492,9 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param bool $includeWithdrawn
-     * @param bool $ifMotionIsMoved
-     *
      * @return Amendment[]
      */
-    public function getVisibleAmendmentsSorted($includeWithdrawn = true, $ifMotionIsMoved = true)
+    public function getVisibleAmendmentsSorted(bool $includeWithdrawn = true, bool $ifMotionIsMoved = true): array
     {
         $amendments = $this->getVisibleAmendments($includeWithdrawn, $ifMotionIsMoved);
 
@@ -560,15 +553,10 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @param bool $throwExceptions
-     *
-     * @return bool
      * @throws NotAmendable
      * @throws Internal
      */
-    public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
+    public function isCurrentlyAmendable(bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $throwExceptions = false): bool
     {
         $permissions = $this->getPermissionsObject();
 
@@ -1062,23 +1050,14 @@ class Motion extends IMotion implements IRSSItem
         return $return;
     }
 
-    /**
-     * @param string $prefix
-     * @param null|Amendment $ignore
-     *
-     * @return null|Amendment
-     */
-    public function findAmendmentWithPrefix($prefix, $ignore = null)
+    public function findAmendmentWithPrefix(string $prefix, ?Amendment $ignore = null): ?Amendment
     {
         $numbering = $this->getMyConsultation()->getAmendmentNumbering();
 
         return $numbering->findAmendmentWithPrefix($this, $prefix, $ignore);
     }
 
-    /**
-     * @return ConsultationMotionType
-     */
-    public function getMyMotionType()
+    public function getMyMotionType(): ConsultationMotionType
     {
         try {
             return $this->getMyConsultation()->getMotionType($this->motionTypeId);
@@ -1158,17 +1137,6 @@ class Motion extends IMotion implements IRSSItem
         }
 
         return $url;
-    }
-
-    public function getTimestamp(): int
-    {
-        if ($this->datePublication) {
-            return Tools::dateSql2timestamp($this->datePublication);
-        } elseif ($this->dateCreation) {
-            return Tools::dateSql2timestamp($this->dateCreation);
-        } else {
-            return 0;
-        }
     }
 
     public function getActiveSpeechQueue(): ?SpeechQueue

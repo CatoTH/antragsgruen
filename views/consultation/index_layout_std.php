@@ -9,7 +9,7 @@ use app\views\consultation\LayoutHelper;
  * @var Consultation $consultation
  */
 
-list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
+list($motions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
     echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }

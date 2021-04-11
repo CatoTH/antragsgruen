@@ -2,6 +2,7 @@
 
 namespace app\views\consultation;
 
+use app\models\IMotionList;
 use app\components\{MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, Motion};
 use app\models\settings\Consultation as ConsultationSettings;
@@ -220,10 +221,7 @@ class LayoutHelper
         return $return;
     }
 
-    /**
-     * @return int[]
-     */
-    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): array
+    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): IMotionList
     {
         $showMotions = !in_array($consultation->getSettings()->startLayoutType, [
             ConsultationSettings::START_LAYOUT_AGENDA_LONG,
@@ -310,7 +308,7 @@ class LayoutHelper
             </form>';
         }
 
-        $shownMotions = [];
+        $shownMotions = new IMotionList();
         if ($showMotions) {
             $motions = [];
             foreach ($agendaItem->getMotionsFromConsultation() as $motion) {
@@ -321,26 +319,23 @@ class LayoutHelper
                 echo '<ul class="motions">';
                 foreach ($motions as $motion) {
                     echo static::showMotion($motion, $consultation, false);
-                    $shownMotions[] = $motion->id;
+                    $shownMotions->addMotion($motion);
                 }
                 echo '</ul>';
             }
         }
         echo '</div>';
 
-        $children               = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
+        $children = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
         $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false);
-        $shownMotions           = array_merge($shownMotions, $agendaListShownMotions);
+        $shownMotions->addIMotionList($agendaListShownMotions);
 
         echo '</li>';
 
         return $shownMotions;
     }
 
-    /**
-     * @return int[]
-     */
-    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): array
+    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): IMotionList
     {
         $fullTitle = '';
         if ($agendaItem->time && $agendaItem->time !== '0000-00-00') {
@@ -394,10 +389,8 @@ class LayoutHelper
 
     /**
      * @param ConsultationAgendaItem[] $items
-     *
-     * @return int[]
      */
-    public static function showAgendaList(array $items, Consultation $consultation, bool $admin, bool $isRoot = false): array
+    public static function showAgendaList(array $items, Consultation $consultation, bool $admin, bool $isRoot = false): IMotionList
     {
         $timesClass = 'noShowTimes ';
         foreach ($consultation->agendaItems as $agendaItem) {
@@ -408,14 +401,14 @@ class LayoutHelper
 
         $items = ConsultationAgendaItem::sortItems($items);
         echo '<ol class="agenda ' . $timesClass . ($isRoot ? 'motionList motionListWithinAgenda' : 'agendaSub') . '">';
-        $shownMotions = [];
+        $shownMotions = new IMotionList();
         foreach ($items as $item) {
             if ($item->isDateSeparator()) {
                 $newShown = static::showDateAgendaItem($item, $consultation, $admin);
             } else {
                 $newShown = static::showAgendaItem($item, $consultation, $admin);
             }
-            $shownMotions = array_merge($shownMotions, $newShown);
+            $shownMotions->addIMotionList($newShown);
         }
         echo '</ol>';
 

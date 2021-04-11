@@ -53,14 +53,13 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @param Motion[] $motions
-     * @return array
+     * @param IMotion[] $motions
      */
-    public static function getMostPopularTags($motions)
+    public static function getMostPopularTags(array $motions): array
     {
         $tags = [];
         foreach ($motions as $motion) {
-            foreach ($motion->tags as $tag) {
+            foreach ($motion->getMyTags() as $tag) {
                 if (!isset($tags[$tag->id])) {
                     $tags[$tag->id] = [
                         'id'    => $tag->id,

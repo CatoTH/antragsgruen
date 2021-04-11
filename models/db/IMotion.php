@@ -393,10 +393,14 @@ abstract class IMotion extends ActiveRecord
      */
     abstract public function getDislikes(): array;
 
+    abstract public function getMyConsultation(): ?Consultation;
+
     /**
-     * @return Consultation
+     * @return ConsultationSettingsTag[]
      */
-    abstract public function getMyConsultation();
+    abstract public function getMyTags(): array;
+
+    abstract public function getMyAgendaItem(): ?ConsultationAgendaItem;
 
     /**
      * @return ConsultationSettingsMotionSection[]
@@ -499,6 +503,17 @@ abstract class IMotion extends ActiveRecord
             return \DateTime::createFromFormat('Y-m-d H:i:s', $this->datePublication);
         } else {
             return null;
+        }
+    }
+
+    public function getTimestamp(): int
+    {
+        if ($this->datePublication) {
+            return Tools::dateSql2timestamp($this->datePublication);
+        } elseif ($this->dateCreation) {
+            return Tools::dateSql2timestamp($this->dateCreation);
+        } else {
+            return 0;
         }
     }
 

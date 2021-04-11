@@ -263,7 +263,7 @@ class MotionSorter
      * @param Motion[] $allMotions
      * @return IMotion[][]
      */
-    public static function getMotionsAndResolutions($allMotions)
+    public static function getIMotionsAndResolutions($allMotions)
     {
         $motions     = [];
         $resolutions = [];

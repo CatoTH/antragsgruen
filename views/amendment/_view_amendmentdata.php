@@ -11,7 +11,8 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
  */
 
 $motion       = $amendment->getMyMotion();
-$consultation = $motion->getMyConsultation();
+$consultation = $amendment->getMyConsultation();
+$motionType   = $amendment->getMyMotionType();
 
 $motionDataMode = $motion->getMyConsultation()->getSettings()->motiondataMode;
 if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_NONE) {
@@ -22,10 +23,12 @@ echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper
 
 $amendmentData = [];
 
-$amendmentData[] = [
-    'title'   => Yii::t('amend', 'motion'),
-    'content' => Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion)),
-];
+if (!$motionType->amendmentsOnly) {
+    $amendmentData[] = [
+        'title' => $motionType->titleSingular,
+        'content' => Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion)),
+    ];
+}
 
 $amendmentData[] = [
     'title'   => Yii::t('amend', 'initiator'),
@@ -98,7 +101,7 @@ if (User::getCurrentUser()) {
         $str .= '<blockquote class="privateNote" id="comm' . $comment->id . '">';
         $str .= '<button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit">' .
                 '</span></button>';
-        $str .= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') . '</blockquote>';
+        $str .= HTMLTools::textToHtmlWithLink($comment->text) . '</blockquote>';
     }
     $str .= Html::beginForm('', 'post', ['class' => 'form-inline' . ($comment ? ' hidden' : '')]);
     $str .= '<textarea class="form-control" name="noteText" title="' . Yii::t('motion', 'private_notes') . '">';

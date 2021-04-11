@@ -127,10 +127,7 @@ class Amendment extends IMotion implements IRSSItem
             ->andWhere(AmendmentComment::tableName() . '.userId = ' . IntVal($userId));
     }
 
-    /**
-     * @return AmendmentComment|null
-     */
-    public function getPrivateComment()
+    public function getPrivateComment(): ?AmendmentComment
     {
         if (!User::getCurrentUser()) {
             return null;
@@ -322,6 +319,16 @@ class Amendment extends IMotion implements IRSSItem
             }
             return Consultation::findOne($motion->consultationId);
         }
+    }
+
+    public function getMyAgendaItem(): ?ConsultationAgendaItem
+    {
+        return $this->getMyMotion()->agendaItem;
+    }
+
+    public function getMyTags(): array
+    {
+        return $this->getMyMotion()->tags;
     }
 
     private $myMotion = null;
