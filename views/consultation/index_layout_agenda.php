@@ -13,7 +13,7 @@ use yii\helpers\Html;
  * @var bool $admin
  */
 
-list($_motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
+list($_motions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
     echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }
@@ -77,7 +77,7 @@ if ($longVersion) {
                     continue;
                 }
                 echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
-                $shownMotions[] = $motion->id;
+                $shownMotions->addMotion($motion);
             }
             echo '</ul>';
         }
@@ -87,7 +87,7 @@ if ($longVersion) {
 /** @var Motion[] $otherMotions */
 $otherMotions = [];
 foreach ($consultation->getVisibleMotions(true, false) as $motion) {
-    if (!in_array($motion->id, $shownMotions) && ($motion->status === Motion::STATUS_MOVED || count($motion->getVisibleReplacedByMotions()) === 0)) {
+    if (!$shownMotions->hasMotion($motion) && ($motion->status === Motion::STATUS_MOVED || count($motion->getVisibleReplacedByMotions()) === 0)) {
         $otherMotions[] = $motion;
     }
 }
