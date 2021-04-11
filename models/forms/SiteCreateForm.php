@@ -27,6 +27,7 @@ class SiteCreateForm extends Model
     const FUNCTIONALITY_MANIFESTO = 2;
     const FUNCTIONALITY_APPLICATIONS = 3;
     const FUNCTIONALITY_AGENDA = 4;
+    const FUNCTIONALITY_STATUTE_AMENDMENTS = 6;
     const FUNCTIONALITY_SPEECH_LISTS = 5;
 
     public $functionality = [1];
@@ -274,6 +275,10 @@ class SiteCreateForm extends Model
             $type = $this->doCreateMotionType($con);
             \app\models\motionTypeTemplates\Motion::doCreateMotionSections($type);
         }
+        if (in_array(static::FUNCTIONALITY_STATUTE_AMENDMENTS, $this->functionality)) {
+            $type = $this->doCreateStatutesType($con);
+            \app\models\motionTypeTemplates\Statutes::doCreateStatutesSections($type);
+        }
 
         if ($this->singleMotion && $type) {
             $motion                 = new Motion();
@@ -425,6 +430,63 @@ class SiteCreateForm extends Model
             $initiatorSettings->type = SupportBase::ONLY_INITIATOR;
         }
         $type->supportTypeMotions    = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+
+        $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
+        $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
+        $type->setSimpleDeadlines($deadlineMotions, $deadlineAmendments);
+
+        if (!$type->save()) {
+            throw new FormError($type->getErrors());
+        }
+
+        return $type;
+    }
+
+    /**
+     * @throws FormError
+     */
+    private function doCreateStatutesType(Consultation $consultation): ConsultationMotionType
+    {
+        $type = \app\models\motionTypeTemplates\Statutes::doCreateStatutesType($consultation);
+
+        $type->sidebarCreateButton = 0;
+        $type->policyMotions = IPolicy::POLICY_ADMINS;
+        $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
+        if (!$this->hasAmendments) {
+            $type->policyAmendments = IPolicy::POLICY_NOBODY;
+        } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
+            $type->policyAmendments = IPolicy::POLICY_ADMINS;
+        } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
+            $type->policyAmendments = IPolicy::POLICY_LOGGED_IN;
+        } else {
+            $type->policyAmendments = IPolicy::POLICY_ALL;
+        }
+        if ($this->amendMerging) {
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
+        }
+        if ($this->hasComments) {
+            if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
+                $type->policyComments = $type->policyAmendments;
+            } else {
+                $type->policyComments = IPolicy::POLICY_ALL;
+            }
+        } else {
+            $type->policyComments = IPolicy::POLICY_NOBODY;
+        }
+        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
+        $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
+
+        $initiatorSettings               = new InitiatorForm(null);
+        $initiatorSettings->type         = SupportBase::NO_INITIATOR;
+        $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+        
+        $initiatorSettings               = new InitiatorForm(null);
+        $initiatorSettings->type         = SupportBase::ONLY_INITIATOR;
+        $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
+        $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
+        $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
+        $type->supportTypeAmendments     = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);

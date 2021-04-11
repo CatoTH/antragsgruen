@@ -21,6 +21,7 @@ trait Manifesto
         $type->titlePlural                  = \Yii::t('structure', 'preset_manifesto_plural');
         $type->createTitle                  = \Yii::t('structure', 'preset_manifesto_call');
         $type->position                     = 0;
+        $type->amendmentsOnly               = 0;
         $type->policyMotions                = IPolicy::POLICY_ADMINS;
         $type->policyAmendments             = IPolicy::POLICY_ALL;
         $type->policyComments               = IPolicy::POLICY_ALL;

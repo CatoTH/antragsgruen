@@ -297,6 +297,7 @@ class MotionController extends AdminBase
                     $motionType->motionLikesDislikes          = 0;
                     $motionType->amendmentLikesDislikes       = 0;
                     $motionType->amendmentMultipleParagraphs  = 1;
+                    $motionType->amendmentsOnly               = 0;
                     $motionType->position                     = 0;
                     $motionType->status                       = 0;
                     $motionType->sidebarCreateButton          = 1;

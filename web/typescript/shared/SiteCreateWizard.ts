@@ -32,6 +32,7 @@ const FUNCTIONALITY_MANIFESTO = 2;
 const FUNCTIONALITY_APPLICATIONS = 3;
 const FUNCTIONALITY_AGENDA = 4;
 const FUNCTIONALITY_SPEECH_LISTS = 5;
+const FUNCTIONALITY_STATUTE_AMENDMENTS = 6;
 
 class SiteCreateWizard {
     private firstPanel: string;
@@ -136,7 +137,8 @@ class SiteCreateWizard {
     };
 
     private hasMotionlikeType (data: WizardState) {
-        return data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1;
+        return data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1
+             || data.functionality.indexOf(FUNCTIONALITY_STATUTE_AMENDMENTS) !== -1;
     }
 
     public panelConditions = {
