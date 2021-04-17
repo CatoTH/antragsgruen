@@ -22,6 +22,7 @@ return [
     'functionality_applications'   => 'Candidatures',
     'functionality_agenda'         => 'An agenda',
     'functionality_speech'         => 'Speaking lists',
+    'functionality_statute_amendments' => 'Statutes<br>amendments',
 
     'language_title' => 'Language of the site',
 

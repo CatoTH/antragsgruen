@@ -66,7 +66,7 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label checkbox-label three-lines-title value-statute">
+            <label class="radio-checkbox-label checkbox-label two-lines value-statute">
                 <span class="description">&nbsp;</span>
                 <span class="title"><?=$t('functionality_statute_amendments')?></span>
                 <span class="input">
