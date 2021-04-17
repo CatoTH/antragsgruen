@@ -15,7 +15,7 @@ use yii\db\ActiveRecord;
  * @property string $titleSingular
  * @property string $titlePlural
  * @property string $createTitle
- * @property string $motionPrefix
+ * @property string|null $motionPrefix
  * @property int $position
  * @property int $amendmentsOnly
  * @property int $pdfLayout
