@@ -108,6 +108,11 @@
           }
         }
       }
+      &.three-lines {
+        .title {
+          margin-top: 0;
+        }
+      }
       &.date-label {
         .title {
           margin-top: 40px;
@@ -120,11 +125,6 @@
         display: block;
         font-weight: normal;
         margin-top: 5px;
-      }
-      &.three-lines-title {
-        .title {
-          margin-top: 0;
-        }
       }
       &.description-first {
         .description {
