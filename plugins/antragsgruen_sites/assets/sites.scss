@@ -3,10 +3,47 @@
 }
 
 #sidebar {
-  .current-uses-list.nav-list {
+  #sidebarYourSites {
+    .login {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .consultationList {
+      > li {
+        padding: 5px 0;
+
+        -webkit-hyphens: auto;
+        word-break: break-word;
+        -moz-hyphens: auto;
+        hyphens: auto;
+        overflow: hidden;
+
+        span.orga {
+          font-size: 0.9em;
+          color: #767676;
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.managerAllsitesList {
+  ul {
+    list-style: none;
+    display: block;
+    margin: 0;
+    padding: 0;
+
     > li {
-      padding-left: 15px;
-      padding-right: 5px;
+      padding: 5px 0;
+      display: block;
+      @media screen and (min-width: 1024px) {
+        float: left;
+        width: 50%;
+        height: 60px;
+      }
 
       -webkit-hyphens: auto;
       word-break: break-word;
@@ -20,6 +57,18 @@
         display: block;
       }
     }
+  }
+}
+
+.manager-navbar-orgaLink {
+  a {
+    margin-left: 0 !important;
+  }
+
+  .orga {
+    font-size: 0.9em;
+    color: #767676;
+    display: block;
   }
 }
 

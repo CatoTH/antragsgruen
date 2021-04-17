@@ -179,36 +179,6 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return Site[]
-     */
-    public static function getSidebarSites()
-    {
-        if (AntragsgruenApp::getInstance()->mode == 'sandbox') {
-            return [];
-        }
-        $shownSites = [];
-        /** @var Site[] $sites */
-        $sites = Site::find()->with('currentConsultation')->all();
-        foreach ($sites as $site) {
-            if (!$site->public) {
-                continue;
-            }
-            if (!$site->currentConsultation) {
-                continue;
-            }
-            $shownSites[] = $site;
-        }
-
-        usort($shownSites, function (Site $site1, Site $site2) {
-            $date1 = $site1->currentConsultation->dateCreation;
-            $date2 = $site2->currentConsultation->dateCreation;
-            return -1 * Tools::compareSqlTimes($date1, $date2);
-        });
-
-        return $shownSites;
-    }
-
-    /**
      * @param User $user
      * @return bool
      */

@@ -318,24 +318,31 @@ class Layout
         foreach ($this->menusHtmlSmall as $menu) {
             $dropdownHtml .= $menu;
         }
-        return '<nav class="navbar navbar-default sidebarSmall visible-sm-block visible-xs-block" id="' . $htmlId . '">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            ' . $this->menusSmallAttachment . '
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+
+        $barBtn = '';
+        $collapsed = '';
+        if ($dropdownHtml !== '') {
+            $barBtn .= '<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#sidebarSmallContent" aria-expanded="false">
                 <span class="sr-only">' . \Yii::t('base', 'menu_main') . '</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
-            </button>
-        </div>
+            </button>';
 
-        <div class="collapse navbar-collapse" id="sidebarSmallContent">
-            <ul class="nav navbar-nav">
-                ' . $dropdownHtml . '
-            </ul>
+            $collapsed = '<div class="collapse navbar-collapse" id="sidebarSmallContent">
+                <ul class="nav navbar-nav">
+                    ' . $dropdownHtml . '
+                </ul>
+            </div>';
+        }
+
+        return '<nav class="navbar navbar-default sidebarSmall visible-sm-block visible-xs-block" id="' . $htmlId . '">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            ' . $this->menusSmallAttachment . $barBtn . '
         </div>
+        ' . $collapsed . '
     </div>
 </nav>';
     }
@@ -404,13 +411,6 @@ class Layout
 
         if ($controller->consultation && $controller->consultation->getSettings()->logoUrl) {
             $path     = parse_url($controller->consultation->getSettings()->logoUrl);
-            $filename = basename($path['path']);
-            $filename = substr($filename, 0, strrpos($filename, '.'));
-            $filename = str_replace(
-                ['_', 'ue', 'ae', 'oe', 'Ue', 'Oe', 'Ae'],
-                [' ', 'ü', 'ä', 'ö', 'Ü' . 'Ö', 'Ä'],
-                $filename
-            );
             $logoUrl  = $controller->consultation->getSettings()->logoUrl;
             if (!isset($path['host']) && $logoUrl[0] !== '/') {
                 $logoUrl = $resourceBase . $logoUrl;

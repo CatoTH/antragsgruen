@@ -2,102 +2,104 @@
 
 namespace app\plugins\antragsgruen_sites\controllers;
 
-use app\components\{HTMLTools, yii\MessageSource, Tools, UrlHelper};
+use app\models\settings\AntragsgruenApp;
+use app\models\settings\Consultation;
+use app\components\{Tools, yii\MessageSource, UrlHelper};
 use app\controllers\Base;
-use app\models\db\{Site, User};
+use app\models\db\{IComment, Site, User};
 use app\models\exceptions\FormError;
 use app\models\forms\SiteCreateForm;
-use app\models\settings\Consultation;
-use yii\helpers\Html;
 use yii\web\Response;
 
 class ManagerController extends Base
 {
-    /**
-     *
-     */
-    protected function addSidebar()
+    private function addAnonymousSidebar(): void
     {
-        $sites        = Site::getSidebarSites();
-        $sitesCurrent = [];
-        $sitesOld     = [];
-        foreach ($sites as $site) {
-            if ($site->status !== Site::STATUS_ACTIVE) {
-                continue;
-            }
-            if (!$site->currentConsultation) {
-                continue;
-            }
-            $consultation = $site->currentConsultation;
-            if ($consultation->getSettings()->robotsPolicy === Consultation::ROBOTS_NONE) {
-                continue;
-            }
-
-            $url      = UrlHelper::createUrl(['/consultation/home', 'subdomain' => $site->subdomain]);
-            $siteData = [
-                'title'        => $consultation->title,
-                'organization' => $site->organization,
-                'url'          => $url,
-            ];
-            $age      = time() - Tools::dateSql2timestamp($consultation->dateCreation);
-            if ($age < 4 * 30 * 24 * 3600) {
-                $sitesCurrent[] = $siteData;
-            } else {
-                $sitesOld[] = $siteData;
-            }
-        }
-
-        $html         = '<section aria-labelledby="currentUsesTitle">';
-        $html .= '<ul class="nav nav-list current-uses-list">';
-        $html         .= '<li class="nav-header" id="currentUsesTitle">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
-        foreach ($sitesCurrent as $data) {
-            $html .= '<li>';
-            if ($data['organization'] != '') {
-                $html .= '<span class="orga">' . HTMLTools::encodeAddShy($data['organization']) . '</span>';
-            }
-            $html .= Html::a(HTMLTools::encodeAddShy($data['title']), $data['url']) . '</li>' . "\n";
-        }
-        $html                            .= '</ul>';
-        $this->layoutParams->menusHtml[] = $html;
-
-
-        $html     = '<ul class="nav nav-list current-uses-list old-uses-list">';
-        $html     .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_old_uses') . '</li>';
-        $html     .= '<li class="shower"><a href="#" onClick="$(\'.old-uses-list .hidden\').removeClass(\'hidden\');
-            $(\'.old-uses-list .shower\').addClass(\'hidden\'); return false;" style="font-style: italic;">' .
-            \Yii::t('manager', 'sidebar_old_uses_show') . '</a></li>';
-
-        foreach ($sitesOld as $data) {
-            $html .= '<li class="hidden">';
-            if ($data['organization'] != '') {
-                $html .= '<span class="orga">' . HTMLTools::encodeAddShy($data['organization']) . '</span>';
-            }
-            $html .= Html::a(HTMLTools::encodeAddShy($data['title']), $data['url']) . '</li>' . "\n";
-        }
-        $html                            .= '</ul></section>';
-        $this->layoutParams->menusHtml[] = $html;
+        $this->renderPartial('sidebar_anonymous');
     }
 
     /**
-     * @return string
+     * @return Site[]
      */
-    public function actionIndex()
+    private function getMySites(): array
     {
+        $addSiteTo = function(array &$sites, array &$siteIds, Site $site): void {
+            if ($site->dateDeletion || $site->subdomain === null) {
+                return;
+            }
+            if (in_array($site->id, $siteIds)) {
+                return;
+            }
+            $sites[] = $site;
+            $siteIds[] = $site->id;
+        };
+
+        $sortSites = function(Site $site1, Site $site2) {
+            return $site2->id <=> $site1->id;
+        };
+
+        $user = User::getCurrentUser();
+        $siteIds = [];
+
+        $adminSites = [];
+        foreach ($user->adminSites as $adminSite) {
+            $addSiteTo($adminSites, $siteIds, $adminSite);
+        }
+        foreach ($user->consultationPrivileges as $adminConsultation) {
+            $addSiteTo($adminSites, $siteIds, $adminConsultation->consultation->site);
+        }
+
+        $userSites = [];
+        foreach ($user->motionSupports as $motionSupport) {
+            $addSiteTo($userSites, $siteIds, $motionSupport->motion->getMyConsultation()->site);
+        }
+        foreach ($user->amendmentSupports as $amendmentSupport) {
+            $addSiteTo($userSites, $siteIds, $amendmentSupport->amendment->getMyConsultation()->site);
+        }
+        foreach ($user->motionComments as $motionComment) {
+            if ($motionComment->status !== IComment::STATUS_DELETED) {
+                $addSiteTo($userSites, $siteIds, $motionComment->motion->getMyConsultation()->site);
+            }
+        }
+        foreach ($user->amendmentComments as $amendmentComment) {
+            if ($amendmentComment->status !== IComment::STATUS_DELETED) {
+                $addSiteTo($userSites, $siteIds, $amendmentComment->amendment->getMyConsultation()->site);
+            }
+        }
+
+        usort($adminSites, $sortSites);
+        usort($userSites, $sortSites);
+
+        return array_merge($adminSites, $userSites);
+    }
+
+    private function addUserSidebar(bool $showAll): void
+    {
+        $sites = $this->getMySites();
+        $this->renderPartial('sidebar_user', ['sites' => $sites, 'showAll' => $showAll]);
+    }
+
+    private function addSidebar(bool $showAll): void
+    {
+        if (\Yii::$app->user->isGuest) {
+            $this->addAnonymousSidebar();
+        } else {
+            $this->addUserSidebar($showAll);
+        }
+    }
+
+    public function actionIndex(): string
+    {
+        $this->layout = '@app/views/layouts/column2';
+        $this->addSidebar($this->canSeeAllSites());
         if (\Yii::$app->language == 'de') {
-            $this->layout = '@app/views/layouts/column2';
-            $this->addSidebar();
             return $this->render('index_de');
         } else {
-            $this->layout = '@app/views/layouts/column1';
             return $this->render('index_en');
         }
     }
 
-    /**
-     * @param string $test
-     * @return string
-     */
-    public function actionCheckSubdomain($test)
+    public function actionCheckSubdomain(string $test): string
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
@@ -109,10 +111,7 @@ class ManagerController extends Base
         ]);
     }
 
-    /**
-     * @return null|User
-     */
-    protected function eligibleToCreateUser()
+    private function eligibleToCreateUser(): ?User
     {
         if (\Yii::$app->user->isGuest) {
             return null;
@@ -127,9 +126,7 @@ class ManagerController extends Base
         }
     }
 
-    /**
-     */
-    protected function requireEligibleToCreateUser()
+    private function requireEligibleToCreateUser(): void
     {
         if ($this->getParams()->mode == 'sandbox') {
             // In sandbox mode, everyone is allowed to create a site
@@ -190,12 +187,9 @@ class ManagerController extends Base
         );
     }
 
-    /**
-     * @return string
-     */
-    public function actionHelp()
+    public function actionHelp(): string
     {
-        if (\Yii::$app->language == 'de') {
+        if (\Yii::$app->language === 'de') {
             return $this->render('help_de');
         } else {
             return $this->render('help_en');
@@ -203,18 +197,87 @@ class ManagerController extends Base
     }
 
     /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
+     * @return Site[]
      */
-    public function actionLegal()
+    public static function getSidebarSites()
+    {
+        if (AntragsgruenApp::getInstance()->mode == 'sandbox') {
+            return [];
+        }
+
+        $shownSites = [];
+        /** @var Site[] $sites */
+        $sites = Site::find()->with('currentConsultation')->all();
+        foreach ($sites as $site) {
+            if (!$site->public) {
+                continue;
+            }
+            if (!$site->currentConsultation) {
+                continue;
+            }
+            if ($site->status !== Site::STATUS_ACTIVE) {
+                continue;
+            }
+            if ($site->currentConsultation->getSettings()->robotsPolicy === Consultation::ROBOTS_NONE) {
+                continue;
+            }
+            $shownSites[] = $site;
+        }
+
+        usort($shownSites, function (Site $site1, Site $site2) {
+            $date1 = $site1->currentConsultation->dateCreation;
+            $date2 = $site2->currentConsultation->dateCreation;
+            return -1 * Tools::compareSqlTimes($date1, $date2);
+        });
+
+        return $shownSites;
+    }
+
+    private function canSeeAllSites(): bool
+    {
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+        return $user->isGruenesNetzUser();
+    }
+
+    public function actionAllsites(): string
+    {
+        if (!$this->canSeeAllSites()) {
+            $this->showErrorpage(403, 'No access');
+            return '';
+        }
+        $this->layout = '@app/views/layouts/column2';
+        $this->addSidebar(false);
+
+        $years = 1;
+
+        $sites        = $this->getSidebarSites();
+        $sitesCurrent = [];
+        foreach ($sites as $site) {
+            $consultation = $site->currentConsultation;
+            $url      = UrlHelper::createUrl(['/consultation/home', 'subdomain' => $site->subdomain]);
+            $siteData = [
+                'title'        => $consultation->title,
+                'organization' => $site->organization,
+                'url'          => $url,
+            ];
+            $age      = time() - Tools::dateSql2timestamp($consultation->dateCreation);
+            if ($age < $years * 365 * 24 * 3600) {
+                $sitesCurrent[] = $siteData;
+            }
+        }
+
+        return $this->render('allsites', ['sites' => $sitesCurrent]);
+    }
+
+    public function actionLegal(): string
     {
         return $this->renderContentPage('legal');
     }
 
-    /**
-     * @return string
-     */
-    public function actionPrivacy()
+    public function actionPrivacy(): string
     {
         return $this->renderContentPage('privacy');
     }

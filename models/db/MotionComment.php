@@ -30,8 +30,6 @@ use yii\db\ActiveQuery;
  */
 class MotionComment extends IComment
 {
-    /**
-     */
     public function init()
     {
         parent::init();

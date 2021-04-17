@@ -22,9 +22,14 @@ $params = \Yii::$app->params;
 ?>
 <h1 id="antragsgruenTitle">Antragsgrün - das grüne Antragstool</h1>
 
+<?= $controller->layoutParams->getMiniMenu('sidebarSmall'); ?>
+
 <section class="content infoSite" aria-labelledby="antragsgruenTitle">
-    <p>Antragsgrün ist ein <strong>Antrags-Verwaltungs-System</strong>, das speziell für <strong>Parteitage,
-            Verbandstagungen sowie Programmdiskussionen</strong> entwickelt wurde.</p>
+    <p>
+        Antragsgrün ist ein <strong>Antrags-Verwaltungs-System</strong>,
+        das speziell für <strong>Mitgliederversammlungen,
+        Parteitage, Verbandstagungen sowie Programmdiskussionen</strong> entwickelt wurde.
+    </p>
 
     <p>
         Es hilft, eine größere Zahl von Anträgen, Änderungsanträgen und
@@ -35,7 +40,7 @@ $params = \Yii::$app->params;
 
     <p>
         Zum Einsatz kommt es unter anderem bei Parteitagen, von Bundesdelegiertenkonferenzen
-        bis hin zu kommunalen Programmparteitagen,
+        bis hin zu kommunalen Programmparteitagen, in Diözesen,
         sowie bei Jugendorganisationen wie dem Deutschen Bundesjugendring.
     </p>
 </section>
@@ -48,6 +53,10 @@ $params = \Yii::$app->params;
         <ul>
             <li><strong>Anträge, Änderungsanträge, Kommentare</strong> dazu, Unterstützen von (Änderungs-)Anträgen.
                 Übersichtliche Darstellung von Änderungsanträgen.
+            </li>
+            <li>
+                Das <strong>Einreichen von Bewerbungen</strong> für Vorstandsposten, Listenaufstellungen etc.
+                Sowohl Bewerbungen als Formular als auch als PDF werden unterstützt.
             </li>
             <li><strong>Tagesordnungen</strong> werden unterstützt, mit unterschiedlichen Berechtigungen und
                 Antragsformularen pro Tagesordnungspunkt.
@@ -71,18 +80,14 @@ $params = \Yii::$app->params;
             <li><strong>E-Mail-Benachrichtigungen</strong> über neue Anträge, Änderungsanträge und/oder Kommentare für alle
                 Interessierte
             </li>
-            <li>RSS-Feeds, damit alle Interessierte über neu eingereichte (Änderungs-)Anträge oder Kommentare auf dem
-                Laufenden bleiben.
-            </li>
         </ul>
 
         <strong>Das kann Antragsgrün nicht</strong>:
         <ul>
-            <li><strong>Vor-Ort-Präsentationen</strong>. Auf Parteitagen selbst bietet sich der
-                Einsatz von Tools an, die speziell dafür ausgelegt sind - wir empfehlen hier
-                <a lang="en" href="http://openslides.org/de/">OpenSlides</a>.
+            <li><strong>Wahlen / Abstimmungen</strong>. Für Abstimmungen gibt es das Tool <a href="https://abstimmung.netzbegruenung.de/">Abstimmungsgrün</a>.</li>
+            <li><strong>Vor-Ort-Präsentationen</strong>. Antragsgrün kann zwar vor Ort auf Veranstaltungen genutzt werden,
+                ist aber keine vollständige Konferenzsoftware wie z.B. <a lang="en" href="https://openslides.com/">OpenSlides</a>.
             </li>
-            <li><strong>Wahlen / Abstimmungen</strong>.</li>
         </ul>
 
         <p style="text-align: center; font-weight: bold;">
@@ -117,8 +122,8 @@ $params = \Yii::$app->params;
         <p style="margin-bottom: 40px;">
             <a href="mailto:info@antragsgruen.de" aria-label="Kontaktiert uns - E-Mail an info@antragsgruen.de schreiben"><strong>Kontaktiert uns</strong></a>
             für genauere Informationen und ein konkretes Angebot -
-            für kleinere bis mittelgroße Organisationen bieten wir das Hosting in der Regel für 100€ + MwSt. pro Jahr an.
-            Für Jugendorganisationen für die Hälfte.
+            kleineren bis mittelgroßen Organisationen bieten wir das Hosting in der Regel für 100€ + MwSt. pro Jahr an.
+            Jugendorganisationen für die Hälfte.
         </p>
 
         <h3>Angebot für Grüne Organisationen</h3>
@@ -126,11 +131,10 @@ $params = \Yii::$app->params;
             Grünen bzw. Grünen-nahen Organisationen bieten wir an, sich selbstständig eine <strong>Unterseite auf antragsgruen.de</strong>
             einzurichten, um dort ihre Parteitage / Programmdiskussionen zu organisieren.<br>
             Dazu kannst du das Formular unter
-            "<a href="#opensource" onClick="$('#asGreenMember').scrollintoview({top_offset: -50}); return false;">Als
-                Grünen-Mitglied nutzen</a>" nutzen und es dir innerhalb von zwei, drei Minuten selbst einrichten.
+            „<a href="#opensource" onClick="$('#asGreenMember').scrollintoview({top_offset: -50}); return false;">Als
+                Grünen-Mitglied nutzen</a>“ nutzen und es dir innerhalb von zwei, drei Minuten selbst einrichten.
             Benötigt wird nur ein Zugang beim Grünen Netz.<br>
-            Die oben genannte Hosting-Gebühr entfällt in diesem Fall - wir bitten aber dennoch um einen freiwilligen Beitrag,
-            um Antragsgrün weiter betreiben zu können.
+            Die oben genannte Hosting-Gebühr entfällt in diesem Fall.
         </p>
 
         <h3>Fehlt eine Funktion? Professioneller Support und Anpassungen gewünscht?</h3>

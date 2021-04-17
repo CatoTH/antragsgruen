@@ -117,6 +117,25 @@ body > footer {
     padding-left: ceil(($grid-gutter-width / 2));
   }
 
+  .sidebar-box {
+    min-width: 200px;
+
+    .box-header {
+      @include stdHeading($headingSecondaryText, $headingSecondaryBackground, $headingSecondarySize);
+      padding: 5px 5px 5px 15px;
+      margin: -1px;
+      margin-bottom: 12px;
+    }
+    .box-content {
+      padding: 0 15px 15px 15px;
+    }
+    &:first-child {
+      .box-header {
+        @include border-radius-top();
+      }
+    }
+  }
+
   > .antragsgruen-width-main {
     width: 100%;
 
