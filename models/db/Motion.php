@@ -812,7 +812,7 @@ class Motion extends IMotion implements IRSSItem
             $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
         } else {
             $this->status = Motion::STATUS_SUBMITTED_SCREENED;
-            if ($this->statusString === '' && !$this->getMyMotionType()->amendmentsOnly) {
+            if ($this->titlePrefix === '' && !$this->getMyMotionType()->amendmentsOnly) {
                 $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
             }
         }

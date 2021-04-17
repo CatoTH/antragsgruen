@@ -612,7 +612,7 @@ class Consultation extends ActiveRecord
         $max_rev = 0;
         $motionType = $this->getMotionType($motionTypeId);
         $prefix = $motionType->motionPrefix;
-        if ($prefix === '') {
+        if ($prefix === '' || $prefix === null) {
             $prefix = 'A';
         }
         foreach ($this->motions as $motion) {
