@@ -612,7 +612,7 @@ class MotionController extends AdminBase
 
             foreach ($this->consultation->tags as $tag) {
                 if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
-                    $motion->unlink('tags', $tag);
+                    $motion->unlink('tags', $tag, true);
                 } else {
                     try {
                         $motion->link('tags', $tag);
