@@ -133,7 +133,7 @@ if (count($tags) == 1) {
         foreach ($tags as $tag) {
             $tagOptions[$tag->id] = $tag->title;
         }
-        echo '<fieldset class="form-group">';
+        echo '<fieldset class="form-group fuelux">';
         echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend><div style="position: relative;">';
         echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
         echo '</div>';
