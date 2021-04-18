@@ -52,7 +52,7 @@
         "corejs-typeahead": "^1.3.1",
         "isotope-layout": "^3.0.6",
         "moment": "^2.29.1",
-        "postcss": "^8.2.9",
+        "postcss": "^8.2.10",
         "remove-trailing-separator": "^1.1.0"
     },
     "browserslist": [

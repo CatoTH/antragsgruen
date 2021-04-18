@@ -9,7 +9,7 @@
 - When official supports are collected for a motion or amendments, it is now optionally possible to support them "non-publically". That is, only logged in users can see the names of those supports.
 - Bugfix: fix issues when rendering applications using LaTeX.
 
-### Version 4.7.1 [not released yet]
+### Version 4.7.1 (2021-04-18)
 
 - Bugfix: If a woman quota was set up in the support collection phase, the notification e-mail to the initiator about the minimum number of supporters did not take into account this quota.
 - Bugfix: A motion creation bug was fixed that happened if an organization list drop-down was set up and the "Grünes Netz"-login was used.
