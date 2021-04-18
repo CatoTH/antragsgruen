@@ -2,7 +2,7 @@
 
 namespace app\plugins\frauenrat\pdf;
 
-use app\models\db\{Amendment, Motion};
+use app\models\db\{Amendment, Motion, MotionSupporter};
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 
@@ -33,7 +33,7 @@ class Frauenrat extends IPDFLayout
         $pdf->SetFont($pdf->calibriBold, 'B', $fontsize);
         $pdf->SetTextColor(40, 40, 40, 40);
         //$pdf->SetXY($left, $wraptop);
-        $pdf->Write(0, mb_strtoupper($motion->motionType->titleSingular, 'UTF-8') . "\n");
+        $pdf->Write(0, mb_strtoupper($motion->getMyMotionType()->titleSingular, 'UTF-8') . "\n");
 
         $pdf->SetTextColor(100, 100, 100, 100);
         $wraptop = $pdf->getY() + $abs;
@@ -47,9 +47,14 @@ class Frauenrat extends IPDFLayout
         }
 
         $initiatorName = $addressedTo = null;
+        $initiatorNames = [];
         $contact = $topic = [];
         foreach ($motion->getInitiators() as $initiator) {
-            $initiatorName = $initiator->organization;
+            if ($initiator->personType === MotionSupporter::PERSON_ORGANIZATION) {
+                $initiatorNames[] = $initiator->organization;
+            } else {
+                $initiatorNames[] = $initiator->name;
+            }
             if ($initiator->contactName) {
                 $contact[] = 'Name: ' . $initiator->contactName;
             }
@@ -69,18 +74,21 @@ class Frauenrat extends IPDFLayout
             }
         }
 
+        $initiatorTitle = (count($initiatorNames) > 1 ? \Yii::t('motion', 'initiators_x') : \Yii::t('motion', 'initiators_1'));
         $data = [
-            'Antragsteller*in'   => $initiatorName,
+            $initiatorTitle      => implode(", ", $initiatorNames),
             'Ansprechpartner*in' => implode("\n", $contact),
             'Themenbereich'      => implode(", ", $topic),
-            'Adressat*in'        => $addressedTo,
         ];
+        if ($addressedTo) {
+            $data['Adressat*in'] = $addressedTo;
+        }
 
 
         foreach ($data as $key => $val) {
             $pdf->SetX($left);
             $pdf->MultiCell(42, 0, $key . ':', 0, 'L', false, 0);
-            $pdf->MultiCell(120, 0, $val, 0, 'L');
+            $pdf->MultiCell(100, 0, $val, 0, 'L');
             $pdf->Ln(2);
         }
 

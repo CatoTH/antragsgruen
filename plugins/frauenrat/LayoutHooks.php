@@ -86,7 +86,7 @@ class LayoutHooks extends Hooks
             case Motion::STATUS_ACCEPTED:
                 return 'accept';
             case Motion::STATUS_REJECTED:
-                return 'accept';
+                return 'reject';
             case Motion::STATUS_MODIFIED_ACCEPTED:
                 return 'modified';
             case Motion::STATUS_VOTE:
@@ -142,17 +142,23 @@ class LayoutHooks extends Hooks
             return true;
         }));
 
-        $organisation = null;
-        foreach ($motionData as $i => $data) {
+        $organisations = [];
+        foreach (array_keys($motionData) as $i) {
             if ($motionData[$i]['title'] === \Yii::t('motion', 'initiators_1') || $motionData[$i]['title'] === \Yii::t('motion', 'initiators_x')) {
                 $motionData[$i]['title']   = 'Ansprechpartner*in';
                 $initiators                = $motion->getInitiators();
                 $motionData[$i]['content'] = '';
                 foreach ($initiators as $supp) {
                     if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
-                        $organisation = $supp->organization;
+                        $organisations[] = $supp->organization;
+                    } else {
+                        $organisations[] = $supp->name;
                     }
                     $motionData[$i]['content'] .= $this->formatInitiator($supp);
+                }
+                if ($motionData[$i]['content'] === '') {
+                    unset($motionData[$i]);
+                    continue;
                 }
             }
             if ($motionData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
@@ -170,15 +176,15 @@ class LayoutHooks extends Hooks
                 $motionData[$i]['content'] = $this->getTagsSavingForm($motion);
             }
         }
-        if ($organisation) {
+        if ($organisations) {
             array_unshift($motionData, [
-                'title'   => \Yii::t('motion', 'initiators_1'),
-                'content' => $organisation,
+                'title'   => (count($organisations) > 1 ? \Yii::t('motion', 'initiators_x') : \Yii::t('motion', 'initiators_1')),
+                'content' => implode(', ', $organisations),
             ]);
         }
 
         foreach ($motion->getActiveSections() as $section) {
-            if (strpos($section->getSettings()->title, 'Adressat') !== false) {
+            if (strpos($section->getSettings()->title, 'Adressat') !== false && trim($section->data) !== '') {
                 $motionData[] = [
                     'title'   => 'Konkrete Adressat*innen',
                     'content' => Html::encode($section->data),
@@ -205,17 +211,23 @@ class LayoutHooks extends Hooks
             return true;
         }));
 
-        $organisation = null;
-        foreach ($amendmentData as $i => $data) {
+        $organisations = [];
+        foreach (array_keys($amendmentData) as $i) {
             if ($amendmentData[$i]['title'] === \Yii::t('amend', 'initiator')) {
                 $amendmentData[$i]['title']   = 'Ansprechpartner*in';
                 $initiators                   = $amendment->getInitiators();
                 $amendmentData[$i]['content'] = '';
                 foreach ($initiators as $supp) {
                     if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
-                        $organisation = $supp->organization;
+                        $organisations[] = $supp->organization;
+                    } else {
+                        $organisations[] = $supp->name;
                     }
                     $amendmentData[$i]['content'] .= $this->formatInitiator($supp);
+                }
+                if ($amendmentData[$i]['content'] === '') {
+                    unset($amendmentData[$i]);
+                    continue;
                 }
             }
             if ($amendmentData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
@@ -230,11 +242,11 @@ class LayoutHooks extends Hooks
                 }
             }
         }
-        if ($organisation) {
+        if (count($organisations) > 0) {
             array_splice($amendmentData, 1, 0, [
                 [
-                    'title'   => \Yii::t('motion', 'initiators_1'),
-                    'content' => $organisation,
+                    'title'   => (count($organisations) > 1 ? \Yii::t('motion', 'initiators_x') : \Yii::t('motion', 'initiators_1')),
+                    'content' => implode(', ', $organisations),
                 ]
             ]);
         }

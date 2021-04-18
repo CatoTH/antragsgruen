@@ -102,7 +102,6 @@ class LayoutHelper
     {
         $return = '';
 
-        /** @var Motion $motion */
         $classes = ['motion', 'motionRow' . $motion->id];
         if ($motion->getMyMotionType()->getSettingsObj()->cssIcon) {
             $classes[] = $motion->getMyMotionType()->getSettingsObj()->cssIcon;
@@ -125,7 +124,7 @@ class LayoutHelper
         if (count($amendments) > 0) {
             if ($hideAmendmendsByDefault) {
                 $return .= '<h4 class="amendments amendmentsToggler closed"><button class="btn-link">';
-                $return .= '<span class="glyphicon glyphicon-chevron-down"></span><span class="glyphicon glyphicon-chevron-up"></span> ';
+                $return .= '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> ';
                 if (count($amendments) === 1) {
                     $return .= '1 ' . \Yii::t('amend', 'amendment');
                 } else {
@@ -156,10 +155,6 @@ class LayoutHelper
     }
 
     /**
-     * @param ConsultationAgendaItem $agendaItem
-     * @param Consultation $consultation
-     * @param bool $admin
-     *
      * @return int[]
      */
     public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): array
