@@ -171,7 +171,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 foreach ($site->consultations as $cons) {
                     $templates[$cons->id] = $cons->title;
                 }
-                echo '<div class="settingsTypeTemplate">';
+                echo '<div class="settingsTypeTemplate fuelux">';
                 echo HTMLTools::fueluxSelectbox(
                     'newConsultation[template]',
                     $templates,
