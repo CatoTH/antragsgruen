@@ -136,13 +136,13 @@ class AmendmentComment extends IComment
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
-        $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
+        $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
 
         return static::find()->joinWith('amendment', true)->joinWith('amendment.motionJoin', true)
-            ->where('amendmentComment.status = ' . IntVal(static::STATUS_VISIBLE))
+            ->where('amendmentComment.status = ' . intval(static::STATUS_VISIBLE))
             ->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
             ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
-            ->andWhere('motion.consultationId = ' . IntVal($consultation->id))
+            ->andWhere('motion.consultationId = ' . intval($consultation->id))
             ->orderBy('amendmentComment.dateCreation DESC')
             ->offset(0)->limit($limit)->all();
     }
@@ -193,11 +193,11 @@ class AmendmentComment extends IComment
     public static function getScreeningComments(Consultation $consultation)
     {
         $query = AmendmentComment::find();
-        $query->where('amendmentComment.status = ' . IntVal(static::STATUS_SCREENING));
+        $query->where('amendmentComment.status = ' . intval(static::STATUS_SCREENING));
         $query->joinWith(
             [
                 'amendment' => function ($query) use ($consultation) {
-                    $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleAmendmentStatuses());
+                    $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleAmendmentStatuses());
                     /** @var ActiveQuery $query */
                     $query->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                     $query->andWhere('amendment.motionId = motion.id');
@@ -205,10 +205,10 @@ class AmendmentComment extends IComment
                     $query->joinWith(
                         [
                             'motionJoin' => function ($query) use ($consultation) {
-                                $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
+                                $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
                                 /** @var ActiveQuery $query */
                                 $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
-                                $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                                $query->andWhere('motion.consultationId = ' . intval($consultation->id));
                             }
                         ]
                     );

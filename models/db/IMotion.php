@@ -136,20 +136,6 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getStatusesAsVerbs()
-    {
-        $statuses = [];
-
-        foreach (IMotionStatus::getAllStatuses() as $status) {
-            $statuses[$status->id] = ($status->nameVerb ? $status->nameVerb : $status->name);
-        }
-
-        return $statuses;
-    }
-
-    /**
-     * @return string[]
-     */
     public static function getVotingStatuses()
     {
         return [
@@ -198,38 +184,6 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_REJECTED,
             static::STATUS_MODIFIED_ACCEPTED,
         ];
-    }
-
-    /**
-     * @return int[]
-     */
-    public static function getStatusesInvisibleForAdmins()
-    {
-        $statuses = [];
-
-        foreach (IMotionStatus::getAllStatuses() as $status) {
-            if ($status->adminInvisible) {
-                $statuses[] = $status->id;
-            }
-        }
-
-        return $statuses;
-    }
-
-    /**
-     * @return string[]
-     */
-    public static function getStatusNamesVisibleForAdmins()
-    {
-        $names     = [];
-        $invisible = static::getStatusesInvisibleForAdmins();
-        foreach (static::getStatusNames() as $id => $name) {
-            if (!in_array($id, $invisible)) {
-                $names[$id] = $name;
-            }
-        }
-
-        return $names;
     }
 
     /**
@@ -283,12 +237,12 @@ abstract class IMotion extends ActiveRecord
             return false;
         }
 
-        return !in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses());
+        return !in_array($this->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses());
     }
 
     public function isVisibleForAdmins(): bool
     {
-        return !in_array($this->status, static::getStatusesInvisibleForAdmins());
+        return !in_array($this->status, $this->getMyConsultation()->getStatuses()->getStatusesInvisibleForAdmins());
     }
 
     public function isVisibleForProposalAdmins(): bool
@@ -319,7 +273,7 @@ abstract class IMotion extends ActiveRecord
             return true;
         }
 
-        return !in_array($this->status, $this->getMyConsultation()->getUnreadableStatuses());
+        return !in_array($this->status, $this->getMyConsultation()->getStatuses()->getUnreadableStatuses());
     }
 
     abstract public function setDeleted(): void;

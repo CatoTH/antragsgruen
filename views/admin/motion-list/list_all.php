@@ -16,6 +16,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
+$consultation = $controller->consultation;
 
 $this->title = Yii::t('admin', 'list_head_title');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'));
@@ -141,8 +142,8 @@ if ($colAction) {
 echo '</tr></thead>';
 
 
-$motionStatuses    = Motion::getStatusNames();
-$amendmentStatuses = Amendment::getStatusNames();
+$motionStatuses    = $consultation->getStatuses()->getStatusNames();
+$amendmentStatuses = $consultation->getStatuses()->getStatusNames();
 /** @var null|Motion $lastMotion */
 $lastMotion = null;
 

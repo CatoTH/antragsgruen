@@ -9,7 +9,7 @@ if (!isset($show_visibility)) {
     $show_visibility = true;
 }
 
-$amendmentStatusVerbs = \app\models\db\IMotion::getStatusesAsVerbs();
+$amendmentStatusVerbs = $entry->getMyConsultation()->getStatuses()->getStatusesAsVerbs();
 
 if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->proposalStatus])) {
     echo '<div class="statusIcons proposalStatusIcons">';

@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AgendaItem;
+use app\models\settings\IMotionStatus;
 use app\components\{MotionSorter, Tools};
 use yii\db\ActiveRecord;
 
@@ -129,7 +130,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         $return = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
-            if (in_array($motion->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
+            if (in_array($motion->status, IMotionStatus::getInvisibleMotionStatuses($this->getMyConsultation()))) {
                 continue;
             }
             if ($motion->agendaItemId === null || $motion->agendaItemId !== $this->id) {
@@ -336,7 +337,7 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public function getVisibleMotions($withdrawnAreVisible = true, $resolutionsAreVisible = true)
     {
-        $statuses = $this->getMyConsultation()->getInvisibleMotionStatuses($withdrawnAreVisible);
+        $statuses = $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
         if (!$resolutionsAreVisible) {
             $statuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
             $statuses[] = IMotion::STATUS_RESOLUTION_FINAL;

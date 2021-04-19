@@ -14,7 +14,7 @@ use yii\helpers\Html;
 /** @var Motion[] $replacedByMotions */
 $replacedByMotions = [];
 foreach ($motion->replacedByMotions as $replMotion) {
-    if (!in_array($replMotion->status, $motion->getMyConsultation()->getInvisibleMotionStatuses())) {
+    if (!in_array($replMotion->status, $motion->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
         $replacedByMotions[] = $replMotion;
     }
 }

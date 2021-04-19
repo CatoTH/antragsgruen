@@ -1,6 +1,5 @@
 <?php
 
-use app\components\Tools;
 use app\models\db\{Amendment, AmendmentSupporter, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
@@ -81,7 +80,7 @@ if ($myself) {
             $motionLink = \app\components\UrlHelper::createMotionUrl($motion);
             echo Html::a(Html::encode($motion->getTitleWithPrefix()), $motionLink, ['class' => 'motion' . $motion->id]);
             echo ' (' . Html::encode($title) . ')';
-            echo ': ' . Html::encode($motion->getStatusNames()[$motion->status]);
+            echo ': ' . Html::encode($motion->getMyConsultation()->getStatuses()->getStatusName($motion->status));
             echo '</div>';
             if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
                 echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';
@@ -108,7 +107,7 @@ if ($myself) {
             $amendmentUrl = \app\components\UrlHelper::createAmendmentUrl($amendment);
             echo Html::a(Html::encode($amendment->getTitle()), $amendmentUrl, ['class' => 'amendment' . $amendment->id]);
             echo ' (' . Html::encode($title) . ')';
-            echo ': ' . Html::encode($amendment->getStatusNames()[$amendment->status]);
+            echo ': ' . Html::encode($amendment->getMyConsultation()->getStatuses()->getStatusName($amendment->status));
             echo '</div>';
             if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
                 echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';

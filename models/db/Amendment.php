@@ -506,13 +506,12 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param Consultation $consultation
      * @param int $limit
      * @return Amendment[]
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
-        $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
+        $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
         $query             = Amendment::find();
         $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
         $query->joinWith(
@@ -520,7 +519,7 @@ class Amendment extends IMotion implements IRSSItem
                 'motionJoin' => function ($query) use ($invisibleStatuses, $consultation) {
                     /** @var ActiveQuery $query */
                     $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
-                    $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                    $query->andWhere('motion.consultationId = ' . intval($consultation->id));
                 }
             ]
         );
@@ -542,10 +541,10 @@ class Amendment extends IMotion implements IRSSItem
         $query->joinWith(
             [
                 'motionJoin' => function ($query) use ($consultation) {
-                    $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
+                    $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
                     /** @var ActiveQuery $query */
                     $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
-                    $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                    $query->andWhere('motion.consultationId = ' . intval($consultation->id));
                 }
             ]
         );
@@ -822,7 +821,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         if ($this->status === Amendment::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
-        } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
+        } elseif (in_array($this->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
             $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
         } else {
             $this->status = static::STATUS_WITHDRAWN;
@@ -948,7 +947,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->getSettings()->adminsMayEdit) {
             return;
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleAmendmentStatuses())) {
+        if (in_array($this->status, $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses())) {
             return;
         }
         $this->textFixed = 1;
@@ -1052,8 +1051,10 @@ class Amendment extends IMotion implements IRSSItem
             }
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(false))) {
-            $return[\Yii::t('motion', 'status')] = IMotion::getStatusNames()[$this->status];
+
+        $consultation = $this->getMyConsultation();
+        if (in_array($this->status, $consultation->getStatuses()->getInvisibleMotionStatuses(false))) {
+            $return[\Yii::t('motion', 'status')] = $consultation->getStatuses()->getStatusNames()[$this->status];
         }
 
         return $return;
@@ -1183,7 +1184,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getFormattedStatus(): string
     {
-        $statusNames = Amendment::getStatusNames();
+        $statusNames = $this->getMyConsultation()->getStatuses()->getStatusNames();
         $status      = '';
         switch ($this->status) {
             case Amendment::STATUS_SUBMITTED_UNSCREENED:

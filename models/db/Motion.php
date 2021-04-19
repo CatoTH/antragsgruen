@@ -341,18 +341,17 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param Consultation $consultation
      * @param int $limit
      *
      * @return Motion[]
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
-        $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
+        $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
 
         $query = Motion::find();
         $query->where('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+        $query->andWhere('motion.consultationId = ' . intval($consultation->id));
         $query->orderBy("dateCreation DESC");
         $query->offset(0)->limit($limit);
 
@@ -436,7 +435,7 @@ class Motion extends IMotion implements IRSSItem
             return [];
         }
 
-        $filtered   = $this->getMyConsultation()->getInvisibleAmendmentStatuses($includeWithdrawn);
+        $filtered   = $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses($includeWithdrawn);
         $amendments = [];
         foreach ($this->amendments as $amend) {
             if (!in_array($amend->status, $filtered)) {
@@ -601,11 +600,11 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return Motion[]
      */
-    public function getVisibleReplacedByMotions()
+    public function getVisibleReplacedByMotions(): array
     {
         $replacedByMotions = [];
         foreach ($this->replacedByMotions as $replMotion) {
-            if (!in_array($replMotion->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
+            if (!in_array($replMotion->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
                 $replacedByMotions[] = $replMotion;
             }
         }
@@ -808,7 +807,7 @@ class Motion extends IMotion implements IRSSItem
     {
         if ($this->status === Motion::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
-        } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
+        } elseif (in_array($this->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
             $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
         } else {
             $this->status = static::STATUS_WITHDRAWN;
@@ -942,7 +941,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->getSettings()->adminsMayEdit) {
             return;
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
+        if (in_array($this->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
             return;
         }
         $this->textFixed = 1;
@@ -1076,8 +1075,9 @@ class Motion extends IMotion implements IRSSItem
         } elseif (count($this->tags) === 1) {
             $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(false))) {
-            $return[\Yii::t('motion', 'status')] = IMotion::getStatusNames()[$this->status];
+        $consultation = $this->getMyConsultation();
+        if (in_array($this->status, $consultation->getStatuses()->getInvisibleMotionStatuses(false))) {
+            $return[\Yii::t('motion', 'status')] = $consultation->getStatuses()->getStatusNames()[$this->status];
         }
 
         return $return;
@@ -1143,8 +1143,9 @@ class Motion extends IMotion implements IRSSItem
     {
         $status = '';
 
-        $screeningMotionsShown = $this->getMyConsultation()->getSettings()->screeningMotionsShown;
-        $statusNames           = Motion::getStatusNames();
+        $consultation = $this->getMyConsultation();
+        $screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
+        $statusNames           = $consultation->getStatuses()->getStatusNames();
         if ($this->isInScreeningProcess()) {
             $status .= '<span class="unscreened">' . Html::encode($statusNames[$this->status]) . '</span>';
         } elseif ($this->status === Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
@@ -1152,7 +1153,7 @@ class Motion extends IMotion implements IRSSItem
         } elseif ($this->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
             $status .= Html::encode($statusNames[$this->status]);
             $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
-            $status .= IPolicy::getPolicyNames()[$this->motionType->policySupportMotions] . ')</small>';
+            $status .= IPolicy::getPolicyNames()[$this->getMyMotionType()->policySupportMotions] . ')</small>';
         } else {
             $status .= Html::encode($statusNames[$this->status]);
         }

@@ -116,7 +116,6 @@ class MotionSorter
 
 
     /**
-     * @param Consultation $consultation
      * @param Motion[] $motions
      * @return array|array[]
      */
@@ -125,7 +124,7 @@ class MotionSorter
         $motionsSorted   = [];
         $motionsNoPrefix = [];
 
-        $inivisible   = $consultation->getInvisibleMotionStatuses();
+        $inivisible   = $consultation->getStatuses()->getInvisibleMotionStatuses();
         $inivisible[] = IMotion::STATUS_MODIFIED;
 
         foreach ($motions as $motion) {
@@ -171,9 +170,6 @@ class MotionSorter
         foreach ($motions as $motion) {
             $motionIdsToBeSorted[] = $motion->id;
         }
-
-        $inivisible   = $consultation->getInvisibleMotionStatuses();
-        $inivisible[] = IMotion::STATUS_MODIFIED;
 
         $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
         foreach ($items as $agendaItem) {

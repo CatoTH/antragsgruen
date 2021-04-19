@@ -132,6 +132,7 @@ class StdHooks extends Hooks
 
     public function getMotionFormattedAmendmentList(string $before, Motion $motion): string
     {
+        $consultation = $motion->getMyConsultation();
         $amendments = $motion->getVisibleAmendments();
         // Global alternatives first, then sorted by titlePrefix
         usort($amendments, function (Amendment $amend1, Amendment $amend2) {
@@ -158,7 +159,7 @@ class StdHooks extends Hooks
                     $aename = $amend->id;
                 }
                 $amendLink     = UrlHelper::createAmendmentUrl($amend);
-                $amendStatuses = Amendment::getStatusNames();
+                $amendStatuses = $consultation->getStatuses()->getStatusNames();
                 $before        .= Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);
                 $before        .= ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStatuses[$amend->status]) . ')';
                 $before        .= '</li>';

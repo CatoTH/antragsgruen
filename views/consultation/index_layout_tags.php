@@ -18,7 +18,7 @@ if (count($resolutions) > 0) {
 }
 
 foreach ($motions as $motion) {
-    if (in_array($motion->status, $consultation->getInvisibleMotionStatuses())) {
+    if (in_array($motion->status, $consultation->getStatuses()->getInvisibleMotionStatuses())) {
         continue;
     }
     if (count($motion->tags) === 0) {
@@ -123,7 +123,7 @@ foreach ($tagIds as $tagId) {
         }
         echo Html::encode(implode(', ', $initiators));
         if ($motion->status != Motion::STATUS_SUBMITTED_SCREENED) {
-            echo ', ' . Html::encode(Motion::getStatusNames()[$motion->status]);
+            echo ', ' . Html::encode($consultation->getStatuses()->getStatusName($motion->status));
         }
         echo '</td></tr>';
 
@@ -141,7 +141,7 @@ foreach ($tagIds as $tagId) {
             $title = Yii::t('amend', 'amendment_for') . ' ' . Html::encode($motion->titlePrefix);
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
             if ($amend->status === Amendment::STATUS_WITHDRAWN) {
-                echo ' <span class="status">(' . Html::encode($amend->getStatusNames()[$amend->status]) . ')</span>';
+                echo ' <span class="status">(' . Html::encode($consultation->getStatuses()->getStatusName($amend->status)) . ')</span>';
             }
             echo '</div></td>';
             echo '<td class="initiatorRow">';
@@ -155,7 +155,7 @@ foreach ($tagIds as $tagId) {
             }
             echo Html::encode(implode(', ', $initiators));
             if ($amend->status != Amendment::STATUS_SUBMITTED_SCREENED) {
-                echo ', ' . Html::encode(Amendment::getStatusNames()[$amend->status]);
+                echo ', ' . Html::encode($consultation->getStatuses()->getStatusName($amend->status));
             }
             echo '</td></tr>';
         }

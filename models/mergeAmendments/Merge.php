@@ -124,7 +124,7 @@ class Merge
         $oldMotion    = $this->origMotion;
         $consultation = $oldMotion->getMyConsultation();
 
-        $invisible = $consultation->getInvisibleAmendmentStatuses();
+        $invisible = $consultation->getStatuses()->getInvisibleAmendmentStatuses();
         foreach ($oldMotion->getVisibleAmendments() as $amendment) {
             if (isset($amendmentStatuses[$amendment->id])) {
                 $newStatus = IntVal($amendmentStatuses[$amendment->id]);

@@ -123,7 +123,7 @@ echo '<div class="content form-horizontal fuelux">';
         <label class="col-md-3 control-label" for="motionStatus"><?= Yii::t('admin', 'motion_status') ?>:</label>
         <div class="col-md-5">
             <?php
-            $stats = Motion::getStatusNamesVisibleForAdmins();
+            $stats = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
             echo HTMLTools::fueluxSelectbox('motion[status]', $stats, $motion->status, ['id' => 'motionStatus'], true);
             echo '</div><div class="col-md-4">';
             $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];

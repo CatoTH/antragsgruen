@@ -86,7 +86,7 @@ class LayoutHelper
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         if (in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY])) {
-            $names                = IMotion::getStatusNames();
+            $names                = $motion->getMyConsultation()->getStatuses()->getStatusNames();
             $content->titleRaw    = $motion->title;
             $content->titlePrefix = $names[$motion->status] . "\n";
             $content->titleLong   = $names[$motion->status] . ': ' . $motion->getTitleWithIntro();

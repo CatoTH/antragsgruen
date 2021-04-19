@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\IMotionStatusEngine;
 use app\components\{MotionSorter, UrlHelper};
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\{Internal, NotFound};
@@ -466,6 +467,17 @@ class Consultation extends ActiveRecord
         return new $numberings[$this->amendmentNumbering]();
     }
 
+    /** @var null|IMotionStatusEngine */
+    private $statusEngine = null;
+
+    public function getStatuses(): IMotionStatusEngine
+    {
+        if ($this->statusEngine === null) {
+            $this->statusEngine = new IMotionStatusEngine($this);
+        }
+        return $this->statusEngine;
+    }
+
     /**
      * @param bool $withdrawnAreVisible
      * @param bool $includeResolutions
@@ -474,7 +486,7 @@ class Consultation extends ActiveRecord
     public function getVisibleMotions($withdrawnAreVisible = true, $includeResolutions = true)
     {
         $return            = [];
-        $invisibleStatuses = $this->getInvisibleMotionStatuses($withdrawnAreVisible);
+        $invisibleStatuses = $this->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
         if (!$includeResolutions) {
             $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
             $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_FINAL;
@@ -553,62 +565,6 @@ class Consultation extends ActiveRecord
         return $tags;
     }
 
-    /**
-     * @param bool $withdrawnAreVisible
-     *
-     * @return int[]
-     */
-    public function getInvisibleMotionStatuses($withdrawnAreVisible = true)
-    {
-        $invisible = [
-            IMotion::STATUS_DELETED,
-            IMotion::STATUS_DRAFT,
-            IMotion::STATUS_COLLECTING_SUPPORTERS,
-            IMotion::STATUS_DRAFT_ADMIN,
-            IMotion::STATUS_WITHDRAWN_INVISIBLE,
-            IMotion::STATUS_MERGING_DRAFT_PRIVATE,
-            IMotion::STATUS_MERGING_DRAFT_PUBLIC,
-            IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
-            IMotion::STATUS_INLINE_REPLY,
-        ];
-        if (!$this->getSettings()->screeningMotionsShown) {
-            $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;
-            $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
-        }
-        if (!$withdrawnAreVisible) {
-            $invisible[] = IMotion::STATUS_WITHDRAWN;
-            //$invisible[] = IMotion::STATUS_MOVED;
-            $invisible[] = IMotion::STATUS_MODIFIED;
-            $invisible[] = IMotion::STATUS_MODIFIED_ACCEPTED;
-            $invisible[] = IMotion::STATUS_PROCESSED;
-        }
-        return $invisible;
-    }
-
-    /**
-     * @return int[]
-     */
-    public function getUnreadableStatuses()
-    {
-        return [
-            IMotion::STATUS_DELETED,
-            IMotion::STATUS_DRAFT,
-            IMotion::STATUS_DRAFT_ADMIN,
-            IMotion::STATUS_MERGING_DRAFT_PRIVATE,
-            IMotion::STATUS_MERGING_DRAFT_PUBLIC,
-            IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
-        ];
-    }
-
-    /**
-     * @param bool $withdrawnAreVisible
-     * @return int[]
-     */
-    public function getInvisibleAmendmentStatuses($withdrawnAreVisible = true)
-    {
-        return $this->getInvisibleMotionStatuses($withdrawnAreVisible);
-    }
-
     public function getNextMotionPrefix(int $motionTypeId): string
     {
         $max_rev = 0;
@@ -656,7 +612,7 @@ class Consultation extends ActiveRecord
     {
         $results = [];
         foreach ($this->motions as $motion) {
-            if (in_array($motion->status, $this->getInvisibleMotionStatuses())) {
+            if (in_array($motion->status, $this->getStatuses()->getInvisibleMotionStatuses())) {
                 continue;
             }
             $found = false;
@@ -674,7 +630,7 @@ class Consultation extends ActiveRecord
             }
             if (!$found) {
                 foreach ($motion->amendments as $amend) {
-                    if (in_array($amend->status, $this->getInvisibleAmendmentStatuses())) {
+                    if (in_array($amend->status, $this->getStatuses()->getInvisibleAmendmentStatuses())) {
                         continue;
                     }
                     foreach ($amend->getActiveSections() as $section) {

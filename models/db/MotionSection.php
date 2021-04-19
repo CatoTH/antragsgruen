@@ -161,9 +161,9 @@ class MotionSection extends IMotionSection
         $sections = [];
         $motion   = $this->getConsultation()->getMotion($this->motionId);
         if ($allStatuses) {
-            $excludedStatuses = $this->getConsultation()->getUnreadableStatuses();
+            $excludedStatuses = $this->getConsultation()->getStatuses()->getUnreadableStatuses();
         } else {
-            $excludedStatuses = $this->getConsultation()->getInvisibleAmendmentStatuses();
+            $excludedStatuses = $this->getConsultation()->getStatuses()->getInvisibleAmendmentStatuses();
         }
         foreach ($motion->amendments as $amend) {
             $allowedProposedChange = ($includeProposals && $amend->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);

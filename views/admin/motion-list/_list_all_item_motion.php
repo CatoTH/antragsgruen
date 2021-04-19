@@ -15,11 +15,12 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
+$consultation = $controller->consultation;
 
-$hasTags        = (count($controller->consultation->tags) > 0);
-$motionStatuses = Motion::getStatusNames();
+$hasTags        = (count($consultation->tags) > 0);
+$motionStatuses = $consultation->getStatuses()->getStatusNames();
 $viewUrl        = UrlHelper::createMotionUrl($entry);
-if (User::havePrivilege($controller->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+if (User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT)) {
     $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
 } else {
     $editUrl = null;

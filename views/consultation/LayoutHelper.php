@@ -41,7 +41,7 @@ class LayoutHelper
         $return .= '<p class="info">';
         $return .= Html::encode($motion->getInitiatorsStr());
         if ($motion->status === Motion::STATUS_WITHDRAWN) {
-            $statusName = Html::encode($motion->getStatusNames()[$motion->status]);
+            $statusName = Html::encode($motion->getMyConsultation()->getStatuses()->getStatusName($motion->status));
             $return     .= ' <span class="status">(' . $statusName . ')</span>';
         }
         if ($motion->status === Motion::STATUS_MOVED) {
@@ -74,7 +74,7 @@ class LayoutHelper
         $return .= '<span class="info">';
         $return .= Html::encode($amendment->getInitiatorsStr());
         if ($amendment->status === Amendment::STATUS_WITHDRAWN) {
-            $statusName = $amendment->getStatusNames()[$amendment->status];
+            $statusName = $amendment->getMyConsultation()->getStatuses()->getStatusName($amendment->status);
             $return     .= ' <span class="status">(' . Html::encode($statusName) . ')</span>';
         }
         $return .= '</span>' . "\n";

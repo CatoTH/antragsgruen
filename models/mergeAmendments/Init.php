@@ -127,7 +127,7 @@ class Init
     public function getAffectingAmendments(array $allAmendingIds, array $amendmentsById): array
     {
         // Must match merging.php: $amendments = $motion->getVisibleAmendmentsSorted();
-        $hiddenStatuses = $this->motion->getMyConsultation()->getInvisibleAmendmentStatuses(true);
+        $hiddenStatuses = $this->motion->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses(true);
 
         /** @var Amendment[] $modUs */
         $modUs = [];
@@ -192,7 +192,7 @@ class Init
 
     public static function getJsAmendmentStaticData(Amendment $amendment): array
     {
-        $statusesAllNames = Amendment::getStatusNames();
+        $statusesAllNames = $amendment->getMyConsultation()->getStatuses()->getStatusNames();
 
         return [
             'id'            => $amendment->id,

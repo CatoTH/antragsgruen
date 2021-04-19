@@ -109,7 +109,7 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
                         <?= HTMLTools::amendmentDiffTooltip($amendment) ?>
                         <label for="amendmentStatus<?= $amendment->id ?>">Status:</label><br>
                         <?php
-                        $statusesAll                  = $amendment->getStatusNames();
+                        $statusesAll                  = $amendment->getMyConsultation()->getStatuses()->getStatusNames();
                         $statuses                     = [
                             Amendment::STATUS_PROCESSED         => $statusesAll[Amendment::STATUS_PROCESSED],
                             Amendment::STATUS_ACCEPTED          => $statusesAll[Amendment::STATUS_ACCEPTED],

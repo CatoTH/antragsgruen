@@ -1,12 +1,13 @@
 <?php
 
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Amendment, User};
+use app\models\db\{Amendment, Motion, User};
 use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Amendment $entry
+ * @var Motion $lastMotion
  * @var \app\models\forms\AdminMotionFilterForm $search
  * @var boolean $colMark
  * @var boolean $colProposals
@@ -16,10 +17,11 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
+$consultation = $controller->consultation;
 
-$hasTags           = (count($controller->consultation->tags) > 0);
-$amendmentStatuses = Amendment::getStatusNames();
-if (User::havePrivilege($controller->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+$hasTags           = (count($consultation->tags) > 0);
+$amendmentStatuses = $consultation->getStatuses()->getStatusNames();
+if (User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT)) {
     $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
 } else {
     $editUrl = null;
