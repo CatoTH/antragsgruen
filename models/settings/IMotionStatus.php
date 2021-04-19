@@ -29,11 +29,17 @@ class IMotionStatus
      */
     public $adminInvisible;
 
-    public function __construct(int $id, string $name, ?string $nameVerb = null, ?bool $adminInvisible = false)
+    /**
+     * @var bool
+     */
+    public $userInvisible;
+
+    public function __construct(int $id, string $name, ?string $nameVerb = null, ?bool $adminInvisible = false, ?bool $userInvisible = false)
     {
         $this->id = $id;
         $this->name = $name;
         $this->nameVerb = $nameVerb;
         $this->adminInvisible = $adminInvisible;
+        $this->userInvisible = $userInvisible;
     }
 }

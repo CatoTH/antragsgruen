@@ -28,9 +28,28 @@ class IMotionStatusEngine
             \Yii::t('structure', 'STATUS_WITHDRAWN'),
             \Yii::t('structure', 'STATUSV_WITHDRAWN')
         );
-        $statuses[] = new IMotionStatus(IMotion::STATUS_DRAFT, \Yii::t('structure', 'STATUS_DRAFT'));
-        $statuses[] = new IMotionStatus(IMotion::STATUS_SUBMITTED_UNSCREENED, \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'));
-        $statuses[] = new IMotionStatus(IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED, \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED_CHECKED'));
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_DRAFT,
+            \Yii::t('structure', 'STATUS_DRAFT'),
+            null,
+            false,
+            true
+        );
+
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_SUBMITTED_UNSCREENED,
+            \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
+            null,
+            false,
+            !$this->consultation->getSettings()->screeningMotionsShown
+        );
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED,
+            \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED_CHECKED'),
+            null,
+            false,
+            !$this->consultation->getSettings()->screeningMotionsShown
+        );
         $statuses[] = new IMotionStatus(IMotion::STATUS_SUBMITTED_SCREENED, \Yii::t('structure', 'STATUS_SUBMITTED_SCREENED'));
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_ACCEPTED,
@@ -71,13 +90,37 @@ class IMotionStatusEngine
         $statuses[] = new IMotionStatus(IMotion::STATUS_PAUSED, \Yii::t('structure', 'STATUS_PAUSED'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_MISSING_INFORMATION, \Yii::t('structure', 'STATUS_MISSING_INFORMATION'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_DISMISSED, \Yii::t('structure', 'STATUS_DISMISSED'));
-        $statuses[] = new IMotionStatus(IMotion::STATUS_COLLECTING_SUPPORTERS, \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'));
-        $statuses[] = new IMotionStatus(IMotion::STATUS_DRAFT_ADMIN, \Yii::t('structure', 'STATUS_DRAFT_ADMIN'));
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_COLLECTING_SUPPORTERS,
+            \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'),
+            null,
+            false,
+            true
+        );
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_DRAFT_ADMIN,
+            \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
+            null,
+            false,
+            true
+        );
         $statuses[] = new IMotionStatus(IMotion::STATUS_PROCESSED, \Yii::t('structure', 'STATUS_PROCESSED'));
-        $statuses[] = new IMotionStatus(IMotion::STATUS_WITHDRAWN_INVISIBLE, \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'));
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_WITHDRAWN_INVISIBLE,
+            \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
+            null,
+            false,
+            true
+        );
         $statuses[] = new IMotionStatus(IMotion::STATUS_OBSOLETED_BY, \Yii::t('structure', 'STATUS_OBSOLETED_BY'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_CUSTOM_STRING, \Yii::t('structure', 'STATUS_CUSTOM_STRING'));
-        $statuses[] = new IMotionStatus(IMotion::STATUS_INLINE_REPLY, \Yii::t('structure', 'STATUS_INLINE_REPLY'));
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_INLINE_REPLY,
+            \Yii::t('structure', 'STATUS_INLINE_REPLY'),
+            null,
+            false,
+            true
+        );
         $statuses[] = new IMotionStatus(IMotion::STATUS_RESOLUTION_PRELIMINARY, \Yii::t('structure', 'STATUS_RESOLUTION_PRELIMINARY'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_RESOLUTION_FINAL, \Yii::t('structure', 'STATUS_RESOLUTION_FINAL'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_MOVED, \Yii::t('structure', 'STATUS_MOVED'));
@@ -86,24 +129,28 @@ class IMotionStatusEngine
             IMotion::STATUS_DELETED,
             \Yii::t('structure', 'STATUS_DELETED'),
             \Yii::t('structure', 'STATUSV_DELETED'),
+            true,
             true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
             \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC'),
             null,
+            true,
             true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE'),
             null,
+            true,
             true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
             \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT'),
             null,
+            true,
             true
         );
 
@@ -210,20 +257,11 @@ class IMotionStatusEngine
      */
     public function getInvisibleMotionStatuses(bool $withdrawnAreVisible = true): array
     {
-        $invisible = [
-            IMotion::STATUS_DELETED,
-            IMotion::STATUS_DRAFT,
-            IMotion::STATUS_COLLECTING_SUPPORTERS,
-            IMotion::STATUS_DRAFT_ADMIN,
-            IMotion::STATUS_WITHDRAWN_INVISIBLE,
-            IMotion::STATUS_MERGING_DRAFT_PRIVATE,
-            IMotion::STATUS_MERGING_DRAFT_PUBLIC,
-            IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
-            IMotion::STATUS_INLINE_REPLY,
-        ];
-        if (!$this->consultation->getSettings()->screeningMotionsShown) {
-            $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;
-            $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
+        $invisible = [];
+        foreach ($this->allStatusesCache as $status) {
+            if ($status->userInvisible) {
+                $invisible[] = $status->id;
+            }
         }
         if (!$withdrawnAreVisible) {
             $invisible[] = IMotion::STATUS_WITHDRAWN;
