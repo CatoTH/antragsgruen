@@ -155,14 +155,13 @@ class Consultation extends ActiveRecord
         return $motions;
     }
 
-    /** @var Motion[] */
+    /** @var Motion[]|null[] */
     private $motionCache = [];
 
     /**
      * @param string|null $motionSlug
-     * @return Motion|null
      */
-    public function getMotion($motionSlug)
+    public function getMotion($motionSlug): ?Motion
     {
         if (is_null($motionSlug)) {
             return null;
@@ -191,10 +190,7 @@ class Consultation extends ActiveRecord
         $this->motionCache = [];
     }
 
-    /**
-     * @return Motion|null
-     */
-    public function getForcedMotion()
+    public function getForcedMotion(): ?Motion
     {
         if ($this->getSettings()->forceMotion === null) {
             return null;
@@ -203,12 +199,11 @@ class Consultation extends ActiveRecord
     }
 
 
-    /** @var Amendment[] */
+    /** @var Amendment[]|null[] */
     private $amendmentCache = [];
 
     /**
      * @param int $amendmentId
-     * @return Amendment|null
      */
     public function getAmendment($amendmentId): ?Amendment
     {
@@ -231,11 +226,7 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    /**
-     * @param int $amendmentId
-     * @return bool
-     */
-    public function isMyAmendment($amendmentId)
+    public function isMyAmendment(int $amendmentId): bool
     {
         if ($this->preloadedAllMotionData !== '') {
             return in_array($amendmentId, $this->preloadedAmendmentIds);

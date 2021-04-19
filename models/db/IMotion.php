@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\models\settings\{AntragsgruenApp, IMotionStatus, VotingData};
+use app\models\settings\{AntragsgruenApp, VotingData};
 use app\models\siteSpecificBehavior\Permissions;
 use app\components\{Tools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
@@ -26,8 +26,8 @@ use yii\helpers\Html;
  * @property string|null $proposalVisibleFrom
  * @property string $proposalComment
  * @property string|null $proposalNotification
- * @property int $proposalUserStatus
- * @property string $proposalExplanation
+ * @property int|null $proposalUserStatus
+ * @property string|null $proposalExplanation
  * @property string|null $votingBlockId
  * @property string|null $votingData
  * @property int $votingStatus
@@ -114,24 +114,6 @@ abstract class IMotion extends ActiveRecord
     const STATUS_PAUSED = 12;
     const STATUS_MISSING_INFORMATION = 13;
     const STATUS_DISMISSED = 14;
-
-    /**
-     * @param bool $includeAdminInvisibles
-     *
-     * @return string[]
-     */
-    public static function getStatusNames(bool $includeAdminInvisibles = false)
-    {
-        $statuses = [];
-
-        foreach (IMotionStatus::getAllStatuses() as $status) {
-            if ($includeAdminInvisibles || !$status->adminInvisible) {
-                $statuses[$status->id] = $status->name;
-            }
-        }
-
-        return $statuses;
-    }
 
     /**
      * @return string[]
@@ -406,6 +388,7 @@ abstract class IMotion extends ActiveRecord
                 $sectionsIn[$section->sectionId] = $section;
             }
         }
+        /** @var MotionSection[] $sectionsOut */
         $sectionsOut = [];
         foreach ($this->getTypeSections() as $section) {
             if (isset($sectionsIn[$section->id])) {

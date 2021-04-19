@@ -326,15 +326,13 @@ trait MotionMergingTrait
         $newMotion = $this->consultation->getMotion($motionSlug);
         if (!$newMotion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-
-            return null;
+            return '';
         }
 
         $oldMotion = $newMotion->replacedMotion;
         if (!$oldMotion->canMergeAmendments()) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
-
-            return null;
+            return '';
         }
 
         if ($this->isPostSet('modify')) {
@@ -422,7 +420,7 @@ trait MotionMergingTrait
     }
 
     /**
-     * @param $motionSlug
+     * @param string $motionSlug
      *
      * @return string
      * @throws \Exception

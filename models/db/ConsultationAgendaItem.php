@@ -130,7 +130,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         $return = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
-            if (in_array($motion->status, IMotionStatus::getInvisibleMotionStatuses($this->getMyConsultation()))) {
+            if (in_array($motion->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
                 continue;
             }
             if ($motion->agendaItemId === null || $motion->agendaItemId !== $this->id) {

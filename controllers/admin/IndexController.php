@@ -315,7 +315,7 @@ class IndexController extends AdminBase
                     }
                     if (!$found && $val !== '') {
                         $text = new ConsultationText();
-                        $text->motionTypeId = $motionTypeId;
+                        $text->motionTypeId = intval($motionTypeId);
                         $text->category = $categoryId;
                         $text->textId = $key;
                         $text->text = HTMLTools::cleanHtmlTranslationString($val);
