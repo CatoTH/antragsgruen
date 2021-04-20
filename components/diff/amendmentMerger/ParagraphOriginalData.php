@@ -15,7 +15,7 @@ class ParagraphOriginalData
     /** @var ParagraphMergerWord[] */
     public $words;
 
-    /** @var ParagraphDiff[] */
+    /** @var CollidingParagraphDiff[] */
     public $collidingParagraphs = [];
 
     /**

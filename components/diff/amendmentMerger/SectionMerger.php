@@ -66,7 +66,7 @@ class SectionMerger
     /**
      * @param AmendmentSection[] $sections
      */
-    public function addAmendingSections($sections)
+    public function addAmendingSections(array $sections): void
     {
         foreach ($sections as $section) {
             $newParas = HTMLTools::sectionSimpleHTML($section->data);
@@ -74,46 +74,36 @@ class SectionMerger
         }
     }
 
-    /**
-     * @param int $paraNo
-     * @return ParagraphMerger
-     */
-    public function getParagraphMerger($paraNo)
+    public function getParagraphMerger(int $paraNo): ParagraphMerger
     {
         return $this->paragraphs[$paraNo];
     }
 
     /**
-     * @param int $paraNo
      * @return GroupedParagraphData[]
      */
-    public function getGroupedParagraphData($paraNo)
+    public function getGroupedParagraphData(int $paraNo): array
     {
         return $this->paragraphs[$paraNo]->getGroupedParagraphData();
     }
 
     /**
-     * @param int $paraNo
      * @return GroupedParagraphData[][]
      */
-    public function getCollidingParagraphGroups($paraNo)
+    public function getCollidingParagraphGroups(int $paraNo): array
     {
         return $this->paragraphs[$paraNo]->getCollidingParagraphGroups();
     }
 
     /**
-     * @param int $paraNo
      * @return int[]
      */
-    public function getAffectingAmendmentIds($paraNo)
+    public function getAffectingAmendmentIds(int $paraNo): array
     {
         return $this->paragraphs[$paraNo]->getAffectingAmendmentIds();
     }
 
-    /**
-     * @return boolean
-     */
-    public function hasCollidingParagraphs()
+    public function hasCollidingParagraphs(): bool
     {
         foreach ($this->paragraphs as $paragraph) {
             if (count($paragraph->getCollidingParagraphs()) > 0) {
