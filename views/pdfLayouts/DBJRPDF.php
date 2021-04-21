@@ -39,6 +39,11 @@ class DBJRPDF extends IPdfWriter
      */
     public function Footer()
     {
+        if (count($this->pagegroups) === 0) {
+            // This is most likely a PDF-only application => we don't need page numbers
+            return;
+        }
+
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font

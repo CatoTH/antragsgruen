@@ -8,6 +8,7 @@
 - If admins create a motion or amendment in behalf of an user, no confirmation mails about the submission is sent to the user anymore (if confirmation mails are activated in the first place).
 - When official supports are collected for a motion or amendments, it is now optionally possible to support them "non-publically". That is, only logged in users can see the names of those supports.
 - Bugfix: fix issues when rendering applications using LaTeX.
+- Bugfix: for PDF-only applications, the collective PDF merging all applications could not be generated.
 
 ### Version 4.7.1 (2021-04-18)
 

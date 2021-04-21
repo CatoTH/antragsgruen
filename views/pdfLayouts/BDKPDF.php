@@ -66,6 +66,11 @@ class BDKPDF extends IPdfWriter
 
     public function Footer()
     {
+        if (count($this->pagegroups) === 0) {
+            // This is most likely a PDF-only application => we don't need page numbers
+            return;
+        }
+        
         $this->SetY(-15);
         $this->SetFont('helvetica', '', 10);
         $this->Cell(
