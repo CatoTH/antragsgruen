@@ -32,6 +32,16 @@ class ByLDKPDF extends IPdfWriter
         $this->setPrintFooter($footer);
     }
 
+    public function Header()
+    {
+        if (count($this->pagegroups) === 0) {
+            // This is most likely a PDF-only application => we don't need page numbers
+            return;
+        }
+
+        parent::Header();
+    }
+
     // @codingStandardsIgnoreStart
     public function Footer()
     {
