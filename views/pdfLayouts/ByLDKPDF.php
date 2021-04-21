@@ -33,8 +33,6 @@ class ByLDKPDF extends IPdfWriter
     }
 
     // @codingStandardsIgnoreStart
-    /**
-     */
     public function Footer()
     {
         if (count($this->pagegroups) === 0) {
