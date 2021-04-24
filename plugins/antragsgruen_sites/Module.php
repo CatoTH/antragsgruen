@@ -5,6 +5,7 @@ namespace app\plugins\antragsgruen_sites;
 use app\models\db\Consultation;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
+use yii\helpers\Url;
 
 class Module extends ModuleBase
 {
@@ -23,10 +24,9 @@ class Module extends ModuleBase
     }
 
     /**
-     * @param \yii\web\Controller $controller
      * @return \yii\web\AssetBundle[]|string[]
      */
-    public static function getActiveAssetBundles(\yii\web\Controller $controller)
+    public static function getActiveAssetBundles(\yii\web\Controller $controller): array
     {
         if (strpos($controller->route, 'antragsgruen_sites') === 0) {
             return [
@@ -37,10 +37,19 @@ class Module extends ModuleBase
         }
     }
 
-    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)
         ];
+    }
+
+    public static function getGeneratedRoute(array $routeParts, string $originallyGeneratedRoute): ?string
+    {
+        if ($routeParts[0] === '/motion/pdf') {
+            $routeParts[0] = '/motion/pdfamendcollection';
+            return Url::toRoute($routeParts);
+        }
+        return null;
     }
 }

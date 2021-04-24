@@ -58,7 +58,7 @@ class Module extends ModuleBase
         return SiteSpecificBehavior::class;
     }
 
-    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)

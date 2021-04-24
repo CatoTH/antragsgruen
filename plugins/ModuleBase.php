@@ -5,8 +5,7 @@ namespace app\plugins;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\models\db\{Amendment, Consultation, Motion, Site};
 use app\models\layoutHooks\Hooks;
-use app\models\settings\IMotionStatus;
-use app\models\settings\Layout;
+use app\models\settings\{IMotionStatus, Layout};
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\base\{Action, Module};
 use yii\web\{AssetBundle, Controller, View};
@@ -25,11 +24,9 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Controller $controller
-     *
      * @return AssetBundle[]
      */
-    public static function getActiveAssetBundles(Controller $controller)
+    public static function getActiveAssetBundles(Controller $controller): array
     {
         return [];
     }
@@ -54,6 +51,11 @@ class ModuleBase extends Module
         return null;
     }
 
+    public static function getGeneratedRoute(array $routeParts, string $originallyGeneratedRoute): ?string
+    {
+        return null;
+    }
+
     public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
         $urls = [];
@@ -70,8 +72,6 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Site $site
-     *
      * @return null|DefaultBehavior|string
      */
     public static function getSiteSpecificBehavior(Site $site)
@@ -80,8 +80,6 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Consultation $consultation
-     *
      * @return string|\app\models\settings\Consultation|null
      */
     public static function getConsultationSettingsClass(Consultation $consultation)
@@ -95,9 +93,7 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Site $site
-     *
-     * @return string|\app\models\settings\Site
+     * @return string|\app\models\settings\Site|null
      */
     public static function getSiteSettingsClass(Site $site)
     {
@@ -125,12 +121,9 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Layout $layoutSettings
-     * @param Consultation|null $consultation
-     *
      * @return Hooks[]
      */
-    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array
     {
         return [];
     }

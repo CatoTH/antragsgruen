@@ -19,7 +19,7 @@ class Module extends ModuleBase
         Event::on(Amendment::class, Amendment::EVENT_SUBMITTED, [OnSubmittedHandler::class, 'onAmendmentSubmitted'], null, false);
     }
 
-    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)

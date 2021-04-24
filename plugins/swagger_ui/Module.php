@@ -9,11 +9,9 @@ use app\plugins\ModuleBase;
 class Module extends ModuleBase
 {
     /**
-     * @param \yii\web\Controller $controller
-     *
      * @return \yii\web\AssetBundle[]|string[]
      */
-    public static function getActiveAssetBundles(\yii\web\Controller $controller)
+    public static function getActiveAssetBundles(\yii\web\Controller $controller): array
     {
         return [
             Assets::class,

@@ -274,6 +274,7 @@ class LayoutHooks extends Hooks
 .sectionMyMotions, .sectionMyAmendments, .sectionAgenda { display: none; }
 .motionList .motion > .title a, .motionList .motion > .title .motionLink { color: #0C2847; }
 .motionListBelowAgenda h4.amendments { color: #0071A6; }
+.motionTitle { font-weight: bold; }
 </style>
 <script>
 $(function() {

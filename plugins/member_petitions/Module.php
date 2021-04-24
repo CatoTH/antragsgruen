@@ -20,11 +20,10 @@ class Module extends ModuleBase
     }
 
     /**
-     * @param Controller $controller
      * @return \yii\web\AssetBundle[]|string[]
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getActiveAssetBundles(Controller $controller)
+    public static function getActiveAssetBundles(Controller $controller): array
     {
         return [
             Assets::class
@@ -65,7 +64,7 @@ class Module extends ModuleBase
         );
     }
 
-    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)

@@ -102,7 +102,16 @@ class UrlHelper
         )) {
             unset($route['consultationPath']);
         }
-        return Url::toRoute($route);
+        $finalRoute = Url::toRoute($route);
+
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $overriddenRoute = $plugin::getGeneratedRoute($route, $finalRoute);
+            if ($overriddenRoute) {
+                $finalRoute = $overriddenRoute;
+            }
+        }
+
+        return $finalRoute;
     }
 
     /**
@@ -216,7 +225,7 @@ class UrlHelper
     public static function createGruenesNetzLoginUrl(string $route): string
     {
         /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = Yii::$app->params;
 
         $target_url = Url::toRoute($route);
 
@@ -283,8 +292,8 @@ class UrlHelper
         $params = Yii::$app->params;
 
         $urlParts = parse_url($url);
-        $scheme   = (isset($urlParts['scheme']) ? $urlParts['scheme'] : $_SERVER['REQUEST_SCHEME']);
-        $host     = (isset($urlParts['host']) ? $urlParts['host'] : $_SERVER['HTTP_HOST']);
+        $scheme   = $urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME'];
+        $host     = $urlParts['host'] ?? $_SERVER['HTTP_HOST'];
         $fullhost = $scheme . '://' . $host . '/';
         if ($params->domainPlain == $fullhost) {
             return null;

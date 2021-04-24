@@ -8,7 +8,7 @@ use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
 {
-    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)
