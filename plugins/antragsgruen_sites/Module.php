@@ -5,7 +5,6 @@ namespace app\plugins\antragsgruen_sites;
 use app\models\db\Consultation;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
-use yii\helpers\Url;
 
 class Module extends ModuleBase
 {
@@ -42,14 +41,5 @@ class Module extends ModuleBase
         return [
             new LayoutHooks($layoutSettings, $consultation)
         ];
-    }
-
-    public static function getGeneratedRoute(array $routeParts, string $originallyGeneratedRoute): ?string
-    {
-        if ($routeParts[0] === '/motion/pdf') {
-            $routeParts[0] = '/motion/pdfamendcollection';
-            return Url::toRoute($routeParts);
-        }
-        return null;
     }
 }

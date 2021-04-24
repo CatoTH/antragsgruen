@@ -6,6 +6,7 @@ use app\models\db\Consultation;
 use app\models\settings\Layout;
 use app\plugins\frauenrat\pdf\Frauenrat;
 use app\plugins\ModuleBase;
+use yii\helpers\Url;
 
 class Module extends ModuleBase
 {
@@ -45,5 +46,14 @@ class Module extends ModuleBase
     public static function getCustomEmailTemplate(): ?string
     {
         return '@app/plugins/frauenrat/views/email';
+    }
+
+    public static function getGeneratedRoute(array $routeParts, string $originallyGeneratedRoute): ?string
+    {
+        if ($routeParts[0] === '/motion/pdf') {
+            $routeParts[0] = '/motion/pdfamendcollection';
+            return Url::toRoute($routeParts);
+        }
+        return null;
     }
 }
