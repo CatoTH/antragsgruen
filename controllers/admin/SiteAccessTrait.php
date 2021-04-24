@@ -320,11 +320,17 @@ trait SiteAccessTrait
     {
         $policyWarning = false;
 
+        $siteAdminIds = array_map(function(User $user): int {
+            return $user->id;
+        }, $this->consultation->site->admins);
+
         $usersWithReadWriteAccess = false;
         foreach ($this->consultation->userPrivileges as $privilege) {
+            // Users that have regular privilges, not consultation/site-admins
             if (($privilege->privilegeCreate || $privilege->privilegeView) && !(
-                $privilege->adminContentEdit || $privilege->adminProposals || $privilege->adminScreen || $privilege->adminSuper
-                )) {
+                $privilege->adminContentEdit || $privilege->adminProposals || $privilege->adminScreen || $privilege->adminSuper ||
+                in_array($privilege->userId, $siteAdminIds)
+            )) {
                 $usersWithReadWriteAccess = true;
             }
         }
