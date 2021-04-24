@@ -78,7 +78,7 @@ class Draft implements \JsonSerializable
 
         $json                       = json_decode($data, true);
         $draft->sections            = $json['sections'];
-        $draft->removedSections     = (isset($json['removedSections']) ? $json['removedSections'] : []);
+        $draft->removedSections     = $json['removedSections'] ?? [];
         $draft->paragraphs          = DraftParagraph::fromJsonArr($json['paragraphs']);
 
         // If the merging page is reloaded and an amendment has been deleted in the meanwhile,
@@ -98,8 +98,8 @@ class Draft implements \JsonSerializable
             }
         }
 
-        $draft->public              = $public;
-        $draft->time                = $time;
+        $draft->public = $public;
+        $draft->time = $time;
 
         return $draft;
     }

@@ -25,17 +25,15 @@ class DraftParagraph
     {
         $para                    = new DraftParagraph();
         $para->amendmentToggles  = $json['amendmentToggles'];
-        $para->textVersions      = (isset($json['textVersions']) ? $json['textVersions'] : []);
+        $para->textVersions      = $json['textVersions'] ?? [];
         $para->text              = $json['text'];
         $para->unchanged         = $json['unchanged'];
-        $para->handledCollisions = (isset($json['handledCollisions']) ? $json['handledCollisions'] : []);
+        $para->handledCollisions = $json['handledCollisions'] ?? [];
 
         return $para;
     }
 
     /**
-     * @param array $arr
-     *
      * @return DraftParagraph[]
      */
     public static function fromJsonArr(array $arr): array
@@ -46,8 +44,6 @@ class DraftParagraph
     }
 
     /**
-     * @param Motion $motion
-     *
      * @return int[]
      */
     public function getActiveResolvedAmendmentIds(Motion $motion): array
