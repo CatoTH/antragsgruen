@@ -49,7 +49,7 @@ class Init
         return $form;
     }
 
-    public static function initFromDraft(Motion $motion, Draft $draft)
+    public static function initFromDraft(Motion $motion, Draft $draft): Init
     {
         $form                     = new Init();
         $form->motion             = $motion;
@@ -119,7 +119,10 @@ class Init
         }
     }
 
-    public function getAllAmendmentIdsAffectingParagraph(MotionSection $section, $paragraphNo, ?array $onlyAmendments = null)
+    /**
+     * @return int[]
+     */
+    public function getAllAmendmentIdsAffectingParagraph(MotionSection $section, $paragraphNo, ?array $onlyAmendments = null): array
     {
         return $section->getAmendmentDiffMerger($onlyAmendments)->getAffectingAmendmentIds($paragraphNo);
     }
@@ -166,11 +169,7 @@ class Init
     }
 
     /**
-     * @param MotionSection $section
-     * @param int $paragraphNo
      * @param Amendment[] $amendmentsById
-     *
-     * @return string
      */
     public function getParagraphText(MotionSection $section, int $paragraphNo, $amendmentsById): string
     {

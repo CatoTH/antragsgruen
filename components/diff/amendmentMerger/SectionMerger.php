@@ -80,6 +80,8 @@ class SectionMerger
     }
 
     /**
+     * Hint: Only used for tests
+     *
      * @return GroupedParagraphData[]
      */
     public function getGroupedParagraphData(int $paraNo): array
