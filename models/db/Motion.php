@@ -294,10 +294,7 @@ class Motion extends IMotion implements IRSSItem
         return $this->hasOne(User::class, ['id' => 'responsibilityId']);
     }
 
-    /**
-     * @return Consultation
-     */
-    public function getMyConsultation()
+    public function getMyConsultation(): ?Consultation
     {
         $current = Consultation::getCurrent();
         if ($current && $current->getMotion($this->id)) {

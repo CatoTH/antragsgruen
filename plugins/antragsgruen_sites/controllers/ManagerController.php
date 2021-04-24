@@ -51,18 +51,22 @@ class ManagerController extends Base
 
         $userSites = [];
         foreach ($user->motionSupports as $motionSupport) {
-            $addSiteTo($userSites, $siteIds, $motionSupport->motion->getMyConsultation()->site);
+            if ($motionSupport->motion->getMyConsultation()) {
+                $addSiteTo($userSites, $siteIds, $motionSupport->motion->getMyConsultation()->site);
+            }
         }
         foreach ($user->amendmentSupports as $amendmentSupport) {
-            $addSiteTo($userSites, $siteIds, $amendmentSupport->amendment->getMyConsultation()->site);
+            if ($amendmentSupport->amendment->getMyConsultation()) {
+                $addSiteTo($userSites, $siteIds, $amendmentSupport->amendment->getMyConsultation()->site);
+            }
         }
         foreach ($user->motionComments as $motionComment) {
-            if ($motionComment->status !== IComment::STATUS_DELETED) {
+            if ($motionComment->status !== IComment::STATUS_DELETED && $motionComment->motion->getMyConsultation()) {
                 $addSiteTo($userSites, $siteIds, $motionComment->motion->getMyConsultation()->site);
             }
         }
         foreach ($user->amendmentComments as $amendmentComment) {
-            if ($amendmentComment->status !== IComment::STATUS_DELETED) {
+            if ($amendmentComment->status !== IComment::STATUS_DELETED && $amendmentComment->amendment->getMyConsultation()) {
                 $addSiteTo($userSites, $siteIds, $amendmentComment->amendment->getMyConsultation()->site);
             }
         }

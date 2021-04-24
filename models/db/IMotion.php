@@ -329,10 +329,7 @@ abstract class IMotion extends ActiveRecord
      */
     abstract public function getDislikes(): array;
 
-    /**
-     * @return Consultation
-     */
-    abstract public function getMyConsultation();
+    abstract public function getMyConsultation(): ?Consultation;
 
     /**
      * @return ConsultationSettingsMotionSection[]
