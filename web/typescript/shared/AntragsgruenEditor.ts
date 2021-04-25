@@ -108,15 +108,15 @@ export class AntragsgruenEditor {
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'h1 h2 h3 h4;' +
-                'ol[start,data-*](ice-ins,ice-del,ice-cts,appendHint,moved,decimalDot,decimalCircle,lowerAlpha,upperAlpha);' +
-                'li[value,data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
-                'ul[data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
+                'ol[start,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved,decimalDot,decimalCircle,lowerAlpha,upperAlpha);' +
+                'li[value,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved);' +
+                'ul[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved);' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'div [data-*](collidingParagraph,hasCollisions,moved);' +
-                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead,moved){border,margin,padding};' +
-                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript' + autocolorizeClass + ');' +
-                'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
-                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
+                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,collidingParagraphHead,moved){border,margin,padding};' +
+                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,underline' + strikeClass + ',subscript,superscript' + autocolorizeClass + ');' +
+                'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision);' +
+                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision);';
         } else {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul;' +

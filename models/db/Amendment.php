@@ -391,11 +391,7 @@ class Amendment extends IMotion implements IRSSItem
         return $this->getMyMotionType()->motionSections;
     }
 
-    /**
-     * @param string $changeId
-     * @return array
-     */
-    public function getInlineChangeData($changeId)
+    public function getInlineChangeData(string $changeId): array
     {
         if ($this->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
             return $this->proposalReferencedBy->getInlineChangeData($changeId);

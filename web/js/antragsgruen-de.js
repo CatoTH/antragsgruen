@@ -30,7 +30,8 @@ ANTRAGSGRUEN_STRINGS = {
         "colliding_title": "Kollidierender ÄA",
         "colliding_start": "Ab hier Kollisionen",
         "colliding_end": "Bis hier Kollisionen",
-        "reloadParagraph": "Wenn diese Auswahl geändert wird, gehen händische Änderungen in diesem Paragraph verloren. Weiter?"
+        "reloadParagraph": "Wenn diese Auswahl geändert wird, gehen händische Änderungen in diesem Paragraph verloren. Weiter?",
+        "mergedCollisionHint": "Diese Änderung kollidiert mit einer Vorigen. Achte beim Einpflegen besonders auf die schlussendliche Formulierung!"
     },
     "admin": {
         "adminMayEditConfirm": "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?",
