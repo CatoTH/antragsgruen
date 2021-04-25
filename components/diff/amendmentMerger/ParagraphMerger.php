@@ -370,7 +370,7 @@ class ParagraphMerger
                         }
 
                         $cid = $CHANGESET_COUNTER++;
-                        $mid  = $cid . '-' . $amendmentId;
+                        $mid  = $cid . '-' . $amendmentId . '-COLLISION';
                         $appendedDiff = str_replace('###INS_START###', '###INS_START' . $mid . '###', $appendedDiff);
                         $appendedDiff = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $appendedDiff);
 

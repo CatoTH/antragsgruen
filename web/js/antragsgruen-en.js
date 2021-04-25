@@ -31,7 +31,8 @@ ANTRAGSGRUEN_STRINGS = {
         "colliding_title": "Colliding amendm.",
         "colliding_start": "Collisions start here",
         "colliding_end": "Collisions end here",
-        "reloadParagraph": "If this selection is changed, manual changes to this paragraph are lost. Proceed?"
+        "reloadParagraph": "If this selection is changed, manual changes to this paragraph are lost. Proceed?",
+        "mergedCollisionHint": "This change collides with a previous one. Please be cautious to get a consistent text in the end."
     },
     "admin": {
         "adminMayEditConfirm": "If this is deactivated, this cannot be undone for all motions created up to now.",
