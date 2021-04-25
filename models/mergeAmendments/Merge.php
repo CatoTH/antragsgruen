@@ -203,7 +203,7 @@ class Merge
             }
         }
 
-        foreach ($oldMotion->tags as $tag) {
+        foreach ($oldMotion->getPublicTopicTags() as $tag) {
             $newMotion->link('tags', $tag);
         }
 

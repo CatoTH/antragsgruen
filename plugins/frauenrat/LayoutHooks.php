@@ -64,7 +64,7 @@ class LayoutHooks extends Hooks
         $saveUrl  = UrlHelper::createUrl(['/frauenrat/motion/save-tag', 'motionSlug' => $motion->getMotionSlug()]);
         $form     = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
         $preTagId = null;
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             $preTagId = $tag->id;
         }
         $allTags = [

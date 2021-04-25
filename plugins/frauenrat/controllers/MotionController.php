@@ -26,7 +26,7 @@ class MotionController extends Base
             return 'Not permitted to change the tag';
         }
 
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             $motion->unlink('tags', $tag, true);
         }
         foreach ($this->consultation->tags as $tag) {

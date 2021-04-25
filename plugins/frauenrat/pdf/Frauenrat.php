@@ -65,7 +65,7 @@ class Frauenrat extends IPDFLayout
                 $contact[] = 'Telefon: ' . $initiator->contactPhone;
             }
         }
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             $topic[] = $tag->title;
         }
         foreach ($motion->getActiveSections() as $section) {

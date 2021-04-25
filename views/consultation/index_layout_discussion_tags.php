@@ -134,7 +134,7 @@ if (count($comments) > 0) {
 
                 $cssClasses   = ['sortitem', 'motion'];
                 $cssClasses[] = 'motionRow' . $motion->id;
-                foreach ($motion->tags as $tag) {
+                foreach ($motion->getPublicTopicTags() as $tag) {
                     $cssClasses[] = 'tag' . $tag->id;
                 }
 

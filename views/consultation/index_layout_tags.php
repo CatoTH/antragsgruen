@@ -21,14 +21,14 @@ foreach ($motions as $motion) {
     if (in_array($motion->status, $consultation->getStatuses()->getInvisibleMotionStatuses())) {
         continue;
     }
-    if (count($motion->tags) === 0) {
+    if (count($motion->getPublicTopicTags()) === 0) {
         $hasNoTagMotions = true;
         if (!isset($tags[0])) {
             $tags[0] = ['name' => Yii::t('motion', 'tag_none'), 'motions' => []];
         }
         $tags[0]['motions'][] = $motion;
     } else {
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             if (!isset($tags[$tag->id])) {
                 $tags[$tag->id] = ['name' => $tag->title, 'motions' => []];
             }

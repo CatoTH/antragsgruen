@@ -71,7 +71,7 @@ if ($colProposals) {
 echo '<td>' . Html::encode($entry->getInitiatorsStr()) . '</td>';
 if ($hasTags) {
     $tags = [];
-    foreach ($entry->tags as $tag) {
+    foreach ($entry->getPublicTopicTags() as $tag) {
         $tags[] = $tag->title;
     }
     echo '<td>' . Html::encode(implode(', ', $tags)) . '</td>';

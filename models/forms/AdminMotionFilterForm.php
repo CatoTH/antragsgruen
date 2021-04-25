@@ -264,8 +264,8 @@ class AdminMotionFilterForm extends Model
     {
         if (is_a($motion1, Motion::class)) {
             /** @var Motion $motion1 */
-            if (count($motion1->tags) > 0) {
-                $tag1 = $motion1->tags[0];
+            if (count($motion1->getPublicTopicTags()) > 0) {
+                $tag1 = $motion1->getPublicTopicTags()[0];
             } else {
                 $tag1 = null;
             }
@@ -274,8 +274,8 @@ class AdminMotionFilterForm extends Model
         }
         if (is_a($motion2, Motion::class)) {
             /** @var Motion $motion2 */
-            if (count($motion2->tags) > 0) {
-                $tag2 = $motion2->tags[0];
+            if (count($motion2->getPublicTopicTags()) > 0) {
+                $tag2 = $motion2->getPublicTopicTags()[0];
             } else {
                 $tag2 = null;
             }
@@ -405,7 +405,7 @@ class AdminMotionFilterForm extends Model
         if ($this->tag === null || $this->tag === 0) {
             return true;
         }
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             if ($tag->id === $this->tag) {
                 return true;
             }
@@ -507,7 +507,7 @@ class AdminMotionFilterForm extends Model
         if ($this->tag === null || $this->tag === 0) {
             return true;
         }
-        foreach ($amendment->getMyMotion()->tags as $tag) {
+        foreach ($amendment->getMyMotion()->getPublicTopicTags() as $tag) {
             if ($tag->id === $this->tag) {
                 return true;
             }
@@ -791,7 +791,7 @@ class AdminMotionFilterForm extends Model
     {
         $tags = $tagsNames = [];
         foreach ($this->allMotions as $motion) {
-            foreach ($motion->tags as $tag) {
+            foreach ($motion->getPublicTopicTags() as $tag) {
                 if (!isset($tags[$tag->id])) {
                     $tags[$tag->id]      = 0;
                     $tagsNames[$tag->id] = $tag->title;
@@ -800,7 +800,7 @@ class AdminMotionFilterForm extends Model
             }
         }
         foreach ($this->allAmendments as $amend) {
-            foreach ($amend->getMyMotion()->tags as $tag) {
+            foreach ($amend->getMyMotion()->getPublicTopicTags() as $tag) {
                 if (!isset($tags[$tag->id])) {
                     $tags[$tag->id]      = 0;
                     $tagsNames[$tag->id] = $tag->title;

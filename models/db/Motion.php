@@ -18,8 +18,6 @@ use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $consultationId
  * @property int $motionTypeId
@@ -42,7 +40,6 @@ use yii\helpers\Html;
  * @property Amendment[] $amendments
  * @property MotionComment[] $comments
  * @property MotionComment[] $privateComments
- * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
  * @property ConsultationAgendaItem|null $agendaItem
@@ -653,12 +650,9 @@ class Motion extends IMotion implements IRSSItem
         return in_array($this->status, [static::STATUS_RESOLUTION_FINAL, static::STATUS_RESOLUTION_PRELIMINARY]);
     }
 
-    /**
-     * @return string
-     */
-    public function getIconCSSClass()
+    public function getIconCSSClass(): string
     {
-        foreach ($this->tags as $tag) {
+        foreach ($this->getPublicTopicTags() as $tag) {
             return $tag->getCSSIconClass();
         }
 
@@ -1063,15 +1057,18 @@ class Motion extends IMotion implements IRSSItem
             $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->getShownCode(true) .
                                                        ' ' . $this->agendaItem->title;
         }
-        if (count($this->tags) > 1) {
-            $tags = [];
-            foreach ($this->tags as $tag) {
-                $tags[] = $tag->title;
+
+        $tags = $this->getPublicTopicTags();
+        if (count($tags) > 1) {
+            $tagTitles = [];
+            foreach ($tags as $tag) {
+                $tagTitles[] = $tag->title;
             }
-            $return[\Yii::t('export', 'TopicMulti')] = implode("\n", $tags);
-        } elseif (count($this->tags) === 1) {
-            $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
+            $return[\Yii::t('export', 'TopicMulti')] = implode("\n", $tagTitles);
+        } elseif (count($tags) === 1) {
+            $return[\Yii::t('export', 'TopicSingle')] = $tags[0]->title;
         }
+
         $consultation = $this->getMyConsultation();
         if (in_array($this->status, $consultation->getStatuses()->getInvisibleMotionStatuses(false))) {
             $return[\Yii::t('motion', 'status')] = $consultation->getStatuses()->getStatusNames()[$this->status];

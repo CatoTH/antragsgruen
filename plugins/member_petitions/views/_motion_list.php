@@ -74,7 +74,7 @@ foreach ($motions as $motion) {
     $cssClasses   = ['sortitem', 'motion'];
     $cssClasses[] = 'motionRow' . $motion->id;
     $cssClasses[] = 'phase' . $motionPhase;
-    foreach ($motion->tags as $tag) {
+    foreach ($motion->getPublicTopicTags() as $tag) {
         $cssClasses[] = 'tag' . $tag->id;
     }
 

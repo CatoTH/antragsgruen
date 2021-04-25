@@ -179,7 +179,7 @@ foreach ($motions as $motion) {
     }
     if (isset($COL_TAGS)) {
         $tags = [];
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             $tags[] = $tag->title;
         }
         $doc->setCell($row, $COL_TAGS, Spreadsheet::TYPE_TEXT, implode("\n", $tags));

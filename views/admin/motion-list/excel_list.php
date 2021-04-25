@@ -144,7 +144,7 @@ foreach ($motions as $motion) {
     }
     if (isset($COL_TAGS)) {
         $tags = [];
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             $tags[] = $tag->title;
         }
         $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS . $row, implode("\n", $tags));

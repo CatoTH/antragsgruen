@@ -248,7 +248,7 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
             <?php
             foreach ($consultation->tags as $tag) {
                 echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
-                foreach ($motion->tags as $mtag) {
+                foreach ($motion->getPublicTopicTags() as $mtag) {
                     if ($mtag->id == $tag->id) {
                         echo ' checked';
                     }

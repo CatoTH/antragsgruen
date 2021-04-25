@@ -53,7 +53,7 @@ class MotionDeepCopy
 
     private static function copyTags(Motion $oldMotion, Motion $newMotion)
     {
-        foreach ($oldMotion->tags as $tag) {
+        foreach ($oldMotion->getPublicTopicTags() as $tag) {
             $newMotion->link('tags', $tag);
         }
     }
