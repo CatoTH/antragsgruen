@@ -184,6 +184,10 @@
 
   li {
     text-shadow: none;
+
+    > span {
+      display: inline-block; // necessary to prevent safari from unnecessarily breaking parts
+    }
   }
 
   a {
