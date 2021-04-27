@@ -6,7 +6,7 @@ use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var Motion[] $entries
+ * @var Motion[] $motions
  */
 
 /** @var \app\controllers\Base $controller */
@@ -20,9 +20,33 @@ $layout->addBreadcrumb(Yii::t('admin', 'bread_list'));
 echo '<h1>' . Yii::t('admin', 'list_head_title') . '</h1>';
 echo '<div class="content">';
 
-foreach ($entries as $entry) {
+/** @var Motion[] $motionsVisible */
+$motionsVisible = [];
+/** @var Motion[] $motionsInvisible */
+$motionsInvisible = [];
+
+foreach ($motions as $motion) {
+    if ($motion->isVisible()) {
+        $motionsVisible[] = $motion;
+    } else {
+        $motionsInvisible[] = $motion;
+    }
+}
+
+echo '<h2>' . Yii::t('admin', 'list_visibles') . '</h2>';
+
+foreach ($motionsInvisible as $motion) {
+    $url = UrlHelper::createUrl(['admin/motion-list/index', 'motionId' => $motion->id]);
+    echo Html::a('<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Html::encode($motion->getTitleWithPrefix()), $url);
+    echo " <small>(" . $motion->getFormattedStatus() . ")</small>";
+    echo "<br>";
+}
+
+echo '<h2>' . Yii::t('admin', 'list_invisibles') . '</h2>';
+
+foreach ($motionsVisible as $entry) {
     $url = UrlHelper::createUrl(['admin/motion-list/index', 'motionId' => $entry->id]);
-    echo Html::a('<span class="glyphicon glyphicon-chevron-right"></span> ' . Html::encode($entry->getTitleWithPrefix()), $url) . "<br>";
+    echo Html::a('<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Html::encode($entry->getTitleWithPrefix()), $url) . "<br>";
 }
 
 echo '</div>';

@@ -118,6 +118,8 @@ return [
     'motion_move_con_none'        => 'Es gibt keine andere Veranstaltung mit kompatiblen Antragstypen',
     'motion_move_type'            => 'Antragstyp',
     'list_head_title'             => 'Liste: Anträge, Änderungsanträge',
+    'list_visibles'               => 'Sichtbare Anträge',
+    'list_invisibles'             => '(Noch) Nicht sichtbare Anträge',
     'list_action'                 => 'Aktion',
     'list_export'                 => 'Export',
     'list_tag'                    => 'Thema',
