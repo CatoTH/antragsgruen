@@ -25,7 +25,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT)) {
 } else {
     $editUrl = null;
 }
-$route       = 'admin/motion-list/index';
+
 echo '<tr class="motion motion' . $entry->id . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
@@ -110,11 +110,11 @@ if ($colAction) {
         Motion::STATUS_SUBMITTED_UNSCREENED_CHECKED,
     ];
     if (in_array($entry->status, $screenable)) {
-        $link = Html::encode($search->getCurrentUrl($route, ['motionScreen' => $entry->id]));
+        $link = Html::encode($search->getCurrentUrl(['motionScreen' => $entry->id]));
         $name = Html::encode(Yii::t('admin', 'list_screen'));
         echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
     } else {
-        $link = Html::encode($search->getCurrentUrl($route, ['motionUnscreen' => $entry->id]));
+        $link = Html::encode($search->getCurrentUrl(['motionUnscreen' => $entry->id]));
         $name = Html::encode(Yii::t('admin', 'list_unscreen'));
         echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
     }
@@ -122,7 +122,7 @@ if ($colAction) {
     $name = Html::encode(Yii::t('admin', 'list_template_motion'));
     echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
 
-    $delLink = Html::encode($search->getCurrentUrl($route, ['motionDelete' => $entry->id]));
+    $delLink = Html::encode($search->getCurrentUrl(['motionDelete' => $entry->id]));
     echo '<li><a tabindex="-1" href="' . $delLink . '" class="delete" ' .
         'onClick="return confirm(\'' . addslashes(Yii::t('admin', 'list_confirm_del_motion')) . '\');">' .
         Yii::t('admin', 'list_delete') . '</a></li>';

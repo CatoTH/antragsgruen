@@ -68,6 +68,7 @@ class Consultation implements \JsonSerializable
     public $initiatorsMayReject = false;
     public $odtExportHasLineNumers = true;
     public $pProcedureExpandAll = true; // If false: only show max. 1 section in the internal proposed procedure
+    public $adminListFilerByMotion = false; // If true: the admin list is filtered by motion. To be activated manually.
 
     /** @var int */
     public $lineLength = 80;

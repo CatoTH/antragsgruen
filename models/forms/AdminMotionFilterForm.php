@@ -46,8 +46,10 @@ class AdminMotionFilterForm extends Model
     /** @var boolean */
     private $showScreening;
 
+    /** @var string[] */
+    private $route;
+
     /**
-     * @param Consultation $consultation
      * @param Motion[] $allMotions
      * @param bool $amendments
      * @param boolean $showScreening
@@ -898,9 +900,14 @@ class AdminMotionFilterForm extends Model
         return $out;
     }
 
-    public function getCurrentUrl(string $baseUrl, array $add = []): string
+    public function setCurrentRoute(array $route): void
     {
-        return UrlHelper::createUrl(array_merge([$baseUrl], [
+        $this->route = $route;
+    }
+
+    public function getCurrentUrl(array $add = []): string
+    {
+        return UrlHelper::createUrl(array_merge($this->route, [
             'Search[status]'         => $this->status,
             'Search[tag]'            => $this->tag,
             'Search[initiator]'      => $this->initiator,

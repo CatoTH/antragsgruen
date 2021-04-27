@@ -19,6 +19,9 @@ $layout     = $controller->layoutParams;
 $consultation = $controller->consultation;
 
 $this->title = Yii::t('admin', 'list_head_title');
+if ($consultation->getSettings()->adminListFilerByMotion) {
+    $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('/admin/motion-list/index'));
+}
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'));
 $layout->loadTypeahead();
 $layout->loadFuelux();
@@ -27,7 +30,12 @@ $layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
 
-$route   = 'admin/motion-list/index';
+$route   = ['/admin/motion-list/index'];
+if ($consultation->getSettings()->adminListFilerByMotion && count($entries) > 0) {
+    $route['motionId'] = $entries[0]->id;
+}
+$search->setCurrentRoute($route);
+
 $hasTags = (count($controller->consultation->tags) > 0);
 
 $hasResponsibilities   = false;
@@ -56,6 +64,9 @@ echo '<div class="content fuelux" data-antragsgruen-widget="backend/MotionList">
 echo $controller->showErrors();
 
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';
+if ($consultation->getSettings()->adminListFilerByMotion && count($entries) > 0) {
+    echo '<input type="hidden" name="motionId" value="' . intval($entries[0]->id) . '">';
+}
 
 echo $search->getFilterFormFields($hasResponsibilities);
 
@@ -65,7 +76,7 @@ echo '<div style="float: left;"><br><button type="submit" class="btn btn-success
 echo '</form><br style="clear: both;">';
 
 
-$url = $search->getCurrentUrl($route);
+$url = $search->getCurrentUrl();
 echo Html::beginForm($url, 'post', ['class' => 'motionListForm']);
 echo '<input type="hidden" name="save" value="1">';
 
@@ -80,21 +91,21 @@ echo '</th><th class="prefixCol">';
 if ($search->sort === AdminMotionFilterForm::SORT_TITLE_PREFIX) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_prefix') . '</span>';
 } else {
-    $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
+    $url = $search->getCurrentUrl(['Search[sort]' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
     echo Html::a(Yii::t('admin', 'list_prefix'), $url);
 }
 echo '</th><th class="titleCol">';
 if ($search->sort === AdminMotionFilterForm::SORT_TITLE) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_title') . '</span>';
 } else {
-    $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TITLE]);
+    $url = $search->getCurrentUrl(['Search[sort]' => AdminMotionFilterForm::SORT_TITLE]);
     echo Html::a(Yii::t('admin', 'list_title'), $url);
 }
 echo '</th><th>';
 if ($search->sort === AdminMotionFilterForm::SORT_STATUS) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_status') . '</span>';
 } else {
-    $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_STATUS]);
+    $url = $search->getCurrentUrl(['Search[sort]' => AdminMotionFilterForm::SORT_STATUS]);
     echo Html::a(Yii::t('admin', 'list_status'), $url);
 }
 echo '</th>';
@@ -103,7 +114,7 @@ if ($colResponsible) {
     if ($search->sort === AdminMotionFilterForm::SORT_RESPONSIBILITY) {
         echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_responsible') . '</span>';
     } else {
-        $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_RESPONSIBILITY]);
+        $url = $search->getCurrentUrl(['Search[sort]' => AdminMotionFilterForm::SORT_RESPONSIBILITY]);
         echo Html::a(Yii::t('admin', 'list_responsible'), $url);
     }
     echo '</th>';
@@ -113,7 +124,7 @@ if ($colProposals) {
     if ($search->sort === AdminMotionFilterForm::SORT_PROPOSAL) {
         echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_proposal') . '</span>';
     } else {
-        $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_PROPOSAL]);
+        $url = $search->getCurrentUrl(['Search[sort]' => AdminMotionFilterForm::SORT_PROPOSAL]);
         echo Html::a(Yii::t('admin', 'list_proposal'), $url);
     }
     echo '</th>';
@@ -122,7 +133,7 @@ echo '<th>';
 if ($search->sort === AdminMotionFilterForm::SORT_INITIATOR) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_initiators') . '</span>';
 } else {
-    $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_INITIATOR]);
+    $url = $search->getCurrentUrl(['Search[sort]' => AdminMotionFilterForm::SORT_INITIATOR]);
     echo Html::a(Yii::t('admin', 'list_initiators'), $url);
 }
 if ($hasTags) {
@@ -130,7 +141,7 @@ if ($hasTags) {
     if ($search->sort === AdminMotionFilterForm::SORT_TAG) {
         echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_tag') . '</span>';
     } else {
-        $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TAG]);
+        $url = $search->getCurrentUrl(['Search[sort]' => AdminMotionFilterForm::SORT_TAG]);
         echo Html::a(Yii::t('admin', 'list_tag'), $url);
     }
 }

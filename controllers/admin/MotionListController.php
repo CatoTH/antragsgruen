@@ -12,8 +12,6 @@ use yii\web\Response;
 
 class MotionListController extends AdminBase
 {
-    /**
-     */
     protected function actionListallScreeningMotions()
     {
         if ($this->isRequestSet('motionScreen')) {
@@ -78,9 +76,6 @@ class MotionListController extends AdminBase
         }
     }
 
-
-    /**
-     */
     protected function actionListallScreeningAmendments()
     {
         if ($this->isRequestSet('amendmentScreen')) {
@@ -144,8 +139,6 @@ class MotionListController extends AdminBase
         }
     }
 
-    /**
-     */
     protected function actionListallProposalAmendments()
     {
         if ($this->isRequestSet('proposalVisible')) {
@@ -161,11 +154,7 @@ class MotionListController extends AdminBase
     }
 
 
-    /**
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionIndex()
+    public function actionIndex(?string $motionId = null): string
     {
         $consultation       = $this->consultation;
         $privilegeScreening = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
@@ -178,7 +167,9 @@ class MotionListController extends AdminBase
 
         $this->activateFunctions();
 
-        $consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
+        if ($motionId === null && !$consultation->getSettings()->adminListFilerByMotion) {
+            $consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
+        }
 
         if ($privilegeScreening) {
             $this->actionListallScreeningMotions();
@@ -188,7 +179,19 @@ class MotionListController extends AdminBase
             $this->actionListallProposalAmendments();
         }
 
-        $search = new AdminMotionFilterForm($consultation, $consultation->motions, true, $privilegeScreening);
+
+        if ($motionId === null && $consultation->getSettings()->adminListFilerByMotion) {
+            $search = new AdminMotionFilterForm($consultation, $consultation->motions, false, $privilegeScreening);
+            return $this->render('motion_list', ['entries' => $search->getSorted()]);
+        }
+
+        if ($motionId !== null) {
+            $motions = [$consultation->getMotion($motionId)];
+        } else {
+            $motions = $consultation->motions;
+        }
+
+        $search = new AdminMotionFilterForm($consultation, $motions, true, $privilegeScreening);
         if ($this->isRequestSet('Search')) {
             $search->setAttributes($this->getRequestValue('Search'));
         }

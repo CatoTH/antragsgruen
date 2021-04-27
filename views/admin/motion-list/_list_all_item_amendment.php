@@ -109,11 +109,11 @@ if ($colAction) {
     ];
     if (in_array($entry->status, $screenable)) {
         $name = Html::encode(Yii::t('admin', 'list_screen'));
-        $link = Html::encode($search->getCurrentUrl($route, ['amendmentScreen' => $entry->id]));
+        $link = Html::encode($search->getCurrentUrl(['amendmentScreen' => $entry->id]));
         echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
     } else {
         $name = Html::encode(Yii::t('admin', 'list_unscreen'));
-        $link = Html::encode($search->getCurrentUrl($route, ['amendmentUnscreen' => $entry->id]));
+        $link = Html::encode($search->getCurrentUrl(['amendmentUnscreen' => $entry->id]));
         echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
     }
     $name = Html::encode(Yii::t('admin', 'list_template_amendment'));
@@ -124,7 +124,7 @@ if ($colAction) {
     ]));
     echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
 
-    $delLink = Html::encode($search->getCurrentUrl($route, ['amendmentDelete' => $entry->id]));
+    $delLink = Html::encode($search->getCurrentUrl(['amendmentDelete' => $entry->id]));
     echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
         'onClick="return confirm(\'' . addslashes(Yii::t('admin', 'list_confirm_del_amend')) . '\');">' .
         Yii::t('admin', 'list_delete') . '</a></li>';
