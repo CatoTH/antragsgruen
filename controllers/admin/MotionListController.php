@@ -179,7 +179,9 @@ class MotionListController extends AdminBase
             $this->actionListallProposalAmendments();
         }
 
-
+        if ($motionId !== null && $consultation->getMotion($motionId) === null) {
+            $motionId = null;
+        }
         if ($motionId === null && $consultation->getSettings()->adminListFilerByMotion) {
             return $this->render('motion_list', ['motions' => $consultation->motions]);
         }
