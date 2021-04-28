@@ -120,6 +120,7 @@ return [
     'list_head_title'             => 'Liste: Anträge, Änderungsanträge',
     'list_visibles'               => 'Sichtbare Anträge',
     'list_invisibles'             => '(Noch) Nicht sichtbare Anträge',
+    'list_show_all'               => 'Komplettliste anzeigen',
     'list_action'                 => 'Aktion',
     'list_export'                 => 'Export',
     'list_tag'                    => 'Thema',

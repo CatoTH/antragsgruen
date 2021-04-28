@@ -124,6 +124,7 @@ return [
     'list_head_title'             => 'List: motions, amendments',
     'list_visibles'               => 'Visible motions',
     'list_invisibles'             => 'Motions not (yet) visible',
+    'list_show_all'               => 'Complete list',
     'list_action'                 => 'Action',
     'list_export'                 => 'Export',
     'list_tag'                    => 'Tag',

@@ -11,6 +11,7 @@ use yii\helpers\Html;
  * @var AdminMotionFilterForm $search
  * @var boolean $privilegeScreening
  * @var boolean $privilegeProposals
+ * @var string|null $motionId
  */
 
 /** @var \app\controllers\Base $controller */
@@ -31,8 +32,8 @@ $layout->fullWidth  = true;
 $layout->fullScreen = true;
 
 $route   = ['/admin/motion-list/index'];
-if ($consultation->getSettings()->adminListFilerByMotion && count($entries) > 0) {
-    $route['motionId'] = $entries[0]->id;
+if ($motionId !== null) {
+    $route['motionId'] = $motionId;
 }
 $search->setCurrentRoute($route);
 
@@ -64,8 +65,8 @@ echo '<div class="content fuelux" data-antragsgruen-widget="backend/MotionList">
 echo $controller->showErrors();
 
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';
-if ($consultation->getSettings()->adminListFilerByMotion && count($entries) > 0) {
-    echo '<input type="hidden" name="motionId" value="' . intval($entries[0]->id) . '">';
+if ($motionId !== null) {
+    echo '<input type="hidden" name="motionId" value="' . Html::encode($motionId) . '">';
 }
 
 echo $search->getFilterFormFields($hasResponsibilities);

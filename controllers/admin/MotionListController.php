@@ -167,7 +167,7 @@ class MotionListController extends AdminBase
 
         $this->activateFunctions();
 
-        if ($motionId === null && !$consultation->getSettings()->adminListFilerByMotion) {
+        if (($motionId === null && !$consultation->getSettings()->adminListFilerByMotion) || $motionId === 'all') {
             $consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         }
 
@@ -179,14 +179,14 @@ class MotionListController extends AdminBase
             $this->actionListallProposalAmendments();
         }
 
-        if ($motionId !== null && $consultation->getMotion($motionId) === null) {
+        if ($motionId !== null && $motionId !== 'all' && $consultation->getMotion($motionId) === null) {
             $motionId = null;
         }
         if ($motionId === null && $consultation->getSettings()->adminListFilerByMotion) {
             return $this->render('motion_list', ['motions' => $consultation->motions]);
         }
 
-        if ($motionId !== null) {
+        if ($motionId !== null && $motionId !== 'all') {
             $motions = [$consultation->getMotion($motionId)];
         } else {
             $motions = $consultation->motions;
@@ -198,6 +198,7 @@ class MotionListController extends AdminBase
         }
 
         return $this->render('list_all', [
+            'motionId'           => $motionId,
             'entries'            => $search->getSorted(),
             'search'             => $search,
             'privilegeScreening' => $privilegeScreening,
