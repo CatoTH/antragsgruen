@@ -144,7 +144,9 @@ class Init
         foreach ($modUs as $amendment) {
             // ModUs that modify a paragraph unaffected by the original amendment.
             // We need to check that the original amendment is not deleted though.
-            if ($amendment->proposalReferencedBy && !in_array($amendment->proposalReferencedBy->status, $hiddenStatuses)) {
+            // Also be defensive about data inconsistencies when the motion assignment does not match - see https://github.com/CatoTH/antragsgruen/issues/576
+            if ($amendment->proposalReferencedBy && $amendment->motionId === $amendment->proposalReferencedBy->motionId &&
+                !in_array($amendment->proposalReferencedBy->status, $hiddenStatuses)) {
                 $normalAmendments[$amendment->proposalReferencedBy->id] = $amendment->proposalReferencedBy;
             }
         }
