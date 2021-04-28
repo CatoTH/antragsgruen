@@ -34,6 +34,13 @@ foreach ($motions as $motion) {
     }
 }
 
+echo '<h2>' . Yii::t('admin', 'list_visibles') . '</h2>';
+
+foreach ($motionsVisible as $entry) {
+    $url = UrlHelper::createUrl(['admin/motion-list/index', 'motionId' => $entry->id]);
+    echo Html::a('<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Html::encode($entry->getTitleWithPrefix()), $url) . "<br>";
+}
+
 echo '<h2>' . Yii::t('admin', 'list_invisibles') . '</h2>';
 
 foreach ($motionsInvisible as $motion) {
@@ -45,13 +52,6 @@ foreach ($motionsInvisible as $motion) {
         echo ' (' . count($motion->getSupporters(true)) . ')';
     }
     echo '</small><br>';
-}
-
-echo '<h2>' . Yii::t('admin', 'list_visibles') . '</h2>';
-
-foreach ($motionsVisible as $entry) {
-    $url = UrlHelper::createUrl(['admin/motion-list/index', 'motionId' => $entry->id]);
-    echo Html::a('<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Html::encode($entry->getTitleWithPrefix()), $url) . "<br>";
 }
 
 echo '</div>';
