@@ -10,6 +10,7 @@
 - For consultations with more than a thousand motions / amendments, an internal consultation setting "adminListFilerByMotion" can now be set in the database to separate the admin list into one list per motion.
 - Bugfix: fix issues when rendering applications using LaTeX.
 - Bugfix: for PDF-only applications, the collective PDF merging all applications could not be generated.
+- Bugfix: the "reset to original motion text" button when editing an amendment text as admin did not work.
 
 ### Version 4.7.1 (2021-04-18)
 

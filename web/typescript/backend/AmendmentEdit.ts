@@ -71,6 +71,13 @@ export class AmendmentEdit {
 
         this.$editTextCaller.find("button").on("click", this.textEditCalled.bind(this));
 
+        $('.wysiwyg-textarea .resetText').on("click", (ev) => {
+            let $text: JQuery = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
+            window['CKEDITOR']['instances'][$text.attr('id')].setData($text.data('original-html'));
+
+            $(ev.currentTarget).parents('.modifiedActions').addClass('hidden');
+        });
+
         $(".amendmentDeleteForm").on("submit", function (ev, data) {
             if (data && typeof (data.confirmed) && data.confirmed === true) {
                 return;
