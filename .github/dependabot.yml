@@ -1,0 +1,47 @@
+version: 2
+updates:
+- package-ecosystem: composer
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: codeception/module-webdriver
+    versions:
+    - 1.2.1
+  - dependency-name: phpstan/phpstan
+    versions:
+    - 0.12.82
+    - 0.12.83
+    - 0.12.84
+  - dependency-name: paragonie/sodium_compat
+    versions:
+    - 1.15.3
+  - dependency-name: squizlabs/php_codesniffer
+    versions:
+    - 3.6.0
+  - dependency-name: codeception/codeception
+    versions:
+    - 4.1.16
+    - 4.1.17
+    - 4.1.18
+    - 4.1.19
+    - 4.1.20
+  - dependency-name: tecnickcom/tcpdf
+    versions:
+    - 6.4.1
+  - dependency-name: guzzlehttp/guzzle
+    versions:
+    - 7.2.0
+    - 7.3.0
+  - dependency-name: swiftmailer/swiftmailer
+    versions:
+    - 6.2.7
+  - dependency-name: yiisoft/yii2
+    versions:
+    - 2.0.41
+    - 2.0.41.1
+  - dependency-name: setasign/fpdi
+    versions:
+    - 2.3.6
