@@ -103,11 +103,10 @@ trait MotionExportTraits
 
     /**
      * @param string $motionSlug
-     * @param null|string $showAlways
      * @return string
      * @throws \Exception
      */
-    public function actionPdf($motionSlug, $showAlways = null)
+    public function actionPdf($motionSlug)
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 

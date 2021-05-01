@@ -292,8 +292,6 @@ class AmendmentEditForm extends Model
 
 
     /**
-     * @param Amendment $amendment
-     *
      * @throws \Throwable
      * @throws \app\models\exceptions\NotAmendable
      */
@@ -303,7 +301,7 @@ class AmendmentEditForm extends Model
             throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
 
-        $this->supporters = $this->motion->motionType
+        $this->supporters = $this->motion->getMyMotionType()
             ->getAmendmentSupportTypeClass()->getAmendmentSupporters($amendment);
 
         if (!$this->adminMode) {
@@ -314,7 +312,7 @@ class AmendmentEditForm extends Model
         $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
 
         if ($amendment->save()) {
-            $motionType = $this->motion->motionType;
+            $motionType = $this->motion->getMyMotionType();
             $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
             // Sections

@@ -125,7 +125,6 @@ class MotionSupporter extends ISupporter
         }
 
         $motion->refresh();
-        $motion->flushViewCache();
 
         $support->trigger(MotionSupporter::EVENT_SUPPORTED, new MotionSupporterEvent($support, $hadEnoughSupportersBefore));
     }

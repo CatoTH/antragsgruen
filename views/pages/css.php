@@ -33,7 +33,7 @@ $table-border-color: $colorGreenLight;
 $sidebarActionFont: "Open Sans", sans-serif;
 $deadlineCircleFont: "Open Sans", sans-serif;
 $motionFixedWidth: 740px;
-$inlineAmendmentPreambleHeight: 30px;
+$inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: rgb(226, 0, 122);
 $icon-font-path: "./fonts/";
 

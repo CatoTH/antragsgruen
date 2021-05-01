@@ -279,12 +279,22 @@ abstract class SupportBase
             }
         }
 
-        $supporters = $this->getAmendmentSupporters($amendment);
-        foreach ($supporters as $sup) {
+        $supportersAndInitiators = $this->getAmendmentSupporters($amendment);
+        $initiators = [];
+        foreach ($supportersAndInitiators as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
                 $sup->amendmentId = $amendment->id;
                 $sup->save();
             }
+            if ($sup->role === ISupporter::ROLE_INITIATOR) {
+                $initiators[] = $sup;
+            }
+        }
+
+        $initiatorsFormattedPre = $amendment->getInitiatorsStr();
+        $initiatorsFormattedPost = $amendment->getInitiatorsStrFromArray($initiators);
+        if ($initiatorsFormattedPre !== $initiatorsFormattedPost) {
+            $amendment->getMyMotion()->flushViewCache();
         }
     }
 

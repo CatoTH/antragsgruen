@@ -42,6 +42,7 @@ class AntragsgruenApp implements \JsonSerializable
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
     public $binaryFilePath        = null;
+    public $viewCacheFilePath     = null; // If set, then view caches are saved to a separate directory, overriding the default and not using Redis
     public $mode                  = 'production'; // [production | sandbox]
     public $updateKey             = null;
 

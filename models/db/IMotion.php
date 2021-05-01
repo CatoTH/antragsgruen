@@ -290,6 +290,16 @@ abstract class IMotion extends ActiveRecord
         return $orgaInitiated;
     }
 
+    public function getInitiatorsStrFromArray(array $initiators): string
+    {
+        $str   = [];
+        foreach ($initiators as $init) {
+            $str[] = $init->getNameWithResolutionDate(false);
+        }
+
+        return implode(', ', $str);
+    }
+
     public function getInitiatorsStr(): string
     {
         $cached = $this->getCacheItem('supporters.initiatorStr');
@@ -297,13 +307,8 @@ abstract class IMotion extends ActiveRecord
             return $cached;
         }
 
-        $inits = $this->getInitiators();
-        $str   = [];
-        foreach ($inits as $init) {
-            $str[] = $init->getNameWithResolutionDate(false);
-        }
-
-        $initiatorsStr = implode(', ', $str);
+        $initiators = $this->getInitiators();
+        $initiatorsStr = $this->getInitiatorsStrFromArray($initiators);
         $this->setCacheItem('supporters.initiatorStr', $initiatorsStr);
 
         return $initiatorsStr; // Hint: the returned string is NOT yet HTML-encoded

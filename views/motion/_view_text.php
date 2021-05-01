@@ -1,6 +1,6 @@
 <?php
 
-use app\components\HashedStaticCache;
+use app\components\HashedStaticFileCache;
 use app\models\db\{ConsultationSettingsMotionSection, Motion};
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
@@ -23,7 +23,7 @@ foreach ($sections as $section) {
 }
 
 if ($useCache) {
-    $cached = HashedStaticCache::getCache(LayoutHelper::getViewCacheKey($motion), null);
+    $cached = HashedStaticFileCache::getCache(LayoutHelper::getViewCacheKey($motion), null);
     if ($cached) {
         echo $cached;
         return;
@@ -76,7 +76,7 @@ foreach ($sections as $i => $section) {
             $sectionText .= '<h3 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h3>';
         }
 
-        $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
+        $commOp = $openedComments[$section->sectionId] ?? [];
         $sectionText   .= $section->getSectionType()->showMotionView($commentForm, $commOp);
 
         $sectionText .= '</section>';
@@ -104,6 +104,6 @@ if ($bottom !== '') {
 }
 
 if ($useCache) {
-    HashedStaticCache::setCache(LayoutHelper::getViewCacheKey($motion), null, $out);
+    HashedStaticFileCache::setCache(LayoutHelper::getViewCacheKey($motion), null, $out);
 }
 echo $out;

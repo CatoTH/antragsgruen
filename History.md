@@ -7,7 +7,10 @@
 - When merging amendments into a motion, text entered by the admins can now optionally receive a blue color, to distinguish admin-entered text from the base motion or changes made by the amendments.
 - If admins create a motion or amendment in behalf of an user, no confirmation mails about the submission is sent to the user anymore (if confirmation mails are activated in the first place).
 - When official supports are collected for a motion or amendments, it is now optionally possible to support them "non-publically". That is, only logged in users can see the names of those supports.
-- For consultations with more than a thousand motions / amendments, an internal consultation setting "adminListFilerByMotion" can now be set in the database to separate the admin list into one list per motion.
+- Improvements for consultations with more than a thousand motions / amendments:
+  - An internal consultation setting "adminListFilerByMotion" can now be set in the database to separate the admin list into one list per motion.
+  - The caching of motion views was improved so that it does not need to be recalculated as often anymore
+  - An optional file-based view cache was introduced, configurable by setting "viewCacheFilePath" in the config.json. Its purpose is not to overload Redis with binary data.
 - Bugfix: fix issues when rendering applications using LaTeX.
 - Bugfix: for PDF-only applications, the collective PDF merging all applications could not be generated.
 - Bugfix: the "reset to original motion text" button when editing an amendment text as admin did not work.

@@ -17,8 +17,6 @@ use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $motionId
  * @property string|null $titlePrefix
@@ -49,6 +47,8 @@ class Amendment extends IMotion implements IRSSItem
     const EVENT_SUBMITTED       = 'submitted';
     const EVENT_PUBLISHED       = 'published';
     const EVENT_PUBLISHED_FIRST = 'published_first';
+
+    const PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE = ['status', 'titlePrefix'];
 
     public function init()
     {
@@ -97,9 +97,11 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function save($runValidation = true, $attributeNames = null)
     {
+        $viewCacheNeedsRebuild = count(array_intersect(array_keys($this->getDirtyAttributes()), static::PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE)) > 0;
+
         $result = parent::save($runValidation, $attributeNames);
 
-        if ($this->getMyMotion()) {
+        if ($this->getMyMotion() && $viewCacheNeedsRebuild) {
             $this->getMyMotion()->flushViewCache();
         }
 

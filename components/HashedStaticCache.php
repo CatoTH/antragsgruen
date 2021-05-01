@@ -6,21 +6,18 @@ class HashedStaticCache
 {
     /**
      * @param mixed $dep
-     *
-     * @return string
      */
-    private static function hashDependencies($dep)
+    private static function hashDependencies($dep): string
     {
         return md5(print_r($dep, true));
     }
 
     /**
-     * @param string $function
      * @param mixed $dependencies
      *
      * @return mixed|false
      */
-    public static function getCache($function, $dependencies)
+    public static function getCache(string $function, $dependencies)
     {
         if (YII_ENV === 'test') {
             return false;
@@ -31,11 +28,10 @@ class HashedStaticCache
     }
 
     /**
-     * @param string $function
      * @param mixed $dependencies
      * @param mixed $data
      */
-    public static function setCache($function, $dependencies, $data)
+    public static function setCache(string $function, $dependencies, $data): void
     {
         if (YII_ENV === 'test') {
             return;
@@ -45,10 +41,9 @@ class HashedStaticCache
     }
 
     /**
-     * @param string $function
      * @param mixed $dependencies
      */
-    public static function flushCache($function, $dependencies)
+    public static function flushCache(string $function, $dependencies)
     {
         if (YII_ENV === 'test') {
             return;

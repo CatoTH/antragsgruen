@@ -2,6 +2,7 @@
 
 namespace app\views\motion;
 
+use app\components\HashedStaticFileCache;
 use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
 use app\models\db\{Consultation, IMotion, ISupporter, Motion, User};
@@ -70,7 +71,7 @@ class LayoutHelper
     }
 
     public static function getViewCacheKey(Motion $motion): string {
-        return 'motion_view3_' . $motion->id;
+        return 'motion_view_' . $motion->id;
     }
 
     /**
@@ -418,18 +419,16 @@ class LayoutHelper
     }
 
     /**
-     * @param Motion $motion
-     * @return string
      * @throws \app\models\exceptions\Internal
      * @throws \Exception
      */
-    public static function createPdfLatex(Motion $motion)
+    public static function createPdfLatex(Motion $motion): string
     {
-        $cache = \Yii::$app->cache->get($motion->getPdfCacheKey());
+        $cache = HashedStaticFileCache::getCache($motion->getPdfCacheKey(), null);
         if ($cache && !YII_DEBUG) {
             return $cache;
         }
-        $texTemplate = $motion->motionType->texTemplate;
+        $texTemplate = $motion->getMyMotionType()->texTemplate;
 
         $layout             = new Layout();
         $layout->assetRoot  = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
@@ -438,12 +437,10 @@ class LayoutHelper
         $layout->author     = $motion->getInitiatorsStr();
         $layout->title      = $motion->getTitleWithPrefix();
 
-        /** @var AntragsgruenApp $params */
-        $params   = \yii::$app->params;
-        $exporter = new Exporter($layout, $params);
+        $exporter = new Exporter($layout, AntragsgruenApp::getInstance());
         $content  = LayoutHelper::renderTeX($motion);
         $pdf      = $exporter->createPDF([$content]);
-        \Yii::$app->cache->set($motion->getPdfCacheKey(), $pdf);
+        HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdf);
         return $pdf;
     }
 }

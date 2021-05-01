@@ -4,7 +4,7 @@ namespace app\models\db;
 
 use app\models\notifications\MotionProposedProcedure;
 use app\models\notifications\MotionPublished;
-use app\components\{HashedStaticCache, MotionSorter, RSSExporter, Tools, UrlHelper};
+use app\components\{HashedStaticFileCache, MotionSorter, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
@@ -963,7 +963,7 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $this->flushCache();
         }
-        \Yii::$app->cache->delete($this->getPdfCacheKey());
+        HashedStaticFileCache::flushCache($this->getPdfCacheKey(), null);
         foreach ($this->amendments as $amend) {
             $amend->flushCacheWithChildren($items);
         }
@@ -972,8 +972,8 @@ class Motion extends IMotion implements IRSSItem
 
     public function flushViewCache(): void
     {
-        HashedStaticCache::flushCache(\app\views\motion\LayoutHelper::getViewCacheKey($this), null);
-         \Yii::$app->cache->delete($this->getPdfCacheKey());
+        HashedStaticFileCache::flushCache(\app\views\motion\LayoutHelper::getViewCacheKey($this), null);
+        HashedStaticFileCache::flushCache($this->getPdfCacheKey(), null);
     }
 
     public function getPdfCacheKey(): string

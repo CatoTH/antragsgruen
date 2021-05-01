@@ -265,7 +265,6 @@ trait MotionActionsTrait
             }
         }
 
-        $motion->flushViewCache();
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
         \Yii::$app->session->setFlash('success', \Yii::t('motion', 'neutral_done'));
     }
