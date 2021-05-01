@@ -183,7 +183,8 @@ class MotionListController extends AdminBase
             $motionId = null;
         }
         if ($motionId === null && $consultation->getSettings()->adminListFilerByMotion) {
-            return $this->render('motion_list', ['motions' => $consultation->motions]);
+            $search = new AdminMotionFilterForm($consultation, $consultation->motions, true, $privilegeScreening);
+            return $this->render('motion_list', ['motions' => $consultation->motions, 'search' => $search]);
         }
 
         if ($motionId !== null && $motionId !== 'all') {

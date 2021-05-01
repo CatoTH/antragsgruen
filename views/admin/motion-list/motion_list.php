@@ -1,13 +1,14 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\IMotion;
-use app\models\db\Motion;
+use app\models\db\{IMotion, Motion};
+use app\models\forms\AdminMotionFilterForm;
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
  * @var Motion[] $motions
+ * @var AdminMotionFilterForm $search
  */
 
 /** @var \app\controllers\Base $controller */
@@ -15,11 +16,39 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 $consultation = $controller->consultation;
 
+$hasResponsibilities   = false;
+$hasProposedProcedures = $controller->consultation->hasProposedProcedures();
+foreach ($controller->consultation->motionTypes as $motionType) {
+    if ($motionType->getSettingsObj()->hasResponsibilities) {
+        $hasResponsibilities = true;
+    }
+}
+
 $this->title = Yii::t('admin', 'list_head_title');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'));
+$layout->loadTypeahead();
+$layout->loadFuelux();
+$layout->addCSS('css/backend.css');
+$layout->fullWidth  = true;
 
 echo '<h1>' . Yii::t('admin', 'list_head_title') . '</h1>';
-echo '<div class="content">';
+echo $this->render('_list_all_export', [
+    'hasProposedProcedures' => $hasProposedProcedures,
+    'hasResponsibilities'   => $hasResponsibilities,
+]);
+
+echo '<div class="content fuelux" data-antragsgruen-widget="backend/MotionList">';
+
+$route   = ['/admin/motion-list/index'];
+echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';
+echo '<input type="hidden" name="motionId" value="all">';
+
+echo $search->getFilterFormFields($hasResponsibilities);
+
+echo '<div style="float: left;"><br><button type="submit" class="btn btn-success">' .
+     Yii::t('admin', 'list_search_do') . '</button></div>';
+
+echo '</form><br style="clear: both;">';
 
 $motionStatuses = $consultation->getStatuses()->getStatusNames();
 /** @var Motion[] $motionsVisible */
