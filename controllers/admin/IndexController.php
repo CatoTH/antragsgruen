@@ -187,50 +187,11 @@ class IndexController extends AdminBase
             return;
         }
 
-        /**
-         * @param int $tagId
-         * @return ConsultationSettingsTag|null
-         */
-        $getById = function ($tagId) use ($consultation) {
-            foreach ($consultation->tags as $tag) {
-                if ($tag->id == $tagId) {
-                    return $tag;
-                }
-            }
-            return null;
-        };
-
-        /**
-         * @param string $tagName
-         * @return ConsultationSettingsTag|null
-         */
-        $getByName = function ($tagName) use ($consultation) {
-            $tagName = mb_strtolower($tagName);
-            foreach ($consultation->tags as $tag) {
-                if (mb_strtolower($tag->title) == $tagName) {
-                    return $tag;
-                }
-            }
-            return null;
-        };
-
         $foundTags = [];
         $newTags   = json_decode(\Yii::$app->request->post('tags'), true);
         foreach ($newTags as $pos => $newTag) {
-            if ($newTag['id'] == 0) {
-                if ($getByName($newTag['name'])) {
-                    continue;
-                }
-                $tag                 = new ConsultationSettingsTag();
-                $tag->consultationId = $consultation->id;
-                $tag->title          = $newTag['name'];
-                $tag->position       = $pos;
-                $tag->save();
-            } else {
-                $tag = $getById($newTag['id']);
-                if (!$tag) {
-                    continue;
-                }
+            $tag = $consultation->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $newTag['name'], $pos);
+            if ($tag->position != $pos) {
                 $tag->position = $pos;
                 $tag->save();
             }

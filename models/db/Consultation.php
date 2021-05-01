@@ -11,8 +11,6 @@ use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property int $siteId
  * @property int $amendmentNumbering
@@ -536,24 +534,34 @@ class Consultation extends ActiveRecord
     /**
      * @return ConsultationSettingsTag[]
      */
-    public function getSortedTags()
+    public function getSortedTags(int $type): array
     {
-        $tags = $this->tags;
-        usort(
-            $tags,
-            function ($tag1, $tag2) {
-                /** @var ConsultationSettingsTag $tag1 */
-                /** @var ConsultationSettingsTag $tag2 */
-                if ($tag1->position < $tag2->position) {
-                    return -1;
-                }
-                if ($tag1->position > $tag2->position) {
-                    return 1;
-                }
-                return 0;
-            }
-        );
+        $tags = array_filter($this->tags, function(ConsultationSettingsTag $tag) use ($type): bool {
+            return $tag->type === $type;
+        });
+        usort($tags, function (ConsultationSettingsTag $tag1, ConsultationSettingsTag $tag2): int {
+            return $tag1->position <=> $tag2->position;
+        });
         return $tags;
+    }
+
+    public function getExistingTagOrCreate(int $type, string $nameUnnormalized, int $position): ConsultationSettingsTag
+    {
+        $nameNormalized = ConsultationSettingsTag::normalizeName($nameUnnormalized);
+        foreach ($this->tags as $tag) {
+            if ($tag->type === $type && $tag->getNormalizedName() === $nameNormalized) {
+                return $tag;
+            }
+        }
+
+        $tag = new ConsultationSettingsTag();
+        $tag->type = $type;
+        $tag->title = $nameUnnormalized;
+        $tag->consultationId = $this->id;
+        $tag->position = $position;
+        $tag->save();
+
+        return $tag;
     }
 
     public function getNextMotionPrefix(int $motionTypeId): string

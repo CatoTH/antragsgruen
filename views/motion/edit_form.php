@@ -107,7 +107,7 @@ if (count($form->motionType->agendaItems) > 0) {
 
 /** @var ConsultationSettingsTag[] $tags */
 $tags = [];
-foreach ($consultation->getSortedTags() as $tag) {
+foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
     $tags[$tag->id] = $tag;
 }
 

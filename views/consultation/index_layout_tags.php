@@ -36,7 +36,7 @@ foreach ($motions as $motion) {
         }
     }
 }
-$sortedTags = $consultation->getSortedTags();
+$sortedTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
 foreach ($sortedTags as $tag) {
     if (isset($tags[$tag->id])) {
         $tagIds[] = $tag->id;

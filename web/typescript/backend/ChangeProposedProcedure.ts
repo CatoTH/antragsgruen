@@ -9,6 +9,7 @@ export class ChangeProposedProcedure {
     private $visibilityInput: JQuery;
     private $votingStatusInput: JQuery;
     private $votingBlockId: JQuery;
+    private $tagsSelect: JQuery;
     private saveUrl: string;
     private context: string;
     private csrf: string;
@@ -21,6 +22,7 @@ export class ChangeProposedProcedure {
         this.initCommentForm();
         this.initVotingBlock();
         this.initExplanation();
+        this.initTags();
         $widget.on("submit", ev => ev.preventDefault());
     }
 
@@ -29,6 +31,7 @@ export class ChangeProposedProcedure {
         this.$visibilityInput = this.$widget.find('input[name=proposalVisible]');
         this.$votingStatusInput = this.$widget.find('input[name=votingStatus]');
         this.$votingBlockId = this.$widget.find('input[name=votingBlockId]');
+        this.$tagsSelect = this.$widget.find('.proposalTagsSelect');
         this.$openerBtn = $('.proposedChangesOpener button');
         this.context = this.$widget.data('context');
         this.saveUrl = this.$widget.attr('action');
@@ -55,11 +58,25 @@ export class ChangeProposedProcedure {
         }
     }
 
+    private initTags() {
+        const $tagsSelect: any = this.$tagsSelect;
+
+        $tagsSelect.selectize({
+            create: true,
+            plugins: ["remove_button"],
+        });
+
+        $tagsSelect.on("change", () => {
+            this.$widget.addClass('isChanged');
+        });
+    }
+
     private reinitAfterReload() {
         this.initElements();
         this.statusChanged();
         this.commentsScrollBottom();
         this.initExplanation();
+        this.initTags();
         this.$widget.find('.newBlock').addClass('hidden');
         this.$widget.find('.selectlist').selectlist();
         this.$widget.find('.notifyProposerSection').addClass('hidden');
@@ -128,11 +145,13 @@ export class ChangeProposedProcedure {
     }
 
     private saveStatus() {
+        const selectize = this.$tagsSelect[0] as any
         let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
         let data = {
             setStatus: newVal,
             visible: (this.$visibilityInput.prop('checked') ? 1 : 0),
             votingBlockId: this.$votingBlockId.val(),
+            tags: selectize.selectize.items,
         };
 
         if (newVal == STATUS_REFERRED) {

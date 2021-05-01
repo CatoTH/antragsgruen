@@ -235,7 +235,7 @@ abstract class IMotion extends ActiveRecord
         $tags = [];
         foreach ($this->tags as $tag) {
             if ($tag->type === ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) {
-                $tags[] = $tag;
+                $tags[$tag->getNormalizedName()] = $tag;
             }
         }
         return $tags;

@@ -5,7 +5,17 @@ namespace app\controllers;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\notifications\MotionProposedProcedure;
 use app\components\{Tools, UrlHelper};
-use app\models\db\{ConsultationLog, IComment, IMotion, Motion, MotionAdminComment, MotionComment, MotionSupporter, User, Consultation, VotingBlock};
+use app\models\db\{ConsultationLog,
+    ConsultationSettingsTag,
+    IComment,
+    IMotion,
+    Motion,
+    MotionAdminComment,
+    MotionComment,
+    MotionSupporter,
+    User,
+    Consultation,
+    VotingBlock};
 use app\models\exceptions\{DB, FormError, Internal, MailNotSent};
 use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;
@@ -478,6 +488,27 @@ trait MotionActionsTrait
             $newVotingStatus = (\Yii::$app->request->post('votingStatus', null) !== null ? intval(\Yii::$app->request->post('votingStatus', null)) : null);
             $ppChanges->setProposalVotingStatusChanges($motion->votingStatus, $newVotingStatus);
             $motion->votingStatus = $newVotingStatus;
+
+            $oldTags = $motion->getProposedProcedureTags();
+            $newTags = [];
+            $changed = false;
+            foreach (\Yii::$app->request->post('tags', []) as $newTag) {
+                $tag = $motion->getMyConsultation()->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $newTag, 0);
+                if (!isset($oldTags[$tag->getNormalizedName()])) {
+                    $motion->link('tags', $tag);
+                    $changed = true;
+                }
+                $newTags[] = ConsultationSettingsTag::normalizeName($newTag);
+            }
+            foreach ($oldTags as $tagKey => $tag) {
+                if (!in_array($tagKey, $newTags)) {
+                    $motion->unlink('tags', $tag, true);
+                    $changed = true;
+                }
+            }
+            if ($changed) {
+                $ppChanges->setProposalTagsHaveChanged(array_keys($oldTags), $newTags);
+            }
 
             $proposalExplanationPre = $motion->proposalExplanation;
             if (\Yii::$app->request->post('proposalExplanation', null) !== null) {

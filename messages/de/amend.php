@@ -299,6 +299,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_voting_status'     => 'Abstimmungsstatus',
     'proposal_refer_to'          => 'Überweisen an',
     'proposal_custom_str'        => 'Sonstiger Status',
+    'proposal_tags'              => 'Interne Schlagworte',
     'proposal_obsoleted_by'      => 'Erledigt durch',
     'proposal_modified_accepted' => 'Modifiziert übernehmen',
     'proposal_comment_title'     => 'Interne Kommentare',

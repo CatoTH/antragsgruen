@@ -216,7 +216,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         $boolSettingRow($settings, 'screeningMotionsShown', $handledSettings, Yii::t('admin', 'con_show_screening'));
 
 
-        $tags = $consultation->getSortedTags();
+        $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
         ?>
         <div class="form-group">
             <div class="col-sm-3 control-label"><?= Yii::t('admin', 'con_topics') ?>:</div>

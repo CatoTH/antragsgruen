@@ -303,6 +303,12 @@ class Layout
         $this->addJs('npm/typeahead.bundle.min.js');
     }
 
+    public function loadSelectize(): void
+    {
+        $this->addJs('js/selectize.min.js');
+        $this->addCSS('css/selectize.bootstrap3.css');
+    }
+
     public function registerPluginAssets(View $view, Controller $controller): void
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {

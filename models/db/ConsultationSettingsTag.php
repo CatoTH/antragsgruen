@@ -64,6 +64,16 @@ class ConsultationSettingsTag extends ActiveRecord
         }
     }
 
+    public static function normalizeName(string $name): string
+    {
+        return trim(mb_strtolower($name));
+    }
+
+    public function getNormalizedName(): string
+    {
+        return static::normalizeName($this->title);
+    }
+
     /**
      * @param Motion[] $motions
      */

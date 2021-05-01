@@ -98,6 +98,22 @@
       font-weight: bold;
     }
   }
+  .proposalTags {
+    display: flex;
+    flex-direction: row;
+    border-top: solid 1px #eee;
+    > label {
+      flex-grow: 0;
+      padding: 10px;
+      font-size: 14px;
+      white-space: nowrap;
+      margin: 0;
+    }
+    > div {
+      padding: 5px 10px 0;
+      flex-grow: 1;
+    }
+  }
   .commentList {
     flex: 1;
     margin: 0;
