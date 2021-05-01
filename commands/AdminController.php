@@ -11,6 +11,7 @@ class AdminController extends Controller
 {
     /**
      * Resets the password for a given user
+     *
      * @param string $auth
      * @param string $password
      */
@@ -27,11 +28,33 @@ class AdminController extends Controller
         $user = User::findOne(['auth' => $auth]);
         if (!$user) {
             $this->stderr('User not found: ' . $auth . "\n");
+
             return;
         }
 
         $user->changePassword($password);
         $this->stdout('The password has been changed.' . "\n");
+    }
+
+    private function getConsultationFromParams($subdomain, $consultation): ?Consultation
+    {
+        /** @var Site $site */
+        $site = Site::findOne(['subdomain' => $subdomain]);
+        if (!$site) {
+            $this->stderr('Site not found' . "\n");
+            return null;
+        }
+        $con = null;
+        foreach ($site->consultations as $cons) {
+            if ($cons->urlPath == $consultation) {
+                $con = $cons;
+            }
+        }
+        if (!$con) {
+            $this->stderr('Consultation not found' . "\n");
+            return null;
+        }
+        return $con;
     }
 
     /**
@@ -45,25 +68,12 @@ class AdminController extends Controller
             $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
             return;
         }
-        /** @var Site $site */
-        $site = Site::findOne(['subdomain' => $subdomain]);
-        if (!$site) {
-            $this->stderr('Site not found' . "\n");
-            return;
+
+        $con = $this->getConsultationFromParams($subdomain, $consultation);
+        if ($con) {
+            $con->flushCacheWithChildren(null);
+            $this->stdout('All caches of this consultation have been flushed' . "\n");
         }
-        $con = null;
-        foreach ($site->consultations as $cons) {
-            if ($cons->urlPath == $consultation) {
-                $con = $cons;
-            }
-        }
-        if (!$con) {
-            $this->stderr('Consultation not found' . "\n");
-            return;
-        }
-        /** @var Consultation $con */
-        $con->flushCacheWithChildren(null);
-        $this->stdout('All caches of this consultation have been flushed' . "\n");
     }
 
     /**
@@ -79,17 +89,55 @@ class AdminController extends Controller
      * Pre-caches some important data.
      * HINT: Probably needs to be called several time, if the memory fills up or the execution time exeeds the limit
      */
-    public function actionBuildCaches()
+    public function actionBuildConsultationCaches($subdomain, $consultation)
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
-        /** @var Motion[] $motions */
-        $motions = Motion::find()->all();
-        foreach ($motions as $motion) {
-            if ($motion->status == Motion::STATUS_DELETED) {
-                continue;
+        $con = $this->getConsultationFromParams($subdomain, $consultation);
+        if (!$con) {
+            return;
+        }
+
+        foreach ($con->getVisibleMotions() as $motion) {
+            echo '- Motion ' . $motion->id . "\n";
+            $motion->getNumberOfCountableLines();
+            $motion->getFirstLineNumber();
+            if ($params->xelatexPath || $params->lualatexPath) {
+                \app\views\motion\LayoutHelper::createPdfLatex($motion);
             }
+            foreach ($motion->amendments as $amendment) {
+                if ($amendment->status == Amendment::STATUS_DELETED) {
+                    continue;
+                }
+                echo '  - Amendment ' . $amendment->id . "\n";
+                $amendment->getFirstDiffLine();
+                if ($params->xelatexPath || $params->lualatexPath) {
+                    \app\views\amendment\LayoutHelper::createPdfLatex($amendment);
+                }
+            }
+        }
+        if ($params->xelatexPath || $params->lualatexPath) {
+            $this->stdout(
+                'Please remember to ensure the runtime/cache-directory and all files are still writable ' .
+                'by the web process if the current process is being run with a different user.' . "\n"
+            );
+        }
+    }
+
+    /**
+     * Pre-caches some important data.
+     * HINT: Probably needs to be called several time, if the memory fills up or the execution time exeeds the limit
+     */
+    public function actionBuildMotionCache($motionSlug)
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+
+
+        $motions = Motion::findAll(['motionSlug' => $motionSlug]);
+        echo 'Found ' . count($motions) . ' motion(s)' . "\n";
+        foreach ($motions as $motion) {
             echo '- Motion ' . $motion->id . "\n";
             $motion->getNumberOfCountableLines();
             $motion->getFirstLineNumber();
