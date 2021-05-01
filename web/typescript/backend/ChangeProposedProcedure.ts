@@ -78,7 +78,7 @@ export class ChangeProposedProcedure {
         this.initExplanation();
         this.initTags();
         this.$widget.find('.newBlock').addClass('hidden');
-        this.$widget.find('.selectlist').selectlist();
+        //this.$widget.find('.selectlist').selectlist();
         this.$widget.find('.notifyProposerSection').addClass('hidden');
     }
 
