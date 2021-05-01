@@ -28,6 +28,7 @@ $this->title = Yii::t('admin', 'list_head_title');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'));
 $layout->loadTypeahead();
 $layout->loadFuelux();
+$layout->addJS('js/colResizable-1.6.min.js');
 $layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
 

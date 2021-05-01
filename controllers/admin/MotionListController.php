@@ -167,7 +167,7 @@ class MotionListController extends AdminBase
 
         $this->activateFunctions();
 
-        if (($motionId === null && !$consultation->getSettings()->adminListFilerByMotion) || $motionId === 'all') {
+        if ($motionId === null || $motionId === 'all') {
             $consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         }
 

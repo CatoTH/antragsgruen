@@ -601,6 +601,9 @@ class AdminMotionFilterForm extends Model
 
     public function getFilterFormFields(bool $responsibilities): string
     {
+        // The list getting too long and is getting too heavy on the database if we have a full list
+        $skipNumbers = (count($this->allMotions) + count($this->allAmendments)) > 250;
+
         $str = '';
 
         $str    .= '<label>' . \Yii::t('admin', 'filter_prefix') . ':<br>';
@@ -669,7 +672,7 @@ class AdminMotionFilterForm extends Model
 
         // Agenda items
 
-        $agendaItemList = $this->getAgendaItemList();
+        $agendaItemList = $this->getAgendaItemList($skipNumbers);
         if (count($agendaItemList) > 0) {
             $name  = \Yii::t('admin', 'filter_agenda_item') . ':';
             $str   .= '<label>' . $name . '<br>';
@@ -706,8 +709,7 @@ class AdminMotionFilterForm extends Model
                 \Yii::t('admin', 'filter_initiator') . ':</label><br>';
 
         $values        = [];
-        if ((count($this->allMotions) + count($this->allAmendments)) > 250) {
-            // The list getting too long and is getting too heavy on the database if we have a full list
+        if ($skipNumbers) {
             $initiatorList = [];
         } else {
             $initiatorList = $this->getInitiatorList();
@@ -815,13 +817,17 @@ class AdminMotionFilterForm extends Model
         return $out;
     }
 
-    public function getAgendaItemList(): array
+    public function getAgendaItemList($skipNumbers = false): array
     {
         $agendaItems = [];
         foreach ($this->consultation->agendaItems as $agendaItem) {
-            $num = count($agendaItem->motions);
-            if ($num > 0) {
-                $agendaItems[$agendaItem->id] = $agendaItem->title . ' (' . $num . ')';
+            if ($skipNumbers) {
+                $agendaItems[$agendaItem->id] = $agendaItem->title;
+            } else {
+                $num = count($agendaItem->motions);
+                if ($num > 0) {
+                    $agendaItems[$agendaItem->id] = $agendaItem->title . ' (' . $num . ')';
+                }
             }
         }
 
