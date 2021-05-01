@@ -20,6 +20,7 @@ $params = Yii::$app->params;
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadFuelux();
+$layout->loadSelectize();
 
 $this->title = Yii::t('admin', 'con_h1');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
@@ -221,23 +222,14 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         <div class="form-group">
             <div class="col-sm-3 control-label"><?= Yii::t('admin', 'con_topics') ?>:</div>
             <div class="col-sm-9">
-
-                <div class="pillbox" data-initialize="pillbox" id="tagsList">
-                    <ul class="clearfix pill-group" id="tagsListUl">
+                <div class="selectize-wrapper" id="tagsList">
+                    <select class="tags" name="tags[]" multiple="multiple">
                         <?php
                         foreach ($tags as $tag) {
-                            echo '<li class="btn btn-default pill" data-id="' . $tag->id . '">
-        <span>' . Html::encode($tag->title) . '</span>
-        <span class="glyphicon glyphicon-close"><span class="sr-only">' . Yii::t('base', 'aria_remove') . '</span></span>
-    </li>';
+                            echo '<option name="' . Html::encode($tag->title) . '" selected>' . Html::encode($tag->title) . '</option>';
                         }
                         ?>
-                        <li class="pillbox-input-wrap btn-group">
-                            <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
-                            <input type="text" class="form-control dropdown-toggle pillbox-add-item"
-                                   placeholder="<?= Yii::t('admin', 'con_topic_add') ?>">
-                        </li>
-                    </ul>
+                    </select>
                 </div>
                 <label>
                     <?php
@@ -265,22 +257,14 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_organisations_hint')) ?>
             </div>
             <div class="col-sm-9">
-                <div class="pillbox" data-initialize="pillbox" id="organisationList">
-                    <ul class="clearfix pill-group" id="organisationListUl">
+                <div class="selectize-wrapper" id="organisationList">
+                    <select class="tags" name="organisations[]" multiple="multiple">
                         <?php
                         foreach ($organisations as $organisation) {
-                            echo '<li class="btn btn-default pill">
-        <span>' . Html::encode($organisation) . '</span>
-        <span class="glyphicon glyphicon-close"><span class="sr-only">Remove</span></span>
-    </li>';
+                            echo '<option name="' . Html::encode($organisation) . '" selected>' . Html::encode($organisation) . '</option>';
                         }
                         ?>
-                        <li class="pillbox-input-wrap btn-group">
-                            <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
-                            <input type="text" class="form-control dropdown-toggle pillbox-add-item"
-                                   placeholder="<?= Yii::t('admin', 'con_organisation_add') ?>">
-                        </li>
-                    </ul>
+                    </select>
                 </div>
             </div>
         </div>

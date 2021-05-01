@@ -123,14 +123,10 @@ class Consultation implements \JsonSerializable
         ];
     }
 
-    public function setOrganisationsFromInput(?string $organisationField): void
+    public function setOrganisationsFromInput(?array $organisationField): void
     {
         if ($organisationField) {
-            $arr                 = json_decode($organisationField, true);
-            $this->organisations = [];
-            foreach ($arr as $orga) {
-                $this->organisations[] = trim($orga);
-            }
+            $this->organisations = $organisationField;
         } else {
             $this->organisations = null;
         }

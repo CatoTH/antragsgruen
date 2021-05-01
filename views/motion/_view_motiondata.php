@@ -1,7 +1,7 @@
 <?php
 
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Motion, MotionSupporter, User, Consultation};
+use app\models\db\{ConsultationSettingsTag, Motion, MotionSupporter, User, Consultation};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
@@ -151,7 +151,7 @@ if (!$motion->isResolution() && $motionDataMode === \app\models\settings\Consult
 
 
 $admin = User::havePrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
-if ($admin && count($motion->getMyConsultation()->tags) > 0) {
+if ($admin && count($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) {
     $tags         = [];
     $used_tag_ids = [];
     foreach ($motion->getPublicTopicTags() as $tag) {
@@ -170,7 +170,7 @@ if ($admin && count($motion->getMyConsultation()->tags) > 0) {
     $content .= '<select name="tagId" title="' . Yii::t('motion', 'tag_select') . '" class="form-control">
         <option>-</option>';
 
-    foreach ($motion->getMyConsultation()->tags as $tag) {
+    foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
         if (!in_array($tag->id, $used_tag_ids)) {
             $content .= '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->title) . '</option>';
         }

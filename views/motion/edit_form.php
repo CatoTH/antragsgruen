@@ -111,7 +111,7 @@ foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC
     $tags[$tag->id] = $tag;
 }
 
-if (count($tags) == 1) {
+if (count($tags) === 1) {
     $keys = array_keys($tags);
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
 } elseif (count($tags) > 0) {
