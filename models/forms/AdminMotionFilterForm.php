@@ -840,7 +840,7 @@ class AdminMotionFilterForm extends Model
         $userNum   = [];
         foreach (array_merge($this->allMotions, $this->allAmendments) as $imotion) {
             /** @var IMotion $imotion */
-            if ($imotion->responsibilityUser) {
+            if ($imotion->responsibilityId && $imotion->responsibilityUser) {
                 if ($imotion->responsibilityUser->name) {
                     $name = $imotion->responsibilityUser->name;
                 } else {
