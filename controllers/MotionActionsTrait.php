@@ -304,7 +304,7 @@ trait MotionActionsTrait
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
-        foreach ($motion->getMyConsultation()->tags as $tag) {
+        foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
             if ($tag->id == \Yii::$app->request->post('tagId')) {
                 $motion->link('tags', $tag);
             }
@@ -319,7 +319,7 @@ trait MotionActionsTrait
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
-        foreach ($motion->getMyConsultation()->tags as $tag) {
+        foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
             if ($tag->id === intval(\Yii::$app->request->post('tagId'))) {
                 $motion->unlink('tags', $tag, true);
             }

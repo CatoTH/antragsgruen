@@ -3,7 +3,7 @@
 namespace app\plugins\frauenrat;
 
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Amendment, IMotion, ISupporter, Motion, MotionSection, User};
+use app\models\db\{Amendment, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSection, User};
 use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
 
@@ -70,7 +70,7 @@ class LayoutHooks extends Hooks
         $allTags = [
             '' => '- keines -',
         ];
-        foreach ($motion->getMyConsultation()->tags as $tag) {
+        foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
             $allTags[$tag->id] = $tag->title;
         }
         $form .= HTMLTools::fueluxSelectbox('newTag', $allTags, $preTagId, [], false, 'xs');

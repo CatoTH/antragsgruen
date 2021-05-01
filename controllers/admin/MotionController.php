@@ -3,7 +3,14 @@
 namespace app\controllers\admin;
 
 use app\components\{DateTools, HTMLTools, Tools, UrlHelper};
-use app\models\db\{Consultation, ConsultationSettingsMotionSection, ConsultationMotionType, Motion, MotionSupporter, TexTemplate, User};
+use app\models\db\{Consultation,
+    ConsultationSettingsMotionSection,
+    ConsultationMotionType,
+    ConsultationSettingsTag,
+    Motion,
+    MotionSupporter,
+    TexTemplate,
+    User};
 use app\models\exceptions\{ExceptionBase, FormError};
 use app\models\events\MotionEvent;
 use app\models\forms\{DeadlineForm, MotionEditForm, MotionMover};
@@ -610,7 +617,7 @@ class MotionController extends AdminBase
 
             $motion->save();
 
-            foreach ($this->consultation->tags as $tag) {
+            foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
                 if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
                     $motion->unlink('tags', $tag, true);
                 } else {

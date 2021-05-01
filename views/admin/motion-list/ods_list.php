@@ -1,8 +1,7 @@
 <?php
 
 use app\components\HTMLTools;
-use app\models\db\ConsultationMotionType;
-use app\models\db\Motion;
+use app\models\db\{ConsultationMotionType, ConsultationSettingsTag, Motion};
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 
 /**
@@ -30,7 +29,7 @@ $doc = new Spreadsheet([
 $currCol = $firstCol = 1;
 
 
-$hasTags             = ($consultation->tags > 0);
+$hasTags             = ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) > 0);
 $hasAgendaItems      = false;
 $hasResponsibilities = false;
 foreach ($motions as $motion) {

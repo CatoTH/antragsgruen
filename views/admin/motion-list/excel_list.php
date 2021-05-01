@@ -1,8 +1,7 @@
 <?php
 
 use app\components\LineSplitter;
-use app\models\db\ConsultationMotionType;
-use app\models\db\Motion;
+use app\models\db\{ConsultationMotionType, ConsultationSettingsTag, Motion};
 
 /**
  * @var \yii\web\View $this
@@ -18,7 +17,7 @@ $consultation = $controller->consultation;
 //PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 
 
-$hasTags = ($consultation->tags > 0);
+$hasTags = ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) > 0);
 
 
 $currCol   = ord('B');
