@@ -15,10 +15,11 @@ class ProposedProcedureController extends AdminBase
 
     /**
      * @param int $agendaItemId
-     * @param null|int $expandId
+     * @param null|string $expandId
+     * @param null|string $tagId
      * @return string
      */
-    public function actionIndex($agendaItemId = 0, $expandId = null)
+    public function actionIndex($agendaItemId = 0, $expandId = null, $tagId = null)
     {
         $this->activateFunctions();
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
@@ -32,8 +33,9 @@ class ProposedProcedureController extends AdminBase
 
         return $this->render('index', [
             'proposedAgenda' => $proposalFactory->create(),
-            'expandAll'      => $this->consultation->getSettings()->pProcedureExpandAll,
-            'expandId'       => ($expandId ? IntVal($expandId) : null),
+            'expandAll' => $this->consultation->getSettings()->pProcedureExpandAll,
+            'expandId' => ($expandId ? intval($expandId) : null),
+            'tagId' => ($tagId ? intval($tagId) : null),
         ]);
     }
 

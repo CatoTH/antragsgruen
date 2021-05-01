@@ -175,6 +175,7 @@ return [
     'filter_na'                   => '- egal -',
     'filter_title'                => 'Titel',
     'filter_status'               => 'Status',
+    'filter_tag_pp'               => 'Intern',
     'filter_proposal_status'      => 'Verfahrensvorschlag',
     'filter_proposal_accepted'    => 'Verfahrensvorschlag akzeptiert',
     'filter_proposal_noresponse'  => 'Noch keine Antwort',

@@ -73,7 +73,7 @@ if ($colProposals) {
     echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry, 'show_visibility' => true]);
 
     $name = $entry->getFormattedProposalStatus();
-    echo Html::a(($name ? $name : '-'), UrlHelper::createAmendmentUrl($entry));
+    echo Html::a(($name ?: '-'), UrlHelper::createAmendmentUrl($entry));
 
     if ($entry->proposalStatus === Amendment::STATUS_MODIFIED_ACCEPTED) {
         $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');
@@ -85,7 +85,11 @@ if ($colProposals) {
 
 echo '<td>' . Html::encode($entry->getInitiatorsStr()) . '</td>';
 if ($hasTags) {
-    echo '<td></td>';
+    $tags = [];
+    foreach ($entry->getProposedProcedureTags() as $tag) {
+        $tags[] = Html::encode($tag->title) . ' <small>(' . Yii::t('admin', 'filter_tag_pp') . ')</small>';
+    }
+    echo '<td>' . implode(', ', $tags) . '</td>';
 }
 echo '<td class="exportCol">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {

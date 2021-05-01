@@ -26,7 +26,7 @@ class Factory
     /**
      * @return Agenda[]
      */
-    protected function createFromAgenda()
+    protected function createFromAgenda(): array
     {
         $items   = [];
         $idCount = 1;
@@ -113,11 +113,9 @@ class Factory
 
     /**
      * @param Motion[] $motions
-     * @param array $handledVotings
-     * @param array $handledAmends
      * @return Agenda[]
      */
-    protected function createFromMotions($motions, $handledVotings = [], $handledAmends = [])
+    protected function createFromMotions(array $motions, array $handledVotings = [], array $handledAmends = []): array
     {
         $items   = [];
         $idCount = 1;
@@ -185,21 +183,19 @@ class Factory
     /**
      * @return Agenda[]
      */
-    public function create()
+    public function create(): array
     {
         switch ($this->consultation->getSettings()->startLayoutType) {
             case ConsultationSettings::START_LAYOUT_AGENDA:
             case ConsultationSettings::START_LAYOUT_AGENDA_LONG:
             case ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND:
                 return $this->createFromAgenda();
-                break;
 
             case ConsultationSettings::START_LAYOUT_STD:
             case ConsultationSettings::START_LAYOUT_TAGS:
             default:
                 $motions = $this->consultation->getVisibleMotionsSorted(true);
                 return $this->createFromMotions($motions);
-                break;
         }
     }
 }

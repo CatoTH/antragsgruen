@@ -116,11 +116,11 @@ if (count($comments) > 0) {
                     </button>
                     <button type="button" class="btn btn-default" data-sort="amendments" data-order="desc"
                             title="<?= Yii::t('con', 'discuss_sort_amend') ?>">
-                        <span class="glyphicon glyphicon-flash"></span>
+                        <span class="glyphicon glyphicon-flash" aria-label="<?= Yii::t('con', 'discuss_sort_amend') ?>"></span>
                     </button>
                     <button type="button" class="btn btn-default" data-sort="comments" data-order="desc"
                             title="<?= Yii::t('con', 'discuss_sort_comment') ?>">
-                        <span class="glyphicon glyphicon-comment"></span>
+                        <span class="glyphicon glyphicon-comment" aria-label="<?= Yii::t('con', 'discuss_sort_comment') ?>"></span>
                     </button>
                 </div>
             </div>

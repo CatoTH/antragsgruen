@@ -507,6 +507,11 @@ class AdminMotionFilterForm extends Model
         if ($this->tag === null || $this->tag === 0) {
             return true;
         }
+        foreach ($amendment->getProposedProcedureTags() as $tag) {
+            if ($tag->id === $this->tag) {
+                return true;
+            }
+        }
         foreach ($amendment->getMyMotion()->getPublicTopicTags() as $tag) {
             if ($tag->id === $this->tag) {
                 return true;
@@ -789,32 +794,54 @@ class AdminMotionFilterForm extends Model
 
     public function getTagList(): array
     {
-        $tags = $tagsNames = [];
+        $publicTags = [];
+        $publicTagNames = [];
+        $internalTags = [];
+        $internalTagNames = [];
         foreach ($this->allMotions as $motion) {
             foreach ($motion->getPublicTopicTags() as $tag) {
-                if (!isset($tags[$tag->id])) {
-                    $tags[$tag->id]      = 0;
-                    $tagsNames[$tag->id] = $tag->title;
+                if (!isset($publicTags[$tag->id])) {
+                    $publicTags[$tag->id]      = 0;
+                    $publicTagNames[$tag->id] = $tag->title;
                 }
-                $tags[$tag->id]++;
+                $publicTags[$tag->id]++;
+            }
+            foreach ($motion->getProposedProcedureTags() as $tag) {
+                if (!isset($internalTags[$tag->id])) {
+                    $internalTags[$tag->id]      = 0;
+                    $internalTagNames[$tag->id] = $tag->title;
+                }
+                $internalTags[$tag->id]++;
             }
         }
         foreach ($this->allAmendments as $amend) {
             foreach ($amend->getMyMotion()->getPublicTopicTags() as $tag) {
-                if (!isset($tags[$tag->id])) {
-                    $tags[$tag->id]      = 0;
-                    $tagsNames[$tag->id] = $tag->title;
+                if (!isset($publicTags[$tag->id])) {
+                    $publicTags[$tag->id]      = 0;
+                    $publicTagNames[$tag->id] = $tag->title;
                 }
-                $tags[$tag->id]++;
+                $publicTags[$tag->id]++;
+            }
+            foreach ($amend->getProposedProcedureTags() as $tag) {
+                if (!isset($internalTags[$tag->id])) {
+                    $internalTags[$tag->id]      = 0;
+                    $internalTagNames[$tag->id] = $tag->title;
+                }
+                $internalTags[$tag->id]++;
             }
         }
-        $out = [];
-        foreach ($tags as $tagId => $num) {
-            $out[$tagId] = $tagsNames[$tagId] . ' (' . $num . ')';
+        $outPublic = [];
+        foreach ($publicTags as $tagId => $num) {
+            $outPublic[$tagId] = $publicTagNames[$tagId] . ' (' . $num . ')';
         }
-        asort($out);
+        asort($outPublic);
+        $outInternal = [];
+        foreach ($internalTags as $tagId => $num) {
+            $outInternal[$tagId] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $internalTagNames[$tagId] . ' (' . $num . ')';
+        }
+        asort($outInternal);
 
-        return $out;
+        return array_replace($outInternal, $outPublic);
     }
 
     public function getAgendaItemList($skipNumbers = false): array

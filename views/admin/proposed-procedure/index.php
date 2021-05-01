@@ -9,6 +9,7 @@ use yii\helpers\Html;
  * @var Agenda[] $proposedAgenda
  * @var bool $expandAll
  * @var null|string $expandId
+ * @var null|int $tagId
  */
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -16,6 +17,7 @@ $controller         = $this->context;
 $layout             = $controller->layoutParams;
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
+$consultation = $controller->consultation;
 
 $this->title = Yii::t('con', 'proposal_title_internal');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('/admin/motion-list/index'));
@@ -55,17 +57,43 @@ echo Html::beginForm('', 'post', [
             </div>
             <div class="fullscreenToggle">
                 <button class="btn btn-default" type="button" data-antragsgruen-widget="frontend/FullscreenToggle">
-                    <span class="glyphicon glyphicon-fullscreen"></span>
+                    <span class="glyphicon glyphicon-fullscreen" title="Fullscreen" aria-label="Fullscreen"></span>
                 </button>
             </div>
         </div>
     </section>
+
+    <section class="motionListFilter content" id="motionListSorter" aria-labelledby="motionListSorterTitle">
+        <?php
+        $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+        ?>
+        <div>
+            <div class="tagList">
+                <?php
+                if (!$consultation->getSettings()->pProcedureExpandAll) {
+                    $url = UrlHelper::createUrl(['admin/proposed-procedure/index']);
+                    $btn = ($tagId === null ? 'btn-info' : 'btn-defult');
+                    echo '<a href="' . Html::encode($url) . '" class="btn ' . $btn . ' btn-xs" data-filter="*">' . Yii::t('con', 'discuss_filter_all') . '</a>';
+                }
+
+                foreach ($tags as $tag) {
+                    $url = UrlHelper::createUrl(['admin/proposed-procedure/index', 'tagId' => $tag->id]);
+                    $btn = ($tagId === $tag->id ? 'btn-info' : 'btn-defult');
+                    echo '<a href="' . Html::encode($url) . '" class="btn ' . $btn . ' btn-xs tag' . $tag->id . '">';
+                    echo Html::encode($tag->title) . '</span></a>';
+                }
+                ?>
+            </div>
+        </div>
+    </section>
+
     <div class="reloadContent">
         <?= $controller->showErrors() ?>
         <?= $this->render('_index_content', [
             'proposedAgenda' => $proposedAgenda,
             'expandAll'      => $expandAll,
             'expandId'       => $expandId,
+            'tagId'          => $tagId,
         ]) ?>
     </div>
 <?php

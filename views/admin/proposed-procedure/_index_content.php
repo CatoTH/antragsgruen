@@ -5,6 +5,7 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\IMotion;
 use app\models\proposedProcedure\Agenda;
+use app\models\proposedProcedure\AgendaVoting;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
@@ -13,6 +14,7 @@ use yii\helpers\Html;
  * @var Agenda[] $proposedAgenda
  * @var bool $expandAll
  * @var null|string $expandId
+ * @var null|string $tagId
  */
 
 /** @var \app\controllers\Base $controller */
@@ -25,12 +27,29 @@ foreach ($controller->consultation->motionTypes as $motionType) {
     }
 }
 
+$getRelevantItemsFromBlock = function(AgendaVoting $votingBlock) use ($tagId): array
+{
+    if ($tagId === null) {
+        return $votingBlock->items;
+    } else {
+        return array_filter($votingBlock->items, function (IMotion $imotion) use ($tagId): bool {
+            foreach ($imotion->getProposedProcedureTags() as $tag) {
+                if ($tag->id === $tagId) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+};
+
 foreach ($proposedAgenda as $proposedItem) {
     if (count($proposedItem->votingBlocks) === 0) {
         continue;
     }
 
-    if (!$expandAll && $proposedItem->blockId !== $expandId) {
+    if (!$expandAll && $tagId === null && $proposedItem->blockId !== $expandId) {
         $expandUrl   = UrlHelper::createUrl(['/admin/proposed-procedure/index', 'expandId' => $proposedItem->blockId]);
         $expandTitle = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Html::encode($proposedItem->title);
         ?>
@@ -56,6 +75,10 @@ foreach ($proposedAgenda as $proposedItem) {
         <div class="content">
             <?php
             foreach ($proposedItem->votingBlocks as $votingBlock) {
+                $items = $getRelevantItemsFromBlock($votingBlock);
+                if (count($items) === 0) {
+                    continue;
+                }
                 ?>
                 <table class="table votingTable votingTable<?= $votingBlock->getId() ?>">
                     <?php
@@ -84,7 +107,7 @@ foreach ($proposedAgenda as $proposedItem) {
                     <tbody>
                     <?php
                     $currentMotion = null;
-                    foreach ($votingBlock->items as $item) {
+                    foreach ($items as $item) {
                         if (is_a($item, Amendment::class)) {
                             $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-amendment-visible');
                             $type          = 'amendment';
@@ -146,6 +169,13 @@ foreach ($proposedAgenda as $proposedItem) {
                                 <?php
                                 echo $this->render('_status_icons', ['entry' => $item, 'show_visibility' => false]);
                                 echo Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
+                                if (count($item->getProposedProcedureTags()) > 0) {
+                                    $tags = [];
+                                    foreach ($item->getProposedProcedureTags() as $tag) {
+                                        $tags[] = Html::encode($tag->title);
+                                    }
+                                    echo '<small style="color: gray;">' . implode(', ', $tags) . '</small>';
+                                }
                                 ?></td>
                             <td class="visible">
                                 <input type="checkbox" name="visible"
