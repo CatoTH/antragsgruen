@@ -510,17 +510,22 @@ class AdminMotionFilterForm extends Model
         if ($this->tag === null || $this->tag === 0) {
             return true;
         }
-        foreach ($amendment->getProposedProcedureTags() as $tag) {
+        // Hint: there are probably a lot more amendments than tags. So to limit the amount of queries,
+        // it's faster to iterate over the tags than to iterate over amendments.
+        $tagFound = null;
+        foreach ($this->consultation->tags as $tag) {
             if ($tag->id === $this->tag) {
+                $tagFound = $tag;
+            }
+        }
+        if (!$tagFound) {
+            return false;
+        }
+        foreach ($tagFound->amendments as $taggedAmendment) {
+            if ($taggedAmendment->id === $amendment->id) {
                 return true;
             }
         }
-        foreach ($amendment->getMyMotion()->getPublicTopicTags() as $tag) {
-            if ($tag->id === $this->tag) {
-                return true;
-            }
-        }
-
         return false;
     }
 
