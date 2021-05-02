@@ -47,7 +47,7 @@ class MotionEditForm extends Model
         if ($motion) {
             $this->motionId   = $motion->id;
             $this->supporters = $motion->motionSupporters;
-            foreach ($motion->tags as $tag) {
+            foreach ($motion->getPublicTopicTags() as $tag) {
                 $this->tags[] = $tag->id;
             }
             foreach ($motion->getActiveSections() as $section) {
@@ -380,7 +380,7 @@ class MotionEditForm extends Model
             $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
 
             // Tags
-            foreach ($motion->tags as $tag) {
+            foreach ($motion->getPublicTopicTags() as $tag) {
                 $motion->unlink('tags', $tag, true);
             }
             foreach ($this->tags as $tagId) {

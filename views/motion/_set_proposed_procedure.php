@@ -36,6 +36,8 @@ if (isset($msgAlert) && $msgAlert !== null) {
 }
 
 $votingBlocks = $motion->getMyConsultation()->votingBlocks;
+$allTags = $motion->getMyConsultation()->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+$selectedTags = $motion->getProposedProcedureTags();
 ?>
 <h2>
     <?= Yii::t('amend', 'proposal_amend_title') ?>
@@ -56,7 +58,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
             ?>
             <label class="proposalStatus<?= $statusId ?>">
                 <input type="radio" name="proposalStatus" value="<?= $statusId ?>" <?php
-                if ($motion->proposalStatus === $statusId) {
+                if (intval($motion->proposalStatus) === intval($statusId)) {
                     $foundStatus = true;
                     echo 'checked';
                 }
@@ -194,6 +196,22 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
         <button class="btn btn-default btn-xs"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
     </section>
 </div>
+<section class="proposalTags">
+    <label for="proposalTagsSelect"><?= Yii::t('amend', 'proposal_tags') ?>:</label>
+    <div class="selectize-wrapper">
+        <select class="proposalTagsSelect" name="proposalTags[]" multiple="multiple" id="proposalTagsSelect">
+            <?php
+            foreach ($allTags as $tag) {
+                echo '<option name="' . Html::encode($tag->title) . '"';
+                if (isset($selectedTags[$tag->getNormalizedName()])) {
+                    echo ' selected';
+                }
+                echo '>' . Html::encode($tag->title) . '</option>';
+            }
+            ?>
+        </select>
+    </div>
+</section>
 <section class="statusDetails status_<?= Motion::STATUS_OBSOLETED_BY ?>">
     <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
     <?php

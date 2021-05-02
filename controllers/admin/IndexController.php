@@ -53,7 +53,7 @@ class IndexController extends AdminBase
             $data = $post['consultation'];
             $model->setAttributes($data);
 
-            $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
+            $settingsInput = $post['settings'] ?? [];
             $settings      = $model->getSettings();
             $settings->saveConsultationForm($settingsInput, $post['settingsFields']);
             $settings->setOrganisationsFromInput($post['organisations']);
@@ -156,7 +156,7 @@ class IndexController extends AdminBase
                     }
                 }
 
-                $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
+                $settingsInput = $post['siteSettings'] ?? [];
                 $siteSettings  = $consultation->site->getSettings();
                 $siteSettings->saveForm($settingsInput, $post['siteSettingsFields']);
                 $consultation->site->setSettings($siteSettings);
@@ -187,57 +187,18 @@ class IndexController extends AdminBase
             return;
         }
 
-        /**
-         * @param int $tagId
-         * @return ConsultationSettingsTag|null
-         */
-        $getById = function ($tagId) use ($consultation) {
-            foreach ($consultation->tags as $tag) {
-                if ($tag->id == $tagId) {
-                    return $tag;
-                }
-            }
-            return null;
-        };
-
-        /**
-         * @param string $tagName
-         * @return ConsultationSettingsTag|null
-         */
-        $getByName = function ($tagName) use ($consultation) {
-            $tagName = mb_strtolower($tagName);
-            foreach ($consultation->tags as $tag) {
-                if (mb_strtolower($tag->title) == $tagName) {
-                    return $tag;
-                }
-            }
-            return null;
-        };
-
         $foundTags = [];
-        $newTags   = json_decode(\Yii::$app->request->post('tags'), true);
+        $newTags   = \Yii::$app->request->post('tags', []);
         foreach ($newTags as $pos => $newTag) {
-            if ($newTag['id'] == 0) {
-                if ($getByName($newTag['name'])) {
-                    continue;
-                }
-                $tag                 = new ConsultationSettingsTag();
-                $tag->consultationId = $consultation->id;
-                $tag->title          = $newTag['name'];
-                $tag->position       = $pos;
-                $tag->save();
-            } else {
-                $tag = $getById($newTag['id']);
-                if (!$tag) {
-                    continue;
-                }
+            $tag = $consultation->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $newTag, $pos);
+            if ($tag->position !== $pos) {
                 $tag->position = $pos;
                 $tag->save();
             }
             $foundTags[] = $tag->id;
         }
 
-        foreach ($consultation->tags as $tag) {
+        foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
             if (!in_array($tag->id, $foundTags)) {
                 \Yii::$app->db->createCommand('DELETE FROM `motionTag` WHERE `tagId` = ' . intval($tag->id))->execute();
                 $tag->delete();

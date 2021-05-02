@@ -34,7 +34,7 @@ foreach ($amendments as $amendment) {
         $motionData[] = '';
     }
     $topics = [];
-    foreach ($amendment->getMyMotion()->tags as $tag) {
+    foreach ($amendment->getMyMotion()->getPublicTopicTags() as $tag) {
         $topics[] = $tag->title;
     }
     $motionData[] = implode(', ', $topics);

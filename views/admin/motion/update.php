@@ -2,7 +2,7 @@
 
 use app\models\settings\AntragsgruenApp;
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{ConsultationAgendaItem, Motion, MotionSupporter};
+use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter};
 use yii\helpers\Html;
 
 /**
@@ -239,16 +239,16 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
         </div>
     </div>
 
-<?php if (count($consultation->tags) > 0) { ?>
+<?php if (count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) { ?>
     <div class="form-group">
         <label class="col-md-3 control-label">
             <?= Yii::t('admin', 'motion_topics') ?>:
         </label>
         <div class="col-md-9 tagList">
             <?php
-            foreach ($consultation->tags as $tag) {
+            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
                 echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
-                foreach ($motion->tags as $mtag) {
+                foreach ($motion->getPublicTopicTags() as $mtag) {
                     if ($mtag->id == $tag->id) {
                         echo ' checked';
                     }

@@ -20,6 +20,7 @@ use yii\helpers\Html;
  * @property string|null $datePublication
  * @property string|null $dateResolution
  * @property IComment[] $comments
+ * @property ConsultationSettingsTag[] $tags
  * @property int $status
  * @property int $proposalStatus
  * @property int $proposalReferenceId
@@ -212,6 +213,33 @@ abstract class IMotion extends ActiveRecord
         $this->votingData       = json_encode($data, JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @return ConsultationSettingsTag[]
+     */
+    public function getPublicTopicTags(): array
+    {
+        $tags = [];
+        foreach ($this->tags as $tag) {
+            if ($tag->type === ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) {
+                $tags[] = $tag;
+            }
+        }
+        return $tags;
+    }
+
+    /**
+     * @return ConsultationSettingsTag[]
+     */
+    public function getProposedProcedureTags(): array
+    {
+        $tags = [];
+        foreach ($this->tags as $tag) {
+            if ($tag->type === ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) {
+                $tags[$tag->getNormalizedName()] = $tag;
+            }
+        }
+        return $tags;
+    }
 
     public function isVisible(): bool
     {

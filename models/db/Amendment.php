@@ -175,6 +175,15 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTags()
+    {
+        return $this->hasMany(ConsultationSettingsTag::class, ['id' => 'tagId'])
+                    ->viaTable('amendmentTag', ['amendmentId' => 'id']);
+    }
+
+    /**
      * @return ActiveQuery
      */
     public function getSections()

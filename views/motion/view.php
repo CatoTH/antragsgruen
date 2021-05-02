@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
-use app\models\db\{Consultation, Motion, MotionComment, MotionSupporter, User};
+use app\models\db\{Motion, MotionComment, MotionSupporter, User};
 use app\models\forms\CommentForm;
 use app\models\policies\{IPolicy, Nobody};
 use app\views\motion\LayoutHelper;
@@ -11,7 +11,6 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var Motion $motion
- * @var Consultation $consultation
  * @var int[] $openedComments
  * @var string|null $adminEdit
  * @var null|string $supportStatus
@@ -20,12 +19,18 @@ use yii\helpers\Html;
  * @var string|null $procedureToken
  */
 
+$consultation = $motion->getMyConsultation();
+$hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
+$hasPpAdminbox = ($hasPp && !$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS));
+
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/MotionShow');
 $layout->loadFuelux();
-$consultation = $motion->getMyConsultation();
+if ($hasPp && $hasPpAdminbox) {
+    $layout->loadSelectize();
+}
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
@@ -135,8 +140,6 @@ if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
     <?php
 }
 
-$hasPp          = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox  = ($hasPp && !$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS));
 //$hasSpeechLists = $consultation->getSettings()->hasSpeechLists;
 $hasSpeechLists = false;
 if ($hasPpAdminbox || $hasSpeechLists) {

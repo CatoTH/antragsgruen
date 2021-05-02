@@ -22,6 +22,9 @@ class ProposedProcedureChange implements \JsonSerializable
     public $proposalExplanationFrom = null;
     public $proposalExplanationTo = null;
 
+    public $proposalTagsFrom = null;
+    public $proposalTagsTo = null;
+
     public $votingBlockIdFrom = null;
     public $votingBlockIdTo = null;
 
@@ -70,6 +73,13 @@ class ProposedProcedureChange implements \JsonSerializable
             $this->votingBlockIdTo = $to;
             $this->hasChanges = true;
         }
+    }
+
+    public function setProposalTagsHaveChanged(?array $from, ?array $to): void
+    {
+        $this->proposalTagsFrom = $from;
+        $this->proposalTagsTo = $to;
+        $this->hasChanges = true;
     }
 
     public function hasChanges(): bool {

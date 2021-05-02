@@ -46,7 +46,7 @@ echo '<input type="hidden" name="motionId" value="all">';
 
 echo $search->getFilterFormFields($hasResponsibilities);
 
-echo '<div style="float: left;"><br><button type="submit" class="btn btn-success">' .
+echo '<div style="float: left;"><br><button type="submit" class="btn btn-success" name="search">' .
      Yii::t('admin', 'list_search_do') . '</button></div>';
 
 echo '</form><br style="clear: both;">';

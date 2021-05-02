@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, ISupporter, User, VotingBlock};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, IMotion, ISupporter, User, VotingBlock};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{MailNotSent, NotFound};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
@@ -514,6 +514,27 @@ class AmendmentController extends Base
             $newVotingStatus = (\Yii::$app->request->post('votingStatus', null) !== null ? intval(\Yii::$app->request->post('votingStatus', null)) : null);
             $ppChanges->setProposalVotingStatusChanges($amendment->votingStatus, $newVotingStatus);
             $amendment->votingStatus = $newVotingStatus;
+
+            $oldTags = $amendment->getProposedProcedureTags();
+            $newTags = [];
+            $changed = false;
+            foreach (\Yii::$app->request->post('tags', []) as $newTag) {
+                $tag = $amendment->getMyConsultation()->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $newTag, 0);
+                if (!isset($oldTags[$tag->getNormalizedName()])) {
+                    $amendment->link('tags', $tag);
+                    $changed = true;
+                }
+                $newTags[] = ConsultationSettingsTag::normalizeName($newTag);
+            }
+            foreach ($oldTags as $tagKey => $tag) {
+                if (!in_array($tagKey, $newTags)) {
+                    $amendment->unlink('tags', $tag, true);
+                    $changed = true;
+                }
+            }
+            if ($changed) {
+                $ppChanges->setProposalTagsHaveChanged(array_keys($oldTags), $newTags);
+            }
 
             $proposalExplanationPre = $amendment->proposalExplanation;
             if (\Yii::$app->request->post('proposalExplanation', null) !== null) {

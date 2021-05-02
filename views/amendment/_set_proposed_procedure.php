@@ -40,6 +40,8 @@ if (isset($msgAlert) && $msgAlert !== null) {
 }
 
 $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
+$allTags = $amendment->getMyConsultation()->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+$selectedTags = $amendment->getProposedProcedureTags();
 ?>
     <h2>
         <?= Yii::t('amend', 'proposal_amend_title') ?>
@@ -193,6 +195,22 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             <button class="btn btn-default btn-xs"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
         </section>
     </div>
+    <section class="proposalTags">
+        <label for="proposalTagsSelect"><?= Yii::t('amend', 'proposal_tags') ?>:</label>
+        <div class="selectize-wrapper">
+            <select class="proposalTagsSelect" name="proposalTags[]" multiple="multiple" id="proposalTagsSelect">
+                <?php
+                foreach ($allTags as $tag) {
+                    echo '<option name="' . Html::encode($tag->title) . '"';
+                    if (isset($selectedTags[$tag->getNormalizedName()])) {
+                        echo ' selected';
+                    }
+                    echo '>' . Html::encode($tag->title) . '</option>';
+                }
+                ?>
+            </select>
+        </div>
+    </section>
     <section class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
         <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
         <?php

@@ -39,6 +39,7 @@ class AcceptanceTester extends \Codeception\Actor
     const FIRST_FREE_VOTING_BLOCK_ID        = 3;
     const FIRST_FREE_CONTENT_ID             = 4;
     const FIRST_FREE_USER_ID                = 9;
+    const FIRST_FREE_TAG_ID                 = 14;
 
     const ABSOLUTE_URL_TEMPLATE_SITE = 'http://antragsgruen-test.local/{SUBDOMAIN}/{PATH}';
     const ABSOLUTE_URL_TEMPLATE = 'http://antragsgruen-test.local/{SUBDOMAIN}/{CONSULTATION}/{PATH}';

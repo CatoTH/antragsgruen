@@ -1,8 +1,7 @@
 <?php
 
 use app\components\LineSplitter;
-use app\models\db\ConsultationMotionType;
-use app\models\db\Motion;
+use app\models\db\{ConsultationMotionType, ConsultationSettingsTag, Motion};
 
 /**
  * @var \yii\web\View $this
@@ -18,7 +17,7 @@ $consultation = $controller->consultation;
 //PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 
 
-$hasTags = ($consultation->tags > 0);
+$hasTags = ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) > 0);
 
 
 $currCol   = ord('B');
@@ -144,7 +143,7 @@ foreach ($motions as $motion) {
     }
     if (isset($COL_TAGS)) {
         $tags = [];
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             $tags[] = $tag->title;
         }
         $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS . $row, implode("\n", $tags));

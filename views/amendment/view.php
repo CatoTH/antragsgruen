@@ -17,13 +17,19 @@ use yii\helpers\Html;
  * @var string|null $procedureToken
  */
 
+$consultation = $amendment->getMyConsultation();
+$motion = $amendment->getMyMotion();
+$hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
+$hasPpAdminbox = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/AmendmentShow');
 $layout->loadFuelux();
-$consultation = $amendment->getMyConsultation();
-$motion       = $amendment->getMyMotion();
+if ($hasPp && $hasPpAdminbox) {
+    $layout->loadSelectize();
+}
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
@@ -123,8 +129,8 @@ if (User::getCurrentUser() && !$amendment->getPrivateComment()) {
     <?php
 }
 
-if ($amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
-    if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+if ($hasPp) {
+    if ($hasPpAdminbox) {
         ?>
         <div class="proposedChangesOpener">
             <button class="btn btn-default btn-sm">

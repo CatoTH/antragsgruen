@@ -4,19 +4,22 @@ namespace app\models\db;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $consultationId
+ * @property int $type
  * @property int $position
  * @property string $title
  * @property int $cssicon
  *
  * @property Consultation $consultation
  * @property Motion[] $motions
+ * @property Amendment[] $amendments
  */
 class ConsultationSettingsTag extends ActiveRecord
 {
+    const TYPE_PUBLIC_TOPIC = 0;
+    const TYPE_PROPOSED_PROCEDURE = 1;
+
     /**
      * @return string
      */
@@ -44,6 +47,15 @@ class ConsultationSettingsTag extends ActiveRecord
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAmendments()
+    {
+        return $this->hasMany(Amendment::class, ['id' => 'amendmentId'])->viaTable('amendmentTag', ['tagId' => 'id'])
+            ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
+    }
+
     public function getCSSIconClass(): string
     {
         switch ($this->cssicon) {
@@ -52,15 +64,24 @@ class ConsultationSettingsTag extends ActiveRecord
         }
     }
 
+    public static function normalizeName(string $name): string
+    {
+        return trim(mb_strtolower($name));
+    }
+
+    public function getNormalizedName(): string
+    {
+        return static::normalizeName($this->title);
+    }
+
     /**
      * @param Motion[] $motions
-     * @return array
      */
-    public static function getMostPopularTags($motions)
+    public static function getMostPopularTags(array $motions): array
     {
         $tags = [];
         foreach ($motions as $motion) {
-            foreach ($motion->tags as $tag) {
+            foreach ($motion->getPublicTopicTags() as $tag) {
                 if (!isset($tags[$tag->id])) {
                     $tags[$tag->id] = [
                         'id'    => $tag->id,

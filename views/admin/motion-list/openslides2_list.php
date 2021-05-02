@@ -40,7 +40,7 @@ foreach ($motions as $motion) {
         $motionData[] = '';
     }
     $topics       = [];
-    foreach ($motion->tags as $tag) {
+    foreach ($motion->getPublicTopicTags() as $tag) {
         $topics[] = $tag->title;
     }
     $motionData[] = implode(', ', $topics);

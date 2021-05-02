@@ -125,6 +125,19 @@ CREATE TABLE `###TABLE_PREFIX###amendmentSupporter` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `amendmentTag`
+--
+
+CREATE TABLE `###TABLE_PREFIX###amendmentTag` (
+    `amendmentId` int(11) NOT NULL,
+    `tagId`       int(11) NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `consultation`
 --
 
@@ -295,6 +308,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationSettingsMotionSection` (
 CREATE TABLE `###TABLE_PREFIX###consultationSettingsTag` (
   `id`             INT(11)      NOT NULL,
   `consultationId` INT(11)     DEFAULT NULL,
+  `type`           TINYINT(4) NOT NULL DEFAULT 0,
   `position`       SMALLINT(6) DEFAULT NULL,
   `title`          VARCHAR(100) NOT NULL,
   `cssicon`        SMALLINT(6) DEFAULT '0'
@@ -766,6 +780,13 @@ ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
   ADD KEY `fk_supporter_idx` (`userId`);
 
 --
+-- Indexes for table `amendmentTag`
+--
+ALTER TABLE `###TABLE_PREFIX###amendmentTag`
+  ADD PRIMARY KEY (`amendmentId`,`tagId`),
+  ADD KEY `amendment_tag_fk_tagIdx` (`tagId`);
+
+--
 -- Indexes for table `consultation`
 --
 ALTER TABLE `###TABLE_PREFIX###consultation`
@@ -1191,6 +1212,13 @@ ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
   ADD CONSTRAINT `fk_support_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `amendmentTag`
+--
+ALTER TABLE `###TABLE_PREFIX###amendmentTag`
+  ADD CONSTRAINT `amendment_tag_fk_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
+  ADD CONSTRAINT `amendment_tag_fk_tag` FOREIGN KEY (`tagId`) REFERENCES `###TABLE_PREFIX###consultationSettingsTag` (`id`);
 
 --
 -- Constraints for table `consultation`

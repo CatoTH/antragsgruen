@@ -107,11 +107,11 @@ if (count($form->motionType->agendaItems) > 0) {
 
 /** @var ConsultationSettingsTag[] $tags */
 $tags = [];
-foreach ($consultation->getSortedTags() as $tag) {
+foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
     $tags[$tag->id] = $tag;
 }
 
-if (count($tags) == 1) {
+if (count($tags) === 1) {
     $keys = array_keys($tags);
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
 } elseif (count($tags) > 0) {

@@ -4,7 +4,7 @@ namespace app\plugins\frauenrat\controllers;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
-use app\models\db\{Motion, User};
+use app\models\db\{ConsultationSettingsTag, Motion, User};
 
 class MotionController extends Base
 {
@@ -26,10 +26,10 @@ class MotionController extends Base
             return 'Not permitted to change the tag';
         }
 
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getPublicTopicTags() as $tag) {
             $motion->unlink('tags', $tag, true);
         }
-        foreach ($this->consultation->tags as $tag) {
+        foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
             if ($tag->id === intval(\Yii::$app->request->post('newTag'))) {
                 $motion->link('tags', $tag);
             }

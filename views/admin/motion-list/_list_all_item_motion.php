@@ -64,17 +64,20 @@ if ($colProposals) {
     if ($entry->status === Motion::STATUS_MOVED) {
         echo $name;
     } else {
-        echo Html::a(($name ? $name : '-'), UrlHelper::createMotionUrl($entry));
+        echo Html::a(($name ?: '-'), UrlHelper::createMotionUrl($entry));
     }
     echo '</td>';
 }
 echo '<td>' . Html::encode($entry->getInitiatorsStr()) . '</td>';
 if ($hasTags) {
     $tags = [];
-    foreach ($entry->tags as $tag) {
-        $tags[] = $tag->title;
+    foreach ($entry->getProposedProcedureTags() as $tag) {
+        $tags[] = Html::encode($tag->title) . ' <small>(' . Yii::t('admin', 'filter_tag_pp') . ')</small>';
     }
-    echo '<td>' . Html::encode(implode(', ', $tags)) . '</td>';
+    foreach ($entry->getPublicTopicTags() as $tag) {
+        $tags[] = Html::encode($tag->title);
+    }
+    echo '<td class="tagsCol">' . implode(', ', $tags) . '</td>';
 }
 echo '<td class="exportCol">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {

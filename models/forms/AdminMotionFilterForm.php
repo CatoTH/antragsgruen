@@ -51,10 +51,8 @@ class AdminMotionFilterForm extends Model
 
     /**
      * @param Motion[] $allMotions
-     * @param bool $amendments
-     * @param boolean $showScreening
      */
-    public function __construct(Consultation $consultation, $allMotions, $amendments, $showScreening)
+    public function __construct(Consultation $consultation, array $allMotions, bool $amendments, bool $showScreening)
     {
         parent::__construct();
         $this->showScreening = $showScreening;
@@ -264,8 +262,8 @@ class AdminMotionFilterForm extends Model
     {
         if (is_a($motion1, Motion::class)) {
             /** @var Motion $motion1 */
-            if (count($motion1->tags) > 0) {
-                $tag1 = $motion1->tags[0];
+            if (count($motion1->getPublicTopicTags()) > 0) {
+                $tag1 = $motion1->getPublicTopicTags()[0];
             } else {
                 $tag1 = null;
             }
@@ -274,8 +272,8 @@ class AdminMotionFilterForm extends Model
         }
         if (is_a($motion2, Motion::class)) {
             /** @var Motion $motion2 */
-            if (count($motion2->tags) > 0) {
-                $tag2 = $motion2->tags[0];
+            if (count($motion2->getPublicTopicTags()) > 0) {
+                $tag2 = $motion2->getPublicTopicTags()[0];
             } else {
                 $tag2 = null;
             }
@@ -346,7 +344,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @return IMotion[]
      */
-    public function getSorted()
+    public function getSorted(): array
     {
         $merge = array_merge($this->getFilteredMotions(), $this->getFilteredAmendments());
         switch ($this->sort) {
@@ -405,7 +403,12 @@ class AdminMotionFilterForm extends Model
         if ($this->tag === null || $this->tag === 0) {
             return true;
         }
-        foreach ($motion->tags as $tag) {
+        foreach ($motion->getProposedProcedureTags() as $tag) {
+            if ($tag->id === $this->tag) {
+                return true;
+            }
+        }
+        foreach ($motion->getPublicTopicTags() as $tag) {
             if ($tag->id === $this->tag) {
                 return true;
             }
@@ -507,7 +510,12 @@ class AdminMotionFilterForm extends Model
         if ($this->tag === null || $this->tag === 0) {
             return true;
         }
-        foreach ($amendment->getMyMotion()->tags as $tag) {
+        foreach ($amendment->getProposedProcedureTags() as $tag) {
+            if ($tag->id === $this->tag) {
+                return true;
+            }
+        }
+        foreach ($amendment->getMyMotion()->getPublicTopicTags() as $tag) {
             if ($tag->id === $this->tag) {
                 return true;
             }
@@ -606,12 +614,12 @@ class AdminMotionFilterForm extends Model
 
         $str = '';
 
-        $str    .= '<label>' . \Yii::t('admin', 'filter_prefix') . ':<br>';
+        $str    .= '<label class="filterPrefix">' . \Yii::t('admin', 'filter_prefix') . ':<br>';
         $prefix = Html::encode($this->prefix);
         $str    .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
         $str    .= '</label>';
 
-        $str   .= '<label>' . \Yii::t('admin', 'filter_title') . ':<br>';
+        $str   .= '<label class="filterTitle">' . \Yii::t('admin', 'filter_title') . ':<br>';
         $title = Html::encode($this->title);
         $str   .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
         $str   .= '</label>';
@@ -619,7 +627,7 @@ class AdminMotionFilterForm extends Model
 
         // Motion status
 
-        $str         .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
+        $str         .= '<label class="filterStatus">' . \Yii::t('admin', 'filter_status') . ':<br>';
         $statuses    = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getStatusList() as $statusId => $statusName) {
@@ -638,7 +646,7 @@ class AdminMotionFilterForm extends Model
 
         // Proposal status
 
-        $str         .= '<label>' . \Yii::t('admin', 'filter_proposal_status') . ':<br>';
+        $str         .= '<label class="filterProposal">' . \Yii::t('admin', 'filter_proposal_status') . ':<br>';
         $statuses    = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getProposalStatusList() as $statusId => $statusName) {
@@ -660,12 +668,12 @@ class AdminMotionFilterForm extends Model
         $tagsList = $this->getTagList();
         if (count($tagsList) > 0) {
             $name = \Yii::t('admin', 'filter_tag') . ':';
-            $str  .= '<label>' . $name . '<br>';
+            $str  .= '<label class="filterTags">' . $name . '<br>';
             $tags = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
             }
-            $str .= HTMLTools::fueluxSelectbox('Search[tag]', $tags, $this->tag, [], true);
+            $str .= HTMLTools::fueluxSelectbox('Search[tag]', $tags, $this->tag, ['id' => 'filterSelectTags'], true);
             $str .= '</label>';
         }
 
@@ -675,7 +683,7 @@ class AdminMotionFilterForm extends Model
         $agendaItemList = $this->getAgendaItemList($skipNumbers);
         if (count($agendaItemList) > 0) {
             $name  = \Yii::t('admin', 'filter_agenda_item') . ':';
-            $str   .= '<label>' . $name . '<br>';
+            $str   .= '<label class="filterAgenda">' . $name . '<br>';
             $items = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($agendaItemList as $itemId => $itemName) {
                 $items[$itemId] = $itemName;
@@ -789,32 +797,54 @@ class AdminMotionFilterForm extends Model
 
     public function getTagList(): array
     {
-        $tags = $tagsNames = [];
+        $publicTags = [];
+        $publicTagNames = [];
+        $internalTags = [];
+        $internalTagNames = [];
         foreach ($this->allMotions as $motion) {
-            foreach ($motion->tags as $tag) {
-                if (!isset($tags[$tag->id])) {
-                    $tags[$tag->id]      = 0;
-                    $tagsNames[$tag->id] = $tag->title;
+            foreach ($motion->getPublicTopicTags() as $tag) {
+                if (!isset($publicTags[$tag->id])) {
+                    $publicTags[$tag->id]      = 0;
+                    $publicTagNames[$tag->id] = $tag->title;
                 }
-                $tags[$tag->id]++;
+                $publicTags[$tag->id]++;
+            }
+            foreach ($motion->getProposedProcedureTags() as $tag) {
+                if (!isset($internalTags[$tag->id])) {
+                    $internalTags[$tag->id]      = 0;
+                    $internalTagNames[$tag->id] = $tag->title;
+                }
+                $internalTags[$tag->id]++;
             }
         }
         foreach ($this->allAmendments as $amend) {
-            foreach ($amend->getMyMotion()->tags as $tag) {
-                if (!isset($tags[$tag->id])) {
-                    $tags[$tag->id]      = 0;
-                    $tagsNames[$tag->id] = $tag->title;
+            foreach ($amend->getMyMotion()->getPublicTopicTags() as $tag) {
+                if (!isset($publicTags[$tag->id])) {
+                    $publicTags[$tag->id]      = 0;
+                    $publicTagNames[$tag->id] = $tag->title;
                 }
-                $tags[$tag->id]++;
+                $publicTags[$tag->id]++;
+            }
+            foreach ($amend->getProposedProcedureTags() as $tag) {
+                if (!isset($internalTags[$tag->id])) {
+                    $internalTags[$tag->id]      = 0;
+                    $internalTagNames[$tag->id] = $tag->title;
+                }
+                $internalTags[$tag->id]++;
             }
         }
-        $out = [];
-        foreach ($tags as $tagId => $num) {
-            $out[$tagId] = $tagsNames[$tagId] . ' (' . $num . ')';
+        $outPublic = [];
+        foreach ($publicTags as $tagId => $num) {
+            $outPublic[$tagId] = $publicTagNames[$tagId] . ' (' . $num . ')';
         }
-        asort($out);
+        asort($outPublic);
+        $outInternal = [];
+        foreach ($internalTags as $tagId => $num) {
+            $outInternal[$tagId] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $internalTagNames[$tagId] . ' (' . $num . ')';
+        }
+        asort($outInternal);
 
-        return $out;
+        return array_replace($outInternal, $outPublic);
     }
 
     public function getAgendaItemList($skipNumbers = false): array
