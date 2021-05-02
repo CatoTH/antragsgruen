@@ -89,7 +89,7 @@ if ($hasTags) {
     foreach ($entry->getProposedProcedureTags() as $tag) {
         $tags[] = Html::encode($tag->title) . ' <small>(' . Yii::t('admin', 'filter_tag_pp') . ')</small>';
     }
-    echo '<td>' . implode(', ', $tags) . '</td>';
+    echo '<td class="tagsCol">' . implode(', ', $tags) . '</td>';
 }
 echo '<td class="exportCol">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {

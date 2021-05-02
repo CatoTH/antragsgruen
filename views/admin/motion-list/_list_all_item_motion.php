@@ -77,7 +77,7 @@ if ($hasTags) {
     foreach ($entry->getPublicTopicTags() as $tag) {
         $tags[] = Html::encode($tag->title);
     }
-    echo '<td>' . implode(', ', $tags) . '</td>';
+    echo '<td class="tagsCol">' . implode(', ', $tags) . '</td>';
 }
 echo '<td class="exportCol">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {

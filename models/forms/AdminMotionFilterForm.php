@@ -51,10 +51,8 @@ class AdminMotionFilterForm extends Model
 
     /**
      * @param Motion[] $allMotions
-     * @param bool $amendments
-     * @param boolean $showScreening
      */
-    public function __construct(Consultation $consultation, $allMotions, $amendments, $showScreening)
+    public function __construct(Consultation $consultation, array $allMotions, bool $amendments, bool $showScreening)
     {
         parent::__construct();
         $this->showScreening = $showScreening;
@@ -346,7 +344,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @return IMotion[]
      */
-    public function getSorted()
+    public function getSorted(): array
     {
         $merge = array_merge($this->getFilteredMotions(), $this->getFilteredAmendments());
         switch ($this->sort) {
@@ -404,6 +402,11 @@ class AdminMotionFilterForm extends Model
     {
         if ($this->tag === null || $this->tag === 0) {
             return true;
+        }
+        foreach ($motion->getProposedProcedureTags() as $tag) {
+            if ($tag->id === $this->tag) {
+                return true;
+            }
         }
         foreach ($motion->getPublicTopicTags() as $tag) {
             if ($tag->id === $this->tag) {
@@ -611,12 +614,12 @@ class AdminMotionFilterForm extends Model
 
         $str = '';
 
-        $str    .= '<label>' . \Yii::t('admin', 'filter_prefix') . ':<br>';
+        $str    .= '<label class="filterPrefix">' . \Yii::t('admin', 'filter_prefix') . ':<br>';
         $prefix = Html::encode($this->prefix);
         $str    .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
         $str    .= '</label>';
 
-        $str   .= '<label>' . \Yii::t('admin', 'filter_title') . ':<br>';
+        $str   .= '<label class="filterTitle">' . \Yii::t('admin', 'filter_title') . ':<br>';
         $title = Html::encode($this->title);
         $str   .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
         $str   .= '</label>';
@@ -624,7 +627,7 @@ class AdminMotionFilterForm extends Model
 
         // Motion status
 
-        $str         .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
+        $str         .= '<label class="filterStatus">' . \Yii::t('admin', 'filter_status') . ':<br>';
         $statuses    = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getStatusList() as $statusId => $statusName) {
@@ -643,7 +646,7 @@ class AdminMotionFilterForm extends Model
 
         // Proposal status
 
-        $str         .= '<label>' . \Yii::t('admin', 'filter_proposal_status') . ':<br>';
+        $str         .= '<label class="filterProposal">' . \Yii::t('admin', 'filter_proposal_status') . ':<br>';
         $statuses    = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getProposalStatusList() as $statusId => $statusName) {
@@ -665,12 +668,12 @@ class AdminMotionFilterForm extends Model
         $tagsList = $this->getTagList();
         if (count($tagsList) > 0) {
             $name = \Yii::t('admin', 'filter_tag') . ':';
-            $str  .= '<label>' . $name . '<br>';
+            $str  .= '<label class="filterTags">' . $name . '<br>';
             $tags = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
             }
-            $str .= HTMLTools::fueluxSelectbox('Search[tag]', $tags, $this->tag, [], true);
+            $str .= HTMLTools::fueluxSelectbox('Search[tag]', $tags, $this->tag, ['id' => 'filterSelectTags'], true);
             $str .= '</label>';
         }
 
@@ -680,7 +683,7 @@ class AdminMotionFilterForm extends Model
         $agendaItemList = $this->getAgendaItemList($skipNumbers);
         if (count($agendaItemList) > 0) {
             $name  = \Yii::t('admin', 'filter_agenda_item') . ':';
-            $str   .= '<label>' . $name . '<br>';
+            $str   .= '<label class="filterAgenda">' . $name . '<br>';
             $items = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($agendaItemList as $itemId => $itemName) {
                 $items[$itemId] = $itemName;
