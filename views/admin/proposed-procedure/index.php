@@ -70,11 +70,9 @@ echo Html::beginForm('', 'post', [
         <div>
             <div class="tagList">
                 <?php
-                if ($consultation->getSettings()->pProcedureExpandAll) {
-                    $url = UrlHelper::createUrl(['admin/proposed-procedure/index']);
-                    $btn = ($tagId === null ? 'btn-info' : 'btn-defult');
-                    echo '<a href="' . Html::encode($url) . '" class="btn ' . $btn . ' btn-xs tagAll" data-filter="*">' . Yii::t('con', 'discuss_filter_all') . '</a>';
-                }
+                $url = UrlHelper::createUrl(['admin/proposed-procedure/index']);
+                $btn = ($tagId === null ? 'btn-info' : 'btn-defult');
+                echo '<a href="' . Html::encode($url) . '" class="btn ' . $btn . ' btn-xs tagAll" data-filter="*">' . Yii::t('con', 'discuss_filter_all') . '</a>';
 
                 foreach ($tags as $tag) {
                     $url = UrlHelper::createUrl(['admin/proposed-procedure/index', 'tagId' => $tag->id]);
