@@ -1,7 +1,7 @@
 <?php
 
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Amendment, IMotion};
+use app\models\db\{Amendment, IMotion, Motion};
 use app\models\proposedProcedure\{Agenda, AgendaVoting};
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
@@ -16,6 +16,7 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
+$consultation = $controller->consultation;
 
 $hasResponsibilities = false;
 foreach ($controller->consultation->motionTypes as $motionType) {
@@ -24,18 +25,36 @@ foreach ($controller->consultation->motionTypes as $motionType) {
     }
 }
 
-$getRelevantItemsFromBlock = function(AgendaVoting $votingBlock) use ($tagId): array
+$taggedMotionIds = null;
+$taggedAmendmentIds = null;
+if ($tagId !== null) {
+    $tag = $consultation->getTagById($tagId);
+    $taggedMotionIds = [];
+    $taggedAmendmentIds = [];
+    if ($tag) {
+        foreach ($tag->motions as $motion) {
+            $taggedMotionIds[] = $motion->id;
+        }
+        foreach ($tag->amendments as $amendment) {
+            $taggedAmendmentIds[] = $amendment->id;
+        }
+    }
+}
+
+// Hint: there are probably a lot more motions/amendments than tags. So to limit the amount of queries,
+// it's faster to iterate over the tags than to iterate over motions/amendments.
+$getRelevantItemsFromBlock = function(AgendaVoting $votingBlock) use ($taggedMotionIds, $taggedAmendmentIds): array
 {
-    if ($tagId === null) {
+    if ($taggedMotionIds === null || $taggedAmendmentIds === null) {
         return $votingBlock->items;
     } else {
-        return array_filter($votingBlock->items, function (IMotion $imotion) use ($tagId): bool {
-            foreach ($imotion->getProposedProcedureTags() as $tag) {
-                if ($tag->id === $tagId) {
-                    return true;
-                }
+        return array_filter($votingBlock->items, function (IMotion $imotion) use ($taggedMotionIds, $taggedAmendmentIds): bool {
+            if (is_a($imotion, Motion::class) && in_array($imotion->id, $taggedMotionIds)) {
+                return true;
             }
-
+            if (is_a($imotion, Amendment::class) && in_array($imotion->id, $taggedAmendmentIds)) {
+                return true;
+            }
             return false;
         });
     }

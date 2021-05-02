@@ -564,6 +564,16 @@ class Consultation extends ActiveRecord
         return $tag;
     }
 
+    public function getTagById(int $id): ?ConsultationSettingsTag
+    {
+        foreach ($this->tags as $tag) {
+            if ($tag->id === $id) {
+                return $tag;
+            }
+        }
+        return null;
+    }
+
     public function getNextMotionPrefix(int $motionTypeId): string
     {
         $max_rev = 0;

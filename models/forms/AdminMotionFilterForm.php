@@ -19,7 +19,7 @@ class AdminMotionFilterForm extends Model
     const SORT_PROPOSAL_STATUS = 8;
     const SORT_RESPONSIBILITY = 9;
 
-    /** @var int */
+    /** @var int|null */
     public $status = null;
     public $tag = null;
     public $agendaItem = null;
@@ -512,12 +512,7 @@ class AdminMotionFilterForm extends Model
         }
         // Hint: there are probably a lot more amendments than tags. So to limit the amount of queries,
         // it's faster to iterate over the tags than to iterate over amendments.
-        $tagFound = null;
-        foreach ($this->consultation->tags as $tag) {
-            if ($tag->id === $this->tag) {
-                $tagFound = $tag;
-            }
-        }
+        $tagFound = $this->consultation->getTagById($this->tag);
         if (!$tagFound) {
             return false;
         }
