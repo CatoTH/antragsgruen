@@ -3,7 +3,7 @@
 namespace app\models\forms;
 
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Amendment, AmendmentSupporter, Consultation, IMotion, ISupporter, Motion, MotionSupporter};
+use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter};
 use yii\base\Model;
 use yii\helpers\Html;
 
@@ -797,52 +797,20 @@ class AdminMotionFilterForm extends Model
 
     public function getTagList(): array
     {
-        $publicTags = [];
-        $publicTagNames = [];
-        $internalTags = [];
-        $internalTagNames = [];
-        foreach ($this->allMotions as $motion) {
-            foreach ($motion->getPublicTopicTags() as $tag) {
-                if (!isset($publicTags[$tag->id])) {
-                    $publicTags[$tag->id]      = 0;
-                    $publicTagNames[$tag->id] = $tag->title;
-                }
-                $publicTags[$tag->id]++;
-            }
-            foreach ($motion->getProposedProcedureTags() as $tag) {
-                if (!isset($internalTags[$tag->id])) {
-                    $internalTags[$tag->id]      = 0;
-                    $internalTagNames[$tag->id] = $tag->title;
-                }
-                $internalTags[$tag->id]++;
-            }
-        }
-        foreach ($this->allAmendments as $amend) {
-            foreach ($amend->getMyMotion()->getPublicTopicTags() as $tag) {
-                if (!isset($publicTags[$tag->id])) {
-                    $publicTags[$tag->id]      = 0;
-                    $publicTagNames[$tag->id] = $tag->title;
-                }
-                $publicTags[$tag->id]++;
-            }
-            foreach ($amend->getProposedProcedureTags() as $tag) {
-                if (!isset($internalTags[$tag->id])) {
-                    $internalTags[$tag->id]      = 0;
-                    $internalTagNames[$tag->id] = $tag->title;
-                }
-                $internalTags[$tag->id]++;
-            }
-        }
-        $outPublic = [];
-        foreach ($publicTags as $tagId => $num) {
-            $outPublic[$tagId] = $publicTagNames[$tagId] . ' (' . $num . ')';
-        }
-        asort($outPublic);
         $outInternal = [];
-        foreach ($internalTags as $tagId => $num) {
-            $outInternal[$tagId] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $internalTagNames[$tagId] . ' (' . $num . ')';
+        $outPublic = [];
+        foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) as $tag) {
+            $num = count($tag->motions) + count($tag->amendments);
+            if ($num > 0) {
+                $outInternal[$tag->id] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $tag->title . ' (' . $num . ')';
+            }
         }
-        asort($outInternal);
+        foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+            $num = count($tag->motions) + count($tag->amendments);
+            if ($num > 0) {
+                $outPublic[$tag->id] = $tag->title . ' (' . $num . ')';
+            }
+        }
 
         return array_replace($outInternal, $outPublic);
     }
