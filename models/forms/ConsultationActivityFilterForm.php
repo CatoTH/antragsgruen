@@ -2,10 +2,8 @@
 
 namespace app\models\forms;
 
-use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\db\Consultation;
-use app\models\db\ConsultationLog;
+use app\models\db\{Consultation, ConsultationLog};
 use yii\base\Model;
 use yii\helpers\Html;
 
@@ -86,6 +84,22 @@ class ConsultationActivityFilterForm extends Model
         return array_slice($entries, $this->page * $this->entriesPerPage, $this->entriesPerPage);
     }
 
+    private function getPageLink(string $urlBase, int $page): string
+    {
+        $parts = [$urlBase];
+        if ($this->filterForAmendmentId !== null) {
+            $parts['amendmentId'] = $this->filterForAmendmentId;
+        }
+        if ($this->filterForMotionId !== null) {
+            $parts['motionId'] = $this->filterForMotionId;
+        }
+        if ($this->showUserInvisibleEvents) {
+            $parts['showAll'] = 1;
+        }
+        $parts['page'] = $page;
+        return UrlHelper::createUrl($parts);
+    }
+
     public function getPagination(string $urlBase): string
     {
         $entries = count($this->getAllLogEntries());
@@ -99,24 +113,24 @@ class ConsultationActivityFilterForm extends Model
 
         $prev = '<span aria-hidden="true">&laquo;</span>';
         if ($this->page > 0) {
-            $url = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => $this->page - 1]));
-            $str .= '<li><a href="' . $url . '" aria-label="Previous">' . $prev . '</a></li>';
+            $url = Html::encode($this->getPageLink($urlBase, $this->page - 1));
+            $str .= '<li><a href="' . $url . '" aria-label="' . \Yii::t('con', 'activity_prev') . '">' . $prev . '</a></li>';
         } else {
-            $url = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => 0]));
-            $str .= '<li class="disabled"><a href="' . $url . '" aria-label="Previous">' . $prev . '</a></li>';
+            $url = Html::encode($this->getPageLink($urlBase, 0));
+            $str .= '<li class="disabled"><a href="' . $url . '" aria-label="' . \Yii::t('con', 'activity_prev') . '">' . $prev . '</a></li>';
         }
 
         $first = max($this->page - 5, 0);
         $last  = min($this->page + 5, $maxPage);
         if ($first > 0) {
-            $link = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => 0]));
+            $link = Html::encode($this->getPageLink($urlBase, 0));
             $str .= '<li><a href="' . $link . '">1</a></li>';
         }
         if ($first > 1) {
             $str .= '<li><a class="disabled">...</a></li>';
         }
         for ($i = $first; $i <= $last; $i++) {
-            $link = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => $i]));
+            $link = Html::encode($this->getPageLink($urlBase, $i));
             $str .= '<li class="' . ($i === $this->page ? ' active' : '') . '">';
             $str .= '<a href="' . $link . '">' . ($i + 1) . '</a></li>';
         }
@@ -124,17 +138,17 @@ class ConsultationActivityFilterForm extends Model
             $str .= '<li><a class="disabled">...</a></li>';
         }
         if ($last < $maxPage) {
-            $link = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => $maxPage]));
+            $link = Html::encode($this->getPageLink($urlBase, $maxPage));
             $str .= '<li><a href="' . $link . '">' . ($maxPage + 1) . '</a></li>';
         }
 
         $next = '<span aria-hidden="true">&raquo;</span>';
         if ($this->page < ($maxPage - 1)) {
-            $url = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => $this->page + 1]));
-            $str .= '<li><a href="' . $url . '" aria-label="Next">' . $next . '</a></li>';
+            $url = Html::encode($this->getPageLink($urlBase, $this->page + 1));
+            $str .= '<li><a href="' . $url . '" aria-label="' . \Yii::t('con', 'activity_next') . '">' . $next . '</a></li>';
         } else {
-            $url = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => $maxPage]));
-            $str .= '<li class="disabled"><a href="' . $url . '" aria-label="Next">' . $prev . '</a></li>';
+            $url = Html::encode($this->getPageLink($urlBase, $maxPage));
+            $str .= '<li class="disabled"><a href="' . $url . '" aria-label="' . \Yii::t('con', 'activity_next') . '">' . $next . '</a></li>';
         }
 
         $str .= '</ul></nav>';

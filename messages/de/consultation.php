@@ -49,6 +49,8 @@ return [
 
     'activity_bc'    => 'Aktivitäten',
     'activity_title' => 'Aktivitäts-Protokoll',
+    'activity_next'  => 'Nächste Seite',
+    'activity_prev'  => 'Vorige Seite',
 
     'collecting_bc'      => 'Unterstützung sammeln',
     'collecting_title'   => 'Unterstützung sammeln',

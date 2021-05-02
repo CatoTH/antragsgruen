@@ -49,6 +49,8 @@ return [
 
     'activity_bc'    => 'Activities',
     'activity_title' => 'Activity log',
+    'activity_next'  => 'Next page',
+    'activity_prev'  => 'Previous page',
 
     'collecting_bc'      => 'Collecting support',
     'collecting_title'   => 'Collecting support',
