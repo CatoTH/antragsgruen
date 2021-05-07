@@ -251,7 +251,8 @@ class Exporter
                     if ($node->hasAttribute('href')) {
                         $link    = $node->getAttribute('href');
                         $link    = explode('#', $link); // Hash-parts of URLs break LaTeX
-                        $content = '\href{' . $link[0] . '}{' . $content . '}';
+                        $link    = str_replace('%', '\%', $link[0]);
+                        $content = '\href{' . $link . '}{' . $content . '}';
                     }
                     return $content;
                 case 'span':
