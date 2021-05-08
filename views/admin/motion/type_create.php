@@ -74,7 +74,7 @@ echo Html::beginForm('', 'post', [
                data-label-single="<?= Yii::t('structure', 'preset_statutes_singular') ?>"
                data-label-plural="<?= Yii::t('structure', 'preset_statutes_plural') ?>"
                data-label-cta="<?= Yii::t('structure', 'preset_statutes_call') ?>">
-            <input type="radio" name="type[preset]" value="statute" class="presetPdfStatute">
+            <input type="radio" name="type[preset]" value="statute" class="presetStatute">
             <span><?= Yii::t('admin', 'motion_type_templ_statute') ?></span>
         </label>
         <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_statuteh') ?></div>

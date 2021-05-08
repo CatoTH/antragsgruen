@@ -76,7 +76,6 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
         </div>
     </div>
 
-
     <div class="form-group" id="typeMaxPdfSupportersRow">
         <label class="col-md-4 control-label" for="typeMaxPdfSupporters">
             <?= Yii::t('admin', 'motion_type_supp_max_pdf') ?>

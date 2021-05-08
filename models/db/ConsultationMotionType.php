@@ -366,7 +366,7 @@ class ConsultationMotionType extends ActiveRecord
     {
         $return = [];
         foreach ($this->motions as $motion) {
-            if (in_array($motion->status, $this->getConsultation()->getUnreadableStatuses())) {
+            if (in_array($motion->status, $this->getConsultation()->getStatuses()->getUnreadableStatuses())) {
                 continue;
             }
             if (!$this->getAmendmentPolicy()->checkCurrUserMotion($allowAdmins, $assumeLoggedIn)) {

@@ -21,7 +21,7 @@ $statutes = $motionType->getAmendableOnlyMotions(true, true);
 
 <?php
 if (count($statutes) > 0) {
-    echo '<ul>';
+    echo '<ul class="baseStatutesList">';
     foreach ($statutes as $statute) {
         echo '<li>';
         $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $statute->id]);
@@ -30,7 +30,7 @@ if (count($statutes) > 0) {
     }
     echo '</ul>';
 } else {
-    echo '<em>' . Yii::t('admin', 'motion_type_amendonly_noyet') . '</em>';
+    echo '<em class="baseStatutesNone">' . Yii::t('admin', 'motion_type_amendonly_noyet') . '</em>';
 }
 
 $createLink = UrlHelper::createUrl(['/motion/create', 'motionTypeId' => $motionType->id]);

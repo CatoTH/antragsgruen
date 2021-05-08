@@ -33,7 +33,7 @@ trait Statutes
         $type->motionLikesDislikes          = 0;
         $type->amendmentLikesDislikes       = 0;
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;
-        $type->sidebarCreateButton          = 1;
+        $type->sidebarCreateButton          = 0;
 
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::NO_INITIATOR;
