@@ -12,6 +12,7 @@ $I->dontSeeElement('.sidebarActions .edit');
 $I->dontSeeElement('.sidebarActions .adminEdit');
 $I->dontSeeElement('.sidebarActions .withdraw');
 $I->seeElement('.sidebarActions .back');
+$I->seeElement('.motionRow');
 
 $I->wantTo('see the amendment as the user who initiated it');
 $I->loginAsStdUser();

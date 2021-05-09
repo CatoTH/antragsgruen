@@ -1,7 +1,7 @@
 <?php
 
 use app\components\{MotionSorter, UrlHelper};
-use app\models\db\{Consultation, ConsultationAgendaItem, Motion};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion};
 use app\models\settings\{Layout, Consultation as ConsultationSettings};
 use app\views\consultation\LayoutHelper;
 use yii\helpers\Html;
@@ -71,32 +71,49 @@ if ($longVersion) {
         if (count($agendaItem->getVisibleMotions(true, false)) > 0) {
             echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
             echo '<ul class="motionList motionListStd motionListBelowAgenda agenda' . $agendaItem->id . '">';
-            $motions = MotionSorter::getSortedMotionsFlat($consultation, $agendaItem->getVisibleMotions());
+            $motions = MotionSorter::getSortedIMotionsFlat($consultation, $agendaItem->getVisibleMotions());
             foreach ($motions as $motion) {
                 if ($motion->isResolution()) {
                     continue;
                 }
-                echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
-                $shownMotions->addMotion($motion);
+
+                if (is_a($motion, Motion::class)) {
+                    echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
+                } else {
+                    /** @var Amendment $motion */
+                    echo LayoutHelper::showStatuteAmendment($motion, $consultation);
+                }
+                $shownMotions->addIMotion($motion);
             }
             echo '</ul>';
         }
     }
 }
 
-/** @var Motion[] $otherMotions */
+/** @var IMotion[] $otherMotions */
 $otherMotions = [];
-foreach ($consultation->getVisibleMotions(true, false) as $motion) {
-    if (!$shownMotions->hasMotion($motion) && ($motion->status === Motion::STATUS_MOVED || count($motion->getVisibleReplacedByMotions()) === 0)) {
-        $otherMotions[] = $motion;
+foreach ($_motions as $imotion) {
+    if (!$shownMotions->hasIMotion($imotion)) {
+        if ($imotion->status === IMotion::STATUS_MOVED) {
+            continue;
+        }
+        if (is_a($imotion, Motion::class) && count($imotion->getVisibleReplacedByMotions()) > 0) {
+            continue;
+        }
+        $otherMotions[] = $imotion;
     }
 }
-$otherMotions = MotionSorter::getSortedMotionsFlat($consultation, $otherMotions);
+$otherMotions = MotionSorter::getSortedIMotionsFlat($consultation, $otherMotions);
 if (count($otherMotions) > 0) {
     echo '<h2 class="green">' . Yii::t('con', 'Other Motions') . '</h2>';
     echo '<ul class="motionList motionListStd motionListBelowAgenda agenda0">';
     foreach ($otherMotions as $motion) {
-        echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
+        if (is_a($motion, Motion::class)) {
+            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
+        } else {
+            /** @var Amendment $motion */
+            echo LayoutHelper::showStatuteAmendment($motion, $consultation);
+        }
     }
     echo '</ul>';
 }

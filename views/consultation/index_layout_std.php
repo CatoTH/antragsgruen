@@ -17,7 +17,7 @@ if (count($resolutions) > 0) {
 echo '<section aria-labelledby="allMotionsTitle">';
 echo '<h2 class="green" id="allMotionsTitle">' . Yii::t('con', 'All Motions') . '</h2>';
 
-$motions = MotionSorter::getSortedMotions($consultation, $motions);
+$motions = MotionSorter::getSortedIMotions($consultation, $motions);
 foreach ($motions as $name => $motns) {
     echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
     foreach ($motns as $motion) {

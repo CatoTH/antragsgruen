@@ -9,10 +9,11 @@ use yii\helpers\Html;
  * @var \app\models\settings\Layout $layout
  */
 
+$motionType   = $amendment->getMyMotionType();
 $html        = '<ul class="sidebarActions" aria-label="' . Html::encode(Yii::t('amend', 'sidebar_title_aria')) . '">';
 $sidebarRows = 0;
 
-if ($amendment->getMyMotion()->motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
+if ($motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
     $html .= '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt" aria-hidden="true"></span>' .
         Yii::t('motion', 'download_pdf');
@@ -53,8 +54,13 @@ if ($adminEdit) {
 }
 
 $html .= '<li class="back">';
-$title = '<span class="icon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>' . Yii::t('amend', 'sidebar_back');
-$html .= Html::a($title, UrlHelper::createMotionUrl($amendment->getMyMotion())) . '</li>';
+if ($motionType->amendmentsOnly) {
+    $title = '<span class="icon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>' . Yii::t('motion', 'back_start');
+    $html .= Html::a($title, UrlHelper::homeUrl()) . '</li>';
+} else {
+    $title = '<span class="icon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>' . Yii::t('amend', 'sidebar_back');
+    $html .= Html::a($title, UrlHelper::createMotionUrl($amendment->getMyMotion())) . '</li>';
+}
 $sidebarRows++;
 
 $html .= '</ul>';

@@ -164,11 +164,13 @@ if (count($comments) > 0) {
 
                 if (is_a($motion, Motion::class)) {
                     $motionUrl = UrlHelper::createMotionUrl($motion);
+                    $className = 'motionLink' . $motion->id;
                 } else {
                     /** @var \app\models\db\Amendment $motionUrl */
                     $motionUrl = UrlHelper::createAmendmentUrl($motion);
+                    $className = 'amendmentLink' . $motion->id;
                 }
-                echo '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
+                echo '<a href="' . Html::encode($motionUrl) . '" class="' . $className . '">';
 
                 echo ' <span class="motionTitle">' . Html::encode($motion->getTitleWithPrefix()) . '</span>';
 

@@ -25,6 +25,7 @@ $amendmentData = [];
 
 if (!$motionType->amendmentsOnly) {
     $amendmentData[] = [
+        'rowClass' => 'motionRow',
         'title' => $motionType->titleSingular,
         'content' => Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion)),
     ];

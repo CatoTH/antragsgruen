@@ -361,7 +361,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         $motions = $this->getVisibleMotions($withdrawnAreVisible);
 
-        return MotionSorter::getSortedMotionsFlat($this->getMyConsultation(), $motions);
+        return MotionSorter::getSortedIMotionsFlat($this->getMyConsultation(), $motions);
     }
 
 

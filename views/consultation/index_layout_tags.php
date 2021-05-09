@@ -103,7 +103,7 @@ foreach ($tagIds as $tagId) {
             echo Html::a(
                 Html::encode($motion->getTitle()),
                 UrlHelper::createAmendmentUrl($motion),
-                ['class' => 'motionLink' . $motion->id]
+                ['class' => 'amendmentLink' . $motion->id]
             );
         } elseif (is_a($motion, Motion::class)) {
             echo Html::a(

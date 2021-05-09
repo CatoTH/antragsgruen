@@ -50,3 +50,25 @@ $I->seeElement('.consultationIndex');
 $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
+$I->logout();
+$I->loginAsStdAdmin();
+
+foreach (\app\models\settings\Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
+    $page = $I->gotoStdAdminPage()->gotoAppearance();
+    $I->selectFueluxOption('#startLayoutType', $layoutId);
+    $page->saveForm();
+    $I->gotoConsultationHome();
+    $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+    $I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+}
+
+$I->wantTo('check the amendment view');
+
+$I->click('.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->dontSeeElement('.motionRow');
+$I->see('This is my reason');
+$I->see('Article 1', '.deleted');
+$I->see('Paragraph 1', '.inserted');
+$I->see('Zurück zur Übersicht', '#sidebar .back');
+$I->click('#sidebar .back a');
+$I->seeElement('.consultationIndex');
