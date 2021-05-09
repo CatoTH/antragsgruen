@@ -22,7 +22,6 @@ use yii\helpers\Html;
  * @property int $consultationId
  * @property int $motionTypeId
  * @property int $parentMotionId
- * @property int|null $agendaItemId
  * @property string $title
  * @property string $titlePrefix
  * @property int $status
@@ -42,7 +41,6 @@ use yii\helpers\Html;
  * @property MotionComment[] $privateComments
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
- * @property ConsultationAgendaItem|null $agendaItem
  * @property Motion|null $replacedMotion
  * @property Motion[] $replacedByMotions
  * @property VotingBlock|null $votingBlock
@@ -297,7 +295,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function getMyAgendaItem(): ?ConsultationAgendaItem
     {
-        return $this->agendaItem;
+        return ($this->agendaItemId ? $this->agendaItem : null);
     }
 
     /**
@@ -305,7 +303,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getTypeSections()
     {
-        return $this->motionType->motionSections;
+        return $this->getMyMotionType()->motionSections;
     }
 
     /**
@@ -1021,9 +1019,8 @@ class Motion extends IMotion implements IRSSItem
             }
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
         }
-        if ($this->agendaItem) {
-            $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->getShownCode(true) .
-                                                       ' ' . $this->agendaItem->title;
+        if ($this->agendaItemId && $this->agendaItem) {
+            $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->getShownCode(true) . ' ' . $this->agendaItem->title;
         }
 
         $tags = $this->getPublicTopicTags();

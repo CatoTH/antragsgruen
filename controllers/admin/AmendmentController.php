@@ -295,6 +295,16 @@ class AmendmentController extends AdminBase
             if ($amdat['dateResolution'] !== '') {
                 $amendment->dateResolution = Tools::dateBootstraptime2sql($amdat['dateResolution']);
             }
+            $amendment->agendaItemId = null;
+            if (isset($amdat['agendaItemId'])) {
+                foreach ($this->consultation->agendaItems as $agendaItem) {
+                    if ($agendaItem->id === intval($amdat['agendaItemId'])) {
+                        $amendment->agendaItemId = intval($amdat['agendaItemId']);
+                    }
+                }
+            }
+            var_dump($amdat);
+            var_dump($amendment->agendaItemId);
 
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
                 \Yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));

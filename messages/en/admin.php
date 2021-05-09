@@ -387,6 +387,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'amend_screen_as_x'           => 'Screen as %PREFIX%',
     'amend_prefix_placeholder'    => 'e.g. "Ä1", "A23-0042"',
     'amend_prefix_unique'         => 'Needs to be unique',
+    'amend_agenda_like_none'      => 'None',
+    'amend_agenda_like_motion'    => 'Same as the motion',
     'amend_created_at'            => 'Created on',
     'amend_resoluted_on'          => 'Decided on',
     'amend_edit_text_title'       => 'Edit text',

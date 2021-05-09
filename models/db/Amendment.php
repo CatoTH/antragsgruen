@@ -111,6 +111,14 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return ActiveQuery
      */
+    public function getAgendaItem()
+    {
+        return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getComments()
     {
         return $this->hasMany(AmendmentComment::class, ['amendmentId' => 'id'])
@@ -259,7 +267,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         return [
             [['motionId'], 'required'],
-            [['id', 'motionId', 'status', 'textFixed', 'proposalStatus', 'proposalReferenceId'], 'number'],
+            [['id', 'motionId', 'status', 'textFixed', 'proposalStatus', 'proposalReferenceId', 'agendaItemId'], 'number'],
         ];
     }
 
@@ -334,7 +342,11 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getMyAgendaItem(): ?ConsultationAgendaItem
     {
-        return $this->getMyMotion()->agendaItem;
+        if ($this->agendaItemId && $this->agendaItem) {
+            return $this->agendaItem;
+        } else {
+            return $this->getMyMotion()->getMyAgendaItem();
+        }
     }
 
     public function getMyTags(): array
@@ -1076,6 +1088,9 @@ class Amendment extends IMotion implements IRSSItem
                 $initiators[] = $init->getNameWithResolutionDate(false);
             }
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
+        }
+        if ($this->agendaItemId && $this->agendaItem) { // Only show this if an explicit agenda item was set
+            $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->getShownCode(true) . ' ' . $this->agendaItem->title;
         }
 
         $consultation = $this->getMyConsultation();

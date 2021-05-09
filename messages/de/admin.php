@@ -388,6 +388,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'amend_screen_as_x'          => 'Freischalten als %PREFIX%',
     'amend_prefix_placeholder'   => 'z.B. "Ä1", "A23-0042"',
     'amend_prefix_unique'        => 'Muss eindeutig sein',
+    'amend_agenda_like_none'     => 'Keiner',
+    'amend_agenda_like_motion'   => 'Wie der Antrag',
     'amend_created_at'           => 'Angelegt am',
     'amend_resoluted_on'         => 'Beschlossen am',
     'amend_edit_text_title'      => 'Text bearbeiten',

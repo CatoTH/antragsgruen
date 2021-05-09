@@ -15,12 +15,14 @@ use yii\helpers\Html;
 /**
  * @property string $titlePrefix
  * @property int $id
+ * @property int|null $agendaItemId
  * @property IMotionSection[] $sections
  * @property string $dateCreation
  * @property string|null $datePublication
  * @property string|null $dateResolution
  * @property IComment[] $comments
  * @property ConsultationSettingsTag[] $tags
+ * @property ConsultationAgendaItem|null $agendaItem
  * @property int $status
  * @property int|null $proposalStatus
  * @property int|null $proposalReferenceId

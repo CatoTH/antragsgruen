@@ -6,7 +6,7 @@ use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, Moti
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var Motion $motion
  * @var \app\models\forms\MotionEditForm $form
  */
@@ -18,7 +18,7 @@ $consultation = $controller->consultation;
 
 $this->title = Yii::t('admin', 'motion_edit_title') . ': ' . $motion->getTitleWithPrefix();
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));
-$layout->addBreadcrumb(Yii::t('admin', 'bread_motion'));
+$layout->addBreadcrumb($motion->getMyMotionType()->titleSingular);
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();

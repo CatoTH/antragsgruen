@@ -79,7 +79,7 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m210207_145533_remove_obsolete_fields', '1615109742'),
   ('m210307_092657_enhance_consultation_log', '1615109833'),
   ('m210425_100105_tag_types_amendment_tags', '1619345550'),
-  ('m210404_173210_statute_amendments', '1617558247')
+  ('m210509_173210_statute_amendments', '1620567930')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

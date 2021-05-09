@@ -9,6 +9,7 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 CREATE TABLE `###TABLE_PREFIX###amendment` (
   `id`                    INT(11)     NOT NULL,
   `motionId`              INT(11)              DEFAULT NULL,
+  `agendaItemId`          INT(11)              DEFAULT NULL,
   `titlePrefix`           VARCHAR(45)          DEFAULT NULL,
   `changeEditorial`       LONGTEXT    NOT NULL,
   `changeText`            LONGTEXT    NOT NULL,
@@ -745,7 +746,8 @@ ALTER TABLE `###TABLE_PREFIX###amendment`
   ADD KEY `fk_motionIdx` (`motionId`),
   ADD KEY `amendment_reference_am` (`proposalReferenceId`),
   ADD KEY `ix_amendment_voting_block` (`votingBlockId`),
-  ADD KEY `fk_amendment_responsibility` (`responsibilityId`);
+  ADD KEY `fk_amendment_responsibility` (`responsibilityId`),
+  ADD KEY `fk_amendment_agenda` (`agendaItemId`);
 
 --
 -- Indexes for table `amendmentAdminComment`
@@ -1175,6 +1177,7 @@ ALTER TABLE `###TABLE_PREFIX###votingBlock`
 -- Constraints for table `amendment`
 --
 ALTER TABLE `###TABLE_PREFIX###amendment`
+  ADD CONSTRAINT `fk_amendment_agenda` FOREIGN KEY (`agendaItemId`) REFERENCES `###TABLE_PREFIX###consultationAgendaItem` (`id`),
   ADD CONSTRAINT `fk_amendment_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_amendment_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `###TABLE_PREFIX###votingBlock` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_amendment_responsibility` FOREIGN KEY (`responsibilityId`) REFERENCES `###TABLE_PREFIX###user` (`id`),

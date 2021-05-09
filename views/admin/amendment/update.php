@@ -2,7 +2,7 @@
 
 use app\models\settings\AntragsgruenApp;
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentSection, Consultation};
+use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationAgendaItem};
 use yii\helpers\Html;
 
 /**
@@ -90,6 +90,39 @@ echo Html::beginForm('', 'post', [
 echo '<div class="content form-horizontal fuelux">';
 
 ?>
+    <div class="form-group">
+        <div class="col-md-3 control-label"><?= Html::encode($amendment->getMyMotionType()->titleSingular) ?>:</div>
+        <div class="col-md-9 motionEditLinkHolder">
+            <a href="<?= Html::encode(UrlHelper::createUrl(['admin/motion/update', 'motionId' => $amendment->motionId])) ?>">
+                <?= $amendment->getMyMotion()->getTitleWithPrefix() ?>
+            </a>
+        </div>
+    </div>
+
+<?php
+if (count($consultation->agendaItems) > 0) {
+    echo '<div class="form-group">';
+    echo '<label class="col-md-3 control-label" for="agendaItemId">';
+    echo Yii::t('admin', 'motion_agenda_item');
+    echo ':</label><div class="col-md-9">';
+    $options    = ['id' => 'agendaItemId'];
+    if ($amendment->getMyMotion()->agendaItemId && $amendment->getMyMotion()->agendaItem) {
+        $motionAgendaItem = $amendment->getMyMotion()->agendaItem->title;
+    } else {
+        $motionAgendaItem = Yii::t('admin', 'amend_agenda_like_none');
+    }
+    $selections = [
+        0 => ' - ' . Yii::t('admin', 'amend_agenda_like_motion') . ' - (' . $motionAgendaItem . ')',
+    ];
+    foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
+        $selections[$item->id] = $item->title;
+    }
+
+    echo HTMLTools::fueluxSelectbox('amendment[agendaItemId]', $selections, $amendment->agendaItemId, $options, true);
+    echo '</div></div>';
+}
+?>
+
     <div class="form-group">
         <label class="col-md-3 control-label" for="amendmentStatus">
             <?= Yii::t('admin', 'motion_status') ?>:
