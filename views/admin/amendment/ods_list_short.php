@@ -6,7 +6,7 @@ use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var Motion[] $motions
  * @var bool $withdrawn
  * @var bool $textCombined
@@ -83,9 +83,12 @@ $doc->drawBorder(1, $firstCol, 2, $LAST_COL, 1.5);
 $row = 3;
 
 foreach ($motions as $motion) {
+    if ($motion->getMyMotionType()->amendmentsOnly) {
+        continue;
+    }
+    $row++;
     $doc->setMinRowHeight($row, 2);
 
-    $row++;
     $maxRows        = 1;
     $firstMotionRow = $row;
 

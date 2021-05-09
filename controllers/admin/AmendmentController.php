@@ -22,7 +22,7 @@ class AmendmentController extends AdminBase
      */
     public function actionOdslist($textCombined = false, $withdrawn = 0)
     {
-        $withdrawn = (IntVal($withdrawn) === 1);
+        $withdrawn = (intval($withdrawn) === 1);
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
@@ -86,6 +86,9 @@ class AmendmentController extends AdminBase
         $zip       = new ZipWriter();
         $hasLaTeX  = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
                     $file = LayoutHelper::createPdfLatex($amendment);
@@ -115,6 +118,9 @@ class AmendmentController extends AdminBase
         $withdrawn = (IntVal($withdrawn) === 1);
         $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 $content = $this->renderPartial('@app/views/amendment/view_odt', ['amendment' => $amendment]);
                 $zip->addFile($amendment->getFilenameBase(false) . '.odt', $content);

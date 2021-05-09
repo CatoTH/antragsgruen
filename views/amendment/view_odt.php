@@ -8,10 +8,9 @@ use yii\helpers\Html;
 
 /**
  * @var \app\models\db\Amendment $amendment
- * @var \app\models\settings\AntragsgruenApp $config
  */
 
-$config = Yii::$app->params;
+$config = \app\models\settings\AntragsgruenApp::getInstance();
 
 $template = $amendment->getMyMotion()->motionType->getOdtTemplateFile();
 /** @noinspection PhpUnhandledExceptionInspection */

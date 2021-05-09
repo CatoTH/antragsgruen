@@ -67,9 +67,12 @@ class AmendmentController extends Base
         $amendments  = [];
         $texTemplate = null;
         foreach ($motions as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
             // If we have multiple motion types, we just take the template from the first one.
             if ($texTemplate === null) {
-                $texTemplate = $motion->motionType->texTemplate;
+                $texTemplate = $motion->getMyMotionType()->texTemplate;
             }
             $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }

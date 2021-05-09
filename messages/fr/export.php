@@ -10,7 +10,7 @@ return [
     'AgendaItem'            => 'Point à l\'ordre du jour',
     'TopicSingle'           => 'Sujet',
     'TopicMulti'            => 'Sujets',
-    'all_motions_title'     => 'Toutes les motions',
+    'all_motions_title'     => 'Toutes les %TITLE%',
     'all_amendments_title'  => 'Tous les amendements',
     'title'                 => 'Titre',
     'draft'                 => 'Brouillon',

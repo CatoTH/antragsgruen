@@ -15,14 +15,16 @@ if (count($motions) === 0) {
     die();
 }
 
-$pdfLayout = $motions[0]->motionType->getPDFLayoutClass();
-$pdf       = $pdfLayout->createPDFClass();
+$motionType = $motions[0]->getMyMotionType();
+$pdfLayout  = $motionType->getPDFLayoutClass();
+$pdf        = $pdfLayout->createPDFClass();
 
 // set document information
+$title = str_replace('%TITLE%', $motionType->titlePlural, Yii::t('export', 'all_motions_title'));
 $pdf->SetCreator(Yii::t('export', 'default_creator'));
 $pdf->SetAuthor(Yii::t('export', 'default_creator'));
-$pdf->SetTitle(Yii::t('export', 'all_motions_title'));
-$pdf->SetSubject(Yii::t('export', 'all_motions_title'));
+$pdf->SetTitle($title);
+$pdf->SetSubject($title);
 
 
 try {

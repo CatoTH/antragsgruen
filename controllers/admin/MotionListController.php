@@ -2,12 +2,14 @@
 
 namespace app\controllers\admin;
 
+use app\components\Tools;
 use app\components\ZipWriter;
-use app\models\db\{Consultation, User};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\forms\AdminMotionFilterForm;
 use app\models\settings\AntragsgruenApp;
-use app\views\motion\LayoutHelper;
+use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
+use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\web\Response;
 
 class MotionListController extends AdminBase
@@ -244,20 +246,25 @@ class MotionListController extends AdminBase
             return '';
         }
 
+        $filename = Tools::sanitizeFilename($motionType->titlePlural, false) . '.ods';
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . $filename);
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
-        $motions = [];
+        $imotions = [];
         foreach ($this->consultation->getVisibleMotionsSorted($withdrawn) as $motion) {
-            if ($motion->motionTypeId == $motionTypeId) {
-                $motions[] = $motion;
+            if ($motion->motionTypeId === $motionTypeId) {
+                if ($motionType->amendmentsOnly) {
+                    $imotions = array_merge($imotions, $motion->getVisibleAmendments($withdrawn));
+                } else {
+                    $imotions[] = $motion;
+                }
             }
         }
 
         return $this->renderPartial('ods_list', [
-            'motions'      => $motions,
+            'imotions'     => $imotions,
             'textCombined' => $textCombined,
             'motionType'   => $motionType,
         ]);
@@ -375,9 +382,18 @@ class MotionListController extends AdminBase
             } else {
                 $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
-            if (count($motions) == 0) {
+            if (count($motions) === 0) {
                 $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
                 return '';
+            }
+            /** @var IMotion[] $imotions */
+            $imotions = [];
+            foreach ($motions as $motion) {
+                if ($motion->getMyMotionType()->amendmentsOnly) {
+                    $imotions = array_merge($imotions, $motion->getVisibleAmendments($withdrawn));
+                } else {
+                    $imotions[] = $motion;
+                }
             }
         } catch (ExceptionBase $e) {
             $this->showErrorpage(404, $e->getMessage());
@@ -386,13 +402,22 @@ class MotionListController extends AdminBase
 
         $zip      = new ZipWriter();
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
-        foreach ($motions as $motion) {
-            if ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
-                $file = LayoutHelper::createPdfLatex($motion);
-            } else {
-                $file = LayoutHelper::createPdfTcpdf($motion);
+        foreach ($imotions as $imotion) {
+            if (is_a($imotion, Motion::class)) {
+                if ($hasLaTeX && $imotion->getMyMotionType()->texTemplateId) {
+                    $file = MotionLayoutHelper::createPdfLatex($imotion);
+                } else {
+                    $file = MotionLayoutHelper::createPdfTcpdf($imotion);
+                }
+                $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
+            } elseif (is_a($imotion, Amendment::class))  {
+                if ($hasLaTeX && $imotion->getMyMotionType()->texTemplateId) {
+                    $file = AmendmentLayoutHelper::createPdfLatex($imotion);
+                } else {
+                    $file = AmendmentLayoutHelper::createPdfTcpdf($imotion);
+                }
+                $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
             }
-            $zip->addFile($motion->getFilenameBase(false) . '.pdf', $file);
         }
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
@@ -421,9 +446,18 @@ class MotionListController extends AdminBase
             } else {
                 $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
-            if (count($motions) == 0) {
+            if (count($motions) === 0) {
                 $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
                 return '';
+            }
+            /** @var IMotion[] $imotions */
+            $imotions = [];
+            foreach ($motions as $motion) {
+                if ($motion->getMyMotionType()->amendmentsOnly) {
+                    $imotions = array_merge($imotions, $motion->getVisibleAmendments($withdrawn));
+                } else {
+                    $imotions[] = $motion;
+                }
             }
         } catch (ExceptionBase $e) {
             $this->showErrorpage(404, $e->getMessage());
@@ -431,9 +465,15 @@ class MotionListController extends AdminBase
         }
 
         $zip = new ZipWriter();
-        foreach ($motions as $motion) {
-            $content = $this->renderPartial('@app/views/motion/view_odt', ['motion' => $motion]);
-            $zip->addFile($motion->getFilenameBase(false) . '.odt', $content);
+        foreach ($imotions as $imotion) {
+            if (is_a($imotion, Motion::class)) {
+                $content = $this->renderPartial('@app/views/motion/view_odt', ['motion' => $imotion]);
+                $zip->addFile($imotion->getFilenameBase(false) . '.odt', $content);
+            }
+            if (is_a($imotion, Amendment::class)) {
+                $content = $this->renderPartial('@app/views/amendment/view_odt', ['amendment' => $imotion]);
+                $zip->addFile($imotion->getFilenameBase(false) . '.odt', $content);
+            }
         }
 
         \Yii::$app->response->format = Response::FORMAT_RAW;

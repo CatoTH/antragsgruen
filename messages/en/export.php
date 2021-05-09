@@ -11,7 +11,7 @@ return [
     'AgendaItem'            => 'Agenda item',
     'TopicSingle'           => 'Topic',
     'TopicMulti'            => 'Topics',
-    'all_motions_title'     => 'All motions',
+    'all_motions_title'     => 'All %TITLE%',
     'all_amendments_title'  => 'All amendments',
     'title'                 => 'Title',
     'draft'                 => 'Draft',

@@ -1,12 +1,12 @@
 <?php
 
 use app\components\HTMLTools;
-use app\models\db\{ConsultationMotionType, ConsultationSettingsTag, Motion};
+use app\models\db\{Amendment, ConsultationMotionType, ConsultationSettingsTag, IMotion, Motion};
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 
 /**
- * @var $this yii\web\View
- * @var Motion[] $motions
+ * @var yii\web\View $this
+ * @var IMotion[] $imotions
  * @var bool $textCombined
  * @var ConsultationMotionType $motionType
  */
@@ -32,11 +32,11 @@ $currCol = $firstCol = 1;
 $hasTags             = ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) > 0);
 $hasAgendaItems      = false;
 $hasResponsibilities = false;
-foreach ($motions as $motion) {
-    if ($motion->agendaItem) {
+foreach ($imotions as $imotion) {
+    if (is_a($imotion, Motion::class) && $imotion->agendaItem) {
         $hasAgendaItems = true;
     }
-    if ($motion->responsibilityId || $motion->responsibilityComment) {
+    if ($imotion->responsibilityId || $imotion->responsibilityComment) {
         $hasResponsibilities = true;
     }
 }
@@ -69,7 +69,8 @@ if ($hasResponsibilities) {
 
 // Title
 
-$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, Yii::t('export', 'all_motions_title'));
+$title = str_replace('%TITLE%', $motionType->titlePlural, Yii::t('export', 'all_motions_title'));
+$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, $title);
 $doc->setCellStyle(1, $firstCol, [], [
     'fo:font-size'   => '16pt',
     'fo:font-weight' => 'bold',
@@ -120,12 +121,13 @@ $doc->drawBorder(1, $firstCol, 2, $LAST_COL, 1.5);
 
 $row = 2;
 
-foreach ($motions as $motion) {
+foreach ($imotions as $imotion) {
     $row++;
+    $doc->setMinRowHeight($row, 2);
 
     $initiatorNames    = [];
     $initiatorContacts = [];
-    foreach ($motion->getInitiators() as $supp) {
+    foreach ($imotion->getInitiators() as $supp) {
         $initiatorNames[] = $supp->getNameWithResolutionDate(false);
         if ($supp->contactEmail !== '') {
             $initiatorContacts[] = $supp->contactEmail;
@@ -135,21 +137,21 @@ foreach ($motions as $motion) {
         }
     }
 
-    if ($hasAgendaItems && $motion->agendaItem) {
-        $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $motion->agendaItem->getShownCode(true));
+    if ($hasAgendaItems && is_a($imotion, Motion::class) && $imotion->agendaItem) {
+        $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $imotion->agendaItem->getShownCode(true));
     }
-    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $imotion->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
     $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacts));
 
     if ($hasResponsibilities) {
         $responsibility = [];
-        if ($motion->responsibilityUser) {
-            $user = $motion->responsibilityUser;
+        if ($imotion->responsibilityUser) {
+            $user = $imotion->responsibilityUser;
             $responsibility[] = $user->name ? $user->name : $user->getAuthName();
         }
-        if ($motion->responsibilityComment) {
-            $responsibility[] = $motion->responsibilityComment;
+        if ($imotion->responsibilityComment) {
+            $responsibility[] = $imotion->responsibilityComment;
         }
         $doc->setCell($row, $COL_RESPONSIBILITY, Spreadsheet::TYPE_TEXT, implode(', ', $responsibility));
     }
@@ -157,9 +159,13 @@ foreach ($motions as $motion) {
 
     if ($textCombined) {
         $text = '';
-        foreach ($motion->getSortedSections(true) as $section) {
+        foreach ($imotion->getSortedSections(true) as $section) {
             $text .= $section->getSettings()->title . "\n\n";
-            $text .= $section->getSectionType()->getMotionODS();
+            if (is_a($imotion, Motion::class)) {
+                $text .= $section->getSectionType()->getMotionODS();
+            } elseif (is_a($imotion, Amendment::class)) {
+                $text .= $section->getSectionType()->getAmendmentODS();
+            }
             $text .= "\n\n";
         }
         $text = HTMLTools::correctHtmlErrors($text);
@@ -167,9 +173,13 @@ foreach ($motions as $motion) {
     } else {
         foreach ($motionType->motionSections as $section) {
             $text = '';
-            foreach ($motion->getActiveSections() as $sect) {
+            foreach ($imotion->getActiveSections() as $sect) {
                 if ($sect->sectionId === $section->id) {
-                    $text = $sect->getSectionType()->getMotionODS();
+                    if (is_a($imotion, Motion::class)) {
+                        $text .= $sect->getSectionType()->getMotionODS();
+                    } elseif (is_a($imotion, Amendment::class)) {
+                        $text .= $sect->getSectionType()->getAmendmentODS();
+                    }
                 }
             }
             $text = HTMLTools::correctHtmlErrors($text);
@@ -178,7 +188,7 @@ foreach ($motions as $motion) {
     }
     if (isset($COL_TAGS)) {
         $tags = [];
-        foreach ($motion->getPublicTopicTags() as $tag) {
+        foreach ($imotion->getPublicTopicTags() as $tag) {
             $tags[] = $tag->title;
         }
         $doc->setCell($row, $COL_TAGS, Spreadsheet::TYPE_TEXT, implode("\n", $tags));
