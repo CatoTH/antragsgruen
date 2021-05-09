@@ -2,6 +2,10 @@
 
 ## Version 4.8.0 [not released yet]
 
+- Statute amendments are now explicitly supported. They have the following characteristics:
+  - Admins can create the base statutes that can be amended. This base text will not be visible regularily.
+  - Statute amendments are displayed and created like normal motions. That is, they will be shown like normal motions on the home page and receive a regular prefix like "S1". Their content is using the diff view of amendments, though.
+- Admins can now explicitly assign amendments (including statute amendments) to agenda items, also to agenda items different from their base motion. In this case, they appear like regular motions on the home page.
 - Admins can now see an activity log for each motion and amendment, chronologically listing all relevant events for it (supports, comments, proposed procedure changes etc.).
 - Admins can now assign motions and amendments to user accounts, e.g. when the motion was created by an admin or an anonymous user before creating an account.
 - When merging amendments into a motion, text entered by the admins can now optionally receive a blue color, to distinguish admin-entered text from the base motion or changes made by the amendments.

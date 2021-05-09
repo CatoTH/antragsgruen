@@ -303,8 +303,6 @@ class AmendmentController extends AdminBase
                     }
                 }
             }
-            var_dump($amdat);
-            var_dump($amendment->agendaItemId);
 
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
                 \Yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));

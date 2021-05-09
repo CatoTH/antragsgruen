@@ -310,16 +310,21 @@ class LayoutHelper
 
         $shownMotions = new IMotionList();
         if ($showMotions) {
-            $motions = [];
-            foreach ($agendaItem->getMotionsFromConsultation() as $motion) {
-                $motions[] = $motion;
+            $imotions = [];
+            foreach ($agendaItem->getIMotionsFromConsultation() as $imotion) {
+                $imotions[] = $imotion;
             }
-            $motions = MotionSorter::getSortedIMotionsFlat($consultation, $motions);
-            if (count($motions) > 0) {
+            $imotions = MotionSorter::getSortedIMotionsFlat($consultation, $imotions);
+            if (count($imotions) > 0) {
                 echo '<ul class="motions">';
-                foreach ($motions as $motion) {
-                    echo static::showMotion($motion, $consultation, false);
-                    $shownMotions->addMotion($motion);
+                foreach ($imotions as $imotion) {
+                    if (is_a($imotion, Motion::class)) {
+                        echo static::showMotion($imotion, $consultation, false);
+                    } elseif (is_a($imotion, Amendment::class)) {
+                        echo static::showStatuteAmendment($imotion, $consultation);
+                    }
+
+                    $shownMotions->addIMotion($imotion);
                 }
                 echo '</ul>';
             }
@@ -401,17 +406,17 @@ class LayoutHelper
 
         $items = ConsultationAgendaItem::sortItems($items);
         echo '<ol class="agenda ' . $timesClass . ($isRoot ? 'motionList motionListWithinAgenda' : 'agendaSub') . '">';
-        $shownMotions = new IMotionList();
+        $shownIMotions = new IMotionList();
         foreach ($items as $item) {
             if ($item->isDateSeparator()) {
                 $newShown = static::showDateAgendaItem($item, $consultation, $admin);
             } else {
                 $newShown = static::showAgendaItem($item, $consultation, $admin);
             }
-            $shownMotions->addIMotionList($newShown);
+            $shownIMotions->addIMotionList($newShown);
         }
         echo '</ol>';
 
-        return $shownMotions;
+        return $shownIMotions;
     }
 }

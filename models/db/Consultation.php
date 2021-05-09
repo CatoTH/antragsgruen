@@ -496,7 +496,7 @@ class Consultation extends ActiveRecord
         $motionIds = [];
         $items     = ConsultationAgendaItem::getSortedFromConsultation($this);
         foreach ($items as $agendaItem) {
-            $newMotions = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleMotions($includeWithdrawn));
+            $newMotions = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleIMotions($includeWithdrawn));
             foreach ($newMotions as $newMotion) {
                 $motions[]   = $newMotion;
                 $motionIds[] = $newMotion->id;
@@ -689,7 +689,7 @@ class Consultation extends ActiveRecord
         $items = ConsultationAgendaItem::getSortedFromConsultation($this);
         foreach ($items as $agendaItem) {
             $result[] = $agendaItem;
-            $motions  = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleMotions());
+            $motions  = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleIMotions());
             foreach ($motions as $motion) {
                 $ids[] = $motion->id;
                 $addMotion($motion);

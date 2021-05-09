@@ -62,7 +62,7 @@ $consultation = $controller->consultation;
         <?php
         if (count($consultation->agendaItems) > 0) {
             foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
-                if (count($item->getVisibleMotions(true)) === 0) {
+                if (count($item->getVisibleIMotions(true)) === 0) {
                     continue;
                 }
                 ?>

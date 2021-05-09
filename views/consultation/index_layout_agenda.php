@@ -32,7 +32,7 @@ echo '<h2 class="green" id="sectionAgendaTitle">' . Yii::t('con', 'Agenda') . '<
 if ($admin) {
     echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit" ';
     echo 'data-save-order="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-order-ajax'])) . '">';
-    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
+    $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
     $templateItem                 = new ConsultationAgendaItem();
     $templateItem->consultationId = $consultation->id;
     $templateItem->refresh();
@@ -58,7 +58,7 @@ if ($admin) {
     echo '</div>';
 } else {
     echo '<div class="agendaHolder">';
-    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
+    $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
     echo '</div>';
 }
 echo '</section>';
@@ -68,22 +68,21 @@ echo '</section>';
 if ($longVersion) {
     $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
     foreach ($items as $agendaItem) {
-        if (count($agendaItem->getVisibleMotions(true, false)) > 0) {
+        if (count($agendaItem->getVisibleIMotions(true, false)) > 0) {
             echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
             echo '<ul class="motionList motionListStd motionListBelowAgenda agenda' . $agendaItem->id . '">';
-            $motions = MotionSorter::getSortedIMotionsFlat($consultation, $agendaItem->getVisibleMotions());
-            foreach ($motions as $motion) {
-                if ($motion->isResolution()) {
-                    continue;
-                }
-
-                if (is_a($motion, Motion::class)) {
-                    echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
+            $imotions = MotionSorter::getSortedIMotionsFlat($consultation, $agendaItem->getVisibleIMotions());
+            foreach ($imotions as $imotion) {
+                if (is_a($imotion, Motion::class)) {
+                    if ($imotion->isResolution()) {
+                        continue;
+                    }
+                    echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmendsByDefault);
                 } else {
                     /** @var Amendment $motion */
-                    echo LayoutHelper::showStatuteAmendment($motion, $consultation);
+                    echo LayoutHelper::showStatuteAmendment($imotion, $consultation);
                 }
-                $shownMotions->addIMotion($motion);
+                $shownIMotions->addIMotion($imotion);
             }
             echo '</ul>';
         }
@@ -93,7 +92,7 @@ if ($longVersion) {
 /** @var IMotion[] $otherMotions */
 $otherMotions = [];
 foreach ($_motions as $imotion) {
-    if (!$shownMotions->hasIMotion($imotion)) {
+    if (!$shownIMotions->hasIMotion($imotion)) {
         if ($imotion->status === IMotion::STATUS_MOVED) {
             continue;
         }

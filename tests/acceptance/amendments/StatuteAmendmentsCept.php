@@ -45,13 +45,39 @@ $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 $I->click('#motionConfirmedForm .btn');
 
-$I->wantTo('check the home pages');
+$I->logout();
+$I->loginAsStdAdmin();
+
+
+$I->wantTo('set up an agenda and assign the statute amendment to it');
+
+$page = $I->gotoStdAdminPage()->gotoAppearance();
+$I->selectFueluxOption('#startLayoutType', '4');
+$page->saveForm();
+
+$I->gotoConsultationHome();
+
+$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
+$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Earth");');
+$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
+
+$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
+$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Mars");');
+$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
+
+$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
+$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("venus");');
+$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
+
+$earth = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID;
+$mars = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1;
+$venus = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 2;
+
+
+$I->wantTo('check the home pages (with no agenda item assigned)');
 $I->seeElement('.consultationIndex');
 $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
-
-$I->logout();
-$I->loginAsStdAdmin();
 
 foreach (\app\models\settings\Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
     $page = $I->gotoStdAdminPage()->gotoAppearance();
@@ -61,6 +87,30 @@ foreach (\app\models\settings\Consultation::getStartLayouts() as $layoutId => $l
     $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
     $I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 }
+
+
+$I->wantTo('check the home pages (with an agenda item assigned)');
+
+$I->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+
+$I->selectFueluxOption('#agendaItemId', $earth);
+$I->submitForm('#amendmentUpdateForm', [], 'save');
+
+$page = $I->gotoStdAdminPage()->gotoAppearance();
+$I->selectFueluxOption('#startLayoutType', '3');
+$page->saveForm();
+$I->gotoConsultationHome();
+$I->see('Our statutes', '#agendaitem_' . $earth . ' .amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->see('S1', '#agendaitem_' . $earth . ' .amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+
+
+$page = $I->gotoStdAdminPage()->gotoAppearance();
+$I->selectFueluxOption('#startLayoutType', '4');
+$page->saveForm();
+$I->gotoConsultationHome();
+$I->see('Our statutes', '.agenda' . $earth . ' .amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->see('S1', '.agenda' . $earth . ' .amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+
 
 $I->wantTo('check the amendment view');
 
