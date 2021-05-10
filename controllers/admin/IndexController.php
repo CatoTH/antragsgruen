@@ -56,7 +56,7 @@ class IndexController extends AdminBase
             $settingsInput = $post['settings'] ?? [];
             $settings      = $model->getSettings();
             $settings->saveConsultationForm($settingsInput, $post['settingsFields']);
-            $settings->setOrganisationsFromInput($post['organisations']);
+            $settings->setOrganisationsFromInput($post['organisations'] ?? []);
 
             $model->setSettings($settings);
 
@@ -98,7 +98,7 @@ class IndexController extends AdminBase
         if ($this->isPostSet('save')) {
             $post = \Yii::$app->request->post();
 
-            $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
+            $settingsInput = $post['settings'] ?? [];
             $settings      = $consultation->getSettings();
 
             if (isset($settingsInput['translationService']) && isset($post['translationSpecificService'])) {
