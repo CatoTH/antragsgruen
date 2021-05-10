@@ -140,6 +140,12 @@ class MotionController extends Base
         ]);
     }
 
+    public function actionCreateSelectStatutes($motionTypeId): string
+    {
+        $motionType = $this->consultation->getMotionType(intval($motionTypeId));
+        return $this->render('create_select_statutes', ['motionType' => $motionType]);
+    }
+
     public function actionCreatedone(string $motionSlug, string $fromMode): string
     {
         $motion = $this->consultation->getMotion($motionSlug);

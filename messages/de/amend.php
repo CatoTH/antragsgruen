@@ -56,6 +56,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'submitted_screening_email_subject' => 'Änderungsantrag eingereicht',
     'screened_hint'                     => 'Geprüft',
     'amend_for'                         => ' zu ',
+    'create_select_statutes'            => 'Es gibt mehrere Abschnitte, zu denen ein Änderungsantrag gestellt werden kann. Wähle hier den aus, den du ändern möchtest.',
     'create_explanation'                => 'Bitte ändere unten den ursprünglichen Antragstext so ab, wie du ihn gerne beschlossen haben möchtest.<br>' . "\n" .
                                            'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
                                            'Falls Du der Antragskommission über einen inhaltlichen  Änderungsantrag hinaus oder ausschließlich redaktionelle Hinweise zum Antrag geben möchtest, kannst du diese als "<strong>Redaktionelle Änderung</strong>" beifügen und entsprechend kennzeichnen.',

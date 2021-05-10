@@ -122,3 +122,34 @@ $I->see('Paragraph 1', '.inserted');
 $I->see('Zurück zur Übersicht', '#sidebar .back');
 $I->click('#sidebar .back a');
 $I->seeElement('.consultationIndex');
+
+
+$I->wantTo('check what happens if there are two statutes and amendments');
+$I->gotoStdAdminPage()->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeElement('.baseStatutesList');
+$I->click('.statuteCreateLnk');
+$I->fillField('#sections_' . AcceptanceTester::FIRST_FREE_MOTION_SECTION, 'Our second statutes');
+$sectionId = 'sections_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . '_wysiwyg';
+$I->executeJS('CKEDITOR.instances.' . $sectionId . '.setData("<h2>Another part of the statutes</h2>");');
+
+$I->submitForm('#motionEditForm', [], 'save');
+$I->submitForm('#motionConfirmForm', [], 'confirm');
+$I->click('.btnBack');
+
+$I->gotoConsultationHome();
+$I->click('#sidebar .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE . ' a');
+$I->seeElement('.createSelectStatutes');
+$I->click('.statute' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1) . ' a');
+
+$I->wait(0.5);
+$I->executeJS('CKEDITOR.instances.' . $sectionId . '.setData("<p>A completely different text</p>");');
+$I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>This is my reason</p>");');
+
+$I->fillField(['name' => 'Initiator[primaryName]'], 'My Name');
+$I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+$I->submitForm('#amendmentEditForm', [], 'save');
+$I->submitForm('#amendmentConfirmForm', [], 'confirm');
+$I->click('#motionConfirmedForm .btn');
+
+$I->see('Our second statutes', '.amendmentLink' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1));
+$I->see('S2', '.amendmentLink' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1));

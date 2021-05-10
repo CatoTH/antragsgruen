@@ -384,8 +384,7 @@ class ConsultationMotionType extends ActiveRecord
             if (count($motions) === 1) {
                 return UrlHelper::createUrl(['/amendment/create', 'motionSlug' => $motions[0]->getMotionSlug()]);
             } elseif (count($motions) > 1) {
-                // @TODO
-                return null;
+                return UrlHelper::createUrl(['/motion/create-select-statutes', 'motionTypeId' => $motions[0]->motionTypeId]);
             } else {
                 return null;
             }
