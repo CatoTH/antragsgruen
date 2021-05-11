@@ -3,13 +3,9 @@
 namespace app\models\forms;
 
 use app\components\HTMLTools;
-use app\models\db\Amendment;
-use app\models\db\Motion;
-use app\models\db\AmendmentSection;
-use app\models\db\AmendmentSupporter;
+use app\models\db\{Amendment, Motion, AmendmentSection, AmendmentSupporter};
 use app\models\exceptions\FormError;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
+use app\models\sectionTypes\{ISectionType, TextSimple};
 use yii\base\Model;
 
 class AmendmentEditForm extends Model

@@ -16,11 +16,11 @@ $I->wantTo('Create three organisations');
 
 $page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
 
-$I->executeJS('$("#organisationList").pillbox("addItems", -1, [{ "text": "Working group: environment" }]);');
-$I->executeJS('$("#organisationList").pillbox("addItems", -1, [{ "text": "Working group: infrastructure" }]);');
-$I->executeJS('$("#organisationList").pillbox("addItems", -1, [{ "text": "Working group: education" }]);');
+$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: environment");');
+$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: infrastructure");');
+$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: education");');
 $page->saveForm();
-if ($I->executeJS('return $("#tagsList").pillbox("items").length') != 3) {
+if ($I->executeJS('return document.querySelector("#organisationList select").selectize.items.length') != 3) {
     $I->fail('Invalid return from tag-List');
 }
 

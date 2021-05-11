@@ -23,6 +23,7 @@ $layout->fullWidth  = true;
 $layout->fullScreen = true;
 $layout->loadCKEditor();
 $layout->loadFuelux();
+$layout->loadSelectize();
 
 $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
 $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionUrl);

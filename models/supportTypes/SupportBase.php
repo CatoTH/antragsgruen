@@ -293,6 +293,7 @@ abstract class SupportBase
                 $initiators[] = $sup;
             }
         }
+        $amendment->refresh();
 
         $initiatorsFormattedPre = $amendment->getInitiatorsStr();
         $initiatorsFormattedPost = $amendment->getInitiatorsStrFromArray($initiators);
