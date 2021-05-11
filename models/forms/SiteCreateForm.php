@@ -3,9 +3,7 @@
 namespace app\models\forms;
 
 use app\components\Tools;
-use app\models\motionTypeTemplates\Application;
-use app\models\motionTypeTemplates\Manifesto;
-use app\models\motionTypeTemplates\PDFApplication;
+use app\models\motionTypeTemplates\{Application, Manifesto, PDFApplication};
 use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationText, Motion, MotionSupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\policies\IPolicy;
@@ -452,6 +450,7 @@ class SiteCreateForm extends Model
         $type->sidebarCreateButton = 0;
         $type->policyMotions = IPolicy::POLICY_ADMINS;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
+        $type->motionPrefix = 'S';
         if (!$this->hasAmendments) {
             $type->policyAmendments = IPolicy::POLICY_NOBODY;
         } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
@@ -480,7 +479,7 @@ class SiteCreateForm extends Model
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::NO_INITIATOR;
         $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
-        
+
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::ONLY_INITIATOR;
         $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;

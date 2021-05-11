@@ -98,3 +98,4 @@ $I->see('Satzungsänderungsanträge', '.statutesCreate' . (AcceptanceTester::FIR
 
 $I->click('.statutesCreate' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE) . ' a');
 $I->seeElement('.statuteCreateLnk');
+$I->seeInField('#typeMotionPrefix', 'S');
