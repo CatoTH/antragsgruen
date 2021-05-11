@@ -523,7 +523,7 @@ abstract class IMotion extends ActiveRecord
             case static::STATUS_REFERRED:
                 return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment) . $explStr;
             case static::STATUS_OBSOLETED_BY:
-                $refAmend = $this->getMyConsultation()->getAmendment($this->proposalComment);
+                $refAmend = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
                 if ($refAmend) {
                     $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
 

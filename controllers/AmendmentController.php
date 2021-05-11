@@ -60,7 +60,7 @@ class AmendmentController extends Base
     public function actionPdfcollection($withdrawn = 0)
     {
         $withdrawn = ($withdrawn == 1);
-        $motions   = $this->consultation->getVisibleMotionsSorted($withdrawn);
+        $motions   = $this->consultation->getVisibleIMotionsSorted($withdrawn);
         if (count($motions) == 0) {
             $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }

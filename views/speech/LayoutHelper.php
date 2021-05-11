@@ -48,7 +48,7 @@ class LayoutHelper
                 static::addQueueToSidebar($speechQueue, null, $html, $miniHtml, $currentQueue);
             }
         }
-        foreach ($consultation->getVisibleMotionsSorted() as $motion) {
+        foreach ($consultation->getVisibleIMotionsSorted() as $motion) {
             foreach ($consultation->speechQueues as $speechQueue) {
                 if ($speechQueue->motionId === $motion->id) {
                     static::addQueueToSidebar($speechQueue, $motion, $html, $miniHtml, $currentQueue);

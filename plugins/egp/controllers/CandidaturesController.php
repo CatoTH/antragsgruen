@@ -15,7 +15,7 @@ class CandidaturesController extends Base
 
                 return false;
             }
-            $motions = $agendaItem->getVisibleMotionsSorted(false);
+            $motions = $agendaItem->getVisibleIMotionsSorted(false);
             $motionType = null;
         } elseif ($motionTypeId) {
             $motionType = $this->consultation->getMotionType($motionTypeId);

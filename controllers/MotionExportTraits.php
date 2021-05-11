@@ -173,7 +173,7 @@ trait MotionExportTraits
     {
         /** @var TexTemplate $texTemplate */
         $texTemplate = null;
-        $motions     = $this->consultation->getVisibleMotionsSorted($withdrawn);
+        $motions     = $this->consultation->getVisibleIMotionsSorted($withdrawn);
         if ($motionTypeId !== '' && $motionTypeId !== '0') {
             $motionTypeIds = explode(',', $motionTypeId);
             $motions       = array_filter($motions, function (Motion $motion) use ($motionTypeIds) {

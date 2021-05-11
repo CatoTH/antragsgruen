@@ -20,7 +20,7 @@ $params->addBreadcrumb(Yii::t('admin', 'amend_pdf_list'));
 echo '<h1>' . Yii::t('admin', 'amend_pdf_list') . '</h1>
    <div class="content">';
 
-$motions = $consultation->getVisibleMotionsSorted($withdrawn);
+$motions = $consultation->getVisibleIMotionsSorted($withdrawn);
 foreach ($motions as $motion) {
     $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
     if (count($amendments) > 0) {

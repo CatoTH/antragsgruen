@@ -12,15 +12,15 @@ $I->dontSee('Themenbereich');
 $I->wantTo('Create some tags');
 $I->loginAndGotoStdAdminPage()->gotoConsultation();
 
-if ($I->executeJS('return $("#tagsList").pillbox("items").length') != 3) {
+if ($I->executeJS('return document.querySelector("#tagsList select").selectize.items.length') != 3) {
     $I->fail('Invalid return from tag-List');
 }
-$I->executeJS('$("#tagsList").pillbox("addItems", -1, [{ "text": "Economy" }]);');
+$I->executeJS('document.querySelector("#tagsList select").selectize.createItem("Economy");');
 
 $I->submitForm('#consultationSettingsForm', [], 'save');
 $I->see('Economy');
 
-$I->executeJS('$("#tagsList").pillbox("addItems", -1, [{ "text": "Environment" }]);');
+$I->executeJS('document.querySelector("#tagsList select").selectize.createItem("Environment");');
 $I->submitForm('#consultationSettingsForm', [], 'save');
 $I->see('Economy');
 $I->see('Environment');

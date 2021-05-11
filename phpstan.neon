@@ -1,3 +1,8 @@
+# php -d memory_limit=1G vendor/bin/phpstan.phar analyse --level 7 --generate-baseline
+# php -d memory_limit=1G vendor/bin/phpstan.phar analyse --level 7
+# includes:
+#	- phpstan-baseline.neon
+#
 parameters:
     scanDirectories:
       - vendor

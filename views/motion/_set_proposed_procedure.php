@@ -216,7 +216,7 @@ $selectedTags = $motion->getProposedProcedureTags();
     <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
     <?php
     $options = ['-'];
-    foreach ($motion->getMyConsultation()->getVisibleMotionsSorted(false) as $otherMotion) {
+    foreach ($motion->getMyConsultation()->getVisibleIMotionsSorted(false) as $otherMotion) {
         if ($otherMotion->id === $motion->id) {
             continue;
         }

@@ -33,7 +33,7 @@ $json = [
             'url_json' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
             'url_html' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)),
         ];
-    }, $consultation->getVisibleMotionsSorted(false)),
+    }, $consultation->getVisibleIMotionsSorted(false)),
     'url_json' => UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/rest')),
     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')),
 ];

@@ -220,7 +220,7 @@ $selectedTags = $amendment->getProposedProcedureTags();
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
-        foreach ($amendment->getMyConsultation()->getVisibleMotionsSorted(false) as $otherMotion) {
+        foreach ($amendment->getMyConsultation()->getVisibleIMotionsSorted(false) as $otherMotion) {
             if ($otherMotion->id == $amendment->motionId) {
                 continue;
             }

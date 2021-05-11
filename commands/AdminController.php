@@ -40,7 +40,7 @@ class AdminController extends Controller
     {
         if ($subdomain == '' || $consultation == '') {
             $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
-            return;
+            return null;
         }
         /** @var Site|null $site */
         $site = Site::findOne(['subdomain' => $subdomain]);

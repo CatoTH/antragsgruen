@@ -124,7 +124,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return Motion[]
+     * @return IMotion[]
      */
     public function getMyIMotions(): array
     {
@@ -373,7 +373,7 @@ class ConsultationAgendaItem extends ActiveRecord
     /**
      * @return IMotion[]
      */
-    public function getVisibleMotionsSorted(bool $withdrawnAreVisible = true): array
+    public function getVisibleIMotionsSorted(bool $withdrawnAreVisible = true): array
     {
         $motions = $this->getVisibleIMotions($withdrawnAreVisible);
 

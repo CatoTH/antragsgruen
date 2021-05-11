@@ -880,6 +880,16 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
+    public static function getNewNumberForAmendment(Amendment $amendment): string
+    {
+        if ($amendment->getMyMotionType()->amendmentsOnly) {
+            return $amendment->getMyConsultation()->getNextMotionPrefix($amendment->getMyMotionType()->id);
+        } else {
+            $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
+            return $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
+        }
+    }
+
     public function setInitialSubmitted(): void
     {
         if ($this->needsCollectionPhase()) {
@@ -889,12 +899,7 @@ class Amendment extends IMotion implements IRSSItem
         } else {
             $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
             if ($this->titlePrefix === '') {
-                if ($this->getMyMotionType()->amendmentsOnly) {
-                    $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->getMyMotionType()->id);
-                } else {
-                    $numbering = $this->getMyConsultation()->getAmendmentNumbering();
-                    $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
-                }
+                $this->titlePrefix = Amendment::getNewNumberForAmendment($this);
             }
         }
         $this->save();
@@ -906,12 +911,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix === '') {
-            if ($this->getMyMotionType()->amendmentsOnly) {
-                $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->getMyMotionType()->id);
-            } else {
-                $numbering = $this->getMyConsultation()->getAmendmentNumbering();
-                $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
-            }
+            $this->titlePrefix = Amendment::getNewNumberForAmendment($this);
         }
         $this->save(true);
         $this->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($this));
@@ -1150,7 +1150,7 @@ class Amendment extends IMotion implements IRSSItem
 
         // This amendment is obsoleted by an amendment with a modification proposal
         if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
-            $obsoletedBy = $this->getMyConsultation()->getAmendment($this->proposalComment);
+            $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
                 return $obsoletedBy->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
             }
@@ -1185,7 +1185,7 @@ class Amendment extends IMotion implements IRSSItem
 
         // This amendment is obsoleted by an amendment with a modification proposal
         if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
-            $obsoletedBy = $this->getMyConsultation()->getAmendment($this->proposalComment);
+            $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
                 return $obsoletedBy->getAlternativeProposaltextReference($internalNestingLevel + 1);
             }

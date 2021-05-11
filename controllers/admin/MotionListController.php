@@ -222,7 +222,7 @@ class MotionListController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list_all', [
-            'items' => $this->consultation->getAgendaWithMotions(),
+            'items' => $this->consultation->getAgendaWithIMotions(),
         ]);
     }
 
@@ -253,7 +253,7 @@ class MotionListController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $imotions = [];
-        foreach ($this->consultation->getVisibleMotionsSorted($withdrawn) as $motion) {
+        foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $motion) {
             if ($motion->motionTypeId === $motionTypeId) {
                 if ($motionType->amendmentsOnly) {
                     $imotions = array_merge($imotions, $motion->getVisibleAmendments($withdrawn));
@@ -308,7 +308,7 @@ class MotionListController extends AdminBase
         error_reporting(E_ALL & ~E_DEPRECATED); // PHPExcel ./. PHP 7
 
         $motions = [];
-        foreach ($this->consultation->getVisibleMotionsSorted($withdrawn) as $motion) {
+        foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $motion) {
             if ($motion->motionTypeId == $motionTypeId) {
                 $motions[] = $motion;
             }
@@ -346,7 +346,7 @@ class MotionListController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $motions = [];
-        foreach ($this->consultation->getVisibleMotionsSorted(false) as $motion) {
+        foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
             if ($motion->motionTypeId == $motionTypeId) {
                 $motions[] = $motion;
             }

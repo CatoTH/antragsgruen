@@ -537,6 +537,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'todo_amendment_screen' => 'Änderungsantrag freischalten',
     'todo_comment_screen'   => 'Kommentar freischalten',
     'todo_comment_to'       => 'Zu',
+    'todo_statutes_create'  => 'Satzung hinterlegen',
 
     'cons_new_created'            => 'Die neue Veranstaltung wurde angelegt.',
     'cons_std_set_done'           => 'Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.',

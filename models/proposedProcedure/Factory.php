@@ -43,7 +43,7 @@ class Factory
             }
             $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $agendaItem->title;
             $item  = new Agenda($idCount++, $title, $agendaItem);
-            foreach ($agendaItem->getVisibleMotionsSorted(true) as $motion) {
+            foreach ($agendaItem->getVisibleIMotionsSorted(true) as $motion) {
                 if (in_array($motion->id, $handledMotions)) {
                     continue;
                 }
@@ -59,32 +59,36 @@ class Factory
                     $handledVotings[] = $votingBlock->id;
                 }
 
-                foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
-                    if (in_array($amendment->id, $handledAmends)) {
-                        continue;
-                    }
-                    if ($amendment->votingBlockId > 0 && $amendment->votingBlock) {
-                        $votingBlock = $amendment->votingBlock;
-                        if (in_array($votingBlock->id, $handledVotings)) {
+                if (is_a($motion, Motion::class)) {
+                    foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
+                        if (in_array($amendment->id, $handledAmends)) {
                             continue;
                         }
-                        $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
+                        if ($amendment->votingBlockId > 0 && $amendment->votingBlock) {
+                            $votingBlock = $amendment->votingBlock;
+                            if (in_array($votingBlock->id, $handledVotings)) {
+                                continue;
+                            }
+                            $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
+                        }
                     }
                 }
             }
 
             $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
-            foreach ($agendaItem->getVisibleMotionsSorted(true) as $motion) {
+            foreach ($agendaItem->getVisibleIMotionsSorted(true) as $motion) {
                 if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
                     continue;
                 }
                 $block->items[]   = $motion;
                 $handledMotions[] = $motion->id;
 
-                foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
-                    $block->items[]  = $amendment;
-                    $handledAmends[] = $amendment->id;
+                if (is_a($motion, Motion::class)) {
+                    foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
+                        $block->items[] = $amendment;
+                        $handledAmends[] = $amendment->id;
+                    }
                 }
             }
             if (count($block->items) > 0) {
@@ -100,7 +104,7 @@ class Factory
             // Attach motions that haven't been found in the agenda at the end of the document (if no filter is set)
 
             $unhandledMotions = [];
-            foreach ($this->consultation->getVisibleMotionsSorted(true) as $motion) {
+            foreach ($this->consultation->getVisibleIMotionsSorted(true) as $motion) {
                 if (!in_array($motion->id, $handledMotions)) {
                     $unhandledMotions[] = $motion;
                 }
@@ -194,7 +198,7 @@ class Factory
             case ConsultationSettings::START_LAYOUT_STD:
             case ConsultationSettings::START_LAYOUT_TAGS:
             default:
-                $motions = $this->consultation->getVisibleMotionsSorted(true);
+                $motions = $this->consultation->getVisibleIMotionsSorted(true);
                 return $this->createFromMotions($motions);
         }
     }

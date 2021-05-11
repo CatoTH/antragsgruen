@@ -30,7 +30,7 @@ class AmendmentController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list', [
-            'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn),
             'textCombined' => $textCombined,
             'withdrawn'    => $withdrawn,
         ]);
@@ -55,7 +55,7 @@ class AmendmentController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list_short', [
-            'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn),
             'textCombined' => $textCombined,
             'maxLen'       => $maxLen,
             'withdrawn'    => $withdrawn,
@@ -340,7 +340,7 @@ class AmendmentController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $amendments = [];
-        foreach ($this->consultation->getVisibleMotionsSorted(false) as $motion) {
+        foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
             foreach ($motion->getVisibleAmendmentsSorted(false) as $amendment) {
                 $amendments[] = $amendment;
             }
