@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\{DateTools, Tools};
+use app\components\{DateTools, Tools, UrlHelper};
 use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
@@ -10,15 +10,14 @@ use app\views\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $consultationId
  * @property string $titleSingular
  * @property string $titlePlural
  * @property string $createTitle
- * @property string $motionPrefix
+ * @property string|null $motionPrefix
  * @property int $position
+ * @property int $amendmentsOnly
  * @property int $pdfLayout
  * @property int|null $texTemplateId
  * @property string $deadlines
@@ -314,15 +313,15 @@ class ConsultationMotionType extends ActiveRecord
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'sidebarCreateButton'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'required'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'status'], 'required'],
-            [['amendmentMultipleParagraphs', 'position'], 'required'],
+            [['amendmentMultipleParagraphs', 'position', 'amendmentsOnly'], 'required'],
 
-            [['id', 'consultationId', 'position'], 'number'],
+            [['id', 'consultationId', 'position', 'amendmentsOnly'], 'number'],
             [['status', 'amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'number'],
             [['initiatorsCanMergeAmendments', 'pdfLayout', 'sidebarCreateButton'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
-            [['motionPrefix', 'position', 'supportTypeMotions', 'supportTypeAmendments'], 'safe'],
+            [['motionPrefix', 'position', 'amendmentsOnly', 'supportTypeMotions', 'supportTypeAmendments'], 'safe'],
             [['pdfLayout', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments'], 'safe'],
             [['sidebarCreateButton'], 'safe']
@@ -358,6 +357,40 @@ class ConsultationMotionType extends ActiveRecord
             }
         }
         return $return;
+    }
+
+    /**
+     * @return Motion[]
+     */
+    public function getAmendableOnlyMotions(bool $allowAdmins = true, bool $assumeLoggedIn = false): array
+    {
+        $return = [];
+        foreach ($this->motions as $motion) {
+            if (in_array($motion->status, $this->getConsultation()->getStatuses()->getUnreadableStatuses())) {
+                continue;
+            }
+            if (!$this->getAmendmentPolicy()->checkCurrUserMotion($allowAdmins, $assumeLoggedIn)) {
+                continue;
+            }
+            $return[] = $motion;
+        }
+        return $return;
+    }
+
+    public function getCreateLink(): ?string
+    {
+        if ($this->amendmentsOnly) {
+            $motions = $this->getAmendableOnlyMotions();
+            if (count($motions) === 1) {
+                return UrlHelper::createUrl(['/amendment/create', 'motionSlug' => $motions[0]->getMotionSlug()]);
+            } elseif (count($motions) > 1) {
+                return UrlHelper::createUrl(['/motion/create-select-statutes', 'motionTypeId' => $motions[0]->motionTypeId]);
+            } else {
+                return null;
+            }
+        } else {
+            return UrlHelper::createUrl(['/motion/create', 'motionTypeId' => $this->id]);
+        }
     }
 
     public function isCompatibleTo(ConsultationMotionType $cmpMotionType): bool

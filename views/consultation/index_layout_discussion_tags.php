@@ -1,7 +1,7 @@
 <?php
 
 use app\components\{MotionSorter, Tools, UrlHelper};
-use app\models\db\{Consultation, ConsultationSettingsTag, Motion};
+use app\models\db\{Consultation, ConsultationSettingsTag, IMotion, Motion};
 use yii\helpers\Html;
 
 /**
@@ -13,16 +13,16 @@ use yii\helpers\Html;
 $layout->addJS('npm/isotope.pkgd.min.js');
 $showPrefix = !$consultation->getSettings()->hideTitlePrefix;
 
-list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
+list($motions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
     echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }
 
-$motions = array_filter($motions, function(Motion $motion) {
+$motions = array_filter($motions, function(IMotion $motion) {
     return !in_array($motion->status, $motion->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses(false));
 });
 if (!$showPrefix) {
-    usort($motions, function (Motion $motion1, Motion $motion2) {
+    usort($motions, function (IMotion $motion1, IMotion $motion2) {
         return $motion2->getTimestamp() <=> $motion1->getTimestamp();
     });
 }
@@ -139,7 +139,11 @@ if (count($comments) > 0) {
                 }
 
                 $commentCount   = $motion->getNumOfAllVisibleComments(false);
-                $amendmentCount = count($motion->getVisibleAmendments(false));
+                if (is_a($motion, Motion::class)) {
+                    $amendmentCount = count($motion->getVisibleAmendments(false));
+                } else {
+                    $amendmentCount = 0;
+                }
 
                 echo '<li class="' . implode(' ', $cssClasses) . '" ' .
                      'data-created="' . $motion->getTimestamp() . '" ' .
@@ -158,8 +162,15 @@ if (count($comments) > 0) {
                 echo '</p>' . "\n";
                 echo '<p class="title">' . "\n";
 
-                $motionUrl = UrlHelper::createMotionUrl($motion);
-                echo '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
+                if (is_a($motion, Motion::class)) {
+                    $motionUrl = UrlHelper::createMotionUrl($motion);
+                    $className = 'motionLink' . $motion->id;
+                } else {
+                    /** @var \app\models\db\Amendment $motionUrl */
+                    $motionUrl = UrlHelper::createAmendmentUrl($motion);
+                    $className = 'amendmentLink' . $motion->id;
+                }
+                echo '<a href="' . Html::encode($motionUrl) . '" class="' . $className . '">';
 
                 echo ' <span class="motionTitle">' . Html::encode($motion->getTitleWithPrefix()) . '</span>';
 

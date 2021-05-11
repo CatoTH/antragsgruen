@@ -40,8 +40,10 @@ return [
 
     'screened_hint'                => 'Screened',
     'amend_for'                    => ' to ',
+    'create_select_statutes'       => 'There is more than one section to amend. Please choose which one you want to change.',
     'create_explanation'           => 'Please amend the motion as you like. Explain in the  &quot;Reason&quot; section below.<br>' . "\n" .
                                       'Please note, you can request &quot;Editorial changes&quot;.',
+    'create_explanation_statutes'  => 'Please amend the statutes as you like. Explain in the  &quot;Reason&quot; section below.',
     'editorial_hint'               => 'Editorial hint',
     'global_alternative'           => 'Global alternative',
     'merge_init_title'             => 'Refactor "%NAME%"',
@@ -302,7 +304,7 @@ return [
     'proposal_send_again'        => 'Again',
     'proposal_send_again_conf'   => 'Do you want to send the confirmation mail again?',
     'proposal_set_feedback'      => 'Set as confirmed',
-    'proposal_set_feedback_conf' => 'Did the initiator confirm this proposal?',
+    'proposal_set_feedback_conf' => 'Did the proposer confirm this proposal?',
     'proposal_notified'          => 'The proposer has been notified at %DATE%.',
     'proposal_email_title'       => 'Amendment %PREFIX%: Proposed procedure',
     'proposal_email_modified'    => "Hi %NAME_GIVEN%,\n\n" .

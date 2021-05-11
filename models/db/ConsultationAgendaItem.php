@@ -111,7 +111,7 @@ class ConsultationAgendaItem extends ActiveRecord
     /**
      * @return Motion[]
      */
-    public function getMyMotions()
+    public function getMyMotions(): array
     {
         $motions = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
@@ -124,23 +124,44 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return Motion[]
+     * @return IMotion[]
      */
-    public function getMotionsFromConsultation()
+    public function getMyIMotions(): array
+    {
+        $imotions = [];
+        foreach ($this->getMyConsultation()->motions as $motion) {
+            if ($motion->agendaItemId === $this->id) {
+                $imotions[] = $motion;
+            }
+            foreach ($motion->amendments as $amendment) {
+                if ($amendment->agendaItemId === $this->id) {
+                    $imotions[] = $amendment;
+                }
+            }
+        }
+
+        return $imotions;
+    }
+
+    /**
+     * @return IMotion[]
+     */
+    public function getIMotionsFromConsultation(): array
     {
         $return = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
             if (in_array($motion->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
                 continue;
             }
-            if ($motion->agendaItemId === null || $motion->agendaItemId !== $this->id) {
-                continue;
-            }
-            if (count($motion->getVisibleReplacedByMotions()) > 0 && $motion->status !== Motion::STATUS_MOVED) {
+            if ($motion->agendaItemId === $this->id && count($motion->getVisibleReplacedByMotions()) === 0 && $motion->status !== Motion::STATUS_MOVED) {
                 // In case of "moved / copied", the whole point of copying it instead of just overwriting the old motion is so that it is still visible
-                continue;
+                $return[] = $motion;
             }
-            $return[] = $motion;
+            foreach ($motion->getVisibleAmendmentsSorted() as $amendment) {
+                if ($amendment->agendaItemId === $this->id) {
+                    $return[] = $amendment;
+                }
+            }
         }
 
         return $return;
@@ -330,12 +351,9 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @param bool $withdrawnAreVisible
-     * @param bool $resolutionsAreVisible
-     *
-     * @return Motion[]
+     * @return IMotion[]
      */
-    public function getVisibleMotions($withdrawnAreVisible = true, $resolutionsAreVisible = true)
+    public function getVisibleIMotions(bool $withdrawnAreVisible = true, bool $resolutionsAreVisible = true): array
     {
         $statuses = $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
         if (!$resolutionsAreVisible) {
@@ -343,9 +361,9 @@ class ConsultationAgendaItem extends ActiveRecord
             $statuses[] = IMotion::STATUS_RESOLUTION_FINAL;
         }
         $return = [];
-        foreach ($this->getMyMotions() as $motion) {
-            if (!in_array($motion->status, $statuses)) {
-                $return[] = $motion;
+        foreach ($this->getMyIMotions() as $imotion) {
+            if (!in_array($imotion->status, $statuses)) {
+                $return[] = $imotion;
             }
         }
 
@@ -353,15 +371,13 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @param bool $withdrawnAreVisible
-     *
-     * @return Motion[]
+     * @return IMotion[]
      */
-    public function getVisibleMotionsSorted($withdrawnAreVisible = true)
+    public function getVisibleIMotionsSorted(bool $withdrawnAreVisible = true): array
     {
-        $motions = $this->getVisibleMotions($withdrawnAreVisible);
+        $motions = $this->getVisibleIMotions($withdrawnAreVisible);
 
-        return MotionSorter::getSortedMotionsFlat($this->getMyConsultation(), $motions);
+        return MotionSorter::getSortedIMotionsFlat($this->getMyConsultation(), $motions);
     }
 
 

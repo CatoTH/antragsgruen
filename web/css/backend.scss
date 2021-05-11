@@ -763,6 +763,9 @@ label.legend {
 }
 
 #motionUpdateForm {
+  .urlSlugHolder .shower {
+    margin-top: 7px;
+  }
   #motionTextEditCaller {
     text-align: center;
   }
@@ -787,6 +790,12 @@ label.legend {
 }
 
 #amendmentUpdateForm {
+  .control-label {
+    font-weight: bold;
+  }
+  .motionEditLinkHolder {
+    padding-top: 7px;
+  }
   #amendmentTextEditCaller {
     text-align: center;
   }
@@ -806,6 +815,11 @@ label.legend {
 }
 
 .adminTypeForm {
+  .statuteCreateLnk {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
   .submitRow {
     text-align: center;
   }

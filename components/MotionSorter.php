@@ -116,10 +116,10 @@ class MotionSorter
 
 
     /**
-     * @param Motion[] $motions
-     * @return array|array[]
+     * @param IMotion[] $motions
+     * @return IMotion[]
      */
-    public static function getSortedMotionsStd(Consultation $consultation, $motions)
+    public static function getSortedMotionsStd(Consultation $consultation, $motions): array
     {
         $motionsSorted   = [];
         $motionsNoPrefix = [];
@@ -157,23 +157,23 @@ class MotionSorter
     }
 
     /**
-     * @param Consultation $consultation
-     * @param Motion[] $motions
+     * @param IMotion[] $imotions
      * @return array|array[]
      */
-    public static function getSortedMotionsAgenda(Consultation $consultation, $motions)
+    public static function getSortedIMotionsAgenda(Consultation $consultation, $imotions)
     {
         $motionsSorted       = [];
         $foundMotionIds      = [];
         $motionIdsToBeSorted = [];
 
-        foreach ($motions as $motion) {
-            $motionIdsToBeSorted[] = $motion->id;
+        foreach ($imotions as $imotion) {
+            $motionIdsToBeSorted[] = $imotion->id;
+            // @TODO A differenciation between motions and amendments will be necessary
         }
 
         $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
         foreach ($items as $agendaItem) {
-            $agendaMotions = $agendaItem->getVisibleMotions();
+            $agendaMotions = $agendaItem->getVisibleIMotions();
             foreach ($agendaMotions as $agendaMotion) {
                 if (!in_array($agendaMotion->id, $motionIdsToBeSorted)) {
                     continue;
@@ -186,7 +186,7 @@ class MotionSorter
                 $foundMotionIds[]                                = $agendaMotion->id;
             }
         }
-        foreach ($motions as $motion) {
+        foreach ($imotions as $motion) {
             if (!in_array($motion->id, $foundMotionIds)) {
                 if (!isset($motionsSorted['noAgenda'])) {
                     $motionsSorted['noAgenda'] = [];
@@ -204,30 +204,28 @@ class MotionSorter
     }
 
     /**
-     * @param Consultation $consultation
-     * @param Motion[] $motions
+     * @param IMotion[] $imotions
      * @return array|array[]
      */
-    public static function getSortedMotions(Consultation $consultation, $motions)
+    public static function getSortedIMotions(Consultation $consultation, $imotions)
     {
         switch ($consultation->getSettings()->startLayoutType) {
             case \app\models\settings\Consultation::START_LAYOUT_AGENDA:
             case \app\models\settings\Consultation::START_LAYOUT_AGENDA_LONG:
-                return static::getSortedMotionsAgenda($consultation, $motions);
+                return static::getSortedIMotionsAgenda($consultation, $imotions);
             // @TODO Tags?
             default:
-                return static::getSortedMotionsStd($consultation, $motions);
+                return static::getSortedMotionsStd($consultation, $imotions);
         }
     }
 
     /**
-     * @param Consultation $consultation
-     * @param Motion[] $motions
-     * @return Motion[]
+     * @param IMotion[] $imotions
+     * @return IMotion[]
      */
-    public static function getSortedMotionsFlat(Consultation $consultation, $motions)
+    public static function getSortedIMotionsFlat(Consultation $consultation, $imotions)
     {
-        $motions2   = static::getSortedMotions($consultation, $motions);
+        $motions2   = static::getSortedIMotions($consultation, $imotions);
         $motionsOut = [];
         foreach ($motions2 as $vals) {
             foreach ($vals as $mot) {
@@ -238,7 +236,6 @@ class MotionSorter
     }
 
     /**
-     * @param Consultation $consultation
      * @param Amendment[] $amendments
      * @return Amendment[]
      * @throws \app\models\exceptions\Internal
@@ -257,14 +254,18 @@ class MotionSorter
 
     /**
      * @param Motion[] $allMotions
-     * @return Motion[][]
+     * @return IMotion[][]
      */
-    public static function getMotionsAndResolutions($allMotions)
+    public static function getIMotionsAndResolutions($allMotions)
     {
         $motions     = [];
         $resolutions = [];
         foreach ($allMotions as $mot) {
-            if ($mot->isResolution()) {
+            if ($mot->getMyMotionType()->amendmentsOnly) {
+                foreach ($mot->amendments as $amendment) {
+                    $motions[] = $amendment;
+                }
+            } elseif ($mot->isResolution()) {
                 if (count($mot->getVisibleReplacedByMotions()) === 0) {
                     $resolutions[] = $mot;
                 }

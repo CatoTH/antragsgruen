@@ -22,7 +22,7 @@ class AmendmentController extends AdminBase
      */
     public function actionOdslist($textCombined = false, $withdrawn = 0)
     {
-        $withdrawn = (IntVal($withdrawn) === 1);
+        $withdrawn = (intval($withdrawn) === 1);
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
@@ -30,7 +30,7 @@ class AmendmentController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list', [
-            'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn),
             'textCombined' => $textCombined,
             'withdrawn'    => $withdrawn,
         ]);
@@ -55,7 +55,7 @@ class AmendmentController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list_short', [
-            'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn),
             'textCombined' => $textCombined,
             'maxLen'       => $maxLen,
             'withdrawn'    => $withdrawn,
@@ -86,6 +86,9 @@ class AmendmentController extends AdminBase
         $zip       = new ZipWriter();
         $hasLaTeX  = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
                     $file = LayoutHelper::createPdfLatex($amendment);
@@ -115,6 +118,9 @@ class AmendmentController extends AdminBase
         $withdrawn = (IntVal($withdrawn) === 1);
         $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 $content = $this->renderPartial('@app/views/amendment/view_odt', ['amendment' => $amendment]);
                 $zip->addFile($amendment->getFilenameBase(false) . '.odt', $content);
@@ -289,6 +295,14 @@ class AmendmentController extends AdminBase
             if ($amdat['dateResolution'] !== '') {
                 $amendment->dateResolution = Tools::dateBootstraptime2sql($amdat['dateResolution']);
             }
+            $amendment->agendaItemId = null;
+            if (isset($amdat['agendaItemId'])) {
+                foreach ($this->consultation->agendaItems as $agendaItem) {
+                    if ($agendaItem->id === intval($amdat['agendaItemId'])) {
+                        $amendment->agendaItemId = intval($amdat['agendaItemId']);
+                    }
+                }
+            }
 
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
                 \Yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
@@ -326,7 +340,7 @@ class AmendmentController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $amendments = [];
-        foreach ($this->consultation->getVisibleMotionsSorted(false) as $motion) {
+        foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
             foreach ($motion->getVisibleAmendmentsSorted(false) as $amendment) {
                 $amendments[] = $amendment;
             }

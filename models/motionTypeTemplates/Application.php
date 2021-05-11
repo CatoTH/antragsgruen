@@ -18,6 +18,7 @@ trait Application
         $type->titlePlural                  = \Yii::t('structure', 'preset_app_plural');
         $type->createTitle                  = \Yii::t('structure', 'preset_app_call');
         $type->position                     = 0;
+        $type->amendmentsOnly               = 0;
         $type->policyMotions                = IPolicy::POLICY_ALL;
         $type->policyAmendments             = IPolicy::POLICY_NOBODY;
         $type->policyComments               = IPolicy::POLICY_NOBODY;

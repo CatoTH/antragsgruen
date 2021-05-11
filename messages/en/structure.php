@@ -98,6 +98,12 @@ return [
     'preset_motion_text'     => 'Motion text',
     'preset_motion_reason'   => 'Reason',
 
+    'preset_statutes_singular' => 'Statutes amendment',
+    'preset_statutes_plural'   => 'Statutes amendments',
+    'preset_statutes_call'     => 'Statutes amendment',
+    'preset_statutes_title'    => 'Title',
+    'preset_statutes_text'     => 'Statutes',
+
     'role_initiator' => 'Proposer',
     'role_supporter' => 'Supporter',
     'role_likes'     => 'Likes',
@@ -179,6 +185,7 @@ return [
     'supp_only_initiators'    => 'Only proposer',
     'supp_given_by_initiator' => 'Supporters given by proposer',
     'supp_collect_before'     => 'Collecting phase before publication (not for organizations)',
+    'supp_no_initiator'       => 'No proposer',
 
     'activity_none'                       => 'No activity yet',
     'activity_someone'                    => 'Someone',

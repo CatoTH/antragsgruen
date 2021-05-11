@@ -135,6 +135,7 @@ class MessageSource extends \yii\i18n\MessageSource
             ],
             'amend' => [
                 'create_explanation',
+                'create_explanation_statutes',
                 'support_collection_hint',
                 'support_collection_reached_hint',
                 'support_collect_explanation',
@@ -182,7 +183,7 @@ class MessageSource extends \yii\i18n\MessageSource
     /**
      * Loads the message translation for the specified language and category or returns null if file doesn't exist.
      *
-     * @param $messageFile string path to message file
+     * @param string $messageFile path to message file
      * @return array|null array of messages or null if file not found
      */
     protected function loadMessagesFromFile(string $messageFile): ?array
@@ -200,9 +201,6 @@ class MessageSource extends \yii\i18n\MessageSource
     }
 
     /**
-     * @param string $category
-     * @param string $language
-     * @return array
      * @throws Internal
      */
     public function getBaseMessages(string $category, string $language): array

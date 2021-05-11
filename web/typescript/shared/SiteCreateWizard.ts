@@ -32,6 +32,7 @@ const FUNCTIONALITY_MANIFESTO = 2;
 const FUNCTIONALITY_APPLICATIONS = 3;
 const FUNCTIONALITY_AGENDA = 4;
 const FUNCTIONALITY_SPEECH_LISTS = 5;
+const FUNCTIONALITY_STATUTE_AMENDMENTS = 6;
 
 class SiteCreateWizard {
     private firstPanel: string;
@@ -116,11 +117,14 @@ class SiteCreateWizard {
         $panel.addClass("active").removeClass("inactive");
         this.$activePanel = $panel;
 
-        if ($panel.find("input:checked").length > 0) {
-            $panel.find("input:checked").trigger("focus");
-        } else if ($panel.find("button[type=submit]").length > 0) {
-            $panel.find("button[type=submit]").trigger("focus");
-        }
+        // Workaround for Safari - it sometimes reloaded the page when clicking the "next" button
+        window.setTimeout(() => {
+            if ($panel.find("input:checked").length > 0) {
+                $panel.find("input:checked").trigger("focus");
+            } else if ($panel.find("button[type=submit]").length > 0) {
+                $panel.find("button[type=submit]").trigger("focus");
+            }
+        }, 100);
 
         try {
             let isCorrect = (window.location.hash == "#" + $panel.attr("id"));
@@ -136,7 +140,8 @@ class SiteCreateWizard {
     };
 
     private hasMotionlikeType (data: WizardState) {
-        return data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1;
+        return data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1
+             || data.functionality.indexOf(FUNCTIONALITY_STATUTE_AMENDMENTS) !== -1;
     }
 
     public panelConditions = {

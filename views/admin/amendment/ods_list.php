@@ -32,6 +32,9 @@ $currCol = $firstCol = 1;
 $hasAgendaItems = false;
 $hasResponsibilities = false;
 foreach ($motions as $motion) {
+    if ($motion->getMyMotionType()->amendmentsOnly) {
+        continue;
+    }
     if ($motion->agendaItem) {
         $hasAgendaItems = true;
     }
@@ -112,6 +115,9 @@ $doc->drawBorder(1, $firstCol, 2, $LAST_COL, 1.5);
 $row = 3;
 
 foreach ($motions as $motion) {
+    if ($motion->getMyMotionType()->amendmentsOnly) {
+        continue;
+    }
     $doc->setMinRowHeight($row, 2);
 
     $row++;

@@ -53,6 +53,8 @@ return [
     'submitted_create'              => 'Created %TITLE%',
     'submitted_submit'              => 'Submitted %TITLE%',
     'submitted_publish'             => 'Published %TITLE%',
+    'created_statutes'              => 'Created statutes',
+    'created_statutes_done'         => 'The statutes have been saved. Users can now create amendments for them (if the permissions have been granted).',
     'created_bread_create'          => 'Created',
     'created_bread_submit'          => 'Submitted',
     'created_bread_publish'         => 'Published',
@@ -231,4 +233,6 @@ return [
     'goto_line'     => 'Go to line',
     'goto_line_go'  => 'Go',
     'goto_line_err' => 'Line not found',
+
+    'statutes_base_head' => 'Base text',
 ];

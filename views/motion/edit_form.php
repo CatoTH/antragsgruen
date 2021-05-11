@@ -17,7 +17,11 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-if ($mode === 'create') {
+$isAmendmentsOnly = !!$form->motionType->amendmentsOnly;
+
+if ($isAmendmentsOnly) {
+    $this->title = $form->motionType->titleSingular . ': ' . Yii::t('motion', 'statutes_base_head');
+} elseif ($mode === 'create') {
     $this->title = $form->motionType->createTitle;
 } else {
     $this->title = str_replace('%TYPE%', $form->motionType->titleSingular, Yii::t('motion', 'motion_edit'));
@@ -41,7 +45,9 @@ echo '<div class="form content hideIfEmpty">';
 echo $controller->showErrors();
 
 $publicPolicies = [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_GRUENES_NETZ];
-echo str_replace('%HOME%', UrlHelper::homeUrl(), $form->motionType->getConsultationTextWithFallback('motion', 'create_explanation')) . '<br><br>';
+if (!$isAmendmentsOnly) {
+    echo str_replace('%HOME%', UrlHelper::homeUrl(), $form->motionType->getConsultationTextWithFallback('motion', 'create_explanation')) . '<br><br>';
+}
 
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
@@ -60,7 +66,7 @@ if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePubli
 
 
 $motionPolicy = $form->motionType->getMotionPolicy();
-if (!in_array($motionPolicy::getPolicyID(), $publicPolicies)) {
+if (!in_array($motionPolicy::getPolicyID(), $publicPolicies) && !$isAmendmentsOnly) {
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         Yii::t('motion', 'create_prerequisites'), '</div>';
 
@@ -88,7 +94,7 @@ echo Html::beginForm('', 'post', [
 
 echo '<div class="content">';
 
-if (count($form->motionType->agendaItems) > 0) {
+if (count($form->motionType->agendaItems) > 0 && !$isAmendmentsOnly) {
     echo '<fieldset class="form-group fuelux">';
     echo '<legend class="legend">' . Yii::t('motion', 'agenda_item') . '</label>';
     if ($form->agendaItem) {
@@ -105,39 +111,42 @@ if (count($form->motionType->agendaItems) > 0) {
     echo '</fieldset>';
 }
 
-/** @var ConsultationSettingsTag[] $tags */
-$tags = [];
-foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-    $tags[$tag->id] = $tag;
-}
 
-if (count($tags) === 1) {
-    $keys = array_keys($tags);
-    echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
-} elseif (count($tags) > 0) {
-    if ($consultation->getSettings()->allowMultipleTags) {
-        echo '<fieldset class="form-group multipleTagsGroup">';
-        echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend>';
-        foreach ($tags as $id => $tag) {
-            echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
-            if (in_array($id, $form->tags)) {
-                echo ' checked';
+if (!$isAmendmentsOnly) {
+    /** @var ConsultationSettingsTag[] $tags */
+    $tags = [];
+    foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+        $tags[$tag->id] = $tag;
+    }
+
+    if (count($tags) === 1) {
+        $keys = array_keys($tags);
+        echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
+    } elseif (count($tags) > 0) {
+        if ($consultation->getSettings()->allowMultipleTags) {
+            echo '<fieldset class="form-group multipleTagsGroup">';
+            echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend>';
+            foreach ($tags as $id => $tag) {
+                echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
+                if (in_array($id, $form->tags)) {
+                    echo ' checked';
+                }
+                echo ' title="Tags"> ' . Html::encode($tag->title) . '</label>';
             }
-            echo ' title="Tags"> ' . Html::encode($tag->title) . '</label>';
+            echo '</fieldset>';
+        } else {
+            $layout->loadFuelux();
+            $selected = (count($form->tags) > 0 ? $form->tags[0] : 0);
+            $tagOptions = [];
+            foreach ($tags as $tag) {
+                $tagOptions[$tag->id] = $tag->title;
+            }
+            echo '<fieldset class="form-group">';
+            echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend><div style="position: relative;">';
+            echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
+            echo '</div>';
+            echo '</fieldset>';
         }
-        echo '</fieldset>';
-    } else {
-        $layout->loadFuelux();
-        $selected   = (count($form->tags) > 0 ? $form->tags[0] : 0);
-        $tagOptions = [];
-        foreach ($tags as $tag) {
-            $tagOptions[$tag->id] = $tag->title;
-        }
-        echo '<fieldset class="form-group">';
-        echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend><div style="position: relative;">';
-        echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
-        echo '</div>';
-        echo '</fieldset>';
     }
 }
 
@@ -151,6 +160,11 @@ echo '</div>';
 $initiatorClass = $form->motionType->getMotionSupportTypeClass();
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
+if ($isAmendmentsOnly) {
+    $backUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $form->motionType->id]);
+} else {
+    $backUrl = UrlHelper::homeUrl();
+}
 ?>
 <section class="content saveCancelRow">
     <div class="saveCol">
@@ -160,7 +174,7 @@ echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
         </button>
     </div>
     <div class="cancelCol">
-        <a href="<?= Html::encode(UrlHelper::homeUrl()) ?>" id="cancel" class="btn">
+        <a href="<?= Html::encode($backUrl) ?>" id="cancel" class="btn">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
             <?= Yii::t('motion', 'back_start') ?>
         </a>

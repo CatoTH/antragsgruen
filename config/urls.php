@@ -92,6 +92,7 @@ $urlRules = [
 
     $domv . '<_a:(' . $consultationPaths . ')>'    => 'consultation/<_a>',
     $domv . 'motion/create'                        => 'motion/create',
+    $domv . 'motion/create-select-statutes'        => 'motion/create-select-statutes',
     $dommotion                                     => 'motion/view',
     $dommotion . '/<_a:(' . $motionPaths . ')>'    => 'motion/<_a>',
     $domamend                                      => 'amendment/view',

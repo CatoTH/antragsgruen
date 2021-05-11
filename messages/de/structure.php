@@ -98,6 +98,12 @@ return [
     'preset_motion_text'     => 'Antragstext',
     'preset_motion_reason'   => 'Begründung',
 
+    'preset_statutes_singular' => 'Satzungsänderungsantrag',
+    'preset_statutes_plural'   => 'Satzungsänderungsanträge',
+    'preset_statutes_call'     => 'Satzungsänderungsantrag',
+    'preset_statutes_title'    => 'Titel',
+    'preset_statutes_text'     => 'Satzungstext',
+
     'role_initiator' => 'Initiator*in',
     'role_supporter' => 'Unterstützer*in',
     'role_likes'     => 'Mag',
@@ -179,6 +185,7 @@ return [
     'supp_only_initiators'    => 'Nur die Antragsteller*in',
     'supp_given_by_initiator' => 'Von der Antragsteller*in angegeben',
     'supp_collect_before'     => 'Unterstützungs-Phase vor Veröffentlichung (außer bei Gremien)',
+    'supp_no_initiator'       => 'Keine Antragsteller*in',
 
     'activity_none'                       => 'Noch keine Aktivitäten',
     'activity_someone'                    => 'Ein*e Benutzer*in',

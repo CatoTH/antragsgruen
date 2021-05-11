@@ -44,19 +44,19 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <fieldset class="form-group">
+    <fieldset class="form-group" data-visibility="hasInitiator">
         <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_person_type') ?>
         </legend>
         <div class="col-md-8 contactDetails personTypes">
             <div class="form-control">
-                <label>
+                <label class="initiatorCanBePerson">
                     <?php
                     echo Html::checkbox('initiatorCanBePerson', $motionSettings->initiatorCanBePerson);
                     echo Yii::t('admin', 'motion_type_person_natural');
                     ?>
                 </label>
-                <label>
+                <label class="initiatorCanBeOrganization">
                     <?php
                     echo Html::checkbox('initiatorCanBeOrganization', $motionSettings->initiatorCanBeOrganization);
                     echo Yii::t('admin', 'motion_type_person_orga');
@@ -66,7 +66,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </fieldset>
 
-    <fieldset class="form-group">
+    <fieldset class="form-group" data-visibility="hasInitiator">
         <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_contact_name') ?>
         </legend>
@@ -87,7 +87,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </fieldset>
 
-    <fieldset class="form-group">
+    <fieldset class="form-group" data-visibility="hasInitiator">
         <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_email') ?>
         </legend>
@@ -108,7 +108,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </fieldset>
 
-    <fieldset class="form-group">
+    <fieldset class="form-group" data-visibility="hasInitiator">
         <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_phone') ?>
         </legend>
@@ -129,7 +129,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </fieldset>
 
-    <fieldset class="form-group formGroupResolutionDate">
+    <fieldset class="form-group formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
         <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_orga_resolution') ?>
         </legend>
@@ -150,7 +150,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </fieldset>
 
-    <fieldset class="form-group formGroupGender">
+    <fieldset class="form-group formGroupGender" data-visibility="initiatorCanBePerson">
         <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_gender') ?>
         </legend>
@@ -171,7 +171,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </fieldset>
 
-    <div class="form-group formGroupMinSupporters" id="typeMinSupportersRow">
+    <div class="form-group formGroupMinSupporters" id="typeMinSupportersRow" data-visibility="hasSupporters">
         <label class="col-md-4 control-label" for="typeMinSupporters">
             <?= Yii::t('admin', 'motion_type_supp_min') ?>
         </label>
@@ -182,7 +182,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRow">
+    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRow" data-visibility="allowFemaleQuota">
         <label class="col-md-4 control-label" for="typeMinSupportersFemale">
             <?= Yii::t('admin', 'motion_type_supp_female_min') ?>
         </label>
@@ -197,7 +197,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupAllowMore">
+    <div class="form-group formGroupAllowMore" data-visibility="hasSupporters">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowMoreSupporters">
             <?php
@@ -211,7 +211,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupAllowAfterPub">
+    <div class="form-group formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowSupportingAfterPublication">
             <?php
@@ -226,7 +226,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupOfferNonPublic">
+    <div class="form-group formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="offerNonPublicSupports">
             <?php
@@ -241,7 +241,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" id="typeHasOrgaRow">
+    <div class="form-group" id="typeHasOrgaRow" data-visibility="hasInitiator">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="hasOrganizations">
             <?php
@@ -299,19 +299,19 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" data-visibility="hasInitiator">
         <div class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_person_type') ?>
         </div>
         <div class="col-md-8 contactDetails personTypes">
             <div class="form-control">
-                <label>
+                <label class="initiatorCanBePerson">
                     <?php
                     echo Html::checkbox('amendmentInitiatorCanBePerson', $amendmentSettings->initiatorCanBePerson);
                     echo Yii::t('admin', 'motion_type_person_natural');
                     ?>
                 </label>
-                <label>
+                <label class="initiatorCanBeOrganization">
                     <?php
                     echo Html::checkbox('amendmentInitiatorCanBeOrganization', $amendmentSettings->initiatorCanBeOrganization);
                     echo Yii::t('admin', 'motion_type_person_orga');
@@ -321,7 +321,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" data-visibility="hasInitiator">
         <div class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_contact_name') ?>
         </div>
@@ -342,7 +342,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" data-visibility="hasInitiator">
         <div class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_email') ?>
         </div>
@@ -363,7 +363,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" data-visibility="hasInitiator">
         <div class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_phone') ?>
         </div>
@@ -384,7 +384,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupResolutionDate">
+    <div class="form-group formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
         <div class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_orga_resolution') ?>
         </div>
@@ -405,7 +405,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupGender">
+    <div class="form-group formGroupGender" data-visibility="initiatorCanBePerson">
         <div class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_gender') ?>
         </div>
@@ -426,7 +426,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupMinSupporters" id="typeMinSupportersRowAmendment">
+    <div class="form-group formGroupMinSupporters" id="typeMinSupportersRowAmendment" data-visibility="hasSupporters">
         <label class="col-md-4 control-label" for="typeMinSupportersAmendment">
             <?= Yii::t('admin', 'motion_type_supp_min') ?>
         </label>
@@ -437,7 +437,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRowAmendment">
+    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRowAmendment" data-visibility="allowFemaleQuota">
         <label class="col-md-4 control-label" for="typeMinSupportersFemaleAmendment">
             <?= Yii::t('admin', 'motion_type_supp_female_min') ?>
         </label>
@@ -451,7 +451,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupAllowMore"">
+    <div class="form-group formGroupAllowMore" data-visibility="hasSupporters">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowMoreSupporters">
             <?php
@@ -465,7 +465,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupAllowAfterPub">
+    <div class="form-group formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowSupportingAfterPublication">
             <?php
@@ -480,7 +480,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupOfferNonPublic">
+    <div class="form-group formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="offerNonPublicSupports">
             <?php
@@ -495,7 +495,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" id="typeHasOrgaRowAmendment">
+    <div class="form-group" id="typeHasOrgaRowAmendment" data-visibility="hasInitiator">
         <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="hasOrganizations">
             <?php

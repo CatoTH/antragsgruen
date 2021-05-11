@@ -14,7 +14,7 @@ echo '<section class="sectionResolutions">';
 echo '<h2 class="green">' . Yii::t('con', 'resolutions') . '</h2>';
 
 echo '<ul class="motionList motionListStd motionListWithoutAgenda resolutionList">';
-$sortedResolutions = MotionSorter::getSortedMotionsFlat($consultation, $resolutions);
+$sortedResolutions = MotionSorter::getSortedIMotionsFlat($consultation, $resolutions);
 foreach ($sortedResolutions as $resolution) {
     $hasPDF = ($resolution->getMyMotionType()->getPDFLayoutClass() !== null);
 

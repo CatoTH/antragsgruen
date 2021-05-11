@@ -514,6 +514,16 @@ ul.searchResults {
   }
 }
 
+.createSelectStatutes {
+  .statute {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 18px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+
 .createConfirmPage {
   .sectionType3, .sectionType4 {
     padding-left: $fixedWidthTextStdPadding;

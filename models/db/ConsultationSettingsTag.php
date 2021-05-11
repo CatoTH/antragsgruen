@@ -75,7 +75,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @param Motion[] $motions
+     * @param IMotion[] $motions
      */
     public static function getMostPopularTags(array $motions): array
     {

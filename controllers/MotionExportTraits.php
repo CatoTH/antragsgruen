@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\NotFound;
 use app\models\db\{Consultation, Motion, TexTemplate, User};
@@ -172,7 +173,7 @@ trait MotionExportTraits
     {
         /** @var TexTemplate $texTemplate */
         $texTemplate = null;
-        $motions     = $this->consultation->getVisibleMotionsSorted($withdrawn);
+        $motions     = $this->consultation->getVisibleIMotionsSorted($withdrawn);
         if ($motionTypeId !== '' && $motionTypeId !== '0') {
             $motionTypeIds = explode(',', $motionTypeId);
             $motions       = array_filter($motions, function (Motion $motion) use ($motionTypeIds) {
@@ -200,14 +201,15 @@ trait MotionExportTraits
 
     public function actionFullpdf($motionTypeId = '', $withdrawn = 0, $resolutions = 0)
     {
-        $withdrawn   = (IntVal($withdrawn) === 1);
-        $resolutions = (IntVal($resolutions) === 1);
+        $withdrawn   = (intval($withdrawn) === 1);
+        $resolutions = (intval($resolutions) === 1);
 
         try {
             list($motions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
             if (count($motions) === 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
             }
+            // Hint: If it is an amendmentOnly type, we will include the base motion here, too. Hence, no differentiation.
         } catch (ExceptionBase $e) {
             return $this->showErrorpage(404, $e->getMessage());
         }
@@ -234,29 +236,44 @@ trait MotionExportTraits
      */
     public function actionPdfcollection($motionTypeId = '', $withdrawn = 0, $resolutions = 0)
     {
-        $withdrawn   = (IntVal($withdrawn) === 1);
-        $resolutions = (IntVal($resolutions) === 1);
+        $withdrawn   = (intval($withdrawn) === 1);
+        $resolutions = (intval($resolutions) === 1);
 
         try {
             list($motions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
             if (count($motions) === 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
             }
+            /** @var Motion[] $motions */
+            $motionType = $motions[0]->getMyMotionType();
+            if ($motionType->amendmentsOnly) {
+                $imotions = [];
+                foreach ($motions as $motion) {
+                    $imotions = array_merge($imotions, $motion->getVisibleAmendmentsSorted($withdrawn));
+                }
+                if (count($imotions) === 0) {
+                    return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+                }
+            } else {
+                $imotions = $motions;
+            }
         } catch (ExceptionBase $e) {
             return $this->showErrorpage(404, $e->getMessage());
         }
 
+        $filename = Tools::sanitizeFilename($motionType->titlePlural, false) . '.pdf';
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
             \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if ($hasLaTeX && $texTemplate) {
-            return $this->renderPartial('pdf_collection_tex', ['motions' => $motions, 'texTemplate' => $texTemplate]);
+            return $this->renderPartial('pdf_collection_tex', ['imotions' => $imotions, 'texTemplate' => $texTemplate]);
         } else {
-            return $this->renderPartial('pdf_collection_tcpdf', ['motions' => $motions]);
+            return $this->renderPartial('pdf_collection_tcpdf', ['imotions' => $imotions]);
         }
     }
 

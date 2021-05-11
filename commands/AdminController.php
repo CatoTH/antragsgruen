@@ -24,7 +24,7 @@ class AdminController extends Controller
                 $auth = User::gruenesNetzId2Auth($auth);
             }
         }
-        /** @var User $user */
+        /** @var User|null $user */
         $user = User::findOne(['auth' => $auth]);
         if (!$user) {
             $this->stderr('User not found: ' . $auth . "\n");
@@ -38,7 +38,11 @@ class AdminController extends Controller
 
     private function getConsultationFromParams($subdomain, $consultation): ?Consultation
     {
-        /** @var Site $site */
+        if ($subdomain == '' || $consultation == '') {
+            $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
+            return null;
+        }
+        /** @var Site|null $site */
         $site = Site::findOne(['subdomain' => $subdomain]);
         if (!$site) {
             $this->stderr('Site not found' . "\n");
@@ -225,7 +229,7 @@ class AdminController extends Controller
             $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
             return;
         }
-        /** @var Site $site */
+        /** @var Site|null $site */
         $site = Site::findOne(['subdomain' => $subdomain]);
         if (!$site) {
             $this->stderr('Site not found' . "\n");

@@ -13,7 +13,7 @@ class PerformanceTestController extends Controller
     {
         $x = explode(" ", microtime());
 
-        return intval($x[1] * 1000 + $x[0] * 1000);
+        return intval($x[1]) * 1000 + intval($x[0]) * 1000;
     }
 
     public function actionDiff()

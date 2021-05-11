@@ -21,7 +21,7 @@ class BugfixController extends Controller
      */
     public function actionFixMotionText($motionId)
     {
-        /** @var Motion $motion */
+        /** @var Motion|null $motion */
         $motion = Motion::findOne($motionId);
         if (!$motion) {
             $this->stderr('Motion not found' . "\n");
@@ -55,7 +55,7 @@ class BugfixController extends Controller
      */
     public function actionFixAmendmentText($amendmentId)
     {
-        /** @var Amendment $amendment */
+        /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne($amendmentId);
         if (!$amendment) {
             $this->stderr('Amendment not found' . "\n");
@@ -98,7 +98,7 @@ class BugfixController extends Controller
             $this->stdout('yii bugfix/fix-all-consultation-texts [subdomain] [consultationPath]' . "\n");
             return;
         }
-        /** @var Site $site */
+        /** @var Site|null $site */
         $site = Site::findOne(['subdomain' => $subdomain]);
         if (!$site) {
             $this->stderr('Site not found' . "\n");

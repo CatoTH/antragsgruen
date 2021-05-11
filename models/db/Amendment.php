@@ -111,6 +111,14 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return ActiveQuery
      */
+    public function getAgendaItem()
+    {
+        return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getComments()
     {
         return $this->hasMany(AmendmentComment::class, ['amendmentId' => 'id'])
@@ -129,10 +137,7 @@ class Amendment extends IMotion implements IRSSItem
             ->andWhere(AmendmentComment::tableName() . '.userId = ' . IntVal($userId));
     }
 
-    /**
-     * @return AmendmentComment|null
-     */
-    public function getPrivateComment()
+    public function getPrivateComment(): ?AmendmentComment
     {
         if (!User::getCurrentUser()) {
             return null;
@@ -262,7 +267,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         return [
             [['motionId'], 'required'],
-            [['id', 'motionId', 'status', 'textFixed', 'proposalStatus', 'proposalReferenceId'], 'number'],
+            [['id', 'motionId', 'status', 'textFixed', 'proposalStatus', 'proposalReferenceId', 'agendaItemId'], 'number'],
         ];
     }
 
@@ -333,6 +338,20 @@ class Amendment extends IMotion implements IRSSItem
             }
             return Consultation::findOne($motion->consultationId);
         }
+    }
+
+    public function getMyAgendaItem(): ?ConsultationAgendaItem
+    {
+        if ($this->agendaItemId && $this->agendaItem) {
+            return $this->agendaItem;
+        } else {
+            return $this->getMyMotion()->getMyAgendaItem();
+        }
+    }
+
+    public function getMyTags(): array
+    {
+        return $this->getMyMotion()->tags;
     }
 
     private $myMotion = null;
@@ -861,6 +880,16 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
+    public static function getNewNumberForAmendment(Amendment $amendment): string
+    {
+        if ($amendment->getMyMotionType()->amendmentsOnly) {
+            return $amendment->getMyConsultation()->getNextMotionPrefix($amendment->getMyMotionType()->id);
+        } else {
+            $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
+            return $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
+        }
+    }
+
     public function setInitialSubmitted(): void
     {
         if ($this->needsCollectionPhase()) {
@@ -869,9 +898,8 @@ class Amendment extends IMotion implements IRSSItem
             $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
         } else {
             $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
-            if ($this->titlePrefix == '') {
-                $numbering         = $this->getMyConsultation()->getAmendmentNumbering();
-                $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
+            if ($this->titlePrefix === '') {
+                $this->titlePrefix = Amendment::getNewNumberForAmendment($this);
             }
         }
         $this->save();
@@ -883,8 +911,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix === '') {
-            $numbering         = $this->getMyConsultation()->getAmendmentNumbering();
-            $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
+            $this->titlePrefix = Amendment::getNewNumberForAmendment($this);
         }
         $this->save(true);
         $this->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($this));
@@ -1062,6 +1089,9 @@ class Amendment extends IMotion implements IRSSItem
             }
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
         }
+        if ($this->agendaItemId && $this->agendaItem) { // Only show this if an explicit agenda item was set
+            $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->getShownCode(true) . ' ' . $this->agendaItem->title;
+        }
 
         $consultation = $this->getMyConsultation();
         if (in_array($this->status, $consultation->getStatuses()->getInvisibleMotionStatuses(false))) {
@@ -1120,7 +1150,7 @@ class Amendment extends IMotion implements IRSSItem
 
         // This amendment is obsoleted by an amendment with a modification proposal
         if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
-            $obsoletedBy = $this->getMyConsultation()->getAmendment($this->proposalComment);
+            $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
                 return $obsoletedBy->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
             }
@@ -1155,7 +1185,7 @@ class Amendment extends IMotion implements IRSSItem
 
         // This amendment is obsoleted by an amendment with a modification proposal
         if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
-            $obsoletedBy = $this->getMyConsultation()->getAmendment($this->proposalComment);
+            $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
                 return $obsoletedBy->getAlternativeProposaltextReference($internalNestingLevel + 1);
             }

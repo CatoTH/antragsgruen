@@ -60,16 +60,19 @@ class AmendmentController extends Base
     public function actionPdfcollection($withdrawn = 0)
     {
         $withdrawn = ($withdrawn == 1);
-        $motions   = $this->consultation->getVisibleMotionsSorted($withdrawn);
+        $motions   = $this->consultation->getVisibleIMotionsSorted($withdrawn);
         if (count($motions) == 0) {
             $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
         $amendments  = [];
         $texTemplate = null;
         foreach ($motions as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
             // If we have multiple motion types, we just take the template from the first one.
             if ($texTemplate === null) {
-                $texTemplate = $motion->motionType->texTemplate;
+                $texTemplate = $motion->getMyMotionType()->texTemplate;
             }
             $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }
@@ -249,7 +252,7 @@ class AmendmentController extends Base
     public function actionCreateconfirm($motionSlug, $amendmentId, $fromMode)
     {
         $motion = $this->consultation->getMotion($motionSlug);
-        /** @var Amendment $amendment */
+        /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne(
             [
                 'id'       => $amendmentId,
@@ -292,7 +295,7 @@ class AmendmentController extends Base
     public function actionEdit($motionSlug, $amendmentId)
     {
         $motion = $this->consultation->getMotion($motionSlug);
-        /** @var Amendment $amendment */
+        /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne(
             [
                 'id'       => $amendmentId,

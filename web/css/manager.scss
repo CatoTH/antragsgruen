@@ -102,10 +102,15 @@
       }
       &.two-lines {
         .title {
-          margin-top: 40px;
+          margin-top: 20px;
           @media screen and (max-width: 525px) {
             margin-top: 7px;
           }
+        }
+      }
+      &.three-lines {
+        .title {
+          margin-top: 0;
         }
       }
       &.date-label {

@@ -140,6 +140,12 @@ class MotionController extends Base
         ]);
     }
 
+    public function actionCreateSelectStatutes(string $motionTypeId): string
+    {
+        $motionType = $this->consultation->getMotionType(intval($motionTypeId));
+        return $this->render('create_select_statutes', ['motionType' => $motionType]);
+    }
+
     public function actionCreatedone(string $motionSlug, string $fromMode): string
     {
         $motion = $this->consultation->getMotion($motionSlug);
@@ -149,7 +155,11 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
+        if ($motion->getMyMotionType()->amendmentsOnly) {
+            return $this->render('create_done_amendments_only', ['motion' => $motion, 'mode' => $fromMode]);
+        } else {
+            return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
+        }
     }
 
     /**
@@ -311,7 +321,7 @@ class MotionController extends Base
         } catch (ExceptionBase $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::homeUrl());
         }
 
         /**

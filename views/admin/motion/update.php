@@ -6,7 +6,7 @@ use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, Moti
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var Motion $motion
  * @var \app\models\forms\MotionEditForm $form
  */
@@ -18,7 +18,7 @@ $consultation = $controller->consultation;
 
 $this->title = Yii::t('admin', 'motion_edit_title') . ': ' . $motion->getTitleWithPrefix();
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));
-$layout->addBreadcrumb(Yii::t('admin', 'bread_motion'));
+$layout->addBreadcrumb($motion->getMyMotionType()->titleSingular);
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
@@ -28,8 +28,11 @@ $layout->loadFuelux();
 $layout->addJS('npm/clipboard.min.js');
 
 $html = '<ul class="sidebarActions">';
-$html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
-$html .= '<span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('admin', 'motion_show') . '</a></li>';
+
+if (!$motion->getMyMotionType()->amendmentsOnly) {
+    $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
+    $html .= '<span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('admin', 'motion_show') . '</a></li>';
+}
 
 $activityUrl = UrlHelper::createUrl(['/consultation/activitylog', 'motionId' => $motion->id, 'showAll' => true]);
 $html     .= '<li><a href="' . Html::encode($activityUrl) . '" class="activity">';
@@ -64,7 +67,7 @@ echo $controller->showErrors();
 if ($motion->isInScreeningProcess()) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
-    if ($newRev === '') {
+    if ($newRev === '' && !$motion->getMyMotionType()->amendmentsOnly) {
         $newRev = $motion->getMyConsultation()->getNextMotionPrefix($motion->motionTypeId);
     }
 

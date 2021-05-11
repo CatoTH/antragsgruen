@@ -15,27 +15,29 @@ use yii\helpers\Html;
 /**
  * @property string $titlePrefix
  * @property int $id
+ * @property int|null $agendaItemId
  * @property IMotionSection[] $sections
  * @property string $dateCreation
  * @property string|null $datePublication
  * @property string|null $dateResolution
  * @property IComment[] $comments
  * @property ConsultationSettingsTag[] $tags
+ * @property ConsultationAgendaItem|null $agendaItem
  * @property int $status
- * @property int $proposalStatus
- * @property int $proposalReferenceId
+ * @property int|null $proposalStatus
+ * @property int|null $proposalReferenceId
  * @property string|null $proposalVisibleFrom
- * @property string $proposalComment
+ * @property string|null $proposalComment
  * @property string|null $proposalNotification
  * @property int|null $proposalUserStatus
  * @property string|null $proposalExplanation
  * @property string|null $votingBlockId
  * @property string|null $votingData
- * @property int $votingStatus
+ * @property int|null $votingStatus
  * @property int|null $responsibilityId
  * @property string|null $responsibilityComment
  * @property string|null $extraData
- * @property User $responsibilityUser
+ * @property User|null $responsibilityUser
  */
 abstract class IMotion extends ActiveRecord
 {
@@ -364,9 +366,9 @@ abstract class IMotion extends ActiveRecord
 
     abstract public function getMyConsultation(): ?Consultation;
 
-    /**
-     * @return ConsultationSettingsMotionSection[]
-     */
+    abstract public function getMyAgendaItem(): ?ConsultationAgendaItem;
+
+    /** @return ConsultationSettingsMotionSection[] */
     abstract public function getTypeSections();
 
     /**
@@ -439,10 +441,7 @@ abstract class IMotion extends ActiveRecord
      */
     abstract public function getLikeDislikeSettings();
 
-    /**
-     * @return boolean
-     */
-    abstract public function isDeadlineOver();
+    abstract public function isDeadlineOver(): bool;
 
     abstract public function getLink(bool $absolute = false): string;
 
@@ -454,10 +453,7 @@ abstract class IMotion extends ActiveRecord
         return $this->dateCreation;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getDateTime()
+    public function getDateTime(): ?\DateTime
     {
         if ($this->dateCreation) {
             return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateCreation);
@@ -466,10 +462,7 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getPublicationDateTime()
+    public function getPublicationDateTime(): ?\DateTime
     {
         if ($this->datePublication) {
             return \DateTime::createFromFormat('Y-m-d H:i:s', $this->datePublication);
@@ -478,12 +471,20 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
+    public function getTimestamp(): int
+    {
+        if ($this->datePublication) {
+            return Tools::dateSql2timestamp($this->datePublication);
+        } elseif ($this->dateCreation) {
+            return Tools::dateSql2timestamp($this->dateCreation);
+        } else {
+            return 0;
+        }
+    }
+
     abstract public function isSupportingPossibleAtThisStatus(): bool;
 
-    /**
-     * @return bool
-     */
-    public function proposalAllowsUserFeedback()
+    public function proposalAllowsUserFeedback(): bool
     {
         if ($this->proposalStatus === null) {
             return false;
@@ -492,20 +493,12 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function proposalFeedbackHasBeenRequested()
+    public function proposalFeedbackHasBeenRequested(): bool
     {
         return ($this->proposalAllowsUserFeedback() && $this->proposalNotification !== null);
     }
 
-    /**
-     * @param bool $includeExplanation
-     *
-     * @return string
-     */
-    public function getFormattedProposalStatus($includeExplanation = false)
+    public function getFormattedProposalStatus(bool $includeExplanation = false): string
     {
         if ($this->status === static::STATUS_WITHDRAWN) {
             return '<span class="withdrawn">' . \Yii::t('structure', 'STATUS_WITHDRAWN') . '</span>';
@@ -530,7 +523,7 @@ abstract class IMotion extends ActiveRecord
             case static::STATUS_REFERRED:
                 return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment) . $explStr;
             case static::STATUS_OBSOLETED_BY:
-                $refAmend = $this->getMyConsultation()->getAmendment($this->proposalComment);
+                $refAmend = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
                 if ($refAmend) {
                     $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
 
@@ -587,12 +580,7 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    /**
-     * @param bool $screeningAdmin
-     *
-     * @return int
-     */
-    public function getNumOfAllVisibleComments($screeningAdmin)
+    public function getNumOfAllVisibleComments(bool $screeningAdmin): int
     {
         return count(array_filter($this->comments, function (IComment $comment) use ($screeningAdmin) {
             return ($comment->status === IComment::STATUS_VISIBLE ||
@@ -601,13 +589,11 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
-     * @param bool $screeningAdmin
-     * @param int $paragraphNo
      * @param null|int $parentId - null == only root level comments
      *
      * @return IComment[]
      */
-    public function getVisibleComments($screeningAdmin, $paragraphNo, $parentId)
+    public function getVisibleComments(bool $screeningAdmin, int $paragraphNo, ?int $parentId): array
     {
         $statuses = [IComment::STATUS_VISIBLE];
         if ($screeningAdmin) {

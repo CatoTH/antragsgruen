@@ -411,8 +411,6 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $motionTypeId
-     * @return ConsultationMotionType
      * @throws NotFound
      */
     public function getMotionType(int $motionTypeId): ConsultationMotionType
@@ -490,15 +488,15 @@ class Consultation extends ActiveRecord
 
     /**
      * @param bool $includeWithdrawn
-     * @return Motion[]
+     * @return IMotion[]
      */
-    public function getVisibleMotionsSorted($includeWithdrawn = true)
+    public function getVisibleIMotionsSorted($includeWithdrawn = true)
     {
         $motions   = [];
         $motionIds = [];
         $items     = ConsultationAgendaItem::getSortedFromConsultation($this);
         foreach ($items as $agendaItem) {
-            $newMotions = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions($includeWithdrawn));
+            $newMotions = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleIMotions($includeWithdrawn));
             foreach ($newMotions as $newMotion) {
                 $motions[]   = $newMotion;
                 $motionIds[] = $newMotion->id;
@@ -511,7 +509,7 @@ class Consultation extends ActiveRecord
                 $motionIds[]       = $motion->id;
             }
         }
-        $noAgendaMotions = MotionSorter::getSortedMotionsFlat($this, $noAgendaMotions);
+        $noAgendaMotions = MotionSorter::getSortedIMotionsFlat($this, $noAgendaMotions);
         $motions         = array_merge($motions, $noAgendaMotions);
         return $motions;
     }
@@ -577,26 +575,28 @@ class Consultation extends ActiveRecord
     public function getNextMotionPrefix(int $motionTypeId): string
     {
         $max_rev = 0;
-        /** @var ConsultationMotionType $motionType */
-        $motionType = null;
-        foreach ($this->motionTypes as $t) {
-            if ($t->id == $motionTypeId) {
-                $motionType = $t;
-            }
-        }
+        $motionType = $this->getMotionType($motionTypeId);
         $prefix = $motionType->motionPrefix;
-        if ($prefix == '') {
+        if ($prefix === '' || $prefix === null) {
             $prefix = 'A';
         }
         foreach ($this->motions as $motion) {
-            if ($motion->status != Motion::STATUS_DELETED) {
-                if (mb_substr($motion->titlePrefix, 0, mb_strlen($prefix)) !== $prefix) {
-                    continue;
+            if ($motion->status !== Motion::STATUS_DELETED) {
+                if (mb_substr($motion->titlePrefix, 0, mb_strlen($prefix)) === $prefix) {
+                    $revs = mb_substr($motion->titlePrefix, mb_strlen($prefix));
+                    $revnr = intval($revs);
+                    if ($revnr > $max_rev) {
+                        $max_rev = $revnr;
+                    }
                 }
-                $revs  = mb_substr($motion->titlePrefix, mb_strlen($prefix));
-                $revnr = IntVal($revs);
-                if ($revnr > $max_rev) {
-                    $max_rev = $revnr;
+                foreach ($motion->amendments as $amendment) {
+                    if ($motion->status !== Amendment::STATUS_DELETED && mb_substr($amendment->titlePrefix, 0, mb_strlen($prefix)) === $prefix) {
+                        $revs = mb_substr($amendment->titlePrefix, mb_strlen($prefix));
+                        $revnr = intval($revs);
+                        if ($revnr > $max_rev) {
+                            $max_rev = $revnr;
+                        }
+                    }
                 }
             }
         }
@@ -685,19 +685,21 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    public function getAgendaWithMotions(): array
+    public function getAgendaWithIMotions(): array
     {
         $ids    = [];
         $result = [];
-        $addMotion = function (Motion $motion) use (&$result) {
+        $addMotion = function (IMotion $motion) use (&$result) {
             $result[] = $motion;
-            $result   = array_merge($result, MotionSorter::getSortedAmendments($this, $motion->getVisibleAmendments()));
+            if (is_a($motion, Motion::class)) {
+                $result = array_merge($result, MotionSorter::getSortedAmendments($this, $motion->getVisibleAmendments()));
+            }
         };
 
         $items = ConsultationAgendaItem::getSortedFromConsultation($this);
         foreach ($items as $agendaItem) {
             $result[] = $agendaItem;
-            $motions  = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions());
+            $motions  = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleIMotions());
             foreach ($motions as $motion) {
                 $ids[] = $motion->id;
                 $addMotion($motion);

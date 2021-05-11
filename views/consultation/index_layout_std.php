@@ -1,7 +1,7 @@
 <?php
 
 use app\components\MotionSorter;
-use app\models\db\Consultation;
+use app\models\db\{Amendment, Consultation, Motion};
 use app\views\consultation\LayoutHelper;
 
 /**
@@ -9,7 +9,7 @@ use app\views\consultation\LayoutHelper;
  * @var Consultation $consultation
  */
 
-list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
+list($motions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
     echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }
@@ -17,11 +17,16 @@ if (count($resolutions) > 0) {
 echo '<section aria-labelledby="allMotionsTitle">';
 echo '<h2 class="green" id="allMotionsTitle">' . Yii::t('con', 'All Motions') . '</h2>';
 
-$motions = MotionSorter::getSortedMotions($consultation, $motions);
+$motions = MotionSorter::getSortedIMotions($consultation, $motions);
 foreach ($motions as $name => $motns) {
     echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
     foreach ($motns as $motion) {
-        echo LayoutHelper::showMotion($motion, $consultation, false);
+        if (is_a($motion, Motion::class)) {
+            echo LayoutHelper::showMotion($motion, $consultation, false);
+        } else {
+            /** @var Amendment $motion */
+            echo LayoutHelper::showStatuteAmendment($motion, $consultation);
+        }
     }
     echo '</ul>';
 }

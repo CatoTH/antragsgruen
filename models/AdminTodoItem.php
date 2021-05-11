@@ -39,22 +39,40 @@ class AdminTodoItem
     }
 
     private static $todoCache = [];
+
     /**
-     * @param Consultation|null $consultation
+     * @param AdminTodoItem[] $todo
+     *
      * @return AdminTodoItem[]
      */
-    public static function getConsultationTodos(?Consultation $consultation)
+    private static function addMissingStatutesItem(Consultation $consultation, array $todo): array
     {
-        if (!$consultation) {
-            return [];
+        foreach ($consultation->motionTypes as $motionType) {
+            if (!$motionType->amendmentsOnly) {
+                continue;
+            }
+            if (count($motionType->getAmendableOnlyMotions(true, true)) === 0) {
+                $description = \Yii::t('admin', 'todo_statutes_create');
+                $todo[] = new AdminTodoItem(
+                    'statutesCreate' . $motionType->id,
+                    $motionType->titlePlural,
+                    '',
+                    UrlHelper::createUrl(['/admin/motion/type', 'motionTypeId' => $motionType->id]),
+                    0,
+                    $description
+                );
+            }
         }
+        return $todo;
+    }
 
-        if (isset(static::$todoCache[$consultation->id])) {
-            return static::$todoCache[$consultation->id];
-        }
-
-        $todo = [];
-
+    /**
+     * @param AdminTodoItem[] $todo
+     *
+     * @return AdminTodoItem[]
+     */
+    private static function addScreeningMotionsItems(Consultation $consultation, array $todo): array
+    {
         $motions = Motion::getScreeningMotions($consultation);
         foreach ($motions as $motion) {
             $description = \Yii::t('admin', 'todo_from') . ': ' . $motion->getInitiatorsStr();
@@ -62,11 +80,21 @@ class AdminTodoItem
                 'motionScreen' . $motion->id,
                 $motion->getTitleWithPrefix(),
                 str_replace('%TYPE%', $motion->motionType->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
-                UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]),
+                UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description
             );
         }
+        return $todo;
+    }
+
+    /**
+     * @param AdminTodoItem[] $todo
+     *
+     * @return AdminTodoItem[]
+     */
+    private static function addScreeningAmendmentItems(Consultation $consultation, array $todo): array
+    {
         $amendments = Amendment::getScreeningAmendments($consultation);
         foreach ($amendments as $amend) {
             $description = \Yii::t('admin', 'todo_from') . ': ' . $amend->getInitiatorsStr();
@@ -74,11 +102,21 @@ class AdminTodoItem
                 'amendmentsScreen' . $amend->id,
                 $amend->getTitle(),
                 \Yii::t('admin', 'todo_amendment_screen'),
-                UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amend->id]),
+                UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => $amend->id]),
                 Tools::dateSql2timestamp($amend->dateCreation),
                 $description
             );
         }
+        return $todo;
+    }
+
+    /**
+     * @param AdminTodoItem[] $todo
+     *
+     * @return AdminTodoItem[]
+     */
+    private static function addScreeningMotionComments(Consultation $consultation, array $todo): array
+    {
         $comments = MotionComment::getScreeningComments($consultation);
         foreach ($comments as $comment) {
             $description = \Yii::t('admin', 'todo_from') . ': ' . $comment->name;
@@ -91,9 +129,19 @@ class AdminTodoItem
                 $description
             );
         }
+        return $todo;
+    }
+
+    /**
+     * @param AdminTodoItem[] $todo
+     *
+     * @return AdminTodoItem[]
+     */
+    private static function addScreeningAmendmentComments(Consultation $consultation, array $todo): array
+    {
         $comments = AmendmentComment::getScreeningComments($consultation);
         foreach ($comments as $comment) {
-            $description = 'Von: ' . $comment->name;
+            $description = \Yii::t('admin', 'todo_from') . ': ' . $comment->name;
             $todo[]      = new AdminTodoItem(
                 'amendmentCommentScreen' . $comment->id,
                 \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->getIMotion()->getTitle(),
@@ -103,6 +151,28 @@ class AdminTodoItem
                 $description
             );
         }
+        return $todo;
+    }
+
+    /**
+     * @return AdminTodoItem[]
+     */
+    public static function getConsultationTodos(?Consultation $consultation): array
+    {
+        if (!$consultation) {
+            return [];
+        }
+
+        if (isset(static::$todoCache[$consultation->id])) {
+            return static::$todoCache[$consultation->id];
+        }
+
+        $todo = [];
+        $todo = static::addMissingStatutesItem($consultation, $todo);
+        $todo = static::addScreeningMotionsItems($consultation, $todo);
+        $todo = static::addScreeningAmendmentItems($consultation, $todo);
+        $todo = static::addScreeningMotionComments($consultation, $todo);
+        $todo = static::addScreeningAmendmentComments($consultation, $todo);
 
         usort($todo, function (AdminTodoItem $todo1, AdminTodoItem $todo2) {
             if ($todo1->timestamp < $todo2->timestamp) {

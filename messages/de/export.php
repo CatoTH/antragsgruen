@@ -11,7 +11,7 @@ return [
     'AgendaItem'            => 'Tagesordnungspunkt',
     'TopicSingle'           => 'Thema',
     'TopicMulti'            => 'Themen',
-    'all_motions_title'     => 'Alle Anträge',
+    'all_motions_title'     => 'Alle %TITLE%',
     'all_amendments_title'  => 'Alle Änderungsanträge',
     'title'                 => 'Titel',
     'draft'                 => 'Entwurf',
