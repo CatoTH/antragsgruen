@@ -316,8 +316,11 @@ class AmendmentEditForm extends Model
                 $section->delete();
             }
             foreach ($this->sections as $section) {
-                $section->amendmentId = $amendment->id;
-                $section->save();
+                // Just saving the old section might fail as it might have been deleted by a different object instance above.
+                $clonedSection = new AmendmentSection();
+                $clonedSection->setAttributes($section->getAttributes(), false);
+                $clonedSection->amendmentId = $amendment->id;
+                $clonedSection->save();
             }
 
             $amendment->save();
