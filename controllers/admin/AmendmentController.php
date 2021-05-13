@@ -220,16 +220,11 @@ class AmendmentController extends AdminBase
     }
 
     /**
-     * @param int $amendmentId
-     *
      * @return string
-     * @throws \Exception
      * @throws \Throwable
      * @throws \app\models\exceptions\Internal
-     * @throws \Yii\base\ExitException
-     * @throws \Yii\db\StaleObjectException
      */
-    public function actionUpdate($amendmentId)
+    public function actionUpdate(string $amendmentId)
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
@@ -286,7 +281,7 @@ class AmendmentController extends AdminBase
             }
 
             $amdat                        = $post['amendment'];
-            $amendment->statusString      = $amdat['statusString'];
+            $amendment->statusString      = mb_substr($amdat['statusString'], 0, 55);
             $amendment->dateCreation      = Tools::dateBootstraptime2sql($amdat['dateCreation']);
             $amendment->noteInternal      = $amdat['noteInternal'];
             $amendment->status            = intval($amdat['status']);

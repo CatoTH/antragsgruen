@@ -471,16 +471,11 @@ class MotionController extends AdminBase
     }
 
     /**
-     * @param int $motionId
-     *
      * @return string
-     * @throws \Exception
      * @throws \Throwable
      * @throws \app\models\exceptions\Internal
-     * @throws \Yii\base\ExitException
-     * @throws \Yii\db\StaleObjectException
      */
-    public function actionUpdate($motionId)
+    public function actionUpdate(string $motionId)
     {
         /** @var Motion $motion */
         $motion = $this->consultation->getMotion($motionId);
@@ -522,7 +517,7 @@ class MotionController extends AdminBase
             }
 
             try {
-                $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
+                $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
                 $form->setAdminMode(true);
                 $form->setAttributes([$post, $_FILES]);
 
@@ -532,7 +527,7 @@ class MotionController extends AdminBase
 
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {
-                    $overrides = (isset($post['amendmentOverride']) ? $post['amendmentOverride'] : []);
+                    $overrides = $post['amendmentOverride'] ?? [];
                     $newHtmls  = [];
                     foreach ($post['sections'] as $sectionId => $html) {
                         $htmlTypes = [ISectionType::TYPE_TEXT_SIMPLE, ISectionType::TYPE_TEXT_HTML];
@@ -560,7 +555,7 @@ class MotionController extends AdminBase
             }
 
             $motion->title        = $modat['title'];
-            $motion->statusString = $modat['statusString'];
+            $motion->statusString = mb_substr($modat['statusString'], 0, 55);
             $motion->noteInternal = $modat['noteInternal'];
             $motion->status       = intval($modat['status']);
             $motion->agendaItemId = (isset($modat['agendaItemId']) ? intval($modat['agendaItemId']) : null);
@@ -641,7 +636,7 @@ class MotionController extends AdminBase
             \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
+        $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
         $form->setAdminMode(true);
         return $this->render('update', ['motion' => $motion, 'form' => $form]);
     }

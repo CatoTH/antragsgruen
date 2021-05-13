@@ -318,9 +318,7 @@ class Motion extends IMotion implements IRSSItem
         ];
     }
 
-    /**
-     */
-    public function refreshTitle()
+    public function refreshTitle(): void
     {
         $this->refresh();
         $section = $this->getTitleSection();
@@ -332,11 +330,9 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param int $limit
-     *
      * @return Motion[]
      */
-    public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
+    public static function getNewestByConsultation(Consultation $consultation, int $limit = 5): array
     {
         $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
 
@@ -350,11 +346,9 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param Consultation $consultation
-     *
      * @return Motion[]
      */
-    public static function getScreeningMotions(Consultation $consultation)
+    public static function getScreeningMotions(Consultation $consultation): array
     {
         $query = Motion::find();
         $query->where('motion.status IN (' . implode(', ', static::getScreeningStatuses()) . ')');
@@ -367,7 +361,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return string ("Application: John <Doe>")
      */
-    public function getTitleWithIntro()
+    public function getTitleWithIntro(): string
     {
         try {
             $intro = $this->getMyMotionType()->getSettingsObj()->motionTitleIntro;
@@ -396,7 +390,7 @@ class Motion extends IMotion implements IRSSItem
         return $name; // unencoded string, e.g. "A1: Application: John <Doe>"
     }
 
-    public function getEncodedTitleWithPrefix()
+    public function getEncodedTitleWithPrefix(): string
     {
         $title = $this->getTitleWithPrefix();
         $title = Html::encode($title);
