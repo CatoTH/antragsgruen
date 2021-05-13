@@ -115,6 +115,12 @@ trait MotionExportTraits
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if (!($hasLaTeX && $motion->getMyMotionType()->texTemplateId) && !$motion->getMyMotionType()->getPDFLayoutClass()) {
+            $this->showErrorpage(404, \Yii::t('motion', 'err_no_pdf'));
+            return '';
+        }
+
         $filename                    = $motion->getFilenameBase(false) . '.pdf';
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
@@ -127,7 +133,6 @@ trait MotionExportTraits
             return $motion->getAlternativePdfSection()->getData();
         }
 
-        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
             return LayoutHelper::createPdfLatex($motion);
         } else {

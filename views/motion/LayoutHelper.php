@@ -109,7 +109,7 @@ class LayoutHelper
         $initiatorsStr            = implode(', ', $initiators);
         $content->author          = $initiatorsStr;
         $content->publicationDate = Tools::formatMysqlDate($motion->datePublication);
-        $content->typeName        = $motion->motionType->titleSingular;
+        $content->typeName        = $motion->getMyMotionType()->titleSingular;
 
         if ($motion->agendaItem) {
             $content->agendaItemName = $motion->agendaItem->title;
@@ -185,7 +185,7 @@ class LayoutHelper
 
     public static function createPdfTcpdf(Motion $motion): string
     {
-        $pdfLayout = $motion->motionType->getPDFLayoutClass();
+        $pdfLayout = $motion->getMyMotionType()->getPDFLayoutClass();
         $pdf       = $pdfLayout->createPDFClass();
 
         $initiators = [];

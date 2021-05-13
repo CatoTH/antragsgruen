@@ -33,6 +33,12 @@ class AmendmentController extends Base
             return '';
         }
 
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if (!($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) && !$amendment->getMyMotionType()->getPDFLayoutClass()) {
+            $this->showErrorpage(404, \Yii::t('motion', 'err_no_pdf'));
+            return '';
+        }
+
         if (!$amendment->isReadable()) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
@@ -45,7 +51,6 @@ class AmendmentController extends Base
             \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
             return LayoutHelper::createPdfLatex($amendment);
         } else {

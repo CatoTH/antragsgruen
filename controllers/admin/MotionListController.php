@@ -406,17 +406,19 @@ class MotionListController extends AdminBase
             if (is_a($imotion, Motion::class)) {
                 if ($hasLaTeX && $imotion->getMyMotionType()->texTemplateId) {
                     $file = MotionLayoutHelper::createPdfLatex($imotion);
-                } else {
+                    $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
+                } elseif ($imotion->getMyMotionType()->getPDFLayoutClass()) {
                     $file = MotionLayoutHelper::createPdfTcpdf($imotion);
+                    $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
                 }
-                $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
             } elseif (is_a($imotion, Amendment::class))  {
                 if ($hasLaTeX && $imotion->getMyMotionType()->texTemplateId) {
                     $file = AmendmentLayoutHelper::createPdfLatex($imotion);
-                } else {
+                    $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
+                } elseif ($imotion->getMyMotionType()->getPDFLayoutClass()) {
                     $file = AmendmentLayoutHelper::createPdfTcpdf($imotion);
+                    $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
                 }
-                $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
             }
         }
 

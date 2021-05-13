@@ -139,6 +139,7 @@ return [
     'err_not_visible'           => 'This motion is not public.',
     'err_draft_not_found'       => 'There is not work-in-progress draft.',
     'err_user_not_found'        => 'User not found',
+    'err_no_pdf'                => 'The PDF view was deactivated.',
     'info_draft_admin'          => 'Draft - only visible for admins',
     'withdraw_done'             => 'The motion has been withdrawn.',
     'withdraw_bread'            => 'Withdraw',
