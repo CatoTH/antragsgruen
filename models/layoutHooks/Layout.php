@@ -17,12 +17,10 @@ class Layout
     }
 
     /**
-     * @param string $name
-     * @param mixed[] $args
      * @param mixed $initValue
      * @return mixed
      */
-    private static function callHook($name, $args = [], $initValue = '')
+    private static function callHook(string $name, array $args = [], $initValue = '')
     {
         $out = $initValue;
         foreach (static::$hooks as $hook) {
@@ -202,12 +200,19 @@ class Layout
     }
 
     /**
-     * @param Site $site
      * @return string[]
      */
-    public static function getSitewidePublicWarnings(Site $site)
+    public static function getSitewidePublicWarnings(Site $site): array
     {
         return static::callHook('getSitewidePublicWarnings', [$site], []);
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getConsultationwidePublicWarnings(Consultation $consultation): array
+    {
+        return static::callHook('getConsultationwidePublicWarnings', [$consultation], []);
     }
 
     public static function renderMotionSection(MotionSection $section, Motion $motion): ?string

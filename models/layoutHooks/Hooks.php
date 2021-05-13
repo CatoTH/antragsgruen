@@ -79,12 +79,9 @@ class Hooks
     }
 
     /**
-     * @param string $before
      * @param ConsultationMotionType[] $motionTypes
-     *
-     * @return string
      */
-    public function setSidebarCreateMotionButton($before, $motionTypes)
+    public function setSidebarCreateMotionButton(string $before, $motionTypes): string
     {
         return $before;
     }
@@ -191,11 +188,14 @@ class Hooks
 
     /**
      * @param string[] $before
-     * @param Site $site
-     *
      * @return string[]
      */
-    public function getSitewidePublicWarnings($before, Site $site)
+    public function getSitewidePublicWarnings(array $before, Site $site): array
+    {
+        return $before;
+    }
+
+    public function getConsultationwidePublicWarnings(array $before, Consultation $consultation): array
     {
         return $before;
     }

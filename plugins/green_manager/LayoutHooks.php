@@ -83,10 +83,9 @@ class LayoutHooks extends Hooks
 
     /**
      * @param string[] $before
-     * @param Site $site
      * @return string[]
      */
-    public function getSitewidePublicWarnings($before, Site $site)
+    public function getSitewidePublicWarnings(array $before, Site $site): array
     {
         /** @var SiteSettings $settings */
         $settings = $site->getSettings();

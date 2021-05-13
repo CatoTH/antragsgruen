@@ -58,7 +58,10 @@ class LayoutHooks extends Hooks
         $out .= '</section>';
 
         if ($this->consultation) {
-            $warnings = Layout::getSitewidePublicWarnings($this->consultation->site);
+            $warnings = array_merge(
+                Layout::getSitewidePublicWarnings($this->consultation->site),
+                Layout::getConsultationwidePublicWarnings($this->consultation)
+            );
             if (count($warnings) > 0) {
                 $out .= '<div class="alert alert-danger">';
                 $out .= '<p>' . implode('</p><p>', $warnings) . '</p>';

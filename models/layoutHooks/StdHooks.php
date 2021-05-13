@@ -5,7 +5,7 @@ namespace app\models\layoutHooks;
 use app\components\{Tools, UrlHelper};
 use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
-use app\models\db\{Amendment, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
@@ -59,7 +59,22 @@ class StdHooks extends Hooks
 
     public function beforeContent(string $before): string
     {
-        return Layout::breadcrumbs();
+        $out = '';
+        if ($this->consultation) {
+            $warnings = array_merge(
+                Layout::getSitewidePublicWarnings($this->consultation->site),
+                Layout::getConsultationwidePublicWarnings($this->consultation)
+            );
+            if (count($warnings) > 0) {
+                $out .= '<div class="alert alert-danger consultationwideWarning">';
+                $out .= '<p>' . implode('</p><p>', $warnings) . '</p>';
+                $out .= '</div>';
+            }
+        }
+
+        $out .= Layout::breadcrumbs();
+
+        return $out;
     }
 
     public function breadcrumbs(string $before): string
@@ -355,7 +370,7 @@ class StdHooks extends Hooks
             ' . \Yii::t('con', 'aad_text') . '
             <div>
                 <a href="' . $url . '" title="' . \Yii::t('con', 'aad_btn') . '" class="btn btn-primary">
-                <span class="glyphicon glyphicon-chevron-right"></span> Infos
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Infos
                 </a>
             </div>
         </div>
@@ -394,13 +409,9 @@ class StdHooks extends Hooks
     }
 
     /**
-     * @param string $before
      * @param ConsultationMotionType[] $motionTypes
-     *
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function setSidebarCreateMotionButton($before, $motionTypes)
+    public function setSidebarCreateMotionButton(string $before, $motionTypes): string
     {
         $html      = '<div class="createMotionHolder1"><div class="createMotionHolder2">';
         $htmlSmall = '';
@@ -423,6 +434,17 @@ class StdHooks extends Hooks
         $this->layout->menusSmallAttachment = $htmlSmall;
 
         return '';
+    }
+
+    public function getConsultationwidePublicWarnings(array $before, Consultation $consultation): array
+    {
+        if ($consultation->getSettings()->maintenanceMode && User::getCurrentUser() &&
+            User::getCurrentUser()->hasPrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+            $url = UrlHelper::createUrl('admin/index/consultation');
+            $before[] = str_replace('%URL%', $url, \Yii::t('base', 'head_maintenance_adm'));
+        }
+
+        return $before;
     }
 
     public function getConsultationPreWelcome(string $before): string

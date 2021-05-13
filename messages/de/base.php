@@ -37,6 +37,7 @@ return [
     'err_cons_404'          => 'Die angegebene Veranstaltung wurde nicht gefunden. Höchstwahrscheinlich liegt das an einem Tippfehler in der Adresse im Browser.<br><br>
 			Auf der <a href="%URL%">Antragsgrün-Startseite</a> siehst du rechts eine Liste der aktiven Veranstaltungen.',
     'err_update_mode'       => 'Die Seite befindet sich gerade im Update-Modus.<br><br>Wenn Sie Admin der Seite sind und dies nicht beabsichtigt ist, finden Sie in der <a href="https://github.com/CatoTH/antragsgruen/blob/main/docs/update-troubleshooting.md">Dokumentation</a> weitere Informationen.',
+    'head_maintenance_adm'  => 'Der Wartungsmodus ist aktiv. Reguläre Nutzer*innen können diese Seite nicht sehen, bis du <a href="%URL%">in den Einstellungen den Wartungsmodus beendest</a>.',
     'legal_multisite_hint'  => '<p>Antragsgrün bietet Nutzer*innen die Möglichkeit, Veranstaltungsseiten anzulegen, die eigenständig verwaltet werden.</p>',
     'legal_base_title'      => 'Betreiber*in der Plattform Antragsgruen.de',
     'legal_base_intro'      => 'Verantwortlich für die Software Antragsgrün und den Betrieb der technischen Plattform antragsgruen.de:',
