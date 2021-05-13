@@ -17,6 +17,14 @@ class SectionMerger
     /** @var string[] */
     private $paragraphStrings;
 
+    // If set to true, then collisions will be merged into the text, preferring ease of editing over consistency
+    private $mergeCollisions;
+
+    public function __construct(bool $mergeCollisions = true)
+    {
+        $this->mergeCollisions = $mergeCollisions;
+    }
+
     /**
      * @param MotionSection $section
      * @throws \app\models\exceptions\Internal
@@ -41,10 +49,10 @@ class SectionMerger
         $this->paragraphs = [];
         if (count($paras) > 0) {
             foreach ($paras as $paraNo => $paraStr) {
-                $this->paragraphs[$paraNo] = new ParagraphMerger($paraStr);
+                $this->paragraphs[$paraNo] = new ParagraphMerger($paraStr, $this->mergeCollisions);
             }
         } else {
-            $this->paragraphs[0] = new ParagraphMerger('<p></p>');
+            $this->paragraphs[0] = new ParagraphMerger('<p></p>', $this->mergeCollisions);
         }
     }
 

@@ -17,7 +17,14 @@ class ParagraphMerger
 
     private $merged = false;
 
-    public function __construct(string $paragraphStr)
+    // If set to true, then collisions will be merged into the text, preferring ease of editing over consistency
+    private $mergeCollisions;
+
+    // Sets the limit, how long a collision may be in character for it to be merged.
+    // If the collision (deletion + insertion) is longer than this limit, it will fall back into separating out the collisions
+    private $collisionMergingLimit = 100;
+
+    public function __construct(string $paragraphStr, $mergeCollisions)
     {
         $origTokenized = Diff::tokenizeLine($paragraphStr);
         $words         = [];
@@ -28,6 +35,8 @@ class ParagraphMerger
         }
         $this->paraData = new ParagraphOriginalData($paragraphStr, $origTokenized, $words);
         $this->diffs    = [];
+
+        $this->mergeCollisions = $mergeCollisions;
     }
 
     /**
@@ -144,7 +153,10 @@ class ParagraphMerger
             for ($wordNo = 0; $wordNo < $words; $wordNo++) {
                 $word  = $changeSet->diff[$wordNo];
                 $split = explode('###INS_START###', $word->diff);
-                if (count($split) === 2 && $split[0] === $word->word) {
+
+                // INS_START appears, is an attachment to the original word without changig it.
+                // However, do NOT do this if it's a plain insertion into plain text and we are merging collisions as we have better handling in those routines.
+                if (count($split) === 2 && $split[0] === $word->word && !(strpos($split[1], '<') === false && $this->mergeCollisions)) {
                     $this->moveInsertIntoOwnWord($changeSetNo, $wordNo, '###INS_START###' . $split[1]);
                     $changeSet = $this->diffs[$changeSetNo];
                     $wordNo++;
@@ -268,37 +280,75 @@ class ParagraphMerger
     }
 
     /*
+     * Must only be return true if:
+     * - this first affected word of the colliding group is also the first word affected by the already merged amendment
+     */
+    private function mergeCollidedParagraphGroupIsToBePrepended(ParagraphDiffGroup $paragraphDiffGroup): bool
+    {
+        $firstPos = $paragraphDiffGroup->firstCollisionPos;
+        if ($firstPos > 0 && $this->paraData->words[$firstPos]->modifiedBy === $this->paraData->words[$firstPos - 1]->modifiedBy) {
+            return false;
+        }
+
+        $hasInsert = (strpos($paragraphDiffGroup->tokens[$firstPos]->diff, '###INS_START###') !== false);
+        $hasDelete = (strpos($paragraphDiffGroup->tokens[$firstPos]->diff, '###DEL_START###') !== false);
+        return ($hasInsert && !$hasDelete);
+    }
+
+    /*
      * The diff group should be saved into the appendCollisionGroups property of the last word of the first changeset that it collides with.
      * (An alternative would be to store it to the last word of the last changeset it collides with)
      */
     private function mergeCollidedParagraphGroup(ParagraphDiffGroup $paragraphDiffGroup): void {
         $affectedAmendmentId = $this->paraData->words[$paragraphDiffGroup->firstCollisionPos]->modifiedBy;
         $merged = false;
-        for ($i = $paragraphDiffGroup->firstCollisionPos; $i < count($this->paraData->words) && !$merged; $i++) {
-            if ($i === count($this->paraData->words) - 1 || $this->paraData->words[$i + 1]->modifiedBy !== $affectedAmendmentId) {
-                if ($this->paraData->words[$i]->appendCollisionGroups === null) {
-                    $this->paraData->words[$i]->appendCollisionGroups = [];
+        if ($this->mergeCollidedParagraphGroupIsToBePrepended($paragraphDiffGroup)) {
+            $firstPos = $paragraphDiffGroup->firstCollisionPos;
+            if ($this->paraData->words[$firstPos]->prependCollisionGroups === null) {
+                $this->paraData->words[$firstPos]->prependCollisionGroups = [];
+            }
+            $this->paraData->words[$firstPos]->prependCollisionGroups[] = $paragraphDiffGroup;
+        } else {
+            for ($i = $paragraphDiffGroup->firstCollisionPos; $i < count($this->paraData->words) && !$merged; $i++) {
+                if ($i === count($this->paraData->words) - 1 || $this->paraData->words[$i + 1]->modifiedBy !== $affectedAmendmentId) {
+                    if ($this->paraData->words[$i]->appendCollisionGroups === null) {
+                        $this->paraData->words[$i]->appendCollisionGroups = [];
+                    }
+                    $this->paraData->words[$i]->appendCollisionGroups[] = $paragraphDiffGroup;
+                    $merged = true;
                 }
-                $this->paraData->words[$i]->appendCollisionGroups[] = $paragraphDiffGroup;
-                $merged = true;
             }
         }
     }
 
+    /*
+     * The collision will be merged IF:
+     * - The setting is set (true by default)
+     * - The length of the diff does not exceed the limit defined
+     * - It does not smell like having HTML elements
+     */
     private function tryMergingCollidedParagraph(CollidingParagraphDiff $paragraph): bool {
-        // @TODO
-        // Check if it's safe and senseful to merge it. E.g.: no HTML tags contained, deleted part is not too long
+        if (!$this->mergeCollisions) {
+            return false;
+        }
+
+        foreach ($paragraph->collidingGroups as $collidingGroup) {
+            $combined = '';
+            foreach (array_keys($collidingGroup->tokens) as $tokenKey) {
+                $combined .= $collidingGroup->tokens[$tokenKey]->diff;
+            }
+            $normalized = str_replace(['###DEL_START###', '###DEL_END###', '###INS_START###', '###INS_END###'], ['', '', '', ''], $combined);
+            if (mb_strpos($normalized, '<') !== false) {
+                return false;
+            }
+            if (mb_strlen($normalized) > $this->collisionMergingLimit) {
+                return false;
+            }
+        }
 
         foreach ($paragraph->collidingGroups as $collidingGroup) {
             $this->mergeCollidedParagraphGroup($collidingGroup);
         }
-
-        /*
-        echo '<pre>';
-        var_dump($paragraph->collidingGroups);
-        var_dump($this->paraData->words);
-        echo '</pre>';
-        */
 
         return true;
     }
@@ -339,6 +389,30 @@ class ParagraphMerger
         $this->merged = true;
     }
 
+    private static function appendedOrPrependedGroupsToPending(?array $groups, ?int &$CHANGESET_COUNTER): string
+    {
+        if ($groups === null || count($groups) === 0) {
+            return '';
+        }
+        $pending = '';
+        foreach ($groups as $collisionGroup) {
+            $appendedDiff = '';
+            $amendmentId = null;
+            foreach ($collisionGroup->tokens as $token) {
+                $appendedDiff .= $token->diff;
+                $amendmentId = $token->amendmentId;
+            }
+
+            $cid = $CHANGESET_COUNTER++;
+            $mid = $cid . '-' . $amendmentId . '-COLLISION';
+            $appendedDiff = str_replace('###INS_START###', '###INS_START' . $mid . '###', $appendedDiff);
+            $appendedDiff = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $appendedDiff);
+
+            $pending .= $appendedDiff;
+        }
+        return $pending;
+    }
+
     /**
      * @param ParagraphMergerWord[] $words
      *
@@ -371,25 +445,10 @@ class ParagraphMerger
                     $pending          = '';
                     $pendingCurrAmend = $word->modifiedBy;
                 }
+
+                $pending .= static::appendedOrPrependedGroupsToPending($word->prependCollisionGroups, $CHANGESET_COUNTER);
                 $pending .= $word->modification;
-
-                if ($word->appendCollisionGroups) {
-                    foreach ($word->appendCollisionGroups as $appendCollisionGroup) {
-                        $appendedDiff = '';
-                        $amendmentId = null;
-                        foreach ($appendCollisionGroup->tokens as $token) {
-                            $appendedDiff .= $token->diff;
-                            $amendmentId = $token->amendmentId;
-                        }
-
-                        $cid = $CHANGESET_COUNTER++;
-                        $mid  = $cid . '-' . $amendmentId . '-COLLISION';
-                        $appendedDiff = str_replace('###INS_START###', '###INS_START' . $mid . '###', $appendedDiff);
-                        $appendedDiff = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $appendedDiff);
-
-                        $pending .= $appendedDiff;
-                    }
-                }
+                $pending .= static::appendedOrPrependedGroupsToPending($word->appendCollisionGroups, $CHANGESET_COUNTER);
             } else {
                 if (0 !== $pendingCurrAmend) {
                     $data = new GroupedParagraphData();

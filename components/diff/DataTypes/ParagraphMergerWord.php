@@ -19,5 +19,8 @@ class ParagraphMergerWord
     public $modifiedBy = null;
 
     /** @var null|ParagraphDiffGroup[] */
+    public $prependCollisionGroups = null;
+
+    /** @var null|ParagraphDiffGroup[] */
     public $appendCollisionGroups = null;
 }
