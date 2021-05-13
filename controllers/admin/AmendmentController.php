@@ -45,9 +45,9 @@ class AmendmentController extends AdminBase
      */
     public function actionOdslistShort($textCombined = 0, $withdrawn = 0, $maxLen = 2000)
     {
-        $withdrawn    = (IntVal($withdrawn) === 1);
-        $maxLen       = IntVal($maxLen);
-        $textCombined = (IntVal($textCombined) === 1);
+        $withdrawn    = (intval($withdrawn) === 1);
+        $maxLen       = intval($maxLen);
+        $textCombined = (intval($textCombined) === 1);
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
@@ -69,7 +69,7 @@ class AmendmentController extends AdminBase
      */
     public function actionPdflist($withdrawn = 0)
     {
-        $withdrawn = (IntVal($withdrawn) === 1);
+        $withdrawn = (intval($withdrawn) === 1);
 
         return $this->render('pdf_list', ['consultation' => $this->consultation, 'withdrawn' => $withdrawn]);
     }
@@ -115,7 +115,7 @@ class AmendmentController extends AdminBase
      */
     public function actionOdtziplist($withdrawn = 0)
     {
-        $withdrawn = (IntVal($withdrawn) === 1);
+        $withdrawn = (intval($withdrawn) === 1);
         $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             if ($motion->getMyMotionType()->amendmentsOnly) {

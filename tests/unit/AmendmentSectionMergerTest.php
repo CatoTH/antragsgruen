@@ -327,4 +327,29 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
             $this->getGroupedParagraphData(0, '<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd!</p>'),
         ], $merger->getGroupedParagraphData(1));
     }
+
+    public function testCollisionWithMultipleMergableParts()
+    {
+        $origText = '<p>A beginning. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>';
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger();
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>A beginning. Bavaria ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>A beginning. Zombie ipsum dolor sit amet o’ha wea nia ausgähd, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>A beginning. '),
+            // Both replacements of "Lorem" should be included, one as a collision
+            $this->getGroupedParagraphData(1, '###DEL_START###Lorem###DEL_END######INS_START###Bavaria###INS_END### ###DEL_START-2-COLLISION###Lorem###DEL_END######INS_START-2-COLLISION###Zombie###INS_END### '),
+            $this->getGroupedParagraphData(0, 'ipsum dolor sit '),
+            // A regular replacement of the second amendment (that was in collision in the previous diff)
+            $this->getGroupedParagraphData(2, 'amet###DEL_START###, consetetur sadipscing elitr###DEL_END######INS_START### o’ha wea nia ausgähd###INS_END###, '),
+            $this->getGroupedParagraphData(0, 'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $collisions = $merger->getCollidingParagraphGroups(0);
+        $this->assertTrue(isset($collisions[2]));
+    }
 }
