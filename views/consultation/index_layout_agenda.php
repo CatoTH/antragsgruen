@@ -79,7 +79,7 @@ if ($longVersion) {
                     }
                     echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmendsByDefault);
                 } else {
-                    /** @var Amendment $motion */
+                    /** @var Amendment $imotion */
                     echo LayoutHelper::showStatuteAmendment($imotion, $consultation);
                 }
                 $shownIMotions->addIMotion($imotion);
@@ -94,6 +94,9 @@ $otherMotions = [];
 foreach ($_motions as $imotion) {
     if (!$shownIMotions->hasIMotion($imotion)) {
         if ($imotion->status === IMotion::STATUS_MOVED) {
+            continue;
+        }
+        if (in_array($imotion->status, $consultation->getStatuses()->getInvisibleMotionStatuses())) {
             continue;
         }
         if (is_a($imotion, Motion::class) && count($imotion->getVisibleReplacedByMotions()) > 0) {

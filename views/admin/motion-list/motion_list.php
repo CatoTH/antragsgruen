@@ -58,7 +58,9 @@ $motionsVisible = [];
 $motionsInvisible = [];
 
 foreach ($motions as $motion) {
-    if ($motion->isVisible()) {
+    if (!$motion->isReadable()) {
+        continue;
+    } elseif ($motion->isVisible()) {
         $motionsVisible[] = $motion;
     } else {
         $motionsInvisible[] = $motion;

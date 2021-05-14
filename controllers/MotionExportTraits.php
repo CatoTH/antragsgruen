@@ -154,6 +154,12 @@ trait MotionExportTraits
 
         $amendments = $motion->getVisibleAmendmentsSorted();
 
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if (!($hasLaTeX && $motion->getMyMotionType()->texTemplateId) && !$motion->getMyMotionType()->getPDFLayoutClass()) {
+            $this->showErrorpage(404, \Yii::t('motion', 'err_no_pdf'));
+            return '';
+        }
+
         $filename                    = $motion->getFilenameBase(false) . '.collection.pdf';
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
@@ -162,7 +168,6 @@ trait MotionExportTraits
             \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
             return $this->renderPartial('pdf_amend_collection_tex', [
                 'motion' => $motion, 'amendments' => $amendments, 'texTemplate' => $motion->motionType->texTemplate
@@ -193,9 +198,9 @@ trait MotionExportTraits
                 continue;
             }
             if ($texTemplate === null) {
-                $texTemplate       = $motion->motionType->texTemplate;
+                $texTemplate       = $motion->getMyMotionType()->texTemplate;
                 $motionsFiltered[] = $motion;
-            } elseif ($motion->motionType->texTemplate && $motion->motionType->texTemplate->id === $texTemplate->id) {
+            } elseif ($motion->getMyMotionType()->texTemplate && $motion->getMyMotionType()->texTemplate->id === $texTemplate->id) {
                 $motionsFiltered[] = $motion;
             }
         }
@@ -211,6 +216,7 @@ trait MotionExportTraits
 
         try {
             list($motions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
+            /** @var Motion[] $motions */
             if (count($motions) === 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
             }
@@ -219,13 +225,18 @@ trait MotionExportTraits
             return $this->showErrorpage(404, $e->getMessage());
         }
 
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if (!($hasLaTeX && $texTemplate) && !$motions[0]->getMyMotionType()->getPDFLayoutClass()) {
+            $this->showErrorpage(404, \Yii::t('motion', 'err_no_pdf'));
+            return '';
+        }
+
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
             \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if ($hasLaTeX && $texTemplate) {
             return $this->renderPartial('pdf_full_tex', ['motions' => $motions, 'texTemplate' => $texTemplate]);
         } else {
@@ -266,6 +277,12 @@ trait MotionExportTraits
             return $this->showErrorpage(404, $e->getMessage());
         }
 
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if (!($hasLaTeX && $texTemplate) && !$motionType->getPDFLayoutClass()) {
+            $this->showErrorpage(404, \Yii::t('motion', 'err_no_pdf'));
+            return '';
+        }
+
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false) . '.pdf';
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
@@ -274,7 +291,6 @@ trait MotionExportTraits
             \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if ($hasLaTeX && $texTemplate) {
             return $this->renderPartial('pdf_collection_tex', ['imotions' => $imotions, 'texTemplate' => $texTemplate]);
         } else {
