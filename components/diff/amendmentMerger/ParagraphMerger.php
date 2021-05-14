@@ -425,7 +425,7 @@ class ParagraphMerger
         $pending          = '';
         $pendingCurrAmend = 0;
 
-        foreach ($words as $word) {
+        foreach ($words as $wordNo => $word) {
             if ($word->modifiedBy !== null) {
                 if ($pendingCurrAmend === 0 && !in_array($word->orig, ['', '#', '##', '###'])) { // # would lead to conflicty with ###DEL_START### in the modification
                     if (mb_strpos($word->modification, $word->orig) === 0) {
@@ -434,6 +434,18 @@ class ParagraphMerger
                         $shortened            = mb_substr($word->modification, mb_strlen($word->orig));
                         $pending              .= $word->orig;
                         $word->modification = $shortened;
+
+                        foreach ($word->prependCollisionGroups ?? [] as $group) {
+                            // If a prepended collision begins with the same original word, then we don't want to repeat it
+                            // Relevant for the scenario:
+                            //   - original:        "word "
+                            //   - Regular diff:    "word ###INS_START###ins1###INS_END###"
+                            //   - Collision:       "word ###INS_START###ins2###INS_END###"
+                            //   - Desired outcome: "word ###INS_START###ins2###INS_END######INS_START###ins1###INS_END###"
+                            if (mb_strpos($group->tokens[$wordNo]->diff, $word->orig) === 0) {
+                                $group->tokens[$wordNo]->diff = mb_substr($group->tokens[$wordNo]->diff, mb_strlen($word->orig));
+                            }
+                        }
                     }
                 }
                 if ($word->modifiedBy !== $pendingCurrAmend) {
@@ -446,7 +458,20 @@ class ParagraphMerger
                     $pendingCurrAmend = $word->modifiedBy;
                 }
 
-                $pending .= static::appendedOrPrependedGroupsToPending($word->prependCollisionGroups, $CHANGESET_COUNTER);
+                $toPrepend = static::appendedOrPrependedGroupsToPending($word->prependCollisionGroups, $CHANGESET_COUNTER);
+                $pending .= $toPrepend;
+                if (preg_match("/^(?<orig>.*)###(INS|DEL)_START/siuU", $toPrepend, $matches)) {
+                    // Scenario
+                    //   - original:        "word "
+                    //   - Regular diff:    "word###DEL_START### "
+                    //   - Collision:       "word ###INS_START###schena ###INS_END###"
+                    //   - Desired outcome: "word ###INS_START###schena ###INS_END######DEL_START### "
+                    $origPrepended = $matches['orig'];
+                    while (mb_strlen($origPrepended) > 0 && mb_strlen($word->modification) > 0 && mb_substr($origPrepended, 0, 1) === mb_substr($word->modification, 0, 1)) {
+                        $origPrepended = mb_substr($origPrepended, 1);
+                        $word->modification = mb_substr($word->modification, 1);
+                    }
+                }
                 $pending .= $word->modification;
                 $pending .= static::appendedOrPrependedGroupsToPending($word->appendCollisionGroups, $CHANGESET_COUNTER);
             } else {

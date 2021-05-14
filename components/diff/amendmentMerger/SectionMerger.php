@@ -94,7 +94,8 @@ class SectionMerger
      */
     public function getGroupedParagraphData(int $paraNo): array
     {
-        return $this->paragraphs[$paraNo]->getGroupedParagraphData();
+        $CHANGESET_COUNTER = 0;
+        return $this->paragraphs[$paraNo]->getGroupedParagraphData($CHANGESET_COUNTER);
     }
 
     /**
