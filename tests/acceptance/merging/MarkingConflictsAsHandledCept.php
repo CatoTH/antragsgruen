@@ -15,17 +15,17 @@ $I->dontSeeElementInDOM('.draftExistsAlert');
 $I->wait(0.2);
 $I->executeJS('$(".toMergeAmendments .selectAll").trigger("click");');
 $I->click('.mergeAllRow .btn-primary');
-$I->see('Alternatives Ende', '#paragraphWrapper_2_7 .collidingParagraph274');
+$I->see('Woibbadinga noch da Giasinga', '#paragraphWrapper_2_4 .collidingParagraph3');
 
 $I->executeJS('$("#draftSavingPanel").hide();'); // Workaround for non-clickable error
-$I->click('#paragraphWrapper_2_7 .collidingParagraph274 .hideCollision');
+$I->click('#paragraphWrapper_2_4 .collidingParagraph3 .hideCollision');
 $I->executeJS('$("#draftSavingPanel").show();'); // Workaround for non-clickable error
 
 $I->click('#draftSavingPanel .saveDraft');
 $I->executeJS('$(window).unbind("beforeunload");'); // Prevent the alert from disturbing the window
 
 $I->wait(1);
-$I->dontSeeElementInDOM('#paragraphWrapper_2_7 .collidingParagraph274');
+$I->dontSeeElementInDOM('#paragraphWrapper_2_4 .collidingParagraph3');
 
 $I->wantTo('show the conflict again and save the draft');
 
@@ -33,15 +33,12 @@ $I->gotoMotion();
 $I->click('#sidebar .mergeamendments a');
 $I->click('.draftExistsAlert .btn');
 $I->executeJS('$("#draftSavingPanel").hide();'); // Workaround for non-clickable error
-$I->dontSeeElementInDOM('#paragraphWrapper_2_7 .collidingParagraph274');
-$I->see('Brezen', '#paragraphWrapper_2_7');
-$I->click('#paragraphWrapper_2_7 .amendmentStatus274 .toggleAmendment');
+$I->dontSeeElementInDOM('#paragraphWrapper_2_4 .collidingParagraph3');
+$I->click('#paragraphWrapper_2_4 .amendmentStatus3 .toggleAmendment');
 $I->wait(0.3);
-$I->dontSee('Brezen', '#paragraphWrapper_2_7');
-$I->click('#paragraphWrapper_2_7 .amendmentStatus274 .toggleAmendment');
+$I->click('#paragraphWrapper_2_4 .amendmentStatus3 .toggleAmendment');
 $I->wait(0.3);
-$I->see('Brezen', '#paragraphWrapper_2_7');
-$I->seeElement('#paragraphWrapper_2_7 .collidingParagraph274');
+$I->seeElement('#paragraphWrapper_2_4 .collidingParagraph3');
 $I->executeJS('$("#draftSavingPanel").show();'); // Workaround for non-clickable error
 
 $I->click('#draftSavingPanel .saveDraft');
@@ -50,4 +47,4 @@ $I->executeJS('$(window).unbind("beforeunload");'); // Prevent the alert from di
 $I->gotoMotion();
 $I->click('#sidebar .mergeamendments a');
 $I->click('.draftExistsAlert .btn');
-$I->seeElement('#paragraphWrapper_2_7 .collidingParagraph274');
+$I->seeElement('#paragraphWrapper_2_4 .collidingParagraph3');

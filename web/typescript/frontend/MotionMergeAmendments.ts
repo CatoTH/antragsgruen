@@ -271,7 +271,6 @@ class MotionMergeChangeTooltip {
             cid = $myEl.parent().data("cid");
         }
         $myEl.parents(".texteditor").first().find("[data-cid=" + cid + "]").addClass("hover");
-        console.log($myEl.data(), $myEl.data("appended-collision"), $myEl.data("appendedCollision"));
 
         html = '';
         if (isAppendedCollision) {
