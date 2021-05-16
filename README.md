@@ -157,6 +157,12 @@ If you run into the error "This PDF document probably uses a compression techniq
 
 After that, newer PDF files should be able to be parsed as well.
 
+### ImageMagick
+
+To resize uploaded images in applications on the server side, and to enable uploading PDFs as images, ImageMagick needs to be installed as command line tool:
+- Install the packages. On Debian-based systems, `apt-get install imagemagick` should do the trick.
+- Make sure PDF operations are allowed. On Debian-based systems, check the file `/etc/ImageMagick-6/policy.xml` and comment out `<policy domain="coder" rights="none" pattern="PDF" />` if necessary.
+- Set the path to the binary in `imageMagickPath` in `config/config.json`.
 
 ### Multisite-Mode
 
