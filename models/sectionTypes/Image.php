@@ -12,10 +12,14 @@ use CatoTH\HTML2OpenDocument\Text;
 
 class Image extends ISectionType
 {
+    private function supportsPdf(): bool
+    {
+        return (AntragsgruenApp::getInstance()->imageMagickPath !== null && file_exists(AntragsgruenApp::getInstance()->imageMagickPath));
+    }
+
     public function getImageUrl(bool $absolute = false, bool $showAlways = false): ?string
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
+        $app = AntragsgruenApp::getInstance();
         $externallySavedData = ($app->binaryFilePath !== null && trim($app->binaryFilePath) !== '');
 
         /** @var MotionSection $section */
@@ -68,7 +72,7 @@ class Image extends ISectionType
         $url  = $this->getImageUrl();
         $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_IMAGE . '">';
         if ($url) {
-            $str      .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="Current Image" class="currentImage">';
+            $str      .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="' . \Yii::t('motion', 'image_current') . '" class="currentImage">';
             $required = false;
         } else {
             $required = ($type->required ? 'required' : '');
@@ -77,12 +81,18 @@ class Image extends ISectionType
         $str .= $this->getFormLabel();
 
         $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
-        $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
+        $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign" aria-hidden="true"></span> ';
         $str     .= str_replace('%MB%', $maxSize, \Yii::t('motion', 'max_size_hint'));
         $str     .= '</div>';
 
+        $inputTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+        if ($this->supportsPdf()) {
+            $inputTypes[] = 'application/pdf';
+        }
+
         $str .= '<input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
-            ' name="sections[' . $type->id . ']">';
+                ' accept="' . implode(', ', $inputTypes) . '"' .
+                ' name="sections[' . $type->id . ']">';
         if ($url && !$type->required) {
             $str .= '<label class="deleteImage"><input type="checkbox" name="sectionDelete[' . $type->id . ']">';
             $str .= \Yii::t('motion', 'img_delete');
@@ -152,6 +162,14 @@ class Image extends ISectionType
         return $converted;
     }
 
+    private function convertPdfToTmpPng(string $pdfFilename): string
+    {
+        $app = AntragsgruenApp::getInstance();
+        $pngFilename = $app->getTmpDir() . uniqid('pdf-') . '.png';
+        exec($app->imageMagickPath . ' -density 150 ' . escapeshellarg($pdfFilename . '[0]') . ' ' . escapeshellarg($pngFilename));
+        return $pngFilename;
+    }
+
     /**
      * @param array $data
      * @throws FormError
@@ -161,7 +179,15 @@ class Image extends ISectionType
         if (!isset($data['tmp_name'])) {
             throw new FormError('Invalid Image');
         }
-        $mime      = mime_content_type($data['tmp_name']);
+        $mime = mime_content_type($data['tmp_name']);
+        $toDeleteTmpFiles = [];
+        if ($mime === 'application/pdf' && $this->supportsPdf()) {
+            $pngFile = $this->convertPdfToTmpPng($data['tmp_name']);
+            $data['tmp_name'] = $pngFile;
+            $toDeleteTmpFiles[] = $pngFile;
+            $mime = 'image/png';
+        }
+
         $imagedata = getimagesize($data['tmp_name']);
         if (!$imagedata) {
             throw new FormError('Could not read image.');
@@ -181,6 +207,10 @@ class Image extends ISectionType
         ];
         $this->section->setData($optimized);
         $this->section->metadata = json_encode($metadata);
+
+        foreach ($toDeleteTmpFiles as $deleteTmpFile) {
+            unlink($deleteTmpFile);
+        }
     }
 
     public function deleteMotionData()
@@ -223,13 +253,9 @@ class Image extends ISectionType
     }
 
     /**
-     * @param float $width
-     * @param float $height
-     * @param float $maxX
-     * @param float $maxY
      * @return float[]
      */
-    private function scaleSize($width, $height, $maxX, $maxY)
+    private function scaleSize(float $width, float $height, float $maxX, float $maxY): array
     {
         $scaleX = $maxX / $width;
         $scaleY = $maxY / $height;
@@ -263,10 +289,10 @@ class Image extends ISectionType
         }
 
         if ($this->section->isLayoutRight()) {
-            $size     = $this->scaleSize($metadata['width'], $metadata['height'], $maxWidth, $maxHeight);
+            $size     = $this->scaleSize(floatval($metadata['width']), floatval($metadata['height']), floatval($maxWidth), floatval($maxHeight));
             $imageData = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
         } else {
-            $size     = $this->scaleSize($metadata['width'], $metadata['height'], $maxWidth, $maxHeight);
+            $size     = $this->scaleSize(floatval($metadata['width']), floatval($metadata['height']), floatval($maxWidth), floatval($maxHeight));
             $imageData = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
         }
 

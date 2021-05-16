@@ -155,6 +155,7 @@ return [
     'img_delete'                => 'Delete image',
     'pdf_delete'                => 'Delete PDF',
     'pdf_current'               => 'Current PDF',
+    'image_current'             => 'Current image',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
     'create_explanation'        => '<div style="font-weight: bold; text-decoration: underline;">Motion or amendment?</div>

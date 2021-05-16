@@ -178,6 +178,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'img_delete'                         => 'Bild löschen',
     'pdf_delete'                         => 'PDF löschen',
     'pdf_current'                        => 'Aktuelles PDF',
+    'image_current'                      => 'Aktuelles Bild',
     'max_len_hint'                       => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
     'max_len_alert'                      => 'Der Text ist zu lang!',
     'create_explanation'                 => '<div style="font-weight: bold; text-decoration: underline;">Antrag oder Änderungsantrag?</div>
