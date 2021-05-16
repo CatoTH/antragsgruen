@@ -120,10 +120,9 @@ class DiffRenderer
 
     /**
      * @internal
-     * @param string $text
      * @return string[]
      */
-    public function splitTextByMarkers($text)
+    public function splitTextByMarkers(string $text): array
     {
         return preg_split('/###(INS|DEL)_(START|END)###/siu', $text);
     }
@@ -489,11 +488,9 @@ class DiffRenderer
     }
 
     /**
-     * @param string $diff
      * @param Amendment[] $amendmentsById
-     * @return string
      */
-    public static function renderForInlineDiff($diff, $amendmentsById)
+    public static function renderForInlineDiff(string $diff, array $amendmentsById): string
     {
         $renderer = new DiffRenderer();
         $renderer->setInsCallback(function ($node, $params) use ($amendmentsById) {
@@ -505,6 +502,10 @@ class DiffRenderer
             }
             $classes = explode(' ', $node->getAttribute('class'));
             $classes = array_merge($classes, ['ice-ins', 'ice-cts', 'appendHint']);
+            if (count($params) > 2 && $params[2] === 'COLLISION') {
+                $classes[] = 'appendedCollision';
+                $node->setAttribute('data-appended-collision', '1');
+            }
             $node->setAttribute('class', implode(' ', $classes));
 
         });
@@ -517,6 +518,10 @@ class DiffRenderer
             }
             $classes = explode(' ', $node->getAttribute('class'));
             $classes = array_merge($classes, ['ice-del', 'ice-cts', 'appendHint']);
+            if (count($params) > 2 && $params[2] === 'COLLISION') {
+                $classes[] = 'appendedCollision';
+                $node->setAttribute('data-appended-collision', '1');
+            }
             $node->setAttribute('class', implode(' ', $classes));
         });
         return $renderer->renderHtmlWithPlaceholders($diff);

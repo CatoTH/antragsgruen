@@ -2,12 +2,11 @@
 
 use app\models\settings\AntragsgruenApp;
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationAgendaItem};
+use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem};
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
- * @var Consultation $consultation
+ * @var yii\web\View $this
  * @var Amendment $amendment
  * @var \app\models\forms\AmendmentEditForm $form
  */
@@ -15,6 +14,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
+$consultation = $amendment->getMyConsultation();
 
 $this->title = Yii::t('admin', 'amend_edit_title') . ': ' . $amendment->getTitle();
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));

@@ -14,4 +14,10 @@ class ParagraphDiffGroup
 
     /** @var int[] */
     public $collisionIds;
+
+    /** @var int */
+    public $firstCollisionPos;
+
+    /** @var int */
+    public $lastCollisionPos;
 }

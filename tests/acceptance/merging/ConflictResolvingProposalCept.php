@@ -41,7 +41,7 @@ $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary.
 
 $I->see('noconflict', '#section_holder_2_1 ins');
 $I->dontSeeElement('#paragraphWrapper_2_1 .collidingParagraph');
-$I->seeElement('#paragraphWrapper_2_2 .collidingParagraph');
+$I->see('Zombie', '#paragraphWrapper_2_2 .appendedCollision');
 
 
 $I->wantTo('switch to original amendment version');
@@ -70,7 +70,7 @@ $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary.
 
 $I->dontSee('noconflict', '#section_holder_2_1 ins');
 $I->seeElement('#paragraphWrapper_2_1 .collidingParagraph');
-$I->seeElement('#paragraphWrapper_2_2 .collidingParagraph');
+$I->see('Zombie', '#paragraphWrapper_2_2 .appendedCollision');
 
 
 $I->wantTo('switch to proposed amendment version');
@@ -81,4 +81,4 @@ $I->clickJS('#paragraphWrapper_2_1 .amendmentStatus280 .versionprop a');
 $I->wait(1);
 $I->see('noconflict', '#section_holder_2_1 ins');
 $I->dontSeeElement('#paragraphWrapper_2_1 .collidingParagraph');
-$I->seeElement('#paragraphWrapper_2_2 .collidingParagraph');
+$I->see('Zombie', '#paragraphWrapper_2_2 .appendedCollision');

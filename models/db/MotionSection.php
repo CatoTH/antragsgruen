@@ -420,10 +420,8 @@ class MotionSection extends IMotionSection
 
     /**
      * @param int[]|null $toMergeAmendmentIds
-     *
-     * @return SectionMerger
      */
-    public function getAmendmentDiffMerger($toMergeAmendmentIds)
+    public function getAmendmentDiffMerger($toMergeAmendmentIds): SectionMerger
     {
         if ($toMergeAmendmentIds === null) {
             $key = '-';

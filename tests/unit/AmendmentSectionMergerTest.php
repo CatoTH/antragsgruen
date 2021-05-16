@@ -158,13 +158,47 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $merger->getGroupedParagraphData(0));
     }
 
-    public function testMergeWithComplication1()
+    public function testMergeWithComplication1_WithCollisionMerging()
     {
         $origText = '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>';
 
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
         $merger = new SectionMerger();
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>owe gwihss Sauwedda ded Hier was Neues Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim schena Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, und hier was Neues gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
+        $merger->addAmendingParagraphs(3, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
+
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>'),
+            $this->getGroupedParagraphData(2, '###DEL_START###Woibbadinga damischa ###DEL_END###'),
+            $this->getGroupedParagraphData(0, 'owe gwihss Sauwedda ded '),
+            $this->getGroupedParagraphData(2, '###INS_START###Hier was Neues ###INS_END###'),
+            $this->getGroupedParagraphData(0, 'Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi '),
+            $this->getGroupedParagraphData(3, 'mim ###INS_START0-2-COLLISION###schena ###INS_END######DEL_START### Radl foahn Landla Leonhardifahrt, Radler###DEL_END###'),
+            $this->getGroupedParagraphData(0, '. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn '),
+            $this->getGroupedParagraphData(1, '###INS_START###Inserted ###INS_END###'),
+            $this->getGroupedParagraphData(0, 'ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, '),
+            $this->getGroupedParagraphData(2, '###INS_START###und hier was Neues ###INS_END###'),
+            $this->getGroupedParagraphData(0, 'gsuffa Oachkatzlschwoaf hod Wiesn.</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $colliding = $merger->getCollidingParagraphGroups(0);
+        $this->assertFalse(isset($colliding[1]));
+        $this->assertFalse(isset($colliding[2]));
+        $this->assertFalse(isset($colliding[3]));
+    }
+
+    public function testMergeWithComplication1_WithoutCollisionMerging()
+    {
+        $origText = '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>';
+
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger(false);
         $merger->initByMotionParagraphs($paragraphs);
 
         $merger->addAmendingParagraphs(1, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
@@ -196,7 +230,41 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
     /**
      * Hint, Does not collide anymore, since 3.7
      */
-    public function testMergeWithComplication2()
+    public function testMergeWithComplication2_WithoutCollisionMerging()
+    {
+        $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25</p>';
+
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger(false);
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test6 test7 test9 test11 test13 test15 test16.1 test17 test19 test21 test22 test23 test25</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test10 test11 test13 test15 test16.2 test17 test19 test21 test23 test25 test26</p>']);
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>test1 test3 test5 '),
+            $this->getGroupedParagraphData(1, '###INS_START###test6 ###INS_END###'),
+            $this->getGroupedParagraphData(0, 'test7 test9 '),
+            $this->getGroupedParagraphData(2, '###INS_START###test10 ###INS_END###'),
+            $this->getGroupedParagraphData(0, 'test11 test13 test15 '),
+            $this->getGroupedParagraphData(1, '###INS_START###test16.1 ###INS_END###'),
+            $this->getGroupedParagraphData(2, '###INS_START###test16.2 ###INS_END###'),
+            $this->getGroupedParagraphData(0, 'test17 test19 test21 '),
+            $this->getGroupedParagraphData(1, '###INS_START###test22 ###INS_END###'),
+            $this->getGroupedParagraphData(0, 'test23 test25'),
+            $this->getGroupedParagraphData(2, '###INS_START### test26###INS_END###'),
+            $this->getGroupedParagraphData(0, '</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $colliding = $merger->getCollidingParagraphGroups(0);
+        $this->assertEqualsCanonicalizing(0, count($colliding));
+    }
+
+    /**
+     * Hint, Does not collide anymore, since 3.7
+     */
+    public function testMergeWithComplication2_WithCollisionMerging()
     {
         $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25</p>';
 
@@ -214,8 +282,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
             $this->getGroupedParagraphData(0, 'test7 test9 '),
             $this->getGroupedParagraphData(2, '###INS_START###test10 ###INS_END###'),
             $this->getGroupedParagraphData(0, 'test11 test13 test15 '),
-            $this->getGroupedParagraphData(1, '###INS_START###test16.1 ###INS_END###'),
-            $this->getGroupedParagraphData(2, '###INS_START###test16.2 ###INS_END###'),
+            $this->getGroupedParagraphData(2, '###INS_START0-1-COLLISION###test16.1 ###INS_END######INS_START###test16.2 ###INS_END###'),
             $this->getGroupedParagraphData(0, 'test17 test19 test21 '),
             $this->getGroupedParagraphData(1, '###INS_START###test22 ###INS_END###'),
             $this->getGroupedParagraphData(0, 'test23 test25'),
@@ -326,5 +393,157 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd!</p>'),
         ], $merger->getGroupedParagraphData(1));
+    }
+
+    public function testCollisionWithMultipleMergableParts()
+    {
+        $origText = '<p>A beginning. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>';
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger();
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>A beginning. Bavaria ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>A beginning. Zombie ipsum dolor sit amet o’ha wea nia ausgähd, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>A beginning. '),
+            // Both replacements of "Lorem" should be included, one as a collision
+            $this->getGroupedParagraphData(1, '###DEL_START###Lorem###DEL_END######INS_START###Bavaria###INS_END### ###DEL_START0-2-COLLISION###Lorem###DEL_END######INS_START0-2-COLLISION###Zombie###INS_END### '),
+            $this->getGroupedParagraphData(0, 'ipsum dolor sit '),
+            // A regular replacement of the second amendment (that was in collision in the previous diff)
+            $this->getGroupedParagraphData(2, 'amet###DEL_START###, consetetur sadipscing elitr###DEL_END######INS_START### o’ha wea nia ausgähd###INS_END###, '),
+            $this->getGroupedParagraphData(0, 'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $collisions = $merger->getCollidingParagraphGroups(0);
+        $this->assertCount(0, $collisions);
+    }
+
+    public function testCollisionWithTwoDeletedParts_WithCollisionMerging()
+    {
+        // This tests that partially overlapping deletions CAN be merged
+        $origText = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>';
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger();
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>Lorem ipsum dolor sit amet, tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, '),
+            // Both deletions in one, after another
+            $this->getGroupedParagraphData(2, '###DEL_START###sed diam nonumy eirmod tempor invidunt ut labore ###DEL_END######DEL_START0-1-COLLISION###consetetur sadipscing elitr, sed diam nonumy eirmod ###DEL_END###'),
+            $this->getGroupedParagraphData(0, 'et dolore magna aliquyam erat, sed diam voluptua.</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $collisions = $merger->getCollidingParagraphGroups(0);
+        $this->assertCount(0, $collisions);
+    }
+
+    public function testCollisionWithTwoDeletedParts_WithoutCollisionMerging()
+    {
+        $origText = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>';
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger(false);
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>Lorem ipsum dolor sit amet, tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, '),
+            // Both deletions in one, after another
+            $this->getGroupedParagraphData(2, '###DEL_START###sed diam nonumy eirmod tempor invidunt ut labore ###DEL_END###'),
+            $this->getGroupedParagraphData(0, 'et dolore magna aliquyam erat, sed diam voluptua.</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $collisions = $merger->getCollidingParagraphGroups(0);
+        $this->assertCount(1, $collisions);
+        $this->assertTrue(isset($collisions[1]));
+        $this->assertSame('###DEL_START###consetetur sadipscing elitr, sed diam nonumy eirmod ###DEL_END###', $collisions[1][1]->text);
+    }
+
+    public function testCollisionTooBigToBeMerged_WithCollisionMerging()
+    {
+        // This tests that a collision can NOT be merged when it is too long
+        $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>';
+
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger(true);
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 Replacement no. 1 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 ' .
+                                                'Here we are inserting a rather long text. As this exceeds the limit set in ParagraphMerger::$collisionMergingLimit, this should lead to a collision' .
+                                                'test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 '),
+            $this->getGroupedParagraphData(1, '###DEL_START###test23###DEL_END######INS_START###Replacement no. 1###INS_END### '),
+            $this->getGroupedParagraphData(0, 'test25 test27 test29 test31 test33 test33 test35 test37 test39</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $colliding = $merger->getCollidingParagraphGroups(0);
+        $this->assertEqualsCanonicalizing(1, count($colliding));
+        $this->assertTrue(isset($colliding[2]));
+        $this->assertSame('###DEL_START###test23###DEL_END######INS_START###Here we are inserting a rather long text. As this exceeds the limit set in ParagraphMerger::$collisionMergingLimit, this should lead to a collisiontest23###INS_END### ', $colliding[2][1]->text);
+    }
+
+    public function testCollisionTooHtmlishToBeMerged_WithCollisionMerging()
+    {
+        // This tests that a collision can NOT be merged when it contains HTML tags
+        $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>';
+
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger(true);
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 Replacement no. 1 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 <strong>Replacement no. 2</strong> test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 '),
+            $this->getGroupedParagraphData(1, '###DEL_START###test23###DEL_END######INS_START###Replacement no. 1###INS_END### '),
+            $this->getGroupedParagraphData(0, 'test25 test27 test29 test31 test33 test33 test35 test37 test39</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $colliding = $merger->getCollidingParagraphGroups(0);
+        $this->assertEqualsCanonicalizing(1, count($colliding));
+        $this->assertTrue(isset($colliding[2]));
+        $this->assertSame('###DEL_START###test23 ###DEL_END######INS_START###<strong>Replacement no. 2</strong> ###INS_END###', $colliding[2][1]->text);
+    }
+
+    public function testCollisionSeveralConfusingCollisions_WithCollisionMerging()
+    {
+        $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>';
+
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new SectionMerger(true);
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test7 test9 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17.8 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+        $merger->addAmendingParagraphs(3, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test16.test17 Test18 test19 test21 test23 test25 test27 test33 test33 test35 test37 test39</p>']);
+        $merger->addAmendingParagraphs(4, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test18 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+
+        $this->assertEqualsCanonicalizing([
+            $this->getGroupedParagraphData(0, '<p>test1 test3 test5 test7 test9 test11 test13 test15 '),
+            $this->getGroupedParagraphData(2, 'test1###DEL_START0-3-COLLISION###5 ###DEL_END######INS_START0-3-COLLISION###6.###INS_END###test17 ###INS_START0-3-COLLISION###Test18 ###INS_END###7###INS_START###.8###INS_END### ###DEL_START1-1-COLLISION###test11 test13 test15 test17 test19 test21 test23 test25 ###DEL_END###test1###DEL_START2-4-COLLISION###7###DEL_END######INS_START2-4-COLLISION###8###INS_END### '),
+            $this->getGroupedParagraphData(0, 'test19 test21 test23 test25 test27 '),
+            $this->getGroupedParagraphData(3, '###DEL_START###test29 test31 ###DEL_END###'),
+            $this->getGroupedParagraphData(0, 'test33 test33 test35 test37 test39</p>'),
+        ], $merger->getGroupedParagraphData(0));
+
+        $colliding = $merger->getCollidingParagraphGroups(0);
+        $this->assertEqualsCanonicalizing(0, count($colliding));
     }
 }

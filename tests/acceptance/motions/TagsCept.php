@@ -12,6 +12,7 @@ $I->dontSee('Themenbereich');
 $I->wantTo('Create some tags');
 $I->loginAndGotoStdAdminPage()->gotoConsultation();
 
+$I->wait(0.5);
 if ($I->executeJS('return document.querySelector("#tagsList select").selectize.items.length') != 3) {
     $I->fail('Invalid return from tag-List');
 }

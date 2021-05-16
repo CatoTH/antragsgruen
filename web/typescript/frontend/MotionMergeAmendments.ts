@@ -265,13 +265,18 @@ class MotionMergeChangeTooltip {
     private getContent() {
         let $myEl: JQuery = this.$element,
             html,
-            cid = $myEl.data("cid");
+            cid = $myEl.data("cid"),
+            isAppendedCollision = ($myEl.data("appended-collision") == 1 || $myEl.parent().data("appended-collision") == 1);
         if (cid == undefined) {
             cid = $myEl.parent().data("cid");
         }
         $myEl.parents(".texteditor").first().find("[data-cid=" + cid + "]").addClass("hover");
 
-        html = '<div>';
+        html = '';
+        if (isAppendedCollision) {
+            html += '<div class="mergingPopoverCollisionHint">⚠️ ' + __t("merge", "mergedCollisionHint") + '</div>';
+        }
+        html += '<div class="mergingPopoverButtons">';
         html += '<button type="button" class="accept btn btn-sm btn-default"></button>';
         html += '<button type="button" class="reject btn btn-sm btn-default"></button>';
         html += '<a href="#" class="btn btn-small btn-default opener" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>';
