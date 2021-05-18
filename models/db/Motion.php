@@ -687,6 +687,15 @@ class Motion extends IMotion implements IRSSItem
                 $return[] = $supp;
             }
         }
+        usort($return, function(MotionSupporter $supp1, MotionSupporter $supp2) {
+            if ($supp1->position > $supp2->position) {
+                return 1;
+            }
+            if ($supp1->position < $supp2->position) {
+                return -1;
+            }
+            return $supp1->id <=> $supp2->id;
+        });
 
         return $return;
     }

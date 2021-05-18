@@ -163,12 +163,17 @@ class LayoutHooks extends Hooks
             }
             if ($motionData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
                 $proposalAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+                $motionData[$i]['content'] = '';
+                if ($motion->proposalComment) {
+                    // This property is set manually in the database
+                    $motionData[$i]['content'] .= '<div>' . Html::encode($motion->proposalComment) . '</div>';
+                }
                 if ($proposalAdmin) {
-                    $motionData[$i]['content'] = $this->getMotionProposalSavingForm($motion);
+                    $motionData[$i]['content'] .= $this->getMotionProposalSavingForm($motion);
                 } elseif ($motion->isProposalPublic() && $motion->proposalStatus) {
                     $proposal = $this->getMotionProposalString($motion);
                     if ($proposal && isset(static::$PROPOSALS[$proposal])) {
-                        $motionData[$i]['content'] = Html::encode(static::$PROPOSALS[$proposal]);
+                        $motionData[$i]['content'] .= Html::encode(static::$PROPOSALS[$proposal]);
                     }
                 }
             }

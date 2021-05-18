@@ -613,14 +613,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($supp1->position < $supp2->position) {
                 return -1;
             }
-            if ($supp1->id > $supp2->id) {
-                return 1;
-            }
-            if ($supp1->id < $supp2->id) {
-                return -1;
-            }
-
-            return 0;
+            return $supp1->id <=> $supp2->id;
         });
 
         return $return;

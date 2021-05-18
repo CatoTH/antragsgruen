@@ -172,19 +172,19 @@ abstract class SupportBase
         $errors = [];
 
         if (!isset($initiator['primaryName']) || !$this->isValidName($initiator['primaryName'])) {
-            $errors[] = 'No valid name entered.';
+            $errors[] = \Yii::t('motion', 'err_invalid_name');
         }
 
-        $emailSet   = (isset($initiator['contactEmail']) && trim($initiator['contactEmail']) != '');
+        $emailSet   = (isset($initiator['contactEmail']) && trim($initiator['contactEmail']) !== '');
         $checkEmail = ($settings->contactEmail === InitiatorForm::CONTACT_REQUIRED || $emailSet);
-        if ($checkEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'No valid e-mail-address given.';
+        if ($checkEmail && !filter_var(trim($initiator['contactEmail']), FILTER_VALIDATE_EMAIL)) {
+            $errors[] = \Yii::t('motion', 'err_invalid_email');
         }
 
-        $phoneSet   = (isset($initiator['contactPhone']) && trim($initiator['contactPhone']) != '');
+        $phoneSet   = (isset($initiator['contactPhone']) && trim($initiator['contactPhone']) !== '');
         $checkPhone = ($settings->contactPhone === InitiatorForm::CONTACT_REQUIRED || $phoneSet);
         if ($checkPhone && empty($initiator['contactPhone'])) {
-            $errors[] = 'No valid phone number given given.';
+            $errors[] = \Yii::t('motion', 'err_invalid_phone');
         }
 
         $personType = IntVal($initiator['personType']);
