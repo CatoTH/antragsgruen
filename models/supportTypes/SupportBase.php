@@ -457,17 +457,17 @@ abstract class SupportBase
         $init->position = $posCount++;
         if ($init->personType === ISupporter::PERSON_NATURAL) {
             if ($user && $user->fixedData && !$otherInitiator) {
-                $init->name         = $user->name;
+                $init->name         = trim($user->name);
                 $init->organization = $user->organization;
             } else {
-                $init->name = $post['Initiator']['primaryName'];
+                $init->name = trim($post['Initiator']['primaryName']);
                 if (isset($post['Initiator']['organization'])) {
                     $init->organization = $post['Initiator']['organization'];
                 } else {
                     $init->organization = '';
                 }
             }
-            $init->contactName = (isset($post['Initiator']['contactName']) ? $post['Initiator']['contactName'] : '');
+            $init->contactName = $post['Initiator']['contactName'] ?? '';
         } else {
             $init->organization = $post['Initiator']['primaryName'];
             $init->contactName  = $post['Initiator']['contactName'];
@@ -566,17 +566,17 @@ abstract class SupportBase
         $init->position    = $posCount++;
         if ($init->personType == ISupporter::PERSON_NATURAL) {
             if ($user && $user->fixedData && !$otherInitiator) {
-                $init->name         = $user->name;
+                $init->name         = trim($user->name);
                 $init->organization = $user->organization;
             } else {
-                $init->name = $post['Initiator']['primaryName'];
+                $init->name = trim($post['Initiator']['primaryName']);
                 if (isset($post['Initiator']['organization'])) {
                     $init->organization = $post['Initiator']['organization'];
                 } else {
                     $init->organization = '';
                 }
             }
-            $init->contactName = (isset($post['Initiator']['contactName']) ? $post['Initiator']['contactName'] : '');
+            $init->contactName = $post['Initiator']['contactName'] ?? '';
         } else {
             $init->organization = $post['Initiator']['primaryName'];
             $init->contactName  = $post['Initiator']['contactName'];

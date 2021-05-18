@@ -203,7 +203,7 @@ class AmendmentEditForm extends Model
         }
 
         try {
-            $this->motion->motionType->getAmendmentSupportTypeClass()->validateAmendment();
+            $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->validateAmendment();
         } catch (FormError $e) {
             $errors = array_merge($errors, $e->getMessages());
         }
@@ -279,7 +279,7 @@ class AmendmentEditForm extends Model
             }
         }
 
-        $this->motion->motionType->getAmendmentSupportTypeClass()->validateAmendment();
+        $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->validateAmendment();
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));

@@ -431,8 +431,8 @@ class AmendmentController extends Base
             if (User::getCurrentUser() && !$iAmAdmin) {
                 $user                    = User::getCurrentUser();
                 $supporter->userId       = $user->id;
-                $supporter->name         = $user->name;
-                $supporter->contactEmail = $user->email;
+                $supporter->name         = trim($user->name);
+                $supporter->contactEmail = trim($user->email);
                 $supporter->personType   = AmendmentSupporter::PERSON_NATURAL;
             }
             $form->supporters[] = $supporter;

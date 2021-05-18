@@ -114,8 +114,11 @@ abstract class ISupporter extends ActiveRecord
     {
         parent::setAttributes($values, $safeOnly);
         if (!isset($values['extraData']) || $values['extraData'] === null) {
-            $this->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, (isset($values['gender']) ? $values['gender'] : null));
+            $this->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, $values['gender'] ?? null);
         }
+        $this->contactEmail = ($this->contactEmail === null ? null : trim($this->contactEmail));
+        $this->contactPhone = ($this->contactPhone === null ? null : trim($this->contactPhone));
+        $this->contactName = ($this->contactName === null ? null : trim($this->contactName));
         $this->personType = intval($this->personType);
         $this->position   = intval($this->position);
         $this->userId     = ($this->userId === null ? null : intval($this->userId));
