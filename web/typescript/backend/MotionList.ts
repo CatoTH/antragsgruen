@@ -78,8 +78,10 @@ export class MotionList {
                         $(this).attr("href", link);
                     });
                 };
-            $dd.find("input[type=checkbox]").change(recalcLinks).trigger("change");
+            $dd.find("input[type=checkbox]").on("change", recalcLinks).trigger("change");
         });
+
+        $exportRow.find('[data-toggle="tooltip"]').tooltip();
     }
 
     private onDeleteClicked(ev) {

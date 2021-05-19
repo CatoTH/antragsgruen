@@ -7,7 +7,7 @@
  * @var bool $hasResponsibilities
  */
 
-use app\components\UrlHelper;
+use app\components\{HTMLTools, UrlHelper};
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
@@ -125,6 +125,7 @@ $btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONS
                     <li role="separator" class="divider"></li>
                     <?php
                     $title = Yii::t('admin', 'index_export_ods');
+                    $title .= HTMLTools::getTooltipIcon(Yii::t('admin', 'index_export_ods_tt'));
                     echo $getExportLinkLi($title, ['admin/motion-list/motion-odslist'], $motionType->id, 'motionODS');
 
                     if ($controller->getParams()->xelatexPath || $controller->getParams()->lualatexPath) {
@@ -173,6 +174,7 @@ $btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONS
                 <?php
 
                 $title = Yii::t('admin', 'index_export_ods');
+                $title .= HTMLTools::getTooltipIcon(Yii::t('admin', 'index_export_ods_tt'));
                 echo $getExportLinkLi($title, ['admin/amendment/odslist'], null, 'amendmentOds');
 
                 $title = Yii::t('admin', 'index_export_ods_short');

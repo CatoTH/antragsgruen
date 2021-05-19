@@ -907,6 +907,19 @@ label.legend {
   .errorProne {
     font-size: 0.9em;
   }
+
+  .dropdown-menu {
+    .glyphicon-info-sign {
+      opacity: 0.7;
+      font-size: 14px;
+      margin-left: 5px;
+      margin-top: 2px;
+    }
+    .tooltip {
+      font-size: 12px;
+      line-height: 1.2;
+    }
+  }
 }
 
 .motionListSearchForm {

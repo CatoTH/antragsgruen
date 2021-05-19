@@ -22,6 +22,7 @@ return [
     'index_all_motions'           => 'All motions and amendments',
     'index_export_ods'            => 'Spreadsheet',
     'index_export_ods_short'      => 'Spreadsheet: <small>short amend.</small>',
+    'index_export_ods_tt'         => 'Spreadsheets can be opened with OpenOffice and LibreOffice. Excel is not yet supported.',
     'index_export_procedure'      => 'Proposed procedure',
     'index_export_ods_listall'    => 'Spreadsheet: motions, addresses',
     'index_motion_create'         => 'Create new',
