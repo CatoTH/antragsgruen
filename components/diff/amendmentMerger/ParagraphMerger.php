@@ -608,7 +608,7 @@ class ParagraphMerger
      * @param GroupedParagraphData[] $paraData
      * @param Amendment[] $amendmentsById
      */
-    public static function getFormattedCollision(array $paraData, Amendment $amendment, array $amendmentsById): string
+    public static function getFormattedCollision(array $paraData, Amendment $amendment, array $amendmentsById, bool $includeControls): string
     {
         $amendmentUrl      = UrlHelper::createAmendmentUrl($amendment);
         $paragraphText     = '';
@@ -632,16 +632,21 @@ class ParagraphMerger
         $out = '<div class="collidingParagraph collidingParagraph' . $amendment->id . '"
                      data-link="' . Html::encode($amendmentUrl) . '"
                      data-amendment-id="' . $amendment->id . '"
-                     data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">
-                     <button class="btn btn-link pull-right btn-xs hideCollision" type="button">' .
-               \Yii::t('amend', 'merge_colliding_hide') . ' <span class="glyphicon glyphicon-minus-sign"></span>' .
-               '</button>
-                     <p class="collidingParagraphHead"><strong>' .
-            \Yii::t('amend', 'merge_colliding') . ': ' .
-            Html::a(Html::encode($amendment->titlePrefix), $amendmentUrl) .
-            '</strong></p>';
-
-        $out .= '<div class="alert alert-danger"><p>' . \Yii::t('amend', 'merge_colliding_hint') . '</p></div>';
+                     data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
+        if ($includeControls) {
+            $out .= '<button class="btn btn-link pull-right btn-xs hideCollision" type="button">' .
+                    \Yii::t('amend', 'merge_colliding_hide') . ' <span class="glyphicon glyphicon-minus-sign"></span>' .
+                    '</button>';
+            $out .= '<p class="collidingParagraphHead"><strong>' .
+                    \Yii::t('amend', 'merge_colliding') . ': ' .
+                    Html::a(Html::encode($amendment->titlePrefix), $amendmentUrl) .
+                    '</strong></p>';
+            $out .= '<div class="alert alert-danger"><p>' . \Yii::t('amend', 'merge_colliding_hint') . '</p></div>';
+        } else {
+            $out .= '<p class="collidingParagraphHead"><strong>' .
+                    \Yii::t('amend', 'merge_colliding') . ': ' . Html::encode($amendment->titlePrefix) .
+                    '</strong></p>';
+        }
         $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
         $out .= '</div>';
 

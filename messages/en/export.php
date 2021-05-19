@@ -20,6 +20,7 @@ return [
     'motions'               => 'Motions',
     'amendment'             => 'Amendment',
     'amendments'            => 'Amendments',
+    'amendments_none'       => 'none',
     'line'                  => 'Line',
     'status'                => 'Status',
     'amend_change'          => 'Change',

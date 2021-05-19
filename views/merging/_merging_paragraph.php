@@ -81,7 +81,7 @@ echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' 
             <?php
             foreach ($paragraphCollisions as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                echo \app\components\diff\amendmentMerger\ParagraphMerger::getFormattedCollision($paraData, $amendment, $amendmentsById);
+                echo \app\components\diff\amendmentMerger\ParagraphMerger::getFormattedCollision($paraData, $amendment, $amendmentsById, true);
             }
             ?>
         </div>
