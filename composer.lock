@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d7934a6f3297485c865c321c1dd2ce3",
+    "content-hash": "8b6957831c8c950a5610704bdaf81681",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -83,16 +83,16 @@
         },
         {
             "name": "catoth/html2opendocument",
-            "version": "0.14",
+            "version": "0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/html2opendocument.git",
-                "reference": "00918f39f135bff92c70d6dbbe461e37ae0e4311"
+                "reference": "17e6cef0f4368696acd34811bd349ee9895fccc2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/00918f39f135bff92c70d6dbbe461e37ae0e4311",
-                "reference": "00918f39f135bff92c70d6dbbe461e37ae0e4311",
+                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/17e6cef0f4368696acd34811bd349ee9895fccc2",
+                "reference": "17e6cef0f4368696acd34811bd349ee9895fccc2",
                 "shasum": ""
             },
             "require": {
@@ -126,9 +126,9 @@
             ],
             "support": {
                 "issues": "https://github.com/CatoTH/html2opendocument/issues",
-                "source": "https://github.com/CatoTH/html2opendocument/tree/0.14"
+                "source": "https://github.com/CatoTH/html2opendocument/tree/0.15"
             },
-            "time": "2021-04-10T07:05:08+00:00"
+            "time": "2021-05-22T06:17:15+00:00"
         },
         {
             "name": "cebe/markdown",

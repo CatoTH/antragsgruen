@@ -1,11 +1,8 @@
 <?php
 
 use CatoTH\HTML2OpenDocument\Spreadsheet;
-use app\components\StringSplitter;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\Motion;
+use app\components\{StringSplitter, UrlHelper};
+use app\models\db\{Amendment, ConsultationAgendaItem, Motion};
 
 /**
  * @var $this yii\web\View
@@ -21,7 +18,7 @@ $consultation = $controller->consultation;
 $DEBUG = false;
 
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params = \yii::$app->params;
+$params = Yii::$app->params;
 
 $doc = new Spreadsheet([
     'tmpPath'   => $params->getTmpDir(),
@@ -70,12 +67,12 @@ foreach ($items as $item) {
             $prefix = $item->titlePrefix;
 
             if ($item instanceof Motion) {
-                $subject = str_replace('%MOTION%', $prefix, \Yii::t('export', 'mail_motion_x'));
+                $subject = str_replace('%MOTION%', $prefix, Yii::t('export', 'mail_motion_x'));
                 $body    = $prefix . ' ("' . $title . '")';
             } else {
                 $subject = $title;
                 $title   = mb_substr($title, mb_strlen($prefix) + 2);
-                $body    = \Yii::t('export', 'mail_amendment_x_to_y');
+                $body    = Yii::t('export', 'mail_amendment_x_to_y');
                 $body    = str_replace(['%AMENDMENT%', '%MOTION%'], [$prefix, $item->getMyMotion()->title], $body);
             }
             if (count($item->getInitiators()) > 0) {
@@ -96,7 +93,7 @@ foreach ($items as $item) {
             }
             $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $prefix);
             $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $name);
-            $mailbody = str_replace(['%MOTION%', '%NAME%'], [$body, $firstName], \Yii::t('export', 'mail_body'));
+            $mailbody = str_replace(['%MOTION%', '%NAME%'], [$body, $firstName], Yii::t('export', 'mail_body'));
             $href     = 'mailto:' . $email . '?subject=' . $prefix . ': ' . $title . '&body=' . rawurlencode($mailbody);
             $doc->setCell($row, $COL_EMAIL, Spreadsheet::TYPE_LINK, ['href' => $href, 'text' => $email]);
             if ($phone) {
@@ -104,10 +101,10 @@ foreach ($items as $item) {
                 $doc->setCell($row, $COL_PHONE, Spreadsheet::TYPE_LINK, ['href' => $phoneLink, 'text' => $phone]);
             }
             $viewUrl    = $item instanceof Motion ? UrlHelper::createMotionUrl($item) : UrlHelper::createAmendmentUrl($item);
-            $linkParams = ['href' => UrlHelper::absolutizeLink($viewUrl), 'text' => \Yii::t('export', 'motion')];
+            $linkParams = ['href' => UrlHelper::absolutizeLink($viewUrl), 'text' => Yii::t('export', 'motion')];
             $doc->setCell($row, $COL_LINK, Spreadsheet::TYPE_LINK, $linkParams);
         } else { // null
-            $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'misc'));
+            $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, Yii::t('export', 'misc'));
             $fill (['fo:background-color' => agendaColor], []);
         }
     }

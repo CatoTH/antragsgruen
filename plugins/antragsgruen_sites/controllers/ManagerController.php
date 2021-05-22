@@ -51,22 +51,22 @@ class ManagerController extends Base
 
         $userSites = [];
         foreach ($user->motionSupports as $motionSupport) {
-            if ($motionSupport->motion->getMyConsultation()) {
+            if ($motionSupport->motion && $motionSupport->motion->getMyConsultation()) {
                 $addSiteTo($userSites, $siteIds, $motionSupport->motion->getMyConsultation()->site);
             }
         }
         foreach ($user->amendmentSupports as $amendmentSupport) {
-            if ($amendmentSupport->amendment->getMyConsultation()) {
+            if ($amendmentSupport->amendment && $amendmentSupport->amendment->getMyConsultation()) {
                 $addSiteTo($userSites, $siteIds, $amendmentSupport->amendment->getMyConsultation()->site);
             }
         }
         foreach ($user->motionComments as $motionComment) {
-            if ($motionComment->status !== IComment::STATUS_DELETED && $motionComment->motion->getMyConsultation()) {
+            if ($motionComment->status !== IComment::STATUS_DELETED && $motionComment->motion && $motionComment->motion->getMyConsultation()) {
                 $addSiteTo($userSites, $siteIds, $motionComment->motion->getMyConsultation()->site);
             }
         }
         foreach ($user->amendmentComments as $amendmentComment) {
-            if ($amendmentComment->status !== IComment::STATUS_DELETED && $amendmentComment->amendment->getMyConsultation()) {
+            if ($amendmentComment->status !== IComment::STATUS_DELETED && $amendmentComment->amendment && $amendmentComment->amendment->getMyConsultation()) {
                 $addSiteTo($userSites, $siteIds, $amendmentComment->amendment->getMyConsultation()->site);
             }
         }
