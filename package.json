@@ -16,7 +16,7 @@
         "@types/bootbox": "^5.2.1",
         "@types/bootstrap": "^3.4.0",
         "@types/ckeditor": "^4.9.10",
-        "@types/clipboard": "^2.0.1",
+        "@types/clipboard": "^2.0.7",
         "@types/eonasdan-bootstrap-datetimepicker": "^4.17.27",
         "@types/jquery": "^3.5.5",
         "@types/sortablejs": "^1.10.6",
@@ -52,7 +52,7 @@
         "corejs-typeahead": "^1.3.1",
         "isotope-layout": "^3.0.6",
         "moment": "^2.29.1",
-        "postcss": "^8.2.15",
+        "postcss": "^8.3.0",
         "remove-trailing-separator": "^1.1.0"
     },
     "browserslist": [
