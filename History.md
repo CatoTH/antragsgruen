@@ -16,6 +16,7 @@
 - If admins create a motion or amendment in behalf of an user, no confirmation mails about the submission is sent to the user anymore (if confirmation mails are activated in the first place).
 - When official supports are collected for a motion or amendments, it is now optionally possible to support them "non-publically". That is, only logged in users can see the names of those supports.
 - In the proposed procedure, admins can set internal tags to motions and amendments in order to filter them more efficiently later on in the motion list.
+- Export to OpenSlides is now an advanced feature than can be activated in the motion list under "Functionality".
 - Improvements for consultations with more than a thousand motions / amendments:
   - An internal consultation setting "adminListFilerByMotion" can now be set in the database to separate the admin list into one list per motion.
   - The caching of motion views was improved so that it does not need to be recalculated as often anymore

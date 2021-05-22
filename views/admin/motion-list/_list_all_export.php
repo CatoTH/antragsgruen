@@ -11,11 +11,12 @@ use app\components\{HTMLTools, UrlHelper};
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
-$controller   = $this->context;
+$controller = $this->context;
 $consultation = $controller->consultation;
-
 $layout = $controller->layoutParams;
 
+$hasOpenslides = $consultation->getSettings()->openslidesExportEnabled;
+$hasInactiveFunctionality = (!$hasResponsibilities || !$hasProposedProcedures || !$hasOpenslides);
 
 $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
     $params     = array_merge($route, ['motionTypeId' => $motionTypeId, 'withdrawn' => '0']);
@@ -46,7 +47,7 @@ foreach ($consultation->motionTypes as $motionType) {
 }
 
 $btnNew       = count($creatableMotions) > 0;
-$btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONSULTATION_SETTINGS) && (!$hasResponsibilities || !$hasProposedProcedures);
+$btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONSULTATION_SETTINGS) && $hasInactiveFunctionality;
 
 ?>
 <section class="motionListExportRow toolbarBelowTitle">
@@ -95,6 +96,11 @@ $btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONS
                     $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'activate' => 'procedure']);
                     $title = Yii::t('admin', 'list_functions_procedure');
                     echo '<li>' . Html::a($title, $url, ['class' => 'activateProcedure']) . '</li>';
+                }
+                if (!$hasOpenslides) {
+                    $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'activate' => 'openslides']);
+                    $title = Yii::t('admin', 'list_functions_openslides');
+                    echo '<li>' . Html::a($title, $url, ['class' => 'activateOpenslides']) . '</li>';
                 }
                 ?>
             </ul>
@@ -198,64 +204,68 @@ $btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONS
             </ul>
         </div>
 
-        <div class="dropdown dropdown-menu-left exportOpenslidesDd">
-            <button class="btn btn-default dropdown-toggle" type="button" id="exportOpenslidesBtn"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <?= Yii::t('export', 'btn_openslides') ?>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportOpenslidesBtn">
-                <!--
-                <li><?php
-                $add       = '<br><small>' . Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
-                $title     = 'V1: ' . Yii::t('admin', 'index_export_oslides_users') . $add;
-                $usersLink = UrlHelper::createUrl(['admin/index/openslidesusers', 'version' => '1']);
-                echo Html::a($title, $usersLink, ['class' => 'users']);
-                ?></li>
-                <?php
-                foreach ($consultation->motionTypes as $motionType) {
-                    $motionTypeUrl = UrlHelper::createUrl(
-                        ['admin/motion-list/motion-openslides', 'motionTypeId' => $motionType->id]
-                    );
-                    $title         = 'V1: ' . Html::encode($motionType->titlePlural);
-                    echo '<li>' .
-                         Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
-                         '</li>';
-                } ?>
-                <li><?php
-                $title     = 'V1: ' . Yii::t('admin', 'index_export_oslides_amend');
-                $amendLink = UrlHelper::createUrl(['admin/amendment/openslides', 'version' => '1']);
-                echo Html::a($title, $amendLink, ['class' => 'amendments']);
-                ?></li>
-                    -->
-                <li>
-                    <?php
-                    $add       = '<br><small>' . Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
-                    $title     = Yii::t('admin', 'index_export_oslides_users') . $add;
-                    $usersLink = UrlHelper::createUrl(['admin/index/openslidesusers', 'version' => '2']);
-                    echo Html::a($title, $usersLink, ['class' => 'users']);
-                    ?>
-                </li>
-                <?php
-                foreach ($consultation->motionTypes as $motionType) {
-                    $motionTypeUrl = UrlHelper::createUrl(
-                        ['admin/motion-list/motion-openslides', 'motionTypeId' => $motionType->id, 'version' => '2']
-                    );
-                    $title         = Html::encode($motionType->titlePlural);
-                    echo '<li>' .
-                         Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
-                         '</li>';
-                } ?>
-                <li>
-                    <?php
-                    $title     = Yii::t('admin', 'index_export_oslides_amend');
-                    $amendLink = UrlHelper::createUrl(['admin/amendment/openslides', 'version' => '2']);
-                    echo Html::a($title, $amendLink, ['class' => 'amendments']);
-                    ?>
-                </li>
-            </ul>
-        </div>
         <?php
+        if ($consultation->getSettings()->openslidesExportEnabled) {
+            ?>
+            <div class="dropdown dropdown-menu-left exportOpenslidesDd">
+                <button class="btn btn-default dropdown-toggle" type="button" id="exportOpenslidesBtn"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <?= Yii::t('export', 'btn_openslides') ?>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportOpenslidesBtn">
+                    <!--
+                <li><?php
+                    $add = '<br><small>' . Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
+                    $title = 'V1: ' . Yii::t('admin', 'index_export_oslides_users') . $add;
+                    $usersLink = UrlHelper::createUrl(['admin/index/openslidesusers', 'version' => '1']);
+                    echo Html::a($title, $usersLink, ['class' => 'users']);
+                    ?></li>
+                    <?php
+                    foreach ($consultation->motionTypes as $motionType) {
+                        $motionTypeUrl = UrlHelper::createUrl(
+                            ['admin/motion-list/motion-openslides', 'motionTypeId' => $motionType->id]
+                        );
+                        $title = 'V1: ' . Html::encode($motionType->titlePlural);
+                        echo '<li>' .
+                             Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
+                             '</li>';
+                    } ?>
+                    <li><?php
+                    $title = 'V1: ' . Yii::t('admin', 'index_export_oslides_amend');
+                    $amendLink = UrlHelper::createUrl(['admin/amendment/openslides', 'version' => '1']);
+                    echo Html::a($title, $amendLink, ['class' => 'amendments']);
+                    ?></li>
+                    -->
+                    <li>
+                        <?php
+                        $add = '<br><small>' . Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
+                        $title = Yii::t('admin', 'index_export_oslides_users') . $add;
+                        $usersLink = UrlHelper::createUrl(['admin/index/openslidesusers', 'version' => '2']);
+                        echo Html::a($title, $usersLink, ['class' => 'users']);
+                        ?>
+                    </li>
+                    <?php
+                    foreach ($consultation->motionTypes as $motionType) {
+                        $motionTypeUrl = UrlHelper::createUrl(
+                            ['admin/motion-list/motion-openslides', 'motionTypeId' => $motionType->id, 'version' => '2']
+                        );
+                        $title = Html::encode($motionType->titlePlural);
+                        echo '<li>' .
+                             Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
+                             '</li>';
+                    } ?>
+                    <li>
+                        <?php
+                        $title = Yii::t('admin', 'index_export_oslides_amend');
+                        $amendLink = UrlHelper::createUrl(['admin/amendment/openslides', 'version' => '2']);
+                        echo Html::a($title, $amendLink, ['class' => 'amendments']);
+                        ?>
+                    </li>
+                </ul>
+            </div>
+            <?php
+        }
         if ($hasProposedProcedures) {
             echo $this->render('../proposed-procedure/_switch_dropdown');
         }

@@ -6,6 +6,14 @@ $I->populateDBData1();
 
 $I->wantTo('test the list of motions in OpenSlides-Format');
 $I->loginAndGotoMotionList();
+$I->dontSeeElement('#exportOpenslidesBtn');
+
+$I->dontSeeElement('.activateOpenslides');
+$I->click('#activateFncBtn');
+$I->seeElement('.activateOpenslides');
+$I->click('.activateOpenslides');
+$I->seeElement('#exportOpenslidesBtn');
+
 $I->click('#exportOpenslidesBtn');
 $I->seeElement('.exportOpenslidesDd .users');
 $file = $I->downloadLink('.exportOpenslidesDd .users');
