@@ -46,7 +46,7 @@ class Frauenrat extends IPDFLayout
             $pdf->Ln(3);
         }
 
-        $initiatorName = $addressedTo = null;
+        $addressedTo = null;
         $initiatorNames = [];
         $contact = $topic = [];
         foreach ($motion->getInitiators() as $initiator) {

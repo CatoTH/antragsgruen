@@ -49,6 +49,29 @@ class Init
         return $form;
     }
 
+    public static function forEmbeddedAmendmentsExport(Motion $motion): Init
+    {
+        $form                     = new Init();
+        $form->motion             = $motion;
+        $form->toMergeMainIds     = [];
+        $form->toMergeResolvedIds = [];
+        $textVersions = [];
+        foreach ($motion->getVisibleAmendments(false, false) as $amendment) {
+            $form->toMergeMainIds[] = $amendment->id;
+
+            if ($amendment->hasAlternativeProposaltext(false)) {
+                $form->toMergeResolvedIds[] = $amendment->getMyProposalReference()->id;
+                $textVersions[$amendment->id] = static::TEXT_VERSION_PROPOSAL;
+            } else {
+                $form->toMergeResolvedIds[] = $amendment->id;
+            }
+        }
+
+        $form->draftData = Draft::initFromForm($form, $textVersions);
+
+        return $form;
+    }
+
     public static function initFromDraft(Motion $motion, Draft $draft): Init
     {
         $form                     = new Init();

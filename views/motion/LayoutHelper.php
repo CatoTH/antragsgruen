@@ -3,6 +3,7 @@
 namespace app\views\motion;
 
 use app\components\HashedStaticFileCache;
+use app\models\mergeAmendments\Init;
 use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
 use app\models\db\{Consultation, IMotion, ISupporter, Motion, User};
@@ -442,5 +443,160 @@ class LayoutHelper
         $pdf      = $exporter->createPDF([$content]);
         HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdf);
         return $pdf;
+    }
+
+    /*
+     * This converts proper internal HTML coming from amendment merging into something that can be used for TCPDF.
+     * The code is disgusting and doesn't even try to generate valid HTML.
+     * Only HTML code that will be rendered correctly by TCPDF.
+     */
+    /** @noinspection HtmlUnknownAttribute */
+    public static function convertMergingHtmlToTcpdfable(string $html): string
+    {
+        // data-append-hint's should be added as SUB elements, convert INS/DEL to inline colored text
+        $html = preg_replace_callback('/<ins(?<attrs> [^>]*)?>(?<content>.*)<\/ins>/siuU', function ($matches) {
+            $content = $matches['content'];
+            if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attrs'], $matches2)) {
+                $content .= '<sub>' . $matches2['append'] . '</sub> ';
+            }
+
+            return '<span color="green"><b><u>' . $content . '</u></b></span>';
+        }, $html);
+        $html = preg_replace_callback('/<del(?<attrs> [^>]*)?>(?<content>.*)<\/del>/siuU', function ($matches) {
+            $content = $matches['content'];
+            if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attrs'], $matches2)) {
+                $content .= '<sub>' . $matches2['append'] . '</sub> ';
+            }
+
+            return '<span color="red"><b><s>' . $content . '</s></b></span>';
+        }, $html);
+
+        // appendHint class should be converted to a SUB element
+        $html = preg_replace_callback(
+            '/<(?<tag>\w+) (?<attributes>[^>]*appendHint[^>]*)>' .
+            '(?<content>.*)' .
+            '<\/\k<tag>>/siuU',
+            function ($matches) {
+                $content = $matches['content'];
+                if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attributes'], $matches2)) {
+                    $content .= '<sub>' . $matches2['append'] . '</sub> ';
+                }
+
+                return '<' . $matches['tag'] . ' ' . $matches['attributes'] . '>' . $content . '</' . $matches['tag'] . '>';
+            },
+            $html
+        );
+        // ice-ins class should be converted to a green DIV element (ice-ins will probably only be used on block elements)
+        $html = preg_replace_callback(
+            '/<(?<tag>\w+) (?<attributes>[^>]*ice\-ins[^>]*)>' .
+            '(?<content>.*)' .
+            '<\/\k<tag>>/siuU',
+            function ($matches) {
+                $content = $matches['content'];
+                $content = '<div color="green"><b><u>' . $content . '</u></b></div>';
+
+                return '<' . $matches['tag'] . ' ' . $matches['attributes'] . '>' . $content . '</' . $matches['tag'] . '>';
+            },
+            $html
+        );
+        // ice-del class should be converted to a red DIV element (ice-ins will probably only be used on block elements)
+        $html = preg_replace_callback(
+            '/<(?<tag>\w+) (?<attributes>[^>]*ice\-del[^>]*)>' .
+            '(?<content>.*)' .
+            '<\/\k<tag>>/siuU',
+            function ($matches) {
+                $content = $matches['content'];
+                $content = '<div color="red"><b><s>' . $content . '</s></b></div>';
+
+                return '<' . $matches['tag'] . ' ' . $matches['attributes'] . '>' . $content . '</' . $matches['tag'] . '>';
+            },
+            $html
+        );
+
+        // Adds a padding="0" to all block elements
+        $html = preg_replace_callback(
+            '/<(?<tag>p|ul|li|div|blockquote|h1|h2|h3|h4|h5|h6)(?<attributes> [^>]*)?>/siuU',
+            function ($matches) {
+                $str = '<' . $matches['tag'] . ' padding="0"';
+                if (isset($matches['attributes'])) {
+                    $str .= ' ' . $matches['attributes'];
+                }
+                $str .= '>';
+
+                return $str;
+            },
+            $html
+        );
+
+        // Some attempts to fix the most severe broken HTML
+
+        // </li><sub>[Ä1]</sub> => <sub>[Ä1]</sub></li>
+        $html = preg_replace(
+            '/<\/li><sub>([^<]*)<\/sub>/siuU',
+            '<sub>$1</sub></li>',
+            $html
+        );
+
+        $html = preg_replace(
+            '/<div +padding="0" +color="red"><b><s><li padding="0">(.*)<\/li> *<\/s> *<\/b> *<\/div>/siuU',
+            '<li padding="0" color="red"><b><s>$1</s></b></li>',
+            $html
+        );
+        $html = preg_replace(
+            '/<div +padding="0" +color="green"><b><u><li padding="0">(.*)<\/li> *<\/u> *<\/b> *<\/div>/siuU',
+            '<li padding="0" color="green"><b><u>$1</u></b></li>',
+            $html
+        );
+
+        return $html;
+    }
+
+    /**
+     * @noinspection HtmlUnknownAttribute
+     * @noinspection HtmlDeprecatedAttribute
+     */
+    public static function printMotionWithEmbeddedAmendmentsToPdf(Init $form, IPDFLayout $pdfLayout, IPdfWriter $pdf): void
+    {
+        $amendmentsById = [];
+        foreach ($form->motion->getVisibleAmendments(false, false) as $amendment) {
+            $amendmentsById[$amendment->id] = $amendment;
+        }
+
+        foreach ($form->motion->getSortedSections(false) as $section) {
+            $type = $section->getSettings();
+            if ($type->type === ISectionType::TYPE_TITLE) {
+                $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+            } elseif ($type->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                $paragraphs = $section->getTextParagraphObjects(false, false, false, true);
+                $paragraphNos = array_keys($paragraphs);
+
+                foreach ($paragraphNos as $paragraphNo) {
+                    $draftParagraph = $form->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
+                    $paragraphCollisions = array_filter(
+                        $form->getParagraphTextCollisions($section, $paragraphNo),
+                        function ($amendmentId) use ($draftParagraph) {
+                            return !in_array($amendmentId, $draftParagraph->handledCollisions);
+                        },
+                        ARRAY_FILTER_USE_KEY
+                    );
+
+                    $html = LayoutHelper::convertMergingHtmlToTcpdfable($draftParagraph->text);
+                    $pdf->writeHTML($html);
+
+                    foreach ($paragraphCollisions as $amendmentId => $paraData) {
+                        $amendment = $amendmentsById[$amendmentId];
+                        $html = \app\components\diff\amendmentMerger\ParagraphMerger::getFormattedCollision($paraData, $amendment, $amendmentsById, false);
+                        $html = LayoutHelper::convertMergingHtmlToTcpdfable($html);
+
+                        $html = '<table style="border-left: solid 1px red;" padding="0" width="100%"><tr padding="0"><td padding="0" width="3%">&nbsp;</td>' .
+                                '<td padding="0" width="97%">' . $html . '</td></tr></table>';
+                        $pdf->Ln(5);
+                        $pdf->writeHTML($html);
+                    }
+                }
+            } else {
+                $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+            }
+        }
     }
 }

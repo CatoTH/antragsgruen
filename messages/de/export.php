@@ -20,6 +20,7 @@ return [
     'motions'               => 'Anträge',
     'amendment'             => 'Änderungsantrag',
     'amendments'            => 'Änderungsanträge',
+    'amendments_none'       => 'keine',
     'line'                  => 'Zeile',
     'status'                => 'Status',
     'amend_change'          => 'Änderung',

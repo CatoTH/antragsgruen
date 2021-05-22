@@ -119,7 +119,7 @@ trait MotionMergingTrait
         $paragraphCollisions = $merger->getCollidingParagraphGroups();
         foreach ($paragraphCollisions as $amendmentId => $paraData) {
             $amendment    = $amendmentsById[$amendmentId];
-            $collisions[] = $merger->getFormattedCollision($paraData, $amendment, $amendmentsById);
+            $collisions[] = $merger->getFormattedCollision($paraData, $amendment, $amendmentsById, true);
         }
 
         return json_encode([

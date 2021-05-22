@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\NotFound;
+use app\models\mergeAmendments\Init;
 use app\models\db\{Consultation, Motion, TexTemplate, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\MotionSectionChanges;
@@ -296,6 +297,19 @@ trait MotionExportTraits
         } else {
             return $this->renderPartial('pdf_collection_tcpdf', ['imotions' => $imotions]);
         }
+    }
+
+    public function actionEmbeddedAmendmentsPdf(string $motionSlug): string
+    {
+        $motion = $this->getMotionWithCheck($motionSlug);
+
+        if (!$motion->isReadable()) {
+            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+        }
+
+        $form = Init::forEmbeddedAmendmentsExport($motion);
+
+        return $this->renderPartial('pdf_embedded_amendments_tcpdf', ['form' => $form]);
     }
 
     /**
