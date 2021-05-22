@@ -32,7 +32,7 @@ if ($colMark) {
 }
 echo '<td>';
 if ($entry->getMyMotionType()->motionPrefix) {
-    echo Html::encode($entry->getMyMotionType()->motionPrefix);
+    echo Html::encode(trim($entry->getMyMotionType()->motionPrefix, ":-. \t\n\r\0\x0B"));
 } else {
     echo Yii::t('admin', 'list_motion_short');
 }
