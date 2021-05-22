@@ -960,6 +960,17 @@ label.legend {
     overflow: visible;
   }
 
+  .exportCol {
+    overflow: visible;
+    .btn-link {
+      padding: 0;
+      font-weight: normal;
+      font-size: 12.6px; // 14px * 0.9em
+      margin-top: -3px;
+      margin-right: -4px;
+    }
+  }
+
   .proposalCol {
     .editModified {
       font-size: 0.8em;

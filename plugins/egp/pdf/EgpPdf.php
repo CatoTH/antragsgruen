@@ -26,12 +26,12 @@ class EgpPdf extends IPdfWriter
         $this->robotoItalicBold = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-BoldItalic.ttf', 'TrueTypeUnicode', '', 96);
     }
 
-    public function getMotionFont(MotionSection $section): string
+    public function getMotionFont(?MotionSection $section): string
     {
         return $this->roboto;
     }
 
-    public function getMotionFontSize(MotionSection $section): int
+    public function getMotionFontSize(?MotionSection $section): int
     {
         return 11;
     }
