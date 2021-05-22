@@ -26,12 +26,12 @@ class FrauenratPdf extends IPdfWriter
         $this->calibriItalicBold = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Bold Italic.ttf', 'TrueTypeUnicode', '', 96);
     }
 
-    public function getMotionFont(MotionSection $section): string
+    public function getMotionFont(?MotionSection $section): string
     {
         return $this->calibri;
     }
 
-    public function getMotionFontSize(MotionSection $section): int
+    public function getMotionFontSize(?MotionSection $section): int
     {
         return 12;
     }

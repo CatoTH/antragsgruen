@@ -30,7 +30,12 @@ echo '<tr class="motion motion' . $entry->id . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
-echo '<td>' . Yii::t('admin', 'list_motion_short') . '</td>';
+echo '<td>';
+if ($entry->getMyMotionType()->motionPrefix) {
+    echo Html::encode($entry->getMyMotionType()->motionPrefix);
+} else {
+    echo Yii::t('admin', 'list_motion_short');
+}
 echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
 echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
@@ -79,17 +84,33 @@ if ($hasTags) {
     }
     echo '<td class="tagsCol">' . implode(', ', $tags) . '</td>';
 }
-echo '<td class="exportCol">';
+echo '<td class="exportCol"><div class="btn-group">
+  <button class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    <span class="caret"></span>
+    PDF
+  </button>
+  <ul class="dropdown-menu">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {
-    echo Html::a('PDF', UrlHelper::createMotionUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
-    echo Html::a(
-        Yii::t('admin', 'list_pdf_amend'),
+    echo '<li>' . Html::a(
+        str_replace('%TITLE%', $entry->getMyMotionType()->titleSingular, Yii::t('admin', 'list_export_motion_only')),
+        UrlHelper::createMotionUrl($entry, 'pdf'),
+        ['class' => 'pdf']
+    ) . '</li>';
+    echo '<li>' . Html::a(
+        Yii::t('admin', 'list_export_amend_attach'),
         UrlHelper::createMotionUrl($entry, 'pdfamendcollection'),
         ['class' => 'pdfamend']
-    ) . ' / ';
+    ) . '</li>';
+    echo '<li>' . Html::a(
+        Yii::t('admin', 'list_export_amend_embed'),
+        UrlHelper::createMotionUrl($entry, 'embedded-amendments-pdf'),
+        ['class' => 'pdfEmbeddedAmendments']
+    ) . '</li>';
 }
-echo Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']) . ' / ';
-echo Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainhtml'), ['class' => 'plainHtml']);
+echo '</ul></div>';
+
+echo ' / ' . Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']);
+echo ' / ' . Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainhtml'), ['class' => 'plainHtml']);
 
 foreach ($controller->getParams()->getPluginClasses() as $pluginClass) {
     foreach ($pluginClass::getCustomMotionExports($entry) as $title => $url) {

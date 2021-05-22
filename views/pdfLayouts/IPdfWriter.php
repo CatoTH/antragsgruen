@@ -34,20 +34,24 @@ class IPdfWriter extends Fpdi
         return $linesArr;
     }
 
-    public function getMotionFont(MotionSection $section): string
+    public function getMotionFont(?MotionSection $section): string
     {
-        if ($section->getSettings()->fixedWidth) {
+        if ($section && $section->getSettings()->fixedWidth) {
             return 'dejavusansmono';
         } else {
             return 'helvetica';
         }
     }
 
-    public function getMotionFontSize(MotionSection $section): int
+    public function getMotionFontSize(?MotionSection $section): int
     {
-        $lineLength = $section->getConsultation()->getSettings()->lineLength;
+        if ($section) {
+            $lineLength = $section->getConsultation()->getSettings()->lineLength;
 
-        return ($lineLength > 70 ? 10 : 11);
+            return ($lineLength > 70 ? 10 : 11);
+        } else {
+            return 10;
+        }
     }
 
     public function printMotionSection(MotionSection $section): void

@@ -562,6 +562,21 @@ class LayoutHelper
             $amendmentsById[$amendment->id] = $amendment;
         }
 
+        $pdfLayout->printMotionHeader($form->motion);
+
+        $pdf->SetFont($pdf->getMotionFont(null), '', $pdf->getMotionFontSize(null));
+        $pdf->Ln(5);
+        $amendmentsHtml = '<table border="1" cellpadding="5"><tr><td><h2>' . \Yii::t('export', 'amendments') . '</h2>';
+        foreach ($form->motion->getVisibleAmendments(false, false) as $amendment) {
+            $amendmentsHtml .= '<div><strong>' . Html::encode($amendment->titlePrefix) . '</strong>: ' . Html::encode($amendment->getInitiatorsStr()) . '</div>';
+        }
+        if (count($form->motion->getVisibleAmendments(false, false)) === 0) {
+            $amendmentsHtml .= '<em>' . \Yii::t('export', 'amendments_none') . '</em>';
+        }
+        $amendmentsHtml .= '</td></tr></table>';
+        $pdf->writeHTML($amendmentsHtml, true, false, false, true);
+        $pdf->Ln(5);
+
         foreach ($form->motion->getSortedSections(false) as $section) {
             $type = $section->getSettings();
             if ($type->type === ISectionType::TYPE_TITLE) {
