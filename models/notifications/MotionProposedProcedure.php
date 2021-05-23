@@ -30,7 +30,7 @@ class MotionProposedProcedure
             $text = static::getDefaultText($motion);
         }
         if ($replyTo === null || trim($replyTo) === '') {
-            $replyTo = MailTools::getDefaultReplyTo($motion->getMyConsultation(), \app\models\db\User::getCurrentUser());
+            $replyTo = MailTools::getDefaultReplyTo($motion, $motion->getMyConsultation(), \app\models\db\User::getCurrentUser());
         }
 
         /** @noinspection PhpUnhandledExceptionInspection */

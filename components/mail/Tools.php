@@ -2,7 +2,7 @@
 
 namespace app\components\mail;
 
-use app\models\db\{Consultation, EMailLog, User};
+use app\models\db\{Consultation, EMailLog, IMotion, User};
 use app\models\exceptions\{MailNotSent, ServerConfiguration};
 
 class Tools
@@ -18,16 +18,23 @@ class Tools
         return $name;
     }
 
-    public static function getDefaultReplyTo(?Consultation $consultation = null, ?User $user = null): ?string
+    public static function getDefaultReplyTo(?IMotion $imotion = null, ?Consultation $consultation = null, ?User $user = null): ?string
     {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
+
+        if ($imotion->responsibilityId && $imotion->responsibilityUser && $imotion->responsibilityUser->getSettingsObj()->ppReplyTo) {
+            return $imotion->responsibilityUser->getSettingsObj()->ppReplyTo;
+        }
 
         if ($user && $user->getSettingsObj()->ppReplyTo) {
             return $user->getSettingsObj()->ppReplyTo;
         }
 
         $replyTo = null;
+        if ($imotion && $imotion->getMyConsultation()) {
+            $consultation = $imotion->getMyConsultation();
+        }
         if ($consultation) {
             if ($consultation->getSettings()->emailReplyTo) {
                 $replyTo = $consultation->getSettings()->emailReplyTo;
@@ -80,7 +87,7 @@ class Tools
             $fromName = static::getDefaultMailFromName($fromConsultation);
         }
         if (!$replyTo) {
-            $replyTo = static::getDefaultReplyTo($fromConsultation);
+            $replyTo = static::getDefaultReplyTo(null, $fromConsultation);
         }
 
         $messageId = explode('@', $fromEmail);

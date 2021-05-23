@@ -294,10 +294,10 @@ $selectedTags = $amendment->getProposedProcedureTags();
         <h3><?= Yii::t('amend', 'proposal_notify_text') ?></h3>
         <div class="row proposalFrom">
             <?php
-            $replyTo            = \app\components\mail\Tools::getDefaultReplyTo($amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
-            $fromName           = \app\components\mail\Tools::getDefaultMailFromName($amendment->getMyConsultation());
+            $replyTo = \app\components\mail\Tools::getDefaultReplyTo($amendment, $amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
+            $fromName = \app\components\mail\Tools::getDefaultMailFromName($amendment->getMyConsultation());
             $placeholderReplyTo = Yii::t('amend', 'proposal_notify_replyto') . ': ' . ($replyTo ? $replyTo : '-');
-            $placeholderName    = Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;
+            $placeholderName = Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;
             ?>
             <div class="col-md-6">
                 <input type="text" name="proposalNotificationFrom" id="proposalNotificationFrom" class="form-control"

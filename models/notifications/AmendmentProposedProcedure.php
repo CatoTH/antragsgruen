@@ -30,7 +30,7 @@ class AmendmentProposedProcedure
             $text = static::getDefaultText($amendment);
         }
         if ($replyTo === null || trim($replyTo) === '') {
-            $replyTo = MailTools::getDefaultReplyTo($amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
+            $replyTo = MailTools::getDefaultReplyTo($amendment, $amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
         }
 
         /** @noinspection PhpUnhandledExceptionInspection */
