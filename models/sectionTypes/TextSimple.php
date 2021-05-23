@@ -3,9 +3,9 @@
 namespace app\models\sectionTypes;
 
 use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
-use app\components\{HashedStaticCache, HTMLTools, LineSplitter};
+use app\components\{HashedStaticCache, HTMLTools, LineSplitter, UrlHelper};
 use app\components\latex\{Content, Exporter};
-use app\models\db\{AmendmentSection, Consultation, MotionSection};
+use app\models\db\{AmendmentSection, Consultation, Motion, MotionSection};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
@@ -19,7 +19,7 @@ class TextSimple extends Text
     /**
      * @param bool $active
      */
-    public function forceMultipleParagraphMode($active)
+    public function forceMultipleParagraphMode(bool $active)
     {
         $this->forceMultipleParagraphs = $active;
     }
@@ -277,7 +277,12 @@ class TextSimple extends Text
         }
         $wrapStart .= '">';
         $wrapEnd   = '</div></section>';
-        $str       .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
+        if ($this->motionContext && $section->getAmendment() && $section->getAmendment()->motionId !== $this->motionContext->id) {
+            $linkMotion = $section->getAmendment()->getMyMotion();
+        } else {
+            $linkMotion = null;
+        }
+        $str       .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine, $linkMotion);
         $str       .= '</div>';
         $str       .= '</div>';
 
@@ -385,7 +390,7 @@ class TextSimple extends Text
         }, $text);
     }
 
-    public static function formatDiffGroup(array $diffGroups, string $wrapStart = '', string $wrapEnd = '', int $firstLineOfSection = -1): string
+    public static function formatDiffGroup(array $diffGroups, string $wrapStart = '', string $wrapEnd = '', int $firstLineOfSection = -1, ?Motion $linkMotion = null): string
     {
         $out = '';
         foreach ($diffGroups as $diff) {
@@ -437,8 +442,12 @@ class TextSimple extends Text
                 }
             }
             $lineFrom = ($diff['lineFrom'] < $firstLineOfSection ? $firstLineOfSection : $diff['lineFrom']);
-            $out      = str_replace(['#LINETO#', '#LINEFROM#'], [(string)$diff['lineTo'], (string)$lineFrom], $out) . '</h4>';
-            $out      .= '<div>';
+            $out      = str_replace(['#LINETO#', '#LINEFROM#'], [(string)$diff['lineTo'], (string)$lineFrom], $out);
+            if ($linkMotion) {
+                $link = UrlHelper::createMotionUrl($linkMotion);
+                $out .= ' <span class="linkedMotion">(' . Html::a(Html::encode($linkMotion->getTitleWithPrefix()), $link) . ')</span>';
+            }
+            $out      .= ':</h4><div>';
             if ($text[0] != '<') {
                 $out .= '<p>' . $text . '</p>';
             } else {

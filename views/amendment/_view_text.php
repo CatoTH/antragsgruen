@@ -30,7 +30,9 @@ if ($amendment->hasVisibleAlternativeProposaltext($procedureToken)) {
             if (!$amendment->isProposalPublic()) {
                 $prefix = '[ADMIN] ' . $prefix;
             }
-            echo $section->getSectionType()->getAmendmentFormatted($prefix);
+            $sectionType = $section->getSectionType();
+            $sectionType->setMotionContext($amendment->getMyMotion());
+            echo $sectionType->getAmendmentFormatted($prefix);
         }
     }
 } else {

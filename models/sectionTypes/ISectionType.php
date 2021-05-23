@@ -3,7 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
-use app\models\db\{Consultation, IMotionSection, MotionSection};
+use app\models\db\{Consultation, IMotionSection, Motion};
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -35,6 +35,9 @@ abstract class ISectionType
     protected $section;
 
     protected $absolutizeLinks = false;
+
+    /** @var null|Motion */
+    protected $motionContext = null;
 
     public function __construct(IMotionSection $section)
     {
@@ -85,6 +88,13 @@ abstract class ISectionType
     public function setAbsolutizeLinks(bool $absolutize): void
     {
         $this->absolutizeLinks = $absolutize;
+    }
+
+    // This sets the motion in whose Context an amendment will be shown. This is relevant if the proposed procedure of an amendment
+    // suggests replacing this amendment by one to another motion.
+    public function setMotionContext(?Motion $motion): void
+    {
+        $this->motionContext = $motion;
     }
 
 
@@ -161,11 +171,7 @@ abstract class ISectionType
     abstract public function getAmendmentPlainText(): string;
 
     /**
-     * @param CommentForm|null $commentForm
      * @param int[] $openedComments
-     *
-     * @return string
-     * @noinspection PhpUnusedParameterInspection
      */
     public function showMotionView(?CommentForm $commentForm, array $openedComments): string
     {
