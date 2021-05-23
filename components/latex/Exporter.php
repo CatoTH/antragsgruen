@@ -391,7 +391,7 @@ class Exporter
         $replaces['%ASSETROOT%']  = $layout->assetRoot;
         $replaces['%PLUGINROOT%'] = $layout->pluginRoot;
         $replaces['%TITLE%']      = static::encodePlainString($layout->title);
-        $replaces['%AUTHOR%']     = $layout->author;
+        $replaces['%AUTHOR%']     = static::encodePlainString($layout->author);
         $template                 = str_replace(array_keys($replaces), array_values($replaces), $template);
         return $template;
     }
@@ -428,7 +428,7 @@ class Exporter
         $replaces['%TITLEPREFIX%']        = static::encodePlainString($content->titlePrefix);
         $replaces['%TITLE_LONG%']         = static::encodePlainString($content->titleLong);
         $replaces['%TITLE_RAW%']          = static::encodePlainString($content->titleRaw);
-        $replaces['%AUTHOR%']             = $content->author;
+        $replaces['%AUTHOR%']             = static::encodePlainString($content->author);
         $replaces['%MOTION_DATA_TABLE%']  = $content->motionDataTable;
         $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
         $replaces['%INTRODUCTION_BIG%']   = $content->introductionBig;
