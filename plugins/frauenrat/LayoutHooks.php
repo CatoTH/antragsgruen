@@ -313,15 +313,11 @@ $(function() {
 
     public function getConsultationPreWelcome(string $before): string
     {
-        $motionTypeIds = [1];
-        $pdfLink       = UrlHelper::createUrl([
-            '/motion/fullpdf',
-            'motionTypeId' => implode(",", $motionTypeIds),
-            'filename'     => 'Motions-with-amendments.pdf',
-        ]);
+        $pdfLinkSpt = UrlHelper::createUrl(['/frauenrat/motion/schwerpunktthemen']);
+        $pdfLinkSachantraege = UrlHelper::createUrl(['/frauenrat/motion/sachantraege']);
 
-        return '<a href="' . Html::encode($pdfLink) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">' .
-               '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Antragsspiegel herunterladen</a>';
+        return '<a href="' . Html::encode($pdfLinkSachantraege) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">Antragsspiegel</a>' .
+               '<a href="' . Html::encode($pdfLinkSpt) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">Anträge SPT</a>';
     }
 
     public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
