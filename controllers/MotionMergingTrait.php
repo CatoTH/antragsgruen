@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\UrlHelper;
+use app\components\{MotionSorter, UrlHelper};
 use app\models\db\Consultation;
 use app\models\exceptions\{Inconsistency, Internal};
 use app\models\mergeAmendments\{Draft, Merge, Init};
@@ -10,8 +10,6 @@ use app\models\MotionSectionChanges;
 use yii\web\Response;
 
 /**
- * Trait MotionMergingTrait
- * @package controllers
  * @property Consultation $consultation
  */
 trait MotionMergingTrait
@@ -144,7 +142,8 @@ trait MotionMergingTrait
         $newAmendmentsStatus     = [];
 
         $knownAmendments = array_map('intval', explode(',', $knownAmendments));
-        foreach ($motion->getVisibleAmendments() as $amendment) {
+        $amendments = Init::getMotionAmendmentsForMerging($motion);
+        foreach ($amendments as $amendment) {
             $amendmentsById[$amendment->id] = $amendment;
             if (!in_array($amendment->id, $knownAmendments)) {
                 $newAmendmentsById[$amendment->id]   = $amendment;
@@ -248,7 +247,9 @@ trait MotionMergingTrait
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $amendments  = $motion->getVisibleAmendmentsSorted();
+        $amendments = Init::getMotionAmendmentsForMerging($motion);
+        $amendments = MotionSorter::getSortedAmendments($motion->getMyConsultation(), $amendments);
+
         $draft       = $motion->getMergingDraft(false);
         $unconfirmed = $motion->getMergingUnconfirmed();
 

@@ -224,9 +224,8 @@ $selectedTags = $motion->getProposedProcedureTags();
             $options[$otherAmend->id] = $otherAmend->getTitle();
         }
     }
-    // Hint: the SELECT is not auto-initialized, for that takes rather long when there are many amendments
     $attrs = ['id' => 'obsoletedByAmendment'];
-    echo HTMLTools::fueluxSelectbox('obsoletedByMotion', $options, $preObsoletedBy, $attrs, false, null, false);
+    echo Html::dropDownList('obsoletedByMotion', $preObsoletedBy, $options, $attrs);
     ?>
 </section>
 <section class="statusDetails status_<?= Motion::STATUS_REFERRED ?>">
@@ -243,7 +242,7 @@ $selectedTags = $motion->getProposedProcedureTags();
     <div class="votingStatus">
         <h3><?= Yii::t('amend', 'proposal_voting_status') ?></h3>
         <?php
-        foreach (Motion::getVotingStatuses() as $statusId => $statusName) {
+        foreach ($motion->getMyConsultation()->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
             ?>
             <label>
                 <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php

@@ -148,6 +148,7 @@ return [
     'STATUS_PROCESSED'                    => 'Processed',
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Submitted (screened, not yet published)',
     'STATUS_PROPOSED_MODIFIED_AMENDMENT'  => 'Proposed modification',
+    'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION' => 'Proposed move from other motion',
     'STATUS_OBSOLETED_BY'                 => 'Handled by another amendment',
     'STATUS_CUSTOM_STRING'                => 'Custom status',
     'STATUS_INLINE_REPLY'                 => 'Response',
@@ -166,6 +167,7 @@ return [
     'PROPOSED_OBSOLETED_BY_AMEND' => 'Handled by another amendment',
     'PROPOSED_OBSOLETED_BY_MOT'   => 'Handled by another motion',
     'PROPOSED_CUSTOM_STRING'      => 'Custom status',
+    'PROPOSED_MOVE_TO_OTHER_MOTION' => 'Moved to other motion',
 
     'section_comment_none'      => 'No comments',
     'section_comment_motion'    => 'Comment the whole motion as one',

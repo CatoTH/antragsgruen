@@ -79,7 +79,7 @@ class MergeSingleAmendmentForm extends Model
             if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
+            if (in_array($this->otherAmendStatuses[$amendment->id], $amendment->getMyConsultation()->getStatuses()->getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -173,7 +173,7 @@ class MergeSingleAmendmentForm extends Model
             if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
+            if (in_array($this->otherAmendStatuses[$amendment->id], $amendment->getMyConsultation()->getStatuses()->getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -207,7 +207,7 @@ class MergeSingleAmendmentForm extends Model
             if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (!in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
+            if (!in_array($this->otherAmendStatuses[$amendment->id], $amendment->getMyConsultation()->getStatuses()->getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             $amendment->status = $this->otherAmendStatuses[$amendment->id];

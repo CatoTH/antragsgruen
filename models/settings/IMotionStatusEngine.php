@@ -153,6 +153,13 @@ class IMotionStatusEngine
             true,
             true
         );
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION,
+            \Yii::t('structure', 'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION'),
+            null,
+            false,
+            true
+        );
 
         $this->allStatusesCache = $statuses;
     }
@@ -253,6 +260,33 @@ class IMotionStatusEngine
     }
 
     /**
+     * Used to decide if "submitted on" or "created on" is shown on the motion page. Mostly relevant for the collection phase.
+     * @return int[]
+     */
+    public function getNotYetSubmittedStatuses(): array
+    {
+        return [
+            IMotion::STATUS_DELETED,
+            IMotion::STATUS_DRAFT,
+            IMotion::STATUS_COLLECTING_SUPPORTERS,
+            IMotion::STATUS_DRAFT_ADMIN,
+            IMotion::STATUS_MERGING_DRAFT_PRIVATE,
+            IMotion::STATUS_MERGING_DRAFT_PUBLIC,
+        ];
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getScreeningStatuses(): array
+    {
+        return [
+            IMotion::STATUS_SUBMITTED_UNSCREENED,
+            IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED
+        ];
+    }
+
+    /**
      * @return int[]
      */
     public function getInvisibleMotionStatuses(bool $withdrawnAreVisible = true): array
@@ -278,6 +312,42 @@ class IMotionStatusEngine
      */
     public function getInvisibleAmendmentStatuses(bool $withdrawnAreVisible = true): array
     {
-        return $this->consultation->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
+        return $this->getInvisibleMotionStatuses($withdrawnAreVisible);
+    }
+
+    public function getAmendmentStatusesUnselectableForMerging(): array
+    {
+        $invisible = [];
+        foreach ($this->allStatusesCache as $status) {
+            if ($status->userInvisible && $status->id !== IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+                $invisible[] = $status->id;
+            }
+        }
+        return $invisible;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getStatusesMarkAsDoneOnRewriting(): array
+    {
+        return [
+            IMotion::STATUS_PROCESSED,
+            IMotion::STATUS_ACCEPTED,
+            IMotion::STATUS_REJECTED,
+            IMotion::STATUS_MODIFIED_ACCEPTED,
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getVotingStatuses(): array
+    {
+        return [
+            IMotion::STATUS_VOTE     => \Yii::t('structure', 'STATUS_VOTE'),
+            IMotion::STATUS_ACCEPTED => \Yii::t('structure', 'STATUS_ACCEPTED'),
+            IMotion::STATUS_REJECTED => \Yii::t('structure', 'STATUS_REJECTED'),
+        ];
     }
 }

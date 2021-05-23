@@ -148,6 +148,7 @@ return [
     'STATUS_PROCESSED'                    => 'Behandelt',
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Eingereicht (geprüft, unveröffentlicht)',
     'STATUS_PROPOSED_MODIFIED_AMENDMENT'  => 'Vorgeschlagene Änderung',
+    'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION' => 'Vorgeschlagene Verschiebung von anderem Antrag',
     'STATUS_OBSOLETED_BY'                 => 'Erledigt durch anderen ÄA',
     'STATUS_CUSTOM_STRING'                => 'Sonstiger Status',
     'STATUS_INLINE_REPLY'                 => 'Antwort',
@@ -166,6 +167,7 @@ return [
     'PROPOSED_OBSOLETED_BY_AMEND' => 'Erledigt durch anderen ÄA',
     'PROPOSED_OBSOLETED_BY_MOT'   => 'Erledigt durch anderen Antrag',
     'PROPOSED_CUSTOM_STRING'      => 'Sonstiger Status',
+    'PROPOSED_MOVE_TO_OTHER_MOTION' => 'Verschoben zu anderem Antrag',
 
     'section_comment_none'      => 'Keine Kommentare',
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',

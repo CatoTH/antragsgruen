@@ -87,6 +87,12 @@ abstract class IMotion extends ActiveRecord
     // This amendment is being referenced by proposalReference of the modified amendment.
     const STATUS_PROPOSED_MODIFIED_AMENDMENT = 21;
 
+    // Used as a status for amendment, which is the proposed move of an amendment to another motion.
+    // The original amendment gets this status as `proposalStatus`, the internal new amendment (for the other motion) gets this status as `status`.
+    // The internal new amendment should not be used-visible in the context of its motion (only when merging),
+    // only within the amendment that references this one via its proposalReference
+    const STATUS_PROPOSED_MOVE_TO_OTHER_MOTION = 28;
+
     // An amendment or motion has been referred to another institution.
     // The institution is documented in statusString, or, in case of a change proposal, in proposalComment
     const STATUS_REFERRED = 10;
@@ -118,57 +124,14 @@ abstract class IMotion extends ActiveRecord
     const STATUS_MISSING_INFORMATION = 13;
     const STATUS_DISMISSED = 14;
 
-    /**
-     * @return string[]
-     */
-    public static function getVotingStatuses()
-    {
-        return [
-            static::STATUS_VOTE     => \Yii::t('structure', 'STATUS_VOTE'),
-            static::STATUS_ACCEPTED => \Yii::t('structure', 'STATUS_ACCEPTED'),
-            static::STATUS_REJECTED => \Yii::t('structure', 'STATUS_REJECTED'),
-        ];
-    }
-
-    /**
-     * @return int[]
-     */
-    public static function getScreeningStatuses()
-    {
-        return [
-            static::STATUS_SUBMITTED_UNSCREENED,
-            static::STATUS_SUBMITTED_UNSCREENED_CHECKED
-        ];
-    }
-
     public function isInScreeningProcess(): bool
     {
-        return in_array($this->status, IMotion::getScreeningStatuses());
+        return in_array($this->status, $this->getMyConsultation()->getStatuses()->getScreeningStatuses());
     }
 
     public function isSubmitted(): bool
     {
-        return !in_array($this->status, [
-            IMotion::STATUS_DELETED,
-            IMotion::STATUS_DRAFT,
-            IMotion::STATUS_COLLECTING_SUPPORTERS,
-            IMotion::STATUS_DRAFT_ADMIN,
-            IMotion::STATUS_MERGING_DRAFT_PRIVATE,
-            IMotion::STATUS_MERGING_DRAFT_PUBLIC,
-        ]);
-    }
-
-    /**
-     * @return int[]
-     */
-    public static function getStatusesMarkAsDoneOnRewriting()
-    {
-        return [
-            static::STATUS_PROCESSED,
-            static::STATUS_ACCEPTED,
-            static::STATUS_REJECTED,
-            static::STATUS_MODIFIED_ACCEPTED,
-        ];
+        return !in_array($this->status, $this->getMyConsultation()->getStatuses()->getNotYetSubmittedStatuses());
     }
 
     /**
@@ -388,6 +351,7 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
             static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
             static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND'),
+            static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION => \Yii::t('structure', 'PROPOSED_MOVE_TO_OTHER_MOTION'),
             static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
         ];
     }

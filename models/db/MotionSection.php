@@ -151,19 +151,16 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @param bool $includeProposals
-     * @param bool $onlyWithChanges
-     * @param bool $allStatuses
-     * @return AmendmentSection[]|null
+     * @return AmendmentSection[]
      */
-    public function getAmendingSections($includeProposals = false, $onlyWithChanges = false, $allStatuses = false)
+    public function getAmendingSections(bool $includeProposals = false, bool $onlyWithChanges = false, bool $allStatuses = false): array
     {
         $sections = [];
         $motion   = $this->getConsultation()->getMotion($this->motionId);
         if ($allStatuses) {
             $excludedStatuses = $this->getConsultation()->getStatuses()->getUnreadableStatuses();
         } else {
-            $excludedStatuses = $this->getConsultation()->getStatuses()->getInvisibleAmendmentStatuses();
+            $excludedStatuses = $this->getConsultation()->getStatuses()->getAmendmentStatusesUnselectableForMerging();
         }
         foreach ($motion->amendments as $amend) {
             $allowedProposedChange = ($includeProposals && $amend->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
@@ -284,10 +281,6 @@ class MotionSection extends IMotionSection
     private $paragraphObjectCacheWithoutLines = null;
 
     /**
-     * @param bool $lineNumbers
-     * @param bool $includeComments
-     * @param bool $includeAmendment
-     * @param bool $minOnePara
      * @return MotionSectionParagraph[]
      * @throws Internal
      */

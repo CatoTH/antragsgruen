@@ -351,8 +351,9 @@ class Motion extends IMotion implements IRSSItem
     public static function getScreeningMotions(Consultation $consultation): array
     {
         $query = Motion::find();
-        $query->where('motion.status IN (' . implode(', ', static::getScreeningStatuses()) . ')');
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+        $statuses = array_map('intval', $consultation->getStatuses()->getScreeningStatuses());
+        $query->where('motion.status IN (' . implode(', ', $statuses) . ')');
+        $query->andWhere('motion.consultationId = ' . intval($consultation->id));
         $query->orderBy("dateCreation DESC");
 
         return $query->all();

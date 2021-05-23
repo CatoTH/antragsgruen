@@ -2,7 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
-use app\models\db\{IMotion, Motion, MotionSection};
+use app\models\db\{Amendment, IMotion, Motion, MotionSection};
 use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable
@@ -86,7 +86,9 @@ class Draft implements \JsonSerializable
         $draft->amendmentVersions = [];
         $draft->amendmentStatuses = [];
         $draft->amendmentVotingData = [];
-        foreach ($origMotion->getVisibleAmendments() as $amendment) {
+
+        $amendments = Init::getMotionAmendmentsForMerging($origMotion);
+        foreach ($amendments as $amendment) {
             if (isset($json['amendmentVersions'][$amendment->id])) {
                 $draft->amendmentVersions[$amendment->id] = $json['amendmentVersions'][$amendment->id];
             }
@@ -115,7 +117,8 @@ class Draft implements \JsonSerializable
         $draft->amendmentVersions   = [];
         $draft->amendmentVotingData = [];
 
-        foreach ($form->motion->getVisibleAmendments() as $amendment) {
+        $amendments = Init::getMotionAmendmentsForMerging($form->motion);
+        foreach ($amendments as $amendment) {
             $draft->amendmentStatuses[$amendment->id] = $amendment->status;
 
             if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id])) {

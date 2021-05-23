@@ -2,6 +2,7 @@ const STATUS_REFERRED = 10;
 const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY = 22;
 const STATUS_CUSTOM_STRING = 23;
+const STATUS_PROPOSED_MOVE_TO_OTHER_MOTION = 28;
 
 export class ChangeProposedProcedure {
     private $openerBtn: JQuery;
@@ -158,10 +159,15 @@ export class ChangeProposedProcedure {
             data['proposalComment'] = this.$widget.find('input[name=referredTo]').val();
         }
         if (newVal == STATUS_OBSOLETED_BY) {
-            if (this.$widget.find('input[name=obsoletedByAmendment]').length > 0) {
-                data['proposalComment'] = this.$widget.find('input[name=obsoletedByAmendment]').val();
+            if (this.$widget.find('select[name=obsoletedByAmendment]').length > 0) {
+                data['proposalComment'] = this.$widget.find('select[name=obsoletedByAmendment]').val();
             } else {
-                data['proposalComment'] = this.$widget.find('input[name=obsoletedByMotion]').val();
+                data['proposalComment'] = this.$widget.find('select[name=obsoletedByMotion]').val();
+            }
+        }
+        if (newVal == STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+            if (this.$widget.find('select[name=movedToOtherMotion]').length > 0) {
+                data['proposalComment'] = this.$widget.find('select[name=movedToOtherMotion]').val();
             }
         }
         if (newVal == STATUS_CUSTOM_STRING) {
@@ -190,10 +196,6 @@ export class ChangeProposedProcedure {
         } else {
             this.$widget.removeClass('noStatus');
         }
-        if (newVal === STATUS_OBSOLETED_BY) {
-            // this operation takes a long time, so we only do it when actually needed
-            this.$widget.find('#obsoletedByAmendment').selectlist();
-        }
     }
 
     private initStatusSetter() {
@@ -216,7 +218,10 @@ export class ChangeProposedProcedure {
             this.$widget.addClass('isChanged');
         });
 
-        this.$widget.on('changed.fu.selectlist', '#obsoletedByAmendment', () => {
+        this.$widget.on('change', '#obsoletedByAmendment', () => {
+            this.$widget.addClass('isChanged');
+        });
+        this.$widget.on('change', '#movedToOtherMotion', () => {
             this.$widget.addClass('isChanged');
         });
 

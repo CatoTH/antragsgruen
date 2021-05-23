@@ -62,7 +62,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return string[]
      */
-    public static function getProposedChangeStatuses()
+    public static function getProposedChangeStatuses(): array
     {
         $statuses = [
             IMotion::STATUS_ACCEPTED,
@@ -71,6 +71,7 @@ class Amendment extends IMotion implements IRSSItem
             IMotion::STATUS_REFERRED,
             IMotion::STATUS_VOTE,
             IMotion::STATUS_OBSOLETED_BY,
+            IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION,
             IMotion::STATUS_CUSTOM_STRING,
         ];
         if (Consultation::getCurrent()) {
@@ -557,13 +558,13 @@ class Amendment extends IMotion implements IRSSItem
 
 
     /**
-     * @param Consultation $consultation
      * @return Amendment[]
      */
     public static function getScreeningAmendments(Consultation $consultation)
     {
         $query = Amendment::find();
-        $query->where('amendment.status IN (' . implode(', ', static::getScreeningStatuses()) . ')');
+        $statuses = array_map('intval', $consultation->getStatuses()->getScreeningStatuses());
+        $query->where('amendment.status IN (' . implode(', ', $statuses) . ')');
         $query->joinWith(
             [
                 'motionJoin' => function ($query) use ($consultation) {
@@ -1096,7 +1097,6 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param ConsultationMotionType $motionType
      * @throws FormError
      */
     public function setMotionType(ConsultationMotionType $motionType)
@@ -1145,6 +1145,14 @@ class Amendment extends IMotion implements IRSSItem
             }
         }
 
+        // It was proposed to move this amendment to another motion
+        if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+            $movedTo = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
+            if ($movedTo) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -1164,8 +1172,7 @@ class Amendment extends IMotion implements IRSSItem
     public function getAlternativeProposaltextReference(int $internalNestingLevel = 0): ?array
     {
         // This amendment has a direct modification proposal
-        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->getMyProposalReference()) {
+        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getMyProposalReference()) {
             return [
                 'amendment'    => $this,
                 'modification' => $this->getMyProposalReference(),
@@ -1177,6 +1184,17 @@ class Amendment extends IMotion implements IRSSItem
             $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
                 return $obsoletedBy->getAlternativeProposaltextReference($internalNestingLevel + 1);
+            }
+        }
+
+        // It was proposed to move this amendment to another motion
+        if ($this->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+            $movedTo = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
+            if ($movedTo) {
+                return [
+                    'amendment'    => $this,
+                    'modification' => $movedTo,
+                ];
             }
         }
 

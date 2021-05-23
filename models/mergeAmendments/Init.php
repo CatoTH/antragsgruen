@@ -27,7 +27,9 @@ class Init
         $form->motion             = $motion;
         $form->toMergeMainIds     = [];
         $form->toMergeResolvedIds = [];
-        foreach ($motion->getVisibleAmendments() as $amendment) {
+
+        $amendments = Init::getMotionAmendmentsForMerging($motion);
+        foreach ($amendments as $amendment) {
             if (isset($postAmendIds[$amendment->id])) {
                 $form->toMergeMainIds[] = $amendment->id;
             }
@@ -105,9 +107,20 @@ class Init
         return $form;
     }
 
+    /**
+     * @return Amendment[]
+     */
+    public static function getMotionAmendmentsForMerging(Motion $motion): array
+    {
+        $hiddenStatuses = $motion->getMyConsultation()->getStatuses()->getAmendmentStatusesUnselectableForMerging();
+        return array_values(array_filter($motion->amendments, function (Amendment $amendment) use ($hiddenStatuses): bool {
+            return !in_array($amendment->status, $hiddenStatuses);
+        }));
+    }
+
     public function resolveAmendmentToProposalId(int $amendmentId): ?int
     {
-        foreach ($this->motion->getVisibleAmendments() as $amendment) {
+        foreach (static::getMotionAmendmentsForMerging($this->motion) as $amendment) {
             if ($amendment->id === $amendmentId && $amendment->getMyProposalReference()) {
                 return $amendment->getMyProposalReference()->id;
             }
@@ -152,8 +165,7 @@ class Init
 
     public function getAffectingAmendments(array $allAmendingIds, array $amendmentsById): array
     {
-        // Must match merging.php: $amendments = $motion->getVisibleAmendmentsSorted();
-        $hiddenStatuses = $this->motion->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses(true);
+        $hiddenStatuses = $this->motion->getMyConsultation()->getStatuses()->getAmendmentStatusesUnselectableForMerging();
 
         /** @var Amendment[] $modUs */
         $modUs = [];

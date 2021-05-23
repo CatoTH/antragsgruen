@@ -59,7 +59,7 @@ use yii\helpers\Html;
                 echo '</div><div class="col-md-7"><div class="fueluxSelectHolder">';
                 $statusesAll = $amendment->getMyConsultation()->getStatuses()->getStatusNames();
                 $statuses    = [];
-                foreach (Amendment::getStatusesMarkAsDoneOnRewriting() as $statusId) {
+                foreach ($amendment->getMyConsultation()->getStatuses()->getStatusesMarkAsDoneOnRewriting() as $statusId) {
                     $statuses[$statusId] = $statusesAll[$statusId];
                 }
                 $statuses[$otherAmend->status] = Yii::t('amend', 'merge1_status_unchanged') . ': ' .

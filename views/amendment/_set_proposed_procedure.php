@@ -29,6 +29,11 @@ if ($amendment->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
 } else {
     $preObsoletedBy = '';
 }
+if ($amendment->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+    $preMovedToMotion = $amendment->proposalComment;
+} else {
+    $preMovedToMotion = '';
+}
 if ($amendment->proposalStatus === Amendment::STATUS_CUSTOM_STRING) {
     $preCustomStr = $amendment->proposalComment;
 } else {
@@ -228,9 +233,27 @@ $selectedTags = $amendment->getProposedProcedureTags();
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
-        // Hint: the SELECT is not auto-initialized, for that takes rather long when there are many amendments
         $attrs = ['id' => 'obsoletedByAmendment'];
-        echo HTMLTools::fueluxSelectbox('obsoletedByAmendment', $options, $preObsoletedBy, $attrs, false, null, false);
+        echo Html::dropDownList('obsoletedByAmendment', $preObsoletedBy, $options, $attrs);
+        ?>
+    </section>
+    <section class="statusDetails status_<?= Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION ?>">
+        <label class="headingLabel"><?= Yii::t('amend', 'proposal_moved_to_other_motion') ?>:</label>
+        <?php
+        $options = ['-'];
+        foreach ($amendment->getMyConsultation()->getVisibleMotions(true) as $otherMotion) {
+            if ($otherMotion->id === $amendment->motionId) {
+                continue;
+            }
+            foreach ($otherMotion->amendments as $otherAmendment) {
+                if ($otherAmendment->status === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+                    $options[$otherAmendment->id] = $otherMotion->titlePrefix . ': ' . $otherAmendment->getTitle();
+                }
+            }
+        }
+        $attrs = ['id' => 'movedToOtherMotion'];
+        echo Html::dropDownList('movedToOtherMotion', $preMovedToMotion, $options, $attrs);
+        echo '<div>' . Yii::t('amend', 'proposal_moved_to_other_motion_h') . '</div>';
         ?>
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">
@@ -247,7 +270,7 @@ $selectedTags = $amendment->getProposedProcedureTags();
         <div class="votingStatus">
             <h3><?= Yii::t('amend', 'proposal_voting_status') ?></h3>
             <?php
-            foreach (Amendment::getVotingStatuses() as $statusId => $statusName) {
+            foreach ($amendment->getMyConsultation()->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
                 ?>
                 <label>
                     <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php

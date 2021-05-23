@@ -23,7 +23,7 @@ class Tools
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
-        if ($imotion->responsibilityId && $imotion->responsibilityUser && $imotion->responsibilityUser->getSettingsObj()->ppReplyTo) {
+        if ($imotion && $imotion->responsibilityId && $imotion->responsibilityUser && $imotion->responsibilityUser->getSettingsObj()->ppReplyTo) {
             return $imotion->responsibilityUser->getSettingsObj()->ppReplyTo;
         }
 

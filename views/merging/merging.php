@@ -33,8 +33,7 @@ if ($twoCols) {
 $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
-// Must match: models/mergeAmendments/Init.php:getAffectingAmendments
-$amendments = $motion->getVisibleAmendmentsSorted();
+$amendments = Init::getMotionAmendmentsForMerging($form->motion);
 
 $amendmentStaticData = array_map(function (Amendment $amendment) {
     return Init::getJsAmendmentStaticData($amendment);

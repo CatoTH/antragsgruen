@@ -49,13 +49,13 @@ trait AmendmentMergingTrait
             $newSections[$section->sectionId] = AmendmentRewriter::calcNewSectionTextWithOverwrites(
                 $section->getOriginalMotionSection()->getData(),
                 $section->data,
-                (isset($newSectionParas[$section->sectionId]) ? $newSectionParas[$section->sectionId] : [])
+                $newSectionParas[$section->sectionId] ?? []
             );
         }
 
         $collisions = $amendments = [];
         foreach ($otherAmendments as $amend) {
-            if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
+            if (in_array($otherAmendmentsStatus[$amend->id], $amendment->getMyConsultation()->getStatuses()->getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {

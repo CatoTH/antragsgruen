@@ -20,6 +20,8 @@ return [
     'referred_to'            => 'Referred to',
     'refer_to'               => 'Refer to',
     'obsoleted_by'           => 'Handled by',
+    'proposal_moved_to_other_motion' => 'New amendment',
+    'proposal_moved_to_other_motion_h' => 'Currently needs to be created manually, and set to the status &quot;Proposed move from other motion&quot;.',
     'resoluted_on'           => 'Decided on',
     'submitted_on'           => 'Submitted',
     'created_on'             => 'Created',

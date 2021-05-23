@@ -483,7 +483,6 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
      */
     public function actionSaveProposalStatus($motionSlug, $amendmentId)
     {
