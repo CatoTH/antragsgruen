@@ -139,7 +139,7 @@ class AdminController extends Controller
         $params = \Yii::$app->params;
 
 
-        $motions = Motion::findAll(['motionSlug' => $motionSlug]);
+        $motions = Motion::findAll(['slug' => $motionSlug]);
         echo 'Found ' . count($motions) . ' motion(s)' . "\n";
         foreach ($motions as $motion) {
             echo '- Motion ' . $motion->id . "\n";
