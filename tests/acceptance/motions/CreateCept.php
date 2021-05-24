@@ -69,7 +69,7 @@ $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATI
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->wait(1);
-$I->see('No valid name entered');
+$I->see('Bitte gib deinen Namen ein');
 $I->seeInField(['name' => 'Initiator[primaryName]'], '');
 $I->seeInField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
 $I->seeInField(['name' => 'Initiator[contactPhone]'], '+49-123-456789');

@@ -9,6 +9,10 @@ $I->wantTo('set some tags');
 $I->gotoConsultationHome();
 $I->loginAsProposalAdmin();
 
+// Remove relicts from previous test cases
+$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
+
+
 // <pseudotag> and Äöé\' and some nice words to A2
 $I->gotoMotion(true, 'Testing_proposed_changes-630');
 $I->dontSeeElement('#proposedChanges');

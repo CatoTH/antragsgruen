@@ -163,7 +163,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'err_draft_not_found'                => 'Es gibt keinen Bearbeitungs-Zwischenstand.',
     'err_user_not_found'                 => 'Benutzer*in nicht gefunden',
     'err_no_pdf'                         => 'Die PDF-Anzeige wurde deaktiviert.',
-    'err_invalid_name'                   => 'Bitte gib deine Namen ein.',
+    'err_invalid_name'                   => 'Bitte gib deinen Namen ein.',
     'err_invalid_email'                  => 'Die eingegebene E-Mail-Adresse ist ungültig.',
     'err_invalid_phone'                  => 'Die eingegebene Telefonnummer ist ungültig.',
     'info_draft_admin'                   => 'Entwurf - nur für Admins sichtbar',
