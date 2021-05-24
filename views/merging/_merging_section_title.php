@@ -20,7 +20,7 @@ if ($twoCols) {
         </div>
         <div class="twoColsRight content sectionType<?= $type->type ?>" data-section-id="<?= $section->sectionId ?>">
             <?php
-            $changes = $section->getAmendingSections(false, true, true);
+            $changes = $section->getMergingAmendingSections(true, true);
             /** @var \app\models\db\AmendmentSection[] $changes */
             if (count($changes) > 0) {
                 ?>
@@ -51,7 +51,7 @@ if ($twoCols) {
         echo $form->getRegularSection($section)->getSectionType()->getMotionFormField();
 
         if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
-            $changes = $section->getAmendingSections(false, true, true);
+            $changes = $section->getMergingAmendingSections(true, true);
             /** @var \app\models\db\AmendmentSection[] $changes */
             if (count($changes) > 0) {
                 ?>

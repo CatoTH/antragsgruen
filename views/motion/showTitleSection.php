@@ -20,7 +20,7 @@ if ($hasLineNumbers) {
 $id = 'section_' . $section->sectionId . '_0';
 echo '<div class="' . implode(' ', $classes) . '" id="' . $id . '">';
 
-$amendingSections = $section->getAmendingSections(false, true);
+$amendingSections = $section->getUserVisibleAmendingSections();
 
 echo '<ul class="bookmarks">';
 

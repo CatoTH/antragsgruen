@@ -153,7 +153,30 @@ class MotionSection extends IMotionSection
     /**
      * @return AmendmentSection[]
      */
-    public function getAmendingSections(bool $includeProposals = false, bool $onlyWithChanges = false, bool $allStatuses = false): array
+    public function getUserVisibleAmendingSections(): array
+    {
+        $sections = [];
+        $motion   = $this->getConsultation()->getMotion($this->motionId);
+        $excludedStatuses = $this->getConsultation()->getStatuses()->getInvisibleAmendmentStatuses(false);
+        foreach ($motion->amendments as $amend) {
+            if (in_array($amend->status, $excludedStatuses)) {
+                continue;
+            }
+            foreach ($amend->sections as $section) {
+                if ($section->sectionId === $this->sectionId) {
+                    if ($section->data !== $this->getData()) {
+                        $sections[] = $section;
+                    }
+                }
+            }
+        }
+        return $sections;
+    }
+
+    /**
+     * @return AmendmentSection[]
+     */
+    public function getMergingAmendingSections(bool $onlyWithChanges = false, bool $allStatuses = false): array
     {
         $sections = [];
         $motion   = $this->getConsultation()->getMotion($this->motionId);
@@ -163,7 +186,7 @@ class MotionSection extends IMotionSection
             $excludedStatuses = $this->getConsultation()->getStatuses()->getAmendmentStatusesUnselectableForMerging();
         }
         foreach ($motion->amendments as $amend) {
-            $allowedProposedChange = ($includeProposals && $amend->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
+            $allowedProposedChange = ($amend->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
             if (in_array($amend->status, $excludedStatuses) && !$allowedProposedChange) {
                 continue;
             }
@@ -284,7 +307,7 @@ class MotionSection extends IMotionSection
      * @return MotionSectionParagraph[]
      * @throws Internal
      */
-    public function getTextParagraphObjects(bool $lineNumbers, bool $includeComments = false, bool $includeAmendment = false, bool $minOnePara = false)
+    public function getTextParagraphObjects(bool $lineNumbers, bool $includeComments = false, bool $includeAmendment = false, bool $minOnePara = false): array
     {
         if ($lineNumbers && $this->paragraphObjectCacheWithLines !== null) {
             return $this->paragraphObjectCacheWithLines;
@@ -424,7 +447,7 @@ class MotionSection extends IMotionSection
         }
         if (!isset($this->mergers[$key])) {
             $sections = [];
-            foreach ($this->getAmendingSections(true, false, false) as $section) {
+            foreach ($this->getMergingAmendingSections(false, false) as $section) {
                 if ($toMergeAmendmentIds === null || in_array($section->amendmentId, $toMergeAmendmentIds)) {
                     $sections[] = $section;
                 }

@@ -52,7 +52,7 @@ foreach ($sections as $i => $section) {
 
     // Show title only as a separate section if there are amendments, or if explicitly requested
     if ($titleSection && $titleSection->sectionId === $section->sectionId) {
-        if (count($section->getAmendingSections(false, true)) === 0 && !$section->getSettings()->getSettingsObj()->showInHtml) {
+        if (count($section->getUserVisibleAmendingSections()) === 0 && !$section->getSettings()->getSettingsObj()->showInHtml) {
             continue;
         }
     }

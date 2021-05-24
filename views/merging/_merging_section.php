@@ -11,7 +11,7 @@ use app\models\db\MotionSection;
 use yii\helpers\Html;
 
 $amendmentsById = [];
-foreach ($section->getAmendingSections(true, false, true) as $sect) {
+foreach ($section->getMergingAmendingSections(false, true) as $sect) {
     $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
 }
 
