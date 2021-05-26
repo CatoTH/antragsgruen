@@ -107,7 +107,7 @@ export class AntragsgruenEditor {
 
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
-                'h1 h2 h3 h4;' +
+                'h1 h2 h3 h4(ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved);' +
                 'ol[start,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved,decimalDot,decimalCircle,lowerAlpha,upperAlpha);' +
                 'li[value,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved);' +
                 'ul[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved);' +

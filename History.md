@@ -27,6 +27,7 @@
 - Bugfix: for PDF-only applications, the collective PDF merging all applications could not be generated.
 - Bugfix: the "reset to original motion text" button when editing an amendment text as admin did not work.
 - Bugfix: a rare bug when sending e-mails through sendmail was fixed that could lead to broken links in the mail.
+- Bugfix: when editing an amendment that changed a headline, the change to the headline was not marked as edited text
 
 ### Version 4.7.1 (2021-04-18)
 
