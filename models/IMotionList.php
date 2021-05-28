@@ -50,7 +50,7 @@ class IMotionList
     }
 
     public function addIMotionList(IMotionList $list): void {
-        $this->motionIds = array_unique(array_merge($list->motionIds));
-        $this->amendmentIds = array_unique(array_merge($list->amendmentIds));
+        $this->motionIds = array_unique(array_merge($this->motionIds, $list->motionIds));
+        $this->amendmentIds = array_unique(array_merge($this->amendmentIds, $list->amendmentIds));
     }
 }
