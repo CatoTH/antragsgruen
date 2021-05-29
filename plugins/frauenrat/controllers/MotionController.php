@@ -6,9 +6,9 @@ use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\mergeAmendments\Init;
 use app\plugins\frauenrat\pdf\Frauenrat;
+use app\plugins\frauenrat\pdf\FrauenratPdf;
 use app\views\pdfLayouts\IPdfWriter;
 use app\models\db\{ConsultationSettingsTag, Motion, User};
-use PhpMyAdmin\Pdf;
 
 class MotionController extends Base
 {
@@ -98,14 +98,20 @@ class MotionController extends Base
     {
         $motionType = $motions[0]->getMyMotionType();
         $pdfLayout = new Frauenrat($motionType);
+        /** @var FrauenratPdf $pdf */
         $pdf        = $pdfLayout->createPDFClass();
+
+        $pageCount = $pdf->setSourceFile($topPageFile);
+        $pdf->pageNumberStartPage = $pageCount + 1;
 
         $pdf->SetCreator('Deutscher Frauenrat');
         $pdf->SetAuthor('Deutscher Frauenrat');
         $pdf->SetTitle($title);
         $pdf->SetSubject($title);
 
-        $pageCount = $pdf->setSourceFile($topPageFile);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $templateId = $pdf->importPage($pageNo);
             $pdf->AddPage();

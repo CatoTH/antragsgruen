@@ -2,17 +2,13 @@
 
 namespace app\plugins\frauenrat\pdf;
 
-use app\models\db\{Amendment, Motion, MotionSupporter};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, Motion, MotionSupporter};
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use yii\helpers\Html;
 
 class Frauenrat extends IPDFLayout
 {
-    public function printMotionHeader(Motion $motion): void
+    private function printHeader(FrauenratPdf $pdf, Consultation $consultation, ConsultationMotionType $motionType, string $title1, ?string $title2): void
     {
-        /** @var FrauenratPdf $pdf */
-        $pdf = $this->pdf;
-
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(true);
         $pdf->startPageGroup();
@@ -20,9 +16,8 @@ class Frauenrat extends IPDFLayout
 
         $left     = 23.5;
         $abs      = 5;
-        $fontsize = 30;
 
-        $this->setHeaderLogo($motion->getMyConsultation(), $abs, 30, null);
+        $this->setHeaderLogo($consultation, $abs, 20, null);
         if ($this->headerlogo) {
             $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
@@ -30,21 +25,45 @@ class Frauenrat extends IPDFLayout
             $pdf->setY($logo['y'] + $abs);
         }
 
-        $pdf->SetFont($pdf->calibriBold, 'B', $fontsize);
-        $pdf->SetTextColor(40, 40, 40, 40);
-        //$pdf->SetXY($left, $wraptop);
-        $pdf->Write(0, mb_strtoupper($motion->getMyMotionType()->titleSingular, 'UTF-8') . "\n");
+        //$pdf->SetFont($pdf->calibriBold, 'B', $fontsize);
+        //$pdf->SetTextColor(86, 55, 12, 59);
+        //$pdf->Write(0, mb_strtoupper($motion->getMyMotionType()->titleSingular, 'UTF-8') . "\n");
 
         $pdf->SetTextColor(100, 100, 100, 100);
         $wraptop = $pdf->getY() + $abs;
         $pdf->SetXY($left, $wraptop);
 
         $pdf->SetFont($pdf->calibri, '', 11);
-        $intro = $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction;
+        $intro = $motionType->getSettingsObj()->pdfIntroduction;
         if ($intro) {
             $pdf->MultiCell(160, 0, $intro, 0, 'L');
             $pdf->Ln(3);
         }
+
+        $pdf->SetX($left);
+        $pdf->SetTextColor(86, 55, 12, 59);
+        $pdf->SetFont($pdf->calibriBold, 'B', 16);
+        $pdf->MultiCell(130, 0, mb_strtoupper($title1, 'UTF-8'), 0, 'L');
+
+        $pdf->SetTextColor(100, 100, 100, 100);
+        $pdf->Ln(3);
+
+        if ($title2) {
+            $pdf->SetX($left);
+            $pdf->SetFont($pdf->calibriBold, 'B', 12);
+            $pdf->MultiCell(130, 0, $title2, 0, 'L');
+            $pdf->Ln(3);
+        }
+
+        $pdf->SetFont($pdf->calibri, '', 11);
+    }
+    public function printMotionHeader(Motion $motion): void
+    {
+        /** @var FrauenratPdf $pdf */
+        $pdf = $this->pdf;
+        $left     = 23.5;
+
+        $this->printHeader($pdf, $motion->getMyConsultation(), $motion->getMyMotionType(), $motion->getTitleWithPrefix(), null);
 
         $addressedTo = null;
         $initiatorNames = [];
@@ -78,8 +97,10 @@ class Frauenrat extends IPDFLayout
         $data = [
             $initiatorTitle      => implode(", ", $initiatorNames),
             'Ansprechpartner*in' => implode("\n", $contact),
-            'Themenbereich'      => implode(", ", $topic),
         ];
+        if (count($topic) > 0) {
+            $data['Themenbereich'] = implode(", ", $topic);
+        }
         if ($addressedTo) {
             $data['Adressat*in'] = $addressedTo;
         }
@@ -95,9 +116,8 @@ class Frauenrat extends IPDFLayout
         $pdf->Ln(9);
 
         $pdf->SetX($left);
-        $pdf->SetFont($pdf->calibriBold, 'B', 12);
-        $pdf->writeHTML('<h3> &nbsp;' . Html::encode(mb_strtoupper($motion->getTitleWithPrefix(), 'UTF-8')) . '</h3>');
 
+        $pdf->SetTextColor(100, 100, 100, 100);
         $pdf->SetFont($pdf->calibri, '', 12);
     }
 
@@ -105,46 +125,11 @@ class Frauenrat extends IPDFLayout
     {
         /** @var FrauenratPdf $pdf */
         $pdf = $this->pdf;
-
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(true);
-        $pdf->startPageGroup();
-        $pdf->AddPage();
-
         $left           = 23.5;
-        $abs            = 5;
-        $title1Fontsize = 15;
-        $title2Fontsize = 25;
 
-        $this->setHeaderLogo($amendment->getMyConsultation(), $abs, 30, null);
-        if ($this->headerlogo) {
-            $logo = $this->headerlogo;
-            $pdf->setJPEGQuality(100);
-            $pdf->Image('@' . $logo['data'], $logo['x'], $logo['y'], $logo['w'], $logo['h']);
-            $pdf->setY($logo['y'] + $abs);
-        }
-
-        $pdf->SetTextColor(100, 100, 100, 100);
-        $pdf->SetFont($pdf->calibriItalic, 'I', 11);
-        $pdf->SetXY($left, $pdf->getY());
-        $pdf->Ln(3);
-        $intro = $amendment->getMyMotionType()->getSettingsObj()->pdfIntroduction;
-        if ($intro) {
-            $pdf->MultiCell(0, 0, trim($intro), 0, 'L');
-            $pdf->Ln(3);
-        }
-
-        $pdf->SetTextColor(40, 40, 40, 40);
-        $pdf->SetFont($pdf->calibriBold, 'B', $title1Fontsize);
-        $pdf->MultiCell(0, 0, trim($amendment->getMyMotion()->getTitleWithPrefix()), 0, 'L');
-        $pdf->Ln(3);
-        $pdf->SetFont($pdf->calibriBold, 'B', $title2Fontsize);
-        $pdf->Write(0, mb_strtoupper(\Yii::t('amend', 'amendment') . ' ' . $amendment->titlePrefix, 'UTF-8') . "\n");
-        $pdf->Ln(3);
-
-        $pdf->SetX($left);
-        $pdf->SetTextColor(100, 100, 100, 100);
-        $pdf->SetFont($pdf->calibri, '', 11);
+        $title1 = $amendment->getMyMotion()->getTitleWithPrefix();
+        $title2 = \Yii::t('amend', 'amendment') . ' ' . $amendment->titlePrefix;
+        $this->printHeader($pdf, $amendment->getMyConsultation(), $amendment->getMyMotionType(), $title1, $title2);
 
         $initiatorName = null;
         $contact = [];

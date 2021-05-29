@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\UrlHelper;
 use app\models\db\ConsultationMotionType;
 use yii\helpers\Html;
 

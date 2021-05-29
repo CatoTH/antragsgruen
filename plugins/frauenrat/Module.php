@@ -61,7 +61,7 @@ class Module extends ModuleBase
     public static function getGeneratedRoute(array $routeParts, string $originallyGeneratedRoute): ?string
     {
         if ($routeParts[0] === '/motion/pdf') {
-            $routeParts[0] = '/motion/pdfamendcollection';
+            $routeParts[0] = '/motion/embedded-amendments-pdf';
             return Url::toRoute($routeParts);
         }
         return null;

@@ -15,6 +15,8 @@ class FrauenratPdf extends IPdfWriter
     public $calibriItalic;
     public $calibriItalicBold;
 
+    public $pageNumberStartPage = 1;
+
     public function __construct(IPDFLayout $layout)
     {
         $this->layout = $layout;
@@ -60,6 +62,10 @@ class FrauenratPdf extends IPdfWriter
 
     public function Footer()
     {
+        if ($this->getPage() < $this->pageNumberStartPage) {
+            return;
+        }
+
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
