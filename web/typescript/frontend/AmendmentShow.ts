@@ -14,6 +14,7 @@ class AmendmentShow {
 
         this.initPrivateComments();
         this.initCmdEnterSubmit();
+        this.initAmendmentTextMode();
     }
 
     private delSubmit(ev) {
@@ -55,6 +56,26 @@ class AmendmentShow {
             $('.privateNotes blockquote').addClass('hidden');
             $('.privateNotes form').removeClass('hidden');
             $('.privateNotes textarea').trigger("focus");
+        });
+    }
+
+    private initAmendmentTextMode()
+    {
+        $('.amendmentTextModeSelector a.showOnlyChanges').on('click', (ev) => {
+            const $section = $(ev.target).parents(".motionTextHolder");
+            $section.find(".amendmentTextModeSelector .showOnlyChanges").parent().addClass('selected');
+            $section.find(".amendmentTextModeSelector .showFullText").parent().removeClass('selected');
+            $section.find(".fullMotionText").addClass('hidden');
+            $section.find(".onlyChangedText").removeClass('hidden');
+            ev.preventDefault();
+        });
+        $('.amendmentTextModeSelector a.showFullText').on('click', (ev) => {
+            const $section = $(ev.target).parents(".motionTextHolder");
+            $section.find(".amendmentTextModeSelector .showOnlyChanges").parent().removeClass('selected');
+            $section.find(".amendmentTextModeSelector .showFullText").parent().addClass('selected');
+            $section.find(".fullMotionText").removeClass('hidden');
+            $section.find(".onlyChangedText").addClass('hidden');
+            ev.preventDefault();
         });
     }
 }

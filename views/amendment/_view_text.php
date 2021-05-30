@@ -33,6 +33,8 @@ if ($amendment->hasVisibleAlternativeProposaltext($procedureToken)) {
             $sectionType = $section->getSectionType();
             $sectionType->setMotionContext($amendment->getMyMotion());
             echo $sectionType->getAmendmentFormatted($prefix);
+
+
         }
     }
 } else {

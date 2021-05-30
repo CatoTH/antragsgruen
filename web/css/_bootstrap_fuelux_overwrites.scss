@@ -77,6 +77,30 @@
     margin: -1px;
   }
 
+  .greenHeaderDropDown {
+    float: right;
+    .btn-link, .btn-link:link {
+      color: $headingSecondaryText;
+      font-weight: normal;
+    }
+    &:focus, &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    .dropdown-menu {
+      text-transform: none;
+    }
+    li.selected {
+      a::before {
+        content: '✓';
+        display: block;
+        float: left;
+        width: 16px;
+        margin-left: -16px;
+        text-align: center;
+      }
+    }
+  }
+
   .content {
     padding: 15px 20px 30px;
     overflow: visible; // Wg. Datetimepicker, der über den Rand hinausgeht

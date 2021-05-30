@@ -251,6 +251,9 @@ class TextSimple extends Text
         if ($section->getAmendment()->globalAlternative) {
             return $this->getAmendmentFormattedGlobalAlternative();
         }
+
+        $str = '';
+
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
         $firstLine  = $section->getFirstLineNumber();
 
@@ -268,8 +271,18 @@ class TextSimple extends Text
             $sectionTitlePrefix .= ': ';
         }
         $title     = $sectionTitlePrefix . $section->getSettings()->title;
-        $str       = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str       .= '<h3 class="green">' . Html::encode($title) . '</h3>';
+        $str = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
+        $str .= '<h3 class="green">' . Html::encode($title);
+        $str .= '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
+          <button class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
+            <span class="sr-only">' . \Yii::t('amend', 'textmode_set') . '</span>
+            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+          <li class="selected"><a href="#" class="showOnlyChanges">' . \Yii::t('amend', 'textmode_only_changed') . '</a></li>
+          <li><a href="#" class="showFullText">' . \Yii::t('amend', 'textmode_full_text') . '</a></li>
+          </ul>';
+        $str .= '</h3>';
         $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
         if ($section->getSettings()->fixedWidth) {
@@ -282,7 +295,35 @@ class TextSimple extends Text
         } else {
             $linkMotion = null;
         }
-        $str       .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine, $linkMotion);
+        $str .= '<div class="onlyChangedText">';
+        $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine, $linkMotion);
+        $str .= '</div>';
+
+        $str .= '<div class="fullMotionText text motionTextFormattings textOrig ';
+        if ($section->getSettings()->fixedWidth) {
+            $str .= ' fixedWidthFont';
+        }
+        $str .= 'hidden">';
+        $diffSections = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
+        $lineNo = $firstLine;
+        foreach ($diffSections as $diffSection) {
+            $matchNo = 0;
+            $str .= preg_replace_callback('/###LINENUMBER###/sU', function () use (&$lineNo, &$matchNo, $section) {
+                // @TODO Does not work perfectly yet with nested lists
+                $str = '';
+                if ($matchNo > 0) {
+                    $str .= '<br>';
+                }
+                if ($section->getSettings()->lineNumbers) {
+                    $str .= '<span class="lineNumber" data-line-number="' . $lineNo . '" aria-hidden="true"></span>';
+                }
+                $lineNo++;
+                $matchNo++;
+                return $str;
+            }, $diffSection);
+        }
+        $str .= '</div>';
+
         $str       .= '</div>';
         $str       .= '</div>';
 

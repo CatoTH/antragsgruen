@@ -37,6 +37,9 @@ return [
     'amendment_for'          => 'Amendment for',
     'amendment_for_prefix'   => 'Amendment for %PREFIX%',
     'ajax_diff_title'        => 'Changes',
+    'textmode_set'           => 'Text mode',
+    'textmode_only_changed'  => 'Show only the changes',
+    'textmode_full_text'     => 'Show complete text',
     'confirmed_visible'      => 'You submitted the amendment. It is visible immediately.',
     'confirmed_screening'    => 'You submitted the amendment. It will be screened now.',
 

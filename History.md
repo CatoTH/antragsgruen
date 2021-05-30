@@ -10,6 +10,7 @@
 - Admins can now explicitly assign amendments (including statute amendments) to agenda items, also to agenda items different from their base motion. In this case, they appear like regular motions on the home page.
 - Admins can now see an activity log for each motion and amendment, chronologically listing all relevant events for it (supports, comments, proposed procedure changes etc.).
 - Admins can now assign motions and amendments to user accounts, e.g. when the motion was created by an admin or an anonymous user before creating an account.
+- For amendments, instead of only the condensed change view, it is now also possible to show the changes in the context of the whole motion text, by clicking on the settings icon next to each section headline.
 - Motions can now be downloaded as a PDF with all screened amendments embedded inline into the motion text.
 - When merging amendments into a motion, text entered by the admins can now optionally receive a blue color, to distinguish admin-entered text from the base motion or changes made by the amendments.
 - When merging multiple amendments affecting the same passage of a motion, the merging algorithm now tries more aggressively to merge them into the text, relying on the editing person to resolve the conflicts. Previously, it just refused to merge the second amendment and repeated the colliding amendment below the paragraph.

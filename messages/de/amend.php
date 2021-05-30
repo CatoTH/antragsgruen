@@ -35,6 +35,9 @@ return [
     'amendment_for'                     => 'Änderungsantrag zu',
     'amendment_for_prefix'              => 'Änderungsantrag zu %PREFIX%',
     'ajax_diff_title'                   => 'Änderungen',
+    'textmode_set'                      => 'Textdarstellung',
+    'textmode_only_changed'             => 'Nur die Änderungen anzeigen',
+    'textmode_full_text'                => 'Kompletten Antragstext anzeigen',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag veröffentlicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
                                            'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',

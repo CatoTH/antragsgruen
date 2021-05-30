@@ -45,16 +45,17 @@ class Frauenrat extends IPDFLayout
         $pdf->SetFont($pdf->calibriBold, 'B', 16);
         $pdf->MultiCell(130, 0, mb_strtoupper($title1, 'UTF-8'), 0, 'L');
 
-        $pdf->SetTextColor(100, 100, 100, 100);
         $pdf->Ln(3);
 
         if ($title2) {
             $pdf->SetX($left);
+            $pdf->SetTextColor(100, 0, 0, 30);
             $pdf->SetFont($pdf->calibriBold, 'B', 12);
             $pdf->MultiCell(130, 0, $title2, 0, 'L');
             $pdf->Ln(3);
         }
 
+        $pdf->SetTextColor(100, 100, 100, 100);
         $pdf->SetFont($pdf->calibri, '', 11);
     }
     public function printMotionHeader(Motion $motion): void
