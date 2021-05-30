@@ -130,7 +130,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         $imotions = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
-            if ($motion->agendaItemId === $this->id) {
+            if ($motion->agendaItemId === $this->id && !$motion->getMyMotionType()->amendmentsOnly) {
                 $imotions[] = $motion;
             }
             foreach ($motion->amendments as $amendment) {
@@ -153,7 +153,10 @@ class ConsultationAgendaItem extends ActiveRecord
             if (in_array($motion->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
                 continue;
             }
-            if ($motion->agendaItemId === $this->id && count($motion->getVisibleReplacedByMotions()) === 0 && $motion->status !== Motion::STATUS_MOVED) {
+            if ($motion->agendaItemId === $this->id &&
+                count($motion->getVisibleReplacedByMotions()) === 0 &&
+                $motion->status !== Motion::STATUS_MOVED &&
+                !$motion->getMyMotionType()->amendmentsOnly) {
                 // In case of "moved / copied", the whole point of copying it instead of just overwriting the old motion is so that it is still visible
                 $return[] = $motion;
             }
