@@ -301,26 +301,15 @@ class TextSimple extends Text
 
         $str .= '<div class="fullMotionText text motionTextFormattings textOrig ';
         if ($section->getSettings()->fixedWidth) {
-            $str .= ' fixedWidthFont';
+            $str .= 'fixedWidthFont ';
         }
         $str .= 'hidden">';
         $diffSections = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
         $lineNo = $firstLine;
         foreach ($diffSections as $diffSection) {
-            $matchNo = 0;
-            $str .= preg_replace_callback('/###LINENUMBER###/sU', function () use (&$lineNo, &$matchNo, $section) {
-                // @TODO Does not work perfectly yet with nested lists
-                $str = '';
-                if ($matchNo > 0) {
-                    $str .= '<br>';
-                }
-                if ($section->getSettings()->lineNumbers) {
-                    $str .= '<span class="lineNumber" data-line-number="' . $lineNo . '" aria-hidden="true"></span>';
-                }
-                $lineNo++;
-                $matchNo++;
-                return $str;
-            }, $diffSection);
+            $lineNumbers = substr_count($diffSection, '###LINENUMBER###');
+            $str .= LineSplitter::replaceLinebreakPlaceholdersByMarkup($diffSection, $section->getSettings()->lineNumbers, $lineNo);
+            $lineNo += $lineNumbers;
         }
         $str .= '</div>';
 

@@ -10,11 +10,7 @@ class LineSplitter
     private $lineLength;
     private $text;
 
-    /**
-     * @param string $text
-     * @param int $lineLength
-     */
-    public function __construct($text, $lineLength)
+    public function __construct(string $text, int $lineLength)
     {
         $this->text       = str_replace("\r", "", $text);
         $this->lineLength = $lineLength;
@@ -27,7 +23,7 @@ class LineSplitter
      * @static
      * @return string[]
      */
-    public function splitLines()
+    public function splitLines(): array
     {
         $lines              = [];
         $lastSeparator      = -1;
@@ -121,12 +117,9 @@ class LineSplitter
 
 
     /**
-     * @param \DOMElement $node
-     * @param int $lineLength
-     * @param string $prependLines
      * @return string[]
      */
-    private static function splitHtmlToLinesInt(\DOMElement $node, $lineLength, $prependLines)
+    private static function splitHtmlToLinesInt(\DOMElement $node, int $lineLength, string $prependLines): array
     {
         $indentedElements = ['ol', 'ul', 'pre', 'blockquote'];
         $veryBigElements  = ['h1', 'h2'];
@@ -193,12 +186,9 @@ class LineSplitter
     }
 
     /**
-     * @param string $html
-     * @param int $lineLength
-     * @param string $prependLines
      * @return string[]
      */
-    public static function splitHtmlToLines($html, $lineLength, $prependLines)
+    public static function splitHtmlToLines(string $html, int $lineLength, string $prependLines): array
     {
         $cache_depends = [$html, $lineLength, $prependLines];
         $cache = HashedStaticCache::getCache('splitHtmlToLines', $cache_depends);
@@ -220,16 +210,33 @@ class LineSplitter
 
     /**
      * @param string[] $paragraphs
-     * @param int $lineLength
      * @return string[]
      */
-    public static function addLineNumbersToParagraphs($paragraphs, $lineLength)
+    public static function addLineNumbersToParagraphs(array $paragraphs, int $lineLength): array
     {
         for ($i = 0; $i < count($paragraphs); $i++) {
             $lines          = static::splitHtmlToLines($paragraphs[$i], $lineLength, '###LINENUMBER###');
             $paragraphs[$i] = implode('', $lines);
         }
         return $paragraphs;
+    }
+
+    public static function replaceLinebreakPlaceholdersByMarkup(string $html, bool $addLineNumbers, int $firstLineNo): string
+    {
+        $lineNo = $firstLineNo;
+        $replacedHtml = preg_replace_callback('/###LINENUMBER###/sU', function () use (&$lineNo, $addLineNumbers) {
+            $str = '###LINEBREAK###';
+            if ($addLineNumbers) {
+                $str .= '<span class="lineNumber" data-line-number="' . $lineNo . '" aria-hidden="true"></span>';
+            }
+            $lineNo++;
+
+            return $str;
+        }, $html);
+
+        $blocks = implode("|", HTMLTools::$KNOWN_BLOCK_ELEMENTS);
+        $replacedHtml = preg_replace('/(<(' . $blocks . ')( [^>]*)?>)###LINEBREAK###/siu', '$1', $replacedHtml);
+        return str_replace('###LINEBREAK###', '<br>', $replacedHtml);
     }
 
     public static function countMotionParaLines(string $para, int $lineLength): int

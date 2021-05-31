@@ -14,6 +14,34 @@ $I->dontSeeElement('.sidebarActions .withdraw');
 $I->seeElement('.sidebarActions .back');
 $I->seeElement('.motionRow');
 
+$I->see('Von Zeile 1 bis 2:');
+$I->see('Und noch eine neue Zeile', 'ins');
+$I->dontSee('Listenpunkt (kursiv)');
+
+$I->wantTo('test the full motion text view');
+$I->dontSeeElement('#section_2 .dropdown-menu .showFullText');
+$I->clickJS('#section_2 .dropdown-toggle');
+$I->wait(0.1);
+$I->seeElement('#section_2 .dropdown-menu li.selected .showOnlyChanges');
+$I->seeElement('#section_2 .dropdown-menu .showFullText');
+$I->clickJS('#section_2 .dropdown-menu .showFullText');
+$I->wait(0.1);
+$I->dontSeeElement('#section_2 .dropdown-menu .showFullText');
+$I->dontSee('Von Zeile 1 bis 2:');
+$I->see('Und noch eine neue Zeile', 'ins');
+$I->see('Listenpunkt (kursiv)');
+
+$I->wantTo('switch back to regular view');
+$I->clickJS('#section_2 .dropdown-toggle');
+$I->wait(0.1);
+$I->seeElement('#section_2 .dropdown-menu li.selected .showFullText');
+$I->clickJS('#section_2 .dropdown-menu .showOnlyChanges');
+$I->wait(0.1);
+$I->see('Von Zeile 1 bis 2:');
+$I->see('Und noch eine neue Zeile', 'ins');
+$I->dontSee('Listenpunkt (kursiv)');
+
+
 $I->wantTo('see the amendment as the user who initiated it');
 $I->loginAsStdUser();
 $I->gotoConsultationHome()->gotoAmendmentView(2);
