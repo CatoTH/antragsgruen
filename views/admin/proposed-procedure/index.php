@@ -31,6 +31,9 @@ $reloadOptions = ['admin/proposed-procedure/index-ajax'];
 if ($expandId) {
     $reloadOptions['expandId'] = $expandId;
 }
+if ($tagId) {
+    $reloadOptions['tagId'] = $tagId;
+}
 $reloadUrl = UrlHelper::createUrl($reloadOptions);
 echo Html::beginForm('', 'post', [
     'class'                    => 'proposedProcedureReloadHolder',

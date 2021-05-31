@@ -44,7 +44,7 @@ class ProposedProcedureController extends AdminBase
      * @param null|int $expandId
      * @return string
      */
-    public function actionIndexAjax($agendaItemId = 0, $expandId = null)
+    public function actionIndexAjax($agendaItemId = 0, $expandId = null, $tagId = null)
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
@@ -61,7 +61,8 @@ class ProposedProcedureController extends AdminBase
         $html = $this->renderPartial('_index_content', [
             'proposedAgenda' => $proposalFactory->create(),
             'expandAll'      => $this->consultation->getSettings()->pProcedureExpandAll,
-            'expandId'       => ($expandId ? IntVal($expandId) : null),
+            'expandId'       => ($expandId ? intval($expandId) : null),
+            'tagId'          => ($tagId ? intval($tagId) : null),
         ]);
 
         return json_encode([
