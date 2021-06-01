@@ -26,6 +26,7 @@
   - An optional file-based view cache was introduced, configurable by setting "viewCacheFilePath" in the config.json. Its purpose is not to overload Redis with binary data.
 - For motion types, it is now possible to deactivate entering a name as proposer altogether, by selecting "No proposer" in the "From"-dropdown of the motion type settings.
 - Bugfix: for PDF-only applications, the collective PDF merging all applications could not be generated.
+- Bugfix: Uploaded GIFs could not be rendered into application PDFs if LaTeX-based PDF-rendering is used.
 - Bugfix: the "reset to original motion text" button when editing an amendment text as admin did not work.
 - Bugfix: a rare bug when sending e-mails through sendmail was fixed that could lead to broken links in the mail.
 - Bugfix: when editing an amendment that changed a headline, the change to the headline was not marked as edited text

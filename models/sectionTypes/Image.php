@@ -85,7 +85,7 @@ class Image extends ISectionType
         $str     .= str_replace('%MB%', $maxSize, \Yii::t('motion', 'max_size_hint'));
         $str     .= '</div>';
 
-        $inputTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+        $inputTypes = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'];
         if ($this->supportsPdf()) {
             $inputTypes[] = 'application/pdf';
         }
@@ -168,6 +168,19 @@ class Image extends ISectionType
         $pngFilename = $app->getTmpDir() . uniqid('pdf-') . '.png';
         exec($app->imageMagickPath . ' -density 150 ' . escapeshellarg($pdfFilename . '[0]') . ' ' . escapeshellarg($pngFilename));
         return $pngFilename;
+    }
+
+    private function convertGifToPngData(string $gifData): string
+    {
+        $app = AntragsgruenApp::getInstance();
+        $gifFilename = $app->getTmpDir() . uniqid('pdf-') . '.gif';
+        $pngFilename = $app->getTmpDir() . uniqid('pdf-') . '.png';
+        file_put_contents($gifFilename, $gifData);
+        exec($app->imageMagickPath . ' ' . escapeshellarg($gifFilename . '[0]') . ' ' . escapeshellarg($pngFilename));
+        $data = file_get_contents($pngFilename);
+        unlink($pngFilename);
+        unlink($gifFilename);
+        return $data;
     }
 
     /**
@@ -305,6 +318,9 @@ class Image extends ISectionType
             case 'image/jpeg':
                 $type = 'JPEG';
                 break;
+            case 'image/gif':
+                $type = 'GIF';
+                break;
             default:
                 $type = '';
         }
@@ -337,24 +353,32 @@ class Image extends ISectionType
         $params   = \Yii::$app->params;
         $metadata = json_decode($this->section->metadata, true);
 
-        $fileExt      = static::getFileExtensionFromMimeType($metadata['mime']);
-        $filenameBase = uniqid('motion-pdf-image') . '.' . $fileExt;
-
         $extraSettings = $this->section->getSettings()->getSettingsObj();
         $maxHeight     = ($extraSettings->imgMaxHeight > 0 ? $extraSettings->imgMaxHeight : null);
+
+        $fileExt      = static::getFileExtensionFromMimeType($metadata['mime']);
+        if ($isRight) {
+            $imageData          = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
+        } else {
+            $imageData         = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
+        }
+
+        if ($fileExt === 'gif') {
+            $imageData = $this->convertGifToPngData($imageData);
+            $fileExt = 'png';
+        }
+        $filenameBase = uniqid('motion-pdf-image') . '.' . $fileExt;
 
         if ($isRight) {
             $maxWidth           = ($extraSettings->imgMaxWidth > 0 ? $extraSettings->imgMaxWidth : 4.9);
             $maxStr             = ($maxHeight ? 'max width=' . $maxWidth . 'cm,max height=' . $maxHeight . 'cm' : 'width=' . $maxWidth . 'cm');
             $content->textRight .= '\includegraphics[' . $maxStr . ']{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
             $content->textRight .= '\newline' . "\n" . '\newline' . "\n";
-            $imageData          = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
         } else {
             $maxWidth          = ($extraSettings->imgMaxWidth > 0 ? $extraSettings->imgMaxWidth : 10);
             $maxStr            = ($maxHeight ? 'max width=' . $maxWidth . 'cm,max height=' . $maxHeight . 'cm' : 'width=' . $maxWidth . 'cm');
             $content->textMain .= '\includegraphics[' . $maxStr . ']{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
             $content->textMain .= '\newline' . "\n" . '\newline' . "\n";
-            $imageData         = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
         }
 
         $content->imageData[$filenameBase] = $imageData;
