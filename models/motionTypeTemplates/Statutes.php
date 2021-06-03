@@ -20,6 +20,7 @@ trait Statutes
         $type->titleSingular                = \Yii::t('structure', 'preset_statutes_singular');
         $type->titlePlural                  = \Yii::t('structure', 'preset_statutes_plural');
         $type->createTitle                  = \Yii::t('structure', 'preset_statutes_call');
+        $type->motionPrefix                 = 'S';
         $type->position                     = 0;
         $type->amendmentsOnly               = 1;
         $type->policyMotions                = IPolicy::POLICY_ADMINS;

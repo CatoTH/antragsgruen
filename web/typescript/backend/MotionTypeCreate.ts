@@ -2,12 +2,14 @@ export class MotionTypeCreate {
     private $inputSingle: JQuery;
     private $inputPlural: JQuery;
     private $inputCta: JQuery;
+    private $inputPrefix: JQuery;
     private $presets: JQuery;
 
     constructor(private $form: JQuery) {
         this.$inputSingle = $form.find('#typeTitleSingular');
         this.$inputPlural = $form.find('#typeTitlePlural');
         this.$inputCta = $form.find('#typeCreateTitle');
+        this.$inputPrefix = $form.find('#typeMotionPrefix');
 
         this.$inputSingle.on('keyup keypress', (ev) => {
             $(ev.currentTarget).data('changed', '1');
@@ -16,6 +18,9 @@ export class MotionTypeCreate {
             $(ev.currentTarget).data('changed', '1');
         });
         this.$inputCta.on('keyup keypress', (ev) => {
+            $(ev.currentTarget).data('changed', '1');
+        });
+        this.$inputPrefix.on('keyup keypress', (ev) => {
             $(ev.currentTarget).data('changed', '1');
         });
 
@@ -30,6 +35,9 @@ export class MotionTypeCreate {
             }
             if (this.$inputCta.data('changed') !== '1' && $selected.data('label-cta')) {
                 this.$inputCta.val($selected.data('label-cta'));
+            }
+            if (this.$inputPrefix.data('changed') !== '1') {
+                this.$inputPrefix.val($selected.data('label-prefix'));
             }
         });
     }

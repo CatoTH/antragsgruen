@@ -46,6 +46,7 @@ echo Html::beginForm('', 'post', [
         <label class="typePreset"
                data-label-single="<?= Yii::t('structure', 'preset_motion_singular') ?>"
                data-label-plural="<?= Yii::t('structure', 'preset_motion_plural') ?>"
+               data-label-prefix=""
                data-label-cta="<?= Yii::t('structure', 'preset_motion_call') ?>">
             <input type="radio" name="type[preset]" value="motion" class="presetMotion">
             <span><?= Yii::t('admin', 'motion_type_templ_motion') ?></span>
@@ -55,6 +56,7 @@ echo Html::beginForm('', 'post', [
         <label class="typePreset"
                data-label-single="<?= Yii::t('structure', 'preset_app_singular') ?>"
                data-label-plural="<?= Yii::t('structure', 'preset_app_plural') ?>"
+               data-label-prefix=""
                data-label-cta="<?= Yii::t('structure', 'preset_app_call') ?>">
             <input type="radio" name="type[preset]" value="application" class="presetApplication">
             <span><?= Yii::t('admin', 'motion_type_templ_appl') ?></span>
@@ -64,6 +66,7 @@ echo Html::beginForm('', 'post', [
         <label class="typePreset"
                data-label-single="<?= Yii::t('structure', 'preset_app_singular') ?>"
                data-label-plural="<?= Yii::t('structure', 'preset_app_plural') ?>"
+               data-label-prefix=""
                data-label-cta="<?= Yii::t('structure', 'preset_app_call') ?>">
             <input type="radio" name="type[preset]" value="pdfapplication" class="presetPdfApplication">
             <span><?= Yii::t('admin', 'motion_type_templ_pdfappl') ?></span>
@@ -73,6 +76,7 @@ echo Html::beginForm('', 'post', [
         <label class="typePreset"
                data-label-single="<?= Yii::t('structure', 'preset_statutes_singular') ?>"
                data-label-plural="<?= Yii::t('structure', 'preset_statutes_plural') ?>"
+               data-label-prefix="S"
                data-label-cta="<?= Yii::t('structure', 'preset_statutes_call') ?>">
             <input type="radio" name="type[preset]" value="statute" class="presetStatute">
             <span><?= Yii::t('admin', 'motion_type_templ_statute') ?></span>
