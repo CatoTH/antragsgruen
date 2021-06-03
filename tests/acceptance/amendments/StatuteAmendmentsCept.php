@@ -15,6 +15,12 @@ $I->submitForm('.motionTypeCreateForm', [], 'create');
 
 $I->see('Satzungsänderungsanträge: Basistexte');
 $I->seeElement('.baseStatutesNone');
+
+$I->dontSeeElement('#typePolicySupportMotions');
+$I->seeElement('#typePolicySupportAmendments');
+$I->dontSeeElement('#motionSupportersForm');
+$I->seeElement('#amendmentSupportersForm');
+
 $I->click('.statuteCreateLnk');
 
 $I->fillField('#sections_' . AcceptanceTester::FIRST_FREE_MOTION_SECTION, 'Our statutes');

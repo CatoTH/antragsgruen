@@ -824,10 +824,6 @@ label.legend {
     text-align: center;
   }
 
-  .sectionAdder {
-
-  }
-
   .control-label {
     font-weight: bold;
   }
@@ -878,6 +874,10 @@ label.legend {
       padding-bottom: 20px;
       margin-top: -10px;
     }
+  }
+
+  &.amendmentsOnly .hideForAmendmentsOnly {
+    display: none;
   }
 }
 

@@ -46,7 +46,11 @@ if ($supportCollPolicyWarning) {
     <?php
 }
 
-echo Html::beginForm($myUrl, 'post', ['class' => 'adminTypeForm form-horizontal fuelux']);
+$formClasses = ['adminTypeForm', 'form-horizontal', 'fuelux'];
+if ($motionType->amendmentsOnly) {
+    $formClasses[] = 'amendmentsOnly';
+}
+echo Html::beginForm($myUrl, 'post', ['class' => implode(' ', $formClasses)]);
 
 echo '<div class="content">';
 

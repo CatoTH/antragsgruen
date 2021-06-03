@@ -15,7 +15,7 @@ $amendmentSettings = $motionType->getAmendmentSupportTypeClass()->getSettingsObj
 
 $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_encode($amendmentSettings));
 ?>
-<section class="motionSupporters" id="motionSupportersForm">
+<section class="motionSupporters hideForAmendmentsOnly" id="motionSupportersForm">
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator') ?></h2>
 
     <div class="form-group">
