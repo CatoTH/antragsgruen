@@ -87,7 +87,11 @@
       background-color: rgba(255, 255, 255, 0.2);
     }
     .dropdown-menu {
-      text-transform: none;
+      > li > a {
+        text-transform: none;
+        text-shadow: none;
+        font-weight: normal;
+      }
     }
     li.selected {
       a::before {
