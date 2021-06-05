@@ -41,6 +41,14 @@ $I->selectOption('#movedToOtherMotion', '1');
 $I->seeElement('#proposedChanges .saving');
 $I->executeJS('$("#proposedChanges .saving button").click();');
 
+$I->wantTo('see the effects in the proposed procedure');
+$I->click('#motionListLink');
+$I->click('#exportProcedureBtn');
+$I->click('.exportProcedureDd .linkProcedureIntern a');
+$I->seeElement('.proposedProcedureOverview');
+$I->see('Vorgeschlagene Verschiebung von anderem Antrag', '.amendment1');
+$I->see('Verschoben zu anderem Antrag', '.amendment279');
+
 $I->wantTo('see the effects in the amendment view');
 $I->gotoConsultationHome()->gotoAmendmentView(279);
 

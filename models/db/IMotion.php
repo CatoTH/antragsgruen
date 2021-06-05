@@ -471,6 +471,10 @@ abstract class IMotion extends ActiveRecord
             /** @var Motion $this */
             return '<span class="moved">' . LayoutHelper::getMotionMovedStatusHtml($this) . '</span>';
         }
+        if ($this->status === static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION && is_a($this, Amendment::class)) {
+            // @TODO backlink once we have a link from the moved amendment to the original, not just the other way round
+            return \Yii::t('structure', 'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION');
+        }
         $explStr = '';
         if ($includeExplanation && $this->proposalExplanation) {
             $explStr .= ' <span class="explanation">(' . \Yii::t('con', 'proposal_explanation') . ': ';

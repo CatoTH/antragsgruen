@@ -2,6 +2,7 @@
 
 namespace app\models\proposedProcedure;
 
+use app\models\settings\IMotionStatusEngine;
 use app\models\db\{Consultation, ConsultationAgendaItem, Motion};
 use app\models\settings\Consultation as ConsultationSettings;
 
@@ -35,6 +36,7 @@ class Factory
         $handledAmends  = [];
         $handledVotings = [];
 
+        $forbiddenStatuses = $this->consultation->getStatuses()->getStatusesInvisibleForProposedProcedure();
         $agendaItems = ConsultationAgendaItem::getSortedFromConsultation($this->consultation);
 
         foreach ($agendaItems as $agendaItem) {
@@ -43,7 +45,9 @@ class Factory
             }
             $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $agendaItem->title;
             $item  = new Agenda($idCount++, $title, $agendaItem);
-            foreach ($agendaItem->getVisibleIMotionsSorted(true) as $motion) {
+
+            $imotions = IMotionStatusEngine::filterIMotionsByForbiddenStatuses($agendaItem->getMyIMotions(), $forbiddenStatuses, true);
+            foreach ($imotions as $motion) {
                 if (in_array($motion->id, $handledMotions)) {
                     continue;
                 }
@@ -60,7 +64,8 @@ class Factory
                 }
 
                 if (is_a($motion, Motion::class)) {
-                    foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
+                    $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
+                    foreach ($amendments as $amendment) {
                         if (in_array($amendment->id, $handledAmends)) {
                             continue;
                         }
@@ -77,7 +82,7 @@ class Factory
 
             $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
-            foreach ($agendaItem->getVisibleIMotionsSorted(true) as $motion) {
+            foreach ($imotions as $motion) {
                 if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
                     continue;
                 }
@@ -85,7 +90,8 @@ class Factory
                 $handledMotions[] = $motion->id;
 
                 if (is_a($motion, Motion::class)) {
-                    foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
+                    $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
+                    foreach ($amendments as $amendment) {
                         $block->items[] = $amendment;
                         $handledAmends[] = $amendment->id;
                     }
@@ -125,6 +131,7 @@ class Factory
         $idCount = 1;
 
         $handledMotions = [];
+        $forbiddenStatuses = $this->consultation->getStatuses()->getStatusesInvisibleForProposedProcedure();
 
         foreach ($motions as $motion) {
             $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $motion->getTitleWithPrefix();
@@ -146,17 +153,20 @@ class Factory
                 $handledAmends[] = $votingBlock->id;
             }
 
-            foreach ($motion->getVisibleAmendments(true, false) as $amendment) {
-                if (in_array($amendment->id, $handledAmends)) {
-                    continue;
-                }
-                if ($amendment->votingBlockId && $amendment->votingBlock) {
-                    $votingBlock = $amendment->votingBlock;
-                    if (in_array($votingBlock->id, $handledVotings)) {
+            if (is_a($motion, Motion::class)) {
+                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
+                foreach ($amendments as $amendment) {
+                    if (in_array($amendment->id, $handledAmends)) {
                         continue;
                     }
-                    $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
-                    $handledAmends[] = $votingBlock->id;
+                    if ($amendment->votingBlockId && $amendment->votingBlock) {
+                        $votingBlock = $amendment->votingBlock;
+                        if (in_array($votingBlock->id, $handledVotings)) {
+                            continue;
+                        }
+                        $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
+                        $handledAmends[] = $votingBlock->id;
+                    }
                 }
             }
 
@@ -166,10 +176,13 @@ class Factory
                 $handledMotions[] = $motion->id;
                 $block->items[] = $motion;
             }
-            foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
-                if ($amendment->isProposalPublic() || $this->includeInvisible) {
-                    $handledAmends[] = $amendment->id;
-                    $block->items[]  = $amendment;
+            if (is_a($motion, Motion::class)) {
+                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
+                foreach ($amendments as $amendment) {
+                    if ($amendment->isProposalPublic() || $this->includeInvisible) {
+                        $handledAmends[] = $amendment->id;
+                        $block->items[] = $amendment;
+                    }
                 }
             }
             if (count($block->items) > 0) {

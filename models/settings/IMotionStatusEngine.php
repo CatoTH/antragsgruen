@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\models\settings;
 
+use app\components\MotionSorter;
+use app\models\db\Amendment;
 use app\models\db\IMotion;
 
 class IMotionStatusEngine
@@ -326,6 +328,11 @@ class IMotionStatusEngine
         return $invisible;
     }
 
+    public function getStatusesInvisibleForProposedProcedure(): array
+    {
+        return $this->getAmendmentStatusesUnselectableForMerging();
+    }
+
     /**
      * @return int[]
      */
@@ -349,5 +356,73 @@ class IMotionStatusEngine
             IMotion::STATUS_ACCEPTED => \Yii::t('structure', 'STATUS_ACCEPTED'),
             IMotion::STATUS_REJECTED => \Yii::t('structure', 'STATUS_REJECTED'),
         ];
+    }
+
+    /**
+     * @param IMotion[] $imotions
+     * @param int[] $statuses
+     *
+     * @return IMotion[]
+     */
+    public static function filterIMotionsByAllowedStatuses(array $imotions, array $statuses, bool $sort = false): array
+    {
+        $imotions = array_values(array_filter($imotions, function (IMotion $imotion) use ($statuses) {
+            return in_array($imotion->status, $statuses);
+        }));
+        if ($sort && count($imotions) > 0) {
+            $imotions = MotionSorter::getSortedIMotions($imotions[0]->getMyConsultation(), $imotions);
+        }
+        return $imotions;
+    }
+
+    /**
+     * @param IMotion[] $imotions
+     * @param int[] $statuses
+     *
+     * @return IMotion[]
+     */
+    public static function filterIMotionsByForbiddenStatuses(array $imotions, array $statuses, bool $sort = false): array
+    {
+        $imotions = array_values(array_filter($imotions, function (IMotion $imotion) use ($statuses) {
+            return !in_array($imotion->status, $statuses);
+        }));
+        if ($sort && count($imotions) > 0) {
+            $imotions = MotionSorter::getSortedIMotionsFlat($imotions[0]->getMyConsultation(), $imotions);
+        }
+        return $imotions;
+    }
+
+    /**
+     * @param Amendment[] $amendments
+     * @param int[] $statuses
+     *
+     * @return Amendment[]
+     */
+    public static function filterAmendmentsByAllowedStatuses(array $amendments, array $statuses, bool $sort = false): array
+    {
+        $amendments = array_values(array_filter($amendments, function (IMotion $amendments) use ($statuses) {
+            return in_array($amendments->status, $statuses);
+        }));
+        if ($sort && count($amendments) > 0) {
+            $amendments = MotionSorter::getSortedAmendments($amendments[0]->getMyConsultation(), $amendments);
+        }
+        return $amendments;
+    }
+
+    /**
+     * @param Amendment[] $amendments
+     * @param int[] $statuses
+     *
+     * @return Amendment[]
+     */
+    public static function filterAmendmentsByForbiddenStatuses(array $amendments, array $statuses, bool $sort = false): array
+    {
+        $amendments = array_values(array_filter($amendments, function (IMotion $amendments) use ($statuses) {
+            return !in_array($amendments->status, $statuses);
+        }));
+        if ($sort && count($amendments) > 0) {
+            $amendments = MotionSorter::getSortedAmendments($amendments[0]->getMyConsultation(), $amendments);
+        }
+        return $amendments;
     }
 }
