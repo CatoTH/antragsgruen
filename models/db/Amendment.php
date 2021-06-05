@@ -1218,6 +1218,9 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->status === static::STATUS_ACCEPTED || $this->proposalStatus === static::STATUS_ACCEPTED) {
             return true;
         }
+        if ($this->status === static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+            return true;
+        }
         if ($this->status === static::STATUS_PROPOSED_MODIFIED_AMENDMENT ||
             $this->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
             return true;
