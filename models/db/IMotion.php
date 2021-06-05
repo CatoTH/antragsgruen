@@ -371,11 +371,9 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
-     * @param bool $withoutTitle
-     *
-     * @return MotionSection[]
+     * @return MotionSection[]|AmendmentSection[]
      */
-    public function getSortedSections($withoutTitle = false)
+    public function getSortedSections(bool $withoutTitle = false): array
     {
         $sectionsIn = [];
         $title      = $this->getTitleSection();

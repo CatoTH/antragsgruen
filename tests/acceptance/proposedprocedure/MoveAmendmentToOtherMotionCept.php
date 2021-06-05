@@ -48,6 +48,7 @@ $I->click('.exportProcedureDd .linkProcedureIntern a');
 $I->seeElement('.proposedProcedureOverview');
 $I->see('Vorgeschlagene Verschiebung von anderem Antrag', '.amendment1');
 $I->see('Verschoben zu anderem Antrag', '.amendment279');
+$I->see('Oamoi a Maß und no a Maß', '.amendment1 .inserted');
 
 $I->wantTo('see the effects in the amendment view');
 $I->gotoConsultationHome()->gotoAmendmentView(279);

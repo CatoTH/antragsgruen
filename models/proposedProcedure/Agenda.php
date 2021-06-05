@@ -79,11 +79,19 @@ class Agenda
             }
         }
 
-        $proposal  = '';
+        /** @var Amendment|null $toShowAmendment */
+        $toShowAmendment = null;
         if ($amendment->hasAlternativeProposaltext()) {
-            $reference = $amendment->getMyProposalReference();
+            $toShowAmendment = $amendment->getMyProposalReference();
+        }
+        if ($amendment->status === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+            $toShowAmendment = $amendment;
+        }
+
+        $proposal  = '';
+        if ($toShowAmendment) {
             /** @var AmendmentSection[] $sections */
-            $sections = $reference->getSortedSections(false);
+            $sections = $toShowAmendment->getSortedSections(false);
             foreach ($sections as $section) {
                 try {
                     $firstLine    = $section->getFirstLineNumber();
