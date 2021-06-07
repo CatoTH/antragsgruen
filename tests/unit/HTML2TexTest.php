@@ -304,24 +304,22 @@ class HTML2TexTest extends TestBase
         $expect = '\begin{itemize}
 \item Line 1
  \newline
-
 \item Line 2
 \begin{itemize}
 \item Line 2.1.
  \newline
-
 \item Line 2.2
 
 \end{itemize}
  \phantom{ }
-
 \item Line 3
 
 \end{itemize}
 ';
 
         $byLines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
-        $out    = Exporter::getMotionLinesToTeX($byLines);
+        $out = Exporter::getMotionLinesToTeX($byLines);
+        $out = Exporter::fixLatexErrorsInFinalDocument($out);
 
         $this->assertEquals($expect, $out);
     }
@@ -351,6 +349,35 @@ Second line.
 ';
 
         $out = Exporter::getMotionLinesToTeX([$orig]);
+        $out = Exporter::fixLatexErrorsInFinalDocument($out);
         $this->assertEquals($expect, $out);
+    }
+
+    public function testBrAfterBlockquote()
+    {
+        $orig = '<p>Test1</p><blockquote>
+<p><strong>Line 1,<br />
+Line 2,<br />
+Line 3, </strong><br />
+<strong>Line 4 ...</strong><br />
+&nbsp;</p>
+</blockquote>
+<p><br />
+Test2</p>';
+        $expected = 'Test1
+\begin{quotation}\noindent
+\textbf{Line 1,\newline
+Line 2,\newline
+Line 3, }\newline
+\textbf{Line 4 ...}\newline
+\end{quotation}
+\phantom{ }
+Test2
+';
+
+        $out = Exporter::getMotionLinesToTeX([$orig]);
+        $out = Exporter::fixLatexErrorsInFinalDocument($out);
+
+        $this->assertSame($expected, $out);
     }
 }

@@ -83,9 +83,21 @@ class Exporter
         $str = str_replace('\end{enumerate}' . "\n\n", '\end{enumerate}' . "\n", $str);
         $str = preg_replace('/(\\\\linebreak{}\\n*)+\\\\begin{enumerate}/siu', "\n\begin{enumerate}", $str);
 
+        return $str;
+    }
+
+    public static function fixLatexErrorsInFinalDocument(string $str): string {
+        $str = str_replace('\linebreak' . "\n\n", '\linebreak' . "\n", $str);
+        $str = str_replace('\newline' . "\n\n", '\newline' . "\n", $str);
+        $str = preg_replace('/\\\\newline\\n{2,}\\\\nolinenumbers/siu', "\n\n\\nolinenumbers", $str);
+        $str = preg_replace('/\\n+\\\\newline/siu', "\n\\newline", $str); // Prevents \n\n\\newline, which produces "There's no line here to end" errors
+
+        // \end{quotation} + \newline => \end{quotation} + \phantom{ }
+        $str = preg_replace('/\\\\end\{quotation\}\n\\\\newline\n/siu', "\\end{quotation}\n\\phantom{ }\n", $str);
+
         // \end{itemize} \newline \begin{itemize} => \end{itemize} \phantom{ } \begin{itemize}
         // \newline itself would break, \phantom{ }\newline would lead to two line number
-        $str = preg_replace('/(\\}\s*)\\\\newline/siu', '$1\\phantom{ }', $str);
+        $str = preg_replace('/(\\\\end\\{[^\}]*\\}\s*)\\\\newline/siu', '$1\\phantom{ }', $str);
 
         // \newline \newline makes paragraphs next to sidebars in application look awkward;
         // the construct with \newline \phantom does not appear to have this issue, and still leaves empty line numbers intact

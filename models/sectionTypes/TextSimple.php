@@ -573,10 +573,7 @@ class TextSimple extends Text
                 }
             }
 
-            $tex2 = str_replace('\linebreak' . "\n\n", '\linebreak' . "\n", $tex2);
-            $tex2 = str_replace('\newline' . "\n\n", '\newline' . "\n", $tex2);
-            $tex2 = preg_replace('/\\\\newline\\n{2,}\\\\nolinenumbers/siu', "\n\n\\nolinenumbers", $tex2);
-            $tex2 = preg_replace('/\\n+\\\\newline/siu', "\n\\newline", $tex2); // Prevents \n\n\\newline, which produces "There's no line here to end" errors
+            $tex2 = Exporter::fixLatexErrorsInFinalDocument($tex2);
 
             HashedStaticCache::setCache('printMotionTeX', $cacheDeps, $tex2);
         }
