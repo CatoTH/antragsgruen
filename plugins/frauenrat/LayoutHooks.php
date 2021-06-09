@@ -152,7 +152,7 @@ class LayoutHooks extends Hooks
                     if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
                         $organisations[] = $supp->organization;
                     } else {
-                        $organisations[] = $supp->name;
+                        $organisations[] = $supp->name ?: $supp->organization;
                     }
                     $motionData[$i]['content'] .= $this->formatInitiator($supp);
                 }
@@ -162,6 +162,11 @@ class LayoutHooks extends Hooks
                 }
             }
             if ($motionData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
+                if (substr($motion->titlePrefix, 0, 2) === 'A ') {
+                    $motionData[$i]['title'] = 'Empfehlung Vorstand';
+                } else {
+                    $motionData[$i]['title'] = 'Votum Antragskommission';
+                }
                 $proposalAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
                 $motionData[$i]['content'] = '';
                 if ($motion->proposalComment) {
@@ -181,6 +186,7 @@ class LayoutHooks extends Hooks
                 $motionData[$i]['content'] = $this->getTagsSavingForm($motion);
             }
         }
+
         if ($organisations) {
             array_unshift($motionData, [
                 'title'   => (count($organisations) > 1 ? \Yii::t('motion', 'initiators_x') : \Yii::t('motion', 'initiators_1')),
@@ -226,7 +232,7 @@ class LayoutHooks extends Hooks
                     if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
                         $organisations[] = $supp->organization;
                     } else {
-                        $organisations[] = $supp->name;
+                        $organisations[] = $supp->name ?: $supp->organization;
                     }
                     $amendmentData[$i]['content'] .= $this->formatInitiator($supp);
                 }

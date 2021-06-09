@@ -73,7 +73,7 @@ class Frauenrat extends IPDFLayout
             if ($initiator->personType === MotionSupporter::PERSON_ORGANIZATION) {
                 $initiatorNames[] = $initiator->organization;
             } else {
-                $initiatorNames[] = $initiator->name;
+                $initiatorNames[] = $initiator->name ?: $initiator->organization;
             }
             if ($initiator->contactName) {
                 $contact[] = 'Name: ' . $initiator->contactName;
