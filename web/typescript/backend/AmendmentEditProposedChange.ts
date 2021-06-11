@@ -58,7 +58,10 @@ export class AmendmentEditProposedChange {
                 '_csrf': this.$form.find('> input[name=_csrf]').val(),
                 'sections': sectionData
             }, (ret) => {
-                if (ret['collisions'].length == 0) {
+                if (ret['error']) {
+                    this.$collisionIndicator.removeClass('hidden');
+                    this.$collisionIndicator.find('.collisionList').html('<li>' + ret['error'] + '</li>');
+                } else if (ret['collisions'].length == 0) {
                     this.$collisionIndicator.addClass('hidden');
                 } else {
                     this.$collisionIndicator.removeClass('hidden');

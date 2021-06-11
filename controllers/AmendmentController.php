@@ -740,11 +740,25 @@ class AmendmentController extends Base
         $this->amendment = $amendment;
         if (!$amendment) {
             \Yii::$app->response->statusCode = 404;
-            return 'Amendment not found';
+            return json_encode([
+                'error' => 'Amendment not found',
+                'collisions' => [],
+            ]);
         }
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;
-            return 'Not permitted to change the status';
+            return json_encode([
+                'error' => 'Not permitted to change the status',
+                'collisions' => [],
+            ]);
+        }
+
+        $checkAgainstAmendments = $amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment->id]);
+        if (count($checkAgainstAmendments) > 100) {
+            return json_encode([
+                'error' => 'Too many amendments to check for collisions (max. 100)',
+                'collisions' => [],
+            ]);
         }
 
         $newSections = \Yii::$app->request->post('sections', []);
@@ -754,7 +768,7 @@ class AmendmentController extends Base
 
         /** @var Amendment[] $collidesWith */
         $collidesWith = [];
-        foreach ($amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment->id]) as $compAmend) {
+        foreach ($checkAgainstAmendments as $compAmend) {
             foreach ($compAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
                 if (count($coll) > 0 && !in_array($compAmend, $collidesWith, true)) {
@@ -764,6 +778,7 @@ class AmendmentController extends Base
         }
 
         return json_encode([
+            'error' => null,
             'collisions' => array_map(function (Amendment $amend) {
                 // Keep in sync with edit_proposed_change.php
                 $title = $amend->getShortTitle();
