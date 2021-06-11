@@ -44,9 +44,15 @@ export class AmendmentEditProposedChange {
 
     private initCollisionDetection() {
         this.$collisionIndicator = this.$form.find('#collisionIndicator');
+        let lastCheckedContent = null;
 
         window.setInterval(() => {
             let sectionData = this.getTextConsolidatedSections();
+            if (JSON.stringify(sectionData) === lastCheckedContent) {
+                return;
+            }
+
+            lastCheckedContent = JSON.stringify(sectionData);
             let url = this.$form.data('collision-check-url');
             $.post(url, {
                 '_csrf': this.$form.find('> input[name=_csrf]').val(),
