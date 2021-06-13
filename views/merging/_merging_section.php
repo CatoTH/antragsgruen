@@ -39,10 +39,10 @@ if ($twoCols) {
     echo '<div class="sectionHolder boxed">';
 }
 
-
+$firstLineCount = $lineNo;
 foreach ($paragraphNos as $paragraphNo) {
+    $paragraph = $paragraphs[$paragraphNo];
     if ($twoCols) {
-        $paragraph = $paragraphs[$paragraphNo];
         echo '<div class="twoColsHolder">';
         echo '<div class="twoColsLeft sectionType' . $type->type . '">';
         echo '<div class="text motionTextFormattings textOrig';
@@ -79,11 +79,18 @@ foreach ($paragraphNos as $paragraphNo) {
         }
         echo '<div class="twoColsRight sectionType' . $type->type . $add . '" data-section-id="' . $section->sectionId . '">';
     }
+
+    $firstLineNo = $firstLineCount;
+    $lastLineNo = $firstLineNo + count($paragraph->lines) - 1;
+    $firstLineCount = $firstLineNo + count($paragraph->lines);
+
     echo $this->render('_merging_paragraph', [
         'section'        => $section,
         'form'           => $form,
         'amendmentsById' => $amendmentsById,
         'paragraphNo'    => $paragraphNo,
+        'firstLineNo'    => $firstLineNo,
+        'lastLineNo'     => $lastLineNo,
     ]);
     if ($twoCols) {
         echo '</div>';

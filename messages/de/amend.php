@@ -145,6 +145,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_accept_all'                  => 'Alle Änderungen übernehmen',
     'merge_reject_all'                  => 'Alle Änderungen ablehnen',
     'merge_changed'                     => 'Geändert',
+    'merge_line_range_aria'             => 'Absatz von Zeile %FROM% bis %TO%',
     'merge_init_explanation'            => '<p>Hier kannst Du eine neue Version des Antrags erstellen, in dem einige oder alle beantragten Änderungen aufgegriffen werden.</p>
             <p>Man kann dabei entweder einen einzelnen Änderungsantrag einpflegen (unten), oder aber alle Änderungsanträge auf einmal (oben). Bei letzterem gibt es die Möglichkeit, einzelne Änderungsanträge auszunehmen, die abgelehnt wurden oder zu viele Konflikte mit anderen Änderungsanträgen verursachen.</p>
             <p>Der ursprüngliche Antrag sowie die Änderungsanträge bleiben dabei erhalten, wird aber als überholt gekennzeichnet.</p>',

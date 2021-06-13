@@ -124,6 +124,7 @@ return [
     'merge_accept_all'             => 'Accept all changes',
     'merge_reject_all'             => 'Reject all changes',
     'merge_changed'                => 'Changed',
+    'merge_line_range_aria'        => 'Paragraph from line %FROM% to %TO%',
 
     'unsaved_drafts'                    => 'There are unsaved drafts that can be restored:',
     'confirm_amendment'                 => 'Confirm amendment',

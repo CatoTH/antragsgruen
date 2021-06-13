@@ -195,10 +195,38 @@
     }
 
     .leftToolbar {
-      float: left;
       width: 0;
-      padding-top: 3px;
-      margin-left: -25px;
+      position: absolute;
+      left: -22px;
+      top: 0;
+      bottom: 0;
+      .lineNumbers {
+        font-size: 12px;
+        color: #C3C3C3;
+      }
+      .firstLineNumber {
+        position: absolute;
+        top: 7px;
+        width: 16px;
+        text-align: center;
+      }
+      .lastLineNumber {
+        position: absolute;
+        bottom: 7px;
+        width: 16px;
+        text-align: center;
+      }
+      .inbetweenLineNumbers {
+        position: absolute;
+        width: 1px;
+        top: 25px;
+        bottom: 25px;
+        left: 8px;
+        background-image: linear-gradient(#C3C3FF 33%, rgba(255, 255, 255, 0) 0%);
+        background-position: right;
+        background-size: 1px 3px;
+        background-repeat: repeat-y;
+      }
     }
     .changeToolbar {
       float: right;
@@ -266,7 +294,8 @@
     color: gray;
     margin-right: 10px;
     font-size: 0.8em;
-    margin-top: 2px;
+    margin-top: 7px;
+    margin-left: -19px;
     font-weight: bold;
     visibility: visible;
     &.unchanged {

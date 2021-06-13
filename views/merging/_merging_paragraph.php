@@ -10,6 +10,8 @@ use yii\helpers\Html;
  * @var Init $form
  * @var Amendment[] $amendmentsById
  * @var int $paragraphNo
+ * @var int $firstLineNo
+ * @var int $lastLineNo
  */
 
 $draftParagraph      = $form->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
@@ -36,8 +38,28 @@ echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' 
      '" data-section-id="' . $type->id . '" data-paragraph-id="' . $paragraphNo . '" ' .
      'id="paragraphWrapper_' . $type->id . '_' . $paragraphNo . '" ' .
      'data-reload-url="' . Html::encode($reloadUrl) . '">';
+$linesAria = str_replace(['%FROM%', '%TO%'], [$firstLineNo, $lastLineNo], Yii::t('amend', 'merge_line_range_aria'));
 ?>
     <div class="leftToolbar">
+        <div class="lineNumbers" aria-label="<?= Html::encode($linesAria) ?>">
+            <?php
+            if ($firstLineNo <= $lastLineNo) {
+                // $lastLineNo < $firstLineNo happens for sections that only have one completely empty paragraph
+                ?>
+                <div class="firstLineNumber" aria-hidden="true"><?= $firstLineNo ?></div>
+                <?php
+
+            }
+            if ($lastLineNo > $firstLineNo + 1) { ?>
+                <div class="inbetweenLineNumbers" aria-hidden="true"></div>
+                <?php
+            }
+            if ($lastLineNo > $firstLineNo) { ?>
+                <div class="lastLineNumber" aria-hidden="true"><?= $lastLineNo ?></div>
+                <?php
+            }
+            ?>
+        </div>
         <div class="changedIndicator unchanged"><span
                 class="glyphicon glyphicon-edit" title="<?= Yii::t('amend', 'merge_changed') ?>"
                 aria-label="<?= Yii::t('amend', 'merge_changed') ?>"></span></div>
