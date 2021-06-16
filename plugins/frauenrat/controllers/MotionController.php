@@ -141,7 +141,7 @@ class MotionController extends Base
         $topPageFile = __DIR__ . '/../assets/top5_antragsspiegel.pdf';
 
         $pdf = $this->createPdfFromMotions($motions, 'Schwerpunktthemen', $topPageFile);
-        $pdf->Output();
+        $pdf->Output('TOP_5_Schwerpunktthemen.pdf');
     }
 
     public function actionSachantraege()
@@ -155,6 +155,6 @@ class MotionController extends Base
         $topPageFile = __DIR__ . '/../assets/top6_antragsspiegel.pdf';
 
         $pdf = $this->createPdfFromMotions($motions, 'Sachanträge', $topPageFile);
-        $pdf->Output();
+        $pdf->Output('TOP_6_Sachantraege.pdf');
     }
 }

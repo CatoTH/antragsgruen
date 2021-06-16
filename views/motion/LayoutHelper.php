@@ -582,6 +582,10 @@ class LayoutHelper
             if ($type->type === ISectionType::TYPE_TITLE) {
                 $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
             } elseif ($type->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                if ($section->getSettings()->printTitle && !$section->getSectionType()->isEmpty()) {
+                    $pdfLayout->printSectionHeading($section->getSettings()->title);
+                }
+
                 $paragraphs = $section->getTextParagraphObjects(false, false, false, true);
                 $paragraphNos = array_keys($paragraphs);
 

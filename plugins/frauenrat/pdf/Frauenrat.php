@@ -194,12 +194,18 @@ class Frauenrat extends IPDFLayout
 
     public function printSectionHeading(string $text)
     {
+        if (strpos($_SERVER['REQUEST_URI'], 'TOP_5') !== false) {
+            return;
+        }
+
         /** @var FrauenratPdf $pdf */
         $pdf = $this->pdf;
 
         $pdf->SetFont($pdf->calibriBold, 'b', 12);
-        $pdf->ln(2);
-        $pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, '', '', true, 0, true);
+        $pdf->SetTextColor(46, 116, 181);
+        $pdf->ln(4);
+        $pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, 22, '', true, 0, true);
         $pdf->SetFont($pdf->calibri, '', 12);
+        $pdf->SetTextColor(0, 0, 0);
     }
 }
