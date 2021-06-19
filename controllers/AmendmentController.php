@@ -4,7 +4,16 @@ namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, IMotion, ISupporter, User, VotingBlock};
+use app\models\db\{Amendment,
+    AmendmentAdminComment,
+    AmendmentSupporter,
+    ConsultationLog,
+    ConsultationSettingsTag,
+    IMotion,
+    ISupporter,
+    Motion,
+    User,
+    VotingBlock};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{MailNotSent, NotFound};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
@@ -72,7 +81,7 @@ class AmendmentController extends Base
         $amendments  = [];
         $texTemplate = null;
         foreach ($motions as $motion) {
-            if ($motion->getMyMotionType()->amendmentsOnly) {
+            if (!is_a($motion, Motion::class) || $motion->getMyMotionType()->amendmentsOnly) {
                 continue;
             }
             // If we have multiple motion types, we just take the template from the first one.

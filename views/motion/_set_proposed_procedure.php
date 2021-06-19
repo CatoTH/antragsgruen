@@ -220,6 +220,9 @@ $selectedTags = $motion->getProposedProcedureTags();
         if ($otherMotion->id === $motion->id) {
             continue;
         }
+        if (!is_a($otherMotion, Motion::class)) {
+            continue;
+        }
         foreach ($otherMotion->getVisibleAmendmentsSorted() as $otherAmend) {
             $options[$otherAmend->id] = $otherAmend->getTitle();
         }

@@ -6,7 +6,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\NotFound;
 use app\models\mergeAmendments\Init;
-use app\models\db\{Consultation, Motion, TexTemplate, User};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, TexTemplate, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\MotionSectionChanges;
 use app\models\settings\AntragsgruenApp;
@@ -184,30 +184,35 @@ trait MotionExportTraits
     {
         /** @var TexTemplate $texTemplate */
         $texTemplate = null;
-        $motions     = $this->consultation->getVisibleIMotionsSorted($withdrawn);
+        $imotions = $this->consultation->getVisibleIMotionsSorted($withdrawn);
         if ($motionTypeId !== '' && $motionTypeId !== '0') {
             $motionTypeIds = explode(',', $motionTypeId);
-            $motions       = array_filter($motions, function (Motion $motion) use ($motionTypeIds) {
-                return in_array($motion->motionTypeId, $motionTypeIds);
+            $imotions       = array_filter($imotions, function (IMotion $motion) use ($motionTypeIds) {
+                if (is_a($motion, Motion::class)) {
+                    $motionTypeId = $motion->motionTypeId;
+                } else {
+                    /** @var Amendment $motion */
+                    $motionTypeId = $motion->getMyMotion()->motionTypeId;
+                }
+                return in_array($motionTypeId, $motionTypeIds);
             });
         }
 
-        $motionsFiltered = [];
-        foreach ($motions as $motion) {
+        $imotionsFiltered = [];
+        foreach ($imotions as $imotion) {
             $resolutionStates = [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY];
-            if ($resolutions && !in_array($motion->status, $resolutionStates)) {
+            if ($resolutions && !in_array($imotion->status, $resolutionStates)) {
                 continue;
             }
             if ($texTemplate === null) {
-                $texTemplate       = $motion->getMyMotionType()->texTemplate;
-                $motionsFiltered[] = $motion;
-            } elseif ($motion->getMyMotionType()->texTemplate && $motion->getMyMotionType()->texTemplate->id === $texTemplate->id) {
-                $motionsFiltered[] = $motion;
+                $texTemplate       = $imotion->getMyMotionType()->texTemplate;
+                $imotionsFiltered[] = $imotion;
+            } elseif ($imotion->getMyMotionType()->texTemplate && $imotion->getMyMotionType()->texTemplate->id === $texTemplate->id) {
+                $imotionsFiltered[] = $imotion;
             }
         }
-        $motions = $motionsFiltered;
 
-        return [$motions, $texTemplate];
+        return [$imotionsFiltered, $texTemplate];
     }
 
     public function actionFullpdf($motionTypeId = '', $withdrawn = 0, $resolutions = 0)
@@ -216,9 +221,9 @@ trait MotionExportTraits
         $resolutions = (intval($resolutions) === 1);
 
         try {
-            list($motions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
-            /** @var Motion[] $motions */
-            if (count($motions) === 0) {
+            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
+            /** @var IMotion[] $imotions */
+            if (count($imotions) === 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
             }
             // Hint: If it is an amendmentOnly type, we will include the base motion here, too. Hence, no differentiation.
@@ -227,7 +232,7 @@ trait MotionExportTraits
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
-        if (!($hasLaTeX && $texTemplate) && !$motions[0]->getMyMotionType()->getPDFLayoutClass()) {
+        if (!($hasLaTeX && $texTemplate) && !$imotions[0]->getMyMotionType()->getPDFLayoutClass()) {
             $this->showErrorpage(404, \Yii::t('motion', 'err_no_pdf'));
             return '';
         }
@@ -239,9 +244,9 @@ trait MotionExportTraits
         }
 
         if ($hasLaTeX && $texTemplate) {
-            return $this->renderPartial('pdf_full_tex', ['motions' => $motions, 'texTemplate' => $texTemplate]);
+            return $this->renderPartial('pdf_full_tex', ['imotions' => $imotions, 'texTemplate' => $texTemplate]);
         } else {
-            return $this->renderPartial('pdf_full_tcpdf', ['motions' => $motions]);
+            return $this->renderPartial('pdf_full_tcpdf', ['imotions' => $imotions]);
         }
     }
 
@@ -257,22 +262,22 @@ trait MotionExportTraits
         $resolutions = (intval($resolutions) === 1);
 
         try {
-            list($motions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
-            if (count($motions) === 0) {
+            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
+            if (count($imotions) === 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
             }
-            /** @var Motion[] $motions */
-            $motionType = $motions[0]->getMyMotionType();
+            /** @var IMotion[] $imotions */
+            $motionType = $imotions[0]->getMyMotionType();
             if ($motionType->amendmentsOnly) {
                 $imotions = [];
-                foreach ($motions as $motion) {
-                    $imotions = array_merge($imotions, $motion->getVisibleAmendmentsSorted($withdrawn));
+                foreach ($motionType->motions as $motion) {
+                    if (is_a($motion, Motion::class)) {
+                        $imotions = array_merge($imotions, $motion->getVisibleAmendmentsSorted($withdrawn));
+                    }
                 }
                 if (count($imotions) === 0) {
                     return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
                 }
-            } else {
-                $imotions = $motions;
             }
         } catch (ExceptionBase $e) {
             return $this->showErrorpage(404, $e->getMessage());

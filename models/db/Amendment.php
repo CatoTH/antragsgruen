@@ -755,12 +755,13 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param bool $ignoreCollisionProblems
-     * @return bool
      * @throws \app\models\exceptions\Internal
      */
-    public function canMergeIntoMotion($ignoreCollisionProblems = false)
+    public function canMergeIntoMotion(bool $ignoreCollisionProblems = false): bool
     {
+        if ($this->getMyMotionType()->amendmentsOnly) {
+            return false;
+        }
         if ($this->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
             return true;
         } elseif ($this->getMyMotion()->iAmInitiator()) {

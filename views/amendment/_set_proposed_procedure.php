@@ -7,7 +7,7 @@
  */
 
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, IAdminComment};
+use app\models\db\{Amendment, IAdminComment, Motion};
 use yii\helpers\Html;
 
 $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
@@ -221,12 +221,15 @@ $selectedTags = $amendment->getProposedProcedureTags();
         <?php
         $options = ['-'];
         foreach ($amendment->getMyMotion()->getVisibleAmendmentsSorted() as $otherAmend) {
-            if ($otherAmend->id != $amendment->id) {
+            if ($otherAmend->id !== $amendment->id) {
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
         foreach ($amendment->getMyConsultation()->getVisibleIMotionsSorted(false) as $otherMotion) {
-            if ($otherMotion->id == $amendment->motionId) {
+            if ($otherMotion->id === $amendment->motionId) {
+                continue;
+            }
+            if (!is_a($otherMotion, Motion::class)) {
                 continue;
             }
             foreach ($otherMotion->getVisibleAmendmentsSorted() as $otherAmend) {

@@ -487,10 +487,9 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param bool $includeWithdrawn
      * @return IMotion[]
      */
-    public function getVisibleIMotionsSorted($includeWithdrawn = true)
+    public function getVisibleIMotionsSorted(bool $includeWithdrawn = true): array
     {
         $motions   = [];
         $motionIds = [];
@@ -510,8 +509,7 @@ class Consultation extends ActiveRecord
             }
         }
         $noAgendaMotions = MotionSorter::getSortedIMotionsFlat($this, $noAgendaMotions);
-        $motions         = array_merge($motions, $noAgendaMotions);
-        return $motions;
+        return array_merge($motions, $noAgendaMotions);
     }
 
     /**
