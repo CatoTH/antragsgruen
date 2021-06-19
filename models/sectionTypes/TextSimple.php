@@ -114,11 +114,12 @@ class TextSimple extends Text
     /**
      * @param string $data
      */
-    public function setMotionData($data)
+    public function setMotionData($data, bool $allowForbidden = false)
     {
-        $type                   = $this->section->getSettings();
+        $type = $this->section->getSettings();
+        $forbiddenFormattings = ($allowForbidden ? [] : $type->getForbiddenMotionFormattings());
         $this->section->dataRaw = $data;
-        $this->section->setData(HTMLTools::cleanSimpleHtml($data, $type->getForbiddenMotionFormattings()));
+        $this->section->setData(HTMLTools::cleanSimpleHtml($data, $forbiddenFormattings));
     }
 
     public function deleteMotionData()

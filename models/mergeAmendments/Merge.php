@@ -3,6 +3,7 @@
 namespace app\models\mergeAmendments;
 
 use app\components\Tools;
+use app\models\sectionTypes\TextSimple;
 use app\models\db\{IMotion, Motion, MotionSection, MotionSupporter};
 use app\models\events\MotionEvent;
 use app\models\exceptions\Internal;
@@ -68,7 +69,9 @@ class Merge
             $paragraphs[] = $consolidated;
         }
         $html = implode("\n", $paragraphs);
-        $section->getSectionType()->setMotionData($html);
+        /** @var TextSimple $simpleTextSection */
+        $simpleTextSection = $section->getSectionType();
+        $simpleTextSection->setMotionData($html, true);
         $section->dataRaw = $html;
     }
 
