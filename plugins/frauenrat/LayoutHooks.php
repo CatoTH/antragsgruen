@@ -286,6 +286,7 @@ class LayoutHooks extends Hooks
 .motionList .motion > .title a, .motionList .motion > .title .motionLink { color: #0C2847; }
 .motionListBelowAgenda h4.amendments { color: #0071A6; }
 .motionTitle { font-weight: bold; }
+.motionMergeStyles .paragraphWrapper .leftToolbar .lineNumbers { color: black; }
 </style>
 <script>
 $(function() {

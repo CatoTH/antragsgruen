@@ -16,6 +16,7 @@
   - Text entered by the admins can now optionally receive a blue color, to distinguish admin-entered text from the base motion or changes made by the amendments.
   - When merging multiple amendments affecting the same passage of a motion, the merging algorithm now tries more aggressively to merge them into the text, relying on the editing person to resolve the conflicts. Previously, it just refused to merge the second amendment and repeated the colliding amendment below the paragraph.
   - Indications about line numbers of the original motion are now shown at the side.
+  - Text could be striked through, but that formatting was not saved. It now is.
 - As long as the maintenance mode is activated, admins now get an alert on the page about it being active, including a link to the page where they can deactivate it.
 - If admins create a motion or amendment in behalf of an user, no confirmation mails about the submission is sent to the user anymore (if confirmation mails are activated in the first place).
 - When official supports are collected for a motion or amendments, it is now optionally possible to support them "non-publically". That is, only logged in users can see the names of those supports.
