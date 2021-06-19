@@ -24,4 +24,11 @@ class Sendmail extends Base
 
         return new \Swift_Mailer($transport);
     }
+
+    protected function getFallbackTransport(): ?\Swift_Mailer
+    {
+        $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -t');
+
+        return new \Swift_Mailer($transport);
+    }
 }

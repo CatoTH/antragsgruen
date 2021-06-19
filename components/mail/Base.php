@@ -62,6 +62,11 @@ abstract class Base
      */
     abstract protected function getTransport();
 
+    protected function getFallbackTransport(): ?\Swift_Mailer
+    {
+        return null;
+    }
+
     protected function createHtmlPart(string $subject, string $plain, ?string $html, ?Consultation $consultation): string
     {
         if (!$html) {
@@ -136,8 +141,16 @@ abstract class Base
         }
 
         $message->setTo($toEmail);
-        $transport = $this->getTransport();
-        $transport->send($message);
+        try {
+            $transport = $this->getTransport();
+            $transport->send($message);
+        } catch (\Exception $e) {
+            $fallbackTransport = $this->getFallbackTransport();
+            // "Expected response code 220 but got an empty response" is triggered is regular sendmail is not accessible
+            if ($fallbackTransport && strpos($e->getMessage(), 'Expected response code 220') !== false) {
+                $fallbackTransport->send($message);
+            }
+        }
 
         return EMailLog::STATUS_SENT;
     }
