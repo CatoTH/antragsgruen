@@ -131,7 +131,7 @@ $params = \Yii::$app->params;
         Textentwürfe, Bewerbungen einschließlich Fotos, Satzungen usw. verwaltet werden.</p>
     <p>Änderungsanträge beziehen sich unmittelbar auf einen Antrag (bzw. andere eingestellte Texte) und haben den Zweck,
         diesen zu verändern. Antragsgrün will vor allem die Handhabung vieler Änderungsanträge pro Antrag vereinfachen
-        und formalisiert diese daher stark: beim Einreichen eines Änderungsantrags muss explizit angegeben werden, die
+        und formalisiert diese daher stark: beim Einreichen eines Änderungsantrags muss explizit angegeben werden, wie
         der Antrag nach der beantragten Änderung aussehen soll. Antragsgrün kann so automatisch die tatsächlichen
         Änderungen feststellen, den ursprünglichen Antrag so annotieren, dass leicht ersichtlich ist, zu welchen
         Passagen es Alternativvorschläge gibt, und auf Wunsch die Änderungen in den ursprünglichen Antrag
@@ -154,7 +154,7 @@ $params = \Yii::$app->params;
         werden soll.</p>
     <!-- @TODO: Verzeichnis -->
 
-    <h3 id="antragstypen">Antragstypen / Motion Type</h3>
+    <h3 id="antragstypen">Antragstypen</h3>
     <p>Innerhalb einer Veranstaltung kann es verschieden strukturierte Dokumente geben – oder Dokumente, die
         unterschiedlichen Regelungen unterliegen, z.B. was Antragsfristen oder Berechtigungen zum Anlegen angeht.
         Beispielsweise benötigen Bewerbungen andere Angaben (Name, Selbstvorstellung, Foto, weitere Angaben, …) als
@@ -177,7 +177,7 @@ $params = \Yii::$app->params;
         eine Vorstandswahl könnte es beispielsweise für die Wahl eines jeden Vorstandsposten einen Tagesordnungspunkt
         geben, jeder mit dem Antragstyp „Bewerbung“; so können dann Bewerbungen gezielt für einen bestimmten Posten
         eingereicht werden.</p>
-    <p>Um Tagesordnungen zu aktivieren: Erst unter „Einstellungen“ in der Unterseite „Diese Veranstaltung“ bei
+    <p>Um Tagesordnungen zu aktivieren: Erst unter „Einstellungen“ in der Unterseite „Aussehen und Bestandteile der Seite“ bei
         „Startseiten-Design“ einen der beiden Tagesordnungspunkt-Punkte auswählen. Dann kann man auf der Startseite neue
         Tagesordnungspunkte anlegen.</p>
     <!-- @TODO: Genauere Erklärung zur Nummerierung von Tagesordnungspunkten -->
@@ -240,8 +240,8 @@ $params = \Yii::$app->params;
         Benutzer*innen das Login erlauben“ aktiviert werden. Anschließend erscheint weiter unten der Punkt
         „Benutzer*innen-Accounts“, in dem neue Mitglieder eingeladen werden können.</p>
     <p>Wenn Antragsgrün in Organisationen verwendet werden soll, die eine Single-Sign-On-Lösung verwenden, lässt sich
-        die Authentifizierung auf weitere Mechanismen ausweiten; produktiv kamen Bereits OpenID- sowie SAML-Konnektoren
-        zum Einsatz. Für weitere Informationen schreiben Sie uns bitte einfach an.</p>
+        die Authentifizierung auf weitere Mechanismen ausweiten; produktiv kamen Bereits OpenID- und SAML-Konnektoren
+        sowie Integrationen in CRM-Systeme (z.B. CiviCRM) zum Einsatz. Für weitere Informationen schreiben Sie uns bitte einfach an.</p>
 
     <h3 id="antragsschluss">Antragsschluss</h3>
     <p>Wenn das Einreichen von Anträgen oder Änderungsanträgen nur bis zu einem bestimmten Zeitpunkt möglich sein soll,
@@ -392,7 +392,8 @@ $params = \Yii::$app->params;
         OpenSlides angepasst ist. Anträge und Änderungsanträge, die im Vorfeld einer Tagung in Antragsgrün eingereicht
         und vorbereitet wurden, können so kurz vor der Tagung leicht in einen bestehenden Openslides-Ablauf integriert
         werden.</p>
-    <p>Den Export gibt es für Admins der Veranstaltung im Menüpunkt „Antragsliste“.</p>
+    <p>Den Export gibt es für Admins der Veranstaltung im Menüpunkt „Antragsliste“, nachdem der Export einmalig auf dieser Seite
+        unter „Funktionen” → „Openslides-Export” aktiviert wurde.</p>
 
     <h3 id="export_weitere">HTML, Plain Text, RSS, Weitere Formate</h3>
     <p>Generell ist es recht leicht, weitere Formate zu unterstützen. Ein paar weitere Formate werden daher bereits
@@ -403,11 +404,14 @@ $params = \Yii::$app->params;
     <h2 id="weitere_funktionen">Weitere Funktionen</h2>
     <h3 id="layout">Layout-Anpassbarkeit</h3>
     <p>Verschiedene Aspekte des Layouts von Antragsgrün lassen sich über das Administrationsinterface anpassen – die
-        meisten davon unter „Einstellungen“ → „Diese Veranstaltung“ → „Aussehen“.</p>
+        meisten davon unter „Einstellungen“ → „Aussehen und Bestandteile der Seite“.</p>
     <p>Am stärksten wirkt sich die „Layout“-Einstellung aus: sie verändert das komplette Aussehen der Seite und wird
         genutzt, um eine entwickelte Anpassung an ein Corporate Design zu aktivieren. Neben dem
         „Antragsgrün-Standard“-Layout gibt es derzeit Layouts, die teils für den Deutschen Bundesjugendring, teils für
-        Bündnis 90 / Die Grünen entwickelt wurden. Weitere grundlegend andere Layouts können entweder von halbwegs
+        Bündnis 90 / Die Grünen entwickelt wurden. Unter „Eigenes Farbschema anlegen” lassen sich auch Farben,
+        Schriftgrößen und einige weitere Aspekte des Layouts (wie Schattierungen oder Abrundungen) an die eigene
+        Corporate Identity anpassen.</p>
+    <p>Weitere grundlegend andere Layouts können entweder von halbwegs
         versierten Web-Entwickler*innen selbst entwickelt werden (siehe „<a
                 href="https://github.com/CatoTH/antragsgruen">Developing custom themes</a>“), oder bei uns in Auftrag
         gegeben werden.</p>
@@ -461,16 +465,16 @@ $params = \Yii::$app->params;
         </li>
     </ul>
 
-    <h3 id="themen">Themen / Tags</h3>
+    <h3 id="themen">Themen / Schlagworte</h3>
     <p>Anträge lassen sich auf der Startseite nicht nur streng hierarchisch in einer Tagesordnung darstellen, sondern
         auch nach nach vorgegebenen Schlagworten gliedern. Der wichtigste Unterschied dabei ist, dass ein Antrag auch
         mehrere Themen / Schlagworte gleichzeitig haben kann (auf der Startseite also z.B. sowohl unter „Verkehr“ als
         auch „Umwelt“ auftauchen kann). Welche Themen zur Auswahl stehen, kann von der Leitung der Veranstaltung
         vorgegeben werden. Antragsteller*innen können beim Einreichen eines Antrags Themen auswählen.</p>
-    <p>Man aktiviert diese Darstellung unter „Einstellungen“ → „Diese Veranstaltung“, indem man zuerst bei
-        „Startseiten-Design“ den Punkt „Themen / Schlagworte“ wählt und weiter unten bei „Anträge“ die verschiedenen
-        Themen anlegt, die zur Auswahl stehen sollen. Im allgemeinen wird auch die Einstellung „Mehrere Themen pro
-        Antrag möglich“ gleich darunter empfehlenswert sein.</p>
+    <p>Man aktiviert diese Darstellung unter „Einstellungen“ → „Aussehen und Bestandteile der Seite“, indem man zuerst bei
+        „Startseite & Tagesordnung“ den Punkt „Themen / Schlagworte als Liste“ wählt und unter
+        „Einstellungen” -> „Diese Veranstaltung” bei „Anträge“ die verschiedenen Themen anlegt, die zur Auswahl stehen sollen.
+        Im allgemeinen wird auch die Einstellung „Mehrere Themen pro Antrag möglich“ gleich darunter empfehlenswert sein.</p>
 
     <h3 id="kommentare">Kommentare</h3>
     <p>Sowohl Anträge als auch Änderungsanträge können kommentiert werden, sofern dies von der Veranstaltungsleitung
@@ -501,7 +505,7 @@ $params = \Yii::$app->params;
         sammeln“-Phase verwendet, die weiter oben beschrieben wurde)</p>
 
     <h3 id="uebersetzen">Übersetzung der Seite / Anpassungen des Wordings</h3>
-    <p>Antragsgrün unterstützt drei Stufen der sprachlichen Anpassung:</p>
+    <p>Antragsgrün unterstützt mehrere Stufen der sprachlichen Anpassung:</p>
     <ul>
         <li>Pro Veranstaltung lassen sich sämtliche Texte auf der Oberfläche von Antragsgrün über die
             Administrations-Oberfläche anpassen, unter „Einstellungen“ → „Sprache anpassen“. Diese Möglichkeit lässt
@@ -524,6 +528,11 @@ $params = \Yii::$app->params;
             Antragsgrün-Distribution werden kann.<br>
             Welche Sprachvariante verwendet werden soll, kann pro Veranstaltung unter „Einstellungen“ → „Sprache
             anpassen“ → „Basis-Sprachversion“ ausgewählt werden.
+        </li>
+        <li>
+            Einige sprachliche Anpassungen können auch pro Antragstyp festgelegt werden - beispielsweise die Einleitung der
+            Bestätigungsmail beim Einreichen von Anträgen oder Bewerbungen, oder die einleitende Erklärung beim Einreichen.
+            Diese kann man beim jeweilgen Antragstyp unter „Antragstyp-spezifische Texte / Übersetzungen” eingeben.
         </li>
     </ul>
 

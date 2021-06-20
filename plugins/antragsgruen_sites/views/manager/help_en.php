@@ -159,10 +159,9 @@ $params = \Yii::$app->params;
         different posts to be elected. The latter ones would get the motion type “Application”, making it possible to
         apply specifically for, say, treasurer or chairwoman.</p>
     <p>Using the agenda feature has to be explicitly activated, either while initializing the site using the initial
-        questionnaire, or afterwards by going to “Settings” → “This consultation” and choosing one of the two
-        “Agenda”-Styles from the “Homepage style” drop-down. After that, the agenda can be created on the home page of
+        questionnaire, or afterwards by going to “Settings” → “Appearance and components of this site” and choosing one of the two
+        “Agenda”-Styles from the “Homepage / Agenda” drop-down. After that, the agenda can be created on the home page of
         the consultation.</p>
-
 
     <h2 id="workflow">Workflow: Submission, screening, permissions</h2>
 
@@ -222,7 +221,7 @@ $params = \Yii::$app->params;
         section “User accounts” appears, allowing to invite new users by entering their name and e-mail-address.</p>
     <p>If Antragsgrün is supposed to leverage an existing Single-Sign-On-Solution, it is possible to include other log
         in mechanisms. For example, Antragsgrün has been successfully deployed in environments providing OpenID- and
-        SAML-based SSO. If you are interested in that topic, please contact us.</p>
+        SAML-based SSO as well as integration into CRM-systems (e.g. CiviCRM). If you are interested in that topic, please contact us.</p>
 
     <h3 id="deadlines">Deadlines</h3>
 
@@ -360,13 +359,6 @@ $params = \Yii::$app->params;
         OpenOffice of LibreOffice.</p>
     <p>This export is available for administrators in the motion list (“Motions” at the very top).</p>
 
-    <h3 id="openslides">OpenSlides / CSV</h3>
-
-    <p>Several organizations using Antragsgrün to prepare all motions and amendments are using OpenSlides to as a
-        presentation system for their assemblies. Therefore, Antragsgrün also supports a CSV-Export that is specifically
-        aimed to be imported by both major versions of OpenSlides.</p>
-    <p>This export is available for administrators in the motion list (“Motions” at the very top).</p>
-
     <h3 id="export_misc">HTML, Plain Text, RSS, further formats</h3>
 
     <p>It’s pretty easy to add further export formats. There are several already: for example, an export to plain HTML,
@@ -380,9 +372,11 @@ $params = \Yii::$app->params;
         → “This consultation” → “Appearance”.</p>
     <p>The “Layout”-setting has the biggest impact: it completely changes the design of the whole site and is used to
         activate adaptions to other corporate designs. Aside from the default layout, two themes are included that have
-        been developed for the German Federal Youth Council and the German Green Party. If you want to develop your own
-        custom theme, we have put some instructions on how to do so on our <a
-                href="https://github.com/CatoTH/antragsgruen">Github page (“Developing custom themes”)</a>.</p>
+        been developed for the German Federal Youth Council and the German Green Party. However, using the
+        “Create custom theme” page it is possible to change colors, font sizes and several other aspects of the layout
+        according to your Corporate Identity using the web interface.</p>
+    <p>If that flexibility is not enough and it is necessary to modify the theme in a more structural way, we have put
+        some instructions on how to do so on our <a href="https://github.com/CatoTH/antragsgruen">Github page (“Developing custom themes”)</a>.</p>
     <p>For the home page of a consultation, there are several variants available (“Homepage style” in the settings),
         targeted towards different use cases. This setting is necessary to activate the agenda on the homepage or to
         enable the tagging feature (see further below).</p>
@@ -440,8 +434,9 @@ $params = \Yii::$app->params;
         that multiple tags can be assigned to each motion, instead of only one agenda item. For example, one motion can
         be assigned both the tags “Environment” and “Traffic”. The administrators of a consultation can specify the list
         of available tags. Users can then choose fitting tags when submitting a motion.</p>
-    <p>The tagging system can be activated at “Settings” → “This consultation”, by choosing “Tags” at the “Homepage
-        style”. The list of available tags can then be set further below on the same page in the “Motion”-Section at
+    <p>The tagging system can be activated at “Settings” → “Appearance and components of this site”,
+        by choosing “Tags / categories” at the “Homepage / Agenda” selection.
+        The list of available tags can be specified at “Settings” → “This consultation” in the “Motion”-Section at
         “Available tags”.</p>
 
     <h3 id="comments">Comments</h3>
@@ -471,7 +466,7 @@ $params = \Yii::$app->params;
         case, but is used for the “Call for supporter”-phase described above)</p>
 
     <h3 id="translation">Translations / Changing the wording</h3>
-    <p>Antragsgrün supports three ways of change and internationalize the user interface and the wording:</p>
+    <p>Antragsgrün supports several ways of change and internationalize the user interface and the wording:</p>
     <ul>
         <li>For each consultation, it is possible to change all strings of the user interface using the web interface.
             This can be done at “Settings” → “Edit the language”. This can be used to change a few words, change the
@@ -487,6 +482,11 @@ $params = \Yii::$app->params;
             English vs. American English. This also requires some additions to the source code of the project. The main
             difference of this method compared to using the web interface as described in point 1 is that translations
             created like this can be used by other consultations as well.
+        </li>
+        <li>
+            Some changes can be made to the wording regarding specific motion types. For example, the confirmatin e-mail
+            or explanation could be different when submitting a motion and an application. These specific texts can be
+            entered at the repective motion type at “Motion type specific texts / translations”.
         </li>
     </ul>
 </div>
