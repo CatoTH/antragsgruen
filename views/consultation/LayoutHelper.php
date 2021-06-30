@@ -117,7 +117,8 @@ class LayoutHelper
         $return .= '<p class="info">';
         $return .= Html::encode($amendment->getInitiatorsStr());
         if ($amendment->status === Motion::STATUS_WITHDRAWN) {
-            $statusName = Html::encode($amendment->getStatusNames()[$amendment->status]);
+            $statusNames = $amendment->getMyConsultation()->getStatuses()->getStatusNames();
+            $statusName = Html::encode($statusNames[$amendment->status]);
             $return     .= ' <span class="status">(' . $statusName . ')</span>';
         }
         $return .= '</p>';

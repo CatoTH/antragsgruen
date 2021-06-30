@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.8.1 [not released yet]
+
+- Bugfix: The consultation page did was not shown when a statute amendment was withdrawn.
+
 ## Version 4.8.0 (2021-06-27)
 
 - Statute amendments are now explicitly supported. They have the following characteristics:
