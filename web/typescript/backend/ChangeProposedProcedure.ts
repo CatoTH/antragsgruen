@@ -31,7 +31,7 @@ export class ChangeProposedProcedure {
         this.$statusDetails = this.$widget.find('.statusDetails');
         this.$visibilityInput = this.$widget.find('input[name=proposalVisible]');
         this.$votingStatusInput = this.$widget.find('input[name=votingStatus]');
-        this.$votingBlockId = this.$widget.find('input[name=votingBlockId]');
+        this.$votingBlockId = this.$widget.find('select[name=votingBlockId]');
         this.$tagsSelect = this.$widget.find('.proposalTagsSelect');
         this.$openerBtn = $('.proposedChangesOpener button');
         this.context = this.$widget.data('context');
@@ -79,7 +79,6 @@ export class ChangeProposedProcedure {
         this.initExplanation();
         this.initTags();
         this.$widget.find('.newBlock').addClass('hidden');
-        //this.$widget.find('.selectlist').selectlist();
         this.$widget.find('.notifyProposerSection').addClass('hidden');
     }
 
@@ -236,7 +235,7 @@ export class ChangeProposedProcedure {
     }
 
     private initVotingBlock() {
-        this.$widget.on('changed.fu.selectlist', '#votingBlockId', () => {
+        this.$widget.on('change', '#votingBlockId', () => {
             this.$widget.addClass('isChanged');
             if (this.$votingBlockId.val() == 'NEW') {
                 this.$widget.find(".newBlock").removeClass('hidden');

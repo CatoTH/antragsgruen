@@ -57,7 +57,7 @@ $I->wait(1);
 
 $I->wantTo('make the proposal visible and notify the proposer of the amendment');
 $I->executeJS('$("#proposedChanges input[name=proposalVisible]").prop("checked", true).change();');
-$I->executeJS('$("#votingBlockId").selectlist("selectByValue", "NEW").trigger("changed.fu.selectlist")');
+$I->executeJS('$("#votingBlockId").val("NEW").trigger("change")');
 $I->fillField('#newBlockTitle', 'Voting 1');
 $I->executeJS('$("#proposedChanges .saving button").click();');
 $I->wait(1);
@@ -71,7 +71,7 @@ $I->wait(1);
 $I->see('Der/die Antragsteller*in wurde am');
 
 
-$I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId").selectlist("selectedItem").text'));
+$I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId option:selected").text()'));
 
 
 $I->wantTo('propose to reject the second amendment');

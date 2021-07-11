@@ -17,7 +17,6 @@ echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
-    'class'                    => 'fuelux',
 ]);
 if ($amendment->proposalStatus === Amendment::STATUS_REFERRED) {
     $preReferredTo = $amendment->proposalComment;
@@ -93,15 +92,19 @@ $selectedTags = $amendment->getProposedProcedureTags();
             </div>
             <div class="votingBlockSettings showIfStatusSet">
                 <h3><?= Yii::t('amend', 'proposal_voteblock') ?></h3>
-                <?php
-                $options = ['-'];
-                foreach ($votingBlocks as $votingBlock) {
-                    $options[$votingBlock->id] = $votingBlock->title;
-                }
-                $options['NEW'] = '- ' . Yii::t('amend', 'proposal_voteblock_newopt') . ' -';
-                $attrs          = ['id' => 'votingBlockId'];
-                echo HTMLTools::fueluxSelectbox('votingBlockId', $options, $amendment->votingBlockId, $attrs);
-                ?>
+                <select name="votingBlockId" id="votingBlockId">
+                    <option>-</option>
+                    <?php
+                    foreach ($votingBlocks as $votingBlock) {
+                        echo '<option value="' . Html::encode($votingBlock->id) . '"';
+                        if ($amendment->votingBlockId === $votingBlock->id) {
+                            echo ' selected';
+                        }
+                        echo '>' . Html::encode($votingBlock->title) . '</option>';
+                    }
+                    ?>
+                    <option value="NEW">- <?= Yii::t('amend', 'proposal_voteblock_newopt') ?> -</option>
+                </select>
                 <div class="newBlock">
                     <label for="newBlockTitle" class="control-label">
                         <?= Yii::t('amend', 'proposal_voteblock_new') ?>:
