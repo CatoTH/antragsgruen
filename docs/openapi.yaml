@@ -202,6 +202,12 @@ components:
           example: https://test.antragsgruen.de/consultation
     MotionLinkWithAmendmentLinks:
       properties:
+        type:
+          type: string
+          description: Describes if this is a motion or an amendment (e.g., a statute amendment to be shown like a motion)
+          enum:
+            - motion
+            - amendment
         id:
           type: number
           example: 23

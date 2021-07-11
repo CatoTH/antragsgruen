@@ -4,6 +4,7 @@
 
 - Bugfix: The consultation page did was not shown when a statute amendment was withdrawn.
 - Bugfix: after saving a proposed procedure of an amendment or motion, the selected voting block was not shown.
+- Bugfix: the REST API didn't work correctly with statute amendments
 
 ## Version 4.8.0 (2021-06-27)
 
