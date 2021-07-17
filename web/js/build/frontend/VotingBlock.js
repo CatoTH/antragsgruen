@@ -1,0 +1,2 @@
+define(["require","exports"],function(t,e){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.VotingBlock=void 0;var n=function(t){this.$element=t;var e=this.$element.find(".currentVoting"),n={voting:t.data("voting"),csrf:$("head").find("meta[name=csrf-token]").attr("content")};this.widget=new Vue({el:e[0],template:'\n                <voting-block-widget :voting="voting" :csrf="csrf"></voting-block-widget>',data:n})};e.VotingBlock=n});
+//# sourceMappingURL=VotingBlock.js.map

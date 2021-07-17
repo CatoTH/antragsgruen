@@ -3,6 +3,7 @@
 namespace app\models\proposedProcedure;
 
 use app\models\db\{Amendment, IMotion, Motion, VotingBlock};
+use app\components\UrlHelper;
 
 class AgendaVoting
 {
@@ -50,5 +51,54 @@ class AgendaVoting
             }
         }
         return $ids;
+    }
+
+    public function getApiObject(bool $hasMultipleVotingBlocks): array
+    {
+        $votingBlockJson = [
+            'id' => ($this->getId() === 'new' ? null : $this->getId()),
+            'title' => ($hasMultipleVotingBlocks || $this->voting ? $this->title : null),
+            'items' => [],
+        ];
+
+        foreach ($this->items as $item) {
+            if ($item->isProposalPublic()) {
+                $procedure = Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
+            } elseif ($item->status === IMotion::STATUS_MOVED && is_a($item, Motion::class)) {
+                /** @var Motion $item */
+                $procedure = \app\views\consultation\LayoutHelper::getMotionMovedStatusHtml($item);
+            } else {
+                $procedure = null;
+            }
+
+            if (is_a($item, Amendment::class)) {
+                /** @var Amendment $item */
+                $votingBlockJson['items'][] = [
+                    'type' => 'Amendment',
+                    'id' => $item->id,
+                    'prefix' => $item->titlePrefix,
+                    'title_with_prefix' => $item->getTitleWithPrefix(),
+                    'url_json' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($item, 'rest')),
+                    'url_html' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($item)),
+                    'initiators_html' => $item->getInitiatorsStr(),
+                    'procedure' => $procedure,
+                ];
+            } else {
+                /** @var Motion $item */
+                $votingBlockJson['items'][] = [
+                    'type' => 'Motion',
+                    'id' => $item->id,
+                    'prefix' => $item->titlePrefix,
+                    'title_with_prefix' => $item->getTitleWithPrefix(),
+                    'url_json' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($item, 'rest')),
+                    'url_html' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($item)),
+                    'initiators_html' => $item->getInitiatorsStr(),
+                    'procedure' => $procedure,
+                ];
+            }
+
+        }
+
+        return $votingBlockJson;
     }
 }
