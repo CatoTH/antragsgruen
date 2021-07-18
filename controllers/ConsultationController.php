@@ -500,4 +500,18 @@ class ConsultationController extends Base
 
         return $this->render('@app/views/speech/admin-singlepage', ['queue' => $unassignedQueue]);
     }
+
+    public function actionAdminVotings(): string
+    {
+        $this->layout = 'column2';
+
+        $user = User::getCurrentUser();
+        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        return $this->render('@app/views/voting/admin-votings');
+    }
 }

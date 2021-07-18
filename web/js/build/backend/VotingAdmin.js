@@ -1,0 +1,2 @@
+define(["require","exports"],function(t,e){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.VotingAdmin=void 0;var i=function(t){this.$element=t,this.widget=new Vue({el:this.$element.find(".votingAdmin")[0],template:'<voting-admin-widget v-bind:voting="voting" v-bind:csrf="csrf"></voting-admin-widget>',data:{voting:t.data("voting"),csrf:$("head").find("meta[name=csrf-token]").attr("content")}})};e.VotingAdmin=i});
+//# sourceMappingURL=VotingAdmin.js.map

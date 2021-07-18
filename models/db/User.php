@@ -59,6 +59,7 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_SITE_ADMIN                = 6;
     const PRIVILEGE_CHANGE_PROPOSALS          = 7;
     const PRIVILEGE_SPEECH_QUEUES             = 8;
+    const PRIVILEGE_VOTINGS                   = 9;
 
     /**
      * @return string[]

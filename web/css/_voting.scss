@@ -1,0 +1,112 @@
+@import "variables";
+
+.votingCommon {
+  .titleLink {
+    flex: 1;
+    line-height: 16px;
+  }
+  .amendmentBy {
+    font-size: 0.8em;
+    color: #888;
+  }
+
+  .voteList {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: solid 1px #ccc;
+    }
+
+    .votingOptions {
+      flex-basis: 200px;
+      text-align: right;
+    }
+  }
+
+  .votingResultList {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: solid 1px #ccc;
+    }
+
+    .votesDetailed {
+      flex: 0.5;
+      font-size: 0.9em;
+    }
+    .result {
+      flex: 0;
+      text-align: right;
+      white-space: nowrap;
+
+      .accepted {
+        color: green;
+      }
+    }
+  }
+
+  .votingFooter {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px #ccc;
+
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .votedCounter {
+      flex: 1;
+    }
+    .showAll {
+      flex: 1;
+      text-align: right;
+    }
+  }
+
+  .votingExplanation {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #555;
+  }
+}
+
+.votingDataActions {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  border-bottom: solid 1px #ccc;
+  padding-bottom: 10px;
+
+  .data {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    > * {
+      flex-basis: 50%;
+      padding: 5px 10px;
+    }
+  }
+  .actions {
+    flex-basis: 200px;
+    text-align: right;
+    margin-top: 20px;
+  }
+}
