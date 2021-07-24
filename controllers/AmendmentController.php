@@ -9,7 +9,6 @@ use app\models\db\{Amendment,
     AmendmentSupporter,
     ConsultationLog,
     ConsultationSettingsTag,
-    IMotion,
     ISupporter,
     Motion,
     User,
@@ -579,7 +578,7 @@ class AmendmentController extends Base
                     $votingBlock                 = new VotingBlock();
                     $votingBlock->consultationId = $this->consultation->id;
                     $votingBlock->title          = $title;
-                    $votingBlock->votingStatus   = IMotion::STATUS_VOTE;
+                    $votingBlock->votingStatus   = VotingBlock::STATUS_OFFLINE;
                     $votingBlock->save();
 
                     $amendment->votingBlockId = $votingBlock->id;

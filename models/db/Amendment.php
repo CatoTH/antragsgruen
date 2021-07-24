@@ -38,9 +38,10 @@ use yii\helpers\Html;
  * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
- * @property Amendment $proposalReferencedBy
- * @property VotingBlock $votingBlock
- * @property User $responsibilityUser
+ * @property Amendment|null $proposalReferencedBy
+ * @property VotingBlock|null $votingBlock
+ * @property User|null $responsibilityUser
+ * @property Vote[] $votes
  */
 class Amendment extends IMotion implements IRSSItem
 {
@@ -245,6 +246,14 @@ class Amendment extends IMotion implements IRSSItem
     public function getResponsibilityUser()
     {
         return $this->hasOne(User::class, ['id' => 'responsibilityId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotes()
+    {
+        return $this->hasMany(Vote::class, ['amendmentId' => 'id']);
     }
 
     /**

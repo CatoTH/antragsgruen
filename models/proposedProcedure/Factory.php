@@ -219,6 +219,7 @@ class Factory
 
     /**
      * @return AgendaVoting[]
+     * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
      */
     public function getAllVotingBlocks(): array
     {
@@ -240,14 +241,16 @@ class Factory
 
     /**
      * @return AgendaVoting[]
+     * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
      */
     public function getOpenVotingBlocks(): array
     {
         // There is probably a more efficient way to create this, without having to build the whole agenda first
         $votingBlocks = [];
         foreach ($this->getAllVotingBlocks() as $votingBlock) {
-            // @TODO check if the voting is opened
-            $votingBlocks[] = $votingBlock;
+            if ($votingBlock->voting->votingStatus === VotingBlock::STATUS_OPEN) {
+                $votingBlocks[] = $votingBlock;
+            }
         }
 
         return $votingBlocks;

@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\models\notifications\MotionProposedProcedure;
 use app\models\notifications\MotionPublished;
+use app\models\settings\AntragsgruenApp;
 use app\components\{HashedStaticFileCache, MotionSorter, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
@@ -47,6 +48,7 @@ use yii\helpers\Html;
  * @property VotingBlock|null $votingBlock
  * @property User|null $responsibilityUser
  * @property SpeechQueue[] $speechQueues
+ * @property Vote[] $votes
  */
 class Motion extends IMotion implements IRSSItem
 {
@@ -90,10 +92,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-
-        return $app->tablePrefix . 'motion';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'motion';
     }
 
     /**
@@ -258,6 +257,14 @@ class Motion extends IMotion implements IRSSItem
     public function getVotingBlock()
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotes()
+    {
+        return $this->hasMany(Vote::class, ['motionId' => 'id']);
     }
 
     /**

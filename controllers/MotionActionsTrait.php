@@ -8,7 +8,6 @@ use app\components\{Tools, UrlHelper};
 use app\models\db\{ConsultationLog,
     ConsultationSettingsTag,
     IComment,
-    IMotion,
     Motion,
     MotionAdminComment,
     MotionComment,
@@ -537,7 +536,7 @@ trait MotionActionsTrait
                     $votingBlock                 = new VotingBlock();
                     $votingBlock->consultationId = $this->consultation->id;
                     $votingBlock->title          = $title;
-                    $votingBlock->votingStatus   = IMotion::STATUS_VOTE;
+                    $votingBlock->votingStatus   = VotingBlock::STATUS_OFFLINE;
                     $votingBlock->save();
 
                     $motion->votingBlockId = $votingBlock->id;

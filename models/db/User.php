@@ -40,6 +40,7 @@ use yii\web\IdentityInterface;
  * @property ConsultationUserPrivilege[] $consultationPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
+ * @property Vote[] $votes
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -231,6 +232,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getNotifications()
     {
         return $this->hasMany(UserNotification::class, ['userId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotes()
+    {
+        return $this->hasMany(Vote::class, ['userId' => 'id']);
     }
 
     /**
