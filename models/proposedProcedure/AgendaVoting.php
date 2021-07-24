@@ -2,8 +2,9 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\{Amendment, IMotion, Motion, VotingBlock};
+use app\models\db\{Amendment, IMotion, Motion, User, VotingBlock};
 use app\components\UrlHelper;
+use app\models\exceptions\Access;
 
 class AgendaVoting
 {
@@ -53,11 +54,11 @@ class AgendaVoting
         return $ids;
     }
 
-    public function getApiObject(bool $hasMultipleVotingBlocks): array
+    private function getApiObject(?string $title, ?User $user, bool $adminFields): array
     {
         $votingBlockJson = [
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
-            'title' => ($hasMultipleVotingBlocks || $this->voting ? $this->title : null),
+            'title' => $title,
             'items' => [],
         ];
 
@@ -74,7 +75,7 @@ class AgendaVoting
             if (is_a($item, Amendment::class)) {
                 /** @var Amendment $item */
                 $votingBlockJson['items'][] = [
-                    'type' => 'Amendment',
+                    'type' => 'amendment',
                     'id' => $item->id,
                     'prefix' => $item->titlePrefix,
                     'title_with_prefix' => $item->getTitleWithPrefix(),
@@ -86,7 +87,7 @@ class AgendaVoting
             } else {
                 /** @var Motion $item */
                 $votingBlockJson['items'][] = [
-                    'type' => 'Motion',
+                    'type' => 'motion',
                     'id' => $item->id,
                     'prefix' => $item->titlePrefix,
                     'title_with_prefix' => $item->getTitleWithPrefix(),
@@ -100,5 +101,25 @@ class AgendaVoting
         }
 
         return $votingBlockJson;
+    }
+
+    public function getProposedProcedureApiObject(bool $hasMultipleVotingBlocks): array
+    {
+        $title = ($hasMultipleVotingBlocks || $this->voting ? $this->title : null);
+
+        return $this->getApiObject($title, null, false);
+    }
+
+    public function getAdminApiObject(): array
+    {
+        if (!$this->voting->getMyConsultation()->havePrivilege(User::PRIVILEGE_VOTINGS)) {
+            throw new Access('No voting admin permissions');
+        }
+        return $this->getApiObject($this->title, null, true);
+    }
+
+    public function getUserApiObject(?User $user): array
+    {
+        return $this->getApiObject($this->title, $user, true);
     }
 }

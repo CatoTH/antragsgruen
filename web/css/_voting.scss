@@ -4,6 +4,7 @@
   .titleLink {
     flex: 1;
     line-height: 16px;
+    overflow: hidden;
   }
   .amendmentBy {
     font-size: 0.8em;
@@ -14,6 +15,9 @@
     display: block;
     margin: 0;
     padding: 0;
+
+    clear: both;
+    border-top: solid 1px #ccc;
 
     > li {
       display: flex;
@@ -60,6 +64,46 @@
       }
     }
   }
+  .votingAdminList {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: solid 1px #ccc;
+    }
+
+    .titleLink {
+      flex-basis: 40%;
+    }
+    .votesDetailed {
+      flex: 1;
+      font-size: 0.9em;
+      flex-basis: 60%;
+
+      table {
+        width: 100%;
+      }
+      thead th {
+        text-align: center;
+      }
+    }
+    .result {
+      flex: 0;
+      text-align: right;
+      white-space: nowrap;
+
+      .accepted {
+        color: green;
+      }
+    }
+  }
 
   .votingFooter {
     padding-top: 10px;
@@ -78,11 +122,30 @@
       text-align: right;
     }
   }
+}
 
+.currentVotingWidget {
+  .votingsAdminLink {
+    float: right;
+  }
   .votingExplanation {
     margin-top: 15px;
     font-size: 0.9em;
     color: #555;
+  }
+}
+
+.manageVotings {
+  .btnRemove {
+    float: right;
+    color: $colorDelLink;
+  }
+}
+
+.votingAdderForm {
+  .btnAddOpener {
+    color: $colorGreenLight;
+    font-weight: normal;
   }
 }
 

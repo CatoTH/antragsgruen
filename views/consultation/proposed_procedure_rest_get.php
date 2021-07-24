@@ -19,7 +19,7 @@ foreach ($proposedAgenda as $proposedItem) {
     ];
 
     foreach ($proposedItem->votingBlocks as $votingBlock) {
-        $itemJson['voting_blocks'][] = $votingBlock->getApiObject(count($proposedItem->votingBlocks) > 1);
+        $itemJson['voting_blocks'][] = $votingBlock->getProposedProcedureApiObject(count($proposedItem->votingBlocks) > 1);
     }
 
     $json[] = $itemJson;

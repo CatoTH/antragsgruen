@@ -1,5 +1,6 @@
 <?php
 
+use app\models\db\VotingBlock;
 use app\models\proposedProcedure\Factory;
 use yii\helpers\Html;
 
@@ -18,14 +19,9 @@ $layout->loadVue();
 $layout->addVueTemplate('@app/views/voting/admin-votings.vue.php');
 
 $proposalFactory = new Factory($consultation, false);
-$agenda = $proposalFactory->create();
-$votingBlockToRender = null;
-foreach ($agenda as $agendaItem) {
-    foreach ($agendaItem->votingBlocks as $votingBlock) {
-        if ($votingBlock->voting && $votingBlockToRender === null) {
-            $votingBlockToRender = $votingBlock;
-        }
-    }
+$apiData = [];
+foreach ($proposalFactory->getAllVotingBlocks() as $votingBlock) {
+    $apiData[] = $votingBlock->getAdminApiObject();
 }
 
 ?>
@@ -33,9 +29,17 @@ foreach ($agenda as $agendaItem) {
 <div class="content">
     ...
 </div>
-<div class="manageVotings votingCommon">
-    <section data-antragsgruen-widget="backend/VotingAdmin"
-             data-voting="<?= Html::encode(json_encode($votingBlockToRender->getApiObject(true))) ?>">
-        <div class="votingAdmin"></div>
-    </section>
+<section >
+
+                </section>
+<div class="manageVotings votingCommon"
+     data-antragsgruen-widget="backend/VotingAdmin"
+     data-voting="<?= Html::encode(json_encode($apiData)) ?>">
+    <div class="votingAdmin"></div>
+</div>
+<div class="content votingAdderForm">
+    <button class="btn btn-link btnAddOpener" type="button">
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+        Create a new voting
+    </button>
 </div>

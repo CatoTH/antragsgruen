@@ -7,14 +7,16 @@ export class VotingBlock {
 
     constructor(private $element: JQuery) {
         const $vueEl = this.$element.find(".currentVoting");
+        const allVotingData = $element.data('voting');
         const data = {
-            voting: $element.data('voting'),
+            votings: allVotingData,
             csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
         };
+        console.log("Voting data: ", allVotingData, $vueEl);
+
         this.widget = new Vue({
             el: $vueEl[0],
-            template: `
-                <voting-block-widget :voting="voting" :csrf="csrf"></voting-block-widget>`,
+            template: `<div class="currentVotings"><voting-block-widget v-for="voting in votings" :voting="voting" :csrf="csrf"></voting-block-widget></div>`,
             data
         });
     }

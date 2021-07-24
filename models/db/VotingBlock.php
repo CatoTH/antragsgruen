@@ -36,6 +36,15 @@ class VotingBlock extends ActiveRecord
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
+    public function getMyConsultation(): Consultation {
+        $current = Consultation::getCurrent();
+        if ($current && $current->id === $this->consultationId) {
+            return $current;
+        } else {
+            return Consultation::findOne($this->consultationId);
+        }
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

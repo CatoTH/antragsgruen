@@ -3,7 +3,7 @@
 namespace app\models\proposedProcedure;
 
 use app\models\settings\IMotionStatusEngine;
-use app\models\db\{Consultation, ConsultationAgendaItem, Motion};
+use app\models\db\{Consultation, ConsultationAgendaItem, Motion, VotingBlock};
 use app\models\settings\Consultation as ConsultationSettings;
 
 class Factory
@@ -214,5 +214,42 @@ class Factory
                 $motions = $this->consultation->getVisibleIMotionsSorted(true);
                 return $this->createFromMotions($motions);
         }
+    }
+
+
+    /**
+     * @return AgendaVoting[]
+     */
+    public function getAllVotingBlocks(): array
+    {
+        // There is probably a more efficient way to create this, without having to build the whole agenda first
+        $proposalFactory = new Factory($this->consultation, false);
+        $agenda = $proposalFactory->create();
+
+        $votingBlocks = [];
+        foreach ($agenda as $agendaItem) {
+            foreach ($agendaItem->votingBlocks as $votingBlock) {
+                if ($votingBlock->voting) {
+                    $votingBlocks[] = $votingBlock;
+                }
+            }
+        }
+
+        return $votingBlocks;
+    }
+
+    /**
+     * @return AgendaVoting[]
+     */
+    public function getOpenVotingBlocks(): array
+    {
+        // There is probably a more efficient way to create this, without having to build the whole agenda first
+        $votingBlocks = [];
+        foreach ($this->getAllVotingBlocks() as $votingBlock) {
+            // @TODO check if the voting is opened
+            $votingBlocks[] = $votingBlock;
+        }
+
+        return $votingBlocks;
     }
 }
