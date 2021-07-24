@@ -29,8 +29,8 @@
       border-bottom: solid 1px #ccc;
     }
 
-    .votingOptions {
-      flex-basis: 200px;
+    .votingOptions, .voted {
+      flex-basis: 230px;
       text-align: right;
     }
   }

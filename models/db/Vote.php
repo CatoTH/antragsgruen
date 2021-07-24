@@ -65,4 +65,35 @@ class Vote extends ActiveRecord
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
     }
+
+    public function getVoteForApi(): ?string
+    {
+        switch ($this->vote) {
+            case Vote::VOTE_YES:
+                return 'yes';
+            case Vote::VOTE_NO:
+                return 'no';
+            case Vote::VOTE_ABSTENTION:
+                return 'abstention';
+            default:
+                return null;
+        }
+    }
+
+    public function setVoteFromApi(string $vote): void
+    {
+        switch ($vote) {
+            case 'yes':
+                $this->vote = self::VOTE_YES;
+                break;
+            case 'no':
+                $this->vote = self::VOTE_NO;
+                break;
+            case 'abstention':
+                $this->vote = self::VOTE_ABSTENTION;
+                break;
+            default:
+                $this->vote = null;
+        }
+    }
 }

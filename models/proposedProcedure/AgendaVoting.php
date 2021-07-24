@@ -74,7 +74,7 @@ class AgendaVoting
 
             if (is_a($item, Amendment::class)) {
                 /** @var Amendment $item */
-                $votingBlockJson['items'][] = [
+                $data = [
                     'type' => 'amendment',
                     'id' => $item->id,
                     'prefix' => $item->titlePrefix,
@@ -84,9 +84,14 @@ class AgendaVoting
                     'initiators_html' => $item->getInitiatorsStr(),
                     'procedure' => $procedure,
                 ];
+                if ($user && $this->voting) {
+                    $vote = $this->voting->getUserVote($user, 'amendment', $item->id);
+                    $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
+                    $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, 'amendment', $item->id);
+                }
             } else {
                 /** @var Motion $item */
-                $votingBlockJson['items'][] = [
+                $data = [
                     'type' => 'motion',
                     'id' => $item->id,
                     'prefix' => $item->titlePrefix,
@@ -96,8 +101,13 @@ class AgendaVoting
                     'initiators_html' => $item->getInitiatorsStr(),
                     'procedure' => $procedure,
                 ];
+                if ($user && $this->voting) {
+                    $vote = $this->voting->getUserVote($user, 'motion', $item->id);
+                    $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
+                    $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, 'motion', $item->id);
+                }
             }
-
+            $votingBlockJson['items'][] = $data;
         }
 
         return $votingBlockJson;

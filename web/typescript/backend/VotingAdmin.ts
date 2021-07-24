@@ -8,7 +8,6 @@ export class VotingAdmin {
     constructor(private $element: JQuery) {
         const $vueEl = this.$element.find(".votingAdmin")[0];
         const allVotingData = $element.data('voting');
-        console.log("Voting data: ", allVotingData);
         const data = {
             votings: allVotingData,
             csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,

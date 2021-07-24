@@ -24,13 +24,7 @@ class VotingController extends Base
 
     // *** User-facing methods ***
 
-    public function actionGetOpenVotingBlocks()
-    {
-        $this->handleRestHeaders(['GET'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
+    private function getOpenVotingsUserData(): string {
         $user = User::getCurrentUser();
         $proposalFactory = new Factory($this->consultation, false);
         $votingData = [];
@@ -38,8 +32,17 @@ class VotingController extends Base
             $votingData[] = $voting->getUserApiObject($user);
         }
 
-        $responseJson = json_encode($votingData);
+        return json_encode($votingData);
+    }
 
+    public function actionGetOpenVotingBlocks()
+    {
+        $this->handleRestHeaders(['GET'], true);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $responseJson = $this->getOpenVotingsUserData();
         return $this->returnRestResponse(200, $responseJson);
     }
 
@@ -50,6 +53,8 @@ class VotingController extends Base
      */
     public function actionPostVote($votingBlockId)
     {
+        $this->handleRestHeaders(['POST'], true);
+
         $votingBlock = $this->consultation->getVotingBlock(intval($votingBlockId));
         if (!$votingBlock) {
             return $this->getError('Voting not found');
@@ -67,34 +72,29 @@ class VotingController extends Base
             if (!in_array($voteData['itemType'], ['motion', 'amendment'])) {
                 return $this->getError('Invalid vote');
             }
+            $itemId = intval($voteData['itemId']);
 
-            if ($votingBlock->getUserVote($user, $voteData['itemType'], $voteData['itemId'])) {
+            if ($votingBlock->getUserVote($user, $voteData['itemType'], $itemId)) {
                 return $this->getError('Already voted');
             }
-            if (!$votingBlock->userIsAllowedToVoteFor($user, $voteData['itemType'], $voteData['itemId'])) {
+            if (!$votingBlock->userIsAllowedToVoteFor($user, $voteData['itemType'], $itemId)) {
                 return $this->getError('Not possible to vote for this item');
             }
 
             $vote = new Vote();
             $vote->userId = $user->id;
             $vote->votingBlockId = $votingBlock->id;
-
-            if ($voteData['vote'] === 'yes') {
-                $vote->vote = Vote::VOTE_YES;
-            } elseif ($voteData['vote'] === 'no') {
-                $vote->vote = Vote::VOTE_NO;
-            } elseif ($voteData['vote'] === 'abstention') {
-                $vote->vote = Vote::VOTE_ABSTENTION;
-            } else {
+            $vote->setVoteFromApi($voteData['vote']);
+            if ($vote->vote === null) {
                 return $this->getError('Invalid vote');
             }
             if ($voteData['itemType'] === 'motion') {
-                $vote->motionId = intval($voteData['itemId']);
+                $vote->motionId = $itemId;
                 $vote->amendmentId = null;
             }
             if ($voteData['itemType'] === 'amendment') {
                 $vote->motionId = null;
-                $vote->amendmentId = intval($voteData['itemId']);
+                $vote->amendmentId = $itemId;
             }
             if (isset($voteData['public']) && $voteData['public'] && $votingBlock->votesPublic) {
                 $vote->public = 1;
@@ -110,7 +110,8 @@ class VotingController extends Base
             $vote->save();
         }
 
-        return $this->actionGetOpenVotingBlocks();
+        $responseJson = $this->getOpenVotingsUserData();
+        return $this->returnRestResponse(200, $responseJson);
     }
 
 }

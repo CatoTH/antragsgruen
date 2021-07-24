@@ -34,16 +34,32 @@ ob_start();
                         <a :href="item.url_html"><span class="glyphicon glyphicon-new-window" aria-label="Änderungsantrag anzeigen"></span></a><br>
                         <span class="amendmentBy">By {{ item.initiators_html }}</span>
                     </div>
-                    <div class="votingOptions">
+
+                    <div class="votingOptions" v-if="item.can_vote">
                         <button type="button" class="btn btn-default btn-sm" @click="voteYes(item)">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                             Yes
                         </button>
                         <button type="button" class="btn btn-default btn-sm" @click="voteNo(item)">
+                            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                             No
                         </button>
                         <button type="button" class="btn btn-default btn-sm" @click="voteAbstention(item)">
                             Abstention
                         </button>
+                    </div>
+                    <div class="voted" v-if="item.voted">
+                        <span class="yes" v-if="item.voted === 'yes'">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            Yes
+                        </span>
+                        <span class="yes" v-if="item.voted === 'no'">
+                            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                            No
+                        </span>
+                        <span class="yes" v-if="item.voted === 'abstention'">
+                            Abstention
+                        </span>
                     </div>
                 </li>
             </ul>
@@ -109,16 +125,13 @@ $html = ob_get_clean();
         computed: {},
         methods: {
             voteYes: function (item) {
-                console.log("Yes", item);
-                this.mode = 'result';
+                this.$emit('vote', this.voting.id, item.type, item.id, 'yes');
             },
             voteNo: function (item) {
-                console.log("No", item);
-                this.mode = 'result';
+                this.$emit('vote', this.voting.id, item.type, item.id, 'no');
             },
             voteAbstention: function (item) {
-                console.log("Abstention", item);
-                this.mode = 'result';
+                this.$emit('vote', this.voting.id, item.type, item.id, 'abstention');
             }
         }
     });
