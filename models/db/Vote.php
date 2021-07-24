@@ -22,12 +22,16 @@ use yii\db\ActiveRecord;
  */
 class Vote extends ActiveRecord
 {
+    const VOTE_ABSTENTION = 0;
+    const VOTE_YES = 1;
+    const VOTE_NO = -1;
+
     /**
      * @return string
      */
     public static function tableName()
     {
-        return AntragsgruenApp::getInstance()->tablePrefix . 'motion';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'vote';
     }
 
     /**

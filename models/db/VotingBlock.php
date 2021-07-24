@@ -109,4 +109,43 @@ class VotingBlock extends ActiveRecord
         ];
         $this->activityLog = json_encode($activityLog);
     }
+
+    public function getUserVote(User $user, string $itemType, int $itemId): ?Vote
+    {
+        foreach ($this->votes as $vote) {
+            if ($vote->userId === $user->id && $itemType === 'motion' && $vote->motionId === $itemId) {
+                return $vote;
+            }
+            if ($vote->userId === $user->id && $itemType === 'amendment' && $vote->amendmentId === $itemId) {
+                return $vote;
+            }
+        }
+        return null;
+    }
+
+    public function userIsAllowedToVoteFor(User $user, string $itemType, int $itemId): bool
+    {
+        if ($this->getUserVote($user, $itemType, $itemId)) {
+            return false;
+        }
+        if ($this->votingStatus !== static::STATUS_OPEN) {
+            return false;
+        }
+        // Now we assume every user may vote
+        if ($itemType === 'motion') {
+            foreach ($this->motions as $motion) {
+                if ($motion->id === $itemId) {
+                    return true;
+                }
+            }
+        }
+        if ($itemType === 'amendment') {
+            foreach ($this->amendments as $amendment) {
+                if ($amendment->id === $itemId) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
