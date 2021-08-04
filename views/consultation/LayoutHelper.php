@@ -140,7 +140,7 @@ class LayoutHelper
         return $statusName;
     }
 
-    public static function showMotion(Motion $motion, Consultation $consultation, bool $hideAmendmendsByDefault): string
+    public static function showMotion(Motion $motion, Consultation $consultation, bool $hideAmendmendsByDefault, bool $hasAgenda): string
     {
         $return = '';
 
@@ -163,6 +163,12 @@ class LayoutHelper
         $return .= "<span class='clearfix'></span>\n";
 
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments(true, false));
+        if ($hasAgenda) {
+            $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
+                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
+                return $amendment->agendaItemId === null;
+            }));
+        }
         if (count($amendments) > 0) {
             if ($hideAmendmendsByDefault) {
                 $return .= '<h4 class="amendments amendmentsToggler closed"><button class="btn-link">';
@@ -320,7 +326,7 @@ class LayoutHelper
                 echo '<ul class="motions">';
                 foreach ($imotions as $imotion) {
                     if (is_a($imotion, Motion::class)) {
-                        echo static::showMotion($imotion, $consultation, false);
+                        echo static::showMotion($imotion, $consultation, false, true);
                     } elseif (is_a($imotion, Amendment::class)) {
                         echo static::showStatuteAmendment($imotion, $consultation);
                     }

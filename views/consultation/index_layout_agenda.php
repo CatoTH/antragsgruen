@@ -77,7 +77,7 @@ if ($longVersion) {
                     if ($imotion->isResolution()) {
                         continue;
                     }
-                    echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmendsByDefault);
+                    echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmendsByDefault, true);
                 } else {
                     /** @var Amendment $imotion */
                     echo LayoutHelper::showStatuteAmendment($imotion, $consultation);
@@ -111,7 +111,7 @@ if (count($otherMotions) > 0) {
     echo '<ul class="motionList motionListStd motionListBelowAgenda agenda0">';
     foreach ($otherMotions as $motion) {
         if (is_a($motion, Motion::class)) {
-            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
+            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault, true);
         } else {
             /** @var Amendment $motion */
             echo LayoutHelper::showStatuteAmendment($motion, $consultation);

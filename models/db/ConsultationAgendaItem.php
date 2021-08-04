@@ -232,11 +232,9 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @param Consultation $consultation
-     *
      * @return ConsultationAgendaItem[]
      */
-    public static function getSortedFromConsultation(Consultation $consultation)
+    public static function getSortedFromConsultation(Consultation $consultation): array
     {
         $separator = \Yii::t('structure', 'top_separator');
 

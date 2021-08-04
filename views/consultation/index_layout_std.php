@@ -22,7 +22,7 @@ foreach ($motions as $name => $motns) {
     echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
     foreach ($motns as $motion) {
         if (is_a($motion, Motion::class)) {
-            echo LayoutHelper::showMotion($motion, $consultation, false);
+            echo LayoutHelper::showMotion($motion, $consultation, false, false);
         } else {
             /** @var Amendment $motion */
             echo LayoutHelper::showStatuteAmendment($motion, $consultation);
