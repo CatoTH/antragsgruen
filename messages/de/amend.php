@@ -320,6 +320,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_voteblock'         => 'Abstimmungsblock',
     'proposal_voteblock_new'     => 'Titel des neuen Blocks',
     'proposal_voteblock_newopt'  => 'Neuen anlegen',
+    'proposal_voteblock_edit'    => 'Abstimmungen verwalten',
     'proposal_noti'              => 'Antragsteller*in benachrichtigen',
     'proposal_visible'           => 'Verfahrensvorschlag ist sichtbar',
     'proposal_publicity'         => 'Öffentlich',

@@ -40,13 +40,14 @@ export class MoveMotion {
     }
 
     private isPrefixAvailable(prefix: string, consultation: number): Promise<boolean> {
-        return $.get(this.checkBackend, {
-            checkType: 'prefix',
-            newMotionPrefix: prefix,
-            newConsultationId: consultation
-        }).then(res => {
-            console.log(res);
-            return res;
+        return new Promise((resolve, reject) => {
+            return $.get(this.checkBackend, {
+                checkType: 'prefix',
+                newMotionPrefix: prefix,
+                newConsultationId: consultation
+            }).then(res => {
+                resolve(res);
+            });
         });
     }
 

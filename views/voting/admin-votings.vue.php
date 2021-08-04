@@ -5,6 +5,10 @@ ob_start();
 <section class="voting" aria-label="Administrate voting">
     <h2 class="green">{{ voting.title }}</h2>
     <div class="content">
+        <label>
+            <input type="checkbox" v-model="settings.isUsed" @change="statusChanged()">
+            <?= Yii::t('voting', 'admin_voting_use') ?>
+        </label>
         <form method="POST" class="votingDataActions" v-if="mode === 'init'">
             <div class="data">
                 <label>
@@ -136,7 +140,10 @@ $html = ob_get_clean();
         props: ['voting'],
         data() {
             return {
-                mode: 'init'
+                mode: 'init',
+                settings: {
+                    isUsed: true,
+                }
             }
         },
         computed: {
@@ -148,6 +155,9 @@ $html = ob_get_clean();
             finishVoting: function () {
                 this.mode = 'finished';
             },
+            statusChanged: function () {
+                this.$emit('set-status', 123, 'motion', 123, this.settings.isUsed);
+            }
         }
     });
 </script>

@@ -22,6 +22,18 @@ class VotingController extends Base
         ]);
     }
 
+    // *** Admin-facing methods ***
+
+    public function actionPostVoteSettings()
+    {
+        $this->handleRestHeaders(['POST'], true);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        return $this->getError('test');
+    }
+
     // *** User-facing methods ***
 
     private function getOpenVotingsUserData(): string {

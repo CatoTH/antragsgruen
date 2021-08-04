@@ -288,6 +288,7 @@ return [
     'proposal_voteblock'         => 'Voting block',
     'proposal_voteblock_new'     => 'Title of new block',
     'proposal_voteblock_newopt'  => 'Create new',
+    'proposal_voteblock_edit'    => 'Manage votings',
     'proposal_noti'              => 'Notifications',
     'proposal_visible'           => 'Proposed procedure is public',
     'proposal_publicity'         => 'Public',

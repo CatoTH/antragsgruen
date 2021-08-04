@@ -65,7 +65,7 @@ ob_start();
             </ul>
             <footer class="votingFooter">
                 <div class="votedCounter">
-                    <strong>Status:</strong> 13 votes have been casted
+                    <strong>Status:</strong> 13 votes have been cast
                 </div>
                 <div class="showAll">
                     <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Show all votings</a>

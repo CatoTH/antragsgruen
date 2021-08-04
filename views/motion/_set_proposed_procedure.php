@@ -6,7 +6,7 @@
  */
 
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{IAdminComment, Motion};
+use app\models\db\{IAdminComment, Motion, User};
 use yii\helpers\Html;
 
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
@@ -30,12 +30,13 @@ if ($motion->proposalStatus === Motion::STATUS_CUSTOM_STRING) {
     $preCustomStr = '';
 }
 
-if (isset($msgAlert) && $msgAlert !== null) {
+if (isset($msgAlert)) {
     echo '<div class="alert alert-info">' . $msgAlert . '</div>';
 }
 
-$votingBlocks = $motion->getMyConsultation()->votingBlocks;
-$allTags = $motion->getMyConsultation()->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+$consultation = $motion->getMyConsultation();
+$votingBlocks = $consultation->votingBlocks;
+$allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
 $selectedTags = $motion->getProposedProcedureTags();
 ?>
 <h2>
@@ -99,6 +100,18 @@ $selectedTags = $motion->getProposedProcedureTags();
                 ?>
                 <option value="NEW">- <?= Yii::t('amend', 'proposal_voteblock_newopt') ?> -</option>
             </select>
+            <?php
+            if (User::getCurrentUser() && User::getCurrentUser()->hasPrivilege($consultation, User::PRIVILEGE_VOTINGS)) {
+                $url = UrlHelper::createUrl(['consultation/admin-votings']);
+                $title = Html::encode(Yii::t('amend', 'proposal_voteblock_edit'));
+                ?>
+                <a href="<?= Html::encode($url) ?>" class="votingEditLink" title="<?= $title ?>">
+                    <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                    <span class="sr-only"><?= $title ?></span>
+                </a>
+                <?php
+            }
+            ?>
             <div class="newBlock">
                 <label for="newBlockTitle" class="control-label">
                     <?= Yii::t('amend', 'proposal_voteblock_new') ?>:
@@ -169,7 +182,7 @@ $selectedTags = $motion->getProposedProcedureTags();
                     <div class="header">
                         <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
                         <?php
-                        if (\app\models\db\User::isCurrentUser($user)) {
+                        if (User::isCurrentUser($user)) {
                             $url = UrlHelper::createMotionUrl($motion, 'del-proposal-comment');
                             echo '<button type="button" data-url="' . Html::encode($url) . '" class="btn-link delComment">';
                             echo '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>';
@@ -219,7 +232,7 @@ $selectedTags = $motion->getProposedProcedureTags();
     <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
     <?php
     $options = ['-'];
-    foreach ($motion->getMyConsultation()->getVisibleIMotionsSorted(false) as $otherMotion) {
+    foreach ($consultation->getVisibleIMotionsSorted(false) as $otherMotion) {
         if ($otherMotion->id === $motion->id) {
             continue;
         }
@@ -248,7 +261,7 @@ $selectedTags = $motion->getProposedProcedureTags();
     <div class="votingStatus">
         <h3><?= Yii::t('amend', 'proposal_voting_status') ?></h3>
         <?php
-        foreach ($motion->getMyConsultation()->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
+        foreach ($consultation->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
             ?>
             <label>
                 <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php
@@ -279,8 +292,8 @@ $selectedTags = $motion->getProposedProcedureTags();
     <h3><?= Yii::t('amend', 'proposal_notify_text') ?></h3>
     <div class="row proposalFrom">
         <?php
-        $replyTo = \app\components\mail\Tools::getDefaultReplyTo($motion, $motion->getMyConsultation(), \app\models\db\User::getCurrentUser());
-        $fromName = \app\components\mail\Tools::getDefaultMailFromName($motion->getMyConsultation());
+        $replyTo = \app\components\mail\Tools::getDefaultReplyTo($motion, $consultation, User::getCurrentUser());
+        $fromName = \app\components\mail\Tools::getDefaultMailFromName($consultation);
         $placeholderReplyTo = Yii::t('amend', 'proposal_notify_replyto') . ': ' . $replyTo;
         $placeholderName = Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;
         ?>

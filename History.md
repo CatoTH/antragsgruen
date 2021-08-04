@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.9.0 [not released yet]
+
+- Support for Internet Explorer was dropped.
+
 ### Version 4.8.1 [not released yet]
 
 - Bugfix: The consultation page did was not shown when a statute amendment was withdrawn.
