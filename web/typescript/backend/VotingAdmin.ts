@@ -26,18 +26,15 @@ export class VotingAdmin {
             </div>`,
             data,
             methods: {
-                _performOperation: function (votingBlockId, itemType, itemId, additionalProps) {
+                _performOperation: function (votingBlockId, additionalProps) {
                     let postData = {
                         _csrf: this.csrf,
                     };
                     if (additionalProps) {
-                        postData = (<any>Object).assign(postData, additionalProps);
+                        postData = Object.assign(postData, additionalProps);
                     }
                     const widget = this;
-                    const url = voteSettingsUrl
-                        .replace(/VOTINGBLOCKID/, votingBlockId)
-                        .replace(/ITEMTYPE/, itemType)
-                        .replace(/ITEMID/, itemId);
+                    const url = voteSettingsUrl.replace(/VOTINGBLOCKID/, votingBlockId);
                     console.log(url);
                     $.post(url, postData, function (data) {
                         console.log(data.success !== undefined, !data.success);
@@ -51,9 +48,9 @@ export class VotingAdmin {
                         alert(err.responseText);
                     });
                 },
-                setStatus(votingBlockId, itemType, itemId, newStatus) {
+                setStatus(votingBlockId, newStatus) {
                     console.log(arguments);
-                    this._performOperation(votingBlockId, itemType, itemId, {
+                    this._performOperation(votingBlockId, {
                         status: newStatus
                     });
                 }

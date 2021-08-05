@@ -5,11 +5,13 @@ ob_start();
 <section class="voting" aria-label="Administrate voting">
     <h2 class="green">{{ voting.title }}</h2>
     <div class="content">
-        <label>
-            <input type="checkbox" v-model="settings.isUsed" @change="statusChanged()">
-            <?= Yii::t('voting', 'admin_voting_use') ?>
-        </label>
-        <form method="POST" class="votingDataActions" v-if="mode === 'init'">
+        <div class="activateHeader">
+            <label>
+                <input type="checkbox" v-model="isUsed">
+                <?= Yii::t('voting', 'admin_voting_use') ?>
+            </label>
+        </div>
+        <form method="POST" class="votingDataActions" v-if="isPreparing">
             <div class="data">
                 <label>
                     Members present (NYO):<br>
@@ -21,20 +23,20 @@ ob_start();
                 </label>
             </div>
             <div class="actions">
-                <button type="button" class="btn btn-primary" @click="startVoting()">Start voting</button>
+                <button type="button" class="btn btn-primary" @click="openVoting()">Start voting</button>
             </div>
         </form>
-        <form method="POST" class="votingDataActions" v-if="mode === 'started'">
+        <form method="POST" class="votingDataActions" v-if="isOpen">
             <div class="data">
                 Voting started: 2021-07-18 14:00<br>
                 Members present (NYO): 24<br>
                 Members present (INGYO): 32<br>
             </div>
             <div class="actions">
-                <button type="button" class="btn btn-primary" @click="finishVoting()">Close voting</button>
+                <button type="button" class="btn btn-primary" @click="closeVoting()">Close voting</button>
             </div>
         </form>
-        <form method="POST" class="votingDataActions" v-if="mode === 'finished'">
+        <form method="POST" class="votingDataActions" v-if="isClosed">
             <div class="data">
                 Voting started: 2021-07-18 14:00<br>
                 Voting closed: 2021-07-18 14:15<br>
@@ -54,7 +56,7 @@ ob_start();
                     <a :href="item.url_html"><span class="glyphicon glyphicon-new-window" aria-label="Show amendment"></span></a><br>
                     <span class="amendmentBy">By {{ item.initiators_html }}</span>
                 </div>
-                <div class="votesDetailed" v-if="mode === 'started' || mode === 'finished'">
+                <div class="votesDetailed" v-if="isOpen || isClosed">
                     <table class="votingTable">
                         <thead>
                             <tr>
@@ -103,14 +105,14 @@ ob_start();
                         </tbody>
                     </table>
                 </div>
-                <div class="result" v-if="mode === 'finished'">
+                <div class="result" v-if="isClosed">
                     <div class="accepted">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Accepted
                     </div>
                 </div>
             </li>
         </ul>
-        <footer class="votingFooter" v-if="mode === 'init'">
+        <footer class="votingFooter" v-if="isPreparing">
             <div class="votingAmendmentAdder">
                 Add an amendment to this voting:
                 <select name="amendment">
@@ -120,7 +122,7 @@ ob_start();
                 </select>
             </div>
         </footer>
-        <footer class="votingFooter" v-if="mode === 'started' || mode === 'finished'">
+        <footer class="votingFooter" v-if="isOpen || isClosed">
             <div class="votingDetails">
                 <strong>Full Members present:</strong> 25 NYO, 16 INGYO<br>
                 <strong>Quorum:</strong> 20 for NYO, 12 for INGYO
@@ -135,28 +137,68 @@ $html = ob_get_clean();
 ?>
 
 <script>
+    // HINT: keep in sync with VotingBlock.php
+
+    // The voting is not performed using Antragsgrün
+    const STATUS_OFFLINE = 0;
+
+    // Votings that have been created and will be using Antragsgrün, but are not active yet
+    const STATUS_PREPARING = 1;
+
+    // Currently open for voting. Currently there should only be one voting in this status at a time.
+    const STATUS_OPEN = 2;
+
+    // Vorting is closed.
+    const STATUS_CLOSED = 3;
+
+
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
         data() {
             return {
-                mode: 'init',
                 settings: {
-                    isUsed: true,
+                    isUsed: (this.voting.status > STATUS_OFFLINE),
                 }
             }
         },
         computed: {
+            isUsed: {
+                get() {
+                    return this.voting.status !== STATUS_OFFLINE;
+                },
+                set(val) {
+                    if (val && this.voting.status === STATUS_OFFLINE) {
+                        this.voting.status = STATUS_PREPARING;
+                        this.statusChanged();
+                    }
+                    if (!val) {
+                        this.voting.status = STATUS_OFFLINE;
+                        this.statusChanged();
+                    }
+                }
+            },
+            isPreparing: function () {
+                return this.voting.status === STATUS_PREPARING;
+            },
+            isOpen: function () {
+                return this.voting.status === STATUS_OPEN;
+            },
+            isClosed: function () {
+                return this.voting.status === STATUS_CLOSED;
+            }
         },
         methods: {
-            startVoting: function () {
-                this.mode = 'started';
+            openVoting: function () {
+                this.voting.status = STATUS_OPEN;
+                this.statusChanged();
             },
-            finishVoting: function () {
-                this.mode = 'finished';
+            closeVoting: function () {
+                this.voting.status = STATUS_CLOSED;
+                this.statusChanged();
             },
             statusChanged: function () {
-                this.$emit('set-status', 123, 'motion', 123, this.settings.isUsed);
+                this.$emit('set-status', this.voting.id, this.voting.status);
             }
         }
     });

@@ -27,7 +27,7 @@ foreach ($proposalFactory->getAllVotingBlocks() as $votingBlock) {
     $apiData[] = $votingBlock->getAdminApiObject();
 }
 
-$voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID', 'itemType' => 'ITEMTYPE', 'itemId' => 'ITEMID']);
+$voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
 
 ?>
 <h1><?= Yii::t('voting', 'admin_title') ?></h1>

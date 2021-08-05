@@ -21,6 +21,8 @@ use yii\db\ActiveRecord;
  */
 class VotingBlock extends ActiveRecord
 {
+    // HINT: keep in sync with admin-votings.vue.php
+
     // The voting is not performed using Antragsgrün
     const STATUS_OFFLINE = 0;
 
@@ -37,7 +39,7 @@ class VotingBlock extends ActiveRecord
     const MAJORITY_TYPE_SIMPLE = 1;
 
     const ACTIVITY_TYPE_OPENED = 1;
-    const ACTIVITy_TYPE_CLOSED = 2;
+    const ACTIVITY_TYPE_CLOSED = 2;
 
     /**
      * @return string

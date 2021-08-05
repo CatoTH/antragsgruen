@@ -59,6 +59,7 @@ class AgendaVoting
         $votingBlockJson = [
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
             'title' => $title,
+            'status' => ($this->voting ? $this->voting->votingStatus : null),
             'items' => [],
         ];
 

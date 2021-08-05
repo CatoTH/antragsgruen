@@ -87,8 +87,8 @@ $urlRules = [
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
 
     $restBaseCon . '/votings/open' => '/voting/get-open-voting-blocks',
+    $restBaseCon . '/votings/<votingBlockId:[^\/]+>/settings' => '/voting/post-vote-settings',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/<itemType:[^\/]+>/<itemId:[^\/]+>' => '/voting/post-vote',
-    $restBaseCon . '/votings/<votingBlockId:[^\/]+>/<itemType:[^\/]+>/<itemId:[^\/]+>/settings' => '/voting/post-vote-settings',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',

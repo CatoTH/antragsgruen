@@ -24,19 +24,61 @@ class VotingController extends Base
 
     // *** Admin-facing methods ***
 
-    public function actionPostVoteSettings()
+    private function getVotingBlockAndCheckPermission(string $votingBlockId): VotingBlock
+    {
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $user = User::getCurrentUser();
+        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
+            $this->returnRestResponse(403, $this->getError('Missing privileges'));
+            die();
+        }
+
+        $block = $this->consultation->getVotingBlock(intval($votingBlockId));
+        if (!$block) {
+            $this->returnRestResponse(404, $this->getError('Voting block not found'));
+            die();
+        }
+
+        return $block;
+    }
+
+    private function getAllVotingAdminData(): string
+    {
+        $proposalFactory = new Factory($this->consultation, false);
+        $apiData = [];
+        foreach ($proposalFactory->getAllVotingBlocks() as $votingBlock) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $apiData[] = $votingBlock->getAdminApiObject();
+        }
+
+        return json_encode($apiData);
+    }
+
+    public function actionPostVoteSettings(string $votingBlockId)
     {
         $this->handleRestHeaders(['POST'], true);
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        return $this->getError('test');
+        $votingBlock = $this->getVotingBlockAndCheckPermission($votingBlockId);
+
+        if (\Yii::$app->request->post('status') !== null) {
+            // @TODO refine
+            $votingBlock->votingStatus = intval(\Yii::$app->request->post('status'));
+            $votingBlock->save();
+        }
+
+        $responseJson = $this->getAllVotingAdminData();
+        return $this->returnRestResponse(200, $responseJson);
     }
 
     // *** User-facing methods ***
 
-    private function getOpenVotingsUserData(): string {
+    private function getOpenVotingsUserData(): string
+    {
         $user = User::getCurrentUser();
         $proposalFactory = new Factory($this->consultation, false);
         $votingData = [];
@@ -55,6 +97,7 @@ class VotingController extends Base
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $responseJson = $this->getOpenVotingsUserData();
+
         return $this->returnRestResponse(200, $responseJson);
     }
 
@@ -123,6 +166,7 @@ class VotingController extends Base
         }
 
         $responseJson = $this->getOpenVotingsUserData();
+
         return $this->returnRestResponse(200, $responseJson);
     }
 
