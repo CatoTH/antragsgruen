@@ -2,6 +2,10 @@
 
 ## Version 4.9.0 [not released yet]
 
+- Online voting functionality was added. Admins can now define voting blocks, where users can vote on amendments and motions to be adopted or rejected.
+  - Currently, only simple majority is supported.
+  - All registered users can vote.
+  - Votings can be prepared as part of the proposed procedure.
 - Support for Internet Explorer was dropped.
 
 ### Version 4.8.1 [not released yet]

@@ -61,6 +61,11 @@ ob_start();
                         <span class="yes" v-if="item.voted === 'abstention'">
                             <?= Yii::t('voting', 'vote_abstention') ?>
                         </span>
+
+                        <button type="button" class="btn btn-link btn-sm" @click="voteUndo(item)"
+                                title="<?= Yii::t('voting', 'vote_undo') ?>" aria-label="<?= Yii::t('voting', 'vote_undo') ?>">
+                            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                        </button>
                     </div>
                 </li>
             </ul>
@@ -141,6 +146,9 @@ $html = ob_get_clean();
             },
             voteAbstention: function (item) {
                 this.$emit('vote', this.voting.id, item.type, item.id, 'abstention');
+            },
+            voteUndo: function(item) {
+                this.$emit('vote', this.voting.id, item.type, item.id, 'undo');
             }
         }
     });

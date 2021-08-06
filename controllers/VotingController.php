@@ -160,9 +160,17 @@ class VotingController extends Base
             }
             $itemId = intval($voteData['itemId']);
 
-            if ($votingBlock->getUserVote($user, $voteData['itemType'], $itemId)) {
-                return $this->getError('Already voted');
+            $exitingVote = $votingBlock->getUserVote($user, $voteData['itemType'], $itemId);
+
+            if ($exitingVote) {
+                if ($voteData['vote'] === 'undo') {
+                    $exitingVote->delete();
+                    continue;
+                } else {
+                    return $this->getError('Already voted');
+                }
             }
+
             if (!$votingBlock->userIsAllowedToVoteFor($user, $voteData['itemType'], $itemId)) {
                 return $this->getError('Not possible to vote for this item');
             }

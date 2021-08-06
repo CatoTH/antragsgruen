@@ -21,6 +21,12 @@ ob_start();
             <strong><?= Yii::t('voting', 'majority_simple') ?></strong><br>
             <small><?= Yii::t('voting', 'majority_simple_h') ?></small>
         </div>
+        <div class="alert alert-success" v-if="isOpen">
+            <p><?= Yii::t('voting', 'admin_status_opened') ?></p>
+        </div>
+        <div class="alert alert-info" v-if="isClosed">
+            <p><?= Yii::t('voting', 'admin_status_closed') ?></p>
+        </div>
         <form method="POST" class="votingDataActions" v-if="isPreparing">
             <div class="data">
                 <label>
@@ -38,13 +44,13 @@ ob_start();
         </form>
         <form method="POST" class="votingDataActions" v-if="isOpen || isClosed">
             <div class="data">
-                <ol v-if="voting.log.length > 0" class="activityLog">
-                    <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
-                </ol>
-                Members present (NYO): 24<br>
-                Members present (INGYO): 32<br>
+                <div class="votingDetails">
+                    <strong>Full Members present:</strong> 25 NYO, 16 INGYO<br>
+                    <strong>Quorum:</strong> 20 for NYO, 12 for INGYO
+                </div>
             </div>
             <div class="actions" v-if="isOpen">
+                <button type="button" class="btn btn-default" @click="cancelVoting()"><?= Yii::t('voting', 'admin_btn_cancel') ?></button>
                 <button type="button" class="btn btn-primary" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
             </div>
         </form>
@@ -149,11 +155,10 @@ ob_start();
                 </select>
             </div>
         </footer>
-        <footer class="votingFooter" v-if="isOpen || isClosed">
-            <div class="votingDetails">
-                <strong>Full Members present:</strong> 25 NYO, 16 INGYO<br>
-                <strong>Quorum:</strong> 20 for NYO, 12 for INGYO
-            </div>
+        <footer class="votingFooter">
+            <ol v-if="voting.log.length > 0" class="activityLog">
+                <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
+            </ol>
         </footer>
     </div>
 </section>
@@ -249,6 +254,10 @@ $html = ob_get_clean();
             },
             closeVoting: function () {
                 this.voting.status = STATUS_CLOSED;
+                this.statusChanged();
+            },
+            cancelVoting: function () {
+                this.voting.status = STATUS_PREPARING;
                 this.statusChanged();
             },
             statusChanged: function () {

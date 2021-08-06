@@ -105,10 +105,21 @@
     }
   }
 
+  .majorityType {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: solid 1px #ccc;
+  }
+
+  .activityLog {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
   .votingFooter {
     padding-top: 10px;
-    padding-bottom: 10px;
-    border-bottom: solid 1px #ccc;
 
     display: flex;
     flex-direction: row;
@@ -179,23 +190,12 @@
 
   .data {
     flex-grow: 1;
-    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    > * {
-      flex-basis: 50%;
-      padding: 5px 10px;
-    }
+
   }
   .actions {
-    flex-basis: 200px;
+    flex-basis: 330px;
     text-align: right;
-    margin-top: 20px;
-  }
-  .activityLog {
-    display: block;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
   }
 }

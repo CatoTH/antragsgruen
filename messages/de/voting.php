@@ -5,6 +5,7 @@ return [
     'vote_yes' => 'Ja',
     'vote_no' => 'Nein',
     'vote_abstention' => 'Enthaltung',
+    'vote_undo' => 'Stimme zurücknehmen',
 
     'status_accepted' => 'Angenommen',
     'status_rejected' => 'Abgelehnt',
@@ -16,6 +17,9 @@ return [
     'admin_votes_total' => 'Gesamt',
     'admin_btn_open' => 'Abstimmung eröffnen',
     'admin_btn_close' => 'Abstimmung schließen',
+    'admin_btn_cancel' => 'Abbrechen',
+    'admin_status_opened' => 'Die Abstimmung <strong>läuft</strong>, Mitglieder können nun ihre Stimmen vergeben',
+    'admin_status_closed' => 'Die Abstimmung wurde <strong>geschlossen</strong>.',
 
     'voting_show_amend' => 'Änderungsantrag anzeigen',
     'voting_by' => 'Von',

@@ -5,6 +5,7 @@ return [
     'vote_yes' => 'Yes',
     'vote_no' => 'No',
     'vote_abstention' => 'Abstention',
+    'vote_undo' => 'Undo vote',
 
     'status_accepted' => 'Accepted',
     'status_rejected' => 'Rejected',
@@ -16,6 +17,9 @@ return [
     'admin_votes_total' => 'Total',
     'admin_btn_open' => 'Open voting',
     'admin_btn_close' => 'Close voting',
+    'admin_btn_cancel' => 'Cancel',
+    'admin_status_opened' => 'The voting is <strong>open</strong>, users can now cast their votes',
+    'admin_status_closed' => 'The voting is <strong>closed</strong>.',
 
     'voting_show_amend' => 'Show amendment',
     'voting_by' => 'By',
