@@ -11,6 +11,10 @@ ob_start();
                 <?= Yii::t('voting', 'admin_voting_use') ?>
             </label>
         </div>
+        <div class="majorityType" v-if="isPreparing">
+            <strong><?= Yii::t('voting', 'majority_simple') ?></strong>
+            <small>(<?= Yii::t('voting', 'majority_simple_h') ?>)</small>
+        </div>
         <form method="POST" class="votingDataActions" v-if="isPreparing">
             <div class="data">
                 <label>
@@ -23,7 +27,7 @@ ob_start();
                 </label>
             </div>
             <div class="actions">
-                <button type="button" class="btn btn-primary" @click="openVoting()">Start voting</button>
+                <button type="button" class="btn btn-primary" @click="openVoting()"><?= Yii::t('voting', 'admin_btn_open') ?></button>
             </div>
         </form>
         <form method="POST" class="votingDataActions" v-if="isOpen">
@@ -33,7 +37,7 @@ ob_start();
                 Members present (INGYO): 32<br>
             </div>
             <div class="actions">
-                <button type="button" class="btn btn-primary" @click="closeVoting()">Close voting</button>
+                <button type="button" class="btn btn-primary" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
             </div>
         </form>
         <form method="POST" class="votingDataActions" v-if="isClosed">
@@ -57,7 +61,8 @@ ob_start();
                     <span class="amendmentBy">By {{ item.initiators_html }}</span>
                 </div>
                 <div class="votesDetailed" v-if="isOpen || isClosed">
-                    <table class="votingTable">
+                    <!--
+                    <table class="votingTable votingTableMultiple">
                         <thead>
                             <tr>
                                 <th rowspan="2"></th>
@@ -104,10 +109,31 @@ ob_start();
                             </tr>
                         </tbody>
                     </table>
+                    -->
+                    <div v-if="item.vote_results.length === 1 && item.vote_results[0]">
+                        <table class="votingTable votingTableSingle">
+                            <thead>
+                            <tr>
+                                <th><?= Yii::t('voting', 'vote_yes') ?></th>
+                                <th><?= Yii::t('voting', 'vote_no') ?></th>
+                                <th><?= Yii::t('voting', 'vote_abstention') ?></th>
+                                <th><?= Yii::t('voting', 'admin_votes_total') ?></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{{ item.vote_results[0].yes }}</td>
+                                <td>{{ item.vote_results[0].no }}</td>
+                                <td>{{ item.vote_results[0].abstention }}</td>
+                                <td class="total">{{ item.vote_results[0].yes + item.vote_results[0].no + item.vote_results[0].abstention }}</td>
+                            </tr>
+                            </tbody>
+
+                    </div>
                 </div>
                 <div class="result" v-if="isClosed">
                     <div class="accepted">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Accepted
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <?= Yii::t('voting', 'status_accepted') ?>
                     </div>
                 </div>
             </li>

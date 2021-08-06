@@ -279,9 +279,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function getExternalAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        foreach ($params->getPluginClasses() as $pluginClass) {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             $authenticator = $pluginClass::getExternalPasswordAuthenticator();
             if ($authenticator) {
                 return $authenticator;
@@ -338,7 +336,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         if ($this->organizationIds) {
             $organizationIds = json_decode($this->organizationIds, true);
-            if ($this->isGruenesNetzUser() || true) {
+            if ($this->isGruenesNetzUser()) {
                 $organizationIds = GruenesNetzSamlClient::resolveOrganizationIds($organizationIds);
             }
             return $organizationIds;

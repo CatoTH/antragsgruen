@@ -2,7 +2,7 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\{Amendment, IMotion, Motion, User, VotingBlock};
+use app\models\db\{Amendment, IMotion, Motion, User, Vote, VotingBlock};
 use app\components\UrlHelper;
 use app\models\exceptions\Access;
 
@@ -62,6 +62,9 @@ class AgendaVoting
             'status' => ($this->voting ? $this->voting->votingStatus : null),
             'items' => [],
         ];
+        if ($adminFields) {
+            $votingBlockJson['user_groups'] = [Vote::USER_GROUP_DEFAULT];
+        }
 
         foreach ($this->items as $item) {
             if ($item->isProposalPublic()) {
@@ -108,6 +111,24 @@ class AgendaVoting
                     $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, 'motion', $item->id);
                 }
             }
+
+            if ($adminFields && $this->voting) {
+                if (is_a($item, Amendment::class)) {
+                    $votes = $this->voting->getVotesForAmendment($item);
+                } else {
+                    $votes = $this->voting->getVotesForMotion($item);
+                }
+                $data['votes'] = array_map(function (Vote $vote): array {
+                    return [
+                        'vote' => $vote->getVoteForApi(),
+                        'user_id' => $vote->userId,
+                        'user_name' => ($vote->user ? $vote->user->getAuthUsername() : null),
+                        'user_groups' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),
+                    ];
+                }, $votes);
+                $data['vote_results'] = Vote::calculateVoteResultsForApi($votes);
+            }
+
             $votingBlockJson['items'][] = $data;
         }
 

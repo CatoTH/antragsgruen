@@ -125,6 +125,26 @@ class VotingBlock extends ActiveRecord
         return null;
     }
 
+    /**
+     * @return Vote[]
+     */
+    public function getVotesForMotion(Motion $motion): array
+    {
+        return array_values(array_filter($this->votes, function (Vote $vote) use ($motion): bool {
+            return $vote->motionId === $motion->id;
+        }));
+    }
+
+    /**
+     * @return Vote[]
+     */
+    public function getVotesForAmendment(Amendment $amendment): array
+    {
+        return array_values(array_filter($this->votes, function (Vote $vote) use ($amendment): bool {
+            return $vote->amendmentId === $amendment->id;
+        }));
+    }
+
     public function userIsAllowedToVoteFor(User $user, string $itemType, int $itemId): bool
     {
         if ($this->getUserVote($user, $itemType, $itemId)) {
@@ -149,5 +169,15 @@ class VotingBlock extends ActiveRecord
             }
         }
         return false;
+    }
+
+    public function openVoting(): void {
+        $this->votingStatus = VotingBlock::STATUS_OPEN;
+        $this->save();
+    }
+
+    public function closeVoting(): void {
+        $this->votingStatus = VotingBlock::STATUS_CLOSED;
+        $this->save();
     }
 }

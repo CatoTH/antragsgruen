@@ -140,6 +140,23 @@
     float: right;
     color: $colorDelLink;
   }
+  .activateHeader {
+    label {
+      font-weight: normal;
+    }
+  }
+  .votingTable {
+    table-layout: fixed;
+    th {
+      text-align: center;
+    }
+    td {
+      text-align: center;
+    }
+    .total {
+      font-weight: bold;
+    }
+  }
 }
 
 .votingAdderForm {

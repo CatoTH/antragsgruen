@@ -87,6 +87,7 @@ $urlRules = [
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
 
     $restBaseCon . '/votings/open' => '/voting/get-open-voting-blocks',
+    $restBaseCon . '/votings/admin' => '/voting/get-admin-voting-blocks',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/settings' => '/voting/post-vote-settings',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/<itemType:[^\/]+>/<itemId:[^\/]+>' => '/voting/post-vote',
 

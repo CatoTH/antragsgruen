@@ -27,6 +27,7 @@ foreach ($proposalFactory->getAllVotingBlocks() as $votingBlock) {
     $apiData[] = $votingBlock->getAdminApiObject();
 }
 
+$pollUrl = UrlHelper::createUrl(['/voting/get-admin-voting-blocks']);
 $voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
 
 ?>
@@ -36,6 +37,7 @@ $voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBl
 </div>
 <div class="manageVotings votingCommon"
      data-url-vote-settings="<?= Html::encode($voteSettingsUrl) ?>"
+     data-url-poll="<?= Html::encode($pollUrl) ?>"
      data-antragsgruen-widget="backend/VotingAdmin"
      data-voting="<?= Html::encode(json_encode($apiData)) ?>">
     <div class="votingAdmin"></div>

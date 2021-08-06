@@ -9,13 +9,11 @@ export class VotingAdmin {
         const $vueEl = this.$element.find(".votingAdmin")[0];
         const allVotingData = $element.data('voting');
         const voteSettingsUrl = $element.data('url-vote-settings');
+        const pollUrl = $element.data('url-poll');
 
-        console.log(voteSettingsUrl);
+        console.log(JSON.parse(JSON.stringify(allVotingData)));
+        console.log(pollUrl);
 
-        const data = {
-            votings: allVotingData,
-            csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
-        };
         this.widget = new Vue({
             el: $vueEl,
             template: `<div class="adminVotings">
@@ -24,7 +22,13 @@ export class VotingAdmin {
                                      @set-status="setStatus"
                 ></voting-admin-widget>
             </div>`,
-            data,
+            data() {
+                return {
+                    votings: allVotingData,
+                    csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
+                    pollingId: null
+                };
+            },
             methods: {
                 _performOperation: function (votingBlockId, additionalProps) {
                     let postData = {
@@ -35,9 +39,7 @@ export class VotingAdmin {
                     }
                     const widget = this;
                     const url = voteSettingsUrl.replace(/VOTINGBLOCKID/, votingBlockId);
-                    console.log(url);
                     $.post(url, postData, function (data) {
-                        console.log(data.success !== undefined, !data.success);
                         if (data.success !== undefined && !data.success) {
                             alert(data.message);
                             return;
@@ -53,7 +55,27 @@ export class VotingAdmin {
                     this._performOperation(votingBlockId, {
                         status: newStatus
                     });
+                },
+                reloadData: function () {
+                    const widget = this;
+                    $.get(pollUrl, function (data) {
+                        widget.votings = data;
+                    }).catch(function (err) {
+                        console.error("Could not load voting data from backend", err);
+                    });
+                },
+                startPolling: function () {
+                    const widget = this;
+                    this.pollingId = window.setInterval(function () {
+                        widget.reloadData();
+                    }, 3000);
                 }
+            },
+            beforeDestroy() {
+                window.clearInterval(this.pollingId)
+            },
+            created() {
+                this.startPolling()
             }
         });
     }

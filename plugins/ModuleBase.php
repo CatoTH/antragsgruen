@@ -17,7 +17,6 @@ class ModuleBase extends Module
         parent::init();
 
         if (\Yii::$app instanceof \yii\console\Application) {
-            /** @noinspection PhpUnhandledExceptionInspection */
             $ref                       = new \ReflectionClass($this);
             $this->controllerNamespace = $ref->getNamespaceName() . '\\commands';
         }
@@ -149,6 +148,11 @@ class ModuleBase extends Module
     }
 
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
+    {
+        return null;
+    }
+
+    public static function calculateVoteResultsForApi(): ?array
     {
         return null;
     }

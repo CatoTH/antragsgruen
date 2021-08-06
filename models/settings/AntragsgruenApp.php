@@ -113,7 +113,7 @@ class AntragsgruenApp implements \JsonSerializable
     /**
      * @return string[]
      */
-    public function getPluginNames()
+    public function getPluginNames(): array
     {
         $names = $this->plugins;
         $currSubdomain = (isset($_SERVER['HTTP_HOST']) ? explode('.', $_SERVER['HTTP_HOST'])[0] : '');
@@ -128,7 +128,7 @@ class AntragsgruenApp implements \JsonSerializable
     /**
      * @return ModuleBase[]
      */
-    public function getPluginClasses()
+    public function getPluginClasses(): array
     {
         $plugins = [];
         foreach ($this->getPluginNames() as $name) {
@@ -140,17 +140,15 @@ class AntragsgruenApp implements \JsonSerializable
     /**
      * @return ModuleBase[]
      */
-    public static function getActivePlugins()
+    public static function getActivePlugins(): array
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        return $params->getPluginClasses();
+        return AntragsgruenApp::getInstance()->getPluginClasses();
     }
 
     /**
      * @return string[]
      */
-    public static function getActivePluginIds()
+    public static function getActivePluginIds(): array
     {
         return array_keys(static::getActivePlugins());
     }

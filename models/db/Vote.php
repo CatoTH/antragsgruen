@@ -26,6 +26,12 @@ class Vote extends ActiveRecord
     const VOTE_YES = 1;
     const VOTE_NO = -1;
 
+    const VOTE_API_ABSTENTION = 'abstention';
+    const VOTE_API_YES = 'yes';
+    const VOTE_API_NO = 'no';
+
+    const USER_GROUP_DEFAULT = 0;
+
     /**
      * @return string
      */
@@ -69,12 +75,12 @@ class Vote extends ActiveRecord
     public function getVoteForApi(): ?string
     {
         switch ($this->vote) {
-            case Vote::VOTE_YES:
-                return 'yes';
-            case Vote::VOTE_NO:
-                return 'no';
-            case Vote::VOTE_ABSTENTION:
-                return 'abstention';
+            case static::VOTE_YES:
+                return static::VOTE_API_YES;
+            case static::VOTE_NO:
+                return static::VOTE_API_NO;
+            case static::VOTE_ABSTENTION:
+                return static::VOTE_API_ABSTENTION;
             default:
                 return null;
         }
@@ -83,17 +89,43 @@ class Vote extends ActiveRecord
     public function setVoteFromApi(string $vote): void
     {
         switch ($vote) {
-            case 'yes':
+            case static::VOTE_API_YES:
                 $this->vote = self::VOTE_YES;
                 break;
-            case 'no':
+            case static::VOTE_API_NO:
                 $this->vote = self::VOTE_NO;
                 break;
-            case 'abstention':
+            case static::VOTE_API_ABSTENTION:
                 $this->vote = self::VOTE_ABSTENTION;
                 break;
             default:
                 $this->vote = null;
         }
+    }
+
+    /**
+     * @param Vote[] $votes
+     */
+    public static function calculateVoteResultsForApi(array $votes): array
+    {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
+            $results = $pluginClass::calculateVoteResultsForApi();
+            if ($results) {
+                return $results;
+            }
+        }
+
+        $results = [
+            static::USER_GROUP_DEFAULT => [
+                static::VOTE_API_YES => 0,
+                static::VOTE_API_NO => 0,
+                static::VOTE_API_ABSTENTION => 0,
+            ],
+        ];
+        foreach ($votes as $vote) {
+            $vote = $vote->getVoteForApi();
+            $results[static::USER_GROUP_DEFAULT][$vote]++;
+        }
+        return $results;
     }
 }

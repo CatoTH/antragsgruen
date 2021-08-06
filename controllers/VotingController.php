@@ -56,6 +56,24 @@ class VotingController extends Base
         return json_encode($apiData);
     }
 
+    public function actionGetAdminVotingBlocks()
+    {
+        $this->handleRestHeaders(['GET'], true);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $user = User::getCurrentUser();
+        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
+            $this->returnRestResponse(403, $this->getError('Missing privileges'));
+            die();
+        }
+
+        $responseJson = $this->getAllVotingAdminData();
+
+        return $this->returnRestResponse(200, $responseJson);
+    }
+
     public function actionPostVoteSettings(string $votingBlockId)
     {
         $this->handleRestHeaders(['POST'], true);
@@ -66,9 +84,20 @@ class VotingController extends Base
         $votingBlock = $this->getVotingBlockAndCheckPermission($votingBlockId);
 
         if (\Yii::$app->request->post('status') !== null) {
-            // @TODO refine
-            $votingBlock->votingStatus = intval(\Yii::$app->request->post('status'));
-            $votingBlock->save();
+            $newStatus = intval(\Yii::$app->request->post('status'));
+            if ($newStatus === VotingBlock::STATUS_OPEN) {
+                $votingBlock->openVoting();
+
+                foreach ($this->consultation->votingBlocks as $otherVotingBlock) {
+                    if ($otherVotingBlock->votingStatus === VotingBlock::STATUS_OPEN && $votingBlock->id !== $otherVotingBlock->id) {
+                        $otherVotingBlock->closeVoting();
+                    }
+                }
+            } else {
+                // @TODO refine
+                $votingBlock->votingStatus = $newStatus;
+                $votingBlock->save();
+            }
         }
 
         $responseJson = $this->getAllVotingAdminData();
