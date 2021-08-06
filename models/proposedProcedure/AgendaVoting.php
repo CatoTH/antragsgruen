@@ -64,6 +64,18 @@ class AgendaVoting
         ];
         if ($adminFields) {
             $votingBlockJson['user_groups'] = [Vote::USER_GROUP_DEFAULT];
+            $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
+        }
+        if ($this->voting) {
+            $votingBlockJson['votes_total'] = 0;
+            $voteUserIds = [];
+            foreach ($this->voting->votes as $vote) {
+                $votingBlockJson['votes_total']++;
+                if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
+                    $voteUserIds[] = $vote->userId;
+                }
+            }
+            $votingBlockJson['votes_users'] = count($voteUserIds);
         }
 
         foreach ($this->items as $item) {

@@ -12,7 +12,6 @@ export class VotingAdmin {
         const pollUrl = $element.data('url-poll');
 
         console.log(JSON.parse(JSON.stringify(allVotingData)));
-        console.log(pollUrl);
 
         this.widget = new Vue({
             el: $vueEl,
@@ -45,7 +44,6 @@ export class VotingAdmin {
                             return;
                         }
                         widget.votings = data;
-                        console.log("returned", data);
                     }).catch(function (err) {
                         alert(err.responseText);
                     });

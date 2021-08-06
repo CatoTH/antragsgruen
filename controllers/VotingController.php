@@ -85,7 +85,9 @@ class VotingController extends Base
 
         if (\Yii::$app->request->post('status') !== null) {
             $newStatus = intval(\Yii::$app->request->post('status'));
-            if ($newStatus === VotingBlock::STATUS_OPEN) {
+            if ($newStatus === VotingBlock::STATUS_PREPARING) {
+                $votingBlock->switchToOnlineVoting();
+            } elseif ($newStatus === VotingBlock::STATUS_OPEN) {
                 $votingBlock->openVoting();
 
                 foreach ($this->consultation->votingBlocks as $otherVotingBlock) {
@@ -93,10 +95,10 @@ class VotingController extends Base
                         $otherVotingBlock->closeVoting();
                     }
                 }
-            } else {
-                // @TODO refine
-                $votingBlock->votingStatus = $newStatus;
-                $votingBlock->save();
+            } elseif ($newStatus === VotingBlock::STATUS_CLOSED) {
+                $votingBlock->closeVoting();
+            } elseif ($newStatus === VotingBlock::STATUS_OFFLINE) {
+                $votingBlock->switchToOfflineVoting();
             }
         }
 

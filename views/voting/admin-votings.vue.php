@@ -1,19 +1,25 @@
 <?php
+
+use yii\helpers\Html;
+
 ob_start();
 ?>
 
 <section class="voting" aria-label="Administrate voting">
-    <h2 class="green">{{ voting.title }}</h2>
+    <h2 class="green">
+        {{ voting.title }}
+        <label class="activateHeader">
+            <input type="checkbox" v-model="isUsed">
+            <?= Yii::t('voting', 'admin_voting_use') ?>
+            <span class="glyphicon glyphicon-info-sign"
+                  aria-label="<?= Html::encode(Yii::t('voting', 'admin_voting_use_h')) ?>"
+                  v-tooltip="'<?= addslashes(Yii::t('voting', 'admin_voting_use_h')) ?>'"></span>
+        </label>
+    </h2>
     <div class="content">
-        <div class="activateHeader">
-            <label>
-                <input type="checkbox" v-model="isUsed">
-                <?= Yii::t('voting', 'admin_voting_use') ?>
-            </label>
-        </div>
         <div class="majorityType" v-if="isPreparing">
-            <strong><?= Yii::t('voting', 'majority_simple') ?></strong>
-            <small>(<?= Yii::t('voting', 'majority_simple_h') ?>)</small>
+            <strong><?= Yii::t('voting', 'majority_simple') ?></strong><br>
+            <small><?= Yii::t('voting', 'majority_simple_h') ?></small>
         </div>
         <form method="POST" class="votingDataActions" v-if="isPreparing">
             <div class="data">
@@ -30,26 +36,20 @@ ob_start();
                 <button type="button" class="btn btn-primary" @click="openVoting()"><?= Yii::t('voting', 'admin_btn_open') ?></button>
             </div>
         </form>
-        <form method="POST" class="votingDataActions" v-if="isOpen">
+        <form method="POST" class="votingDataActions" v-if="isOpen || isClosed">
             <div class="data">
-                Voting started: 2021-07-18 14:00<br>
+                <ol v-if="voting.log.length > 0" class="activityLog">
+                    <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
+                </ol>
                 Members present (NYO): 24<br>
                 Members present (INGYO): 32<br>
             </div>
-            <div class="actions">
+            <div class="actions" v-if="isOpen">
                 <button type="button" class="btn btn-primary" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
             </div>
         </form>
-        <form method="POST" class="votingDataActions" v-if="isClosed">
-            <div class="data">
-                Voting started: 2021-07-18 14:00<br>
-                Voting closed: 2021-07-18 14:15<br>
-            </div>
-            <div class="actions">
-            </div>
-        </form>
         <ul class="votingAdminList">
-            <li v-for="(item, index) in voting.items">
+            <li v-for="item in voting.items">
                 <div class="titleLink">
                     <!--
                     <button class="btn btn-link btnRemove" type="button" title="Remove this amendment from this voting">
@@ -57,8 +57,9 @@ ob_start();
                     </button>
                     -->
                     {{ item.title_with_prefix }}
-                    <a :href="item.url_html"><span class="glyphicon glyphicon-new-window" aria-label="Show amendment"></span></a><br>
-                    <span class="amendmentBy">By {{ item.initiators_html }}</span>
+                    <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
+                                class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a><br>
+                    <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                 </div>
                 <div class="votesDetailed" v-if="isOpen || isClosed">
                     <!--
@@ -177,6 +178,17 @@ $html = ob_get_clean();
     // Vorting is closed.
     const STATUS_CLOSED = 3;
 
+    const ACTIVITY_TYPE_OPENED = 1;
+    const ACTIVITY_TYPE_CLOSED = 2;
+    const ACTIVITY_TYPE_CANCEL = 3;
+
+    Vue.directive('tooltip', function (el, binding) {
+        $(el).tooltip({
+            title: binding.value,
+            placement: 'top',
+            trigger: 'hover'
+        })
+    });
 
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
@@ -215,6 +227,22 @@ $html = ob_get_clean();
             }
         },
         methods: {
+            formatLogEntry: function (logEntry) {
+                let description = '?';
+                switch (logEntry['type']) {
+                    case ACTIVITY_TYPE_OPENED:
+                        description = 'Voting opened';
+                        break;
+                    case ACTIVITY_TYPE_CANCEL:
+                        description = 'Voting canceled';
+                        break;
+                    case ACTIVITY_TYPE_CLOSED:
+                        description = 'Voting closed';
+                        break;
+                }
+                let date = new Date(logEntry['date']);
+                return date.toLocaleString() + ': ' + description;
+            },
             openVoting: function () {
                 this.voting.status = STATUS_OPEN;
                 this.statusChanged();
@@ -226,6 +254,9 @@ $html = ob_get_clean();
             statusChanged: function () {
                 this.$emit('set-status', this.voting.id, this.voting.status);
             }
+        },
+        updated() {
+            $(this.$el).find('[data-toggle="tooltip"]').tooltip();
         }
     });
 </script>

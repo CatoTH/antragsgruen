@@ -141,9 +141,12 @@
     color: $colorDelLink;
   }
   .activateHeader {
-    label {
-      font-weight: normal;
-    }
+    font-weight: bold;
+    float: right;
+    color: $headingSecondaryText;
+    text-transform: none;
+    text-shadow: none;
+    font-size: 14px;
   }
   .votingTable {
     table-layout: fixed;
@@ -188,5 +191,11 @@
     flex-basis: 200px;
     text-align: right;
     margin-top: 20px;
+  }
+  .activityLog {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
   }
 }

@@ -40,6 +40,7 @@ class VotingBlock extends ActiveRecord
 
     const ACTIVITY_TYPE_OPENED = 1;
     const ACTIVITY_TYPE_CLOSED = 2;
+    const ACTIVITY_TYPE_CANCEL = 3;
 
     /**
      * @return string
@@ -112,6 +113,16 @@ class VotingBlock extends ActiveRecord
         $this->activityLog = json_encode($activityLog);
     }
 
+    public function getActivityLogForApi(): array
+    {
+        return array_map(function (array $activity): array {
+            return [
+                'type' => $activity['type'],
+                'date' => $activity['date'],
+            ];
+        }, $this->getActivityLog());
+    }
+
     public function getUserVote(User $user, string $itemType, int $itemId): ?Vote
     {
         foreach ($this->votes as $vote) {
@@ -171,12 +182,34 @@ class VotingBlock extends ActiveRecord
         return false;
     }
 
+    public function switchToOfflineVoting(): void {
+        if ($this->votingStatus === VotingBlock::STATUS_OPEN) {
+            $this->addActivity(static::ACTIVITY_TYPE_CANCEL);
+        }
+        $this->votingStatus = VotingBlock::STATUS_OFFLINE;
+        $this->save();
+    }
+
+    public function switchToOnlineVoting(): void {
+        if ($this->votingStatus === VotingBlock::STATUS_OPEN) {
+            $this->addActivity(static::ACTIVITY_TYPE_CANCEL);
+        }
+        $this->votingStatus = VotingBlock::STATUS_PREPARING;
+        $this->save();
+    }
+
     public function openVoting(): void {
+        if ($this->votingStatus !== VotingBlock::STATUS_OPEN) {
+            $this->addActivity(static::ACTIVITY_TYPE_OPENED);
+        }
         $this->votingStatus = VotingBlock::STATUS_OPEN;
         $this->save();
     }
 
     public function closeVoting(): void {
+        if ($this->votingStatus !== VotingBlock::STATUS_CLOSED) {
+            $this->addActivity(static::ACTIVITY_TYPE_CANCEL);
+        }
         $this->votingStatus = VotingBlock::STATUS_CLOSED;
         $this->save();
     }

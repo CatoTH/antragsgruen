@@ -19,8 +19,8 @@ ob_start();
         if ($iAmAdmin) {
             $url = UrlHelper::createUrl(['consultation/admin-votings']);
             echo '<a href="' . Html::encode($url) . '" class="votingsAdminLink">';
-            echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
-            echo 'Administrate votings';
+            echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
+            echo Yii::t('voting', 'voting_admin_all');
             echo '</a>';
         }
         ?>
@@ -31,49 +31,57 @@ ob_start();
                 <li v-for="(item, index) in voting.items">
                     <div class="titleLink">
                         {{ item.title_with_prefix }}
-                        <a :href="item.url_html"><span class="glyphicon glyphicon-new-window" aria-label="Änderungsantrag anzeigen"></span></a><br>
-                        <span class="amendmentBy">By {{ item.initiators_html }}</span>
+                        <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
+                                class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a><br>
+                        <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
 
                     <div class="votingOptions" v-if="item.can_vote">
                         <button type="button" class="btn btn-default btn-sm" @click="voteYes(item)">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                            Yes
+                            <?= Yii::t('voting', 'vote_yes') ?>
                         </button>
                         <button type="button" class="btn btn-default btn-sm" @click="voteNo(item)">
                             <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                            No
+                            <?= Yii::t('voting', 'vote_no') ?>
                         </button>
                         <button type="button" class="btn btn-default btn-sm" @click="voteAbstention(item)">
-                            Abstention
+                            <?= Yii::t('voting', 'vote_abstention') ?>
                         </button>
                     </div>
                     <div class="voted" v-if="item.voted">
                         <span class="yes" v-if="item.voted === 'yes'">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                            Yes
+                            <?= Yii::t('voting', 'vote_yes') ?>
                         </span>
                         <span class="yes" v-if="item.voted === 'no'">
                             <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                            No
+                            <?= Yii::t('voting', 'vote_no') ?>
                         </span>
                         <span class="yes" v-if="item.voted === 'abstention'">
-                            Abstention
+                            <?= Yii::t('voting', 'vote_abstention') ?>
                         </span>
                     </div>
                 </li>
             </ul>
             <footer class="votingFooter">
                 <div class="votedCounter">
-                    <strong>Status:</strong> 13 votes have been cast
+                    <strong><?= Yii::t('voting', 'voting_votes_status') ?>:</strong>
+                    <span v-if="voting.votes_total === 0"><?= Yii::t('voting', 'voting_votes_0') ?></span>
+                    <span v-if="voting.votes_total === 1"><?= Yii::t('voting', 'voting_votes_1_1') ?></span>
+                    <span v-if="voting.votes_users === 1 && voting.votes_total > 1"><?= str_replace(['%VOTES%'], ['{{ voting.votes_total }}'],
+                            Yii::t('voting', 'voting_votes_1_x')) ?></span>
+                    <span v-if="voting.votes_users > 1"><?= str_replace(['%VOTES%', '%USERS%'], ['{{ voting.votes_total }}', '{{ voting.votes_users }}'],
+                            Yii::t('voting', 'voting_votes_x')) ?></span>
                 </div>
                 <div class="showAll">
-                    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Show all votings</a>
+                    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> <?= Yii::t('voting', 'voting_show_all') ?></a>
                 </div>
             </footer>
             <div class="votingExplanation">
-                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <strong>Who can see how I voted?</strong>
-                The votes are visible to the administrators of this page, but not for other participants using this page.
+                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                <strong><?= Yii::t('voting', 'voting_visibility') ?></strong>
+                <?= Yii::t('voting', 'voting_visibility_admin') ?>
             </div>
         </template>
         <template v-if="mode === 'result'">
@@ -81,8 +89,9 @@ ob_start();
                 <li v-for="(item, index) in voting.items">
                     <div class="titleLink">
                         {{ item.title_with_prefix }}
-                        <a :href="item.url_html"><span class="glyphicon glyphicon-new-window" aria-label="Änderungsantrag anzeigen"></span></a><br>
-                        <span class="amendmentBy">By {{ item.initiators_html }}</span>
+                        <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
+                                class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a><br>
+                        <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
                     <div class="votesDetailed">
                         <div class="yes">Yes: 15.3 <small>(10 NYO, 8 INGYO)</small></div>
@@ -102,7 +111,7 @@ ob_start();
                     <strong>Quorum:</strong> 20 for NYO, 12 for INGYO
                 </div>
                 <div class="showAll">
-                    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Show all votings</a>
+                    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> <?= Yii::t('voting', 'voting_show_all') ?></a>
                 </div>
             </footer>
         </template>
