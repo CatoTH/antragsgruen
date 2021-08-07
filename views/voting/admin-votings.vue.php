@@ -1,11 +1,21 @@
 <?php
 
+use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
+
+/**
+ * @var \yii\web\View $this
+ */
+
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+/** @var \app\models\db\Consultation */
+$consultation = $controller->consultation;
 
 ob_start();
 ?>
 
-<section class="voting" aria-label="Administrate voting">
+<section class="voting" :aria-label="'<?= Yii::t('voting', 'admin_aria_single') ?>: ' + voting.title">
     <h2 class="green">
         {{ voting.title }}
         <label class="activateHeader">
@@ -76,55 +86,12 @@ ob_start();
                     <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                 </div>
                 <div class="votesDetailed" v-if="isOpen || isClosed">
-                    <!--
-                    <table class="votingTable votingTableMultiple">
-                        <thead>
-                            <tr>
-                                <th rowspan="2"></th>
-                                <th rowspan="2">Votes cast</th>
-                                <th colspan="2">Yes</th>
-                                <th colspan="2">No</th>
-                                <th>Abs.</th>
-                                <th>Total</th>
-                            </tr>
-                            <tr>
-                                <th>Ticks</th>
-                                <th>Votes</th>
-                                <th>Ticks</th>
-                                <th>Votes</th>
-                                <th>Ticks</th>
-                                <th>Ticks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>NYC</th>
-                                <td>224</td>
-                                <td>4</td>
-                                <td>128</td>
-                                <td>3</td>
-                                <td>96</td>
-                                <td>2</td>
-                                <td>9</td>
-                            </tr>
-                            <tr>
-                                <th>INGYO</th>
-                                <td>168</td>
-                                <td>4</td>
-                                <td>96</td>
-                                <td>3</td>
-                                <td>72</td>
-                                <td>2</td>
-                                <td>9</td>
-                            </tr>
-                            <tr>
-                                <th>Total</th>
-                                <td colspan="2">392</td>
-                                <td colspan="2">224</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    -->
+                    <?php
+                    $alternativeResults = Layout::getVotingAlternativeAdminResults($consultation);
+                    if ($alternativeResults) {
+                        echo $alternativeResults;
+                    } else {
+                    ?>
                     <div v-if="item.vote_results.length === 1 && item.vote_results[0]">
                         <table class="votingTable votingTableSingle">
                             <thead>
@@ -143,8 +110,11 @@ ob_start();
                                 <td class="total">{{ item.vote_results[0].yes + item.vote_results[0].no + item.vote_results[0].abstention }}</td>
                             </tr>
                             </tbody>
-
+                        </table>
                     </div>
+                    <?php
+                    }
+                    ?>
                 </div>
                 <div class="result" v-if="isClosed">
                     <div class="accepted">

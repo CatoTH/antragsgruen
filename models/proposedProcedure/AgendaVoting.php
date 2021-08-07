@@ -145,7 +145,7 @@ class AgendaVoting
                         'user_organizations' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),
                     ];
                 }, $votes);
-                $data['vote_results'] = Vote::calculateVoteResultsForApi($votes);
+                $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
             }
 
             $votingBlockJson['items'][] = $data;

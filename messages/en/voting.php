@@ -12,6 +12,7 @@ return [
 
     'admin_title' => 'Voting administration',
     'admin_bc' => 'Administration',
+    'admin_aria_single' => 'Administrate voting',
     'admin_voting_use' => 'Online voting',
     'admin_voting_use_h' => 'The voting about the following motions and amendments shall take place online on Antragsgrün',
     'admin_votes_total' => 'Total',

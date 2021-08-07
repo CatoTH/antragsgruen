@@ -229,4 +229,9 @@ class Layout
     {
         return static::callHook('getAmendmentPublishedInitiatorEmail', [$amendment], null);
     }
+
+    public static function getVotingAlternativeAdminResults(Consultation $consultation): ?string
+    {
+        return static::callHook('getVotingAlternativeAdminResults', [$consultation], null);
+    }
 }

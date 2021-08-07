@@ -104,10 +104,10 @@ class Vote extends ActiveRecord
     /**
      * @param Vote[] $votes
      */
-    public static function calculateVoteResultsForApi(array $votes): array
+    public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): array
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
-            $results = $pluginClass::calculateVoteResultsForApi();
+            $results = $pluginClass::calculateVoteResultsForApi($voting, $votes);
             if ($results) {
                 return $results;
             }
@@ -121,8 +121,8 @@ class Vote extends ActiveRecord
             ],
         ];
         foreach ($votes as $vote) {
-            $vote = $vote->getVoteForApi();
-            $results[User::ORGANIZATION_DEFAULT][$vote]++;
+            $voteType = $vote->getVoteForApi();
+            $results[User::ORGANIZATION_DEFAULT][$voteType]++;
         }
         return $results;
     }

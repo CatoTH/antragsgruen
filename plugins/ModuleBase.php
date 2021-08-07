@@ -3,7 +3,7 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Amendment, Consultation, Motion, Site};
+use app\models\db\{Amendment, Consultation, Motion, Site, Vote, VotingBlock};
 use app\models\layoutHooks\Hooks;
 use app\models\UserOrganization;
 use app\models\settings\{IMotionStatus, Layout};
@@ -161,7 +161,10 @@ class ModuleBase extends Module
         return [];
     }
 
-    public static function calculateVoteResultsForApi(): ?array
+    /**
+     * @param Vote[] $votes
+     */
+    public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): ?array
     {
         return null;
     }

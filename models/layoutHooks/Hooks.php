@@ -214,4 +214,9 @@ class Hooks
     {
         return $before;
     }
+
+    public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
+    {
+        return $before;
+    }
 }

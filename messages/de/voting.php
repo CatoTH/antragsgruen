@@ -12,6 +12,7 @@ return [
 
     'admin_title' => 'Abstimmungen: Verwaltung',
     'admin_bc' => 'Verwaltung',
+    'admin_aria_single' => 'Abstimmung verwalten',
     'admin_voting_use' => 'Online-Abstimmung',
     'admin_voting_use_h' => 'Die Abstimmung über die genannten (Änderungs-)Anträge soll online auf Antragsgrün durchgeführt werden',
     'admin_votes_total' => 'Gesamt',
