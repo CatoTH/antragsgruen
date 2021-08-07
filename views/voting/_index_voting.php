@@ -14,8 +14,7 @@ $layout = $controller->layoutParams;
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 
-$proposalFactory = new Factory($consultation, false);
-$votingBlocksToRender = $proposalFactory->getOpenVotingBlocks();
+$votingBlocksToRender = Factory::getOpenVotingBlocks($consultation);
 $apiData = [];
 foreach ($votingBlocksToRender as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());

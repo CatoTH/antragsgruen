@@ -746,7 +746,7 @@ CREATE TABLE `###TABLE_PREFIX###votingBlock` (
   `title` varchar(150) NOT NULL,
   `majorityType` tinyint(4) DEFAULT NULL,
   `votesPublic` tinyint(4) DEFAULT NULL,
-  `membersPresentByGroup` text DEFAULT NULL,
+  `usersPresentByOrga` text DEFAULT NULL,
   `votingStatus` tinyint(4) NOT NULL,
   `activityLog` text DEFAULT NULL
 )

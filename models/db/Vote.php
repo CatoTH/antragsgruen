@@ -30,8 +30,6 @@ class Vote extends ActiveRecord
     const VOTE_API_YES = 'yes';
     const VOTE_API_NO = 'no';
 
-    const USER_GROUP_DEFAULT = 0;
-
     /**
      * @return string
      */
@@ -116,7 +114,7 @@ class Vote extends ActiveRecord
         }
 
         $results = [
-            static::USER_GROUP_DEFAULT => [
+            User::ORGANIZATION_DEFAULT => [
                 static::VOTE_API_YES => 0,
                 static::VOTE_API_NO => 0,
                 static::VOTE_API_ABSTENTION => 0,
@@ -124,7 +122,7 @@ class Vote extends ActiveRecord
         ];
         foreach ($votes as $vote) {
             $vote = $vote->getVoteForApi();
-            $results[static::USER_GROUP_DEFAULT][$vote]++;
+            $results[User::ORGANIZATION_DEFAULT][$vote]++;
         }
         return $results;
     }

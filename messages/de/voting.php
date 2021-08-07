@@ -20,6 +20,7 @@ return [
     'admin_btn_cancel' => 'Abbrechen',
     'admin_status_opened' => 'Die Abstimmung <strong>läuft</strong>, Mitglieder können nun ihre Stimmen vergeben',
     'admin_status_closed' => 'Die Abstimmung wurde <strong>geschlossen</strong>.',
+    'admin_members_present' => 'Anwesende Mitglieder',
 
     'voting_show_amend' => 'Änderungsantrag anzeigen',
     'voting_by' => 'Von',

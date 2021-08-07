@@ -221,10 +221,10 @@ class Factory
      * @return AgendaVoting[]
      * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
      */
-    public function getAllVotingBlocks(): array
+    public static function getAllVotingBlocks(Consultation $consultation): array
     {
         // There is probably a more efficient way to create this, without having to build the whole agenda first
-        $proposalFactory = new Factory($this->consultation, false);
+        $proposalFactory = new Factory($consultation, true);
         $agenda = $proposalFactory->create();
 
         $votingBlocks = [];
@@ -243,11 +243,11 @@ class Factory
      * @return AgendaVoting[]
      * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
      */
-    public function getOpenVotingBlocks(): array
+    public static function getOpenVotingBlocks(Consultation $consultation): array
     {
         // There is probably a more efficient way to create this, without having to build the whole agenda first
         $votingBlocks = [];
-        foreach ($this->getAllVotingBlocks() as $votingBlock) {
+        foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
             if ($votingBlock->voting->votingStatus === VotingBlock::STATUS_OPEN) {
                 $votingBlocks[] = $votingBlock;
             }

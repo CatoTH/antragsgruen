@@ -48,10 +48,14 @@ export class VotingAdmin {
                         alert(err.responseText);
                     });
                 },
-                setStatus(votingBlockId, newStatus) {
+                setStatus(votingBlockId, newStatus, organizations) {
                     console.log(arguments);
                     this._performOperation(votingBlockId, {
-                        status: newStatus
+                        status: newStatus,
+                        organizations: organizations.map(orga => { return {
+                            id: orga.id,
+                            members_present: orga.members_present,
+                        }}),
                     });
                 },
                 reloadData: function () {

@@ -20,6 +20,7 @@ return [
     'admin_btn_cancel' => 'Cancel',
     'admin_status_opened' => 'The voting is <strong>open</strong>, users can now cast their votes',
     'admin_status_closed' => 'The voting is <strong>closed</strong>.',
+    'admin_members_present' => 'Members present',
 
     'voting_show_amend' => 'Show amendment',
     'voting_by' => 'By',

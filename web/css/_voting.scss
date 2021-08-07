@@ -188,11 +188,27 @@
   border-bottom: solid 1px #ccc;
   padding-bottom: 10px;
 
+  .votingDetails ul {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    > li {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      &:before {
+        content: ', ';
+      }
+      &:first-child:before {
+        content: '';
+      }
+    }
+  }
   .data {
     flex-grow: 1;
     flex-direction: row;
     flex-wrap: wrap;
-
   }
   .actions {
     flex-basis: 330px;

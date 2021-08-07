@@ -20,9 +20,8 @@ $this->title = Yii::t('voting', 'admin_title');
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/voting/admin-votings.vue.php');
 
-$proposalFactory = new Factory($consultation, false);
 $apiData = [];
-foreach ($proposalFactory->getAllVotingBlocks() as $votingBlock) {
+foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
     /** @noinspection PhpUnhandledExceptionInspection */
     $apiData[] = $votingBlock->getAdminApiObject();
 }

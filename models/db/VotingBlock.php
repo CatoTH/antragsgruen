@@ -10,7 +10,7 @@ use yii\db\ActiveRecord;
  * @property string $title
  * @property int|null $majorityType
  * @property int|null $votesPublic
- * @property string|null $membersPresentByGroup
+ * @property string|null $usersPresentByOrga
  * @property string|null $activityLog
  * @property int $votingStatus
  *
@@ -93,34 +93,6 @@ class VotingBlock extends ActiveRecord
     public function getVotes()
     {
         return $this->hasMany(Vote::class, ['votingBlockId' => 'id']);
-    }
-
-    public function getActivityLog(): array
-    {
-        if (!$this->activityLog) {
-            return [];
-        }
-        return json_decode($this->activityLog, true);
-    }
-
-    protected function addActivity(int $type): void
-    {
-        $activityLog = $this->getActivityLog();
-        $activityLog[] = [
-            'type' => $type,
-            'date' => date('c'),
-        ];
-        $this->activityLog = json_encode($activityLog);
-    }
-
-    public function getActivityLogForApi(): array
-    {
-        return array_map(function (array $activity): array {
-            return [
-                'type' => $activity['type'],
-                'date' => $activity['date'],
-            ];
-        }, $this->getActivityLog());
     }
 
     public function getUserVote(User $user, string $itemType, int $itemId): ?Vote
@@ -212,5 +184,58 @@ class VotingBlock extends ActiveRecord
         }
         $this->votingStatus = VotingBlock::STATUS_CLOSED;
         $this->save();
+    }
+
+    public function getActivityLog(): array
+    {
+        if (!$this->activityLog) {
+            return [];
+        }
+        return json_decode($this->activityLog, true);
+    }
+
+    protected function addActivity(int $type): void
+    {
+        $activityLog = $this->getActivityLog();
+        $activityLog[] = [
+            'type' => $type,
+            'date' => date('c'),
+        ];
+        $this->activityLog = json_encode($activityLog);
+    }
+
+    public function getActivityLogForApi(): array
+    {
+        return array_map(function (array $activity): array {
+            return [
+                'type' => $activity['type'],
+                'date' => $activity['date'],
+            ];
+        }, $this->getActivityLog());
+    }
+
+    public function getUsersPresentByOrganizations(): array {
+        if (!$this->usersPresentByOrga) {
+            return [];
+        }
+        return json_decode($this->usersPresentByOrga, true);
+    }
+
+    public function setUserPresentByOrganization(string $organization, ?int $users): void
+    {
+        $present = $this->getUsersPresentByOrganizations();
+        if ($users !== null) {
+            $present[$organization] = $users;
+        } elseif (isset($present[$organization])) {
+            unset($present[$organization]);
+        }
+        $this->usersPresentByOrga = json_encode($present);
+    }
+
+    public function getUserPresentByOrganization(string $organization): ?int
+    {
+        $present = $this->getUsersPresentByOrganizations();
+
+        return $present[$organization] ?? null;
     }
 }

@@ -63,7 +63,14 @@ class AgendaVoting
             'items' => [],
         ];
         if ($adminFields) {
-            $votingBlockJson['user_groups'] = [Vote::USER_GROUP_DEFAULT];
+            $votingBlockJson['user_organizations'] = [];
+            foreach (User::getSelectableUserOrganizations(true) as $organization) {
+                $votingBlockJson['user_organizations'][] = [
+                    'id' => $organization->id,
+                    'title' => $organization->title,
+                    'members_present' => ($this->voting ? $this->voting->getUserPresentByOrganization($organization->id) : null),
+                ];
+            }
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
         }
         if ($this->voting) {
@@ -135,7 +142,7 @@ class AgendaVoting
                         'vote' => $vote->getVoteForApi(),
                         'user_id' => $vote->userId,
                         'user_name' => ($vote->user ? $vote->user->getAuthUsername() : null),
-                        'user_groups' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),
+                        'user_organizations' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),
                     ];
                 }, $votes);
                 $data['vote_results'] = Vote::calculateVoteResultsForApi($votes);

@@ -28,14 +28,16 @@ ob_start();
             <p><?= Yii::t('voting', 'admin_status_closed') ?></p>
         </div>
         <form method="POST" class="votingDataActions" v-if="isPreparing">
-            <div class="data">
+            <div class="data form-inline" v-if="organizations.length === 1">
                 <label>
-                    Members present (NYO):<br>
-                    <input type="number" class="form-control" value="24">
+                    <?= Yii::t('voting', 'admin_members_present') ?>:
+                    <input type="number" class="form-control" v-model="organizations[0].members_present">
                 </label>
-                <label>
-                    Members present (INGYO):<br>
-                    <input type="number" class="form-control" value="32">
+            </div>
+            <div class="data" v-if="organizations.length > 1">
+                <label v-for="orga in organizations">
+                    <?= Yii::t('voting', 'admin_members_present') ?> ({{ orga.title }}):<br>
+                    <input type="number" class="form-control" v-model="orga.members_present">
                 </label>
             </div>
             <div class="actions">
@@ -44,9 +46,15 @@ ob_start();
         </form>
         <form method="POST" class="votingDataActions" v-if="isOpen || isClosed">
             <div class="data">
-                <div class="votingDetails">
-                    <strong>Full Members present:</strong> 25 NYO, 16 INGYO<br>
-                    <strong>Quorum:</strong> 20 for NYO, 12 for INGYO
+                <div class="votingDetails" v-if="organizations.length === 1">
+                    <strong><?= Yii::t('voting', 'admin_members_present') ?>:</strong>
+                    {{ organizations[0].members_present }}
+                </div>
+                <div class="votingDetails" v-if="organizations.length > 1">
+                    <strong><?= Yii::t('voting', 'admin_members_present') ?>:</strong>
+                    <ul>
+                        <li v-for="orga in organizationsWithUsersEntered">{{ orga.members_present }} {{ orga.title }}</li>
+                    </ul>
                 </div>
             </div>
             <div class="actions" v-if="isOpen">
@@ -198,12 +206,7 @@ $html = ob_get_clean();
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
-        data() {
-            return {
-                settings: {
-                    isUsed: (this.voting.status > STATUS_OFFLINE),
-                }
-            }
+        data: {
         },
         computed: {
             isUsed: {
@@ -229,6 +232,11 @@ $html = ob_get_clean();
             },
             isClosed: function () {
                 return this.voting.status === STATUS_CLOSED;
+            },
+            organizationsWithUsersEntered: function () {
+                return this.organizations.filter(function (organization) {
+                    return organization.members_present !== null;
+                });
             }
         },
         methods: {
@@ -261,11 +269,20 @@ $html = ob_get_clean();
                 this.statusChanged();
             },
             statusChanged: function () {
-                this.$emit('set-status', this.voting.id, this.voting.status);
+                this.$emit('set-status', this.voting.id, this.voting.status, this.organizations);
+            },
+            updateOrganizations: function () {
+                if (this.organizations === undefined) {
+                    this.organizations = Object.assign([], this.voting.user_organizations);
+                }
             }
         },
         updated() {
             $(this.$el).find('[data-toggle="tooltip"]').tooltip();
+            this.updateOrganizations();
+        },
+        beforeMount: function () {
+            this.updateOrganizations();
         }
     });
 </script>

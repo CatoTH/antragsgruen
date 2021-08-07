@@ -11,8 +11,6 @@ use yii\db\{ActiveRecord, Expression};
 use yii\web\IdentityInterface;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property string $name
  * @property string $nameGiven
@@ -62,6 +60,8 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_CHANGE_PROPOSALS          = 7;
     const PRIVILEGE_SPEECH_QUEUES             = 8;
     const PRIVILEGE_VOTINGS                   = 9;
+
+    const ORGANIZATION_DEFAULT = '0';
 
     /**
      * @return string[]
@@ -331,11 +331,14 @@ class User extends ActiveRecord implements IdentityInterface
      * Hint: there might be others, too, but they would not be assignable by the admin
      * @return UserOrganization[]
      */
-    public static function getSelectableUserOrganizations(): array
+    public static function getSelectableUserOrganizations(bool $includeDefault = false): array
     {
         $groups = [];
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $groups = array_merge($groups, $plugin::getUserOrganizations());
+        }
+        if (count($groups) === 0) {
+            $groups[] = new UserOrganization(User::ORGANIZATION_DEFAULT, '');
         }
         return $groups;
     }

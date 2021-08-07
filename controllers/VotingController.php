@@ -46,9 +46,8 @@ class VotingController extends Base
 
     private function getAllVotingAdminData(): string
     {
-        $proposalFactory = new Factory($this->consultation, false);
         $apiData = [];
-        foreach ($proposalFactory->getAllVotingBlocks() as $votingBlock) {
+        foreach (Factory::getAllVotingBlocks($this->consultation) as $votingBlock) {
             /** @noinspection PhpUnhandledExceptionInspection */
             $apiData[] = $votingBlock->getAdminApiObject();
         }
@@ -83,6 +82,13 @@ class VotingController extends Base
 
         $votingBlock = $this->getVotingBlockAndCheckPermission($votingBlockId);
 
+        if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
+            foreach (\Yii::$app->request->post('organizations', []) as $organization) {
+                $users = ($organization['members_present'] !== '' ? intval($organization['members_present']) : null);
+                $votingBlock->setUserPresentByOrganization($organization['id'], $users);
+            }
+            $votingBlock->save();
+        }
         if (\Yii::$app->request->post('status') !== null) {
             $newStatus = intval(\Yii::$app->request->post('status'));
             if ($newStatus === VotingBlock::STATUS_PREPARING) {
@@ -111,9 +117,8 @@ class VotingController extends Base
     private function getOpenVotingsUserData(): string
     {
         $user = User::getCurrentUser();
-        $proposalFactory = new Factory($this->consultation, false);
         $votingData = [];
-        foreach ($proposalFactory->getOpenVotingBlocks() as $voting) {
+        foreach (Factory::getOpenVotingBlocks($this->consultation) as $voting) {
             $votingData[] = $voting->getUserApiObject($user);
         }
 
