@@ -573,6 +573,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'users_name'       => 'Name',
     'users_auth'       => 'Authentication',
     'users_registered' => 'Registered',
+    'users_organization' => 'Organization',
     'pdf_templ_none'   => 'No PDF',
 
     'updates_title'        => 'Available Updates',

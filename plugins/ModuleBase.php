@@ -5,6 +5,7 @@ namespace app\plugins;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\models\db\{Amendment, Consultation, Motion, Site};
 use app\models\layoutHooks\Hooks;
+use app\models\UserOrganization;
 use app\models\settings\{IMotionStatus, Layout};
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\base\{Action, Module};
@@ -150,6 +151,14 @@ class ModuleBase extends Module
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {
         return null;
+    }
+
+    /**
+     * @return UserOrganization[]
+     */
+    public static function getUserOrganizations(): array
+    {
+        return [];
     }
 
     public static function calculateVoteResultsForApi(): ?array

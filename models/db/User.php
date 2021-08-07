@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\UserOrganization;
 use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, GruenesNetzSamlClient, mail\Tools as MailTools};
 use app\models\events\UserEvent;
 use app\models\exceptions\{FormError, MailNotSent, ServerConfiguration};
@@ -324,6 +325,19 @@ class User extends ActiveRecord implements IdentityInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Hint: there might be others, too, but they would not be assignable by the admin
+     * @return UserOrganization[]
+     */
+    public static function getSelectableUserOrganizations(): array
+    {
+        $groups = [];
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $groups = array_merge($groups, $plugin::getUserOrganizations());
+        }
+        return $groups;
     }
 
     /**
