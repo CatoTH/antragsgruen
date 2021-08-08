@@ -10,6 +10,10 @@ return [
     'status_accepted' => 'Accepted',
     'status_rejected' => 'Rejected',
 
+    'activity_opened' => 'Voting opened',
+    'activity_closed' => 'Voting closed',
+    'activity_canceled' => 'Voting canceled',
+
     'admin_title' => 'Voting administration',
     'admin_bc' => 'Administration',
     'admin_aria_single' => 'Administrate voting',
@@ -19,6 +23,7 @@ return [
     'admin_btn_open' => 'Open voting',
     'admin_btn_close' => 'Close voting',
     'admin_btn_cancel' => 'Cancel',
+    'admin_btn_reset' => 'Reset',
     'admin_status_opened' => 'The voting is <strong>open</strong>, users can now cast their votes',
     'admin_status_closed' => 'The voting is <strong>closed</strong>.',
     'admin_members_present' => 'Members present',

@@ -71,6 +71,9 @@ ob_start();
                 <button type="button" class="btn btn-default" @click="cancelVoting()"><?= Yii::t('voting', 'admin_btn_cancel') ?></button>
                 <button type="button" class="btn btn-primary" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
             </div>
+            <div class="actions" v-if="isClosed">
+                <button type="button" class="btn btn-default" @click="cancelVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
+            </div>
         </form>
         <ul class="votingAdminList">
             <li v-for="item in voting.items">
@@ -123,6 +126,11 @@ ob_start();
                 </div>
             </li>
         </ul>
+        <footer class="votingFooter">
+            <ol v-if="voting.log.length > 0" class="activityLog">
+                <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
+            </ol>
+        </footer>
         <footer class="votingFooter" v-if="isPreparing">
             <div class="votingAmendmentAdder">
                 Add an amendment to this voting:
@@ -132,11 +140,6 @@ ob_start();
                     <option>Amendment 2</option>
                 </select>
             </div>
-        </footer>
-        <footer class="votingFooter">
-            <ol v-if="voting.log.length > 0" class="activityLog">
-                <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
-            </ol>
         </footer>
     </div>
 </section>
@@ -214,13 +217,13 @@ $html = ob_get_clean();
                 let description = '?';
                 switch (logEntry['type']) {
                     case ACTIVITY_TYPE_OPENED:
-                        description = 'Voting opened';
+                        description = <?= json_encode(Yii::t('voting', 'activity_opened')) ?>;
                         break;
                     case ACTIVITY_TYPE_CANCEL:
-                        description = 'Voting canceled';
+                        description = <?= json_encode(Yii::t('voting', 'activity_canceled')) ?>;
                         break;
                     case ACTIVITY_TYPE_CLOSED:
-                        description = 'Voting closed';
+                        description = <?= json_encode(Yii::t('voting', 'activity_closed')) ?>;
                         break;
                 }
                 let date = new Date(logEntry['date']);

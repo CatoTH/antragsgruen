@@ -338,6 +338,12 @@ $votingOpened = $voting->hasAnyData();
             <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid"
                    value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
         </div>
+        <?php
+        $detailed = $voting->renderDetailedResults();
+        if ($detailed) {
+            echo '<div class="col-md-12">' . $detailed . '</div>';
+        }
+        ?>
     </div>
 
 <?php

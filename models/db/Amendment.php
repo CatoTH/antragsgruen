@@ -1312,6 +1312,17 @@ class Amendment extends IMotion implements IRSSItem
         return $url;
     }
 
+    public function setVotingResult(int $votingResult): void
+    {
+        $this->votingStatus = $votingResult;
+        if ($votingResult === IMotion::STATUS_ACCEPTED) {
+            ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::AMENDMENT_VOTE_ACCEPTED, $this->id);
+        }
+        if ($votingResult === IMotion::STATUS_REJECTED) {
+            ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::AMENDMENT_VOTE_REJECTED, $this->id);
+        }
+    }
+
     public function getUserdataExportObject(): array
     {
         $data = [

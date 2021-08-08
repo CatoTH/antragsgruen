@@ -25,6 +25,16 @@ class Module extends ModuleBase
     }
 
     /**
+     * @param Consultation $consultation
+     * @return string|VotingData
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getVotingDataClass(Consultation $consultation): ?string
+    {
+        return VotingData::class;
+    }
+
+    /**
      * @param Vote[] $votes
      */
     public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): ?array

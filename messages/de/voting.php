@@ -10,6 +10,10 @@ return [
     'status_accepted' => 'Angenommen',
     'status_rejected' => 'Abgelehnt',
 
+    'activity_opened' => 'Abstimmung eröffnet',
+    'activity_closed' => 'Abstimmung geschlossen',
+    'activity_canceled' => 'Abstimmung abgebrochen',
+
     'admin_title' => 'Abstimmungen: Verwaltung',
     'admin_bc' => 'Verwaltung',
     'admin_aria_single' => 'Abstimmung verwalten',
@@ -19,6 +23,7 @@ return [
     'admin_btn_open' => 'Abstimmung eröffnen',
     'admin_btn_close' => 'Abstimmung schließen',
     'admin_btn_cancel' => 'Abbrechen',
+    'admin_btn_reset' => 'Zurücksetzen',
     'admin_status_opened' => 'Die Abstimmung <strong>läuft</strong>, Mitglieder können nun ihre Stimmen vergeben',
     'admin_status_closed' => 'Die Abstimmung wurde <strong>geschlossen</strong>.',
     'admin_members_present' => 'Anwesende Mitglieder',

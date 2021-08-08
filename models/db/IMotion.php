@@ -165,8 +165,15 @@ abstract class IMotion extends ActiveRecord
 
     public function getVotingData(): VotingData
     {
+        $className = VotingData::class;
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($plugin::getVotingDataClass($this->getMyConsultation()) !== null) {
+                $className = $plugin::getVotingDataClass($this->getMyConsultation());
+            }
+        }
+
         if (!is_object($this->votingDataObject)) {
-            $this->votingDataObject = new VotingData($this->votingData);
+            $this->votingDataObject = new $className($this->votingData);
         }
 
         return $this->votingDataObject;
@@ -663,7 +670,7 @@ abstract class IMotion extends ActiveRecord
     public function getExtraDataKey(string $key)
     {
         $data = $this->getExtraData();
-        return (isset($data[$key]) ? $data[$key] : null);
+        return $data[$key] ?? null;
     }
 
     public function setExtraDataKey(string $key, $value): void

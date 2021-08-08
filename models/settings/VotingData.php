@@ -2,6 +2,9 @@
 
 namespace app\models\settings;
 
+use app\models\db\Vote;
+use app\models\db\VotingBlock;
+
 class VotingData implements \JsonSerializable
 {
     use JsonConfigTrait;
@@ -18,10 +21,7 @@ class VotingData implements \JsonSerializable
     /** @var null|string */
     public $comment = null;
 
-    /**
-     * @return boolean
-     */
-    public function hasAnyData()
+    public function hasAnyData(): bool
     {
         return $this->votesYes || $this->votesNo || $this->votesInvalid || $this->votesAbstention || $this->comment;
     }
@@ -46,5 +46,23 @@ class VotingData implements \JsonSerializable
         if (isset($votes['comment'])) {
             $this->comment = $votes['comment'];
         }
+    }
+
+    public function augmentWithResults(VotingBlock $voting, array $votes): self
+    {
+        $results = Vote::calculateVoteResultsForApi($voting, $votes);
+        $orga = \app\models\db\User::ORGANIZATION_DEFAULT;
+        if (isset($results[$orga])) {
+            $this->votesYes = $results[$orga][Vote::VOTE_API_YES];
+            $this->votesNo = $results[$orga][Vote::VOTE_API_NO];
+            $this->votesAbstention = $results[$orga][Vote::VOTE_API_ABSTENTION];
+        }
+
+        return $this;
+    }
+
+    public function renderDetailedResults(): ?string
+    {
+        return null;
     }
 }

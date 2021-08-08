@@ -39,6 +39,8 @@ class ConsultationLog extends ActiveRecord
     const MOTION_NOTIFY_PROPOSAL     = 36;
     const MOTION_ACCEPT_PROPOSAL     = 31;
     const MOTION_PUBLISH_PROPOSAL    = 30;
+    const MOTION_VOTE_ACCEPTED       = 39;
+    const MOTION_VOTE_REJECTED       = 40;
     const AMENDMENT_PUBLISH          = 13;
     const AMENDMENT_WITHDRAW         = 14;
     const AMENDMENT_DELETE           = 15;
@@ -58,6 +60,8 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_NOTIFY_PROPOSAL  = 38;
     const AMENDMENT_ACCEPT_PROPOSAL  = 32;
     const AMENDMENT_PUBLISH_PROPOSAL = 29;
+    const AMENDMENT_VOTE_ACCEPTED    = 41;
+    const AMENDMENT_VOTE_REJECTED    = 42;
 
     public static $MOTION_ACTION_TYPES    = [
         self::MOTION_PUBLISH,
@@ -79,6 +83,8 @@ class ConsultationLog extends ActiveRecord
         self::MOTION_NOTIFY_PROPOSAL,
         self::MOTION_ACCEPT_PROPOSAL,
         self::MOTION_PUBLISH_PROPOSAL,
+        self::MOTION_VOTE_ACCEPTED,
+        self::MOTION_VOTE_REJECTED,
     ];
 
     public static $AMENDMENT_ACTION_TYPES = [
@@ -101,6 +107,8 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_NOTIFY_PROPOSAL,
         self::AMENDMENT_ACCEPT_PROPOSAL,
         self::AMENDMENT_PUBLISH_PROPOSAL,
+        self::AMENDMENT_VOTE_ACCEPTED,
+        self::AMENDMENT_VOTE_REJECTED,
     ];
 
     public static $USER_INVISIBLE_EVENTS = [

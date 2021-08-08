@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\VotingData;
 use yii\db\ActiveRecord;
 
 /**
@@ -174,6 +175,12 @@ class VotingBlock extends ActiveRecord
         if ($this->votingStatus !== VotingBlock::STATUS_OPEN) {
             $this->addActivity(static::ACTIVITY_TYPE_OPENED);
         }
+        if ($this->majorityType === null) {
+            $this->majorityType = static::MAJORITY_TYPE_SIMPLE;
+        }
+        if ($this->votesPublic === null) {
+            $this->votesPublic = 0;
+        }
         $this->votingStatus = VotingBlock::STATUS_OPEN;
         $this->save();
     }
@@ -184,6 +191,24 @@ class VotingBlock extends ActiveRecord
         }
         $this->votingStatus = VotingBlock::STATUS_CLOSED;
         $this->save();
+
+        foreach ($this->motions as $motion) {
+            $votes = $this->getVotesForMotion($motion);
+            $result = Vote::calculateFinalVoteResult($this, $votes);
+            $votingData = $motion->getVotingData()->augmentWithResults($this, $votes);
+            $motion->setVotingData($votingData);
+            $motion->setVotingResult($result);
+            $motion->save();
+        }
+
+        foreach ($this->amendments as $amendment) {
+            $votes = $this->getVotesForAmendment($amendment);
+            $result = Vote::calculateFinalVoteResult($this, $votes);
+            $votingData = $amendment->getVotingData()->augmentWithResults($this, $votes);
+            $amendment->setVotingData($votingData);
+            $amendment->setVotingResult($result);
+            $amendment->save();
+        }
     }
 
     public function getActivityLog(): array
