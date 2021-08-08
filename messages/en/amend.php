@@ -97,7 +97,7 @@ return [
     'merge_new_status_res_p'       => 'A preliminary resolution',
     'merge_new_orga'               => 'Deciding body',
     'merge_new_resolution_date'    => 'Resolution date',
-    'merge_new_votes_enter'        => 'Enter voting result',
+    'merge_new_votes_enter'        => 'Voting data',
     'merge_new_votes_yes'          => '"Yes"-Votes',
     'merge_new_votes_no'           => '"No"-Votes',
     'merge_new_votes_abstention'   => 'Abstentions',

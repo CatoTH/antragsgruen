@@ -54,18 +54,18 @@ export class MotionEdit {
     }
 
     private initVotingFunctions() {
-        const $closer = $(".votingResultCloser"),
-            $opener = $(".votingResultOpener"),
-            $inputRows = $(".contentVotingResult, .contentVotingResultComment");
+        const $closer = $(".votingDataCloser"),
+            $opener = $(".votingDataOpener"),
+            $holder = $(".votingDataHolder");
         $opener.on("click", () => {
             $closer.removeClass("hidden");
             $opener.addClass("hidden");
-            $inputRows.removeClass("hidden");
+            $holder.removeClass("hidden");
         });
         $closer.on("click", () => {
             $closer.addClass("hidden");
             $opener.removeClass("hidden");
-            $inputRows.addClass("hidden");
+            $holder.addClass("hidden");
         });
     }
 
