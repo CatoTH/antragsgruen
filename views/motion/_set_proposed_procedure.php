@@ -87,7 +87,7 @@ $selectedTags = $motion->getProposedProcedureTags();
         </fieldset>
         <div class="votingBlockSettings showIfStatusSet">
             <h3><?= Yii::t('amend', 'proposal_voteblock') ?></h3>
-            <select name="votingBlockId" id="votingBlockId">
+            <select name="votingBlockId" id="votingBlockId" class="stdDropdown">
                 <option>-</option>
                 <?php
                 foreach ($votingBlocks as $votingBlock) {

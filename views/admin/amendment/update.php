@@ -117,7 +117,8 @@ if (count($consultation->agendaItems) > 0) {
         $selections[$item->id] = $item->title;
     }
 
-    echo HTMLTools::fueluxSelectbox('amendment[agendaItemId]', $selections, $amendment->agendaItemId, $options, true);
+    $options = ['id' => 'amendmentStatus', 'class' => 'stdDropdown fullsize'];
+    echo Html::dropDownList('amendment[agendaItemId]', $amendment->agendaItemId, $selections, $options);
     echo '</div></div>';
 }
 ?>
@@ -128,9 +129,9 @@ if (count($consultation->agendaItems) > 0) {
         </label>
         <div class="col-md-4">
             <?php
-            $options  = ['id' => 'amendmentStatus'];
+            $options  = ['id' => 'amendmentStatus', 'class' => 'stdDropdown fullsize'];
             $statuses = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
-            echo HTMLTools::fueluxSelectbox('amendment[status]', $statuses, $amendment->status, $options, true);
+            echo Html::dropDownList('amendment[status]', $amendment->status, $statuses, $options);
             ?>
         </div>
         <div class="col-md-5">
@@ -249,22 +250,22 @@ $votingOpened = $voting->hasAnyData();
         <div class="col-md-3">
             <label for="votesYes"><?= Yii::t('amend', 'merge_new_votes_yes') ?></label>
             <input class="form-control" name="votes[yes]" type="number" id="votesYes"
-                   value="<?= Html::encode($voting->votesYes ? $voting->votesYes : '') ?>">
+                   value="<?= Html::encode($voting->votesYes !== null ? $voting->votesYes : '') ?>">
         </div>
         <div class="col-md-3">
             <label for="votesNo"><?= Yii::t('amend', 'merge_new_votes_no') ?></label>
             <input class="form-control" name="votes[no]" type="number" id="votesNo"
-                   value="<?= Html::encode($voting->votesNo ? $voting->votesNo : '') ?>">
+                   value="<?= Html::encode($voting->votesNo !== null ? $voting->votesNo : '') ?>">
         </div>
         <div class="col-md-3">
             <label for="votesAbstention"><?= Yii::t('amend', 'merge_new_votes_abstention') ?></label>
             <input class="form-control" name="votes[abstention]" type="number" id="votesAbstention"
-                   value="<?= Html::encode($voting->votesAbstention ? $voting->votesAbstention : '') ?>">
+                   value="<?= Html::encode($voting->votesAbstention !== null ? $voting->votesAbstention : '') ?>">
         </div>
         <div class="col-md-3">
             <label for="votesInvalid"><?= Yii::t('amend', 'merge_new_votes_invalid') ?></label>
             <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid"
-                   value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
+                   value="<?= Html::encode($voting->votesInvalid !== null ? $voting->votesInvalid : '') ?>">
         </div>
         <?php
         $detailed = $voting->renderDetailedResults();

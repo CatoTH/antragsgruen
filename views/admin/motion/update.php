@@ -102,8 +102,8 @@ echo '<div class="content form-horizontal fuelux">';
             foreach ($motion->motionType->getCompatibleMotionTypes() as $motionType) {
                 $options[$motionType->id] = $motionType->titleSingular;
             }
-            $attrs = ['id' => 'motionType'];
-            echo HTMLTools::fueluxSelectbox('motion[motionType]', $options, $motion->motionTypeId, $attrs, true);
+            $attrs = ['id' => 'motionType', 'class' => 'stdDropdown fullsize'];
+            echo Html::dropDownList('motion[motionType]', $motion->motionTypeId, $options, $attrs);
             ?>
         </div>
     </div>
@@ -116,8 +116,8 @@ echo '<div class="content form-horizontal fuelux">';
             foreach ($consultation->motions as $otherMotion) {
                 $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
             }
-            $attrs = ['id' => 'parentMotion'];
-            echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs, true);
+            $attrs = ['id' => 'parentMotion', 'class' => 'stdDropdown fullsize'];
+            echo Html::dropDownList('motion[parentMotionId]', $motion->parentMotionId, $options, $attrs);
             ?>
         </div>
     </div>
@@ -127,7 +127,8 @@ echo '<div class="content form-horizontal fuelux">';
         <div class="col-md-5">
             <?php
             $stats = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
-            echo HTMLTools::fueluxSelectbox('motion[status]', $stats, $motion->status, ['id' => 'motionStatus'], true);
+            $options = ['id' => 'motionStatus', 'class' => 'stdDropdown fullsize'];
+            echo Html::dropDownList('motion[status]', $motion->status, $stats, $options);
             echo '</div><div class="col-md-4">';
             $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
             echo Html::textInput('motion[statusString]', $motion->statusString, $options);
@@ -141,13 +142,13 @@ if (count($consultation->agendaItems) > 0) {
     echo '<label class="col-md-3 control-label" for="agendaItemId">';
     echo Yii::t('admin', 'motion_agenda_item');
     echo ':</label><div class="col-md-9">';
-    $options    = ['id' => 'agendaItemId'];
+    $options    = ['id' => 'agendaItemId', 'class' => 'stdDropdown fullsize'];
     $selections = [];
     foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
         $selections[$item->id] = $item->title;
     }
 
-    echo HTMLTools::fueluxSelectbox('motion[agendaItemId]', $selections, $motion->agendaItemId, $options, true);
+    echo Html::dropDownList('motion[agendaItemId]', $motion->agendaItemId, $selections, $options);
     echo '</div></div>';
 }
 ?>
@@ -321,22 +322,22 @@ $votingOpened = $voting->hasAnyData();
         <div class="col-md-3">
             <label for="votesYes"><?= Yii::t('amend', 'merge_new_votes_yes') ?></label>
             <input class="form-control" name="votes[yes]" type="number" id="votesYes"
-                   value="<?= Html::encode($voting->votesYes ? $voting->votesYes : '') ?>">
+                   value="<?= Html::encode($voting->votesYes !== null ? $voting->votesYes : '') ?>">
         </div>
         <div class="col-md-3">
             <label for="votesNo"><?= Yii::t('amend', 'merge_new_votes_no') ?></label>
             <input class="form-control" name="votes[no]" type="number" id="votesNo"
-                   value="<?= Html::encode($voting->votesNo ? $voting->votesNo : '') ?>">
+                   value="<?= Html::encode($voting->votesNo !== null ? $voting->votesNo : '') ?>">
         </div>
         <div class="col-md-3">
             <label for="votesAbstention"><?= Yii::t('amend', 'merge_new_votes_abstention') ?></label>
             <input class="form-control" name="votes[abstention]" type="number" id="votesAbstention"
-                   value="<?= Html::encode($voting->votesAbstention ? $voting->votesAbstention : '') ?>">
+                   value="<?= Html::encode($voting->votesAbstention !== null ? $voting->votesAbstention : '') ?>">
         </div>
         <div class="col-md-3">
             <label for="votesInvalid"><?= Yii::t('amend', 'merge_new_votes_invalid') ?></label>
             <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid"
-                   value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
+                   value="<?= Html::encode($voting->votesInvalid !== null ? $voting->votesInvalid : '') ?>">
         </div>
         <?php
         $detailed = $voting->renderDetailedResults();
