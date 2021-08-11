@@ -526,10 +526,6 @@ class AmendmentController extends Base
             $ppChanges->setProposalCommentChanges($amendment->proposalComment, \Yii::$app->request->post('proposalComment', ''));
             $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
 
-            $newVotingStatus = (\Yii::$app->request->post('votingStatus', null) !== null ? intval(\Yii::$app->request->post('votingStatus', null)) : null);
-            $ppChanges->setProposalVotingStatusChanges($amendment->votingStatus, $newVotingStatus);
-            $amendment->votingStatus = $newVotingStatus;
-
             $oldTags = $amendment->getProposedProcedureTags();
             $newTags = [];
             $changed = false;
@@ -569,27 +565,12 @@ class AmendmentController extends Base
                 $amendment->proposalVisibleFrom = null;
             }
 
-            $votingBlockId = \Yii::$app->request->post('votingBlockId', null);
-            $votingBlockPre = $amendment->votingBlockId;
-            $amendment->votingBlockId = null;
-            if ($votingBlockId === 'NEW') {
-                $title = trim(\Yii::$app->request->post('votingBlockTitle', ''));
-                if ($title !== '') {
-                    $votingBlock                 = new VotingBlock();
-                    $votingBlock->consultationId = $this->consultation->id;
-                    $votingBlock->title          = $title;
-                    $votingBlock->votingStatus   = VotingBlock::STATUS_OFFLINE;
-                    $votingBlock->save();
-
-                    $amendment->votingBlockId = $votingBlock->id;
-                }
-            } elseif ($votingBlockId > 0) {
-                $votingBlock = $this->consultation->getVotingBlock($votingBlockId);
-                if ($votingBlock) {
-                    $amendment->votingBlockId = $votingBlock->id;
-                }
-            }
-            $ppChanges->setVotingBlockChanges($votingBlockPre, $amendment->votingBlockId);
+            $amendment->setProposalVotingPropertiesFromRequest(
+                \Yii::$app->request->post('votingStatus', null),
+                \Yii::$app->request->post('votingBlockId', null),
+                \Yii::$app->request->post('votingBlockTitle', ''),
+                $ppChanges
+            );
 
             if ($ppChanges->hasChanges()) {
                 ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendment->id, $ppChanges->jsonSerialize());

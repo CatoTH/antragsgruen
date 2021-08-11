@@ -2,8 +2,10 @@
 
 namespace app\controllers\admin;
 
+use app\models\consultationLog\ProposedProcedureChange;
 use app\components\{DateTools, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation,
+    ConsultationLog,
     ConsultationSettingsMotionSection,
     ConsultationMotionType,
     ConsultationSettingsTag,
@@ -524,6 +526,17 @@ class MotionController extends AdminBase
                 $votingData = $motion->getVotingData();
                 $votingData->setFromPostData($post['votes']);
                 $motion->setVotingData($votingData);
+
+                $ppChanges = new ProposedProcedureChange(null);
+                $motion->setProposalVotingPropertiesFromRequest(
+                    \Yii::$app->request->post('votingStatus', null),
+                    \Yii::$app->request->post('votingBlockId', null),
+                    \Yii::$app->request->post('newBlockTitle', ''),
+                    $ppChanges
+                );
+                if ($ppChanges->hasChanges()) {
+                    ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
+                }
 
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {

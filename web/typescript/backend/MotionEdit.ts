@@ -3,9 +3,16 @@
 import {MotionSupporterEdit} from "./MotionSupporterEdit";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 
+const STATUS_VOTE = 11;
+
 export class MotionEdit {
+    private $updateForm: JQuery;
+    private $status: JQuery;
+
     constructor() {
         let lang = $("html").attr("lang");
+        this.$updateForm = $("#motionUpdateForm");
+        this.$status = $("#motionStatus");
         $("#motionDateCreationHolder").datetimepicker({
             locale: lang
         });
@@ -19,16 +26,16 @@ export class MotionEdit {
             locale: $('#resolutionDate').data('locale'),
             format: 'L'
         });
-        $("#motionTextEditCaller").find("button").click(() => {
+        $("#motionTextEditCaller").find("button").on('click', () => {
             this.initMotionTextEdit();
         });
 
-        $(".checkAmendmentCollisions").click((ev) => {
+        $(".checkAmendmentCollisions").on('click', ev => {
             ev.preventDefault();
             this.loadAmendmentCollisions();
         });
 
-        $("#motionUpdateForm").on("submit", function () {
+        this.$updateForm.on("submit", function () {
             $(".amendmentCollisionsHolder .amendmentOverrideBlock > .texteditor").each(function () {
                 let text = CKEDITOR.instances[$(this).attr("id")].getData();
                 $(this).parents(".amendmentOverrideBlock").find("> textarea").val(text);
@@ -54,19 +61,33 @@ export class MotionEdit {
     }
 
     private initVotingFunctions() {
-        const $closer = $(".votingDataCloser"),
+        const $classHolders = $(".contentVotingResultCaller, .votingDataHolder"),
+            $closer = $(".votingDataCloser"),
             $opener = $(".votingDataOpener"),
-            $holder = $(".votingDataHolder");
+            $votingBlockId = $('select[name=votingBlockId]');
+
         $opener.on("click", () => {
-            $closer.removeClass("hidden");
-            $opener.addClass("hidden");
-            $holder.removeClass("hidden");
+            $classHolders.addClass('explicitlyOpened');
         });
         $closer.on("click", () => {
-            $closer.addClass("hidden");
-            $opener.removeClass("hidden");
-            $holder.addClass("hidden");
+            $classHolders.removeClass('explicitlyOpened');
         });
+
+        this.$status.on('change', () => {
+            if (parseInt(this.$status.val() as string, 10) === STATUS_VOTE) {
+                $classHolders.addClass('hasVotingStatus');
+            } else {
+                $classHolders.removeClass('hasVotingStatus');
+            }
+        }).trigger('change');
+
+        $votingBlockId.on('change', () => {
+            if ($votingBlockId.val() == 'NEW') {
+                $(".votingBlockRow .newBlock").removeClass('hidden');
+            } else {
+                $(".votingBlockRow .newBlock").addClass('hidden');
+            }
+        }).trigger('change');
     }
 
     private onSubmitDeleteForm(ev, data) {
@@ -94,7 +115,7 @@ export class MotionEdit {
                 $textarea.parent().find("textarea").val(editor.getData());
             });
         });
-        $("#motionUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
+        this.$updateForm.append("<input type='hidden' name='edittext' value='1'>");
 
         if ($(".checkAmendmentCollisions").length > 0) {
             $(".wysiwyg-textarea .texteditor").on("focus", function () {
@@ -120,7 +141,7 @@ export class MotionEdit {
         });
         $.post(url, {
             'newSections': sections,
-            '_csrf': $("#motionUpdateForm").find('> input[name=_csrf]').val()
+            '_csrf': this.$updateForm.find('> input[name=_csrf]').val()
         }, function (html) {
             $holder.html(html);
 

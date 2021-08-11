@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\{AntragsgruenApp, VotingData};
+use app\models\consultationLog\ProposedProcedureChange;
 use app\models\siteSpecificBehavior\Permissions;
 use app\components\{Tools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
@@ -530,6 +531,33 @@ abstract class IMotion extends ActiveRecord
                     return $this->proposalStatus . '?' . $explStr;
                 }
         }
+    }
+
+    public function setProposalVotingPropertiesFromRequest(?string $votingStatus, ?string $votingBlockId, string $newVotingBlockTitle, ProposedProcedureChange $ppChanges) {
+        $newVotingStatus = ($votingStatus !== null ? intval($votingStatus) : null);
+        $ppChanges->setProposalVotingStatusChanges($this->votingStatus, $newVotingStatus);
+        $this->votingStatus = $newVotingStatus;
+
+        $votingBlockPre = $this->votingBlockId;
+        $this->votingBlockId = null;
+        if ($votingBlockId === 'NEW') {
+            $newVotingBlockTitle = trim($newVotingBlockTitle);
+            if ($newVotingBlockTitle !== '') {
+                $votingBlock = new VotingBlock();
+                $votingBlock->consultationId = $this->getMyConsultation()->id;
+                $votingBlock->title = $newVotingBlockTitle;
+                $votingBlock->votingStatus = VotingBlock::STATUS_OFFLINE;
+                $votingBlock->save();
+
+                $this->votingBlockId = $votingBlock->id;
+            }
+        } elseif ($votingBlockId > 0) {
+            $votingBlock = $this->getMyConsultation()->getVotingBlock($votingBlockId);
+            if ($votingBlock) {
+                $this->votingBlockId = $votingBlock->id;
+            }
+        }
+        $ppChanges->setVotingBlockChanges($votingBlockPre, $this->votingBlockId);
     }
 
     /**

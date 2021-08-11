@@ -484,10 +484,6 @@ trait MotionActionsTrait
             $ppChanges->setProposalCommentChanges($motion->proposalComment, \Yii::$app->request->post('proposalComment', ''));
             $motion->proposalComment = \Yii::$app->request->post('proposalComment', '');
 
-            $newVotingStatus = (\Yii::$app->request->post('votingStatus', null) !== null ? intval(\Yii::$app->request->post('votingStatus', null)) : null);
-            $ppChanges->setProposalVotingStatusChanges($motion->votingStatus, $newVotingStatus);
-            $motion->votingStatus = $newVotingStatus;
-
             $oldTags = $motion->getProposedProcedureTags();
             $newTags = [];
             $changed = false;
@@ -527,27 +523,12 @@ trait MotionActionsTrait
                 $motion->proposalVisibleFrom = null;
             }
 
-            $votingBlockId = \Yii::$app->request->post('votingBlockId', null);
-            $votingBlockPre = $motion->votingBlockId;
-            $motion->votingBlockId = null;
-            if ($votingBlockId === 'NEW') {
-                $title = trim(\Yii::$app->request->post('votingBlockTitle', ''));
-                if ($title !== '') {
-                    $votingBlock                 = new VotingBlock();
-                    $votingBlock->consultationId = $this->consultation->id;
-                    $votingBlock->title          = $title;
-                    $votingBlock->votingStatus   = VotingBlock::STATUS_OFFLINE;
-                    $votingBlock->save();
-
-                    $motion->votingBlockId = $votingBlock->id;
-                }
-            } elseif ($votingBlockId > 0) {
-                $votingBlock = $this->consultation->getVotingBlock($votingBlockId);
-                if ($votingBlock) {
-                    $motion->votingBlockId = $votingBlock->id;
-                }
-            }
-            $ppChanges->setVotingBlockChanges($votingBlockPre, $motion->votingBlockId);
+            $motion->setProposalVotingPropertiesFromRequest(
+                \Yii::$app->request->post('votingStatus', null),
+                \Yii::$app->request->post('votingBlockId', null),
+                \Yii::$app->request->post('votingBlockTitle', ''),
+                $ppChanges
+            );
 
             if ($ppChanges->hasChanges()) {
                 ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());

@@ -42,15 +42,39 @@
   }
 }
 
+// Motion / Amendment Votings
 .contentVotingResultCaller {
   text-align: right;
-}
 
-.votingDataCloser.btn-link {
-  color: #555;
-  float: right;
-  padding: 0;
-  margin-top: -2px;
+  &.explicitlyOpened, &.hasData, &.hasVotingStatus {
+    display: none;
+  }
+}
+.votingDataHolder {
+  display: none;
+  &.explicitlyOpened {
+    display: block;
+  }
+  &.hasData, &.hasVotingStatus {
+    display: block;
+    .votingDataCloser {
+      display: none;
+    }
+  }
+  .votingDataCloser.btn-link {
+    color: #555;
+    float: right;
+    padding: 0;
+    margin-top: -2px;
+  }
+
+  .votingResult {
+    label {
+      padding-top: 7px;
+      margin-right: 15px;
+      font-weight: normal;
+    }
+  }
 }
 
 legend, label.legend {

@@ -8,16 +8,20 @@ use yii\helpers\Html;
  * @var Amendment $amendment
  */
 
+$votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 $voting = $amendment->getVotingData();
-$votingOpened = $voting->hasAnyData() || $amendment->status === IMotion::STATUS_VOTE || $amendment->proposalStatus === IMotion::STATUS_VOTE;
+$cssClass = '';
+if ($voting->hasAnyData() || $amendment->proposalStatus === IMotion::STATUS_VOTE) {
+    $cssClass .= ' hasData';
+}
 ?>
-<div class="contentVotingResultCaller">
-    <button class="btn btn-link votingDataOpener <?= ($votingOpened ? 'hidden' : '') ?>" type="button">
+<div class="contentVotingResultCaller<?= $cssClass ?>">
+    <button class="btn btn-link votingDataOpener" type="button">
         <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
         <?= Yii::t('admin', 'motion_vote_open') ?>
     </button>
 </div>
-<section aria-labelledby="votingDataTitle" class="votingDataHolder <?= ($votingOpened ? '' : 'hidden') ?>">
+<section aria-labelledby="votingDataTitle" class="votingDataHolder<?=$cssClass?>">
     <h2 class="green">
         <span id="votingDataTitle"><?= Yii::t('admin', 'motion_vote_title') ?></span>
         <button class="btn btn-link votingDataCloser" type="button">
@@ -25,7 +29,53 @@ $votingOpened = $voting->hasAnyData() || $amendment->status === IMotion::STATUS_
             <?= Yii::t('admin', 'motion_vote_close') ?>
         </button>
     </h2>
-    <div class="content">
+    <div class="content form-horizontal">
+        <div class="form-group votingBlockRow">
+            <label class="col-md-3 control-label" for="votingBlockId">
+                <?= Yii::t('amend', 'proposal_voteblock') ?>
+            </label>
+            <div class="col-md-9">
+                <select name="votingBlockId" id="votingBlockId" class="stdDropdown">
+                    <option>-</option>
+                    <?php
+                    foreach ($votingBlocks as $votingBlock) {
+                        echo '<option value="' . Html::encode($votingBlock->id) . '"';
+                        if ($amendment->votingBlockId === $votingBlock->id) {
+                            echo ' selected';
+                        }
+                        echo '>' . Html::encode($votingBlock->title) . '</option>';
+                    }
+                    ?>
+                    <option value="NEW">- <?= Yii::t('amend', 'proposal_voteblock_newopt') ?> -</option>
+                </select>
+                <div class="newBlock">
+                    <label for="newBlockTitle" class="control-label">
+                        <?= Yii::t('amend', 'proposal_voteblock_new') ?>:
+                    </label>
+                    <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
+                </div>
+            </div>
+        </div>
+        <div class="form-group votingResult">
+            <div class="col-md-3 control-label">
+                <?= Yii::t('amend', 'proposal_voting_status') ?>
+            </div>
+            <div class="col-md-9">
+                <?php
+                foreach ($amendment->getMyConsultation()->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
+                    ?>
+                    <label>
+                        <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php
+                        if ($amendment->votingStatus == $statusId) {
+                            echo 'checked';
+                        }
+                        ?>> <?= Html::encode($statusName) ?>
+                    </label>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
         <div class="form-group contentVotingResultComment">
             <label class="col-md-3 control-label" for="votesComment">
                 <?= Yii::t('amend', 'merge_new_votes_comment') ?>
