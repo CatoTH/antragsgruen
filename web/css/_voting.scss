@@ -167,9 +167,32 @@
     td {
       text-align: center;
     }
-    .total {
-      font-weight: bold;
-    }
+  }
+}
+
+.votingResultTable {
+  table-layout: fixed;
+  width: 100%;
+
+  caption {
+    // @TODO Move into EYF plugin
+    margin-top: 15px;
+    font-size: 1.2em;
+    color: #333;
+    border-top: solid 1px #ccc;
+  }
+
+  th {
+    text-align: center;
+    vertical-align: bottom;
+  }
+
+  td {
+    text-align: center;
+  }
+
+  .total {
+    font-weight: bold;
   }
 }
 

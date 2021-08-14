@@ -9,6 +9,6 @@ class LayoutHooks extends Hooks
 {
     public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
     {
-        return file_get_contents(__DIR__ . '/views/voting-result-admin.php');
+        return file_get_contents(__DIR__ . '/views/voting-result-admin.vue.php');
     }
 }

@@ -9,6 +9,9 @@ class VotingData implements \JsonSerializable
 {
     use JsonConfigTrait;
 
+    /** @var null|string - casting a "yes" for Item 1 implies a "yes" for Item 2 of the same item group */
+    public $itemGroupSameVote = null;
+
     /** @var null|int */
     public $votesYes = null;
     /** @var null|int */
@@ -32,16 +35,16 @@ class VotingData implements \JsonSerializable
     public function setFromPostData($votes)
     {
         if (isset($votes['yes']) && is_numeric($votes['yes'])) {
-            $this->votesYes = IntVal($votes['yes']);
+            $this->votesYes = intval($votes['yes']);
         }
         if (isset($votes['no']) && is_numeric($votes['no'])) {
-            $this->votesNo = IntVal($votes['no']);
+            $this->votesNo = intval($votes['no']);
         }
         if (isset($votes['abstention']) && is_numeric($votes['abstention'])) {
-            $this->votesAbstention = IntVal($votes['abstention']);
+            $this->votesAbstention = intval($votes['abstention']);
         }
         if (isset($votes['invalid']) && is_numeric($votes['invalid'])) {
-            $this->votesInvalid = IntVal($votes['invalid']);
+            $this->votesInvalid = intval($votes['invalid']);
         }
         if (isset($votes['comment'])) {
             $this->comment = $votes['comment'];

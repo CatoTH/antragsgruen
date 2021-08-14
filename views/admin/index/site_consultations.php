@@ -47,7 +47,7 @@ foreach ($consultations as $consultation) {
 
     echo '<div class="stdbox">';
     if ($isStandard) {
-        echo '<strong><span class="glyphicon glyphicon-ok" style="color: green;"></span> ' .
+        echo '<strong><span class="glyphicon glyphicon-ok" style="color: green;" aria-hidden="true"></span> ' .
             Yii::t('admin', 'cons_std_con') . '</strong>';
     } else {
         echo '<button type="submit" name="setStandard[' . $consultation->id . ']" class="link">' .

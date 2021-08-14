@@ -73,6 +73,9 @@ class VotingData extends \app\models\settings\VotingData {
 
     public function renderDetailedResults(): ?string
     {
-        return print_r(get_object_vars($this), true);
+        $result = $this;
+        ob_start();
+        require(__DIR__ . '/views/voting-result-admin-backend.php');
+        return ob_get_clean();
     }
 }

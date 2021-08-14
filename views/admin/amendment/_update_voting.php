@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\{Amendment, IMotion};
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
 
@@ -14,6 +15,7 @@ $cssClass = '';
 if ($voting->hasAnyData() || $amendment->proposalStatus === IMotion::STATUS_VOTE) {
     $cssClass .= ' hasData';
 }
+$voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);
 ?>
 <div class="contentVotingResultCaller<?= $cssClass ?>">
     <button class="btn btn-link votingDataOpener" type="button">
@@ -30,6 +32,12 @@ if ($voting->hasAnyData() || $amendment->proposalStatus === IMotion::STATUS_VOTE
         </button>
     </h2>
     <div class="content form-horizontal">
+        <div class="votingEditLinkHolder">
+            <a href="<?= Html::encode($voteEditUrl) ?>" class="votingEditLink">
+                <?= Yii::t('amend', 'proposal_voteblock_edit') ?>
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            </a>
+        </div>
         <div class="form-group votingBlockRow">
             <label class="col-md-3 control-label" for="votingBlockId">
                 <?= Yii::t('amend', 'proposal_voteblock') ?>

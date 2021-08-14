@@ -1,4 +1,4 @@
-<table class="votingTable votingTableMultiple">
+<table class="votingResultTable votingResultTableMultiple">
     <thead>
     <tr>
         <th rowspan="2"></th>
