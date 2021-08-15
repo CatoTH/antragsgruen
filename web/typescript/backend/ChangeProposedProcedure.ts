@@ -25,6 +25,7 @@ export class ChangeProposedProcedure {
         this.initExplanation();
         this.initTags();
         $widget.on("submit", ev => ev.preventDefault());
+        this.$widget.find('#votingBlockId').trigger('change');
     }
 
     private initElements() {
@@ -80,6 +81,7 @@ export class ChangeProposedProcedure {
         this.initTags();
         this.$widget.find('.newBlock').addClass('hidden');
         this.$widget.find('.notifyProposerSection').addClass('hidden');
+        this.$widget.find('#votingBlockId').trigger('change');
     }
 
     private setGlobalProposedStr(html: string) {
@@ -178,6 +180,11 @@ export class ChangeProposedProcedure {
         if (data.votingBlockId == 'NEW') {
             data['votingBlockTitle'] = this.$widget.find('input[name=newBlockTitle]').val();
         }
+        data['votingItemBlockId'] = {};
+        this.$widget.find('.votingItemBlockInput').each(function(i, el) {
+            const $select = $(el);
+            data['votingItemBlockId'][$select.data('voting-block') + ""] = $select.val();
+        });
 
         if (this.$widget.find('input[name=setPublicExplanation]').prop('checked')) {
             data['proposalExplanation'] = this.$widget.find('textarea[name=proposalExplanation]').val();
@@ -237,11 +244,17 @@ export class ChangeProposedProcedure {
     private initVotingBlock() {
         this.$widget.on('change', '#votingBlockId', () => {
             this.$widget.addClass('isChanged');
-            if (this.$votingBlockId.val() == 'NEW') {
-                this.$widget.find(".newBlock").removeClass('hidden');
+            if (this.$votingBlockId.val() === 'NEW') {
+                this.$widget.find('.newBlock').removeClass('hidden');
+                this.$widget.find('.votingItemBlockRow').addClass('hidden');
             } else {
-                this.$widget.find(".newBlock").addClass('hidden');
+                this.$widget.find('.newBlock').addClass('hidden');
+                this.$widget.find('.votingItemBlockRow').addClass('hidden');
+                this.$widget.find('.votingItemBlockRow' + this.$votingBlockId.val()).removeClass('hidden');
             }
+        });
+        this.$widget.on('change', '.votingItemBlockRow select', () => {
+            this.$widget.addClass('isChanged');
         });
         this.$widget.find('.newBlock').addClass('hidden');
     }

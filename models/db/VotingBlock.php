@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\VotingData;
+use app\models\VotingItemGroup;
 use yii\db\ActiveRecord;
 
 /**
@@ -262,5 +263,47 @@ class VotingBlock extends ActiveRecord
         $present = $this->getUsersPresentByOrganizations();
 
         return $present[$organization] ?? null;
+    }
+
+    /**
+     * @return VotingItemGroup[]
+     */
+    public function getVotingItemBlocks(bool $includeUngrouped, ?IMotion $adhocFilter): array
+    {
+        $groups = [];
+        $ungrouped = [];
+
+        foreach ($this->getMyConsultation()->motions as $motion) {
+            if ($motion->votingBlockId === $this->id && $motion->getVotingData()->itemGroupSameVote) {
+                if (!isset($groups[$motion->getVotingData()->itemGroupSameVote])) {
+                    $groups[$motion->getVotingData()->itemGroupSameVote] = new VotingItemGroup($motion->getVotingData()->itemGroupSameVote, null);
+                }
+                $groups[$motion->getVotingData()->itemGroupSameVote]->motions[] = $motion;
+                $groups[$motion->getVotingData()->itemGroupSameVote]->motionIds[] = $motion->id;
+            }
+            if ($motion->votingBlockId === $this->id && $motion->getVotingData()->itemGroupSameVote === null && $includeUngrouped) {
+                $ungrouped[] = new VotingItemGroup(null, $motion);
+            }
+
+            foreach ($motion->amendments as $amendment) {
+                if ($amendment->votingBlockId === $this->id && $amendment->getVotingData()->itemGroupSameVote) {
+                    if (!isset($groups[$amendment->getVotingData()->itemGroupSameVote])) {
+                        $groups[$amendment->getVotingData()->itemGroupSameVote] = new VotingItemGroup($amendment->getVotingData()->itemGroupSameVote, null);
+                    }
+                    $groups[$amendment->getVotingData()->itemGroupSameVote]->amendments[] = $amendment;
+                    $groups[$amendment->getVotingData()->itemGroupSameVote]->amendmentIds[] = $amendment->id;
+                }
+                if ($amendment->votingBlockId === $this->id && $amendment->getVotingData()->itemGroupSameVote === null && $includeUngrouped) {
+                    $ungrouped[] = new VotingItemGroup(null, $amendment);
+                }
+            }
+        }
+        $groups = array_merge($groups, $ungrouped);
+        if ($adhocFilter) {
+            $groups = array_filter($groups, function (VotingItemGroup $group) use ($adhocFilter): bool {
+                return !$group->isOnlyMyselfGroup($adhocFilter);
+            });
+        }
+        return array_values($groups);
     }
 }

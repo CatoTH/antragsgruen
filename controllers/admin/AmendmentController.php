@@ -314,6 +314,7 @@ class AmendmentController extends AdminBase
             $amendment->setProposalVotingPropertiesFromRequest(
                 \Yii::$app->request->post('votingStatus', null),
                 \Yii::$app->request->post('votingBlockId', null),
+                \Yii::$app->request->post('votingItemBlockId', []),
                 \Yii::$app->request->post('newBlockTitle', ''),
                 $ppChanges
             );

@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\models\settings\{AntragsgruenApp, VotingData};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\siteSpecificBehavior\Permissions;
+use app\models\VotingItemGroup;
 use app\components\{Tools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
@@ -32,7 +33,7 @@ use yii\helpers\Html;
  * @property string|null $proposalNotification
  * @property int|null $proposalUserStatus
  * @property string|null $proposalExplanation
- * @property string|null $votingBlockId
+ * @property int|null $votingBlockId
  * @property string|null $votingData
  * @property int|null $votingStatus
  * @property int|null $responsibilityId
@@ -533,7 +534,7 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    public function setProposalVotingPropertiesFromRequest(?string $votingStatus, ?string $votingBlockId, string $newVotingBlockTitle, ProposedProcedureChange $ppChanges) {
+    public function setProposalVotingPropertiesFromRequest(?string $votingStatus, ?string $votingBlockId, array $votingItemBlockIds, string $newVotingBlockTitle, ProposedProcedureChange $ppChanges) {
         $newVotingStatus = ($votingStatus !== null ? intval($votingStatus) : null);
         $ppChanges->setProposalVotingStatusChanges($this->votingStatus, $newVotingStatus);
         $this->votingStatus = $newVotingStatus;
@@ -555,6 +556,13 @@ abstract class IMotion extends ActiveRecord
             $votingBlock = $this->getMyConsultation()->getVotingBlock($votingBlockId);
             if ($votingBlock) {
                 $this->votingBlockId = $votingBlock->id;
+                if (isset($votingItemBlockIds[$votingBlock->id])) {
+                    VotingItemGroup::setVotingItemGroupToAllItems($this, $votingItemBlockIds[$votingBlock->id]);
+                } else {
+                    $votingData = $this->getVotingData();
+                    $votingData->itemGroupSameVote = null;
+                    $this->setVotingData($votingData);
+                }
             }
         }
         $ppChanges->setVotingBlockChanges($votingBlockPre, $this->votingBlockId);

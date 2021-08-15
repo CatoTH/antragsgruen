@@ -124,6 +124,34 @@ $selectedTags = $amendment->getProposedProcedureTags();
                     </label>
                     <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
                 </div>
+                <?php
+                foreach ($votingBlocks as $votingBlock) {
+                    $subitems = $votingBlock->getVotingItemBlocks(true, $amendment);
+                    if (count($subitems) === 0) {
+                        continue;
+                    }
+                    ?>
+                    <div class="votingItemBlockRow votingItemBlockRow<?= $votingBlock->id ?>">
+                        <label class="control-label" for="votingItemBlockId<?= $votingBlock->id ?>">
+                            <?= Yii::t('amend', 'proposal_voteitemblock') ?>
+                        </label>
+                        <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>"
+                                class="stdDropdown votingItemBlockInput" data-voting-block="<?= $votingBlock->id ?>">
+                            <option value=""><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
+                            <?php
+                            foreach ($subitems as $subitem) {
+                                echo '<option value="' . $subitem->groupId . '"';
+                                if (in_array($amendment->id, $subitem->amendmentIds)) {
+                                    echo ' selected';
+                                }
+                                echo '>' . Html::encode($subitem->getTitle($amendment)) . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
             <div class="notificationSettings showIfStatusSet">
                 <h3><?= Yii::t('amend', 'proposal_noti') ?></h3>

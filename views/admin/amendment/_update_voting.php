@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\{Amendment, IMotion};
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use yii\helpers\Html;
 
@@ -64,6 +65,37 @@ $voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);
                 </div>
             </div>
         </div>
+        <?php
+        foreach ($votingBlocks as $votingBlock) {
+            $subitems = $votingBlock->getVotingItemBlocks(true, $amendment);
+            if (count($subitems) === 0) {
+                continue;
+            }
+            //echo '<pre>';            var_dump($subitems); echo '</pre>';
+            ?>
+            <div class="form-group votingItemBlockRow votingItemBlockRow<?= $votingBlock->id ?>">
+                <label class="col-md-3 control-label" for="votingItemBlockId<?= $votingBlock->id ?>">
+                    <?= Yii::t('amend', 'proposal_voteitemblock') ?>:
+                    <?= HTMLTools::getTooltipIcon(Yii::t('amend', 'proposal_voteitemblock_h')) ?>
+                </label>
+                <div class="col-md-9">
+                    <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>" class="stdDropdown">
+                        <option><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
+                        <?php
+                        foreach ($subitems as $subitem) {
+                            echo '<option value="' . $subitem->groupId . '"';
+                            if (in_array($amendment->id, $subitem->amendmentIds)) {
+                                echo ' selected';
+                            }
+                            echo '>' . Html::encode($subitem->getTitle($amendment)) . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
         <div class="form-group votingResult">
             <div class="col-md-3 control-label">
                 <?= Yii::t('amend', 'proposal_voting_status') ?>

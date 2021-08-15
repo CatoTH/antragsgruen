@@ -109,10 +109,13 @@ export class AmendmentEdit {
         }).trigger('change');
 
         $votingBlockId.on('change', () => {
-            if ($votingBlockId.val() == 'NEW') {
+            if ($votingBlockId.val() === 'NEW') {
                 $(".votingBlockRow .newBlock").removeClass('hidden');
+                $(".votingItemBlockRow").addClass('hidden');
             } else {
                 $(".votingBlockRow .newBlock").addClass('hidden');
+                $(".votingItemBlockRow").addClass('hidden');
+                $(".votingItemBlockRow" + $votingBlockId.val()).removeClass('hidden');
             }
         }).trigger('change');
     }

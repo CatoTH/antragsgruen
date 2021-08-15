@@ -1,5 +1,7 @@
 <?php
 
+use app\components\HTMLTools;
+use app\components\UrlHelper;
 use app\models\db\{IMotion, Motion};
 use yii\helpers\Html;
 
@@ -14,6 +16,7 @@ $cssClass = '';
 if ($voting->hasAnyData() || $motion->proposalStatus === IMotion::STATUS_VOTE) {
     $cssClass .= ' hasData';
 }
+$voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);
 ?>
 <div class="contentVotingResultCaller<?= $cssClass ?>">
     <button class="btn btn-link votingDataOpener" type="button">
@@ -30,6 +33,12 @@ if ($voting->hasAnyData() || $motion->proposalStatus === IMotion::STATUS_VOTE) {
         </button>
     </h2>
     <div class="content form-horizontal">
+        <div class="votingEditLinkHolder">
+            <a href="<?= Html::encode($voteEditUrl) ?>" class="votingEditLink">
+                <?= Yii::t('amend', 'proposal_voteblock_edit') ?>
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            </a>
+        </div>
         <div class="form-group votingBlockRow">
             <label class="col-md-3 control-label" for="votingBlockId">
                 <?= Yii::t('amend', 'proposal_voteblock') ?>
@@ -56,6 +65,36 @@ if ($voting->hasAnyData() || $motion->proposalStatus === IMotion::STATUS_VOTE) {
                 </div>
             </div>
         </div>
+        <?php
+        foreach ($votingBlocks as $votingBlock) {
+            $subitems = $votingBlock->getVotingItemBlocks(true, $motion);
+            if (count($subitems) === 0) {
+                continue;
+            }
+            ?>
+            <div class="form-group votingItemBlockRow votingItemBlockRow<?= $votingBlock->id ?>">
+                <label class="col-md-3 control-label" for="votingItemBlockId<?= $votingBlock->id ?>">
+                    <?= Yii::t('amend', 'proposal_voteitemblock') ?>:
+                    <?= HTMLTools::getTooltipIcon(Yii::t('amend', 'proposal_voteitemblock_h')) ?>
+                </label>
+                <div class="col-md-9">
+                    <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>" class="stdDropdown">
+                        <option><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
+                        <?php
+                        foreach ($subitems as $subitem) {
+                            echo '<option value="' . $subitem->groupId . '"';
+                            if (in_array($motion->id, $subitem->motionIds)) {
+                                echo ' selected';
+                            }
+                            echo '>' . Html::encode($subitem->getTitle($motion)) . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
         <div class="form-group votingResult">
             <div class="col-md-3 control-label">
                 <?= Yii::t('amend', 'proposal_voting_status') ?>

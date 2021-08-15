@@ -5,6 +5,10 @@
 @import "bootstrap-3.4.1-sass/bootstrap/mixins";
 @import "mixins";
 
+.tooltip-inner {
+    max-width: 100% !important;
+}
+
 .adminForm {
   label {
     font-weight: normal;
