@@ -25,20 +25,20 @@
     <tr>
         <th>NYO</th>
         <td><?= $result->nyoTotalMultiplied ?></td>
-        <td><?= $result->nyoYesMultiplied ?></td>
         <td><?= $result->nyoYes ?></td>
-        <td><?= $result->nyoNoMultiplied ?></td>
+        <td><?= $result->nyoYesMultiplied ?></td>
         <td><?= $result->nyoNo ?></td>
+        <td><?= $result->nyoNoMultiplied ?></td>
         <td><?= $result->nyoAbstention ?></td>
         <td><?= $result->nyoTotal ?></td>
     </tr>
     <tr>
         <th>INGYO</th>
         <td><?= $result->ingyoTotalMultiplied ?></td>
-        <td><?= $result->ingyoYesMultiplied ?></td>
         <td><?= $result->ingyoYes ?></td>
-        <td><?= $result->ingyoNoMultiplied ?></td>
+        <td><?= $result->ingyoYesMultiplied ?></td>
         <td><?= $result->ingyoNo ?></td>
+        <td><?= $result->ingyoNoMultiplied ?></td>
         <td><?= $result->ingyoAbstention ?></td>
         <td><?= $result->ingyoTotal ?></td>
     </tr>
