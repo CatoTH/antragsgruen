@@ -42,6 +42,7 @@ return [
     'index_appearance'            => 'Appearance and components of this site',
     'index_consultation_settings' => 'This consultation',
     'index_motion_types'          => 'Edit motion types',
+    'index_site_voting'           => 'Votings',
     'index_site_access'           => 'Login / users / admins',
     'index_site_consultations'    => 'Manage more consultations on this subdomain',
     'index_site_config'           => 'Configuration of this Antragsgrün installation',
