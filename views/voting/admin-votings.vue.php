@@ -68,11 +68,12 @@ ob_start();
                 </div>
             </div>
             <div class="actions" v-if="isOpen">
-                <button type="button" class="btn btn-default" @click="cancelVoting()"><?= Yii::t('voting', 'admin_btn_cancel') ?></button>
+                <button type="button" class="btn btn-default" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
                 <button type="button" class="btn btn-primary" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
             </div>
             <div class="actions" v-if="isClosed">
-                <button type="button" class="btn btn-default" @click="cancelVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
+                <button type="button" class="btn btn-default" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
+                <button type="button" class="btn btn-default" @click="reopenVoting()"><?= Yii::t('voting', 'admin_btn_reopen') ?></button>
             </div>
         </form>
         <ul class="votingAdminList">
@@ -170,7 +171,10 @@ $html = ob_get_clean();
 
     const ACTIVITY_TYPE_OPENED = 1;
     const ACTIVITY_TYPE_CLOSED = 2;
-    const ACTIVITY_TYPE_CANCEL = 3;
+    const ACTIVITY_TYPE_RESET = 3;
+    const ACTIVITY_TYPE_REOPENED = 4;
+
+    const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
 
     Vue.directive('tooltip', function (el, binding) {
         $(el).tooltip({
@@ -240,11 +244,14 @@ $html = ob_get_clean();
                     case ACTIVITY_TYPE_OPENED:
                         description = <?= json_encode(Yii::t('voting', 'activity_opened')) ?>;
                         break;
-                    case ACTIVITY_TYPE_CANCEL:
-                        description = <?= json_encode(Yii::t('voting', 'activity_canceled')) ?>;
+                    case ACTIVITY_TYPE_RESET:
+                        description = <?= json_encode(Yii::t('voting', 'activity_reset')) ?>;
                         break;
                     case ACTIVITY_TYPE_CLOSED:
                         description = <?= json_encode(Yii::t('voting', 'activity_closed')) ?>;
+                        break;
+                    case ACTIVITY_TYPE_REOPENED:
+                        description = <?= json_encode(Yii::t('voting', 'activity_reopened')) ?>;
                         break;
                 }
                 let date = new Date(logEntry['date']);
@@ -258,8 +265,17 @@ $html = ob_get_clean();
                 this.voting.status = STATUS_CLOSED;
                 this.statusChanged();
             },
-            cancelVoting: function () {
-                this.voting.status = STATUS_PREPARING;
+            resetVoting: function () {
+                const widget = this;
+                bootbox.confirm(resetConfirmation, function(result) {
+                    if (result) {
+                        widget.voting.status = STATUS_PREPARING;
+                        widget.statusChanged();
+                    }
+                });
+            },
+            reopenVoting: function () {
+                this.voting.status = STATUS_OPEN;
                 this.statusChanged();
             },
             statusChanged: function () {

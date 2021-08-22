@@ -42,7 +42,8 @@ class VotingBlock extends ActiveRecord
 
     const ACTIVITY_TYPE_OPENED = 1;
     const ACTIVITY_TYPE_CLOSED = 2;
-    const ACTIVITY_TYPE_CANCEL = 3;
+    const ACTIVITY_TYPE_RESET = 3;
+    const ACTIVITY_TYPE_REOPENED = 4;
 
     /**
      * @return string
@@ -173,7 +174,7 @@ class VotingBlock extends ActiveRecord
 
     public function switchToOfflineVoting(): void {
         if ($this->votingStatus === VotingBlock::STATUS_OPEN) {
-            $this->addActivity(static::ACTIVITY_TYPE_CANCEL);
+            $this->addActivity(static::ACTIVITY_TYPE_RESET);
         }
         $this->votingStatus = VotingBlock::STATUS_OFFLINE;
         $this->save();
@@ -181,14 +182,20 @@ class VotingBlock extends ActiveRecord
 
     public function switchToOnlineVoting(): void {
         if ($this->votingStatus === VotingBlock::STATUS_OPEN) {
-            $this->addActivity(static::ACTIVITY_TYPE_CANCEL);
+            $this->addActivity(static::ACTIVITY_TYPE_RESET);
         }
         $this->votingStatus = VotingBlock::STATUS_PREPARING;
         $this->save();
+
+        foreach ($this->votes as $vote) {
+            $vote->delete();
+        }
     }
 
     public function openVoting(): void {
-        if ($this->votingStatus !== VotingBlock::STATUS_OPEN) {
+        if ($this->votingStatus === VotingBlock::STATUS_CLOSED) {
+            $this->addActivity(static::ACTIVITY_TYPE_REOPENED);
+        } elseif ($this->votingStatus !== VotingBlock::STATUS_OPEN) {
             $this->addActivity(static::ACTIVITY_TYPE_OPENED);
         }
         if ($this->majorityType === null) {
@@ -203,7 +210,7 @@ class VotingBlock extends ActiveRecord
 
     public function closeVoting(): void {
         if ($this->votingStatus !== VotingBlock::STATUS_CLOSED) {
-            $this->addActivity(static::ACTIVITY_TYPE_CANCEL);
+            $this->addActivity(static::ACTIVITY_TYPE_RESET);
         }
         $this->votingStatus = VotingBlock::STATUS_CLOSED;
         $this->save();

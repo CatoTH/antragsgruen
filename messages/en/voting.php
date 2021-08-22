@@ -12,7 +12,8 @@ return [
 
     'activity_opened' => 'Voting opened',
     'activity_closed' => 'Voting closed',
-    'activity_canceled' => 'Voting canceled',
+    'activity_reset' => 'Voting reset',
+    'activity_reopened' => 'Voting re-opened',
 
     'admin_title' => 'Voting administration',
     'admin_bc' => 'Administration',
@@ -24,6 +25,8 @@ return [
     'admin_btn_close' => 'Close voting',
     'admin_btn_cancel' => 'Cancel',
     'admin_btn_reset' => 'Reset',
+    'admin_btn_reset_bb' => 'This will remove all votes and set the voting back to preparation mode, where you can add or remove motions and amendments. WARNING: All users will have to vote again.',
+    'admin_btn_reopen' => 'Re-Open',
     'admin_status_opened' => 'The voting is <strong>open</strong>, users can now cast their votes',
     'admin_status_closed' => 'The voting is <strong>closed</strong>.',
     'admin_members_present' => 'Members present',
