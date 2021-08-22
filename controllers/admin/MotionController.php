@@ -565,14 +565,14 @@ class MotionController extends AdminBase
             if (isset($modat['slug']) && preg_match('/^[\w_-]+$/i', $modat['slug'])) {
                 $collision = false;
                 foreach ($motion->getMyConsultation()->motions as $otherMotion) {
-                    if (strtolower($otherMotion->slug) === strtolower($modat['slug']) && $otherMotion->id !== $motion->id) {
+                    if (mb_strtolower($otherMotion->slug) === mb_strtolower($modat['slug']) && $otherMotion->id !== $motion->id) {
                         $collision = true;
                     }
                 }
                 if ($collision) {
                     \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_url_path_err'));
                 } else {
-                    $motion->slug = strtolower($modat['slug']);
+                    $motion->slug = mb_strtolower($modat['slug']);
                 }
             }
 

@@ -6,6 +6,7 @@
 - Bugfix: After saving a proposed procedure of an amendment or motion, the selected voting block was not shown.
 - Bugfix: If an amendment was assigned to an agenda item explicitly, it still showed up for a second time at the motion in the agenda.
 - Bugfix: The REST API didn't work correctly with statute amendments
+- Bugfix: To prevent motions that cannot be saved in the backend due to special characters in the motion slug, all slugs are now strictly transliterated to latin characters.
 
 ## Version 4.8.0 (2021-06-27)
 

@@ -15,6 +15,7 @@ use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
 use app\models\sectionTypes\{Image, ISectionType, PDF};
 use app\models\supportTypes\SupportBase;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use yii\helpers\Html;
 
 /**
@@ -956,7 +957,7 @@ class Motion extends IMotion implements IRSSItem
     public function createSlug(): string
     {
         $motionTitle = (mb_strlen($this->title) > 70 ? mb_substr($this->title, 0, 70) : $this->title);
-        $title       = Tools::sanitizeFilename($motionTitle, true);
+        $title = (new AsciiSlugger())->slug($motionTitle);
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $random = \Yii::$app->getSecurity()->generateRandomKey(2);
