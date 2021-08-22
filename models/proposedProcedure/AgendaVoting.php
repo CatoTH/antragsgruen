@@ -74,15 +74,9 @@ class AgendaVoting
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
         }
         if ($this->voting) {
-            $votingBlockJson['votes_total'] = 0;
-            $voteUserIds = [];
-            foreach ($this->voting->votes as $vote) {
-                $votingBlockJson['votes_total']++;
-                if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
-                    $voteUserIds[] = $vote->userId;
-                }
-            }
-            $votingBlockJson['votes_users'] = count($voteUserIds);
+            list($total, $users) = $this->voting->getVoteStatistics();
+            $votingBlockJson['votes_total'] = $total;
+            $votingBlockJson['votes_users'] = $users;
         }
 
         foreach ($this->items as $item) {
@@ -106,11 +100,12 @@ class AgendaVoting
                     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($item)),
                     'initiators_html' => $item->getInitiatorsStr(),
                     'procedure' => $procedure,
+                    'item_group_same_vote' => $item->getVotingData()->itemGroupSameVote,
                 ];
                 if ($user && $this->voting) {
-                    $vote = $this->voting->getUserVote($user, 'amendment', $item->id);
+                    $vote = $this->voting->getUserSingleItemVote($user, $item);
                     $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
-                    $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, 'amendment', $item->id);
+                    $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, $item);
                 }
             } else {
                 /** @var Motion $item */
@@ -123,11 +118,12 @@ class AgendaVoting
                     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($item)),
                     'initiators_html' => $item->getInitiatorsStr(),
                     'procedure' => $procedure,
+                    'item_group_same_vote' => $item->getVotingData()->itemGroupSameVote,
                 ];
                 if ($user && $this->voting) {
-                    $vote = $this->voting->getUserVote($user, 'motion', $item->id);
+                    $vote = $this->voting->getUserSingleItemVote($user, $item);
                     $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
-                    $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, 'motion', $item->id);
+                    $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, $item);
                 }
             }
 

@@ -76,17 +76,19 @@ ob_start();
             </div>
         </form>
         <ul class="votingAdminList">
-            <li v-for="item in voting.items">
+            <li v-for="groupedVoting in groupedVotings">
                 <div class="titleLink">
                     <!--
                     <button class="btn btn-link btnRemove" type="button" title="Remove this amendment from this voting">
                         <span class="glyphicon glyphicon-remove-circle" aria-label="Remove this amendment from this voting"></span>
                     </button>
                     -->
-                    {{ item.title_with_prefix }}
-                    <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
+                    <div v-for="item in groupedVoting">
+                        {{ item.title_with_prefix }}
+                        <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
                                 class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a><br>
-                    <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
+                        <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
+                    </div>
                 </div>
                 <div class="votesDetailed" v-if="isOpen || isClosed">
                     <?php
@@ -95,7 +97,7 @@ ob_start();
                         echo $alternativeResults;
                     } else {
                     ?>
-                    <div v-if="item.vote_results.length === 1 && item.vote_results[0]">
+                    <div v-if="groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0]">
                         <table class="votingTable votingTableSingle">
                             <thead>
                             <tr>
@@ -107,10 +109,10 @@ ob_start();
                             </thead>
                             <tbody>
                             <tr>
-                                <td>{{ item.vote_results[0].yes }}</td>
-                                <td>{{ item.vote_results[0].no }}</td>
-                                <td>{{ item.vote_results[0].abstention }}</td>
-                                <td class="total">{{ item.vote_results[0].yes + item.vote_results[0].no + item.vote_results[0].abstention }}</td>
+                                <td>{{ groupedVoting[0].vote_results[0].yes }}</td>
+                                <td>{{ groupedVoting[0].vote_results[0].no }}</td>
+                                <td>{{ groupedVoting[0].vote_results[0].abstention }}</td>
+                                <td class="total">{{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -131,6 +133,7 @@ ob_start();
                 <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
             </ol>
         </footer>
+        <!--
         <footer class="votingFooter" v-if="isPreparing">
             <div class="votingAmendmentAdder">
                 Add an amendment to this voting:
@@ -141,6 +144,7 @@ ob_start();
                 </select>
             </div>
         </footer>
+        -->
     </div>
 </section>
 
@@ -182,6 +186,23 @@ $html = ob_get_clean();
         data: {
         },
         computed: {
+            groupedVotings: function () {
+                const knownGroupIds = {};
+                const allGroups = [];
+                this.voting.items.forEach(function(item) {
+                    if (item.item_group_same_vote) {
+                        if (knownGroupIds[item.item_group_same_vote] !== undefined) {
+                            allGroups[knownGroupIds[item.item_group_same_vote]].push(item);
+                        } else {
+                            knownGroupIds[item.item_group_same_vote] = allGroups.length;
+                            allGroups.push([item]);
+                        }
+                    } else {
+                        allGroups.push([item]);
+                    }
+                });
+                return allGroups;
+            },
             isUsed: {
                 get() {
                     return this.voting.status !== STATUS_OFFLINE;

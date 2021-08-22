@@ -21,7 +21,7 @@ foreach ($votingBlocksToRender as $votingBlockToRender) {
 }
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks']);
-$voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'itemType' => 'ITEMTYPE', 'itemId' => 'ITEMID']);
+$voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID']);
 ?>
 <section aria-labelledby="votingTitle"
          data-url-poll="<?= Html::encode($pollUrl) ?>"

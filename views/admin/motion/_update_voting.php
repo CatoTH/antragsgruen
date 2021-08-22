@@ -79,7 +79,7 @@ $voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);
                 </label>
                 <div class="col-md-9">
                     <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>" class="stdDropdown">
-                        <option><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
+                        <option value=""><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
                         <?php
                         foreach ($subitems as $subitem) {
                             echo '<option value="' . $subitem->groupId . '"';

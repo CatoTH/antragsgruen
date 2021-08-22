@@ -556,7 +556,7 @@ abstract class IMotion extends ActiveRecord
             $votingBlock = $this->getMyConsultation()->getVotingBlock($votingBlockId);
             if ($votingBlock) {
                 $this->votingBlockId = $votingBlock->id;
-                if (isset($votingItemBlockIds[$votingBlock->id])) {
+                if (isset($votingItemBlockIds[$votingBlock->id]) && trim($votingItemBlockIds[$votingBlock->id]) !== '') {
                     VotingItemGroup::setVotingItemGroupToAllItems($this, $votingItemBlockIds[$votingBlock->id]);
                 } else {
                     $votingData = $this->getVotingData();

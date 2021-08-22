@@ -5,6 +5,9 @@
     flex: 1;
     line-height: 16px;
     overflow: hidden;
+    > div {
+      margin-bottom: 7px;
+    }
   }
   .amendmentBy {
     font-size: 0.8em;

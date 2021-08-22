@@ -28,6 +28,7 @@ return [
     'admin_status_closed' => 'The voting is <strong>closed</strong>.',
     'admin_members_present' => 'Members present',
 
+    'voting_current_aria' => 'Currently active voting',
     'voting_show_amend' => 'Show amendment',
     'voting_by' => 'By',
     'voting_admin_all' => 'Administrate votings',

@@ -11,8 +11,6 @@ export class VotingBlock {
         const pollUrl = $element.data('url-poll');
         const voteUrl = $element.data('url-vote');
 
-        console.log(JSON.parse(JSON.stringify(allVotingData)));
-
         this.widget = new Vue({
             el: $vueEl[0],
             template: `
@@ -26,21 +24,23 @@ export class VotingBlock {
                 };
             },
             methods: {
-                vote: function (votingBlockId, itemType, itemId, vote) {
+                vote: function (votingBlockId, itemGroupSameVote, itemType, itemId, vote) {
                     const postData = {
                         _csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
                         votes: [{
+                            itemGroupSameVote,
                             itemType,
                             itemId,
                             vote
                         }]
                     };
                     const widget = this;
-                    const url = voteUrl
-                        .replace(/VOTINGBLOCKID/, votingBlockId)
-                        .replace(/ITEMTYPE/, itemType)
-                        .replace(/ITEMID/, itemId);
+                    const url = voteUrl.replace(/VOTINGBLOCKID/, votingBlockId);
                     $.post(url, postData, function (data) {
+                        if (data.success !== undefined && !data.success) {
+                            alert(data.message);
+                            return;
+                        }
                         widget.votings = data;
                     }).catch(function (err) {
                         alert(err.responseText);

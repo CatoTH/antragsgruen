@@ -20,31 +20,31 @@
     <tbody>
     <tr>
         <th>NYO</th>
-        <td>{{ item.vote_results['nyo'].total_multiplied }}</td>
-        <td>{{ item.vote_results['nyo'].yes }}</td>
-        <td>{{ item.vote_results['nyo'].yes_multiplied }}</td>
-        <td>{{ item.vote_results['nyo'].no }}</td>
-        <td>{{ item.vote_results['nyo'].no_multiplied }}</td>
-        <td>{{ item.vote_results['nyo'].abstention }}</td>
-        <td>{{ item.vote_results['nyo'].total }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyo'].total_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyo'].yes }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyo'].yes_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyo'].no }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyo'].no_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyo'].abstention }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyo'].total }}</td>
     </tr>
     <tr>
         <th>INGYO</th>
-        <td>{{ item.vote_results['ingyo'].total_multiplied }}</td>
-        <td>{{ item.vote_results['ingyo'].yes }}</td>
-        <td>{{ item.vote_results['ingyo'].yes_multiplied }}</td>
-        <td>{{ item.vote_results['ingyo'].no }}</td>
-        <td>{{ item.vote_results['ingyo'].no_multiplied }}</td>
-        <td>{{ item.vote_results['ingyo'].abstention }}</td>
-        <td>{{ item.vote_results['ingyo'].total }}</td>
+        <td>{{ groupedVoting[0].vote_results['ingyo'].total_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['ingyo'].yes }}</td>
+        <td>{{ groupedVoting[0].vote_results['ingyo'].yes_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['ingyo'].no }}</td>
+        <td>{{ groupedVoting[0].vote_results['ingyo'].no_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['ingyo'].abstention }}</td>
+        <td>{{ groupedVoting[0].vote_results['ingyo'].total }}</td>
     </tr>
     <tr>
         <th>Total</th>
-        <td>{{ item.vote_results['total'].total_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['total'].total_multiplied }}</td>
         <td></td>
-        <td>{{ item.vote_results['total'].yes_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['total'].yes_multiplied }}</td>
         <td></td>
-        <td>{{ item.vote_results['total'].no_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['total'].no_multiplied }}</td>
     </tr>
     </tbody>
 </table>

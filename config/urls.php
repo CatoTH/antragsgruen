@@ -89,7 +89,7 @@ $urlRules = [
     $restBaseCon . '/votings/open' => '/voting/get-open-voting-blocks',
     $restBaseCon . '/votings/admin' => '/voting/get-admin-voting-blocks',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/settings' => '/voting/post-vote-settings',
-    $restBaseCon . '/votings/<votingBlockId:[^\/]+>/<itemType:[^\/]+>/<itemId:[^\/]+>' => '/voting/post-vote',
+    $restBaseCon . '/votings/<votingBlockId:[^\/]+>/vote' => '/voting/post-vote',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',

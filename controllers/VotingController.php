@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\models\db\Amendment;
+use app\models\db\IMotion;
+use app\models\db\Motion;
 use app\models\db\User;
 use app\models\db\Vote;
 use app\models\db\VotingBlock;
+use app\models\exceptions\FormError;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
 
@@ -16,6 +20,9 @@ class VotingController extends Base
 
     private function getError(string $message): string
     {
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
         return json_encode([
             'success' => false,
             'message' => $message,
@@ -109,6 +116,7 @@ class VotingController extends Base
         }
 
         $responseJson = $this->getAllVotingAdminData();
+
         return $this->returnRestResponse(200, $responseJson);
     }
 
@@ -137,10 +145,91 @@ class VotingController extends Base
         return $this->returnRestResponse(200, $responseJson);
     }
 
+    private function getIMotionByTypeAndId(string $itemType, int $itemId, ?VotingBlock $ensureVotingBlock): IMotion
+    {
+        $item = null;
+        if ($itemType === 'amendment') {
+            $item = $this->consultation->getAmendment($itemId);
+        }
+        if ($itemType === 'motion') {
+            $item = $this->consultation->getMotion($itemId);
+        }
+        if ($item) {
+            if ($ensureVotingBlock && $item->votingBlockId !== $ensureVotingBlock->id) {
+                throw new FormError('Item not part of this voting block');
+            }
+            return $item;
+        } else {
+            throw new FormError('Item not found');
+        }
+    }
+
+    private function voteForSingleItem(User $user, VotingBlock $votingBlock, IMotion $imotion, bool $public, string $voteChoice): Vote {
+        if (!$votingBlock->userIsAllowedToVoteFor($user, $imotion)) {
+            throw new FormError('Not possible to vote for this item');
+        }
+
+        $vote = new Vote();
+        $vote->userId = $user->id;
+        $vote->votingBlockId = $votingBlock->id;
+        $vote->setVoteFromApi($voteChoice);
+        if ($vote->vote === null) {
+            throw new FormError('Invalid vote');
+        }
+        if (is_a($imotion, Motion::class)) {
+            $vote->motionId = $imotion->id;
+            $vote->amendmentId = null;
+        }
+        if (is_a($imotion, Amendment::class)) {
+            $vote->motionId = null;
+            $vote->amendmentId = $imotion->id;
+        }
+        if ($public && $votingBlock->votesPublic) {
+            $vote->public = 1;
+        } else {
+            $vote->public = 0;
+        }
+        $vote->dateVote = date('Y-m-d H:i:s');
+
+        return $vote;
+    }
+
+    private function undoVoteForSingleItem(User $user, VotingBlock $votingBlock, IMotion $imotion): void {
+        $exitingVote = $votingBlock->getUserSingleItemVote($user, $imotion);
+        if (!$exitingVote) {
+            throw new FormError('Vote not found');
+        }
+        $exitingVote->delete();
+    }
+
     /**
+     * @return Vote[]
+     */
+    private function voteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup, bool $public, string $voteChoice): array {
+        $votes = [];
+        foreach ($votingBlock->getItemGroupItems($itemGroup) as $imotion) {
+            $votes[] = $this->voteForSingleItem($user, $votingBlock, $imotion, $public, $voteChoice);
+        }
+        return $votes;
+    }
+
+    private function undoVoteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup): void {
+        foreach ($votingBlock->getItemGroupItems($itemGroup) as $item) {
+            try {
+                $exitingVote = $votingBlock->getUserSingleItemVote($user, $item);
+                $exitingVote->delete();
+            } catch (FormError $e) {
+                // To make eventual inconsistencies at least not worse, let's remove all further votes anyway
+            }
+        }
+    }
+
+    /**
+     * votes[0][itemGroupSameVote]=[empty]|123abcderf
      * votes[0][itemType]=amendment
-     * votes[0][itemType]=amendment
+     * votes[0][itemId]=3
      * votes[0][vote]=yes
+     * [optional] votes[0][public]=1
      */
     public function actionPostVote($votingBlockId)
     {
@@ -158,55 +247,38 @@ class VotingController extends Base
             return $this->getError('Not logged in');
         }
 
-        $votesToSave = [];
-        foreach (\Yii::$app->request->post('votes', []) as $voteData) {
-            if (!in_array($voteData['itemType'], ['motion', 'amendment'])) {
-                return $this->getError('Invalid vote');
-            }
-            $itemId = intval($voteData['itemId']);
-
-            $exitingVote = $votingBlock->getUserVote($user, $voteData['itemType'], $itemId);
-
-            if ($exitingVote) {
-                if ($voteData['vote'] === 'undo') {
-                    $exitingVote->delete();
-                    continue;
+        try {
+            $votesToSave = [];
+            foreach (\Yii::$app->request->post('votes', []) as $voteData) {
+                $public = (isset($voteData['public']) && $voteData['public']);
+                if (isset($voteData['itemGroupSameVote']) && trim($voteData['itemGroupSameVote']) !== '') {
+                    if ($voteData['vote'] === 'undo') {
+                        $this->undoVoteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote']);
+                    } else {
+                        $votesToSave = array_merge(
+                            $votesToSave,
+                            $this->voteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote'], $public, $voteData['vote'])
+                        );
+                    }
                 } else {
-                    return $this->getError('Already voted');
+                    // Vote for a single item that is not assigned to a item group
+                    if (!in_array($voteData['itemType'], ['motion', 'amendment'])) {
+                        return $this->getError('Invalid vote');
+                    }
+                    $item = $this->getIMotionByTypeAndId($voteData['itemType'], intval($voteData['itemId']), $votingBlock);
+                    if ($voteData['vote'] === 'undo') {
+                        $this->undoVoteForSingleItem($user, $votingBlock, $item);
+                    } else {
+                        $votesToSave[] = $this->voteForSingleItem($user, $votingBlock, $item, $public, $voteData['vote']);
+                    }
                 }
             }
 
-            if (!$votingBlock->userIsAllowedToVoteFor($user, $voteData['itemType'], $itemId)) {
-                return $this->getError('Not possible to vote for this item');
+            foreach ($votesToSave as $vote) {
+                $vote->save();
             }
-
-            $vote = new Vote();
-            $vote->userId = $user->id;
-            $vote->votingBlockId = $votingBlock->id;
-            $vote->setVoteFromApi($voteData['vote']);
-            if ($vote->vote === null) {
-                return $this->getError('Invalid vote');
-            }
-            if ($voteData['itemType'] === 'motion') {
-                $vote->motionId = $itemId;
-                $vote->amendmentId = null;
-            }
-            if ($voteData['itemType'] === 'amendment') {
-                $vote->motionId = null;
-                $vote->amendmentId = $itemId;
-            }
-            if (isset($voteData['public']) && $voteData['public'] && $votingBlock->votesPublic) {
-                $vote->public = 1;
-            } else {
-                $vote->public = 0;
-            }
-            $vote->dateVote = date('Y-m-d H:i:s');
-
-            $votesToSave[] = $vote;
-        }
-
-        foreach ($votesToSave as $vote) {
-            $vote->save();
+        } catch (FormError $error) {
+            return $this->getError($error->getMessage());
         }
 
         $responseJson = $this->getOpenVotingsUserData();

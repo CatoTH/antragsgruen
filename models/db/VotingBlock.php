@@ -97,13 +97,13 @@ class VotingBlock extends ActiveRecord
         return $this->hasMany(Vote::class, ['votingBlockId' => 'id']);
     }
 
-    public function getUserVote(User $user, string $itemType, int $itemId): ?Vote
+    public function getUserSingleItemVote(User $user, IMotion $imotion): ?Vote
     {
         foreach ($this->votes as $vote) {
-            if ($vote->userId === $user->id && $itemType === 'motion' && $vote->motionId === $itemId) {
+            if ($vote->userId === $user->id && is_a($imotion, Motion::class) && $vote->motionId === $imotion->id) {
                 return $vote;
             }
-            if ($vote->userId === $user->id && $itemType === 'amendment' && $vote->amendmentId === $itemId) {
+            if ($vote->userId === $user->id && is_a($imotion, Amendment::class) && $vote->amendmentId === $imotion->id) {
                 return $vote;
             }
         }
@@ -130,25 +130,25 @@ class VotingBlock extends ActiveRecord
         }));
     }
 
-    public function userIsAllowedToVoteFor(User $user, string $itemType, int $itemId): bool
+    public function userIsAllowedToVoteFor(User $user, IMotion $imotion): bool
     {
-        if ($this->getUserVote($user, $itemType, $itemId)) {
+        if ($this->getUserSingleItemVote($user, $imotion)) {
             return false;
         }
         if ($this->votingStatus !== static::STATUS_OPEN) {
             return false;
         }
         // Now we assume every user may vote
-        if ($itemType === 'motion') {
+        if (is_a($imotion, Motion::class)) {
             foreach ($this->motions as $motion) {
-                if ($motion->id === $itemId) {
+                if ($motion->id === $imotion->id) {
                     return true;
                 }
             }
         }
-        if ($itemType === 'amendment') {
+        if (is_a($imotion, Amendment::class)) {
             foreach ($this->amendments as $amendment) {
-                if ($amendment->id === $itemId) {
+                if ($amendment->id === $imotion->id) {
                     return true;
                 }
             }
@@ -305,5 +305,72 @@ class VotingBlock extends ActiveRecord
             });
         }
         return array_values($groups);
+    }
+
+    public function getVoteStatistics(): array
+    {
+        $total = 0;
+        $voteUserIds = [];
+
+        $groupsMyMotionIds = [];
+        $groupsMyAmendmentIds = [];
+        foreach ($this->getMyConsultation()->motions as $motion) {
+            if ($motion->votingBlockId === $this->id && $motion->getVotingData()->itemGroupSameVote) {
+                $groupsMyMotionIds[$motion->id] = $motion->getVotingData()->itemGroupSameVote;
+            }
+            foreach ($motion->amendments as $amendment) {
+                if ($amendment->votingBlockId === $this->id && $amendment->getVotingData()->itemGroupSameVote) {
+                    $groupsMyAmendmentIds[$amendment->id] = $amendment->getVotingData()->itemGroupSameVote;
+                }
+            }
+        }
+
+        // If three motions are in a voting group, there will be three votes in the database.
+        // For the statistics, we should only count them once.
+        $countedItemGroups = [];
+        foreach ($this->votes as $vote) {
+            $groupId = null;
+            if ($vote->motionId !== null && isset($groupsMyMotionIds[$vote->motionId])) {
+                $groupId = $groupsMyMotionIds[$vote->motionId];
+            }
+            if ($vote->amendmentId !== null && isset($groupsMyAmendmentIds[$vote->amendmentId])) {
+                $groupId = $groupsMyAmendmentIds[$vote->amendmentId];
+            }
+
+            if ($groupId && in_array($groupId, $countedItemGroups)) {
+                continue;
+            }
+
+            $total++;
+            if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
+                $voteUserIds[] = $vote->userId;
+            }
+
+            if ($groupId) {
+                $countedItemGroups[] = $groupId;
+            }
+        }
+
+        return [$total, count($voteUserIds)];
+    }
+
+    /**
+     * @return IMotion[]
+     */
+    public function getItemGroupItems(?string $itemGroupId): array
+    {
+        $items = [];
+        foreach ($this->getMyConsultation()->motions as $motion) {
+            if ($itemGroupId === $motion->getVotingData()->itemGroupSameVote && $this->id === $motion->votingBlockId) {
+                $items[] = $motion;
+            }
+
+            foreach ($motion->amendments as $amendment) {
+                if ($itemGroupId === $amendment->getVotingData()->itemGroupSameVote && $this->id === $amendment->votingBlockId) {
+                    $items[] = $amendment;
+                }
+            }
+        }
+        return $items;
     }
 }

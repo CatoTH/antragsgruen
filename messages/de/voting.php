@@ -28,6 +28,7 @@ return [
     'admin_status_closed' => 'Die Abstimmung wurde <strong>geschlossen</strong>.',
     'admin_members_present' => 'Anwesende Mitglieder',
 
+    'voting_current_aria' => 'Aktuell laufende Abstimmung',
     'voting_show_amend' => 'Änderungsantrag anzeigen',
     'voting_by' => 'Von',
     'voting_admin_all' => 'Abstimmungen verwalten',
