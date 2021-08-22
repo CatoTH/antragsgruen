@@ -1,7 +1,6 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{IMotion, Motion};
 use yii\helpers\Html;
 

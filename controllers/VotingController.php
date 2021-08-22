@@ -4,12 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\models\db\Amendment;
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\User;
-use app\models\db\Vote;
-use app\models\db\VotingBlock;
+use app\models\db\{Amendment, IMotion, Motion, User, Vote, VotingBlock};
 use app\models\exceptions\FormError;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
@@ -285,5 +280,4 @@ class VotingController extends Base
 
         return $this->returnRestResponse(200, $responseJson);
     }
-
 }

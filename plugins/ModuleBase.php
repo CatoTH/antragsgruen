@@ -3,7 +3,7 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Amendment, Consultation, Motion, Site, Vote, VotingBlock};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, Site, User, Vote, VotingBlock};
 use app\models\layoutHooks\Hooks;
 use app\models\UserOrganization;
 use app\models\settings\{IMotionStatus, Layout, VotingData};
@@ -183,6 +183,11 @@ class ModuleBase extends Module
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getVotingDataClass(Consultation $consultation): ?string
+    {
+        return null;
+    }
+
+    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IMotion $imotion): ?bool
     {
         return null;
     }

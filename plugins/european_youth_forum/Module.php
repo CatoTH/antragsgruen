@@ -2,7 +2,7 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{Consultation, Vote, VotingBlock};
+use app\models\db\{Consultation, IMotion, User, Vote, VotingBlock};
 use app\models\settings\Layout;
 use app\models\UserOrganization;
 use app\plugins\ModuleBase;
@@ -98,5 +98,12 @@ class Module extends ModuleBase
         $results['total']['total_multiplied'] = $results['nyo']['total_multiplied'] + $results['ingyo']['total_multiplied'];
 
         return $results;
+    }
+
+    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IMotion $imotion): ?bool
+    {
+        $organizationIds = $user->getMyOrganizationIds();
+
+        return in_array('nyo', $organizationIds) || in_array('ingyo', $organizationIds);
     }
 }

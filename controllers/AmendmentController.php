@@ -11,8 +11,7 @@ use app\models\db\{Amendment,
     ConsultationSettingsTag,
     ISupporter,
     Motion,
-    User,
-    VotingBlock};
+    User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{MailNotSent, NotFound};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};

@@ -33,7 +33,7 @@ return [
     'voting_by' => 'By',
     'voting_admin_all' => 'Administrate votings',
     'voting_visibility' => 'Who can see how I voted?',
-    'voting_visibility_admin' => 'The votes are visible to the administrators of this page, but not for other participants using this page.',
+    'voting_visibility_admin' => 'The votes are visible to the administrators of this page, but not for other participants.',
     'voting_show_all' => 'Show all votings',
     'voting_votes_status' => 'Status',
     'voting_votes_0' => 'No vote has been cast yet',

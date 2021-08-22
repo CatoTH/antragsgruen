@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\models\settings\VotingData;
+use app\models\settings\AntragsgruenApp;
 use app\models\VotingItemGroup;
 use yii\db\ActiveRecord;
 
@@ -133,27 +133,42 @@ class VotingBlock extends ActiveRecord
     public function userIsAllowedToVoteFor(User $user, IMotion $imotion): bool
     {
         if ($this->getUserSingleItemVote($user, $imotion)) {
+            // The user has already voted
             return false;
         }
         if ($this->votingStatus !== static::STATUS_OPEN) {
             return false;
         }
-        // Now we assume every user may vote
+
+        $foundImotion = false;
         if (is_a($imotion, Motion::class)) {
             foreach ($this->motions as $motion) {
                 if ($motion->id === $imotion->id) {
-                    return true;
+                    $foundImotion = true;
                 }
             }
         }
         if (is_a($imotion, Amendment::class)) {
             foreach ($this->amendments as $amendment) {
                 if ($amendment->id === $imotion->id) {
-                    return true;
+                    $foundImotion = true;
                 }
             }
         }
-        return false;
+        if (!$foundImotion) {
+            return false;
+        }
+
+        // In case a plugin provides eligibility check, we take its result. The first plugin providing the check wins.
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $allowed = $plugin::userIsAllowedToVoteFor($this, $user, $imotion);
+            if ($allowed !== null) {
+                return $allowed;
+            }
+        }
+
+        // If no plugin
+        return true;
     }
 
     public function switchToOfflineVoting(): void {
