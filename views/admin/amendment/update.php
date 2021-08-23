@@ -1,7 +1,7 @@
 <?php
 
 use app\models\settings\AntragsgruenApp;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem};
 use yii\helpers\Html;
 
@@ -117,7 +117,7 @@ if (count($consultation->agendaItems) > 0) {
         $selections[$item->id] = $item->title;
     }
 
-    $options = ['id' => 'amendmentStatus', 'class' => 'stdDropdown fullsize'];
+    $options = ['id' => 'agendaItemId', 'class' => 'stdDropdown fullsize'];
     echo Html::dropDownList('amendment[agendaItemId]', $amendment->agendaItemId, $selections, $options);
     echo '</div></div>';
 }
