@@ -129,8 +129,25 @@ ob_start();
                 </div>
             </li>
         </ul>
-        <footer class="votingFooter">
-            <ol v-if="voting.log.length > 0" class="activityLog">
+        <footer class="votingFooter" v-if="voting.log.length > 2" aria-label="<?= Yii::t('voting', 'activity_title') ?>">
+            <div class="activityOpener" v-if="activityClosed">
+                <button type="button" class="btn btn-link btn-xs" @click="openActivities()">
+                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                    <?= Yii::t('voting', 'activity_show_all') ?>
+                </button>
+            </div>
+            <div class="activityCloser" v-if="!activityClosed">
+                <button type="button" class="btn btn-link btn-xs" @click="closeActivities()">
+                    <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                    <?= Yii::t('voting', 'activity_show_all') ?>
+                </button>
+            </div>
+            <ol class="activityLog" :class="{ closed: activityClosed }">
+                <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
+            </ol>
+        </footer>
+        <footer class="votingFooter" v-if="voting.log.length > 0 && voting.log.length < 2" aria-label="<?= Yii::t('voting', 'activity_title') ?>">
+            <ol class="activityLog">
                 <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
             </ol>
         </footer>
@@ -187,7 +204,10 @@ $html = ob_get_clean();
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
-        data: {
+        data() {
+            return {
+                activityClosed: true
+            }
         },
         computed: {
             groupedVotings: function () {
@@ -285,6 +305,12 @@ $html = ob_get_clean();
                 if (this.organizations === undefined) {
                     this.organizations = Object.assign([], this.voting.user_organizations);
                 }
+            },
+            openActivities: function () {
+                this.activityClosed = false;
+            },
+            closeActivities: function () {
+                this.activityClosed = true;
             }
         },
         updated() {

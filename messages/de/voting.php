@@ -10,6 +10,8 @@ return [
     'status_accepted' => 'Angenommen',
     'status_rejected' => 'Abgelehnt',
 
+    'activity_title' => 'Protokoll',
+    'activity_show_all' => 'Komplettes Protokoll anzeigen',
     'activity_opened' => 'Abstimmung eröffnet',
     'activity_closed' => 'Abstimmung geschlossen',
     'activity_reset' => 'Abstimmung zurückgesetzt',

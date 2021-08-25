@@ -20,7 +20,6 @@
     padding: 0;
 
     clear: both;
-    border-top: solid 1px #ccc;
 
     > li {
       display: flex;
@@ -108,17 +107,24 @@
     }
   }
 
-  .majorityType {
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    border-bottom: solid 1px #ccc;
+  .votingFooter {
+    padding-top: 10px;
+  }
+}
+
+.currentVotingWidget {
+  .votingsAdminLink {
+    float: right;
   }
 
-  .activityLog {
-    display: block;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+  .votingsAdminLink + .voteList {
+    border-top: solid 1px #ccc;
+  }
+
+  .votingExplanation {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #555;
   }
 
   .votingFooter {
@@ -135,17 +141,6 @@
       flex: 1;
       text-align: right;
     }
-  }
-}
-
-.currentVotingWidget {
-  .votingsAdminLink {
-    float: right;
-  }
-  .votingExplanation {
-    margin-top: 15px;
-    font-size: 0.9em;
-    color: #555;
   }
 }
 
@@ -169,6 +164,43 @@
     }
     td {
       text-align: center;
+    }
+  }
+
+  .majorityType {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: solid 1px #ccc;
+  }
+
+  .activityLog {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    &.closed {
+      max-height: 45px;
+      overflow: hidden;
+      position: relative;
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 45px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fff 100%);
+        pointer-events: none;
+      }
+    }
+  }
+
+  .activityOpener, .activityCloser {
+    float: right;
+    .btn {
+      font-weight: normal;
     }
   }
 }

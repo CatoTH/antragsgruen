@@ -10,6 +10,8 @@ return [
     'status_accepted' => 'Accepted',
     'status_rejected' => 'Rejected',
 
+    'activity_title' => 'Protocol',
+    'activity_show_all' => 'Show complete protocol',
     'activity_opened' => 'Voting opened',
     'activity_closed' => 'Voting closed',
     'activity_reset' => 'Voting reset',
