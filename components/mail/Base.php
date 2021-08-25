@@ -129,6 +129,7 @@ abstract class Base
      * @param \Swift_Message|array $message
      * @param string $toEmail
      *
+     * @throws \Exception
      * @return int
      */
     public function send($message, $toEmail)
@@ -149,6 +150,8 @@ abstract class Base
             // "Expected response code 220 but got an empty response" is triggered is regular sendmail is not accessible
             if ($fallbackTransport && strpos($e->getMessage(), 'Expected response code 220') !== false) {
                 $fallbackTransport->send($message);
+            } else {
+                throw $e;
             }
         }
 
