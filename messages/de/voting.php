@@ -29,6 +29,7 @@ return [
     'admin_btn_reset' => 'Zurücksetzen',
     'admin_btn_reset_bb' => 'Hiermit werden alle Stimmen gelöscht und die Abstimmung wieder in den Vorbereitungs-Modus gesetzt, um Anträge hinzufügen und entfernen zu können. ACHTUNG: Alle Mitglieder müssen erneut abstimmen.',
     'admin_btn_reopen' => 'Erneut öffnen',
+    'admin_btn_remove_item' => 'Aus der Abstimmung entfernen',
     'admin_status_opened' => 'Die Abstimmung <strong>läuft</strong>, Mitglieder können nun ihre Stimmen vergeben',
     'admin_status_closed' => 'Die Abstimmung wurde <strong>geschlossen</strong>.',
     'admin_members_present' => 'Anwesende Mitglieder',

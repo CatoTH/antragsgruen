@@ -42,7 +42,7 @@ class Agenda
             if ($motion->isProposalPublic() || $includeInvisible) {
                 $block->items[]   = $motion;
                 $handledMotions[] = $motion->id;
-
+                /*
                 foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
                     if (in_array($amendment->id, $handledAmends)) {
                         continue;
@@ -52,6 +52,7 @@ class Agenda
                         $handledAmends[] = $amendment->id;
                     }
                 }
+                */
             }
         }
         foreach ($votingBlock->amendments as $vAmendment) {

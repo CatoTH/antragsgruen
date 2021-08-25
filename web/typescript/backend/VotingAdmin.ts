@@ -11,14 +11,13 @@ export class VotingAdmin {
         const voteSettingsUrl = $element.data('url-vote-settings');
         const pollUrl = $element.data('url-poll');
 
-        console.log(JSON.parse(JSON.stringify(allVotingData)));
-
         this.widget = new Vue({
             el: $vueEl,
             template: `<div class="adminVotings">
                 <voting-admin-widget v-for="voting in votings"
                                      :voting="voting"
                                      @set-status="setStatus"
+                                     @remove-item="removeItem"
                 ></voting-admin-widget>
             </div>`,
             data() {
@@ -49,13 +48,20 @@ export class VotingAdmin {
                     });
                 },
                 setStatus(votingBlockId, newStatus, organizations) {
-                    console.log(arguments);
                     this._performOperation(votingBlockId, {
+                        op: 'update',
                         status: newStatus,
                         organizations: organizations.map(orga => { return {
                             id: orga.id,
                             members_present: orga.members_present,
                         }}),
+                    });
+                },
+                removeItem(votingBlockId, itemType, itemId) {
+                    this._performOperation(votingBlockId, {
+                        op: 'remove-item',
+                        itemType,
+                        itemId
                     });
                 },
                 reloadData: function () {

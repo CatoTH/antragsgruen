@@ -91,6 +91,12 @@ ob_start();
                         <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
                 </div>
+                <div class="prepActions" v-if="isPreparing">
+                    <button class="btn btn-link btn-xs removeBtn" type="button" @click="removeItem(groupedVoting)"
+                            title="<?= Yii::t('voting', 'admin_btn_remove_item') ?>" aria-label="<?= Yii::t('voting', 'admin_btn_remove_item') ?>">
+                        <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+                    </button>
+                </div>
                 <div class="votesDetailed" v-if="isOpen || isClosed">
                     <?php
                     $alternativeResults = Layout::getVotingAlternativeAdminResults($consultation);
@@ -276,6 +282,9 @@ $html = ob_get_clean();
                 }
                 let date = new Date(logEntry['date']);
                 return date.toLocaleString() + ': ' + description;
+            },
+            removeItem: function (groupedVoting) {
+                this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);
             },
             openVoting: function () {
                 this.voting.status = STATUS_OPEN;

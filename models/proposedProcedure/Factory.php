@@ -3,7 +3,7 @@
 namespace app\models\proposedProcedure;
 
 use app\models\settings\IMotionStatusEngine;
-use app\models\db\{Consultation, ConsultationAgendaItem, Motion, VotingBlock};
+use app\models\db\{Consultation, ConsultationAgendaItem, IMotion, Motion, VotingBlock};
 use app\models\settings\Consultation as ConsultationSettings;
 
 class Factory
@@ -122,10 +122,11 @@ class Factory
     }
 
     /**
-     * @param Motion[] $motions
+     * @param IMotion[] $imotions
+     *
      * @return Agenda[]
      */
-    protected function createFromMotions(array $motions, array $handledVotings = [], array $handledAmends = []): array
+    protected function createFromMotions(array $imotions, array $handledVotings = [], array $handledAmends = []): array
     {
         $items   = [];
         $idCount = 1;
@@ -133,28 +134,28 @@ class Factory
         $handledMotions = [];
         $forbiddenStatuses = $this->consultation->getStatuses()->getStatusesInvisibleForProposedProcedure();
 
-        foreach ($motions as $motion) {
-            $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $motion->getTitleWithPrefix();
+        foreach ($imotions as $imotion) {
+            $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $imotion->getTitleWithPrefix();
             $item  = new Agenda($idCount++, $title, null);
 
-            if (in_array($motion->id, $handledMotions)) {
+            if (in_array($imotion->id, $handledMotions)) {
                 continue;
             }
-            if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
+            if (!$imotion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
                 continue;
             }
 
-            if ($motion->votingBlockId && $motion->votingBlock) {
-                $votingBlock = $motion->votingBlock;
+            if ($imotion->votingBlockId && $imotion->votingBlock) {
+                $votingBlock = $imotion->votingBlock;
                 if (in_array($votingBlock->id, $handledVotings)) {
                     continue;
                 }
                 $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
-                $handledAmends[] = $votingBlock->id;
+                $handledVotings[] = $votingBlock->id;
             }
 
-            if (is_a($motion, Motion::class)) {
-                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
+            if (is_a($imotion, Motion::class)) {
+                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($imotion->amendments, $forbiddenStatuses, true);
                 foreach ($amendments as $amendment) {
                     if (in_array($amendment->id, $handledAmends)) {
                         continue;
@@ -165,19 +166,19 @@ class Factory
                             continue;
                         }
                         $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
-                        $handledAmends[] = $votingBlock->id;
+                        $handledVotings[] = $votingBlock->id;
                     }
                 }
             }
 
             $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
-            if ($motion->isProposalPublic() || $this->includeInvisible) {
-                $handledMotions[] = $motion->id;
-                $block->items[] = $motion;
+            if ($imotion->isProposalPublic() || $this->includeInvisible) {
+                $handledMotions[] = $imotion->id;
+                $block->items[] = $imotion;
             }
-            if (is_a($motion, Motion::class)) {
-                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
+            if (is_a($imotion, Motion::class)) {
+                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($imotion->amendments, $forbiddenStatuses, true);
                 foreach ($amendments as $amendment) {
                     if ($amendment->isProposalPublic() || $this->includeInvisible) {
                         $handledAmends[] = $amendment->id;

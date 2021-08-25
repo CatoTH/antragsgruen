@@ -29,6 +29,7 @@ return [
     'admin_btn_reset' => 'Reset',
     'admin_btn_reset_bb' => 'This will remove all votes and set the voting back to preparation mode, where you can add or remove motions and amendments. WARNING: All users will have to vote again.',
     'admin_btn_reopen' => 'Re-Open',
+    'admin_btn_remove_item' => 'Remove from voting',
     'admin_status_opened' => 'The voting is <strong>open</strong>, users can now cast their votes',
     'admin_status_closed' => 'The voting is <strong>closed</strong>.',
     'admin_members_present' => 'Members present',

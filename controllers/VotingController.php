@@ -7,6 +7,7 @@ namespace app\controllers;
 use app\models\db\{Amendment, IMotion, Motion, User, Vote, VotingBlock};
 use app\models\exceptions\FormError;
 use app\models\proposedProcedure\Factory;
+use app\models\settings\VotingData;
 use yii\web\Response;
 
 class VotingController extends Base
@@ -75,15 +76,8 @@ class VotingController extends Base
         return $this->returnRestResponse(200, $responseJson);
     }
 
-    public function actionPostVoteSettings(string $votingBlockId)
+    private function voteSettingsUpdate(VotingBlock $votingBlock): void
     {
-        $this->handleRestHeaders(['POST'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        $votingBlock = $this->getVotingBlockAndCheckPermission($votingBlockId);
-
         if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
             foreach (\Yii::$app->request->post('organizations', []) as $organization) {
                 $users = ($organization['members_present'] !== '' ? intval($organization['members_present']) : null);
@@ -108,6 +102,58 @@ class VotingController extends Base
             } elseif ($newStatus === VotingBlock::STATUS_OFFLINE) {
                 $votingBlock->switchToOfflineVoting();
             }
+        }
+    }
+
+    private function voteRemoveItemDo(IMotion $imotion): void
+    {
+        $imotion->setVotingData(new VotingData(null));
+        $imotion->votingBlockId = null;
+        $imotion->save();
+    }
+
+    private function voteRemoveItem(VotingBlock $votingBlock): void
+    {
+        if ($votingBlock->votingStatus !== VotingBlock::STATUS_PREPARING) {
+            throw new FormError('Not possible to remove items in this state');
+        }
+        $item = null;
+        if (\Yii::$app->request->post('itemType') === 'motion') {
+            $item = $this->consultation->getMotion(\Yii::$app->request->post('itemId'));
+        }
+        if (\Yii::$app->request->post('itemType') === 'amendment') {
+            $item = $this->consultation->getAmendment(\Yii::$app->request->post('itemId'));
+        }
+        if (!$item) {
+            throw new FormError('Item not found');
+        }
+        if ($item->getVotingData()->itemGroupSameVote) {
+            foreach ($votingBlock->getItemGroupItems($item->getVotingData()->itemGroupSameVote) as $item) {
+                $this->voteRemoveItemDo($item);
+            }
+        } else {
+            if ($item->votingBlockId === $votingBlock->id) {
+                $this->voteRemoveItemDo($item);
+            }
+        }
+    }
+
+    public function actionPostVoteSettings(string $votingBlockId)
+    {
+        $this->handleRestHeaders(['POST'], true);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $votingBlock = $this->getVotingBlockAndCheckPermission($votingBlockId);
+
+        switch (\Yii::$app->request->post('op')) {
+            case 'update':
+                $this->voteSettingsUpdate($votingBlock);
+                break;
+            case 'remove-item':
+                $this->voteRemoveItem($votingBlock);
+                break;
         }
 
         $responseJson = $this->getAllVotingAdminData();
