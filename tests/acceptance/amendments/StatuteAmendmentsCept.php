@@ -58,7 +58,7 @@ $I->loginAsStdAdmin();
 $I->wantTo('set up an agenda and assign the statute amendment to it');
 
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectFueluxOption('#startLayoutType', '4');
+$I->selectOption('#startLayoutType', '4');
 $page->saveForm();
 
 $I->gotoConsultationHome();
@@ -87,7 +87,7 @@ $I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 foreach (\app\models\settings\Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
     $page = $I->gotoStdAdminPage()->gotoAppearance();
-    $I->selectFueluxOption('#startLayoutType', $layoutId);
+    $I->selectOption('#startLayoutType', $layoutId);
     $page->saveForm();
     $I->gotoConsultationHome();
     $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
@@ -99,11 +99,11 @@ $I->wantTo('check the home pages (with an agenda item assigned)');
 
 $I->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
-$I->selectFueluxOption('#agendaItemId', $earth);
+$I->selectOption('#agendaItemId', $earth);
 $I->submitForm('#amendmentUpdateForm', [], 'save');
 
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectFueluxOption('#startLayoutType', '3');
+$I->selectOption('#startLayoutType', '3');
 $page->saveForm();
 $I->gotoConsultationHome();
 $I->see('Our statutes', '#agendaitem_' . $earth . ' .amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
@@ -111,7 +111,7 @@ $I->see('S1', '#agendaitem_' . $earth . ' .amendmentLink' . AcceptanceTester::FI
 
 
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectFueluxOption('#startLayoutType', '4');
+$I->selectOption('#startLayoutType', '4');
 $page->saveForm();
 $I->gotoConsultationHome();
 $I->see('Our statutes', '.agenda' . $earth . ' .amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);

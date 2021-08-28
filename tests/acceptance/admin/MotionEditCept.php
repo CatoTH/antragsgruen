@@ -16,8 +16,7 @@ $I->seeElementInDOM('#sections_2');
 $I->seeElement('.saveholder .checkAmendmentCollisions');
 $I->dontSeeElement('.saveholder .save');
 
-$I->selectFueluxOption('#motionStatus', \app\models\db\IMotion::STATUS_COMPLETED);
-$I->see('Erledigt', '#motionStatus .selected-label');
+$I->selectOption('#motionStatus', \app\models\db\IMotion::STATUS_COMPLETED);
 $I->fillField('#motionStatusString', 'völlig erschöpft');
 
 $I->fillField('#motionTitle', 'Neuer Titel');

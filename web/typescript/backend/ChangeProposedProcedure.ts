@@ -25,7 +25,7 @@ export class ChangeProposedProcedure {
         this.initExplanation();
         this.initTags();
         $widget.on("submit", ev => ev.preventDefault());
-        this.$widget.find('#votingBlockId').trigger('change');
+        this.setVotingBlockSettings();
     }
 
     private initElements() {
@@ -241,17 +241,21 @@ export class ChangeProposedProcedure {
         this.$widget.on('click', 'button[name=notificationSubmit]', this.notifyProposer.bind(this));
     }
 
+    private setVotingBlockSettings() {
+        if (this.$votingBlockId.val() === 'NEW') {
+            this.$widget.find('.newBlock').removeClass('hidden');
+            this.$widget.find('.votingItemBlockRow').addClass('hidden');
+        } else {
+            this.$widget.find('.newBlock').addClass('hidden');
+            this.$widget.find('.votingItemBlockRow').addClass('hidden');
+            this.$widget.find('.votingItemBlockRow' + this.$votingBlockId.val()).removeClass('hidden');
+        }
+    }
+
     private initVotingBlock() {
         this.$widget.on('change', '#votingBlockId', () => {
             this.$widget.addClass('isChanged');
-            if (this.$votingBlockId.val() === 'NEW') {
-                this.$widget.find('.newBlock').removeClass('hidden');
-                this.$widget.find('.votingItemBlockRow').addClass('hidden');
-            } else {
-                this.$widget.find('.newBlock').addClass('hidden');
-                this.$widget.find('.votingItemBlockRow').addClass('hidden');
-                this.$widget.find('.votingItemBlockRow' + this.$votingBlockId.val()).removeClass('hidden');
-            }
+            this.setVotingBlockSettings();
         });
         this.$widget.on('change', '.votingItemBlockRow select', () => {
             this.$widget.addClass('isChanged');

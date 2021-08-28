@@ -19,7 +19,7 @@ $I->seeElement('.amendmentRow1');
 $I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
 
 $page = $I->loginAndGotoMotionList()->gotoAmendmentEdit(1);
-$I->selectFueluxOption('#amendmentStatus', IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION);
+$I->selectOption('#amendmentStatus', IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION);
 $page->saveForm();
 
 $page = $I->gotoConsultationHome();
