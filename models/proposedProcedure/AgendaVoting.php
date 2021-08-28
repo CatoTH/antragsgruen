@@ -5,6 +5,7 @@ namespace app\models\proposedProcedure;
 use app\models\db\{Amendment, IMotion, Motion, User, Vote, VotingBlock};
 use app\components\UrlHelper;
 use app\models\exceptions\Access;
+use app\models\IMotionList;
 
 class AgendaVoting
 {
@@ -17,10 +18,39 @@ class AgendaVoting
     /** @var IMotion[] */
     public $items = [];
 
+    /** @var IMotionList */
+    public $itemIds;
+
     public function __construct(string $title, ?VotingBlock $voting)
     {
         $this->title  = $title;
         $this->voting = $voting;
+        $this->itemIds = new IMotionList();
+    }
+
+    public function addItemsFromBlock(bool $includeInvisible): void
+    {
+        if (!$this->voting) {
+            return;
+        }
+        foreach ($this->voting->motions as $motion) {
+            if (!$motion->isVisibleForAdmins()) {
+                continue;
+            }
+            if ($motion->isProposalPublic() || $includeInvisible) {
+                $this->items[]   = $motion;
+                $this->itemIds->addMotion($motion);
+            }
+        }
+        foreach ($this->voting->amendments as $vAmendment) {
+            if (!$vAmendment->isVisibleForAdmins()) {
+                continue;
+            }
+            if ($vAmendment->isProposalPublic() || $includeInvisible) {
+                $this->items[]  = $vAmendment;
+                $this->itemIds->addAmendment($vAmendment);
+            }
+        }
     }
 
     public function getId(): string
@@ -30,28 +60,6 @@ class AgendaVoting
         } else {
             return 'new';
         }
-    }
-
-    public function getHandledMotionIds(): array
-    {
-        $ids = [];
-        foreach ($this->items as $item) {
-            if (is_a($item, Motion::class)) {
-                $ids[] = $item->id;
-            }
-        }
-        return $ids;
-    }
-
-    public function getHandledAmendmentIds(): array
-    {
-        $ids = [];
-        foreach ($this->items as $item) {
-            if (is_a($item, Amendment::class)) {
-                $ids[] = $item->id;
-            }
-        }
-        return $ids;
     }
 
     private function getApiObject(?string $title, ?User $user, bool $adminFields): array
