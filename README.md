@@ -3,7 +3,7 @@ Antragsgrün
 
 Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments and candidacies: from submission to administration and print template.
 
-A number of organisations are using the tool successfully such as the federal association of the german Green Party, the German Federal Youth Council or the austrian NEOS.
+A number of organisations are using the tool successfully such as the federal association of the European and German Green Party, the German Federal Youth Council, the European Youth Forum or the German Woman's Council.
 It can be easily adapted to a variety of scenarios.
 
 Core functions:
@@ -224,6 +224,15 @@ Force a new password for an user:
 
 Developing
 ----------
+
+### Technical considerations
+
+- PHP version support: Antragsgrün supports PHP versions for one year after its end of life (that is, if PHP 7.2 is supported until end 2020, the first major version of Antragsgrün after end 2021 will drop support for PHP 7.2).
+- PHP Framework: [Yii2](https://www.yiiframework.com/) is used. While it would not being the framework of choice for a fresh start anymore, it works sufficiently well since its introduction in 2015 and is still supported, so there is no plan to migrate to Symfony of Laravel as of yet.
+- JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though written in TypeScript and loaded via [RequireJS](https://requirejs.org/). For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS 2](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
+- REST API: The API is documented below. There will be more development regarding the REST API, including authorized endpoints using JWT based authentication.
+
+### Compiling from source
 
 You can enable debug mode by creating an empty file config/DEBUG.
 

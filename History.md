@@ -8,7 +8,7 @@
   - Votings can be prepared as part of the proposed procedure.
 - Support for Internet Explorer was dropped.
 
-### Version 4.8.1 [not released yet]
+### Version 4.8.1 (2021-08-28)
 
 - Bugfix: The consultation page did was not shown when a statute amendment was withdrawn.
 - Bugfix: After saving a proposed procedure of an amendment or motion, the selected voting block was not shown.
