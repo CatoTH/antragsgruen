@@ -9,6 +9,7 @@ export class VotingAdmin {
         const $vueEl = this.$element.find(".votingAdmin")[0];
         const allVotingData = $element.data('voting');
         const voteSettingsUrl = $element.data('url-vote-settings');
+        const addableMotions = $element.data('addable-motions');
         const pollUrl = $element.data('url-poll');
 
         this.widget = new Vue({
@@ -16,13 +17,16 @@ export class VotingAdmin {
             template: `<div class="adminVotings">
                 <voting-admin-widget v-for="voting in votings"
                                      :voting="voting"
+                                     :addableMotions="addableMotions"
                                      @set-status="setStatus"
                                      @remove-item="removeItem"
+                                     @add-item="addItem"
                 ></voting-admin-widget>
             </div>`,
             data() {
                 return {
                     votings: allVotingData,
+                    addableMotions,
                     csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
                     pollingId: null
                 };
@@ -62,6 +66,12 @@ export class VotingAdmin {
                         op: 'remove-item',
                         itemType,
                         itemId
+                    });
+                },
+                addItem(votingBlockId, itemDefinition) {
+                    this._performOperation(votingBlockId, {
+                        op: 'add-item',
+                        itemDefinition
                     });
                 },
                 reloadData: function () {

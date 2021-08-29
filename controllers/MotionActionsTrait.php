@@ -523,13 +523,20 @@ trait MotionActionsTrait
                 $motion->proposalVisibleFrom = null;
             }
 
-            $motion->setProposalVotingPropertiesFromRequest(
-                \Yii::$app->request->post('votingStatus', null),
-                \Yii::$app->request->post('votingBlockId', null),
-                \Yii::$app->request->post('votingItemBlockId', []),
-                \Yii::$app->request->post('votingBlockTitle', ''),
-                $ppChanges
-            );
+            try {
+                $motion->setProposalVotingPropertiesFromRequest(
+                    \Yii::$app->request->post('votingStatus', null),
+                    \Yii::$app->request->post('votingBlockId', null),
+                    \Yii::$app->request->post('votingItemBlockId', []),
+                    \Yii::$app->request->post('votingBlockTitle', ''),
+                    true,
+                    $ppChanges
+                );
+            } catch (FormError $e) {
+                $response['success'] = false;
+                $response['error']   = $e->getMessage();
+                return json_encode($response);
+            }
 
             if ($ppChanges->hasChanges()) {
                 ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());

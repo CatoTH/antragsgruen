@@ -7,7 +7,6 @@ namespace app\controllers;
 use app\models\db\{Amendment, IMotion, Motion, User, Vote, VotingBlock};
 use app\models\exceptions\FormError;
 use app\models\proposedProcedure\Factory;
-use app\models\settings\VotingData;
 use yii\web\Response;
 
 class VotingController extends Base
@@ -27,7 +26,7 @@ class VotingController extends Base
 
     // *** Admin-facing methods ***
 
-    private function getVotingBlockAndCheckPermission(string $votingBlockId): VotingBlock
+    private function getVotingBlockAndCheckAdminPermission(string $votingBlockId): VotingBlock
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
@@ -105,11 +104,31 @@ class VotingController extends Base
         }
     }
 
-    private function voteRemoveItemDo(IMotion $imotion): void
+    private function voteAddItem(VotingBlock $votingBlock): void
     {
-        $imotion->setVotingData(new VotingData(null));
-        $imotion->votingBlockId = null;
-        $imotion->save();
+        if ($votingBlock->votingStatus !== VotingBlock::STATUS_PREPARING) {
+            throw new FormError('Not possible to remove items in this state');
+        }
+        /** @var IMotion[] $items */
+        $items = [];
+        $idParts = explode('-', \Yii::$app->request->post('itemDefinition', ''));
+
+        if (count($idParts) === 2 && $idParts[0] === 'motion' && $idParts[1] > 0) {
+            $items[] = $this->consultation->getMotion($idParts[1]);
+        } elseif (count($idParts) === 2 && $idParts[0] === 'amendment' && $idParts[1] > 0) {
+            $items[] = $this->consultation->getAmendment(intval($idParts[1]));
+        } elseif (count($idParts) === 3 && $idParts[0] === 'motion' && $idParts[1] > 0 && $idParts[2] === 'amendments') {
+            $motion = $this->consultation->getMotion($idParts[1]);
+            foreach ($motion->getVisibleAmendmentsSorted(false, false) as $amendment) {
+                $items[] = $amendment;
+            }
+        }
+
+        foreach ($items as $item) {
+            if ($item->votingBlockId === null) {
+                $item->addToVotingBlock($votingBlock, true);
+            }
+        }
     }
 
     private function voteRemoveItem(VotingBlock $votingBlock): void
@@ -129,11 +148,11 @@ class VotingController extends Base
         }
         if ($item->getVotingData()->itemGroupSameVote) {
             foreach ($votingBlock->getItemGroupItems($item->getVotingData()->itemGroupSameVote) as $item) {
-                $this->voteRemoveItemDo($item);
+                $item->removeFromVotingBlock($votingBlock, true);
             }
         } else {
             if ($item->votingBlockId === $votingBlock->id) {
-                $this->voteRemoveItemDo($item);
+                $item->removeFromVotingBlock($votingBlock, true);
             }
         }
     }
@@ -145,11 +164,14 @@ class VotingController extends Base
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $votingBlock = $this->getVotingBlockAndCheckPermission($votingBlockId);
+        $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
 
         switch (\Yii::$app->request->post('op')) {
             case 'update':
                 $this->voteSettingsUpdate($votingBlock);
+                break;
+            case 'add-item':
+                $this->voteAddItem($votingBlock);
                 break;
             case 'remove-item':
                 $this->voteRemoveItem($votingBlock);

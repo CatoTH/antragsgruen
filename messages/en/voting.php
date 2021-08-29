@@ -33,6 +33,12 @@ return [
     'admin_status_opened' => 'The voting is <strong>open</strong>, users can now cast their votes',
     'admin_status_closed' => 'The voting is <strong>closed</strong>.',
     'admin_members_present' => 'Members present',
+    'admin_no_items_yet' => 'No motion or amendment has been added to this voting yet.',
+    'admin_add_amendments' => 'Add a motion or amendment',
+    'admin_add_amendments_opt' => 'Please select a motion/amendment to add',
+    'admin_add_btn' => 'Add selected motion or amendment',
+    'admin_add_opt_motion' => 'Add the motion',
+    'admin_add_opt_all_amend' => 'Add all following amendments',
 
     'voting_current_aria' => 'Currently active voting',
     'voting_show_amend' => 'Show amendment',

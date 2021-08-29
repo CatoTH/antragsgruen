@@ -103,6 +103,15 @@ class Vote extends ActiveRecord
         }
     }
 
+    public function isForIMotion(IMotion $IMotion): bool
+    {
+        if (is_a($IMotion, Amendment::class)) {
+            return $this->amendmentId === $IMotion->id;
+        } else {
+            return $this->motionId === $IMotion->id;
+        }
+    }
+
     /**
      * @param Vote[] $votes
      */

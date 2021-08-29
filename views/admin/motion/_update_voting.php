@@ -16,6 +16,7 @@ if ($voting->hasAnyData() || $motion->proposalStatus === IMotion::STATUS_VOTE) {
     $cssClass .= ' hasData';
 }
 $voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);
+$currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeRemoved());
 ?>
 <div class="contentVotingResultCaller<?= $cssClass ?>">
     <button class="btn btn-link votingDataOpener" type="button">
@@ -43,7 +44,7 @@ $voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);
                 <?= Yii::t('amend', 'proposal_voteblock') ?>
             </label>
             <div class="col-md-9">
-                <select name="votingBlockId" id="votingBlockId" class="stdDropdown">
+                <select name="votingBlockId" id="votingBlockId" class="stdDropdown"<?= ($currBlockIsLocked ? ' disabled' : '') ?>>
                     <option>-</option>
                     <?php
                     foreach ($votingBlocks as $votingBlock) {
@@ -51,11 +52,17 @@ $voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);
                         if ($motion->votingBlockId === $votingBlock->id) {
                             echo ' selected';
                         }
+                        if (!$votingBlock->itemsCanBeAdded()) {
+                            echo ' disabled';
+                        }
                         echo '>' . Html::encode($votingBlock->title) . '</option>';
                     }
                     ?>
                     <option value="NEW">- <?= Yii::t('amend', 'proposal_voteblock_newopt') ?> -</option>
                 </select>
+                <?php if ($currBlockIsLocked) { ?>
+                    <small><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> <?= Yii::t('amend', 'proposal_voteblock_locked') ?></small>
+                <?php } ?>
                 <div class="newBlock">
                     <label for="newBlockTitle" class="control-label">
                         <?= Yii::t('amend', 'proposal_voteblock_new') ?>:
@@ -77,7 +84,8 @@ $voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);
                     <?= HTMLTools::getTooltipIcon(Yii::t('amend', 'proposal_voteitemblock_h')) ?>
                 </label>
                 <div class="col-md-9">
-                    <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>" class="stdDropdown">
+                    <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>"
+                            <?= ($currBlockIsLocked ? ' disabled' : '') ?> class="stdDropdown">
                         <option value=""><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
                         <?php
                         foreach ($subitems as $subitem) {

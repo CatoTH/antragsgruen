@@ -225,7 +225,7 @@ class Factory
     {
         return array_map(function (VotingBlock $votingBlock): AgendaVoting {
             $voting = new AgendaVoting($votingBlock->title, $votingBlock);
-            $voting->addItemsFromBlock(false);
+            $voting->addItemsFromBlock(true);
             return $voting;
         }, $consultation->votingBlocks);
     }
@@ -241,7 +241,7 @@ class Factory
         }));
         return array_map(function (VotingBlock $votingBlock): AgendaVoting {
             $voting = new AgendaVoting($votingBlock->title, $votingBlock);
-            $voting->addItemsFromBlock(false);
+            $voting->addItemsFromBlock(true);
             return $voting;
         }, $openBlocks);
     }

@@ -13,7 +13,7 @@ use app\models\db\{Amendment,
     Motion,
     User};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\{MailNotSent, NotFound};
+use app\models\exceptions\{FormError, MailNotSent, NotFound};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
@@ -564,13 +564,20 @@ class AmendmentController extends Base
                 $amendment->proposalVisibleFrom = null;
             }
 
-            $amendment->setProposalVotingPropertiesFromRequest(
-                \Yii::$app->request->post('votingStatus', null),
-                \Yii::$app->request->post('votingBlockId', null),
-                \Yii::$app->request->post('votingItemBlockId', []),
-                \Yii::$app->request->post('votingBlockTitle', ''),
-                $ppChanges
-            );
+            try {
+                $amendment->setProposalVotingPropertiesFromRequest(
+                    \Yii::$app->request->post('votingStatus', null),
+                    \Yii::$app->request->post('votingBlockId', null),
+                    \Yii::$app->request->post('votingItemBlockId', []),
+                    \Yii::$app->request->post('votingBlockTitle', ''),
+                    true,
+                    $ppChanges
+                );
+            } catch (FormError $e) {
+                $response['success'] = false;
+                $response['error']   = $e->getMessage();
+                return json_encode($response);
+            }
 
             if ($ppChanges->hasChanges()) {
                 ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendment->id, $ppChanges->jsonSerialize());

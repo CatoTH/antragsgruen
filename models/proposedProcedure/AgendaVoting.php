@@ -28,7 +28,7 @@ class AgendaVoting
         $this->itemIds = new IMotionList();
     }
 
-    public function addItemsFromBlock(bool $includeInvisible): void
+    public function addItemsFromBlock(bool $includeNotOnPublicProposalOnes): void
     {
         if (!$this->voting) {
             return;
@@ -37,7 +37,7 @@ class AgendaVoting
             if (!$motion->isVisibleForAdmins()) {
                 continue;
             }
-            if ($motion->isProposalPublic() || $includeInvisible) {
+            if ($motion->isProposalPublic() || $includeNotOnPublicProposalOnes) {
                 $this->items[]   = $motion;
                 $this->itemIds->addMotion($motion);
             }
@@ -46,7 +46,7 @@ class AgendaVoting
             if (!$vAmendment->isVisibleForAdmins()) {
                 continue;
             }
-            if ($vAmendment->isProposalPublic() || $includeInvisible) {
+            if ($vAmendment->isProposalPublic() || $includeNotOnPublicProposalOnes) {
                 $this->items[]  = $vAmendment;
                 $this->itemIds->addAmendment($vAmendment);
             }

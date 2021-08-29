@@ -289,6 +289,7 @@ return [
     'proposal_voteblock_new'     => 'Title of new block',
     'proposal_voteblock_newopt'  => 'Create new',
     'proposal_voteblock_edit'    => 'Manage votings',
+    'proposal_voteblock_locked'  => 'No motions or amendments can be added to or removed from the voting while the voting is open.',
     'proposal_voteitemblock'     => 'Group with',
     'proposal_voteitemblock_h'   => 'If a motion/amendment is grouped with one or more others, only one vote can be cast for both of them. They are adopted or rejected at the same time. Choose this if one amendment does not make sense without the other.',
     'proposal_voteitemblock_none' => '- none / only this motion/amendment -',

@@ -4,6 +4,8 @@ namespace app\models\db;
 
 use app\models\settings\{AntragsgruenApp, VotingData};
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 use app\models\siteSpecificBehavior\Permissions;
 use app\models\VotingItemGroup;
 use app\components\{Tools, UrlHelper};
@@ -40,6 +42,7 @@ use yii\helpers\Html;
  * @property string|null $responsibilityComment
  * @property string|null $extraData
  * @property User|null $responsibilityUser
+ * @property VotingBlock|null $votingBlock
  */
 abstract class IMotion extends ActiveRecord
 {
@@ -534,37 +537,110 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    public function setProposalVotingPropertiesFromRequest(?string $votingStatus, ?string $votingBlockId, array $votingItemBlockIds, string $newVotingBlockTitle, ProposedProcedureChange $ppChanges) {
+    /**
+     * @throws FormError
+     */
+    public function addToVotingBlock(VotingBlock $votingBlock, bool $save): void
+    {
+        if (!$votingBlock->itemsCanBeAdded()) {
+            throw new FormError('Cannot add an item to a running voting');
+        }
+
+        $this->votingBlockId = $votingBlock->id;
+
+        foreach ($votingBlock->votes as $vote) {
+            if ($vote->isForIMotion($this)) {
+                $vote->delete();
+            }
+        }
+
+        if ($save) {
+            $this->save();
+        }
+    }
+
+    /**
+     * @throws FormError
+     */
+    public function removeFromVotingBlock(VotingBlock $votingBlock, bool $save): void
+    {
+        if (!$votingBlock->itemsCanBeRemoved()) {
+            throw new FormError('Cannot remove an item from a running voting');
+        }
+
+        $this->votingBlockId = null;
+
+        $votingData = $this->getVotingData();
+        $votingData->itemGroupSameVote = null;
+        $this->setVotingData($votingData);
+
+        if ($save) {
+            $this->save();
+        }
+    }
+
+    /**
+     * @throws FormError
+     */
+    public function setProposalVotingPropertiesFromRequest(
+        ?string $votingStatus,
+        ?string $votingBlockId,
+        array $votingItemBlockIds,
+        string $newVotingBlockTitle,
+        bool $proposedProcedureContext,
+        ProposedProcedureChange $ppChanges
+    ): void {
         $newVotingStatus = ($votingStatus !== null ? intval($votingStatus) : null);
         $ppChanges->setProposalVotingStatusChanges($this->votingStatus, $newVotingStatus);
         $this->votingStatus = $newVotingStatus;
 
         $votingBlockPre = $this->votingBlockId;
-        $this->votingBlockId = null;
+
+        /** @var VotingBlock|null $toSetVotingBlock */
+        $toSetVotingBlock = null;
         if ($votingBlockId === 'NEW') {
             $newVotingBlockTitle = trim($newVotingBlockTitle);
             if ($newVotingBlockTitle !== '') {
-                $votingBlock = new VotingBlock();
-                $votingBlock->consultationId = $this->getMyConsultation()->id;
-                $votingBlock->title = $newVotingBlockTitle;
-                $votingBlock->votingStatus = VotingBlock::STATUS_OFFLINE;
-                $votingBlock->save();
-
-                $this->votingBlockId = $votingBlock->id;
+                $toSetVotingBlock = new VotingBlock();
+                $toSetVotingBlock->consultationId = $this->getMyConsultation()->id;
+                $toSetVotingBlock->title = $newVotingBlockTitle;
+                // If the voting is created from the proposed procedure, we assume it's only used to show it there
+                $toSetVotingBlock->votingStatus = ($proposedProcedureContext ? VotingBlock::STATUS_OFFLINE : VotingBlock::STATUS_PREPARING);
+                $toSetVotingBlock->save();
             }
         } elseif ($votingBlockId > 0) {
-            $votingBlock = $this->getMyConsultation()->getVotingBlock($votingBlockId);
-            if ($votingBlock) {
-                $this->votingBlockId = $votingBlock->id;
-                if (isset($votingItemBlockIds[$votingBlock->id]) && trim($votingItemBlockIds[$votingBlock->id]) !== '') {
-                    VotingItemGroup::setVotingItemGroupToAllItems($this, $votingItemBlockIds[$votingBlock->id]);
-                } else {
-                    $votingData = $this->getVotingData();
+            $toSetVotingBlock = $this->getMyConsultation()->getVotingBlock($votingBlockId);
+        }
+
+        if ($toSetVotingBlock) {
+            if ($toSetVotingBlock->id !== $this->votingBlockId) {
+                if ($this->votingBlockId && $this->votingBlock) {
+                    $this->removeFromVotingBlock($this->votingBlock, false);
+                }
+                $this->addToVotingBlock($toSetVotingBlock, false);
+            }
+
+            if (isset($votingItemBlockIds[$toSetVotingBlock->id]) && trim($votingItemBlockIds[$toSetVotingBlock->id]) !== '') {
+                if (in_array($toSetVotingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
+                    VotingItemGroup::setVotingItemGroupToAllItems($this, $votingItemBlockIds[$toSetVotingBlock->id]);
+                } elseif ($votingItemBlockIds[$toSetVotingBlock->id] !== $this->getVotingData()->itemGroupSameVote) {
+                    throw new FormError('Cannot change an item in a running voting');
+                }
+            } else {
+                $votingData = $this->getVotingData();
+                if (in_array($toSetVotingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
                     $votingData->itemGroupSameVote = null;
                     $this->setVotingData($votingData);
+                } elseif ($votingData->itemGroupSameVote !== null) {
+                    throw new FormError('Cannot change an item in a running voting');
                 }
             }
+        } else {
+            if ($this->votingBlockId && $this->votingBlock) {
+                $this->removeFromVotingBlock($this->votingBlock, false);
+            }
         }
+
         $ppChanges->setVotingBlockChanges($votingBlockPre, $this->votingBlockId);
     }
 

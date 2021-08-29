@@ -14,6 +14,15 @@
     color: #888;
   }
 
+  .noVotingsYet {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px #ccc;
+    .alert {
+      margin-bottom: 0;
+    }
+  }
+
   .voteList {
     display: block;
     margin: 0;
@@ -109,6 +118,7 @@
 
   .votingFooter {
     padding-top: 10px;
+    border-top: solid 1px #ccc;
   }
 }
 
@@ -128,8 +138,6 @@
   }
 
   .votingFooter {
-    padding-top: 10px;
-
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -176,6 +184,21 @@
   .prepActions {
     .removeBtn {
       color: $colorDelLink;
+    }
+  }
+
+  .addingMotionForm {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    button {
+      font-weight: normal;
+    }
+
+    .addingMotions {
+      select {
+        max-width: 300px;
+        display: inline-block;
+      }
     }
   }
 

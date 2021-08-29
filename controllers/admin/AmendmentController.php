@@ -311,13 +311,18 @@ class AmendmentController extends AdminBase
             }
 
             $ppChanges = new ProposedProcedureChange(null);
-            $amendment->setProposalVotingPropertiesFromRequest(
-                \Yii::$app->request->post('votingStatus', null),
-                \Yii::$app->request->post('votingBlockId', null),
-                \Yii::$app->request->post('votingItemBlockId', []),
-                \Yii::$app->request->post('newBlockTitle', ''),
-                $ppChanges
-            );
+            try {
+                $amendment->setProposalVotingPropertiesFromRequest(
+                    \Yii::$app->request->post('votingStatus', null),
+                    \Yii::$app->request->post('votingBlockId', null),
+                    \Yii::$app->request->post('votingItemBlockId', []),
+                    \Yii::$app->request->post('newBlockTitle', ''),
+                    false,
+                    $ppChanges
+                );
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
+            }
             if ($ppChanges->hasChanges()) {
                 ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendment->id, $ppChanges->jsonSerialize());
             }

@@ -50,9 +50,7 @@ class VotingBlock extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'votingBlock';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'votingBlock';
     }
 
     /**
@@ -260,6 +258,16 @@ class VotingBlock extends ActiveRecord
                 'date' => $activity['date'],
             ];
         }, $this->getActivityLog());
+    }
+
+    public function itemsCanBeAdded(): bool
+    {
+        return in_array($this->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING]);
+    }
+
+    public function itemsCanBeRemoved(): bool
+    {
+        return in_array($this->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING, VotingBlock::STATUS_CLOSED]);
     }
 
     public function getUsersPresentByOrganizations(): array {

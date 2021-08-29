@@ -321,6 +321,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_voteblock_new'     => 'Titel des neuen Blocks',
     'proposal_voteblock_newopt'  => 'Neuen anlegen',
     'proposal_voteblock_edit'    => 'Abstimmungen verwalten',
+    'proposal_voteblock_locked'  => 'Die Abstimmung läuft, daher können keine (Änderungs-)Anträge hinzugefügt oder entfernt werden.',
     'proposal_voteitemblock'     => 'Gruppieren mit',
     'proposal_voteitemblock_h'   => 'Wenn dieser Antrag mit einem anderen gruppiert wird, werden beide (oder noch mehrere) mit der selben Stimme abgestimmt. Alle werden entweder gemeinsam angenommen, oder gemeinsam abgelehnt. Sinnvoll wenn ein Antrag nur in Kombination mit einem anderen Sinn ergibt.',
     'proposal_voteitemblock_none' => '- alleine stehend -',

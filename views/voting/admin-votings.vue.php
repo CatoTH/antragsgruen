@@ -76,7 +76,12 @@ ob_start();
                 <button type="button" class="btn btn-default" @click="reopenVoting()"><?= Yii::t('voting', 'admin_btn_reopen') ?></button>
             </div>
         </form>
-        <ul class="votingAdminList">
+        <div v-if="groupedVotings.length === 0" class="noVotingsYet">
+            <div class="alert alert-info"><p>
+                    <?= Yii::t('voting', 'admin_no_items_yet') ?>
+            </p></div>
+        </div>
+        <ul class="votingAdminList" v-if="groupedVotings.length > 0">
             <li v-for="groupedVoting in groupedVotings">
                 <div class="titleLink">
                     <!--
@@ -130,11 +135,40 @@ ob_start();
                 </div>
                 <div class="result" v-if="isClosed">
                     <div class="accepted">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <?= Yii::t('voting', 'status_accepted') ?>
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <?= Yii::t('voting', 'status_accepted') ?>
                     </div>
                 </div>
             </li>
         </ul>
+        <div v-if="isPreparing" class="addingMotionForm">
+            <button class="btn btn-link btn-xs" type="button" v-if="!addingMotions" @click="addingMotions = true">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                <?= Yii::t('voting', 'admin_add_amendments') ?>
+            </button>
+            <div v-if="addingMotions" class="addingMotions">
+                <select class="stdDropdown" v-model="addableMotionSelected"
+                    aria-label="<?= Yii::t('voting', 'admin_add_amendments') ?>" title="<?= Yii::t('voting', 'admin_add_amendments') ?>">
+                    <option value=""><?= Yii::t('voting', 'admin_add_amendments_opt') ?></option>
+                    <template v-for="item in addableMotions">
+                        <!-- Statute amendment -->
+                        <option v-if="item.type === 'amendment'" :value="'amendment-' + item.id">{{ item.title }}</option>
+
+                        <option v-if="item.type === 'motion' && item.amendments.length === 0" :value="'motion-' + item.id">{{ item.title }}</option>
+
+                        <optgroup v-if="item.type === 'motion' && item.amendments.length > 0" :label="item.title">
+                            <option :value="'motion-' + item.id"><?= Yii::t('voting', 'admin_add_opt_motion') ?></option>
+                            <option :value="'motion-' + item.id + '-amendments'"><?= Yii::t('voting', 'admin_add_opt_all_amend') ?></option>
+                            <option v-for="amendment in item.amendments" :value="'amendment-' + amendment.id">{{ amendment.title }}</option>
+                        </optgroup>
+                    </template>
+                </select>
+                <button type="button" :disabled="!addableMotionSelected" class="btn btn-default" @click="addItem()">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                    <span class="sr-only"><?= Yii::t('voting', 'admin_add_btn') ?></span>
+                </button>
+            </div>
+        </div>
         <footer class="votingFooter" v-if="voting.log.length > 2" aria-label="<?= Yii::t('voting', 'activity_title') ?>">
             <div class="activityOpener" v-if="activityClosed">
                 <button type="button" class="btn btn-link btn-xs" @click="openActivities()">
@@ -157,18 +191,6 @@ ob_start();
                 <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
             </ol>
         </footer>
-        <!--
-        <footer class="votingFooter" v-if="isPreparing">
-            <div class="votingAmendmentAdder">
-                Add an amendment to this voting:
-                <select name="amendment">
-                    <option></option>
-                    <option>Amendment 1</option>
-                    <option>Amendment 2</option>
-                </select>
-            </div>
-        </footer>
-        -->
     </div>
 </section>
 
@@ -209,10 +231,12 @@ $html = ob_get_clean();
 
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['voting'],
+        props: ['voting', 'addableMotions'],
         data() {
             return {
-                activityClosed: true
+                activityClosed: true,
+                addingMotions: false,
+                addableMotionSelected: ''
             }
         },
         computed: {
@@ -285,6 +309,10 @@ $html = ob_get_clean();
             },
             removeItem: function (groupedVoting) {
                 this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);
+            },
+            addItem: function () {
+                this.$emit('add-item', this.voting.id, this.addableMotionSelected);
+                this.addableMotionSelected = '';
             },
             openVoting: function () {
                 this.voting.status = STATUS_OPEN;

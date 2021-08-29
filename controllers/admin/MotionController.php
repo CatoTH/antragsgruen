@@ -528,13 +528,18 @@ class MotionController extends AdminBase
                 $motion->setVotingData($votingData);
 
                 $ppChanges = new ProposedProcedureChange(null);
-                $motion->setProposalVotingPropertiesFromRequest(
-                    \Yii::$app->request->post('votingStatus', null),
-                    \Yii::$app->request->post('votingBlockId', null),
-                    \Yii::$app->request->post('votingItemBlockId', []),
-                    \Yii::$app->request->post('newBlockTitle', ''),
-                    $ppChanges
-                );
+                try {
+                    $motion->setProposalVotingPropertiesFromRequest(
+                        \Yii::$app->request->post('votingStatus', null),
+                        \Yii::$app->request->post('votingBlockId', null),
+                        \Yii::$app->request->post('votingItemBlockId', []),
+                        \Yii::$app->request->post('newBlockTitle', ''),
+                        false,
+                        $ppChanges
+                    );
+                } catch (FormError $e) {
+                    \Yii::$app->session->setFlash('error', $e->getMessage());
+                }
                 if ($ppChanges->hasChanges()) {
                     ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
                 }
