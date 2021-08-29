@@ -344,6 +344,8 @@ class VotingController extends Base
             return $this->getError($error->getMessage());
         }
 
+        $votingBlock->refresh();
+
         $responseJson = $this->getOpenVotingsUserData();
 
         return $this->returnRestResponse(200, $responseJson);

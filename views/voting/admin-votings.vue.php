@@ -15,7 +15,7 @@ $consultation = $controller->consultation;
 ob_start();
 ?>
 
-<section class="voting" :aria-label="'<?= Yii::t('voting', 'admin_aria_single') ?>: ' + voting.title">
+<section class="voting" :class="['voting' + voting.id]" :aria-label="'<?= Yii::t('voting', 'admin_aria_single') ?>: ' + voting.title">
     <h2 class="green">
         {{ voting.title }}
         <label class="activateHeader">
@@ -51,11 +51,11 @@ ob_start();
                 </label>
             </div>
             <div class="actions">
-                <button type="button" class="btn btn-primary" @click="openVoting()"><?= Yii::t('voting', 'admin_btn_open') ?></button>
+                <button type="button" class="btn btn-primary btnOpen" @click="openVoting()"><?= Yii::t('voting', 'admin_btn_open') ?></button>
             </div>
         </form>
         <form method="POST" class="votingDataActions" v-if="isOpen || isClosed">
-            <div class="data">
+            <div class="data" v-if="organizations.length > 0 && !(organizations.length === 1 && organizations[0].members_present === null)">
                 <div class="votingDetails" v-if="organizations.length === 1">
                     <strong><?= Yii::t('voting', 'admin_members_present') ?>:</strong>
                     {{ organizations[0].members_present }}
@@ -68,12 +68,12 @@ ob_start();
                 </div>
             </div>
             <div class="actions" v-if="isOpen">
-                <button type="button" class="btn btn-default" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
-                <button type="button" class="btn btn-primary" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
+                <button type="button" class="btn btn-default btnReset" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
+                <button type="button" class="btn btn-primary btnClose" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
             </div>
             <div class="actions" v-if="isClosed">
-                <button type="button" class="btn btn-default" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
-                <button type="button" class="btn btn-default" @click="reopenVoting()"><?= Yii::t('voting', 'admin_btn_reopen') ?></button>
+                <button type="button" class="btn btn-default btnReset" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
+                <button type="button" class="btn btn-default btnReopen" @click="reopenVoting()"><?= Yii::t('voting', 'admin_btn_reopen') ?></button>
             </div>
         </form>
         <div v-if="groupedVotings.length === 0" class="noVotingsYet">
@@ -82,13 +82,8 @@ ob_start();
             </p></div>
         </div>
         <ul class="votingAdminList" v-if="groupedVotings.length > 0">
-            <li v-for="groupedVoting in groupedVotings">
+            <li v-for="groupedVoting in groupedVotings" :class="['voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id]">
                 <div class="titleLink">
-                    <!--
-                    <button class="btn btn-link btnRemove" type="button" title="Remove this amendment from this voting">
-                        <span class="glyphicon glyphicon-remove-circle" aria-label="Remove this amendment from this voting"></span>
-                    </button>
-                    -->
                     <div v-for="item in groupedVoting">
                         {{ item.title_with_prefix }}
                         <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
@@ -121,10 +116,10 @@ ob_start();
                             </thead>
                             <tbody>
                             <tr>
-                                <td>{{ groupedVoting[0].vote_results[0].yes }}</td>
-                                <td>{{ groupedVoting[0].vote_results[0].no }}</td>
-                                <td>{{ groupedVoting[0].vote_results[0].abstention }}</td>
-                                <td class="total">{{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}</td>
+                                <td class="voteCountYes">{{ groupedVoting[0].vote_results[0].yes }}</td>
+                                <td class="voteCountNo">{{ groupedVoting[0].vote_results[0].no }}</td>
+                                <td class="voteCountAbstention">{{ groupedVoting[0].vote_results[0].abstention }}</td>
+                                <td class="voteCountTotal total">{{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}</td>
                             </tr>
                             </tbody>
                         </table>

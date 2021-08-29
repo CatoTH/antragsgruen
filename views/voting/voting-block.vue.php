@@ -27,7 +27,7 @@ ob_start();
 
         <template v-if="mode === 'vote'">
             <ul class="voteList">
-                <li v-for="groupedVoting in groupedVotings">
+                <li v-for="groupedVoting in groupedVotings" :class="['voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id]">
                     <div class="titleLink">
                         <div v-for="item in groupedVoting">
                             {{ item.title_with_prefix }}
@@ -39,15 +39,15 @@ ob_start();
                     </div>
 
                     <div class="votingOptions" v-if="groupedVoting[0].can_vote">
-                        <button type="button" class="btn btn-default btn-sm" @click="voteYes(groupedVoting)">
+                        <button type="button" class="btn btn-default btn-sm btnYes" @click="voteYes(groupedVoting)">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                             <?= Yii::t('voting', 'vote_yes') ?>
                         </button>
-                        <button type="button" class="btn btn-default btn-sm" @click="voteNo(groupedVoting)">
+                        <button type="button" class="btn btn-default btn-sm btnNo" @click="voteNo(groupedVoting)">
                             <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                             <?= Yii::t('voting', 'vote_no') ?>
                         </button>
-                        <button type="button" class="btn btn-default btn-sm" @click="voteAbstention(groupedVoting)">
+                        <button type="button" class="btn btn-default btn-sm btnAbstention" @click="voteAbstention(groupedVoting)">
                             <?= Yii::t('voting', 'vote_abstention') ?>
                         </button>
                     </div>
@@ -64,7 +64,7 @@ ob_start();
                             <?= Yii::t('voting', 'vote_abstention') ?>
                         </span>
 
-                        <button type="button" class="btn btn-link btn-sm" @click="voteUndo(groupedVoting)"
+                        <button type="button" class="btn btn-link btn-sm btnUndo" @click="voteUndo(groupedVoting)"
                                 title="<?= Yii::t('voting', 'vote_undo') ?>" aria-label="<?= Yii::t('voting', 'vote_undo') ?>">
                             <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
                         </button>

@@ -298,7 +298,8 @@
     flex-wrap: wrap;
   }
   .actions {
-    flex-basis: 330px;
+    flex-basis: 360px;
+    flex-grow: 1;
     text-align: right;
   }
 }

@@ -164,51 +164,32 @@ class AcceptanceTester extends \Codeception\Actor
         return $this->gotoStdAdminPage($subdomain, $path);
     }
 
-    /**
-     * @param string $subdomain
-     * @param string $path
-     * @return AdminMotionListPage
-     */
-    public function loginAndGotoMotionList($subdomain = 'stdparteitag', $path = 'std-parteitag')
+    public function loginAndGotoMotionList(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): AdminMotionListPage
     {
         $this->gotoConsultationHome(false, $subdomain, $path);
         $this->loginAsStdAdmin();
         return $this->gotoMotionList();
     }
 
-    /**
-     * @param string $subdomain
-     * @param string $path
-     * @return AdminIndexPage
-     */
-    public function gotoStdAdminPage($subdomain = 'stdparteitag', $path = 'std-parteitag')
+    public function gotoStdAdminPage(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): AdminIndexPage
     {
-        $page = AdminIndexPage::openBy(
+        return AdminIndexPage::openBy(
             $this,
             [
                 'subdomain'        => $subdomain,
                 'consultationPath' => $path,
             ]
         );
-        return $page;
     }
 
-    /**
-     * @return AdminMotionListPage
-     */
-    public function gotoMotionList()
+    public function gotoMotionList(): AdminMotionListPage
     {
         $this->click('#motionListLink');
         $this->see(mb_strtoupper('Liste: Anträge, Änderungsanträge'), 'h1');
         return new AdminMotionListPage($this);
     }
 
-    /**
-     * @param $username
-     * @param $password
-     * @return $this
-     */
-    protected function loginWithData($username, $password)
+    protected function loginWithData(string $username, string $password): self
     {
         $this->see('LOGIN', '#loginLink');
         $this->click('#loginLink');
@@ -221,63 +202,42 @@ class AcceptanceTester extends \Codeception\Actor
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function loginAsStdAdmin()
+    public function loginAsStdAdmin(): self
     {
         return $this->loginWithData('testadmin@example.org', 'testadmin');
     }
 
-    /**
-     * @return $this
-     */
-    public function loginAsConsultationAdmin()
+    public function loginAsConsultationAdmin(): self
     {
         return $this->loginWithData('consultationadmin@example.org', 'consultationadmin');
     }
 
-    /**
-     * @return $this
-     */
-    public function loginAsProposalAdmin()
+    public function loginAsProposalAdmin(): self
     {
         return $this->loginWithData('proposaladmin@example.org', 'proposaladmin');
     }
 
-    /**
-     *
-     */
-    public function loginAsGlobalAdmin()
+    public function loginAsGlobalAdmin(): self
     {
         return $this->loginWithData('globaladmin@example.org', 'testadmin');
     }
 
-    /**
-     *
-     */
-    public function loginAsStdUser()
+    public function loginAsStdUser(): self
     {
         return $this->loginWithData('testuser@example.org', 'testuser');
     }
 
-    /**
-     * @return $this
-     */
-    public function loginAsFixedDataUser()
+    public function loginAsFixedDataUser(): self
     {
         return $this->loginWithData('fixeddata@example.org', 'testuser');
     }
 
-    /**
-     * @return $this
-     */
-    public function loginAsFixedDataAdmin()
+    public function loginAsFixedDataAdmin(): self
     {
         return $this->loginWithData('fixedadmin@example.org', 'testadmin');
     }
 
-    public function loginAsGruenesNetzUser()
+    public function loginAsGruenesNetzUser(): void
     {
         $this->see('LOGIN', '#loginLink');
         $this->click('#loginLink');
@@ -288,7 +248,7 @@ class AcceptanceTester extends \Codeception\Actor
         $this->seeElement('#logoutLink');
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->see('LOGOUT', '#logoutLink');
         $this->click('#logoutLink');
