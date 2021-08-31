@@ -119,7 +119,10 @@
       white-space: nowrap;
 
       .accepted {
-        color: green;
+        color: $colorGreenLight;
+      }
+      .rejected {
+        color: $colorDelLink;
       }
     }
   }

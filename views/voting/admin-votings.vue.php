@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\{IMotion, VotingBlock};
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
@@ -133,9 +134,13 @@ ob_start();
                     ?>
                 </div>
                 <div class="result" v-if="isClosed">
-                    <div class="accepted">
+                    <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_accepted') ?>
+                    </div>
+                    <div class="rejected" v-if="itemIsRejected(groupedVoting)">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        <?= Yii::t('voting', 'status_rejected') ?>
                     </div>
                 </div>
             </li>
@@ -199,24 +204,25 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    // HINT: keep in sync with VotingBlock.php
-
     // The voting is not performed using Antragsgrün
-    const STATUS_OFFLINE = 0;
+    const STATUS_OFFLINE = <?= VotingBlock::STATUS_OFFLINE ?>;
 
     // Votings that have been created and will be using Antragsgrün, but are not active yet
-    const STATUS_PREPARING = 1;
+    const STATUS_PREPARING = <?= VotingBlock::STATUS_PREPARING ?>;
 
     // Currently open for voting. Currently there should only be one voting in this status at a time.
-    const STATUS_OPEN = 2;
+    const STATUS_OPEN = <?= VotingBlock::STATUS_OPEN ?>;
 
     // Vorting is closed.
-    const STATUS_CLOSED = 3;
+    const STATUS_CLOSED = <?= VotingBlock::STATUS_CLOSED ?>;
 
-    const ACTIVITY_TYPE_OPENED = 1;
-    const ACTIVITY_TYPE_CLOSED = 2;
-    const ACTIVITY_TYPE_RESET = 3;
-    const ACTIVITY_TYPE_REOPENED = 4;
+    const ACTIVITY_TYPE_OPENED = <?= VotingBlock::ACTIVITY_TYPE_OPENED ?>;
+    const ACTIVITY_TYPE_CLOSED = <?= VotingBlock::ACTIVITY_TYPE_CLOSED ?>;
+    const ACTIVITY_TYPE_RESET = <?= VotingBlock::ACTIVITY_TYPE_RESET ?>;
+    const ACTIVITY_TYPE_REOPENED = <?= VotingBlock::ACTIVITY_TYPE_REOPENED ?>;
+
+    const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
+    const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
 
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
     const motionEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000'])) ?>;
@@ -358,6 +364,12 @@ $html = ob_get_clean();
                     return amendmentEditUrl.replace(/00000000/, item.id);
                 }
                 return '???';
+            },
+            itemIsAccepted: function (groupedItem) {
+                return groupedItem[0].voting_status === VOTING_STATUS_ACCEPTED;
+            },
+            itemIsRejected: function (groupedItem) {
+                return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
             }
         },
         updated() {

@@ -109,12 +109,8 @@ class AgendaVoting
                     'initiators_html' => $item->getInitiatorsStr(),
                     'procedure' => $procedure,
                     'item_group_same_vote' => $item->getVotingData()->itemGroupSameVote,
+                    'voting_status' => $item->votingStatus,
                 ];
-                if ($user && $this->voting) {
-                    $vote = $this->voting->getUserSingleItemVote($user, $item);
-                    $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
-                    $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, $item);
-                }
             } else {
                 /** @var Motion $item */
                 $data = [
@@ -127,12 +123,14 @@ class AgendaVoting
                     'initiators_html' => $item->getInitiatorsStr(),
                     'procedure' => $procedure,
                     'item_group_same_vote' => $item->getVotingData()->itemGroupSameVote,
+                    'voting_status' => $item->votingStatus,
                 ];
-                if ($user && $this->voting) {
-                    $vote = $this->voting->getUserSingleItemVote($user, $item);
-                    $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
-                    $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, $item);
-                }
+            }
+
+            if ($user && $this->voting) {
+                $vote = $this->voting->getUserSingleItemVote($user, $item);
+                $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
+                $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, $item);
             }
 
             if ($adminFields && $this->voting) {
