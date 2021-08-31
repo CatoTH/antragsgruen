@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
@@ -87,7 +88,10 @@ ob_start();
                     <div v-for="item in groupedVoting">
                         {{ item.title_with_prefix }}
                         <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
-                                class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a><br>
+                                class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a>
+                        <a :href="itemAdminUrl(item)" title="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"><span
+                                class="glyphicon glyphicon-wrench" aria-label="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"></span></a>
+                        <br>
                         <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
                 </div>
@@ -215,6 +219,8 @@ $html = ob_get_clean();
     const ACTIVITY_TYPE_REOPENED = 4;
 
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
+    const motionEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000'])) ?>;
+    const amendmentEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000'])) ?>;
 
     Vue.directive('tooltip', function (el, binding) {
         $(el).tooltip({
@@ -343,6 +349,15 @@ $html = ob_get_clean();
             },
             closeActivities: function () {
                 this.activityClosed = true;
+            },
+            itemAdminUrl: function (item) {
+                if (item.type === 'motion') {
+                    return motionEditUrl.replace(/00000000/, item.id);
+                }
+                if (item.type === 'amendment') {
+                    return amendmentEditUrl.replace(/00000000/, item.id);
+                }
+                return '???';
             }
         },
         updated() {

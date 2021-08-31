@@ -42,6 +42,7 @@ return [
 
     'voting_current_aria' => 'Aktuell laufende Abstimmung',
     'voting_show_amend' => 'Änderungsantrag anzeigen',
+    'voting_edit_amend' => 'Änderungsantrag bearbeiten',
     'voting_by' => 'Von',
     'voting_admin_all' => 'Abstimmungen verwalten',
     'voting_visibility' => 'Wer kann sehen, wie ich abgestimmt habe?',

@@ -42,6 +42,7 @@ return [
 
     'voting_current_aria' => 'Currently active voting',
     'voting_show_amend' => 'Show amendment',
+    'voting_edit_amend' => 'Edit amendment',
     'voting_by' => 'By',
     'voting_admin_all' => 'Administrate votings',
     'voting_visibility' => 'Who can see how I voted?',

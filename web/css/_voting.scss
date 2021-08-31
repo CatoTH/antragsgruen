@@ -38,6 +38,10 @@
       padding-top: 10px;
       padding-bottom: 10px;
       border-bottom: solid 1px #ccc;
+
+      &:last-child {
+        border-bottom: none;
+      }
     }
 
     .votingOptions, .voted {
@@ -88,6 +92,10 @@
       padding-top: 10px;
       padding-bottom: 10px;
       border-bottom: solid 1px #ccc;
+
+      &:last-child {
+        border-bottom: none;
+      }
     }
 
     .titleLink {
