@@ -81,35 +81,7 @@ if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL || $mo
     ];
 }
 
-$votingData = $motion->getVotingData();
-if ($votingData->hasAnyData()) {
-    $part1 = [];
-    if ($votingData->votesYes !== null) {
-        $part1[] = Yii::t('motion', 'voting_yes') . ': ' . $votingData->votesYes;
-    }
-    if ($votingData->votesNo !== null) {
-        $part1[] = Yii::t('motion', 'voting_no') . ': ' . $votingData->votesNo;
-    }
-    if ($votingData->votesAbstention !== null) {
-        $part1[] = Yii::t('motion', 'voting_abstention') . ': ' . $votingData->votesAbstention;
-    }
-    if ($votingData->votesInvalid !== null) {
-        $part1[] = Yii::t('motion', 'voting_invalid') . ': ' . $votingData->votesInvalid;
-    }
-    $part1 = implode(", ", $part1);
-    if ($part1 && $votingData->comment) {
-        $str = Html::encode($votingData->comment) . '<br><small>' . $part1 . '</small>';
-    } elseif ($part1) {
-        $str = $part1;
-    } else {
-        $str = $votingData->comment;
-    }
-    $motionData[] = [
-        'rowClass' => 'votingResultRow',
-        'title'    => Yii::t('motion', 'voting_result'),
-        'content'  => $str,
-    ];
-}
+MotionLayoutHelper::addVotingResultsRow($motion->getVotingData(), $motionData);
 
 if (!$motion->isResolution()) {
     $proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);

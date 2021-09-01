@@ -42,36 +42,7 @@ $amendmentData[] = [
     'content'  => $amendment->getFormattedStatus(),
 ];
 
-$votingData = $amendment->getVotingData();
-if ($votingData->hasAnyData()) {
-    $part1 = [];
-    if ($votingData->votesYes !== null) {
-        $part1[] = Yii::t('motion', 'voting_yes') . ': ' . $votingData->votesYes;
-    }
-    if ($votingData->votesNo !== null) {
-        $part1[] = Yii::t('motion', 'voting_no') . ': ' . $votingData->votesNo;
-    }
-    if ($votingData->votesAbstention !== null) {
-        $part1[] = Yii::t('motion', 'voting_abstention') . ': ' . $votingData->votesAbstention;
-    }
-    if ($votingData->votesInvalid !== null) {
-        $part1[] = Yii::t('motion', 'voting_invalid') . ': ' . $votingData->votesInvalid;
-    }
-    $part1 = implode(", ", $part1);
-    if ($part1 && $votingData->comment) {
-        $str = Html::encode($votingData->comment) . '<br><small>' . $part1 . '</small>';
-    } elseif ($part1) {
-        $str = $part1;
-    } else {
-        $str = $votingData->comment;
-    }
-
-    $amendmentData[] = [
-        'rowClass' => 'votingResultRow',
-        'title'    => Yii::t('motion', 'voting_result'),
-        'content'  => $str,
-    ];
-}
+MotionLayoutHelper::addVotingResultsRow($amendment->getVotingData(), $amendmentData);
 
 $proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 if (($amendment->isProposalPublic() && $amendment->proposalStatus) || $proposalAdmin) {

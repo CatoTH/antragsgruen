@@ -3,6 +3,7 @@
 namespace app\models\layoutHooks;
 
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
+use app\models\settings\VotingData;
 
 class Hooks
 {
@@ -216,6 +217,11 @@ class Hooks
     }
 
     public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
+    {
+        return $before;
+    }
+
+    public function getVotingAlternativeUserResults(?array $before, VotingData $votingData): ?array
     {
         return $before;
     }
