@@ -2,8 +2,7 @@
 
 namespace app\models\settings;
 
-use app\models\db\Vote;
-use app\models\db\VotingBlock;
+use app\models\db\{Vote, VotingBlock};
 
 class VotingData implements \JsonSerializable
 {

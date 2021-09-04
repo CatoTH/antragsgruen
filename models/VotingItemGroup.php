@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace app\models;
 
-use app\models\db\Amendment;
-use app\models\db\IMotion;
-use app\models\db\Motion;
+use app\models\db\{Amendment, IMotion, Motion};
 use app\models\exceptions\FormError;
 
 class VotingItemGroup
