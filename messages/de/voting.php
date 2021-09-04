@@ -41,6 +41,7 @@ return [
     'admin_add_opt_motion' => '- Den Antrag hinzufügen -',
     'admin_add_opt_all_amend' => '- Alle folgenden Änderungsanträge hinzufügen -',
 
+    'settings_create' => 'Neue Abstimmung anlegen',
     'settings_open' => 'Einstellungen öffnen',
     'settings_close' => 'Einstellungen schließen',
     'settings_title' => 'Titel',

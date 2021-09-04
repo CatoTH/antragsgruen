@@ -41,6 +41,7 @@ return [
     'admin_add_opt_motion' => 'Add the motion',
     'admin_add_opt_all_amend' => 'Add all following amendments',
 
+    'settings_create' => 'Create a new voting',
     'settings_open' => 'Show settings',
     'settings_close' => 'Hide settings',
     'settings_title' => 'Title',

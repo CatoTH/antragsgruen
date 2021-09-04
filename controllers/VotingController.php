@@ -28,9 +28,6 @@ class VotingController extends Base
 
     private function getVotingBlockAndCheckAdminPermission(string $votingBlockId): VotingBlock
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
         $user = User::getCurrentUser();
         if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
             $this->returnRestResponse(403, $this->getError('Missing privileges'));
@@ -46,7 +43,7 @@ class VotingController extends Base
         return $block;
     }
 
-    private function getAllVotingAdminData(): string
+    private function getAllVotingAdminData(): array
     {
         $apiData = [];
         foreach (Factory::getAllVotingBlocks($this->consultation) as $votingBlock) {
@@ -54,7 +51,7 @@ class VotingController extends Base
             $apiData[] = $votingBlock->getAdminApiObject();
         }
 
-        return json_encode($apiData);
+        return $apiData;
     }
 
     public function actionGetAdminVotingBlocks()
@@ -70,9 +67,9 @@ class VotingController extends Base
             die();
         }
 
-        $responseJson = $this->getAllVotingAdminData();
+        $responseData = $this->getAllVotingAdminData();
 
-        return $this->returnRestResponse(200, $responseJson);
+        return $this->returnRestResponse(200, json_encode($responseData));
     }
 
     private function voteStatusUpdate(VotingBlock $votingBlock): void
@@ -195,9 +192,44 @@ class VotingController extends Base
                 break;
         }
 
-        $responseJson = $this->getAllVotingAdminData();
+        $responseData = $this->getAllVotingAdminData();
 
-        return $this->returnRestResponse(200, $responseJson);
+        return $this->returnRestResponse(200, json_encode($responseData));
+    }
+
+    public function actionCreateVotingBlock()
+    {
+        $this->handleRestHeaders(['POST'], true);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $user = User::getCurrentUser();
+        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
+            $this->returnRestResponse(403, $this->getError('Missing privileges'));
+            die();
+        }
+
+        $newBlock = new VotingBlock();
+        $newBlock->consultationId = $this->consultation->id;
+        $newBlock->title = \Yii::$app->request->post('title');
+        $newBlock->majorityType = VotingBlock::MAJORITY_TYPE_SIMPLE;
+        $newBlock->votesPublic = 0;
+        if (\Yii::$app->request->post('assignedMotion') !== null && \Yii::$app->request->post('assignedMotion') > 0) {
+            $newBlock->assignedToMotionId = \Yii::$app->request->post('assignedMotion');
+        } else {
+            $newBlock->assignedToMotionId = null;
+        }
+        // If the voting is created from the proposed procedure, we assume it's only used to show it there
+        $newBlock->votingStatus = VotingBlock::STATUS_PREPARING;
+        $newBlock->save();
+
+        $votingData = $this->getAllVotingAdminData();
+
+        return $this->returnRestResponse(200, json_encode([
+            'votings' => $votingData,
+            'created_voting' => $newBlock->id,
+        ]));
     }
 
     // *** User-facing methods ***

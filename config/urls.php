@@ -88,6 +88,7 @@ $urlRules = [
 
     $restBaseCon . '/votings/open' => '/voting/get-open-voting-blocks',
     $restBaseCon . '/votings/admin' => '/voting/get-admin-voting-blocks',
+    $restBaseCon . '/votings/create' => '/voting/create-voting-block',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/settings' => '/voting/post-vote-settings',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/vote' => '/voting/post-vote',
 

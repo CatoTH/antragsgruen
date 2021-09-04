@@ -6,11 +6,17 @@ export class VotingAdmin {
     private widget;
 
     constructor(private $element: JQuery) {
+        this.createVueWidget();
+        this.initVotingCreater();
+    }
+
+    private createVueWidget() {
         const $vueEl = this.$element.find(".votingAdmin")[0];
-        const allVotingData = $element.data('voting');
-        const voteSettingsUrl = $element.data('url-vote-settings');
-        const addableMotions = $element.data('addable-motions');
-        const pollUrl = $element.data('url-poll');
+        const allVotingData = this.$element.data('voting');
+        const voteSettingsUrl = this.$element.data('url-vote-settings');
+        const voteCreateUrl = this.$element.data('vote-create');
+        const addableMotions = this.$element.data('addable-motions');
+        const pollUrl = this.$element.data('url-poll');
 
         this.widget = new Vue({
             el: $vueEl,
@@ -69,6 +75,25 @@ export class VotingAdmin {
                         assignedMotion,
                     });
                 },
+                createVoting: function (title, assignedMotion) {
+                    let postData = {
+                        _csrf: this.csrf,
+                        title,
+                        assignedMotion
+                    };
+                    const widget = this;
+                    $.post(voteCreateUrl, postData, function (data) {
+                        if (data.success !== undefined && !data.success) {
+                            alert(data.message);
+                            return;
+                        }
+                        widget.votings = data['votings'];
+
+                        console.log(data['created_voting']);
+                    }).catch(function (err) {
+                        alert(err.responseText);
+                    });
+                },
                 removeItem(votingBlockId, itemType, itemId) {
                     this._performOperation(votingBlockId, {
                         op: 'remove-item',
@@ -103,6 +128,24 @@ export class VotingAdmin {
             created() {
                 this.startPolling()
             }
+        });
+    }
+
+    private initVotingCreater() {
+        const $opener = this.$element.find('.createVotingOpener'),
+            $form = this.$element.find('.createVotingHolder');
+        $opener.on('click', () => {
+            $form.removeClass('hidden');
+            $opener.addClass('hidden');
+        });
+        $form.find('form').on('submit', (ev) => {
+            ev.stopPropagation();
+            ev.preventDefault();
+            this.widget.createVoting($form.find('.settingsTitle').val(), $form.find('.settingsAssignedMotion').val());
+
+            $form.addClass('hidden');
+            $opener.removeClass('hidden');
+            // @TODO Scroll to new voting
         });
     }
 }
