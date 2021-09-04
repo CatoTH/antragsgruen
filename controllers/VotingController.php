@@ -75,7 +75,7 @@ class VotingController extends Base
         return $this->returnRestResponse(200, $responseJson);
     }
 
-    private function voteSettingsUpdate(VotingBlock $votingBlock): void
+    private function voteStatusUpdate(VotingBlock $votingBlock): void
     {
         if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
             foreach (\Yii::$app->request->post('organizations', []) as $organization) {
@@ -102,6 +102,20 @@ class VotingController extends Base
                 $votingBlock->switchToOfflineVoting();
             }
         }
+    }
+
+    private function voteSaveSettings(VotingBlock $votingBlock): void
+    {
+        if (\Yii::$app->request->post('title')) {
+            $votingBlock->title = \Yii::$app->request->post('title');
+        }
+        if (\Yii::$app->request->post('assignedMotion') !== null && \Yii::$app->request->post('assignedMotion') > 0) {
+            $votingBlock->assignedToMotionId = \Yii::$app->request->post('assignedMotion');
+        } else {
+            $votingBlock->assignedToMotionId = null;
+        }
+
+        $votingBlock->save();
     }
 
     private function voteAddItem(VotingBlock $votingBlock): void
@@ -167,8 +181,11 @@ class VotingController extends Base
         $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
 
         switch (\Yii::$app->request->post('op')) {
-            case 'update':
-                $this->voteSettingsUpdate($votingBlock);
+            case 'update-status':
+                $this->voteStatusUpdate($votingBlock);
+                break;
+            case 'save-settings':
+                $this->voteSaveSettings($votingBlock);
                 break;
             case 'add-item':
                 $this->voteAddItem($votingBlock);
@@ -185,25 +202,27 @@ class VotingController extends Base
 
     // *** User-facing methods ***
 
-    private function getOpenVotingsUserData(): string
+    private function getOpenVotingsUserData(?Motion $assignedToMotion): string
     {
         $user = User::getCurrentUser();
         $votingData = [];
-        foreach (Factory::getOpenVotingBlocks($this->consultation) as $voting) {
+        foreach (Factory::getOpenVotingBlocks($this->consultation, $assignedToMotion) as $voting) {
             $votingData[] = $voting->getUserApiObject($user);
         }
 
         return json_encode($votingData);
     }
 
-    public function actionGetOpenVotingBlocks()
+    public function actionGetOpenVotingBlocks($assignedToMotionId)
     {
         $this->handleRestHeaders(['GET'], true);
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $responseJson = $this->getOpenVotingsUserData();
+        $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);
+
+        $responseJson = $this->getOpenVotingsUserData($assignedToMotion);
 
         return $this->returnRestResponse(200, $responseJson);
     }
@@ -294,9 +313,11 @@ class VotingController extends Base
      * votes[0][vote]=yes
      * [optional] votes[0][public]=1
      */
-    public function actionPostVote($votingBlockId)
+    public function actionPostVote($votingBlockId, $assignedToMotionId)
     {
         $this->handleRestHeaders(['POST'], true);
+
+        $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);
 
         $votingBlock = $this->consultation->getVotingBlock(intval($votingBlockId));
         if (!$votingBlock) {
@@ -346,7 +367,7 @@ class VotingController extends Base
 
         $votingBlock->refresh();
 
-        $responseJson = $this->getOpenVotingsUserData();
+        $responseJson = $this->getOpenVotingsUserData($assignedToMotion);
 
         return $this->returnRestResponse(200, $responseJson);
     }

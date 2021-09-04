@@ -20,6 +20,19 @@ ob_start();
 <section class="voting" :class="['voting' + voting.id]" :aria-label="'<?= Yii::t('voting', 'admin_aria_single') ?>: ' + voting.title">
     <h2 class="green">
         {{ voting.title }}
+        <span class="btn-group btn-group-xs settingsToggleGroup">
+            <button class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                    title="<?= Yii::t('voting', 'admin_settings_open') ?>" @click="openSettings()" v-if="!settingsOpened">
+                <span class="sr-only"><?= Yii::t('voting', 'admin_settings_open') ?></span>
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" v-if="settingsOpened"
+                    title="<?= Yii::t('voting', 'admin_settings_close') ?>" @click="closeSettings()">
+                <span class="sr-only"><?= Yii::t('voting', 'admin_settings_close') ?></span>
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </button>
+        </span>
+
         <label class="activateHeader">
             <input type="checkbox" v-model="isUsed">
             <?= Yii::t('voting', 'admin_voting_use') ?>
@@ -28,7 +41,7 @@ ob_start();
                   v-tooltip="'<?= addslashes(Yii::t('voting', 'admin_voting_use_h')) ?>'"></span>
         </label>
     </h2>
-    <div class="content">
+    <div class="content votingShow" v-if="!settingsOpened">
         <div class="majorityType" v-if="isPreparing">
             <strong><?= Yii::t('voting', 'majority_simple') ?></strong><br>
             <small><?= Yii::t('voting', 'majority_simple_h') ?></small>
@@ -196,6 +209,28 @@ ob_start();
             </ol>
         </footer>
     </div>
+    <form method="POST" class="content votingSettings" v-if="settingsOpened" @submit="saveSettings($event)">
+        <label class="titleSetting">
+            <?= Yii::t('voting', 'settings_title') ?>:<br>
+            <input type="text" v-model="settingsTitle" class="form-control">
+        </label>
+        <label class="assignedMotion">
+            <?= Yii::t('voting', 'settings_motionassign') ?>:
+            <span class="glyphicon glyphicon-info-sign"
+                  aria-label="<?= Html::encode(Yii::t('voting', 'settings_motionassign_h')) ?>"
+                  v-tooltip="'<?= addslashes(Yii::t('voting', 'settings_motionassign_h')) ?>'"></span>
+            <br>
+            <select class="stdDropdown" v-model="settingsAssignedMotion">
+                <option :value="''"> - <?= Yii::t('voting', 'settings_motionassign_none') ?> - </option>
+                <option v-for="motion in motionsAssignable" :value="motion.id">
+                    {{ motion.title }}
+                </option>
+            </select>
+        </label>
+        <button type="submit" class="btn btn-success">
+            <?= Yii::t('voting', 'settings_save') ?>
+        </button>
+    </form>
 </section>
 
 
@@ -243,7 +278,13 @@ $html = ob_get_clean();
             return {
                 activityClosed: true,
                 addingMotions: false,
-                addableMotionSelected: ''
+                addableMotionSelected: '',
+                settingsOpened: false,
+                changedSettings: {
+                    // null = uninitialized
+                    title: null,
+                    assignedMotion: null
+                }
             }
         },
         computed: {
@@ -292,6 +333,26 @@ $html = ob_get_clean();
                 return this.organizations.filter(function (organization) {
                     return organization.members_present !== null;
                 });
+            },
+            settingsTitle: {
+                get: function () {
+                    return (this.changedSettings.title !== null ? this.changedSettings.title : this.voting.title);
+                },
+                set: function (value) {
+                    this.changedSettings.title = value;
+                }
+            },
+            settingsAssignedMotion: {
+                get: function () {
+                    const origAssigned = (this.voting.assignedMotion !== null ? this.voting.assignedMotion : '');
+                    return (this.changedSettings.assignedMotion !== null ? this.changedSettings.assignedMotion : origAssigned);
+                },
+                set: function (value) {
+                    this.changedSettings.assignedMotion = value;
+                }
+            },
+            motionsAssignable: function () {
+                return this.addableMotions.filter(motion => motion.type === 'motion'); // All, save for statute amendments
             }
         },
         methods: {
@@ -370,6 +431,18 @@ $html = ob_get_clean();
             },
             itemIsRejected: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
+            },
+            openSettings: function () {
+                this.settingsOpened = true;
+            },
+            closeSettings: function () {
+                this.settingsOpened = false;
+            },
+            saveSettings: function ($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.settingsAssignedMotion);
+                this.settingsOpened = false;
             }
         },
         updated() {

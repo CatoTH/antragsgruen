@@ -2,16 +2,16 @@
 
 namespace app\models\db;
 
-use app\models\notifications\MotionProposedProcedure;
-use app\models\notifications\MotionPublished;
+use app\models\notifications\{MotionProposedProcedure,
+    MotionPublished,
+    MotionSubmitted as MotionSubmittedNotification,
+    MotionWithdrawn as MotionWithdrawnNotification,
+    MotionEdited as MotionEditedNotification};
 use app\models\settings\AntragsgruenApp;
 use app\components\{HashedStaticFileCache, MotionSorter, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
-use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
-use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
-use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
 use app\models\sectionTypes\{Image, ISectionType, PDF};
@@ -49,6 +49,7 @@ use yii\helpers\Html;
  * @property User|null $responsibilityUser
  * @property SpeechQueue[] $speechQueues
  * @property Vote[] $votes
+ * @property VotingBlock[] $assignedVotingBlocks
  */
 class Motion extends IMotion implements IRSSItem
 {
@@ -257,6 +258,14 @@ class Motion extends IMotion implements IRSSItem
     public function getVotingBlock()
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedVotingBlocks()
+    {
+        return $this->hasMany(VotingBlock::class, ['assignedToMotionId' => 'id']);
     }
 
     /**

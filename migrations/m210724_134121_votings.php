@@ -12,9 +12,11 @@ class m210724_134121_votings extends Migration
         $this->update('votingBlock', ['votingStatus' => 0]);
         $this->addColumn('votingBlock', 'majorityType', 'TINYINT NULL DEFAULT NULL AFTER title');
         $this->addColumn('votingBlock', 'votesPublic', 'TINYINT NULL DEFAULT NULL AFTER majorityType');
-        $this->addColumn('votingBlock', 'usersPresentByOrga', 'TEXT NULL DEFAULT NULL AFTER votesPublic');
+        $this->addColumn('votingBlock', 'assignedToMotionId', 'INT NULL DEFAULT NULL AFTER votesPublic');
+        $this->addColumn('votingBlock', 'usersPresentByOrga', 'TEXT NULL DEFAULT NULL AFTER assignedToMotionId');
         $this->addColumn('votingBlock', 'activityLog', 'TEXT NULL DEFAULT NULL AFTER votingStatus');
         $this->alterColumn('votingBlock', 'votingStatus', 'TINYINT NOT NULL');
+        $this->addForeignKey('fk_votingblock_assigned_to_motion', 'votingBlock', 'assignedToMotionId', 'motion', 'id');
 
         $this->createTable('vote', [
             'id' => 'INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY',
@@ -44,8 +46,11 @@ class m210724_134121_votings extends Migration
 
         $this->dropTable('vote');
 
+        $this->dropForeignKey('fk_votingblock_assigned_to_motion', 'votingBlock');
+
         $this->alterColumn('votingBlock', 'votingStatus', 'TINYINT DEFAULT NULL');
         $this->dropColumn('votingBlock', 'activityLog');
+        $this->dropColumn('votingBlock', 'assignedToMotionId');
         $this->dropColumn('votingBlock', 'usersPresentByOrga');
         $this->dropColumn('votingBlock', 'votesPublic');
         $this->dropColumn('votingBlock', 'majorityType');

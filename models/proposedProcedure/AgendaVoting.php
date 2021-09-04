@@ -68,6 +68,7 @@ class AgendaVoting
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
             'title' => $title,
             'status' => ($this->voting ? $this->voting->votingStatus : null),
+            'assignedMotion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'items' => [],
         ];
         if ($adminFields) {

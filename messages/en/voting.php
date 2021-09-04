@@ -1,6 +1,7 @@
 <?php
 return [
     'bc' => 'Votings',
+    'title_user_single' => 'Voting',
 
     'vote_yes' => 'Yes',
     'vote_no' => 'No',
@@ -39,6 +40,14 @@ return [
     'admin_add_btn' => 'Add selected motion or amendment',
     'admin_add_opt_motion' => 'Add the motion',
     'admin_add_opt_all_amend' => 'Add all following amendments',
+
+    'settings_open' => 'Show settings',
+    'settings_close' => 'Hide settings',
+    'settings_title' => 'Title',
+    'settings_motionassign' => 'Assigned to motion',
+    'settings_motionassign_h' => 'If this voting is assigned to a motion, it will be shown on the motion page, not on the home page',
+    'settings_motionassign_none' => 'None',
+    'settings_save' => 'Save',
 
     'voting_current_aria' => 'Currently active voting',
     'voting_show_amend' => 'Show amendment',

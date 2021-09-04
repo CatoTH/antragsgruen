@@ -128,7 +128,7 @@ if ($consultation->getSettings()->hasSpeechLists) {
     echo $this->render('@app/views/speech/_index_speech', ['queue' => $queue]);
 }
 
-echo $this->render('@app/views/voting/_index_voting');
+echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
 
 
 if (count($consultation->motionTypes) > 0) {

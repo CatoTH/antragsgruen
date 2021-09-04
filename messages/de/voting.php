@@ -1,6 +1,7 @@
 <?php
 return [
     'bc' => 'Abstimmungen',
+    'title_user_single' => 'Abstimmung',
 
     'vote_yes' => 'Ja',
     'vote_no' => 'Nein',
@@ -39,6 +40,14 @@ return [
     'admin_add_btn' => 'Ausgewählten Antrag oder Änderungsantrag hinzufügen',
     'admin_add_opt_motion' => '- Den Antrag hinzufügen -',
     'admin_add_opt_all_amend' => '- Alle folgenden Änderungsanträge hinzufügen -',
+
+    'settings_open' => 'Einstellungen öffnen',
+    'settings_close' => 'Einstellungen schließen',
+    'settings_title' => 'Titel',
+    'settings_motionassign' => 'Im Antrag anzeigen',
+    'settings_motionassign_h' => 'Wenn hier ein Antrag ausgewählt wird, wird die Abstimmung auf der Antragsseite statt auf der Startseite angezeigt.',
+    'settings_motionassign_none' => 'Keiner',
+    'settings_save' => 'Speichern',
 
     'voting_current_aria' => 'Aktuell laufende Abstimmung',
     'voting_show_amend' => 'Änderungsantrag anzeigen',

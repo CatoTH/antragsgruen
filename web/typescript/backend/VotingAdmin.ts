@@ -19,6 +19,7 @@ export class VotingAdmin {
                                      :voting="voting"
                                      :addableMotions="addableMotions"
                                      @set-status="setStatus"
+                                     @save-settings="saveSettings"
                                      @remove-item="removeItem"
                                      @add-item="addItem"
                 ></voting-admin-widget>
@@ -53,12 +54,19 @@ export class VotingAdmin {
                 },
                 setStatus(votingBlockId, newStatus, organizations) {
                     this._performOperation(votingBlockId, {
-                        op: 'update',
+                        op: 'update-status',
                         status: newStatus,
                         organizations: organizations.map(orga => { return {
                             id: orga.id,
                             members_present: orga.members_present,
                         }}),
+                    });
+                },
+                saveSettings(votingBlockId, title, assignedMotion) {
+                    this._performOperation(votingBlockId, {
+                        op: 'save-settings',
+                        title,
+                        assignedMotion,
                     });
                 },
                 removeItem(votingBlockId, itemType, itemId) {

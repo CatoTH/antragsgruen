@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property string $title
  * @property int|null $majorityType
  * @property int|null $votesPublic
+ * @property int|null $assignedToMotionId
  * @property string|null $usersPresentByOrga
  * @property string|null $activityLog
  * @property int $votingStatus
@@ -20,6 +21,7 @@ use yii\db\ActiveRecord;
  * @property Amendment[] $amendments
  * @property Motion[] $motions
  * @property Vote[] $votes
+ * @property Motion|null $assignedToMotion
  */
 class VotingBlock extends ActiveRecord
 {
@@ -86,6 +88,11 @@ class VotingBlock extends ActiveRecord
     {
         return $this->hasMany(Motion::class, ['votingBlockId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+    }
+
+    public function getAssignedToMotion()
+    {
+        return $this->hasOne(Motion::class, ['id' => 'assignedToMotionId']);
     }
 
     /**

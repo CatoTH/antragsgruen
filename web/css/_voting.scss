@@ -164,6 +164,18 @@
 }
 
 .manageVotings {
+  .settingsToggleGroup {
+    .btn-link {
+      color: $text-color;
+    }
+    .btn-link:hover {
+      color: lighten($text-color, 10%);
+    }
+    .btn {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
   .btnRemove {
     float: right;
     color: $colorDelLink;
@@ -241,6 +253,13 @@
     float: right;
     .btn {
       font-weight: normal;
+    }
+  }
+
+  .votingSettings {
+    label {
+      display: block;
+      margin-bottom: 10px;
     }
   }
 }

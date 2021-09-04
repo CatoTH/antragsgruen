@@ -13,7 +13,7 @@ ob_start();
 ?>
 
 <section class="voting" aria-label="<?= Yii::t('voting', 'voting_current_aria') ?>">
-    <h2 class="green">{{ voting.title }}</h2>
+    <h2 class="green"><?= Yii::t('voting', 'title_user_single') ?>: {{ voting.title }}</h2>
     <div class="content">
         <?php
         if ($iAmAdmin) {
