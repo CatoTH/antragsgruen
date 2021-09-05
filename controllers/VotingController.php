@@ -46,7 +46,7 @@ class VotingController extends Base
     private function getAllVotingAdminData(): array
     {
         $this->consultation->refresh();
-        
+
         $apiData = [];
         foreach (Factory::getAllVotingBlocks($this->consultation) as $votingBlock) {
             /** @noinspection PhpUnhandledExceptionInspection */
@@ -262,7 +262,11 @@ class VotingController extends Base
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);
+        if ($assignedToMotionId) {
+            $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);
+        } else {
+            $assignedToMotion = null;
+        }
 
         $responseJson = $this->getOpenVotingsUserData($assignedToMotion);
 
@@ -359,7 +363,11 @@ class VotingController extends Base
     {
         $this->handleRestHeaders(['POST'], true);
 
-        $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);
+        if ($assignedToMotionId) {
+            $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);
+        } else {
+            $assignedToMotion = null;
+        }
 
         $votingBlock = $this->consultation->getVotingBlock(intval($votingBlockId));
         if (!$votingBlock) {

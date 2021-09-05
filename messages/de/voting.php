@@ -20,6 +20,7 @@ return [
 
     'admin_title' => 'Abstimmungen: Verwaltung',
     'admin_bc' => 'Verwaltung',
+    'admin_intro' => '<strong>Hinweis:</strong> eine Einführung und Anleitung zu den Abstimmungen gibt es auf der <a href="https://antragsgruen.de/help#abstimmungen">Hilfe-Seite</a>.',
     'admin_aria_single' => 'Abstimmung verwalten',
     'admin_voting_use' => 'Online-Abstimmung',
     'admin_voting_use_h' => 'Die Abstimmung über die genannten (Änderungs-)Anträge soll online auf Antragsgrün durchgeführt werden',

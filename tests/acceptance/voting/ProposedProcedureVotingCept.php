@@ -6,8 +6,8 @@ $I->populateDBData1();
 
 $I->wantTo('enable non-quota speech lists');
 $I->gotoConsultationHome();
-$I->dontSeeElement('.currentSpeechInline'); // @TODO
-$I->dontSeeElement('#speechAdminLink');
+$I->dontSeeElementInDOM('.currentVotings');
+$I->dontSeeElementInDOM('.voting_amendment_3');
 
 $votingPage = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoVotingPage();
 
@@ -25,7 +25,8 @@ $I->wait(0.3);
 $I->seeElement('.voting1 .btnOpen');
 
 $I->gotoConsultationHome();
-// @TODO Sill no see
+$I->seeElementInDOM('.currentVotings'); // It is not visible yet, but polling is already active
+$I->dontSeeElementInDOM('.voting_amendment_3');
 
 $I->gotoStdAdminPage()->gotoVotingPage();
 $I->seeCheckboxIsChecked('.voting1 .activateHeader input');

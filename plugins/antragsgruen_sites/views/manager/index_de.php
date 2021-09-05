@@ -61,6 +61,7 @@ $params = \Yii::$app->params;
             <li><strong>Tagesordnungen</strong> werden unterstützt, mit unterschiedlichen Berechtigungen und
                 Antragsformularen pro Tagesordnungspunkt.
             </li>
+            <li><strong>Abstimmungen</strong> über Anträge und Änderungsanträge, über die per einfacher Mehrheit abgestimmt wird.</li>
             <li>Beliebige <strong>Textformatierungen</strong> in redaktionellen Texten (u.a. auch YouTube/Vimeo-Videos,
                 Grafiken etc.). Bei Anträgen und Änderungsanträgen sind einige Standard-Textformatierungen möglich.
             </li>
@@ -84,7 +85,8 @@ $params = \Yii::$app->params;
 
         <strong>Das kann Antragsgrün nicht</strong>:
         <ul>
-            <li><strong>Wahlen / Abstimmungen</strong>. Für Abstimmungen gibt es das Tool <a href="https://abstimmung.netzbegruenung.de/">Abstimmungsgrün</a>.</li>
+            <li><strong>Wahlen</strong>. Antragsgrün unterstützt Abstimmungen über Anträge, aber nicht die erhöhten
+                Sicherheitsbedürfnisse von Personenwahlen und geheimen Abstimmungen.</li>
             <li><strong>Vor-Ort-Präsentationen</strong>. Antragsgrün kann zwar vor Ort auf Veranstaltungen genutzt werden,
                 ist aber keine vollständige Konferenzsoftware wie z.B. <a lang="en" href="https://openslides.com/">OpenSlides</a>.
             </li>

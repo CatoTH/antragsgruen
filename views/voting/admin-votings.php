@@ -69,11 +69,12 @@ foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-voting="<?= Html::encode(json_encode($apiData)) ?>">
     <div class="content">
-        ...
         <button type="button" class="btn btn-default createVotingOpener">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             <?= Yii::t('voting', 'settings_create') ?>
         </button>
+
+        <?= Yii::t('voting', 'admin_intro') ?>
     </div>
 
     <section class="createVotingHolder hidden" aria-labelledby="createVotingTitle">

@@ -14,10 +14,15 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 $layout = $controller->layoutParams;
 
+$votingBlocksToRender = Factory::getOpenVotingBlocks($consultation, $assignedToMotion);
+if (count($votingBlocksToRender) === 0 && !Factory::hasOnlineVotingBlocks($consultation)) {
+    // Hint: we poll once there is a online voting block created
+    return;
+}
+
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 
-$votingBlocksToRender = Factory::getOpenVotingBlocks($consultation, $assignedToMotion);
 $apiData = [];
 foreach ($votingBlocksToRender as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());

@@ -14,7 +14,7 @@ $controller->layoutParams->canonicalUrl      = 'https://motion.tools/help';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help'];
 
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
+$params = Yii::$app->params;
 
 ?>
 <h1>Antragsgrün / Motion.Tools<br>
@@ -84,12 +84,17 @@ $params = \Yii::$app->params;
                 <li><a href="#spreadsheets"
                        onClick="$('#spreadsheets').scrollintoview({top_offset: -30}); return false;">Amendments as
                         spreadsheets</a></li>
-                <li><a href="#openslides" onClick="$('#openslides').scrollintoview({top_offset: -30}); return false;">OpenSlides</a>
-                </li>
                 <li><a href="#export_misc" onClick="$('#export_misc').scrollintoview({top_offset: -30}); return false;">HTML,
                         Plain Text, RSS, further formats</a></li>
             </ul>
         </li>
+
+        <li>
+            <a href="#votings" onClick="$('#votings').scrollintoview({top_offset: -30}); return false;">Votings</a>
+            <ul>
+            </ul>
+        </li>
+
         <li>
             <a href="#advanced"
                onClick="$('#advanced').scrollintoview({top_offset: -30}); return false;">Advanced features</a>
@@ -363,6 +368,11 @@ $params = \Yii::$app->params;
 
     <p>It’s pretty easy to add further export formats. There are several already: for example, an export to plain HTML,
         to plain Text, or RSS. If you need a format that is not included yet, just contact us.</p>
+
+
+    <h2 id="votings">Votings</h2>
+    <h3>@TODO</h3>
+
 
     <h2 id="advanced">Advanced features</h2>
 

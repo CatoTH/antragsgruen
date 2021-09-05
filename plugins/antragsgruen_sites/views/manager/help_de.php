@@ -95,6 +95,12 @@ $params = \Yii::$app->params;
             </ul>
         </li>
         <li>
+            <a href="#abstimmungen"
+               onClick="$('#abstimmungen').scrollintoview({top_offset: -30}); return false;">Abstimmungen</a>
+            <ul>
+            </ul>
+        </li>
+        <li>
             <a href="#weitere_funktionen"
                onClick="$('#weitere_funktionen').scrollintoview({top_offset: -30}); return false;">Weitere
                 Funktionen</a>
@@ -400,6 +406,9 @@ $params = \Yii::$app->params;
         unterstützt: z.B. ein Export in reine formlose HTML-Seiten, in Plain-Text, und auch RSS-Feeds der aktuellen
         Anträge gibt es.</p>
     <p>Falls weitere Formate benötigt werden, kontaktieren Sie uns einfach.</p>
+
+    <h2 id="abstimmungen">Abstimmungen</h2>
+    <h3>@TODO</h3>
 
     <h2 id="weitere_funktionen">Weitere Funktionen</h2>
     <h3 id="layout">Layout-Anpassbarkeit</h3>

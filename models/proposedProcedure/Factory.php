@@ -252,4 +252,12 @@ class Factory
             return $voting;
         }, $openBlocks);
     }
+
+    public static function hasOnlineVotingBlocks(Consultation $consultation): bool
+    {
+        $onlineVotings = array_values(array_filter($consultation->votingBlocks, function (VotingBlock $voting): bool {
+            return $voting->votingStatus !== VotingBlock::STATUS_OFFLINE;
+        }));
+        return count($onlineVotings) > 0;
+    }
 }

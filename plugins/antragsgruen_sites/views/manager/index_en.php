@@ -21,7 +21,7 @@ $params = \Yii::$app->params;
 
 ?>
 <h1>Antragsgrün / Motion.Tools<br>
-    <small>The Online Motion Administration for Associations Conventions, General Assemblies and Party Conventions.
+    <small>The Online Motion Administration for Association Conferences, General Assemblies and Party Conventions.
     </small>
 </h1>
 
@@ -29,8 +29,11 @@ $params = \Yii::$app->params;
     <p>Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments and
         candidacies: from submission to administration and print template.</p>
 
-    <p>A number of organisations are already using the tool successfully such as the federal association of the German
-        Green Party or the German Federal Youth Council. It can be easily adapted to a variety of scenarios.</p>
+    <p>A number of organisations are already using the tool successfully such as the
+        <a href="https://www.youthforum.org/">European Youth Forum</a>, the <a href="https://www.gruene.de/">German</a> and
+        <a href="https://europeangreens.eu/">European Green Party</a> or the
+        <a href="https://www.frauenrat.de/shortinfo/">National Council of German Women’s Organizations</a>.
+        It can be easily adapted to a variety of scenarios.</p>
 </div>
 
 <section aria-labelledby="funktionen">
@@ -46,6 +49,7 @@ $params = \Yii::$app->params;
                 on preference, the comments function can be open to everybody or restricted to registered users. No comments
                 required? The comments function can be easily deactivated.
             </li>
+            <li><strong>Vote</strong> on motions and amendments.</li>
             <li><strong>Sophisticated administration tools</strong><br>
                 Automatic email messaging for all essential results.<br>
                 Filter and sorting options for all motions / amendments<br>
