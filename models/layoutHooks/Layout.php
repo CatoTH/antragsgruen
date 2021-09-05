@@ -3,6 +3,7 @@
 namespace app\models\layoutHooks;
 
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
+use app\models\settings\VotingData;
 
 class Layout
 {
@@ -228,5 +229,15 @@ class Layout
     public static function getAmendmentPublishedInitiatorEmail(Amendment $amendment): ?array
     {
         return static::callHook('getAmendmentPublishedInitiatorEmail', [$amendment], null);
+    }
+
+    public static function getVotingAlternativeAdminResults(Consultation $consultation): ?string
+    {
+        return static::callHook('getVotingAlternativeAdminResults', [$consultation], null);
+    }
+
+    public static function getVotingAlternativeUserResults(VotingData $votingData): ?array
+    {
+        return static::callHook('getVotingAlternativeUserResults', [$votingData], null);
     }
 }

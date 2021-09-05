@@ -323,7 +323,8 @@ class Consultation extends ActiveRecord
      */
     public function getVotingBlocks()
     {
-        return $this->hasMany(VotingBlock::class, ['consultationId' => 'id']);
+        return $this->hasMany(VotingBlock::class, ['consultationId' => 'id'])
+            ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
     /**

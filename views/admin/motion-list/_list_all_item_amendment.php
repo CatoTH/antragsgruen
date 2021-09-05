@@ -13,6 +13,7 @@ use yii\helpers\Html;
  * @var boolean $colProposals
  * @var boolean $colAction
  * @var boolean $colResponsible
+ * @var boolean $colDate
  */
 
 /** @var \app\controllers\Base $controller */
@@ -59,7 +60,13 @@ if ($entry->statusString !== null && $entry->statusString !== '') {
     echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
 }
 echo '</td>';
-
+if ($colDate) {
+    echo '<td class="dateCol">';
+    if ($entry->datePublication) {
+        echo \app\components\Tools::formatMysqlDateTime($entry->datePublication);
+    }
+    echo '</td>';
+}
 if ($colResponsible) {
     ?>
     <td class="responsibilityCol">

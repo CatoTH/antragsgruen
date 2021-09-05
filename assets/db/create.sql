@@ -722,14 +722,34 @@ CREATE TABLE `###TABLE_PREFIX###userNotification` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `vote`
+--
+
+CREATE TABLE `###TABLE_PREFIX###vote` (
+  `id` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `votingBlockId` int(11) NOT NULL,
+  `motionId` int(11) DEFAULT NULL,
+  `amendmentId` int(11) DEFAULT NULL,
+  `vote` tinyint(4) NOT NULL,
+  `public` tinyint(4) NOT NULL,
+  `dateVote` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
 -- Table structure for table `votingBlock`
 --
 
 CREATE TABLE `###TABLE_PREFIX###votingBlock` (
-  `id`             INT(11)      NOT NULL,
-  `consultationId` INT(11)      NOT NULL,
-  `title`          VARCHAR(150) NOT NULL,
-  `votingStatus`   TINYINT(4) DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `consultationId` int(11) NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `majorityType` tinyint(4) DEFAULT NULL,
+  `votesPublic` tinyint(4) DEFAULT NULL,
+  `assignedToMotionId` int(11) DEFAULT NULL,
+  `usersPresentByOrga` text DEFAULT NULL,
+  `votingStatus` tinyint(4) NOT NULL,
+  `activityLog` text DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -1024,11 +1044,22 @@ ALTER TABLE `###TABLE_PREFIX###userNotification`
   ADD KEY `consultationId` (`consultationId`, `notificationType`, `notificationReferenceId`);
 
 --
+-- Indexes for table `vote`
+--
+ALTER TABLE `###TABLE_PREFIX###vote`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_vote_user` (`userId`),
+  ADD KEY `fk_vote_vote` (`votingBlockId`),
+  ADD KEY `fk_vote_motion` (`motionId`),
+  ADD KEY `fk_vote_amendment` (`amendmentId`);
+
+--
 -- Indexes for table `votingBlock`
 --
 ALTER TABLE `###TABLE_PREFIX###votingBlock`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_voting_block_consultation` (`consultationId`);
+  ADD KEY `fk_voting_block_consultation` (`consultationId`),
+  ADD KEY `fk_votingblock_assigned_to_motion` (`assignedToMotionId`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -1164,6 +1195,11 @@ ALTER TABLE `###TABLE_PREFIX###user`
 --
 ALTER TABLE `###TABLE_PREFIX###userNotification`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `vote`
+--
+ALTER TABLE `###TABLE_PREFIX###vote`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `votingBlock`
 --
@@ -1454,10 +1490,20 @@ ALTER TABLE `###TABLE_PREFIX###userNotification`
   ADD CONSTRAINT `userNotification_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
 
 --
+-- Constraints for table `vote`
+--
+ALTER TABLE `###TABLE_PREFIX###vote`
+  ADD CONSTRAINT `fk_vote_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
+  ADD CONSTRAINT `fk_vote_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`),
+  ADD CONSTRAINT `fk_vote_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`),
+  ADD CONSTRAINT `fk_vote_vote` FOREIGN KEY (`votingBlockId`) REFERENCES `###TABLE_PREFIX###votingBlock` (`id`);
+
+--
 -- Constraints for table `votingBlock`
 --
 ALTER TABLE `###TABLE_PREFIX###votingBlock`
-  ADD CONSTRAINT `fk_voting_block_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
+  ADD CONSTRAINT `fk_voting_block_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
+  ADD CONSTRAINT `fk_votingblock_assigned_to_motion` FOREIGN KEY (`assignedToMotionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

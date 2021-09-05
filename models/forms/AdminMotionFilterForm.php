@@ -2,7 +2,7 @@
 
 namespace app\models\forms;
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter};
 use yii\base\Model;
 use yii\helpers\Html;
@@ -18,6 +18,7 @@ class AdminMotionFilterForm extends Model
     const SORT_PROPOSAL = 7;
     const SORT_PROPOSAL_STATUS = 8;
     const SORT_RESPONSIBILITY = 9;
+    const SORT_DATE = 10;
 
     /** @var int|null */
     public $status = null;
@@ -131,40 +132,19 @@ class AdminMotionFilterForm extends Model
         if (is_a($motion1, Amendment::class) && is_a($motion2, Motion::class)) {
             return 1;
         }
-        if ($motion1->id < $motion2->id) {
-            return -1;
-        }
-        if ($motion1->id > $motion2->id) {
-            return 1;
-        }
-
-        return 0;
+        return $motion1->id <=> $motion2->id;
     }
 
     public function sortStatus(IMotion $motion1, IMotion $motion2): int
     {
-        if ($motion1->status < $motion2->status) {
-            return -1;
-        }
-        if ($motion1->status > $motion2->status) {
-            return 1;
-        }
-
-        return 0;
+        return $motion1->status <=> $motion2->status;
     }
 
     public function sortProposalStatus(IMotion $motion1, IMotion $motion2): int
     {
         $status1 = (is_a($motion1, Amendment::class) ? $motion1->proposalStatus : 0);
         $status2 = (is_a($motion2, Amendment::class) ? $motion2->proposalStatus : 0);
-        if ($status1 < $status2) {
-            return -1;
-        }
-        if ($status1 > $status2) {
-            return 1;
-        }
-
-        return 0;
+        return $status1 <=> $status2;
     }
 
     private function normalizeResponsibility(IMotion $motion): string
@@ -296,12 +276,19 @@ class AdminMotionFilterForm extends Model
         }
     }
 
+    public function sortDate(IMotion $imotion1, IMotion $imotion2): int
+    {
+        $timestamp1 = ($imotion1->dateCreation ? Tools::dateSql2timestamp($imotion1->dateCreation) : 0);
+        $timestamp2 = ($imotion2->dateCreation ? Tools::dateSql2timestamp($imotion2->dateCreation) : 0);
+        return $timestamp1 <=> $timestamp2;
+    }
+
     /**
      * @param IMotion[] $entries
      *
      * @return IMotion[]
      */
-    public function moveAmendmentsToMotions($entries)
+    public function moveAmendmentsToMotions($entries): array
     {
         $foundMotions = [];
         foreach ($entries as $entry) {
@@ -368,6 +355,9 @@ class AdminMotionFilterForm extends Model
                 break;
             case static::SORT_RESPONSIBILITY:
                 usort($merge, [static::class, 'sortResponsibility']);
+                break;
+            case static::SORT_DATE:
+                usort($merge, [static::class, 'sortDate']);
                 break;
             default:
                 usort($merge, [static::class, 'sortTitlePrefix']);

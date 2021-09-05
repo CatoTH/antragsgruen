@@ -3,9 +3,10 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Amendment, Consultation, Motion, Site};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, Site, User, Vote, VotingBlock};
 use app\models\layoutHooks\Hooks;
-use app\models\settings\{IMotionStatus, Layout};
+use app\models\UserOrganization;
+use app\models\settings\{IMotionStatus, Layout, VotingData};
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\base\{Action, Module};
 use yii\web\{AssetBundle, Controller, View};
@@ -17,7 +18,6 @@ class ModuleBase extends Module
         parent::init();
 
         if (\Yii::$app instanceof \yii\console\Application) {
-            /** @noinspection PhpUnhandledExceptionInspection */
             $ref                       = new \ReflectionClass($this);
             $this->controllerNamespace = $ref->getNamespaceName() . '\\commands';
         }
@@ -82,7 +82,7 @@ class ModuleBase extends Module
     /**
      * @return string|\app\models\settings\Consultation|null
      */
-    public static function getConsultationSettingsClass(Consultation $consultation)
+    public static function getConsultationSettingsClass(Consultation $consultation): ?string
     {
         return null;
     }
@@ -149,6 +149,45 @@ class ModuleBase extends Module
     }
 
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
+    {
+        return null;
+    }
+
+    /**
+     * @return UserOrganization[]
+     */
+    public static function getUserOrganizations(): array
+    {
+        return [];
+    }
+
+    /**
+     * @param Vote[] $votes
+     */
+    public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): ?array
+    {
+        return null;
+    }
+
+    /**
+     * @param Vote[] $votes
+     */
+    public static function calculateFinalVoteResult(VotingBlock $voting, array $votes): ?int
+    {
+        return null;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return string|VotingData
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getVotingDataClass(Consultation $consultation): ?string
+    {
+        return null;
+    }
+
+    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IMotion $imotion): ?bool
     {
         return null;
     }

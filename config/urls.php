@@ -22,7 +22,7 @@ $restBaseCon = $restBase . '/<consultationPath:[\w_-]+>';
 
 $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax|del-agenda-item-ajax|save-agenda-order-ajax';
 $consultationPaths    .= '|feeds|feedall|feedmotions|feedamendments|feedcomments';
-$consultationPaths    .= '|admin-speech|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
+$consultationPaths    .= '|admin-speech|admin-votings|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf|embedded-amendments-pdf';
 $motionPaths          .= '|admin-speech|withdraw|view-changes|view-changes-odt|save-proposal-status|del-proposal-comment';
 $motionPaths          .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm|merge-amendments-paragraph-ajax|merge-amendments-status-ajax';
@@ -85,6 +85,12 @@ $urlRules = [
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/reset'                            => '/speech/admin-queue-reset',
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item'                             => '/speech/admin-create-item',
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
+
+    $restBaseCon . '/votings/open' => '/voting/get-open-voting-blocks',
+    $restBaseCon . '/votings/admin' => '/voting/get-admin-voting-blocks',
+    $restBaseCon . '/votings/create' => '/voting/create-voting-block',
+    $restBaseCon . '/votings/<votingBlockId:[^\/]+>/settings' => '/voting/post-vote-settings',
+    $restBaseCon . '/votings/<votingBlockId:[^\/]+>/vote' => '/voting/post-vote',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',

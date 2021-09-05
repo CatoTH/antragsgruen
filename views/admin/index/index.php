@@ -71,6 +71,16 @@ echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(
 echo '</li>';
 echo '</ul></li>';
 
+if (User::havePrivilege($consultation, User::PRIVILEGE_VOTINGS)) {
+    echo '<li>';
+    echo Html::a(
+        Yii::t('admin', 'index_site_voting'),
+        UrlHelper::createUrl(['consultation/admin-votings']),
+        ['class' => 'votingAdminLink']
+    );
+    echo '</li>';
+}
+
 if (User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
     echo '<li>';
     echo Html::a(

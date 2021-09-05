@@ -2,10 +2,11 @@
 
 namespace app\controllers\admin;
 
+use app\models\consultationLog\ProposedProcedureChange;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site;
 use app\components\{Tools, UrlHelper, ZipWriter};
-use app\models\db\{Amendment, AmendmentSupporter, User};
+use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
@@ -307,6 +308,23 @@ class AmendmentController extends AdminBase
 
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 $plugin::setAmendmentExtraSettingsFromForm($amendment, $post);
+            }
+
+            $ppChanges = new ProposedProcedureChange(null);
+            try {
+                $amendment->setProposalVotingPropertiesFromRequest(
+                    \Yii::$app->request->post('votingStatus', null),
+                    \Yii::$app->request->post('votingBlockId', null),
+                    \Yii::$app->request->post('votingItemBlockId', []),
+                    \Yii::$app->request->post('newBlockTitle', ''),
+                    false,
+                    $ppChanges
+                );
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+            if ($ppChanges->hasChanges()) {
+                ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendment->id, $ppChanges->jsonSerialize());
             }
 
             $amendment->save();

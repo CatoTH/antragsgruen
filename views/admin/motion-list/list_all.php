@@ -37,11 +37,11 @@ if ($motionId !== null) {
 }
 $search->setCurrentRoute($route);
 
-$hasTags = (count($controller->consultation->tags) > 0);
+$hasTags = (count($consultation->tags) > 0);
 
 $hasResponsibilities   = false;
-$hasProposedProcedures = $controller->consultation->hasProposedProcedures();
-foreach ($controller->consultation->motionTypes as $motionType) {
+$hasProposedProcedures = $consultation->hasProposedProcedures();
+foreach ($consultation->motionTypes as $motionType) {
     if ($motionType->getSettingsObj()->hasResponsibilities) {
         $hasResponsibilities = true;
     }
@@ -51,6 +51,7 @@ $colMark        = $privilegeProposals || $privilegeScreening;
 $colAction      = $privilegeScreening;
 $colProposals   = $privilegeProposals && $hasProposedProcedures;
 $colResponsible = $privilegeProposals && $hasResponsibilities;
+$colDate        = in_array('date', $consultation->getSettings()->adminListAdditionalFields);
 
 
 echo '<h1>' . Yii::t('admin', 'list_head_title') . '</h1>';
@@ -110,6 +111,16 @@ if ($search->sort === AdminMotionFilterForm::SORT_STATUS) {
     echo Html::a(Yii::t('admin', 'list_status'), $url);
 }
 echo '</th>';
+if ($colDate) {
+    echo '<th class="dateCol">';
+    if ($search->sort === AdminMotionFilterForm::SORT_DATE) {
+        echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_date') . '</span>';
+    } else {
+        $url = $search->getCurrentUrl(['Search[sort]' => AdminMotionFilterForm::SORT_DATE]);
+        echo Html::a(Yii::t('admin', 'list_date'), $url);
+    }
+    echo '</th>';
+}
 if ($colResponsible) {
     echo '<th class="responsibilityCol">';
     if ($search->sort === AdminMotionFilterForm::SORT_RESPONSIBILITY) {
@@ -169,6 +180,7 @@ foreach ($entries as $entry) {
             'colAction'      => $colAction,
             'colProposals'   => $colProposals,
             'colResponsible' => $colResponsible,
+            'colDate'        => $colDate,
         ]);
     }
     if (is_a($entry, Amendment::class)) {
@@ -180,6 +192,7 @@ foreach ($entries as $entry) {
             'colAction'      => $colAction,
             'colProposals'   => $colProposals,
             'colResponsible' => $colResponsible,
+            'colDate'        => $colDate,
         ]);
     }
 }

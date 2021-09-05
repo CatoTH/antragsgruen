@@ -1,13 +1,10 @@
 <?php
 
-// @TODO Delete this page?
-
 namespace app\tests\_pages;
 
 use Helper\BasePage;
 
 /**
- * Represents contact page
  * @property \AcceptanceTester|\FunctionalTester $actor
  */
 class AdminIndexPage extends BasePage
@@ -16,46 +13,41 @@ class AdminIndexPage extends BasePage
 
     /**
      * @param int $motionTypeId
-     * @return AdminMotionTypePage
      */
-    public function gotoMotionTypes($motionTypeId)
+    public function gotoMotionTypes($motionTypeId): AdminMotionTypePage
     {
         $this->actor->click('.motionType' . $motionTypeId);
         $this->actor->see(mb_strtoupper('Antragstyp bearbeiten'), 'h1');
         return new AdminMotionTypePage($this->actor);
     }
 
-    /**
-     * @return AdminConsultationPage
-     */
-    public function gotoConsultation()
+    public function gotoConsultation(): AdminConsultationPage
     {
         $this->actor->click('#consultationLink');
         return new AdminConsultationPage($this->actor);
     }
 
-    /**
-     * @return AdminAppearancePage
-     */
-    public function gotoAppearance()
+    public function gotoAppearance(): AdminAppearancePage
     {
         $this->actor->click('#appearanceLink');
         return new AdminAppearancePage($this->actor);
     }
 
-    /**
-     * @return AdminSiteAccessPage
-     */
-    public function gotoSiteAccessPage()
+    public function gotoSiteAccessPage(): AdminSiteAccessPage
     {
         $this->actor->click('.siteAccessLink');
         return new AdminSiteAccessPage($this->actor);
     }
 
-    /**
-     */
-    public function gotoConsultationCreatePage()
+    public function gotoConsultationCreatePage(): void
     {
         $this->actor->click('.siteConsultationsLink');
+    }
+
+    public function gotoVotingPage(): VotingAdminPage
+    {
+        $this->actor->click('.votingAdminLink');
+        $this->actor->wait(0.3);
+        return new VotingAdminPage($this->actor);
     }
 }

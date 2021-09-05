@@ -4,58 +4,19 @@ import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 import { AmendmentEditSinglePara } from "../shared/AmendmentEditSinglePara";
 
+const STATUS_VOTE = 11;
+
 export class AmendmentEdit {
     private lang: string;
 
+    private $updateForm: JQuery;
+    private $status: JQuery;
     private $editTextCaller: JQuery;
-
-    private textEditCalledMultiPara() {
-        $(".wysiwyg-textarea").each(function () {
-            let $holder = $(this),
-                $textarea = $holder.find(".texteditor");
-
-            let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
-                ckeditor: editor = editor.getEditor();
-
-            $textarea.parents("form").on("submit", function () {
-                $textarea.parent().find("textarea.raw").val(ckeditor.getData());
-                if (typeof (ckeditor.plugins.lite) != 'undefined') {
-                    ckeditor.plugins.lite.findPlugin(ckeditor).acceptAll();
-                    $textarea.parent().find("textarea.consolidated").val(ckeditor.getData());
-                }
-            });
-        });
-    }
-
-    private textEditCalled() {
-        this.$editTextCaller.addClass("hidden");
-        $("#amendmentTextEditHolder").removeClass("hidden");
-        if (this.$editTextCaller.data("multiple-paragraphs")) {
-            this.textEditCalledMultiPara();
-        } else {
-            new AmendmentEditSinglePara();
-        }
-        $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
-    };
-
-    private initVotingFunctions() {
-        const $closer = $(".votingResultCloser"),
-            $opener = $(".votingResultOpener"),
-            $inputRows = $(".contentVotingResult, .contentVotingResultComment");
-        $opener.on("click", () => {
-            $closer.removeClass("hidden");
-            $opener.addClass("hidden");
-            $inputRows.removeClass("hidden");
-        });
-        $closer.on("click", () => {
-            $closer.addClass("hidden");
-            $opener.removeClass("hidden");
-            $inputRows.addClass("hidden");
-        });
-    }
 
     constructor() {
         this.lang = $("html").attr("lang");
+        this.$updateForm = $("#amendmentUpdateForm");
+        this.$status = $("#amendmentStatus");
         this.$editTextCaller = $("#amendmentTextEditCaller");
 
         $("#amendmentDateCreationHolder").datetimepicker({
@@ -94,5 +55,68 @@ export class AmendmentEdit {
         this.initVotingFunctions();
 
         new MotionSupporterEdit($("#motionSupporterHolder"));
+    }
+
+
+    private textEditCalledMultiPara() {
+        $(".wysiwyg-textarea").each(function () {
+            let $holder = $(this),
+                $textarea = $holder.find(".texteditor");
+
+            let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
+                ckeditor: editor = editor.getEditor();
+
+            $textarea.parents("form").on("submit", function () {
+                $textarea.parent().find("textarea.raw").val(ckeditor.getData());
+                if (typeof (ckeditor.plugins.lite) != 'undefined') {
+                    ckeditor.plugins.lite.findPlugin(ckeditor).acceptAll();
+                    $textarea.parent().find("textarea.consolidated").val(ckeditor.getData());
+                }
+            });
+        });
+    }
+
+    private textEditCalled() {
+        this.$editTextCaller.addClass("hidden");
+        $("#amendmentTextEditHolder").removeClass("hidden");
+        if (this.$editTextCaller.data("multiple-paragraphs")) {
+            this.textEditCalledMultiPara();
+        } else {
+            new AmendmentEditSinglePara();
+        }
+        $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
+    };
+
+    private initVotingFunctions() {
+        const $classHolders = $(".contentVotingResultCaller, .votingDataHolder"),
+            $closer = $(".votingDataCloser"),
+            $opener = $(".votingDataOpener"),
+            $votingBlockId = $('select[name=votingBlockId]');
+
+        $opener.on("click", () => {
+            $classHolders.addClass('explicitlyOpened');
+        });
+        $closer.on("click", () => {
+            $classHolders.removeClass('explicitlyOpened');
+        });
+
+        this.$status.on('change', () => {
+            if (parseInt(this.$status.val() as string, 10) === STATUS_VOTE) {
+                $classHolders.addClass('hasVotingStatus');
+            } else {
+                $classHolders.removeClass('hasVotingStatus');
+            }
+        }).trigger('change');
+
+        $votingBlockId.on('change', () => {
+            if ($votingBlockId.val() === 'NEW') {
+                $(".votingBlockRow .newBlock").removeClass('hidden');
+                $(".votingItemBlockRow").addClass('hidden');
+            } else {
+                $(".votingBlockRow .newBlock").addClass('hidden');
+                $(".votingItemBlockRow").addClass('hidden');
+                $(".votingItemBlockRow" + $votingBlockId.val()).removeClass('hidden');
+            }
+        }).trigger('change');
     }
 }

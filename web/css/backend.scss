@@ -5,6 +5,10 @@
 @import "bootstrap-3.4.1-sass/bootstrap/mixins";
 @import "mixins";
 
+.tooltip-inner {
+    max-width: 100% !important;
+}
+
 .adminForm {
   label {
     font-weight: normal;
@@ -39,6 +43,46 @@
   .ppReplyToOpener {
     padding: 0 5px;
     font-weight: normal;
+  }
+}
+
+// Motion / Amendment Votings
+.contentVotingResultCaller {
+  text-align: right;
+
+  &.explicitlyOpened, &.hasData, &.hasVotingStatus {
+    display: none;
+  }
+}
+.votingDataHolder {
+  display: none;
+  &.explicitlyOpened {
+    display: block;
+  }
+  &.hasData, &.hasVotingStatus {
+    display: block;
+    .votingDataCloser {
+      display: none;
+    }
+  }
+  .votingDataCloser.btn-link {
+    color: #555;
+    float: right;
+    padding: 0;
+    margin-top: -2px;
+  }
+
+  .votingResult {
+    label {
+      padding-top: 7px;
+      margin-right: 15px;
+      font-weight: normal;
+    }
+  }
+
+  .votingEditLinkHolder {
+    text-align: right;
+    margin-bottom: 10px;
   }
 }
 

@@ -38,9 +38,10 @@ use yii\helpers\Html;
  * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
- * @property Amendment $proposalReferencedBy
- * @property VotingBlock $votingBlock
- * @property User $responsibilityUser
+ * @property Amendment|null $proposalReferencedBy
+ * @property VotingBlock|null $votingBlock
+ * @property User|null $responsibilityUser
+ * @property Vote[] $votes
  */
 class Amendment extends IMotion implements IRSSItem
 {
@@ -236,7 +237,8 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getVotingBlock()
     {
-        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
+        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
+            ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
     /**
@@ -245,6 +247,14 @@ class Amendment extends IMotion implements IRSSItem
     public function getResponsibilityUser()
     {
         return $this->hasOne(User::class, ['id' => 'responsibilityId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotes()
+    {
+        return $this->hasMany(Vote::class, ['amendmentId' => 'id']);
     }
 
     /**
@@ -1301,6 +1311,17 @@ class Amendment extends IMotion implements IRSSItem
             $url = UrlHelper::absolutizeLink($url);
         }
         return $url;
+    }
+
+    public function setVotingResult(int $votingResult): void
+    {
+        $this->votingStatus = $votingResult;
+        if ($votingResult === IMotion::STATUS_ACCEPTED) {
+            ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::AMENDMENT_VOTE_ACCEPTED, $this->id);
+        }
+        if ($votingResult === IMotion::STATUS_REJECTED) {
+            ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::AMENDMENT_VOTE_REJECTED, $this->id);
+        }
     }
 
     public function getUserdataExportObject(): array

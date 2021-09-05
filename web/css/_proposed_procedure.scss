@@ -45,6 +45,10 @@
   }
   .votingBlockSettings {
     padding-bottom: 10px;
+    select {
+      display: inline-block;
+      width: calc(100% - 20px);
+    }
   }
   .visibilitySettings {
     label {
@@ -92,7 +96,7 @@
     font-size: 12px;
     font-weight: normal;
   }
-  .newBlock {
+  .newBlock, .votingItemBlockRow {
     .control-label {
       font-size: 14px;
       font-weight: bold;

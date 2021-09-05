@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\UserOrganization;
 use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, GruenesNetzSamlClient, mail\Tools as MailTools};
 use app\models\events\UserEvent;
 use app\models\exceptions\{FormError, MailNotSent, ServerConfiguration};
@@ -10,8 +11,6 @@ use yii\db\{ActiveRecord, Expression};
 use yii\web\IdentityInterface;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property string $name
  * @property string $nameGiven
@@ -40,6 +39,7 @@ use yii\web\IdentityInterface;
  * @property ConsultationUserPrivilege[] $consultationPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
+ * @property Vote[] $votes
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -59,6 +59,9 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_SITE_ADMIN                = 6;
     const PRIVILEGE_CHANGE_PROPOSALS          = 7;
     const PRIVILEGE_SPEECH_QUEUES             = 8;
+    const PRIVILEGE_VOTINGS                   = 9;
+
+    const ORGANIZATION_DEFAULT = '0';
 
     /**
      * @return string[]
@@ -233,6 +236,14 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotes()
+    {
+        return $this->hasMany(Vote::class, ['userId' => 'id']);
+    }
+
+    /**
      * @param Consultation $consultation
      * @return ConsultationUserPrivilege
      */
@@ -269,9 +280,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function getExternalAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        foreach ($params->getPluginClasses() as $pluginClass) {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             $authenticator = $pluginClass::getExternalPasswordAuthenticator();
             if ($authenticator) {
                 return $authenticator;
@@ -319,6 +328,22 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Hint: there might be others, too, but they would not be assignable by the admin
+     * @return UserOrganization[]
+     */
+    public static function getSelectableUserOrganizations(bool $includeDefault = false): array
+    {
+        $groups = [];
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $groups = array_merge($groups, $plugin::getUserOrganizations());
+        }
+        if (count($groups) === 0) {
+            $groups[] = new UserOrganization(User::ORGANIZATION_DEFAULT, '');
+        }
+        return $groups;
+    }
+
+    /**
      * Returns the IDs of the organizations the user is enlisted in.
      * This has to be provided by and updated by the authentication mechanism (only SAML supports this at this point).
      *
@@ -328,7 +353,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         if ($this->organizationIds) {
             $organizationIds = json_decode($this->organizationIds, true);
-            if ($this->isGruenesNetzUser() || true) {
+            if ($this->isGruenesNetzUser()) {
                 $organizationIds = GruenesNetzSamlClient::resolveOrganizationIds($organizationIds);
             }
             return $organizationIds;

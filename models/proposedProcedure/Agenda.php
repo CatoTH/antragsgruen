@@ -4,6 +4,7 @@ namespace app\models\proposedProcedure;
 
 use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, IMotion, VotingBlock};
 use app\models\exceptions\Internal;
+use app\models\IMotionList;
 use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
@@ -31,38 +32,12 @@ class Agenda
         $this->agendaItem = $agendaItem;
     }
 
-    public function addVotingBlock(VotingBlock $votingBlock, bool $includeInvisible, array &$handledMotions, array &$handledAmends)
+    public function addVotingBlock(VotingBlock $votingBlock, bool $includeInvisible, IMotionList $handledMotions)
     {
         $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $votingBlock->title;
         $block = new AgendaVoting($title, $votingBlock);
-        foreach ($votingBlock->motions as $motion) {
-            if (!$motion->isVisibleForAdmins()) {
-                continue;
-            }
-            if ($motion->isProposalPublic() || $includeInvisible) {
-                $block->items[]   = $motion;
-                $handledMotions[] = $motion->id;
-
-                foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
-                    if (in_array($amendment->id, $handledAmends)) {
-                        continue;
-                    }
-                    if ($amendment->isProposalPublic() || $includeInvisible) {
-                        $block->items[]  = $amendment;
-                        $handledAmends[] = $amendment->id;
-                    }
-                }
-            }
-        }
-        foreach ($votingBlock->amendments as $vAmendment) {
-            if (!$vAmendment->isVisibleForAdmins()) {
-                continue;
-            }
-            if (!in_array($vAmendment->id, $handledAmends) && ($vAmendment->isProposalPublic() || $includeInvisible)) {
-                $block->items[]  = $vAmendment;
-                $handledAmends[] = $vAmendment->id;
-            }
-        }
+        $block->addItemsFromBlock($includeInvisible);
+        $handledMotions->addIMotionList($block->itemIds);
         if (count($block->items) > 0) {
             $this->votingBlocks[] = $block;
         }

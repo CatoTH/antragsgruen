@@ -181,6 +181,8 @@ if ($motion->status === Motion::STATUS_DRAFT) {
     <?php
 }
 
+echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => $motion]);
+
 echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
 
 $viewText = $this->render('_view_text', [

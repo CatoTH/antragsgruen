@@ -29,7 +29,7 @@ $I->gotoAmendment(true, 'Testing_proposed_changes-630', 281);
 $I->see('brains');
 $I->see('Verfahrensvorschlag:', 'h3');
 $I->dontSeeElement('#proposedChanges');
-$I->click('.proposedChangesOpener button');
+$I->clickJS('.proposedChangesOpener button');
 $I->wait(0.3);
 $I->seeElement('#proposedChanges');
 $I->click('#proposedChanges .notifyProposer');

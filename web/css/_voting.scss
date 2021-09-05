@@ -1,0 +1,344 @@
+@import "variables";
+
+.votingCommon {
+  .titleLink {
+    flex: 1;
+    line-height: 16px;
+    overflow: hidden;
+    > div {
+      margin-bottom: 7px;
+    }
+  }
+  .amendmentBy {
+    font-size: 0.8em;
+    color: #888;
+  }
+
+  .noVotingsYet {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px #ccc;
+    .alert {
+      margin-bottom: 0;
+    }
+  }
+
+  .voteList {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    clear: both;
+
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: solid 1px #ccc;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    .votingOptions, .voted {
+      flex-basis: 230px;
+      text-align: right;
+    }
+  }
+
+  .votingResultList {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: solid 1px #ccc;
+    }
+
+    .votesDetailed {
+      flex: 0.5;
+      font-size: 0.9em;
+    }
+    .result {
+      flex: 0;
+      text-align: right;
+      white-space: nowrap;
+
+      .accepted {
+        color: green;
+      }
+    }
+  }
+  .votingAdminList {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: solid 1px #ccc;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    .titleLink {
+      flex-basis: 40%;
+    }
+    .votesDetailed {
+      flex: 1;
+      font-size: 0.9em;
+      flex-basis: 60%;
+
+      table {
+        width: 100%;
+      }
+      thead th {
+        text-align: center;
+      }
+    }
+    .result {
+      flex: 0;
+      text-align: right;
+      white-space: nowrap;
+
+      .accepted {
+        color: $colorGreenLight;
+      }
+      .rejected {
+        color: $colorDelLink;
+      }
+    }
+  }
+
+  .votingFooter {
+    padding-top: 10px;
+    border-top: solid 1px #ccc;
+  }
+}
+
+.currentVotingWidget {
+  .votingsAdminLink {
+    float: right;
+  }
+
+  .votingsAdminLink + .voteList {
+    border-top: solid 1px #ccc;
+  }
+
+  .votingExplanation {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #555;
+  }
+
+  .votingFooter {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .votedCounter {
+      flex: 1;
+    }
+    .showAll {
+      flex: 1;
+      text-align: right;
+    }
+  }
+}
+
+.manageVotings {
+  .settingsToggleGroup {
+    .btn-link {
+      color: $text-color;
+    }
+    .btn-link:hover {
+      color: lighten($text-color, 10%);
+    }
+    .btn {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+  .btnRemove {
+    float: right;
+    color: $colorDelLink;
+  }
+  .activateHeader {
+    font-weight: bold;
+    float: right;
+    color: $headingSecondaryText;
+    text-transform: none;
+    text-shadow: none;
+    font-size: 14px;
+  }
+  .votingTable {
+    table-layout: fixed;
+    th {
+      text-align: center;
+    }
+    td {
+      text-align: center;
+    }
+  }
+
+  .majorityType {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: solid 1px #ccc;
+  }
+
+  .prepActions {
+    .removeBtn {
+      color: $colorDelLink;
+    }
+  }
+
+  .addingMotionForm {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    button {
+      font-weight: normal;
+    }
+
+    .addingMotions {
+      select {
+        max-width: 300px;
+        display: inline-block;
+      }
+    }
+  }
+
+  .activityLog {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    &.closed {
+      max-height: 45px;
+      overflow: hidden;
+      position: relative;
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 45px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fff 100%);
+        pointer-events: none;
+      }
+    }
+  }
+
+  .activityOpener, .activityCloser {
+    float: right;
+    .btn {
+      font-weight: normal;
+    }
+  }
+
+  .createVotingOpener {
+    float: right;
+  }
+
+  .votingSettings {
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .btnDelete {
+      float: right;
+      color: $colorDelLink;
+    }
+  }
+}
+
+.votingResultTable {
+  table-layout: fixed;
+  width: 100%;
+
+  caption {
+    // @TODO Move into EYF plugin
+    margin-top: 15px;
+    font-size: 1.2em;
+    color: #333;
+    border-top: solid 1px #ccc;
+  }
+
+  th {
+    text-align: center;
+    vertical-align: bottom;
+  }
+
+  td {
+    text-align: center;
+  }
+
+  .total {
+    font-weight: bold;
+  }
+}
+
+.votingAdderForm {
+  .btnAddOpener {
+    color: $colorGreenLight;
+    font-weight: normal;
+  }
+}
+
+.votingDataActions {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  border-bottom: solid 1px #ccc;
+  padding-bottom: 10px;
+
+  .votingDetails ul {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    > li {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      &:before {
+        content: ', ';
+      }
+      &:first-child:before {
+        content: '';
+      }
+    }
+  }
+  .data {
+    flex-grow: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .actions {
+    flex-basis: 360px;
+    flex-grow: 1;
+    text-align: right;
+  }
+}

@@ -2,15 +2,16 @@
 
 namespace app\models\db;
 
-use app\models\notifications\MotionProposedProcedure;
-use app\models\notifications\MotionPublished;
+use app\models\notifications\{MotionProposedProcedure,
+    MotionPublished,
+    MotionSubmitted as MotionSubmittedNotification,
+    MotionWithdrawn as MotionWithdrawnNotification,
+    MotionEdited as MotionEditedNotification};
+use app\models\settings\AntragsgruenApp;
 use app\components\{HashedStaticFileCache, MotionSorter, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
-use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
-use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
-use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
 use app\models\sectionTypes\{Image, ISectionType, PDF};
@@ -47,6 +48,8 @@ use yii\helpers\Html;
  * @property VotingBlock|null $votingBlock
  * @property User|null $responsibilityUser
  * @property SpeechQueue[] $speechQueues
+ * @property Vote[] $votes
+ * @property VotingBlock[] $assignedVotingBlocks
  */
 class Motion extends IMotion implements IRSSItem
 {
@@ -90,10 +93,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-
-        return $app->tablePrefix . 'motion';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'motion';
     }
 
     /**
@@ -257,7 +257,24 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getVotingBlock()
     {
-        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
+        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
+            ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedVotingBlocks()
+    {
+        return $this->hasMany(VotingBlock::class, ['assignedToMotionId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotes()
+    {
+        return $this->hasMany(Vote::class, ['motionId' => 'id']);
     }
 
     /**
@@ -1140,6 +1157,17 @@ class Motion extends IMotion implements IRSSItem
     public function getActiveSpeechQueue(): ?SpeechQueue
     {
         return $this->getMyConsultation()->getActiveSpeechQueue();
+    }
+
+    public function setVotingResult(int $votingResult): void
+    {
+        $this->votingStatus = $votingResult;
+        if ($votingResult === IMotion::STATUS_ACCEPTED) {
+            ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::MOTION_VOTE_ACCEPTED, $this->id);
+        }
+        if ($votingResult === IMotion::STATUS_REJECTED) {
+            ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::MOTION_VOTE_REJECTED, $this->id);
+        }
     }
 
     public function getUserdataExportObject(): array

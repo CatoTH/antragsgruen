@@ -1628,5 +1628,5 @@ VALUES
 --
 
 INSERT INTO `###TABLE_PREFIX###votingBlock` (`id`, `consultationId`, `title`, `votingStatus`) VALUES
-  (1, 1, 'Ä2 or Ä3', 11),
-  (2, 6, 'Test', 11);
+  (1, 1, 'Ä2 or Ä3', 0),
+  (2, 6, 'Test', 0);

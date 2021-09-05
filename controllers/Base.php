@@ -10,8 +10,7 @@ use app\models\db\{Amendment, Consultation, Motion, Site, User};
 use Yii;
 use yii\base\Module;
 use yii\helpers\Html;
-use yii\web\Controller;
-use yii\web\Response;
+use yii\web\{Controller, Response};
 
 class Base extends Controller
 {

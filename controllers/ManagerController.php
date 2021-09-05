@@ -142,8 +142,27 @@ class ManagerController extends Base
             }
         }
 
-        $users = User::find()->where('status != ' . IntVal(User::STATUS_DELETED))->orderBy('dateCreation DESC')->all();
+        $users = User::find()->where('status != ' . intval(User::STATUS_DELETED))->orderBy('dateCreation DESC')->all();
+        $organizations = User::getSelectableUserOrganizations();
+        $savable = (count($organizations) > 0);
 
-        return $this->render('userlist', ['users' => $users]);
+        if ($savable && $this->isPostSet('save')) {
+            $savedUsers = \Yii::$app->request->post('user');
+            foreach ($users as $user) {
+                if (isset($savedUsers[$user->id]) && isset($savedUsers[$user->id]['organization']) && $savedUsers[$user->id]['organization'] !== '') {
+                    $user->organizationIds = json_encode([$savedUsers[$user->id]['organization']]);
+                } else {
+                    $user->organizationIds = json_encode([]);
+                }
+                $user->save();
+            }
+            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+        }
+
+        return $this->render('userlist', [
+            'users' => $users,
+            'organizations' => $organizations,
+            'savable' => $savable,
+        ]);
     }
 }

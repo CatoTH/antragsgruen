@@ -65,7 +65,7 @@ class LayoutHooks extends Hooks
     {
         $out = '<section class="navwrap">' .
                '<nav role="navigation" class="pos" id="mainmenu">' .
-               '<img src="/img/logo.svg" alt="Logo of the European Green Party" class="logo">' .
+               '<img src="/img/logo.svg" alt="Logo" class="logo">' .
                '<h6 class="sr-only">' .
                \Yii::t('base', 'menu_main') . ':</h6>' .
                '<div class="navigation nav-fallback clearfix">';

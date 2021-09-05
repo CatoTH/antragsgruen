@@ -3,7 +3,7 @@ Antragsgrün
 
 Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments and candidacies: from submission to administration and print template.
 
-A number of organisations are using the tool successfully such as the federal association of the European and German Green Party, the German Federal Youth Council, the European Youth Forum or the German Woman's Council.
+A number of organisations are using the tool successfully such as the federal association of the European and German Green Party, the German Federal Youth Council, the European Youth Forum or the National Council of German Women's Organizations.
 It can be easily adapted to a variety of scenarios.
 
 Core functions:

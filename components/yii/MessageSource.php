@@ -44,6 +44,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'admin'     => 'Administration',
                 'user'      => 'Account-Einstellungen',
                 'speech'    => 'Redelisten',
+                'voting'    => 'Abstimmungen',
                 'wizard'    => 'Wizard',
             ];
         } else {
@@ -62,6 +63,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'admin'     => 'Administration',
                 'user'      => 'User accounts',
                 'speech'    => 'Speaking list',
+                'voting'    => 'Votings',
                 'wizard'    => 'Wizard',
             ];
         }
@@ -75,9 +77,8 @@ class MessageSource extends \yii\i18n\MessageSource
 
     public static function getLanguageVariants(string $language): array
     {
-        /** @var AntragsgruenApp $params */
-        $params        = \Yii::$app->params;
-        $localMessages = (isset($params->localMessages[$language]) ? $params->localMessages[$language] : []);
+        $params        = AntragsgruenApp::getInstance();
+        $localMessages = $params->localMessages[$language] ?? [];
         if ($language === 'de') {
             return array_merge([
                 'de-parteitag'       => 'Konferenz / Parteitag',

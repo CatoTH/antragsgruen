@@ -18,7 +18,6 @@ $params = Yii::$app->params;
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
-$layout->loadFuelux();
 
 $this->title = Yii::t('admin', 'con_h1');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
@@ -42,7 +41,7 @@ $boolSettingRow = function ($settings, $field, &$handledSettings, $description) 
 <?php
 echo Html::beginForm('', 'post', [
     'id'                       => 'consultationAppearanceForm',
-    'class'                    => 'adminForm fuelux',
+    'class'                    => 'adminForm',
     'enctype'                  => 'multipart/form-data',
     'data-antragsgruen-widget' => 'backend/AppearanceEdit',
 ]);
@@ -165,12 +164,11 @@ $handledSiteSettings = [];
                     <?= Yii::t('admin', 'con_home_page_style') ?>:
                 </legend>
                 <div class="selectHolder"><?php
-                    echo HTMLTools::fueluxSelectbox(
+                    echo Html::dropDownList(
                         'settings[startLayoutType]',
-                        $consultation->getSettings()->getStartLayouts(),
                         $consultation->getSettings()->startLayoutType,
-                        ['id' => 'startLayoutType'],
-                        true
+                        $consultation->getSettings()->getStartLayouts(),
+                        ['id' => 'startLayoutType', 'class' => 'stdDropdown fullsize']
                     );
                     ?></div>
             </fieldset>
@@ -181,12 +179,11 @@ $handledSiteSettings = [];
                     <?= Yii::t('admin', 'con_motion_data') ?>:
                 </legend>
                 <div class="selectHolder"><?php
-                    echo HTMLTools::fueluxSelectbox(
+                    echo Html::dropDownList(
                         'settings[motiondataMode]',
-                        $consultation->getSettings()->getMotiondataModes(),
                         $consultation->getSettings()->motiondataMode,
-                        ['id' => 'motiondataMode'],
-                        true
+                        $consultation->getSettings()->getMotiondataModes(),
+                        ['id' => 'motiondataMode', 'class' => 'stdDropdown fullsize']
                     );
                     ?></div>
             </fieldset>

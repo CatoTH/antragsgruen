@@ -1,5 +1,5 @@
 const gulp = require('gulp'),
-    uglify = require('gulp-uglify'),
+    terser = require('gulp-terser'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
     ts = require('gulp-typescript'),
@@ -20,8 +20,8 @@ async function taskCopyFiles() {
     await gulp.src("node_modules/corejs-typeahead/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/jquery/dist/jquery.min.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/requirejs/require.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/requirejs/require.js").pipe(terser()).pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(terser()).pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/isotope-layout/dist/isotope.pkgd.min.js").pipe(gulp.dest('./web/npm/'));
@@ -33,7 +33,7 @@ function taskBuildTypescript() {
         .pipe(sourcemaps.init())
         .pipe(tsProject())
         .js
-        .pipe(uglify())
+        .pipe(terser())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/js/build/'));
 }
@@ -42,7 +42,7 @@ function taskBuildJsMain() {
     return gulp.src(main_js_files)
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen.min.js'))
-        .pipe(uglify())
+        .pipe(terser())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
 }
@@ -51,7 +51,7 @@ function taskBuildDatetimepicker() {
     return gulp.src(["web/js/bootstrap-datetimepicker.js"])
         .pipe(sourcemaps.init())
         .pipe(concat('bootstrap-datetimepicker.min.js'))
-        .pipe(uglify())
+        .pipe(terser())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
 }
@@ -60,7 +60,7 @@ function taskBuildJsDe() {
     return gulp.src(["web/js/antragsgruen-de.js"])
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen-de.min.js'))
-        .pipe(uglify())
+        .pipe(terser())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
 }
@@ -69,7 +69,7 @@ function taskBuildJsEn() {
     return gulp.src(["web/js/antragsgruen-en.js"])
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen-en.min.js'))
-        .pipe(uglify())
+        .pipe(terser())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
 }
@@ -78,7 +78,7 @@ function taskBuildJsEnGb() {
     return gulp.src(["web/js/antragsgruen-en-gb.js"])
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen-en-gb.min.js'))
-        .pipe(uglify())
+        .pipe(terser())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
 }

@@ -2,12 +2,12 @@
 
 /**
  * @var Yii\web\View $this
- * @var \app\models\db\Amendment $amendment
+ * @var Amendment $amendment
  * @var string $context
  */
 
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, IAdminComment, Motion};
+use app\models\db\{Amendment, IAdminComment, Motion, User};
 use yii\helpers\Html;
 
 $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
@@ -39,12 +39,13 @@ if ($amendment->proposalStatus === Amendment::STATUS_CUSTOM_STRING) {
     $preCustomStr = '';
 }
 
-if (isset($msgAlert) && $msgAlert !== null) {
+if (isset($msgAlert)) {
     echo '<div class="alert alert-info">' . $msgAlert . '</div>';
 }
 
-$votingBlocks = $amendment->getMyConsultation()->votingBlocks;
-$allTags = $amendment->getMyConsultation()->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+$consultation = $amendment->getMyConsultation();
+$votingBlocks = $consultation->votingBlocks;
+$allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
 $selectedTags = $amendment->getProposedProcedureTags();
 ?>
     <h2>
@@ -92,7 +93,7 @@ $selectedTags = $amendment->getProposedProcedureTags();
             </div>
             <div class="votingBlockSettings showIfStatusSet">
                 <h3><?= Yii::t('amend', 'proposal_voteblock') ?></h3>
-                <select name="votingBlockId" id="votingBlockId">
+                <select name="votingBlockId" id="votingBlockId" class="stdDropdown">
                     <option>-</option>
                     <?php
                     foreach ($votingBlocks as $votingBlock) {
@@ -105,12 +106,52 @@ $selectedTags = $amendment->getProposedProcedureTags();
                     ?>
                     <option value="NEW">- <?= Yii::t('amend', 'proposal_voteblock_newopt') ?> -</option>
                 </select>
+                <?php
+                if (User::getCurrentUser() && User::getCurrentUser()->hasPrivilege($consultation, User::PRIVILEGE_VOTINGS)) {
+                    $url = UrlHelper::createUrl(['consultation/admin-votings']);
+                    $title = Html::encode(Yii::t('amend', 'proposal_voteblock_edit'));
+                    ?>
+                    <a href="<?= Html::encode($url) ?>" class="votingEditLink" title="<?= $title ?>">
+                        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                        <span class="sr-only"><?= $title ?></span>
+                    </a>
+                    <?php
+                }
+                ?>
                 <div class="newBlock">
                     <label for="newBlockTitle" class="control-label">
                         <?= Yii::t('amend', 'proposal_voteblock_new') ?>:
                     </label>
                     <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
                 </div>
+                <?php
+                foreach ($votingBlocks as $votingBlock) {
+                    $subitems = $votingBlock->getVotingItemBlocks(true, $amendment);
+                    if (count($subitems) === 0) {
+                        continue;
+                    }
+                    ?>
+                    <div class="votingItemBlockRow votingItemBlockRow<?= $votingBlock->id ?>">
+                        <label class="control-label" for="votingItemBlockId<?= $votingBlock->id ?>">
+                            <?= Yii::t('amend', 'proposal_voteitemblock') ?>
+                        </label>
+                        <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>"
+                                class="stdDropdown votingItemBlockInput" data-voting-block="<?= $votingBlock->id ?>">
+                            <option value=""><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
+                            <?php
+                            foreach ($subitems as $subitem) {
+                                echo '<option value="' . $subitem->groupId . '"';
+                                if (in_array($amendment->id, $subitem->amendmentIds)) {
+                                    echo ' selected';
+                                }
+                                echo '>' . Html::encode($subitem->getTitle($amendment)) . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
             <div class="notificationSettings showIfStatusSet">
                 <h3><?= Yii::t('amend', 'proposal_noti') ?></h3>
@@ -228,7 +269,7 @@ $selectedTags = $amendment->getProposedProcedureTags();
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
-        foreach ($amendment->getMyConsultation()->getVisibleIMotionsSorted(false) as $otherMotion) {
+        foreach ($consultation->getVisibleIMotionsSorted(false) as $otherMotion) {
             if ($otherMotion->id === $amendment->motionId) {
                 continue;
             }
@@ -247,7 +288,7 @@ $selectedTags = $amendment->getProposedProcedureTags();
         <label class="headingLabel"><?= Yii::t('amend', 'proposal_moved_to_other_motion') ?>:</label>
         <?php
         $options = ['-'];
-        foreach ($amendment->getMyConsultation()->getVisibleMotions(true) as $otherMotion) {
+        foreach ($consultation->getVisibleMotions(true) as $otherMotion) {
             if ($otherMotion->id === $amendment->motionId) {
                 continue;
             }
@@ -276,7 +317,7 @@ $selectedTags = $amendment->getProposedProcedureTags();
         <div class="votingStatus">
             <h3><?= Yii::t('amend', 'proposal_voting_status') ?></h3>
             <?php
-            foreach ($amendment->getMyConsultation()->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
+            foreach ($consultation->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
                 ?>
                 <label>
                     <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php
@@ -323,8 +364,8 @@ $selectedTags = $amendment->getProposedProcedureTags();
         <h3><?= Yii::t('amend', 'proposal_notify_text') ?></h3>
         <div class="row proposalFrom">
             <?php
-            $replyTo = \app\components\mail\Tools::getDefaultReplyTo($amendment, $amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
-            $fromName = \app\components\mail\Tools::getDefaultMailFromName($amendment->getMyConsultation());
+            $replyTo = \app\components\mail\Tools::getDefaultReplyTo($amendment, $consultation, User::getCurrentUser());
+            $fromName = \app\components\mail\Tools::getDefaultMailFromName($consultation);
             $placeholderReplyTo = Yii::t('amend', 'proposal_notify_replyto') . ': ' . ($replyTo ? $replyTo : '-');
             $placeholderName = Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;
             ?>

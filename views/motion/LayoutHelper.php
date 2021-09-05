@@ -3,8 +3,10 @@
 namespace app\views\motion;
 
 use app\components\HashedStaticFileCache;
+use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\mergeAmendments\Init;
-use app\components\latex\{Content, Exporter, Layout};
+use app\models\settings\VotingData;
+use app\components\latex\{Content, Exporter, Layout as LatexLayout};
 use app\components\Tools;
 use app\models\db\{Consultation, IMotion, ISupporter, Motion, User};
 use app\models\LimitedSupporterList;
@@ -69,6 +71,45 @@ class LayoutHelper
             $inits[] = $name;
         }
         return implode(', ', $inits);
+    }
+
+    public static function addVotingResultsRow(VotingData $votingData, array &$rows): void
+    {
+        if ($votingData->hasAnyData()) {
+            $result = LayoutHooks::getVotingAlternativeUserResults($votingData);
+            if ($result) {
+                $rows[] = $result;
+                return;
+            }
+
+            $part1 = [];
+            if ($votingData->votesYes !== null) {
+                $part1[] = \Yii::t('motion', 'voting_yes') . ': ' . $votingData->votesYes;
+            }
+            if ($votingData->votesNo !== null) {
+                $part1[] = \Yii::t('motion', 'voting_no') . ': ' . $votingData->votesNo;
+            }
+            if ($votingData->votesAbstention !== null) {
+                $part1[] = \Yii::t('motion', 'voting_abstention') . ': ' . $votingData->votesAbstention;
+            }
+            if ($votingData->votesInvalid !== null) {
+                $part1[] = \Yii::t('motion', 'voting_invalid') . ': ' . $votingData->votesInvalid;
+            }
+            $part1 = implode(", ", $part1);
+            if ($part1 && $votingData->comment) {
+                $str = Html::encode($votingData->comment) . '<br><small>' . $part1 . '</small>';
+            } elseif ($part1) {
+                $str = $part1;
+            } else {
+                $str = $votingData->comment;
+            }
+
+            $rows[] = [
+                'rowClass' => 'votingResultRow',
+                'title' => \Yii::t('motion', 'voting_result'),
+                'content' => $str,
+            ];
+        }
     }
 
     public static function getViewCacheKey(Motion $motion): string {
@@ -431,7 +472,7 @@ class LayoutHelper
         }
         $texTemplate = $motion->getMyMotionType()->texTemplate;
 
-        $layout             = new Layout();
+        $layout             = new LatexLayout();
         $layout->assetRoot  = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
         $layout->pluginRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
         $layout->template   = $texTemplate->texLayout;

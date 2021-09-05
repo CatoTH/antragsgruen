@@ -3,7 +3,11 @@
 namespace app\models\db;
 
 use app\models\settings\{AntragsgruenApp, VotingData};
+use app\models\consultationLog\ProposedProcedureChange;
+use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 use app\models\siteSpecificBehavior\Permissions;
+use app\models\VotingItemGroup;
 use app\components\{Tools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
@@ -31,13 +35,14 @@ use yii\helpers\Html;
  * @property string|null $proposalNotification
  * @property int|null $proposalUserStatus
  * @property string|null $proposalExplanation
- * @property string|null $votingBlockId
+ * @property int|null $votingBlockId
  * @property string|null $votingData
  * @property int|null $votingStatus
  * @property int|null $responsibilityId
  * @property string|null $responsibilityComment
  * @property string|null $extraData
  * @property User|null $responsibilityUser
+ * @property VotingBlock|null $votingBlock
  */
 abstract class IMotion extends ActiveRecord
 {
@@ -165,8 +170,15 @@ abstract class IMotion extends ActiveRecord
 
     public function getVotingData(): VotingData
     {
+        $className = VotingData::class;
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($plugin::getVotingDataClass($this->getMyConsultation()) !== null) {
+                $className = $plugin::getVotingDataClass($this->getMyConsultation());
+            }
+        }
+
         if (!is_object($this->votingDataObject)) {
-            $this->votingDataObject = new VotingData($this->votingData);
+            $this->votingDataObject = new $className($this->votingData);
         }
 
         return $this->votingDataObject;
@@ -526,6 +538,113 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @throws FormError
+     */
+    public function addToVotingBlock(VotingBlock $votingBlock, bool $save): void
+    {
+        if (!$votingBlock->itemsCanBeAdded()) {
+            throw new FormError('Cannot add an item to a running voting');
+        }
+
+        $this->votingBlockId = $votingBlock->id;
+
+        foreach ($votingBlock->votes as $vote) {
+            if ($vote->isForIMotion($this)) {
+                $vote->delete();
+            }
+        }
+
+        if ($save) {
+            $this->save();
+        }
+    }
+
+    /**
+     * @throws FormError
+     */
+    public function removeFromVotingBlock(VotingBlock $votingBlock, bool $save): void
+    {
+        if (!$votingBlock->itemsCanBeRemoved()) {
+            throw new FormError('Cannot remove an item from a running voting');
+        }
+
+        $this->votingBlockId = null;
+
+        $votingData = $this->getVotingData();
+        $votingData->itemGroupSameVote = null;
+        $this->setVotingData($votingData);
+
+        if ($save) {
+            $this->save();
+        }
+    }
+
+    /**
+     * @throws FormError
+     */
+    public function setProposalVotingPropertiesFromRequest(
+        ?string $votingStatus,
+        ?string $votingBlockId,
+        array $votingItemBlockIds,
+        string $newVotingBlockTitle,
+        bool $proposedProcedureContext,
+        ProposedProcedureChange $ppChanges
+    ): void {
+        $newVotingStatus = ($votingStatus !== null ? intval($votingStatus) : null);
+        $ppChanges->setProposalVotingStatusChanges($this->votingStatus, $newVotingStatus);
+        $this->votingStatus = $newVotingStatus;
+
+        $votingBlockPre = $this->votingBlockId;
+
+        /** @var VotingBlock|null $toSetVotingBlock */
+        $toSetVotingBlock = null;
+        if ($votingBlockId === 'NEW') {
+            $newVotingBlockTitle = trim($newVotingBlockTitle);
+            if ($newVotingBlockTitle !== '') {
+                $toSetVotingBlock = new VotingBlock();
+                $toSetVotingBlock->consultationId = $this->getMyConsultation()->id;
+                $toSetVotingBlock->title = $newVotingBlockTitle;
+                // If the voting is created from the proposed procedure, we assume it's only used to show it there
+                $toSetVotingBlock->votingStatus = ($proposedProcedureContext ? VotingBlock::STATUS_OFFLINE : VotingBlock::STATUS_PREPARING);
+                $toSetVotingBlock->save();
+            }
+        } elseif ($votingBlockId > 0) {
+            $toSetVotingBlock = $this->getMyConsultation()->getVotingBlock($votingBlockId);
+        }
+
+        if ($toSetVotingBlock) {
+            if ($toSetVotingBlock->id !== $this->votingBlockId) {
+                if ($this->votingBlockId && $this->votingBlock) {
+                    $this->removeFromVotingBlock($this->votingBlock, false);
+                }
+                $this->addToVotingBlock($toSetVotingBlock, false);
+            }
+
+            if (isset($votingItemBlockIds[$toSetVotingBlock->id]) && trim($votingItemBlockIds[$toSetVotingBlock->id]) !== '') {
+                if (in_array($toSetVotingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
+                    VotingItemGroup::setVotingItemGroupToAllItems($this, $votingItemBlockIds[$toSetVotingBlock->id]);
+                } elseif ($votingItemBlockIds[$toSetVotingBlock->id] !== $this->getVotingData()->itemGroupSameVote) {
+                    throw new FormError('Cannot change an item in a running voting');
+                }
+            } else {
+                $votingData = $this->getVotingData();
+                if (in_array($toSetVotingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
+                    $votingData->itemGroupSameVote = null;
+                    $this->setVotingData($votingData);
+                } elseif ($votingData->itemGroupSameVote !== null) {
+                    throw new FormError('Cannot change an item in a running voting');
+                }
+            }
+        } else {
+            if ($this->votingBlockId && $this->votingBlock) {
+                $this->removeFromVotingBlock($this->votingBlock, false);
+            }
+        }
+
+        $ppChanges->setVotingBlockChanges($votingBlockPre, $this->votingBlockId);
+    }
+
+    /**
      * @param string $titlePrefix
      *
      * @return string
@@ -663,7 +782,7 @@ abstract class IMotion extends ActiveRecord
     public function getExtraDataKey(string $key)
     {
         $data = $this->getExtraData();
-        return (isset($data[$key]) ? $data[$key] : null);
+        return $data[$key] ?? null;
     }
 
     public function setExtraDataKey(string $key, $value): void

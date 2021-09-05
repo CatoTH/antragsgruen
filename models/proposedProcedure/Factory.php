@@ -2,8 +2,9 @@
 
 namespace app\models\proposedProcedure;
 
+use app\models\IMotionList;
 use app\models\settings\IMotionStatusEngine;
-use app\models\db\{Consultation, ConsultationAgendaItem, Motion};
+use app\models\db\{Consultation, ConsultationAgendaItem, IMotion, Motion, VotingBlock};
 use app\models\settings\Consultation as ConsultationSettings;
 
 class Factory
@@ -32,8 +33,7 @@ class Factory
         $items   = [];
         $idCount = 1;
 
-        $handledMotions = [];
-        $handledAmends  = [];
+        $handledIMotions = new IMotionList();
         $handledVotings = [];
 
         $forbiddenStatuses = $this->consultation->getStatuses()->getStatusesInvisibleForProposedProcedure();
@@ -48,7 +48,7 @@ class Factory
 
             $imotions = IMotionStatusEngine::filterIMotionsByForbiddenStatuses($agendaItem->getMyIMotions(), $forbiddenStatuses, true);
             foreach ($imotions as $motion) {
-                if (in_array($motion->id, $handledMotions)) {
+                if ($handledIMotions->hasIMotion($motion)) {
                     continue;
                 }
                 if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
@@ -59,14 +59,14 @@ class Factory
                     if (in_array($votingBlock->id, $handledVotings)) {
                         continue;
                     }
-                    $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
+                    $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledIMotions);
                     $handledVotings[] = $votingBlock->id;
                 }
 
                 if (is_a($motion, Motion::class)) {
                     $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
                     foreach ($amendments as $amendment) {
-                        if (in_array($amendment->id, $handledAmends)) {
+                        if ($handledIMotions->hasIMotion($amendment)) {
                             continue;
                         }
                         if ($amendment->votingBlockId > 0 && $amendment->votingBlock) {
@@ -74,7 +74,7 @@ class Factory
                             if (in_array($votingBlock->id, $handledVotings)) {
                                 continue;
                             }
-                            $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
+                            $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledIMotions);
                         }
                     }
                 }
@@ -93,7 +93,7 @@ class Factory
                     $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
                     foreach ($amendments as $amendment) {
                         $block->items[] = $amendment;
-                        $handledAmends[] = $amendment->id;
+                        $handledIMotions->addAmendment($amendment);
                     }
                 }
             }
@@ -111,52 +111,52 @@ class Factory
 
             $unhandledMotions = [];
             foreach ($this->consultation->getVisibleIMotionsSorted(true) as $motion) {
-                if (!in_array($motion->id, $handledMotions)) {
+                if (!$handledIMotions->hasIMotion($motion)) {
                     $unhandledMotions[] = $motion;
                 }
             }
-            $items = array_merge($items, static::createFromMotions($unhandledMotions, $handledVotings, $handledAmends));
+            $items = array_merge($items, static::createFromMotions($unhandledMotions, $handledVotings, $handledIMotions));
         }
 
         return $items;
     }
 
     /**
-     * @param Motion[] $motions
+     * @param IMotion[] $imotions
+     *
      * @return Agenda[]
      */
-    protected function createFromMotions(array $motions, array $handledVotings = [], array $handledAmends = []): array
+    protected function createFromMotions(array $imotions, array $handledVotings, IMotionList $handledIMotions): array
     {
         $items   = [];
         $idCount = 1;
 
-        $handledMotions = [];
         $forbiddenStatuses = $this->consultation->getStatuses()->getStatusesInvisibleForProposedProcedure();
 
-        foreach ($motions as $motion) {
-            $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $motion->getTitleWithPrefix();
+        foreach ($imotions as $imotion) {
+            $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $imotion->getTitleWithPrefix();
             $item  = new Agenda($idCount++, $title, null);
 
-            if (in_array($motion->id, $handledMotions)) {
+            if ($handledIMotions->hasIMotion($imotion)) {
                 continue;
             }
-            if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
+            if (!$imotion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
                 continue;
             }
 
-            if ($motion->votingBlockId && $motion->votingBlock) {
-                $votingBlock = $motion->votingBlock;
+            if ($imotion->votingBlockId && $imotion->votingBlock) {
+                $votingBlock = $imotion->votingBlock;
                 if (in_array($votingBlock->id, $handledVotings)) {
                     continue;
                 }
-                $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
-                $handledAmends[] = $votingBlock->id;
+                $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledIMotions);
+                $handledVotings[] = $votingBlock->id;
             }
 
-            if (is_a($motion, Motion::class)) {
-                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
+            if (is_a($imotion, Motion::class)) {
+                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($imotion->amendments, $forbiddenStatuses, true);
                 foreach ($amendments as $amendment) {
-                    if (in_array($amendment->id, $handledAmends)) {
+                    if ($handledIMotions->hasIMotion($amendment)) {
                         continue;
                     }
                     if ($amendment->votingBlockId && $amendment->votingBlock) {
@@ -164,23 +164,23 @@ class Factory
                         if (in_array($votingBlock->id, $handledVotings)) {
                             continue;
                         }
-                        $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
-                        $handledAmends[] = $votingBlock->id;
+                        $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledIMotions);
+                        $handledVotings[] = $votingBlock->id;
                     }
                 }
             }
 
             $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
-            if ($motion->isProposalPublic() || $this->includeInvisible) {
-                $handledMotions[] = $motion->id;
-                $block->items[] = $motion;
+            if ($imotion->isProposalPublic() || $this->includeInvisible) {
+                $handledIMotions->addIMotion($imotion);
+                $block->items[] = $imotion;
             }
-            if (is_a($motion, Motion::class)) {
-                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
+            if (is_a($imotion, Motion::class)) {
+                $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($imotion->amendments, $forbiddenStatuses, true);
                 foreach ($amendments as $amendment) {
                     if ($amendment->isProposalPublic() || $this->includeInvisible) {
-                        $handledAmends[] = $amendment->id;
+                        $handledIMotions->addAmendment($amendment);
                         $block->items[] = $amendment;
                     }
                 }
@@ -212,7 +212,52 @@ class Factory
             case ConsultationSettings::START_LAYOUT_TAGS:
             default:
                 $motions = $this->consultation->getVisibleIMotionsSorted(true);
-                return $this->createFromMotions($motions);
+                return $this->createFromMotions($motions, [], new IMotionList());
         }
+    }
+
+
+    /**
+     * @return AgendaVoting[]
+     * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
+     */
+    public static function getAllVotingBlocks(Consultation $consultation): array
+    {
+        return array_map(function (VotingBlock $votingBlock): AgendaVoting {
+            $voting = new AgendaVoting($votingBlock->title, $votingBlock);
+            $voting->addItemsFromBlock(true);
+            return $voting;
+        }, $consultation->votingBlocks);
+    }
+
+    /**
+     * @return AgendaVoting[]
+     * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
+     */
+    public static function getOpenVotingBlocks(Consultation $consultation, ?Motion $assignedToMotion): array
+    {
+        $openBlocks = array_values(array_filter($consultation->votingBlocks, function (VotingBlock $voting) use ($assignedToMotion): bool {
+            if ($voting->votingStatus !== VotingBlock::STATUS_OPEN) {
+                return false;
+            }
+            if ($assignedToMotion) {
+                return $voting->assignedToMotionId === $assignedToMotion->id;
+            } else {
+                return $voting->assignedToMotionId === null;
+            }
+        }));
+        return array_map(function (VotingBlock $votingBlock): AgendaVoting {
+            $voting = new AgendaVoting($votingBlock->title, $votingBlock);
+            $voting->addItemsFromBlock(true);
+            return $voting;
+        }, $openBlocks);
+    }
+
+    public static function hasOnlineVotingBlocks(Consultation $consultation): bool
+    {
+        $onlineVotings = array_values(array_filter($consultation->votingBlocks, function (VotingBlock $voting): bool {
+            return $voting->votingStatus !== VotingBlock::STATUS_OFFLINE;
+        }));
+        return count($onlineVotings) > 0;
     }
 }

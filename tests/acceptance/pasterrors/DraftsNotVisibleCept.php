@@ -12,7 +12,7 @@ $I->see('Testantrag');
 
 $I->wantTo('set the motion to draft state and make sure it\' not visible');
 $page = $I->gotoMotionList()->gotoMotionEdit(58);
-$I->selectFueluxOption('#motionStatus', \app\models\db\IMotion::STATUS_DRAFT);
+$I->selectOption('#motionStatus', \app\models\db\IMotion::STATUS_DRAFT);
 $page->saveForm();
 
 

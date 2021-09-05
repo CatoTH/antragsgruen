@@ -1,7 +1,7 @@
 <?php
 
 use app\models\settings\AntragsgruenApp;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem};
 use yii\helpers\Html;
 
@@ -117,7 +117,8 @@ if (count($consultation->agendaItems) > 0) {
         $selections[$item->id] = $item->title;
     }
 
-    echo HTMLTools::fueluxSelectbox('amendment[agendaItemId]', $selections, $amendment->agendaItemId, $options, true);
+    $options = ['id' => 'agendaItemId', 'class' => 'stdDropdown fullsize'];
+    echo Html::dropDownList('amendment[agendaItemId]', $amendment->agendaItemId, $selections, $options);
     echo '</div></div>';
 }
 ?>
@@ -128,9 +129,9 @@ if (count($consultation->agendaItems) > 0) {
         </label>
         <div class="col-md-4">
             <?php
-            $options  = ['id' => 'amendmentStatus'];
+            $options  = ['id' => 'amendmentStatus', 'class' => 'stdDropdown fullsize'];
             $statuses = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
-            echo HTMLTools::fueluxSelectbox('amendment[status]', $statuses, $amendment->status, $options, true);
+            echo Html::dropDownList('amendment[status]', $amendment->status, $statuses, $options);
             ?>
         </div>
         <div class="col-md-5">
@@ -221,57 +222,10 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             ?>
         </div>
     </div>
-
 <?php
-$voting       = $amendment->getVotingData();
-$votingOpened = $voting->hasAnyData();
-?>
-    <div class="contentVotingResultCaller">
-        <button class="btn btn-link votingResultOpener <?= ($votingOpened ? 'hidden' : '') ?>" type="button">
-            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-            <?= Yii::t('amend', 'merge_new_votes_enter') ?>
-        </button>
-        <button class="btn btn-link votingResultCloser <?= ($votingOpened ? '' : 'hidden') ?>" type="button">
-            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-            <?= Yii::t('amend', 'merge_new_votes_enter') ?>:
-        </button>
-    </div>
-    <div class="form-group contentVotingResultComment <?= ($votingOpened ? '' : 'hidden') ?>">
-        <label class="col-md-3 control-label" for="votesComment">
-            <?= Yii::t('amend', 'merge_new_votes_comment') ?>
-        </label>
-        <div class="col-md-9">
-            <input class="form-control" name="votes[comment]" type="text" id="votesComment"
-                   value="<?= Html::encode($voting->comment ? $voting->comment : '') ?>">
-        </div>
-    </div>
-    <div class="contentVotingResult row <?= ($votingOpened ? '' : 'hidden') ?>">
-        <div class="col-md-3">
-            <label for="votesYes"><?= Yii::t('amend', 'merge_new_votes_yes') ?></label>
-            <input class="form-control" name="votes[yes]" type="number" id="votesYes"
-                   value="<?= Html::encode($voting->votesYes ? $voting->votesYes : '') ?>">
-        </div>
-        <div class="col-md-3">
-            <label for="votesNo"><?= Yii::t('amend', 'merge_new_votes_no') ?></label>
-            <input class="form-control" name="votes[no]" type="number" id="votesNo"
-                   value="<?= Html::encode($voting->votesNo ? $voting->votesNo : '') ?>">
-        </div>
-        <div class="col-md-3">
-            <label for="votesAbstention"><?= Yii::t('amend', 'merge_new_votes_abstention') ?></label>
-            <input class="form-control" name="votes[abstention]" type="number" id="votesAbstention"
-                   value="<?= Html::encode($voting->votesAbstention ? $voting->votesAbstention : '') ?>">
-        </div>
-        <div class="col-md-3">
-            <label for="votesInvalid"><?= Yii::t('amend', 'merge_new_votes_invalid') ?></label>
-            <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid"
-                   value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
-        </div>
-    </div>
-
-<?php
-
 echo '</div>';
 
+echo $this->render('_update_voting', ['amendment' => $amendment]);
 
 /** @var AmendmentSection[] $sections */
 $sections = $amendment->getSortedSections(false);

@@ -1,7 +1,7 @@
 <?php
 
 use app\models\settings\AntragsgruenApp;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Tools, UrlHelper};
 use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter};
 use yii\helpers\Html;
 
@@ -102,8 +102,8 @@ echo '<div class="content form-horizontal fuelux">';
             foreach ($motion->motionType->getCompatibleMotionTypes() as $motionType) {
                 $options[$motionType->id] = $motionType->titleSingular;
             }
-            $attrs = ['id' => 'motionType'];
-            echo HTMLTools::fueluxSelectbox('motion[motionType]', $options, $motion->motionTypeId, $attrs, true);
+            $attrs = ['id' => 'motionType', 'class' => 'stdDropdown fullsize'];
+            echo Html::dropDownList('motion[motionType]', $motion->motionTypeId, $options, $attrs);
             ?>
         </div>
     </div>
@@ -116,8 +116,8 @@ echo '<div class="content form-horizontal fuelux">';
             foreach ($consultation->motions as $otherMotion) {
                 $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
             }
-            $attrs = ['id' => 'parentMotion'];
-            echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs, true);
+            $attrs = ['id' => 'parentMotion', 'class' => 'stdDropdown fullsize'];
+            echo Html::dropDownList('motion[parentMotionId]', $motion->parentMotionId, $options, $attrs);
             ?>
         </div>
     </div>
@@ -127,7 +127,8 @@ echo '<div class="content form-horizontal fuelux">';
         <div class="col-md-5">
             <?php
             $stats = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
-            echo HTMLTools::fueluxSelectbox('motion[status]', $stats, $motion->status, ['id' => 'motionStatus'], true);
+            $options = ['id' => 'motionStatus', 'class' => 'stdDropdown fullsize'];
+            echo Html::dropDownList('motion[status]', $motion->status, $stats, $options);
             echo '</div><div class="col-md-4">';
             $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
             echo Html::textInput('motion[statusString]', $motion->statusString, $options);
@@ -141,13 +142,13 @@ if (count($consultation->agendaItems) > 0) {
     echo '<label class="col-md-3 control-label" for="agendaItemId">';
     echo Yii::t('admin', 'motion_agenda_item');
     echo ':</label><div class="col-md-9">';
-    $options    = ['id' => 'agendaItemId'];
+    $options    = ['id' => 'agendaItemId', 'class' => 'stdDropdown fullsize'];
     $selections = [];
     foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
         $selections[$item->id] = $item->title;
     }
 
-    echo HTMLTools::fueluxSelectbox('motion[agendaItemId]', $selections, $motion->agendaItemId, $options, true);
+    echo Html::dropDownList('motion[agendaItemId]', $motion->agendaItemId, $selections, $options);
     echo '</div></div>';
 }
 ?>
@@ -293,56 +294,10 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             ?>
         </div>
     </div>
-
-<?php
-$voting       = $motion->getVotingData();
-$votingOpened = $voting->hasAnyData();
-?>
-    <div class="contentVotingResultCaller">
-        <button class="btn btn-link votingResultOpener <?= ($votingOpened ? 'hidden' : '') ?>" type="button">
-            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-            <?= Yii::t('amend', 'merge_new_votes_enter') ?>
-        </button>
-        <button class="btn btn-link votingResultCloser <?= ($votingOpened ? '' : 'hidden') ?>" type="button">
-            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-            <?= Yii::t('amend', 'merge_new_votes_enter') ?>:
-        </button>
-    </div>
-    <div class="form-group contentVotingResultComment <?= ($votingOpened ? '' : 'hidden') ?>">
-        <label class="col-md-3 control-label" for="votesComment">
-            <?= Yii::t('amend', 'merge_new_votes_comment') ?>
-        </label>
-        <div class="col-md-9">
-            <input class="form-control" name="votes[comment]" type="text" id="votesComment"
-                   value="<?= Html::encode($voting->comment ? $voting->comment : '') ?>">
-        </div>
-    </div>
-    <div class="contentVotingResult row <?= ($votingOpened ? '' : 'hidden') ?>">
-        <div class="col-md-3">
-            <label for="votesYes"><?= Yii::t('amend', 'merge_new_votes_yes') ?></label>
-            <input class="form-control" name="votes[yes]" type="number" id="votesYes"
-                   value="<?= Html::encode($voting->votesYes ? $voting->votesYes : '') ?>">
-        </div>
-        <div class="col-md-3">
-            <label for="votesNo"><?= Yii::t('amend', 'merge_new_votes_no') ?></label>
-            <input class="form-control" name="votes[no]" type="number" id="votesNo"
-                   value="<?= Html::encode($voting->votesNo ? $voting->votesNo : '') ?>">
-        </div>
-        <div class="col-md-3">
-            <label for="votesAbstention"><?= Yii::t('amend', 'merge_new_votes_abstention') ?></label>
-            <input class="form-control" name="votes[abstention]" type="number" id="votesAbstention"
-                   value="<?= Html::encode($voting->votesAbstention ? $voting->votesAbstention : '') ?>">
-        </div>
-        <div class="col-md-3">
-            <label for="votesInvalid"><?= Yii::t('amend', 'merge_new_votes_invalid') ?></label>
-            <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid"
-                   value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
-        </div>
-    </div>
-
 <?php
 echo '</div>';
 
+echo $this->render('_update_voting', ['motion' => $motion]);
 
 $needsCollisionCheck = (!$motion->textFixed && count($motion->getAmendmentsRelevantForCollisionDetection()) > 0);
 if (!$motion->textFixed) {
