@@ -17,7 +17,8 @@ $consultation = $controller->consultation;
 ob_start();
 ?>
 
-<section class="voting" :class="['voting' + voting.id]" :aria-label="'<?= Yii::t('voting', 'admin_aria_single') ?>: ' + voting.title">
+<section class="voting" :class="['voting' + voting.id]" :id="'voting' + voting.id"
+         :aria-label="'<?= Yii::t('voting', 'admin_aria_single') ?>: ' + voting.title">
     <h2 class="green">
         {{ voting.title }}
         <span class="btn-group btn-group-xs settingsToggleGroup">
@@ -230,6 +231,10 @@ ob_start();
         <button type="submit" class="btn btn-success">
             <?= Yii::t('voting', 'settings_save') ?>
         </button>
+        <button type="button" class="btn btn-link btnDelete" @click="deleteVoting()"
+                title="<?= Yii::t('voting', 'settings_delete') ?>" aria-label="<?= Yii::t('voting', 'settings_delete') ?>">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        </button>
     </form>
 </section>
 
@@ -260,6 +265,8 @@ $html = ob_get_clean();
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
 
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
+    const deleteConfirmation = <?= json_encode(Yii::t('voting', 'settings_delete_bb')) ?>;
+
     const motionEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000'])) ?>;
     const amendmentEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000'])) ?>;
 
@@ -443,6 +450,14 @@ $html = ob_get_clean();
                 $event.stopPropagation();
                 this.$emit('save-settings', this.voting.id, this.settingsTitle, this.settingsAssignedMotion);
                 this.settingsOpened = false;
+            },
+            deleteVoting: function () {
+                const widget = this;
+                bootbox.confirm(deleteConfirmation, function(result) {
+                    if (result) {
+                        widget.$emit('delete-voting', widget.voting.id);
+                    }
+                });
             }
         },
         updated() {

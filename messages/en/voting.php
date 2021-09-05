@@ -49,6 +49,8 @@ return [
     'settings_motionassign_h' => 'If this voting is assigned to a motion, it will be shown on the motion page, not on the home page',
     'settings_motionassign_none' => 'None',
     'settings_save' => 'Save',
+    'settings_delete' => 'Delete the voting',
+    'settings_delete_bb' => 'Do you want to delete the voting including all cast votes? The motions and amendments will remain untouched.',
 
     'voting_current_aria' => 'Currently active voting',
     'voting_show_amend' => 'Show amendment',

@@ -27,6 +27,7 @@ export class VotingAdmin {
                                      @set-status="setStatus"
                                      @save-settings="saveSettings"
                                      @remove-item="removeItem"
+                                     @delete-voting="deleteVoting"
                                      @add-item="addItem"
                 ></voting-admin-widget>
             </div>`,
@@ -75,6 +76,11 @@ export class VotingAdmin {
                         assignedMotion,
                     });
                 },
+                deleteVoting(votingBlockId) {
+                    this._performOperation(votingBlockId, {
+                        op: 'delete-voting',
+                    });
+                },
                 createVoting: function (title, assignedMotion) {
                     let postData = {
                         _csrf: this.csrf,
@@ -89,7 +95,9 @@ export class VotingAdmin {
                         }
                         widget.votings = data['votings'];
 
-                        console.log(data['created_voting']);
+                        window.setTimeout(() => {
+                            $("#voting" + data['created_voting']).scrollintoview({top_offset: -100});
+                        }, 200);
                     }).catch(function (err) {
                         alert(err.responseText);
                     });
@@ -145,7 +153,6 @@ export class VotingAdmin {
 
             $form.addClass('hidden');
             $opener.removeClass('hidden');
-            // @TODO Scroll to new voting
         });
     }
 }

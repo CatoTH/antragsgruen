@@ -265,6 +265,11 @@
       display: block;
       margin-bottom: 10px;
     }
+
+    .btnDelete {
+      float: right;
+      color: $colorDelLink;
+    }
   }
 }
 

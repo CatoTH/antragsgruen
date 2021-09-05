@@ -45,6 +45,8 @@ class VotingController extends Base
 
     private function getAllVotingAdminData(): array
     {
+        $this->consultation->refresh();
+        
         $apiData = [];
         foreach (Factory::getAllVotingBlocks($this->consultation) as $votingBlock) {
             /** @noinspection PhpUnhandledExceptionInspection */
@@ -99,6 +101,11 @@ class VotingController extends Base
                 $votingBlock->switchToOfflineVoting();
             }
         }
+    }
+
+    public function deleteVoting(VotingBlock $votingBlock)
+    {
+        $votingBlock->deleteVoting();
     }
 
     private function voteSaveSettings(VotingBlock $votingBlock): void
@@ -189,6 +196,9 @@ class VotingController extends Base
                 break;
             case 'remove-item':
                 $this->voteRemoveItem($votingBlock);
+                break;
+            case 'delete-voting':
+                $this->deleteVoting($votingBlock);
                 break;
         }
 

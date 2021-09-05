@@ -49,6 +49,8 @@ return [
     'settings_motionassign_h' => 'Wenn hier ein Antrag ausgewählt wird, wird die Abstimmung auf der Antragsseite statt auf der Startseite angezeigt.',
     'settings_motionassign_none' => 'Keiner',
     'settings_save' => 'Speichern',
+    'settings_delete' => 'Abstimmung löschen',
+    'settings_delete_bb' => 'Soll diese Abstimmung mitsamt den abgegebenen Stimmen gelöscht werden? Die Anträge und Änderungsanträge bleiben dabei bestehen.',
 
     'voting_current_aria' => 'Aktuell laufende Abstimmung',
     'voting_show_amend' => 'Änderungsantrag anzeigen',

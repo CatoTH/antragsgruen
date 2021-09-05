@@ -257,7 +257,8 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getVotingBlock()
     {
-        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
+        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
+            ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
     /**

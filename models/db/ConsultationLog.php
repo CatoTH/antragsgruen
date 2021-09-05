@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{Tools, UrlHelper};
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
@@ -62,6 +63,9 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_PUBLISH_PROPOSAL = 29;
     const AMENDMENT_VOTE_ACCEPTED    = 41;
     const AMENDMENT_VOTE_REJECTED    = 42;
+    const VOTING_OPEN                = 43;
+    const VOTING_CLOSE               = 44;
+    const VOTING_DELETE              = 45;
 
     public static $MOTION_ACTION_TYPES    = [
         self::MOTION_PUBLISH,
@@ -134,6 +138,7 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_NOTIFY_PROPOSAL,
         self::AMENDMENT_ACCEPT_PROPOSAL,
         self::AMENDMENT_PUBLISH_PROPOSAL,
+        self::VOTING_DELETE,
     ];
 
     /** @var null|Motion */
@@ -154,9 +159,7 @@ class ConsultationLog extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'consultationLog';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultationLog';
     }
 
     /**
@@ -385,11 +388,9 @@ class ConsultationLog extends ActiveRecord
 
     private static function amendmentId2Prefix(int $amendmentId): ?string
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
         $row = (new \yii\db\Query())
             ->select(['titlePrefix'])
-            ->from($app->tablePrefix . 'amendment')
+            ->from(AntragsgruenApp::getInstance()->tablePrefix . 'amendment')
             ->where(['id' => IntVal($amendmentId)])
             ->one();
         return ($row ? $row['titlePrefix'] : null);
@@ -397,11 +398,9 @@ class ConsultationLog extends ActiveRecord
 
     private static function amendmentId2Motion(int $amendmentId): ?Motion
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
         $row = (new \yii\db\Query())
             ->select(['motionId'])
-            ->from($app->tablePrefix . 'amendment')
+            ->from(AntragsgruenApp::getInstance()->tablePrefix . 'amendment')
             ->where(['id' => IntVal($amendmentId)])
             ->one();
         if (!$row) {
@@ -412,11 +411,9 @@ class ConsultationLog extends ActiveRecord
 
     private static function motionId2Prefix(int $motionId): ?string
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
         $row = (new \yii\db\Query())
             ->select(['titlePrefix'])
-            ->from($app->tablePrefix . 'motion')
+            ->from(AntragsgruenApp::getInstance()->tablePrefix . 'motion')
             ->where(['id' => IntVal($motionId)])
             ->one();
         return ($row ? $row['titlePrefix'] : null);

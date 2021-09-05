@@ -39,6 +39,9 @@ class VotingBlock extends ActiveRecord
     // Vorting is closed.
     const STATUS_CLOSED = 3;
 
+    // Vorting is deleted - not accessible in the frontend.
+    const STATUS_DELETED = -1;
+
     // More yes- than no-votes
     const MAJORITY_TYPE_SIMPLE = 1;
 
@@ -211,6 +214,8 @@ class VotingBlock extends ActiveRecord
         }
         $this->votingStatus = VotingBlock::STATUS_OPEN;
         $this->save();
+
+        ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_OPEN, $this->id);
     }
 
     public function closeVoting(): void {
@@ -237,6 +242,16 @@ class VotingBlock extends ActiveRecord
             $amendment->setVotingResult($result);
             $amendment->save();
         }
+
+        ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_CLOSE, $this->id);
+    }
+
+    public function deleteVoting(): void
+    {
+        $this->votingStatus = static::STATUS_DELETED;
+        $this->save();
+
+        ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_DELETE, $this->id);
     }
 
     public function getActivityLog(): array
