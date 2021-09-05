@@ -12,7 +12,7 @@ use yii\helpers\Html;
 $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 $voting = $amendment->getVotingData();
 $cssClass = '';
-if ($voting->hasAnyData() || $amendment->proposalStatus === IMotion::STATUS_VOTE) {
+if ($voting->hasAnyData() || $amendment->proposalStatus === IMotion::STATUS_VOTE || $amendment->votingBlockId !== null) {
     $cssClass .= ' hasData';
 }
 $voteEditUrl = UrlHelper::createUrl(['consultation/admin-votings']);

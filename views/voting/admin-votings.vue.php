@@ -104,8 +104,8 @@ ob_start();
                         {{ item.title_with_prefix }}
                         <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
                                 class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a>
-                        <a :href="itemAdminUrl(item)" title="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"><span
-                                class="glyphicon glyphicon-wrench" aria-label="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"></span></a>
+                        <a :href="itemAdminUrl(item)" title="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"
+                           :class="'adminUrl' + item.id"><span class="glyphicon glyphicon-wrench" aria-label="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"></span></a>
                         <br>
                         <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
@@ -228,7 +228,7 @@ ob_start();
                 </option>
             </select>
         </label>
-        <button type="submit" class="btn btn-success">
+        <button type="submit" class="btn btn-success btnSave">
             <?= Yii::t('voting', 'settings_save') ?>
         </button>
         <button type="button" class="btn btn-link btnDelete" @click="deleteVoting()"
