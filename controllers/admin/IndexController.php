@@ -183,10 +183,6 @@ class IndexController extends AdminBase
 
     private function saveTags(Consultation $consultation): void
     {
-        if (!$this->isPostSet('tags')) {
-            return;
-        }
-
         $foundTags = [];
         $newTags   = \Yii::$app->request->post('tags', []);
         foreach ($newTags as $pos => $newTag) {
@@ -201,6 +197,7 @@ class IndexController extends AdminBase
         foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
             if (!in_array($tag->id, $foundTags)) {
                 \Yii::$app->db->createCommand('DELETE FROM `motionTag` WHERE `tagId` = ' . intval($tag->id))->execute();
+                \Yii::$app->db->createCommand('DELETE FROM `amendmentTag` WHERE `tagId` = ' . intval($tag->id))->execute();
                 $tag->delete();
             }
         }
