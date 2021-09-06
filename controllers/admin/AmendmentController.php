@@ -6,7 +6,7 @@ use app\models\consultationLog\ProposedProcedureChange;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site;
 use app\components\{Tools, UrlHelper, ZipWriter};
-use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, User};
+use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
@@ -328,6 +328,17 @@ class AmendmentController extends AdminBase
             }
 
             $amendment->save();
+
+            foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+                if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
+                    $amendment->unlink('tags', $tag, true);
+                } else {
+                    try {
+                        $amendment->link('tags', $tag);
+                    } catch (\Exception $e) {
+                    }
+                }
+            }
 
             $this->saveAmendmentSupporters($amendment);
             $this->saveAmendmentInitiator($amendment);

@@ -6,6 +6,7 @@
   - Currently, only simple majority is supported.
   - All registered users can vote.
   - Votings can be prepared as part of the proposed procedure.
+- Submitted amendments can now optionally have tags, too, if set up in the motion types.
 - Support for Internet Explorer was dropped.
 
 ### Version 4.8.1 (2021-08-28)

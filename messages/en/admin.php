@@ -258,6 +258,7 @@ return [
     'con_organisations_hint'  => 'If this list is empty (default), proposers of a motion can freely enter the organisation name. Changes to this list do not affect already submitted motions.',
     'con_organisation_add'    => 'New organisation',
     'con_multiple_topics'     => 'Allow multiple topics per motion',
+    'con_amendment_tags'      => 'Topics for individual amendments',
     'con_title_amendments'    => 'Amendments',
     'con_amend_number'        => 'Numbering',
     'con_amend_screening'     => '<strong>Screening</strong> of amendments',

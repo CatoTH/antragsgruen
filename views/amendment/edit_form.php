@@ -107,6 +107,10 @@ if ($consultation->getSettings()->editorialAmendments || $globalAlternatives) {
 echo '<div class="content">';
 
 
+if ($consultation->getSettings()->amendmentsHaveTags) {
+    echo $this->render('@app/views/shared/edit_tags', ['consultation' => $consultation, 'tagIds' => $form->tags]);
+}
+
 if ($consultation->getSettings()->editorialAmendments) { ?>
     <div class="form-group wysiwyg-textarea hidden" id="sectionHolderEditorial"
          data-full-html="0" data-max-len="0">

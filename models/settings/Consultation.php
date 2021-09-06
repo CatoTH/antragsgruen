@@ -48,6 +48,7 @@ class Consultation implements \JsonSerializable
     public $hasSpeechLists = false;
     public $speechRequiresLogin = false;
     public $allowMultipleTags = false;
+    public $amendmentsHaveTags = false;
     public $openslidesExportEnabled = false;
 
     /** @var null|int */

@@ -3,7 +3,15 @@
 namespace app\controllers;
 
 use app\components\UrlHelper;
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSupporter, ConsultationLog, IComment, Consultation, User};
+use app\models\db\{Amendment,
+    AmendmentAdminComment,
+    AmendmentComment,
+    AmendmentSupporter,
+    ConsultationLog,
+    ConsultationSettingsTag,
+    IComment,
+    Consultation,
+    User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{DB, FormError, Internal};
 use app\models\forms\CommentForm;
@@ -73,6 +81,38 @@ trait AmendmentActionsTrait
             }
             $viewParameters['openedComments'][$commentForm->sectionId][] = $commentForm->paragraphNo;
             \Yii::$app->session->setFlash('error', $e->getMessage());
+        }
+    }
+
+
+
+    /**
+     * @throws Internal
+     */
+    private function amendmentAddTag(Amendment $amendment): void
+    {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            throw new Internal(\Yii::t('comment', 'err_no_screening'));
+        }
+        foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+            if ($tag->id == \Yii::$app->request->post('tagId')) {
+                $amendment->link('tags', $tag);
+            }
+        }
+    }
+
+    /**
+     * @throws Internal
+     */
+    private function amendmentDelTag(Amendment $amendment): void
+    {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            throw new Internal(\Yii::t('comment', 'err_no_screening'));
+        }
+        foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+            if ($tag->id === intval(\Yii::$app->request->post('tagId'))) {
+                $amendment->unlink('tags', $tag, true);
+            }
         }
     }
 
@@ -350,6 +390,10 @@ trait AmendmentActionsTrait
             $this->amendmentSupportRevoke($amendment);
         } elseif (isset($post['amendmentSupportFinish'])) {
             $this->amendmentSupportFinish($amendment);
+        } elseif (isset($post['addTag'])) {
+            $this->amendmentAddTag($amendment);
+        } elseif (isset($post['delTag'])) {
+            $this->amendmentDelTag($amendment);
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
         } elseif (isset($post['setProposalAgree'])) {

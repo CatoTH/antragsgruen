@@ -3,7 +3,7 @@
 namespace app\models\forms;
 
 use app\components\HTMLTools;
-use app\models\db\{Amendment, Motion, AmendmentSection, AmendmentSupporter};
+use app\models\db\{Amendment, ConsultationSettingsTag, Motion, AmendmentSection, AmendmentSupporter};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\{ISectionType, TextSimple};
 use yii\base\Model;
@@ -15,6 +15,9 @@ class AmendmentEditForm extends Model
 
     /** @var AmendmentSupporter[] */
     public $supporters = [];
+
+    /** @var array */
+    public $tags = [];
 
     /** @var AmendmentSection[] */
     public $sections = [];
@@ -32,11 +35,7 @@ class AmendmentEditForm extends Model
 
     private $adminMode = false;
 
-    /**
-     * @param Motion $motion
-     * @param null|Amendment $amendment
-     */
-    public function __construct(Motion $motion, $amendment)
+    public function __construct(Motion $motion, ?Amendment $amendment)
     {
         parent::__construct();
         $this->motion = $motion;
@@ -59,6 +58,9 @@ class AmendmentEditForm extends Model
                     $amendmentSections[$section->sectionId]->data    = $data;
                     $amendmentSections[$section->sectionId]->dataRaw = $data;
                 }
+            }
+            foreach ($amendment->getPublicTopicTags() as $tag) {
+                $this->tags[] = $tag->id;
             }
         }
         $this->sections = [];
@@ -99,11 +101,7 @@ class AmendmentEditForm extends Model
         return [
             [['type'], 'required'],
             [['id', 'type'], 'number'],
-            [
-                'type',
-                'required',
-                'message' => \Yii::t('amend', 'err_type_missing')
-            ],
+            ['type', 'required', 'message' => \Yii::t('amend', 'err_type_missing')],
             [['supporters', 'tags', 'type'], 'safe'],
         ];
     }
@@ -221,6 +219,8 @@ class AmendmentEditForm extends Model
      */
     public function createAmendment()
     {
+        $consultation = $this->motion->getMyConsultation();
+
         if (!$this->motion->isCurrentlyAmendable()) {
             throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
@@ -236,7 +236,7 @@ class AmendmentEditForm extends Model
         $amendment->status            = Motion::STATUS_DRAFT;
         $amendment->statusString      = '';
         $amendment->motionId          = $this->motion->id;
-        $amendment->textFixed         = ($this->motion->getMyConsultation()->getSettings()->adminsMayEdit ? 0 : 1);
+        $amendment->textFixed         = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
         $amendment->titlePrefix       = '';
         $amendment->dateCreation      = date('Y-m-d H:i:s');
         $amendment->changeEditorial   = $this->editorial;
@@ -247,6 +247,14 @@ class AmendmentEditForm extends Model
 
         if ($amendment->save()) {
             $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
+
+            foreach ($this->tags as $tagId) {
+                /** @var ConsultationSettingsTag $tag */
+                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
+                if ($tag) {
+                    $amendment->link('tags', $tag);
+                }
+            }
 
             foreach ($this->sections as $section) {
                 $section->amendmentId = $amendment->id;
@@ -310,6 +318,18 @@ class AmendmentEditForm extends Model
         if ($amendment->save()) {
             $motionType = $this->motion->getMyMotionType();
             $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
+
+            // Tags
+            foreach ($amendment->getPublicTopicTags() as $tag) {
+                $amendment->unlink('tags', $tag, true);
+            }
+            foreach ($this->tags as $tagId) {
+                /** @var ConsultationSettingsTag $tag */
+                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $amendment->getMyConsultation()->id]);
+                if ($tag) {
+                    $amendment->link('tags', $tag);
+                }
+            }
 
             // Sections
             foreach ($amendment->getActiveSections() as $section) {

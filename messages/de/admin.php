@@ -255,6 +255,7 @@ return [
     'con_organisations_hint'  => 'Wenn diese Liste leer gelassen wird (Standard), können Antragstellende das Gremium frei eingeben. Nachträgliche Änderungen hier wirken sich nicht auf bereits gestellte Anträge aus.',
     'con_organisation_add'    => 'Neues Gremium',
     'con_multiple_topics'     => 'Mehrere Themen pro Antrag möglich',
+    'con_amendment_tags'      => 'Themen-Angabe für einzelne Änderungsanträge',
     'con_title_amendments'    => 'Änderungsanträge',
     'con_amend_number'        => 'Nummerierung',
     'con_amend_screening'     => '<strong>Freischaltung</strong> von Änderungsanträgen',

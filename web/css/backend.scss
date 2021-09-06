@@ -840,6 +840,13 @@ label.legend {
   .motionEditLinkHolder {
     padding-top: 7px;
   }
+  .tagList, .nonAmendable {
+    label {
+      font-weight: normal;
+      margin-top: 5px;
+      margin-right: 15px;
+    }
+  }
   #amendmentTextEditCaller {
     text-align: center;
   }

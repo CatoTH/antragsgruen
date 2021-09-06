@@ -242,6 +242,17 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                     echo ' ' . Yii::t('admin', 'con_multiple_topics');
                     ?>
                 </label>
+                <label>
+                    <?php
+                    $handledSettings[] = 'amendmentsHaveTags';
+                    echo Html::checkbox(
+                        'settings[amendmentsHaveTags]',
+                        $settings->amendmentsHaveTags,
+                        ['id' => 'amendmentsHaveTags']
+                    );
+                    echo ' ' . Yii::t('admin', 'con_amendment_tags');
+                    ?>
+                </label>
             </div>
         </div>
 

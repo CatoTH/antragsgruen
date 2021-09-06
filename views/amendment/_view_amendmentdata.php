@@ -63,6 +63,8 @@ $amendmentData[] = [
     'content' => Tools::formatMysqlDateTime($amendment->dateCreation),
 ];
 
+MotionLayoutHelper::addTagsRow($consultation, $amendment->getPublicTopicTags(), $amendmentData);
+
 $amendmentData = \app\models\layoutHooks\Layout::getAmendmentViewData($amendmentData, $amendment);
 
 if (User::getCurrentUser()) {

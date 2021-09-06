@@ -407,9 +407,9 @@ trait MotionActionsTrait
             $this->motionSupportRevoke($motion);
         } elseif (isset($post['motionSupportFinish'])) {
             $this->motionSupportFinish($motion);
-        } elseif (isset($post['motionAddTag'])) {
+        } elseif (isset($post['addTag'])) {
             $this->motionAddTag($motion);
-        } elseif (isset($post['motionDelTag'])) {
+        } elseif (isset($post['delTag'])) {
             $this->motionDelTag($motion);
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($motion, $viewParameters);

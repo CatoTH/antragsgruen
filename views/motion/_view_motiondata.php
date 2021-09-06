@@ -1,7 +1,7 @@
 <?php
 
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{ConsultationSettingsTag, Motion, MotionSupporter, User, Consultation};
+use app\models\db\{Motion, MotionSupporter, User, Consultation};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
@@ -121,53 +121,7 @@ if (!$motion->isResolution() && $motionDataMode === \app\models\settings\Consult
     ];
 }
 
-
-$admin = User::havePrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
-if ($admin && count($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) {
-    $tags         = [];
-    $used_tag_ids = [];
-    foreach ($motion->getPublicTopicTags() as $tag) {
-        $used_tag_ids[] = $tag->id;
-        $str            = Html::encode($tag->title);
-        $str            .= Html::beginForm('', 'post', ['class' => 'form-inline delTagForm delTag' . $tag->id]);
-        $str            .= '<input type="hidden" name="tagId" value="' . $tag->id . '">';
-        $str            .= '<button type="submit" name="motionDelTag">' . Yii::t('motion', 'tag_del') . '</button>';
-        $str            .= Html::endForm();
-        $tags[]         = $str;
-    }
-    $content = implode(', ', $tags);
-
-    $content .= '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">' . Yii::t('motion', 'tag_new') . '</a>';
-    $content .= Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
-    $content .= '<select name="tagId" title="' . Yii::t('motion', 'tag_select') . '" class="form-control">
-        <option>-</option>';
-
-    foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-        if (!in_array($tag->id, $used_tag_ids)) {
-            $content .= '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->title) . '</option>';
-        }
-    }
-    $content .= '</select>
-            <button class="btn btn-primary" type="submit" name="motionAddTag">' .
-                Yii::t('motion', 'tag_add') .
-                '</button>';
-    $content .= Html::endForm();
-
-    $motionData[] = [
-        'title'   => Yii::t('motion', 'tag_tags'),
-        'tdClass' => 'tags',
-        'content' => $content,
-    ];
-} elseif (count($motion->getPublicTopicTags()) > 0) {
-    $tags = [];
-    foreach ($motion->getPublicTopicTags() as $tag) {
-        $tags[] = $tag->title;
-    }
-    $motionData[] = [
-        'title'   => (count($motion->getPublicTopicTags()) > 1 ? Yii::t('motion', 'tags') : Yii::t('motion', 'tag')),
-        'content' => Html::encode(implode(', ', $tags)),
-    ];
-}
+MotionLayoutHelper::addTagsRow($consultation, $motion->getPublicTopicTags(), $motionData);
 
 if ($motion->replacedMotion) {
     $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);

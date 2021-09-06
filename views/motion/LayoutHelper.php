@@ -8,7 +8,7 @@ use app\models\mergeAmendments\Init;
 use app\models\settings\VotingData;
 use app\components\latex\{Content, Exporter, Layout as LatexLayout};
 use app\components\Tools;
-use app\models\db\{Consultation, IMotion, ISupporter, Motion, User};
+use app\models\db\{Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
 use app\models\LimitedSupporterList;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
@@ -108,6 +108,60 @@ class LayoutHelper
                 'rowClass' => 'votingResultRow',
                 'title' => \Yii::t('motion', 'voting_result'),
                 'content' => $str,
+            ];
+        }
+    }
+
+    /**
+     * @param ConsultationSettingsTag[] $selectedTags
+     */
+    public static function addTagsRow(Consultation $consultation, array $selectedTags, array &$rows): void
+    {
+        $admin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
+        if ($admin && count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) {
+            $tags = [];
+            $used_tag_ids = [];
+            foreach ($selectedTags as $tag) {
+                $used_tag_ids[] = $tag->id;
+                $str = Html::encode($tag->title);
+                $str .= Html::beginForm('', 'post', ['class' => 'form-inline delTagForm delTag' . $tag->id]);
+                $str .= '<input type="hidden" name="tagId" value="' . $tag->id . '">';
+                $str .= '<button type="submit" name="delTag">' . \Yii::t('motion', 'tag_del') . '</button>';
+                $str .= Html::endForm();
+                $tags[] = $str;
+            }
+            $content = implode(', ', $tags);
+
+            $content .= '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">' . \Yii::t('motion', 'tag_new') . '</a>';
+            $content .= Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
+            $content .= '<select name="tagId" title="' . \Yii::t('motion', 'tag_select') . '" class="form-control">
+        <option>-</option>';
+
+            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+                if (!in_array($tag->id, $used_tag_ids)) {
+                    $content .= '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->title) . '</option>';
+                }
+            }
+            $content .= '</select>
+            <button class="btn btn-primary" type="submit" name="addTag">' .
+                        \Yii::t('motion', 'tag_add') .
+                        '</button>';
+            $content .= Html::endForm();
+
+            $rows[] = [
+                'title' => \Yii::t('motion', 'tag_tags'),
+                'tdClass' => 'tags',
+                'content' => $content,
+            ];
+        } elseif (count($selectedTags) > 0) {
+            $tags = [];
+            foreach ($selectedTags as $tag) {
+                $tags[] = $tag->title;
+            }
+
+            $rows[] = [
+                'title' => (count($selectedTags) > 1 ? \Yii::t('motion', 'tags') : \Yii::t('motion', 'tag')),
+                'content' => Html::encode(implode(', ', $tags)),
             ];
         }
     }

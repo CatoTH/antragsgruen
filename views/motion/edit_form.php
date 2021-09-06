@@ -9,7 +9,6 @@
  */
 
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\ConsultationSettingsTag;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
@@ -113,41 +112,7 @@ if (count($form->motionType->agendaItems) > 0 && !$isAmendmentsOnly) {
 
 
 if (!$isAmendmentsOnly) {
-    /** @var ConsultationSettingsTag[] $tags */
-    $tags = [];
-    foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-        $tags[$tag->id] = $tag;
-    }
-
-    if (count($tags) === 1) {
-        $keys = array_keys($tags);
-        echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
-    } elseif (count($tags) > 0) {
-        if ($consultation->getSettings()->allowMultipleTags) {
-            echo '<fieldset class="form-group multipleTagsGroup">';
-            echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend>';
-            foreach ($tags as $id => $tag) {
-                echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
-                if (in_array($id, $form->tags)) {
-                    echo ' checked';
-                }
-                echo ' title="Tags"> ' . Html::encode($tag->title) . '</label>';
-            }
-            echo '</fieldset>';
-        } else {
-            $layout->loadFuelux();
-            $selected = (count($form->tags) > 0 ? $form->tags[0] : 0);
-            $tagOptions = [];
-            foreach ($tags as $tag) {
-                $tagOptions[$tag->id] = $tag->title;
-            }
-            echo '<fieldset class="form-group">';
-            echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend><div style="position: relative;">';
-            echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
-            echo '</div>';
-            echo '</fieldset>';
-        }
-    }
+    echo $this->render('@app/views/shared/edit_tags', ['consultation' => $consultation, 'tagIds' => $form->tags]);
 }
 
 foreach ($form->sections as $section) {

@@ -7,6 +7,12 @@ class AmendmentShow {
         $("form.delLink").on("submit", this.delSubmit.bind(this));
         $(".share_buttons a").on("click", this.shareLinkClicked.bind(this));
 
+        $('.tagAdderHolder').on("click", function (ev) {
+            ev.preventDefault();
+            $(this).addClass("hidden");
+            $('#tagAdderForm').removeClass("hidden");
+        });
+
         let s: string[] = location.hash.split('#comm');
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});

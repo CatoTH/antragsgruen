@@ -5,7 +5,6 @@ namespace app\models\db;
 use app\models\settings\{AntragsgruenApp, VotingData};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
 use app\models\siteSpecificBehavior\Permissions;
 use app\models\VotingItemGroup;
 use app\components\{Tools, UrlHelper};

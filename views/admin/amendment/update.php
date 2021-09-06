@@ -2,7 +2,7 @@
 
 use app\models\settings\AntragsgruenApp;
 use app\components\{Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem};
+use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, ConsultationSettingsTag};
 use yii\helpers\Html;
 
 /**
@@ -204,6 +204,27 @@ if (count($consultation->agendaItems) > 0) {
             ) ?>
         </div>
     </div>
+
+<?php if (count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) { ?>
+    <div class="form-group">
+        <label class="col-md-3 control-label">
+            <?= Yii::t('admin', 'motion_topics') ?>:
+        </label>
+        <div class="col-md-9 tagList">
+            <?php
+            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+                echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
+                foreach ($amendment->getPublicTopicTags() as $mtag) {
+                    if ($mtag->id == $tag->id) {
+                        echo ' checked';
+                    }
+                }
+                echo '> ' . Html::encode($tag->title) . '</label>';
+            }
+            ?>
+        </div>
+    </div>
+<?php } ?>
 
 <?php
 foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
