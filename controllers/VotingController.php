@@ -89,12 +89,6 @@ class VotingController extends Base
                 $votingBlock->switchToOnlineVoting();
             } elseif ($newStatus === VotingBlock::STATUS_OPEN) {
                 $votingBlock->openVoting();
-
-                foreach ($this->consultation->votingBlocks as $otherVotingBlock) {
-                    if ($otherVotingBlock->votingStatus === VotingBlock::STATUS_OPEN && $votingBlock->id !== $otherVotingBlock->id) {
-                        $otherVotingBlock->closeVoting();
-                    }
-                }
             } elseif ($newStatus === VotingBlock::STATUS_CLOSED) {
                 $votingBlock->closeVoting();
             } elseif ($newStatus === VotingBlock::STATUS_OFFLINE) {
