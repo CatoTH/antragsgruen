@@ -13,8 +13,7 @@ $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://motion.tools/help';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help'];
 
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = Yii::$app->params;
+$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 ?>
 <h1>Antragsgrün / Motion.Tools<br>
@@ -92,6 +91,9 @@ $params = Yii::$app->params;
         <li>
             <a href="#votings" onClick="$('#votings').scrollintoview({top_offset: -30}); return false;">Votings</a>
             <ul>
+                <li><a href="#voting_limitations" onClick="$('#voting_limitations').scrollintoview({top_offset: -30}); return false;">Limitations</a></li>
+                <li><a href="#voting_administration" onClick="$('#voting_administration').scrollintoview({top_offset: -30}); return false;">Administration</a></li>
+                <li><a href="#voting_user" onClick="$('#voting_user').scrollintoview({top_offset: -30}); return false;">As an user</a></li>
             </ul>
         </li>
 
@@ -371,8 +373,66 @@ $params = Yii::$app->params;
 
 
     <h2 id="votings">Votings</h2>
-    <h3>@TODO</h3>
 
+    <p>The voting system lets users cast votes (yes, no, abstention) on chosen motions or amendments directly on
+        the Antragsgrün site. Admins can choose flexibly which items to be voted for at what time.
+        The voting process is aimed to be as simple and quick for the users as possible.</p>
+
+    <h3 id="voting_limitations">Limitations</h3>
+
+    <p>Votings are currently <strong>half-public</strong>. This means, regular users can only see how they voted themselves,
+        but not how other users have voted. Admins can see all votes.
+        Both aspects may become more flexible in the future, allowing completely open votings and half-hiding
+        votes from admins. However, system administrators with access to the database will always be able to see
+        the votings, so no real anonymous voting system will be supported anytime soon.
+        For this reason, the voting system must not be used for use cases like elections.</p>
+
+    <p>Currently, only simple majority is supported, meaning that a motion or amendment needs more yes
+        than no-votes to succeed. In the future, other majority types might be supported, too.</p>
+
+    <p>All logged in users can vote, right now. No rights management is implemented yet in the default
+        version of the site. This might be added in the future.</p>
+
+    <h3 id="voting_administration">Administration</h3>
+
+    <h4>Voting Blocks</h4>
+
+    <p>A voting block is one or more motions / amendments that are voted for at the same time with the same rules.
+        They are presented to the users to be voted on as one block, either on the home page or on the page of a motion.
+        If, in the future, different majority types will be supported (like absolute majority or 2/3 majority),
+        then all votings within one block would be evaluated using the same majority type.
+        In the settings of a voting block, the number of present members can be protocoled.</p>
+
+    <p>Voting blocks can have the following statuses:</p>
+    <ul>
+        <li><strong>Offline</strong>: The voting will be shown as part of a proposed procedure, but the voting will be conducted outside of the Antragsgrün system, e.g. by present members raising cards.</li>
+        <li><strong>Preparing</strong>: This is the status any block is in once online voting has been activated, as long as the voting has not been opened yet. Users cannot see the voting yet.</li>
+        <li><strong>Opened</strong>: The voting block is visible to users and they can vote. Multiple voting blocks can be open at a time, though this might be confusing.</li>
+        <li><strong>Closed</strong>: Casting new votes is not possible anymore. Once a voting is closed, those items with enough votes given the chosen majority type will be set to accepted, all others to rejected. Closed votings are visible for users on a separate page (not implemented yet).</li>
+    </ul>
+    <p>Note that it is possible to re-open an already closed voting by clicking „Reset“, which will put it back into „Preparing“ state and delete all votes cast so far.</p>
+
+    <p>Initially, no votings block exist. They are either created on the administration page of the votings (Settings → Votings), or on the fly while setting motions and amendments to be voted for, as will be described in the next section.</p>
+
+    <h4>Setting up a voting for a motion or amendment</h4>
+
+    <p>The easiest way to add a motion or amendment to a voting block is to use the „Add a motion or amendment“ button at the bottom of each voting block on the administration page. Here, it is also possible to add all amendments of a specific motion at the same time.</p>
+
+    <p>Coming from the motion or amendment admin page, another option to enable voting for it is to set the status of it to „Vote“ when editing it. If the advanced feature of „proposed procedures“ is enabled (in the admin’s motion list, open the dropdown-menu „Functionalities“ and choose „Proposed procedure“ to activate it), then another option to enable voting is to choose the status „Vote“ in the proposed procedure’s status list. In this case, the main status can remain „Submitted“ or any other status. Once one of these statuses is chosen, additional options will appear on the admin page or the proposed procedure box. It will let you assign this motion/amendment to an existing voting block or create a new voting block.</p>
+
+    <p>If a voting block has multiple items to vote for, the option „<strong>Group with</strong>“ will be shown on the admin page of the motion/amendment. This lets you group the current motion/amendment with others of the same voting block. The effect will be that they will be presented as one voting item, allowing only one vote that will be counted the same for all of them. This means, the same amount of yes/no/abstention votes will be counted for all motions/amendments, and thus either all of them will be adopted or all of them will be rejected. This option can be chosen if one amendment does not make sense without the other.</p>
+
+    <p>The „Voting status“ should initially be „Vote“, indicating that no decision has be made yet. Once a voting gets closed by an admin, either „Accepted“ or „Rejected“ will be set automatically. However, this can also be set manually by an admin, overriding the automatic mechanism.</p>
+
+    <p>Note the following <strong>limitations</strong>: every motion and amendment can only be part of one motion block at a time. Also, adding and removing them from voting blocks is only possible if the voting block is in „Preparing“ mode.</p>
+
+    <h3 id="voting_user">As an user</h3>
+
+    <p>The voting takes place either on the home page of the consultation, or on a specific motion page - depending on how the voting block has been set up. Regular users will not see anything of the voting functionality as long as no voting is open. A voting will only become visible once the admin presses the „Open Voting“ button at the corresponding voting block.</p>
+
+    <p>Users can now cast one vote for each motion and amendment assigned to this voting block - either yes, no or abstention. If multiple motions/amendments are grouped by an admin using the „Group with“ function, then they will be presented together, only vote can be cast for them and the cast vote will be valid for all of them.</p>
+
+    <p>As long as the voting is open, users can chose to take back their vote and cast it differently. Once the voting gets closed, no changes can be made anymore and the voting will disappear from the home page. It will still be visible for users on a separate page.</p>
 
     <h2 id="advanced">Advanced features</h2>
 

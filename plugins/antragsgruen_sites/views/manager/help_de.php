@@ -13,8 +13,7 @@ $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/help';
 $controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/help'];
 
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
+$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 ?>
 <h1>Antragsgrün - das grüne Antragstool</h1>
@@ -98,6 +97,9 @@ $params = \Yii::$app->params;
             <a href="#abstimmungen"
                onClick="$('#abstimmungen').scrollintoview({top_offset: -30}); return false;">Abstimmungen</a>
             <ul>
+                <li><a href="#abstimmungen_grenzen" onClick="$('#abstimmungen_grenzen').scrollintoview({top_offset: -30}); return false;">Grenzen</a></li>
+                <li><a href="#abstimmungen_administration" onClick="$('#abstimmungen_administration').scrollintoview({top_offset: -30}); return false;">Administration</a></li>
+                <li><a href="#abstimmungen_user" onClick="$('#abstimmungen_user').scrollintoview({top_offset: -30}); return false;">Aus Sicht des Abstimmenden</a></li>
             </ul>
         </li>
         <li>
@@ -408,7 +410,62 @@ $params = \Yii::$app->params;
     <p>Falls weitere Formate benötigt werden, kontaktieren Sie uns einfach.</p>
 
     <h2 id="abstimmungen">Abstimmungen</h2>
-    <h3>@TODO</h3>
+
+    <p>Auf Antragsgrün können Abstimmungen über Anträge und Änderungsanträge abgehalten werden.
+        Administrator*innen können flexibel bestimmen, wann über welchen Antrag abgestimmt wird.
+        Benutzer*innen können pro Antrag bzw. Änderungsantrag mit Ja, Nein und Enthaltung abstimmen.
+        Das Abstimmungssystem ist dabei darauf ausgerichtet, das Abstimmen den Benutzer*innen so leicht wie möglich zu machen.</p>
+
+    <h3 id="abstimmungen_grenzen">Grenzen</h3>
+
+    <p>Abstimmungen sind aktuell <strong>halb-öffentlich</strong>. Reguläre Benutzer*innen können zwar nicht sehen, wer wie abgestimmt hat, Admins zur Kontrolle aber schon.
+        In Zukunft wird dies möglicherweise flexibler, um sowohl öffentliche als auch Abstimmungen zu ermöglichen, die nicht von Admins eingesehen werden können.
+        Eine komplett geheimes Wahlsystem ist aber technisch hoch komplex (oder unmöglich), weshalb Antragsgrün nicht für Personenwahlen eingesetzt werden darf.</p>
+
+    <p>Aktuell werden nur Abstimmungen in <strong>Einfacher Mehrheit</strong> unterstützt - (Änderungs-)Anträge werden angenommen, wenn mehr Ja- als Nein-Stimmen eingehen.
+        Zukünftig werden bei Bedarf auch weitere Mehrheitsformen (wie z.B. 2/3-Mehrheit) umgesetzt.</p>
+
+    <p>Alle Eingeloggten Benutzer*innen können abstimmen. Eine genauere Rechtevergabe an Einzelne gibt es aktuell noch nicht - auch das wird aber bei Bedarf in Zukunft noch eingebaut.</p>
+
+    <h3 id="abstimmungen_administration">Administration</h3>
+
+    <h4>Abstimmungsblöcke</h4>
+
+    <p>Ein Abstimmungsblock ist eine Sammlung von (Änderungs-)Anträgen, die gleichzeitig nach dem selben Mehrheitsprinzip
+        abgestimmt wird. Er wird als Ganzes entweder auf der Startseite oder auf einer Antragsseite angezeigt.
+        Ein Abstimmungsblock hat demnach einen Namen, bei Bedarf eine Zuordnung zu einem Antrag,
+        und eine protokollierbare Zahl an anwesenden Mitgliedern.</p>
+
+    <p>Abstimmungsblöcke können sich in folgendem Zustand befinden:</p>
+    <ul>
+        <li><strong>Offline</strong>: Die Abstimmung wird bei Bedarf im Rahmen eines Verfahrensvorschlags angezeigt, die eigentliche Abstimmung erfolgt aber nicht über Antragsgrün.</li>
+        <li><strong>Vorbereitung</strong>: Die Online-Abstimmung soll genutzt werden, ist aber noch nicht eröffnet. In diesem Status können neue (Änderungs-)Anträge hinzugefügt oder wieder entfernt werden. Die Abstimmung ist für reguläre Benutzer*innen noch nicht sichtbar.</li>
+        <li><strong>Offen</strong>: Die Abstimmung ist sichtbar, Benutzer*innen können Stimmen abgeben. Es können mehrere Blöcke gleichzeitig offen sein, auch wenn leicht unübersichtlich werden dürfte.</li>
+        <li><strong>Geschlossen</strong>: Keine neuen Stimmen können abgegeben werden. Abhängig von der gewählten Mehrheitsformel werden die (Änderungs-)Anträge mit genügend Ja-Stimmen auf „Angenommen”, alle anderen auf „Abgelehnt” gesetzt. Geschlossene Abstimmungen sind auf einer separaten Seite weiterhin einsehbar (was aber noch nicht umgesetzt ist).</li>
+    </ul>
+    <p>Geschlossene Abstimmungen können wieder geöffnet werden, und durch „Zurücksetzen” auch wieder auf „Vorbereitung” gesetzt werden. In letzterem Fall gehen allerdings alle bis dahin abgegebenen Stimmen verloren.
+
+    <p>Zu Beginn gibt es noch keine Abstimmungsblöcke. Sie können entweder auf der Administrationsseite (Einstellungen → Abstimmungen) oder auf der Bearbeitungsseite eines (Änderungs-)Antrags angelegt werden (siehe weiter unten).</p>
+
+    <h4>Einen Antrag oder Änderungsantrag abstimmen lassen</h4>
+
+    <p>Am einfachsten kann man einen (Änderungs-)Antrag einer Abstimmung hinzufügen, indem man die „(Änderungs-)Antrag hinzufügen”-Funktion am Ende eines jeden Abstimmungsblocks verwendet. Abgesehen von einzelnen (Änderungs-)Anträgen kann man hier auch gesammelt alle Änderungsanträge eines Antrags auf einmal hinzufügen.</p>
+
+    <p>Auch auf der Bearbeitungsseite eines (Änderungs-)Antrags kann man ihn einer Abstimmung hinzufügen, indem man zunächst den Status (Hauptstatus oder Verfahrensvorschlag) auf „Abstimmung” setzt. Es erscheinen daraufhin weitere Einstellungsmöglichkeiten, mit denen man ihn einem existierenden Abstimmungsblock zuordnen kann oder einen neuen anlegen.</p>
+
+    <p>Auf der Bearbeitungsseite eines (Änderungs-)Antrags kann man Anträge auch „<strong>gruppieren</strong>”. Sind Änderungsanträge gruppiert, erhalten diese immer die selbe Stimme - also immer entweder alle ein „Ja” oder alle ein „Nein”. Das ist dann sinnvoll, wenn zwei oder mehr Änderungsanträge voneinander abhängen, der eine ohne den anderen also keinen Sinn ergibt.</p>
+
+    <p>Als „Abstimmungsstatus” setzt man zu Beginn am besten „Abstimmung”, um anzudeuten, dass die Entscheidung noch aussteht. Sobald die Abstimmung geschlossen wird, wird dieser Status automatisch auf „Angenommen” oder „Abgelehnt” gesetzt.</p>
+
+    <p>Nennenswerte <strong>Einschränkungen</strong>: Jeder Antrag und Änderungsantrag kann nur einem Abstimmungsblock gleichzeitig zugeordnet sein. Außerdem kann man sie nur zuordnen und entfernen, wenn der betreffende Block entweder im „Offline”- oder „Vorbereitung”-Status ist.</p>
+
+    <h3 id="abstimmungen_user">Aus Sicht des Abstimmenden</h3>
+
+    <p>Die Abstimmung findet entweder auf der Startseite oder auf einer speziellen Antragsseite statt - abhängig davon, wie es vom Admin eingerichtet wurde. Standardmäßig ist keine Abstimmung sichtbar. Eine Abstimmung wird genau dann sichtbar, wenn ein Admin im jeweiligen Abstimmungsblock die Abstimmung eröffnet.</p>
+
+    <p>Nun können Benutzer*innen für jeden Antrag oder Änderungsantrag mit Ja, Nein oder Enthaltung stimmen. Sind mehrere (Änderungs-Anträge) gruppiert, werden sie zusammen angezeigt und es gibt nur je einen Ja/Nein/Enthaltungs-Button, der dann für alle gilt.</p>
+
+    <p>Solange die Abstimmung offen ist, können Nutzer*innen ihre Stimme auch wieder zurücknehmen und sich umentscheiden. Sobald die Abstimmung geschlossen wird, gibt es diese Möglichkeit nicht mehr, die Astimmung verschwindet von der Seite. Sie ist weiterhin auf einer separaten Seite sichtbar.</p>
 
     <h2 id="weitere_funktionen">Weitere Funktionen</h2>
     <h3 id="layout">Layout-Anpassbarkeit</h3>
@@ -482,7 +539,7 @@ $params = \Yii::$app->params;
         vorgegeben werden. Antragsteller*innen können beim Einreichen eines Antrags Themen auswählen.</p>
     <p>Man aktiviert diese Darstellung unter „Einstellungen“ → „Aussehen und Bestandteile der Seite“, indem man zuerst bei
         „Startseite & Tagesordnung“ den Punkt „Themen / Schlagworte als Liste“ wählt und unter
-        „Einstellungen” -> „Diese Veranstaltung” bei „Anträge“ die verschiedenen Themen anlegt, die zur Auswahl stehen sollen.
+        „Einstellungen” → „Diese Veranstaltung” bei „Anträge“ die verschiedenen Themen anlegt, die zur Auswahl stehen sollen.
         Im allgemeinen wird auch die Einstellung „Mehrere Themen pro Antrag möglich“ gleich darunter empfehlenswert sein.</p>
 
     <h3 id="kommentare">Kommentare</h3>
