@@ -65,9 +65,9 @@ export class InitiatorForm {
         $('.fullTextAdd').on("click", this.fullTextAdd.bind(this));
 
         if (this.hasOrganisationList) {
-            this.$initiatorData.find("#initiatorPrimaryOrgaName").on('changed.fu.selectlist', () => {
+            this.$initiatorData.find("#initiatorPrimaryOrgaName").on('change', () => {
                 this.setOrgaNameFromSelect();
-            }).trigger('changed.fu.selectlist');
+            }).trigger('change');
         }
 
         if (this.$supporterData.length > 0 && this.$supporterData.data('min-supporters') > 0) {
@@ -88,8 +88,7 @@ export class InitiatorForm {
             // If a organization list is provided, but selecting organizations is disabled for this specific motion type, then this should prevent some edge cases
             return;
         }
-        const $selectedOrga = this.$initiatorData.find("#initiatorPrimaryOrgaName") as any;
-        const selectedOrga = $selectedOrga.selectlist("getValue").value;
+        const selectedOrga = this.$initiatorData.find("#initiatorPrimaryOrgaName").val();
         this.$initiatorData.find('#initiatorPrimaryName').val(selectedOrga);
     }
 

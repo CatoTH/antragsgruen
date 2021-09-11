@@ -37,18 +37,18 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
             SupportBase::getGenderSelection()
         );
         $str .= '<div class="colGender">';
-        $str .= \app\components\HTMLTools::fueluxSelectbox(
+        $str .= Html::dropDownList(
             'supporterGender[]',
-            $genderChoices,
             $supporter->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER),
-            [],
-            true
+            $genderChoices,
+            ['class' => 'stdDropdown']
         );
         $str .= '</div>';
     }
 
     $str .= '<div>';
-    $str .= '<a href="#" class="delSupporter"><span class="glyphicon glyphicon-minus-sign"></span></a>';
+    $str .= '<button type="button" class="btn btn-link delSupporter" aria-label="' . Yii::t('base', 'aria_remove') . '">' .
+            '<span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></button>';
     if ($supporter->user) {
         $str .= Html::encode($supporter->user->getAuthName());
     }
@@ -61,7 +61,7 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
 
 ?>
 <h2 class="green"><?= Yii::t('admin', 'motion_edit_supporters') ?></h2>
-<div class="content fuelux" id="motionSupporterHolder">
+<div class="content" id="motionSupporterHolder">
     <ul class="supporterList">
         <?php
         foreach ($supporters as $supporter) {

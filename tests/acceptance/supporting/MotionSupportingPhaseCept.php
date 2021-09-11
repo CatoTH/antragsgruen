@@ -81,7 +81,7 @@ $I->fillField('input[name=motionSupportOrga]', 'My organisation');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->seeBootboxDialog('Bitte gib etwas im Gender-Feld an');
 $I->acceptBootboxAlert();
-$I->selectFueluxOption('#motionSupportGender', 'male');
+$I->selectOption('#motionSupportGender', 'Männlich');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 
 $I->see('Du unterstützt diesen Antrag nun.');
@@ -104,13 +104,13 @@ $I->see('aktueller Stand: 0');
 $I->wantTo('support it again');
 
 $I->executeJS('$("input[name=motionSupportOrga]").removeAttr("required");');
-$I->selectFueluxOption('#motionSupportGender', 'na');
+$I->selectOption('#motionSupportGender', 'Keine Angabe');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->dontSee('Du unterstützt diesen Antrag nun.');
 $I->see('No organization entered');
 
 $I->fillField('input[name=motionSupportOrga]', 'My organisation');
-$I->selectFueluxOption('#motionSupportGender', 'na');
+$I->selectOption('#motionSupportGender', 'Keine Angabe');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->see('Du unterstützt diesen Antrag nun.');
 

@@ -31,7 +31,6 @@ if ($form->motion->titlePrefix !== '') {
 
 $layout->robotsNoindex = true;
 $layout->loadCKEditor();
-$layout->loadFuelux();
 $layout->addBreadcrumb($motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
 $layout->addBreadcrumb(Yii::t('amend', $mode === 'create' ? 'amendment_create' : 'amendment_edit'));
 

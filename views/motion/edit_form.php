@@ -29,7 +29,6 @@ $layout->robotsNoindex = true;
 
 $layout->loadCKEditor();
 $layout->loadDatepicker();
-$layout->loadFuelux();
 
 $layout->addBreadcrumb($this->title);
 

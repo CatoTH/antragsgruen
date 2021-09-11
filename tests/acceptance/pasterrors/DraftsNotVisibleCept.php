@@ -18,7 +18,7 @@ $page->saveForm();
 
 foreach (\app\models\settings\Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
     $page = $I->gotoStdAdminPage()->gotoAppearance();
-    $I->selectFueluxOption('#startLayoutType', $layoutId);
+    $I->selectOption('#startLayoutType', $layoutId);
     $page->saveForm();
     $I->gotoConsultationHome();
     $I->dontSee('A4');

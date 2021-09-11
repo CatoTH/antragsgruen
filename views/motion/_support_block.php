@@ -31,7 +31,7 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
 }
 
 ?>
-    <div class="supportBlock fuelux">
+    <div class="supportBlock">
         <div class="colName">
             <input type="text" name="motionSupportName" class="form-control" required <?= $fixedReadOnly ?>
                    value="<?= Html::encode($name) ?>"
@@ -67,12 +67,11 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
                 SupportBase::getGenderSelection()
             );
             echo '<div class="colGender">';
-            echo \app\components\HTMLTools::fueluxSelectbox(
+            echo Html::dropDownList(
                 'motionSupportGender',
-                $genderChoices,
                 '',
-                ['id' => 'motionSupportGender'],
-                true
+                $genderChoices,
+                ['id' => 'motionSupportGender', 'class' => 'stdDropdown']
             );
             echo '</div>';
         }

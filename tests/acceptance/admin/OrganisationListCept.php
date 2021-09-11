@@ -36,26 +36,26 @@ $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><strong>Test 2<
 $I->seeElement('#initiatorPrimaryName');
 $I->dontSeeElement('#initiatorPrimaryOrgaName');
 $I->seeElementInDOM('#initiatorPrimaryOrgaName');
-$I->seeElement('#initiatorOrga.selectlist');
+$I->seeElement('#initiatorOrga');
 
 $I->fillField('#initiatorPrimaryName', 'Tester');
-$I->executeJS('$("#initiatorOrga").selectlist("selectByValue", "Working group: infrastructure");');
+$I->executeJS('$("#initiatorOrga").val("Working group: infrastructure");');
 $I->fillField('#initiatorEmail', 'tobias@hoessl.eu');
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->see('Tester (Working group: infrastructure)');
 
 $I->submitForm('#motionConfirmForm', [], 'modify');
-$selectedOrga = $I->executeJS('return $("#initiatorOrga").selectlist("getValue").value');
+$selectedOrga = $I->executeJS('return $("#initiatorOrga").val()');
 $I->assertEquals('Working group: infrastructure', $selectedOrga);
 
 $I->executeJS('$("#personTypeOrga").prop("checked", true).trigger("change")');
 
 $I->dontSeeElement('#initiatorPrimaryName');
 $I->seeElement('#initiatorPrimaryOrgaName');
-$I->dontSeeElement('#initiatorOrga.selectlist');
+$I->dontSeeElement('#initiatorOrga');
 
-$I->executeJS('$("#initiatorPrimaryOrgaName").selectlist("selectByValue", "Working group: infrastructure").trigger("changed.fu.selectlist");');
+$I->executeJS('$("#initiatorPrimaryOrgaName").val("Working group: infrastructure").trigger("change");');
 $I->fillField('#resolutionDate', '07.12.2019');
 
 $I->submitForm('#motionEditForm', [], 'save');
@@ -66,8 +66,8 @@ $I->submitForm('#motionConfirmForm', [], 'modify');
 
 $I->dontSeeElement('#initiatorPrimaryName');
 $I->seeElement('#initiatorPrimaryOrgaName');
-$I->dontSeeElement('#initiatorOrga.selectlist');
-$selectedOrga = $I->executeJS('return $("#initiatorPrimaryOrgaName").selectlist("getValue").value');
+$I->dontSeeElement('#initiatorOrga');
+$selectedOrga = $I->executeJS('return $("#initiatorPrimaryOrgaName").val()');
 $I->assertEquals('Working group: infrastructure', $selectedOrga);
 
 
@@ -78,26 +78,26 @@ $I->gotoConsultationHome()->gotoAmendmentCreatePage();
 $I->seeElement('#initiatorPrimaryName');
 $I->dontSeeElement('#initiatorPrimaryOrgaName');
 $I->seeElementInDOM('#initiatorPrimaryOrgaName');
-$I->seeElement('#initiatorOrga.selectlist');
+$I->seeElement('#initiatorOrga');
 
 $I->fillField('#initiatorPrimaryName', 'Tester');
-$I->executeJS('$("#initiatorOrga").selectlist("selectByValue", "Working group: infrastructure");');
+$I->executeJS('$("#initiatorOrga").val("Working group: infrastructure");');
 $I->fillField('#initiatorEmail', 'tobias@hoessl.eu');
 $I->submitForm('#amendmentEditForm', [], 'save');
 
 $I->see('Tester (Working group: infrastructure)');
 
 $I->submitForm('#amendmentConfirmForm', [], 'modify');
-$selectedOrga = $I->executeJS('return $("#initiatorOrga").selectlist("getValue").value');
+$selectedOrga = $I->executeJS('return $("#initiatorOrga").val()');
 $I->assertEquals('Working group: infrastructure', $selectedOrga);
 
 $I->executeJS('$("#personTypeOrga").prop("checked", true).trigger("change")');
 
 $I->dontSeeElement('#initiatorPrimaryName');
 $I->seeElement('#initiatorPrimaryOrgaName');
-$I->dontSeeElement('#initiatorOrga.selectlist');
+$I->dontSeeElement('#initiatorOrga');
 
-$I->executeJS('$("#initiatorPrimaryOrgaName").selectlist("selectByValue", "Working group: infrastructure").trigger("changed.fu.selectlist");');
+$I->executeJS('$("#initiatorPrimaryOrgaName").val("Working group: infrastructure").trigger("change");');
 $I->fillField('#resolutionDate', '07.12.2019');
 
 $I->submitForm('#amendmentEditForm', [], 'save');
@@ -108,8 +108,8 @@ $I->submitForm('#amendmentConfirmForm', [], 'modify');
 
 $I->dontSeeElement('#initiatorPrimaryName');
 $I->seeElement('#initiatorPrimaryOrgaName');
-$I->dontSeeElement('#initiatorOrga.selectlist');
-$selectedOrga = $I->executeJS('return $("#initiatorPrimaryOrgaName").selectlist("getValue").value');
+$I->dontSeeElement('#initiatorOrga');
+$selectedOrga = $I->executeJS('return $("#initiatorPrimaryOrgaName").val()');
 $I->assertEquals('Working group: infrastructure', $selectedOrga);
 
 

@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{HTMLTools, Tools};
+use app\components\Tools;
 use app\models\db\ISupporter;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
@@ -137,7 +137,7 @@ if ($adminMode) {
         ?>
         <div class="col-md-3 admin-type">
             <input type="hidden" name="initiatorSet" value="">
-            <?= HTMLTools::fueluxSelectbox('initiatorSetType', $loginTypes, $logininit) ?>
+            <?= Html::dropDownList('initiatorSetType', $logininit, $loginTypes) ?>
         </div>
         <div class="col-md-4">
             <input type="text" name="initiatorSetUsername" id="initiatorSetUsername" class="form-control"
@@ -155,14 +155,15 @@ if ($adminMode) {
             <span class="only-person"><?= Yii::t('initiator', 'name') ?></span>
             <span class="only-organization"><?= Yii::t('initiator', 'nameOrga') ?></span>
         </label>
-        <div class="col-sm-4 fuelux">
+        <div class="col-sm-4">
             <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
                    value="<?= Html::encode($prePrimaryName) ?>" autocomplete="name" required>
             <?php
             if (count($selectOrganisations) > 0) {
                 $selectOrganisations = array_merge(['' => ''], $selectOrganisations);
-                echo HTMLTools::fueluxSelectbox('Initiator[primaryOrgaName]', $selectOrganisations, $prePrimaryName, [
+                echo HTML::dropDownList('Initiator[primaryOrgaName]', $prePrimaryName, $selectOrganisations, [
                     'id' => 'initiatorPrimaryOrgaName',
+                    'class' => 'stdDropdown',
                 ], true);
             }
             ?>
@@ -173,16 +174,17 @@ if ($adminMode) {
 if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
     $preOrga = $initiator->organization;
     ?>
-    <div class="form-group organizationRow fuelux">
+    <div class="form-group organizationRow">
         <label class="col-sm-3 control-label" for="initiatorOrga">
             <?= Yii::t('initiator', 'orgaName') ?>
         </label>
         <div class="col-sm-4">
             <?php
             if (count($selectOrganisations) > 0) {
-                echo HTMLTools::fueluxSelectbox('Initiator[organization]', $selectOrganisations, $preOrga, [
+                echo Html::dropDownList('Initiator[organization]', $preOrga, $selectOrganisations, [
                     'id' => 'initiatorOrga',
-                ], true);
+                    'class' => 'stdDropdown',
+                ]);
             } else {
                 ?>
                 <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]"
@@ -215,20 +217,16 @@ if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->i
 }
 
 if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBePerson) {
-    $layout->loadFuelux();
     $genderChoices = array_merge(['' => ''], SupportBase::getGenderSelection());
     ?>
-    <div class="form-group genderRow fuelux">
+    <div class="form-group genderRow">
         <label class="col-sm-3 control-label" for="initiatorGender"><?= Yii::t('initiator', 'gender') ?></label>
         <div class="col-sm-4">
             <?php
-            echo HTMLTools::fueluxSelectbox(
-                'Initiator[gender]',
-                $genderChoices,
-                $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER),
-                ['id' => 'initiatorGender'],
-                true
-            );
+            echo Html::dropDownList('Initiator[gender]', $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER), $genderChoices, [
+                'id' => 'initiatorGender',
+                'class' => 'stdDropdown',
+            ]);
             ?>
         </div>
     </div>

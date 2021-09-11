@@ -6,7 +6,7 @@ $I->populateDBData1();
 
 
 $I->wantTo('Ensure tags are not visible yet');
-$I->gotoMotion(true);
+$I->gotoMotion();
 $I->dontSee('Themenbereich');
 
 $I->wantTo('Create some tags');
@@ -27,7 +27,6 @@ $I->see('Economy');
 $I->see('Environment');
 
 
-
 $I->wantTo('See the motion logged out now');
 $I->logout();
 $I->gotoMotion();
@@ -44,14 +43,14 @@ $I->dontSeeElement('#tagAdderForm');
 $I->click('.tagAdderHolder');
 $I->seeElement('#tagAdderForm');
 $I->selectOption('#tagAdderForm select', 'Environment');
-$I->submitForm('#tagAdderForm', [], 'motionAddTag');
+$I->submitForm('#tagAdderForm', [], 'addTag');
 
 $I->see('Environment', '.motionDataTable .tags');
 $I->dontSeeElement('#tagAdderForm');
 $I->click('.tagAdderHolder');
 $I->seeElement('#tagAdderForm');
 $I->selectOption('#tagAdderForm select', 'Verkehr');
-$I->submitForm('#tagAdderForm', [], 'motionAddTag');
+$I->submitForm('#tagAdderForm', [], 'addTag');
 
 $I->see('Verkehr', '.motionDataTable .tags');
 $I->dontSeeElement('#tagAdderForm');
@@ -59,7 +58,7 @@ $I->dontSeeElement('#tagAdderForm');
 
 $I->wantTo('Delete a tag');
 $I->seeElement('.motionDataTable .tags .delTag2');
-$I->submitForm('.motionDataTable .tags .delTag2', [], 'motionDelTag');
+$I->submitForm('.motionDataTable .tags .delTag2', [], 'delTag');
 $I->dontSee('Verkehr', '.motionDataTable .tags');
 $I->dontSeeElement('.motionDataTable .tags .delTag2');
 $I->see('Environment', '.motionDataTable .tags');

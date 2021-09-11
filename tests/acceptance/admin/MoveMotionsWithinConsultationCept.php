@@ -19,7 +19,7 @@ $I->submitForm('#comment_-1_-1_form', [], 'writeComment');
 $I->see('An amendment comment');
 
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectFueluxOption('#startLayoutType', '4');
+$I->selectOption('#startLayoutType', \app\models\settings\Consultation::START_LAYOUT_AGENDA_LONG);
 $page->saveForm();
 
 $I->gotoConsultationHome();
