@@ -1,7 +1,5 @@
 declare var Sortable;
 
-import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
-
 const CONTACT_NONE = 0;
 const CONTACT_OPTIONAL = 1;
 const CONTACT_REQUIRED = 2;
@@ -65,7 +63,7 @@ class MotionTypeEdit {
             hasInitiator: () => (currentType !== SUPPORTER_NO_INITIATOR),
             hasSupporters: () => (
                 currentType !== SUPPORTER_NO_INITIATOR &&
-                $supportType.find("li[data-value=\"" + currentType.toString(10) + "\"]").data("has-supporters")
+                $supportType.find("option[value=\"" + currentType.toString(10) + "\"]").data("has-supporters")
             ),
             isCollectingSupporters: () => (currentType === SUPPORTER_COLLECTING_SUPPORTERS),
             allowSupportAfterSubmission: () => (
@@ -95,17 +93,17 @@ class MotionTypeEdit {
             recalcVisibilities();
         }).trigger('change');
 
-        $supportType.on('changed.fu.selectlist', () => {
-            currentType = parseInt($supportType.find('input').val() as string, 10);
-            const hasSupporters = $supportType.find("li[data-value=\"" + currentType.toString(10) + "\"]").data("has-supporters");
+        $supportType.on('change', () => {
+            currentType = parseInt($supportType.val() as string, 10);
+            const hasSupporters = $supportType.find("option[value=\"" + currentType.toString(10) + "\"]").data("has-supporters");
             recalcVisibilities();
 
-            this.motionsHaveSupporters = hasSupporters;
+            this.motionsHaveSupporters = !!hasSupporters;
 
             $initiatorGender.trigger('change');
             $supportAllowMore.trigger('change');
             this.setMaxPdfSupporters();
-        }).trigger('changed.fu.selectlist');
+        }).trigger('change');
 
         $initiatorCanBePerson.on("change", () => {
             if (!$initiatorCanBePerson.prop("checked") && !$initiatorCanBeOrga.prop("checked")) {

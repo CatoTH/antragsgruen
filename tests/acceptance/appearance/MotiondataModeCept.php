@@ -13,7 +13,7 @@ $I->see('Test2', '.motionDataTable'); // Consultation
 $I->wantTo('disable the motion data');
 $I->loginAsStdAdmin();
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectFueluxOption('#motiondataMode', \app\models\settings\Consultation::MOTIONDATA_NONE);
+$I->selectOption('#motiondataMode', \app\models\settings\Consultation::MOTIONDATA_NONE);
 $page->saveForm();
 
 $I->gotoMotion();
@@ -22,7 +22,7 @@ $I->dontSeeElement('.motionDataTable');
 
 $I->wantTo('switch to mini-mode');
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectFueluxOption('#motiondataMode', \app\models\settings\Consultation::MOTIONDATA_MINI);
+$I->selectOption('#motiondataMode', \app\models\settings\Consultation::MOTIONDATA_MINI);
 $page->saveForm();
 
 $I->gotoMotion();

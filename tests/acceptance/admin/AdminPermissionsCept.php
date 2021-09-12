@@ -2,12 +2,7 @@
 
 /** @var \Codeception\Scenario $scenario */
 
-use app\tests\_pages\AdminAdminConsultationsPage;
-use app\tests\_pages\AdminConsultationPage;
-use app\tests\_pages\AdminMotionListPage;
-use app\tests\_pages\AdminMotionTypePage;
-use app\tests\_pages\AdminSiteAccessPage;
-use app\tests\_pages\AdminTranslationPage;
+use app\tests\_pages\{AdminAdminConsultationsPage, AdminConsultationPage, AdminMotionListPage, AdminMotionTypePage, AdminSiteAccessPage, AdminTranslationPage};
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -142,7 +137,7 @@ $adminPage = $I->loginAndGotoStdAdminPage();
 $accessPage = $adminPage->gotoSiteAccessPage();
 $I->wait(1);
 $I->dontSee('consultationadmin@example.org');
-$I->executeJS('$("#adminAddForm .selectlist").selectlist("selectByValue", "email")');
+$I->selectOption('#adminAddForm select', 'email');
 $I->fillField('#addUsername', 'consultationadmin@example.org');
 $I->submitForm('#adminAddForm', [], 'addAdmin');
 $I->see('consultationadmin@example.org', '.admin7');

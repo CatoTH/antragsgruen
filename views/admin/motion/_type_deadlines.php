@@ -27,11 +27,11 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
     ) ?>
 </div>
 
-<div class="form-group deadlineTypeSimple hideForAmendmentsOnly">
-    <label class="col-md-4 control-label" for="typeSimpleDeadlineMotions">
+<div class="adminTwoCols deadlineTypeSimple hideForAmendmentsOnly">
+    <label class="leftColumn" for="typeSimpleDeadlineMotions">
         <?= Yii::t('admin', 'motion_sdeadline_mot') ?>
     </label>
-    <div class="col-md-8">
+    <div class="rightColumn">
         <div class="input-group date datetimepicker" id="typeDeadlineMotionsHolder">
             <input id="typeSimpleDeadlineMotions" type="text" class="form-control"
                    name="deadlines[motionsSimple]" autocomplete="off"
@@ -41,11 +41,11 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
     </div>
 </div>
 
-<div class="form-group deadlineTypeSimple">
-    <label class="col-md-4 control-label" for="typeSimpleDeadlineAmendments">
+<div class="adminTwoCols deadlineTypeSimple">
+    <label class="leftColumn" for="typeSimpleDeadlineAmendments">
         <?= Yii::t('admin', 'motion_sdeadline_amend'); ?>
     </label>
-    <div class="col-md-8">
+    <div class="rightColumn">
         <div class="input-group date datetimepicker" id="typeDeadlineAmendmentsHolder">
             <input id="typeSimpleDeadlineAmendments" type="text" class="form-control"
                    name="deadlines[amendmentsSimple]" autocomplete="off"

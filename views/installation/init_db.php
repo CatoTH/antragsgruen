@@ -21,7 +21,6 @@ $this->title = Yii::t('manager', 'title_install');
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->loadFuelux();
 $layout->robotsNoindex = true;
 $layout->addCSS('css/manager.css');
 
@@ -33,7 +32,7 @@ $dbTestUrlNotSoPretty = UrlHelper::createUrl('installation/db-test');
 Yii::$app->urlManager->enablePrettyUrl = $prettyBefore;
 
 echo '<h1>' . Yii::t('manager', 'title_install') . '</h1>';
-echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
+echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal']);
 
 echo '<div class="content">';
 echo $controller->showErrors();
@@ -90,7 +89,7 @@ echo Html::endForm();
 
 
 echo Html::beginForm('', 'post', [
-    'class'                    => 'antragsgruenInitForm form-horizontal fuelux',
+    'class'                    => 'antragsgruenInitForm form-horizontal',
     'data-antragsgruen-widget' => 'installation/InitDb',
 ]);
 
@@ -101,11 +100,11 @@ echo Html::beginForm('', 'post', [
         <div class="form-group language">
             <label class="col-sm-4 control-label" for="language"><?= Yii::t('manager', 'config_lang') ?>:</label>
             <div class="col-sm-8"><?php
-                echo HTMLTools::fueluxSelectbox(
+                echo Html::dropDownList(
                     'language',
-                    \app\components\yii\MessageSource::getBaseLanguages(),
                     $form->language,
-                    ['id' => 'language']
+                    \app\components\yii\MessageSource::getBaseLanguages(),
+                    ['id' => 'language', 'class' => 'stdDropdown']
                 );
                 ?></div>
         </div>
@@ -120,13 +119,11 @@ if (!$form->databaseParamsComeFromEnv()) {
         <div class="form-group sqlType">
             <label class="col-sm-4 control-label" for="sqlType"><?= Yii::t('manager', 'config_db_type') ?>:</label>
             <div class="col-sm-8"><?php
-                echo HTMLTools::fueluxSelectbox(
+                echo Html::dropDownList(
                     'sqlType',
-                    [
-                        'mysql' => 'MySQL / MariaDB',
-                    ],
                     $form->sqlType,
-                    ['id' => 'sqlType']
+                    [ 'mysql' => 'MySQL / MariaDB', ],
+                    ['id' => 'sqlType', 'class' => 'stdDropdown']
                 );
                 ?></div>
         </div>

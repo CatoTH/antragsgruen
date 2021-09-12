@@ -1,9 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\components\HTMLTools;
-use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\helpers\{Html, Url};
 
 /**
  * @var yii\web\View $this
@@ -25,7 +23,6 @@ $layout->addAMDModule('backend/ConsultationCreate');
 $layout->loadDatepicker();
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'cons_breadcrumb'));
-$layout->loadFuelux();
 
 $settings = $site->getSettings();
 
@@ -171,11 +168,12 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 foreach ($site->consultations as $cons) {
                     $templates[$cons->id] = $cons->title;
                 }
-                echo '<div class="settingsTypeTemplate fuelux">';
-                echo HTMLTools::fueluxSelectbox(
+                echo '<div class="settingsTypeTemplate">';
+                echo Html::dropDownList(
                     'newConsultation[template]',
+                    ($createForm->template ? $createForm->template->id : 0),
                     $templates,
-                    ($createForm->template ? $createForm->template->id : 0)
+                    ['class' => 'stdDropdown']
                 );
                 echo '</div>';
                 ?>
@@ -189,7 +187,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 </button>
             </div>
         </div>
-        <div class="settingsTypeWizard siteCreate fuelux"><?php
+        <div class="settingsTypeWizard siteCreate"><?php
             echo $this->render(
                 '../../createsiteWizard/index',
                 ['model' => $wizardModel, 'errors' => [], 'mode' => 'consultation']

@@ -116,7 +116,7 @@ $hasProposedProcedures = $controller->consultation->hasProposedProcedures();
         <h4><?= Yii::t('admin', 'siteacc_admins_add') ?></h4>
         <div class="row">
             <div class="col-md-3 admin-type">
-                <?= HTMLTools::fueluxSelectbox('addType', $loginTypes) ?>
+                <?= Html::dropDownList('addType', '', $loginTypes, ['class' => 'stdDropdown']) ?>
             </div>
             <div class="col-md-4">
                 <input type="text" name="addUsername" value="" id="addUsername" class="form-control"

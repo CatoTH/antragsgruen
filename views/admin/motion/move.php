@@ -22,7 +22,6 @@ $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admi
 $layout->addBreadcrumb(Yii::t('admin', 'bread_motion'), UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]));
 $layout->addBreadcrumb(Yii::t('admin', 'bread_move'));
 
-$layout->loadFuelux();
 $layout->addCSS('css/backend.css');
 
 echo '<h1>' . Yii::t('admin', 'motion_move_title') . '</h1>';
@@ -31,13 +30,13 @@ $myUrl = UrlHelper::createUrl(['admin/motion/move', 'motionId' => $motion->id]);
 echo Html::beginForm($myUrl, 'post', [
     'data-antragsgruen-widget' => 'backend/MoveMotion',
     'data-check-backend'       => UrlHelper::createUrl(['/admin/motion/move-check', 'motionId' => $motion->id]),
-    'class'                    => 'adminMoveForm form-horizontal fuelux',
+    'class'                    => 'adminMoveForm form-horizontal',
 ]);
 
 $targetConsultations = $form->getConsultationTargets();
 
 ?>
-    <div class="content fuelux form-horizontal">
+    <div class="content form-horizontal">
 
         <div class="form-group">
             <label class="col-md-3 control-label"><?= Yii::t('admin', 'motion_move_op') ?>:</label>
@@ -75,13 +74,13 @@ $targetConsultations = $form->getConsultationTargets();
                 <?php
                 $agendaItems = ConsultationAgendaItem::getSortedFromConsultation($consultation);
                 if (count($agendaItems) > 0) {
-                    $options    = ['id' => 'agendaItemId' . $consultation->id];
+                    $options    = ['id' => 'agendaItemId' . $consultation->id, 'class' => 'stdDropdown'];
                     $selections = [];
                     foreach ($agendaItems as $item) {
                         $selections[$item->id] = $item->title;
                     }
 
-                    echo HTMLTools::fueluxSelectbox('agendaItem[' . $consultation->id . ']', $selections, $motion->agendaItemId, $options, true);
+                    echo Html::dropDownList('agendaItem[' . $consultation->id . ']', $motion->agendaItemId, $selections, $options);
                 } else {
                     echo '<em> ' . Yii::t('admin', 'motion_move_agenda_none') . '</em>';
                 }
@@ -99,7 +98,7 @@ $targetConsultations = $form->getConsultationTargets();
                         $selections[$targetCon->id] = $targetCon->title;
                     }
 
-                    echo HTMLTools::fueluxSelectbox('consultation', $selections, '', ['id' => 'consultationId'], true);
+                    echo Html::dropDownList('consultation', '', $selections, ['id' => 'consultationId', 'class' => 'stdDropdown']);
                 } else {
                     echo '<em> ' . Yii::t('admin', 'motion_move_con_none') . '</em>';
                 }
@@ -113,13 +112,13 @@ $targetConsultations = $form->getConsultationTargets();
                 <label class="col-md-3 control-label"><?= Yii::t('admin', 'motion_move_type') ?>:</label>
                 <div class="col-md-9">
                     <?php
-                    $options    = ['id' => 'motionType' . $targetCon->id];
+                    $options    = ['id' => 'motionType' . $targetCon->id, 'class' => 'stdDropdown'];
                     $selections = [];
                     foreach ($form->getCompatibleMotionTypes($targetCon) as $motionType) {
                         $selections[$motionType->id] = $motionType->titlePlural;
                     }
 
-                    echo HTMLTools::fueluxSelectbox('motionType[' . $targetCon->id . ']', $selections, '', $options, true);
+                    echo Html::dropDownList('motionType[' . $targetCon->id . ']', '', $selections, $options);
                     ?>
                 </div>
             </div>

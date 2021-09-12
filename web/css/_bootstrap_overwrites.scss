@@ -258,39 +258,6 @@ legend, .legend {
   }
 }
 
-.fuelux {
-  .pillbox > .pill-group {
-    list-style-type: none;
-  }
-  .selectlist {
-    position: relative;
-    max-width: 100%;
-    .btn.dropdown-toggle {
-      position: relative;
-      max-width: 100%;
-    }
-    &.full-size {
-      width: 100%;
-      button {
-        width: 100% !important;
-      }
-    }
-    .selected-label {
-      font-weight: normal;
-      display: block;
-      text-overflow: ellipsis;
-      min-height: 20px;
-    }
-    li a {
-      min-height: 26px;
-    }
-  }
-}
-
-.fueluxSelectHolder {
-  position: relative; // fuelux
-}
-
 .dropdown-menu {
   li.checkbox {
     label {

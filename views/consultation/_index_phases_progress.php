@@ -93,8 +93,8 @@ if (count($namedPhases) === 1) {
     echo '</div>';
 } elseif (count($namedPhases) > 1) {
     ?>
-    <div class="consultationPhasesWizard fuelux">
-        <div class="wizard">
+    <div class="consultationPhasesWizard">
+        <div class="wizardWidget">
             <ul class="steps">
                 <?php
                 foreach ($namedPhases as $namedPhase) {

@@ -11,7 +11,7 @@ $I->dontSeeCheckboxIsChecked('#singleMotionMode');
 $I->wantTo('enable single-motion-mode');
 $I->checkOption('#singleMotionMode');
 $I->seeElement('#forceMotionRow');
-$I->selectFueluxOption('#forceMotion', 3);
+$I->selectOption('#forceMotion', 3);
 $I->submitForm('#consultationSettingsForm', [], 'save');
 
 $I->seeElement('#forceMotionRow');
@@ -30,7 +30,7 @@ $I->see('A3: Textformatierungen', 'h1');
 $I->wantTo('unpublish the motion');
 $I->loginAsStdAdmin();
 $I->click('#sidebar .adminEdit a');
-$I->executeJS('$("#motionStatus").selectlist("selectByValue", "' . \app\models\db\Motion::STATUS_DRAFT . '");');
+$I->selectOption('#motionStatus', \app\models\db\Motion::STATUS_DRAFT);
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 
@@ -48,7 +48,7 @@ $I->dontSeeElement('#sidebar li');
 $I->wantTo('overhaul the motion');
 $I->loginAsStdAdmin();
 $I->click('#sidebar .adminEdit a');
-$I->executeJS('$("#motionStatus").selectlist("selectByValue", "' . \app\models\db\Motion::STATUS_SUBMITTED_SCREENED . '");');
+$I->selectOption('#motionStatus', \app\models\db\Motion::STATUS_SUBMITTED_SCREENED);
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 

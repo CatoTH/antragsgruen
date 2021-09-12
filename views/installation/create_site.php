@@ -9,22 +9,20 @@ use yii\helpers\Html;
 
 
 $controller  = $this->context;
-$this->title = \yii::t('manager', 'title_install');
+$this->title = Yii::t('manager', 'title_install');
 
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->loadFuelux();
 $layout->robotsNoindex = true;
 $layout->addCSS('css/formwizard.css');
 $layout->addCSS('css/manager.css');
 $layout->addAMDModule('installation/InitSite');
 $layout->loadDatepicker();
 
-echo '<h1>' . \yii::t('manager', 'title_install') . '</h1>';
+echo '<h1>' . Yii::t('manager', 'title_install') . '</h1>';
 
 
-echo '<div class="fuelux">';
 echo Html::beginForm('', 'post', ['class' => 'siteCreate antragsgruenInitForm form-horizontal']);
 
 
@@ -34,4 +32,3 @@ echo $this->render('../createsiteWizard/index', ['model' => $form, 'errors' => [
 
 
 echo Html::endForm();
-echo '</div>';

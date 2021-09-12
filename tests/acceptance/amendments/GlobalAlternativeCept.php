@@ -60,5 +60,5 @@ $I->dontSeeCheckboxIsChecked('.amendment' . AcceptanceTester::FIRST_FREE_AMENDME
 
 $I->gotoAmendment(true, '2', AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->click('#sidebar .mergeIntoMotion a');
-$status = $I->executeJS('return $("#otherAmendmentsStatus1").selectlist("selectedItem").value');
+$status = $I->executeJS('return $("#otherAmendmentsStatus1").val()');
 $I->assertEquals(\app\models\db\Amendment::STATUS_REJECTED, $status);

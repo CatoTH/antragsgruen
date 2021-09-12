@@ -1,4 +1,4 @@
-// Type definitions for fuelUX
+// Type definitions for coresizable
 // Project: http://www.bacubacu.com/colresizable/
 // Definitions by: Tobias Hößl <https://www.hoessl.eu/>
 // Definitions:

@@ -98,7 +98,7 @@ export class DraftSavingEngine {
         });
         $(".form-group.amendmentStatus").each(function () {
             let $input = $(this).find("input[type=text].hidden"),
-                id = $(this).find(".selectlist").attr("id");
+                id = $(this).find(".stdDropdown").attr("id");
             data[id] = $input.val();
             if ($input.val() != $input.data("original")) {
                 foundChanged = true;
@@ -151,9 +151,9 @@ export class DraftSavingEngine {
             }
         });
         $(".form-group.amendmentStatus").each((i, el) => {
-            let id = $(el).find(".selectlist").attr("id");
+            let id = $(el).find(".stdDropdown").attr("id");
             if (typeof(data[id]) != "undefined") {
-                $('#' + id).selectlist('selectByValue', data[id]);
+                $('#' + id).val(data[id]);
             }
         });
 

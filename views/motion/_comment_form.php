@@ -114,7 +114,7 @@ if ($user) {
             <?= Html::checkbox('comment[notifications]', ($notiSettings !== null), ['class' => 'notisActive']) ?>
             <?= Yii::t('comment', 'set_notis') ?>
         </label>
-        <?= HTMLTools::fueluxSelectbox('comment[notificationsettings]', $settingOptions, $setting, [], false, 'xs') ?>
+        <?= Html::dropDownList('comment[notificationsettings]', $setting, $settingOptions, ['class' => 'stdDropdown stdDropdownSmall']) ?>
     </div>
     <?php
 }

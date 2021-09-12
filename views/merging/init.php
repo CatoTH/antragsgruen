@@ -19,7 +19,6 @@ $layout      = $controller->layoutParams;
 
 $this->title           = str_replace('%NAME%', $motion->getTitleWithPrefix(), Yii::t('amend', 'merge_init_title'));
 $layout->robotsNoindex = true;
-$layout->loadFuelux();
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 

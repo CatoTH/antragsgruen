@@ -1,5 +1,3 @@
-/// <reference path="../typings/fuelux/index.d.ts" />
-
 export class ConsultationSettings {
     constructor(private $form: JQuery) {
         this.initUrlPath();

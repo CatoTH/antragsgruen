@@ -19,7 +19,6 @@ $params = Yii::$app->params;
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
-$layout->loadFuelux();
 $layout->loadSelectize();
 
 $this->title = Yii::t('admin', 'con_h1');
@@ -44,7 +43,7 @@ $boolSettingRow = function ($settings, $field, &$handledSettings, $description) 
 <?php
 echo Html::beginForm('', 'post', [
     'id'                       => 'consultationSettingsForm',
-    'class'                    => 'adminForm form-horizontal fuelux',
+    'class'                    => 'adminForm form-horizontal',
     'enctype'                  => 'multipart/form-data',
     'data-antragsgruen-widget' => 'backend/ConsultationSettings',
 ]);
@@ -78,9 +77,9 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         </div>
 
 
-        <div class="form-group">
-            <div class="col-sm-3 control-label"><?= Yii::t('admin', 'con_url_path') ?>:</div>
-            <div class="col-sm-9 urlPathHolder">
+        <div class="adminTwoCols">
+            <div class="leftColumn"><?= Yii::t('admin', 'con_url_path') ?>:</div>
+            <div class="rightColumn urlPathHolder">
                 <div class="shower">
                     <?= Html::encode($consultation->urlPath) ?>
                     [<a href="#"><?= Yii::t('admin', 'con_url_change') ?></a>]
@@ -95,18 +94,17 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="consultationTitle"><?= Yii::t('admin', 'con_title') ?>:</label>
-            <div class="col-sm-9">
+        <div class="adminTwoCols">
+            <label class="leftColumn" for="consultationTitle"><?= Yii::t('admin', 'con_title') ?>:</label>
+            <div class="rightColumn">
                 <input type="text" required name="consultation[title]" value="<?= Html::encode($consultation->title) ?>"
                        class="form-control" id="consultationTitle">
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-sm-3 control-label"
-                   for="consultationTitleShort"><?= Yii::t('admin', 'con_title_short') ?>:</label>
-            <div class="col-sm-9">
+        <div class="adminTwoCols">
+            <label class="leftColumn" for="consultationTitleShort"><?= Yii::t('admin', 'con_title_short') ?>:</label>
+            <div class="rightColumn">
                 <input type="text" required name="consultation[titleShort]"
                        maxlength="<?= Consultation::TITLE_SHORT_MAX_LEN ?>"
                        value="<?= Html::encode($consultation->titleShort) ?>"
@@ -115,33 +113,35 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         </div>
 
         <?php $handledSettings[] = 'lineLength'; ?>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="lineLength"><?= Yii::t('admin', 'con_line_len') ?>
-                :</label>
-            <div class="col-sm-3">
+        <div class="adminTwoCols">
+            <label class="leftColumn" for="lineLength"><?= Yii::t('admin', 'con_line_len') ?>:</label>
+            <div class="rightColumn">
                 <input type="number" required name="settings[lineLength]"
                        value="<?= Html::encode($settings->lineLength) ?>" class="form-control" id="lineLength">
             </div>
         </div>
 
         <?php $handledSettings[] = 'robotsPolicy'; ?>
-        <fieldset class="form-group">
-            <legend class="col-sm-3 control-label">
+        <div class="adminTwoCols">
+            <div class="leftColumn">
                 <?= Yii::t('admin', 'con_robots') ?>:
                 <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_robots_hint')) ?>
-            </legend>
-            <div class="col-sm-9">
-                <?php
-                foreach (\app\models\settings\Consultation::getRobotPolicies() as $policy => $policyName) {
-                    echo '<label>';
-                    echo Html::radio('settings[robotsPolicy]', ($settings->robotsPolicy == $policy), [
-                        'value' => $policy,
-                    ]);
-                    echo ' ' . Html::encode($policyName) . '</label><br>';
-                }
-                ?>
             </div>
-        </fieldset>
+            <div class="rightColumn">
+                <fieldset>
+                    <legend class="hidden"><?= Yii::t('admin', 'con_robots') ?></legend>
+                    <?php
+                    foreach (\app\models\settings\Consultation::getRobotPolicies() as $policy => $policyName) {
+                        echo '<label>';
+                        echo Html::radio('settings[robotsPolicy]', ($settings->robotsPolicy == $policy), [
+                            'value' => $policy,
+                        ]);
+                        echo ' ' . Html::encode($policyName) . '</label><br>';
+                    }
+                    ?>
+                </fieldset>
+            </div>
+        </div>
 
     </div>
     <h2 class="green"><?= Yii::t('admin', 'con_title_motions') ?></h2>
@@ -168,18 +168,18 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             }
         }
         ?>
-        <fieldset class="form-group" id="forceMotionRow">
-            <legend class="col-sm-3 control-label"><?= Yii::t('admin', 'con_force_motion') ?>:</legend>
-            <div class="col-sm-9"><?php
-                echo HTMLTools::fueluxSelectbox(
+        <div class="adminTwoCols" id="forceMotionRow">
+            <label class="leftColumn" for="forceMotion"><?= Yii::t('admin', 'con_force_motion') ?>:</label>
+            <div class="rightColumn">
+                <?= Html::dropDownList(
                     'settings[forceMotion]',
-                    $motions,
                     $settings->forceMotion,
-                    ['id' => 'forceMotion'],
-                    true
+                    $motions,
+                    ['id' => 'forceMotion', 'class' => 'stdDropdown']
                 );
-                ?></div>
-        </fieldset>
+                ?>
+            </div>
+        </div>
 
 
         <div><label>
@@ -219,9 +219,9 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
 
         $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
         ?>
-        <div class="form-group">
-            <div class="col-sm-3 control-label"><?= Yii::t('admin', 'con_topics') ?>:</div>
-            <div class="col-sm-9">
+        <div class="adminTwoCols">
+            <div class="leftColumn"><?= Yii::t('admin', 'con_topics') ?>:</div>
+            <div class="rightColumn">
                 <div class="selectize-wrapper" id="tagsList">
                     <select class="tags" name="tags[]" multiple="multiple">
                         <?php
@@ -262,12 +262,12 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $organisations = [];
         }
         ?>
-        <div class="form-group">
-            <div class="col-sm-3 control-label">
+        <div class="adminTwoCols">
+            <div class="leftColumn">
                 <?= Yii::t('admin', 'con_organisations') ?>:
                 <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_organisations_hint')) ?>
             </div>
-            <div class="col-sm-9">
+            <div class="rightColumn">
                 <div class="selectize-wrapper" id="organisationList">
                     <select class="tags" name="organisations[]" multiple="multiple">
                         <?php
@@ -284,20 +284,20 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
     <h2 class="green"><?= Yii::t('admin', 'con_title_amendments') ?></h2>
     <div class="content">
 
-        <fieldset class="form-group">
-            <legend class="col-sm-3 control-label">
+        <div class="adminTwoCols">
+            <div class="leftColumn">
                 <?= Yii::t('admin', 'con_amend_number') ?>:
-            </legend>
-            <div class="col-sm-9"><?php
-                echo HTMLTools::fueluxSelectbox(
+            </div>
+            <div class="rightColumn">
+                <?= Html::dropDownList(
                     'consultation[amendmentNumbering]',
-                    \app\models\amendmentNumbering\IAmendmentNumbering::getNames(),
                     $consultation->amendmentNumbering,
-                    ['id' => 'amendmentNumbering'],
-                    true
+                    \app\models\amendmentNumbering\IAmendmentNumbering::getNames(),
+                    ['id' => 'amendmentNumbering', 'class' => 'stdDropdown']
                 );
-                ?></div>
-        </fieldset>
+                ?>
+            </div>
+        </div>
 
 
         <div><label>
@@ -368,9 +368,9 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
     </div>
     <h2 class="green"><?= Yii::t('admin', 'con_title_email') ?></h2>
     <div class="content">
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="adminEmail"><?= Yii::t('admin', 'con_email_admins') ?>:</label>
-            <div class="col-sm-9">
+        <div class="adminTwoCols">
+            <label class="leftColumn" for="adminEmail"><?= Yii::t('admin', 'con_email_admins') ?>:</label>
+            <div class="rightColumn">
                 <input type="text" name="consultation[adminEmail]"
                        value="<?= Html::encode($consultation->adminEmail) ?>"
                        class="form-control" id="adminEmail">
@@ -381,11 +381,11 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         $handledSettings[] = 'emailFromName';
         $placeholder       = str_replace('%NAME%', $params->mailFromName, Yii::t('admin', 'con_email_from_place'));
         ?>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="emailFromName">
+        <div class="adminTwoCols">
+            <label class="leftColumn" for="emailFromName">
                 <?= Yii::t('admin', 'con_email_from') ?>:
             </label>
-            <div class="col-sm-9">
+            <div class="rightColumn">
                 <input type="text" name="settings[emailFromName]" class="form-control" id="emailFromName"
                        placeholder="<?= Html::encode($placeholder) ?>"
                        value="<?= Html::encode($settings->emailFromName) ?>">
@@ -393,9 +393,9 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         </div>
 
         <?php $handledSettings[] = 'emailReplyTo'; ?>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="emailReplyTo">Reply-To:</label>
-            <div class="col-sm-9">
+        <div class="adminTwoCols">
+            <label class="leftColumn" for="emailReplyTo">Reply-To:</label>
+            <div class="rightColumn">
                 <input type="email" name="settings[emailReplyTo]" class="form-control" id="emailReplyTo"
                        placeholder="<?= Yii::t('admin', 'con_email_replyto_place') ?>"
                        value="<?= Html::encode($settings->emailReplyTo) ?>">

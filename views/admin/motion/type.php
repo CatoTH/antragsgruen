@@ -21,7 +21,6 @@ $layout->addBreadcrumb(Yii::t('admin', 'bread_types'));
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
-$layout->loadFuelux();
 $layout->addAMDModule('backend/MotionTypeEdit');
 
 $myUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
@@ -46,7 +45,7 @@ if ($supportCollPolicyWarning) {
     <?php
 }
 
-$formClasses = ['adminTypeForm', 'form-horizontal', 'fuelux'];
+$formClasses = ['adminTypeForm', 'form-horizontal'];
 if ($motionType->amendmentsOnly) {
     $formClasses[] = 'amendmentsOnly';
 }
@@ -69,28 +68,26 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_pdf_layout') ?></h2>
 
-    <div class="form-group">
-        <label class="col-sm-4 control-label" for="pdfIntroduction">
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="pdfIntroduction">
             <?= Yii::t('admin', 'con_pdf_intro') ?>:
         </label>
-        <div class="col-sm-8">
+        <div class="rightColumn">
         <textarea name="type[pdfIntroduction]" class="form-control" id="pdfIntroduction"
                   placeholder="<?= Html::encode(Yii::t('admin', 'con_pdf_intro_place')) ?>"
         ><?= $motionType->getSettingsObj()->pdfIntroduction ?></textarea>
         </div>
     </div>
 
-    <div class="form-group" id="typeMaxPdfSupportersRow">
-        <label class="col-md-4 control-label" for="typeMaxPdfSupporters">
-            <?= Yii::t('admin', 'motion_type_supp_max_pdf') ?>
+    <div class="adminTwoCols" id="typeMaxPdfSupportersRow">
+        <label class="leftColumn" for="typeMaxPdfSupporters">
+            <?= Yii::t('admin', 'motion_type_supp_max_pdf') ?>:
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_max_pdfd')) ?>
         </label>
-        <div class="col-md-2">
+        <div class="rightColumn">
             <input type="hidden" name="initiatorSettingFields[]" value="maxPdfSupporters">
             <input type="number" name="initiatorSettings[maxPdfSupporters]" class="form-control" id="typeMaxPdfSupporters"
                    value="<?= Html::encode($supportSett->maxPdfSupporters !== null ? $supportSett->maxPdfSupporters : '') ?>">
-        </div>
-        <div class="col-m-1">
-            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_max_pdfd')) ?>
         </div>
     </div>
 

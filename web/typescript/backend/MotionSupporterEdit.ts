@@ -49,10 +49,10 @@ export class MotionSupporterEdit {
                     $newEl.find('input.supporterOrga').val(orga.trim());
                 }
                 if ($newEl.find('.colGender').length > 0 && parts.length > 0) {
-                    $newEl.find('.colGender').first().children().selectlist("selectByValue", parts[0]);
+                    $newEl.find('.colGender').find('select').val(parts[0]);
                 }
             }
-            $fullTextHolder.find('textarea').select().focus();
+            $fullTextHolder.find('textarea').trigger('select').trigger('focus');
             $firstAffectedRow.scrollintoview();
         });
 
@@ -70,8 +70,7 @@ export class MotionSupporterEdit {
                         parts.push(($el.find(".supporterOrga").val() as string).replace(/,/, ' ').replace(/;/, ' '));
                     }
                     if ($el.find(".colGender").length) {
-                        let gender: any = $el.find(".colGender").first().children();
-                        parts.push(gender.selectlist("getValue").value);
+                        parts.push($el.find(".colGender select").val());
                     }
                     supporters.push(parts.join(','));
                 });

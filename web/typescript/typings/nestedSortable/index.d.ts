@@ -1,4 +1,4 @@
-// Type definitions for fuelUX
+// Type definitions for nestedSortable
 // Project: http://mjsarfatti.com/sandbox/nestedSortable/
 // Definitions by: Tobias Hößl <https://www.hoessl.eu/>
 // Definitions:

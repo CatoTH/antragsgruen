@@ -14,7 +14,6 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->loadFuelux();
 $layout->loadCKEditor();
 $layout->addAMDModule('frontend/MergeSingleAmendment');
 $layout->addCSS('css/formwizard.css');
@@ -40,10 +39,10 @@ $needsCollisionCheck = (count($otherAmendments) > 0);
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
-echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuelux']);
+echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm']);
 
 ?>
-    <div id="MergeSingleWizard" class="wizard">
+    <div id="MergeSingleWizard" class="wizardWidget">
         <ul class="steps">
             <li data-target="#step1" class="goto_step1">
                 <?= Yii::t('amend', 'merge1_step1_title') ?><span class="chevron"></span>

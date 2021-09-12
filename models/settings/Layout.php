@@ -276,12 +276,6 @@ class Layout
         $this->addJS('js/ckeditor/ckeditor.js');
     }
 
-    public function loadFuelux(): void
-    {
-        $this->addJS('npm/fuelux.min.js');
-        $this->addCSS('npm/fuelux.min.css');
-    }
-
     public function loadBootstrapToggle(): void
     {
         $this->addJS('npm/bootstrap-toggle.min.js');

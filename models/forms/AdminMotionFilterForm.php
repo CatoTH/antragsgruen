@@ -630,7 +630,7 @@ class AdminMotionFilterForm extends Model
             $statusNames             = $this->consultation->getStatuses()->getStatusNames();
             $statuses[$this->status] = Html::encode($statusNames[$this->status] . ' (0)');
         }
-        $str .= HTMLTools::fueluxSelectbox('Search[status]', $statuses, $this->status, [], true);
+        $str .= Html::dropDownList('Search[status]', $this->status, $statuses, ['class' => 'stdDropdown']);
         $str .= '</label>';
 
 
@@ -649,7 +649,7 @@ class AdminMotionFilterForm extends Model
             $statusNames             = Motion::getProposedStatusNames();
             $statuses[$this->status] = Html::encode($statusNames[$this->proposalStatus] . ' (0)');
         }
-        $str .= HTMLTools::fueluxSelectbox('Search[proposalStatus]', $statuses, $this->proposalStatus, [], true);
+        $str .= Html::dropDownList('Search[proposalStatus]', $this->proposalStatus, $statuses, ['class' => 'stdDropdown']);
         $str .= '</label>';
 
 
@@ -663,7 +663,7 @@ class AdminMotionFilterForm extends Model
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
             }
-            $str .= HTMLTools::fueluxSelectbox('Search[tag]', $tags, $this->tag, ['id' => 'filterSelectTags'], true);
+            $str .= Html::dropDownList('Search[tag]', $this->tag, $tags, ['id' => 'filterSelectTags', 'class' => 'stdDropdown']);
             $str .= '</label>';
         }
 
@@ -678,7 +678,7 @@ class AdminMotionFilterForm extends Model
             foreach ($agendaItemList as $itemId => $itemName) {
                 $items[$itemId] = $itemName;
             }
-            $str .= HTMLTools::fueluxSelectbox('Search[agendaItem]', $items, $this->agendaItem, [], true);
+            $str .= Html::dropDownList('Search[agendaItem]', $this->agendaItem, $items, ['class' => 'stdDropdown']);
             $str .= '</label>';
         }
 
@@ -694,7 +694,7 @@ class AdminMotionFilterForm extends Model
                 foreach ($allResponsibilities as $itemId => $itemName) {
                     $items[$itemId] = $itemName;
                 }
-                $str .= HTMLTools::fueluxSelectbox('Search[responsibility]', $items, $this->responsibility, [], true);
+                $str .= Html::dropDownList('Search[responsibility]', $this->responsibility, $items, ['class' => 'stdDropdown']);
                 $str .= '</label>';
             }
         }

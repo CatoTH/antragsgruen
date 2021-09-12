@@ -121,7 +121,10 @@ button.link {
     transition: border ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
     outline: none;
   }
-  &.fullsize {
-    width: 100%;
+  &.stdDropdownSmall {
+    width: auto;
+    display: inline;
+    font-size: 0.8em;
+    padding: 3px 18px 3px 3px;
   }
 }

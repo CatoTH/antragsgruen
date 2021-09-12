@@ -25,7 +25,6 @@ if ($consultation->getSettings()->adminListFilerByMotion) {
 }
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'));
 $layout->loadTypeahead();
-$layout->loadFuelux();
 $layout->addJS('js/colResizable-1.6.min.js');
 $layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
@@ -61,7 +60,7 @@ echo $this->render('_list_all_export', [
     'hasResponsibilities'   => $hasResponsibilities,
 ]);
 
-echo '<div class="content fuelux" data-antragsgruen-widget="backend/MotionList">';
+echo '<div class="content" data-antragsgruen-widget="backend/MotionList">';
 
 echo $controller->showErrors();
 

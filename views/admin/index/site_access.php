@@ -21,7 +21,6 @@ $this->title = Yii::t('admin', 'siteacc_title');
 $layout->addCSS('css/backend.css');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'siteacc_bread'));
-$layout->loadFuelux();
 $layout->addAMDModule('backend/SiteAccess');
 
 $settings    = $site->getSettings();

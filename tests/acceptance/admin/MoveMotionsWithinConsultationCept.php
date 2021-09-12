@@ -41,7 +41,7 @@ $mars = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1;
 $venus = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 2;
 
 $I->gotoMotionList()->gotoMotionEdit(118);
-$I->selectFueluxOption('#agendaItemId', $earth);
+$I->selectOption('#agendaItemId', $earth);
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 $I->gotoConsultationHome();
@@ -56,7 +56,7 @@ $I->checkOption("//input[@name='operation'][@value='move']");
 $I->seeCheckboxIsChecked("//input[@name='operation'][@value='move']");
 $I->checkOption("//input[@name='target'][@value='agenda']");
 $I->seeElement('.moveToAgendaItem');
-$I->selectFueluxOption('#agendaItemId1', $mars);
+$I->selectOption('#agendaItemId1', $mars);
 $I->submitForm('.adminMoveForm', [], 'move');
 
 $I->see('A8: Testing proposed changes', 'h1');
@@ -75,7 +75,7 @@ $I->fillField('#motionTitlePrefix', 'A8M');
 $I->checkOption("//input[@name='operation'][@value='copy']");
 $I->checkOption("//input[@name='target'][@value='agenda']");
 $I->seeElement('.moveToAgendaItem');
-$I->selectFueluxOption('#agendaItemId1', $venus);
+$I->selectOption('#agendaItemId1', $venus);
 $I->submitForm('.adminMoveForm', [], 'move');
 
 $I->see('A8M: Testing proposed changes', 'h1');

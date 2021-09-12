@@ -30,7 +30,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
     <?php
     if ($iAmAdmin) {
         ?>
-        <section class="proposedProcedureToolbar toolbarBelowTitle fuelux">
+        <section class="proposedProcedureToolbar toolbarBelowTitle">
             <div class="left">
                 <div class="currentDate">
                     <?= Yii::t('con', 'proposal_updated') ?>:

@@ -857,69 +857,6 @@ class HTMLTools
         return $str;
     }
 
-    /**
-     * @param string $formName
-     * @param array $options
-     * @param string $selected
-     * @param array $attributes
-     * @param bool $fullSize
-     * @param string|null $btnSize [lg, sm, xs]
-     * @return string
-     */
-    public static function fueluxSelectbox($formName, $options, $selected = '', $attributes = [], $fullSize = false, $btnSize = null, bool $autoInit = true)
-    {
-        $btnSize = ($btnSize ? ' btn-' . $btnSize : '');
-
-        $classes = 'btn-group selectlist';
-        if ($fullSize) {
-            $classes .= ' full-size';
-        }
-        if (isset($attributes['class'])) {
-            $classes .= ' ' . $attributes['class'];
-            unset($attributes['class']);
-        }
-        $str = '<div class="' . $classes . '" data-resize="auto"';
-        if ($autoInit) {
-            $str .= ' data-initialize="selectlist"';
-        }
-        foreach ($attributes as $attrName => $attrVal) {
-            $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
-        }
-        $str .= '>
-  <button class="btn btn-default ' . $btnSize . ' dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true">
-    <span class="selected-label"></span>
-    <span class="caret"></span>
-    <span class="sr-only">' . \Yii::t('base', 'toggle_dropdown') . '</span>
-  </button>
-  <ul class="dropdown-menu">';
-        foreach ($options as $value => $name) {
-            if (is_array($name)) {
-                $str .= '<li data-value="' . Html::encode($value) . '"';
-                if ($value == $selected) {
-                    $str .= ' data-selected="true" aria-checked="true"';
-                } else {
-                    $str .= ' aria-checked="false"';
-                }
-                if (isset($name['attributes'])) {
-                    foreach ($name['attributes'] as $attrName => $attrVal) {
-                        $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
-                    }
-                }
-                $str .= '><a href="#">' . Html::encode($name['title']) . '</a></li>';
-            } else {
-                $str .= '<li data-value="' . Html::encode($value) . '" ';
-                if ($value == $selected) {
-                    $str .= ' data-selected="true"';
-                }
-                $str .= '><a href="#">' . Html::encode($name) . '</a></li>';
-            }
-        }
-        $str .= '</ul>
-  <input class="hidden hidden-field" name="' . $formName . '" type="hidden" value="' . Html::encode($selected) . '">
-</div>';
-        return $str;
-    }
-
     public static function amendmentDiffTooltip(Amendment $amendment, string $direction = '', string $tooltipExtraClass = ''): string
     {
         // $direction values: [top, bottom, right, left]

@@ -33,11 +33,11 @@ use yii\helpers\Html;
             <label for="amendmentStatus"><?= Yii::t('amend', 'merge1_amend_status') ?></label>
             <div class="fueluxSelectHolder">
                 <?php
-                echo HTMLTools::fueluxSelectbox(
+                echo Html::dropDownList(
                     'amendmentStatus',
-                    $amendment->getMyConsultation()->getStatuses()->getStatusNames(),
                     Amendment::STATUS_ACCEPTED,
-                    ['id' => 'amendmentStatus']
+                    $amendment->getMyConsultation()->getStatuses()->getStatusNames(),
+                    ['id' => 'amendmentStatus', 'class' => 'stdDropdown']
                 );
                 ?>
             </div>
@@ -65,11 +65,11 @@ use yii\helpers\Html;
                 $statuses[$otherAmend->status] = Yii::t('amend', 'merge1_status_unchanged') . ': ' .
                     $statusesAll[$amendment->status];
                 $statusPre = ($amendment->globalAlternative ? Amendment::STATUS_REJECTED : $otherAmend->status);
-                echo HTMLTools::fueluxSelectbox(
+                echo Html::dropDownList(
                     'otherAmendmentsStatus[' . $otherAmend->id . ']',
-                    $statuses,
                     $statusPre,
-                    ['data-amendment-id' => $otherAmend->id, 'id' => 'otherAmendmentsStatus' . $otherAmend->id]
+                    $statuses,
+                    ['data-amendment-id' => $otherAmend->id, 'id' => 'otherAmendmentsStatus' . $otherAmend->id, 'class' => 'stdDropdown']
                 );
                 echo '</div></div></div>';
             }

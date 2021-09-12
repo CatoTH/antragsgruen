@@ -22,7 +22,6 @@ $this->title        = Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
 $layout->loadCKEditor();
-$layout->loadFuelux();
 $layout->loadSelectize();
 
 $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());

@@ -16,7 +16,7 @@ $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
-$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
+$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
 $I->fillField('#typeMinSupporters', 0);
 $I->uncheckOption('#typeHasOrga');
 

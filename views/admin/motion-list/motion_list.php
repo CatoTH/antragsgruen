@@ -27,7 +27,6 @@ foreach ($controller->consultation->motionTypes as $motionType) {
 $this->title = Yii::t('admin', 'list_head_title');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'));
 $layout->loadTypeahead();
-$layout->loadFuelux();
 $layout->addJS('js/colResizable-1.6.min.js');
 $layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
@@ -38,7 +37,7 @@ echo $this->render('_list_all_export', [
     'hasResponsibilities'   => $hasResponsibilities,
 ]);
 
-echo '<div class="content fuelux" data-antragsgruen-widget="backend/MotionList">';
+echo '<div class="content" data-antragsgruen-widget="backend/MotionList">';
 
 $route   = ['/admin/motion-list/index'];
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';

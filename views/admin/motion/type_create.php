@@ -15,21 +15,20 @@ $layout     = $controller->layoutParams;
 $this->title = Yii::t('admin', 'motion_type_create_head');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'bread_types'));
-$layout->loadFuelux();
 $layout->addCSS('css/backend.css');
 
 echo '<h1>' . $this->title . '</h1>';
 echo Html::beginForm('', 'post', [
-    'class'                    => 'motionTypeCreateForm content form-horizontal fuelux',
+    'class'                    => 'motionTypeCreateForm content form-horizontal',
     'data-antragsgruen-widget' => 'backend/MotionTypeCreate',
 ]);
 
 ?>
-<div class="form-group">
-    <label class="col-md-3 control-label">
+<div class="adminTwoCols">
+    <label class="leftColumn">
         <?= Yii::t('admin', 'motion_type_templ') ?>:
     </label>
-    <div class="col-md-9 typePresetList">
+    <div class="rightColumn typePresetList">
         <?php
         foreach ($controller->consultation->motionTypes as $motionType) {
             ?>
@@ -92,11 +91,11 @@ echo Html::beginForm('', 'post', [
 </div>
 
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="typeTitleSingular">
-        <?= Yii::t('admin', 'motion_type_singular') ?>
+<div class="adminTwoCols">
+    <label class="leftColumn" for="typeTitleSingular">
+        <?= Yii::t('admin', 'motion_type_singular') ?>:
     </label>
-    <div class="col-md-9"><?php
+    <div class="rightColumn"><?php
         $options = [
             'class'    => 'form-control',
             'id'       => 'typeTitleSingular',
@@ -107,11 +106,11 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="typeTitlePlural">
-        <?= Yii::t('admin', 'motion_type_plural') ?>
+<div class="adminTwoCols">
+    <label class="leftColumn" for="typeTitlePlural">
+        <?= Yii::t('admin', 'motion_type_plural') ?>:
     </label>
-    <div class="col-md-9"><?php
+    <div class="rightColumn"><?php
         $options = [
             'class'    => 'form-control',
             'id'       => 'typeTitlePlural',
@@ -122,11 +121,11 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="typeCreateTitle">
-        <?= Yii::t('admin', 'motion_type_create_title') ?>
+<div class="adminTwoCols">
+    <label class="leftColumn" for="typeCreateTitle">
+        <?= Yii::t('admin', 'motion_type_create_title') ?>:
     </label>
-    <div class="col-md-9"><?php
+    <div class="rightColumn"><?php
         $options = [
             'class'    => 'form-control',
             'id'       => 'typeCreateTitle',
@@ -137,11 +136,11 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="typeMotionPrefix">
-        <?= Yii::t('admin', 'motion_type_title_prefix') ?>
+<div class="adminTwoCols">
+    <label class="leftColumn" for="typeMotionPrefix">
+        <?= Yii::t('admin', 'motion_type_title_prefix') ?>:
     </label>
-    <div class="col-md-2">
+    <div class="rightColumn">
         <?php
         $options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
         echo Html::textInput('type[motionPrefix]', '', $options);
@@ -149,11 +148,11 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label">
-        <?= Yii::t('admin', 'motion_type_pdf_layout') ?>
+<div class="adminTwoCols">
+    <label class="leftColumn">
+        <?= Yii::t('admin', 'motion_type_pdf_layout') ?>:
     </label>
-    <div class="col-md-9 thumbnailedLayoutSelector">
+    <div class="rightColumn thumbnailedLayoutSelector">
         <?php
         $pdfTemplates = IPDFLayout::getAvailableClassesWithLatex();
         $hasTex = isset($pdfTemplates[1]);

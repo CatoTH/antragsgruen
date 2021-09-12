@@ -21,18 +21,17 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <!-- Policy for creating motions -->
 
-<div class="form-group hideForAmendmentsOnly">
-    <label class="col-md-4 control-label" for="typePolicyMotions">
-        <?= Yii::t('admin', 'motion_type_perm_motion') ?>
+<div class="adminTwoCols hideForAmendmentsOnly">
+    <label class="leftColumn" for="typePolicyMotions">
+        <?= Yii::t('admin', 'motion_type_perm_motion') ?>:
     </label>
-    <div class="col-md-8">
+    <div class="rightColumn">
         <?php
-        echo HTMLTools::fueluxSelectbox(
+        echo Html::dropDownList(
             'type[policyMotions]',
-            $policies,
             $motionType->policyMotions,
-            ['id' => 'typePolicyMotions'],
-            true
+            $policies,
+            ['id' => 'typePolicyMotions', 'class' => 'stdDropdown']
         );
         ?>
     </div>
@@ -41,18 +40,17 @@ foreach (IPolicy::getPolicies() as $policy) {
 <!--Support policy for motions -->
 
 
-<div class="form-group hideForAmendmentsOnly">
-    <label class="col-md-4 control-label" for="typePolicySupportMotions">
-        <?= Yii::t('admin', 'motion_type_perm_supp_mot') ?>
+<div class="adminTwoCols hideForAmendmentsOnly">
+    <label class="leftColumn" for="typePolicySupportMotions">
+        <?= Yii::t('admin', 'motion_type_perm_supp_mot') ?>:
     </label>
-    <div class="col-md-8">
+    <div class="rightColumn">
         <?php
-        echo HTMLTools::fueluxSelectbox(
+        echo Html::dropDownList(
             'type[policySupportMotions]',
-            $policies,
             $motionType->policySupportMotions,
-            ['id' => 'typePolicySupportMotions'],
-            true
+            $policies,
+            ['id' => 'typePolicySupportMotions', 'class' => 'stdDropdown']
         );
         ?>
     </div>
@@ -61,10 +59,11 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <!--Support types for motions (Likes, Dislikes, Official support) -->
 
-<div class="form-group hideForAmendmentsOnly">
-    <fieldset class="col-md-8 col-md-offset-4 contactDetails motionSupportPolicy">
-        <legend class="sr-only"><?= Yii::t('admin', 'motion_type_like_title') ?></legend>
-        <div class="form-control">
+<div class="adminTwoCols hideForAmendmentsOnly">
+    <div class="leftColumn"></div>
+    <div class="rightColumn">
+        <fieldset class="contactDetails motionSupportPolicy">
+            <legend class="sr-only"><?= Yii::t('admin', 'motion_type_like_title') ?></legend>
             <?php
             $checkboxes = [
                 [SupportBase::LIKEDISLIKE_LIKE, Yii::t('admin', 'motion_type_like_like'), 'motionLike'],
@@ -90,30 +89,30 @@ foreach (IPolicy::getPolicies() as $policy) {
                 echo '</label>';
             }
             ?>
-        </div>
-    </fieldset>
+        </fieldset>
+    </div>
 </div>
 
 
 <!-- Policy for creating amendments -->
 
-<div class="form-group">
-    <label class="col-md-4 control-label" for="typePolicyAmendments">
-        <?= Yii::t('admin', 'motion_type_perm_amend') ?>
+<div class="adminTwoCols">
+    <label class="leftColumn" for="typePolicyAmendments">
+        <?= Yii::t('admin', 'motion_type_perm_amend') ?>:
     </label>
-    <div class="col-md-8">
+    <div class="rightColumn">
         <?php
-        echo HTMLTools::fueluxSelectbox(
+        echo Html::dropDownList(
             'type[policyAmendments]',
-            $policies,
             $motionType->policyAmendments,
-            ['id' => 'typePolicyAmendments'],
-            true
+            $policies,
+            ['id' => 'typePolicyAmendments', 'class' => 'stdDropdown']
         ) ?>
     </div>
 </div>
-<div class="form-group checkboxNoPadding">
-    <div class="col-md-8 col-md-offset-4">
+<div class="adminTwoCols checkboxNoPadding">
+    <div class="leftColumn"></div>
+    <div class="rightColumn">
         <?php
         echo HTMLTools::labeledCheckbox(
             'type[amendSinglePara]',
@@ -128,18 +127,17 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <!-- Support policy for amendments -->
 
-<div class="form-group">
-    <label class="col-md-4 control-label" for="typePolicySupportAmendments">
-        <?= Yii::t('admin', 'motion_type_perm_supp_amend') ?>
+<div class="adminTwoCols">
+    <label class="leftColumn" for="typePolicySupportAmendments">
+        <?= Yii::t('admin', 'motion_type_perm_supp_amend') ?>:
     </label>
-    <div class="col-md-8">
+    <div class="rightColumn">
         <?php
-        echo HTMLTools::fueluxSelectbox(
+        echo Html::dropDownList(
             'type[policySupportAmendments]',
-            $policies,
             $motionType->policySupportAmendments,
-            ['id' => 'typePolicySupportAmendments'],
-            true
+            $policies,
+            ['id' => 'typePolicySupportAmendments', 'class' => 'stdDropdown']
         );
         ?>
     </div>
@@ -148,10 +146,11 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <!-- Support types for amendments (Likes, Dislikes, Official support) -->
 
-<div class="form-group">
-    <fieldset class="col-md-8 col-md-offset-4 contactDetails amendmentSupportPolicy">
-        <legend class="sr-only"><?= Yii::t('admin', 'motion_type_like_title') ?></legend>
-        <div class="form-control">
+<div class="adminTwoCols">
+    <div class="leftColumn"></div>
+    <div class="rightColumn">
+        <fieldset class="contactDetails amendmentSupportPolicy">
+            <legend class="sr-only"><?= Yii::t('admin', 'motion_type_like_title') ?></legend>
             <?php
             $checkboxes = [
                 [SupportBase::LIKEDISLIKE_LIKE, Yii::t('admin', 'motion_type_like_like'), 'amendmentLike'],
@@ -178,73 +177,75 @@ foreach (IPolicy::getPolicies() as $policy) {
                 echo '</label>';
             }
             ?>
-        </div>
-    </fieldset>
+        </fieldset>
+    </div>
 </div>
 
 
 <!--Policy for creating comments -->
 
-<div class="form-group">
-    <label class="col-md-4 control-label" for="typePolicyComments">
-        <?= Yii::t('admin', 'motion_type_perm_comment') ?>
+<div class="adminTwoCols">
+    <label class="leftColumn" for="typePolicyComments">
+        <?= Yii::t('admin', 'motion_type_perm_comment') ?>:
     </label>
-    <div class="col-md-8">
+    <div class="rightColumn">
         <?php
-        echo HTMLTools::fueluxSelectbox(
+        echo Html::dropDownList(
             'type[policyComments]',
-            $policies,
             $motionType->policyComments,
-            ['id' => 'typePolicyComments'],
-            true
+            $policies,
+            ['id' => 'typePolicyComments', 'class' => 'stdDropdown']
         ); ?>
     </div>
 </div>
 
 <!-- Are initiators allowed to merge amendments into their motions -->
 
-<fieldset class="form-group initiatorsCanMergeRow hideForAmendmentsOnly">
-    <legend class="col-md-4 control-label">
-        <?= Yii::t('admin', 'motion_type_initiators_merge') ?>
-    </legend>
-    <div class="col-md-8">
-        <label><?php
-            echo Html::radio(
-                'type[initiatorsCanMergeAmendments]',
-                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NEVER),
-                [
-                    'value' => ConsultationMotionType::INITIATORS_MERGE_NEVER,
-                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NEVER,
-                ]
-            );
-            ?> <?= Yii::t('admin', 'motion_type_initiators_merge_no') ?>
-        </label>
-        <label><?php
-            echo Html::radio(
-                'type[initiatorsCanMergeAmendments]',
-                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION),
-                [
-                    'value' => ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
-                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
-                ]
-            );
-            ?> <?= Yii::t('admin', 'motion_type_initiators_merge_nocoll') ?>
-            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_initiators_merge_nocoll_hint')) ?>
-        </label>
-        <label><?php
-            echo Html::radio(
-                'type[initiatorsCanMergeAmendments]',
-                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION),
-                [
-                    'value' => ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
-                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
-                ]
-            )
-            ?> <?= Yii::t('admin', 'motion_type_initiators_merge_yes') ?>
-            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_initiators_merge_yes_hint')) ?>
-        </label>
+<div class="adminTwoCols initiatorsCanMergeRow hideForAmendmentsOnly">
+    <div class="leftColumn">
+        <?= Yii::t('admin', 'motion_type_initiators_merge') ?>:
     </div>
-</fieldset>
+    <div class="rightColumn">
+        <fieldset>
+            <legend class="hidden"><?= Yii::t('admin', 'motion_type_initiators_merge') ?></legend>
+            <label><?php
+                echo Html::radio(
+                    'type[initiatorsCanMergeAmendments]',
+                    ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NEVER),
+                    [
+                        'value' => ConsultationMotionType::INITIATORS_MERGE_NEVER,
+                        'id' => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NEVER,
+                    ]
+                );
+                ?> <?= Yii::t('admin', 'motion_type_initiators_merge_no') ?>
+            </label>
+            <label><?php
+                echo Html::radio(
+                    'type[initiatorsCanMergeAmendments]',
+                    ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION),
+                    [
+                        'value' => ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
+                        'id' => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
+                    ]
+                );
+                ?> <?= Yii::t('admin', 'motion_type_initiators_merge_nocoll') ?>
+                <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_initiators_merge_nocoll_hint')) ?>
+            </label>
+            <label><?php
+                echo Html::radio(
+                    'type[initiatorsCanMergeAmendments]',
+                    ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION),
+                    [
+                        'value' => ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
+                        'id' => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
+                    ]
+                )
+                ?> <?= Yii::t('admin', 'motion_type_initiators_merge_yes') ?>
+                <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_initiators_merge_yes_hint')) ?>
+            </label>
+        </fieldset>
+    </div>
+</div>
 
 <?php
 ?>

@@ -1,6 +1,5 @@
 <?php
 
-use app\components\HTMLTools;
 use yii\helpers\Html;
 
 /**
@@ -13,14 +12,13 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\ManagerController $controller */
 $controller  = $this->context;
-$this->title = yii::t('manager', 'title_install');
+$this->title = Yii::t('manager', 'title_install');
 $layout      = $controller->layoutParams;
-$layout->loadFuelux();
 
 
-echo '<h1>' . yii::t('manager', 'title_install') . '</h1>';
+echo '<h1>' . Yii::t('manager', 'title_install') . '</h1>';
 echo Html::beginForm('', 'post', [
-    'class'                    => 'siteConfigForm form-horizontal fuelux',
+    'class'                    => 'siteConfigForm form-horizontal',
     'data-antragsgruen-widget' => 'manager/SiteConfig',
 ]);
 
@@ -30,7 +28,7 @@ echo $controller->showErrors();
 
 if (!$editable) {
     echo '<div class="alert alert-danger">';
-    echo yii::t('manager', 'err_settings_ro');
+    echo Yii::t('manager', 'err_settings_ro');
     echo '<br><br><pre>';
     echo Html::encode($makeEditabeCommand);
     echo '</pre>';
@@ -38,16 +36,16 @@ if (!$editable) {
 }
 
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="baseLanguage">' . yii::t('manager', 'language') . ':</label>
+    <label class="col-sm-4 control-label" for="baseLanguage">' . Yii::t('manager', 'language') . ':</label>
     <div class="col-sm-8">';
 $languages = \app\components\yii\MessageSource::getBaseLanguages();
-echo HTMLTools::fueluxSelectbox('baseLanguage', $languages, $config->baseLanguage, ['id' => 'baseLanguage']);
+echo Html::dropDownList('baseLanguage', $config->baseLanguage, $languages, ['id' => 'baseLanguage', 'class' => 'stdDropdown']);
 echo '</div>
 </div>';
 
 
 echo '<div class="form-group">
-  <label class="col-sm-4 control-label" for="resourceBase">' . yii::t('manager', 'default_dir') . ':</label>
+  <label class="col-sm-4 control-label" for="resourceBase">' . Yii::t('manager', 'default_dir') . ':</label>
   <div class="col-sm-8">
     <input type="text" required name="resourceBase" placeholder="/"
       value="' . Html::encode($config->resourceBase) . '" class="form-control" id="resourceBase">
@@ -55,7 +53,7 @@ echo '<div class="form-group">
 </div>';
 
 echo '<div class="form-group">
-  <label class="col-sm-4 control-label" for="lualatexPath">' . yii::t('manager', 'path_lualatex') . ':</label>
+  <label class="col-sm-4 control-label" for="lualatexPath">' . Yii::t('manager', 'path_lualatex') . ':</label>
   <div class="col-sm-8">
     <input type="text" name="lualatexPath" placeholder="/usr/bin/lualatex"
       value="' . Html::encode($config->lualatexPath) . '" class="form-control" id="lualatexPath">
@@ -65,12 +63,12 @@ echo '<div class="form-group">
 echo '</div>';
 
 
-echo '<h2 class="green">' . yii::t('manager', 'email_settings') . '</h2>';
+echo '<h2 class="green">' . Yii::t('manager', 'email_settings') . '</h2>';
 
 echo '<div class="content">';
 echo '<div class="form-group">
   <label class="col-sm-4 control-label" for="mailFromEmail">' .
-    yii::t('manager', 'email_from_address') . ':</label>
+    Yii::t('manager', 'email_from_address') . ':</label>
   <div class="col-sm-8">
     <input type="text" name="mailFromEmail" placeholder="antragsgruen@example.org"
       value="' . Html::encode($config->mailFromEmail) . '" class="form-control" id="mailFromEmail">
@@ -78,7 +76,7 @@ echo '<div class="form-group">
 </div>';
 
 echo '<div class="form-group">
-  <label class="col-sm-4 control-label" for="mailFromName">' . yii::t('manager', 'email_from_name') . ':</label>
+  <label class="col-sm-4 control-label" for="mailFromName">' . Yii::t('manager', 'email_from_name') . ':</label>
   <div class="col-sm-8">
     <input type="text" name="mailFromName" placeholder="Antragsgrün"
       value="' . Html::encode($config->mailFromName) . '" class="form-control" id="mailFromName">
@@ -87,20 +85,20 @@ echo '<div class="form-group">
 
 $currTransport = (isset($config->mailService['transport']) ? $config->mailService['transport'] : '');
 echo '<div class="form-group">
-  <label class="col-sm-4 control-label" for="emailTransport">' . yii::t('manager', 'email_transport') . ':</label>
+  <label class="col-sm-4 control-label" for="emailTransport">' . Yii::t('manager', 'email_transport') . ':</label>
   <div class="col-sm-8">';
-echo HTMLTools::fueluxSelectbox(
+echo Html::dropDownList(
     'mailService[transport]',
-    [
-        'sendmail' => yii::t('manager', 'email_sendmail'),
-        'smtp'     => yii::t('manager', 'email_smtp'),
-        'mailjet'  => yii::t('manager', 'email_mailjet'),
-        //'mailgun'  => yii::t('manager', 'email_mailgun'),
-        //'mandrill' => yii::t('manager', 'email_mandrill'),
-        'none'     => yii::t('manager', 'email_none'),
-    ],
     $currTransport,
-    ['id' => 'emailTransport']
+    [
+        'sendmail' => Yii::t('manager', 'email_sendmail'),
+        'smtp'     => Yii::t('manager', 'email_smtp'),
+        'mailjet'  => Yii::t('manager', 'email_mailjet'),
+        //'mailgun'  => Yii::t('manager', 'email_mailgun'),
+        //'mandrill' => Yii::t('manager', 'email_mandrill'),
+        'none'     => Yii::t('manager', 'email_none'),
+    ],
+    ['id' => 'emailTransport', 'class' => 'stdDropdown']
 );
 echo '</div>
 </div>';
@@ -120,7 +118,7 @@ $currTls      = (isset($config->mailService['encryption']) && $config->mailServi
     <!-- Mandrill -->
     <!--
     <div class="form-group emailOption mandrillApiKey">
-        <label class="col-sm-4 control-label" for="mandrillApiKey"><?= yii::t('manager', 'mandrill_api') ?>:</label>
+        <label class="col-sm-4 control-label" for="mandrillApiKey"><?= Yii::t('manager', 'mandrill_api') ?>:</label>
         <div class="col-sm-8">
             <input type="text" name="mailService[mandrillApiKey]" placeholder=""
                    value="<?= Html::encode($currApiKey) ?>" class="form-control" id="mandrillApiKey">
@@ -130,14 +128,14 @@ $currTls      = (isset($config->mailService['encryption']) && $config->mailServi
 
     <!-- Mailjet -->
     <div class="form-group emailOption mailjetApiKey">
-        <label class="col-sm-4 control-label" for="mailjetApiKey"><?= yii::t('manager', 'mailjet_api_key') ?></label>
+        <label class="col-sm-4 control-label" for="mailjetApiKey"><?= Yii::t('manager', 'mailjet_api_key') ?></label>
         <div class="col-sm-8">
             <input type="text" name="mailService[mailjetApiKey]" placeholder=""
                    value="<?= Html::encode($currApiKey) ?>" class="form-control" id="mailjetApiKey">
         </div>
     </div>
     <div class="form-group emailOption mailjetApiSecret">
-        <label class="col-sm-4 control-label" for="mailjetApiSecret"><?= yii::t('manager', 'mailjet_secret') ?>
+        <label class="col-sm-4 control-label" for="mailjetApiSecret"><?= Yii::t('manager', 'mailjet_secret') ?>
             :</label>
         <div class="col-sm-8">
             <input type="text" name="mailService[mailjetApiSecret]" placeholder=""
@@ -148,14 +146,14 @@ $currTls      = (isset($config->mailService['encryption']) && $config->mailServi
     <!-- Mailgun -->
     <!--
     <div class="form-group emailOption mailgunApiKey">
-        <label class="col-sm-4 control-label" for="mailgunApiKey"><?= yii::t('manager', 'mailgun_api') ?>:</label>
+        <label class="col-sm-4 control-label" for="mailgunApiKey"><?= Yii::t('manager', 'mailgun_api') ?>:</label>
         <div class="col-sm-8">
             <input type="text" name="mailService[mailgunApiKey]" placeholder=""
                    value="<?= Html::encode($currApiKey) ?>" class="form-control" id="mailgunApiKey">
         </div>
     </div>
     <div class="form-group emailOption mailgunDomain">
-        <label class="col-sm-4 control-label" for="mailgunDomain"><?= yii::t('manager', 'mailgun_domain') ?>:</label>
+        <label class="col-sm-4 control-label" for="mailgunDomain"><?= Yii::t('manager', 'mailgun_domain') ?>:</label>
         <div class="col-sm-8">
             <input type="text" name="mailService[mailgunDomain]" placeholder=""
                    value="<?= Html::encode($currDomain) ?>" class="form-control" id="mailgunDomain">
@@ -165,21 +163,21 @@ $currTls      = (isset($config->mailService['encryption']) && $config->mailServi
 
     <!-- SMTP -->
     <div class="form-group emailOption smtpHost">
-        <label class="col-sm-4 control-label" for="smtpHost"><?= yii::t('manager', 'smtp_server') ?>:</label>
+        <label class="col-sm-4 control-label" for="smtpHost"><?= Yii::t('manager', 'smtp_server') ?>:</label>
         <div class="col-sm-8">
             <input type="text" name="mailService[smtpHost]" placeholder="smtp.yourserver.de"
                    value="<?= Html::encode($currHost) ?>" class="form-control" id="smtpHost">
         </div>
     </div>
     <div class="form-group emailOption smtpPort">
-        <label class="col-sm-4 control-label" for="smtpPort"><?= yii::t('manager', 'smtp_port') ?>:</label>
+        <label class="col-sm-4 control-label" for="smtpPort"><?= Yii::t('manager', 'smtp_port') ?>:</label>
         <div class="col-sm-3">
             <input type="number" name="mailService[smtpPort]" placeholder="25"
                    value="<?= Html::encode($currPort) ?>" class="form-control" id="smtpPort">
         </div>
     </div>
     <div class="form-group emailOption smtpTls">
-        <label class="col-sm-4 control-label" for="smtpTls"><?= yii::t('manager', 'smtp_tls') ?>:</label>
+        <label class="col-sm-4 control-label" for="smtpTls"><?= Yii::t('manager', 'smtp_tls') ?>:</label>
         <div class="col-sm-3">
             <?php
             echo Html::checkbox('mailService[smtpTls]', $currTls, ['id' => 'smtpTls']);
@@ -187,25 +185,25 @@ $currTls      = (isset($config->mailService['encryption']) && $config->mailServi
         </div>
     </div>
     <div class="form-group emailOption smtpAuthType">
-        <label class="col-sm-4 control-label" for="smtpAuthType"><?= yii::t('manager', 'smtp_login') ?>:</label>
+        <label class="col-sm-4 control-label" for="smtpAuthType"><?= Yii::t('manager', 'smtp_login') ?>:</label>
         <div class="col-sm-8"><?php
-            echo HTMLTools::fueluxSelectbox(
+            echo Html::dropDownList(
                 'mailService[smtpAuthType]',
+                $currAuthType,
                 [
-                    'none'      => yii::t('manager', 'smtp_login_none'),
+                    'none'      => Yii::t('manager', 'smtp_login_none'),
                     'plain'     => 'Plain',
                     'login'     => 'LOGIN',
                     'crammd5'   => 'Cram-MD5',
                     'plain_tls' => 'PLAIN / TLS',
                 ],
-                $currAuthType,
-                ['id' => 'smtpAuthType']
+                ['id' => 'smtpAuthType', 'class' => 'stdDropdown']
             );
             ?>
         </div>
     </div>
     <div class="form-group emailOption smtpUsername">
-        <label class="col-sm-4 control-label" for="smtpUsername"><?= yii::t('manager', 'smtp_username') ?>:</label>
+        <label class="col-sm-4 control-label" for="smtpUsername"><?= Yii::t('manager', 'smtp_username') ?>:</label>
         <div class="col-sm-8">
             <input type="text" name="mailService[smtpUsername]" placeholder=""
                    value="<?= Html::encode($currUsername) ?>" class="form-control" id="smtpUsername">
@@ -213,7 +211,7 @@ $currTls      = (isset($config->mailService['encryption']) && $config->mailServi
     </div>
 
     <div class="form-group emailOption smtpPassword">
-        <label class="col-sm-4 control-label" for="smtpPassword"><?= yii::t('manager', 'smtp_password') ?>:</label>
+        <label class="col-sm-4 control-label" for="smtpPassword"><?= Yii::t('manager', 'smtp_password') ?>:</label>
         <div class="col-sm-8">
             <input type="password" name="mailService[smtpPassword]" placeholder=""
                    value="<?= Html::encode($currPassword) ?>" class="form-control" id="smtpPassword">
@@ -224,7 +222,7 @@ $currTls      = (isset($config->mailService['encryption']) && $config->mailServi
 
 echo '<div class="form-group"><label>';
 echo Html::checkbox('confirmEmailAddresses', $config->confirmEmailAddresses, ['id' => 'confirmEmailAddresses']) . ' ';
-echo yii::t('manager', 'confirm_email_addresses') . '</label></div>';
+echo Yii::t('manager', 'confirm_email_addresses') . '</label></div>';
 
 
 echo '<div class="saveholder">
@@ -232,7 +230,7 @@ echo '<div class="saveholder">
 if (!$editable) {
     echo 'disabled';
 }
-echo '>' . yii::t('manager', 'save') . '</button>
+echo '>' . Yii::t('manager', 'save') . '</button>
 </div>';
 
 echo '</div>';

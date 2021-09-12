@@ -42,7 +42,7 @@ $icon-font-path: "./fonts/";
 @import "wizard";
 @import "helpers";
 @import "elements";
-@import "bootstrap_fuelux_overwrites";
+@import "bootstrap_overwrites";
 @import "base_layout";
 @import "contentpage";
 @import "consultation_motion_list";

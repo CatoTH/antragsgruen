@@ -41,7 +41,7 @@ echo Html::beginForm('', 'post', [
     'data-reload-url'          => $reloadUrl,
 ]);
 ?>
-    <section class="proposedProcedureToolbar toolbarBelowTitle fuelux">
+    <section class="proposedProcedureToolbar toolbarBelowTitle">
         <div class="left">
             <div class="currentDate">
                 <?= Yii::t('con', 'proposal_updated') ?>:

@@ -11,7 +11,7 @@ $t = function (string $string): string {
  */
 
 ?>
-<div id="SiteCreateWizard" class="wizard" data-mode="site" data-init-step="#panelLanguage">
+<div id="SiteCreateWizard" class="wizardWidget" data-mode="site" data-init-step="#panelLanguage">
     <ul class="steps">
         <li data-target="#stepLanguage" class="stepLanguage">
             <?= $t('step_language') ?><span class="chevron"></span>

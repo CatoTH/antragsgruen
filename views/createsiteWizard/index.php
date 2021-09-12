@@ -14,7 +14,7 @@ $t = function ($string) {
 
 
 ?>
-<div id="SiteCreateWizard" class="wizard" data-mode="<?= Html::encode($mode) ?>" data-init-step="#panelFunctionality">
+<div id="SiteCreateWizard" class="wizardWidget" data-mode="<?= Html::encode($mode) ?>" data-init-step="#panelFunctionality">
     <ul class="steps">
         <li data-target="#stepPurpose" class="stepPurpose">
             <?= $t('step_purpose') ?>

@@ -18,37 +18,32 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
 <section class="motionSupporters hideForAmendmentsOnly" id="motionSupportersForm">
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator') ?></h2>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeSupportType">
-            <?= Yii::t('admin', 'motion_type_supp_form') ?>
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeSupportType">
+            <?= Yii::t('admin', 'motion_type_supp_form') ?>:
         </label>
-        <div class="col-md-8">
+        <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="type">
-            <?php
-            $options = [];
-            foreach (SupportBase::getImplementations() as $formId => $formClass) {
-                $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass === CollectBeforePublish::class);
-                $options[]  = [
-                    'title'      => $formClass::getTitle(),
-                    'attributes' => ['data-has-supporters' => ($supporters ? '1' : '0')],
-                ];
-            }
-            echo HTMLTools::fueluxSelectbox(
-                'motionInitiatorSettings[type]',
-                $options,
-                $motionSettings->type,
-                ['id' => 'typeSupportType', 'class' => 'supportType'],
-                true
-            );
-            ?>
+            <select name="motionInitiatorSettings[type]" id="typeSupportType" class="supportType stdDropdown">
+                <?php
+                foreach (SupportBase::getImplementations() as $formId => $formClass) {
+                    $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass === CollectBeforePublish::class);
+                    echo '<option value="' . $formId . '" data-has-supporters="' . ($supporters ? '1' : '0') . '"';
+                    if ($motionSettings->type === $formId) {
+                        echo ' selected';
+                    }
+                    echo '>' . Html::encode($formClass::getTitle()) . '</option>';
+                }
+                ?>
+            </select>
         </div>
     </div>
 
-    <fieldset class="form-group" data-visibility="hasInitiator">
-        <legend class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_person_type') ?>
-        </legend>
-        <div class="col-md-8 contactDetails personTypes">
+    <div class="adminTwoCols" data-visibility="hasInitiator">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_person_type') ?>:
+        </div>
+        <div class="rightColumn contactDetails personTypes">
             <div class="form-control">
                 <label class="initiatorCanBePerson">
                     <?php
@@ -64,13 +59,13 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 </label>
             </div>
         </div>
-    </fieldset>
+    </div>
 
-    <fieldset class="form-group" data-visibility="hasInitiator">
-        <legend class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_contact_name') ?>
-        </legend>
-        <div class="col-md-8 contactDetails contactName">
+    <div class="adminTwoCols" data-visibility="hasInitiator">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_contact_name') ?>:
+        </div>
+        <div class="rightColumn contactDetails contactName">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="contactName">
             <?php
             echo Html::radioList(
@@ -85,13 +80,13 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </fieldset>
+    </div>
 
-    <fieldset class="form-group" data-visibility="hasInitiator">
-        <legend class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_email') ?>
-        </legend>
-        <div class="col-md-8 contactDetails contactEMail">
+    <div class="adminTwoCols" data-visibility="hasInitiator">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_email') ?>:
+        </div>
+        <div class="rightColumn contactDetails contactEMail">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="contactEmail">
             <?php
             echo Html::radioList(
@@ -106,13 +101,13 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </fieldset>
+    </div>
 
-    <fieldset class="form-group" data-visibility="hasInitiator">
-        <legend class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_phone') ?>
-        </legend>
-        <div class="col-md-8 contactDetails contactPhone">
+    <div class="adminTwoCols" data-visibility="hasInitiator">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_phone') ?>:
+        </div>
+        <div class="rightColumn contactDetails contactPhone">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="contactPhone">
             <?php
             echo Html::radioList(
@@ -127,13 +122,13 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </fieldset>
+    </div>
 
-    <fieldset class="form-group formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
-        <legend class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_orga_resolution') ?>
-        </legend>
-        <div class="col-md-8 contactDetails contactResolutionDate">
+    <div class="adminTwoCols formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_orga_resolution') ?>:
+        </div>
+        <div class="rightColumn contactDetails contactResolutionDate">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="hasResolutionDate">
             <?php
             echo Html::radioList(
@@ -148,13 +143,13 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </fieldset>
+    </div>
 
-    <fieldset class="form-group formGroupGender" data-visibility="initiatorCanBePerson">
-        <legend class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_gender') ?>
-        </legend>
-        <div class="col-md-8 contactDetails contactGender">
+    <div class="adminTwoCols formGroupGender" data-visibility="initiatorCanBePerson">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_gender') ?>:
+        </div>
+        <div class="rightColumn contactDetails contactGender">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="contactGender">
             <?php
             echo Html::radioList(
@@ -169,11 +164,11 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </fieldset>
+    </div>
 
-    <div class="form-group formGroupMinSupporters" id="typeMinSupportersRow" data-visibility="hasSupporters">
-        <label class="col-md-4 control-label" for="typeMinSupporters">
-            <?= Yii::t('admin', 'motion_type_supp_min') ?>
+    <div class="adminTwoCols formGroupMinSupporters" id="typeMinSupportersRow" data-visibility="hasSupporters">
+        <label class="leftColumn" for="typeMinSupporters">
+            <?= Yii::t('admin', 'motion_type_supp_min') ?>:
         </label>
         <div class="col-md-2">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="minSupporters">
@@ -182,23 +177,21 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRow" data-visibility="allowFemaleQuota">
-        <label class="col-md-4 control-label" for="typeMinSupportersFemale">
-            <?= Yii::t('admin', 'motion_type_supp_female_min') ?>
+    <div class="adminTwoCols formGroupMinFemale" id="typeMinSupportersFemaleRow" data-visibility="allowFemaleQuota">
+        <label class="leftColumn control-label" for="typeMinSupportersFemale">
+            <?= Yii::t('admin', 'motion_type_supp_female_min') ?>:
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
         </label>
-        <div class="col-md-2">
+        <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="minSupportersFemale">
             <input type="number" name="motionInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemale"
                    value="<?= Html::encode($motionSettings->minSupportersFemale) ?>">
         </div>
-
-        <div class="col-md-1">
-            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
-        </div>
     </div>
 
-    <div class="form-group formGroupAllowMore" data-visibility="hasSupporters">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols formGroupAllowMore" data-visibility="hasSupporters">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowMoreSupporters">
             <?php
             echo HTMLTools::labeledCheckbox(
@@ -211,8 +204,9 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowSupportingAfterPublication">
             <?php
             echo HTMLTools::labeledCheckbox(
@@ -226,8 +220,9 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="offerNonPublicSupports">
             <?php
             echo HTMLTools::labeledCheckbox(
@@ -241,8 +236,9 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" id="typeHasOrgaRow" data-visibility="hasInitiator">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols" id="typeHasOrgaRow" data-visibility="hasInitiator">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="hasOrganizations">
             <?php
             echo HTMLTools::labeledCheckbox(
@@ -256,8 +252,9 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
     </div>
 
 
-    <div class="form-group" id="sameInitiatorSettingsForAmendments">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols" id="sameInitiatorSettingsForAmendments">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <?php
             echo HTMLTools::labeledCheckbox(
                 'sameInitiatorSettingsForAmendments',
@@ -273,37 +270,32 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
 <section class="amendmentSupporters" id="amendmentSupportersForm">
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator_amend') ?></h2>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeSupportTypeAmendment">
-            <?= Yii::t('admin', 'motion_type_supp_form') ?>
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeSupportTypeAmendment">
+            <?= Yii::t('admin', 'motion_type_supp_form') ?>:
         </label>
-        <div class="col-md-8">
+        <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="type">
-            <?php
-            $options = [];
-            foreach (SupportBase::getImplementations() as $formId => $formClass) {
-                $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass === CollectBeforePublish::class);
-                $options[]  = [
-                    'title'      => $formClass::getTitle(),
-                    'attributes' => ['data-has-supporters' => ($supporters ? '1' : '0')],
-                ];
-            }
-            echo HTMLTools::fueluxSelectbox(
-                'amendmentInitiatorSettings[type]',
-                $options,
-                $amendmentSettings->type,
-                ['id' => 'typeSupportTypeAmendment', 'class' => 'supportType'],
-                true
-            );
-            ?>
+            <select name="amendmentInitiatorSettings[type]" id="typeSupportTypeAmendment" class="supportType stdDropdown">
+                <?php
+                foreach (SupportBase::getImplementations() as $formId => $formClass) {
+                    $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass === CollectBeforePublish::class);
+                    echo '<option value="' . $formId . '" data-has-supporters="' . ($supporters ? '1' : '0') . '"';
+                    if ($amendmentSettings->type === $formId) {
+                        echo ' selected';
+                    }
+                    echo '>' . Html::encode($formClass::getTitle()) . '</option>';
+                }
+                ?>
+            </select>
         </div>
     </div>
 
-    <div class="form-group" data-visibility="hasInitiator">
-        <div class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_person_type') ?>
+    <div class="adminTwoCols" data-visibility="hasInitiator">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_person_type') ?>:
         </div>
-        <div class="col-md-8 contactDetails personTypes">
+        <div class="rightColumn contactDetails personTypes">
             <div class="form-control">
                 <label class="initiatorCanBePerson">
                     <?php
@@ -321,11 +313,11 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" data-visibility="hasInitiator">
-        <div class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_contact_name') ?>
+    <div class="adminTwoCols" data-visibility="hasInitiator">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_contact_name') ?>:
         </div>
-        <div class="col-md-8 contactDetails contactName">
+        <div class="rightColumn contactDetails contactName">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="contactName">
             <?php
             echo Html::radioList(
@@ -342,11 +334,11 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" data-visibility="hasInitiator">
-        <div class="col-md-4 control-label">
+    <div class="adminTwoCols" data-visibility="hasInitiator">
+        <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_email') ?>
         </div>
-        <div class="col-md-8 contactDetails contactEMail">
+        <div class="rightColumn contactDetails contactEMail">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="contactEmail">
             <?php
             echo Html::radioList(
@@ -363,11 +355,11 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" data-visibility="hasInitiator">
-        <div class="col-md-4 control-label">
+    <div class="adminTwoCols" data-visibility="hasInitiator">
+        <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_phone') ?>
         </div>
-        <div class="col-md-8 contactDetails contactPhone">
+        <div class="rightColumn contactDetails contactPhone">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="contactPhone">
             <?php
             echo Html::radioList(
@@ -384,11 +376,11 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
-        <div class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_orga_resolution') ?>
+    <div class="adminTwoCols formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_orga_resolution') ?>:
         </div>
-        <div class="col-md-8 contactDetails contactResolutionDate">
+        <div class="rightColumn contactDetails contactResolutionDate">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="hasResolutionDate">
             <?php
             echo Html::radioList(
@@ -405,11 +397,11 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupGender" data-visibility="initiatorCanBePerson">
-        <div class="col-md-4 control-label">
-            <?= Yii::t('admin', 'motion_type_gender') ?>
+    <div class="adminTwoCols formGroupGender" data-visibility="initiatorCanBePerson">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_gender') ?>:
         </div>
-        <div class="col-md-8 contactDetails contactGender">
+        <div class="rightColumn contactDetails contactGender">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="contactGender">
             <?php
             echo Html::radioList(
@@ -426,33 +418,32 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupMinSupporters" id="typeMinSupportersRowAmendment" data-visibility="hasSupporters">
-        <label class="col-md-4 control-label" for="typeMinSupportersAmendment">
-            <?= Yii::t('admin', 'motion_type_supp_min') ?>
+    <div class="adminTwoCols formGroupMinSupporters" id="typeMinSupportersRowAmendment" data-visibility="hasSupporters">
+        <label class="leftColumn" for="typeMinSupportersAmendment">
+            <?= Yii::t('admin', 'motion_type_supp_min') ?>:
         </label>
-        <div class="col-md-2">
+        <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="minSupporters">
             <input type="number" name="amendmentInitiatorSettings[minSupporters]" class="form-control" id="typeMinSupportersAmendment"
                    value="<?= Html::encode($amendmentSettings->minSupporters) ?>">
         </div>
     </div>
 
-    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRowAmendment" data-visibility="allowFemaleQuota">
-        <label class="col-md-4 control-label" for="typeMinSupportersFemaleAmendment">
-            <?= Yii::t('admin', 'motion_type_supp_female_min') ?>
+    <div class="adminTwoCols formGroupMinFemale" id="typeMinSupportersFemaleRowAmendment" data-visibility="allowFemaleQuota">
+        <label class="leftColumn" for="typeMinSupportersFemaleAmendment">
+            <?= Yii::t('admin', 'motion_type_supp_female_min') ?>:
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
         </label>
-        <div class="col-md-2">
+        <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="minSupportersFemale">
             <input type="number" name="amendmentInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemaleAmendment"
                    value="<?= Html::encode($amendmentSettings->minSupportersFemale) ?>">
         </div>
-        <div class="col-md-1">
-            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
-        </div>
     </div>
 
-    <div class="form-group formGroupAllowMore" data-visibility="hasSupporters">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols formGroupAllowMore" data-visibility="hasSupporters">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowMoreSupporters">
             <?php
             echo HTMLTools::labeledCheckbox(
@@ -465,8 +456,9 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowSupportingAfterPublication">
             <?php
             echo HTMLTools::labeledCheckbox(
@@ -480,8 +472,9 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="offerNonPublicSupports">
             <?php
             echo HTMLTools::labeledCheckbox(
@@ -495,8 +488,9 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" id="typeHasOrgaRowAmendment" data-visibility="hasInitiator">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols" id="typeHasOrgaRowAmendment" data-visibility="hasInitiator">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="hasOrganizations">
             <?php
             echo HTMLTools::labeledCheckbox(

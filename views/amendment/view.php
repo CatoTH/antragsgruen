@@ -27,7 +27,6 @@ $hasPpAdminbox = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPO
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/AmendmentShow');
-$layout->loadFuelux();
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }

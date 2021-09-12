@@ -18,9 +18,9 @@ $I->seeElement('.feedAll');
 $I->wantTo('deactivate some feeds');
 
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectFueluxOption('#typePolicyMotions', IPolicy::POLICY_NOBODY);
-$I->selectFueluxOption('#typePolicyAmendments', IPolicy::POLICY_NOBODY);
-$I->selectFueluxOption('#typePolicyComments', IPolicy::POLICY_NOBODY);
+$I->selectOption('#typePolicyMotions', IPolicy::POLICY_NOBODY);
+$I->selectOption('#typePolicyAmendments', IPolicy::POLICY_NOBODY);
+$I->selectOption('#typePolicyComments', IPolicy::POLICY_NOBODY);
 $I->submitForm('.adminTypeForm', [], 'save');
 
 
@@ -36,9 +36,9 @@ $I->dontSeeElement('.feedAll');
 $I->wantTo('activate the feeds again');
 
 $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectFueluxOption('#typePolicyMotions', IPolicy::POLICY_ALL);
-$I->selectFueluxOption('#typePolicyAmendments', IPolicy::POLICY_ALL);
-$I->selectFueluxOption('#typePolicyComments', IPolicy::POLICY_ALL);
+$I->selectOption('#typePolicyMotions', IPolicy::POLICY_ALL);
+$I->selectOption('#typePolicyAmendments', IPolicy::POLICY_ALL);
+$I->selectOption('#typePolicyComments', IPolicy::POLICY_ALL);
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoConsultationHome();

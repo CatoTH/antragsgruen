@@ -10,11 +10,11 @@ use yii\helpers\Html;
 
 ?>
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_names') ?></h2>
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeTitleSingular">
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeTitleSingular">
             <?= Yii::t('admin', 'motion_type_singular') ?>
         </label>
-        <div class="col-md-8"><?php
+        <div class="rightColumn"><?php
             $options = [
                 'class' => 'form-control',
                 'id' => 'typeTitleSingular',
@@ -24,11 +24,11 @@ use yii\helpers\Html;
             ?></div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeTitlePlural">
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeTitlePlural">
             <?= Yii::t('admin', 'motion_type_plural') ?>
         </label>
-        <div class="col-md-8">
+        <div class="rightColumn">
             <?php
             $options = [
                 'class' => 'form-control',
@@ -40,11 +40,11 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeCreateTitle">
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeCreateTitle">
             <?= Yii::t('admin', 'motion_type_create_title') ?>
         </label>
-        <div class="col-md-8">
+        <div class="rightColumn">
             <?php
             $options = [
                 'class' => 'form-control',
@@ -55,8 +55,9 @@ use yii\helpers\Html;
             ?>
         </div>
     </div>
-    <div class="form-group checkboxNoPadding">
-        <div class="col-md-8 col-md-offset-4">
+    <div class="adminTwoCols checkboxNoPadding">
+        <div class="leftColumn"></div>
+        <div class="rightColumn">
             <?php
             echo HTMLTools::labeledCheckbox(
                 'type[sidebarCreateButton]',
@@ -68,11 +69,11 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeMotionPrefix">
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeMotionPrefix">
             <?= Yii::t('admin', 'motion_type_title_prefix') ?>
         </label>
-        <div class="col-md-2">
+        <div class="rightColumn">
             <?php
             $options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
             echo Html::textInput('type[motionPrefix]', $motionType->motionPrefix, $options);
@@ -80,11 +81,11 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeMotionIntro">
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeMotionIntro">
             <?= Yii::t('admin', 'motion_type_title_intro') ?>
         </label>
-        <div class="col-md-8">
+        <div class="rightColumn">
             <?php
             $options = ['class' => 'form-control', 'id' => 'typeMotionIntro'];
             echo Html::textInput('type[typeMotionIntro]', $motionType->getSettingsObj()->motionTitleIntro, $options);
@@ -92,11 +93,11 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeProposedProcedure">
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeProposedProcedure">
             <?= Yii::t('admin', 'motion_type_proposed') ?>
         </label>
-        <div class="col-md-8">
+        <div class="rightColumn">
             <?php
             echo HTMLTools::labeledCheckbox(
                 'type[proposedProcedure]',
@@ -108,11 +109,11 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeResponsibilities">
+    <div class="adminTwoCols">
+        <label class="leftColumn" for="typeResponsibilities">
             <?= Yii::t('admin', 'motion_type_respons') ?>
         </label>
-        <div class="col-md-8">
+        <div class="rightColumn">
             <?php
             echo HTMLTools::labeledCheckbox(
                 'type[responsibilities]',

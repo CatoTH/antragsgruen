@@ -5,7 +5,7 @@ export class Comments {
                 $replyTo = $widget.find('.replyTo' + commentId);
             if ($replyTo.hasClass('hidden')) {
                 $replyTo.removeClass('hidden');
-                $replyTo.find('textarea').focus();
+                $replyTo.find('textarea').trigger('focus');
             } else {
                 $replyTo.addClass('hidden');
             }
@@ -14,9 +14,9 @@ export class Comments {
         $widget.on('change', '.commentNotifications .notisActive', (ev) => {
             const $button = $(ev.currentTarget);
             if ($button.prop('checked')) {
-                $button.parents('.commentNotifications').find('.selectlist').removeClass('hidden');
+                $button.parents('.commentNotifications').find('select').removeClass('hidden');
             } else {
-                $button.parents('.commentNotifications').find('.selectlist').addClass('hidden');
+                $button.parents('.commentNotifications').find('select').addClass('hidden');
             }
         });
 

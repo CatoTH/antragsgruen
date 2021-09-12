@@ -62,7 +62,7 @@ class LayoutHooks extends Hooks
     private function getTagsSavingForm(Motion $motion): string
     {
         $saveUrl  = UrlHelper::createUrl(['/frauenrat/motion/save-tag', 'motionSlug' => $motion->getMotionSlug()]);
-        $form     = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
+        $form     = Html::beginForm($saveUrl, 'post', ['class' => 'frauenratSelect']);
         $preTagId = null;
         foreach ($motion->getPublicTopicTags() as $tag) {
             $preTagId = $tag->id;
@@ -73,7 +73,7 @@ class LayoutHooks extends Hooks
         foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
             $allTags[$tag->id] = $tag->title;
         }
-        $form .= HTMLTools::fueluxSelectbox('newTag', $allTags, $preTagId, [], false, 'xs');
+        $form .= Html::dropDownList('newTag', $preTagId, $allTags, ['class' => 'stdDropdown stdDropdownSmall']);
         $form .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
         $form .= Html::endForm();
 
@@ -99,9 +99,9 @@ class LayoutHooks extends Hooks
     private function getMotionProposalSavingForm(Motion $motion): string
     {
         $saveUrl   = UrlHelper::createUrl(['/frauenrat/motion/save-proposal', 'motionSlug' => $motion->getMotionSlug()]);
-        $form      = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
+        $form      = Html::beginForm($saveUrl, 'post', ['class' => 'frauenratSelect']);
         $preselect = $this->getMotionProposalString($motion);
-        $form      .= HTMLTools::fueluxSelectbox('newProposal', static::$PROPOSALS, $preselect, [], false, 'xs');
+        $form      .= Html::dropDownList('newProposal', $preselect, static::$PROPOSALS, ['class' => 'stdDropdown stdDropdownSmall']);
         $form      .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
         $form      .= Html::endForm();
 
@@ -115,9 +115,9 @@ class LayoutHooks extends Hooks
             'motionSlug'  => $amendment->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendment->id
         ]);
-        $form      = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
+        $form      = Html::beginForm($saveUrl, 'post', ['class' => 'frauenratSelect']);
         $preselect = $this->getMotionProposalString($amendment);
-        $form      .= HTMLTools::fueluxSelectbox('newProposal', static::$PROPOSALS, $preselect, [], false, 'xs');
+        $form      .= Html::dropDownList('newProposal', $preselect, static::$PROPOSALS, ['class' => 'stdDropdown stdDropdownSmall']);
         $form      .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
         $form      .= Html::endForm();
 
