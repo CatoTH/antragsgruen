@@ -19,7 +19,6 @@ $motion     = $form->motion;
 $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
-$layout->loadFuelux();
 $layout->loadVue();
 $layout->loadCKEditor();
 
@@ -64,7 +63,7 @@ echo $controller->showErrors();
 echo '</div>';
 
 echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'post', [
-    'class'                      => 'motionMergeForm motionMergeStyles fuelux',
+    'class'                      => 'motionMergeForm motionMergeStyles',
     'enctype'                    => 'multipart/form-data',
     'data-draft-saving-url'      => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
     'data-check-status-url'      => UrlHelper::createMotionUrl($motion, 'merge-amendments-status-ajax', ['knownAmendments' => 'AMENDMENTS']),

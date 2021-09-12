@@ -93,7 +93,7 @@ echo Html::beginForm('', 'post', [
 echo '<div class="content">';
 
 if (count($form->motionType->agendaItems) > 0 && !$isAmendmentsOnly) {
-    echo '<fieldset class="form-group fuelux">';
+    echo '<fieldset class="form-group">';
     echo '<legend class="legend">' . Yii::t('motion', 'agenda_item') . '</label>';
     if ($form->agendaItem) {
         echo '<div>' . Html::encode($form->agendaItem->title) . '</div>';
@@ -103,7 +103,7 @@ if (count($form->motionType->agendaItems) > 0 && !$isAmendmentsOnly) {
         foreach ($form->motionType->agendaItems as $agendaItem) {
             $agendaItems[$agendaItem->id] = $agendaItem->title;
         }
-        echo HTMLTools::fueluxSelectbox('agendaItem', $agendaItems, null, ['id' => 'agendaSelect']);
+        echo Html::dropDownList('agendaItem', null, $agendaItems, ['id' => 'agendaSelect', 'class' => 'stdDropdown']);
         echo '</div>';
     }
     echo '</fieldset>';

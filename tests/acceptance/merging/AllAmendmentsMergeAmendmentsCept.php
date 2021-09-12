@@ -120,8 +120,8 @@ $I->fillField('#votesComment3', 'Accepted by a great margin');
 $I->fillField('#votesYes3', '15');
 $I->fillField('#votesNo3', '4');
 
-$I->seeFueluxOptionIsSelected('#amendmentStatus274', 5);
-$I->selectFueluxOption('#amendmentStatus274', 4); // Correcting status to "Accepted"
+$I->seeOptionIsSelected('#amendmentStatus274', 'Abgelehnt');
+$I->selectOption('#amendmentStatus274', \app\models\db\IMotion::STATUS_ACCEPTED);
 
 
 $I->wantTo('modify the text');

@@ -14,7 +14,6 @@ use Yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->loadFuelux();
 $layout->loadCKEditor();
 $layout->addAMDModule('frontend/MergeSingleAmendment');
 $layout->addCSS('css/formwizard.css');
@@ -41,7 +40,7 @@ foreach ($amendment->getActiveSections() as $section) {
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
-echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuelux']);
+echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm']);
 
 ?>
     <div class="content">

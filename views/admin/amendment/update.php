@@ -24,7 +24,6 @@ $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
-$layout->loadFuelux();
 $layout->addJS('npm/clipboard.min.js');
 
 $html = '<ul class="sidebarActions">';
@@ -86,7 +85,7 @@ echo Html::beginForm('', 'post', [
 ]);
 
 
-echo '<div class="content form-horizontal fuelux">';
+echo '<div class="content form-horizontal">';
 
 ?>
     <div class="form-group">

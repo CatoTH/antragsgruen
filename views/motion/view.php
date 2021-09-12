@@ -27,7 +27,6 @@ $hasPpAdminbox = ($hasPp && !$motion->isResolution() && User::havePrivilege($con
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/MotionShow');
-$layout->loadFuelux();
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }

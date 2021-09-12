@@ -25,7 +25,7 @@ $page->saveForm();
 $I->wantTo('see the field being required');
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->seeElement('.genderRow');
-$I->seeFueluxOptionIsSelected('#initiatorGender', '');
+$I->seeOptionIsSelected('#initiatorGender', '');
 
 $page->fillInValidSampleData();
 $I->click('#motionEditForm button[name=save]');
@@ -34,8 +34,8 @@ $I->seeBootboxDialog('Bitte gib etwas im Gender-Feld an');
 $I->acceptBootboxAlert();
 
 $I->wantTo('save the form');
-$I->selectFueluxOption('#initiatorGender', 'diverse');
-$I->seeFueluxOptionIsSelected('#initiatorGender', 'diverse');
+$I->selectOption('#initiatorGender', 'diverse');
+$I->seeOptionIsSelected('#initiatorGender', 'Inter/Divers');
 
 $I->click('#motionEditForm button[name=save]');
 $I->seeElement('#motionConfirmForm');
@@ -43,9 +43,9 @@ $I->seeElement('#motionConfirmForm');
 
 $I->wantTo('make a change');
 $I->click('#motionConfirmForm button[name=modify]');
-$I->seeFueluxOptionIsSelected('#initiatorGender', 'diverse');
+$I->seeOptionIsSelected('#initiatorGender', 'Inter/Divers');
 
-$I->selectFueluxOption('#initiatorGender', 'female');
+$I->selectOption('#initiatorGender', 'female');
 $I->click('#motionEditForm button[name=save]');
 $I->seeElement('#motionConfirmForm');
 
@@ -60,7 +60,7 @@ $page->saveForm();
 $I->wantTo('see the field being optional');
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->seeElement('.genderRow');
-$I->seeFueluxOptionIsSelected('#initiatorGender', '');
+$I->seeOptionIsSelected('#initiatorGender', '');
 
 $page->fillInValidSampleData();
 $I->click('#motionEditForm button[name=save]');

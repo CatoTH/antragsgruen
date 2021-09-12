@@ -7,7 +7,7 @@ $I->populateDBData1();
 
 $I->gotoConsultationHome();
 $page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoAppearance();
-$I->selectFueluxOption('#startLayoutType', '6');
+$I->selectOption('#startLayoutType', \app\models\settings\Consultation::START_LAYOUT_DISCUSSION_TAGS);
 $page->saveForm();
 
 $I->wantTo('test the tag filtering');
@@ -16,7 +16,7 @@ $I->gotoConsultationHome();
 $I->see('Umwelt (5)', '.tagList .tag1');
 $I->see('Listen-Test', '.motionLink115'); // Umwelt
 $I->see('Testantrag', '.motionLink58'); // Verkehr
-$I->dontSeeElement('.expandableRecentComments ');
+$I->dontSeeElement('.expandableRecentComments');
 $I->dontSeeElement('.motionRow2 .comments');
 
 $I->executeJS('$(".tagList .tag1").trigger("click")');

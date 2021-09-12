@@ -1,9 +1,7 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\Motion;
+use app\components\{HTMLTools, UrlHelper};
+use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\Draft;
 use yii\helpers\Html;
 
@@ -19,7 +17,6 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->robotsNoindex = true;
-$layout->loadFuelux();
 $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 $layout->addBreadcrumb(Yii::t('amend', 'merge_confirm_title'));
 $layout->loadDatepicker();
@@ -37,7 +34,7 @@ echo Html::beginForm('', 'post', [
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendmentsConfirm'
 ]);
 
-$odtText = '<span class="glyphicon glyphicon-download"></span> ' . Yii::t('amend', 'merge_confirm_odt');
+$odtText = '<span class="glyphicon glyphicon-download" aria-hidden="true"></span> ' . Yii::t('amend', 'merge_confirm_odt');
 $odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
 ?>
     <section class="toolbarBelowTitle mergeConfirmToolbar">
@@ -86,7 +83,7 @@ foreach ($newMotion->getSortedSections(true) as $section) {
 }
 if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
     ?>
-    <section class="newAmendments fuelux">
+    <section class="newAmendments">
         <h2 class="green"><?= Yii::t('amend', 'merge_amend_statuses') ?></h2>
         <div class="content form-horizontal">
             <?php
@@ -117,13 +114,9 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
                             Amendment::STATUS_MODIFIED_ACCEPTED => $statusesAll[Amendment::STATUS_MODIFIED_ACCEPTED],
                         ];
                         $statuses[$amendment->status] = $statusesAll[$amendment->status];
-                        if (isset($mergingDraft->amendmentStatuses[$amendment->id])) {
-                            $statusPre = $mergingDraft->amendmentStatuses[$amendment->id];
-                        } else {
-                            $statusPre = Amendment::STATUS_PROCESSED;
-                        }
-                        $opts = ['id' => 'amendmentStatus' . $amendment->id];
-                        echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $statuses, $statusPre, $opts, true);
+                        $statusPre = $mergingDraft->amendmentStatuses[$amendment->id] ?? Amendment::STATUS_PROCESSED;
+                        $opts = ['id' => 'amendmentStatus' . $amendment->id, 'class' => 'stdDropdown'];
+                        echo Html::dropDownList('amendStatus[' . $amendment->id . ']', $statusPre, $statuses, $opts, true);
                         ?>
                     </div>
                     <div class="col-md-3">

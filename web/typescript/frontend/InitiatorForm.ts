@@ -247,8 +247,10 @@ export class InitiatorForm {
                 $newEl.find('input.name').val(lines[i]);
             }
         }
-        this.$fullTextHolder.find('textarea').select().focus();
-        $firstAffectedRow.scrollintoview();
+        this.$fullTextHolder.find('textarea').trigger('select').trigger('focus');
+        if ($firstAffectedRow.length) {
+            $firstAffectedRow.scrollintoview();
+        }
     }
 
     private onKeyOnTextfield(ev) {
@@ -273,7 +275,7 @@ export class InitiatorForm {
                 return;
             }
             $row.remove();
-            this.$supporterAdderRow.prev().find('input.name, input.organization').last().focus();
+            this.$supporterAdderRow.prev().find('input.name, input.organization').last().trigger('focus');
         }
     }
 
@@ -285,7 +287,7 @@ export class InitiatorForm {
             }
         }
         if ($('#personTypeNatural').prop('checked')) {
-            if (this.settings.contactGender === CONTACT_REQUIRED && $('#initiatorGender input').val() === '') {
+            if (this.settings.contactGender === CONTACT_REQUIRED && $('#initiatorGender').val() === '') {
                 ev.preventDefault();
                 bootbox.alert(__t('std', 'missing_gender'));
             }

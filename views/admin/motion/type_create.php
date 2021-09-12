@@ -150,7 +150,7 @@ echo Html::beginForm('', 'post', [
 </div>
 
 <div class="form-group">
-    <label class="col-md-3 control-label" for="pdfLayout">
+    <label class="col-md-3 control-label">
         <?= Yii::t('admin', 'motion_type_pdf_layout') ?>
     </label>
     <div class="col-md-9 thumbnailedLayoutSelector">

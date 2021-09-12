@@ -38,10 +38,10 @@ if ($consultation->getSettings()->allowMultipleTags) {
     foreach ($tags as $tag) {
         $tagOptions[$tag->id] = $tag->title;
     }
-    echo '<fieldset class="form-group">';
-    echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend><div style="position: relative;">';
+    echo '<div class="form-group">';
+    echo '<label class="legend" for="tagSelect">' . Yii::t('motion', 'tag_tags') . '</label><div style="position: relative;">';
     echo Html::dropDownList('tags[]', $selected, $tagOptions, ['id' => 'tagSelect', 'class' => 'stdDropdown']);
     echo '</div>';
-    echo '</fieldset>';
+    echo '</div>';
 }
 
