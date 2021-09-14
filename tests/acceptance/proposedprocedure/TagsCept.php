@@ -69,7 +69,7 @@ $I->seeElement('.motion2');
 $I->seeElement('.amendment279');
 $I->seeElement('.amendment280');
 
-$I->selectFueluxOption('#filterSelectTags', AcceptanceTester::FIRST_FREE_TAG_ID + 2);
+$I->selectOption('#filterSelectTags', AcceptanceTester::FIRST_FREE_TAG_ID + 2);
 $I->submitForm('.motionListSearchForm', [], 'search');
 
 $I->seeElement('.motion118');

@@ -91,9 +91,9 @@ $I->logout();
 $I->wantTo('check the admin settings');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->seeInField('#typeMinSupporters', 1);
-$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
+$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
 $I->dontSeeElement('#typeMinSupporters');
-$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
+$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeMinSupporters');
 
 $I->submitForm('#policyFixForm', [], 'supportCollPolicyFix');

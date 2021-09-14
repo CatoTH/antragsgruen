@@ -16,9 +16,9 @@ $I->dontSeeElementInDOM('#sidebar .collecting');
 $I->wantTo('check the admin settings and enable gender support and the supporting page');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->seeInField('#typeMinSupporters', 1);
-$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
+$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
 $I->dontSeeElement('#typeMinSupporters');
-$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
+$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeMinSupporters');
 $I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value='2']"); // Required
 $I->submitForm('.adminTypeForm', [], 'save');

@@ -13,7 +13,7 @@ $I->seeCheckboxIsChecked('#sameInitiatorSettingsForAmendments input');
 $I->executeJS('$("#sameInitiatorSettingsForAmendments input").prop("checked", false).trigger("change");');
 $I->seeElement('section.amendmentSupporters');
 
-$I->selectFueluxOption('#typeSupportTypeAmendment', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
+$I->selectOption('#typeSupportTypeAmendment', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
 $I->fillField('#typeMinSupportersAmendment', 19);
 
 $page->saveForm();

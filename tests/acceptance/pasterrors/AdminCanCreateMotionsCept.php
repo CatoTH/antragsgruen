@@ -11,9 +11,9 @@ $I->checkOption('input[name=managedUserAccounts]');
 $I->submitForm('#siteSettingsForm', [], 'saveLogin');
 
 $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectFueluxOption('#typePolicyMotions', \app\models\policies\LoggedIn::getPolicyID());
-$I->selectFueluxOption('#typePolicyAmendments', \app\models\policies\LoggedIn::getPolicyID());
-$I->selectFueluxOption('#typePolicyAmendments', \app\models\policies\LoggedIn::getPolicyID());
+$I->selectOption('#typePolicyMotions', \app\models\policies\LoggedIn::getPolicyID());
+$I->selectOption('#typePolicyAmendments', \app\models\policies\LoggedIn::getPolicyID());
+$I->selectOption('#typePolicyAmendments', \app\models\policies\LoggedIn::getPolicyID());
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoMotionList();

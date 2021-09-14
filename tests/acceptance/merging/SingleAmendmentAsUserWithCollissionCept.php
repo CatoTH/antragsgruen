@@ -37,7 +37,7 @@ $I->see('In den Antrag übernehmen', '#sidebar');
 $I->click('#sidebar .mergeIntoMotion a');
 $I->dontSee('Kann nicht automatisch übernommen werden', 'h1');
 $I->cantSeeElementInDOM('.otherAmendmentStatus');
-$I->executeJS('$("#amendmentStatus").selectlist("selectByValue", "6");');
+$I->selectOption('#amendmentStatus', \app\models\db\IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->executeJS('$(".save-row .goto_2").click();');
 $I->wait(1);
 $I->click('.checkAmendmentCollisions');

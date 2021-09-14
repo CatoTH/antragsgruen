@@ -10,8 +10,8 @@ $page = $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
 $I->dontSeeElement('#typeMinSupportersFemaleRow');
 $I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value='2']"); // Required
 $I->dontSeeElement('#typeMinSupportersFemaleRow');
-$I->selectFueluxOption('#typeSupportType', 2); // Collection phase
-$I->selectFueluxOption('#typePolicySupportMotions', 2); // Logged in users
+$I->selectOption('#typeSupportType', 2); // Collection phase
+$I->selectOption('#typePolicySupportMotions', 2); // Logged in users
 $I->checkOption("//input[@name='type[motionLikesDislikes][]'][@value='4']"); // Official
 $I->seeElement('#typeMinSupportersFemaleRow');
 $I->fillField('#typeMinSupporters', 1);

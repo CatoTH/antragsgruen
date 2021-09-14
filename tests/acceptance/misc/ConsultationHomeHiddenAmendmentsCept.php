@@ -7,7 +7,7 @@ $I->populateDBData1();
 
 $I->gotoConsultationHome();
 $page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoAppearance();
-$I->selectFueluxOption('#startLayoutType', '5');
+$I->selectOption('#startLayoutType', '5');
 $page->saveForm();
 
 $I->gotoConsultationHome();

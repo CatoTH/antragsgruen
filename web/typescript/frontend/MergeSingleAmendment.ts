@@ -17,7 +17,7 @@ class MergeSingleAmendment {
         this.$collisionHolder = $(".amendmentCollisionsHolder");
         this.$checkCollisions = $(".checkAmendmentCollisions");
         this.$affectedParagraphs = $(".affectedParagraphs > .paragraph");
-        this.$otherStatsFields = $(".otherAmendmentStatus input");
+        this.$otherStatsFields = $(".otherAmendmentStatus select");
 
         this.$stepWizardHolder = $("#MergeSingleWizard").find(".steps");
         this.$steps = {
@@ -124,7 +124,7 @@ class MergeSingleAmendment {
 
         this.$otherStatsFields.each((i, el) => {
             let $input:JQuery = $(el);
-            otherAmendmentsStatus[$input.parents(".selectlist").data("amendment-id")] = $input.val();
+            otherAmendmentsStatus[$input.data("amendment-id")] = $input.val();
         });
 
         $.post(url, {

@@ -7,8 +7,8 @@ $I->populateDBData1();
 
 $I->wantTo('ensure its deactivated by default');
 $page = $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectFueluxOption('#typePolicySupportMotions', 2); // Logged in users
-$I->selectFueluxOption('#typePolicySupportAmendments', 2); // Logged in users
+$I->selectOption('#typePolicySupportMotions', 2); // Logged in users
+$I->selectOption('#typePolicySupportAmendments', 2); // Logged in users
 $page->saveForm();
 
 $I->gotoMotion();
@@ -50,7 +50,7 @@ $I->dontSee('My name (Orga)', '#supporters');
 $I->wantTo('ensure it is not enabled for published motions by default if there is a collection phase');
 
 $page = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
+$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
 $page->saveForm();
 
 $I->gotoMotion();

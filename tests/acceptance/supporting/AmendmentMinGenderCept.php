@@ -13,8 +13,8 @@ $I->seeElement('#amendmentSupportersForm');
 $I->dontSeeElement('#typeMinSupportersFemaleRowAmendment');
 $I->checkOption("//input[@name='amendmentInitiatorSettings[contactGender]'][@value='2']"); // Required
 $I->dontSeeElement('#typeMinSupportersFemaleRowAmendment');
-$I->selectFueluxOption('#typeSupportTypeAmendment', 2); // Collection phase
-$I->selectFueluxOption('#typePolicySupportAmendments', 2); // Logged in users
+$I->selectOption('#typeSupportTypeAmendment', 2); // Collection phase
+$I->selectOption('#typePolicySupportAmendments', 2); // Logged in users
 $I->checkOption("//input[@name='type[amendmentLikesDislikes][]'][@value='4']"); // Official
 $I->seeElement('#typeMinSupportersFemaleRowAmendment');
 $I->fillField('#typeMinSupportersAmendment', 1);

@@ -1,7 +1,7 @@
 export class SiteConfig {
     constructor() {
-        $("#smtpAuthType").on("changed.fu.selectlist", this.rebuildVisibility.bind(this));
-        $("#emailTransport").on("changed.fu.selectlist", this.rebuildVisibility.bind(this)).trigger("changed.fu.selectlist");
+        $("#smtpAuthType").on("change", this.rebuildVisibility.bind(this));
+        $("#emailTransport").on("change", this.rebuildVisibility.bind(this)).trigger("change");
     }
 
     private rebuildVisibility() {
@@ -23,7 +23,6 @@ export class SiteConfig {
             $('.emailOption.smtpHost').show();
             $('.emailOption.smtpPort').show();
             $('.emailOption.smtpTls').show();
-            console.log($('.emailOption.smtpTls'));
             $('.emailOption.smtpAuthType').show();
             if (auth != 'none') {
                 $('.emailOption.smtpUsername').show();

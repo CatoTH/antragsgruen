@@ -254,28 +254,6 @@ class AcceptanceTester extends \Codeception\Actor
         $this->click('#logoutLink');
     }
 
-    /**
-     * @param string $selector
-     * @param string $value
-     */
-    public function selectFueluxOption($selector, $value)
-    {
-        $this->executeJS('$("' . addslashes($selector) . '")' .
-            '.selectlist("selectByValue", "' . addslashes($value) . '")' .
-            '.trigger("changed.fu.selectlist");');
-    }
-
-    /**
-     * @param string $selector
-     * @param string $expected
-     */
-    public function seeFueluxOptionIsSelected($selector, $expected)
-    {
-        $value = $this->executeJs('return $("' . addslashes($selector) . '")' .
-            '.selectlist("getValue").value;');
-        $this->assertEquals($expected, $value);
-    }
-
     public function clickJS(string $selector): void
     {
         $this->executeJS('document.querySelector("' . $selector . '").dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true}))');

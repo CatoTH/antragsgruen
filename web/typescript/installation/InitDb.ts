@@ -16,17 +16,17 @@ export class InitDb {
             }
         });
 
-        $testDBcaller.click(this.testDb.bind(this));
+        $testDBcaller.on("click", this.testDb.bind(this));
         if ($('#sqlHost').val() != '' || $('#sqlPassword').val() != '') {
-            $testDBcaller.click();
+            $testDBcaller.trigger("click");
         }
 
-        $("#language").on('changed.fu.selectlist', this.gotoLanguageVariant.bind(this));
+        $("#language").on('change', this.gotoLanguageVariant.bind(this));
     }
 
-    private gotoLanguageVariant(ev, data) {
+    private gotoLanguageVariant() {
         let href = window.location.href.split('?')[0];
-        href += '?language=' + data.value;
+        href += '?language=' + $("#language").val();
         window.location.href = href;
     }
 

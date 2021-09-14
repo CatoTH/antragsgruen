@@ -16,13 +16,13 @@ $I->seeCheckboxIsChecked('#sameInitiatorSettingsForAmendments input');
 $I->executeJS('$("#sameInitiatorSettingsForAmendments input").prop("checked", false).trigger("change");');
 $I->seeElement('section.amendmentSupporters');
 
-$I->selectFueluxOption('#typeSupportTypeAmendment', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
+$I->selectOption('#typeSupportTypeAmendment', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
 $I->fillField('#typeMinSupportersAmendment', '19');
 $I->submitForm('.adminTypeForm', [], 'save');
 
-$I->seeFueluxOptionIsSelected('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
+$I->seeOptionIsSelected('#typeSupportType', 'Nur die Antragsteller*in');
 $I->dontSeeElement('#typeMinSupporters');
-$I->seeFueluxOptionIsSelected('#typeSupportTypeAmendment', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
+$I->seeOptionIsSelected('#typeSupportTypeAmendment', 'Von der Antragsteller*in angegeben');
 $I->seeInField('#typeMinSupportersAmendment', '19');
 
 

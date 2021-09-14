@@ -28,11 +28,11 @@ export class MoveMotion {
     }
 
     private initConsultation() {
-        $("#consultationId").on("changed.fu.selectlist", this.rebuildMotionTypes.bind(this));
+        $("#consultationId").on("change", this.rebuildMotionTypes.bind(this));
     }
 
     private rebuildMotionTypes() {
-        const consultationId = $("#consultationId").find("input[name=consultation]").val();
+        const consultationId = $("#consultationId").val();
         $(".moveToMotionTypeId").addClass("hidden");
         if (this.$form.find("input[name=target]:checked").val() === "consultation") {
             $(".moveToMotionTypeId" + consultationId).removeClass("hidden");
@@ -55,8 +55,8 @@ export class MoveMotion {
         let isEnabled = true;
 
         let consultationId;
-        if (this.$form.find('input[name=target]:checked').val() === 'consultation' && this.$form.find('input[name=consultation]').length > 0) {
-            consultationId = parseInt(this.$form.find('input[name=consultation]').val() as string);
+        if (this.$form.find('input[name=target]:checked').val() === 'consultation' && this.$form.find('[name=consultation]').length > 0) {
+            consultationId = parseInt(this.$form.find('[name=consultation]').val() as string);
         } else {
             consultationId = null;
         }
@@ -83,7 +83,7 @@ export class MoveMotion {
         this.$form.find('#motionTitlePrefix').on('change keyup', this.rebuildButtonEnabled.bind(this));
         this.$form.find('input[name=operation]').on('change', this.rebuildButtonEnabled.bind(this));
         this.$form.find('input[name=target]').on('change', this.rebuildButtonEnabled.bind(this));
-        $("#consultationId").on("changed.fu.selectlist", this.rebuildButtonEnabled.bind(this));
+        $("#consultationId").on("change", this.rebuildButtonEnabled.bind(this));
         this.rebuildButtonEnabled();
     }
 }

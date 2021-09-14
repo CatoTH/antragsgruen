@@ -56,7 +56,7 @@ use yii\helpers\Html;
                 echo Html::a(Html::encode($otherAmend->getTitle()), UrlHelper::createAmendmentUrl($otherAmend));
                 echo '<span class="by">' . Yii::t('amend', 'merge1_amend_by') . ': ' .
                     $otherAmend->getInitiatorsStr() . '</span>';
-                echo '</div><div class="col-md-7"><div class="fueluxSelectHolder">';
+                echo '</div><div class="col-md-7">';
                 $statusesAll = $amendment->getMyConsultation()->getStatuses()->getStatusNames();
                 $statuses    = [];
                 foreach ($amendment->getMyConsultation()->getStatuses()->getStatusesMarkAsDoneOnRewriting() as $statusId) {
@@ -71,7 +71,7 @@ use yii\helpers\Html;
                     $statuses,
                     ['data-amendment-id' => $otherAmend->id, 'id' => 'otherAmendmentsStatus' . $otherAmend->id, 'class' => 'stdDropdown']
                 );
-                echo '</div></div></div>';
+                echo '</div></div>';
             }
             ?>
         </div>
