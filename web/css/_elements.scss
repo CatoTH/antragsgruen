@@ -94,7 +94,7 @@ button.link {
 .stdDropdown {
   display: block;
   width: 100%;
-  padding: $padding-base-vertical $padding-base-horizontal;
+  padding: $padding-base-vertical #{$padding-base-horizontal + 18px} $padding-base-vertical $padding-base-horizontal;
   margin: 0;
   font-family: inherit;
   -moz-padding-start: calc(0.75rem - 3px);

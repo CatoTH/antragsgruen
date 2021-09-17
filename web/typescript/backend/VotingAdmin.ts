@@ -12,11 +12,11 @@ export class VotingAdmin {
 
     private createVueWidget() {
         const $vueEl = this.$element.find(".votingAdmin")[0];
-        const allVotingData = this.$element.data('voting');
         const voteSettingsUrl = this.$element.data('url-vote-settings');
         const voteCreateUrl = this.$element.data('vote-create');
         const addableMotions = this.$element.data('addable-motions');
         const pollUrl = this.$element.data('url-poll');
+        const votingInitJson = this.$element[0].getAttribute('data-voting');
 
         this.widget = new Vue({
             el: $vueEl,
@@ -33,7 +33,8 @@ export class VotingAdmin {
             </div>`,
             data() {
                 return {
-                    votings: allVotingData,
+                    votingsJson: null,
+                    votings: null,
                     addableMotions,
                     csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
                     pollingId: null
@@ -58,6 +59,17 @@ export class VotingAdmin {
                     }).catch(function (err) {
                         alert(err.responseText);
                     });
+                },
+                setVotingFromJson(data) {
+                    if (data === this.votingsJson) {
+                        return;
+                    }
+                    this.votings = JSON.parse(data);
+                    this.votingsJson = data;
+                },
+                setVotingFromObject(data) {
+                    this.votings = data;
+                    this.votingsJson = null;
                 },
                 setStatus(votingBlockId, newStatus, organizations) {
                     this._performOperation(votingBlockId, {
@@ -118,8 +130,8 @@ export class VotingAdmin {
                 reloadData: function () {
                     const widget = this;
                     $.get(pollUrl, function (data) {
-                        widget.votings = data;
-                    }).catch(function (err) {
+                        widget.setVotingFromJson(data);
+                    }, 'text').catch(function (err) {
                         console.error("Could not load voting data from backend", err);
                     });
                 },
@@ -134,6 +146,7 @@ export class VotingAdmin {
                 window.clearInterval(this.pollingId)
             },
             created() {
+                this.setVotingFromJson(votingInitJson);
                 this.startPolling()
             }
         });
