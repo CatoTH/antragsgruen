@@ -24,6 +24,7 @@ export class VotingAdmin {
                 <voting-admin-widget v-for="voting in votings"
                                      :voting="voting"
                                      :addableMotions="addableMotions"
+                                     :alreadyAddedItems="alreadyAddedItems"
                                      @set-status="setStatus"
                                      @save-settings="saveSettings"
                                      @remove-item="removeItem"
@@ -39,6 +40,23 @@ export class VotingAdmin {
                     csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
                     pollingId: null
                 };
+            },
+            computed: {
+                alreadyAddedItems: function () {
+                    const motions = [];
+                    const amendments = [];
+                    this.votings.forEach(voting => {
+                        voting.items.forEach(item => {
+                            if (item.type === 'motion') {
+                                motions.push(item.id);
+                            }
+                            if (item.type === 'amendment') {
+                                amendments.push(item.id);
+                            }
+                        });
+                    });
+                    return {motions, amendments};
+                }
             },
             methods: {
                 _performOperation: function (votingBlockId, additionalProps) {

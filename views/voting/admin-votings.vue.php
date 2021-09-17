@@ -170,14 +170,14 @@ ob_start();
                     <option value=""><?= Yii::t('voting', 'admin_add_amendments_opt') ?></option>
                     <template v-for="item in addableMotions">
                         <!-- Statute amendment -->
-                        <option v-if="item.type === 'amendment'" :value="'amendment-' + item.id">{{ item.title }}</option>
+                        <option v-if="item.type === 'amendment'" :value="'amendment-' + item.id" :disabled="!isAddable(item)">{{ item.title }}</option>
 
-                        <option v-if="item.type === 'motion' && item.amendments.length === 0" :value="'motion-' + item.id">{{ item.title }}</option>
+                        <option v-if="item.type === 'motion' && item.amendments.length === 0" :value="'motion-' + item.id" :disabled="!isAddable(item)">{{ item.title }}</option>
 
                         <optgroup v-if="item.type === 'motion' && item.amendments.length > 0" :label="item.title">
-                            <option :value="'motion-' + item.id"><?= Yii::t('voting', 'admin_add_opt_motion') ?></option>
-                            <option :value="'motion-' + item.id + '-amendments'"><?= Yii::t('voting', 'admin_add_opt_all_amend') ?></option>
-                            <option v-for="amendment in item.amendments" :value="'amendment-' + amendment.id">{{ amendment.title }}</option>
+                            <option :value="'motion-' + item.id" :disabled="!isAddable(item)"><?= Yii::t('voting', 'admin_add_opt_motion') ?></option>
+                            <option :value="'motion-' + item.id + '-amendments'" v-if="item.amendments.length > 1"><?= Yii::t('voting', 'admin_add_opt_all_amend') ?></option>
+                            <option v-for="amendment in item.amendments" :value="'amendment-' + amendment.id" :disabled="!isAddable(amendment)">{{ amendment.title }}</option>
                         </optgroup>
                     </template>
                 </select>
@@ -280,7 +280,7 @@ $html = ob_get_clean();
 
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['voting', 'addableMotions'],
+        props: ['voting', 'addableMotions', 'alreadyAddedItems'],
         data() {
             return {
                 activityClosed: true,
@@ -388,6 +388,15 @@ $html = ob_get_clean();
             addItem: function () {
                 this.$emit('add-item', this.voting.id, this.addableMotionSelected);
                 this.addableMotionSelected = '';
+            },
+            isAddable: function (item) {
+                if (item.type === 'motion') {
+                    return this.alreadyAddedItems.motions.indexOf(item.id) === -1;
+                }
+                if (item.type === 'amendment') {
+                    return this.alreadyAddedItems.amendments.indexOf(item.id) === -1;
+                }
+                return false;
             },
             openVoting: function () {
                 this.voting.status = STATUS_OPEN;
