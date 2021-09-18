@@ -14,27 +14,49 @@ use yii\web\{AssetBundle, Controller, View};
 
 class Layout
 {
+    /** @var array */
     public $menu                 = [];
+    /** @var array */
     public $breadcrumbs          = [];
+    /** @var array */
     public $multimenu            = [];
+    /** @var string */
     public $preSidebarHtml       = '';
+    /** @var string */
     public $postSidebarHtml      = '';
+    /** @var array */
     public $menusHtml            = [];
+    /** @var array */
     public $menusHtmlSmall       = [];
+    /** @var string */
     public $menusSmallAttachment = '';
+    /** @var bool */
     public $robotsNoindex        = false;
+    /** @var string */
     public $ogImage              = '';
+    /** @var array */
     public $extraCss             = [];
+    /** @var array */
     public $extraJs              = [];
+    /** @var array */
     public $vueTemplates         = [];
+    /** @var array */
     public $bodyCssClasses       = [];
+    /** @var array */
     public $onloadJs             = [];
+    /** @var bool */
     public $fullWidth            = false;
+    /** @var bool */
     public $fullScreen           = false;
+    /** @var null|string */
     public $mainCssFile          = null;
+    /** @var array */
     public $mainAMDModules       = [];
+    /** @var null|string */
     public $canonicalUrl         = null;
+    /** @var array */
     public $alternateLanuages    = [];
+    /** @var array */
     public $feeds                = [];
 
     /** @var Consultation|null */

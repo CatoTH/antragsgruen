@@ -2,8 +2,7 @@
 
 namespace app\models;
 
-use app\models\db\IMotion;
-use app\models\db\ISupporter;
+use app\models\db\{IMotion, ISupporter};
 
 class LimitedSupporterList
 {
@@ -41,7 +40,7 @@ class LimitedSupporterList
         } elseif ($skipped === 1) {
             return trim($limiter) . ' ' . \Yii::t('export', 'truncated_supp_1');
         } else {
-            return trim($limiter) . ' ' . str_replace('%NUM%', $skipped, \Yii::t('export', 'truncated_supp_x'));
+            return trim($limiter) . ' ' . str_replace('%NUM%', (string)$skipped, \Yii::t('export', 'truncated_supp_x'));
         }
     }
 }

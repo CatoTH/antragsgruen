@@ -20,8 +20,11 @@ class ConsultationCreateForm extends Model
 
     /** @var string */
     public $settingsType;
+    /** @var string */
     public $urlPath;
+    /** @var string */
     public $title;
+    /** @var string */
     public $titleShort;
 
     /** @var Consultation */

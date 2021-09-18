@@ -99,13 +99,11 @@ class Consultation extends ActiveRecord
     const PRELOAD_ALL = 'all';
     private $preloadedAllMotionData = '';
     private $preloadedAmendmentIds  = null;
-    private $preloadedMotionIds     = null;
 
     public function preloadAllMotionData(string $preloadType)
     {
         $this->preloadedAllMotionData = $preloadType;
         foreach ($this->motions as $motion) {
-            $this->preloadedMotionIds[] = $motion->id;
             foreach ($motion->amendments as $amendment) {
                 $this->preloadedAmendmentIds[] = $amendment->id;
             }
@@ -157,7 +155,7 @@ class Consultation extends ActiveRecord
     private $motionCache = [];
 
     /**
-     * @param string|null $motionSlug
+     * @param string|null|int $motionSlug
      */
     public function getMotion($motionSlug): ?Motion
     {

@@ -2,9 +2,9 @@
 
 namespace app\models\db;
 
+use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
-use app\models\settings\VotingData;
 use yii\db\ActiveRecord;
 
 /**
@@ -100,7 +100,7 @@ class Vote extends ActiveRecord
                 $this->vote = self::VOTE_ABSTENTION;
                 break;
             default:
-                $this->vote = null;
+                throw new FormError('Invalid vote: ' . $vote);
         }
     }
 

@@ -8,42 +8,79 @@ class AntragsgruenApp implements \JsonSerializable
 {
     use JsonConfigTrait;
 
+    /** @var null|array */
     public $dbConnection          = null;
+    /** @var null|string */
     public $siteSubdomain         = null;
+    /** @var null|array */
     public $redis                 = null;
+    /** @var bool */
     public $prettyUrl             = true;
+    /** @var string */
     public $tablePrefix           = '';
+    /** @var string */
     public $resourceBase          = '/';
+    /** @var string */
     public $baseLanguage          = 'en';
+    /** @var string */
     public $randomSeed            = '';
+    /** @var bool */
     public $multisiteMode         = false;
+    /** @var string */
     public $domainPlain           = 'http://antragsgruen.local/';
+    /** @var string */
     public $domainSubdomain       = '';
+    /** @var null|string */
     public $cookieDomain          = null;
+    /** @var bool */
     public $hasSaml               = false;
+    /** @var string */
     public $samlOrgaFile          = null;
+    /** @var bool */
     public $prependWWWToSubdomain = true;
+    /** @var bool */
     public $confirmEmailAddresses = true;
+    /** @var bool */
     public $dataPrivacyCheckbox   = false;
+    /** @var string */
     public $mailFromName          = 'Antragsgrün';
+    /** @var string */
     public $mailFromEmail         = '';
+    /** @var int[] */
     public $adminUserIds          = [];
+    /** @var string[] */
     public $siteBehaviorClasses   = [];
+    /** @var string[] */
     public $authClientCollection  = [];
+    /** @var string[] */
     public $blockedSubdomains     = ['www', 'rest', 'ftp', 'smtp', 'imap'];
+    /** @var int */
     public $autoLoginDuration     = 31536000; // 1 Year
+    /** @var null|string */
     public $xelatexPath           = null; // @TODO OBSOLETE
+    /** @var null|string */
     public $xdvipdfmx             = null; // @TODO OBSOLETE
+    /** @var null|string */
     public $lualatexPath          = null;
+    /** @var null|string */
     public $pdfunitePath          = null;
+    /** @var bool */
     public $pdfExportConcat       = true;
+    /** @var bool */
     public $pdfExportIntegFrame   = false;
+    /** @var array */
     public $localMessages         = [];
+    /** @var null|string */
     public $imageMagickPath       = null;
+    /** @var null|int */
     public $sitePurgeAfterDays    = null;
+    /** @var null|string */
     public $binaryFilePath        = null;
+    /** @var null|string */
     public $viewCacheFilePath     = null; // If set, then view caches are saved to a separate directory, overriding the default and not using Redis
+    /** @var string */
     public $mode                  = 'production'; // [production | sandbox]
+    /** @var null|string */
     public $updateKey             = null;
 
     /** @var string[] */

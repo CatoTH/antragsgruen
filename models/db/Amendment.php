@@ -61,7 +61,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return string[]
+     * @return int[]
      */
     public static function getProposedChangeStatuses(): array
     {

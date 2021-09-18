@@ -157,7 +157,7 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionSaveAmendmentComment()
     {
-        $amendmentId = \Yii::$app->request->post('id');
+        $amendmentId = intval(\Yii::$app->request->post('id'));
         $text        = \Yii::$app->request->post('comment');
 
         \Yii::$app->response->format = Response::FORMAT_RAW;

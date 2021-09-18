@@ -1,13 +1,11 @@
 <?php
 
 use app\components\HTMLTools;
-use app\models\forms\SiteCreateForm;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /**
  * @var \Yii\web\View $this
- * @var \app\models\db\Site[] $sites
+ * @var array $sites
  */
 
 /** @var \app\controllers\ConsultationController $controller */

@@ -8,7 +8,7 @@ class FormError extends ExceptionBase
     protected $messages;
 
     /**
-     * @param string|string[] $messages
+     * @param string|string[]|string[][] $messages
      */
     public function __construct($messages)
     {
