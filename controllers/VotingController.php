@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use app\models\db\{Amendment, IMotion, Motion, User, Vote, VotingBlock};
+use app\components\ResourceLock;
 use app\models\exceptions\FormError;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
@@ -97,7 +98,7 @@ class VotingController extends Base
         }
     }
 
-    public function deleteVoting(VotingBlock $votingBlock)
+    private function deleteVoting(VotingBlock $votingBlock)
     {
         $votingBlock->deleteVoting();
     }
@@ -177,6 +178,7 @@ class VotingController extends Base
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
+        ResourceLock::lockVotingBlockForWrite($votingBlock);
 
         switch (\Yii::$app->request->post('op')) {
             case 'update-status':
@@ -197,6 +199,8 @@ class VotingController extends Base
         }
 
         $responseData = $this->getAllVotingAdminData();
+
+        ResourceLock::releaseAllLocks();
 
         return $this->returnRestResponse(200, json_encode($responseData));
     }
@@ -324,15 +328,14 @@ class VotingController extends Base
         $exitingVote->delete();
     }
 
-    /**
-     * @return Vote[]
-     */
-    private function voteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup, bool $public, string $voteChoice): array {
+    private function voteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup, bool $public, string $voteChoice): void {
         $votes = [];
         foreach ($votingBlock->getItemGroupItems($itemGroup) as $imotion) {
             $votes[] = $this->voteForSingleItem($user, $votingBlock, $imotion, $public, $voteChoice);
         }
-        return $votes;
+        foreach ($votes as $vote) {
+            $vote->save();
+        }
     }
 
     private function undoVoteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup): void {
@@ -367,6 +370,8 @@ class VotingController extends Base
         if (!$votingBlock) {
             return $this->getError('Voting not found');
         }
+        ResourceLock::lockVotingBlockForRead($votingBlock);
+
         if ($votingBlock->votingStatus !== VotingBlock::STATUS_OPEN) {
             return $this->getError('Voting not open');
         }
@@ -376,39 +381,37 @@ class VotingController extends Base
         }
 
         try {
-            $votesToSave = [];
             foreach (\Yii::$app->request->post('votes', []) as $voteData) {
                 $public = (isset($voteData['public']) && $voteData['public']);
                 if (isset($voteData['itemGroupSameVote']) && trim($voteData['itemGroupSameVote']) !== '') {
+                    ResourceLock::lockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
                     if ($voteData['vote'] === 'undo') {
                         $this->undoVoteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote']);
                     } else {
-                        $votesToSave = array_merge(
-                            $votesToSave,
-                            $this->voteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote'], $public, $voteData['vote'])
-                        );
+                        $this->voteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote'], $public, $voteData['vote']);
                     }
+                    ResourceLock::unlockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
                 } else {
                     // Vote for a single item that is not assigned to a item group
                     if (!in_array($voteData['itemType'], ['motion', 'amendment'])) {
                         return $this->getError('Invalid vote');
                     }
                     $item = $this->getIMotionByTypeAndId($voteData['itemType'], intval($voteData['itemId']), $votingBlock);
+                    ResourceLock::lockIMotionItemForVoting($item);
                     if ($voteData['vote'] === 'undo') {
                         $this->undoVoteForSingleItem($user, $votingBlock, $item);
                     } else {
-                        $votesToSave[] = $this->voteForSingleItem($user, $votingBlock, $item, $public, $voteData['vote']);
+                        $vote = $this->voteForSingleItem($user, $votingBlock, $item, $public, $voteData['vote']);
+                        $vote->save();
                     }
+                    ResourceLock::unlockIMotionItemForVoting($item);
                 }
-            }
-
-            foreach ($votesToSave as $vote) {
-                $vote->save();
             }
         } catch (FormError $error) {
             return $this->getError($error->getMessage());
         }
 
+        ResourceLock::releaseAllLocks();
         $votingBlock->refresh();
 
         $responseJson = $this->getOpenVotingsUserData($assignedToMotion);

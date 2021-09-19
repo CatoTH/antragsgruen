@@ -35,7 +35,8 @@
     "swiftmailer/swiftmailer": "^6.2",
     "guzzlehttp/guzzle": "^7.2",
     "symfony/string": "^5.3",
-    "symfony/translation-contracts": "^2.4"
+    "symfony/translation-contracts": "^2.4",
+    "symfony/lock": "^5.3"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.1.3",
