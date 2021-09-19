@@ -19,7 +19,7 @@ $json = [
         } else {
             /** @var Motion $imotion */
             $title = $imotion->title;
-            $titleWithIntro = $imotion->getTitleWithPrefix();
+            $titleWithIntro = $imotion->getTitleWithIntro();
             $amendments = $imotion->getVisibleAmendmentsSorted();
             $type = 'motion';
             $htmlLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($imotion));
