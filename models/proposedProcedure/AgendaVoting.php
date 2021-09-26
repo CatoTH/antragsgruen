@@ -9,6 +9,11 @@ use app\models\IMotionList;
 
 class AgendaVoting
 {
+    const API_CONTEXT_PROPOSED_PROCEDURE = 'pp';
+    const API_CONTEXT_VOTING = 'voting';
+    const API_CONTEXT_ADMIN = 'admin';
+    const API_CONTEXT_RESULT = 'result';
+
     /** @var string */
     public $title;
 
@@ -62,7 +67,7 @@ class AgendaVoting
         }
     }
 
-    private function getApiObject(?string $title, ?User $user, bool $adminFields, bool $resultFields): array
+    private function getApiObject(?string $title, ?User $user, string $context): array
     {
         $votingBlockJson = [
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
@@ -73,7 +78,7 @@ class AgendaVoting
             'assignedMotion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'items' => [],
         ];
-        if ($adminFields) {
+        if ($context === static::API_CONTEXT_ADMIN) {
             $votingBlockJson['user_organizations'] = [];
             foreach (User::getSelectableUserOrganizations(true) as $organization) {
                 $votingBlockJson['user_organizations'][] = [
@@ -130,8 +135,17 @@ class AgendaVoting
                 ];
             }
 
-            if ($user && $this->voting) {
-                $this->setApiObjectVotingData($data, $this->voting, $item, $user);
+            if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
+                $vote = $this->voting->getUserSingleItemVote($user, $item);
+                $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
+                $data['can_vote'] = $this->voting->userIsCurrentlyAllowedToVoteFor($user, $item);
+            }
+
+            if ($this->voting && $context === static::API_CONTEXT_ADMIN) {
+                $this->setApiObjectResultData($data, $this->voting, $item, true);
+            }
+            if ($this->voting && $context === static::API_CONTEXT_RESULT) {
+                $this->setApiObjectResultData($data, $this->voting, $item, false);
             }
 
             $votingBlockJson['items'][] = $data;
@@ -140,19 +154,14 @@ class AgendaVoting
         return $votingBlockJson;
     }
 
-    private function setApiObjectVotingData(array &$data, VotingBlock $voting, IMotion $item, User $user): void
+    private function setApiObjectResultData(array &$data, VotingBlock $voting, IMotion $item, bool $isAdmin): void
     {
-        $vote = $voting->getUserSingleItemVote($user, $item);
-        $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
-        $data['can_vote'] = $voting->userIsCurrentlyAllowedToVoteFor($user, $item);
-
         if ($voting->resultsPublic === VotingBlock::RESULTS_PUBLIC_YES) {
             $canSeeResults = true;
         } else {
-            $canSeeResults = $user->hasPrivilege($item->getMyConsultation(), User::PRIVILEGE_VOTINGS);
+            $canSeeResults = $isAdmin;
         }
 
-        $isAdmin = $user->hasPrivilege($item->getMyConsultation(), User::PRIVILEGE_VOTINGS);
         if ($voting->votesPublic === VotingBlock::VOTES_PUBLIC_ALL) {
             $canSeeVotes = true;
         } elseif ($voting->votesPublic === VotingBlock::VOTES_PUBLIC_ADMIN) {
@@ -199,7 +208,7 @@ class AgendaVoting
     {
         $title = ($hasMultipleVotingBlocks || $this->voting ? $this->title : null);
 
-        return $this->getApiObject($title, null, false, false);
+        return $this->getApiObject($title, null, AgendaVoting::API_CONTEXT_PROPOSED_PROCEDURE);
     }
 
     public function getAdminApiObject(): array
@@ -207,16 +216,16 @@ class AgendaVoting
         if (!$this->voting->getMyConsultation()->havePrivilege(User::PRIVILEGE_VOTINGS)) {
             throw new Access('No voting admin permissions');
         }
-        return $this->getApiObject($this->title, null, true, true);
+        return $this->getApiObject($this->title, null, AgendaVoting::API_CONTEXT_ADMIN);
     }
 
-    public function getUserOpenApiObject(?User $user): array
+    public function getUserVotingApiObject(?User $user): array
     {
-        return $this->getApiObject($this->title, $user, false, false);
+        return $this->getApiObject($this->title, $user, AgendaVoting::API_CONTEXT_VOTING);
     }
 
-    public function getUserClosedApiObject(?User $user): array
+    public function getUserResultsApiObject(?User $user): array
     {
-        return $this->getApiObject($this->title, $user, false, true);
+        return $this->getApiObject($this->title, $user, AgendaVoting::API_CONTEXT_RESULT);
     }
 }

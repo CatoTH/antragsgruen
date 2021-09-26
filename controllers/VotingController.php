@@ -260,7 +260,7 @@ class VotingController extends Base
         $user = User::getCurrentUser();
         $votingData = [];
         foreach (Factory::getOpenVotingBlocks($this->consultation, $assignedToMotion) as $voting) {
-            $votingData[] = $voting->getUserOpenApiObject($user);
+            $votingData[] = $voting->getUserVotingApiObject($user);
         }
 
         return json_encode($votingData);

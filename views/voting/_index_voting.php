@@ -25,7 +25,7 @@ $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 
 $apiData = [];
 foreach ($votingBlocksToRender as $votingBlockToRender) {
-    $apiData[] = $votingBlockToRender->getUserOpenApiObject(User::getCurrentUser());
+    $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
 }
 
 $assignedToMotionId = ($assignedToMotion ? $assignedToMotion->id : '');
