@@ -62,12 +62,14 @@ class AgendaVoting
         }
     }
 
-    private function getApiObject(?string $title, ?User $user, bool $adminFields): array
+    private function getApiObject(?string $title, ?User $user, bool $adminFields, bool $resultFields): array
     {
         $votingBlockJson = [
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
             'title' => $title,
             'status' => ($this->voting ? $this->voting->votingStatus : null),
+            'votesPublic' => ($this->voting ? $this->voting->votesPublic : null),
+            'resultsPublic' => ($this->voting ? $this->voting->resultsPublic : null),
             'assignedMotion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'items' => [],
         ];
@@ -129,26 +131,7 @@ class AgendaVoting
             }
 
             if ($user && $this->voting) {
-                $vote = $this->voting->getUserSingleItemVote($user, $item);
-                $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
-                $data['can_vote'] = $this->voting->userIsAllowedToVoteFor($user, $item);
-            }
-
-            if ($adminFields && $this->voting) {
-                if (is_a($item, Amendment::class)) {
-                    $votes = $this->voting->getVotesForAmendment($item);
-                } else {
-                    $votes = $this->voting->getVotesForMotion($item);
-                }
-                $data['votes'] = array_map(function (Vote $vote): array {
-                    return [
-                        'vote' => $vote->getVoteForApi(),
-                        'user_id' => $vote->userId,
-                        'user_name' => ($vote->user ? $vote->user->getAuthUsername() : null),
-                        'user_organizations' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),
-                    ];
-                }, $votes);
-                $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
+                $this->setApiObjectVotingData($data, $this->voting, $item, $user);
             }
 
             $votingBlockJson['items'][] = $data;
@@ -157,11 +140,66 @@ class AgendaVoting
         return $votingBlockJson;
     }
 
+    private function setApiObjectVotingData(array &$data, VotingBlock $voting, IMotion $item, User $user): void
+    {
+        $vote = $voting->getUserSingleItemVote($user, $item);
+        $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
+        $data['can_vote'] = $voting->userIsCurrentlyAllowedToVoteFor($user, $item);
+
+        if ($voting->resultsPublic === VotingBlock::RESULTS_PUBLIC_YES) {
+            $canSeeResults = true;
+        } else {
+            $canSeeResults = $user->hasPrivilege($item->getMyConsultation(), User::PRIVILEGE_VOTINGS);
+        }
+
+        $isAdmin = $user->hasPrivilege($item->getMyConsultation(), User::PRIVILEGE_VOTINGS);
+        if ($voting->votesPublic === VotingBlock::VOTES_PUBLIC_ALL) {
+            $canSeeVotes = true;
+        } elseif ($voting->votesPublic === VotingBlock::VOTES_PUBLIC_ADMIN) {
+            $canSeeVotes = $isAdmin;
+        } else {
+            $canSeeVotes = false;
+        }
+        if (!$canSeeVotes && !$canSeeResults) {
+            return;
+        }
+
+        if (is_a($item, Amendment::class)) {
+            $votes = $voting->getVotesForAmendment($item);
+        } else {
+            /** @var Motion $item */
+            $votes = $voting->getVotesForMotion($item);
+        }
+        if ($canSeeResults) {
+            $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
+        }
+        if ($canSeeVotes) {
+            // Extra safeguard to prevent accidental exposure of votes, even if this case should not be triggerable through the interface
+            $singleVotes = array_values(array_filter($votes, function (Vote $vote) use ($isAdmin) {
+                if ($vote->public === VotingBlock::VOTES_PUBLIC_ALL) {
+                    return true;
+                } elseif ($vote->public === VotingBlock::VOTES_PUBLIC_ADMIN) {
+                    return $isAdmin;
+                } else {
+                    return false;
+                }
+            }));
+            $data['votes'] = array_map(function (Vote $vote): array {
+                return [
+                    'vote' => $vote->getVoteForApi(),
+                    'user_id' => $vote->userId,
+                    'user_name' => ($vote->user ? $vote->user->getAuthUsername() : null),
+                    'user_organizations' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),
+                ];
+            }, $singleVotes);
+        }
+    }
+
     public function getProposedProcedureApiObject(bool $hasMultipleVotingBlocks): array
     {
         $title = ($hasMultipleVotingBlocks || $this->voting ? $this->title : null);
 
-        return $this->getApiObject($title, null, false);
+        return $this->getApiObject($title, null, false, false);
     }
 
     public function getAdminApiObject(): array
@@ -169,11 +207,16 @@ class AgendaVoting
         if (!$this->voting->getMyConsultation()->havePrivilege(User::PRIVILEGE_VOTINGS)) {
             throw new Access('No voting admin permissions');
         }
-        return $this->getApiObject($this->title, null, true);
+        return $this->getApiObject($this->title, null, true, true);
     }
 
-    public function getUserApiObject(?User $user): array
+    public function getUserOpenApiObject(?User $user): array
     {
-        return $this->getApiObject($this->title, $user, true);
+        return $this->getApiObject($this->title, $user, false, false);
+    }
+
+    public function getUserClosedApiObject(?User $user): array
+    {
+        return $this->getApiObject($this->title, $user, false, true);
     }
 }

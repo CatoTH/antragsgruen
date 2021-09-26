@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property string $title
  * @property int|null $majorityType
  * @property int|null $votesPublic
+ * @property int|null $resultsPublic
  * @property int|null $assignedToMotionId
  * @property string|null $usersPresentByOrga
  * @property string|null $activityLog
@@ -25,7 +26,7 @@ use yii\db\ActiveRecord;
  */
 class VotingBlock extends ActiveRecord
 {
-    // HINT: keep in sync with admin-votings.vue.php
+    // HINT: keep in sync with admin-votings.vue.php & voting-block.vue.php
 
     // The voting is not performed using Antragsgrün
     const STATUS_OFFLINE = 0;
@@ -44,6 +45,21 @@ class VotingBlock extends ActiveRecord
 
     // More yes- than no-votes
     const MAJORITY_TYPE_SIMPLE = 1;
+
+    // Nobody can see who voted how
+    const VOTES_PUBLIC_NO = 0;
+
+    // Admins can see who voted how
+    const VOTES_PUBLIC_ADMIN = 1;
+
+    // Everyone with voting rights can see who voted how
+    const VOTES_PUBLIC_ALL = 2;
+
+    // No detailed voting results are visible
+    const RESULTS_PUBLIC_NO = 0;
+
+    // Detailed voting results (number of yes/no votes) are visible
+    const RESULTS_PUBLIC_YES = 1;
 
     const ACTIVITY_TYPE_OPENED = 1;
     const ACTIVITY_TYPE_CLOSED = 2;
@@ -139,16 +155,8 @@ class VotingBlock extends ActiveRecord
         }));
     }
 
-    public function userIsAllowedToVoteFor(User $user, IMotion $imotion): bool
+    public function userIsGenerallyAllowedToVoteFor(User $user, IMotion $imotion): bool
     {
-        if ($this->getUserSingleItemVote($user, $imotion)) {
-            // The user has already voted
-            return false;
-        }
-        if ($this->votingStatus !== static::STATUS_OPEN) {
-            return false;
-        }
-
         $foundImotion = false;
         if (is_a($imotion, Motion::class)) {
             foreach ($this->motions as $motion) {
@@ -178,6 +186,19 @@ class VotingBlock extends ActiveRecord
 
         // If no plugin
         return true;
+    }
+
+    public function userIsCurrentlyAllowedToVoteFor(User $user, IMotion $imotion): bool
+    {
+        if ($this->getUserSingleItemVote($user, $imotion)) {
+            // The user has already voted
+            return false;
+        }
+        if ($this->votingStatus !== static::STATUS_OPEN) {
+            return false;
+        }
+
+        return $this->userIsGenerallyAllowedToVoteFor($user, $imotion);
     }
 
     public function switchToOfflineVoting(): void {
@@ -210,7 +231,10 @@ class VotingBlock extends ActiveRecord
             $this->majorityType = static::MAJORITY_TYPE_SIMPLE;
         }
         if ($this->votesPublic === null) {
-            $this->votesPublic = 0;
+            $this->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
+        }
+        if ($this->resultsPublic === null) {
+            $this->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
         }
         $this->votingStatus = VotingBlock::STATUS_OPEN;
         $this->save();

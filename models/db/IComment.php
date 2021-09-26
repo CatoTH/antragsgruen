@@ -166,11 +166,9 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     }
 
     /**
-     * @param Consultation $consultation
-     * @param int $limit
      * @return IComment[]
      */
-    public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
+    public static function getNewestByConsultation(Consultation $consultation, int $limit = 5): array
     {
         /** @var IComment[] $comments */
         $comments = array_merge(

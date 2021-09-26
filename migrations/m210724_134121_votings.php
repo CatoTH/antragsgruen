@@ -12,6 +12,7 @@ class m210724_134121_votings extends Migration
         $this->update('votingBlock', ['votingStatus' => 0]);
         $this->addColumn('votingBlock', 'majorityType', 'TINYINT NULL DEFAULT NULL AFTER title');
         $this->addColumn('votingBlock', 'votesPublic', 'TINYINT NULL DEFAULT NULL AFTER majorityType');
+        $this->addColumn('votingBlock', 'resultsPublic', 'TINYINT NULL DEFAULT NULL AFTER votesPublic');
         $this->addColumn('votingBlock', 'assignedToMotionId', 'INT NULL DEFAULT NULL AFTER votesPublic');
         $this->addColumn('votingBlock', 'usersPresentByOrga', 'TEXT NULL DEFAULT NULL AFTER assignedToMotionId');
         $this->addColumn('votingBlock', 'activityLog', 'TEXT NULL DEFAULT NULL AFTER votingStatus');
@@ -53,6 +54,7 @@ class m210724_134121_votings extends Migration
         $this->dropColumn('votingBlock', 'assignedToMotionId');
         $this->dropColumn('votingBlock', 'usersPresentByOrga');
         $this->dropColumn('votingBlock', 'votesPublic');
+        $this->dropColumn('votingBlock', 'resultsPublic');
         $this->dropColumn('votingBlock', 'majorityType');
         $this->update('votingBlock', ['votingStatus' => 11]);
     }

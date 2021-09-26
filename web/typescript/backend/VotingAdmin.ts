@@ -4,22 +4,24 @@ declare var Vue: VueConstructor;
 
 export class VotingAdmin {
     private widget;
+    private element: HTMLElement;
 
-    constructor(private $element: JQuery) {
+    constructor($element: JQuery) {
+        this.element = $element[0];
         this.createVueWidget();
         this.initVotingCreater();
     }
 
     private createVueWidget() {
-        const $vueEl = this.$element.find(".votingAdmin")[0];
-        const voteSettingsUrl = this.$element.data('url-vote-settings');
-        const voteCreateUrl = this.$element.data('vote-create');
-        const addableMotions = this.$element.data('addable-motions');
-        const pollUrl = this.$element.data('url-poll');
-        const votingInitJson = this.$element[0].getAttribute('data-voting');
+        const vueEl = this.element.querySelector(".votingAdmin");
+        const voteSettingsUrl = this.element.getAttribute('data-url-vote-settings');
+        const voteCreateUrl = this.element.getAttribute('data-vote-create');
+        const addableMotions = JSON.parse(this.element.getAttribute('data-addable-motions'));
+        const pollUrl = this.element.getAttribute('data-url-poll');
+        const votingInitJson = this.element.getAttribute('data-voting');
 
         this.widget = new Vue({
-            el: $vueEl,
+            el: vueEl,
             template: `<div class="adminVotings">
                 <voting-admin-widget v-for="voting in votings"
                                      :voting="voting"
@@ -37,7 +39,7 @@ export class VotingAdmin {
                     votingsJson: null,
                     votings: null,
                     addableMotions,
-                    csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
+                    csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                     pollingId: null
                 };
             },
@@ -99,10 +101,12 @@ export class VotingAdmin {
                         }}),
                     });
                 },
-                saveSettings(votingBlockId, title, assignedMotion) {
+                saveSettings(votingBlockId, title, resultsPublic, votesPublic, assignedMotion) {
                     this._performOperation(votingBlockId, {
                         op: 'save-settings',
                         title,
+                        resultsPublic,
+                        votesPublic,
                         assignedMotion,
                     });
                 },
@@ -171,19 +175,21 @@ export class VotingAdmin {
     }
 
     private initVotingCreater() {
-        const $opener = this.$element.find('.createVotingOpener'),
-            $form = this.$element.find('.createVotingHolder');
-        $opener.on('click', () => {
-            $form.removeClass('hidden');
-            $opener.addClass('hidden');
+        const opener = this.element.querySelector('.createVotingOpener'),
+            form = this.element.querySelector('.createVotingHolder');
+        opener.addEventListener('click', () => {
+            form.classList.remove('hidden');
+            opener.classList.add('hidden');
         });
-        $form.find('form').on('submit', (ev) => {
+        form.querySelector('form').addEventListener('submit', (ev) => {
             ev.stopPropagation();
             ev.preventDefault();
-            this.widget.createVoting($form.find('.settingsTitle').val(), $form.find('.settingsAssignedMotion').val());
+            const title = form.querySelector('.settingsTitle') as HTMLInputElement;
+            const assigned = form.querySelector('.settingsAssignedMotion') as HTMLSelectElement;
+            this.widget.createVoting(title.value, assigned.value);
 
-            $form.addClass('hidden');
-            $opener.removeClass('hidden');
+            form.classList.add('hidden');
+            opener.classList.remove('hidden');
         });
     }
 }

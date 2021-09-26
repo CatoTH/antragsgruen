@@ -2,12 +2,11 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{RSSExporter, Tools, UrlHelper};
 use yii\db\ActiveQuery;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $userId
  * @property int $amendmentId
@@ -26,8 +25,6 @@ use yii\db\ActiveQuery;
  */
 class AmendmentComment extends IComment
 {
-    /**
-     */
     public function init()
     {
         parent::init();
@@ -40,9 +37,7 @@ class AmendmentComment extends IComment
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'amendmentComment';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentComment';
     }
 
     /**
@@ -106,10 +101,7 @@ class AmendmentComment extends IComment
             ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_PRIVATE));
     }
 
-    /**
-     * @return Consultation
-     */
-    public function getConsultation()
+    public function getConsultation(): ?Consultation
     {
         $amendment = $this->getIMotion();
         return $amendment->getMyConsultation();
@@ -130,11 +122,9 @@ class AmendmentComment extends IComment
     }
 
     /**
-     * @param Consultation $consultation
-     * @param int $limit
      * @return AmendmentComment[]
      */
-    public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
+    public static function getNewestByConsultation(Consultation $consultation, int $limit = 5): array
     {
         $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
 
@@ -153,10 +143,7 @@ class AmendmentComment extends IComment
         return $amendment->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') . ' ' . $amendment->getMyMotion()->getTitleWithPrefix();
     }
 
-    /**
-     * @param RSSExporter $feed
-     */
-    public function addToFeed(RSSExporter $feed)
+    public function addToFeed(RSSExporter $feed): void
     {
         if ($this->status === static::STATUS_PRIVATE) {
             return;
@@ -187,7 +174,6 @@ class AmendmentComment extends IComment
     }
 
     /**
-     * @param Consultation $consultation
      * @return AmendmentComment[]
      */
     public static function getScreeningComments(Consultation $consultation)
@@ -220,9 +206,7 @@ class AmendmentComment extends IComment
         return $query->all();
     }
 
-    /**
-     */
-    public function logToConsultationLog()
+    public function logToConsultationLog(): void
     {
         if ($this->status === static::STATUS_PRIVATE) {
             return;
@@ -230,10 +214,7 @@ class AmendmentComment extends IComment
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::AMENDMENT_COMMENT, $this->id);
     }
 
-    /**
-     * @return array
-     */
-    public function getUserdataExportObject()
+    public function getUserdataExportObject(): array
     {
         $amendment = $this->getIMotion();
         return [

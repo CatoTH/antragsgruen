@@ -215,6 +215,33 @@ ob_start();
             <?= Yii::t('voting', 'settings_title') ?>:<br>
             <input type="text" v-model="settingsTitle" class="form-control">
         </label>
+        <fieldset class="resultsPublicSettings">
+            <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
+            <label>
+                <input type="radio" value="0" v-model="resultsPublic">
+                <?= Yii::t('voting', 'settings_resultspublic_admins') ?>
+            </label>
+            <label>
+                <input type="radio" value="1" v-model="resultsPublic">
+                <?= Yii::t('voting', 'settings_resultspublic_all') ?>
+            </label>
+        </fieldset>
+        <fieldset class="votesPublicSettings">
+            <legend><?= Yii::t('voting', 'settings_votespublic') ?></legend>
+            <label>
+                <input type="radio" value="0" v-model="votesPublic" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_votespublic_nobody') ?>
+            </label>
+            <label>
+                <input type="radio" value="1" v-model="votesPublic" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_votespublic_admins') ?>
+            </label>
+            <label>
+                <input type="radio" value="2" v-model="votesPublic" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_votespublic_all') ?>
+            </label>
+            <div class="hint"><?= Yii::t('voting', 'settings_votespublic_hint') ?></div>
+        </fieldset>
         <label class="assignedMotion">
             <?= Yii::t('voting', 'settings_motionassign') ?>:
             <span class="glyphicon glyphicon-info-sign"
@@ -288,9 +315,12 @@ $html = ob_get_clean();
                 addableMotionSelected: '',
                 settingsOpened: false,
                 changedSettings: {
+                    // Caching the changed values here prevents unsaved changes to settings from being reset by AJAX polling
                     // null = uninitialized
                     title: null,
-                    assignedMotion: null
+                    assignedMotion: null,
+                    votesPublic: null,
+                    resultsPublic: null
                 }
             }
         },
@@ -347,6 +377,22 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.changedSettings.title = value;
+                }
+            },
+            votesPublic: {
+                get: function () {
+                    return (this.changedSettings.votesPublic !== null ? this.changedSettings.votesPublic : this.voting.votesPublic);
+                },
+                set: function (value) {
+                    this.changedSettings.votesPublic = value;
+                }
+            },
+            resultsPublic: {
+                get: function () {
+                    return (this.changedSettings.resultsPublic !== null ? this.changedSettings.resultsPublic : this.voting.resultsPublic);
+                },
+                set: function (value) {
+                    this.changedSettings.resultsPublic = value;
                 }
             },
             settingsAssignedMotion: {
@@ -457,7 +503,8 @@ $html = ob_get_clean();
             saveSettings: function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
+                this.changedSettings.votesPublic = null;
                 this.settingsOpened = false;
             },
             deleteVoting: function () {

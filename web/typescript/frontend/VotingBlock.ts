@@ -5,33 +5,35 @@ declare var Vue: VueConstructor;
 export class VotingBlock {
     private widget;
 
-    constructor(private $element: JQuery) {
-        const $vueEl = this.$element.find(".currentVoting");
-        const allVotingData = $element.data('voting');
-        const pollUrl = $element.data('url-poll');
-        const voteUrl = $element.data('url-vote');
+    constructor($element: JQuery) {
+        const element = $element[0],
+            vueEl = element.querySelector(".currentVoting"),
+            votingInitJson = element.getAttribute('data-voting'),
+            pollUrl = element.getAttribute('data-url-poll'),
+            voteUrl = element.getAttribute('data-url-vote');
 
         this.widget = new Vue({
-            el: $vueEl[0],
+            el: vueEl,
             template: `
                 <div class="currentVotings">
                 <voting-block-widget v-for="voting in votings" :voting="voting" @vote="vote"></voting-block-widget>
                 </div>`,
             data() {
                 return {
-                    votings: allVotingData,
+                    votings: JSON.parse(votingInitJson),
                     pollingId: null
                 };
             },
             methods: {
-                vote: function (votingBlockId, itemGroupSameVote, itemType, itemId, vote) {
+                vote: function (votingBlockId, itemGroupSameVote, itemType, itemId, vote, votePublic) {
                     const postData = {
-                        _csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
+                        _csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                         votes: [{
                             itemGroupSameVote,
                             itemType,
                             itemId,
-                            vote
+                            vote,
+                            "public": votePublic
                         }]
                     };
                     const widget = this;

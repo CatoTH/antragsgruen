@@ -2,12 +2,11 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{RSSExporter, Tools, UrlHelper};
 use yii\db\ActiveQuery;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $userId
  * @property int $motionId
@@ -42,9 +41,7 @@ class MotionComment extends IComment
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'motionComment';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'motionComment';
     }
 
     /**
@@ -138,10 +135,9 @@ class MotionComment extends IComment
     }
 
     /**
-     * @param int $limit
      * @return MotionComment[]
      */
-    public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
+    public static function getNewestByConsultation(Consultation $consultation, int $limit = 5): array
     {
         $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
 
@@ -153,28 +149,19 @@ class MotionComment extends IComment
             ->offset(0)->limit($limit)->all();
     }
 
-    /**
-     * @return Consultation
-     */
-    public function getConsultation()
+    public function getConsultation(): ?Consultation
     {
         $motion = $this->getIMotion();
         return $motion->getMyConsultation();
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionTitle()
+    public function getMotionTitle(): string
     {
         $motion = $this->getIMotion();
         return $motion->getTitleWithPrefix();
     }
 
-    /**
-     * @param RSSExporter $feed
-     */
-    public function addToFeed(RSSExporter $feed)
+    public function addToFeed(RSSExporter $feed): void
     {
         if ($this->status === static::STATUS_PRIVATE) {
             return;
@@ -196,16 +183,12 @@ class MotionComment extends IComment
         return $this->dateCreation;
     }
 
-    /**
-     * @return string
-     */
-    public function getLink()
+    public function getLink(): string
     {
         return UrlHelper::createMotionCommentUrl($this);
     }
 
     /**
-     * @param Consultation $consultation
      * @return MotionComment[]
      */
     public static function getScreeningComments(Consultation $consultation)
@@ -227,9 +210,7 @@ class MotionComment extends IComment
         return $query->all();
     }
 
-    /**
-     */
-    public function logToConsultationLog()
+    public function logToConsultationLog(): void
     {
         if ($this->status === static::STATUS_PRIVATE) {
             return;
@@ -237,10 +218,7 @@ class MotionComment extends IComment
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_COMMENT, $this->id);
     }
 
-    /**
-     * @return array
-     */
-    public function getUserdataExportObject()
+    public function getUserdataExportObject(): array
     {
         return [
             'motion_title'  => $this->getIMotion()->getTitleWithPrefix(),

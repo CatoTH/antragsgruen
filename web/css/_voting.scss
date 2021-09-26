@@ -131,6 +131,10 @@
     padding-top: 10px;
     border-top: solid 1px #ccc;
   }
+
+  .publicHint {
+    padding-left: 16px;
+  }
 }
 
 .currentVotingWidget {
@@ -263,12 +267,27 @@
   .votingSettings {
     label {
       display: block;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     .btnDelete {
       float: right;
       color: $colorDelLink;
+    }
+    fieldset {
+      margin-bottom: 15px;
+      legend {
+        font-weight: 700;
+      }
+      .hint {
+        font-size: 0.8em;
+      }
+      label {
+        display: inline-block;
+        font-weight: normal;
+        margin-right: 15px;
+        margin-bottom: 0;
+      }
     }
   }
 }

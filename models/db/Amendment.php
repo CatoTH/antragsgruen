@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
@@ -86,9 +87,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'amendment';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'amendment';
     }
 
     /**

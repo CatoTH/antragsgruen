@@ -83,9 +83,13 @@ ob_start();
                 </div>
             </footer>
             <div class="votingExplanation">
-                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                <strong><?= Yii::t('voting', 'voting_visibility') ?></strong>
-                <?= Yii::t('voting', 'voting_visibility_admin') ?>
+                <div>
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    <strong><?= Yii::t('voting', 'voting_visibility') ?></strong>
+                </div>
+                <div class="publicHint" v-if="votesPublicNo"><?= Yii::t('voting', 'voting_visibility_none') ?></div>
+                <div class="publicHint" v-if="votesPublicAdmin"><?= Yii::t('voting', 'voting_visibility_admin') ?></div>
+                <div class="publicHint" v-if="votesPublicAll"><?= Yii::t('voting', 'voting_visibility_all') ?></div>
             </div>
         </template>
     </div>
@@ -96,6 +100,11 @@ $html = ob_get_clean();
 ?>
 
 <script>
+    // Keep in sync with VotingBlock.php
+    const VOTES_PUBLIC_NO = 0;
+    const VOTES_PUBLIC_ADMIN = 1;
+    const VOTES_PUBLIC_ALL = 2;
+
     Vue.component('voting-block-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
@@ -121,20 +130,29 @@ $html = ob_get_clean();
                     }
                 });
                 return allGroups;
+            },
+            votesPublicNo: function () {
+                return this.voting.votesPublic === VOTES_PUBLIC_NO;
+            },
+            votesPublicAdmin: function () {
+                return this.voting.votesPublic === VOTES_PUBLIC_ADMIN;
+            },
+            votesPublicAll: function () {
+                return this.voting.votesPublic === VOTES_PUBLIC_ALL;
             }
         },
         methods: {
             voteYes: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'yes');
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'yes', this.voting.votesPublic);
             },
             voteNo: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'no');
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'no', this.voting.votesPublic);
             },
             voteAbstention: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'abstention');
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'abstention', this.voting.votesPublic);
             },
             voteUndo: function(groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'undo');
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'undo', this.voting.votesPublic);
             }
         }
     });

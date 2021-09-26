@@ -113,6 +113,18 @@ class VotingController extends Base
         } else {
             $votingBlock->assignedToMotionId = null;
         }
+        if (\Yii::$app->request->post('resultsPublic') !== null) {
+            $votingBlock->resultsPublic = intval(\Yii::$app->request->post('resultsPublic'));
+        } else {
+            $votingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
+        }
+        if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
+            if (\Yii::$app->request->post('votesPublic') !== null) {
+                $votingBlock->votesPublic = intval(\Yii::$app->request->post('votesPublic'));
+            } else {
+                $votingBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
+            }
+        }
 
         $votingBlock->save();
     }
@@ -222,7 +234,8 @@ class VotingController extends Base
         $newBlock->consultationId = $this->consultation->id;
         $newBlock->title = \Yii::$app->request->post('title');
         $newBlock->majorityType = VotingBlock::MAJORITY_TYPE_SIMPLE;
-        $newBlock->votesPublic = 0;
+        $newBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
+        $newBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
         if (\Yii::$app->request->post('assignedMotion') !== null && \Yii::$app->request->post('assignedMotion') > 0) {
             $newBlock->assignedToMotionId = \Yii::$app->request->post('assignedMotion');
         } else {
@@ -247,7 +260,7 @@ class VotingController extends Base
         $user = User::getCurrentUser();
         $votingData = [];
         foreach (Factory::getOpenVotingBlocks($this->consultation, $assignedToMotion) as $voting) {
-            $votingData[] = $voting->getUserApiObject($user);
+            $votingData[] = $voting->getUserOpenApiObject($user);
         }
 
         return json_encode($votingData);
@@ -290,8 +303,8 @@ class VotingController extends Base
         }
     }
 
-    private function voteForSingleItem(User $user, VotingBlock $votingBlock, IMotion $imotion, bool $public, string $voteChoice): Vote {
-        if (!$votingBlock->userIsAllowedToVoteFor($user, $imotion)) {
+    private function voteForSingleItem(User $user, VotingBlock $votingBlock, IMotion $imotion, int $public, string $voteChoice): Vote {
+        if (!$votingBlock->userIsCurrentlyAllowedToVoteFor($user, $imotion)) {
             throw new FormError('Not possible to vote for this item');
         }
 
@@ -310,11 +323,12 @@ class VotingController extends Base
             $vote->motionId = null;
             $vote->amendmentId = $imotion->id;
         }
-        if ($public && $votingBlock->votesPublic) {
-            $vote->public = 1;
-        } else {
-            $vote->public = 0;
-        }
+
+        // $public should be the same as votesPublic, as it was cached in the frontend and is sent from it as-is.
+        // This is just a safeguard so that an accidental change in the value in the database does not lead to
+        // a vote cast by the user under the assumption of being non-public accidentally being stored as public
+        $vote->public = min($public, $votingBlock->votesPublic);
+
         $vote->dateVote = date('Y-m-d H:i:s');
 
         return $vote;
@@ -328,7 +342,7 @@ class VotingController extends Base
         $exitingVote->delete();
     }
 
-    private function voteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup, bool $public, string $voteChoice): void {
+    private function voteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup, int $public, string $voteChoice): void {
         $votes = [];
         foreach ($votingBlock->getItemGroupItems($itemGroup) as $imotion) {
             $votes[] = $this->voteForSingleItem($user, $votingBlock, $imotion, $public, $voteChoice);
@@ -382,7 +396,7 @@ class VotingController extends Base
 
         try {
             foreach (\Yii::$app->request->post('votes', []) as $voteData) {
-                $public = (isset($voteData['public']) && $voteData['public']);
+                $public = isset($voteData['public']) ? intval($voteData['public']) : VotingBlock::VOTES_PUBLIC_NO;
                 if (isset($voteData['itemGroupSameVote']) && trim($voteData['itemGroupSameVote']) !== '') {
                     ResourceLock::lockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
                     if ($voteData['vote'] === 'undo') {
