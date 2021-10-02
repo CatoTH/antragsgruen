@@ -27,6 +27,10 @@ $hasPpAdminbox = ($hasPp && !$motion->isResolution() && User::havePrivilege($con
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/MotionShow');
+
+$layout->loadVue();
+$layout->addVueTemplate('@app/views/shared/fullscreen-projector.vue.php');
+
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }
@@ -57,10 +61,16 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
+$fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
+    data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector">
+    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+    <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
+</button>';
+
 if ($motion->isResolution()) {
-    echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
+    echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . $fullscreenButton . '</h1>';
 } else {
-    echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
+    echo '<h1>' . $motion->getEncodedTitleWithPrefix() . $fullscreenButton . '</h1>';
 }
 
 if ($consultation->getSettings()->hasSpeechLists) {
@@ -217,7 +227,7 @@ echo $viewText;
     </form>
 <?php
 
-$currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
+$currUserId    = (User::getCurrentUser() ? User::getCurrentUser()->id : 0);
 $supporters    = $motion->getSupporters(true);
 $supportType   = $motion->getMyMotionType()->getMotionSupportTypeClass();
 $supportPolicy = $motion->getMyMotionType()->getMotionSupportPolicy();

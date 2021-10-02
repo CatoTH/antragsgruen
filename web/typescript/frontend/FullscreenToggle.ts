@@ -1,13 +1,33 @@
+import { VueConstructor } from 'vue';
+
+declare var Vue: VueConstructor;
+
 export class FullscreenToggle {
-    private $holderElement: JQuery;
+    private readonly holderElement: HTMLElement;
+    private readonly vueElement: string = null;
+    private vueWidget = null;
 
     constructor(private $element: JQuery) {
-        this.$holderElement = $(".well").first();
-        this.$element.on("click", this.toggleFullScreeen.bind(this));
+        const element = $element[0] as HTMLElement;
+        if (element.getAttribute('data-vue-element')) {
+            this.vueElement = element.getAttribute('data-vue-element');
+            this.holderElement = this.createFullscreenVueHolder();
+        } else {
+            this.holderElement = document.querySelector(".well");
+        }
+        element.addEventListener('click', this.toggleFullScreeen.bind(this));
+
+        ["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "msfullscreenchange"].forEach(
+            eventType => document.addEventListener(eventType, this.onFullscreenChange.bind(this), false)
+        );
     }
 
     private requestFullscreen() {
-        let holderElement: any = this.$holderElement[0];
+        if (this.vueElement) {
+            document.querySelector("body").append(this.holderElement);
+        }
+
+        let holderElement = this.holderElement as any;
         if (holderElement.requestFullscreen) {
             holderElement.requestFullscreen();
         } else if (holderElement.webkitRequestFullscreen) {
@@ -16,6 +36,10 @@ export class FullscreenToggle {
             holderElement.mozRequestFullScreen();
         } else if (holderElement.msRequestFullscreen) {
             holderElement.msRequestFullscreen();
+        }
+
+        if (this.vueElement) {
+            this.initVueElement();
         }
     }
 
@@ -34,10 +58,10 @@ export class FullscreenToggle {
 
     private isFullscreen(): boolean {
         let doc: any = document;
-        return doc.fullscreenElement ||
+        return !!(doc.fullscreenElement ||
             doc.webkitFullscreenElement ||
             doc.mozFullScreenElement ||
-            doc.msFullscreenElement;
+            doc.msFullscreenElement);
     }
 
     private toggleFullScreeen() {
@@ -46,5 +70,44 @@ export class FullscreenToggle {
         } else {
             this.requestFullscreen();
         }
+    }
+
+    private onFullscreenChange() {
+        if (!this.isFullscreen() && this.vueElement) {
+            this.destroyVueElement();
+            this.holderElement.remove();
+        }
+    }
+
+    private createFullscreenVueHolder(): HTMLElement
+    {
+        const element = document.createElement('article');
+        element.classList.add('projector');
+        const vueHolder = document.createElement('div');
+        element.append(vueHolder);
+
+        return element;
+    }
+
+    private initVueElement(): void
+    {
+        let template = '<' + this.vueElement + '></' + this.vueElement + '>';
+        this.vueWidget = new Vue({
+            el: this.holderElement.firstChild as HTMLElement,
+            template,
+            data() {
+                return {};
+            },
+            methods: {},
+            beforeDestroy() {
+                console.log("destroy");
+            },
+            created() {}
+        });
+    }
+
+    private destroyVueElement(): void
+    {
+        this.vueWidget.$destroy();
     }
 }

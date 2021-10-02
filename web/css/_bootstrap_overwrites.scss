@@ -52,6 +52,20 @@
       background: $headingPrimaryBackground;
       z-index: 5;
     }
+
+    .btnFullscreen {
+      padding: 0;
+      float: right;
+      margin-right: -10px;
+      margin-top: -2px;
+      color: rgba(255, 255, 255, 0.5);
+      &:hover, &.active {
+        color: rgba(255, 255, 255, 0.8);
+      }
+      &:active, &.active {
+        color: rgba(255, 255, 255, 1);
+      }
+    }
   }
   h2.green, h3.green, .nav-header, legend.green {
     @include stdHeading($headingSecondaryText, $headingSecondaryBackground, $headingSecondarySize);

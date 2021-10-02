@@ -18,6 +18,7 @@ return [
     'motion_withdraw'               => 'Withdraw %TYPE%',
     'motion_admin_edit'             => 'Admin: edit',
     'back_start'                    => 'Back',
+    'fullscreen'                    => 'Projector view (full screen)',
     'pdf_version'                   => 'PDF version',
     'table_caption'                 => 'Metadata of the motion',
     'table_description'             => 'The following table describes the status, the proposer and other metadata of this motion.',

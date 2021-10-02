@@ -18,6 +18,7 @@ return [
     'motion_withdraw'                    => '%TYPE% zurückziehen',
     'motion_admin_edit'                  => 'Admin: bearbeiten',
     'back_start'                         => 'Zurück zur Übersicht',
+    'fullscreen'                         => 'Projektor-Ansicht (Vollbild)',
     'pdf_version'                        => 'PDF-Version',
     'table_caption'                      => 'Rahmendaten zum Antrag',
     'table_description'                  => 'Diese Tabelle beschreibt den Status, die Antragstellerin und verschiedene Rahmendaten zum Antrag',
