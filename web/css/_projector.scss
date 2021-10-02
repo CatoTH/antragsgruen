@@ -1,0 +1,30 @@
+.projectorWidget {
+  background-color: white;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  > header {
+    @include stdHeading($headingPrimaryText, $headingPrimaryBackground, $headingPrimarySize);
+    flex-grow: 0;
+  }
+
+  > main {
+    flex-grow: 1;
+    overflow: auto;
+  }
+
+  .imotionSelector {
+    float: right;
+  }
+
+  h1 {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    margin: 0;
+    padding: 0;
+  }
+}

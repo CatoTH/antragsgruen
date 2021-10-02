@@ -3,19 +3,20 @@ import { VueConstructor } from 'vue';
 declare var Vue: VueConstructor;
 
 export class FullscreenToggle {
+    private readonly element: HTMLElement;
     private readonly holderElement: HTMLElement;
     private readonly vueElement: string = null;
     private vueWidget = null;
 
     constructor(private $element: JQuery) {
-        const element = $element[0] as HTMLElement;
-        if (element.getAttribute('data-vue-element')) {
-            this.vueElement = element.getAttribute('data-vue-element');
+        this.element = $element[0] as HTMLElement;
+        if (this.element.getAttribute('data-vue-element')) {
+            this.vueElement = this.element.getAttribute('data-vue-element');
             this.holderElement = this.createFullscreenVueHolder();
         } else {
             this.holderElement = document.querySelector(".well");
         }
-        element.addEventListener('click', this.toggleFullScreeen.bind(this));
+        this.element.addEventListener('click', this.toggleFullScreeen.bind(this));
 
         ["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "msfullscreenchange"].forEach(
             eventType => document.addEventListener(eventType, this.onFullscreenChange.bind(this), false)
@@ -81,8 +82,7 @@ export class FullscreenToggle {
 
     private createFullscreenVueHolder(): HTMLElement
     {
-        const element = document.createElement('article');
-        element.classList.add('projector');
+        const element = document.createElement('div');
         const vueHolder = document.createElement('div');
         element.append(vueHolder);
 
@@ -91,17 +91,21 @@ export class FullscreenToggle {
 
     private initVueElement(): void
     {
-        let template = '<' + this.vueElement + '></' + this.vueElement + '>';
+        let template = '<' + this.vueElement + ' :initdata="initdata"></' + this.vueElement + '>';
+        let initdata = {};
+        if (this.element.getAttribute('data-vue-initdata')) {
+            initdata = JSON.parse(this.element.getAttribute('data-vue-initdata'));
+        }
         this.vueWidget = new Vue({
             el: this.holderElement.firstChild as HTMLElement,
             template,
             data() {
-                return {};
+                return {
+                    initdata
+                };
             },
             methods: {},
-            beforeDestroy() {
-                console.log("destroy");
-            },
+            beforeDestroy() {},
             created() {}
         });
     }
