@@ -449,4 +449,14 @@ class VotingBlock extends ActiveRecord
         }
         return $items;
     }
+
+    /**
+     * @return VotingBlock[]
+     */
+    public static function getClosedVotings(Consultation $consultation): array
+    {
+        return array_values(array_filter($consultation->votingBlocks, function (VotingBlock $votingBlock) {
+            return $votingBlock->votingStatus === static::STATUS_CLOSED;
+        }));
+    }
 }

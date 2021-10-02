@@ -1,5 +1,7 @@
 <?php
 
+use app\models\db\VotingBlock;
+
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -8,6 +10,7 @@ $I->wantTo('enable non-quota speech lists');
 $I->gotoConsultationHome();
 $I->dontSeeElementInDOM('.currentVotings');
 $I->dontSeeElementInDOM('.voting_amendment_3');
+$I->dontSeeElementInDOM('#votingResultsLink');
 
 $votingPage = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoVotingPage();
 
@@ -39,13 +42,24 @@ $I->clickJS('.voting1 .voting_amendment_270 .removeBtn');
 $I->wait(0.3);
 $I->dontSeeElement('.voting1 .voting_amendment_270');
 
-
 $I->wantTo('Open the voting');
 $I->dontSeeElement('.voting1 .btnClose');
 $I->dontSeeElement('.voting1 .btnReset');
 $I->dontSeeElement('.voting1 .voting_amendment_3 .votingTableSingle');
 $I->clickJS('.voting1 .btnOpen');
 $I->wait(0.3);
+
+
+$I->wantTo('hide the numeric results from the voting');
+$I->dontSeeElement('#voting1 .titleSetting');
+$I->clickJS('#voting1 .settingsToggleGroup button');
+$I->seeElement('#voting1 .titleSetting');
+$I->assertEquals(VotingBlock::RESULTS_PUBLIC_YES, $I->executeJS('return $("#voting1 .resultsPublicSettings input[type=radio]:checked").val()'));
+$I->assertTrue($I->executeJS('return $("#voting1 .votesPublicSettings input[type=radio]").prop("disabled")'));
+$I->clickJS('#voting1 .resultsPublicSettings input[type=radio][value=\"' . VotingBlock::RESULTS_PUBLIC_NO . '\"]');
+$I->clickJS('#voting1 .btnSave');
+$I->wait(0.3);
+
 
 $I->dontSeeElement('.voting1 .btnOpen');
 $I->seeElement('.voting1 .btnClose');
@@ -100,3 +114,12 @@ $I->wait(0.3);
 
 $I->see('Angenommen', '.voting_amendment_3');
 $I->see('Abgelehnt', '.voting_amendment_274');
+
+
+$I->wantTo('see the voting result on the public page');
+$I->gotoConsultationHome();
+$I->click('#votingResultsLink');
+$I->wait(0.5);
+$I->dontSeeElement('.voting_motion_114 .votingTableSingle');
+$I->seeElement('.voting_amendment_3 .accepted');
+$I->seeElement('.voting_amendment_274 .rejected');

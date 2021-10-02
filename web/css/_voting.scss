@@ -1,8 +1,83 @@
 @import "variables";
 
 .votingCommon {
+  .votingListCommon {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    clear: both;
+
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: solid 1px #ccc;
+
+      // Always shown
+      .titleLink {
+        flex-grow: 1;
+        flex-basis: 40%;
+      }
+      // Admin and sometimes user
+      .votesDetailed {
+        flex-grow: 1;
+        flex-basis: 40%;
+      }
+      // Only when closed, then admin and user
+      .result {
+        flex-grow: 0;
+        flex-basis: 20%;
+      }
+      // User when opened
+      .votingOptions, .voted {
+        flex-basis: 230px;
+        flex-grow: 0;
+        text-align: right;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .votingListAdmin {
+    // nothing yet
+  }
+
+  .votesDetailed {
+    table {
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    thead th {
+      text-align: center;
+    }
+
+    th {
+      text-align: center;
+    }
+    td {
+      text-align: center;
+    }
+  }
+
+  li.showResults {
+    // Flex properties are set above
+    &.showDetailedResults {
+      // nothing yet
+    }
+    &.noDetailedResults {
+      // Nothing yet
+    }
+  }
+
   .titleLink {
-    flex: 1;
     line-height: 16px;
     overflow: hidden;
     > div {
@@ -23,107 +98,16 @@
     }
   }
 
-  .voteList {
-    display: block;
-    margin: 0;
-    padding: 0;
+  .result {
+    text-align: right;
+    white-space: nowrap;
 
-    clear: both;
-
-    > li {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border-bottom: solid 1px #ccc;
-
-      &:last-child {
-        border-bottom: none;
-      }
+    .accepted {
+      color: $colorGreenLight;
     }
 
-    .votingOptions, .voted {
-      flex-basis: 230px;
-      text-align: right;
-    }
-  }
-
-  .votingResultList {
-    display: block;
-    margin: 0;
-    padding: 0;
-
-    > li {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border-bottom: solid 1px #ccc;
-    }
-
-    .votesDetailed {
-      flex: 0.5;
-      font-size: 0.9em;
-    }
-    .result {
-      flex: 0;
-      text-align: right;
-      white-space: nowrap;
-
-      .accepted {
-        color: green;
-      }
-    }
-  }
-  .votingAdminList {
-    display: block;
-    margin: 0;
-    padding: 0;
-
-    > li {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border-bottom: solid 1px #ccc;
-
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-
-    .titleLink {
-      flex-basis: 40%;
-    }
-    .votesDetailed {
-      flex: 1;
-      font-size: 0.9em;
-      flex-basis: 60%;
-
-      table {
-        width: 100%;
-      }
-      thead th {
-        text-align: center;
-      }
-    }
-    .result {
-      flex: 0;
-      text-align: right;
-      white-space: nowrap;
-
-      .accepted {
-        color: $colorGreenLight;
-      }
-      .rejected {
-        color: $colorDelLink;
-      }
+    .rejected {
+      color: $colorDelLink;
     }
   }
 
@@ -191,15 +175,6 @@
     text-transform: none;
     text-shadow: none;
     font-size: 14px;
-  }
-  .votingTable {
-    table-layout: fixed;
-    th {
-      text-align: center;
-    }
-    td {
-      text-align: center;
-    }
   }
 
   .majorityType {

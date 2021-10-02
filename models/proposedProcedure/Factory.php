@@ -253,6 +253,20 @@ class Factory
         }, $openBlocks);
     }
 
+    /**
+     * @return AgendaVoting[]
+     * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
+     */
+    public static function getClosedVotingBlocks(Consultation $consultation): array
+    {
+        $closedBlocks = VotingBlock::getClosedVotings($consultation);
+        return array_map(function (VotingBlock $votingBlock): AgendaVoting {
+            $voting = new AgendaVoting($votingBlock->title, $votingBlock);
+            $voting->addItemsFromBlock(true);
+            return $voting;
+        }, $closedBlocks);
+    }
+
     public static function hasOnlineVotingBlocks(Consultation $consultation): bool
     {
         $onlineVotings = array_values(array_filter($consultation->votingBlocks, function (VotingBlock $voting): bool {

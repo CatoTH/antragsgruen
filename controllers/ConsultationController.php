@@ -514,4 +514,11 @@ class ConsultationController extends Base
 
         return $this->render('@app/views/voting/admin-votings');
     }
+
+    public function actionVotingResults(): string
+    {
+        $this->layout = 'column2';
+
+        return $this->render('@app/views/voting/voting-results');
+    }
 }

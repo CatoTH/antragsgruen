@@ -1,5 +1,7 @@
 <?php
 
+use app\models\db\VotingBlock;
+
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -8,6 +10,7 @@ $I->wantTo('enable non-quota speech lists');
 $I->gotoConsultationHome();
 $I->dontSeeElementInDOM('.currentVotings');
 $I->dontSeeElementInDOM('.voting_amendment_3');
+$I->dontSeeElementInDOM('#votingResultsLink');
 
 $I->wantTo('Create a new voting block for the amendment');
 $page = $I->loginAndGotoMotionList()->gotoAmendmentEdit(1);
@@ -52,6 +55,8 @@ $I->seeElement($votingBaseId);
 $I->dontSeeElement($votingBaseId . ' .titleSetting');
 $I->clickJS($votingBaseId . ' .settingsToggleGroup button');
 $I->seeElement($votingBaseId . ' .titleSetting');
+$I->assertEquals(VotingBlock::RESULTS_PUBLIC_YES, $I->executeJS('return $("' . $votingBaseId . ' .resultsPublicSettings input[type=radio]:checked").val()'));
+$I->assertEquals(VotingBlock::VOTES_PUBLIC_NO, $I->executeJS('return $("' . $votingBaseId . ' .votesPublicSettings input[type=radio]:checked").val()'));
 $I->seeInField($votingBaseId . ' .titleSetting input', 'Newly created voting');
 $I->fillField($votingBaseId . ' .titleSetting input', 'New voting for testing');
 $I->selectOption($votingBaseId . ' .assignedMotion select', 'A5: Leerzeichen-Test');
@@ -69,6 +74,7 @@ $I->wantTo('Vote for it');
 $I->gotoConsultationHome();
 $I->seeElementInDOM('.currentVotings');
 $I->dontSeeElement('.voting_motion_114');
+$I->dontSeeElementInDOM('#votingResultsLink');
 
 $I->click('.motionLink114');
 $I->seeElement('.currentVotings');
@@ -100,8 +106,16 @@ $I->seeInField('#votesNo', 0);
 $I->seeInField('#votesAbstention', 0);
 
 
+$I->wantTo('see the voting result on the public page');
+$I->gotoConsultationHome();
+$I->click('#votingResultsLink');
+$I->wait(0.5);
+$I->see('1', '.voting_motion_114 .votingTableSingle .voteCountYes');
+$I->seeElement('.voting_motion_114 .accepted');
+
+
 $I->wantTo('Delete the voting');
-$I->click('.votingEditLink');
+$I->click('.votingsAdminLink');
 $I->dontSeeElement($votingBaseId . ' .btnDelete');
 $I->clickJS($votingBaseId . ' .settingsToggleGroup button');
 $I->seeElement($votingBaseId . ' .btnDelete');

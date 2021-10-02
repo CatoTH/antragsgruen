@@ -18,6 +18,8 @@ return [
     'activity_reset' => 'Voting reset',
     'activity_reopened' => 'Voting re-opened',
 
+    'results_title' => 'Voting results',
+
     'admin_title' => 'Voting administration',
     'admin_bc' => 'Administration',
     'admin_intro' => '<strong>Hint:</strong> you can find a manual for the voting functionality on the <a href="https://sandbox.motion.tools/help#advanced">help page</a>.',

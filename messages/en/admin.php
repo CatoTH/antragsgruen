@@ -262,7 +262,7 @@ return [
     'con_title_amendments'    => 'Amendments',
     'con_amend_number'        => 'Numbering',
     'con_amend_screening'     => '<strong>Screening</strong> of amendments',
-    'con_amend_editorial'     => 'Allow <strong>editorial change requests</strong> <small>(a separate text field)</small>',
+    'con_amend_editorial'     => 'Allow <strong>editorial hints</strong> <small>(a separate text field)</small>',
     'con_amend_globalalt'     => 'Allow <strong>global alternatives</strong> <small>(amendments that completely replace the motion)</small>',
     'con_proposal_procedure'  => 'Show the <strong>proposed procedure</strong> on a separate page',
     'con_proposal_tt'         => 'Allows admins to propose a procedure for motions and amendments. Has to be explicitly activated per motion type.',

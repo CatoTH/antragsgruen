@@ -266,6 +266,17 @@ class VotingController extends Base
         return json_encode($votingData);
     }
 
+    private function getClosedVotingsUserData(): string
+    {
+        $user = User::getCurrentUser();
+        $votingData = [];
+        foreach (Factory::getClosedVotingBlocks($this->consultation) as $voting) {
+            $votingData[] = $voting->getUserResultsApiObject($user);
+        }
+
+        return json_encode($votingData);
+    }
+
     public function actionGetOpenVotingBlocks($assignedToMotionId)
     {
         $this->handleRestHeaders(['GET'], true);
@@ -280,6 +291,18 @@ class VotingController extends Base
         }
 
         $responseJson = $this->getOpenVotingsUserData($assignedToMotion);
+
+        return $this->returnRestResponse(200, $responseJson);
+    }
+
+    public function actionGetClosedVotingBlocks()
+    {
+        $this->handleRestHeaders(['GET'], true);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $responseJson = $this->getClosedVotingsUserData();
 
         return $this->returnRestResponse(200, $responseJson);
     }

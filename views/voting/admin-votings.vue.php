@@ -97,8 +97,11 @@ ob_start();
                     <?= Yii::t('voting', 'admin_no_items_yet') ?>
             </p></div>
         </div>
-        <ul class="votingAdminList" v-if="groupedVotings.length > 0">
-            <li v-for="groupedVoting in groupedVotings" :class="['voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id]">
+        <ul class="votingListAdmin votingListCommon" v-if="groupedVotings.length > 0">
+            <li v-for="groupedVoting in groupedVotings" :class="[
+                'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
+                (isClosed ? 'showResults' : ''), (isClosed ? 'showDetailedResults' : '')
+            ]">
                 <div class="titleLink">
                     <div v-for="item in groupedVoting">
                         {{ item.title_with_prefix }}

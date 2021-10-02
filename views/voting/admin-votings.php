@@ -14,7 +14,7 @@ $controller = $this->context;
 /** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
-$layout->addBreadcrumb(Yii::t('voting', 'bc'));
+$layout->addBreadcrumb(Yii::t('voting', 'bc'), UrlHelper::createUrl('consultation/voting-results'));
 $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
 

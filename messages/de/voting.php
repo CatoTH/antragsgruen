@@ -18,6 +18,8 @@ return [
     'activity_reset' => 'Abstimmung zurückgesetzt',
     'activity_reopened' => 'Abstimmung erneut geöffnet',
 
+    'results_title' => 'Abstimmungsergebnisse',
+
     'admin_title' => 'Abstimmungen: Verwaltung',
     'admin_bc' => 'Verwaltung',
     'admin_intro' => '<strong>Hinweis:</strong> eine Einführung und Anleitung zu den Abstimmungen gibt es auf der <a href="https://antragsgruen.de/help#abstimmungen">Hilfe-Seite</a>.',

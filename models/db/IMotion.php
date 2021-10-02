@@ -603,6 +603,8 @@ abstract class IMotion extends ActiveRecord
                 $toSetVotingBlock = new VotingBlock();
                 $toSetVotingBlock->consultationId = $this->getMyConsultation()->id;
                 $toSetVotingBlock->title = $newVotingBlockTitle;
+                $toSetVotingBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
+                $toSetVotingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
                 // If the voting is created from the proposed procedure, we assume it's only used to show it there
                 $toSetVotingBlock->votingStatus = ($proposedProcedureContext ? VotingBlock::STATUS_OFFLINE : VotingBlock::STATUS_PREPARING);
                 $toSetVotingBlock->save();
