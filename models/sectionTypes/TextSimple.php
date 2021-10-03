@@ -275,7 +275,7 @@ class TextSimple extends Text
         $str = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($title);
         $str .= '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
-          <button class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
+          <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
             <span class="sr-only">' . \Yii::t('amend', 'textmode_set') . '</span>
             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
           </button>
