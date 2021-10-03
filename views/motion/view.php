@@ -222,9 +222,7 @@ $supporters    = $motion->getSupporters(true);
 $supportType   = $motion->getMyMotionType()->getMotionSupportTypeClass();
 $supportPolicy = $motion->getMyMotionType()->getMotionSupportPolicy();
 
-if (count($supporters) > 0 || $supportCollectingStatus ||
-    ($supportPolicy->checkCurrUser(false) && !$motion->isResolution())) {
-
+if (count($supporters) > 0 || $supportCollectingStatus || ($supportPolicy->checkCurrUser(false) && !$motion->isResolution())) {
     $loginlessSupported = MotionSupporter::getMyLoginlessSupportIds();
     $iAmSupporting = LayoutHelper::printSupporterList($supporters, $currUserId, $loginlessSupported);
 
