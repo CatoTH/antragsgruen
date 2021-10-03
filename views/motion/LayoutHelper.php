@@ -433,6 +433,10 @@ class LayoutHelper
             return;
         }
 
+        echo '<section class="supporters" id="supporters" aria-labelledby="supportersTitle">
+            <h2 class="green" id="supportersTitle">' . \Yii::t('motion', 'supporters_heading') . '</h2>
+            <div class="content"><br>';
+
         if ($canSupport) {
             if ($iAmSupporting) {
                 echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
@@ -460,6 +464,8 @@ class LayoutHelper
             </div>';
             }
         }
+
+        echo '</div></section>';
     }
 
     /**

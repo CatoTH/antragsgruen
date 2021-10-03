@@ -6,6 +6,7 @@
 - Submitted amendments can now optionally have tags, too, if set up in the motion types.
 - The accessibility was improved in some parts, especially drop-down selections, while reducing the page load time.
 - Bugfix: If an amendment was assigned to an agenda item, the agenda item could not be deleted before the amendment was un-assigned first.
+- Bugfix: an empty "Supporting" section was shown in motions and amendments, if only the "liking" function was enabled.
 - Support for Internet Explorer was dropped.
 
 ### Version 4.8.1 (2021-08-28)
