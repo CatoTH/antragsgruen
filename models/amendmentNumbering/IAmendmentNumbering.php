@@ -16,6 +16,7 @@ abstract class IAmendmentNumbering
             0 => PerMotionCompact::class,
             1 => GlobalCompact::class,
             2 => ByLine::class,
+            3 => PerMotionEnglish::class,
         ];
 
         $site = UrlHelper::getCurrentSite();
@@ -53,7 +54,6 @@ abstract class IAmendmentNumbering
 
     /**
      * @param string[] $prefixes
-     * @return int
      */
     public static function getMaxTitlePrefixNumber(array $prefixes): int
     {
@@ -65,6 +65,7 @@ abstract class IAmendmentNumbering
                 $spl    = explode($split, $prefix);
                 $prefix = $spl[0];
             }
+            // Take the last consecutive number of the string
             $number = intval(preg_replace('/^(.*[^0-9])?([0-9]+)([^0-9]*)$/siu', '$2', $prefix));
             if ($number > $maxRev) {
                 $maxRev = $number;

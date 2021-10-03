@@ -2,20 +2,12 @@
 
 namespace unit;
 
-use app\models\amendmentNumbering\ByLine;
-use app\models\amendmentNumbering\GlobalCompact;
-use app\models\amendmentNumbering\IAmendmentNumbering;
-use app\models\amendmentNumbering\PerMotionCompact;
-use app\models\db\Amendment;
-use app\models\db\Motion;
-use Codeception\Specify;
+use app\models\amendmentNumbering\{ByLine, GlobalCompact, IAmendmentNumbering, PerMotionCompact, PerMotionEnglish};
+use app\models\db\{Amendment, Motion};
 
 class AmendmentNumberingTest extends DBTestBase
 {
-
-    /**
-     */
-    public function testMaxTitlePrefixNumber()
+    public function testMaxTitlePrefixNumber(): void
     {
         $prefixes = [
             'A1-Ä3neu2',
@@ -28,9 +20,7 @@ class AmendmentNumberingTest extends DBTestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
-    public function testGlobalNumbering()
+    public function testGlobalNumbering(): void
     {
         $amend = new Amendment();
 
@@ -64,9 +54,7 @@ class AmendmentNumberingTest extends DBTestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
-    public function testPerMotionNumbering()
+    public function testPerMotionNumbering(): void
     {
         $amend = new Amendment();
 
@@ -100,9 +88,7 @@ class AmendmentNumberingTest extends DBTestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
-    public function testByLineNumbering()
+    public function testByLineNumbering(): void
     {
         $sorter = new ByLine();
 
@@ -154,5 +140,31 @@ class AmendmentNumberingTest extends DBTestBase
         $expect                 = 'A2-027-3';
 
         $this->assertEquals($expect, $out);
+    }
+
+    public function testPerMotionNumberingEnglish1(): void
+    {
+        $amend = new Amendment();
+        $motion = Motion::findOne(2);
+
+        $sorter = new PerMotionEnglish();
+        $out = $sorter->getAmendmentNumber($amend, $motion);
+
+        $this->assertEquals('A2 A8', $out);
+    }
+
+    public function testPerMotionNumberingEnglish2(): void
+    {
+        $amend = new Amendment();
+        $motion = Motion::findOne(2);
+
+        $existingAmendment = Amendment::findOne(276);
+        $existingAmendment->titlePrefix = 'M2 A9';
+        $existingAmendment->save();
+
+        $sorter = new PerMotionEnglish();
+        $out    = $sorter->getAmendmentNumber($amend, $motion);
+
+        $this->assertEquals('A2 A10', $out);
     }
 }

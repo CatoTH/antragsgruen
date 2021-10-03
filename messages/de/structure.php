@@ -11,6 +11,7 @@ return [
 
     'amend_number_permotion' => 'Ä1 zu A1 (Zählung pro Antrag)',
     'amend_number_global'    => 'Ä1 zu A1 (Globale Zählung)',
+    'amend_number_english'   => 'M1 A1 (Zählung pro Antrag, „A” für Änderungsantrag)',
     'amend_number_perline'   => 'A01-070 (Zählung nach betroffener Zeile)',
 
     'policy_deadline_over'       => 'Der Antragsschluss ist vorbei.',

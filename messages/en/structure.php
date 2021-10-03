@@ -9,9 +9,10 @@ return [
     'section_pdf_alternative' => 'PDF alternative',
     'section_video_embed'     => 'Embedded video',
 
-    'amend_number_permotion' => 'Ä1 for A1 (Numbering per motion)',
-    'amend_number_global'    => 'Ä1 for A1 (Global numbering)',
-    'amend_number_perline'   => 'A01-070 (Numbering per affected line)',
+    'amend_number_permotion' => 'Ä1 for M1 (Numbering per motion)',
+    'amend_number_global'    => 'Ä1 for M1 (Global numbering)',
+    'amend_number_english'   => 'M1 A1 (Numbering per motion)',
+    'amend_number_perline'   => 'M01-070 (Numbering per affected line)',
 
     'policy_deadline_over'       => 'The deadline is over',
     'policy_deadline_over_comm'  => 'No comments are possible at this point of time.',
