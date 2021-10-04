@@ -9,6 +9,14 @@
   > header {
     @include stdHeading($headingPrimaryText, $headingPrimaryBackground, $headingPrimarySize);
     flex-grow: 0;
+
+    .stdDropdown {
+      background: transparent;
+      color: white;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      line-height: 1.1;
+    }
   }
 
   > main {

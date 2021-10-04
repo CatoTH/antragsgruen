@@ -277,6 +277,9 @@ components:
           example: https://test.antragsgruen.de/consultation/123-motion
     MotionDetails:
       properties:
+        type:
+          type: string
+          example: motion
         id:
           type: number
           example: 23
@@ -358,6 +361,9 @@ components:
           example: https://test.antragsgruen.de/consultation/123-motion/42
     AmendmentDetails:
       properties:
+        type:
+          type: string
+          example: amendment
         id:
           type: number
           example: 23

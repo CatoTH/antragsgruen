@@ -16,10 +16,7 @@ class TextSimple extends Text
 {
     private $forceMultipleParagraphs = null;
 
-    /**
-     * @param bool $active
-     */
-    public function forceMultipleParagraphMode(bool $active)
+    public function forceMultipleParagraphMode(bool $active): void
     {
         $this->forceMultipleParagraphs = $active;
     }
@@ -122,7 +119,7 @@ class TextSimple extends Text
         $this->section->setData(HTMLTools::cleanSimpleHtml($data, $forbiddenFormattings));
     }
 
-    public function deleteMotionData()
+    public function deleteMotionData(): void
     {
         $this->section->setData('');
         $this->section->dataRaw = null;
@@ -217,10 +214,9 @@ class TextSimple extends Text
     }
 
     /**
-     * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function getAmendmentFormattedGlobalAlternative()
+    public function getAmendmentFormattedGlobalAlternative(): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -252,8 +248,6 @@ class TextSimple extends Text
         if ($section->getAmendment()->globalAlternative) {
             return $this->getAmendmentFormattedGlobalAlternative();
         }
-
-        $str = '';
 
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
         $firstLine  = $section->getFirstLineNumber();

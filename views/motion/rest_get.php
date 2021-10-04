@@ -17,6 +17,7 @@ if ($motion->isProposalPublic() && $motion->proposalStatus) {
 }
 
 $json = [
+    'type' => 'motion',
     'id' => $motion->id,
     'agenda_item' => ($motion->agendaItem ? $motion->agendaItem->title : null),
     'prefix' => $motion->titlePrefix,

@@ -48,6 +48,7 @@ if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
 }
 
 $json = [
+    'type' => 'amendment',
     'id' => $amendment->id,
     'prefix' => $amendment->titlePrefix,
     'title' => $amendment->title,

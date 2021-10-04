@@ -8,8 +8,13 @@ ob_start();
 <article class="projectorWidget">
     <header>
         <div class="imotionSelector">
-            <select v-if="imotions">
-                <option v-for="imotion in imotions" :value="imotion.type + '-' + imotion.id">{{ imotion.title_with_prefix }}</option>
+            <select v-if="imotions" v-model="selectedIMotionId" @change="onChangeSelectedIMotion()" class="stdDropdown">
+                <template v-for="imotion in imotions">
+                    <option :value="imotion.type + '-' + imotion.id">{{ imotion.title_with_prefix }}</option>
+                    <optgroup label="" v-if="imotion.amendment_links">
+                        <option v-for="amendment in imotion.amendment_links" :value="'amendment-' + amendment.id">{{ amendment.prefix }}</option>
+                    </optgroup>
+                </template>
             </select>
         </div>
 
@@ -37,7 +42,8 @@ $html = ob_get_clean();
             return {
                 consultationUrl: null,
                 imotions: null,
-                imotion: null
+                imotion: null,
+                selectedIMotionId: null
             }
         },
         computed: {},
@@ -52,15 +58,39 @@ $html = ob_get_clean();
                     .then(data => widget.imotions = data.motion_links)
                     .catch(err => alert(err));
             },
-            loadInitIMotion: function () {
+            loadIMotion: function (url) {
                 const widget = this;
-                fetch(this.initdata.init_imotion_url)
+                fetch(url)
                     .then(response => {
                         if (!response.ok) throw response.statusText;
                         return response.json();
                     })
-                    .then(data => widget.imotion = data)
+                    .then(data => {
+                        widget.imotion = data;
+                        widget.selectedIMotionId = data.type + '-' + data.id;
+                    })
                     .catch(err => alert(err));
+            },
+            loadInitIMotion: function () {
+                this.loadIMotion(this.initdata.init_imotion_url);
+            },
+            onChangeSelectedIMotion: function () {
+                let found = null;
+                this.imotions.forEach(imotion => {
+                    if ((imotion.type + '-' + imotion.id) === this.selectedIMotionId) {
+                        found = imotion;
+                    }
+                    if (imotion.amendment_links) {
+                        imotion.amendment_links.forEach(amendment => {
+                            if (('amendment-' + amendment.id) === this.selectedIMotionId) {
+                                found = amendment;
+                            }
+                        });
+                    }
+                });
+                if (found) {
+                    this.loadIMotion(found.url_json);
+                }
             }
         },
         created() {
