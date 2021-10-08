@@ -48,6 +48,9 @@ class AgendaVoting
             }
         }
         foreach ($this->voting->amendments as $vAmendment) {
+            if (!$vAmendment->getMyMotion()) {
+                continue;
+            }
             if (!$vAmendment->isVisibleForAdmins()) {
                 continue;
             }
