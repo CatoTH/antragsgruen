@@ -38,6 +38,14 @@ export class MotionEditForm {
         if ($group.length === 0) {
             return false;
         }
+
+        if (this.$form.find('.multipleTagsGroup input[type=checkbox]').length) {
+            // Checkboxes: multiple tags are allowed, but also none
+            $group.removeClass('has-error');
+            return false;
+        }
+
+        // From here on: radios
         if ($group.find('input:checked').length > 0) {
             $group.removeClass('has-error');
             return false;
