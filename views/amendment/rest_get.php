@@ -51,7 +51,8 @@ $json = [
     'type' => 'amendment',
     'id' => $amendment->id,
     'prefix' => $amendment->titlePrefix,
-    'title' => $amendment->title,
+    'title' => $amendment->getTitle(),
+    'title_with_prefix' => $amendment->getTitleWithPrefix(),
     'first_line' => $amendment->getFirstDiffLine(),
     'status_id' => $amendment->status,
     'status_title' => $amendment->getFormattedStatus(),
@@ -84,10 +85,14 @@ $json = [
     }, $amendment->getInitiators()),
     'initiators_html' => $amendment->getInitiatorsStr(),
     'sections' => array_map(function (AmendmentSection $section) {
+        $text = $section->getSectionType()->getAmendmentPlainHtml(true);
+        if ($text) {
+            $text = '<div class="text motionTextFormattings textOrig">' . $text . '</div>';
+        }
         return [
             'type' => ISectionType::typeIdToApi($section->getSettings()->type),
             'title' => $section->getSettings()->title,
-            'html' => $section->getSectionType()->getAmendmentPlainHtml(),
+            'html' => $text,
         ];
     }, $amendment->getSortedSections(true)),
     'proposed_procedure' => $proposedProcedure,

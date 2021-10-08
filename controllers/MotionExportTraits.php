@@ -360,11 +360,14 @@ trait MotionExportTraits
 
     /**
      * @param string $motionSlug
+     * @param ?string|null $lineNumbers
      * @return string
      */
-    public function actionRest($motionSlug)
+    public function actionRest($motionSlug, ?string $lineNumbers = null)
     {
         $this->handleRestHeaders(['GET']);
+
+        $lineNumbers = ($lineNumbers !== null && in_array(strtolower($lineNumbers), ['true', '1']));
 
         try {
             $motion = $this->getMotionWithCheck($motionSlug, true);
@@ -376,7 +379,10 @@ trait MotionExportTraits
             return $this->returnRestResponseFromException(new NotFound('Motion is not readable'));
         }
 
-        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['motion' => $motion]));
+        return $this->returnRestResponse(200, $this->renderPartial('rest_get', [
+            'motion' => $motion,
+            'lineNumbers' => $lineNumbers,
+        ]));
     }
 
     /**

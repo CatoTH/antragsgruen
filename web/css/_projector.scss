@@ -22,6 +22,7 @@
   > main {
     flex-grow: 1;
     overflow: auto;
+    padding: 0 3vw 0 3vw;
   }
 
   .imotionSelector {
@@ -34,5 +35,9 @@
     line-height: inherit;
     margin: 0;
     padding: 0;
+  }
+
+  .motionTextFormattings {
+    font-size: 1.6vw;
   }
 }

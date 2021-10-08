@@ -65,7 +65,7 @@
 }
 
 @mixin motionParagraphBlockquote() {
-  font-size: $motionStdFontSize;
+  font-size: inherit;
   padding-left: $fixedWidthTextQuotePadding;
   border-left-width: $fixedWidthTextQuoteBorder;
 }

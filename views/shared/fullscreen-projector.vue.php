@@ -21,9 +21,9 @@ ob_start();
         <h1 v-if="imotion">{{ imotion.title_with_prefix }}</h1>
     </header>
     <main v-if="imotion" class="motionTextHolder">
-        <section v-for="section in imotion.sections" class="paragraph lineNumbers">
+        <section v-for="section in imotion.sections" class="paragraph lineNumbers" v-if="section.html !== ''">
             <h2>{{ section.title }}</h2>
-            <div v-if="section.type === 'TextSimple'" class="text" v-html="section.html" class="text motionTextFormattings textOrig fixedWidthFont"></div>
+            <div v-if="section.type === 'TextSimple'" v-html="section.html"></div>
         </section>
     </main>
 </article>
@@ -60,7 +60,8 @@ $html = ob_get_clean();
             },
             loadIMotion: function (url) {
                 const widget = this;
-                fetch(url)
+                const urlWithParams = url + '?lineNumbers=true';
+                fetch(urlWithParams)
                     .then(response => {
                         if (!response.ok) throw response.statusText;
                         return response.json();
