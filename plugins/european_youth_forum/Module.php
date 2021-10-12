@@ -2,7 +2,7 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{Consultation, IMotion, User, Vote, VotingBlock};
+use app\models\db\{Consultation, IMotion, Site, User, Vote, VotingBlock};
 use app\models\settings\Layout;
 use app\models\UserOrganization;
 use app\plugins\ModuleBase;
@@ -22,6 +22,15 @@ class Module extends ModuleBase
             new UserOrganization('nyo', 'NYO'),
             new UserOrganization('ingyo', 'INGYO'),
         ];
+    }
+
+    /**
+     * @return SiteSpecificBehavior|string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getSiteSpecificBehavior(Site $site)
+    {
+        return SiteSpecificBehavior::class;
     }
 
     /**
