@@ -23,7 +23,7 @@
     </thead>
     <tbody>
     <tr>
-        <th>NYO</th>
+        <th>NYC</th>
         <td><?= $result->nyoTotalMultiplied ?></td>
         <td><?= $result->nyoYes ?></td>
         <td><?= $result->nyoYesMultiplied ?></td>

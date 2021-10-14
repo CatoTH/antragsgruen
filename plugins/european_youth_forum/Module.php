@@ -19,7 +19,7 @@ class Module extends ModuleBase
     public static function getUserOrganizations(): array
     {
         return [
-            new UserOrganization('nyo', 'NYO'),
+            new UserOrganization('nyo', 'NYC'),
             new UserOrganization('ingyo', 'INGYO'),
         ];
     }

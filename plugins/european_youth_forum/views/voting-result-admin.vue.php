@@ -19,7 +19,7 @@
     </thead>
     <tbody>
     <tr>
-        <th>NYO</th>
+        <th>NYC</th>
         <td>{{ groupedVoting[0].vote_results['nyo'].total_multiplied }}</td>
         <td>{{ groupedVoting[0].vote_results['nyo'].yes }}</td>
         <td>{{ groupedVoting[0].vote_results['nyo'].yes_multiplied }}</td>
