@@ -172,9 +172,8 @@ $supportType   = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
 
 if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser(false)) {
     $loginlessSupported = \app\models\db\AmendmentSupporter::getMyLoginlessSupportIds();
-    $iAmSupporting = MotionLayoutHelper::printSupporterList($supporters, $currUserId, $loginlessSupported);
-
-    MotionLayoutHelper::printSupportingSection($amendment, $supportPolicy, $supportType, $iAmSupporting);
+    echo MotionLayoutHelper::printSupportingSection($amendment, $supporters, $supportPolicy, $supportType, $loginlessSupported);
+    echo MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 }
 
 MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);

@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\supportTypes\SupportBase;
 use yii\db\ActiveRecord;
 
 /**
@@ -161,4 +162,24 @@ abstract class ISupporter extends ActiveRecord
     }
 
     abstract public function getIMotion(): IMotion;
+
+    public static function createInitiator(SupportBase $supportType, bool $iAmAdmin): ISupporter {
+        $supporter = new static();
+        $supporter->role = static::ROLE_INITIATOR;
+        $supporter->dateCreation = date('Y-m-d H:i:s');
+        if (User::getCurrentUser() && !$iAmAdmin) {
+            $user = User::getCurrentUser();
+            $supporter->userId = $user->id;
+            $supporter->name = trim($user->name);
+            $supporter->organization = trim($user->organization);
+            $supporter->contactEmail = trim($user->email);
+            if ($supportType->getSettingsObj()->initiatorCanBePerson) {
+                $supporter->personType = static::PERSON_NATURAL;
+            } else {
+                $supporter->personType = static::PERSON_ORGANIZATION;
+                $supporter->contactName = $user->name;
+            }
+        }
+        return $supporter;
+    }
 }

@@ -300,99 +300,100 @@ class LayoutHelper
         return $pdf->Output('', 'S');
     }
 
-    public static function printLikeDislikeSection(IMotion $motion, IPolicy $policy, string $supportStatus): void
+    public static function printLikeDislikeSection(IMotion $motion, IPolicy $policy, string $supportStatus): string
     {
         $user = User::getCurrentUser();
 
         $hasLike    = ($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE);
         $hasDislike = ($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE);
-
         if (!$hasLike && !$hasDislike) {
-            return;
+            return '';
         }
 
         $canSupport = $policy->checkCurrUser(false);
+        $cantSupportMsg = ($canSupport ? '' : $policy->getPermissionDeniedSupportMsg());
+        if ($cantSupportMsg === \Yii::t('structure', 'policy_nobody_supp_denied')) {
+            $cantSupportMsg = '';
+        }
+
         foreach ($motion->getInitiators() as $supp) {
             if ($user && $supp->userId === $user->id) {
                 $canSupport = false;
             }
         }
 
-        $cantSupportMsg = $policy->getPermissionDeniedSupportMsg();
-
         $likes    = $motion->getLikes();
         $dislikes = $motion->getDislikes();
 
-        $nobody = \Yii::t('structure', 'policy_nobody_supp_denied');
-        if (count($likes) === 0 && count($dislikes) === 0 && $cantSupportMsg === $nobody && !$canSupport) {
-            return;
+        if (count($likes) === 0 && count($dislikes) === 0 && !$cantSupportMsg && !$canSupport) {
+            return '';
         }
 
-        echo '<section class="likes" aria-labelledby="likesTitle"><h2 class="green" id="likesTitle">' . \Yii::t('motion', 'likes_title') . '</h2>
+        $str = '<section class="likes" aria-labelledby="likesTitle"><h2 class="green" id="likesTitle">' . \Yii::t('motion', 'likes_title') . '</h2>
     <div class="content">';
 
         if ($hasLike && count($likes) > 0) {
-            echo '<strong>' . \Yii::t('motion', 'likes') . ':</strong><br>';
-            echo '<ul>';
+            $str .= '<strong>' . \Yii::t('motion', 'likes') . ':</strong><br>';
+            $str .= '<ul>';
             foreach ($likes as $supp) {
-                echo '<li>';
+                $str .= '<li>';
                 if ($user && $supp->userId === $user->id) {
-                    echo '<span class="label label-info">' . \Yii::t('motion', 'likes_you') . '</span> ';
+                    $str .= '<span class="label label-info">' . \Yii::t('motion', 'likes_you') . '</span> ';
                 }
-                echo Html::encode($supp->getNameWithOrga());
-                echo '</li>';
+                $str .= Html::encode($supp->getNameWithOrga());
+                $str .= '</li>';
             }
-            echo '</ul>';
-            echo "<br>";
+            $str .= '</ul>';
+            $str .= "<br>";
         }
 
         if ($hasDislike && count($dislikes) > 0) {
-            echo '<strong>' . \Yii::t('motion', 'dislikes') . ':</strong><br>';
-            echo '<ul>';
+            $str .= '<strong>' . \Yii::t('motion', 'dislikes') . ':</strong><br>';
+            $str .= '<ul>';
             foreach ($dislikes as $supp) {
-                echo '<li>';
+                $str .= '<li>';
                 if ($user && $supp->userId === $user->id) {
-                    echo '<span class="label label-info">' . \Yii::t('motion', 'dislikes_you') . '</span> ';
+                    $str .= '<span class="label label-info">' . \Yii::t('motion', 'dislikes_you') . '</span> ';
                 }
-                echo Html::encode($supp->getNameWithOrga());
-                echo '</li>';
+                $str .= Html::encode($supp->getNameWithOrga());
+                $str .= '</li>';
             }
-            echo '</ul>';
-            echo "<br>";
+            $str .= '</ul>';
+            $str .= "<br>";
         }
 
         if ($canSupport) {
-            echo Html::beginForm();
+            $str .= Html::beginForm();
 
-            echo '<div style="text-align: center; margin-bottom: 20px;">';
+            $str .= '<div style="text-align: center; margin-bottom: 20px;">';
             switch ($supportStatus) {
                 case ISupporter::ROLE_INITIATOR:
                     break;
                 case ISupporter::ROLE_LIKE:
-                    echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                    echo '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
-                    echo '</button>';
+                    $str .= '<button type="submit" name="motionSupportRevoke" class="btn">';
+                    $str .= '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
+                    $str .= '</button>';
                     break;
                 case ISupporter::ROLE_DISLIKE:
-                    echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                    echo '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
-                    echo '</button>';
+                    $str .= '<button type="submit" name="motionSupportRevoke" class="btn">';
+                    $str .= '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
+                    $str .= '</button>';
                     break;
                 default:
                     if ($hasLike) {
-                        echo '<button type="submit" name="motionLike" class="btn btn-success">';
-                        echo '<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> ' . \Yii::t('motion', 'like');
-                        echo '</button>';
+                        $str .= '<button type="submit" name="motionLike" class="btn btn-success">';
+                        $str .= '<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> ' . \Yii::t('motion', 'like');
+                        $str .= '</button>';
                     }
 
                     if ($hasDislike) {
-                        echo '<button type="submit" name="motionDislike" class="btn btn-alert">';
-                        echo '<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> ' . \Yii::t('motion', 'dislike');
-                        echo '</button>';
+                        $str .= '<button type="submit" name="motionDislike" class="btn btn-alert">';
+                        $str .= '<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> ' . \Yii::t('motion', 'dislike');
+                        $str .= '</button>';
                     }
             }
-            echo '</div>';
-            echo Html::endForm();
+            $str .= '</div>';
+            $str .= Html::endForm();
         } else {
             if ($cantSupportMsg !== '') {
                 if ($cantSupportMsg === \Yii::t('structure', 'policy_logged_supp_denied')) {
@@ -400,54 +401,111 @@ class LayoutHelper
                 } else {
                     $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
                 }
-                echo '<div class="alert alert-info">' .
+                $str .= '<div class="alert alert-info">' .
                     $icon . '<span class="sr-only">' . \Yii::t('base', 'aria_error') . ':</span>' . Html::encode($cantSupportMsg) . '
                     </div>';
             }
         }
-        echo '</div>';
-        echo '</section>';
+        $str .= '</div>';
+        $str .= '</section>';
+
+        return $str;
     }
 
-    public static function printSupportingSection(IMotion $motion, IPolicy $policy, SupportBase $supportType, bool $iAmSupporting): void
+    /**
+     * @param ISupporter[] $supporters
+     * @param int[] $loginlessSupported
+     */
+    public static function printSupportingSection(IMotion $imotion, array $supporters, IPolicy $policy, SupportBase $supportType, array $loginlessSupported): string
     {
         $user = User::getCurrentUser();
-
-        if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
-            return;
+        $currUserId = ($user ? $user->id : 0);
+        $iAmSupporting = false;
+        $canSupport = $policy->checkCurrUser();
+        $cantSupportMsg = ($canSupport ? '' : $policy->getPermissionDeniedSupportMsg());
+        if ($cantSupportMsg === \Yii::t('structure', 'policy_nobody_supp_denied')) {
+            $cantSupportMsg = '';
         }
 
-        $canSupport = $policy->checkCurrUser();
-        foreach ($motion->getInitiators() as $supp) {
+        $wrapWithContent = function(string $body): string {
+            if ($body !== '') {
+                return  '<section class="supporters" id="supporters" aria-labelledby="supportersTitle">
+                <h2 class="green" id="supportersTitle">' . \Yii::t('motion', 'supporters_heading') . '</h2>
+                <div class="content"><br>' . $body . '</div>
+                </section>';
+            } else {
+                return $body;
+            }
+        };
+
+        $str = '';
+        if (count($supporters) > 0) {
+            $nonPublicSupportCount = 0;
+            $publicSupportCount = 0;
+
+            $str .= '<ul class="supportersList">';
+            foreach ($supporters as $supp) {
+                $isMe = (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $loginlessSupported));
+                if ($isMe) {
+                    $iAmSupporting = true;
+                }
+                if ($currUserId === 0 && !$isMe && $supp->isNonPublic()) {
+                    $nonPublicSupportCount++;
+                    continue;
+                }
+                $publicSupportCount++;
+
+                $str .= '<li>';
+                if ($isMe) {
+                    $str .= '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
+                }
+                $str .= Html::encode($supp->getNameWithOrga());
+                if ($isMe && $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC)) {
+                    $str .= '<span class="nonPublic">(' . \Yii::t('motion', 'supporting_you_nonpublic') . ')</span>';
+                }
+                $str .= '</li>';
+            }
+            if ($nonPublicSupportCount === 1) {
+                if ($publicSupportCount > 0) {
+                    $str .= '<li>' . \Yii::t('motion', 'supporting_nonpublic_more_1') . '</li>';
+                } else {
+                    $str .= '<li>' . \Yii::t('motion', 'supporting_nonpublic_1') . '</li>';
+                }
+            } elseif ($nonPublicSupportCount > 1) {
+                if ($publicSupportCount > 0) {
+                    $str .= '<li>' . str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_more_x')) . '</li>';
+                } else {
+                    $str .= '<li>' . str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_x')) . '</li>';
+                }
+            }
+            $str .= '</ul>';
+        }
+
+        // Hint: if supporters are given by the initiator, then the flag is not set, but we need to show the list above anyway
+        if (!($imotion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
+            return $wrapWithContent($str);
+        }
+
+        foreach ($imotion->getInitiators() as $supp) {
             if ($user && $supp->userId === $user->id) {
-                return;
+                $canSupport = false;
             }
         }
-
-        $cantSupportMsg = $policy->getPermissionDeniedSupportMsg();
-        $nobody         = \Yii::t('structure', 'policy_nobody_supp_denied');
-        if ($cantSupportMsg === $nobody && !$canSupport) {
-            return;
+        if (!$imotion->isSupportingPossibleAtThisStatus()) {
+            $canSupport = false;
         }
-        if (!$motion->isSupportingPossibleAtThisStatus()) {
-            return;
-        }
-
-        echo '<section class="supporters" id="supporters" aria-labelledby="supportersTitle">
-            <h2 class="green" id="supportersTitle">' . \Yii::t('motion', 'supporters_heading') . '</h2>
-            <div class="content"><br>';
 
         if ($canSupport) {
             if ($iAmSupporting) {
-                echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
-                echo '<div style="text-align: center; margin-bottom: 20px;">';
-                echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                echo '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
-                echo '</button>';
-                echo '</div>';
-                echo Html::endForm();
+                $str .= Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
+                $str .= '<div style="text-align: center; margin-bottom: 20px;">';
+                $str .= '<button type="submit" name="motionSupportRevoke" class="btn">';
+                $str .= '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
+                $str .= '</button>';
+                $str .= '</div>';
+                $str .= Html::endForm();
             } else {
-                echo \Yii::$app->controller->renderPartial('@app/views/motion/_support_block', [
+                $str .= \Yii::$app->controller->renderPartial('@app/views/motion/_support_block', [
                     'user'        => $user,
                     'supportType' => $supportType,
                 ]);
@@ -459,65 +517,13 @@ class LayoutHelper
                 } else {
                     $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
                 }
-                echo '<div class="alert alert-info" role="alert">' . $icon .
+                $str .= '<div class="alert alert-info" role="alert">' . $icon .
                     '<span class="sr-only">' . \Yii::t('base', 'aria_error') . ':</span>' . Html::encode($cantSupportMsg) . '
-            </div>';
+                </div>';
             }
         }
 
-        echo '</div></section>';
-    }
-
-    /**
-     * @param ISupporter[] $supporters
-     * @param int[] $loginlessSupported
-     */
-    public static function printSupporterList(array $supporters, int $currUserId, array $loginlessSupported): bool
-    {
-        $iAmSupporting = false;
-        $nonPublicSupportCount = 0;
-        $publicSupportCount = 0;
-
-        if (count($supporters) === 0) {
-            return $iAmSupporting;
-        }
-
-        echo '<ul class="supportersList">';
-        foreach ($supporters as $supp) {
-            $isMe = (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $loginlessSupported));
-            if ($currUserId === 0 && !$isMe && $supp->isNonPublic()) {
-                $nonPublicSupportCount++;
-                continue;
-            }
-            $publicSupportCount++;
-
-            echo '<li>';
-            if ($isMe) {
-                echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
-                $iAmSupporting = true;
-            }
-            echo Html::encode($supp->getNameWithOrga());
-            if ($iAmSupporting && $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC)) {
-                echo '<span class="nonPublic">(' . \Yii::t('motion', 'supporting_you_nonpublic') . ')</span>';
-            }
-            echo '</li>';
-        }
-        if ($nonPublicSupportCount === 1) {
-            if ($publicSupportCount > 0) {
-                echo '<li>' . \Yii::t('motion', 'supporting_nonpublic_more_1') . '</li>';
-            } else {
-                echo '<li>' . \Yii::t('motion', 'supporting_nonpublic_1') . '</li>';
-            }
-        } elseif ($nonPublicSupportCount > 1) {
-            if ($publicSupportCount > 0) {
-                echo '<li>' . str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_more_x')) . '</li>';
-            } else {
-                echo '<li>' . str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_x')) . '</li>';
-            }
-        }
-        echo '</ul>';
-
-        return $iAmSupporting;
+        return $wrapWithContent($str);
     }
 
     /**

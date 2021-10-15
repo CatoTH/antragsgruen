@@ -432,17 +432,7 @@ class AmendmentController extends Base
         }
 
         if (count($form->supporters) == 0) {
-            $supporter               = new AmendmentSupporter();
-            $supporter->role         = AmendmentSupporter::ROLE_INITIATOR;
-            $supporter->dateCreation = date('Y-m-d H:i:s');
-            if (User::getCurrentUser() && !$iAmAdmin) {
-                $user                    = User::getCurrentUser();
-                $supporter->userId       = $user->id;
-                $supporter->name         = trim($user->name);
-                $supporter->contactEmail = trim($user->email);
-                $supporter->personType   = AmendmentSupporter::PERSON_NATURAL;
-            }
-            $form->supporters[] = $supporter;
+            $form->supporters[] = AmendmentSupporter::createInitiator($supportType, $iAmAdmin);
         }
 
         return $this->render(

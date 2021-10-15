@@ -384,18 +384,7 @@ class MotionController extends Base
 
 
         if (count($form->supporters) === 0) {
-            $supporter               = new MotionSupporter();
-            $supporter->role         = MotionSupporter::ROLE_INITIATOR;
-            $supporter->dateCreation = date('Y-m-d H:i:s');
-            $iAmAdmin                = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
-            if (User::getCurrentUser() && !$iAmAdmin) {
-                $user                    = User::getCurrentUser();
-                $supporter->userId       = $user->id;
-                $supporter->name         = trim($user->name);
-                $supporter->contactEmail = trim($user->email);
-                $supporter->personType   = MotionSupporter::PERSON_NATURAL;
-            }
-            $form->supporters[] = $supporter;
+            $form->supporters[] = MotionSupporter::createInitiator($supportType, $iAmAdmin);
         }
 
         return $this->render(

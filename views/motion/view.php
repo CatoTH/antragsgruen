@@ -222,15 +222,10 @@ $supporters    = $motion->getSupporters(true);
 $supportType   = $motion->getMyMotionType()->getMotionSupportTypeClass();
 $supportPolicy = $motion->getMyMotionType()->getMotionSupportPolicy();
 
-if (count($supporters) > 0 || $supportCollectingStatus || ($supportPolicy->checkCurrUser(false) && !$motion->isResolution())) {
-    $loginlessSupported = MotionSupporter::getMyLoginlessSupportIds();
-    $iAmSupporting = LayoutHelper::printSupporterList($supporters, $currUserId, $loginlessSupported);
-
-    LayoutHelper::printSupportingSection($motion, $supportPolicy, $supportType, $iAmSupporting);
-}
-
 if (!$motion->isResolution()) {
-    LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
+    $loginlessSupported = MotionSupporter::getMyLoginlessSupportIds();
+    echo LayoutHelper::printSupportingSection($motion, $supporters, $supportPolicy, $supportType, $loginlessSupported);
+    echo LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
 }
 
 echo \app\models\layoutHooks\Layout::afterMotionView($motion);
