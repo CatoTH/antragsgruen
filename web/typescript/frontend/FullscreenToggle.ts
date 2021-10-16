@@ -75,8 +75,12 @@ export class FullscreenToggle {
 
     private onFullscreenChange() {
         if (!this.isFullscreen() && this.vueElement) {
+            const newUrl = (this.vueWidget.currIMotion ? this.vueWidget.currIMotion.url_html : null);
             this.destroyVueElement();
             this.holderElement.remove();
+            if (newUrl && window.location.href !== newUrl) {
+                window.location.href = newUrl;
+            }
         }
     }
 
@@ -91,7 +95,8 @@ export class FullscreenToggle {
 
     private initVueElement(): void
     {
-        let template = '<' + this.vueElement + ' :initdata="initdata"></' + this.vueElement + '>';
+        const widget = this;
+        let template = '<' + this.vueElement + ' :initdata="initdata" @close="close" @changed="changed"></' + this.vueElement + '>';
         let initdata = {};
         if (this.element.getAttribute('data-vue-initdata')) {
             initdata = JSON.parse(this.element.getAttribute('data-vue-initdata'));
@@ -101,10 +106,26 @@ export class FullscreenToggle {
             template,
             data() {
                 return {
-                    initdata
+                    initdata,
+                    currIMotion: null
                 };
             },
-            methods: {},
+            methods: {
+                close: function (newUrl) {
+                    if (widget.isFullscreen()) {
+                        widget.exitFullscreen();
+                    } else {
+                        widget.destroyVueElement();
+                        widget.holderElement.remove();
+                    }
+                    if (newUrl !== window.location.href) {
+                        window.location.href = newUrl;
+                    }
+                },
+                changed: function (newIMotion) {
+                    this.currIMotion = newIMotion;
+                }
+            },
             beforeDestroy() {},
             created() {}
         });

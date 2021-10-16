@@ -11,14 +11,16 @@ ob_start();
             <select v-if="imotions" v-model="selectedIMotionId" @change="onChangeSelectedIMotion()" class="stdDropdown">
                 <template v-for="imotion in imotions">
                     <option :value="imotion.type + '-' + imotion.id">{{ imotion.title_with_prefix }}</option>
-                    <optgroup label="" v-if="imotion.amendment_links">
-                        <option v-for="amendment in imotion.amendment_links" :value="'amendment-' + amendment.id">{{ amendment.prefix }}</option>
-                    </optgroup>
+                    <option v-if="imotion.amendment_links" v-for="amendment in imotion.amendment_links" :value="'amendment-' + amendment.id">▸ {{ amendment.prefix }}</option>
                 </template>
             </select>
         </div>
 
-        <h1 v-if="imotion">{{ imotion.title_with_prefix }}</h1>
+        <button class="btn btn-link closeBtn" type="button" @click="close()" title="<?= Yii::t('base', 'aria_close') ?>" aria-label="<?= Yii::t('base', 'aria_close') ?>">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+
+        <h1 v-if="imotion" class="hidden">{{ imotion.title_with_prefix }}</h1>
     </header>
     <main v-if="imotion" class="motionTextHolder">
         <section v-for="section in imotion.sections" class="paragraph lineNumbers" v-if="section.html !== ''">
@@ -69,6 +71,7 @@ $html = ob_get_clean();
                     .then(data => {
                         widget.imotion = data;
                         widget.selectedIMotionId = data.type + '-' + data.id;
+                        widget.$emit('changed', data);
                     })
                     .catch(err => alert(err));
             },
@@ -92,6 +95,9 @@ $html = ob_get_clean();
                 if (found) {
                     this.loadIMotion(found.url_json);
                 }
+            },
+            close: function () {
+                this.$emit('close', this.imotion.url_html);
             }
         },
         created() {
