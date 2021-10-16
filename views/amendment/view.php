@@ -182,13 +182,9 @@ $supporters    = $amendment->getSupporters(true);
 $supportPolicy = $motion->getMyMotionType()->getAmendmentSupportPolicy();
 $supportType   = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
 
-if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser(false)) {
-    $loginlessSupported = \app\models\db\AmendmentSupporter::getMyLoginlessSupportIds();
-    echo MotionLayoutHelper::printSupportingSection($amendment, $supporters, $supportPolicy, $supportType, $loginlessSupported);
-    echo MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
-}
-
-MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
+$loginlessSupported = \app\models\db\AmendmentSupporter::getMyLoginlessSupportIds();
+echo MotionLayoutHelper::printSupportingSection($amendment, $supporters, $supportPolicy, $supportType, $loginlessSupported);
+echo MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
 $alternativeCommentView = \app\models\layoutHooks\Layout::getAmendmentAlternativeComments($amendment);
 if ($alternativeCommentView) {

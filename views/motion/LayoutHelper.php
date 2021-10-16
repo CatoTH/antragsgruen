@@ -31,7 +31,7 @@ class LayoutHelper
         $inits = [];
         foreach ($initiators as $supp) {
             $name = $supp->getNameWithResolutionDate(true);
-            $name = \app\models\layoutHooks\Layout::getMotionDetailsInitiatorName($name, $supp);
+            $name = LayoutHooks::getMotionDetailsInitiatorName($name, $supp);
 
             $admin = User::havePrivilege($consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
             if ($admin && ($supp->contactEmail || $supp->contactPhone )) {
