@@ -27,6 +27,8 @@ $hasPpAdminbox = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPO
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/AmendmentShow');
+$layout->loadVue();
+$layout->addVueTemplate('@app/views/shared/fullscreen-projector.vue.php');
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }
@@ -50,7 +52,17 @@ $this->title = $amendment->getTitle() . ' (' . $consultation->title . ')';
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
-echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
+$fullscreenInitData = json_encode([
+    'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
+    'init_imotion_url' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'rest')),
+]);
+$fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
+    data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
+    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+    <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
+</button>';
+
+echo '<h1>' . Html::encode($amendment->getTitle()) . $fullscreenButton . '</h1>';
 
 if ($consultation->getSettings()->hasSpeechLists) {
     echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);

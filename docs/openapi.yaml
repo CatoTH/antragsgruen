@@ -95,6 +95,13 @@ paths:
           example: 123-motion
           schema:
             type: string
+        - in: query
+          name: lineNumbers
+          required: false
+          example: true
+          description: If true, then line number markers will be returned in the text (if there are any)
+          schema:
+            type: boolean
       responses:
         '200': # status code
           description: Motion info, including links to amendments
@@ -277,6 +284,9 @@ components:
           example: https://test.antragsgruen.de/consultation/123-motion
     MotionDetails:
       properties:
+        type:
+          type: string
+          example: motion
         id:
           type: number
           example: 23
@@ -358,6 +368,9 @@ components:
           example: https://test.antragsgruen.de/consultation/123-motion/42
     AmendmentDetails:
       properties:
+        type:
+          type: string
+          example: amendment
         id:
           type: number
           example: 23
@@ -365,6 +378,9 @@ components:
           type: string
           example: Ä1
         title:
+          type: string
+          example: "Ä1 zu A1: My motion"
+        title_with_prefix:
           type: string
           example: "Ä1 zu A1: My motion"
         first_line:

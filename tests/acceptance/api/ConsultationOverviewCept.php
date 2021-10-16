@@ -15,7 +15,7 @@ $client = new \GuzzleHttp\Client([
 $request = $client->get('rest/std-parteitag');
 
 $I->assertEquals(403, $request->getStatusCode());
-$I->assertJsonStringEqualsJsonString('{"success":false,"message":"API disabled"}', $request->getBody()->getContents());
+$I->assertJsonStringEqualsJsonString('{"success":false,"message":"Public API disabled"}', $request->getBody()->getContents());
 
 
 // Enable it

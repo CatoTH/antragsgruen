@@ -237,8 +237,8 @@ class Base extends Controller
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
 
-        if (!$this->site->getSettings()->apiEnabled && !$alwaysEnabled) {
-            $this->returnRestResponseFromException(new \Exception('API disabled', 403));
+        if (!$this->site->getSettings()->apiEnabled && !$alwaysEnabled && !User::getCurrentUser()) {
+            $this->returnRestResponseFromException(new \Exception('Public API disabled', 403));
             Yii::$app->end();
         }
         if ($this->consultation && ($this->consultation->urlPath === null || $this->consultation->dateDeletion)) {

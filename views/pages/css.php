@@ -53,6 +53,7 @@ $icon-font-path: "./fonts/";
 @import "styles";
 @import "merging";
 @import "sidebar";
+@import "projector";
 @import "user_pages";
 
 ';

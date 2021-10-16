@@ -2,11 +2,13 @@
 
 /**
  * @var \app\models\db\Motion $motion
+ * @var bool $lineNumbers
  */
 
 use app\models\db\{Amendment, ISupporter, MotionSection, MotionSupporter};
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TextSimple;
 
 $proposedProcedure = null;
 if ($motion->isProposalPublic() && $motion->proposalStatus) {
@@ -17,6 +19,7 @@ if ($motion->isProposalPublic() && $motion->proposalStatus) {
 }
 
 $json = [
+    'type' => 'motion',
     'id' => $motion->id,
     'agenda_item' => ($motion->agendaItem ? $motion->agendaItem->title : null),
     'prefix' => $motion->titlePrefix,
@@ -42,11 +45,19 @@ $json = [
         ];
     }, $motion->getInitiators()),
     'initiators_html' => $motion->getInitiatorsStr(),
-    'sections' => array_map(function (MotionSection $section) {
+    'sections' => array_map(function (MotionSection $section) use ($lineNumbers) {
+        $type = $section->getSectionType();
+        if (is_a($type, TextSimple::class) && $lineNumbers) {
+            $text = $section->getSectionType()->getMotionPlainHtmlWithLineNumbers();
+        } else {
+            $text = '<div class="text motionTextFormattings textOrig">';
+            $text .= $section->getSectionType()->getMotionPlainHtml();
+            $text .= '</div>';
+        }
         return [
             'type' => ISectionType::typeIdToApi($section->getSettings()->type),
             'title' => $section->getSettings()->title,
-            'html' => $section->getSectionType()->getMotionPlainHtml(),
+            'html' => $text,
         ];
     }, $motion->getSortedSections(true)),
     'proposed_procedure' => $proposedProcedure,

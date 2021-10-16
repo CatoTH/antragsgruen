@@ -16,10 +16,7 @@ class TextSimple extends Text
 {
     private $forceMultipleParagraphs = null;
 
-    /**
-     * @param bool $active
-     */
-    public function forceMultipleParagraphMode(bool $active)
+    public function forceMultipleParagraphMode(bool $active): void
     {
         $this->forceMultipleParagraphs = $active;
     }
@@ -122,7 +119,7 @@ class TextSimple extends Text
         $this->section->setData(HTMLTools::cleanSimpleHtml($data, $forbiddenFormattings));
     }
 
-    public function deleteMotionData()
+    public function deleteMotionData(): void
     {
         $this->section->setData('');
         $this->section->dataRaw = null;
@@ -182,7 +179,56 @@ class TextSimple extends Text
         return $html;
     }
 
-    public function getAmendmentPlainHtml(): string
+    public function getMotionPlainHtmlWithLineNumbers(): string
+    {
+        $section = $this->section;
+        $paragraphBegin = '<div class="text motionTextFormattings textOrig';
+        if ($section->getSettings()->fixedWidth) {
+            $paragraphBegin .= ' fixedWidthFont';
+        }
+        $paragraphBegin .= '">';
+        $paragraphEnd = '</div>';
+
+        if (!$section->getSettings()->lineNumbers) {
+            return $paragraphBegin . $this->getMotionPlainHtml() . $paragraphEnd;
+        }
+
+        $lineNo    = $section->getFirstLineNumber();
+        $paragraphs     = $section->getTextParagraphObjects(true, true, true);
+        $str = '';
+        foreach ($paragraphs as $paragraph) {
+            $str .= $paragraphBegin;
+            foreach ($paragraph->lines as $i => $line) {
+                $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '" aria-hidden="true"></span>';
+                $line = str_replace('###LINENUMBER###', $lineNoStr, $line);
+                $line = str_replace('<br>', '', $line);
+                $first3 = substr($line, 0, 3);
+                if ($i > 0 && !in_array($first3, ['<ol', '<ul', '<p>', '<di'])) {
+                    $str .= '<br>';
+                }
+                $str .= $line;
+            }
+            $str .= $paragraphEnd;
+        }
+
+        return $str;
+    }
+
+    private function getAmendmentPlainHtmlCalcText(AmendmentSection $section, int $firstLine, int $lineLength): string
+    {
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
+        if (count($diffGroups) === 0) {
+            return '';
+        }
+
+        return TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+    }
+
+    public function getAmendmentPlainHtml(bool $skipTitle = false): string
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
@@ -190,37 +236,31 @@ class TextSimple extends Text
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
         if ($section->getAmendment()->globalAlternative) {
-            $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
+            $str = ($skipTitle ? '' : '<h3>' . Html::encode($section->getSettings()->title) . '</h3>');
             $str .= '<p><strong>' . \Yii::t('amend', 'global_alternative') . '</strong></p>';
             $str .= $section->data;
             return $str;
+        } elseif ($skipTitle) {
+            return $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
         } else {
             $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, $section->getSettings()->title];
             $cached    = HashedStaticCache::getCache('getAmendmentPlainHtml', $cacheDeps);
             if (!$cached) {
-                $formatter = new AmendmentSectionFormatter();
-                $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
-                $formatter->setTextNew($section->data);
-                $formatter->setFirstLineNo($firstLine);
-                $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
-                if (count($diffGroups) === 0) {
-                    return '';
+                $str = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
+                if ($str !== '') {
+                    $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
+                    $cached = $str;
+                    HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $cached);
                 }
-
-                $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
-                $str .= TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
-                $cached = $str;
-                HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $cached);
             }
             return $cached;
         }
     }
 
     /**
-     * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function getAmendmentFormattedGlobalAlternative()
+    public function getAmendmentFormattedGlobalAlternative(): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -252,8 +292,6 @@ class TextSimple extends Text
         if ($section->getAmendment()->globalAlternative) {
             return $this->getAmendmentFormattedGlobalAlternative();
         }
-
-        $str = '';
 
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
         $firstLine  = $section->getFirstLineNumber();
