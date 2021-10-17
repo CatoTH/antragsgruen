@@ -8,6 +8,7 @@ use app\models\db\{EMailLog, Site, User};
 use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUser, MailNotSent};
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site as SiteSettings;
+use Gregwar\Captcha\CaptchaBuilder;
 use yii\base\Model;
 
 class LoginUsernamePasswordForm extends Model
@@ -16,9 +17,15 @@ class LoginUsernamePasswordForm extends Model
 
     /** @var string */
     public $username;
+    /** @var string */
     public $password;
+    /** @var string */
     public $passwordConfirm;
+    /** @var string */
     public $name;
+    /** @var string */
+    public $enteredCaptcha;
+    /** @var string */
     public $error;
 
     /** @var bool */
@@ -42,12 +49,11 @@ class LoginUsernamePasswordForm extends Model
             [['username', 'password'], 'required'],
             ['contact', 'required', 'message' => \Yii::t('user', 'err_contact_required')],
             [['createAccount', 'hasComments', 'openNow'], 'boolean'],
-            [['username', 'password', 'passwordConfirm', 'name', 'createAccount'], 'safe'],
+            [['username', 'password', 'passwordConfirm', 'name', 'createAccount', 'enteredCaptcha'], 'safe'],
         ];
     }
 
     /**
-     * @param User $user
      * @throws MailNotSent
      */
     private function sendConfirmationEmail(User $user): void
@@ -76,7 +82,6 @@ class LoginUsernamePasswordForm extends Model
 
 
     /**
-     * @param Site|null $site
      * @throws Login
      */
     private function doCreateAccountValidate(?Site $site): void
@@ -121,8 +126,6 @@ class LoginUsernamePasswordForm extends Model
     }
 
     /**
-     * @param Site|null $site
-     * @return User
      * @throws Login
      */
     public function doCreateAccount(?Site $site): User
@@ -185,7 +188,6 @@ class LoginUsernamePasswordForm extends Model
     }
 
     /**
-     * @param Site|null $site
      * @return User[]
      */
     private function getCandidates(?Site $site): array
@@ -204,8 +206,6 @@ class LoginUsernamePasswordForm extends Model
     }
 
     /**
-     * @param Site|null $site
-     * @return User
      * @throws LoginInvalidUser
      * @throws LoginInvalidPassword
      * @throws Login
@@ -243,8 +243,6 @@ class LoginUsernamePasswordForm extends Model
     }
 
     /**
-     * @param Site|null $site
-     * @return User
      * @throws Login
      */
     public function getOrCreateUser(?Site $site): User
@@ -254,5 +252,23 @@ class LoginUsernamePasswordForm extends Model
         } else {
             return $this->checkLogin($site);
         }
+    }
+
+    public function needsCaptcha(): bool
+    {
+        return true; // @TODO
+    }
+
+    public function createInlineCaptcha(): string
+    {
+        $builder = new CaptchaBuilder();
+        $builder->build(300, 80);
+
+        echo \Yii::$app->session->get('captcha');
+
+        $phrase = $builder->getPhrase();
+        \Yii::$app->session->set('captcha', $phrase);
+
+        return $builder->inline();
     }
 }

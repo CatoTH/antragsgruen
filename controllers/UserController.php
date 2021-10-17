@@ -299,7 +299,6 @@ class UserController extends Base
      * @param string $email
      * @param string $code
      * @return \yii\web\Response
-     * @throws \yii\base\ExitException
      */
     public function actionEmailchange($email, $code)
     {

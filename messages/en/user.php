@@ -74,6 +74,7 @@ return [
     'login_password'          => 'Password',
     'login_password_rep'      => 'Password (Confirm)',
     'login_create_name'       => 'Your name',
+    'login_captcha'           => 'Please enter the code shown',
     'login_btn_login'         => 'Log In',
     'login_btn_create'        => 'Create',
     'login_forgot_pw'         => 'Forgot your password?',
