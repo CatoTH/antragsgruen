@@ -1,5 +1,6 @@
 <?php
 
+use app\components\Captcha;
 use app\components\UrlHelper;
 use app\models\db\User;
 use app\models\forms\LoginUsernamePasswordForm;
@@ -216,8 +217,8 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         }
     }
 
-    if ($usernamePasswordForm->needsCaptcha()) {
-        $image = $usernamePasswordForm->createInlineCaptcha();
+    if (Captcha::needsCaptcha()) {
+        $image = Captcha::createInlineCaptcha();
         ?>
         <div class="form-group row">
             <div class="col-md-12">
@@ -227,7 +228,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
                 <img src="<?= $image ?>" alt="" width="150">
             </div>
             <div class="col-md-7">
-                <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control">
+                <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
             </div>
         </div>
         <?php

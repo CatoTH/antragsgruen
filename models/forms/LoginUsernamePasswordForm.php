@@ -2,13 +2,13 @@
 
 namespace app\models\forms;
 
+use app\components\Captcha;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\components\UrlHelper;
 use app\models\db\{EMailLog, Site, User};
 use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUser, MailNotSent};
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site as SiteSettings;
-use Gregwar\Captcha\CaptchaBuilder;
 use yii\base\Model;
 
 class LoginUsernamePasswordForm extends Model
@@ -249,7 +249,7 @@ class LoginUsernamePasswordForm extends Model
      */
     public function getOrCreateUser(?Site $site): User
     {
-        if ($this->needsCaptcha() && !$this->checkEnteredCaptcha()) {
+        if (Captcha::needsCaptcha() && !Captcha::checkEnteredCaptcha($this->captcha)) {
             throw new Login(\Yii::t('user', 'login_err_captcha'));
         }
 
@@ -258,29 +258,5 @@ class LoginUsernamePasswordForm extends Model
         } else {
             return $this->checkLogin($site);
         }
-    }
-
-    public function needsCaptcha(): bool
-    {
-        return AntragsgruenApp::getInstance()->loginCaptcha;
-    }
-
-    public function createInlineCaptcha(): string
-    {
-        $builder = new CaptchaBuilder();
-        $builder->build(300, 80);
-
-        $phrase = $builder->getPhrase();
-        \Yii::$app->session->set('captcha', $phrase);
-
-        return $builder->inline();
-    }
-
-    private function checkEnteredCaptcha(): bool
-    {
-        if (!$this->captcha || !\Yii::$app->session->get('captcha') || mb_strlen(\Yii::$app->session->get('captcha')) < 5) {
-            return false;
-        }
-        return mb_strtolower(\Yii::$app->session->get('captcha')) === mb_strtolower($this->captcha);
     }
 }

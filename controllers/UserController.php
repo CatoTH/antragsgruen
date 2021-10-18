@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\{ConsultationAccessPassword, Tools, UrlHelper, GruenesNetzSamlClient};
+use app\components\{Captcha, ConsultationAccessPassword, Tools, UrlHelper, GruenesNetzSamlClient};
 use app\models\db\{AmendmentSupporter, ConsultationUserPrivilege, EMailBlocklist, MotionSupporter, User, UserNotification};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
@@ -253,7 +253,11 @@ class UserController extends Base
         if ($this->isPostSet('send')) {
             /** @var User|null $user */
             $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
-            if (!$user) {
+
+            if (Captcha::needsCaptcha() && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
+                $msg = Yii::t('user', 'login_err_captcha');
+                Yii::$app->session->setFlash('error', $msg);
+            } elseif (!$user) {
                 $msg = str_replace('%USER%', $this->getRequestValue('email'), Yii::t('user', 'err_user_notfound'));
                 Yii::$app->session->setFlash('error', $msg);
             } else {
@@ -273,7 +277,11 @@ class UserController extends Base
             /** @var User|null $user */
             $user     = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
-            if (!$user) {
+
+            if (Captcha::needsCaptcha() && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
+                $msg = Yii::t('user', 'login_err_captcha');
+                Yii::$app->session->setFlash('error', $msg);
+            } elseif (!$user) {
                 $msg = str_replace('%USER%', $this->getRequestValue('email'), Yii::t('user', 'err_user_notfound'));
                 Yii::$app->session->setFlash('error', $msg);
             } elseif (mb_strlen($this->getRequestValue('newPassword')) < $pwMinLen) {
