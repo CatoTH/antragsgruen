@@ -92,6 +92,7 @@ return [
     'login_err_password'      => 'Invalid password.',
     'login_err_username'      => 'Username not found.',
     'login_err_siteaccess'    => 'This account is not eligible to log in to this site.',
+    'login_err_captcha'       => 'The entered code did not match the image',
     'create_err_emailexists'  => 'This e-mail-address is already registered to another account',
     'create_err_siteaccess'   => 'Creating accounts is not allowed for this site.',
     'create_err_emailinvalid' => 'Please enter a valid e-mailaddress.',

@@ -67,6 +67,9 @@ rm -R vendor/cebe/markdown/bin
 rm -R vendor/yiisoft/yii2/i18n/migrations
 rm -R vendor/yiisoft/yii2/log/migrations
 rm -R vendor/bower-asset
+rm -Rf vendor/gregwar/captcha/demo/
+rm -Rf vendor/gregwar/captcha/tests/
+cp vendor/gregwar/captcha/src/Gregwar/Captcha/Font/captcha5.ttf vendor/gregwar/captcha/src/Gregwar/Captcha/Font/captcha4.ttf # the original 4 is too big
 find vendor -type l -exec rm {} \;
 rm -R vendor/cebe/markdown/tests
 rm -R tests/

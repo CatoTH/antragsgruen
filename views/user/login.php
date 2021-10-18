@@ -219,10 +219,16 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     if ($usernamePasswordForm->needsCaptcha()) {
         $image = $usernamePasswordForm->createInlineCaptcha();
         ?>
-        <div class="form-group">
-            <img src="<?= $image ?>" alt="" width="150">
-            <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label>
-            <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label>
+            </div>
+            <div class="col-md-5">
+                <img src="<?= $image ?>" alt="" width="150">
+            </div>
+            <div class="col-md-7">
+                <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control">
+            </div>
         </div>
         <?php
     }
