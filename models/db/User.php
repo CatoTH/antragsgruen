@@ -369,14 +369,11 @@ class User extends ActiveRecord implements IdentityInterface
             return 'testCode';
         }
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
         if ($date == '') {
             $date = date('Ymd');
         }
-        $code = $this->id . '-' . substr(md5($this->id . $date . $params->randomSeed), 0, 8);
-        return $code;
+        $binaryCode = md5($this->id . $date . AntragsgruenApp::getInstance()->randomSeed, true);
+        return substr(base64_encode($binaryCode), 0, 10);
     }
 
     /**
@@ -664,8 +661,8 @@ class User extends ActiveRecord implements IdentityInterface
             }
         }
 
-        $recoveryToken       = rand(1000000, 9999999);
-        $this->recoveryAt    = date('Y-m-d H:i:s');
+        $recoveryToken = \Yii::$app->getSecurity()->generateRandomString(10);
+        $this->recoveryAt = date('Y-m-d H:i:s');
         $this->recoveryToken = password_hash($recoveryToken, PASSWORD_DEFAULT);
         $this->save();
 

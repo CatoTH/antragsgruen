@@ -1,5 +1,6 @@
 <?php
 
+use app\components\Captcha;
 use app\components\UrlHelper;
 use yii\helpers\Html;
 
@@ -21,6 +22,9 @@ echo '<h1>' . \Yii::t('user', 'recover_title') . '</h1>';
 
 echo $controller->showErrors();
 
+// Create the same one for both forms, so the value in the session doesn't get overridden by the second
+$inlineCaptcha = (Captcha::needsCaptcha() ? Captcha::createInlineCaptcha() : null);
+
 $url = UrlHelper::createUrl('user/recovery');
 echo Html::beginForm($url, 'post', ['class' => 'sendConfirmationForm']) . '
   <h2 class="green">' . \Yii::t('user', 'recover_step1') . '</h2>
@@ -31,8 +35,23 @@ echo Html::beginForm($url, 'post', ['class' => 'sendConfirmationForm']) . '
             <input class="form-control" name="email" id="sendEmail" type="email" required
                 placeholder="' . Html::encode(\Yii::t('user', 'recover_email_place')) . '" value="">
         </div>
-    </div>
+    </div>';
+if (Captcha::needsCaptcha()) {
+    ?>
     <div class="row">
+        <div class="col-md-12">
+            <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label>
+        </div>
+        <div class="form-group col-md-3">
+            <img src="<?= $inlineCaptcha ?>" alt="" width="150">
+        </div>
+        <div class="form-group col-md-3">
+            <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
+        </div>
+    </div>
+    <?php
+}
+echo '<div class="row">
         <div class="col-sm-6">
             <button type="submit" class="btn btn-primary" name="send">
                 <span class="glyphicon glyphicon-envelope"></span>
@@ -66,7 +85,23 @@ echo Html::beginForm($url, 'post', ['class' => 'sendConfirmationForm']) . '
             <label for="recoveryPassword">' . \Yii::t('user', 'recover_new_pwd') . ':</label>
             <input class="form-control" name="newPassword" id="recoveryPassword" type="password" required value="">
         </div>
+    </div>';
+if (Captcha::needsCaptcha()) {
+    ?>
+    <div class="row">
+        <div class="col-md-12">
+            <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label>
+        </div>
+        <div class="form-group col-md-3">
+            <img src="<?= $inlineCaptcha ?>" alt="" width="150">
+        </div>
+        <div class="form-group col-md-3">
+            <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
+        </div>
     </div>
+    <?php
+}
+echo '
     <div class="row">
         <div class="col-sm-6">
             <button type="submit" class="btn btn-primary" name="recover">
