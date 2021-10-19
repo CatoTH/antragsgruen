@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\components\Captcha;
 use app\components\UrlHelper;
 use app\models\db\EMailLog;
 use app\models\db\Site;
@@ -20,10 +21,16 @@ class LoginUsernamePasswordForm extends Model
 
     /** @var string */
     public $username;
+    /** @var string */
     public $password;
+    /** @var string */
     public $passwordConfirm;
+    /** @var string */
     public $name;
+    /** @var string */
     public $error;
+    /** @var string */
+    public $captcha;
 
     /** @var bool */
     public $createAccount = false;
@@ -37,7 +44,7 @@ class LoginUsernamePasswordForm extends Model
             [['username', 'password'], 'required'],
             ['contact', 'required', 'message' => \Yii::t('user', 'err_contact_required')],
             [['createAccount', 'hasComments', 'openNow'], 'boolean'],
-            [['username', 'password', 'passwordConfirm', 'name', 'createAccount'], 'safe'],
+            [['username', 'password', 'passwordConfirm', 'name', 'createAccount', 'captcha'], 'safe'],
         ];
     }
 
@@ -223,6 +230,10 @@ class LoginUsernamePasswordForm extends Model
      */
     public function getOrCreateUser($site)
     {
+        if (Captcha::needsCaptcha() && !Captcha::checkEnteredCaptcha($this->captcha)) {
+            throw new Login(\Yii::t('user', 'login_err_captcha'));
+        }
+
         if ($this->createAccount) {
             return $this->doCreateAccount($site);
         } else {
