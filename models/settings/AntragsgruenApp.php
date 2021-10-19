@@ -56,6 +56,8 @@ class AntragsgruenApp implements \JsonSerializable
     public $blockedSubdomains     = ['www', 'rest', 'ftp', 'smtp', 'imap'];
     /** @var int */
     public $autoLoginDuration     = 31536000; // 1 Year
+    /** @var bool */
+    public $loginCaptcha          = false;
     /** @var null|string */
     public $xelatexPath           = null; // @TODO OBSOLETE
     /** @var null|string */

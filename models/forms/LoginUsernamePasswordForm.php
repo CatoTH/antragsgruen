@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\components\Captcha;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\components\UrlHelper;
 use app\models\db\{EMailLog, Site, User};
@@ -16,9 +17,15 @@ class LoginUsernamePasswordForm extends Model
 
     /** @var string */
     public $username;
+    /** @var string */
     public $password;
+    /** @var string */
     public $passwordConfirm;
+    /** @var string */
     public $name;
+    /** @var string */
+    public $captcha;
+    /** @var string */
     public $error;
 
     /** @var bool */
@@ -42,12 +49,11 @@ class LoginUsernamePasswordForm extends Model
             [['username', 'password'], 'required'],
             ['contact', 'required', 'message' => \Yii::t('user', 'err_contact_required')],
             [['createAccount', 'hasComments', 'openNow'], 'boolean'],
-            [['username', 'password', 'passwordConfirm', 'name', 'createAccount'], 'safe'],
+            [['username', 'password', 'passwordConfirm', 'name', 'createAccount', 'captcha'], 'safe'],
         ];
     }
 
     /**
-     * @param User $user
      * @throws MailNotSent
      */
     private function sendConfirmationEmail(User $user): void
@@ -56,8 +62,8 @@ class LoginUsernamePasswordForm extends Model
             throw new Internal('Creating account is not supported');
         }
         $bestCode = $user->createEmailConfirmationCode();
-        $params   = ['/user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
-        $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
+        $params = ['/user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
+        $link = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
 
         \app\components\mail\Tools::sendWithLog(
             EMailLog::TYPE_REGISTRATION,
@@ -68,7 +74,7 @@ class LoginUsernamePasswordForm extends Model
             \Yii::t('user', 'create_emailconfirm_msg'),
             '',
             [
-                '%CODE%'      => $bestCode,
+                '%CODE%' => $bestCode,
                 '%BEST_LINK%' => $link,
             ]
         );
@@ -76,7 +82,6 @@ class LoginUsernamePasswordForm extends Model
 
 
     /**
-     * @param Site|null $site
      * @throws Login
      */
     private function doCreateAccountValidate(?Site $site): void
@@ -111,7 +116,7 @@ class LoginUsernamePasswordForm extends Model
             throw new Login($this->error);
         }
 
-        $auth     = 'email:' . $this->username;
+        $auth = 'email:' . $this->username;
         $existing = User::findOne(['auth' => $auth]);
         if ($existing) {
             /** @var User $existing */
@@ -121,8 +126,6 @@ class LoginUsernamePasswordForm extends Model
     }
 
     /**
-     * @param Site|null $site
-     * @return User
      * @throws Login
      */
     public function doCreateAccount(?Site $site): User
@@ -136,20 +139,20 @@ class LoginUsernamePasswordForm extends Model
 
         $this->doCreateAccountValidate($site);
 
-        $user                  = new User();
-        $user->auth            = 'email:' . $this->username;
-        $user->name            = $this->name;
-        $user->email           = $this->username;
-        $user->pwdEnc          = password_hash($this->password, PASSWORD_DEFAULT);
+        $user = new User();
+        $user->auth = 'email:' . $this->username;
+        $user->name = $this->name;
+        $user->email = $this->username;
+        $user->pwdEnc = password_hash($this->password, PASSWORD_DEFAULT);
         $user->organizationIds = '';
 
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if ($params->confirmEmailAddresses) {
-            $user->status         = User::STATUS_UNCONFIRMED;
+            $user->status = User::STATUS_UNCONFIRMED;
             $user->emailConfirmed = 0;
         } else {
-            $user->status         = User::STATUS_CONFIRMED;
+            $user->status = User::STATUS_CONFIRMED;
             $user->emailConfirmed = 1;
         }
 
@@ -158,6 +161,7 @@ class LoginUsernamePasswordForm extends Model
                 $user->refresh();
                 try {
                     $this->sendConfirmationEmail($user);
+
                     return $user;
                 } catch (MailNotSent $e) {
                     $this->error = $e->getMessage();
@@ -185,7 +189,6 @@ class LoginUsernamePasswordForm extends Model
     }
 
     /**
-     * @param Site|null $site
      * @return User[]
      */
     private function getCandidates(?Site $site): array
@@ -200,12 +203,11 @@ class LoginUsernamePasswordForm extends Model
         if (in_array(SiteSettings::LOGIN_STD, $methods)) {
             $candidates = array_merge($candidates, $this->getCandidatesStdLogin());
         }
+
         return $candidates;
     }
 
     /**
-     * @param Site|null $site
-     * @return User
      * @throws LoginInvalidUser
      * @throws LoginInvalidPassword
      * @throws Login
@@ -243,12 +245,14 @@ class LoginUsernamePasswordForm extends Model
     }
 
     /**
-     * @param Site|null $site
-     * @return User
      * @throws Login
      */
     public function getOrCreateUser(?Site $site): User
     {
+        if (Captcha::needsCaptcha() && !Captcha::checkEnteredCaptcha($this->captcha)) {
+            throw new Login(\Yii::t('user', 'login_err_captcha'));
+        }
+
         if ($this->createAccount) {
             return $this->doCreateAccount($site);
         } else {
