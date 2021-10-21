@@ -22,11 +22,25 @@ ob_start();
 
         <h1 v-if="imotion" class="hidden">{{ imotion.title_with_prefix }}</h1>
     </header>
-    <main v-if="imotion" class="motionTextHolder">
-        <section v-for="section in imotion.sections" class="paragraph lineNumbers" v-if="section.html !== ''">
-            <h2>{{ section.title }}</h2>
-            <div v-if="section.type === 'TextSimple'" v-html="section.html"></div>
+    <main v-if="imotion && !isTwoColumnLayout" class="motionTextHolder">
+        <section v-for="section in imotion.sections" class="paragraph lineNumbers" :class="[section.type]" v-if="section.html !== ''">
+            <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
+            <div v-html="section.html"></div>
         </section>
+    </main>
+    <main v-if="imotion && isTwoColumnLayout" class="motionTextHolder row">
+        <div class="col-md-8">
+            <section v-for="section in leftSections" class="paragraph lineNumbers" :class="[section.type]"  v-if="section.html !== ''">
+                <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
+                <div v-html="section.html"></div>
+            </section>
+        </div>
+        <div class="col-md-4">
+            <section v-for="section in rightSections" class="paragraph lineNumbers" :class="[section.type]"  v-if="section.html !== ''">
+                <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
+                <div v-html="section.html"></div>
+            </section>
+        </div>
     </main>
 </article>
 <?php
@@ -48,7 +62,23 @@ $html = ob_get_clean();
                 selectedIMotionId: null
             }
         },
-        computed: {},
+        computed: {
+            isTwoColumnLayout: function () {
+                return this.imotion && this.imotion.sections && this.imotion.sections.find(section => {
+                    return section.layout_right;
+                });
+            },
+            leftSections: function () {
+                return this.imotion.sections.filter(section => {
+                    return !section.layout_right;
+                });
+            },
+            rightSections: function () {
+                return this.imotion.sections.filter(section => {
+                    return section.layout_right;
+                });
+            }
+        },
         methods: {
             loadIMotionList: function() {
                 const widget = this;
@@ -77,6 +107,9 @@ $html = ob_get_clean();
             },
             loadInitIMotion: function () {
                 this.loadIMotion(this.initdata.init_imotion_url);
+            },
+            showSectionTitle: function (section) {
+                return !section.layout_right && ['Image', 'PDFAttachment', 'PDFAlternative'].indexOf(section.type) === -1;
             },
             onChangeSelectedIMotion: function () {
                 let found = null;

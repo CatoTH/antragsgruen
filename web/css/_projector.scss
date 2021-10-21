@@ -111,5 +111,25 @@
     h6 {
       font-size: 1.6vw;
     }
+
+    // Section Types
+    .Image {
+      img {
+        max-width: 100%;
+      }
+      .text {
+        padding: 15px;
+      }
+    }
+
+    .TabularData {
+      .dl-horizontal dt {
+        text-align: left;
+      }
+    }
+
+    .TextSimple {
+
+    }
   }
 }

@@ -50,14 +50,16 @@ $json = [
         if (is_a($type, TextSimple::class) && $lineNumbers) {
             $text = $section->getSectionType()->getMotionPlainHtmlWithLineNumbers();
         } else {
-            $text = '<div class="text motionTextFormattings textOrig">';
-            $text .= $section->getSectionType()->getMotionPlainHtml();
-            $text .= '</div>';
+            $text = $section->getSectionType()->getMotionPlainHtml();
+            if ($text) {
+                $text = '<div class="text motionTextFormattings textOrig">' . $text . '</div>';
+            }
         }
         return [
             'type' => ISectionType::typeIdToApi($section->getSettings()->type),
             'title' => $section->getSettings()->title,
             'html' => $text,
+            'layout_right' => $section->isLayoutRight(),
         ];
     }, $motion->getSortedSections(true)),
     'proposed_procedure' => $proposedProcedure,

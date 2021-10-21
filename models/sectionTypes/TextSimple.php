@@ -189,6 +189,9 @@ class TextSimple extends Text
         $paragraphBegin .= '">';
         $paragraphEnd = '</div>';
 
+        if ($this->isEmpty()) {
+            return '';
+        }
         if (!$section->getSettings()->lineNumbers) {
             return $paragraphBegin . $this->getMotionPlainHtml() . $paragraphEnd;
         }

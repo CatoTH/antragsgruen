@@ -456,6 +456,10 @@ components:
         html:
           type: string
           example: "<strong>This is the motion text</strong>"
+        layout_right:
+          type: boolean
+          example: true
+          description: In case of a two-column layout, true indicates this section is to be shown on the right
     AmendmentSection:
       properties:
         type:
