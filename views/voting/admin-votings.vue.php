@@ -98,7 +98,8 @@ ob_start();
             </p></div>
         </div>
         <ul class="votingListAdmin votingListCommon" v-if="groupedVotings.length > 0">
-            <li v-for="groupedVoting in groupedVotings" :class="[
+            <template v-for="groupedVoting in groupedVotings">
+            <li  :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
                 (isClosed ? 'showResults' : ''), (isClosed ? 'showDetailedResults' : '')
             ]">
@@ -112,6 +113,14 @@ ob_start();
                         <br>
                         <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
+                    <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
+                        <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
+                        <?= Yii::t('voting', 'voting_show_votes') ?>
+                    </button>
+                    <button v-if="hasVoteList(groupedVoting) && isVoteListShown(groupedVoting)" @click="hideVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
+                        <span class="glyphicon glyphicon-chevron-up" aria-label="true"></span>
+                        <?= Yii::t('voting', 'voting_hide_votes') ?>
+                    </button>
                 </div>
                 <div class="prepActions" v-if="isPreparing">
                     <button class="btn btn-link btn-xs removeBtn" type="button" @click="removeItem(groupedVoting)"
@@ -161,6 +170,27 @@ ob_start();
                     </div>
                 </div>
             </li>
+            <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
+                <div class="singleVoteList">
+                    <strong><?= Yii::t('voting', 'vote_yes') ?>:</strong>
+                    <ul>
+                        <li v-for="vote in getVoteListVotes(groupedVoting, 'yes')">{{ vote.user_name }}</li>
+                    </ul>
+                </div>
+                <div class="singleVoteList">
+                    <strong><?= Yii::t('voting', 'vote_no') ?>:</strong>
+                    <ul>
+                        <li v-for="vote in getVoteListVotes(groupedVoting, 'no')">{{ vote.user_name }}</li>
+                    </ul>
+                </div>
+                <div class="singleVoteList">
+                    <strong><?= Yii::t('voting', 'vote_abstention') ?>:</strong>
+                    <ul>
+                        <li v-for="vote in getVoteListVotes(groupedVoting, 'abstention')">{{ vote.user_name }}</li>
+                    </ul>
+                </div>
+            </li>
+            </template>
         </ul>
         <div v-if="isPreparing" class="addingMotionForm">
             <button class="btn btn-link btn-xs" type="button" v-if="!addingMotions" @click="addingMotions = true">
@@ -324,7 +354,8 @@ $html = ob_get_clean();
                     assignedMotion: null,
                     votesPublic: null,
                     resultsPublic: null
-                }
+                },
+                shownVoteLists: []
             }
         },
         computed: {
@@ -496,6 +527,25 @@ $html = ob_get_clean();
             },
             itemIsRejected: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
+            },
+            hasVoteList: function (groupedItem) {
+                return groupedItem[0].votes !== undefined;
+            },
+            isVoteListShown: function (groupedItem) {
+                const showId = groupedItem[0].type + '-' + groupedItem[0].id;
+                return this.shownVoteLists.indexOf(showId) !== -1;
+            },
+            showVoteList: function (groupedItem) {
+                const showId = groupedItem[0].type + '-' + groupedItem[0].id;
+                this.shownVoteLists.push(showId);
+            },
+            hideVoteList: function (groupedItem) {
+                const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
+                this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
+            },
+            getVoteListVotes: function (groupedItem, type) {
+                return groupedItem[0].votes
+                    .filter(vote => vote.vote === type);
             },
             openSettings: function () {
                 this.settingsOpened = true;

@@ -80,6 +80,8 @@ return [
     'voting_votes_1_1' => '1 vote has been cast by 1 user',
     'voting_votes_1_x' => '%VOTES% votes have been cast by 1 user',
     'voting_votes_x' => '%VOTES% votes have been cast by %USERS% users',
+    'voting_show_votes' => 'Show vote list',
+    'voting_hide_votes' => 'Hide vote list',
 
     'majority_simple' => 'Simple majority',
     'majority_simple_h' => 'A motion or amendment is adopted, if more yes- than no-votes are cast.',

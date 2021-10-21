@@ -80,6 +80,8 @@ return [
     'voting_votes_1_1' => '1 Stimme von 1 Mitglied abgegeben',
     'voting_votes_1_x' => '%VOTES% Stimmen von 1 Mitglied abgegeben',
     'voting_votes_x' => '%VOTES% Stimmen von %USERS% Mitgliedern abgegeben',
+    'voting_show_votes' => 'Einzelstimmen anzeigen',
+    'voting_hide_votes' => 'Einzelstimmen ausblenden',
 
     'majority_simple' => 'Einfache Mehrheit',
     'majority_simple_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen abgegeben werden.',
