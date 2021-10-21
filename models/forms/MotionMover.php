@@ -90,7 +90,10 @@ class MotionMover
                 $agendaItemId = intval($post['agendaItem'][$this->consultation->id]);
                 $agendaItem   = $this->consultation->getAgendaItem($agendaItemId);
                 if ($post['operation'] === 'copy') {
-                    return $this->copyToAgendaItem($agendaItem, $titlePrefix);
+                    return $this->copyToAgendaItem($agendaItem, $titlePrefix, true);
+                }
+                if ($post['operation'] === 'copynoref') {
+                    return $this->copyToAgendaItem($agendaItem, $titlePrefix, false);
                 }
                 if ($post['operation'] === 'move') {
                     return $this->moveToAgendaItem($agendaItem, $titlePrefix);
@@ -128,7 +131,10 @@ class MotionMover
                     }
                 }
                 if ($post['operation'] === 'copy') {
-                    return $this->copyToConsultation($motionType, $titlePrefix);
+                    return $this->copyToConsultation($motionType, $titlePrefix, true);
+                }
+                if ($post['operation'] === 'copynoref') {
+                    return $this->copyToConsultation($motionType, $titlePrefix, false);
                 }
                 if ($post['operation'] === 'move') {
                     return $this->moveToConsultation($motionType, $titlePrefix);
@@ -139,15 +145,17 @@ class MotionMover
         return null;
     }
 
-    private function copyToAgendaItem(ConsultationAgendaItem $agendaItem, string $titlePrefix): Motion
+    private function copyToAgendaItem(ConsultationAgendaItem $agendaItem, string $titlePrefix, bool $markAsMoved): Motion
     {
         $newMotion = MotionDeepCopy::copyMotion($this->motion, $this->motion->getMyMotionType(), $agendaItem, $titlePrefix);
 
-        $newMotion->parentMotionId = $this->motion->id;
-        $newMotion->save();
+        if ($markAsMoved) {
+            $newMotion->parentMotionId = $this->motion->id;
+            $newMotion->save();
 
-        $this->motion->status = IMotion::STATUS_MOVED;
-        $this->motion->save();
+            $this->motion->status = IMotion::STATUS_MOVED;
+            $this->motion->save();
+        }
 
         return $newMotion;
     }
@@ -162,15 +170,17 @@ class MotionMover
         return $this->motion;
     }
 
-    private function copyToConsultation(ConsultationMotionType $motionType, string $titlePrefix): Motion
+    private function copyToConsultation(ConsultationMotionType $motionType, string $titlePrefix, bool $markAsMoved): Motion
     {
         $newMotion = MotionDeepCopy::copyMotion($this->motion, $motionType, null, $titlePrefix);
 
-        $newMotion->parentMotionId = $this->motion->id;
-        $newMotion->save();
+        if ($markAsMoved) {
+            $newMotion->parentMotionId = $this->motion->id;
+            $newMotion->save();
 
-        $this->motion->status = IMotion::STATUS_MOVED;
-        $this->motion->save();
+            $this->motion->status = IMotion::STATUS_MOVED;
+            $this->motion->save();
+        }
 
         return $newMotion;
     }

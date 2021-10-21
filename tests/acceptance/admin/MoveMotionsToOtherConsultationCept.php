@@ -45,6 +45,33 @@ $sectionId = AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1;
 $I->see('A big replacement', '#paragraphWrapper_' . $sectionId . '_1 .collidingParagraph');
 
 
+$I->wantTo('make a pure copy of a motion');
+
+$I->gotoMotion(); // A2
+$I->click('#sidebar .adminEdit a');
+$I->click('.sidebarActions .move');
+
+$I->dontSeeElement('.moveToConsultationItem');
+$I->checkOption("//input[@name='operation'][@value='copynoref']");
+$I->seeCheckboxIsChecked("//input[@name='operation'][@value='copynoref']");
+$I->checkOption("//input[@name='target'][@value='consultation']");
+$I->seeElement('.moveToConsultationItem');
+
+$I->submitForm('.adminMoveForm', [], 'move');
+$I->click('.alert-success a');
+$I->see('Test3', '.breadcrumb');
+$I->gotoConsultationHome(true, 'stdparteitag', 'test3');
+$I->seeElement('.motionRow' . AcceptanceTester::FIRST_FREE_MOTION_ID);
+$I->click('.motionRow' . AcceptanceTester::FIRST_FREE_MOTION_ID . ' .motionLink' . AcceptanceTester::FIRST_FREE_MOTION_ID);
+$I->see('Bavaria ipsum dolor sit amet');
+
+$I->wantTo('Make sure A2 is still at its old place');
+$I->gotoConsultationHome();
+$I->seeElement('.motionRow2');
+$I->dontSeeElement('.motionRow2.moved');
+$I->click('.motionRow2 .motionLink2');
+$I->see('Bavaria ipsum dolor sit amet');
+
 $I->wantTo('copy the motion back to test2');
 
 $I->gotoConsultationHome(true, 'stdparteitag', 'test3');

@@ -42,6 +42,11 @@ $targetConsultations = $form->getConsultationTargets();
             <label class="col-md-3 control-label"><?= Yii::t('admin', 'motion_move_op') ?>:</label>
             <div class="col-md-9">
                 <label>
+                    <input type="radio" name="operation" value="copynoref" required>
+                    <?= Yii::t('admin', 'motion_move_op_copynoref') ?>
+                    <div class="checkboxSubtitle"><?= Yii::t('admin', 'motion_move_op_copynorefh') ?></div>
+                </label>
+                <label>
                     <input type="radio" name="operation" value="copy" required>
                     <?= Yii::t('admin', 'motion_move_op_copy') ?>
                     <div class="checkboxSubtitle"><?= Yii::t('admin', 'motion_move_op_copyh') ?></div>
