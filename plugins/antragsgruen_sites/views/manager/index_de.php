@@ -200,8 +200,7 @@ aber das Passwort.</div>';
 
     <div class="content infoSite">
         <p>Antragsgrün wird von <a href="https://www.hoessl.eu/">Tobias Hößl</a> (<a
-                href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>) programmiert, das ursprüngliche Design stammt von <a
-                href="http://www.netzminze.de/">Karin Wehle</a>.</p>
+                href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>) programmiert, das ursprüngliche Design stammt von Karin Wehle.</p>
 
         <p>Wir werden das Antragsgrün in Zukunft weiter ausbauen und um <strong>zusätzliche Funktionen</strong> ergänzen.
             Funktionen, für die sich „Sponsoren“ finden, werden dabei besonders priorisiert.
