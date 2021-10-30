@@ -50,6 +50,7 @@ return [
     'settings_open' => 'Show settings',
     'settings_close' => 'Hide settings',
     'settings_title' => 'Title',
+    'settings_majoritytype' => 'Majority type',
     'settings_resultspublic' => 'Who may see the voting results?',
     'settings_resultspublic_admins' => 'Admins',
     'settings_resultspublic_all' => 'Everyone',
@@ -84,5 +85,7 @@ return [
     'voting_hide_votes' => 'Hide vote list',
 
     'majority_simple' => 'Simple majority',
-    'majority_simple_h' => 'A motion or amendment is adopted, if more yes- than no-votes are cast.',
+    'majority_simple_h' => 'A motion or amendment is adopted, if more yes- than no-votes are cast. Abstentions are not counted.',
+    'majority_twothirds' => '2/3 majority',
+    'majority_twothirds_h' => 'A motion or amendment is adopted, if twice as many yes- as no-votes are cast. Abstentions are not counted.',
 ];

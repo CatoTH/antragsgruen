@@ -170,14 +170,6 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Vote[] $votes
-     */
-    public static function calculateFinalVoteResult(VotingBlock $voting, array $votes): ?int
-    {
-        return null;
-    }
-
-    /**
      * @param Consultation $consultation
      * @return string|VotingData
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)

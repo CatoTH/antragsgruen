@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\models\exceptions\Internal;
+use app\models\majorityType\IMajorityType;
 use app\models\settings\AntragsgruenApp;
 use app\models\VotingItemGroup;
 use yii\db\ActiveRecord;
@@ -42,9 +44,6 @@ class VotingBlock extends ActiveRecord
 
     // Vorting is deleted - not accessible in the frontend.
     const STATUS_DELETED = -1;
-
-    // More yes- than no-votes
-    const MAJORITY_TYPE_SIMPLE = 1;
 
     // Nobody can see who voted how
     const VOTES_PUBLIC_NO = 0;
@@ -155,6 +154,15 @@ class VotingBlock extends ActiveRecord
         }));
     }
 
+    public function getMajorityType(): IMajorityType
+    {
+        $majorityTypes = IMajorityType::getMajorityTypes();
+        if (!isset($majorityTypes[$this->majorityType])) {
+            throw new Internal('Unsupported majority type: ' . $this->majorityType);
+        }
+        return new $majorityTypes[$this->majorityType]();
+    }
+
     public function userIsGenerallyAllowedToVoteFor(User $user, IMotion $imotion): bool
     {
         $foundImotion = false;
@@ -228,7 +236,7 @@ class VotingBlock extends ActiveRecord
             $this->addActivity(static::ACTIVITY_TYPE_OPENED);
         }
         if ($this->majorityType === null) {
-            $this->majorityType = static::MAJORITY_TYPE_SIMPLE;
+            $this->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
         }
         if ($this->votesPublic === null) {
             $this->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
@@ -251,7 +259,7 @@ class VotingBlock extends ActiveRecord
 
         foreach ($this->motions as $motion) {
             $votes = $this->getVotesForMotion($motion);
-            $result = Vote::calculateFinalVoteResult($this, $votes);
+            $result = $this->getMajorityType()->calculateResult($votes);
             $votingData = $motion->getVotingData()->augmentWithResults($this, $votes);
             $motion->setVotingData($votingData);
             $motion->setVotingResult($result);
@@ -260,7 +268,7 @@ class VotingBlock extends ActiveRecord
 
         foreach ($this->amendments as $amendment) {
             $votes = $this->getVotesForAmendment($amendment);
-            $result = Vote::calculateFinalVoteResult($this, $votes);
+            $result = $this->getMajorityType()->calculateResult($votes);
             $votingData = $amendment->getVotingData()->augmentWithResults($this, $votes);
             $amendment->setVotingData($votingData);
             $amendment->setVotingResult($result);

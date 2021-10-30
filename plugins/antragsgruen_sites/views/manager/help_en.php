@@ -387,9 +387,6 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         the votings, so no real anonymous voting system will be supported anytime soon.
         For this reason, the voting system must not be used for use cases like elections.</p>
 
-    <p>Currently, only simple majority is supported, meaning that a motion or amendment needs more yes
-        than no-votes to succeed. In the future, other majority types might be supported, too.</p>
-
     <p>All logged in users can vote, right now. No rights management is implemented yet in the default
         version of the site. This might be added in the future.</p>
 
@@ -397,10 +394,8 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <h4>Voting Blocks</h4>
 
-    <p>A voting block is one or more motions / amendments that are voted for at the same time with the same rules.
+    <p>A voting block is one or more motions / amendments that are voted for at the same time with the same majority rules.
         They are presented to the users to be voted on as one block, either on the home page or on the page of a motion.
-        If, in the future, different majority types will be supported (like absolute majority or 2/3 majority),
-        then all votings within one block would be evaluated using the same majority type.
         In the settings of a voting block, the number of present members can be protocoled.</p>
 
     <p>Voting blocks can have the following statuses:</p>
@@ -413,6 +408,12 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     <p>Note that it is possible to re-open an already closed voting by clicking „Reset“, which will put it back into „Preparing“ state and delete all votes cast so far.</p>
 
     <p>Initially, no votings block exist. They are either created on the administration page of the votings (Settings → Votings), or on the fly while setting motions and amendments to be voted for, as will be described in the next section.</p>
+
+    <p>More detailed settings on the visibility of a voting, the title, the assignment to a motion, the way how the majority is calculated, and a way to delete it again can be found when clicking on the settings-icon next to the title of the voting block. As for the majority types, the following are supported as of yet:</p>
+    <ul>
+        <li><strong>Simple majority</strong>: A motion is accepted if the number of yes-votes exceeds the number of no-votes. Abstentions are not counted.</li>
+        <li><strong>2/3-majority</strong>: A motion is accepted if the number of yes-votes is at least twice as high as the number of no-votes. Abstentions are not counted.</li>
+    </ul>
 
     <h4>Setting up a voting for a motion or amendment</h4>
 

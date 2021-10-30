@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\models\settings\{AntragsgruenApp, VotingData};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
+use app\models\majorityType\IMajorityType;
 use app\models\siteSpecificBehavior\Permissions;
 use app\models\VotingItemGroup;
 use app\components\{Tools, UrlHelper};
@@ -605,6 +606,7 @@ abstract class IMotion extends ActiveRecord
                 $toSetVotingBlock->title = $newVotingBlockTitle;
                 $toSetVotingBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
                 $toSetVotingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
+                $toSetVotingBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
                 // If the voting is created from the proposed procedure, we assume it's only used to show it there
                 $toSetVotingBlock->votingStatus = ($proposedProcedureContext ? VotingBlock::STATUS_OFFLINE : VotingBlock::STATUS_PREPARING);
                 $toSetVotingBlock->save();

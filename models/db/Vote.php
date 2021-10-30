@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
+use app\models\majorityType\IMajorityType;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
@@ -137,38 +138,5 @@ class Vote extends ActiveRecord
             $results[User::ORGANIZATION_DEFAULT][$voteType]++;
         }
         return $results;
-    }
-
-    /**
-     * @param Vote[] $votes
-     */
-    public static function calculateFinalVoteResult(VotingBlock $voting, array $votes): int
-    {
-        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
-            $results = $pluginClass::calculateFinalVoteResult($voting, $votes);
-            if ($results) {
-                return $results;
-            }
-        }
-
-        if ($voting->majorityType !== VotingBlock::MAJORITY_TYPE_SIMPLE) {
-            throw new Internal('Unsupported majority type: ' . $voting->majorityType);
-        }
-        $yes = 0;
-        $no = 0;
-        foreach ($votes as $vote) {
-            if ($vote->vote === Vote::VOTE_YES) {
-                $yes++;
-            }
-            if ($vote->vote === Vote::VOTE_NO) {
-                $no++;
-            }
-        }
-
-        if ($yes > $no) {
-            return IMotion::STATUS_ACCEPTED;
-        } else {
-            return IMotion::STATUS_REJECTED;
-        }
     }
 }
