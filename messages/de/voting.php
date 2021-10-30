@@ -50,6 +50,7 @@ return [
     'settings_open' => 'Einstellungen öffnen',
     'settings_close' => 'Einstellungen schließen',
     'settings_title' => 'Titel',
+    'settings_majoritytype' => 'Art der Mehrheit',
     'settings_resultspublic' => 'Wer darf die Abstimmungsergebnisse in Zahlen sehen?',
     'settings_resultspublic_admins' => 'Admins',
     'settings_resultspublic_all' => 'Alle',
@@ -83,4 +84,6 @@ return [
 
     'majority_simple' => 'Einfache Mehrheit',
     'majority_simple_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen abgegeben werden.',
+    'majority_twothirds' => '2/3-Mehrheit',
+    'majority_twothirds_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn doppelt so viele Ja- wie Nein-Stimmen abgegeben werden.',
 ];

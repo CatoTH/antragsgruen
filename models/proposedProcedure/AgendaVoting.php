@@ -79,6 +79,7 @@ class AgendaVoting
             'votesPublic' => ($this->voting ? $this->voting->votesPublic : null),
             'resultsPublic' => ($this->voting ? $this->voting->resultsPublic : null),
             'assignedMotion' => ($this->voting ? $this->voting->assignedToMotionId : null),
+            'majorityType' => ($this->voting ? $this->voting->majorityType : null),
             'items' => [],
         ];
         if ($context === static::API_CONTEXT_ADMIN) {

@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\majorityType\IMajorityType;
 use app\models\db\{IMotion, VotingBlock};
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
@@ -43,9 +44,10 @@ ob_start();
         </label>
     </h2>
     <div class="content votingShow" v-if="!settingsOpened">
-        <div class="majorityType" v-if="isPreparing">
-            <strong><?= Yii::t('voting', 'majority_simple') ?></strong><br>
-            <small><?= Yii::t('voting', 'majority_simple_h') ?></small>
+        <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
+             v-if="isPreparing && majorityType.id === voting.majorityType">
+            <strong>{{ majorityType.name }}</strong><br>
+            <small>{{ majorityType.description }}</small>
         </div>
         <div class="alert alert-success" v-if="isOpen">
             <p><?= Yii::t('voting', 'admin_status_opened') ?></p>
@@ -218,6 +220,15 @@ ob_start();
             <?= Yii::t('voting', 'settings_title') ?>:<br>
             <input type="text" v-model="settingsTitle" class="form-control">
         </label>
+        <fieldset class="majortyTypeSettings">
+            <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
+            <label v-for="majorityTypeDef in MAJORITY_TYPES">
+                <input type="radio" :value="majorityTypeDef.id" v-model="majorityType">
+                {{ majorityTypeDef.name }}
+                <span class="glyphicon glyphicon-info-sign"
+                  :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
+            </label>
+        </fieldset>
         <fieldset class="resultsPublicSettings">
             <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
             <label>
@@ -294,6 +305,14 @@ $html = ob_get_clean();
     const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
 
+    const MAJORITY_TYPES = <?= json_encode(array_map(function ($className) {
+        return [
+            'id' => $className::getID(),
+            'name' => $className::getName(),
+            'description' => $className::getDescription(),
+        ];
+    }, IMajorityType::getMajorityTypes())); ?>;
+
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
     const deleteConfirmation = <?= json_encode(Yii::t('voting', 'settings_delete_bb')) ?>;
 
@@ -322,6 +341,7 @@ $html = ob_get_clean();
                     // null = uninitialized
                     title: null,
                     assignedMotion: null,
+                    majorityType: null,
                     votesPublic: null,
                     resultsPublic: null
                 }
@@ -380,6 +400,15 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.changedSettings.title = value;
+                }
+            },
+            majorityType: {
+                get: function () {
+                    console.log("get", (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majorityType));
+                    return (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majorityType);
+                },
+                set: function (value) {
+                    this.changedSettings.majorityType = value;
                 }
             },
             votesPublic: {
@@ -506,8 +535,9 @@ $html = ob_get_clean();
             saveSettings: function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.majorityType, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
+                this.changedSettings.majorityType = null;
                 this.settingsOpened = false;
             },
             deleteVoting: function () {

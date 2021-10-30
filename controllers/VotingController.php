@@ -7,6 +7,7 @@ namespace app\controllers;
 use app\models\db\{Amendment, IMotion, Motion, User, Vote, VotingBlock};
 use app\components\ResourceLock;
 use app\models\exceptions\FormError;
+use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
 
@@ -124,6 +125,11 @@ class VotingController extends Base
             } else {
                 $votingBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
             }
+            if (\Yii::$app->request->post('majorityType') !== null) {
+                $votingBlock->majorityType = intval(\Yii::$app->request->post('majorityType'));
+            } else {
+                $votingBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
+            }
         }
 
         $votingBlock->save();
@@ -233,7 +239,7 @@ class VotingController extends Base
         $newBlock = new VotingBlock();
         $newBlock->consultationId = $this->consultation->id;
         $newBlock->title = \Yii::$app->request->post('title');
-        $newBlock->majorityType = VotingBlock::MAJORITY_TYPE_SIMPLE;
+        $newBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
         $newBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
         $newBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
         if (\Yii::$app->request->post('assignedMotion') !== null && \Yii::$app->request->post('assignedMotion') > 0) {

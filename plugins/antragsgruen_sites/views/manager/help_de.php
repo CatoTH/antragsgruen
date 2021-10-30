@@ -422,9 +422,6 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         In Zukunft wird dies möglicherweise flexibler, um sowohl öffentliche als auch Abstimmungen zu ermöglichen, die nicht von Admins eingesehen werden können.
         Eine komplett geheimes Wahlsystem ist aber technisch hoch komplex (oder unmöglich), weshalb Antragsgrün nicht für Personenwahlen eingesetzt werden darf.</p>
 
-    <p>Aktuell werden nur Abstimmungen in <strong>Einfacher Mehrheit</strong> unterstützt - (Änderungs-)Anträge werden angenommen, wenn mehr Ja- als Nein-Stimmen eingehen.
-        Zukünftig werden bei Bedarf auch weitere Mehrheitsformen (wie z.B. 2/3-Mehrheit) umgesetzt.</p>
-
     <p>Alle Eingeloggten Benutzer*innen können abstimmen. Eine genauere Rechtevergabe an Einzelne gibt es aktuell noch nicht - auch das wird aber bei Bedarf in Zukunft noch eingebaut.</p>
 
     <h3 id="abstimmungen_administration">Administration</h3>
@@ -433,7 +430,8 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <p>Ein Abstimmungsblock ist eine Sammlung von (Änderungs-)Anträgen, die gleichzeitig nach dem selben Mehrheitsprinzip
         abgestimmt wird. Er wird als Ganzes entweder auf der Startseite oder auf einer Antragsseite angezeigt.
-        Ein Abstimmungsblock hat demnach einen Namen, bei Bedarf eine Zuordnung zu einem Antrag,
+        Ein Abstimmungsblock hat demnach einen Namen, ein zugeordnetes Mehrheitsprinzip,
+        Sichtbarkeitseinstellungen, bei Bedarf eine Zuordnung zu einem Antrag,
         und eine protokollierbare Zahl an anwesenden Mitgliedern.</p>
 
     <p>Abstimmungsblöcke können sich in folgendem Zustand befinden:</p>
@@ -443,9 +441,15 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         <li><strong>Offen</strong>: Die Abstimmung ist sichtbar, Benutzer*innen können Stimmen abgeben. Es können mehrere Blöcke gleichzeitig offen sein, auch wenn leicht unübersichtlich werden dürfte.</li>
         <li><strong>Geschlossen</strong>: Keine neuen Stimmen können abgegeben werden. Abhängig von der gewählten Mehrheitsformel werden die (Änderungs-)Anträge mit genügend Ja-Stimmen auf „Angenommen”, alle anderen auf „Abgelehnt” gesetzt. Geschlossene Abstimmungen sind auf einer separaten Seite weiterhin einsehbar (was aber noch nicht umgesetzt ist).</li>
     </ul>
-    <p>Geschlossene Abstimmungen können wieder geöffnet werden, und durch „Zurücksetzen” auch wieder auf „Vorbereitung” gesetzt werden. In letzterem Fall gehen allerdings alle bis dahin abgegebenen Stimmen verloren.
+    <p>Geschlossene Abstimmungen können wieder geöffnet werden, und durch „Zurücksetzen” auch wieder auf „Vorbereitung” gesetzt werden. In letzterem Fall gehen allerdings alle bis dahin abgegebenen Stimmen verloren.</p>
 
     <p>Zu Beginn gibt es noch keine Abstimmungsblöcke. Sie können entweder auf der Administrationsseite (Einstellungen → Abstimmungen) oder auf der Bearbeitungsseite eines (Änderungs-)Antrags angelegt werden (siehe weiter unten).</p>
+
+    <p>Genauere Einstellungen zum Abstimmungblock sowie die Möglichkeit ihn wieder zu löschen finden sich, wenn man neben dem Titel des Blocks auf das Einstellungs-Icon klickt. Insbesondere lässt sich dort auch einstellen, nach welchem Prinzip die Mehrheit ermittelt wird:</p>
+    <ul>
+        <li><strong>Einfache Mehrheit</strong>: Ein Antrag gilt als angenommen, wenn die Zahl der Ja-Stimmen die der Nein-Stimmen übersteigt. Enthaltungen werden nicht mitgezählt.</li>
+        <li><strong>2/3-Mehrheit</strong>: Ein Antrag gilt als angenommen, wenn mindestens doppelt so viele Ja- wie Nein-Stimmen abgegeben werden. Enthaltungen werden nicht mitgezählt.</li>
+    </ul>
 
     <h4>Einen Antrag oder Änderungsantrag abstimmen lassen</h4>
 

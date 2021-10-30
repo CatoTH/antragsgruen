@@ -101,10 +101,11 @@ export class VotingAdmin {
                         }}),
                     });
                 },
-                saveSettings(votingBlockId, title, resultsPublic, votesPublic, assignedMotion) {
+                saveSettings(votingBlockId, title, majorityType, resultsPublic, votesPublic, assignedMotion) {
                     this._performOperation(votingBlockId, {
                         op: 'save-settings',
                         title,
+                        majorityType,
                         resultsPublic,
                         votesPublic,
                         assignedMotion,
