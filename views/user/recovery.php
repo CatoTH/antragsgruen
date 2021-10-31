@@ -27,7 +27,7 @@ $url = UrlHelper::createUrl('user/recovery');
 echo Html::beginForm($url, 'post', ['class' => 'sendConfirmationForm', 'aria-labelledby' => 'step1title']);
 
 // Create the same one for both forms, so the value in the session doesn't get overridden by the second
-$inlineCaptcha = (Captcha::needsCaptcha() ? Captcha::createInlineCaptcha() : null);
+$inlineCaptcha = (Captcha::needsCaptcha(null) ? Captcha::createInlineCaptcha() : null);
 
 ?>
     <h2 class="green" id="step1title"><?= Yii::t('user', 'recover_step1') ?></h2>
@@ -40,7 +40,7 @@ $inlineCaptcha = (Captcha::needsCaptcha() ? Captcha::createInlineCaptcha() : nul
             </div>
         </div>
         <?php
-        if (Captcha::needsCaptcha()) {
+        if (Captcha::needsCaptcha(null)) {
             ?>
             <div class="row">
                 <div class="col-md-12">
@@ -93,7 +93,7 @@ $inlineCaptcha = (Captcha::needsCaptcha() ? Captcha::createInlineCaptcha() : nul
             </div>
         </div>
         <?php
-        if (Captcha::needsCaptcha()) {
+        if (Captcha::needsCaptcha(null)) {
             ?>
             <div class="row">
                 <div class="col-md-12">

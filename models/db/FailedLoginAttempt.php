@@ -1,0 +1,97 @@
+<?php
+
+declare(strict_types=1);
+
+namespace app\models\db;
+
+use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
+
+/**
+ * @property int $id
+ * @property string $ipHash
+ * @property string $username
+ * @property string $dateAttempt
+ */
+class FailedLoginAttempt extends ActiveRecord
+{
+    const THROTTLING_MIN_ATTEMPTS = 3;
+    const THROTTLING_DURATION_MINUTES = 60;
+
+    public static function tableName(): string
+    {
+        return AntragsgruenApp::getInstance()->tablePrefix . 'failedLoginAttempt';
+    }
+
+    private static function getCurrentIpHash(): string
+    {
+        $ip = \Yii::$app->request->getRemoteIP() ?? '';
+        return hash('sha256', $ip);
+    }
+
+    private static function normalizeUsername(string $username): string
+    {
+        return trim(mb_strtolower($username));
+    }
+
+    public static function logFailedAttempt(string $username): void
+    {
+        $normalizedUsername = static::normalizeUsername($username);
+        $attempt = new FailedLoginAttempt();
+        $attempt->ipHash = static::getCurrentIpHash();
+        $attempt->username = $normalizedUsername;
+        $attempt->dateAttempt = new Expression('NOW()');
+        $attempt->save();
+
+        \Yii::$app->session->set('loginLastFailedAttemptUsername', $normalizedUsername);
+    }
+
+    private static function needsLoginThrottlingByIp(): bool
+    {
+        $interval = new Expression('NOW() - INTERVAL ' . intval(static::THROTTLING_DURATION_MINUTES) . ' MINUTE');
+        $attempts = FailedLoginAttempt::find()
+            ->where(['=', 'ipHash', static::getCurrentIpHash()])
+            ->andWhere(['>', 'dateAttempt', $interval])
+            ->count();
+
+        return ($attempts >= static::THROTTLING_MIN_ATTEMPTS);
+    }
+
+    private static function needsLoginThrottlingByUsername(string $username): bool
+    {
+        $interval = new Expression('NOW() - INTERVAL ' . intval(static::THROTTLING_DURATION_MINUTES) . ' MINUTE');
+        $attempts = FailedLoginAttempt::find()
+            ->where(['=', 'username', static::normalizeUsername($username)])
+            ->andWhere(['>', 'dateAttempt', $interval])
+            ->count();
+
+        return ($attempts >= static::THROTTLING_MIN_ATTEMPTS);
+    }
+
+    /**
+     * Hint: this method is called twice: when rendering the form, and when actually checking the login.
+     * This is unfortunately not 100% consistent:
+     * - the user might change the username (which could lead to an unnecessary captcha check, but that's fine)
+     * - after submitting a form with captcha, the retry time might have been passed, making the captcha unnecessary. Also fine.
+     * - Problem: when changing the username, one could run into a situation where the login form doesn't know that the
+     *   username is actually blocked. With the current implementation, this leads to a failed attempt due to incorrect captcha
+     */
+    public static function needsLoginThrottling(?string $username): bool
+    {
+        if ($username === null) {
+            // Coming from the login form, not the actual login
+            $username = \Yii::$app->session->get('loginLastFailedAttemptUsername');
+        } else {
+            // Edge case: someone logs in successfully (which leads to the session being reset), logs out and tries to login again
+            \Yii::$app->session->set('loginLastFailedAttemptUsername', $username);
+        }
+        if (static::needsLoginThrottlingByIp()) {
+            return true;
+        }
+        if ($username && static::needsLoginThrottlingByUsername($username)) {
+            return true;
+        }
+        return false;
+    }
+}

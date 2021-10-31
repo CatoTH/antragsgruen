@@ -1,7 +1,6 @@
 <?php
 
-use app\components\Captcha;
-use app\components\UrlHelper;
+use app\components\{Captcha, UrlHelper};
 use app\models\db\User;
 use app\models\forms\LoginUsernamePasswordForm;
 use yii\helpers\Html;
@@ -217,7 +216,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         }
     }
 
-    if (Captcha::needsCaptcha()) {
+    if (Captcha::needsCaptcha(null)) {
         $image = Captcha::createInlineCaptcha();
         ?>
         <div class="form-group row">

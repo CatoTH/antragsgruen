@@ -57,7 +57,7 @@ class AntragsgruenApp implements \JsonSerializable
     /** @var int */
     public $autoLoginDuration     = 31536000; // 1 Year
     /** @var bool */
-    public $loginCaptcha          = false;
+    public $loginCaptcha          = false; // Forces captcha even at the first login attempt
     /** @var null|string */
     public $xelatexPath           = null; // @TODO OBSOLETE
     /** @var null|string */

@@ -5,7 +5,7 @@ namespace app\models\forms;
 use app\components\Captcha;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\components\UrlHelper;
-use app\models\db\{EMailLog, Site, User};
+use app\models\db\{EMailLog, FailedLoginAttempt, Site, User};
 use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUser, MailNotSent};
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site as SiteSettings;
@@ -232,6 +232,7 @@ class LoginUsernamePasswordForm extends Model
         $candidates = $this->getCandidates($site);
 
         if (count($candidates) === 0) {
+            FailedLoginAttempt::logFailedAttempt($this->username);
             $this->error = \Yii::t('user', 'login_err_username');
             throw new LoginInvalidUser($this->error);
         }
@@ -240,6 +241,8 @@ class LoginUsernamePasswordForm extends Model
                 return $tryUser;
             }
         }
+
+        FailedLoginAttempt::logFailedAttempt($this->username);
         $this->error = \Yii::t('user', 'login_err_password');
         throw new LoginInvalidPassword($this->error);
     }
@@ -249,7 +252,7 @@ class LoginUsernamePasswordForm extends Model
      */
     public function getOrCreateUser(?Site $site): User
     {
-        if (Captcha::needsCaptcha() && !Captcha::checkEnteredCaptcha($this->captcha)) {
+        if (Captcha::needsCaptcha($this->username) && !Captcha::checkEnteredCaptcha($this->captcha)) {
             throw new Login(\Yii::t('user', 'login_err_captcha'));
         }
 

@@ -8,7 +8,7 @@
 - The accessibility was improved in some parts, especially drop-down selections, while reducing the page load time.
 - A new amendment numbering scheme was introduced more appropriate for english environments: "M1 A1" (Motion number + Amendment number)
 - It is now possible to copy a motion including all its amendments to a different consultation or agenda item without marking the original one as moved.
-- Standalone hosted versions of Antragsgrün can now optionally use CAPTCHAs for login and account recovery (by adding the loginCaptcha flag to config.json).
+- To prevent brute force login attempts, a entering a CAPTCHA is now required after three failed login or account recovery attempts. Standalone hosted versions of Antragsgrün can optionally require it for every single login attempt, by adding the loginCaptcha flag to config.json.
 - Bugfix: If an amendment was assigned to an agenda item, the agenda item could not be deleted before the amendment was un-assigned first.
 - Bugfix: an empty "Supporting" section was shown in motions and amendments, if only the "liking" function was enabled.
 - Support for Internet Explorer was dropped.

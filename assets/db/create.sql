@@ -396,6 +396,19 @@ CREATE TABLE `###TABLE_PREFIX###emailLog` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `###TABLE_PREFIX###failedLoginAttempt`
+--
+
+CREATE TABLE `###TABLE_PREFIX###failedLoginAttempt` (
+  `id` int(11) NOT NULL,
+  `ipHash` char(64) NOT NULL,
+  `username` varchar(190) NOT NULL,
+  `dateAttempt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `migration`
 --
 
@@ -906,6 +919,14 @@ ALTER TABLE `###TABLE_PREFIX###emailLog`
   ADD KEY `fromSiteId` (`fromSiteId`);
 
 --
+-- Indexes for table `failedLoginAttempt`
+--
+ALTER TABLE `###TABLE_PREFIX###failedLoginAttempt`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `failedlogin_ip` (`ipHash`),
+  ADD KEY `failedlogin_username` (`username`);
+
+--
 -- Indexes for table `migration`
 --
 ALTER TABLE `###TABLE_PREFIX###migration`
@@ -1136,6 +1157,11 @@ ALTER TABLE `###TABLE_PREFIX###consultationText`
 --
 ALTER TABLE `###TABLE_PREFIX###emailLog`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `failedLoginAttempt`
+--
+ALTER TABLE `###TABLE_PREFIX###failedLoginAttempt`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motion`
 --

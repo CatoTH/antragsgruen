@@ -251,17 +251,17 @@ class UserController extends Base
     public function actionRecovery(string $email = '', string $code = ''): string
     {
         if ($this->isPostSet('send')) {
+            $email = $this->getRequestValue('email');
             /** @var User|null $user */
-            $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
+            $user = User::findOne(['auth' => 'email:' . $email]);
 
-            if (Captcha::needsCaptcha() && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
+            if (Captcha::needsCaptcha($email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
                 $msg = Yii::t('user', 'login_err_captcha');
                 Yii::$app->session->setFlash('error', $msg);
             } elseif (!$user) {
-                $msg = str_replace('%USER%', $this->getRequestValue('email'), Yii::t('user', 'err_user_notfound'));
+                $msg = str_replace('%USER%', $email, Yii::t('user', 'err_user_notfound'));
                 Yii::$app->session->setFlash('error', $msg);
             } else {
-                $email = $this->getRequestValue('email');
                 try {
                     $user->sendRecoveryMail();
                     $msg = Yii::t('user', 'pwd_recovery_sent');
@@ -274,21 +274,21 @@ class UserController extends Base
         }
 
         if ($this->isPostSet('recover')) {
+            $email = $this->getRequestValue('email');
             /** @var User|null $user */
-            $user     = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
+            $user     = User::findOne(['auth' => 'email:' . $email]);
             $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
-            if (Captcha::needsCaptcha() && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
+            if (Captcha::needsCaptcha($email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
                 $msg = Yii::t('user', 'login_err_captcha');
                 Yii::$app->session->setFlash('error', $msg);
             } elseif (!$user) {
-                $msg = str_replace('%USER%', $this->getRequestValue('email'), Yii::t('user', 'err_user_notfound'));
+                $msg = str_replace('%USER%', $email, Yii::t('user', 'err_user_notfound'));
                 Yii::$app->session->setFlash('error', $msg);
             } elseif (mb_strlen($this->getRequestValue('newPassword')) < $pwMinLen) {
                 $msg = str_replace('%MINLEN%', (string)$pwMinLen, Yii::t('user', 'err_pwd_length'));
                 Yii::$app->session->setFlash('error', $msg);
             } else {
-                $email = $this->getRequestValue('email');
                 try {
                     if ($user->checkRecoveryToken($this->getRequestValue('recoveryCode'))) {
                         $user->changePassword($this->getRequestValue('newPassword'));

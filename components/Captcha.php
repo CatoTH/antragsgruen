@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use app\models\db\FailedLoginAttempt;
 use app\models\settings\AntragsgruenApp;
 use Gregwar\Captcha\CaptchaBuilder;
 
 class Captcha
 {
-    public static function needsCaptcha(): bool
+    public static function needsCaptcha(?string $username): bool
     {
+        if (FailedLoginAttempt::needsLoginThrottling($username)) {
+            return true;
+        }
         return AntragsgruenApp::getInstance()->loginCaptcha;
     }
 
