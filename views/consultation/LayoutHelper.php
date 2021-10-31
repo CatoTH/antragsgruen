@@ -248,9 +248,9 @@ class LayoutHelper
         echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
 
         $motionType = $agendaItem->getMyMotionType();
-        if ($motionType && !$motionType->amendmentsOnly && $motionType->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-            $motionCreateLink = UrlHelper::createUrl(['motion/create', 'agendaItemId' => $agendaItem->id]);
-            echo '<a href="' . Html::encode($motionCreateLink) . '" class="motionCreateLink btn btn-default btn-xs"';
+        if ($motionType && $motionType->getMotionPolicy()->checkCurrUserMotion(false, true) && $agendaItem->getIMotionCreateLink()) {
+            $createLink = $agendaItem->getIMotionCreateLink();
+            echo '<a href="' . Html::encode($createLink) . '" class="motionCreateLink btn btn-default btn-xs"';
             echo ' title="' . Html::encode($agendaItem->title . ': ' . $motionType->createTitle) . '"';
             echo ' rel="nofollow"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ';
             echo nl2br(Html::encode($motionType->createTitle)) . '</a>';

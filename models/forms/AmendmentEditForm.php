@@ -3,7 +3,7 @@
 namespace app\models\forms;
 
 use app\components\HTMLTools;
-use app\models\db\{Amendment, ConsultationSettingsTag, Motion, AmendmentSection, AmendmentSupporter};
+use app\models\db\{Amendment, ConsultationAgendaItem, ConsultationSettingsTag, Motion, AmendmentSection, AmendmentSupporter};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\{ISectionType, TextSimple};
 use yii\base\Model;
@@ -12,6 +12,9 @@ class AmendmentEditForm extends Model
 {
     /** @var Motion */
     public $motion;
+
+    /** @var ConsultationAgendaItem|null */
+    public $agendaItem;
 
     /** @var AmendmentSupporter[] */
     public $supporters = [];
@@ -35,10 +38,11 @@ class AmendmentEditForm extends Model
 
     private $adminMode = false;
 
-    public function __construct(Motion $motion, ?Amendment $amendment)
+    public function __construct(Motion $motion, ?ConsultationAgendaItem $agendaItem, ?Amendment $amendment)
     {
         parent::__construct();
         $this->motion = $motion;
+        $this->agendaItem = $agendaItem;
         /** @var AmendmentSection[] $amendmentSections */
         $amendmentSections = [];
         $motionSections    = [];
@@ -242,6 +246,7 @@ class AmendmentEditForm extends Model
         $amendment->changeEditorial   = $this->editorial;
         $amendment->changeExplanation = $this->reason;
         $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
+        $amendment->agendaItemId      = ($this->agendaItem ? $this->agendaItem->id : null);
         $amendment->changeText        = '';
         $amendment->cache             = '';
 

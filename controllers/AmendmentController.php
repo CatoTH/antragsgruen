@@ -325,7 +325,7 @@ class AmendmentController extends Base
         }
 
         $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
-        $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
+        $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
 
         if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren(null);
@@ -366,12 +366,13 @@ class AmendmentController extends Base
 
     /**
      * @param string $motionSlug
+     * @param int $agendaItemId
      * @param int $cloneFrom
      * @return string
      * @throws \app\models\exceptions\Internal
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function actionCreate($motionSlug, $cloneFrom = 0)
+    public function actionCreate($motionSlug, $agendaItemId = 0, $cloneFrom = 0)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -389,9 +390,15 @@ class AmendmentController extends Base
             }
         }
 
-        $form        = new AmendmentEditForm($motion, null);
+        if ($agendaItemId > 0) {
+            $agendaItem = $this->consultation->getAgendaItem(intval($agendaItemId));
+        } else {
+            $agendaItem = null;
+        }
+
+        $form = new AmendmentEditForm($motion, $agendaItem, null);
         $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
-        $iAmAdmin    = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $iAmAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
 
         if ($this->isPostSet('save')) {
             try {

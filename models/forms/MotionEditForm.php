@@ -12,7 +12,7 @@ class MotionEditForm extends Model
     /** @var ConsultationMotionType */
     public $motionType;
 
-    /** @var ConsultationAgendaItem */
+    /** @var ConsultationAgendaItem|null */
     public $agendaItem;
 
     /** @var MotionSupporter[] */

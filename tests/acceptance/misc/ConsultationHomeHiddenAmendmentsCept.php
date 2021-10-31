@@ -7,7 +7,7 @@ $I->populateDBData1();
 
 $I->gotoConsultationHome();
 $page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoAppearance();
-$I->selectOption('#startLayoutType', '5');
+$I->selectOption('#startLayoutType', \app\models\settings\Consultation::START_LAYOUT_AGENDA_HIDE_AMEND);
 $page->saveForm();
 
 $I->gotoConsultationHome();

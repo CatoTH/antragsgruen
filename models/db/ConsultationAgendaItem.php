@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\{AgendaItem, AntragsgruenApp};
-use app\components\{MotionSorter, Tools};
+use app\components\{MotionSorter, Tools, UrlHelper};
 use yii\db\ActiveRecord;
 
 /**
@@ -209,12 +209,9 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @param Consultation $consultation
-     * @param int|null $parentItemId
-     *
      * @return ConsultationAgendaItem[]
      */
-    public static function getItemsByParent(Consultation $consultation, ?int $parentItemId)
+    public static function getItemsByParent(Consultation $consultation, ?int $parentItemId): array
     {
         $return = [];
         foreach ($consultation->agendaItems as $item) {
@@ -405,5 +402,25 @@ class ConsultationAgendaItem extends ActiveRecord
         $month = \Yii::t('structure', 'months_' . $date->format('n'));
 
         return $dow . ', ' . $date->format('j') . '. ' . $month . ' ' . $date->format('Y');
+    }
+
+    public function getIMotionCreateLink(): ?string
+    {
+        $motionType = $this->getMyMotionType();
+        if (!$motionType) {
+            return null;
+        }
+        if ($motionType->amendmentsOnly) {
+            $motions = $motionType->getAmendableOnlyMotions();
+            if (count($motions) === 1) {
+                return UrlHelper::createUrl(['/amendment/create', 'motionSlug' => $motions[0]->getMotionSlug(), 'agendaItemId' => $this->id]);
+            } elseif (count($motions) > 1) {
+                return UrlHelper::createUrl(['/motion/create-select-statutes', 'agendaItemId' => $this->id]);
+            } else {
+                return null;
+            }
+        } else {
+            return UrlHelper::createUrl(['/motion/create', 'agendaItemId' => $this->id]);
+        }
     }
 }

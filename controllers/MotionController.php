@@ -140,10 +140,23 @@ class MotionController extends Base
         ]);
     }
 
-    public function actionCreateSelectStatutes(string $motionTypeId): string
+    public function actionCreateSelectStatutes(?string $motionTypeId = null, ?string $agendaItemId = null): string
     {
-        $motionType = $this->consultation->getMotionType(intval($motionTypeId));
-        return $this->render('create_select_statutes', ['motionType' => $motionType]);
+        $agendaItem = null;
+        $motionType = null;
+
+        if ($motionTypeId) {
+            $motionType = $this->consultation->getMotionType(intval($motionTypeId));
+        } elseif ($agendaItemId) {
+            $agendaItem = $this->consultation->getAgendaItem(intval($agendaItemId));
+            if ($agendaItem && $agendaItem->getMyMotionType()) {
+                $motionType = $agendaItem->getMyMotionType();
+            }
+        }
+        if (!$motionType) {
+            return $this->showErrorpage(400, 'No motion type found');
+        }
+        return $this->render('create_select_statutes', ['motionType' => $motionType, 'agendaItem' => $agendaItem]);
     }
 
     public function actionCreatedone(string $motionSlug, string $fromMode): string
@@ -263,25 +276,17 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionTypeId
-     * @param int $agendaItemId
-     * @param int $cloneFrom
-     *
      * @return array
      * @throws Internal
      * @throws \app\models\exceptions\NotFound
      */
-    private function getMotionTypeForCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
+    private function getMotionTypeForCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0)
     {
-        $motionTypeId = intval($motionTypeId);
-
         if ($agendaItemId > 0) {
-            $where      = ['consultationId' => $this->consultation->id, 'id' => $agendaItemId];
-            $agendaItem = ConsultationAgendaItem::findOne($where);
+            $agendaItem = $this->consultation->getAgendaItem($agendaItemId);
             if (!$agendaItem) {
                 throw new Internal('Could not find agenda item');
             }
-            /** @var ConsultationAgendaItem $agendaItem */
             if (!$agendaItem->motionType) {
                 throw new Internal('Agenda item does not have motions');
             }
@@ -316,7 +321,7 @@ class MotionController extends Base
     public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
     {
         try {
-            $ret = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId, $cloneFrom);
+            $ret = $this->getMotionTypeForCreate(intval($motionTypeId), intval($agendaItemId), intval($cloneFrom));
             list($motionType, $agendaItem) = $ret;
         } catch (ExceptionBase $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
