@@ -2,9 +2,9 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
+
 /**
- * @package app\models\db
- *
  * @property int $motionId
  * @property Motion $motion
  */
@@ -15,9 +15,7 @@ class MotionAdminComment extends IAdminComment
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'motionAdminComment';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'motionAdminComment';
     }
 
     /**

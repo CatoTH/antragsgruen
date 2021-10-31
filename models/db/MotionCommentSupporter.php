@@ -2,11 +2,10 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property string $ipHash
  * @property string $cookieId
@@ -23,9 +22,7 @@ class MotionCommentSupporter extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'motionCommentSupporter';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'motionCommentSupporter';
     }
 
     /**

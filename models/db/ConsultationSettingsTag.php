@@ -1,6 +1,7 @@
 <?php
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
@@ -25,9 +26,7 @@ class ConsultationSettingsTag extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'consultationSettingsTag';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultationSettingsTag';
     }
 
     /**

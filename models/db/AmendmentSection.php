@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{diff\AmendmentRewriter, diff\ArrayMatcher, diff\Diff, diff\DiffRenderer, HTMLTools, LineSplitter};
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
@@ -23,9 +24,7 @@ class AmendmentSection extends IMotionSection
 
     public static function tableName(): string
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'amendmentSection';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentSection';
     }
 
     public function getSettings(): ?ConsultationSettingsMotionSection

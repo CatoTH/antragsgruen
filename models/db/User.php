@@ -147,9 +147,7 @@ class User extends ActiveRecord implements IdentityInterface
         if (!$user) {
             return false;
         }
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        return in_array($user->id, $params->adminUserIds);
+        return in_array($user->id, AntragsgruenApp::getInstance()->adminUserIds);
     }
 
 
@@ -158,9 +156,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function tableName()
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'user';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'user';
     }
 
     /**
@@ -551,10 +547,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getNotificationUnsubscribeCode(): string
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
-        return $this->id . '-' . substr(md5($this->id . 'unsubscribe' . $params->randomSeed), 0, 8);
+        return $this->id . '-' . substr(md5($this->id . 'unsubscribe' . AntragsgruenApp::getInstance()->randomSeed), 0, 8);
     }
 
     public static function getUserByUnsubscribeCode(string $code): ?User
@@ -601,19 +594,16 @@ class User extends ActiveRecord implements IdentityInterface
      * Checks if this user has the given privilege or at least one of the given privileges (binary OR)
      * for the given consultation
      *
-     * @param Consultation|null $consultation
      * @param int|int[] $privilege
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function hasPrivilege($consultation, $privilege): bool
+    public function hasPrivilege(?Consultation $consultation, $privilege): bool
     {
         if (!$consultation) {
             return false;
         }
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        if (in_array($this->id, $params->adminUserIds)) {
+        if (in_array($this->id, AntragsgruenApp::getInstance()->adminUserIds)) {
             return true;
         }
 
@@ -815,9 +805,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function changeEmailAddress($newEmail, $code)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        if ($params->confirmEmailAddresses) {
+        if (AntragsgruenApp::getInstance()->confirmEmailAddresses) {
             $this->checkEmailChangeToken($newEmail, $code);
         }
 

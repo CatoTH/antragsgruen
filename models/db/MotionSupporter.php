@@ -4,11 +4,10 @@ namespace app\models\db;
 
 use app\components\EmailNotifications;
 use app\models\events\MotionSupporterEvent;
+use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $motionId
  * @property int $position
@@ -53,9 +52,7 @@ class MotionSupporter extends ISupporter
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'motionSupporter';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'motionSupporter';
     }
 
     /**

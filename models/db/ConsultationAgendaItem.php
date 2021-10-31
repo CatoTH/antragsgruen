@@ -2,8 +2,7 @@
 
 namespace app\models\db;
 
-use app\models\settings\AgendaItem;
-use app\models\settings\IMotionStatus;
+use app\models\settings\{AgendaItem, AntragsgruenApp};
 use app\components\{MotionSorter, Tools};
 use yii\db\ActiveRecord;
 
@@ -34,10 +33,7 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-
-        return $app->tablePrefix . 'consultationAgendaItem';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultationAgendaItem';
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\UrlHelper;
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
@@ -29,10 +30,7 @@ class ConsultationText extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-
-        return $app->tablePrefix . 'consultationText';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultationText';
     }
 
     /**
@@ -132,7 +130,7 @@ class ConsultationText extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getDefaultPages()
+    public static function getDefaultPages(): array
     {
         return [
             'maintenance' => \Yii::t('pages', 'content_maint_title'),
@@ -149,7 +147,7 @@ class ConsultationText extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getSitewidePages()
+    public static function getSitewidePages(): array
     {
         return ['legal', 'privacy', 'login_pre', 'login_post'];
     }
@@ -159,17 +157,12 @@ class ConsultationText extends ActiveRecord
      *
      * @return string[]
      */
-    public static function getSystemwidePages()
+    public static function getSystemwidePages(): array
     {
         return ['legal', 'privacy'];
     }
 
-    /**
-     * @param string $pageKey
-     *
-     * @return ConsultationText
-     */
-    public static function getDefaultPage($pageKey)
+    public static function getDefaultPage(string $pageKey): ConsultationText
     {
         $data           = new ConsultationText();
         $data->textId   = $pageKey;
@@ -221,12 +214,9 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @param Site|null $site
-     * @param Consultation|null $consultation
-     *
      * @return ConsultationText[]
      */
-    public static function getMenuEntries($site, $consultation)
+    public static function getMenuEntries(?Site $site, ?Consultation $consultation): array
     {
         $pages = [];
         if ($site) {
@@ -255,14 +245,7 @@ class ConsultationText extends ActiveRecord
         return $pages;
     }
 
-    /**
-     * @param Site|null $site
-     * @param Consultation|null $consultation
-     * @param string $pageKey
-     *
-     * @return ConsultationText
-     */
-    public static function getPageData($site, $consultation, $pageKey)
+    public static function getPageData(?Site $site, ?Consultation $consultation, string $pageKey): ConsultationText
     {
         $foundText = null;
         if (!in_array($pageKey, static::getSitewidePages())) {
@@ -322,12 +305,9 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @param Site $site
-     * @param Consultation|null $consultation
-     *
      * @return ConsultationText[]
      */
-    public static function getAllPages($site, $consultation)
+    public static function getAllPages(Site $site, ?Consultation $consultation): array
     {
         $pages = ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null, 'category' => 'pagedata']);
         if ($consultation) {

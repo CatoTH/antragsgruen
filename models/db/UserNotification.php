@@ -2,13 +2,11 @@
 
 namespace app\models\db;
 
-use app\models\notifications\CommentNotificationSubscriptions;
-use app\models\notifications\MotionNotificationSubscriptions;
+use app\models\notifications\{CommentNotificationSubscriptions, MotionNotificationSubscriptions};
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property int $userId
  * @property int $consultationId
@@ -37,9 +35,7 @@ class UserNotification extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'userNotification';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'userNotification';
     }
 
     /**
@@ -156,7 +152,6 @@ class UserNotification extends ActiveRecord
 
     /**
      * @param int|null $refId
-     * @return UserNotification
      */
     public static function addNotification(User $user, Consultation $consultation, $type, $refId = null): UserNotification
     {
@@ -178,7 +173,7 @@ class UserNotification extends ActiveRecord
     /**
      * @param int $commentSetting
      */
-    public static function addCommentNotification(User $user, Consultation $consultation, $commentSetting)
+    public static function addCommentNotification(User $user, Consultation $consultation, $commentSetting): void
     {
         if (!in_array($commentSetting, static::$COMMENT_SETTINGS)) {
             return;
@@ -189,12 +184,10 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @param User $user
-     * @param Consultation $consultation
      * @param int $type
      * @param int|null $refId
      */
-    public static function removeNotification(User $user, Consultation $consultation, $type, $refId = null)
+    public static function removeNotification(User $user, Consultation $consultation, $type, $refId = null): void
     {
         $noti = static::getNotification($user, $consultation, $type, $refId);
         if ($noti) {
@@ -203,10 +196,7 @@ class UserNotification extends ActiveRecord
         static::$noticache = [];
     }
 
-    /**
-     * @param Motion $motion
-     */
-    public static function notifyNewMotion(Motion $motion)
+    public static function notifyNewMotion(Motion $motion): void
     {
         $notificationType = UserNotification::NOTIFICATION_NEW_MOTION;
         $notified         = [];
@@ -221,10 +211,7 @@ class UserNotification extends ActiveRecord
         }
     }
 
-    /**
-     * @param IComment $comment
-     */
-    public static function notifyNewComment(IComment $comment)
+    public static function notifyNewComment(IComment $comment): void
     {
         $usersRepliedTo = $comment->getUserIdsBeingRepliedToByThis();
         $usersInSameIMotion = $comment->getUserIdsActiveOnThisIMotion();

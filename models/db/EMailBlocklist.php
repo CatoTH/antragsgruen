@@ -1,6 +1,7 @@
 <?php
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
@@ -10,9 +11,7 @@ class EMailBlocklist extends ActiveRecord
 {
     public static function tableName(): string
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'emailBlocklist';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'emailBlocklist';
     }
 
     public static function isBlocked(string $email): bool

@@ -70,9 +70,7 @@ class Consultation extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'consultation';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultation';
     }
 
     /**

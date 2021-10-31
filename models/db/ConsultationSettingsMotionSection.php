@@ -2,13 +2,11 @@
 
 namespace app\models\db;
 
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TabularData;
+use app\models\sectionTypes\{ISectionType, TabularData};
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $motionTypeId
  * @property int $type
@@ -40,9 +38,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
 
     public static function tableName(): string
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'consultationSettingsMotionSection';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultationSettingsMotionSection';
     }
 
     /**

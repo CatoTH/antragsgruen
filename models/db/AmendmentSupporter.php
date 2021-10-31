@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\EmailNotifications;
 use app\models\events\AmendmentSupporterEvent;
+use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
 
 /**
@@ -53,9 +54,7 @@ class AmendmentSupporter extends ISupporter
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'amendmentSupporter';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentSupporter';
     }
 
     /**

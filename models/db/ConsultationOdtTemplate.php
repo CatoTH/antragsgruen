@@ -1,11 +1,10 @@
 <?php
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property int $consultationId
  * @property int $type
@@ -20,9 +19,7 @@ class ConsultationOdtTemplate extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'consultationOdtTemplate';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultationOdtTemplate';
     }
 
     /**

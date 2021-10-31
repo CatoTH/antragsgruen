@@ -2,11 +2,10 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property int $siteId
  * @property string $title
@@ -23,9 +22,7 @@ class TexTemplate extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'texTemplate';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'texTemplate';
     }
 
     /**

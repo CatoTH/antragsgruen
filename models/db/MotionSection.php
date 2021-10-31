@@ -36,9 +36,7 @@ class MotionSection extends IMotionSection
      */
     public static function tableName()
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'motionSection';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'motionSection';
     }
 
     private function hasExternallySavedData(): bool
@@ -47,8 +45,7 @@ class MotionSection extends IMotionSection
         // therefore, to ensure that test cases cover this scenario, we call it earlier
         $type = $this->getSettings()->type;
 
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
+        $app = AntragsgruenApp::getInstance();
         if ($app->binaryFilePath === null || trim($app->binaryFilePath) === '') {
             return false;
         }
@@ -62,8 +59,7 @@ class MotionSection extends IMotionSection
 
     private function getExternallySavedFile(): string
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
+        $app = AntragsgruenApp::getInstance();
         $path = $app->binaryFilePath;
         if (substr($path, -1, 1) !== '/') {
             $path .= '/';

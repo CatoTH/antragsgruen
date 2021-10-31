@@ -2,9 +2,9 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
+
 /**
- * @package app\models\db
- *
  * @property int $amendmentId
  * @property Amendment $amendment
  */
@@ -15,9 +15,7 @@ class AmendmentAdminComment extends IAdminComment
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'amendmentAdminComment';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentAdminComment';
     }
 
     /**

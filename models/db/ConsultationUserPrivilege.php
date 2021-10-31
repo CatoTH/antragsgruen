@@ -4,10 +4,9 @@ namespace app\models\db;
 
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
-use app\models\exceptions\AlreadyExists;
-use app\models\exceptions\FormError;
-use app\models\exceptions\MailNotSent;
+use app\models\exceptions\{AlreadyExists, FormError, MailNotSent};
 use app\models\notifications\UserAsksPermission;
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
@@ -30,9 +29,7 @@ class ConsultationUserPrivilege extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'consultationUserPrivilege';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultationUserPrivilege';
     }
 
     /**

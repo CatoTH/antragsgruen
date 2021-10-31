@@ -8,8 +8,6 @@ use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\db\ActiveRecord;
 
 /**
- * @package app\models\db
- *
  * @property int $id
  * @property int $currentConsultationId
  * @property int $public
@@ -43,9 +41,7 @@ class Site extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'site';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'site';
     }
 
     /**
@@ -124,10 +120,7 @@ class Site extends ActiveRecord
     /** @var null|\app\models\settings\Site */
     private $settingsObject = null;
 
-    /**
-     * @return \app\models\settings\Site
-     */
-    public function getSettings()
+    public function getSettings(): \app\models\settings\Site
     {
         if (!is_object($this->settingsObject)) {
             $settingsClass = \app\models\settings\Site::class;
@@ -143,10 +136,7 @@ class Site extends ActiveRecord
         return $this->settingsObject;
     }
 
-    /**
-     * @param \app\models\settings\Site $settings
-     */
-    public function setSettings($settings)
+    public function setSettings(\app\models\settings\Site $settings): void
     {
         $this->settingsObject = $settings;
         $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
@@ -157,9 +147,7 @@ class Site extends ActiveRecord
         if ($subdomain == '') {
             return false;
         }
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        if (in_array($subdomain, $params->blockedSubdomains)) {
+        if (in_array($subdomain, AntragsgruenApp::getInstance()->blockedSubdomains)) {
             return false;
         }
         if (!preg_match('/^[A-Za-z0-9]([A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/siu', $subdomain)) {
@@ -171,33 +159,22 @@ class Site extends ActiveRecord
 
     public function getBaseUrl(): string
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        $domain = str_replace('<subdomain:[\w_-]+>', $this->subdomain, $params->domainSubdomain);
+        $domain = str_replace('<subdomain:[\w_-]+>', $this->subdomain, AntragsgruenApp::getInstance()->domainSubdomain);
 
         return trim(explode("//", $domain)[1], '/');
     }
 
-    /**
-     * @param User $user
-     * @return bool
-     */
-    public function isAdmin($user)
+    public function isAdmin(User $user): bool
     {
         foreach ($this->admins as $e) {
             if ($e->id == $user->id) {
                 return true;
             }
         }
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        return in_array($user->id, $params->adminUserIds);
+        return in_array($user->id, AntragsgruenApp::getInstance()->adminUserIds);
     }
 
-    /**
-     * @return bool
-     */
-    public function isAdminCurUser()
+    public function isAdminCurUser(): bool
     {
         $user = \Yii::$app->user;
         if ($user->isGuest) {
@@ -223,8 +200,7 @@ class Site extends ActiveRecord
             }
         }
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
         if (isset($params->siteBehaviorClasses[$this->id])) {
             return new $params->siteBehaviorClasses[$this->id]();
         }
@@ -232,9 +208,7 @@ class Site extends ActiveRecord
         return new DefaultBehavior();
     }
 
-    /**
-     */
-    public function setDeleted()
+    public function setDeleted(): void
     {
         $this->status       = static::STATUS_DELETED;
         $this->subdomain    = null;
@@ -246,16 +220,12 @@ class Site extends ActiveRecord
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function readyForPurge()
+    public function readyForPurge(): bool
     {
         if ($this->dateDeletion === null) {
             return false;
         }
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
         if ($params->sitePurgeAfterDays === null || $params->sitePurgeAfterDays < 1) {
             return false;
         }

@@ -33,10 +33,7 @@ class ConsultationFile extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-
-        return $app->tablePrefix . 'consultationFile';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'consultationFile';
     }
 
     /**
@@ -131,9 +128,7 @@ class ConsultationFile extends ActiveRecord
 
     private static function getMimeType(string $data): string
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        $file   = $params->getTmpDir() . 'mime-' . uniqid();
+        $file = AntragsgruenApp::getInstance()->getTmpDir() . 'mime-' . uniqid();
         file_put_contents($file, $data);
         $mime = mime_content_type($file);
         unlink($file);

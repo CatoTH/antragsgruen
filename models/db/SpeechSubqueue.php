@@ -23,10 +23,7 @@ class SpeechSubqueue extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-
-        return $app->tablePrefix . 'speechSubqueue';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'speechSubqueue';
     }
 
     /**

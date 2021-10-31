@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
@@ -100,9 +101,7 @@ class EMailLog extends ActiveRecord
 
     public static function tableName(): string
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        return $app->tablePrefix . 'emailLog';
+        return AntragsgruenApp::getInstance()->tablePrefix . 'emailLog';
     }
 
     /**
