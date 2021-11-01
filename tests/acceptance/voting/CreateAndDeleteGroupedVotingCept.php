@@ -27,6 +27,7 @@ $page->saveForm();
 
 $I->seeElement('.votingDataHolder');
 $I->seeOptionIsSelected('#votingBlockId', 'Newly created voting');
+$I->dontSeeElement('#votingItemBlockName');
 
 
 $I->wantTo('Assign a motion to the same voting block');
@@ -35,16 +36,28 @@ $I->dontSeeElement('.votingDataHolder');
 $I->clickJS('.votingDataOpener');
 $I->seeElement('.votingDataHolder');
 
+$I->dontSeeElement('#votingItemBlockName');
 $I->dontSeeElement('.newBlock');
 $I->dontSeeElement('.votingItemBlockRow' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID);
 $I->executeJS('$("#votingBlockId").val("' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . '").trigger("change")');
 $I->dontSeeElement('.newBlock');
 $I->seeElement('.votingItemBlockRow' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID);
+$I->dontSeeElement('#votingItemBlockName');
 
 $I->selectOption('#votingItemBlockId' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID, 'Ä1');
+$I->seeElement('#votingItemBlockName');
+$I->fillField('#votingItemBlockName', 'Vote for Ä1 and A5 at the same time');
 $page->saveForm();
 
 $I->seeOptionIsSelected('#votingItemBlockId' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID, 'Ä1');
+$I->seeElement('#votingItemBlockName');
+$I->seeInField('#votingItemBlockName', 'Vote for Ä1 and A5 at the same time');
+
+
+$I->wantTo('See the new group in the motion, too');
+$page = $I->gotoMotionList()->gotoMotionEdit(114);
+$I->seeElement('.votingDataHolder');
+$I->seeInField('#votingItemBlockName', 'Vote for Ä1 and A5 at the same time');
 
 
 $I->wantTo('Rename the voting and open it as part of that motion');
@@ -52,6 +65,8 @@ $I->click('.votingEditLink');
 
 $votingBaseId = '#voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID;
 $I->seeElement($votingBaseId);
+$I->see('Vote for Ä1 and A5 at the same time', '.voting_motion_114');
+
 $I->dontSeeElement($votingBaseId . ' .titleSetting');
 $I->clickJS($votingBaseId . ' .settingsToggleGroup button');
 $I->seeElement($votingBaseId . ' .titleSetting');
@@ -81,6 +96,7 @@ $I->seeElement('.currentVotings');
 $I->seeElement('.voting_motion_114');
 $I->see('A5: Leerzeichen-Test', '.voting_motion_114');
 $I->see('Ä1 zu A2: O’zapft is!', '.voting_motion_114');
+$I->see('Vote for Ä1 and A5 at the same time', '.voting_motion_114');
 $I->clickJS('.voting_motion_114 .btnYes');
 $I->wait(0.3);
 $I->see('1 Stimme von 1 Mitglied abgegeben');

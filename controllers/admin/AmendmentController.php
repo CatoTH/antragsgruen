@@ -316,6 +316,7 @@ class AmendmentController extends AdminBase
                     \Yii::$app->request->post('votingStatus', null),
                     \Yii::$app->request->post('votingBlockId', null),
                     \Yii::$app->request->post('votingItemBlockId', []),
+                    \Yii::$app->request->post('votingItemBlockName', ''),
                     \Yii::$app->request->post('newBlockTitle', ''),
                     false,
                     $ppChanges

@@ -38,6 +38,8 @@ $consultation = $motion->getMyConsultation();
 $votingBlocks = $consultation->votingBlocks;
 $allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
 $selectedTags = $motion->getProposedProcedureTags();
+$currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeRemoved());
+$voting = $motion->getVotingData();
 ?>
 <h2>
     <?= Yii::t('amend', 'proposal_amend_title') ?>
@@ -138,6 +140,7 @@ $selectedTags = $motion->getProposedProcedureTags();
                                 if (in_array($motion->id, $subitem->motionIds)) {
                                     echo ' selected';
                                 }
+                                echo ' data-group-name="' . Html::encode($subitem->groupName) . '"';
                                 echo '>' . Html::encode($subitem->getTitle($motion)) . '</option>';
                             }
                             ?>
@@ -146,6 +149,14 @@ $selectedTags = $motion->getProposedProcedureTags();
                     <?php
                 }
                 ?>
+            <div class="votingItemBlockNameRow votingItemBlockNameRow">
+                <label class="control-label" for="votingItemBlockName">
+                    <?= Yii::t('amend', 'proposal_voteitemblock_name') ?>:
+                </label>
+                <input name="votingItemBlockName" id="votingItemBlockName"
+                       class="form-control" value="<?= Html::encode($voting->itemGroupName ?: '') ?>"
+                    <?= ($currBlockIsLocked ? ' disabled' : '') ?>>
+            </div>
         </div>
         <div class="notificationSettings showIfStatusSet">
             <h3><?= Yii::t('amend', 'proposal_noti') ?></h3>

@@ -55,7 +55,7 @@ ob_start();
         <div class="alert alert-info" v-if="isClosed">
             <p><?= Yii::t('voting', 'admin_status_closed') ?></p>
         </div>
-        <form method="POST" class="votingDataActions" v-if="isPreparing">
+        <form method="POST" class="votingDataActions" v-if="isPreparing" @submit="openVoting($event)">
             <div class="data form-inline" v-if="organizations.length === 1">
                 <label>
                     <?= Yii::t('voting', 'admin_members_present') ?>:
@@ -106,6 +106,9 @@ ob_start();
                 (isClosed ? 'showResults' : ''), (isClosed ? 'showDetailedResults' : '')
             ]">
                 <div class="titleLink">
+                    <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">
+                        {{ groupedVoting[0].item_group_name }}
+                    </div>
                     <div v-for="item in groupedVoting">
                         {{ item.title_with_prefix }}
                         <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
@@ -507,7 +510,11 @@ $html = ob_get_clean();
                 }
                 return false;
             },
-            openVoting: function () {
+            openVoting: function ($event) {
+                if ($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                }
                 this.voting.status = STATUS_OPEN;
                 this.statusChanged();
             },
@@ -583,8 +590,10 @@ $html = ob_get_clean();
                 this.settingsOpened = false;
             },
             saveSettings: function ($event) {
-                $event.preventDefault();
-                $event.stopPropagation();
+                if ($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                }
                 this.$emit('save-settings', this.voting.id, this.settingsTitle, this.majorityType, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;

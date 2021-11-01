@@ -108,14 +108,34 @@ export class AmendmentEdit {
             }
         }).trigger('change');
 
+        $(".votingItemBlockRow select").on('change', (ev) => {
+            const $select = $(ev.currentTarget);
+            if ($select.val()) {
+                const selectedName = $select.find("option[value=" + $select.val() + "]").data("group-name");
+                $(".votingItemBlockNameRow input").val(selectedName);
+                $(".votingItemBlockNameRow").removeClass('hidden');
+            } else {
+                // Not grouped
+                $(".votingItemBlockNameRow").addClass('hidden');
+            }
+        });
+
         $votingBlockId.on('change', () => {
             if ($votingBlockId.val() === 'NEW') {
                 $(".votingBlockRow .newBlock").removeClass('hidden');
                 $(".votingItemBlockRow").addClass('hidden');
+                $(".votingItemBlockNameRow").addClass('hidden');
             } else {
                 $(".votingBlockRow .newBlock").addClass('hidden');
                 $(".votingItemBlockRow").addClass('hidden');
-                $(".votingItemBlockRow" + $votingBlockId.val()).removeClass('hidden');
+                const $votingItemBlockRow = $(".votingItemBlockRow" + $votingBlockId.val());
+                $votingItemBlockRow.removeClass('hidden');
+                if ($votingItemBlockRow.length > 0) {
+                    $votingItemBlockRow.removeClass('hidden');
+                    $votingItemBlockRow.find("select").trigger('change'); // to trigger group name listener
+                } else {
+                    $(".votingItemBlockNameRow").addClass('hidden');
+                }
             }
         }).trigger('change');
     }

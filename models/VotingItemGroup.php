@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\models;
 
-use app\models\db\{Amendment, IMotion, Motion};
+use app\models\db\{Amendment, IMotion, Motion, VotingBlock};
 use app\models\exceptions\FormError;
 
 class VotingItemGroup
@@ -13,26 +13,11 @@ class VotingItemGroup
     const ADHOC_PREFIX_MOTION = 'motion-';
     const ADHOC_PREFIX_AMENDMENT = 'amendment-';
 
-    /**
-     * Hint: either $groupId or $adhocItem needs to be provided
-     */
-    public function __construct(?string $groupId, ?IMotion $adhocItem)
-    {
-        if ($groupId === null && is_a($adhocItem, Motion::class)) {
-            $this->groupId = static::ADHOC_PREFIX . static::ADHOC_PREFIX_MOTION . $adhocItem->id;
-            $this->motions[] = $adhocItem;
-            $this->motionIds[] = $adhocItem->id;
-        } elseif ($groupId === null && is_a($adhocItem, Amendment::class)) {
-            $this->groupId = static::ADHOC_PREFIX . static::ADHOC_PREFIX_AMENDMENT . $adhocItem->id;
-            $this->amendments[] = $adhocItem;
-            $this->amendmentIds[] = $adhocItem->id;
-        } else {
-            $this->groupId = $groupId;
-        }
-    }
-
     /** @var string */
     public $groupId;
+
+    /** @var string|null */
+    public $groupName;
 
     /** @var int[] */
     public $motionIds = [];
@@ -45,6 +30,27 @@ class VotingItemGroup
 
     /** @var Amendment[] */
     public $amendments = [];
+
+
+    /**
+     * Hint: either $groupId or $adhocItem needs to be provided
+     */
+    public function __construct(?string $groupId, ?string $groupName, ?IMotion $adhocItem)
+    {
+        $this->groupName = $groupName;
+
+        if ($groupId === null && is_a($adhocItem, Motion::class)) {
+            $this->groupId = static::ADHOC_PREFIX . static::ADHOC_PREFIX_MOTION . $adhocItem->id;
+            $this->motions[] = $adhocItem;
+            $this->motionIds[] = $adhocItem->id;
+        } elseif ($groupId === null && is_a($adhocItem, Amendment::class)) {
+            $this->groupId = static::ADHOC_PREFIX . static::ADHOC_PREFIX_AMENDMENT . $adhocItem->id;
+            $this->amendments[] = $adhocItem;
+            $this->amendmentIds[] = $adhocItem->id;
+        } else {
+            $this->groupId = $groupId;
+        }
+    }
 
     public function isAdhocGroup(): bool
     {
@@ -79,7 +85,7 @@ class VotingItemGroup
         return implode(', ', $titles);
     }
 
-    public static function setVotingItemGroupToAllItems(IMotion $imotion, string $idToSet): void
+    public static function setVotingItemGroupToAllItems(VotingBlock $votingBlock, IMotion $imotion, string $idToSet, ?string $nameToSet): void
     {
         if (strpos($idToSet, static::ADHOC_PREFIX) === 0) {
             $otherItem = null;
@@ -100,14 +106,24 @@ class VotingItemGroup
 
             $settings = $otherItem->getVotingData();
             $settings->itemGroupSameVote = $newGroupId;
+            $settings->itemGroupName = $nameToSet;
             $otherItem->setVotingData($settings);
             $otherItem->save();
 
             $settings = $imotion->getVotingData();
             $settings->itemGroupSameVote = $newGroupId;
+            $settings->itemGroupName = $nameToSet;
             $imotion->setVotingData($settings); // Don't save yet
         } else {
+            foreach ($votingBlock->getItemGroupItems($idToSet) as $otherItem) {
+                $settings = $otherItem->getVotingData();
+                $settings->itemGroupName = $nameToSet;
+                $otherItem->setVotingData($settings);
+                $otherItem->save();
+            }
+
             $settings = $imotion->getVotingData();
+            $settings->itemGroupName = $nameToSet;
             $settings->itemGroupSameVote = $idToSet;
             $imotion->setVotingData($settings);
         }

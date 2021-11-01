@@ -10,6 +10,8 @@ class VotingData implements \JsonSerializable
 
     /** @var null|string - casting a "yes" for Item 1 implies a "yes" for Item 2 of the same item group */
     public $itemGroupSameVote = null;
+    /** @var null|string */
+    public $itemGroupName = null;
 
     /** @var null|int */
     public $votesYes = null;

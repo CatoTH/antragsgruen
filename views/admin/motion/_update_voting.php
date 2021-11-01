@@ -93,6 +93,7 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
                             if (in_array($motion->id, $subitem->motionIds)) {
                                 echo ' selected';
                             }
+                            echo ' data-group-name="' . Html::encode($subitem->groupName) . '"';
                             echo '>' . Html::encode($subitem->getTitle($motion)) . '</option>';
                         }
                         ?>
@@ -102,6 +103,16 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
             <?php
         }
         ?>
+        <div class="form-group votingItemBlockNameRow votingItemBlockNameRow">
+            <label class="col-md-3 control-label" for="votingItemBlockName">
+                <?= Yii::t('amend', 'proposal_voteitemblock_name') ?>:
+            </label>
+            <div class="col-md-9">
+                <input name="votingItemBlockName" id="votingItemBlockName"
+                       class="form-control" value="<?= Html::encode($voting->itemGroupName ?: '') ?>"
+                       <?= ($currBlockIsLocked ? ' disabled' : '') ?>>
+            </div>
+        </div>
         <div class="form-group votingResult">
             <div class="col-md-3 control-label">
                 <?= Yii::t('amend', 'proposal_voting_status') ?>

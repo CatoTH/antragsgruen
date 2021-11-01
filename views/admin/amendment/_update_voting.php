@@ -77,7 +77,6 @@ $currBlockIsLocked = ($amendment->votingBlock && !$amendment->votingBlock->items
             if (count($subitems) === 0) {
                 continue;
             }
-            //echo '<pre>';            var_dump($subitems); echo '</pre>';
             ?>
             <div class="form-group votingItemBlockRow votingItemBlockRow<?= $votingBlock->id ?>">
                 <label class="col-md-3 control-label" for="votingItemBlockId<?= $votingBlock->id ?>">
@@ -87,13 +86,14 @@ $currBlockIsLocked = ($amendment->votingBlock && !$amendment->votingBlock->items
                 <div class="col-md-9">
                     <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>"
                             <?= ($currBlockIsLocked ? ' disabled' : '') ?> class="stdDropdown">
-                        <option value=""><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
+                        <option value="" data-group-name=""><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
                         <?php
                         foreach ($subitems as $subitem) {
                             echo '<option value="' . $subitem->groupId . '"';
                             if (in_array($amendment->id, $subitem->amendmentIds)) {
                                 echo ' selected';
                             }
+                            echo ' data-group-name="' . Html::encode($subitem->groupName) . '"';
                             echo '>' . Html::encode($subitem->getTitle($amendment)) . '</option>';
                         }
                         ?>
@@ -103,6 +103,16 @@ $currBlockIsLocked = ($amendment->votingBlock && !$amendment->votingBlock->items
             <?php
         }
         ?>
+        <div class="form-group votingItemBlockNameRow">
+            <label class="col-md-3 control-label" for="votingItemBlockName">
+                <?= Yii::t('amend', 'proposal_voteitemblock_name') ?>:
+            </label>
+            <div class="col-md-9">
+                <input name="votingItemBlockName" id="votingItemBlockName"
+                       class="form-control" value="<?= Html::encode($voting->itemGroupName ?: '') ?>"
+                       <?= ($currBlockIsLocked ? ' disabled' : '') ?>>
+            </div>
+        </div>
         <div class="form-group votingResult">
             <div class="col-md-3 control-label">
                 <?= Yii::t('amend', 'proposal_voting_status') ?>

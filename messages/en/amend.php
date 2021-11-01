@@ -293,6 +293,7 @@ return [
     'proposal_voteitemblock'     => 'Group with',
     'proposal_voteitemblock_h'   => 'If a motion/amendment is grouped with one or more others, only one vote can be cast for both of them. They are adopted or rejected at the same time. Choose this if one amendment does not make sense without the other.',
     'proposal_voteitemblock_none' => '- none / only this motion/amendment -',
+    'proposal_voteitemblock_name' => 'Group name',
     'proposal_noti'              => 'Notifications',
     'proposal_visible'           => 'Proposed procedure is public',
     'proposal_publicity'         => 'Public',

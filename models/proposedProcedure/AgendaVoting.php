@@ -121,6 +121,7 @@ class AgendaVoting
                     'initiators_html' => $item->getInitiatorsStr(),
                     'procedure' => $procedure,
                     'item_group_same_vote' => $item->getVotingData()->itemGroupSameVote,
+                    'item_group_name' => $item->getVotingData()->itemGroupName,
                     'voting_status' => $item->votingStatus,
                 ];
             } else {
@@ -135,6 +136,7 @@ class AgendaVoting
                     'initiators_html' => $item->getInitiatorsStr(),
                     'procedure' => $procedure,
                     'item_group_same_vote' => $item->getVotingData()->itemGroupSameVote,
+                    'item_group_name' => $item->getVotingData()->itemGroupName,
                     'voting_status' => $item->votingStatus,
                 ];
             }

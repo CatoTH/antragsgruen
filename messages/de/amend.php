@@ -325,6 +325,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_voteitemblock'     => 'Gruppieren mit',
     'proposal_voteitemblock_h'   => 'Wenn dieser Antrag mit einem anderen gruppiert wird, werden beide (oder noch mehrere) mit der selben Stimme abgestimmt. Alle werden entweder gemeinsam angenommen, oder gemeinsam abgelehnt. Sinnvoll wenn ein Antrag nur in Kombination mit einem anderen Sinn ergibt.',
     'proposal_voteitemblock_none' => '- alleine stehend -',
+    'proposal_voteitemblock_name' => 'Gruppen-Name',
     'proposal_noti'              => 'Antragsteller*in benachrichtigen',
     'proposal_visible'           => 'Verfahrensvorschlag ist sichtbar',
     'proposal_publicity'         => 'Öffentlich',

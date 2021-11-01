@@ -572,6 +572,7 @@ abstract class IMotion extends ActiveRecord
 
         $votingData = $this->getVotingData();
         $votingData->itemGroupSameVote = null;
+        $votingData->itemGroupName = null;
         $this->setVotingData($votingData);
 
         if ($save) {
@@ -586,6 +587,7 @@ abstract class IMotion extends ActiveRecord
         ?string $votingStatus,
         ?string $votingBlockId,
         array $votingItemBlockIds,
+        string $votingItemBlockName,
         string $newVotingBlockTitle,
         bool $proposedProcedureContext,
         ProposedProcedureChange $ppChanges
@@ -623,16 +625,21 @@ abstract class IMotion extends ActiveRecord
                 $this->addToVotingBlock($toSetVotingBlock, false);
             }
 
-            if (isset($votingItemBlockIds[$toSetVotingBlock->id]) && trim($votingItemBlockIds[$toSetVotingBlock->id]) !== '') {
+            $toSetId = $toSetVotingBlock->id;
+            $toSetVotingBlockId = (isset($votingItemBlockIds[$toSetId]) && trim($votingItemBlockIds[$toSetId]) !== '' ? trim($votingItemBlockIds[$toSetId]) : null);
+            $toSetVotingBlockName = (trim($votingItemBlockName) !== '' ? trim($votingItemBlockName) : null);
+
+            if ($toSetVotingBlockId) {
                 if (in_array($toSetVotingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
-                    VotingItemGroup::setVotingItemGroupToAllItems($this, $votingItemBlockIds[$toSetVotingBlock->id]);
-                } elseif ($votingItemBlockIds[$toSetVotingBlock->id] !== $this->getVotingData()->itemGroupSameVote) {
+                    VotingItemGroup::setVotingItemGroupToAllItems($toSetVotingBlock, $this, $toSetVotingBlockId, $toSetVotingBlockName);
+                } elseif ($toSetVotingBlockId !== $this->getVotingData()->itemGroupSameVote) {
                     throw new FormError('Cannot change an item in a running voting');
                 }
             } else {
                 $votingData = $this->getVotingData();
                 if (in_array($toSetVotingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
                     $votingData->itemGroupSameVote = null;
+                    $votingData->itemGroupName = null;
                     $this->setVotingData($votingData);
                 } elseif ($votingData->itemGroupSameVote !== null) {
                     throw new FormError('Cannot change an item in a running voting');

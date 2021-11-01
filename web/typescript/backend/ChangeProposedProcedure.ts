@@ -153,6 +153,7 @@ export class ChangeProposedProcedure {
             setStatus: newVal,
             visible: (this.$visibilityInput.prop('checked') ? 1 : 0),
             votingBlockId: this.$votingBlockId.val(),
+            votingItemBlockName: this.$widget.find(".votingItemBlockNameRow input").val(),
             tags: selectize.selectize.items,
         };
 
@@ -242,13 +243,27 @@ export class ChangeProposedProcedure {
     }
 
     private setVotingBlockSettings() {
+        this.$widget.find(".votingItemBlockRow select").on('change', (ev) => {
+            const $select = $(ev.currentTarget);
+            if ($select.val()) {
+                const selectedName = $select.find("option[value=" + $select.val() + "]").data("group-name");
+                this.$widget.find(".votingItemBlockNameRow input").val(selectedName);
+                this.$widget.find(".votingItemBlockNameRow").removeClass('hidden');
+            } else {
+                // Not grouped
+                this.$widget.find(".votingItemBlockNameRow").addClass('hidden');
+            }
+        });
+
         if (this.$votingBlockId.val() === 'NEW') {
             this.$widget.find('.newBlock').removeClass('hidden');
             this.$widget.find('.votingItemBlockRow').addClass('hidden');
+            this.$widget.find(".votingItemBlockNameRow").addClass('hidden');
         } else {
             this.$widget.find('.newBlock').addClass('hidden');
             this.$widget.find('.votingItemBlockRow').addClass('hidden');
             this.$widget.find('.votingItemBlockRow' + this.$votingBlockId.val()).removeClass('hidden');
+            this.$widget.find(".votingItemBlockRow" + this.$votingBlockId.val() + " select").trigger('change'); // to trigger group name listener
         }
     }
 

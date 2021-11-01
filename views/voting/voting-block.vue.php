@@ -33,6 +33,9 @@ ob_start();
                 (isClosed && resultsPublic ? 'showDetailedResults' : 'noDetailedResults')
             ]" >
                 <div class="titleLink">
+                    <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">
+                        {{ groupedVoting[0].item_group_name }}
+                    </div>
                     <div v-for="item in groupedVoting">
                         {{ item.title_with_prefix }}
                         <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
