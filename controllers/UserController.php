@@ -161,6 +161,8 @@ class UserController extends Base
             $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             if (!$user) {
                 $msgError = Yii::t('user', 'err_email_acc_notfound');
+            } elseif ($user->emailConfirmed === 1) {
+                $msgError = Yii::t('user', 'err_email_acc_confirmed');
             } elseif ($user->checkEmailConfirmationCode(trim($this->getRequestValue('code')))) {
                 $user->emailConfirmed = 1;
                 $user->status         = User::STATUS_CONFIRMED;

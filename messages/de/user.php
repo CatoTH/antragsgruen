@@ -18,6 +18,7 @@ return [
     'pwd_recovery_sent'         => 'Dir wurde eine Passwort-Wiederherstellungs-Mail geschickt.',
     'welcome'                   => 'Willkommen!',
     'err_email_acc_notfound'    => 'Es existiert kein Zugang mit der angegebenen E-Mail-Adresse...?',
+    'err_email_acc_confirmed'   => 'Der Account wurde bereits bestätigt.',
     'err_invalid_email'         => 'Die angegebene E-Mail-Adresse enthält einen Fehler',
     'err_unknown'               => 'Es trat leider ein unvorhergesehener Fehler auf',
     'err_unknown_ww_repeat'     => 'Es trat ein unbekannter Fehler auf.' . "\n" .

@@ -18,6 +18,7 @@ return [
     'pwd_recovery_sent'         => 'A password recovery e-mail has been sent.',
     'welcome'                   => 'Welcome!',
     'err_email_acc_notfound'    => 'There is not account with this e-mail address...?',
+    'err_email_acc_confirmed'   => 'This account is already confirmed.',
     'err_invalid_email'         => 'The given e-mail address is invalid',
     'err_unknown'               => 'An unknown error occurred',
     'err_unknown_ww_repeat'     => 'An unknown error occurred.',
