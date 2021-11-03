@@ -102,6 +102,7 @@ class Exporter
         // \newline \newline makes paragraphs next to sidebars in application look awkward;
         // the construct with \newline \phantom does not appear to have this issue, and still leaves empty line numbers intact
         $str = str_replace("\\newline\n\\newline\n", "\\newline\n\\phantom{ }\n\n", $str);
+        $str = preg_replace("/\\\\phantom\\{ \\}\\n\\n?\\\\newline/siu", "\\phantom{ }", $str);
 
         return $str;
     }
@@ -410,7 +411,7 @@ class Exporter
 
     public static function createTextWithRightString(string $textMain, string $textRight): string
     {
-        if ($textRight === '') {
+        if (trim($textRight) === '' || trim($textRight) === '\\newline') {
             return "\\vspace{1cm}\\raggedright\n" . $textMain;
         }
 
