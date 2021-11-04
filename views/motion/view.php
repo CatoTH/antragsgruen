@@ -59,15 +59,19 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
-$fullscreenInitData = json_encode([
-    'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
-    'init_imotion_url' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
-]);
-$fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
-    data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
-    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-    <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
-</button>';
+if (User::getCurrentUser()) {
+    $fullscreenInitData = json_encode([
+        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
+        'init_imotion_url' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
+    ]);
+    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
+        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
+        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
+    </button>';
+} else {
+    $fullscreenButton = '';
+}
 
 if ($motion->isResolution()) {
     echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . $fullscreenButton . '</h1>';
