@@ -58,6 +58,7 @@ class Module extends ModuleBase
                 Vote::VOTE_API_NO => 0,
                 'no_multiplied' => null,
                 Vote::VOTE_API_ABSTENTION => 0,
+                'abstention_multiplied' => null,
                 'total' => 0,
                 'total_multiplied' => null,
             ],
@@ -67,6 +68,7 @@ class Module extends ModuleBase
                 Vote::VOTE_API_NO => 0,
                 'no_multiplied' => null,
                 Vote::VOTE_API_ABSTENTION => 0,
+                'abstention_multiplied' => null,
                 'total' => 0,
                 'total_multiplied' => null,
             ],
@@ -76,6 +78,7 @@ class Module extends ModuleBase
                 Vote::VOTE_API_NO => 0,
                 'no_multiplied' => null,
                 Vote::VOTE_API_ABSTENTION => 0,
+                'abstention_multiplied' => null,
                 'total' => 0,
                 'total_multiplied' => null,
             ],
@@ -97,13 +100,16 @@ class Module extends ModuleBase
 
         $results['nyo']['yes_multiplied'] = $results['nyo'][Vote::VOTE_API_YES] * $ingyoVotes;
         $results['nyo']['no_multiplied'] = $results['nyo'][Vote::VOTE_API_NO] * $ingyoVotes;
+        $results['nyo']['abstention_multiplied'] = $results['nyo'][Vote::VOTE_API_ABSTENTION] * $ingyoVotes;
         $results['nyo']['total_multiplied'] = $results['nyo']['total'] * $ingyoVotes;
         $results['ingyo']['yes_multiplied'] = $results['ingyo'][Vote::VOTE_API_YES] * $nyoVotes;
         $results['ingyo']['no_multiplied'] = $results['ingyo'][Vote::VOTE_API_NO] * $nyoVotes;
+        $results['ingyo']['abstention_multiplied'] = $results['ingyo'][Vote::VOTE_API_ABSTENTION] * $nyoVotes;
         $results['ingyo']['total_multiplied'] = $results['ingyo']['total'] * $nyoVotes;
 
         $results['total']['yes_multiplied'] = $results['nyo']['yes_multiplied'] + $results['ingyo']['yes_multiplied'];
         $results['total']['no_multiplied'] = $results['nyo']['no_multiplied'] + $results['ingyo']['no_multiplied'];
+        $results['total']['abstention_multiplied'] = $results['nyo']['abstention_multiplied'] + $results['ingyo']['abstention_multiplied'];
         $results['total']['total_multiplied'] = $results['nyo']['total_multiplied'] + $results['ingyo']['total_multiplied'];
 
         return $results;

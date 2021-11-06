@@ -30,6 +30,7 @@ class VotingData extends \app\models\settings\VotingData {
     public $totalNo;
     public $totalNoMultiplied;
     public $totalAbstention;
+    public $totalAbstentionMultiplied;
     public $totalTotal;
     public $totalTotalMultiplied;
 
@@ -61,12 +62,13 @@ class VotingData extends \app\models\settings\VotingData {
         $this->totalNo = $results['total'][Vote::VOTE_API_NO];
         $this->totalNoMultiplied = $results['total']['no_multiplied'];
         $this->totalAbstention = $results['total'][Vote::VOTE_API_ABSTENTION];
+        $this->totalAbstentionMultiplied = $results['total']['abstention_multiplied'];
         $this->totalTotal = $results['total']['total'];
         $this->totalTotalMultiplied = $results['total']['total_multiplied'];
 
-        $this->votesYes = $this->totalYes;
-        $this->votesNo = $this->totalNo;
-        $this->votesAbstention = $this->totalAbstention;
+        $this->votesYes = $this->totalYesMultiplied;
+        $this->votesNo = $this->totalNoMultiplied;
+        $this->votesAbstention = $this->totalAbstentionMultiplied;
 
         return $this;
     }

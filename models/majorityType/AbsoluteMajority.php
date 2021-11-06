@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\majorityType;
 
+use app\models\settings\VotingData;
 use app\models\db\{IMotion, Vote};
 
 class AbsoluteMajority extends IMajorityType
@@ -23,24 +24,9 @@ class AbsoluteMajority extends IMajorityType
         return IMajorityType::MAJORITY_TYPE_ABSOLUTE;
     }
 
-    public function calculateResult(array $votes): int
+    public function calculateResult(VotingData $votingData): int
     {
-        $yes = 0;
-        $no = 0;
-        $abstentions = 0;
-        foreach ($votes as $vote) {
-            if ($vote->vote === Vote::VOTE_YES) {
-                $yes++;
-            }
-            if ($vote->vote === Vote::VOTE_NO) {
-                $no++;
-            }
-            if ($vote->vote === Vote::VOTE_ABSTENTION) {
-                $abstentions++;
-            }
-        }
-
-        if ($yes > ($no + $abstentions)) {
+        if ($votingData->votesYes > ($votingData->votesNo + $votingData->votesAbstention)) {
             return IMotion::STATUS_ACCEPTED;
         } else {
             return IMotion::STATUS_REJECTED;

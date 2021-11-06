@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\majorityType;
 
 use app\models\exceptions\Internal;
+use app\models\settings\VotingData;
 
 abstract class IMajorityType
 {
@@ -29,7 +30,7 @@ abstract class IMajorityType
         ];
     }
 
-    abstract public function calculateResult(array $votes): int;
+    abstract public function calculateResult(VotingData $votingData): int;
 
     public static function getID(): int
     {

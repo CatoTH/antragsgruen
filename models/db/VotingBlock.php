@@ -259,8 +259,8 @@ class VotingBlock extends ActiveRecord
 
         foreach ($this->motions as $motion) {
             $votes = $this->getVotesForMotion($motion);
-            $result = $this->getMajorityType()->calculateResult($votes);
             $votingData = $motion->getVotingData()->augmentWithResults($this, $votes);
+            $result = $this->getMajorityType()->calculateResult($votingData);
             $motion->setVotingData($votingData);
             $motion->setVotingResult($result);
             $motion->save();
@@ -268,8 +268,8 @@ class VotingBlock extends ActiveRecord
 
         foreach ($this->amendments as $amendment) {
             $votes = $this->getVotesForAmendment($amendment);
-            $result = $this->getMajorityType()->calculateResult($votes);
             $votingData = $amendment->getVotingData()->augmentWithResults($this, $votes);
+            $result = $this->getMajorityType()->calculateResult($votingData);
             $amendment->setVotingData($votingData);
             $amendment->setVotingResult($result);
             $amendment->save();

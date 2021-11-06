@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\majorityType;
 
+use app\models\settings\VotingData;
 use app\models\db\{IMotion, Vote};
 
 class TwoThirdsMajority extends IMajorityType
@@ -23,20 +24,9 @@ class TwoThirdsMajority extends IMajorityType
         return SimpleMajority::MAJORITY_TYPE_TWO_THIRD;
     }
 
-    public function calculateResult(array $votes): int
+    public function calculateResult(VotingData $votingData): int
     {
-        $yes = 0;
-        $no = 0;
-        foreach ($votes as $vote) {
-            if ($vote->vote === Vote::VOTE_YES) {
-                $yes++;
-            }
-            if ($vote->vote === Vote::VOTE_NO) {
-                $no++;
-            }
-        }
-
-        if ($yes >= (2 * $no)) { // same as: $yes >= (($yes + $no) * 2/3)
+        if ($votingData->votesYes >= (2 * $votingData->votesNo)) { // same as: $yes >= (($yes + $no) * 2/3)
             return IMotion::STATUS_ACCEPTED;
         } else {
             return IMotion::STATUS_REJECTED;
