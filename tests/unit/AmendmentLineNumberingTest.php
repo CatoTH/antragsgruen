@@ -68,11 +68,18 @@ class AmendmentLineNumberingTest extends DBTestBase
     {
         $diff = $this->getSectionDiffBlocks(270, 2);
         $text = '<ul><li value="1">###LINENUMBER###Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul><ul class="inserted"><li>Neue Zeile</li></ul>';
-        $this->assertEquals([[
-            'text'     => $text,
-            'lineFrom' => 9,
-            'lineTo'   => 9,
-        ]], $diff);
+        $this->assertEquals([
+            [
+                'text'     => $text,
+                'lineFrom' => 9,
+                'lineTo'   => 9,
+            ],
+            [
+                'text' => '<ul><li value="1">###LINENUMBER###<del>Woibbadinga </del><ins><strong>Woibbadinga</strong> </ins>noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
+                'lineFrom' => 14,
+                'lineTo' => 14,
+            ]
+        ], $diff);
         $this->assertEquals($text, $diff[0]['text']);
     }
 

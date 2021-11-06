@@ -9,12 +9,10 @@ use app\models\db\{AmendmentSection, MotionSection};
 class AmendmentAffectedParagraphsTest extends DBTestBase
 {
     /**
-     * @param int $amendmentId
-     * @param int $sectionId
-     * @return array[]
+     * @return string[]
      * @throws \app\models\exceptions\Internal
      */
-    private function getAffected($amendmentId, $sectionId)
+    private function getAffected(int $amendmentId, int $sectionId)
     {
         /** @var AmendmentSection $section */
         $section   = AmendmentSection::findOne(['amendmentId' => $amendmentId, 'sectionId' => $sectionId]);
@@ -26,9 +24,7 @@ class AmendmentAffectedParagraphsTest extends DBTestBase
     }
 
 
-    /**
-     */
-    public function testAffectedParagraphs()
+    public function testAffectedParagraphs(): void
     {
         $diff = $this->getAffected(3, 2);
         $this->assertEquals([
@@ -46,6 +42,7 @@ class AmendmentAffectedParagraphsTest extends DBTestBase
         $diff = $this->getAffected(270, 2);
         $this->assertEquals([
             1 => '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul><ul class="inserted"><li>Neue Zeile</li></ul>',
+            4 => '<ul><li><del>Woibbadinga </del><ins><strong>Woibbadinga</strong> </ins>noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
         ], $diff);
 
         $diff = $this->getAffected(272, 2);
