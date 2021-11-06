@@ -85,7 +85,9 @@ return [
     'voting_hide_votes' => 'Einzelstimmen ausblenden',
 
     'majority_simple' => 'Einfache Mehrheit',
-    'majority_simple_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen abgegeben werden.',
+    'majority_simple_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen abgegeben werden. Enthaltungen werden nicht gezählt.',
+    'majority_absolute' => 'Absolute Mehrheit',
+    'majority_absolute_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen und Enthaltungen zusammen abgegeben werden.',
     'majority_twothirds' => '2/3-Mehrheit',
-    'majority_twothirds_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn doppelt so viele Ja- wie Nein-Stimmen abgegeben werden.',
+    'majority_twothirds_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mindestens (einschließlich) doppelt so viele Ja- wie Nein-Stimmen abgegeben werden. Enthaltungen werden nicht gezählt.',
 ];

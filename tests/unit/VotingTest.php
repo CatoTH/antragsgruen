@@ -203,4 +203,29 @@ class VotingTest extends DBTestBase
 
         $this->assertAmendmentVotingHasStatus(Amendment::STATUS_REJECTED);
     }
+
+    public function testVotingResultAbsoluteAccepted()
+    {
+        $votingBlock = $this->openVotingWithSettings(['majorityType' => IMajorityType::MAJORITY_TYPE_ABSOLUTE]);
+        $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
+        $this->voteForFirstAmendment($votingBlock, 'testuser@example.org', 'yes');
+        $this->voteForFirstAmendment($votingBlock, 'globaladmin@example.org', 'yes');
+        $this->voteForFirstAmendment($votingBlock, 'fixeddata@example.org', 'no');
+        $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'abstention');
+        $this->closeVoting($votingBlock);
+
+        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
+    }
+
+    public function testVotingResultAbsoluteRejectedOnEqualNumbers()
+    {
+        $votingBlock = $this->openVotingWithSettings(['majorityType' => IMajorityType::MAJORITY_TYPE_ABSOLUTE]);
+        $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
+        $this->voteForFirstAmendment($votingBlock, 'testuser@example.org', 'yes');
+        $this->voteForFirstAmendment($votingBlock, 'fixeddata@example.org', 'no');
+        $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'abstention');
+        $this->closeVoting($votingBlock);
+
+        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_REJECTED);
+    }
 }

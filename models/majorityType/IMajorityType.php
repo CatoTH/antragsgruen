@@ -11,8 +11,11 @@ abstract class IMajorityType
     // More yes- than no-votes
     const MAJORITY_TYPE_SIMPLE = 1;
 
-    // More At least 2/3 of all yes- and no-votes have to be yes (abstentions not counted)
-    const MAJORITY_TYPE_TWO_THIRD = 2;
+    // More yes- than no- and abstention-votes combined
+    const MAJORITY_TYPE_ABSOLUTE = 2;
+
+    // At least 2/3 of all yes- and no-votes have to be yes (abstentions not counted)
+    const MAJORITY_TYPE_TWO_THIRD = 3;
 
     /**
      * @return string[]|IMajorityType[]
@@ -21,6 +24,7 @@ abstract class IMajorityType
     {
         return [
             static::MAJORITY_TYPE_SIMPLE => SimpleMajority::class,
+            static::MAJORITY_TYPE_ABSOLUTE => AbsoluteMajority::class,
             static::MAJORITY_TYPE_TWO_THIRD => TwoThirdsMajority::class,
         ];
     }

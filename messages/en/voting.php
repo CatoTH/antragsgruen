@@ -86,6 +86,8 @@ return [
 
     'majority_simple' => 'Simple majority',
     'majority_simple_h' => 'A motion or amendment is adopted, if more yes- than no-votes are cast. Abstentions are not counted.',
+    'majority_absolute' => 'Absolute majority',
+    'majority_absolute_h' => 'A motion or amendment is adopted, if more yes- than no-votes and abstentions combined are cast.',
     'majority_twothirds' => '2/3 majority',
-    'majority_twothirds_h' => 'A motion or amendment is adopted, if twice as many yes- as no-votes are cast. Abstentions are not counted.',
+    'majority_twothirds_h' => 'A motion or amendment is adopted, if at least (including) twice as many yes- as no-votes are cast. Abstentions are not counted.',
 ];
