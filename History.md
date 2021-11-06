@@ -12,6 +12,7 @@
 - Statute amendments can now be created for an agenda item if the according motion type was set.
 - Bugfix: If an amendment was assigned to an agenda item, the agenda item could not be deleted before the amendment was un-assigned first.
 - Bugfix: an empty "Supporting" section was shown in motions and amendments, if only the "liking" function was enabled.
+- Bugfix: Some bugs in edge cases with LaTeX-based PDF rendering were solved.
 - Support for Internet Explorer was dropped.
 
 ### Version 4.8.1 (2021-08-28)

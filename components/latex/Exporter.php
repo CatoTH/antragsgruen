@@ -444,8 +444,8 @@ class Exporter
         $replaces['%AUTHOR%']             = static::encodePlainString($content->author);
         $replaces['%MOTION_DATA_TABLE%']  = $content->motionDataTable;
         $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
-        $replaces['%INTRODUCTION_BIG%']   = $content->introductionBig;
-        $replaces['%INTRODUCTION_SMALL%'] = $content->introductionSmall;
+        $replaces['%INTRODUCTION_BIG%']   = static::encodePlainString($content->introductionBig);
+        $replaces['%INTRODUCTION_SMALL%'] = static::encodePlainString($content->introductionSmall);
         $replaces['%PAGE_LABEL%']         = static::encodePlainString(\Yii::t('export', 'pdf_page_label'));
         $replaces['%INITIATOR_LABEL%']    = static::encodePlainString(\Yii::t('export', 'Initiators'));
         $replaces['%PUBLICATION_DATE%']   = static::encodePlainString($content->publicationDate);
