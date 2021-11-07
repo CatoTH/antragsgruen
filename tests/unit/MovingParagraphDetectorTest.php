@@ -31,7 +31,7 @@ class MovingParagraphDetectorTest extends DBTestBase
 
         /** @var Motion $motion */
         $motion = Motion::findOne(117);
-        foreach ($motion->sections as $section) {
+        foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId == 2) {
                 $amendments = [];
                 foreach ($motion->getVisibleAmendments() as $amendment) {

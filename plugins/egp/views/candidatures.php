@@ -60,7 +60,7 @@ usort($motions, function (Motion $motion1, Motion $motion2) {
                 $videos = [];
                 /** @var \app\models\db\MotionSection|null $nominatedBy */
                 $nominatedBy = null;
-                foreach ($motion->sections as $section) {
+                foreach ($motion->getActiveSections() as $section) {
                     $settings = $section->getSettings();
                     if ($settings->type === ISectionType::TYPE_IMAGE && $image === null) {
                         $image = $section;

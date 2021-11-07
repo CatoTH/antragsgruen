@@ -349,7 +349,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return IMotionSection[]
      */
-    abstract public function getActiveSections();
+    abstract public function getActiveSections(?int $filterType = null): array;
 
     /**
      * @return string[]

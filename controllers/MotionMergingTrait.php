@@ -71,10 +71,8 @@ trait MotionMergingTrait
      * @param int $sectionId
      * @param int $paragraphNo
      * @param string $amendments
-     *
-     * @return string
      */
-    public function actionMergeAmendmentsParagraphAjax($motionSlug, $sectionId, $paragraphNo, $amendments = '')
+    public function actionMergeAmendmentsParagraphAjax($motionSlug, $sectionId, $paragraphNo, $amendments = ''): string
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
@@ -86,8 +84,8 @@ trait MotionMergingTrait
 
 
         $section = null;
-        foreach ($motion->sections as $sec) {
-            if ($sec->sectionId === IntVal($sectionId)) {
+        foreach ($motion->getActiveSections() as $sec) {
+            if ($sec->sectionId === intval($sectionId)) {
                 $section = $sec;
             }
         }

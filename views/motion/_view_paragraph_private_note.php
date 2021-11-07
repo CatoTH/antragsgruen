@@ -12,7 +12,7 @@ use yii\helpers\Html;
 $comment = $motion->getPrivateComment($sectionId, $paragraphNo);
 
 $sectionTitle = null;
-foreach ($motion->sections as $section) {
+foreach ($motion->getActiveSections() as $section) {
     if ($section->sectionId === $sectionId) {
         $sectionTitle = $section->getSettings()->title;
     }

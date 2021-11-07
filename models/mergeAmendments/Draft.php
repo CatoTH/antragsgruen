@@ -179,19 +179,19 @@ class Draft implements \JsonSerializable
         $this->draftMotion->save();
 
         $section = null;
-        foreach ($this->draftMotion->sections as $existingSection) {
+        foreach ($this->draftMotion->getActiveSections() as $existingSection) {
             $section = $existingSection;
         }
         if (!$section) {
             $section = new MotionSection();
-            $section->setAttributes($this->origMotion->sections[0]->getAttributes(), false);
+            $section->setAttributes($this->origMotion->getActiveSections()[0]->getAttributes(), false);
             $section->motionId = $this->draftMotion->id;
         }
         $section->dataRaw = json_encode($this);
         $section->setData('');
         $section->save();
 
-        foreach ($this->draftMotion->sections as $oldSection) {
+        foreach ($this->draftMotion->getActiveSections() as $oldSection) {
             if ($oldSection->sectionId !== $section->sectionId) {
                 try {
                     $oldSection->delete();

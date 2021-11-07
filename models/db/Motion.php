@@ -204,16 +204,14 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param null|int $filer_type
-     *
      * @return MotionSection[]
      */
-    public function getActiveSections($filer_type = null)
+    public function getActiveSections(?int $filterType = null): array
     {
         $sections = [];
         foreach ($this->sections as $section) {
             if ($section->getSettings()) {
-                if ($filer_type === null || $section->getSettings()->type === $filer_type) {
+                if ($filterType === null || $section->getSettings()->type === $filterType) {
                     $sections[] = $section;
                 }
             }
@@ -617,7 +615,7 @@ class Motion extends IMotion implements IRSSItem
         if ($motion) {
             $public = ($motion->status === Motion::STATUS_MERGING_DRAFT_PUBLIC);
 
-            return Draft::initFromJson($this, $public, $motion->getDateTime(), $motion->sections[0]->dataRaw);
+            return Draft::initFromJson($this, $public, $motion->getDateTime(), $motion->getActiveSections()[0]->dataRaw);
         } else {
             return null;
         }
