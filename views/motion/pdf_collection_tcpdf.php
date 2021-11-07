@@ -35,4 +35,3 @@ try {
 
 $pdf->Output(Tools::sanitizeFilename($motionType->titlePlural, true) . '.pdf', 'I');
 
-die();

@@ -29,5 +29,3 @@ try {
 }
 
 $pdf->Output($motion->getFilenameBase(true) . '_amendments.pdf', 'I');
-
-die();

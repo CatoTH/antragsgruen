@@ -47,5 +47,3 @@ try {
 }
 
 $pdf->Output('Motions-with-amendments.pdf', 'I');
-
-die();

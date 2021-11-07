@@ -314,6 +314,10 @@ trait MotionExportTraits
 
         $form = Init::forEmbeddedAmendmentsExport($motion);
 
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+
         return $this->renderPartial('pdf_embedded_amendments_tcpdf', ['form' => $form]);
     }
 

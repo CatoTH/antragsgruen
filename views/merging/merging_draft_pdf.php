@@ -61,5 +61,3 @@ foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section)
 }
 
 $pdf->Output($motion->getFilenameBase(true) . '-Merging-Draft.pdf', 'I');
-
-die();

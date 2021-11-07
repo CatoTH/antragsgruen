@@ -33,6 +33,4 @@ try {
     die();
 }
 
-$pdf->Output('Motions.pdf', 'I');
-
-die();
+$pdf->Output('Amendments.pdf', 'I');

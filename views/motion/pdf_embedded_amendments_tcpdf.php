@@ -18,5 +18,3 @@ $pdf->SetSubject($title);
 \app\views\motion\LayoutHelper::printMotionWithEmbeddedAmendmentsToPdf($form, $pdfLayout, $pdf);
 
 $pdf->Output(\app\components\Tools::sanitizeFilename($form->motion->getTitleWithPrefix(), true) . '.pdf', 'I');
-
-die();

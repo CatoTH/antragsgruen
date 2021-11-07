@@ -67,5 +67,3 @@ $table .= '</table>';
 $pdf->writeHTML($table);
 
 $pdf->Output($motion->getFilenameBase(true) . '-Merging-Selection.pdf', 'I');
-
-die();
