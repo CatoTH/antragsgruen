@@ -96,6 +96,9 @@ if ($hasTags) {
     foreach ($entry->getProposedProcedureTags() as $tag) {
         $tags[] = Html::encode($tag->title) . ' <small>(' . Yii::t('admin', 'filter_tag_pp') . ')</small>';
     }
+    foreach ($entry->getPublicTopicTags() as $tag) {
+        $tags[] = Html::encode($tag->title);
+    }
     echo '<td class="tagsCol">' . implode(', ', $tags) . '</td>';
 }
 echo '<td class="exportCol">';

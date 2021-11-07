@@ -17,7 +17,7 @@ $I->loginAsStdUser();
 $I->wantTo('create an amendment');
 
 $page = $I->gotoConsultationHome()->gotoAmendmentCreatePage();
-$page->createAmendment('Unscreened amendment');
+$page->createAmendment('Unscreened amendment', false);
 
 $I->gotoConsultationHome();
 $I->seeElement('.motionListStd');
