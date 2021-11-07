@@ -306,7 +306,7 @@ class AmendmentEditForm extends Model
      */
     public function saveAmendment(Amendment $amendment)
     {
-        if (!$this->motion->isCurrentlyAmendable()) {
+        if (!$amendment->canEdit()) {
             throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
 
