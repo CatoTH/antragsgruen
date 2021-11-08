@@ -8,12 +8,11 @@ use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
 
 /**
- * @package app\models\db
- *
  * @property int $amendmentId
  * @property int $sectionId
  * @property string $data
  * @property string $dataRaw
+ * @property int $public
  * @property string $cache
  * @property string $metadata
  */

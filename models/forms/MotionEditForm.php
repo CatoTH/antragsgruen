@@ -59,11 +59,12 @@ class MotionEditForm extends Model
             if (isset($motionSections[$sectionType->id])) {
                 $this->sections[] = $motionSections[$sectionType->id];
             } else {
-                $section            = new MotionSection();
+                $section = new MotionSection();
                 $section->sectionId = $sectionType->id;
                 $section->setData('');
-                $section->dataRaw   = '';
-                $section->cache     = '';
+                $section->dataRaw  = '';
+                $section->public = $sectionType->getSettingsObj()->public;
+                $section->cache = '';
                 $section->refresh();
                 $this->sections[] = $section;
             }

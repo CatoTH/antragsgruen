@@ -8,12 +8,11 @@ use app\models\sectionTypes\ISectionType;
 use app\models\exceptions\Internal;
 
 /**
- * @package app\models\db
- *
  * @property int $motionId
  * @property int $sectionId
  * @property string $data
  * @property string $dataRaw
+ * @property int $public
  * @property string $cache
  * @property string $metadata
  *

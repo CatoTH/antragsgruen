@@ -31,6 +31,7 @@ $username = ($user ? $user->name : '');
             $answerSection            = new MotionSection();
             $answerSection->motionId  = $motion->id;
             $answerSection->sectionId = $section->sectionId;
+            $answerSection->public    = \app\models\settings\MotionSection::PUBLIC_YES;
 
             echo $answerSection->getSectionType()->getMotionFormField();
         }
