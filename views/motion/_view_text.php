@@ -13,8 +13,9 @@ use yii\helpers\Html;
  * @var int[] $openedComments
  */
 
-$sections  = $motion->getSortedSections(false);
-$useCache = ($commentForm === null && count($openedComments) === 0);
+$sections  = $motion->getSortedSections(false, true);
+$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections());
+
 foreach ($sections as $section) {
     // Paragraph-based comments have inlined forms, which break the caching mechanism
     if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
@@ -62,8 +63,21 @@ foreach ($sections as $i => $section) {
         continue;
     }
 
+    if ($section->getSettings()->getSettingsObj()->public !== \app\models\settings\MotionSection::PUBLIC_YES) {
+        if ($motion->iAmInitiator()) {
+            $nonPublicHint = '<div class="alert alert-info alertNonPublicSection"><p>' . Yii::t('motion', 'nonpublic_see_user') . '</p></div>';
+        } elseif (\app\models\db\User::havePrivilege($motion->getMyConsultation(), \app\models\db\User::PRIVILEGE_CONTENT_EDIT)) {
+            $nonPublicHint = '<div class="alert alert-info alertNonPublicSection"><p>' . Yii::t('motion', 'nonpublic_see_admin') . '</p></div>';
+        } else {
+            throw new \app\models\exceptions\Internal('Not allowed to see this content');
+        }
+    } else {
+        $nonPublicHint = '';
+    }
+
     if ($section->isLayoutRight() && $bottom === '') {
         $right .= '<section class="sectionType' . $sectionType . '" aria-label="' . Html::encode($section->getSectionTitle()) . '">';
+        $right .= $nonPublicHint;
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
     } else {
@@ -75,6 +89,7 @@ foreach ($sections as $i => $section) {
         if (!in_array($sectionType, [ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_IMAGE])) {
             $sectionText .= '<h3 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h3>';
         }
+        $sectionText .= $nonPublicHint;
 
         $commOp = $openedComments[$section->sectionId] ?? [];
         $sectionText   .= $section->getSectionType()->showMotionView($commentForm, $commOp);

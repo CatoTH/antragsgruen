@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
@@ -14,6 +15,7 @@ use app\models\notifications\{AmendmentProposedProcedure,
 use app\models\policies\{All, IPolicy};
 use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
 use app\models\supportTypes\SupportBase;
+use app\models\settings\MotionSection as MotionSectionSettings;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -200,15 +202,26 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return AmendmentSection[]
      */
-    public function getActiveSections(?int $filterType = null): array
+    public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array
     {
+        if ($showAdminSections && !User::getCurrentUser()->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT) && !$this->iAmInitiator()) {
+            throw new Internal('Can only set showAdminSections for admins');
+        }
+
         $sections = [];
         foreach ($this->sections as $section) {
-            if ($section->getSettings()) {
-                if ($filterType === null || $section->getSettings()->type == $filterType) {
-                    $sections[] = $section;
-                }
+            if (!$section->getSettings()) {
+                // Internal problem - maybe an accidentally deleted motion type
+                continue;
             }
+            if ($filterType !== null && $section->getSettings()->type !== $filterType) {
+                continue;
+            }
+            if ($section->getSettings()->getSettingsObj()->public !== MotionSectionSettings::PUBLIC_YES && !$showAdminSections) {
+                continue;
+            }
+
+            $sections[] = $section;
         }
         return $sections;
     }

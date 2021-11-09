@@ -50,7 +50,7 @@ class MotionEditForm extends Model
             foreach ($motion->getPublicTopicTags() as $tag) {
                 $this->tags[] = $tag->id;
             }
-            foreach ($motion->getActiveSections() as $section) {
+            foreach ($motion->getActiveSections(null, true) as $section) {
                 $motionSections[$section->sectionId] = $section;
             }
         }
@@ -243,10 +243,9 @@ class MotionEditForm extends Model
     }
 
     /**
-     * @param Motion $motion
      * @param string[] $newHtmls
      */
-    public function setSectionTextWithoutSaving(Motion $motion, $newHtmls)
+    public function setSectionTextWithoutSaving(Motion $motion, $newHtmls): void
     {
         foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
             $section->setData($newHtmls[$section->sectionId]);

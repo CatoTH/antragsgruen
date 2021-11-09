@@ -5,6 +5,7 @@
 - Online voting functionality was added. Admins can now define voting blocks, where users can vote on amendments and motions to be adopted or rejected. A documentation about this feature is located at https://sandbox.motion.tools/help#votings .
 - Submitted amendments can now optionally have tags, too, if set up in the motion types.
 - There now is a full-screen view of motions and amendments, to show them on projectors on live events. It can be activated on the title of the motion/amendment.
+- Parts of motions' and in particular applications' motion types can be marked as "non-public", meaning that this information will be only visible for admins and the proposer itself.
 - The accessibility was improved in some parts, especially drop-down selections, while reducing the page load time.
 - A new amendment numbering scheme was introduced more appropriate for english environments: "M1 A1" (Motion number + Amendment number)
 - It is now possible to copy a motion including all its amendments to a different consultation or agenda item without marking the original one as moved.

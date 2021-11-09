@@ -152,6 +152,19 @@ $sName = 'sections[' . $sectionId . ']';
 
                 </fieldset>
 
+                <label class="nonPublicRow">
+                    <?php
+                    $checked = ($section->getSettingsObj()->public === \app\models\settings\MotionSection::PUBLIC_NO);
+                    $options = ['class' => 'nonPublic'];
+                    if ($sectionId !== '#NEW#') {
+                        $options['disabled'] = 'disabled';
+                    }
+                    echo Html::checkbox($sName . '[nonPublic]', $checked, $options);
+                    ?>
+                    <?= Yii::t('admin', 'motion_section_nonpublic') ?>
+                    <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_section_nonpublic_h')) ?>
+                </label>
+
                 <label class="amendmentRow">
                     <?= Html::checkbox(
                         $sName . '[hasAmendments]',
@@ -165,7 +178,6 @@ $sName = 'sections[' . $sectionId . ']';
 
         <?php
         /**
-         * @param TabularDataType $row
          * @param int $i
          * @param string $sectionName
          * @return string

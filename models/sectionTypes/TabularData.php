@@ -18,7 +18,7 @@ class TabularData extends ISectionType
         $data = json_decode($this->section->getData(), true);
 
         $str = '<div class="form-horizontal tabularData">';
-        $str .= '<div class="label">' . Html::encode($type->title) . '</div>';
+        $str .= $this->getFormLabel();
 
         foreach ($rows as $row) {
             $id = 'sections_' . $type->id . '_' . $row->rowId;
@@ -27,7 +27,7 @@ class TabularData extends ISectionType
             $str .= Html::encode($row->title) . ':</label>';
             $str .= '<div class="col-md-9">';
             $nameId = 'name="sections[' . $type->id . '][' . $row->rowId . ']" id="' . $id . '"';
-            $dat    = (isset($data['rows'][$row->rowId]) ? $data['rows'][$row->rowId] : '');
+            $dat    = $data['rows'][$row->rowId] ?? '';
             $str .= $row->getFormField($nameId, $dat, $type->required);
             $str .= '</div></div>';
         }

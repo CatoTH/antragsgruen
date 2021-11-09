@@ -10,6 +10,7 @@ use app\models\siteSpecificBehavior\Permissions;
 use app\models\VotingItemGroup;
 use app\components\{Tools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
+use app\models\settings\MotionSection as MotionSectionSettings;
 use app\models\supportTypes\SupportBase;
 use app\views\consultation\LayoutHelper;
 use yii\base\InvalidConfigException;
@@ -349,12 +350,12 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return IMotionSection[]
      */
-    abstract public function getActiveSections(?int $filterType = null): array;
+    abstract public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array;
 
     /**
      * @return string[]
      */
-    public static function getProposedStatusNames()
+    public static function getProposedStatusNames(): array
     {
         return [
             static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
@@ -368,10 +369,7 @@ abstract class IMotion extends ActiveRecord
         ];
     }
 
-    /**
-     * @return IMotionSection|null
-     */
-    public function getTitleSection()
+    public function getTitleSection(): ?IMotionSection
     {
         foreach ($this->sections as $section) {
             if ($section->getSettings() && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
@@ -385,11 +383,17 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return MotionSection[]|AmendmentSection[]
      */
-    public function getSortedSections(bool $withoutTitle = false): array
+    public function getSortedSections(bool $withoutTitle = false, bool $includeNonPublicIfPossible = false): array
     {
+        if ($includeNonPublicIfPossible && ($this->iAmInitiator() || User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT))) {
+            $includeNonPublic = true;
+        } else {
+            $includeNonPublic = false;
+        }
+
         $sectionsIn = [];
         $title      = $this->getTitleSection();
-        foreach ($this->getActiveSections() as $section) {
+        foreach ($this->getActiveSections(null, $includeNonPublic) as $section) {
             if (!$withoutTitle || $section !== $title) {
                 $sectionsIn[$section->sectionId] = $section;
             }
@@ -403,6 +407,16 @@ abstract class IMotion extends ActiveRecord
         }
 
         return $sectionsOut;
+    }
+
+    public function hasNonPublicSections(): bool
+    {
+        foreach ($this->sections as $section) {
+            if ($section->public !== MotionSectionSettings::PUBLIC_YES || $section->getSettings()->getSettingsObj()->public !== MotionSectionSettings::PUBLIC_YES) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

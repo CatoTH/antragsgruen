@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
+use app\models\settings\MotionSection;
 use app\models\db\{Consultation, IMotionSection, Motion};
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
@@ -108,6 +109,11 @@ abstract class ISectionType
             $str .= ' class="optional" data-optional-str="' . Html::encode(\Yii::t('motion', 'field_optional')) . '"';
         }
         $str .= '>' . Html::encode($type->title) . '</label>';
+
+        if ($type->getSettingsObj()->public === MotionSection::PUBLIC_NO) {
+            $str .= '<div class="alert alert-info"><p>' . \Yii::t('motion', 'field_unpublic') . '</p></div>';
+        }
+
         return $str;
     }
 

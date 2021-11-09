@@ -491,6 +491,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_section_comm_none'    => 'None',
     'motion_section_comm_whole'   => 'Whole comment',
     'motion_section_comm_para'    => 'Paragraph-based',
+    'motion_section_nonpublic'    => 'Non-public',
+    'motion_section_nonpublic_h'  => 'Only visible for the proposer and admins. Cannot be changed afterwards.',
     'motion_section_amendable'    => 'Amendable',
     'motion_section_name'         => 'Section name',
     'motion_section_maxsize'      => 'Maximale Druckgröße',
