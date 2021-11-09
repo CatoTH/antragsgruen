@@ -191,7 +191,7 @@ class AmendmentEditForm extends Model
     /**
      * @throws FormError
      */
-    private function createAmendmentVerify()
+    private function createAmendmentVerify(): void
     {
         $errors = [];
 
@@ -217,12 +217,11 @@ class AmendmentEditForm extends Model
     }
 
     /**
-     * @return Amendment
      * @throws FormError
      * @throws \Throwable
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function createAmendment()
+    public function createAmendment(): Amendment
     {
         $consultation = $this->motion->getMyConsultation();
 
@@ -279,7 +278,7 @@ class AmendmentEditForm extends Model
     /**
      * @throws FormError
      */
-    private function saveAmendmentVerify()
+    private function saveAmendmentVerify(): void
     {
         $errors = [];
 
@@ -305,16 +304,16 @@ class AmendmentEditForm extends Model
      * @throws \Throwable
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function saveAmendment(Amendment $amendment)
+    public function saveAmendment(Amendment $amendment): void
     {
-        if (!$amendment->canEdit()) {
-            throw new FormError(\Yii::t('amend', 'err_create_permission'));
-        }
-
         $this->supporters = $this->motion->getMyMotionType()
             ->getAmendmentSupportTypeClass()->getAmendmentSupporters($amendment);
 
         if (!$this->adminMode) {
+            if (!$amendment->canEdit()) {
+                throw new FormError(\Yii::t('amend', 'err_create_permission'));
+            }
+
             $this->saveAmendmentVerify();
         }
         $amendment->changeExplanation = $this->reason;
