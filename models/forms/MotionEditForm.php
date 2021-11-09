@@ -172,7 +172,7 @@ class MotionEditForm extends Model
     /**
      * @throws FormError
      */
-    private function createMotionVerify()
+    private function createMotionVerify(): void
     {
         $errors = [];
 
@@ -201,12 +201,10 @@ class MotionEditForm extends Model
     /**
      * Returns true, if the rewriting was successful
      *
-     * @param Motion $motion
      * @param string[] $newHtmls
      * @param array $overrides
-     * @return bool
      */
-    public function updateTextRewritingAmendments(Motion $motion, $newHtmls, $overrides = [])
+    public function updateTextRewritingAmendments(Motion $motion, $newHtmls, $overrides = []): bool
     {
         foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -256,10 +254,8 @@ class MotionEditForm extends Model
 
     /**
      * @throws FormError
-     * @throws \Yii\base\Exception
-     * @return Motion
      */
-    public function createMotion()
+    public function createMotion(): Motion
     {
         $consultation = $this->motionType->getConsultation();
 
@@ -313,7 +309,7 @@ class MotionEditForm extends Model
     /**
      * @throws FormError
      */
-    private function saveMotionVerify()
+    private function saveMotionVerify(): void
     {
         $errors = [];
 
@@ -339,10 +335,7 @@ class MotionEditForm extends Model
         }
     }
 
-    /**
-     * @param Motion $motion
-     */
-    private function overwriteSections(Motion $motion)
+    private function overwriteSections(Motion $motion): void
     {
         /** @var MotionSection[] $sectionsById */
         $sectionsById = [];
@@ -360,21 +353,20 @@ class MotionEditForm extends Model
 
 
     /**
-     * @param Motion $motion
      * @throws FormError
      */
-    public function saveMotion(Motion $motion)
+    public function saveMotion(Motion $motion): void
     {
         $consultation = $this->motionType->getConsultation();
-        if (!$this->motionType->getMotionPolicy()->checkCurrUserMotion()) {
-            throw new FormError(\Yii::t('motion', 'err_create_permission'));
+        if (!$this->adminMode) {
+            $this->saveMotionVerify();
+
+            if (!$motion->canEdit()) {
+                throw new FormError(\Yii::t('motion', 'err_create_permission'));
+            }
         }
 
         $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
-
-        if (!$this->adminMode) {
-            $this->saveMotionVerify();
-        }
 
         if ($motion->save()) {
             $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
