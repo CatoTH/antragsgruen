@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\layoutHooks\Layout;
 use app\models\UserOrganization;
 use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, GruenesNetzSamlClient, mail\Tools as MailTools};
 use app\models\events\UserEvent;
@@ -664,16 +665,20 @@ class User extends ActiveRecord implements IdentityInterface
         $authparts = explode(':', $this->auth);
         switch ($authparts[0]) {
             case 'email':
-                return $authparts[1] ?? '';
+                $username = $authparts[1] ?? '';
+                break;
             case 'openid':
                 if ($this->isGruenesNetzUser()) {
-                    return $this->getGruenesNetzName();
+                    $username = $this->getGruenesNetzName();
                 } else {
-                    return $this->auth;
+                    $username = $this->auth;
                 }
+                break;
             default:
-                return $this->auth;
+                $username = $this->auth;
         }
+
+        return Layout::getFormattedUsername($username, $this);
     }
 
     public function getAuthType(): int
