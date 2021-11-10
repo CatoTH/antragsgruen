@@ -2,7 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site, User};
 use app\models\settings\VotingData;
 
 class Hooks
@@ -148,6 +148,11 @@ class Hooks
     }
 
     public function getFormattedAmendmentStatus(string $before, Amendment $amendment): string
+    {
+        return $before;
+    }
+
+    public function getFormattedUsername(string $before, User $user): string
     {
         return $before;
     }

@@ -2,7 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site, User};
 use app\models\settings\VotingData;
 
 class Layout
@@ -168,6 +168,11 @@ class Layout
     public static function getFormattedAmendmentStatus(string $origStatus, Amendment $amendment): string
     {
         return static::callHook('getFormattedAmendmentStatus', [$amendment], $origStatus);
+    }
+
+    public static function getFormattedUsername(string $origName, User $user): string
+    {
+        return static::callHook('getFormattedUsername', [$user], $origName);
     }
 
     public static function getConsultationMotionLineContent(string $origLine, Motion $motion): string
