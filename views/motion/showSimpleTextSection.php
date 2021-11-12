@@ -82,6 +82,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 /** @var int $lineNo */
                 $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '" aria-hidden="true"></span>';
                 $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
+            } else {
+                $line      = str_replace('###LINENUMBER###', '', $line);
             }
             $line   = str_replace('<br>', '', $line);
             $first3 = substr($line, 0, 3);
