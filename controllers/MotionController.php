@@ -187,6 +187,11 @@ class MotionController extends Base
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
+        if (!$motion->canEdit()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
 
         if ($this->isPostSet('modify')) {
             return $this->redirect(UrlHelper::createMotionUrl($motion, 'edit'));

@@ -2,6 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
+use app\models\settings\MotionSection;
 use yii\helpers\Html;
 
 /**
@@ -53,7 +54,7 @@ $iframe = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></if
 <?php
 
 $main = $right = '';
-foreach ($motion->getSortedSections(true) as $section) {
+foreach ($motion->getSortedSections(true, true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
@@ -63,14 +64,18 @@ foreach ($motion->getSortedSections(true) as $section) {
         $right .= $section->getSectionType()->getSimple(true, true);
         $right .= '</section>';
     } else {
+        $settings = $section->getSettings();
         $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type . '">';
-        if ($section->getSettings()->type !== \app\models\sectionTypes\ISectionType::TYPE_PDF_ATTACHMENT &&
-            $section->getSettings()->type !== \app\models\sectionTypes\ISectionType::TYPE_IMAGE
+        if ($settings->type !== \app\models\sectionTypes\ISectionType::TYPE_PDF_ATTACHMENT &&
+            $settings->type !== \app\models\sectionTypes\ISectionType::TYPE_IMAGE
         ) {
-            $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+            $main .= '<h3 class="green">' . Html::encode($settings->title) . '</h3>';
         }
         $main .= '<div class="consolidated">';
 
+        if ($settings->getSettingsObj()->public === MotionSection::PUBLIC_NO) {
+            $main .= '<div class="alert alert-info alertNonPublicSection"><p>' . Yii::t('motion', 'field_unpublic') . '</p></div>';
+        }
         $main .= $section->getSectionType()->getSimple(false, true);
 
         $main .= '</div>';

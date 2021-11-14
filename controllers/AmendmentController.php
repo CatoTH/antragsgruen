@@ -276,6 +276,11 @@ class AmendmentController extends Base
             \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
+        if (!$amendment->canEdit()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
 
         if ($this->isPostSet('modify')) {
             $nextUrl = ['amendment/edit', 'amendmentId' => $amendment->id, 'motionSlug' => $motionSlug];

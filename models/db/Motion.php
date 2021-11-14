@@ -209,11 +209,8 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array
     {
-        if ($showAdminSections && !User::getCurrentUser()->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT) && !$this->iAmInitiator()) {
-            throw new Internal('Can only set showAdminSections for admins');
-        }
-
         $sections = [];
+        $hadNonPublicSections = false;
         foreach ($this->sections as $section) {
             if (!$section->getSettings()) {
                 // Internal problem - maybe an accidentally deleted motion type
@@ -223,10 +220,16 @@ class Motion extends IMotion implements IRSSItem
                 continue;
             }
             if ($section->getSettings()->getSettingsObj()->public !== MotionSectionSettings::PUBLIC_YES && !$showAdminSections) {
+                $hadNonPublicSections = true;
                 continue;
             }
 
             $sections[] = $section;
+        }
+
+        if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() && !User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT)) {
+            // @TODO Find a solution to edit motions before submitting when not logged in
+            throw new Internal('Can only set showAdminSections for admins');
         }
 
         return $sections;

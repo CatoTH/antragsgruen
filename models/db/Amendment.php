@@ -204,11 +204,8 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array
     {
-        if ($showAdminSections && !User::getCurrentUser()->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT) && !$this->iAmInitiator()) {
-            throw new Internal('Can only set showAdminSections for admins');
-        }
-
         $sections = [];
+        $hadNonPublicSections = false;
         foreach ($this->sections as $section) {
             if (!$section->getSettings()) {
                 // Internal problem - maybe an accidentally deleted motion type
@@ -218,11 +215,18 @@ class Amendment extends IMotion implements IRSSItem
                 continue;
             }
             if ($section->getSettings()->getSettingsObj()->public !== MotionSectionSettings::PUBLIC_YES && !$showAdminSections) {
+                $hadNonPublicSections = true;
                 continue;
             }
 
             $sections[] = $section;
         }
+
+        if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() && !User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT)) {
+            // @TODO Find a solution to edit motions before submitting when not logged in
+            throw new Internal('Can only set showAdminSections for admins');
+        }
+
         return $sections;
     }
 
@@ -695,17 +699,19 @@ class Amendment extends IMotion implements IRSSItem
     public function canEdit(): bool
     {
         if ($this->status === static::STATUS_DRAFT) {
+            // As long as amendments are not confirmed, the following can edit and confirm them:
+            // - The account that was used to create it, if an account was used
+            // - Everyone, if no account was used and "All" is selected
+            // - Admins
             $hadLoggedInUser = false;
+            $currUser = User::getCurrentUser();
+            if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+                return true;
+            }
             foreach ($this->amendmentSupporters as $supp) {
-                $currUser = User::getCurrentUser();
                 if ($supp->role === AmendmentSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
-                    if ($currUser && $currUser->id == $supp->userId) {
-                        return true;
-                    }
-                }
-                if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
-                    if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+                    if ($currUser && $currUser->id === $supp->userId) {
                         return true;
                     }
                 }
