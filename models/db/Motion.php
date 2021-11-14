@@ -15,6 +15,7 @@ use app\models\mergeAmendments\Draft;
 use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
 use app\models\sectionTypes\{Image, ISectionType, PDF};
+use app\models\settings\MotionSection as MotionSectionSettings;
 use app\models\supportTypes\SupportBase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use yii\helpers\Html;
@@ -206,15 +207,29 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return MotionSection[]
      */
-    public function getActiveSections(?int $filterType = null): array
+    public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array
     {
         $sections = [];
+        $hadNonPublicSections = false;
         foreach ($this->sections as $section) {
-            if ($section->getSettings()) {
-                if ($filterType === null || $section->getSettings()->type === $filterType) {
-                    $sections[] = $section;
-                }
+            if (!$section->getSettings()) {
+                // Internal problem - maybe an accidentally deleted motion type
+                continue;
             }
+            if ($filterType !== null && $section->getSettings()->type !== $filterType) {
+                continue;
+            }
+            if ($section->getSettings()->getSettingsObj()->public !== MotionSectionSettings::PUBLIC_YES && !$showAdminSections) {
+                $hadNonPublicSections = true;
+                continue;
+            }
+
+            $sections[] = $section;
+        }
+
+        if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() && !User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT)) {
+            // @TODO Find a solution to edit motions before submitting when not logged in
+            throw new Internal('Can only set showAdminSections for admins');
         }
 
         return $sections;

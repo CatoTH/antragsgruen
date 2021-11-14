@@ -20,7 +20,7 @@ $I->see(mb_strtoupper('1. Vorsitzende*r: Bewerben'), 'h1');
 $I->dontSee('Voraussetzungen für einen Antrag');
 $I->see('Name', 'label');
 $I->see('Foto', 'label');
-$I->see('Angaben', '.label');
+$I->see('Angaben', 'label');
 $I->see('Selbstvorstellung', 'label');
 
 

@@ -10,26 +10,26 @@ use app\models\supportTypes\SupportBase;
 class Permissions
 {
     /**
-     * @param Motion $motion
-     * @return bool
      * @throws Internal
      */
-    public function motionCanEdit($motion)
+    public function motionCanEdit(Motion $motion): bool
     {
         $consultation = $motion->getMyConsultation();
 
         if ($motion->status === Motion::STATUS_DRAFT) {
+            // As long as motions are not confirmed, the following can edit and confirm them:
+            // - The account that was used to create the motion, if an account was used
+            // - Everyone, if no account was used and "All" is selected
+            // - Admins
             $hadLoggedInUser = false;
+            $currUser = User::getCurrentUser();
+            if ($currUser && $currUser->hasPrivilege($consultation, User::PRIVILEGE_MOTION_EDIT)) {
+                return true;
+            }
             foreach ($motion->motionSupporters as $supp) {
-                $currUser = User::getCurrentUser();
                 if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
-                    if ($currUser && $currUser->id == $supp->userId) {
-                        return true;
-                    }
-                }
-                if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
-                    if ($currUser && $currUser->hasPrivilege($consultation, User::PRIVILEGE_MOTION_EDIT)) {
+                    if ($currUser && $currUser->id === $supp->userId) {
                         return true;
                     }
                 }
@@ -37,7 +37,7 @@ class Permissions
             if ($hadLoggedInUser) {
                 return false;
             } else {
-                if ($motion->motionType->getMotionPolicy()->getPolicyID() === All::getPolicyID()) {
+                if ($motion->getMyMotionType()->getMotionPolicy()->getPolicyID() === All::getPolicyID()) {
                     return true;
                 } else {
                     return false;
@@ -64,11 +64,7 @@ class Permissions
         return false;
     }
 
-    /**
-     * @param Motion $motion
-     * @return bool
-     */
-    public function motionCanWithdraw($motion)
+    public function motionCanWithdraw(Motion $motion): bool
     {
         if (!in_array($motion->status, [
             Motion::STATUS_SUBMITTED_SCREENED,
@@ -81,11 +77,7 @@ class Permissions
         return $motion->iAmInitiator();
     }
 
-    /**
-     * @param Motion $motion
-     * @return bool
-     */
-    public function motionCanMergeAmendments($motion)
+    public function motionCanMergeAmendments(Motion $motion): bool
     {
         $replacedByMotions = array_filter($motion->replacedByMotions, function (Motion $motion) {
             $draftStatuses = [
@@ -123,15 +115,10 @@ class Permissions
     }
 
     /**
-     * @param Motion $motion
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @param bool $exceptions
-     * @return bool
      * @throws NotAmendable
      * @throws Internal
      */
-    public function isCurrentlyAmendable($motion, $allowAdmins = true, $assumeLoggedIn = false, $exceptions = false)
+    public function isCurrentlyAmendable(Motion $motion, bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $exceptions = false): bool
     {
         $iAmAdmin = User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_ANY);
 

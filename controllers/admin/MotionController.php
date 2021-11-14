@@ -24,7 +24,7 @@ use app\models\motionTypeTemplates\{
 };
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType, Site};
+use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionSection, MotionType, Site};
 use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
@@ -49,6 +49,10 @@ class MotionController extends AdminBase
                 $section->motionTypeId = $motionType->id;
                 $section->type         = intval($data['type']);
                 $section->status       = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+
+                $settings = $section->getSettingsObj();
+                $settings->public = (isset($data['nonPublic']) ? MotionSection::PUBLIC_NO : MotionSection::PUBLIC_YES);
+                $section->setSettingsObj($settings);
             } else {
                 /** @var ConsultationSettingsMotionSection $section */
                 $section = $motionType->getMotionSections()->andWhere('id = ' . intval($sectionId))->one();

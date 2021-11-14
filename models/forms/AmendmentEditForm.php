@@ -82,11 +82,12 @@ class AmendmentEditForm extends Model
                     $data        = '';
                     $origSection = null;
                 }
-                $section            = new AmendmentSection();
+                $section = new AmendmentSection();
                 $section->sectionId = $sectionType->id;
-                $section->data      = $data;
-                $section->dataRaw   = $data;
-                $section->cache     = '';
+                $section->data = $data;
+                $section->dataRaw = $data;
+                $section->public = $sectionType->getSettingsObj()->public;
+                $section->cache = '';
                 $section->refresh();
                 if ($origSection) {
                     $section->setOriginalMotionSection($origSection);

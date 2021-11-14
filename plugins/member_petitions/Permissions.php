@@ -7,11 +7,9 @@ use app\models\db\{Motion, User};
 class Permissions extends \app\models\siteSpecificBehavior\Permissions
 {
     /**
-     * @param Motion $motion
-     * @return bool
      * @throws \Exception
      */
-    public function motionCanMergeAmendments($motion)
+    public function motionCanMergeAmendments(Motion $motion): bool
     {
         $replacedByMotions = array_filter($motion->replacedByMotions, function (Motion $motion) {
             $draftStatuses = [

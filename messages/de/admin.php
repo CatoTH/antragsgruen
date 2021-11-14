@@ -541,6 +541,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_section_comm_none'    => 'Keine',
     'motion_section_comm_whole'   => 'Gesamter Antrag',
     'motion_section_comm_para'    => 'Pro Absatz',
+    'motion_section_nonpublic'    => 'Nicht-öffentlich',
+    'motion_section_nonpublic_h'  => 'Nur für Antragsteller*in selbst und Admins sichtbar. Kann nachträglich nicht geändert werden.',
     'motion_section_amendable'    => 'In Änderungsanträgen',
     'motion_section_name'         => 'Name des Abschnitts',
     'motion_section_maxsize'      => 'Maximum print width',

@@ -134,10 +134,10 @@ echo '</div>';
             ?>
         </ul>
 
-        <a href="#" class="sectionAdder">
+        <button type="button" class="sectionAdder btn btn-link" aria-label="<?= Yii::t('admin', 'motion_section_add') ?>">
             <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
             <?= Yii::t('admin', 'motion_section_add') ?>
-        </a>
+        </button>
 
         <div class="submitRow">
             <button type="submit" name="save" class="btn btn-primary"><?= Yii::t('base', 'save') ?></button>

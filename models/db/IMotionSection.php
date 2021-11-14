@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
 /**
  * @property string $data
  * @property string|null $dataRaw
+ * @property int $public
  * @property int $sectionId
  * @property string $metadata
  */
@@ -59,10 +60,7 @@ abstract class IMotionSection extends ActiveRecord
      */
     abstract public function getFirstLineNumber();
 
-    /**
-     * @return bool
-     */
-    public function isLayoutRight()
+    public function isLayoutRight(): bool
     {
         return ($this->getSettings()->positionRight == 1);
     }

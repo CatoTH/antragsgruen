@@ -65,6 +65,7 @@ class BackendController extends Base
                 $newSection->sectionId = $section->sectionId;
                 $newSection->motionId  = $newMotion->id;
                 $newSection->cache     = '';
+                $newSection->public    = \app\models\settings\MotionSection::PUBLIC_YES;
                 if (isset($postSections[$newSection->sectionId])) {
                     $forbidden           = $section->getSettings()->getForbiddenMotionFormattings();
                     $dataRaw             = $postSections[$newSection->sectionId];

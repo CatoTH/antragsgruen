@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
@@ -14,6 +15,7 @@ use app\models\notifications\{AmendmentProposedProcedure,
 use app\models\policies\{All, IPolicy};
 use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
 use app\models\supportTypes\SupportBase;
+use app\models\settings\MotionSection as MotionSectionSettings;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -200,16 +202,31 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return AmendmentSection[]
      */
-    public function getActiveSections(?int $filterType = null): array
+    public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array
     {
         $sections = [];
+        $hadNonPublicSections = false;
         foreach ($this->sections as $section) {
-            if ($section->getSettings()) {
-                if ($filterType === null || $section->getSettings()->type == $filterType) {
-                    $sections[] = $section;
-                }
+            if (!$section->getSettings()) {
+                // Internal problem - maybe an accidentally deleted motion type
+                continue;
             }
+            if ($filterType !== null && $section->getSettings()->type !== $filterType) {
+                continue;
+            }
+            if ($section->getSettings()->getSettingsObj()->public !== MotionSectionSettings::PUBLIC_YES && !$showAdminSections) {
+                $hadNonPublicSections = true;
+                continue;
+            }
+
+            $sections[] = $section;
         }
+
+        if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() && !User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT)) {
+            // @TODO Find a solution to edit motions before submitting when not logged in
+            throw new Internal('Can only set showAdminSections for admins');
+        }
+
         return $sections;
     }
 
@@ -682,17 +699,19 @@ class Amendment extends IMotion implements IRSSItem
     public function canEdit(): bool
     {
         if ($this->status === static::STATUS_DRAFT) {
+            // As long as amendments are not confirmed, the following can edit and confirm them:
+            // - The account that was used to create it, if an account was used
+            // - Everyone, if no account was used and "All" is selected
+            // - Admins
             $hadLoggedInUser = false;
+            $currUser = User::getCurrentUser();
+            if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+                return true;
+            }
             foreach ($this->amendmentSupporters as $supp) {
-                $currUser = User::getCurrentUser();
                 if ($supp->role === AmendmentSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
-                    if ($currUser && $currUser->id == $supp->userId) {
-                        return true;
-                    }
-                }
-                if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
-                    if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+                    if ($currUser && $currUser->id === $supp->userId) {
                         return true;
                     }
                 }

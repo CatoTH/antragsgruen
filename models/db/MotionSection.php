@@ -8,12 +8,11 @@ use app\models\sectionTypes\ISectionType;
 use app\models\exceptions\Internal;
 
 /**
- * @package app\models\db
- *
  * @property int $motionId
  * @property int $sectionId
  * @property string $data
  * @property string $dataRaw
+ * @property int $public
  * @property string $cache
  * @property string $metadata
  *
@@ -397,6 +396,10 @@ class MotionSection extends IMotionSection
         if (!$this->getSettings()->lineNumbers) {
             return 0;
         }
+        if ($this->getSettings()->getSettingsObj()->public !== \app\models\settings\MotionSection::PUBLIC_YES) {
+            // If a section is not public, we cannot assign line numbers, to prevent inconsistent line numbers
+            return 0;
+        }
 
         $num   = 0;
         $paras = $this->getTextParagraphLines();
@@ -415,7 +418,7 @@ class MotionSection extends IMotionSection
     {
         $motion   = $this->getConsultation()->getMotion($this->motionId);
         $lineNo   = $motion->getFirstLineNumber();
-        $sections = $motion->getSortedSections();
+        $sections = $motion->getSortedSections(false, true);
         foreach ($sections as $section) {
             /** @var MotionSection $section */
             if ($section->sectionId === $this->sectionId) {

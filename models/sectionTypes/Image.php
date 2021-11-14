@@ -110,8 +110,7 @@ class Image extends ISectionType
 
     public static function getOptimizedImage(string $filename, string $targetType): string
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
+        $app = AntragsgruenApp::getInstance();
         if ($app->imageMagickPath === null) {
             return file_get_contents($filename);
         } elseif (!file_exists($app->imageMagickPath)) {
@@ -140,8 +139,7 @@ class Image extends ISectionType
             return $this->section->getData();
         }
 
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
+        $app = AntragsgruenApp::getInstance();
         if ($app->imageMagickPath === null) {
             return $this->section->getData();
         } elseif (!file_exists($app->imageMagickPath)) {
@@ -349,8 +347,7 @@ class Image extends ISectionType
             return;
         }
 
-        /** @var AntragsgruenApp $params */
-        $params   = \Yii::$app->params;
+        $params   = AntragsgruenApp::getInstance();
         $metadata = json_decode($this->section->metadata, true);
 
         $extraSettings = $this->section->getSettings()->getSettingsObj();

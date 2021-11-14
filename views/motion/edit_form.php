@@ -8,7 +8,7 @@
  * @var bool $forceTag
  */
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\UrlHelper;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 

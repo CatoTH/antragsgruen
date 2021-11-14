@@ -91,6 +91,7 @@ CREATE TABLE `###TABLE_PREFIX###amendmentSection` (
   `sectionId`   INT(11)  NOT NULL,
   `data`        LONGTEXT NOT NULL,
   `dataRaw`     LONGTEXT NOT NULL,
+  `public`      TINYINT(3) NOT NULL DEFAULT 1,
   `cache`       LONGTEXT NOT NULL,
   `metadata`    TEXT
 )
@@ -527,6 +528,7 @@ CREATE TABLE `###TABLE_PREFIX###motionSection` (
   `sectionId` INT(11)  NOT NULL,
   `data`      LONGTEXT NOT NULL,
   `dataRaw`   LONGTEXT NOT NULL,
+  `public`    TINYINT(3) NOT NULL DEFAULT 1,
   `cache`     LONGTEXT NOT NULL,
   `metadata`  TEXT
 )

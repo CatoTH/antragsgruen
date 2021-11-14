@@ -258,6 +258,17 @@ class MotionTypeEdit {
         });
         $list.find('.maxLenSet').trigger('change');
 
+        $list.on('change', '.nonPublic', function () {
+            let $li = $(this).parents('li').first();
+            if ($(this).prop('checked')) {
+                $li.find('.hasAmendments').prop('checked', false);
+                $li.find('.amendmentRow').addClass('hidden');
+            } else {
+                $li.find('.amendmentRow').removeClass('hidden');
+            }
+        });
+        $list.find('.nonPublic').trigger('change');
+
         $('.sectionAdder').on('click', function (ev) {
             ev.preventDefault();
             let newStr = $('#sectionTemplate').html();
