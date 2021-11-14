@@ -12,6 +12,7 @@
 - To prevent brute force login attempts, a entering a CAPTCHA is now required after three failed login or account recovery attempts. Standalone hosted versions of Antragsgrün can optionally require it for every single login attempt, by adding the loginCaptcha flag to config.json.
 - Statute amendments can now be created for an agenda item if the according motion type was set.
 - Bugfix: If an amendment was assigned to an agenda item, the agenda item could not be deleted before the amendment was un-assigned first.
+- Bugfix: Tabular data, like in applications, were not exported into spreadsheets.
 - Bugfix: an empty "Supporting" section was shown in motions and amendments, if only the "liking" function was enabled.
 - Bugfix: Some bugs in edge cases with LaTeX-based PDF rendering were solved.
 - Bugfix: if fixed font width was specified but no line numbers, then line number placeholders where shown in the text.

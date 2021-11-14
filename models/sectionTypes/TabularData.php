@@ -281,7 +281,18 @@ class TabularData extends ISectionType
 
     public function getMotionODS(): string
     {
-        return 'Test'; //  @TODO
+        $rows = static::getTabularDataRowsFromData($this->section->getSettings()->data);
+        $data = json_decode($this->section->getData(), true);
+        $str  = '';
+        foreach ($data['rows'] as $rowId => $rowData) {
+            if (!isset($rows[$rowId]) || $rows[$rowId]->formatRow($rowData) === '') {
+                continue;
+            }
+            $str .= '<div>' . Html::encode($rows[$rowId]->title) . ': ';
+            $str .= Html::encode($rows[$rowId]->formatRow($rowData));
+            $str .= '</div>';
+        }
+        return $str;
     }
 
     public function getAmendmentODS(): string
