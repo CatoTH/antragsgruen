@@ -412,6 +412,9 @@ abstract class IMotion extends ActiveRecord
     public function hasNonPublicSections(): bool
     {
         foreach ($this->sections as $section) {
+            if ($section->getSettings() === null) {
+                continue;
+            }
             if ($section->public !== MotionSectionSettings::PUBLIC_YES || $section->getSettings()->getSettingsObj()->public !== MotionSectionSettings::PUBLIC_YES) {
                 return true;
             }
@@ -419,15 +422,9 @@ abstract class IMotion extends ActiveRecord
         return false;
     }
 
-    /**
-     * @return ConsultationMotionType
-     */
-    abstract public function getMyMotionType();
+    abstract public function getMyMotionType(): ConsultationMotionType;
 
-    /**
-     * @return int
-     */
-    abstract public function getLikeDislikeSettings();
+    abstract public function getLikeDislikeSettings(): int;
 
     abstract public function isDeadlineOver(): bool;
 
