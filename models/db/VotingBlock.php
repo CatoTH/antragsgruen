@@ -134,14 +134,40 @@ class VotingBlock extends ActiveRecord
         return null;
     }
 
+    /** @var null|Vote[][] */
+    private $votesSortedByIMotionCache = null;
+
+    private function initVotesSortedCache(): void
+    {
+        if ($this->votesSortedByIMotionCache !== null) {
+            return;
+        }
+        foreach ($this->votes as $vote) {
+            if ($vote->motionId > 0) {
+                $key = 'motion.' . $vote->motionId;
+            } elseif ($vote->amendmentId > 0) {
+                $key = 'amendment.' . $vote->amendmentId;
+            } else {
+                continue;
+            }
+            if (!isset($this->votesSortedByIMotionCache[$key])) {
+                $this->votesSortedByIMotionCache[$key] = [];
+            }
+            $this->votesSortedByIMotionCache[$key][] = $vote;
+        }
+    }
+
     /**
      * @return Vote[]
      */
     public function getVotesForMotion(Motion $motion): array
     {
-        return array_values(array_filter($this->votes, function (Vote $vote) use ($motion): bool {
-            return $vote->motionId === $motion->id;
-        }));
+        $this->initVotesSortedCache();
+        if (isset($this->votesSortedByIMotionCache['motion.' . $motion->id])) {
+            return $this->votesSortedByIMotionCache['motion.' . $motion->id];
+        } else {
+            return [];
+        }
     }
 
     /**
@@ -149,9 +175,12 @@ class VotingBlock extends ActiveRecord
      */
     public function getVotesForAmendment(Amendment $amendment): array
     {
-        return array_values(array_filter($this->votes, function (Vote $vote) use ($amendment): bool {
-            return $vote->amendmentId === $amendment->id;
-        }));
+        $this->initVotesSortedCache();
+        if (isset($this->votesSortedByIMotionCache['amendment.' . $amendment->id])) {
+            return $this->votesSortedByIMotionCache['amendment.' . $amendment->id];
+        } else {
+            return [];
+        }
     }
 
     public function getMajorityType(): IMajorityType
