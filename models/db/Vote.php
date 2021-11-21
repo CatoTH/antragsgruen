@@ -3,8 +3,6 @@
 namespace app\models\db;
 
 use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
-use app\models\majorityType\IMajorityType;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
@@ -18,7 +16,6 @@ use yii\db\ActiveRecord;
  * @property int $public
  * @property string $dateVote
  *
- * @property User $user
  * @property VotingBlock $votingBlock
  * @property Amendment|null $amendment
  * @property Motion|null $motion
@@ -41,12 +38,9 @@ class Vote extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'vote';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
+    public function getUser(): User
     {
-        return $this->hasOne(User::class, ['id' => 'userId']);
+        return User::getCachedUser($this->userId);
     }
 
     /**

@@ -85,9 +85,9 @@ class Module extends ModuleBase
         ];
         foreach ($votes as $vote) {
             $voteType = $vote->getVoteForApi();
-            if (in_array('nyo', $vote->user->getMyOrganizationIds())) {
+            if (in_array('nyo', $vote->getUser()->getMyOrganizationIds())) {
                 $orga = 'nyo';
-            } elseif (in_array('ingyo', $vote->user->getMyOrganizationIds())) {
+            } elseif (in_array('ingyo', $vote->getUser()->getMyOrganizationIds())) {
                 $orga = 'ingyo';
             } else {
                 continue;
