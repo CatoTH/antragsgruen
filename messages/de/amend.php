@@ -102,6 +102,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_amtable_title'               => 'Titel',
     'merge_amtable_status'              => 'Status',
     'merge_amtable_proposal'            => 'Verfahrensvorschlag',
+    'merge_amtable_voting'              => 'Abstimmungsergebnis',
     'merge_amtable_text'                => 'Änderungen',
     'merge_amtable_text_orig'           => 'Original-Änderungsantrag',
     'merge_amtable_text_prop'           => 'Verfahrensvorschlag',

@@ -80,6 +80,7 @@ return [
     'merge_amtable_title'          => 'Title',
     'merge_amtable_status'         => 'Status',
     'merge_amtable_proposal'       => 'Proposed procedure',
+    'merge_amtable_voting'         => 'Voting result',
     'merge_amtable_text'           => 'Changes',
     'merge_amtable_text_orig'      => 'Original amendment',
     'merge_amtable_text_prop'      => 'Proposed procedure',

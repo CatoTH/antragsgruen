@@ -71,13 +71,18 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
         echo Html::beginForm($formUrl, 'post', ['class' => 'mergeAllRow']);
 
         if (count($amendments) > 0) {
-            $hasProposals = $hasProposalText = false;
+            $hasProposals = false;
+            $hasProposalText = false;
+            $hasVoteResults = false;
             foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
                 if ($amend->proposalStatus !== null) {
                     $hasProposals = true;
                 }
                 if ($amend->getMyProposalReference()) {
                     $hasProposalText = true;
+                }
+                if (in_array($amend->votingStatus, [Amendment::STATUS_ACCEPTED, Amendment::STATUS_REJECTED])) {
+                    $hasVoteResults = true;
                 }
             }
             ?>
@@ -92,6 +97,11 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                         if ($hasProposals) {
                             ?>
                             <th class="colProposal"><?= Yii::t('amend', 'merge_amtable_proposal') ?></th>
+                            <?php
+                        }
+                        if ($hasVoteResults) {
+                            ?>
+                            <th class="colProposal"><?= Yii::t('amend', 'merge_amtable_voting') ?></th>
                             <?php
                         }
                         ?>
@@ -120,6 +130,16 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                         echo '</td>';
                         if ($hasProposals) {
                             echo '<td class="colProposal">' . $amend->getFormattedProposalStatus() . '</td>';
+                        }
+                        if ($hasVoteResults) {
+                            echo '<td class="colVoting">';
+                            if ($amend->votingStatus === Amendment::STATUS_ACCEPTED) {
+                                echo Yii::t('voting', 'status_accepted');
+                            }
+                            if ($amend->votingStatus === Amendment::STATUS_REJECTED) {
+                                echo Yii::t('voting', 'status_rejected');
+                            }
+                            echo '</td>';
                         }
                         if ($amend->hasAlternativeProposaltext(false)) {
                             echo '<td class="colText hasAlternative">';
