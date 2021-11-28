@@ -10,16 +10,16 @@ use yii\db\ActiveRecord;
  * @property int $position
  * @property int|null $userId
  * @property string $role
- * @property string $comment
- * @property int $personType
- * @property string $name
- * @property string $organization
- * @property string $resolutionDate
- * @property string $contactName
- * @property string $contactEmail
- * @property string $contactPhone
+ * @property string|null $comment
+ * @property int|null $personType
+ * @property string|null $name
+ * @property string|null $organization
+ * @property string|null $resolutionDate
+ * @property string|null $contactName
+ * @property string|null $contactEmail
+ * @property string|null $contactPhone
  * @property string $dateCreation
- * @property string $extraData
+ * @property string|null $extraData
  *
  * @property User|null $user
  */
@@ -131,7 +131,7 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getExtraDataEntry(string $name, $default = null)
     {
-        $arr = json_decode($this->extraData, true);
+        $arr = $this->extraData ? json_decode($this->extraData, true) : [];
         if ($arr && isset($arr[$name])) {
             return $arr[$name];
         } else {
@@ -144,7 +144,7 @@ abstract class ISupporter extends ActiveRecord
      */
     public function setExtraDataEntry(string $name, $value): void
     {
-        $arr = json_decode($this->extraData, true);
+        $arr = $this->extraData ? json_decode($this->extraData, true) : [];
         if (!$arr) {
             $arr = [];
         }

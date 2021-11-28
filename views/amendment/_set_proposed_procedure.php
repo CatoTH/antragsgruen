@@ -146,7 +146,7 @@ $voting = $amendment->getVotingData();
                                 if (in_array($amendment->id, $subitem->amendmentIds)) {
                                     echo ' selected';
                                 }
-                                echo ' data-group-name="' . Html::encode($subitem->groupName) . '"';
+                                echo ' data-group-name="' . Html::encode($subitem->groupName ?: '') . '"';
                                 echo '>' . Html::encode($subitem->getTitle($amendment)) . '</option>';
                             }
                             ?>
@@ -347,7 +347,7 @@ $voting = $amendment->getVotingData();
         <?php
         echo Html::textarea(
             'proposalExplanation',
-            $amendment->proposalExplanation,
+            $amendment->proposalExplanation ?: '',
             [
                 'title' => Yii::t('amend', 'proposal_public_expl_title'),
                 'class' => 'form-control',

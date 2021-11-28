@@ -183,7 +183,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         <label for="username"><?= Yii::t('user', 'login_username') ?>:</label>
         <input class="form-control" name="username" id="username" type="text" autofocus required
                placeholder="<?= Html::encode(Yii::t('user', 'login_email_placeholder')) ?>"
-               autocomplete="username" value="<?= Html::encode($preUsername) ?>">
+               autocomplete="username" value="<?= Html::encode($preUsername ?: '') ?>">
     </div>
 
     <div class="form-group">
@@ -201,7 +201,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
 
         <div class="form-group hidden" id="regName">
             <label for="name"><?= Yii::t('user', 'login_create_name') ?>:</label>
-            <input type="text" value="<?= Html::encode($preName) ?>" name="name" id="name" class="form-control">
+            <input type="text" value="<?= Html::encode($preName ?: '') ?>" name="name" id="name" class="form-control">
         </div>
         <?php
         if ($controller->getParams()->dataPrivacyCheckbox) {

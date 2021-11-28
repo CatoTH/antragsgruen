@@ -73,7 +73,7 @@ foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
 $forbidRobots = ($controller->consultation && $controller->consultation->getSettings()->robotsPolicy === \app\models\settings\Consultation::ROBOTS_NONE);
-if ($layout->ogImage !== '' && !$forbidRobots) {
+if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
     echo '<meta property="og:image" content="' . Html::encode($layout->ogImage) . '">' . "\n";
 }
 

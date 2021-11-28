@@ -157,7 +157,7 @@ if ($adminMode) {
         </label>
         <div class="col-sm-4">
             <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
-                   value="<?= Html::encode($prePrimaryName) ?>" autocomplete="name" required>
+                   value="<?= Html::encode($prePrimaryName ?: '') ?>" autocomplete="name" required>
             <?php
             if (count($selectOrganisations) > 0) {
                 $selectOrganisations = array_merge(['' => ''], $selectOrganisations);
@@ -188,7 +188,7 @@ if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
             } else {
                 ?>
                 <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]"
-                   value="<?= Html::encode($preOrga) ?>">
+                   value="<?= Html::encode($preOrga ?: '') ?>">
                 <?php
 
             }
@@ -247,7 +247,7 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initi
         </label>
         <div class="col-sm-4">
             <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]"
-                   value="<?= Html::encode($preContactName) ?>" autocomplete="name">
+                   value="<?= Html::encode($preContactName ?: '') ?>" autocomplete="name">
         </div>
     </div>
 
@@ -263,7 +263,7 @@ if ($settings->contactEmail !== InitiatorForm::CONTACT_NONE) {
                 if ($settings->contactEmail === InitiatorForm::CONTACT_REQUIRED && !$adminMode) {
                     echo 'required ';
                 }
-                ?> autocomplete="email" value="<?= Html::encode($preEmail) ?>">
+                ?> autocomplete="email" value="<?= Html::encode($preEmail ?: '') ?>">
         </div>
     </div>
     <?php
@@ -281,7 +281,7 @@ if ($settings->contactPhone !== InitiatorForm::CONTACT_NONE) {
                 if ($settings->contactPhone === InitiatorForm::CONTACT_REQUIRED && !$adminMode) {
                     echo 'required ';
                 }
-                ?> autocomplete="tel" value="<?= Html::encode($prePhone) ?>">
+                ?> autocomplete="tel" value="<?= Html::encode($prePhone ?: '') ?>">
         </div>
     </div>
     <?php

@@ -167,13 +167,13 @@ if (count($consultation->agendaItems) > 0) {
         <div class="col-md-3 control-label"><?= Yii::t('admin', 'motion_url_slug') ?>:</div>
         <div class="col-md-9 urlSlugHolder">
             <div class="shower">
-                <?= Html::encode($motion->slug) ?>
+                <?= Html::encode($motion->slug ?: '') ?>
                 [<a href="#"><?= Yii::t('admin', 'motion_url_change') ?></a>]
             </div>
             <div class="holder hidden">
                 <label for="motionSlug" class="sr-only"><?= Yii::t('admin', 'motion_url_path') ?></label>
                 <input type="text" <?php if ($motion->slug) echo 'required'; ?> name="motion[slug]"
-                       value="<?= Html::encode($motion->slug) ?>" class="form-control"
+                       value="<?= Html::encode($motion->slug ?: '') ?>" class="form-control"
                        pattern="[\w_-]+" id="motionSlug">
                 <small><?= Yii::t('admin', 'motion_url_path_hint') ?></small>
             </div>
@@ -289,7 +289,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         <div class="col-md-9">
             <?php
             $options = ['class' => 'form-control', 'id' => 'motionNoteInternal'];
-            echo Html::textarea('motion[noteInternal]', $motion->noteInternal, $options);
+            echo Html::textarea('motion[noteInternal]', $motion->noteInternal ?: '', $options);
             ?>
         </div>
     </div>
