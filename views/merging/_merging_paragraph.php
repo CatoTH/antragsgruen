@@ -84,7 +84,7 @@ $linesAria = str_replace(['%FROM%', '%TO%'], [$firstLineNo, $lastLineNo], Yii::t
         </div>
     </div>
     <div class="form-group">
-        <div class="wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0" data-unchanged="<?= Html::encode($draftParagraph->unchanged) ?>">
+        <div class="wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0" data-unchanged="<?= Html::encode($draftParagraph->unchanged ?: '') ?>">
             <!--suppress HtmlFormInputWithoutLabel -->
             <textarea name="<?= $nameBase ?>[raw]" class="raw" id="<?= $htmlId ?>"
                       title="<?= Html::encode($type->title) ?>"></textarea>

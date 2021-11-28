@@ -30,7 +30,7 @@ use yii\helpers\Html;
  * @property int $status
  * @property string $statusString
  * @property int $nonAmendable
- * @property string $noteInternal
+ * @property string|null $noteInternal
  * @property string $cache
  * @property int $textFixed
  * @property string|null $slug
@@ -1140,7 +1140,7 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $status .= Html::encode($statusNames[$this->status]);
         }
-        if (trim($this->statusString) !== '') {
+        if ($this->statusString !== null && trim($this->statusString) !== '') {
             $status .= ' <small>(' . Html::encode($this->statusString) . ')</string>';
         }
 

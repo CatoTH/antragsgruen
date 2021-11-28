@@ -269,7 +269,7 @@ class LayoutHelper
                 }
             }
             $typeId   = $agendaItem->motionTypeId;
-            $time     = $agendaItem->getTime() ?? '';
+            $time     = $agendaItem->getTime() ?: '';
             $settings = $agendaItem->getSettingsObj();
 
             echo '<form class="agendaItemEditForm">
@@ -371,13 +371,13 @@ class LayoutHelper
         if ($admin) {
             $date = '';
             echo '<form class="agendaDateEditForm">
-                <div class="input-group date datetimepicker" data-date="' . Html::encode($agendaItem->time) . '">
+                <div class="input-group date datetimepicker" data-date="' . Html::encode($agendaItem->time ?: '') . '">
                     <input type="text" name="date" value="' . Html::encode($date) . '" placeholder="' . \Yii::t('con', 'agenda_date') . '"
                     class="form-control">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                 </div>
                 <div class="title">
-                    <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
+                    <input type="text" name="title" value="' . Html::encode($agendaItem->title ?: '') . '"
                  class="form-control title" placeholder="' . \Yii::t('con', 'agenda_comment') . '">
                  </div>
                  <div class="ok">

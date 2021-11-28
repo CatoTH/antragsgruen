@@ -13,8 +13,7 @@ use app\models\db\{ConsultationLog,
     MotionComment,
     MotionSupporter,
     User,
-    Consultation,
-    VotingBlock};
+    Consultation};
 use app\models\exceptions\{DB, FormError, Internal, MailNotSent};
 use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;

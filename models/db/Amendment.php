@@ -30,7 +30,7 @@ use yii\helpers\Html;
  * @property string $cache
  * @property int $status
  * @property string $statusString
- * @property string $noteInternal
+ * @property string|null $noteInternal
  * @property int $textFixed
  * @property int $globalAlternative
  * @property int|null $responsibilityId
@@ -302,15 +302,15 @@ class Amendment extends IMotion implements IRSSItem
     {
         $motion = $this->getMyMotion();
         if ($motion->titlePrefix !== '') {
-            $showMotionPrefix = (mb_stripos($this->titlePrefix, $motion->titlePrefix) === false);
+            $showMotionPrefix = (mb_stripos($this->titlePrefix ?: '', $motion->titlePrefix) === false);
         } else {
             $showMotionPrefix = false;
         }
-        $prefix = ($this->titlePrefix != '' ? $this->titlePrefix : \Yii::t('amend', 'amendment'));
+        $prefix = $this->titlePrefix ?: \Yii::t('amend', 'amendment');
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $prefix . \Yii::t('amend', 'amend_for') . $motion->title;
         } else {
-            if ($this->getMyMotion()->titlePrefix != '') {
+            if ($this->getMyMotion()->titlePrefix) {
                 if ($showMotionPrefix) {
                     $str = $prefix . \Yii::t('amend', 'amend_for');
                     $str .= $motion->titlePrefix . ': ' . $motion->title;

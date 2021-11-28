@@ -211,9 +211,9 @@ class ConsultationMotionType extends ActiveRecord
     public function getDeadlinesByType(string $type): array
     {
         if ($this->deadlinesObject === null) {
-            $this->deadlinesObject = json_decode($this->deadlines, true);
+            $this->deadlinesObject = ($this->deadlines ? json_decode($this->deadlines, true) : []);
         }
-        return (isset($this->deadlinesObject[$type]) ? $this->deadlinesObject[$type] : []);
+        return $this->deadlinesObject[$type] ?? [];
     }
 
     public function setAllDeadlines(array $deadlines): void

@@ -36,6 +36,7 @@ class Draft implements \JsonSerializable
     /** @var int[] */
     public $removedSections;
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

@@ -171,7 +171,7 @@ class Consultation extends ActiveRecord
             if (is_numeric($motionSlug) && $motion->id === intval($motionSlug) && $motion->status !== Motion::STATUS_DELETED) {
                 return $motion;
             }
-            if (!is_numeric($motionSlug) && mb_strtolower($motion->slug) === mb_strtolower($motionSlug) && $motion->status !== Motion::STATUS_DELETED) {
+            if (!is_numeric($motionSlug) && mb_strtolower($motion->slug ?: '') === mb_strtolower($motionSlug ?: '') && $motion->status !== Motion::STATUS_DELETED) {
                 return $motion;
             }
         }
@@ -585,7 +585,7 @@ class Consultation extends ActiveRecord
                     }
                 }
                 foreach ($motion->amendments as $amendment) {
-                    if ($motion->status !== Amendment::STATUS_DELETED && mb_substr($amendment->titlePrefix, 0, mb_strlen($prefix)) === $prefix) {
+                    if ($motion->status !== Amendment::STATUS_DELETED && mb_substr($amendment->titlePrefix ?: '', 0, mb_strlen($prefix)) === $prefix) {
                         $revs = mb_substr($amendment->titlePrefix, mb_strlen($prefix));
                         $revnr = intval($revs);
                         if ($revnr > $max_rev) {

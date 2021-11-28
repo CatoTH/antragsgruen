@@ -185,7 +185,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="minSupportersFemale">
             <input type="number" name="motionInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemale"
-                   value="<?= Html::encode($motionSettings->minSupportersFemale) ?>">
+                   value="<?= Html::encode($motionSettings->minSupportersFemale ?: '') ?>">
         </div>
     </div>
 
@@ -437,7 +437,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="minSupportersFemale">
             <input type="number" name="amendmentInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemaleAmendment"
-                   value="<?= Html::encode($amendmentSettings->minSupportersFemale) ?>">
+                   value="<?= Html::encode($amendmentSettings->minSupportersFemale ?: '') ?>">
         </div>
     </div>
 

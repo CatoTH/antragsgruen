@@ -40,7 +40,7 @@ echo '<a href="' . Html::encode($viewUrl) . '">';
 if ($lastMotion && $entry->motionId === $lastMotion->id) {
     echo "&#8627;";
 }
-echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-') . '</a></td>';
+echo Html::encode($entry->titlePrefix ?: '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
 if ($lastMotion && $entry->motionId === $lastMotion->id) {
     echo "&#8627;";

@@ -24,6 +24,7 @@
 - Bugfix: an empty "Supporting" section was shown in motions and amendments, if only the "liking" function was enabled.
 - Bugfix: Some bugs in edge cases with LaTeX-based PDF rendering were solved.
 - Bugfix: if fixed font width was specified but no line numbers, then line number placeholders where shown in the text.
+- Compatibility with PHP 8.1
 - Support for Internet Explorer was dropped.
 - PHP-Support: PHP 8.1 is not yet supported, please use PHP 8.0 until support will be added in the next minor version. This is the last version to support PHP 7.2.
 

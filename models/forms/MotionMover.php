@@ -2,12 +2,7 @@
 
 namespace app\models\forms;
 
-use app\models\db\Consultation;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\ConsultationMotionType;
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\User;
+use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, IMotion, Motion, User};
 use app\models\exceptions\Inconsistency;
 
 class MotionMover
@@ -125,7 +120,7 @@ class MotionMover
                         $oMotion->titlePrefix = $consultation->getNextMotionPrefix($motionType->id);
                         $oMotion->save();
                     }
-                    if (mb_strtolower($oMotion->slug) === mb_strtolower($this->motion->slug)) {
+                    if (mb_strtolower($oMotion->slug ?: '') === mb_strtolower($this->motion->slug ?: '')) {
                         $oMotion->slug = null;
                         $oMotion->save();
                     }

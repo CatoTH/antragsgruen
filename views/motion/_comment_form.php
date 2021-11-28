@@ -42,7 +42,7 @@ if ($isReplyTo) {
 echo Html::beginForm('', 'post', ['class' => $classes, 'id' => $formIdPre . '_form']);
 
 if ($user && $user->name) {
-    echo '<div class="commentName">' . Html::encode($form->name) . ' (' . Html::encode($form->email) . ')</div>';
+    echo '<div class="commentName">' . Html::encode($form->name ?: '') . ' (' . Html::encode($form->email ?: '') . ')</div>';
 }
 echo '<h3 class="commentHeader commentWriteHeader" id="commentWrite' . $formIdPre . '">' . $title . '</h3>';
 
@@ -63,7 +63,7 @@ if ($user && $user->name && $user->email) {
     <div class="commentFullTextarea">
         <textarea name="comment[text]" class="form-control"
                   title="<?= Html::encode(Yii::t('comment', 'text')) ?>"  aria-labelledby="commentWrite<?= $formIdPre ?>"
-                  rows="5" id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>
+                  rows="5" id="<?= $formIdPre ?>_text"><?= Html::encode($form->text ?: '') ?></textarea>
     </div>
     <?php
 } else {
@@ -75,7 +75,7 @@ if ($user && $user->name && $user->email) {
             </label>
             <div class="col-sm-9">
                 <input type="text" class="form-control col-sm-9" id="<?= $formIdPre ?>_name"
-                       name="comment[name]" value="<?= Html::encode($form->name) ?>" required autocomplete="name">
+                       name="comment[name]" value="<?= Html::encode($form->name ?: '') ?>" required autocomplete="name">
             </div>
         </div>
         <?php
@@ -89,7 +89,7 @@ if ($user && $user->name && $user->email) {
             <div class="col-sm-9">
                 <input type="email" class="form-control" id="<?= $formIdPre ?>_email"
                        autocomplete="email" name="comment[email]"
-                       value="<?= Html::encode($form->email) ?>"
+                       value="<?= Html::encode($form->email ?: '') ?>"
                     <?= ($consultation->getSettings()->commentNeedsEmail ? ' required' : '') ?>>
             </div>
         </div>
@@ -101,7 +101,7 @@ if ($user && $user->name && $user->email) {
             :</label>
         <div class="col-sm-9">
             <textarea name="comment[text]" title="Text" class="form-control" rows="5"
-                      id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>
+                      id="<?= $formIdPre ?>_text"><?= Html::encode($form->text ?: '') ?></textarea>
         </div>
     </div>
     <?php

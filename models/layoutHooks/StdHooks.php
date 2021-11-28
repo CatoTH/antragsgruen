@@ -206,8 +206,8 @@ class StdHooks extends Hooks
     public function getSupporterNameWithResolutionDate(string $before, ISupporter $supporter, bool $html): string
     {
         if ($html) {
-            $name = Html::encode($supporter->name);
-            $orga = Html::encode(trim($supporter->organization, " \t\n\r\0\x0B"));
+            $name = Html::encode($supporter->name ?: '');
+            $orga = Html::encode(trim($supporter->organization ?: '', " \t\n\r\0\x0B"));
             if ($name == '' && $supporter->getMyUser()) {
                 $name = Html::encode($supporter->getMyUser()->name);
             }
@@ -229,7 +229,7 @@ class StdHooks extends Hooks
             }
         } else {
             $name = $supporter->name;
-            $orga = trim($supporter->organization, " \t\n\r\0\x0B");
+            $orga = trim($supporter->organization ?: '', " \t\n\r\0\x0B");
             if ($name == '' && $supporter->getMyUser()) {
                 $name = $supporter->getMyUser()->name;
             }

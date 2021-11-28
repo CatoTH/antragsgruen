@@ -93,7 +93,7 @@ $currBlockIsLocked = ($amendment->votingBlock && !$amendment->votingBlock->items
                             if (in_array($amendment->id, $subitem->amendmentIds)) {
                                 echo ' selected';
                             }
-                            echo ' data-group-name="' . Html::encode($subitem->groupName) . '"';
+                            echo ' data-group-name="' . Html::encode($subitem->groupName ?: '') . '"';
                             echo '>' . Html::encode($subitem->getTitle($amendment)) . '</option>';
                         }
                         ?>

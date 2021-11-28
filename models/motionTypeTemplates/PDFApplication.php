@@ -8,7 +8,7 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
 
-trait PDFApplication
+class PDFApplication
 {
     public static function doCreateApplicationType(Consultation $consultation): ConsultationMotionType
     {

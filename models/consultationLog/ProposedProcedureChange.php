@@ -89,6 +89,7 @@ class ProposedProcedureChange implements \JsonSerializable
     /**
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $arr = get_object_vars($this);

@@ -129,7 +129,7 @@ class MotionController extends AdminBase
             $deadlineForm = DeadlineForm::createFromInput(\Yii::$app->request->post('deadlines'));
             $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());
 
-            $pdfTemplate = \Yii::$app->request->post('pdfTemplate');
+            $pdfTemplate = \Yii::$app->request->post('pdfTemplate', '');
             if (strpos($pdfTemplate, 'php') === 0) {
                 $motionType->pdfLayout     = intval(str_replace('php', '', $pdfTemplate));
                 $motionType->texTemplateId = null;
@@ -589,7 +589,7 @@ class MotionController extends AdminBase
             if (isset($modat['slug']) && preg_match('/^[\w_-]+$/i', $modat['slug'])) {
                 $collision = false;
                 foreach ($motion->getMyConsultation()->motions as $otherMotion) {
-                    if (mb_strtolower($otherMotion->slug) === mb_strtolower($modat['slug']) && $otherMotion->id !== $motion->id) {
+                    if (mb_strtolower($otherMotion->slug ?: '') === mb_strtolower($modat['slug']) && $otherMotion->id !== $motion->id) {
                         $collision = true;
                     }
                 }
@@ -607,7 +607,7 @@ class MotionController extends AdminBase
 
             if ($modat['dateResolution'] !== '') {
                 $roundedDate = Tools::dateBootstraptime2sql($modat['dateResolution']);
-                if (substr($roundedDate, 0, 16) !== substr($motion->dateResolution, 0, 16)) {
+                if (substr($roundedDate, 0, 16) !== substr($motion->dateResolution ?: '', 0, 16)) {
                     $motion->dateResolution = $roundedDate;
                 }
             } else {
@@ -616,7 +616,7 @@ class MotionController extends AdminBase
 
             if ($modat['datePublication'] !== '') {
                 $roundedDate = Tools::dateBootstraptime2sql($modat['datePublication']);
-                if (substr($roundedDate, 0, 16) !== substr($motion->datePublication, 0, 16)) {
+                if (substr($roundedDate, 0, 16) !== substr($motion->datePublication ?: '', 0, 16)) {
                     $motion->datePublication = $roundedDate;
                 }
             } else {

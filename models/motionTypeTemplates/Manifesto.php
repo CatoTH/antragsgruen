@@ -8,12 +8,11 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
 
-trait Manifesto
+class Manifesto
 {
     public static function doCreateManifestoType(Consultation $consultation): ConsultationMotionType
     {
-        /** @var AntragsgruenApp $config */
-        $config = \Yii::$app->params;
+        $config = AntragsgruenApp::getInstance();
 
         $type                               = new ConsultationMotionType();
         $type->consultationId               = $consultation->id;
