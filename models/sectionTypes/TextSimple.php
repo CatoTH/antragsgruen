@@ -251,9 +251,8 @@ class TextSimple extends Text
             if (!$cached) {
                 $str = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
                 if ($str !== '') {
-                    $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
-                    $cached = $str;
-                    HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $cached);
+                    $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>' . $str;
+                    HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $str);
                 }
             }
             return $cached;
