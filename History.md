@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.9.0 [not released yet]
+## Version 4.9.0 (2021-12-12)
 
 - Online voting functionality was added. Admins can now define voting blocks, where users can vote on amendments and motions to be adopted or rejected. A documentation about this feature is located at https://sandbox.motion.tools/help#votings .
 - Submitted amendments can now optionally have tags, too, if set up in the motion types.
@@ -17,6 +17,7 @@
 - Bugfix: Some bugs in edge cases with LaTeX-based PDF rendering were solved.
 - Bugfix: if fixed font width was specified but no line numbers, then line number placeholders where shown in the text.
 - Support for Internet Explorer was dropped.
+- PHP-Support: PHP 8.1 is not yet supported, please use PHP 8.0 until support will be added in the next minor version. This is the last version to support PHP 7.2.
 
 ### Version 4.8.1 (2021-08-28)
 
