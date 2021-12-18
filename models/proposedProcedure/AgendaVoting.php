@@ -76,10 +76,11 @@ class AgendaVoting
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
             'title' => $title,
             'status' => ($this->voting ? $this->voting->votingStatus : null),
-            'votesPublic' => ($this->voting ? $this->voting->votesPublic : null),
-            'resultsPublic' => ($this->voting ? $this->voting->resultsPublic : null),
-            'assignedMotion' => ($this->voting ? $this->voting->assignedToMotionId : null),
-            'majorityType' => ($this->voting ? $this->voting->majorityType : null),
+            'votes_public' => ($this->voting ? $this->voting->votesPublic : null),
+            'results_public' => ($this->voting ? $this->voting->resultsPublic : null),
+            'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
+            'majority_type' => ($this->voting ? $this->voting->majorityType : null),
+            'answers' => ($this->voting ? $this->voting->getAnswers() : null),
             'items' => [],
         ];
         if ($context === static::API_CONTEXT_ADMIN) {

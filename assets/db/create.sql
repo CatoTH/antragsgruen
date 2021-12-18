@@ -764,6 +764,8 @@ CREATE TABLE `###TABLE_PREFIX###votingBlock` (
   `resultsPublic` tinyint(4) DEFAULT NULL,
   `assignedToMotionId` int(11) DEFAULT NULL,
   `usersPresentByOrga` text DEFAULT NULL,
+  `answers` text DEFAULT NULL,
+  `policyVote` text DEFAULT NULL,
   `votingStatus` tinyint(4) NOT NULL,
   `activityLog` text DEFAULT NULL
 )

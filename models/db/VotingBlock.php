@@ -5,7 +5,7 @@ namespace app\models\db;
 use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
 use app\models\settings\AntragsgruenApp;
-use app\models\VotingItemGroup;
+use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use yii\db\ActiveRecord;
 
 /**
@@ -17,6 +17,8 @@ use yii\db\ActiveRecord;
  * @property int|null $resultsPublic
  * @property int|null $assignedToMotionId
  * @property string|null $usersPresentByOrga
+ * @property string|null $answers
+ * @property string|null $permissions
  * @property string|null $activityLog
  * @property int $votingStatus
  *
@@ -376,6 +378,19 @@ class VotingBlock extends ActiveRecord
         $present = $this->getUsersPresentByOrganizations();
 
         return $present[$organization] ?? null;
+    }
+
+    /**
+     * @return Answer[]
+     */
+    public function getAnswers(): array
+    {
+        return AnswerTemplates::fromVotingBlockData($this->answers);
+    }
+
+    public function getPermissions()
+    {
+        // @TODO This is a placeholder and no permission system is really implemented yet
     }
 
     /**

@@ -45,7 +45,7 @@ ob_start();
     </h2>
     <div class="content votingShow" v-if="!settingsOpened">
         <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
-             v-if="isPreparing && majorityType.id === voting.majorityType">
+             v-if="isPreparing && majorityType.id === voting.majority_type">
             <strong>{{ majorityType.name }}</strong><br>
             <small>{{ majorityType.description }}</small>
         </div>
@@ -438,8 +438,8 @@ $html = ob_get_clean();
             },
             majorityType: {
                 get: function () {
-                    console.log("get", (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majorityType));
-                    return (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majorityType);
+                    console.log("get", (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majority_type));
+                    return (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majority_type);
                 },
                 set: function (value) {
                     this.changedSettings.majorityType = value;
@@ -447,7 +447,7 @@ $html = ob_get_clean();
             },
             votesPublic: {
                 get: function () {
-                    return (this.changedSettings.votesPublic !== null ? this.changedSettings.votesPublic : this.voting.votesPublic);
+                    return (this.changedSettings.votesPublic !== null ? this.changedSettings.votesPublic : this.voting.votes_public);
                 },
                 set: function (value) {
                     this.changedSettings.votesPublic = value;
@@ -455,7 +455,7 @@ $html = ob_get_clean();
             },
             resultsPublic: {
                 get: function () {
-                    return (this.changedSettings.resultsPublic !== null ? this.changedSettings.resultsPublic : this.voting.resultsPublic);
+                    return (this.changedSettings.resultsPublic !== null ? this.changedSettings.resultsPublic : this.voting.results_public);
                 },
                 set: function (value) {
                     this.changedSettings.resultsPublic = value;
@@ -463,7 +463,7 @@ $html = ob_get_clean();
             },
             settingsAssignedMotion: {
                 get: function () {
-                    const origAssigned = (this.voting.assignedMotion !== null ? this.voting.assignedMotion : '');
+                    const origAssigned = (this.voting.assigned_motion !== null ? this.voting.assigned_motion : '');
                     return (this.changedSettings.assignedMotion !== null ? this.changedSettings.assignedMotion : origAssigned);
                 },
                 set: function (value) {

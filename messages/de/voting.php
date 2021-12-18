@@ -6,6 +6,7 @@ return [
     'vote_yes' => 'Ja',
     'vote_no' => 'Nein',
     'vote_abstention' => 'Enthaltung',
+    'vote_present' => 'Anwesend',
     'vote_undo' => 'Stimme zurücknehmen',
 
     'status_accepted' => 'Angenommen',

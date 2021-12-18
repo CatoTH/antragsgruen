@@ -6,6 +6,7 @@ return [
     'vote_yes' => 'Yes',
     'vote_no' => 'No',
     'vote_abstention' => 'Abstention',
+    'vote_present' => 'Present',
     'vote_undo' => 'Undo vote',
 
     'status_accepted' => 'Accepted',

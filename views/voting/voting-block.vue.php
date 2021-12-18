@@ -228,16 +228,16 @@ $html = ob_get_clean();
                 return allGroups;
             },
             votesPublicNo: function () {
-                return this.voting.votesPublic === VOTES_PUBLIC_NO;
+                return this.voting.votes_public === VOTES_PUBLIC_NO;
             },
             votesPublicAdmin: function () {
-                return this.voting.votesPublic === VOTES_PUBLIC_ADMIN;
+                return this.voting.votes_public === VOTES_PUBLIC_ADMIN;
             },
             votesPublicAll: function () {
-                return this.voting.votesPublic === VOTES_PUBLIC_ALL;
+                return this.voting.votes_public === VOTES_PUBLIC_ALL;
             },
             resultsPublic: function () {
-                return this.voting.resultsPublic === RESULTS_PUBLIC_YES;
+                return this.voting.results_public === RESULTS_PUBLIC_YES;
             },
             isOpen: function () {
                 return this.voting.status === STATUS_OPEN;
@@ -248,16 +248,16 @@ $html = ob_get_clean();
         },
         methods: {
             voteYes: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'yes', this.voting.votesPublic);
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'yes', this.voting.votes_public);
             },
             voteNo: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'no', this.voting.votesPublic);
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'no', this.voting.votes_public);
             },
             voteAbstention: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'abstention', this.voting.votesPublic);
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'abstention', this.voting.votes_public);
             },
             voteUndo: function(groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'undo', this.voting.votesPublic);
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'undo', this.voting.votes_public);
             },
             itemIsAccepted: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_ACCEPTED;
