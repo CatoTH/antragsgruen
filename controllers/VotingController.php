@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use app\models\db\{Motion, User, VotingBlock};
-use app\components\ResourceLock;
-use app\components\VotingMethods;
+use app\components\{ResourceLock, VotingMethods};
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
@@ -147,14 +146,16 @@ class VotingController extends Base
         $newBlock = new VotingBlock();
         $newBlock->consultationId = $this->consultation->id;
         $newBlock->title = \Yii::$app->request->post('title');
-        $newBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
-        $newBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
-        $newBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
+        $newBlock->description = \Yii::$app->request->post('description');
+        $newBlock->majorityType = intval(\Yii::$app->request->post('majorityType'));
+        $newBlock->votesPublic = intval(\Yii::$app->request->post('votesPublic'));
+        $newBlock->resultsPublic = intval(\Yii::$app->request->post('resultsPublic'));
         if (\Yii::$app->request->post('assignedMotion') !== null && \Yii::$app->request->post('assignedMotion') > 0) {
             $newBlock->assignedToMotionId = \Yii::$app->request->post('assignedMotion');
         } else {
             $newBlock->assignedToMotionId = null;
         }
+        $newBlock->setAnswerTemplate(intval(\Yii::$app->request->post('answers')));
         // If the voting is created from the proposed procedure, we assume it's only used to show it there
         $newBlock->votingStatus = VotingBlock::STATUS_PREPARING;
         $newBlock->save();

@@ -10,6 +10,8 @@ export class VotingAdmin {
         this.element = $element[0];
         this.createVueWidget();
         this.initVotingCreater();
+
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
     private createVueWidget() {
@@ -116,11 +118,17 @@ export class VotingAdmin {
                         op: 'delete-voting',
                     });
                 },
-                createVoting: function (title, assignedMotion) {
+                createVoting: function (type, answers, title, description, assignedMotion, majorityType, resultsPublic, votesPublic) {
                     let postData = {
                         _csrf: this.csrf,
+                        type,
+                        answers,
                         title,
-                        assignedMotion
+                        description,
+                        assignedMotion,
+                        majorityType,
+                        resultsPublic,
+                        votesPublic
                     };
                     const widget = this;
                     $.post(voteCreateUrl, postData, function (data) {
@@ -177,17 +185,37 @@ export class VotingAdmin {
 
     private initVotingCreater() {
         const opener = this.element.querySelector('.createVotingOpener'),
-            form = this.element.querySelector('.createVotingHolder');
+            form = this.element.querySelector('.createVotingHolder'),
+            specificQuestion = this.element.querySelector('.specificQuestion');
         opener.addEventListener('click', () => {
             form.classList.remove('hidden');
             opener.classList.add('hidden');
         });
+
+        const getRadioListValue = (selector: string, defaultValue: string) => {
+            let val = defaultValue;
+            form.querySelectorAll(selector).forEach(el => {
+                const input = el as HTMLInputElement;
+                if (input.checked) {
+                    console.log(input);
+                    val = input.value;
+                }
+            });
+            return val;
+        };
+
         form.querySelector('form').addEventListener('submit', (ev) => {
             ev.stopPropagation();
             ev.preventDefault();
+            const type = getRadioListValue('.votingType input', 'question');
+            const answers = parseInt(getRadioListValue('.answerTemplate input', '0'), 10); // Default
             const title = form.querySelector('.settingsTitle') as HTMLInputElement;
+            const description = form.querySelector('.settingsDescription') as HTMLInputElement;
             const assigned = form.querySelector('.settingsAssignedMotion') as HTMLSelectElement;
-            this.widget.createVoting(title.value, assigned.value);
+            const majorityType = parseInt(getRadioListValue('.majortyTypeSettings input', '1'), 10); // Default: simple majority
+            const resultsPublic = parseInt(getRadioListValue('.resultsPublicSettings input', '1'), 10); // Default: everyone
+            const votesPublic = parseInt(getRadioListValue('.votesPublicSettings input', '0'), 10); // Default: nobody
+            this.widget.createVoting(type, answers, title.value, description.value, assigned.value, majorityType, resultsPublic, votesPublic);
 
             form.classList.add('hidden');
             opener.classList.remove('hidden');

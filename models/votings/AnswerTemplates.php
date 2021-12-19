@@ -10,7 +10,7 @@ class AnswerTemplates
 {
     const TEMPLATE_YES_NO_ABSTENTION = 0;
     const TEMPLATE_YES_NO = 1;
-    const TEMPLATE_YES_PRESENT = 2;
+    const TEMPLATE_PRESENT = 2;
 
     /**
      * @return Answer[]
@@ -25,7 +25,7 @@ class AnswerTemplates
             return static::getCollectionYesNoAbstention();
         }
         switch ($spec['template']) {
-            case static::TEMPLATE_YES_PRESENT:
+            case static::TEMPLATE_PRESENT:
                 return static::getCollectionPresent();
             case static::TEMPLATE_YES_NO:
                 return static::getCollectionYesNo();

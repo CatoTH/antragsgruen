@@ -759,6 +759,7 @@ CREATE TABLE `###TABLE_PREFIX###votingBlock` (
   `id` int(11) NOT NULL,
   `consultationId` int(11) NOT NULL,
   `title` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
   `majorityType` tinyint(4) DEFAULT NULL,
   `votesPublic` tinyint(4) DEFAULT NULL,
   `resultsPublic` tinyint(4) DEFAULT NULL,
