@@ -103,10 +103,11 @@ export class VotingAdmin {
                         }}),
                     });
                 },
-                saveSettings(votingBlockId, title, majorityType, resultsPublic, votesPublic, assignedMotion) {
+                saveSettings(votingBlockId, title, answerTemplate, majorityType, resultsPublic, votesPublic, assignedMotion) {
                     this._performOperation(votingBlockId, {
                         op: 'save-settings',
                         title,
+                        answerTemplate,
                         majorityType,
                         resultsPublic,
                         votesPublic,
@@ -118,13 +119,13 @@ export class VotingAdmin {
                         op: 'delete-voting',
                     });
                 },
-                createVoting: function (type, answers, title, description, assignedMotion, majorityType, resultsPublic, votesPublic) {
+                createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, resultsPublic, votesPublic) {
                     let postData = {
                         _csrf: this.csrf,
                         type,
                         answers,
                         title,
-                        description,
+                        specificQuestion,
                         assignedMotion,
                         majorityType,
                         resultsPublic,
@@ -197,12 +198,22 @@ export class VotingAdmin {
             form.querySelectorAll(selector).forEach(el => {
                 const input = el as HTMLInputElement;
                 if (input.checked) {
-                    console.log(input);
                     val = input.value;
                 }
             });
             return val;
         };
+
+        const recalcQuestionListener = () => {
+            if (getRadioListValue('.votingType input', 'question') === 'question') {
+                specificQuestion.classList.remove('hidden');
+            } else {
+                specificQuestion.classList.add('hidden');
+            }
+        };
+        form.querySelectorAll('.votingType input').forEach(el => {
+            el.addEventListener('change', recalcQuestionListener);
+        });
 
         form.querySelector('form').addEventListener('submit', (ev) => {
             ev.stopPropagation();
@@ -210,12 +221,12 @@ export class VotingAdmin {
             const type = getRadioListValue('.votingType input', 'question');
             const answers = parseInt(getRadioListValue('.answerTemplate input', '0'), 10); // Default
             const title = form.querySelector('.settingsTitle') as HTMLInputElement;
-            const description = form.querySelector('.settingsDescription') as HTMLInputElement;
+            const specificQuestion = form.querySelector('.settingsQuestion') as HTMLInputElement;
             const assigned = form.querySelector('.settingsAssignedMotion') as HTMLSelectElement;
-            const majorityType = parseInt(getRadioListValue('.majortyTypeSettings input', '1'), 10); // Default: simple majority
+            const majorityType = parseInt(getRadioListValue('.majorityTypeSettings input', '1'), 10); // Default: simple majority
             const resultsPublic = parseInt(getRadioListValue('.resultsPublicSettings input', '1'), 10); // Default: everyone
             const votesPublic = parseInt(getRadioListValue('.votesPublicSettings input', '0'), 10); // Default: nobody
-            this.widget.createVoting(type, answers, title.value, description.value, assigned.value, majorityType, resultsPublic, votesPublic);
+            this.widget.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, resultsPublic, votesPublic);
 
             form.classList.add('hidden');
             opener.classList.remove('hidden');

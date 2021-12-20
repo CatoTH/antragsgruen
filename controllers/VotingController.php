@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\models\db\{Motion, User, VotingBlock};
+use app\models\db\{Motion, User, VotingBlock, VotingQuestion};
 use app\components\{ResourceLock, VotingMethods};
-use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
 
@@ -146,7 +145,6 @@ class VotingController extends Base
         $newBlock = new VotingBlock();
         $newBlock->consultationId = $this->consultation->id;
         $newBlock->title = \Yii::$app->request->post('title');
-        $newBlock->description = \Yii::$app->request->post('description');
         $newBlock->majorityType = intval(\Yii::$app->request->post('majorityType'));
         $newBlock->votesPublic = intval(\Yii::$app->request->post('votesPublic'));
         $newBlock->resultsPublic = intval(\Yii::$app->request->post('resultsPublic'));
@@ -159,6 +157,13 @@ class VotingController extends Base
         // If the voting is created from the proposed procedure, we assume it's only used to show it there
         $newBlock->votingStatus = VotingBlock::STATUS_PREPARING;
         $newBlock->save();
+
+        if (\Yii::$app->request->post('type') === 'question') {
+            $question = new VotingQuestion();
+            $question->title = \Yii::$app->request->post('specificQuestion', '-');
+            $question->votingBlockId = $newBlock->id;
+            $question->save();
+        }
 
         $votingData = $this->getAllVotingAdminData();
 

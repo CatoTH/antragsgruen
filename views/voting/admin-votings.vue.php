@@ -2,6 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\majorityType\IMajorityType;
+use app\models\votings\AnswerTemplates;
 use app\models\db\{IMotion, VotingBlock};
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
@@ -253,7 +254,24 @@ ob_start();
             <?= Yii::t('voting', 'settings_title') ?>:<br>
             <input type="text" v-model="settingsTitle" class="form-control">
         </label>
-        <fieldset class="majortyTypeSettings">
+        <fieldset class="answerTemplate">
+            <legend><?= Yii::t('voting', 'settings_answers') ?>:</legend>
+            <label>
+                <input type="radio" value="<?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>" v-model="answerTemplate">
+                <?= Yii::t('voting', 'settings_answers_yesnoabst') ?>
+            </label>
+            <label>
+                <input type="radio" value="<?= AnswerTemplates::TEMPLATE_YES_NO ?>" v-model="answerTemplate">
+                <?= Yii::t('voting', 'settings_answers_yesno') ?>
+            </label>
+            <label>
+                <input type="radio" value="<?= AnswerTemplates::TEMPLATE_PRESENT ?>" v-model="answerTemplate">
+                <?= Yii::t('voting', 'settings_answers_present') ?>
+                <span class="glyphicon glyphicon-info-sign"
+                  :aria-label="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'" v-tooltip="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'"></span>
+            </label>
+        </fieldset>
+        <fieldset class="majorityTypeSettings">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
             <label v-for="majorityTypeDef in MAJORITY_TYPES">
                 <input type="radio" :value="majorityTypeDef.id" v-model="majorityType">
@@ -373,6 +391,7 @@ $html = ob_get_clean();
                     // Caching the changed values here prevents unsaved changes to settings from being reset by AJAX polling
                     // null = uninitialized
                     title: null,
+                    answerTemplate: null,
                     assignedMotion: null,
                     majorityType: null,
                     votesPublic: null,
@@ -438,11 +457,18 @@ $html = ob_get_clean();
             },
             majorityType: {
                 get: function () {
-                    console.log("get", (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majority_type));
                     return (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majority_type);
                 },
                 set: function (value) {
                     this.changedSettings.majorityType = value;
+                }
+            },
+            answerTemplate: {
+                get: function () {
+                    return (this.changedSettings.answerTemplate !== null ? this.changedSettings.answerTemplate : this.voting.answers_template);
+                },
+                set: function (value) {
+                    this.changedSettings.answerTemplate = value;
                 }
             },
             votesPublic: {
@@ -594,9 +620,10 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.majorityType, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;
+                this.changedSettings.answerTemplate = null;
                 this.settingsOpened = false;
             },
             deleteVoting: function () {

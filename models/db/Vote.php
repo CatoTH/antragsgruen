@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property int $votingBlockId
  * @property int|null $motionId
  * @property int|null $amendmentId
+ * @property int|null $questionId
  * @property int $vote
  * @property int $public
  * @property string $dateVote
@@ -19,6 +20,7 @@ use yii\db\ActiveRecord;
  * @property VotingBlock $votingBlock
  * @property Amendment|null $amendment
  * @property Motion|null $motion
+ * @property VotingQuestion|null $question
  */
 class Vote extends ActiveRecord
 {
@@ -66,6 +68,14 @@ class Vote extends ActiveRecord
     public function getAmendment()
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestion()
+    {
+        return $this->hasOne(VotingQuestion::class, ['id' => 'questionId']);
     }
 
     public function getVoteForApi(): ?string

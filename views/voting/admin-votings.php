@@ -1,7 +1,6 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
@@ -96,29 +95,13 @@ foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
                     <?= Yii::t('voting', 'settings_votingtype_motion') ?>
                 </label>
             </fieldset>
-            <fieldset class="answerTemplate">
-                <legend><?= Yii::t('voting', 'settings_answers') ?>:</legend>
-                <label>
-                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>" required checked="checked">
-                    <?= Yii::t('voting', 'settings_answers_yesnoabst') ?>
-                </label>
-                <label>
-                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_YES_NO ?>" required>
-                    <?= Yii::t('voting', 'settings_answers_yesno') ?>
-                </label>
-                <label>
-                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_PRESENT ?>" required>
-                    <?= Yii::t('voting', 'settings_answers_present') ?>
-                    <?= HTMLTools::getTooltipIcon(Yii::t('voting', 'settings_answers_presenth')) ?>
-                </label>
-            </fieldset>
             <label class="titleSetting">
                 <?= Yii::t('voting', 'settings_title') ?>:<br>
                 <input type="text" class="form-control settingsTitle">
             </label>
-            <label class="description">
-                <?= Yii::t('voting', 'settings_description') ?>:<br>
-                <input type="text" class="form-control settingsDescription">
+            <label class="specificQuestion">
+                <?= Yii::t('voting', 'settings_question') ?>:<br>
+                <input type="text" class="form-control settingsQuestion">
             </label>
             <label class="assignedMotion">
                 <?= Yii::t('voting', 'settings_motionassign') ?>:
@@ -136,7 +119,23 @@ foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
                     ?>
                 </select>
             </label>
-            <fieldset class="majortyTypeSettings">
+            <fieldset class="answerTemplate">
+                <legend><?= Yii::t('voting', 'settings_answers') ?>:</legend>
+                <label>
+                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>" required checked="checked">
+                    <?= Yii::t('voting', 'settings_answers_yesnoabst') ?>
+                </label>
+                <label>
+                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_YES_NO ?>" required>
+                    <?= Yii::t('voting', 'settings_answers_yesno') ?>
+                </label>
+                <label>
+                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_PRESENT ?>" required>
+                    <?= Yii::t('voting', 'settings_answers_present') ?>
+                    <?= HTMLTools::getTooltipIcon(Yii::t('voting', 'settings_answers_presenth')) ?>
+                </label>
+            </fieldset>
+            <fieldset class="majorityTypeSettings">
                 <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
                 <?php
                 foreach (IMajorityType::getMajorityTypes() as $majorityType) {

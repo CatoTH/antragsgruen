@@ -81,6 +81,7 @@ class AgendaVoting
             'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'majority_type' => ($this->voting ? $this->voting->majorityType : null),
             'answers' => ($this->voting ? $this->voting->getAnswers() : null),
+            'answers_template' => ($this->voting ? $this->voting->getAnswerTemplate() : null),
             'items' => [],
         ];
         if ($context === static::API_CONTEXT_ADMIN) {

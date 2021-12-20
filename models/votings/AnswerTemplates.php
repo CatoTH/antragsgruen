@@ -15,16 +15,9 @@ class AnswerTemplates
     /**
      * @return Answer[]
      */
-    public static function fromVotingBlockData(?string $specification): array
+    public static function fromVotingBlockData(int $templateId): array
     {
-        if (empty($specification)) {
-            return static::getCollectionYesNoAbstention();
-        }
-        $spec = json_decode($specification, true);
-        if (!isset($spec['template'])) {
-            return static::getCollectionYesNoAbstention();
-        }
-        switch ($spec['template']) {
+        switch ($templateId) {
             case static::TEMPLATE_PRESENT:
                 return static::getCollectionPresent();
             case static::TEMPLATE_YES_NO:

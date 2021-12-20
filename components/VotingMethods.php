@@ -7,6 +7,7 @@ namespace app\components;
 use app\models\db\{Amendment, Consultation, IMotion, Motion, User, Vote, VotingBlock};
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use app\models\votings\AnswerTemplates;
 use yii\web\Request;
 
 /**
@@ -70,6 +71,11 @@ class VotingMethods
             $votingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
         }
         if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
+            if ($this->request->post('answerTemplate') !== null) {
+                $votingBlock->setAnswerTemplate(intval($this->request->post('answerTemplate')));
+            } else {
+                $votingBlock->setAnswerTemplate(AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION);
+            }
             if ($this->request->post('votesPublic') !== null) {
                 $votingBlock->votesPublic = intval($this->request->post('votesPublic'));
             } else {

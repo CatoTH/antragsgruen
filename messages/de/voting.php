@@ -54,7 +54,7 @@ return [
     'settings_votingtype_motion' => '(Änderungs-)Anträge',
     'settings_votingtype_question' => 'Eine einzelne Frage',
     'settings_title' => 'Titel',
-    'settings_description' => 'Beschreibung',
+    'settings_question' => 'Genaue Frage',
     'settings_answers' => 'Antwortmöglichkeiten',
     'settings_answers_yesnoabst' => 'Ja, Nein, Enthaltung',
     'settings_answers_yesno' => 'Ja, Nein',

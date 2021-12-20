@@ -11,8 +11,8 @@ use yii\db\ActiveRecord;
 /**
  * @property int $id
  * @property int $consultationId
+ * @property int $type
  * @property string $title
- * @property string|null $description
  * @property int|null $majorityType
  * @property int|null $votesPublic
  * @property int|null $resultsPublic
@@ -386,7 +386,16 @@ class VotingBlock extends ActiveRecord
      */
     public function getAnswers(): array
     {
-        return AnswerTemplates::fromVotingBlockData($this->answers);
+        return AnswerTemplates::fromVotingBlockData($this->getAnswerTemplate());
+    }
+
+    public function getAnswerTemplate(): int
+    {
+        if (empty($this->answers)) {
+            return AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION;
+        }
+        $spec = json_decode($this->answers, true);
+        return $spec['template'] ?? AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION;
     }
 
     public function setAnswerTemplate(int $templateId): void
