@@ -2,7 +2,7 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{Consultation, IMotion, Site, User, Vote, VotingBlock};
+use app\models\db\{Consultation, IVotingItem, Site, User, Vote, VotingBlock};
 use app\models\settings\Layout;
 use app\models\UserOrganization;
 use app\plugins\ModuleBase;
@@ -115,7 +115,7 @@ class Module extends ModuleBase
         return $results;
     }
 
-    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IMotion $imotion): ?bool
+    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IVotingItem $item): ?bool
     {
         $organizationIds = $user->getMyOrganizationIds();
 

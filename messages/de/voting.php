@@ -38,7 +38,7 @@ return [
     'admin_status_opened' => 'Die Abstimmung <strong>läuft</strong>, Mitglieder können nun ihre Stimmen vergeben',
     'admin_status_closed' => 'Die Abstimmung wurde <strong>geschlossen</strong>.',
     'admin_members_present' => 'Anwesende Mitglieder',
-    'admin_no_items_yet' => 'Dieser Abstimmung wurde noch kein (Änderungs-)Antrag hinzugefügt.',
+    'admin_no_items_yet' => 'Dieser Abstimmung wurde noch kein (Änderungs-)Antrag und keine Frage hinzugefügt.',
     'admin_add_amendments' => '(Änderungs-)Antrag hinzufügen',
     'admin_add_amendments_opt' => 'Bitte wähle den oder die hinzuzufügenden (Änderungs-)Anträge',
     'admin_add_btn' => 'Ausgewählten Antrag oder Änderungsantrag hinzufügen',

@@ -112,12 +112,12 @@ ob_start();
                     </div>
                     <div v-for="item in groupedVoting">
                         {{ item.title_with_prefix }}
-                        <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
+                        <a v-if="item.url_html" :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
                                 class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a>
-                        <a :href="itemAdminUrl(item)" title="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"
+                        <a v-if="itemAdminUrl(item)" :href="itemAdminUrl(item)" title="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"
                            :class="'adminUrl' + item.id"><span class="glyphicon glyphicon-wrench" aria-label="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"></span></a>
                         <br>
-                        <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
+                        <span class="amendmentBy" v-if="item.initiators_html"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
                     <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
                         <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
@@ -582,7 +582,7 @@ $html = ob_get_clean();
                 if (item.type === 'amendment') {
                     return amendmentEditUrl.replace(/00000000/, item.id);
                 }
-                return '???';
+                return null;
             },
             itemIsAccepted: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_ACCEPTED;

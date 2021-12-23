@@ -16,7 +16,7 @@ use yii\db\ActiveRecord;
  * @property VotingBlock|null $votingBlock
  * @property Vote[] $votes
  */
-class VotingQuestion extends ActiveRecord
+class VotingQuestion extends ActiveRecord implements IVotingItem
 {
     use VotingItemTrait;
 
@@ -43,5 +43,28 @@ class VotingQuestion extends ActiveRecord
     public function getVotes()
     {
         return $this->hasMany(Vote::class, ['questionId' => 'id']);
+    }
+
+    public function getMyConsultation(): ?Consultation
+    {
+        // TODO: Improve
+        return $this->votingBlock->getMyConsultation();
+    }
+
+    public function getAgendaApiBaseObject(): array
+    {
+        return [
+            'type' => 'question',
+            'id' => $this->id,
+            'prefix' => '',
+            'title_with_prefix' => $this->title,
+            'url_json' => null,
+            'url_html' => null,
+            'initiators_html' => null,
+            'procedure' => null,
+            'item_group_same_vote' => $this->getVotingData()->itemGroupSameVote,
+            'item_group_name' => $this->getVotingData()->itemGroupName,
+            'voting_status' => $this->votingStatus,
+        ];
     }
 }

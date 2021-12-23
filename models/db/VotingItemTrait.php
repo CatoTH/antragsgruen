@@ -18,6 +18,9 @@ trait VotingItemTrait
     /** @var null|VotingData */
     private $votingDataObject = null;
 
+
+    abstract public function getMyConsultation(): ?Consultation;
+
     public function getVotingData(): VotingData
     {
         $className = VotingData::class;

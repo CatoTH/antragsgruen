@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\exceptions\Internal;
+use app\models\proposedProcedure\Agenda;
 use app\models\settings\AntragsgruenApp;
 use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
@@ -1411,5 +1412,28 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $data;
+    }
+
+    public function getAgendaApiBaseObject(): array
+    {
+        if ($this->isProposalPublic()) {
+            $procedure = Agenda::formatProposedProcedure($this, Agenda::FORMAT_HTML);
+        } else {
+            $procedure = null;
+        }
+
+        return [
+            'type' => 'amendment',
+            'id' => $this->id,
+            'prefix' => $this->titlePrefix,
+            'title_with_prefix' => $this->getTitleWithPrefix(),
+            'url_json' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this, 'rest')),
+            'url_html' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this)),
+            'initiators_html' => $this->getInitiatorsStr(),
+            'procedure' => $procedure,
+            'item_group_same_vote' => $this->getVotingData()->itemGroupSameVote,
+            'item_group_name' => $this->getVotingData()->itemGroupName,
+            'voting_status' => $this->votingStatus,
+        ];
     }
 }

@@ -45,7 +45,7 @@ use yii\helpers\Html;
  * @property User|null $responsibilityUser
  * @property VotingBlock|null $votingBlock
  */
-abstract class IMotion extends ActiveRecord
+abstract class IMotion extends ActiveRecord implements IVotingItem
 {
     use CacheTrait;
     use VotingItemTrait;

@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\proposedProcedure\Agenda;
 use app\models\notifications\{MotionProposedProcedure,
     MotionPublished,
     MotionSubmitted as MotionSubmittedNotification,
@@ -1250,5 +1251,30 @@ class Motion extends IMotion implements IRSSItem
         }
 
         return $data;
+    }
+
+    public function getAgendaApiBaseObject(): array
+    {
+        if ($this->isProposalPublic()) {
+            $procedure = Agenda::formatProposedProcedure($this, Agenda::FORMAT_HTML);
+        } elseif ($this->status === IMotion::STATUS_MOVED) {
+            $procedure = \app\views\consultation\LayoutHelper::getMotionMovedStatusHtml($this);
+        } else {
+            $procedure = null;
+        }
+
+        return [
+            'type' => 'motion',
+            'id' => $this->id,
+            'prefix' => $this->titlePrefix,
+            'title_with_prefix' => $this->getTitleWithPrefix(),
+            'url_json' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this, 'rest')),
+            'url_html' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this)),
+            'initiators_html' => $this->getInitiatorsStr(),
+            'procedure' => $procedure,
+            'item_group_same_vote' => $this->getVotingData()->itemGroupSameVote,
+            'item_group_name' => $this->getVotingData()->itemGroupName,
+            'voting_status' => $this->votingStatus,
+        ];
     }
 }
