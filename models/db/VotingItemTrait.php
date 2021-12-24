@@ -31,7 +31,9 @@ trait VotingItemTrait
         }
 
         if (!is_object($this->votingDataObject)) {
-            $this->votingDataObject = new $className($this->votingData);
+            /** @var VotingData $object */
+            $object = new $className($this->votingData);
+            $this->votingDataObject = $object;
         }
 
         return $this->votingDataObject;
@@ -40,7 +42,7 @@ trait VotingItemTrait
     public function setVotingData(VotingData $data): void
     {
         $this->votingDataObject = $data;
-        $this->votingData       = json_encode($data, JSON_PRETTY_PRINT);
+        $this->votingData = (string)json_encode($data, JSON_PRETTY_PRINT);
     }
 
     /**
@@ -55,7 +57,7 @@ trait VotingItemTrait
         $this->votingBlockId = $votingBlock->id;
 
         foreach ($votingBlock->votes as $vote) {
-            if ($vote->isForIMotion($this)) {
+            if ($vote->isForVotingItem($this)) {
                 $vote->delete();
             }
         }

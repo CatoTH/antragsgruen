@@ -173,7 +173,7 @@ class VotingBlock extends ActiveRecord
             } elseif ($vote->amendmentId > 0) {
                 $key = 'amendment.' . $vote->amendmentId;
             } elseif ($vote->questionId > 0) {
-                $key = 'question.' . $vote->amendmentId;
+                $key = 'question.' . $vote->questionId;
             } else {
                 continue;
             }
@@ -348,6 +348,15 @@ class VotingBlock extends ActiveRecord
             $amendment->save();
         }
 
+        foreach ($this->questions as $question) {
+            $votes = $this->getVotesForQuestion($question);
+            $votingData = $question->getVotingData()->augmentWithResults($this, $votes);
+            $result = $this->getMajorityType()->calculateResult($votingData);
+            $question->setVotingData($votingData);
+            $question->setVotingResult($result);
+            $question->save();
+        }
+
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_CLOSE, $this->id);
     }
 
@@ -443,7 +452,7 @@ class VotingBlock extends ActiveRecord
     {
         $obj = ($this->answers ? json_decode($this->answers, true) : []);
         $obj['template'] = $templateId;
-        $this->answers = json_encode($obj);
+        $this->answers = (string)json_encode($obj);
     }
 
     public function getPermissions()
@@ -502,6 +511,7 @@ class VotingBlock extends ActiveRecord
 
         $groupsMyMotionIds = [];
         $groupsMyAmendmentIds = [];
+        $groupsMyQuestionsIds = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
             if ($motion->votingBlockId === $this->id && $motion->getVotingData()->itemGroupSameVote) {
                 $groupsMyMotionIds[$motion->id] = $motion->getVotingData()->itemGroupSameVote;
@@ -511,6 +521,9 @@ class VotingBlock extends ActiveRecord
                     $groupsMyAmendmentIds[$amendment->id] = $amendment->getVotingData()->itemGroupSameVote;
                 }
             }
+        }
+        foreach ($this->getMyConsultation()->votingQuestions as $question) {
+            $groupsMyQuestionsIds[$question->id] = $question->getVotingData()->itemGroupSameVote;
         }
 
         // If three motions are in a voting group, there will be three votes in the database.
@@ -523,6 +536,9 @@ class VotingBlock extends ActiveRecord
             }
             if ($vote->amendmentId !== null && isset($groupsMyAmendmentIds[$vote->amendmentId])) {
                 $groupId = $groupsMyAmendmentIds[$vote->amendmentId];
+            }
+            if ($vote->questionId !== null && isset($groupsMyQuestionsIds[$vote->questionId])) {
+                $groupId = $groupsMyQuestionsIds[$vote->questionId];
             }
 
             if ($groupId && in_array($groupId, $countedItemGroups)) {

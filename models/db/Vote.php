@@ -109,12 +109,14 @@ class Vote extends ActiveRecord
         }
     }
 
-    public function isForIMotion(IMotion $IMotion): bool
+    public function isForVotingItem(IMotion $item): bool
     {
-        if (is_a($IMotion, Amendment::class)) {
-            return $this->amendmentId === $IMotion->id;
+        if (is_a($item, Amendment::class)) {
+            return $this->amendmentId === $item->id;
+        } elseif (is_a($item, Motion::class)) {
+            return $this->motionId === $item->id;
         } else {
-            return $this->motionId === $IMotion->id;
+            return $this->questionId === $item->id;
         }
     }
 

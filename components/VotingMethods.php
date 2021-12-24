@@ -176,7 +176,7 @@ class VotingMethods
             $item = $this->consultation->getMotion($itemId);
         }
         if ($itemType === 'question') {
-            $item = $votingBlock->getQuestionById($itemId);
+            $item = $this->consultation->getVotingQuestion($itemId);
         }
 
         if (!$item) {
@@ -273,7 +273,7 @@ class VotingMethods
                 ResourceLock::unlockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
             } else {
                 // Vote for a single item that is not assigned to a item group
-                if (!in_array($voteData['itemType'], ['motion', 'amendment'])) {
+                if (!in_array($voteData['itemType'], ['motion', 'amendment', 'question'])) {
                     throw new FormError('Invalid vote');
                 }
                 $item = $this->getVotingItemByTypeAndId($voteData['itemType'], intval($voteData['itemId']), $votingBlock);

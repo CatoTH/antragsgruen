@@ -9,7 +9,7 @@ use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use Symfony\Component\Lock\{Lock, LockFactory, SharedLockInterface, Store\RedisStore, Store\SemaphoreStore};
 
-class ResourceLock
+final class ResourceLock
 {
     /** @var Lock[] */
     private static $acquiredLocks = [];
@@ -133,7 +133,7 @@ class ResourceLock
 
     public static function lockVotingBlockItemGroup(VotingBlock $votingBlock, string $itemGroup): void
     {
-        $resourceIds = array_map(function (IMotion $imotion): string {
+        $resourceIds = array_map(function (IVotingItem $imotion): string {
             return static::getVotingItemLockId($imotion);
         }, $votingBlock->getItemGroupItems($itemGroup));
         static::lockResourcesForWrite($resourceIds);
@@ -141,7 +141,7 @@ class ResourceLock
 
     public static function unlockVotingBlockItemGroup(VotingBlock $votingBlock, string $itemGroup): void
     {
-        $resourceIds = array_map(function (IMotion $imotion): string {
+        $resourceIds = array_map(function (IVotingItem $imotion): string {
             return static::getVotingItemLockId($imotion);
         }, $votingBlock->getItemGroupItems($itemGroup));
         static::unlockResources($resourceIds);

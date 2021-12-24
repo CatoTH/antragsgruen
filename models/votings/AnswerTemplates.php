@@ -6,7 +6,7 @@ namespace app\models\votings;
 
 use app\models\db\IMotion;
 
-class AnswerTemplates
+final class AnswerTemplates
 {
     const TEMPLATE_YES_NO_ABSTENTION = 0;
     const TEMPLATE_YES_NO = 1;

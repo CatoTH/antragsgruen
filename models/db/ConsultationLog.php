@@ -66,6 +66,8 @@ class ConsultationLog extends ActiveRecord
     const VOTING_OPEN                = 43;
     const VOTING_CLOSE               = 44;
     const VOTING_DELETE              = 45;
+    const VOTING_QUESTION_ACCEPTED   = 46;
+    const VOTING_QUESTION_REJECTED   = 47;
 
     public static $MOTION_ACTION_TYPES    = [
         self::MOTION_PUBLISH,

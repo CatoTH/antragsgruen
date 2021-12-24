@@ -4,6 +4,7 @@
 #	- phpstan-baseline.neon
 #
 parameters:
+    checkMissingIterableValueType: false # Issues becaus Yii's ActiveRecords are recognized as Iterables
     scanDirectories:
       - vendor
     scanFiles:

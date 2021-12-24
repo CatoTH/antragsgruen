@@ -72,4 +72,15 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
             'voting_status' => $this->votingStatus,
         ];
     }
+
+    public function setVotingResult(int $votingResult): void
+    {
+        $this->votingStatus = $votingResult;
+        if ($votingResult === IMotion::STATUS_ACCEPTED) {
+            ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::VOTING_QUESTION_ACCEPTED, $this->id);
+        }
+        if ($votingResult === IMotion::STATUS_REJECTED) {
+            ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::VOTING_QUESTION_REJECTED, $this->id);
+        }
+    }
 }

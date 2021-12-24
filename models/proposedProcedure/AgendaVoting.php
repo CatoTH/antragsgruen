@@ -152,6 +152,7 @@ class AgendaVoting
         } else {
             /** @var VotingQuestion $item */
             $votes = $voting->getVotesForQuestion($item);
+
         }
         if ($canSeeResults) {
             $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
