@@ -199,11 +199,11 @@ ob_start();
             </template>
         </ul>
         <div v-if="isPreparing" class="addingItemsForm">
-            <button class="btn btn-link btn-xs" type="button" v-if="!addingMotions && !addingQuestions" @click="addingMotions = true">
+            <button class="btn btn-link btn-xs addIMotions" type="button" v-if="!addingMotions && !addingQuestions" @click="addingMotions = true">
                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 <?= Yii::t('voting', 'admin_add_amendments') ?>
             </button>
-            <button class="btn btn-link btn-xs" type="button" v-if="!addingMotions && !addingQuestions" @click="openQuestionAdder()">
+            <button class="btn btn-link btn-xs addQuestions" type="button" v-if="!addingMotions && !addingQuestions" @click="openQuestionAdder()">
                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 <?= Yii::t('voting', 'admin_add_question') ?>
             </button>

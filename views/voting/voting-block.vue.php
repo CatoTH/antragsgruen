@@ -72,11 +72,11 @@ ob_start();
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'vote_yes') ?>
                     </span>
-                        <span class="yes" v-if="groupedVoting[0].voted === 'no'">
+                    <span class="no" v-if="groupedVoting[0].voted === 'no'">
                         <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'vote_no') ?>
                     </span>
-                        <span class="yes" v-if="groupedVoting[0].voted === 'abstention'">
+                    <span class="abstention" v-if="groupedVoting[0].voted === 'abstention'">
                         <?= Yii::t('voting', 'vote_abstention') ?>
                     </span>
 

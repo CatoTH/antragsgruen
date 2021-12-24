@@ -782,7 +782,7 @@ CREATE TABLE `###TABLE_PREFIX###votingQuestion` (
   `consultationId` int(11) NOT NULL,
   `title` text NOT NULL,
   `votingStatus` tinyint(4) DEFAULT NULL,
-  `votingBlockId` int(11) NOT NULL,
+  `votingBlockId` int(11) DEFAULT NULL,
   `votingData` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
