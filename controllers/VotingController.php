@@ -111,8 +111,11 @@ class VotingController extends Base
             case 'save-settings':
                 $this->votingMethods->voteSaveSettings($votingBlock);
                 break;
-            case 'add-item':
-                $this->votingMethods->voteAddItem($votingBlock);
+            case 'add-imotion':
+                $this->votingMethods->voteAddIMotion($votingBlock);
+                break;
+            case 'add-question':
+                $this->votingMethods->voteAddQuestion($votingBlock);
                 break;
             case 'remove-item':
                 $this->votingMethods->voteRemoveItem($votingBlock);
@@ -160,6 +163,7 @@ class VotingController extends Base
 
         if (\Yii::$app->request->post('type') === 'question') {
             $question = new VotingQuestion();
+            $question->consultationId = $newBlock->consultationId;
             $question->title = \Yii::$app->request->post('specificQuestion', '-');
             $question->votingBlockId = $newBlock->id;
             $question->save();

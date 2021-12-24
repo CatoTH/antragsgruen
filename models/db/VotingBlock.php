@@ -120,6 +120,16 @@ class VotingBlock extends ActiveRecord
         return $this->hasMany(VotingQuestion::class, ['votingBlockId' => 'id']);
     }
 
+    public function getQuestionById(int $questionId): ?VotingQuestion
+    {
+        foreach ($this->questions as $question) {
+            if ($question->id === $questionId) {
+                return $question;
+            }
+        }
+        return null;
+    }
+
     public function getAssignedToMotion()
     {
         return $this->hasOne(Motion::class, ['id' => 'assignedToMotionId']);
@@ -533,7 +543,7 @@ class VotingBlock extends ActiveRecord
     }
 
     /**
-     * @return IMotion[]
+     * @return IVotingItem[]
      */
     public function getItemGroupItems(?string $itemGroupId): array
     {
@@ -548,6 +558,11 @@ class VotingBlock extends ActiveRecord
                     $items[] = $amendment;
                 }
             }
+        }
+        foreach ($this->questions as $question) {
+            if ($itemGroupId === $question->getVotingData()->itemGroupSameVote && $this->id === $question->votingBlockId) {
+                    $items[] = $question;
+                }
         }
         return $items;
     }

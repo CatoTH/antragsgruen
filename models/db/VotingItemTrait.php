@@ -85,5 +85,4 @@ trait VotingItemTrait
             $this->save();
         }
     }
-
 }

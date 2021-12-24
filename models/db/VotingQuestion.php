@@ -11,7 +11,8 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property string $title
  * @property int|null $votingStatus
- * @property int $votingBlockId
+ * @property int|null $votingBlockId
+ * @property int $consultationId
  * @property string|null $votingData
  * @property VotingBlock|null $votingBlock
  * @property Vote[] $votes
@@ -26,6 +27,16 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
     public static function tableName()
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'votingQuestion';
+    }
+
+    public function getMyConsultation(): ?Consultation
+    {
+        $current = Consultation::getCurrent();
+        if ($current && $current->getMotion($this->id)) {
+            return $current;
+        } else {
+            return Consultation::findOne($this->consultationId);
+        }
     }
 
     /**
@@ -43,12 +54,6 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
     public function getVotes()
     {
         return $this->hasMany(Vote::class, ['questionId' => 'id']);
-    }
-
-    public function getMyConsultation(): ?Consultation
-    {
-        // TODO: Improve
-        return $this->votingBlock->getMyConsultation();
     }
 
     public function getAgendaApiBaseObject(): array

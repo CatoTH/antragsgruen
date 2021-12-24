@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\db\{Amendment, Consultation, IMotion, Motion, User, Vote, VotingBlock};
+use app\models\db\{Amendment, Consultation, IMotion, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use app\models\settings\VotingData;
 use app\models\votings\AnswerTemplates;
 use yii\web\Request;
 
@@ -91,7 +92,7 @@ class VotingMethods
         $votingBlock->save();
     }
 
-    public function voteAddItem(VotingBlock $votingBlock): void
+    public function voteAddIMotion(VotingBlock $votingBlock): void
     {
         if ($votingBlock->votingStatus !== VotingBlock::STATUS_PREPARING) {
             throw new FormError('Not possible to remove items in this state');
@@ -118,17 +119,35 @@ class VotingMethods
         }
     }
 
+    public function voteAddQuestion(VotingBlock $votingBlock): void
+    {
+        if ($votingBlock->votingStatus !== VotingBlock::STATUS_PREPARING) {
+            throw new FormError('Not possible to remove items in this state');
+        }
+
+        $question = new VotingQuestion();
+        $question->title = \Yii::$app->request->post('question', '-');
+        $question->consultationId = $votingBlock->consultationId;
+        $question->votingBlockId = $votingBlock->id;
+        $question->save();
+    }
+
     public function voteRemoveItem(VotingBlock $votingBlock): void
     {
         if ($votingBlock->votingStatus !== VotingBlock::STATUS_PREPARING) {
             throw new FormError('Not possible to remove items in this state');
         }
+        /** @var IVotingItem|null $item */
         $item = null;
+        $itemId = intval($this->request->post('itemId'));
         if ($this->request->post('itemType') === 'motion') {
-            $item = $this->consultation->getMotion($this->request->post('itemId'));
+            $item = $this->consultation->getMotion($itemId);
         }
         if ($this->request->post('itemType') === 'amendment') {
-            $item = $this->consultation->getAmendment($this->request->post('itemId'));
+            $item = $this->consultation->getAmendment($itemId);
+        }
+        if ($this->request->post('itemType') === 'question') {
+            $item = $votingBlock->getQuestionById($itemId);
         }
         if (!$item) {
             throw new FormError('Item not found');
@@ -144,7 +163,10 @@ class VotingMethods
         }
     }
 
-    private function getIMotionByTypeAndId(string $itemType, int $itemId, ?VotingBlock $ensureVotingBlock): IMotion
+    /**
+     * @throws FormError
+     */
+    private function getVotingItemByTypeAndId(string $itemType, int $itemId, VotingBlock $votingBlock): IVotingItem
     {
         $item = null;
         if ($itemType === 'amendment') {
@@ -153,18 +175,22 @@ class VotingMethods
         if ($itemType === 'motion') {
             $item = $this->consultation->getMotion($itemId);
         }
-        if ($item) {
-            if ($ensureVotingBlock && $item->votingBlockId !== $ensureVotingBlock->id) {
-                throw new FormError('Item not part of this voting block');
-            }
-            return $item;
-        } else {
+        if ($itemType === 'question') {
+            $item = $votingBlock->getQuestionById($itemId);
+        }
+
+        if (!$item) {
             throw new FormError('Item not found');
         }
+        if ($item->votingBlockId !== $votingBlock->id) {
+            throw new FormError('Item not part of this voting block');
+        }
+
+        return $item;
     }
 
-    private function voteForSingleItem(User $user, VotingBlock $votingBlock, IMotion $imotion, int $public, string $voteChoice): Vote {
-        if (!$votingBlock->userIsCurrentlyAllowedToVoteFor($user, $imotion)) {
+    private function voteForSingleItem(User $user, VotingBlock $votingBlock, IVotingItem $item, int $public, string $voteChoice): Vote {
+        if (!$votingBlock->userIsCurrentlyAllowedToVoteFor($user, $item)) {
             throw new FormError('Not possible to vote for this item');
         }
 
@@ -175,13 +201,20 @@ class VotingMethods
         if ($vote->vote === null) {
             throw new FormError('Invalid vote');
         }
-        if (is_a($imotion, Motion::class)) {
-            $vote->motionId = $imotion->id;
+        if (is_a($item, Motion::class)) {
+            $vote->motionId = $item->id;
             $vote->amendmentId = null;
+            $vote->questionId = null;
         }
-        if (is_a($imotion, Amendment::class)) {
+        if (is_a($item, Amendment::class)) {
             $vote->motionId = null;
-            $vote->amendmentId = $imotion->id;
+            $vote->amendmentId = $item->id;
+            $vote->questionId = null;
+        }
+        if (is_a($item, VotingQuestion::class)) {
+            $vote->motionId = null;
+            $vote->amendmentId = null;
+            $vote->questionId = $item->id;
         }
 
         // $public should be the same as votesPublic, as it was cached in the frontend and is sent from it as-is.
@@ -194,8 +227,8 @@ class VotingMethods
         return $vote;
     }
 
-    private function undoVoteForSingleItem(User $user, VotingBlock $votingBlock, IMotion $imotion): void {
-        $exitingVote = $votingBlock->getUserSingleItemVote($user, $imotion);
+    private function undoVoteForSingleItem(User $user, VotingBlock $votingBlock, IVotingItem $item): void {
+        $exitingVote = $votingBlock->getUserSingleItemVote($user, $item);
         if (!$exitingVote) {
             throw new FormError('Vote not found');
         }
@@ -243,15 +276,15 @@ class VotingMethods
                 if (!in_array($voteData['itemType'], ['motion', 'amendment'])) {
                     throw new FormError('Invalid vote');
                 }
-                $item = $this->getIMotionByTypeAndId($voteData['itemType'], intval($voteData['itemId']), $votingBlock);
-                ResourceLock::lockIMotionItemForVoting($item);
+                $item = $this->getVotingItemByTypeAndId($voteData['itemType'], intval($voteData['itemId']), $votingBlock);
+                ResourceLock::lockVotingItemForVoting($item);
                 if ($voteData['vote'] === 'undo') {
                     $this->undoVoteForSingleItem($user, $votingBlock, $item);
                 } else {
                     $vote = $this->voteForSingleItem($user, $votingBlock, $item, $public, $voteData['vote']);
                     $vote->save();
                 }
-                ResourceLock::unlockIMotionItemForVoting($item);
+                ResourceLock::unlockVotingItemForVoting($item);
             }
         }
     }

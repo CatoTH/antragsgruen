@@ -198,12 +198,20 @@ ob_start();
             </li>
             </template>
         </ul>
-        <div v-if="isPreparing" class="addingMotionForm">
-            <button class="btn btn-link btn-xs" type="button" v-if="!addingMotions" @click="addingMotions = true">
+        <div v-if="isPreparing" class="addingItemsForm">
+            <button class="btn btn-link btn-xs" type="button" v-if="!addingMotions && !addingQuestions" @click="addingMotions = true">
                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 <?= Yii::t('voting', 'admin_add_amendments') ?>
             </button>
-            <div v-if="addingMotions" class="addingMotions">
+            <button class="btn btn-link btn-xs" type="button" v-if="!addingMotions && !addingQuestions" @click="openQuestionAdder()">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                <?= Yii::t('voting', 'admin_add_question') ?>
+            </button>
+            <button class="btn btn-link btn-xs btnRemove" type="button" v-if="addingMotions || addingQuestions" @click="addingQuestions = false; addingMotions = false"
+                aria-label="<?= Yii::t('voting', 'admin_add_abort') ?>" title="<?= Yii::t('voting', 'admin_add_abort') ?>">
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+            </button>
+            <form v-if="addingMotions" class="addingMotions" @submit="addIMotion($event)">
                 <select class="stdDropdown" v-model="addableMotionSelected"
                     aria-label="<?= Yii::t('voting', 'admin_add_amendments') ?>" title="<?= Yii::t('voting', 'admin_add_amendments') ?>">
                     <option value=""><?= Yii::t('voting', 'admin_add_amendments_opt') ?></option>
@@ -220,11 +228,21 @@ ob_start();
                         </optgroup>
                     </template>
                 </select>
-                <button type="button" :disabled="!addableMotionSelected" class="btn btn-default" @click="addItem()">
+                <button type="submit" :disabled="!addableMotionSelected" class="btn btn-default">
                     <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                     <span class="sr-only"><?= Yii::t('voting', 'admin_add_btn') ?></span>
                 </button>
-            </div>
+            </form>
+            <form v-if="addingQuestions" class="addingQuestions" @submit="addQuestion($event)">
+                <label>
+                    <?= Yii::t('voting', 'admin_add_question_title') ?>:
+                    <input type="text" class="form-control" v-model="addingQuestionText" :id="'voting_question_' + voting.id">
+                </label>
+                <button type="submit" :disabled="!addingQuestionText" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                    <span class="sr-only"><?= Yii::t('voting', 'admin_add_btn') ?></span>
+                </button>
+            </form>
         </div>
         <footer class="votingFooter" v-if="voting.log.length > 2" aria-label="<?= Yii::t('voting', 'activity_title') ?>">
             <div class="activityOpener" v-if="activityClosed">
@@ -386,6 +404,8 @@ $html = ob_get_clean();
                 activityClosed: true,
                 addingMotions: false,
                 addableMotionSelected: '',
+                addingQuestions: false,
+                addingQuestionText: '',
                 settingsOpened: false,
                 changedSettings: {
                     // Caching the changed values here prevents unsaved changes to settings from being reset by AJAX polling
@@ -523,9 +543,28 @@ $html = ob_get_clean();
             removeItem: function (groupedVoting) {
                 this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);
             },
-            addItem: function () {
-                this.$emit('add-item', this.voting.id, this.addableMotionSelected);
+            addIMotion: function ($event) {
+                if ($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                }
+                this.$emit('add-imotion', this.voting.id, this.addableMotionSelected);
                 this.addableMotionSelected = '';
+            },
+            openQuestionAdder: function() {
+                this.addingQuestions = true;
+                window.setTimeout(() => {
+                    document.getElementById('voting_question_' + this.voting.id).focus();
+                }, 1);
+            },
+            addQuestion: function ($event) {
+                if ($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                }
+                this.$emit('add-question', this.voting.id, this.addingQuestionText);
+                this.addingQuestionText = '';
+                this.addingQuestions = false;
             },
             isAddable: function (item) {
                 if (item.type === 'motion') {

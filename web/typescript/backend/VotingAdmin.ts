@@ -33,7 +33,8 @@ export class VotingAdmin {
                                      @save-settings="saveSettings"
                                      @remove-item="removeItem"
                                      @delete-voting="deleteVoting"
-                                     @add-item="addItem"
+                                     @add-imotion="addIMotion"
+                                     @add-question="addQuestion"
                 ></voting-admin-widget>
             </div>`,
             data() {
@@ -153,10 +154,16 @@ export class VotingAdmin {
                         itemId
                     });
                 },
-                addItem(votingBlockId, itemDefinition) {
+                addIMotion(votingBlockId, itemDefinition) {
                     this._performOperation(votingBlockId, {
-                        op: 'add-item',
+                        op: 'add-imotion',
                         itemDefinition
+                    });
+                },
+                addQuestion(votingBlockId, question) {
+                    this._performOperation(votingBlockId, {
+                        op: 'add-question',
+                        question
                     });
                 },
                 reloadData: function () {

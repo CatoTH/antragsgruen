@@ -743,7 +743,7 @@ CREATE TABLE `###TABLE_PREFIX###userNotification` (
 CREATE TABLE `###TABLE_PREFIX###vote` (
   `id` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
-  `votingBlockId` int(11) NOT NULL,
+  `votingBlockId` int(11) DEFAULT NULL,
   `motionId` int(11) DEFAULT NULL,
   `amendmentId` int(11) DEFAULT NULL,
   `questionId` int(11) DEFAULT NULL,
@@ -779,6 +779,7 @@ CREATE TABLE `###TABLE_PREFIX###votingBlock` (
 
 CREATE TABLE `###TABLE_PREFIX###votingQuestion` (
   `id` int(11) NOT NULL,
+  `consultationId` int(11) NOT NULL,
   `title` text NOT NULL,
   `votingStatus` tinyint(4) DEFAULT NULL,
   `votingBlockId` int(11) NOT NULL,
@@ -1106,7 +1107,8 @@ ALTER TABLE `###TABLE_PREFIX###votingBlock`
 --
 ALTER TABLE `###TABLE_PREFIX###votingQuestion`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_question_block` (`votingBlockId`);
+  ADD KEY `fk_question_block` (`votingBlockId`),
+  ADD KEY `fk_question_consultation` (`consultationId`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -1567,7 +1569,8 @@ ALTER TABLE `###TABLE_PREFIX###votingBlock`
 -- Constraints for table `votingQuestion`
 --
 ALTER TABLE `###TABLE_PREFIX###votingQuestion`
-  ADD CONSTRAINT `fk_question_block` FOREIGN KEY (`votingBlockId`) REFERENCES `###TABLE_PREFIX###votingBlock` (`id`);
+  ADD CONSTRAINT `fk_question_block` FOREIGN KEY (`votingBlockId`) REFERENCES `###TABLE_PREFIX###votingBlock` (`id`),
+  ADD CONSTRAINT `fk_question_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;

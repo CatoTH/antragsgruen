@@ -558,7 +558,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
                 $toSetVotingBlock->save();
             }
         } elseif ($votingBlockId > 0) {
-            $toSetVotingBlock = $this->getMyConsultation()->getVotingBlock($votingBlockId);
+            $toSetVotingBlock = $this->getMyConsultation()->getVotingBlock(intval($votingBlockId));
         }
 
         if ($toSetVotingBlock) {

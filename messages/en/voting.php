@@ -41,9 +41,12 @@ return [
     'admin_no_items_yet' => 'No motion, amendment or question has been added to this voting yet.',
     'admin_add_amendments' => 'Add a motion or amendment',
     'admin_add_amendments_opt' => 'Please select a motion/amendment to add',
+    'admin_add_question' => 'Add a question',
+    'admin_add_question_title' => 'Question',
     'admin_add_btn' => 'Add selected motion or amendment',
     'admin_add_opt_motion' => 'Add the motion',
     'admin_add_opt_all_amend' => 'Add all following amendments',
+    'admin_add_abort' => 'Abort adding',
     'admin_settings_open' => 'Show settings',
     'admin_settings_close' => 'Close settings',
 

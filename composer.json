@@ -50,7 +50,7 @@
     "codeception/module-asserts": "^1.1",
     "codeception/module-webdriver": "^1.0",
     "codeception/module-yii2": "^1.1",
-    "phpstan/phpstan": "^0.12.81"
+    "phpstan/phpstan": "^1.2"
   },
   "autoload": {
     "psr-4": {

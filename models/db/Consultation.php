@@ -37,6 +37,7 @@ use yii\db\ActiveRecord;
  * @property SpeechQueue[] $speechQueues
  * @property UserNotification[] $userNotifications
  * @property VotingBlock[] $votingBlocks
+ * @property VotingQuestion[] $votingQuestions
  */
 class Consultation extends ActiveRecord
 {
@@ -323,15 +324,29 @@ class Consultation extends ActiveRecord
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
-    /**
-     * @param int $votingBlockId
-     * @return VotingBlock|null
-     */
-    public function getVotingBlock($votingBlockId)
+    public function getVotingBlock(int $votingBlockId): ?VotingBlock
     {
         foreach ($this->votingBlocks as $votingBlock) {
             if ($votingBlock->id == $votingBlockId) {
                 return $votingBlock;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotingQuestions()
+    {
+        return $this->hasMany(VotingQuestion::class, ['consultationId' => 'id']);
+    }
+
+    public function getVotingQuestion(int $questionId): ?VotingQuestion
+    {
+        foreach ($this->votingQuestions as $question) {
+            if ($question->id == $questionId) {
+                return $question;
             }
         }
         return null;

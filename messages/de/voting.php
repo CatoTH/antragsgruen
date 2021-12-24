@@ -41,9 +41,12 @@ return [
     'admin_no_items_yet' => 'Dieser Abstimmung wurde noch kein (Änderungs-)Antrag und keine Frage hinzugefügt.',
     'admin_add_amendments' => '(Änderungs-)Antrag hinzufügen',
     'admin_add_amendments_opt' => 'Bitte wähle den oder die hinzuzufügenden (Änderungs-)Anträge',
+    'admin_add_question' => 'Frage hinzufügen',
+    'admin_add_question_title' => 'Frage',
     'admin_add_btn' => 'Ausgewählten Antrag oder Änderungsantrag hinzufügen',
     'admin_add_opt_motion' => '- Den Antrag hinzufügen -',
     'admin_add_opt_all_amend' => '- Alle folgenden Änderungsanträge hinzufügen -',
+    'admin_add_abort' => 'Hinzufügen abbrechen',
     'admin_settings_open' => 'Einstellungen anzeigen',
     'admin_settings_close' => 'Einstellungen schließen',
 
