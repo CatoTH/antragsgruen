@@ -275,24 +275,24 @@ ob_start();
         <fieldset class="answerTemplate">
             <legend><?= Yii::t('voting', 'settings_answers') ?>:</legend>
             <label>
-                <input type="radio" value="<?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>" v-model="answerTemplate">
+                <input type="radio" :value="ANSWER_TEMPLATE_YES_NO_ABSTENTION" v-model="answerTemplate" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_answers_yesnoabst') ?>
             </label>
             <label>
-                <input type="radio" value="<?= AnswerTemplates::TEMPLATE_YES_NO ?>" v-model="answerTemplate">
+                <input type="radio" :value="ANSWER_TEMPLATE_YES_NO" v-model="answerTemplate" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_answers_yesno') ?>
             </label>
             <label>
-                <input type="radio" value="<?= AnswerTemplates::TEMPLATE_PRESENT ?>" v-model="answerTemplate">
+                <input type="radio" :value="ANSWER_TEMPLATE_PRESENT" v-model="answerTemplate" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_answers_present') ?>
                 <span class="glyphicon glyphicon-info-sign"
                   :aria-label="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'" v-tooltip="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'"></span>
             </label>
         </fieldset>
-        <fieldset class="majorityTypeSettings">
+        <fieldset class="majorityTypeSettings" v-if="selectedAnswersHaveMajority">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
             <label v-for="majorityTypeDef in MAJORITY_TYPES">
-                <input type="radio" :value="majorityTypeDef.id" v-model="majorityType">
+                <input type="radio" :value="majorityTypeDef.id" v-model="majorityType" :disabled="isOpen || isClosed">
                 {{ majorityTypeDef.name }}
                 <span class="glyphicon glyphicon-info-sign"
                   :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
@@ -373,6 +373,10 @@ $html = ob_get_clean();
 
     const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
+
+    const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
+    const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
+    const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
 
     const MAJORITY_TYPES = <?= json_encode(array_map(function ($className) {
         return [
@@ -461,6 +465,9 @@ $html = ob_get_clean();
             },
             isClosed: function () {
                 return this.voting.status === STATUS_CLOSED;
+            },
+            selectedAnswersHaveMajority: function () {
+                return this.answerTemplate === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answerTemplate === ANSWER_TEMPLATE_YES_NO;
             },
             organizationsWithUsersEntered: function () {
                 return this.organizations.filter(function (organization) {

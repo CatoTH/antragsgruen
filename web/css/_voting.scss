@@ -35,7 +35,7 @@
         flex-grow: 0;
         flex-basis: 20%;
       }
-      // User when opened
+      // Active for users, when the voting is opened
       .votingOptions, .voted {
         flex-basis: 230px;
         flex-grow: 0;
@@ -118,6 +118,12 @@
     border-bottom: solid 1px #ccc;
     .alert {
       margin-bottom: 0;
+    }
+  }
+
+  .votingOptions {
+    button {
+      margin-left: 5px;
     }
   }
 
