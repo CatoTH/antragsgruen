@@ -41,6 +41,13 @@
         flex-grow: 0;
         text-align: right;
       }
+      // For presence calls, the result is rather small
+      &.answer_template_2 {
+        .votesDetailed {
+          flex-basis: 20%;
+          flex-grow: 0;
+        }
+      }
 
       &:last-child {
         border-bottom: none;

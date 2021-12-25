@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
+use app\models\votings\Answer;
 use yii\db\ActiveRecord;
 
 /**
@@ -24,14 +25,6 @@ use yii\db\ActiveRecord;
  */
 class Vote extends ActiveRecord
 {
-    const VOTE_ABSTENTION = 0;
-    const VOTE_YES = 1;
-    const VOTE_NO = -1;
-
-    const VOTE_API_ABSTENTION = 'abstention';
-    const VOTE_API_YES = 'yes';
-    const VOTE_API_NO = 'no';
-
     /**
      * @return string
      */
@@ -78,35 +71,32 @@ class Vote extends ActiveRecord
         return $this->hasOne(VotingQuestion::class, ['id' => 'questionId']);
     }
 
-    public function getVoteForApi(): ?string
+    /**
+     * @param Answer[] $answers
+     */
+    public function getVoteForApi(array $answers): ?string
     {
-        switch ($this->vote) {
-            case static::VOTE_YES:
-                return static::VOTE_API_YES;
-            case static::VOTE_NO:
-                return static::VOTE_API_NO;
-            case static::VOTE_ABSTENTION:
-                return static::VOTE_API_ABSTENTION;
-            default:
-                return null;
+        foreach ($answers as $answer) {
+            if ($answer->dbId === $this->vote) {
+                return $answer->apiId;
+            }
         }
+        return null;
     }
 
-    public function setVoteFromApi(string $vote): void
+    /**
+     * @param Answer[] $answers
+     * @throws FormError
+     */
+    public function setVoteFromApi(string $vote, array $answers): void
     {
-        switch ($vote) {
-            case static::VOTE_API_YES:
-                $this->vote = self::VOTE_YES;
-                break;
-            case static::VOTE_API_NO:
-                $this->vote = self::VOTE_NO;
-                break;
-            case static::VOTE_API_ABSTENTION:
-                $this->vote = self::VOTE_ABSTENTION;
-                break;
-            default:
-                throw new FormError('Invalid vote: ' . $vote);
+        foreach ($answers as $answer) {
+            if ($answer->apiId === $vote) {
+                $this->vote = $answer->dbId;
+                return;
+            }
         }
+        throw new FormError('Invalid vote: ' . $vote);
     }
 
     public function isForVotingItem(IMotion $item): bool
@@ -132,15 +122,15 @@ class Vote extends ActiveRecord
             }
         }
 
+        $answers = $voting->getAnswers();
         $results = [
-            User::ORGANIZATION_DEFAULT => [
-                static::VOTE_API_YES => 0,
-                static::VOTE_API_NO => 0,
-                static::VOTE_API_ABSTENTION => 0,
-            ],
+            User::ORGANIZATION_DEFAULT => [],
         ];
+        foreach ($answers as $answer) {
+            $results[User::ORGANIZATION_DEFAULT][$answer->apiId] = 0;
+        }
         foreach ($votes as $vote) {
-            $voteType = $vote->getVoteForApi();
+            $voteType = $vote->getVoteForApi($answers);
             $results[User::ORGANIZATION_DEFAULT][$voteType]++;
         }
         return $results;

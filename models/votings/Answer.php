@@ -6,8 +6,11 @@ namespace app\models\votings;
 
 class Answer implements \JsonSerializable
 {
+    /** @var int */
+    public $dbId;
+
     /** @var string */
-    public $id;
+    public $apiId;
 
     /** @var string */
     public $title;
@@ -18,7 +21,7 @@ class Answer implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'id' => $this->id,
+            'api_id' => $this->apiId,
             'title' => $this->title,
             'status_id' => $this->statusId,
         ];

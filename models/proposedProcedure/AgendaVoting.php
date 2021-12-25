@@ -75,6 +75,7 @@ class AgendaVoting
 
     private function getApiObject(?string $title, ?User $user, string $context): array
     {
+        $answers = ($this->voting ? $this->voting->getAnswers() : null);
         $votingBlockJson = [
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
             'title' => $title,
@@ -83,7 +84,7 @@ class AgendaVoting
             'results_public' => ($this->voting ? $this->voting->resultsPublic : null),
             'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'majority_type' => ($this->voting ? $this->voting->majorityType : null),
-            'answers' => ($this->voting ? $this->voting->getAnswers() : null),
+            'answers' => $answers,
             'answers_template' => ($this->voting ? $this->voting->getAnswerTemplate() : null),
             'items' => [],
         ];
@@ -109,7 +110,7 @@ class AgendaVoting
 
             if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
                 $vote = $this->voting->getUserSingleItemVote($user, $item);
-                $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
+                $data['voted'] = ($vote ? $vote->getVoteForApi($answers) : null);
                 $data['can_vote'] = $this->voting->userIsCurrentlyAllowedToVoteFor($user, $item);
             }
 
@@ -145,6 +146,7 @@ class AgendaVoting
             return;
         }
 
+        $answers = $voting->getAnswers();
         if (is_a($item, Amendment::class)) {
             $votes = $voting->getVotesForAmendment($item);
         } elseif (is_a($item, Motion::class)) {
@@ -168,9 +170,9 @@ class AgendaVoting
                     return false;
                 }
             }));
-            $data['votes'] = array_map(function (Vote $vote): array {
+            $data['votes'] = array_map(function (Vote $vote) use ($answers): array {
                 return [
-                    'vote' => $vote->getVoteForApi(),
+                    'vote' => $vote->getVoteForApi($answers),
                     'user_id' => $vote->userId,
                     'user_name' => ($vote->user ? $vote->user->getAuthUsername() : null),
                     'user_organizations' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),

@@ -189,6 +189,9 @@ class VotingMethods
         return $item;
     }
 
+    /**
+     * @throws FormError
+     */
     private function voteForSingleItem(User $user, VotingBlock $votingBlock, IVotingItem $item, int $public, string $voteChoice): Vote {
         if (!$votingBlock->userIsCurrentlyAllowedToVoteFor($user, $item)) {
             throw new FormError('Not possible to vote for this item');
@@ -197,25 +200,10 @@ class VotingMethods
         $vote = new Vote();
         $vote->userId = $user->id;
         $vote->votingBlockId = $votingBlock->id;
-        $vote->setVoteFromApi($voteChoice);
-        if ($vote->vote === null) {
-            throw new FormError('Invalid vote');
-        }
-        if (is_a($item, Motion::class)) {
-            $vote->motionId = $item->id;
-            $vote->amendmentId = null;
-            $vote->questionId = null;
-        }
-        if (is_a($item, Amendment::class)) {
-            $vote->motionId = null;
-            $vote->amendmentId = $item->id;
-            $vote->questionId = null;
-        }
-        if (is_a($item, VotingQuestion::class)) {
-            $vote->motionId = null;
-            $vote->amendmentId = null;
-            $vote->questionId = $item->id;
-        }
+        $vote->setVoteFromApi($voteChoice, $votingBlock->getAnswers());
+        $vote->motionId = (is_a($item, Motion::class) ? $item->id : null);
+        $vote->amendmentId = (is_a($item, Amendment::class) ? $item->id : null);
+        $vote->questionId = (is_a($item, VotingQuestion::class) ? $item->id : null);
 
         // $public should be the same as votesPublic, as it was cached in the frontend and is sent from it as-is.
         // This is just a safeguard so that an accidental change in the value in the database does not lead to

@@ -104,6 +104,7 @@ ob_start();
             <template v-for="groupedVoting in groupedVotings">
             <li  :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
+                'answer_template_' + answerTemplate,
                 (isClosed ? 'showResults' : ''), (isClosed ? 'showDetailedResults' : '')
             ]">
                 <div class="titleLink">
@@ -145,18 +146,18 @@ ob_start();
                         <table class="votingTable votingTableSingle">
                             <thead>
                             <tr>
-                                <th><?= Yii::t('voting', 'vote_yes') ?></th>
-                                <th><?= Yii::t('voting', 'vote_no') ?></th>
-                                <th><?= Yii::t('voting', 'vote_abstention') ?></th>
-                                <th><?= Yii::t('voting', 'admin_votes_total') ?></th>
+                                <th v-for="answer in voting.answers">{{ answer.title }}</th>
+                                <th v-if="voting.answers.length > 1"><?= Yii::t('voting', 'admin_votes_total') ?></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td class="voteCountYes">{{ groupedVoting[0].vote_results[0].yes }}</td>
-                                <td class="voteCountNo">{{ groupedVoting[0].vote_results[0].no }}</td>
-                                <td class="voteCountAbstention">{{ groupedVoting[0].vote_results[0].abstention }}</td>
-                                <td class="voteCountTotal total">{{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}</td>
+                                <td v-for="answer in voting.answers" :class="'voteCount_' + answer.api_id">
+                                    {{ groupedVoting[0].vote_results[0][answer.api_id] }}
+                                </td>
+                                <td class="voteCountTotal total" v-if="voting.answers.length > 1">
+                                    {{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -165,7 +166,7 @@ ob_start();
                     }
                     ?>
                 </div>
-                <div class="result" v-if="isClosed">
+                <div class="result" v-if="isClosed && votingHasMajority">
                     <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_accepted') ?>
@@ -177,22 +178,10 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_yes') ?>:</strong>
+                <div class="singleVoteList" v-for="answer in voting.answers">
+                    <strong>{{ answer.title }}:</strong>
                     <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'yes')">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_no') ?>:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'no')">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_abstention') ?>:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'abstention')">{{ vote.user_name }}</li>
+                        <li v-for="vote in getVoteListVotes(groupedVoting, answer.api_id)">{{ vote.user_name }}</li>
                     </ul>
                 </div>
             </li>
@@ -467,7 +456,12 @@ $html = ob_get_clean();
                 return this.voting.status === STATUS_CLOSED;
             },
             selectedAnswersHaveMajority: function () {
+                // Used by the settings form
                 return this.answerTemplate === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answerTemplate === ANSWER_TEMPLATE_YES_NO;
+            },
+            votingHasMajority: function () {
+                // Used for the currently running vote as it is
+                return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
             },
             organizationsWithUsersEntered: function () {
                 return this.organizations.filter(function (organization) {

@@ -6,6 +6,7 @@ use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
 use app\models\settings\AntragsgruenApp;
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
+use app\models\settings\VotingData;
 use yii\db\ActiveRecord;
 
 /**
@@ -323,6 +324,16 @@ class VotingBlock extends ActiveRecord
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_OPEN, $this->id);
     }
 
+    private function closeVoting_setResultToItem(IVotingItem $item, VotingData $votingData): void
+    {
+        $item->setVotingData($votingData);
+        if ($this->votingHasMajority()) {
+            $result = $this->getMajorityType()->calculateResult($votingData);
+            $item->setVotingResult($result);
+        }
+        $item->save();
+    }
+
     public function closeVoting(): void {
         if ($this->votingStatus !== VotingBlock::STATUS_CLOSED) {
             $this->addActivity(static::ACTIVITY_TYPE_RESET);
@@ -333,28 +344,17 @@ class VotingBlock extends ActiveRecord
         foreach ($this->motions as $motion) {
             $votes = $this->getVotesForMotion($motion);
             $votingData = $motion->getVotingData()->augmentWithResults($this, $votes);
-            $result = $this->getMajorityType()->calculateResult($votingData);
-            $motion->setVotingData($votingData);
-            $motion->setVotingResult($result);
-            $motion->save();
+            $this->closeVoting_setResultToItem($motion, $votingData);
         }
-
         foreach ($this->amendments as $amendment) {
             $votes = $this->getVotesForAmendment($amendment);
             $votingData = $amendment->getVotingData()->augmentWithResults($this, $votes);
-            $result = $this->getMajorityType()->calculateResult($votingData);
-            $amendment->setVotingData($votingData);
-            $amendment->setVotingResult($result);
-            $amendment->save();
+            $this->closeVoting_setResultToItem($amendment, $votingData);
         }
-
         foreach ($this->questions as $question) {
             $votes = $this->getVotesForQuestion($question);
             $votingData = $question->getVotingData()->augmentWithResults($this, $votes);
-            $result = $this->getMajorityType()->calculateResult($votingData);
-            $question->setVotingData($votingData);
-            $question->setVotingResult($result);
-            $question->save();
+            $this->closeVoting_setResultToItem($question, $votingData);
         }
 
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_CLOSE, $this->id);
@@ -437,6 +437,12 @@ class VotingBlock extends ActiveRecord
     public function getAnswers(): array
     {
         return AnswerTemplates::fromVotingBlockData($this->getAnswerTemplate());
+    }
+
+    public function votingHasMajority(): bool
+    {
+        return $this->getAnswerTemplate() === AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ||
+               $this->getAnswerTemplate() === AnswerTemplates::TEMPLATE_YES_NO;
     }
 
     public function getAnswerTemplate(): int

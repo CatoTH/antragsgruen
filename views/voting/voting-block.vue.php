@@ -249,7 +249,7 @@ $html = ob_get_clean();
             },
             voteAnswerToCss: function (answer) {
                 const data = {
-                    "id": answer.id,
+                    "id": answer.api_id,
                     "title": answer.title,
                 };
                 if (answer.status_id === VOTING_STATUS_ACCEPTED) {
@@ -265,7 +265,7 @@ $html = ob_get_clean();
                 return data;
             },
             getVoteOptionById: function (id) {
-                return this.voting.answers.find(answer => answer.id === id);
+                return this.voting.answers.find(answer => answer.api_id === id);
             },
             votedOption: function (group) {
                 const answer = this.getVoteOptionById(group.voted);

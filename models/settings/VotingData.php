@@ -13,6 +13,7 @@ class VotingData implements \JsonSerializable
     /** @var null|string */
     public $itemGroupName = null;
 
+    // @TODO Migrate this to the more flexible answer system
     /** @var null|int */
     public $votesYes = null;
     /** @var null|int */
@@ -21,13 +22,16 @@ class VotingData implements \JsonSerializable
     public $votesAbstention = null;
     /** @var null|int */
     public $votesInvalid = null;
+    /** @var null|int */
+    public $votesPresent = null;
 
     /** @var null|string */
     public $comment = null;
 
     public function hasAnyData(): bool
     {
-        return $this->votesYes || $this->votesNo || $this->votesInvalid || $this->votesAbstention || $this->comment;
+        return $this->votesYes || $this->votesNo || $this->votesInvalid ||
+               $this->votesAbstention || $this->votesPresent || $this->comment;
     }
 
     /**
@@ -47,6 +51,9 @@ class VotingData implements \JsonSerializable
         if (isset($votes['invalid']) && is_numeric($votes['invalid'])) {
             $this->votesInvalid = intval($votes['invalid']);
         }
+        if (isset($votes['present']) && is_numeric($votes['present'])) {
+            $this->votesPresent = intval($votes['present']);
+        }
         if (isset($votes['comment'])) {
             $this->comment = $votes['comment'];
         }
@@ -57,9 +64,10 @@ class VotingData implements \JsonSerializable
         $results = Vote::calculateVoteResultsForApi($voting, $votes);
         $orga = \app\models\db\User::ORGANIZATION_DEFAULT;
         if (isset($results[$orga])) {
-            $this->votesYes = $results[$orga][Vote::VOTE_API_YES];
-            $this->votesNo = $results[$orga][Vote::VOTE_API_NO];
-            $this->votesAbstention = $results[$orga][Vote::VOTE_API_ABSTENTION];
+            $this->votesYes = $results[$orga]['yes'] ?? null;
+            $this->votesNo = $results[$orga]['no'] ?? null;
+            $this->votesAbstention = $results[$orga]['abstention'] ?? null;
+            $this->votesPresent = $results[$orga]['present'] ?? null;
         }
 
         return $this;
