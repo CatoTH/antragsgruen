@@ -46,7 +46,7 @@ ob_start();
     </h2>
     <div class="content votingShow" v-if="!settingsOpened">
         <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
-             v-if="isPreparing && majorityType.id === voting.majority_type">
+             v-if="isPreparing && majorityType.id === voting.majority_type && votingHasMajority">
             <strong>{{ majorityType.name }}</strong><br>
             <small>{{ majorityType.description }}</small>
         </div>
@@ -102,12 +102,12 @@ ob_start();
         </div>
         <ul class="votingListAdmin votingListCommon" v-if="groupedVotings.length > 0">
             <template v-for="groupedVoting in groupedVotings">
-            <li  :class="[
+            <li :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
                 'answer_template_' + answerTemplate,
                 (isClosed ? 'showResults' : ''), (isClosed ? 'showDetailedResults' : '')
             ]">
-                <div class="titleLink">
+                <div class="titleLink" :class="{'question': voting.answers.length === 1}">
                     <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">
                         {{ groupedVoting[0].item_group_name }}
                     </div>

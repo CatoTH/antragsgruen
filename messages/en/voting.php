@@ -20,6 +20,7 @@ return [
     'activity_reopened' => 'Voting re-opened',
 
     'results_title' => 'Voting results',
+    'results_none' => 'No voting results have been published yet',
 
     'admin_title' => 'Voting administration',
     'admin_bc' => 'Administration',

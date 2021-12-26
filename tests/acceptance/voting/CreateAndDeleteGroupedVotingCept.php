@@ -125,7 +125,7 @@ $I->wantTo('see the voting result on the public page');
 $I->gotoConsultationHome();
 $I->click('#votingResultsLink');
 $I->wait(0.5);
-$I->see('1', '.voting_motion_114 .votingTableSingle .voteCountYes');
+$I->see('1', '.voting_motion_114 .votingTableSingle .voteCount_yes');
 $I->seeElement('.voting_motion_114 .accepted');
 
 

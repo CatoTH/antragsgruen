@@ -77,8 +77,8 @@ $I->seeElement('.voting_question_2 span.abstention');
 $I->wantTo('Finish the voting');
 $I->click('.votingsAdminLink');
 
-$I->see('1', '.voting_question_1 .voteCountYes');
-$I->see('1', '.voting_question_2 .voteCountAbstention');
+$I->see('1', '.voting_question_1 .voteCount_yes');
+$I->see('1', '.voting_question_2 .voteCount_abstention');
 
 $I->clickJS($votingId . ' .btnClose');
 $I->wait(0.3);

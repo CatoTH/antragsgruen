@@ -20,6 +20,7 @@ return [
     'activity_reopened' => 'Abstimmung erneut geöffnet',
 
     'results_title' => 'Abstimmungsergebnisse',
+    'results_none' => 'Es wurden noch keine Abstimmungsergebnisse veröffentlicht',
 
     'admin_title' => 'Abstimmungen: Verwaltung',
     'admin_bc' => 'Verwaltung',

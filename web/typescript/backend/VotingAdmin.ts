@@ -194,7 +194,8 @@ export class VotingAdmin {
     private initVotingCreater() {
         const opener = this.element.querySelector('.createVotingOpener'),
             form = this.element.querySelector('.createVotingHolder'),
-            specificQuestion = this.element.querySelector('.specificQuestion');
+            specificQuestion = this.element.querySelector('.specificQuestion'),
+            majorityType = this.element.querySelector('.majorityTypeSettings');
         opener.addEventListener('click', () => {
             form.classList.remove('hidden');
             opener.classList.add('hidden');
@@ -221,6 +222,20 @@ export class VotingAdmin {
         form.querySelectorAll('.votingType input').forEach(el => {
             el.addEventListener('change', recalcQuestionListener);
         });
+        recalcQuestionListener();
+
+        const recalcAnswerTypeListener = () => {
+            if (getRadioListValue('.answerTemplate input', '0') === '2') {
+                majorityType.classList.add('hidden');
+            } else {
+                majorityType.classList.remove('hidden');
+
+            }
+        };
+        form.querySelectorAll('.answerTemplate input').forEach(el => {
+            el.addEventListener('change', recalcAnswerTypeListener);
+        });
+        recalcAnswerTypeListener();
 
         form.querySelector('form').addEventListener('submit', (ev) => {
             ev.stopPropagation();

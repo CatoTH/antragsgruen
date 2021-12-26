@@ -110,6 +110,9 @@
   .titleLink {
     line-height: 16px;
     overflow: hidden;
+    &.question {
+      font-weight: bold;
+    }
     > div {
       margin-bottom: 7px;
     }

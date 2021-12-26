@@ -517,6 +517,7 @@ class ConsultationController extends Base
 
     public function actionVotingResults(): string
     {
+        $this->forceLogin();
         $this->layout = 'column2';
 
         return $this->render('@app/views/voting/voting-results');
