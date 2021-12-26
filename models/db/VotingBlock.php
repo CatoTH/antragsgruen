@@ -5,24 +5,29 @@ namespace app\models\db;
 use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
 use app\models\settings\AntragsgruenApp;
-use app\models\VotingItemGroup;
+use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
+use app\models\settings\VotingData;
 use yii\db\ActiveRecord;
 
 /**
  * @property int $id
  * @property int $consultationId
+ * @property int $type
  * @property string $title
  * @property int|null $majorityType
  * @property int|null $votesPublic
  * @property int|null $resultsPublic
  * @property int|null $assignedToMotionId
  * @property string|null $usersPresentByOrga
+ * @property string|null $answers
+ * @property string|null $permissions
  * @property string|null $activityLog
  * @property int $votingStatus
  *
  * @property Consultation $consultation
  * @property Amendment[] $amendments
  * @property Motion[] $motions
+ * @property VotingQuestion[] $questions
  * @property Vote[] $votes
  * @property Motion|null $assignedToMotion
  */
@@ -108,6 +113,24 @@ class VotingBlock extends ActiveRecord
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestions()
+    {
+        return $this->hasMany(VotingQuestion::class, ['votingBlockId' => 'id']);
+    }
+
+    public function getQuestionById(int $questionId): ?VotingQuestion
+    {
+        foreach ($this->questions as $question) {
+            if ($question->id === $questionId) {
+                return $question;
+            }
+        }
+        return null;
+    }
+
     public function getAssignedToMotion()
     {
         return $this->hasOne(Motion::class, ['id' => 'assignedToMotionId']);
@@ -121,13 +144,16 @@ class VotingBlock extends ActiveRecord
         return $this->hasMany(Vote::class, ['votingBlockId' => 'id']);
     }
 
-    public function getUserSingleItemVote(User $user, IMotion $imotion): ?Vote
+    public function getUserSingleItemVote(User $user, IVotingItem $item): ?Vote
     {
         foreach ($this->votes as $vote) {
-            if ($vote->userId === $user->id && is_a($imotion, Motion::class) && $vote->motionId === $imotion->id) {
+            if ($vote->userId === $user->id && is_a($item, Motion::class) && $vote->motionId === $item->id) {
                 return $vote;
             }
-            if ($vote->userId === $user->id && is_a($imotion, Amendment::class) && $vote->amendmentId === $imotion->id) {
+            if ($vote->userId === $user->id && is_a($item, Amendment::class) && $vote->amendmentId === $item->id) {
+                return $vote;
+            }
+            if ($vote->userId === $user->id && is_a($item, VotingQuestion::class) && $vote->questionId === $item->id) {
                 return $vote;
             }
         }
@@ -135,11 +161,11 @@ class VotingBlock extends ActiveRecord
     }
 
     /** @var null|Vote[][] */
-    private $votesSortedByIMotionCache = null;
+    private $votesSortedByItemCache = null;
 
     private function initVotesSortedCache(): void
     {
-        if ($this->votesSortedByIMotionCache !== null) {
+        if ($this->votesSortedByItemCache !== null) {
             return;
         }
         foreach ($this->votes as $vote) {
@@ -147,13 +173,15 @@ class VotingBlock extends ActiveRecord
                 $key = 'motion.' . $vote->motionId;
             } elseif ($vote->amendmentId > 0) {
                 $key = 'amendment.' . $vote->amendmentId;
+            } elseif ($vote->questionId > 0) {
+                $key = 'question.' . $vote->questionId;
             } else {
                 continue;
             }
-            if (!isset($this->votesSortedByIMotionCache[$key])) {
-                $this->votesSortedByIMotionCache[$key] = [];
+            if (!isset($this->votesSortedByItemCache[$key])) {
+                $this->votesSortedByItemCache[$key] = [];
             }
-            $this->votesSortedByIMotionCache[$key][] = $vote;
+            $this->votesSortedByItemCache[$key][] = $vote;
         }
     }
 
@@ -163,8 +191,8 @@ class VotingBlock extends ActiveRecord
     public function getVotesForMotion(Motion $motion): array
     {
         $this->initVotesSortedCache();
-        if (isset($this->votesSortedByIMotionCache['motion.' . $motion->id])) {
-            return $this->votesSortedByIMotionCache['motion.' . $motion->id];
+        if (isset($this->votesSortedByItemCache['motion.' . $motion->id])) {
+            return $this->votesSortedByItemCache['motion.' . $motion->id];
         } else {
             return [];
         }
@@ -176,8 +204,18 @@ class VotingBlock extends ActiveRecord
     public function getVotesForAmendment(Amendment $amendment): array
     {
         $this->initVotesSortedCache();
-        if (isset($this->votesSortedByIMotionCache['amendment.' . $amendment->id])) {
-            return $this->votesSortedByIMotionCache['amendment.' . $amendment->id];
+        if (isset($this->votesSortedByItemCache['amendment.' . $amendment->id])) {
+            return $this->votesSortedByItemCache['amendment.' . $amendment->id];
+        } else {
+            return [];
+        }
+    }
+
+    public function getVotesForQuestion(VotingQuestion $question): array
+    {
+        $this->initVotesSortedCache();
+        if (isset($this->votesSortedByItemCache['question.' . $question->id])) {
+            return $this->votesSortedByItemCache['question.' . $question->id];
         } else {
             return [];
         }
@@ -192,30 +230,37 @@ class VotingBlock extends ActiveRecord
         return new $majorityTypes[$this->majorityType]();
     }
 
-    public function userIsGenerallyAllowedToVoteFor(User $user, IMotion $imotion): bool
+    public function userIsGenerallyAllowedToVoteFor(User $user, IVotingItem $item): bool
     {
-        $foundImotion = false;
-        if (is_a($imotion, Motion::class)) {
+        $foundItem = false;
+        if (is_a($item, Motion::class)) {
             foreach ($this->motions as $motion) {
-                if ($motion->id === $imotion->id) {
-                    $foundImotion = true;
+                if ($motion->id === $item->id) {
+                    $foundItem = true;
                 }
             }
         }
-        if (is_a($imotion, Amendment::class)) {
+        if (is_a($item, Amendment::class)) {
             foreach ($this->amendments as $amendment) {
-                if ($amendment->id === $imotion->id) {
-                    $foundImotion = true;
+                if ($amendment->id === $item->id) {
+                    $foundItem = true;
                 }
             }
         }
-        if (!$foundImotion) {
+        if (is_a($item, VotingQuestion::class)) {
+            foreach ($this->questions as $question) {
+                if ($question->id === $item->id) {
+                    $foundItem = true;
+                }
+            }
+        }
+        if (!$foundItem) {
             return false;
         }
 
         // In case a plugin provides eligibility check, we take its result. The first plugin providing the check wins.
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $allowed = $plugin::userIsAllowedToVoteFor($this, $user, $imotion);
+            $allowed = $plugin::userIsAllowedToVoteFor($this, $user, $item);
             if ($allowed !== null) {
                 return $allowed;
             }
@@ -225,9 +270,9 @@ class VotingBlock extends ActiveRecord
         return true;
     }
 
-    public function userIsCurrentlyAllowedToVoteFor(User $user, IMotion $imotion): bool
+    public function userIsCurrentlyAllowedToVoteFor(User $user, IVotingItem $item): bool
     {
-        if ($this->getUserSingleItemVote($user, $imotion)) {
+        if ($this->getUserSingleItemVote($user, $item)) {
             // The user has already voted
             return false;
         }
@@ -235,7 +280,7 @@ class VotingBlock extends ActiveRecord
             return false;
         }
 
-        return $this->userIsGenerallyAllowedToVoteFor($user, $imotion);
+        return $this->userIsGenerallyAllowedToVoteFor($user, $item);
     }
 
     public function switchToOfflineVoting(): void {
@@ -279,6 +324,16 @@ class VotingBlock extends ActiveRecord
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_OPEN, $this->id);
     }
 
+    private function closeVoting_setResultToItem(IVotingItem $item, VotingData $votingData): void
+    {
+        $item->setVotingData($votingData);
+        if ($this->votingHasMajority()) {
+            $result = $this->getMajorityType()->calculateResult($votingData);
+            $item->setVotingResult($result);
+        }
+        $item->save();
+    }
+
     public function closeVoting(): void {
         if ($this->votingStatus !== VotingBlock::STATUS_CLOSED) {
             $this->addActivity(static::ACTIVITY_TYPE_RESET);
@@ -289,19 +344,17 @@ class VotingBlock extends ActiveRecord
         foreach ($this->motions as $motion) {
             $votes = $this->getVotesForMotion($motion);
             $votingData = $motion->getVotingData()->augmentWithResults($this, $votes);
-            $result = $this->getMajorityType()->calculateResult($votingData);
-            $motion->setVotingData($votingData);
-            $motion->setVotingResult($result);
-            $motion->save();
+            $this->closeVoting_setResultToItem($motion, $votingData);
         }
-
         foreach ($this->amendments as $amendment) {
             $votes = $this->getVotesForAmendment($amendment);
             $votingData = $amendment->getVotingData()->augmentWithResults($this, $votes);
-            $result = $this->getMajorityType()->calculateResult($votingData);
-            $amendment->setVotingData($votingData);
-            $amendment->setVotingResult($result);
-            $amendment->save();
+            $this->closeVoting_setResultToItem($amendment, $votingData);
+        }
+        foreach ($this->questions as $question) {
+            $votes = $this->getVotesForQuestion($question);
+            $votingData = $question->getVotingData()->augmentWithResults($this, $votes);
+            $this->closeVoting_setResultToItem($question, $votingData);
         }
 
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_CLOSE, $this->id);
@@ -379,6 +432,41 @@ class VotingBlock extends ActiveRecord
     }
 
     /**
+     * @return Answer[]
+     */
+    public function getAnswers(): array
+    {
+        return AnswerTemplates::fromVotingBlockData($this->getAnswerTemplate());
+    }
+
+    public function votingHasMajority(): bool
+    {
+        return $this->getAnswerTemplate() === AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ||
+               $this->getAnswerTemplate() === AnswerTemplates::TEMPLATE_YES_NO;
+    }
+
+    public function getAnswerTemplate(): int
+    {
+        if (empty($this->answers)) {
+            return AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION;
+        }
+        $spec = json_decode($this->answers, true);
+        return $spec['template'] ?? AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION;
+    }
+
+    public function setAnswerTemplate(int $templateId): void
+    {
+        $obj = ($this->answers ? json_decode($this->answers, true) : []);
+        $obj['template'] = $templateId;
+        $this->answers = (string)json_encode($obj);
+    }
+
+    public function getPermissions()
+    {
+        // @TODO This is a placeholder and no permission system is really implemented yet
+    }
+
+    /**
      * @return VotingItemGroup[]
      */
     public function getVotingItemBlocks(bool $includeUngrouped, ?IMotion $adhocFilter): array
@@ -429,6 +517,7 @@ class VotingBlock extends ActiveRecord
 
         $groupsMyMotionIds = [];
         $groupsMyAmendmentIds = [];
+        $groupsMyQuestionsIds = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
             if ($motion->votingBlockId === $this->id && $motion->getVotingData()->itemGroupSameVote) {
                 $groupsMyMotionIds[$motion->id] = $motion->getVotingData()->itemGroupSameVote;
@@ -438,6 +527,9 @@ class VotingBlock extends ActiveRecord
                     $groupsMyAmendmentIds[$amendment->id] = $amendment->getVotingData()->itemGroupSameVote;
                 }
             }
+        }
+        foreach ($this->getMyConsultation()->votingQuestions as $question) {
+            $groupsMyQuestionsIds[$question->id] = $question->getVotingData()->itemGroupSameVote;
         }
 
         // If three motions are in a voting group, there will be three votes in the database.
@@ -450,6 +542,9 @@ class VotingBlock extends ActiveRecord
             }
             if ($vote->amendmentId !== null && isset($groupsMyAmendmentIds[$vote->amendmentId])) {
                 $groupId = $groupsMyAmendmentIds[$vote->amendmentId];
+            }
+            if ($vote->questionId !== null && isset($groupsMyQuestionsIds[$vote->questionId])) {
+                $groupId = $groupsMyQuestionsIds[$vote->questionId];
             }
 
             if ($groupId && in_array($groupId, $countedItemGroups)) {
@@ -470,7 +565,7 @@ class VotingBlock extends ActiveRecord
     }
 
     /**
-     * @return IMotion[]
+     * @return IVotingItem[]
      */
     public function getItemGroupItems(?string $itemGroupId): array
     {
@@ -485,6 +580,11 @@ class VotingBlock extends ActiveRecord
                     $items[] = $amendment;
                 }
             }
+        }
+        foreach ($this->questions as $question) {
+            if ($itemGroupId === $question->getVotingData()->itemGroupSameVote && $this->id === $question->votingBlockId) {
+                    $items[] = $question;
+                }
         }
         return $items;
     }

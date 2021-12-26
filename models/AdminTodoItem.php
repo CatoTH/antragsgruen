@@ -2,13 +2,8 @@
 
 namespace app\models;
 
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\AmendmentComment;
-use app\models\db\Consultation;
-use app\models\db\Motion;
-use app\models\db\MotionComment;
+use app\components\{Tools, UrlHelper};
+use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComment};
 
 class AdminTodoItem
 {

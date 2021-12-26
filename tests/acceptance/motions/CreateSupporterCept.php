@@ -45,7 +45,7 @@ $I->fillField('#typeMinSupporters', 2);
 $I->checkOption('#typeAllowMoreSupporters');
 $I->checkOption('#typeHasOrga');
 $motionTypePage->saveForm();
-$I->seeInField('#typeMinSupporters', 2);
+$I->seeInField('#typeMinSupporters', '2');
 
 
 $I->wantTo('create a motion, but without supporters');

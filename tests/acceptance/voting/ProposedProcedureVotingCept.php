@@ -66,9 +66,9 @@ $I->seeElement('.voting1 .btnClose');
 $I->seeElement('.voting1 .btnReset');
 $I->seeElement('.voting1 .voting_amendment_3 .votingTableSingle');
 
-$I->see('0', '.voting_amendment_3 .voteCountNo');
-$I->see('0', '.voting_amendment_3 .voteCountNo');
-$I->see('0', '.voting_amendment_3 .voteCountAbstention');
+$I->see('0', '.voting_amendment_3 .voteCount_no');
+$I->see('0', '.voting_amendment_3 .voteCount_no');
+$I->see('0', '.voting_amendment_3 .voteCount_abstention');
 $I->see('0', '.voting_amendment_3 .voteCountTotal');
 
 $I->wantTo('Vote no, but correct it to yes');
@@ -97,12 +97,12 @@ $I->wantTo('See the updated results');
 $I->click('.votingsAdminLink');
 $I->wait(0.3);
 
-$I->see('1', '.voting_amendment_3 .voteCountYes');
-$I->see('0', '.voting_amendment_3 .voteCountNo');
-$I->see('0', '.voting_amendment_3 .voteCountAbstention');
+$I->see('1', '.voting_amendment_3 .voteCount_yes');
+$I->see('0', '.voting_amendment_3 .voteCount_no');
+$I->see('0', '.voting_amendment_3 .voteCount_abstention');
 $I->see('1', '.voting_amendment_3 .voteCountTotal');
-$I->see('0', '.voting_amendment_274 .voteCountYes');
-$I->see('1', '.voting_amendment_274 .voteCountNo');
+$I->see('0', '.voting_amendment_274 .voteCount_yes');
+$I->see('1', '.voting_amendment_274 .voteCount_no');
 
 
 // @TODO Resetting it

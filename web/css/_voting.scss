@@ -35,11 +35,18 @@
         flex-grow: 0;
         flex-basis: 20%;
       }
-      // User when opened
+      // Active for users, when the voting is opened
       .votingOptions, .voted {
         flex-basis: 230px;
         flex-grow: 0;
         text-align: right;
+      }
+      // For presence calls, the result is rather small
+      &.answer_template_2 {
+        .votesDetailed {
+          flex-basis: 20%;
+          flex-grow: 0;
+        }
       }
 
       &:last-child {
@@ -103,6 +110,9 @@
   .titleLink {
     line-height: 16px;
     overflow: hidden;
+    &.question {
+      font-weight: bold;
+    }
     > div {
       margin-bottom: 7px;
     }
@@ -118,6 +128,12 @@
     border-bottom: solid 1px #ccc;
     .alert {
       margin-bottom: 0;
+    }
+  }
+
+  .votingOptions {
+    button {
+      margin-left: 5px;
     }
   }
 
@@ -212,7 +228,7 @@
     }
   }
 
-  .addingMotionForm {
+  .addingItemsForm {
     padding-top: 10px;
     padding-bottom: 10px;
     button {

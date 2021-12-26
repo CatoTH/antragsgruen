@@ -3,6 +3,7 @@
 
 use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
+use app\models\votings\AnswerTemplates;
 use app\models\db\{Consultation, IMotion, User, VotingBlock};
 use yii\helpers\Html;
 
@@ -29,19 +30,20 @@ ob_start();
             <template v-for="groupedVoting in groupedVotings">
             <li :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
+                'answer_template_' + voting.answers_template,
                 (isClosed ? 'showResults' : ''),
                 (isClosed && resultsPublic ? 'showDetailedResults' : 'noDetailedResults')
             ]" >
-                <div class="titleLink">
+                <div class="titleLink" :class="{'question': voting.answers.length === 1}">
                     <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">
                         {{ groupedVoting[0].item_group_name }}
                     </div>
                     <div v-for="item in groupedVoting">
                         {{ item.title_with_prefix }}
-                        <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
+                        <a v-if="item.url_html" :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
                                 class="glyphicon glyphicon-new-window"
                                 aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a><br>
-                        <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
+                        <span class="amendmentBy" v-if="item.initiators_html"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
                     <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
                         <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
@@ -55,30 +57,19 @@ ob_start();
 
                 <template v-if="isOpen">
                     <div class="votingOptions" v-if="groupedVoting[0].can_vote">
-                        <button type="button" class="btn btn-default btn-sm btnYes" @click="voteYes(groupedVoting)">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                            <?= Yii::t('voting', 'vote_yes') ?>
-                        </button>
-                        <button type="button" class="btn btn-default btn-sm btnNo" @click="voteNo(groupedVoting)">
-                            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                            <?= Yii::t('voting', 'vote_no') ?>
-                        </button>
-                        <button type="button" class="btn btn-default btn-sm btnAbstention" @click="voteAbstention(groupedVoting)">
-                            <?= Yii::t('voting', 'vote_abstention') ?>
+                        <button v-for="option in votingOptionButtons"
+                            type="button" :class="['btn', 'btn-sm', option.btnClass]" @click="vote(groupedVoting, option)">
+                            <span v-if="option.icon === 'yes'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <span v-if="option.icon === 'no'" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                            {{  option.title }}
                         </button>
                     </div>
                     <div class="voted" v-if="groupedVoting[0].voted">
-                    <span class="yes" v-if="groupedVoting[0].voted === 'yes'">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                        <?= Yii::t('voting', 'vote_yes') ?>
-                    </span>
-                        <span class="yes" v-if="groupedVoting[0].voted === 'no'">
-                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                        <?= Yii::t('voting', 'vote_no') ?>
-                    </span>
-                        <span class="yes" v-if="groupedVoting[0].voted === 'abstention'">
-                        <?= Yii::t('voting', 'vote_abstention') ?>
-                    </span>
+                        <span :class="[votedOption(groupedVoting[0]).id]">
+                            <span v-if="votedOption(groupedVoting[0]).icon === 'yes'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <span v-if="votedOption(groupedVoting[0]).icon === 'no'" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                            {{  votedOption(groupedVoting[0]).title }}
+                        </span>
 
                         <button type="button" class="btn btn-link btn-sm btnUndo" @click="voteUndo(groupedVoting)"
                                 title="<?= Yii::t('voting', 'vote_undo') ?>" aria-label="<?= Yii::t('voting', 'vote_undo') ?>">
@@ -97,18 +88,18 @@ ob_start();
                         <table class="votingTable votingTableSingle">
                             <thead>
                             <tr>
-                                <th><?= Yii::t('voting', 'vote_yes') ?></th>
-                                <th><?= Yii::t('voting', 'vote_no') ?></th>
-                                <th><?= Yii::t('voting', 'vote_abstention') ?></th>
-                                <th><?= Yii::t('voting', 'admin_votes_total') ?></th>
+                                <th v-for="answer in voting.answers">{{ answer.title }}</th>
+                                <th v-if="voting.answers.length > 1"><?= Yii::t('voting', 'admin_votes_total') ?></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td class="voteCountYes">{{ groupedVoting[0].vote_results[0].yes }}</td>
-                                <td class="voteCountNo">{{ groupedVoting[0].vote_results[0].no }}</td>
-                                <td class="voteCountAbstention">{{ groupedVoting[0].vote_results[0].abstention }}</td>
-                                <td class="voteCountTotal total">{{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}</td>
+                                <td v-for="answer in voting.answers" :class="'voteCount_' + answer.api_id">
+                                    {{ groupedVoting[0].vote_results[0][answer.api_id] }}
+                                </td>
+                                <td class="voteCountTotal total" v-if="voting.answers.length > 1">
+                                    {{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -117,7 +108,7 @@ ob_start();
                     }
                     ?>
                 </div>
-                <div class="result" v-if="isClosed">
+                <div class="result" v-if="isClosed && votingHasMajority">
                     <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_accepted') ?>
@@ -129,22 +120,10 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_yes') ?>:</strong>
+                <div class="singleVoteList" v-for="answer in voting.answers">
+                    <strong>{{ answer.title }}:</strong>
                     <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'yes')">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_no') ?>:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'no')">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_abstention') ?>:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'abstention')">{{ vote.user_name }}</li>
+                        <li v-for="vote in getVoteListVotes(groupedVoting, answer.api_id)">{{ vote.user_name }}</li>
                     </ul>
                 </div>
             </li>
@@ -201,6 +180,10 @@ $html = ob_get_clean();
     const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
 
+    const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
+    const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
+    const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
+
     Vue.component('voting-block-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
@@ -227,17 +210,26 @@ $html = ob_get_clean();
                 });
                 return allGroups;
             },
+            votingHasMajority: function () {
+                // Used for the currently running vote as it is
+                return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
+            },
+            votingOptionButtons: function () {
+                return this.voting.answers.map((answer) => {
+                    return this.voteAnswerToCss(answer);
+                });
+            },
             votesPublicNo: function () {
-                return this.voting.votesPublic === VOTES_PUBLIC_NO;
+                return this.voting.votes_public === VOTES_PUBLIC_NO;
             },
             votesPublicAdmin: function () {
-                return this.voting.votesPublic === VOTES_PUBLIC_ADMIN;
+                return this.voting.votes_public === VOTES_PUBLIC_ADMIN;
             },
             votesPublicAll: function () {
-                return this.voting.votesPublic === VOTES_PUBLIC_ALL;
+                return this.voting.votes_public === VOTES_PUBLIC_ALL;
             },
             resultsPublic: function () {
-                return this.voting.resultsPublic === RESULTS_PUBLIC_YES;
+                return this.voting.results_public === RESULTS_PUBLIC_YES;
             },
             isOpen: function () {
                 return this.voting.status === STATUS_OPEN;
@@ -247,17 +239,38 @@ $html = ob_get_clean();
             }
         },
         methods: {
-            voteYes: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'yes', this.voting.votesPublic);
-            },
-            voteNo: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'no', this.voting.votesPublic);
-            },
-            voteAbstention: function (groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'abstention', this.voting.votesPublic);
+            vote: function (groupedVoting, voteOption) {
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, voteOption.id, this.voting.votes_public);
             },
             voteUndo: function(groupedVoting) {
-                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'undo', this.voting.votesPublic);
+                this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'undo', this.voting.votes_public);
+            },
+            voteAnswerToCss: function (answer) {
+                const data = {
+                    "id": answer.api_id,
+                    "title": answer.title,
+                    "btnClass": "btn" + answer.api_id.charAt(0).toUpperCase() + answer.api_id.slice(1),
+                };
+                if (answer.status_id === VOTING_STATUS_ACCEPTED) {
+                    data.icon = 'yes';
+                } else if (answer.status_id === VOTING_STATUS_REJECTED) {
+                    data.icon = 'no';
+                } else {
+                    data.icon = null;
+                }
+                if (this.voting.answers.length === 1) {
+                    data.btnClass += ' btn-primary';
+                } else {
+                    data.btnClass += ' btn-default';
+                }
+                return data;
+            },
+            getVoteOptionById: function (id) {
+                return this.voting.answers.find(answer => answer.api_id === id);
+            },
+            votedOption: function (group) {
+                const answer = this.getVoteOptionById(group.voted);
+                return this.voteAnswerToCss(answer);
             },
             itemIsAccepted: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_ACCEPTED;

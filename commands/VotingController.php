@@ -26,6 +26,7 @@ class VotingController extends Controller
 
     public function actionExportUser()
     {
+        /** @var User[] $users */
         $users = User::find()->orderBy('email')->all();
 
         ob_start();
@@ -55,6 +56,7 @@ class VotingController extends Controller
         $usersThatAreAllowed = [];
         $knownUsers = [];
 
+        /** @var User[] $users */
         $users = User::find()->orderBy('email')->all();
         foreach ($users as $user) {
             $knownUsers[] = $user->email;

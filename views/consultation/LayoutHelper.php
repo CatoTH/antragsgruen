@@ -331,7 +331,7 @@ class LayoutHelper
                         echo static::showStatuteAmendment($imotion, $consultation);
                     }
 
-                    $shownMotions->addIMotion($imotion);
+                    $shownMotions->addVotingItem($imotion);
                 }
                 echo '</ul>';
             }

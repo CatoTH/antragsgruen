@@ -6,7 +6,6 @@ use app\models\db\VotingBlock;
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('enable non-quota speech lists');
 $I->gotoConsultationHome();
 $I->dontSeeElementInDOM('.currentVotings');
 $I->dontSeeElementInDOM('.voting_amendment_3');
@@ -54,8 +53,8 @@ $I->seeElement('#votingItemBlockName');
 $I->seeInField('#votingItemBlockName', 'Vote for Ä1 and A5 at the same time');
 
 
-$I->wantTo('See the new group in the motion, too');
-$page = $I->gotoMotionList()->gotoMotionEdit(114);
+$I->wantTo('See the new group in the amendment, too');
+$page = $I->gotoMotionList()->gotoAmendmentEdit(1);
 $I->seeElement('.votingDataHolder');
 $I->seeInField('#votingItemBlockName', 'Vote for Ä1 and A5 at the same time');
 
@@ -110,23 +109,23 @@ $I->seeElement('.voting_motion_114 .accepted');
 $I->click('.adminUrl114');
 $votingStatus = $I->executeJS('return $("input[name=votingStatus]:checked").val()');
 $I->assertEquals(\app\models\db\IMotion::STATUS_ACCEPTED, $votingStatus);
-$I->seeInField('#votesYes', 1);
-$I->seeInField('#votesNo', 0);
-$I->seeInField('#votesAbstention', 0);
+$I->seeInField('#votesYes', '1');
+$I->seeInField('#votesNo', '0');
+$I->seeInField('#votesAbstention', '0');
 
 $I->gotoMotionList()->gotoAmendmentEdit(1);
 $votingStatus = $I->executeJS('return $("input[name=votingStatus]:checked").val()');
 $I->assertEquals(\app\models\db\IMotion::STATUS_ACCEPTED, $votingStatus);
-$I->seeInField('#votesYes', 1);
-$I->seeInField('#votesNo', 0);
-$I->seeInField('#votesAbstention', 0);
+$I->seeInField('#votesYes', '1');
+$I->seeInField('#votesNo', '0');
+$I->seeInField('#votesAbstention', '0');
 
 
 $I->wantTo('see the voting result on the public page');
 $I->gotoConsultationHome();
 $I->click('#votingResultsLink');
 $I->wait(0.5);
-$I->see('1', '.voting_motion_114 .votingTableSingle .voteCountYes');
+$I->see('1', '.voting_motion_114 .votingTableSingle .voteCount_yes');
 $I->seeElement('.voting_motion_114 .accepted');
 
 

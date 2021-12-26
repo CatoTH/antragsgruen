@@ -1,5 +1,10 @@
 # Version history
 
+## Version 4.10.0 [not released yet]
+
+- Votings can now have simple questions that are not attached to any motion or amendment.
+- Votings have different answer options: besides "Yes/No/Abstention", it is now also possible to have simple "Yes/No"- and "Presence"-votings (Roll calls)
+
 ## Version 4.9.0 (2021-12-12)
 
 - Online voting functionality was added. Admins can now define voting blocks, where users can vote on amendments and motions to be adopted or rejected. A documentation about this feature is located at https://sandbox.motion.tools/help#votings .

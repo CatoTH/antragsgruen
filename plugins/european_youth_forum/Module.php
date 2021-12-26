@@ -2,7 +2,7 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{Consultation, IMotion, Site, User, Vote, VotingBlock};
+use app\models\db\{Consultation, IVotingItem, Site, User, Vote, VotingBlock};
 use app\models\settings\Layout;
 use app\models\UserOrganization;
 use app\plugins\ModuleBase;
@@ -50,41 +50,42 @@ class Module extends ModuleBase
     {
         $nyoVotes = $voting->getUserPresentByOrganization('nyo');
         $ingyoVotes = $voting->getUserPresentByOrganization('ingyo');
+        $answers = $voting->getAnswers();
 
         $results = [
             'nyo' => [
-                Vote::VOTE_API_YES => 0,
+                'yes' => 0,
                 'yes_multiplied' => null,
-                Vote::VOTE_API_NO => 0,
+                'no' => 0,
                 'no_multiplied' => null,
-                Vote::VOTE_API_ABSTENTION => 0,
+                'abstention' => 0,
                 'abstention_multiplied' => null,
                 'total' => 0,
                 'total_multiplied' => null,
             ],
             'ingyo' => [
-                Vote::VOTE_API_YES => 0,
+                'yes' => 0,
                 'yes_multiplied' => null,
-                Vote::VOTE_API_NO => 0,
+                'no' => 0,
                 'no_multiplied' => null,
-                Vote::VOTE_API_ABSTENTION => 0,
+                'abstention' => 0,
                 'abstention_multiplied' => null,
                 'total' => 0,
                 'total_multiplied' => null,
             ],
             'total' => [
-                Vote::VOTE_API_YES => 0,
+                'yes' => 0,
                 'yes_multiplied' => null,
-                Vote::VOTE_API_NO => 0,
+                'no' => 0,
                 'no_multiplied' => null,
-                Vote::VOTE_API_ABSTENTION => 0,
+                'abstention' => 0,
                 'abstention_multiplied' => null,
                 'total' => 0,
                 'total_multiplied' => null,
             ],
         ];
         foreach ($votes as $vote) {
-            $voteType = $vote->getVoteForApi();
+            $voteType = $vote->getVoteForApi($answers);
             if (in_array('nyo', $vote->getUser()->getMyOrganizationIds())) {
                 $orga = 'nyo';
             } elseif (in_array('ingyo', $vote->getUser()->getMyOrganizationIds())) {
@@ -98,13 +99,13 @@ class Module extends ModuleBase
             $results['total']['total']++;
         }
 
-        $results['nyo']['yes_multiplied'] = $results['nyo'][Vote::VOTE_API_YES] * $ingyoVotes;
-        $results['nyo']['no_multiplied'] = $results['nyo'][Vote::VOTE_API_NO] * $ingyoVotes;
-        $results['nyo']['abstention_multiplied'] = $results['nyo'][Vote::VOTE_API_ABSTENTION] * $ingyoVotes;
+        $results['nyo']['yes_multiplied'] = $results['nyo']['yes'] * $ingyoVotes;
+        $results['nyo']['no_multiplied'] = $results['nyo']['no'] * $ingyoVotes;
+        $results['nyo']['abstention_multiplied'] = $results['nyo']['abstention'] * $ingyoVotes;
         $results['nyo']['total_multiplied'] = $results['nyo']['total'] * $ingyoVotes;
-        $results['ingyo']['yes_multiplied'] = $results['ingyo'][Vote::VOTE_API_YES] * $nyoVotes;
-        $results['ingyo']['no_multiplied'] = $results['ingyo'][Vote::VOTE_API_NO] * $nyoVotes;
-        $results['ingyo']['abstention_multiplied'] = $results['ingyo'][Vote::VOTE_API_ABSTENTION] * $nyoVotes;
+        $results['ingyo']['yes_multiplied'] = $results['ingyo']['yes'] * $nyoVotes;
+        $results['ingyo']['no_multiplied'] = $results['ingyo']['no'] * $nyoVotes;
+        $results['ingyo']['abstention_multiplied'] = $results['ingyo']['abstention'] * $nyoVotes;
         $results['ingyo']['total_multiplied'] = $results['ingyo']['total'] * $nyoVotes;
 
         $results['total']['yes_multiplied'] = $results['nyo']['yes_multiplied'] + $results['ingyo']['yes_multiplied'];
@@ -115,7 +116,7 @@ class Module extends ModuleBase
         return $results;
     }
 
-    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IMotion $imotion): ?bool
+    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IVotingItem $item): ?bool
     {
         $organizationIds = $user->getMyOrganizationIds();
 

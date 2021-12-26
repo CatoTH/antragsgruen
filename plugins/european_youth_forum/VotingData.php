@@ -2,7 +2,6 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\Vote;
 use app\models\db\VotingBlock;
 
 class VotingData extends \app\models\settings\VotingData {
@@ -41,27 +40,27 @@ class VotingData extends \app\models\settings\VotingData {
         $this->nyoUsers = $voting->getUserPresentByOrganization('nyo');
         $this->ingyoUsers = $voting->getUserPresentByOrganization('ingyo');
 
-        $this->nyoYes = $results['nyo'][Vote::VOTE_API_YES];
+        $this->nyoYes = $results['nyo']['yes'];
         $this->nyoYesMultiplied = $results['nyo']['yes_multiplied'];
-        $this->nyoNo = $results['nyo'][Vote::VOTE_API_NO];
+        $this->nyoNo = $results['nyo']['no'];
         $this->nyoNoMultiplied = $results['nyo']['no_multiplied'];
-        $this->nyoAbstention = $results['nyo'][Vote::VOTE_API_ABSTENTION];
+        $this->nyoAbstention = $results['nyo']['abstention'];
         $this->nyoTotal = $results['nyo']['total'];
         $this->nyoTotalMultiplied = $results['nyo']['total_multiplied'];
 
-        $this->ingyoYes = $results['ingyo'][Vote::VOTE_API_YES];
+        $this->ingyoYes = $results['ingyo']['yes'];
         $this->ingyoYesMultiplied = $results['ingyo']['yes_multiplied'];
-        $this->ingyoNo = $results['ingyo'][Vote::VOTE_API_NO];
+        $this->ingyoNo = $results['ingyo']['no'];
         $this->ingyoNoMultiplied = $results['ingyo']['no_multiplied'];
-        $this->ingyoAbstention = $results['ingyo'][Vote::VOTE_API_ABSTENTION];
+        $this->ingyoAbstention = $results['ingyo']['abstention'];
         $this->ingyoTotal = $results['ingyo']['total'];
         $this->ingyoTotalMultiplied = $results['ingyo']['total_multiplied'];
 
-        $this->totalYes = $results['total'][Vote::VOTE_API_YES];
+        $this->totalYes = $results['total']['yes'];
         $this->totalYesMultiplied = $results['total']['yes_multiplied'];
-        $this->totalNo = $results['total'][Vote::VOTE_API_NO];
+        $this->totalNo = $results['total']['no'];
         $this->totalNoMultiplied = $results['total']['no_multiplied'];
-        $this->totalAbstention = $results['total'][Vote::VOTE_API_ABSTENTION];
+        $this->totalAbstention = $results['total']['abstention'];
         $this->totalAbstentionMultiplied = $results['total']['abstention_multiplied'];
         $this->totalTotal = $results['total']['total'];
         $this->totalTotalMultiplied = $results['total']['total_multiplied'];

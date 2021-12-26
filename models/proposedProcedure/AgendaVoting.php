@@ -2,8 +2,7 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\{Amendment, IMotion, Motion, User, Vote, VotingBlock};
-use app\components\UrlHelper;
+use app\models\db\{Amendment, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\Access;
 use app\models\IMotionList;
 
@@ -20,7 +19,7 @@ class AgendaVoting
     /** @var VotingBlock|null */
     public $voting;
 
-    /** @var IMotion[] */
+    /** @var IVotingItem[] */
     public $items = [];
 
     /** @var IMotionList */
@@ -37,6 +36,10 @@ class AgendaVoting
     {
         if (!$this->voting) {
             return;
+        }
+        foreach ($this->voting->questions as $question) {
+            $this->items[]   = $question;
+            $this->itemIds->addQuestion($question);
         }
         foreach ($this->voting->motions as $motion) {
             if (!$motion->isVisibleForAdmins()) {
@@ -72,14 +75,17 @@ class AgendaVoting
 
     private function getApiObject(?string $title, ?User $user, string $context): array
     {
+        $answers = ($this->voting ? $this->voting->getAnswers() : null);
         $votingBlockJson = [
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
             'title' => $title,
             'status' => ($this->voting ? $this->voting->votingStatus : null),
-            'votesPublic' => ($this->voting ? $this->voting->votesPublic : null),
-            'resultsPublic' => ($this->voting ? $this->voting->resultsPublic : null),
-            'assignedMotion' => ($this->voting ? $this->voting->assignedToMotionId : null),
-            'majorityType' => ($this->voting ? $this->voting->majorityType : null),
+            'votes_public' => ($this->voting ? $this->voting->votesPublic : null),
+            'results_public' => ($this->voting ? $this->voting->resultsPublic : null),
+            'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
+            'majority_type' => ($this->voting ? $this->voting->majorityType : null),
+            'answers' => $answers,
+            'answers_template' => ($this->voting ? $this->voting->getAnswerTemplate() : null),
             'items' => [],
         ];
         if ($context === static::API_CONTEXT_ADMIN) {
@@ -100,50 +106,11 @@ class AgendaVoting
         }
 
         foreach ($this->items as $item) {
-            if ($item->isProposalPublic()) {
-                $procedure = Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
-            } elseif ($item->status === IMotion::STATUS_MOVED && is_a($item, Motion::class)) {
-                /** @var Motion $item */
-                $procedure = \app\views\consultation\LayoutHelper::getMotionMovedStatusHtml($item);
-            } else {
-                $procedure = null;
-            }
-
-            if (is_a($item, Amendment::class)) {
-                /** @var Amendment $item */
-                $data = [
-                    'type' => 'amendment',
-                    'id' => $item->id,
-                    'prefix' => $item->titlePrefix,
-                    'title_with_prefix' => $item->getTitleWithPrefix(),
-                    'url_json' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($item, 'rest')),
-                    'url_html' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($item)),
-                    'initiators_html' => $item->getInitiatorsStr(),
-                    'procedure' => $procedure,
-                    'item_group_same_vote' => $item->getVotingData()->itemGroupSameVote,
-                    'item_group_name' => $item->getVotingData()->itemGroupName,
-                    'voting_status' => $item->votingStatus,
-                ];
-            } else {
-                /** @var Motion $item */
-                $data = [
-                    'type' => 'motion',
-                    'id' => $item->id,
-                    'prefix' => $item->titlePrefix,
-                    'title_with_prefix' => $item->getTitleWithPrefix(),
-                    'url_json' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($item, 'rest')),
-                    'url_html' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($item)),
-                    'initiators_html' => $item->getInitiatorsStr(),
-                    'procedure' => $procedure,
-                    'item_group_same_vote' => $item->getVotingData()->itemGroupSameVote,
-                    'item_group_name' => $item->getVotingData()->itemGroupName,
-                    'voting_status' => $item->votingStatus,
-                ];
-            }
+            $data = $item->getAgendaApiBaseObject();
 
             if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
                 $vote = $this->voting->getUserSingleItemVote($user, $item);
-                $data['voted'] = ($vote ? $vote->getVoteForApi() : null);
+                $data['voted'] = ($vote ? $vote->getVoteForApi($answers) : null);
                 $data['can_vote'] = $this->voting->userIsCurrentlyAllowedToVoteFor($user, $item);
             }
 
@@ -160,7 +127,7 @@ class AgendaVoting
         return $votingBlockJson;
     }
 
-    private function setApiObjectResultData(array &$data, VotingBlock $voting, IMotion $item, bool $isAdmin): void
+    private function setApiObjectResultData(array &$data, VotingBlock $voting, IVotingItem $item, bool $isAdmin): void
     {
         if ($voting->resultsPublic === VotingBlock::RESULTS_PUBLIC_YES) {
             $canSeeResults = true;
@@ -179,11 +146,15 @@ class AgendaVoting
             return;
         }
 
+        $answers = $voting->getAnswers();
         if (is_a($item, Amendment::class)) {
             $votes = $voting->getVotesForAmendment($item);
-        } else {
-            /** @var Motion $item */
+        } elseif (is_a($item, Motion::class)) {
             $votes = $voting->getVotesForMotion($item);
+        } else {
+            /** @var VotingQuestion $item */
+            $votes = $voting->getVotesForQuestion($item);
+
         }
         if ($canSeeResults) {
             $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
@@ -199,9 +170,9 @@ class AgendaVoting
                     return false;
                 }
             }));
-            $data['votes'] = array_map(function (Vote $vote): array {
+            $data['votes'] = array_map(function (Vote $vote) use ($answers): array {
                 return [
-                    'vote' => $vote->getVoteForApi(),
+                    'vote' => $vote->getVoteForApi($answers),
                     'user_id' => $vote->userId,
                     'user_name' => ($vote->user ? $vote->user->getAuthUsername() : null),
                     'user_organizations' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),

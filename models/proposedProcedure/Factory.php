@@ -48,7 +48,7 @@ class Factory
 
             $imotions = IMotionStatusEngine::filterIMotionsByForbiddenStatuses($agendaItem->getMyIMotions(), $forbiddenStatuses, true);
             foreach ($imotions as $motion) {
-                if ($handledIMotions->hasIMotion($motion)) {
+                if ($handledIMotions->hasVotingItem($motion)) {
                     continue;
                 }
                 if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
@@ -66,7 +66,7 @@ class Factory
                 if (is_a($motion, Motion::class)) {
                     $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
                     foreach ($amendments as $amendment) {
-                        if ($handledIMotions->hasIMotion($amendment)) {
+                        if ($handledIMotions->hasVotingItem($amendment)) {
                             continue;
                         }
                         if ($amendment->votingBlockId > 0 && $amendment->votingBlock) {
@@ -111,7 +111,7 @@ class Factory
 
             $unhandledMotions = [];
             foreach ($this->consultation->getVisibleIMotionsSorted(true) as $motion) {
-                if (!$handledIMotions->hasIMotion($motion)) {
+                if (!$handledIMotions->hasVotingItem($motion)) {
                     $unhandledMotions[] = $motion;
                 }
             }
@@ -137,7 +137,7 @@ class Factory
             $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $imotion->getTitleWithPrefix();
             $item  = new Agenda($idCount++, $title, null);
 
-            if ($handledIMotions->hasIMotion($imotion)) {
+            if ($handledIMotions->hasVotingItem($imotion)) {
                 continue;
             }
             if (!$imotion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
@@ -156,7 +156,7 @@ class Factory
             if (is_a($imotion, Motion::class)) {
                 $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($imotion->amendments, $forbiddenStatuses, true);
                 foreach ($amendments as $amendment) {
-                    if ($handledIMotions->hasIMotion($amendment)) {
+                    if ($handledIMotions->hasVotingItem($amendment)) {
                         continue;
                     }
                     if ($amendment->votingBlockId && $amendment->votingBlock) {
@@ -173,7 +173,7 @@ class Factory
             $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
             if ($imotion->isProposalPublic() || $this->includeInvisible) {
-                $handledIMotions->addIMotion($imotion);
+                $handledIMotions->addVotingItem($imotion);
                 $block->items[] = $imotion;
             }
             if (is_a($imotion, Motion::class)) {

@@ -82,7 +82,7 @@ if ($longVersion) {
                     /** @var Amendment $imotion */
                     echo LayoutHelper::showStatuteAmendment($imotion, $consultation);
                 }
-                $shownIMotions->addIMotion($imotion);
+                $shownIMotions->addVotingItem($imotion);
             }
             echo '</ul>';
         }
@@ -92,7 +92,7 @@ if ($longVersion) {
 /** @var IMotion[] $otherMotions */
 $otherMotions = [];
 foreach ($_motions as $imotion) {
-    if (!$shownIMotions->hasIMotion($imotion)) {
+    if (!$shownIMotions->hasVotingItem($imotion)) {
         if ($imotion->status === IMotion::STATUS_MOVED) {
             continue;
         }

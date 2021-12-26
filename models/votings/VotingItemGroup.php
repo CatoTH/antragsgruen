@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\models;
+namespace app\models\votings;
 
 use app\models\db\{Amendment, IMotion, Motion, VotingBlock};
 use app\models\exceptions\FormError;

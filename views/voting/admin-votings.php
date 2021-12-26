@@ -1,8 +1,10 @@
 <?php
 
-use app\components\UrlHelper;
+use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
+use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
+use app\models\votings\AnswerTemplates;
 use yii\helpers\Html;
 
 /**
@@ -82,13 +84,28 @@ foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
             <?= Yii::t('voting', 'settings_create') ?>
         </h2>
         <form method="POST" class="content creatingVoting votingSettings">
+            <fieldset class="votingType">
+                <legend><?= Yii::t('voting', 'settings_votingtype') ?>:</legend>
+                <label>
+                    <input type="radio" name="votingTypeNew" value="question" required checked>
+                    <?= Yii::t('voting', 'settings_votingtype_question') ?>
+                </label>
+                <label>
+                    <input type="radio" name="votingTypeNew" value="motions" required>
+                    <?= Yii::t('voting', 'settings_votingtype_motion') ?>
+                </label>
+            </fieldset>
             <label class="titleSetting">
                 <?= Yii::t('voting', 'settings_title') ?>:<br>
                 <input type="text" class="form-control settingsTitle">
             </label>
+            <label class="specificQuestion">
+                <?= Yii::t('voting', 'settings_question') ?>:<br>
+                <input type="text" class="form-control settingsQuestion">
+            </label>
             <label class="assignedMotion">
                 <?= Yii::t('voting', 'settings_motionassign') ?>:
-                <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('voting', 'settings_motionassign_h')) ?>
+                <?= HTMLTools::getTooltipIcon(Yii::t('voting', 'settings_motionassign_h')) ?>
                 <br>
                 <select class="stdDropdown settingsAssignedMotion">
                     <option value=""> - <?= Yii::t('voting', 'settings_motionassign_none') ?> -</option>
@@ -102,6 +119,64 @@ foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
                     ?>
                 </select>
             </label>
+            <fieldset class="answerTemplate">
+                <legend><?= Yii::t('voting', 'settings_answers') ?>:</legend>
+                <label>
+                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>" required checked="checked">
+                    <?= Yii::t('voting', 'settings_answers_yesnoabst') ?>
+                </label>
+                <label>
+                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_YES_NO ?>" required>
+                    <?= Yii::t('voting', 'settings_answers_yesno') ?>
+                </label>
+                <label>
+                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_PRESENT ?>" required>
+                    <?= Yii::t('voting', 'settings_answers_present') ?>
+                    <?= HTMLTools::getTooltipIcon(Yii::t('voting', 'settings_answers_presenth')) ?>
+                </label>
+            </fieldset>
+            <fieldset class="majorityTypeSettings">
+                <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
+                <?php
+                foreach (IMajorityType::getMajorityTypes() as $majorityType) {
+                    ?>
+                    <label>
+                        <input type="radio" value="<?= $majorityType::getID() ?>" name="majorityTypeNew"
+                               <?= ($majorityType::getID() === IMajorityType::MAJORITY_TYPE_SIMPLE ? 'checked' : '') ?>>
+                        <?= Html::encode($majorityType::getName()) ?>
+                        <?= HTMLTools::getTooltipIcon($majorityType::getDescription()) ?>
+                    </label>
+                    <?php
+                }
+                ?>
+            </fieldset>
+            <fieldset class="resultsPublicSettings">
+                <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
+                <label>
+                    <input type="radio" value="0" name="resultsPublicNew">
+                    <?= Yii::t('voting', 'settings_resultspublic_admins') ?>
+                </label>
+                <label>
+                    <input type="radio" value="1" name="resultsPublicNew" checked>
+                    <?= Yii::t('voting', 'settings_resultspublic_all') ?>
+                </label>
+            </fieldset>
+            <fieldset class="votesPublicSettings">
+                <legend><?= Yii::t('voting', 'settings_votespublic') ?></legend>
+                <label>
+                    <input type="radio" value="0" name="votesPublicNew" checked>
+                    <?= Yii::t('voting', 'settings_votespublic_nobody') ?>
+                </label>
+                <label>
+                    <input type="radio" value="1" name="votesPublicNew">
+                    <?= Yii::t('voting', 'settings_votespublic_admins') ?>
+                </label>
+                <label>
+                    <input type="radio" value="2" name="votesPublicNew">
+                    <?= Yii::t('voting', 'settings_votespublic_all') ?>
+                </label>
+                <div class="hint"><?= Yii::t('voting', 'settings_votespublic_hint') ?></div>
+            </fieldset>
             <button type="submit" class="btn btn-success">
                 <?= Yii::t('voting', 'settings_save') ?>
             </button>

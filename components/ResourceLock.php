@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\db\{Amendment, IMotion, Motion, VotingBlock};
+use app\models\db\{Amendment, IMotion, IVotingItem, Motion, VotingBlock, VotingQuestion};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use Symfony\Component\Lock\{Lock, LockFactory, SharedLockInterface, Store\RedisStore, Store\SemaphoreStore};
 
-class ResourceLock
+final class ResourceLock
 {
     /** @var Lock[] */
     private static $acquiredLocks = [];
@@ -109,38 +109,40 @@ class ResourceLock
         ResourceLock::acquireWriteLock('voting.' . $votingBlock->id);
     }
 
-    private static function getIMotionLockId(IMotion $imotion): string
+    private static function getVotingItemLockId(IVotingItem $item): string
     {
-        if (is_a($imotion, Motion::class)) {
-            return 'voting.motion.' . $imotion->id;
+        if (is_a($item, Motion::class)) {
+            return 'voting.motion.' . $item->id;
+        } elseif (is_a($item, Amendment::class)) {
+            return 'voting.amendment.' . $item->id;
         } else {
-            /** @var Amendment $imotion */
-            return 'voting.amendment.' . $imotion->id;
+            /** @var VotingQuestion $item */
+            return 'voting.question.' . $item->id;
         }
     }
 
-    public static function lockIMotionItemForVoting(IMotion $imotion): void
+    public static function lockVotingItemForVoting(IVotingItem $item): void
     {
-        ResourceLock::acquireWriteLock(static::getIMotionLockId($imotion));
+        ResourceLock::acquireWriteLock(static::getVotingItemLockId($item));
     }
 
-    public static function unlockIMotionItemForVoting(IMotion $imotion): void
+    public static function unlockVotingItemForVoting(IVotingItem $item): void
     {
-        ResourceLock::unlockResources([static::getIMotionLockId($imotion)]);
+        ResourceLock::unlockResources([static::getVotingItemLockId($item)]);
     }
 
     public static function lockVotingBlockItemGroup(VotingBlock $votingBlock, string $itemGroup): void
     {
-        $resourceIds = array_map(function (IMotion $imotion): string {
-            return static::getIMotionLockId($imotion);
+        $resourceIds = array_map(function (IVotingItem $imotion): string {
+            return static::getVotingItemLockId($imotion);
         }, $votingBlock->getItemGroupItems($itemGroup));
         static::lockResourcesForWrite($resourceIds);
     }
 
     public static function unlockVotingBlockItemGroup(VotingBlock $votingBlock, string $itemGroup): void
     {
-        $resourceIds = array_map(function (IMotion $imotion): string {
-            return static::getIMotionLockId($imotion);
+        $resourceIds = array_map(function (IVotingItem $imotion): string {
+            return static::getVotingItemLockId($imotion);
         }, $votingBlock->getItemGroupItems($itemGroup));
         static::unlockResources($resourceIds);
     }

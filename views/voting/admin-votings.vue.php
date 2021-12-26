@@ -2,6 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\majorityType\IMajorityType;
+use app\models\votings\AnswerTemplates;
 use app\models\db\{IMotion, VotingBlock};
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
@@ -45,7 +46,7 @@ ob_start();
     </h2>
     <div class="content votingShow" v-if="!settingsOpened">
         <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
-             v-if="isPreparing && majorityType.id === voting.majorityType">
+             v-if="isPreparing && majorityType.id === voting.majority_type && votingHasMajority">
             <strong>{{ majorityType.name }}</strong><br>
             <small>{{ majorityType.description }}</small>
         </div>
@@ -101,22 +102,23 @@ ob_start();
         </div>
         <ul class="votingListAdmin votingListCommon" v-if="groupedVotings.length > 0">
             <template v-for="groupedVoting in groupedVotings">
-            <li  :class="[
+            <li :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
+                'answer_template_' + answerTemplate,
                 (isClosed ? 'showResults' : ''), (isClosed ? 'showDetailedResults' : '')
             ]">
-                <div class="titleLink">
+                <div class="titleLink" :class="{'question': voting.answers.length === 1}">
                     <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">
                         {{ groupedVoting[0].item_group_name }}
                     </div>
                     <div v-for="item in groupedVoting">
                         {{ item.title_with_prefix }}
-                        <a :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
+                        <a v-if="item.url_html" :href="item.url_html" title="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"><span
                                 class="glyphicon glyphicon-new-window" aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a>
-                        <a :href="itemAdminUrl(item)" title="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"
+                        <a v-if="itemAdminUrl(item)" :href="itemAdminUrl(item)" title="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"
                            :class="'adminUrl' + item.id"><span class="glyphicon glyphicon-wrench" aria-label="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"></span></a>
                         <br>
-                        <span class="amendmentBy"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
+                        <span class="amendmentBy" v-if="item.initiators_html"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
                     <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
                         <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
@@ -144,18 +146,18 @@ ob_start();
                         <table class="votingTable votingTableSingle">
                             <thead>
                             <tr>
-                                <th><?= Yii::t('voting', 'vote_yes') ?></th>
-                                <th><?= Yii::t('voting', 'vote_no') ?></th>
-                                <th><?= Yii::t('voting', 'vote_abstention') ?></th>
-                                <th><?= Yii::t('voting', 'admin_votes_total') ?></th>
+                                <th v-for="answer in voting.answers">{{ answer.title }}</th>
+                                <th v-if="voting.answers.length > 1"><?= Yii::t('voting', 'admin_votes_total') ?></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td class="voteCountYes">{{ groupedVoting[0].vote_results[0].yes }}</td>
-                                <td class="voteCountNo">{{ groupedVoting[0].vote_results[0].no }}</td>
-                                <td class="voteCountAbstention">{{ groupedVoting[0].vote_results[0].abstention }}</td>
-                                <td class="voteCountTotal total">{{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}</td>
+                                <td v-for="answer in voting.answers" :class="'voteCount_' + answer.api_id">
+                                    {{ groupedVoting[0].vote_results[0][answer.api_id] }}
+                                </td>
+                                <td class="voteCountTotal total" v-if="voting.answers.length > 1">
+                                    {{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -164,7 +166,7 @@ ob_start();
                     }
                     ?>
                 </div>
-                <div class="result" v-if="isClosed">
+                <div class="result" v-if="isClosed && votingHasMajority">
                     <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_accepted') ?>
@@ -176,33 +178,29 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_yes') ?>:</strong>
+                <div class="singleVoteList" v-for="answer in voting.answers">
+                    <strong>{{ answer.title }}:</strong>
                     <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'yes')">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_no') ?>:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'no')">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
-                <div class="singleVoteList">
-                    <strong><?= Yii::t('voting', 'vote_abstention') ?>:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, 'abstention')">{{ vote.user_name }}</li>
+                        <li v-for="vote in getVoteListVotes(groupedVoting, answer.api_id)">{{ vote.user_name }}</li>
                     </ul>
                 </div>
             </li>
             </template>
         </ul>
-        <div v-if="isPreparing" class="addingMotionForm">
-            <button class="btn btn-link btn-xs" type="button" v-if="!addingMotions" @click="addingMotions = true">
+        <div v-if="isPreparing" class="addingItemsForm">
+            <button class="btn btn-link btn-xs addIMotions" type="button" v-if="!addingMotions && !addingQuestions" @click="addingMotions = true">
                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 <?= Yii::t('voting', 'admin_add_amendments') ?>
             </button>
-            <div v-if="addingMotions" class="addingMotions">
+            <button class="btn btn-link btn-xs addQuestions" type="button" v-if="!addingMotions && !addingQuestions" @click="openQuestionAdder()">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                <?= Yii::t('voting', 'admin_add_question') ?>
+            </button>
+            <button class="btn btn-link btn-xs btnRemove" type="button" v-if="addingMotions || addingQuestions" @click="addingQuestions = false; addingMotions = false"
+                aria-label="<?= Yii::t('voting', 'admin_add_abort') ?>" title="<?= Yii::t('voting', 'admin_add_abort') ?>">
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+            </button>
+            <form v-if="addingMotions" class="addingMotions" @submit="addIMotion($event)">
                 <select class="stdDropdown" v-model="addableMotionSelected"
                     aria-label="<?= Yii::t('voting', 'admin_add_amendments') ?>" title="<?= Yii::t('voting', 'admin_add_amendments') ?>">
                     <option value=""><?= Yii::t('voting', 'admin_add_amendments_opt') ?></option>
@@ -219,11 +217,21 @@ ob_start();
                         </optgroup>
                     </template>
                 </select>
-                <button type="button" :disabled="!addableMotionSelected" class="btn btn-default" @click="addItem()">
+                <button type="submit" :disabled="!addableMotionSelected" class="btn btn-default">
                     <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                     <span class="sr-only"><?= Yii::t('voting', 'admin_add_btn') ?></span>
                 </button>
-            </div>
+            </form>
+            <form v-if="addingQuestions" class="addingQuestions" @submit="addQuestion($event)">
+                <label>
+                    <?= Yii::t('voting', 'admin_add_question_title') ?>:
+                    <input type="text" class="form-control" v-model="addingQuestionText" :id="'voting_question_' + voting.id">
+                </label>
+                <button type="submit" :disabled="!addingQuestionText" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                    <span class="sr-only"><?= Yii::t('voting', 'admin_add_btn') ?></span>
+                </button>
+            </form>
         </div>
         <footer class="votingFooter" v-if="voting.log.length > 2" aria-label="<?= Yii::t('voting', 'activity_title') ?>">
             <div class="activityOpener" v-if="activityClosed">
@@ -253,10 +261,27 @@ ob_start();
             <?= Yii::t('voting', 'settings_title') ?>:<br>
             <input type="text" v-model="settingsTitle" class="form-control">
         </label>
-        <fieldset class="majortyTypeSettings">
+        <fieldset class="answerTemplate">
+            <legend><?= Yii::t('voting', 'settings_answers') ?>:</legend>
+            <label>
+                <input type="radio" :value="ANSWER_TEMPLATE_YES_NO_ABSTENTION" v-model="answerTemplate" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_answers_yesnoabst') ?>
+            </label>
+            <label>
+                <input type="radio" :value="ANSWER_TEMPLATE_YES_NO" v-model="answerTemplate" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_answers_yesno') ?>
+            </label>
+            <label>
+                <input type="radio" :value="ANSWER_TEMPLATE_PRESENT" v-model="answerTemplate" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_answers_present') ?>
+                <span class="glyphicon glyphicon-info-sign"
+                  :aria-label="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'" v-tooltip="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'"></span>
+            </label>
+        </fieldset>
+        <fieldset class="majorityTypeSettings" v-if="selectedAnswersHaveMajority">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
             <label v-for="majorityTypeDef in MAJORITY_TYPES">
-                <input type="radio" :value="majorityTypeDef.id" v-model="majorityType">
+                <input type="radio" :value="majorityTypeDef.id" v-model="majorityType" :disabled="isOpen || isClosed">
                 {{ majorityTypeDef.name }}
                 <span class="glyphicon glyphicon-info-sign"
                   :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
@@ -338,6 +363,10 @@ $html = ob_get_clean();
     const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
 
+    const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
+    const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
+    const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
+
     const MAJORITY_TYPES = <?= json_encode(array_map(function ($className) {
         return [
             'id' => $className::getID(),
@@ -368,11 +397,14 @@ $html = ob_get_clean();
                 activityClosed: true,
                 addingMotions: false,
                 addableMotionSelected: '',
+                addingQuestions: false,
+                addingQuestionText: '',
                 settingsOpened: false,
                 changedSettings: {
                     // Caching the changed values here prevents unsaved changes to settings from being reset by AJAX polling
                     // null = uninitialized
                     title: null,
+                    answerTemplate: null,
                     assignedMotion: null,
                     majorityType: null,
                     votesPublic: null,
@@ -423,6 +455,14 @@ $html = ob_get_clean();
             isClosed: function () {
                 return this.voting.status === STATUS_CLOSED;
             },
+            selectedAnswersHaveMajority: function () {
+                // Used by the settings form
+                return this.answerTemplate === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answerTemplate === ANSWER_TEMPLATE_YES_NO;
+            },
+            votingHasMajority: function () {
+                // Used for the currently running vote as it is
+                return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
+            },
             organizationsWithUsersEntered: function () {
                 return this.organizations.filter(function (organization) {
                     return organization.members_present !== null;
@@ -438,16 +478,23 @@ $html = ob_get_clean();
             },
             majorityType: {
                 get: function () {
-                    console.log("get", (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majorityType));
-                    return (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majorityType);
+                    return (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majority_type);
                 },
                 set: function (value) {
                     this.changedSettings.majorityType = value;
                 }
             },
+            answerTemplate: {
+                get: function () {
+                    return (this.changedSettings.answerTemplate !== null ? this.changedSettings.answerTemplate : this.voting.answers_template);
+                },
+                set: function (value) {
+                    this.changedSettings.answerTemplate = value;
+                }
+            },
             votesPublic: {
                 get: function () {
-                    return (this.changedSettings.votesPublic !== null ? this.changedSettings.votesPublic : this.voting.votesPublic);
+                    return (this.changedSettings.votesPublic !== null ? this.changedSettings.votesPublic : this.voting.votes_public);
                 },
                 set: function (value) {
                     this.changedSettings.votesPublic = value;
@@ -455,7 +502,7 @@ $html = ob_get_clean();
             },
             resultsPublic: {
                 get: function () {
-                    return (this.changedSettings.resultsPublic !== null ? this.changedSettings.resultsPublic : this.voting.resultsPublic);
+                    return (this.changedSettings.resultsPublic !== null ? this.changedSettings.resultsPublic : this.voting.results_public);
                 },
                 set: function (value) {
                     this.changedSettings.resultsPublic = value;
@@ -463,7 +510,7 @@ $html = ob_get_clean();
             },
             settingsAssignedMotion: {
                 get: function () {
-                    const origAssigned = (this.voting.assignedMotion !== null ? this.voting.assignedMotion : '');
+                    const origAssigned = (this.voting.assigned_motion !== null ? this.voting.assigned_motion : '');
                     return (this.changedSettings.assignedMotion !== null ? this.changedSettings.assignedMotion : origAssigned);
                 },
                 set: function (value) {
@@ -497,9 +544,28 @@ $html = ob_get_clean();
             removeItem: function (groupedVoting) {
                 this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);
             },
-            addItem: function () {
-                this.$emit('add-item', this.voting.id, this.addableMotionSelected);
+            addIMotion: function ($event) {
+                if ($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                }
+                this.$emit('add-imotion', this.voting.id, this.addableMotionSelected);
                 this.addableMotionSelected = '';
+            },
+            openQuestionAdder: function() {
+                this.addingQuestions = true;
+                window.setTimeout(() => {
+                    document.getElementById('voting_question_' + this.voting.id).focus();
+                }, 1);
+            },
+            addQuestion: function ($event) {
+                if ($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                }
+                this.$emit('add-question', this.voting.id, this.addingQuestionText);
+                this.addingQuestionText = '';
+                this.addingQuestions = false;
             },
             isAddable: function (item) {
                 if (item.type === 'motion') {
@@ -556,7 +622,7 @@ $html = ob_get_clean();
                 if (item.type === 'amendment') {
                     return amendmentEditUrl.replace(/00000000/, item.id);
                 }
-                return '???';
+                return null;
             },
             itemIsAccepted: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_ACCEPTED;
@@ -594,9 +660,10 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.majorityType, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;
+                this.changedSettings.answerTemplate = null;
                 this.settingsOpened = false;
             },
             deleteVoting: function () {

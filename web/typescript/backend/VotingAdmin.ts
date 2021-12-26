@@ -10,6 +10,8 @@ export class VotingAdmin {
         this.element = $element[0];
         this.createVueWidget();
         this.initVotingCreater();
+
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
     private createVueWidget() {
@@ -31,7 +33,8 @@ export class VotingAdmin {
                                      @save-settings="saveSettings"
                                      @remove-item="removeItem"
                                      @delete-voting="deleteVoting"
-                                     @add-item="addItem"
+                                     @add-imotion="addIMotion"
+                                     @add-question="addQuestion"
                 ></voting-admin-widget>
             </div>`,
             data() {
@@ -101,10 +104,11 @@ export class VotingAdmin {
                         }}),
                     });
                 },
-                saveSettings(votingBlockId, title, majorityType, resultsPublic, votesPublic, assignedMotion) {
+                saveSettings(votingBlockId, title, answerTemplate, majorityType, resultsPublic, votesPublic, assignedMotion) {
                     this._performOperation(votingBlockId, {
                         op: 'save-settings',
                         title,
+                        answerTemplate,
                         majorityType,
                         resultsPublic,
                         votesPublic,
@@ -116,11 +120,17 @@ export class VotingAdmin {
                         op: 'delete-voting',
                     });
                 },
-                createVoting: function (title, assignedMotion) {
+                createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, resultsPublic, votesPublic) {
                     let postData = {
                         _csrf: this.csrf,
+                        type,
+                        answers,
                         title,
-                        assignedMotion
+                        specificQuestion,
+                        assignedMotion,
+                        majorityType,
+                        resultsPublic,
+                        votesPublic
                     };
                     const widget = this;
                     $.post(voteCreateUrl, postData, function (data) {
@@ -144,10 +154,16 @@ export class VotingAdmin {
                         itemId
                     });
                 },
-                addItem(votingBlockId, itemDefinition) {
+                addIMotion(votingBlockId, itemDefinition) {
                     this._performOperation(votingBlockId, {
-                        op: 'add-item',
+                        op: 'add-imotion',
                         itemDefinition
+                    });
+                },
+                addQuestion(votingBlockId, question) {
+                    this._performOperation(votingBlockId, {
+                        op: 'add-question',
+                        question
                     });
                 },
                 reloadData: function () {
@@ -177,17 +193,62 @@ export class VotingAdmin {
 
     private initVotingCreater() {
         const opener = this.element.querySelector('.createVotingOpener'),
-            form = this.element.querySelector('.createVotingHolder');
+            form = this.element.querySelector('.createVotingHolder'),
+            specificQuestion = this.element.querySelector('.specificQuestion'),
+            majorityType = this.element.querySelector('.majorityTypeSettings');
         opener.addEventListener('click', () => {
             form.classList.remove('hidden');
             opener.classList.add('hidden');
         });
+
+        const getRadioListValue = (selector: string, defaultValue: string) => {
+            let val = defaultValue;
+            form.querySelectorAll(selector).forEach(el => {
+                const input = el as HTMLInputElement;
+                if (input.checked) {
+                    val = input.value;
+                }
+            });
+            return val;
+        };
+
+        const recalcQuestionListener = () => {
+            if (getRadioListValue('.votingType input', 'question') === 'question') {
+                specificQuestion.classList.remove('hidden');
+            } else {
+                specificQuestion.classList.add('hidden');
+            }
+        };
+        form.querySelectorAll('.votingType input').forEach(el => {
+            el.addEventListener('change', recalcQuestionListener);
+        });
+        recalcQuestionListener();
+
+        const recalcAnswerTypeListener = () => {
+            if (getRadioListValue('.answerTemplate input', '0') === '2') {
+                majorityType.classList.add('hidden');
+            } else {
+                majorityType.classList.remove('hidden');
+
+            }
+        };
+        form.querySelectorAll('.answerTemplate input').forEach(el => {
+            el.addEventListener('change', recalcAnswerTypeListener);
+        });
+        recalcAnswerTypeListener();
+
         form.querySelector('form').addEventListener('submit', (ev) => {
             ev.stopPropagation();
             ev.preventDefault();
+            const type = getRadioListValue('.votingType input', 'question');
+            const answers = parseInt(getRadioListValue('.answerTemplate input', '0'), 10); // Default
             const title = form.querySelector('.settingsTitle') as HTMLInputElement;
+            const specificQuestion = form.querySelector('.settingsQuestion') as HTMLInputElement;
             const assigned = form.querySelector('.settingsAssignedMotion') as HTMLSelectElement;
-            this.widget.createVoting(title.value, assigned.value);
+            const majorityType = parseInt(getRadioListValue('.majorityTypeSettings input', '1'), 10); // Default: simple majority
+            const resultsPublic = parseInt(getRadioListValue('.resultsPublicSettings input', '1'), 10); // Default: everyone
+            const votesPublic = parseInt(getRadioListValue('.votesPublicSettings input', '0'), 10); // Default: nobody
+            this.widget.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, resultsPublic, votesPublic);
 
             form.classList.add('hidden');
             opener.classList.remove('hidden');
