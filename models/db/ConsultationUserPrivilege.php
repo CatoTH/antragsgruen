@@ -10,6 +10,8 @@ use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
+ * @deprecated
+ *
  * @property int $userId
  * @property int $consultationId
  * @property int $privilegeView

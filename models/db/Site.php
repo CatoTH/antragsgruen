@@ -26,6 +26,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationText[] $texts
  * @property ConsultationFile[] $files
  * @property User[] $admins
+ * @property ConsultationUserGroup[] $userGroups
  * @property TexTemplate $texTemplates
  */
 class Site extends ActiveRecord
@@ -58,6 +59,14 @@ class Site extends ActiveRecord
     public function getConsultations()
     {
         return $this->hasMany(Consultation::class, ['siteId' => 'id'])->where('consultation.dateDeletion IS NULL');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserGroups()
+    {
+        return $this->hasMany(ConsultationUserGroup::class, ['siteId' => 'id']);
     }
 
     /**

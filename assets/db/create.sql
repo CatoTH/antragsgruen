@@ -343,6 +343,23 @@ CREATE TABLE `###TABLE_PREFIX###consultationText` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `consultationUserGroup`
+--
+
+CREATE TABLE `###TABLE_PREFIX###consultationUserGroup` (
+    `id`             int(11)      NOT NULL,
+    `externalId`     varchar(150)          DEFAULT NULL,
+    `title`          varchar(150) NOT NULL,
+    `consultationId` int(11)               DEFAULT NULL,
+    `siteId`         int(11)               DEFAULT NULL,
+    `selectable`     tinyint(4)   NOT NULL DEFAULT 1,
+    `permissions`    text                  DEFAULT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `consultationUserPrivilege`
 --
 
@@ -704,6 +721,7 @@ CREATE TABLE `###TABLE_PREFIX###user` (
   `emailConfirmed`  TINYINT(4)           DEFAULT '0',
   `auth`            VARCHAR(190)         DEFAULT NULL,
   `dateCreation`    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateLastLogin`   TIMESTAMP   NULL     DEFAULT NULL,
   `status`          TINYINT(4)  NOT NULL,
   `pwdEnc`          VARCHAR(100)         DEFAULT NULL,
   `authKey`         BINARY(100) NOT NULL,
@@ -714,6 +732,19 @@ CREATE TABLE `###TABLE_PREFIX###user` (
   `settings`        TEXT        NULL     DEFAULT NULL
 )
   ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userGroup`
+--
+
+CREATE TABLE `###TABLE_PREFIX###userGroup`
+(
+    `userId`  int(11) NOT NULL,
+    `groupId` int(11) NOT NULL
+) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
@@ -916,6 +947,16 @@ ALTER TABLE `###TABLE_PREFIX###consultationText`
   ADD KEY `fk_text_motion_type` (`motionTypeId`);
 
 --
+-- Indexes for table `consultationUserGroup`
+--
+ALTER TABLE `###TABLE_PREFIX###consultationUserGroup`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `ix_usergroup_external_id` (`externalId`),
+  ADD KEY `usergroup_fk_consultation` (`consultationId`),
+  ADD KEY `usergroup_fk_site` (`siteId`);
+
+
+--
 -- Indexes for table `consultationUserPrivilege`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationUserPrivilege`
@@ -1076,6 +1117,13 @@ ALTER TABLE `###TABLE_PREFIX###user`
   ADD UNIQUE KEY `auth_UNIQUE` (`auth`);
 
 --
+-- Indexes for table `userGroup`
+--
+ALTER TABLE `###TABLE_PREFIX###userGroup`
+  ADD PRIMARY KEY (`userId`,`groupId`),
+  ADD KEY `usergroup_group_ix` (`groupId`);
+
+--
 -- Indexes for table `userNotification`
 --
 ALTER TABLE `###TABLE_PREFIX###userNotification`
@@ -1180,6 +1228,11 @@ ALTER TABLE `###TABLE_PREFIX###consultationSettingsTag`
 ALTER TABLE `###TABLE_PREFIX###consultationText`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `consultationUserGroup`
+--
+ALTER TABLE `###TABLE_PREFIX###consultationUserGroup`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `emailLog`
 --
 ALTER TABLE `###TABLE_PREFIX###emailLog`
@@ -1239,6 +1292,12 @@ ALTER TABLE `###TABLE_PREFIX###speechQueueItem`
 --
 ALTER TABLE `###TABLE_PREFIX###texTemplate`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for table `userGroup`
+--
+ALTER TABLE `###TABLE_PREFIX###userGroup`
+  ADD CONSTRAINT `usergroup_fk_group` FOREIGN KEY (`groupId`) REFERENCES `###TABLE_PREFIX###consultationUserGroup` (`id`),
+  ADD CONSTRAINT `usergroup_fk_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`);
 --
 -- AUTO_INCREMENT for table `user`
 --
@@ -1393,6 +1452,13 @@ ALTER TABLE `###TABLE_PREFIX###consultationText`
   ADD CONSTRAINT `fk_consultation_text_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_text_motion_type` FOREIGN KEY (`motionTypeId`) REFERENCES `###TABLE_PREFIX###consultationMotionType` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationUserGroup`
+--
+ALTER TABLE `###TABLE_PREFIX###consultationUserGroup`
+  ADD CONSTRAINT `usergroup_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
+  ADD CONSTRAINT `usergroup_fk_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`);
 
 --
 -- Constraints for table `consultationUserPrivilege`

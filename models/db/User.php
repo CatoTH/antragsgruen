@@ -23,6 +23,7 @@ use yii\web\IdentityInterface;
  * @property int $emailConfirmed
  * @property string|null $auth
  * @property string $dateCreation
+ * @property string|null $dateLastLogin
  * @property int $status
  * @property string|null $pwdEnc
  * @property string|null $authKey
@@ -37,6 +38,7 @@ use yii\web\IdentityInterface;
  * @property null|MotionComment[] $motionComments
  * @property null|MotionSupporter[] $motionSupports
  * @property Site[] $adminSites
+ * @property ConsultationUserGroup[] $userGroups
  * @property ConsultationUserPrivilege[] $consultationPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
@@ -220,6 +222,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getConsultationPrivileges()
     {
         return $this->hasMany(ConsultationUserPrivilege::class, ['userId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserGroups()
+    {
+        return $this->hasMany(ConsultationUserGroup::class, ['id' => 'groupId'])->viaTable('userGroup', ['userId' => 'id']);
     }
 
     /**

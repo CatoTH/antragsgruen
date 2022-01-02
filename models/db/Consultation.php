@@ -31,6 +31,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationMotionType[] $motionTypes
  * @property ConsultationAgendaItem[] $agendaItems
+ * @property ConsultationUserGroup[] $userGroups
  * @property ConsultationUserPrivilege[] $userPrivileges
  * @property ConsultationFile[] $files
  * @property ConsultationLog[] $logEntries
@@ -274,6 +275,14 @@ class Consultation extends ActiveRecord
     public function getUserPrivileges()
     {
         return $this->hasMany(ConsultationUserPrivilege::class, ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserGroups()
+    {
+        return $this->hasMany(ConsultationUserGroup::class, ['consultationId' => 'id']);
     }
 
     /**
