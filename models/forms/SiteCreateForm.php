@@ -151,6 +151,9 @@ class SiteCreateForm extends Model
 
         $site->link('admins', $user);
 
+        $adminGroup = $site->createDefaultSiteAdminGroup();
+        $adminGroup->addUser($user);
+
         return $site;
     }
 
@@ -219,6 +222,9 @@ class SiteCreateForm extends Model
         if (!$con->save()) {
             throw new FormError($con->getErrors());
         }
+
+        $con->createDefaultUserGroups();
+
         $this->consultation = $con;
     }
 

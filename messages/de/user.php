@@ -162,4 +162,13 @@ return [
     'export_title' => 'Daten-Export',
     'export_intro' => 'Hier kannst du alle personenbezogene Daten, die in Antragsgrün über dich gespeichert sind, in einem maschinenlesbaren JSON-Format herunterladen.',
     'export_btn'   => 'Herunterladen',
+
+    'group_template_siteadmin' => 'Seiten-Admin',
+    'group_template_siteadmin_h' => 'Kann alle Veranstaltungen dieser Seite / Subdomain verwalten.',
+    'group_template_consultationadmin' => 'Veranstaltungs-Admin',
+    'group_template_consultationadmin_h' => 'Kann nur diese eine Veranstaltung verwalten.',
+    'group_template_proposed' => 'Antragskommission',
+    'group_template_proposed_h' => 'Kann die Verfahrensvorschläge bearbeiten, aber nicht die Anträge selbst.',
+    'group_template_participant' => 'Teilnehmer*in',
+    'group_template_participant_h' => 'Keine besonderen Berechtigungen. Nur relevant, falls der Zugriff auf diese Veranstaltung eingeschränkt ist.',
 ];

@@ -7,6 +7,7 @@ use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
+use app\models\db\ConsultationUserGroup;
 use app\models\db\ConsultationUserPrivilege;
 use app\models\db\Site;
 use app\models\db\User;
@@ -131,6 +132,19 @@ class ConsultationCreateForm extends Model
             $newPriv->consultationId = $consultation->id;
             if (!$newPriv->save()) {
                 throw new FormError(implode(', ', $newPriv->getErrors()));
+            }
+        }
+
+        foreach ($this->template->userGroups as $userGroup) {
+            $newGroup = new ConsultationUserGroup();
+            $newGroup->setAttributes($userGroup->getAttributes(), false);
+            $newGroup->consultationId = $consultation->id;
+            if (!$newGroup->save()) {
+                throw new FormError(implode(', ', $newGroup->getErrors()));
+            }
+
+            foreach ($userGroup->users as $user) {
+                $newGroup->addUser($user);
             }
         }
 

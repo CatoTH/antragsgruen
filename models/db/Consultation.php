@@ -547,6 +547,13 @@ class Consultation extends ActiveRecord
         return $user->hasPrivilege($this, $privilege);
     }
 
+    public function createDefaultUserGroups(): void
+    {
+        $this->link('userGroups', ConsultationUserGroup::createDefaultGroupConsultationAdmin($this));
+        $this->link('userGroups', ConsultationUserGroup::createDefaultGroupProposedProcedure($this));
+        $this->link('userGroups', ConsultationUserGroup::createDefaultGroupParticipant($this));
+        echo "COnsultation groups: " . count($this->userGroups) . "\n";
+    }
 
     /**
      * @return ConsultationSettingsTag[]
@@ -636,7 +643,7 @@ class Consultation extends ActiveRecord
      * @return SearchResult[]
      * @throws Internal
      */
-    public function fulltextSearch($text, $backParams)
+    public function fulltextSearch($text, $backParams): array
     {
         $results = [];
         foreach ($this->motions as $motion) {
@@ -784,7 +791,7 @@ class Consultation extends ActiveRecord
     /**
      * @return string[]
      */
-    public function getAdminEmails()
+    public function getAdminEmails(): array
     {
         $mails        = preg_split('/[,;]/', $this->adminEmail);
         $filtered     = [];

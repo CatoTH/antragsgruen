@@ -197,6 +197,15 @@ class Site extends ActiveRecord
         return $this->isAdmin($myUser);
     }
 
+    public function createDefaultSiteAdminGroup(): ConsultationUserGroup
+    {
+        $group = ConsultationUserGroup::createDefaultGroupSiteAdmin($this);
+        $this->link('userGroups', $group);
+        echo "Site groups: " . count($this->userGroups) . "\n";
+
+        return $group;
+    }
+
     /**
      * @return DefaultBehavior
      */

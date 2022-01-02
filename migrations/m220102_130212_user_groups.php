@@ -14,6 +14,7 @@ class m220102_130212_user_groups extends Migration
         $this->createTable('consultationUserGroup', [
             'id' => 'INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY',
             'externalId' => 'VARCHAR(150) NULL DEFAULT NULL',
+            'templateId' => 'TINYINT NULL DEFAULT NULL',
             'title' => 'VARCHAR(150) NOT NULL',
             'consultationId' => 'INTEGER NULL DEFAULT NULL',
             'siteId' => 'INTEGER NULL DEFAULT NULL',
@@ -32,6 +33,37 @@ class m220102_130212_user_groups extends Migration
         $this->createIndex('usergroup_group_ix', 'userGroup', 'groupId');
         $this->addForeignKey('usergroup_fk_user', 'userGroup', 'userId', 'user', 'id');
         $this->addForeignKey('usergroup_fk_group', 'userGroup', 'groupId', 'consultationUserGroup', 'id');
+
+
+        \Yii::$app->db->schema->getTableSchema('consultationUserGroup', true);
+        \Yii::$app->db->schema->getTableSchema('userGroup', true);
+        \Yii::$app->db->schema->getTableSchema('site', true);
+        \Yii::$app->db->schema->getTableSchema('consultation', true);
+        \Yii::$app->db->schema->getTableSchema('user', true);
+
+        $sites = \app\models\db\Site::find()->all();
+        foreach ($sites as $site) {
+            $adminGroup = $site->createDefaultSiteAdminGroup();
+            foreach ($site->admins as $admin) {
+                $adminGroup->addUser($admin);
+            }
+
+            foreach ($site->consultations as $consultation) {
+                $groupAdmin = \app\models\db\ConsultationUserGroup::createDefaultGroupConsultationAdmin($consultation);
+                $groupPp = \app\models\db\ConsultationUserGroup::createDefaultGroupProposedProcedure($consultation);
+                $groupParticipant = \app\models\db\ConsultationUserGroup::createDefaultGroupParticipant($consultation);
+
+                foreach ($consultation->userPrivileges as $privilege) {
+                    if ($privilege->adminSuper) {
+                        $groupAdmin->addUser($privilege->user);
+                    } elseif ($privilege->adminProposals) {
+                        $groupPp->addUser($privilege->user);
+                    } else {
+                        $groupParticipant->addUser($privilege->user);
+                    }
+                }
+            }
+        }
     }
 
     /**

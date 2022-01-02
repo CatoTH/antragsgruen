@@ -349,6 +349,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationText` (
 CREATE TABLE `###TABLE_PREFIX###consultationUserGroup` (
     `id`             int(11)      NOT NULL,
     `externalId`     varchar(150)          DEFAULT NULL,
+    `templateId`     tinyint(4)            DEFAULT NULL,
     `title`          varchar(150) NOT NULL,
     `consultationId` int(11)               DEFAULT NULL,
     `siteId`         int(11)               DEFAULT NULL,
