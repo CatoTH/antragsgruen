@@ -157,7 +157,7 @@ return [
 
     'group_template_siteadmin' => 'Site admin',
     'group_template_siteadmin_h' => 'All privileges to all consultations on this site / subdomain.',
-    'group_template_consultationadmin' => 'Consulttion admin',
+    'group_template_consultationadmin' => 'Consultation admin',
     'group_template_consultationadmin_h' => 'All privileges to this one consultation.',
     'group_template_proposed' => 'Proposed procedure',
     'group_template_proposed_h' => 'Can edit the proposed procedure, but not the motions and amendments themselves.',

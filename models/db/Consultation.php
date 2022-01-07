@@ -48,7 +48,6 @@ class Consultation extends ActiveRecord
     private static $current = null;
 
     /**
-     * @param Consultation $consultation
      * @throws Internal
      */
     public static function setCurrent(Consultation $consultation)
@@ -59,26 +58,17 @@ class Consultation extends ActiveRecord
         static::$current = $consultation;
     }
 
-    /**
-     * @return Consultation|null
-     */
-    public static function getCurrent()
+    public static function getCurrent(): ?Consultation
     {
         return static::$current;
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultation';
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['title', 'dateCreation'], 'required'],
@@ -135,8 +125,6 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param ConsultationMotionType $type
-     *
      * @return Motion[]
      */
     public function getMotionsOfType(ConsultationMotionType $type): array
@@ -181,7 +169,7 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    public function flushMotionCache()
+    public function flushMotionCache(): void
     {
         $this->motionCache = [];
     }
@@ -286,6 +274,23 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @return ConsultationUserGroup[]
+     */
+    public function getAllAvailableUserGroups(): array
+    {
+        $groups = [];
+        foreach ($this->site->userGroups as $userGroup) {
+            if ($userGroup->consultationId === null) {
+                $groups[] = $userGroup;
+            }
+        }
+        foreach ($this->userGroups as $userGroup) {
+            $groups[] = $userGroup;
+        }
+        return $groups;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getFiles()
@@ -293,11 +298,7 @@ class Consultation extends ActiveRecord
         return $this->hasMany(ConsultationFile::class, ['consultationId' => 'id']);
     }
 
-    /**
-     * @param User $user
-     * @return ConsultationUserPrivilege
-     */
-    public function getUserPrivilege(User $user)
+    public function getUserPrivilege(User $user): ConsultationUserPrivilege
     {
         foreach ($this->userPrivileges as $priv) {
             if ($priv->userId == $user->id) {
@@ -314,6 +315,22 @@ class Consultation extends ActiveRecord
         $priv->adminSuper       = 0;
         $priv->adminProposals   = 0;
         return $priv;
+    }
+
+    /**
+     * @return User[]
+     */
+    public function getUsersInAnyGroup(): array
+    {
+        $users = [];
+        foreach ($this->userGroups as $userGroup) {
+            foreach ($userGroup->users as $user) {
+                if (!isset($users[$user->id])) {
+                    $users[$user->id] = $user;
+                }
+            }
+        }
+        return array_values($users);
     }
 
     /**
@@ -417,10 +434,9 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $type
      * @return UserNotification[]
      */
-    public function getUserNotificationsType($type)
+    public function getUserNotificationsType(int $type): array
     {
         $notis = [];
         foreach ($this->userNotifications as $userNotification) {
@@ -487,11 +503,9 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param bool $withdrawnAreVisible
-     * @param bool $includeResolutions
      * @return Motion[]
      */
-    public function getVisibleMotions($withdrawnAreVisible = true, $includeResolutions = true)
+    public function getVisibleMotions(bool $withdrawnAreVisible = true, bool $includeResolutions = true): array
     {
         $return            = [];
         $invisibleStatuses = $this->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
@@ -535,10 +549,8 @@ class Consultation extends ActiveRecord
 
     /**
      * @param int|int[] $privilege
-     * @return bool
-     *
      */
-    public function havePrivilege($privilege)
+    public function havePrivilege($privilege): bool
     {
         $user = User::getCurrentUser();
         if (!$user) {

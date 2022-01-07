@@ -79,10 +79,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 
-    /**
-     * @return null|User
-     */
-    public static function getCurrentUser()
+    public static function getCurrentUser(): ?User
     {
         try {
             if (\Yii::$app->user->getIsGuest()) {
@@ -230,6 +227,19 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUserGroups()
     {
         return $this->hasMany(ConsultationUserGroup::class, ['id' => 'groupId'])->viaTable('userGroup', ['userId' => 'id']);
+    }
+
+    public function getUserGroupsForConsultation(Consultation $consultation): array
+    {
+        return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
+            if ($group->consultationId === $consultation->id) {
+                return true;
+            } elseif ($group->consultation === null) {
+                return ($group->siteId === $consultation->siteId);
+            } else {
+                return false;
+            }
+        });
     }
 
     /**

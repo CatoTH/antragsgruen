@@ -1,6 +1,5 @@
 <?php
 
-use app\components\HTMLTools;
 use app\models\db\User;
 use yii\helpers\Html;
 

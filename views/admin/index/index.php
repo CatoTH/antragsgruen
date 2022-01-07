@@ -32,21 +32,21 @@ echo '<ul class="adminMenuList"><li>';
 
 echo Html::a(
     Yii::t('admin', 'index_consultation_settings'),
-    UrlHelper::createUrl('admin/index/consultation'),
+    UrlHelper::createUrl('/admin/index/consultation'),
     ['id' => 'consultationLink']
 );
 
 echo '</li><li class="secondary">';
 echo Html::a(
     Yii::t('admin', 'index_appearance'),
-    UrlHelper::createUrl('admin/index/appearance'),
+    UrlHelper::createUrl('/admin/index/appearance'),
     ['id' => 'appearanceLink']
 );
 
 echo '</li><li class="secondary">';
 echo Html::a(
     Yii::t('admin', 'Translation / Wording'),
-    UrlHelper::createUrl('admin/index/translation'),
+    UrlHelper::createUrl('/admin/index/translation'),
     ['id' => 'translationLink']
 );
 echo '</li>';
@@ -54,7 +54,7 @@ echo '</li>';
 echo '<li class="secondary">';
 echo Html::a(
     Yii::t('admin', 'index_pages'),
-    UrlHelper::createUrl('pages/list-pages'),
+    UrlHelper::createUrl('/pages/list-pages'),
     ['id' => 'contentPages']
 );
 echo '</li>';
@@ -62,7 +62,7 @@ echo '</li>';
 echo '<li>' . Yii::t('admin', 'index_motion_types') . '<ul>';
 foreach ($consultation->motionTypes as $motionType) {
     echo '<li>';
-    $sectionsUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
+    $sectionsUrl = UrlHelper::createUrl(['/admin/motion/type', 'motionTypeId' => $motionType->id]);
     echo Html::a(Html::encode($motionType->titlePlural), $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
     echo '</li>';
 }
@@ -75,7 +75,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_VOTINGS)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_voting'),
-        UrlHelper::createUrl(['consultation/admin-votings']),
+        UrlHelper::createUrl(['/consultation/admin-votings']),
         ['class' => 'votingAdminLink']
     );
     echo '</li>';
@@ -85,29 +85,29 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_access'),
-        UrlHelper::createUrl('admin/index/siteaccess'),
+        UrlHelper::createUrl('/admin/index/siteaccess'),
         ['class' => 'siteAccessLink']
     );
     echo '</li>';
 
     echo '<li>';
     echo Html::a(
+        Yii::t('admin', 'index_site_user_list'),
+        UrlHelper::createUrl('/admin/index/users'),
+        ['class' => 'siteUsers']
+    );
+    echo '</li>';
+
+    echo '<li>';
+    echo Html::a(
         Yii::t('admin', 'index_site_consultations'),
-        UrlHelper::createUrl('admin/index/siteconsultations'),
+        UrlHelper::createUrl('/admin/index/siteconsultations'),
         ['class' => 'siteConsultationsLink']
     );
     echo '</li>';
 }
 
 if (User::currentUserIsSuperuser() && !$controller->getParams()->multisiteMode) {
-    echo '<li>';
-    echo Html::a(
-        Yii::t('admin', 'index_site_user_list'),
-        UrlHelper::createUrl('/manager/userlist'),
-        ['class' => 'siteUserList']
-    );
-    echo '</li>';
-
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_config'),

@@ -79,6 +79,22 @@ class ConsultationUserGroup extends ActiveRecord
         }
     }
 
+    public function getNormalizedTitle(): string
+    {
+        switch ($this->templateId) {
+            case static::TEMPLATE_SITE_ADMIN:
+                return \Yii::t('user', 'group_template_siteadmin');
+            case static::TEMPLATE_CONSULTATION_ADMIN:
+                return \Yii::t('user', 'group_template_consultationadmin');
+            case static::TEMPLATE_PROPOSED_PROCEDURE:
+                return \Yii::t('user', 'group_template_proposed');
+            case static::TEMPLATE_PARTICIPANT:
+                return \Yii::t('user', 'group_template_participant');
+            default:
+                return $this->title;
+        }
+    }
+
     public function addUser(User $user): void
     {
         $this->link('users', $user);

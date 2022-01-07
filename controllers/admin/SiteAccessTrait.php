@@ -358,6 +358,22 @@ trait SiteAccessTrait
         return $policyWarning;
     }
 
+    public function actionUsers(): string
+    {
+        $consultation = $this->consultation;
+
+        if (!User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
+            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
+            return '';
+        }
+
+
+        return $this->render('users', [
+            'users' => $consultation->getUsersInAnyGroup(),
+            'groups' => $consultation->getAllAvailableUserGroups(),
+        ]);
+    }
+
     /**
      * @throws \Yii\base\Exception|\Throwable
      */
