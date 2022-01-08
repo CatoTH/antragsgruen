@@ -41,51 +41,47 @@ export class UserAdmin {
             computed: {
             },
             methods: {
-                _performOperation: function (votingBlockId, additionalProps) {
+                _performOperation: function (additionalProps) {
                     let postData = {
                         _csrf: this.csrf,
                     };
-                    if (additionalProps) {
-                        postData = Object.assign(postData, additionalProps);
-                    }
+                    postData = Object.assign(postData, additionalProps);
                     const widget = this;
                     $.post(userSaveUrl, postData, function (data) {
                         if (data.success !== undefined && !data.success) {
                             alert(data.message);
                             return;
                         }
-                        widget.votings = data;
+                        widget.setUserGroups(data.users, data.groups);
                     }).catch(function (err) {
                         alert(err.responseText);
                     });
                 },
                 saveUserGroups(user, groups) {
-                    console.log(JSON.stringify(user), groups);
                     this._performOperation({
                         op: 'save-user-groups',
                         userId: user.id,
                         groups
                     });
                 },
-                setUserGroupsFromJson(users, groups) {
-                    if (users === this.usersJson && groups === this.groupsJson) {
+                setUserGroups(users, groups) {
+                    const usersJson = JSON.stringify(users),
+                        groupsJson = JSON.stringify(groups);
+                    if (usersJson === this.usersJson && groupsJson === this.groupsJson) {
                         return;
                     }
-                    this.users = JSON.parse(users);
-                    this.usersJson = users;
-                    this.groups = JSON.parse(groups);
-                    this.groupsJson = groups;
+                    this.users = users;
+                    this.usersJson = usersJson;
+                    this.groups = groups;
+                    this.groupsJson = groupsJson;
                 },
                 reloadData: function () {
                     const widget = this;
-                    console.log("Reloading not implemented yet");
-                    /*
                     $.get(pollUrl, function (data) {
-                        widget.setUserGroupsFromJson(data); // @TODO
-                    }, 'text').catch(function (err) {
+                        widget.setUserGroups(data.users, data.groups);
+                    }).catch(function (err) {
                         console.error("Could not load voting data from backend", err);
                     });
-                    */
                 },
                 startPolling: function () {
                     const widget = this;
@@ -98,7 +94,7 @@ export class UserAdmin {
                 window.clearInterval(this.pollingId)
             },
             created() {
-                this.setUserGroupsFromJson(initUsersJson, initGroupsJson);
+                this.setUserGroups(JSON.parse(initUsersJson), JSON.parse(initGroupsJson));
                 this.startPolling()
             }
         });

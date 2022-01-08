@@ -3,10 +3,11 @@
 namespace app\controllers\admin;
 
 use app\components\{ConsultationAccessPassword, UrlHelper, mail\Tools as MailTools};
-use app\models\db\{ConsultationUserPrivilege, EMailLog, Site, Consultation, User};
+use app\models\db\{ConsultationUserGroup, ConsultationUserPrivilege, EMailLog, Site, Consultation, User};
 use app\models\exceptions\{AlreadyExists, MailNotSent};
 use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
+use yii\base\ExitException;
 use yii\db\IntegrityException;
 use yii\web\Response;
 
@@ -359,38 +360,99 @@ trait SiteAccessTrait
         return $policyWarning;
     }
 
-    public function actionUsers(): string
+    private function getConsultationAndCheckAdminPermission(): Consultation
     {
         $consultation = $this->consultation;
 
         if (!User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return '';
+            throw new ExitException();
         }
 
+        return $consultation;
+    }
 
-        return $this->render('users', [
-            'users' => $consultation->getUsersInAnyGroup(),
-            'groups' => $consultation->getAllAvailableUserGroups(),
-        ]);
+    private function getUsersWidgetData(Consultation $consultation): array
+    {
+        $usersArr = array_map(function (User $user): array {
+            return $user->getUserAdminApiObject();
+        }, $consultation->getUsersInAnyGroup());
+        $groupsArr = array_map(function (ConsultationUserGroup $group): array {
+            return $group->getUserAdminApiObject();
+        }, $consultation->getAllAvailableUserGroups());
+
+        return [
+            'users' => $usersArr,
+            'groups' => $groupsArr,
+        ];
+    }
+
+    private function setUserGroups(Consultation $consultation, int $userId, array $groupIds): void
+    {
+        $user = User::findOne(['id' => $userId]);
+        $userHasGroups = [];
+
+        // Remove all groups belonging to this consultation that are not in the sent array
+        foreach ($user->userGroups as $userGroup) {
+            $userHasGroups[] = $userGroup->id;
+
+            if (!$userGroup->isRelevantForConsultation($consultation)) {
+                continue;
+            }
+            if (!in_array($userGroup->id, $groupIds)) {
+                $user->unlink('userGroups', $userGroup, true);
+            }
+        }
+
+        foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
+            if (in_array($userGroup->id, $groupIds) && !in_array($userGroup->id, $userHasGroups)) {
+                $user->link('userGroups', $userGroup);
+            }
+        }
+
+        $consultation->refresh();
+    }
+
+    public function actionUsers(): string
+    {
+        $consultation = $this->getConsultationAndCheckAdminPermission();
+
+        return $this->render('users', [ 'widgetData' => $this->getUsersWidgetData($consultation) ]);
     }
 
     public function actionUsersSave(): string
     {
-        $consultation = $this->consultation;
-
-        if (!User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return '';
-        }
+        $consultation = $this->getConsultationAndCheckAdminPermission();
 
         $this->handleRestHeaders(['POST'], true);
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $responseData = ['test' => true];
+        switch (\Yii::$app->request->post('op')) {
+            case 'save-user-groups':
+                $this->setUserGroups(
+                    $consultation,
+                    intval(\Yii::$app->request->post('userId')),
+                    array_map('intval', \Yii::$app->request->post('groups', []))
+                );
+                break;
+        }
 
+        $responseData = $this->getUsersWidgetData($consultation);
+        return $this->returnRestResponse(200, json_encode($responseData));
+    }
+
+    public function actionUsersPoll(): string
+    {
+        $consultation = $this->getConsultationAndCheckAdminPermission();
+
+        $this->handleRestHeaders(['GET'], true);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $responseData = $this->getUsersWidgetData($consultation);
         return $this->returnRestResponse(200, json_encode($responseData));
     }
 

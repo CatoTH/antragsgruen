@@ -109,6 +109,15 @@ class ConsultationUserGroup extends ActiveRecord
         ];
     }
 
+    public function isRelevantForConsultation(Consultation $consultation): bool
+    {
+        if ($this->consultationId) {
+            return ($this->consultationId === $consultation->id);
+        } else {
+            return $this->siteId === $consultation->siteId;
+        }
+    }
+
     public static function createDefaultGroupSiteAdmin(Site $site): self
     {
         $group = new ConsultationUserGroup();

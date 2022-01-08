@@ -38,7 +38,7 @@ $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides';
 $adminAmendmentPaths  = 'excellist|odslist|odslist-short|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths           = 'consultation|appearance|consultationextended|translation|translation-motion-type|siteaccess|siteconsultations|openslidesusers';
-$adminPaths           .= '|users|users-save|theming|files|todo|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
+$adminPaths           .= '|users|users-save|users-poll|theming|files|todo|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
 $adminPpPaths         = 'index-ajax|ods|save-motion-comment|save-amendment-comment|save-motion-visible|save-amendment-visible|save-responsibility';
 
 $urlRules = [

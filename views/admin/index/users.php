@@ -1,15 +1,12 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\ConsultationUserGroup;
-use app\models\db\User;
+use app\models\db\{ConsultationUserGroup, User};
 use yii\helpers\Html;
-use app\models\settings\Site as SiteSettings;
 
 /**
  * @var yii\web\View $this
- * @var User[] $users
- * @var ConsultationUserGroup[] $groups
+ * @var array $widgetData
  */
 
 /** @var \app\controllers\Base $controller */
@@ -26,25 +23,19 @@ $layout->loadVueSelect();
 $layout->addVueTemplate('@app/views/admin/index/users.vue.php');
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/index/users-save']);
+$userPollUrl = UrlHelper::createUrl(['/admin/index/users-poll']);
 
 echo '<h1>' . Yii::t('admin', 'siteacc_title') . '</h1>';
 
 echo '<div class="content">';
 
-
-$usersArr = array_map(function(User $user): array {
-    return $user->getUserAdminApiObject();
-}, $users);
-$groupsArr = array_map(function(ConsultationUserGroup $group): array {
-    return $group->getUserAdminApiObject();
-}, $groups);
-
 ?>
 
 <div data-antragsgruen-widget="backend/UserAdmin"
      data-url-user-save="<?= Html::encode($userSaveUrl) ?>"
-     data-users="<?= Html::encode(json_encode($usersArr)) ?>"
-     data-groups="<?= Html::encode(json_encode($groupsArr)) ?>"
+     data-url-poll="<?= Html::encode($userPollUrl) ?>"
+     data-users="<?= Html::encode(json_encode($widgetData['users'])) ?>"
+     data-groups="<?= Html::encode(json_encode($widgetData['groups'])) ?>"
 >
     <div class="userAdmin"></div>
 </div>
