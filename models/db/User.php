@@ -851,6 +851,17 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->emailChange;
     }
 
+    public function getUserAdminApiObject(): array
+    {
+        $data = $this->getUserdataExportObject();
+        $data['id'] = $this->id;
+        $data['groups'] = array_map(function (ConsultationUserGroup $group): int {
+            return $group->id;
+        }, $this->userGroups);
+
+        return $data;
+    }
+
     public function getUserdataExportObject(): array
     {
         switch ($this->status) {
@@ -880,7 +891,7 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public function deleteAccount()
+    public function deleteAccount(): void
     {
         $this->name            = '';
         $this->nameGiven       = '';
@@ -899,6 +910,7 @@ class User extends ActiveRecord implements IdentityInterface
         $this->save(false);
 
         ConsultationUserPrivilege::deleteAll(['userId' => $this->id]);
+        ConsultationUserGroup::deleteAll(['userId' => $this->id]);
 
         $this->trigger(User::EVENT_DELETED, new UserEvent($this));
     }

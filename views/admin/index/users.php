@@ -22,24 +22,27 @@ $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('
 $layout->addBreadcrumb(Yii::t('admin', 'users_bc'));
 
 $layout->loadVue();
+$layout->loadVueSelect();
 $layout->addVueTemplate('@app/views/admin/index/users.vue.php');
 
+$userSaveUrl = UrlHelper::createUrl(['/admin/index/users-save']);
 
 echo '<h1>' . Yii::t('admin', 'siteacc_title') . '</h1>';
 
 echo '<div class="content">';
 
 
-$usersArr = array_map(function(User $user) {
-    return ['username' => $user->getAuthUsername()];
+$usersArr = array_map(function(User $user): array {
+    return $user->getUserAdminApiObject();
 }, $users);
-$groupsArr = array_map(function(ConsultationUserGroup $group) {
-    return ['title' => $group->title];
+$groupsArr = array_map(function(ConsultationUserGroup $group): array {
+    return $group->getUserAdminApiObject();
 }, $groups);
 
 ?>
 
 <div data-antragsgruen-widget="backend/UserAdmin"
+     data-url-user-save="<?= Html::encode($userSaveUrl) ?>"
      data-users="<?= Html::encode(json_encode($usersArr)) ?>"
      data-groups="<?= Html::encode(json_encode($groupsArr)) ?>"
 >

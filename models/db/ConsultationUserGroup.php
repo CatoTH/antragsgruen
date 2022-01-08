@@ -100,6 +100,15 @@ class ConsultationUserGroup extends ActiveRecord
         $this->link('users', $user);
     }
 
+    public function getUserAdminApiObject(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->getNormalizedTitle(),
+            'permissions' => $this->getPermissions(),
+        ];
+    }
+
     public static function createDefaultGroupSiteAdmin(Site $site): self
     {
         $group = new ConsultationUserGroup();

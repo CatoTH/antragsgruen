@@ -8,6 +8,7 @@ use app\models\exceptions\{AlreadyExists, MailNotSent};
 use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
 use yii\db\IntegrityException;
+use yii\web\Response;
 
 /**
  * @property Site $site
@@ -372,6 +373,25 @@ trait SiteAccessTrait
             'users' => $consultation->getUsersInAnyGroup(),
             'groups' => $consultation->getAllAvailableUserGroups(),
         ]);
+    }
+
+    public function actionUsersSave(): string
+    {
+        $consultation = $this->consultation;
+
+        if (!User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
+            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
+            return '';
+        }
+
+        $this->handleRestHeaders(['POST'], true);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $responseData = ['test' => true];
+
+        return $this->returnRestResponse(200, json_encode($responseData));
     }
 
     /**

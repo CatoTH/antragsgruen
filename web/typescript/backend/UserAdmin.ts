@@ -25,7 +25,7 @@ export class UserAdmin {
             template: `<div class="adminUsers">
                 <user-admin-widget :users="users"
                                    :groups="groups"
-                                     @save-user="saveUser"
+                                   @save-user-groups="saveUserGroups"
                 ></user-admin-widget>
             </div>`,
             data() {
@@ -59,10 +59,12 @@ export class UserAdmin {
                         alert(err.responseText);
                     });
                 },
-                saveUser(userId) {
+                saveUserGroups(user, groups) {
+                    console.log(JSON.stringify(user), groups);
                     this._performOperation({
-                        op: 'save-user',
-                        userId,
+                        op: 'save-user-groups',
+                        userId: user.id,
+                        groups
                     });
                 },
                 setUserGroupsFromJson(users, groups) {
@@ -76,11 +78,14 @@ export class UserAdmin {
                 },
                 reloadData: function () {
                     const widget = this;
+                    console.log("Reloading not implemented yet");
+                    /*
                     $.get(pollUrl, function (data) {
                         widget.setUserGroupsFromJson(data); // @TODO
                     }, 'text').catch(function (err) {
                         console.error("Could not load voting data from backend", err);
                     });
+                    */
                 },
                 startPolling: function () {
                     const widget = this;

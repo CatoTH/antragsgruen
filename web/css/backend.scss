@@ -1519,3 +1519,49 @@ label.legend {
     max-width: 150px;
   }
 }
+
+
+.userAdminList {
+  display: block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  > li {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: solid 1px lightgray;
+
+    > .userInfo {
+      flex-basis: 50%;
+    }
+
+    > .groupsDisplay {
+      flex-basis: 60%;
+      text-align: right;
+    }
+
+    > .groupsChange {
+      flex-basis: 55%;
+    }
+
+    > .groupsChangeOps {
+      flex-basis: 50px;
+      text-align: right;
+      padding: 2px;
+
+      .btn {
+        padding: 0;
+      }
+
+      .btnLinkAbort {
+        color: $colorDelLink;
+        opacity: 0.5;
+      }
+    }
+  }
+}
