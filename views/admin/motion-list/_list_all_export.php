@@ -7,6 +7,7 @@
  * @var bool $hasResponsibilities
  */
 
+use app\models\db\ConsultationUserGroup;
 use app\components\{HTMLTools, UrlHelper};
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
@@ -47,7 +48,7 @@ foreach ($consultation->motionTypes as $motionType) {
 }
 
 $btnNew       = count($creatableMotions) > 0;
-$btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONSULTATION_SETTINGS) && $hasInactiveFunctionality;
+$btnFunctions = $consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS) && $hasInactiveFunctionality;
 
 ?>
 <section class="motionListExportRow toolbarBelowTitle">

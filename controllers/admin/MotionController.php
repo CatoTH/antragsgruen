@@ -9,6 +9,7 @@ use app\models\db\{Consultation,
     ConsultationSettingsMotionSection,
     ConsultationMotionType,
     ConsultationSettingsTag,
+    ConsultationUserGroup,
     Motion,
     MotionSupporter,
     TexTemplate,
@@ -31,7 +32,7 @@ use yii\web\Response;
 class MotionController extends AdminBase
 {
     public static $REQUIRED_PRIVILEGES = [
-        User::PRIVILEGE_CONTENT_EDIT,
+        ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT,
     ];
 
     /**
@@ -92,14 +93,12 @@ class MotionController extends AdminBase
      *
      * @return string
      * @throws FormError
-     * @throws \app\models\exceptions\Internal
-     * @throws \Yii\base\ExitException
      */
     public function actionType($motionTypeId)
     {
         $motionTypeId = intval($motionTypeId);
 
-        if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return '';
         }
@@ -267,7 +266,7 @@ class MotionController extends AdminBase
      */
     public function actionTypecreate()
     {
-        if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
 
             return false;

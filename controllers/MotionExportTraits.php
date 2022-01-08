@@ -6,7 +6,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\NotFound;
 use app\models\mergeAmendments\Init;
-use app\models\db\{Amendment, Consultation, IMotion, Motion, TexTemplate, User};
+use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, Motion, TexTemplate, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\MotionSectionChanges;
 use app\models\settings\AntragsgruenApp;
@@ -41,7 +41,7 @@ trait MotionExportTraits
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId === $sectionId) {
                 if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
-                    !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)
+                    !$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)
                 ) {
                     return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
                 }
@@ -76,7 +76,7 @@ trait MotionExportTraits
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId === $sectionId) {
                 if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
-                    !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)
+                    !$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)
                 ) {
                     return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
                 }

@@ -223,7 +223,8 @@ class Amendment extends IMotion implements IRSSItem
             $sections[] = $section;
         }
 
-        if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() && !User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT)) {
+        if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() &&
+            !User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             // @TODO Find a solution to edit motions before submitting when not logged in
             throw new Internal('Can only set showAdminSections for admins');
         }
@@ -706,7 +707,7 @@ class Amendment extends IMotion implements IRSSItem
             // - Admins
             $hadLoggedInUser = false;
             $currUser = User::getCurrentUser();
-            if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+            if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
                 return true;
             }
             foreach ($this->amendmentSupporters as $supp) {
@@ -790,7 +791,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyMotionType()->amendmentsOnly) {
             return false;
         }
-        if ($this->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
+        if ($this->getMyConsultation()->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             return true;
         } elseif ($this->getMyMotion()->iAmInitiator()) {
             $policy = $this->getMyMotionType()->initiatorsCanMergeAmendments;
@@ -1189,7 +1190,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         return ($this->hasAlternativeProposaltext(true) && (
             $this->isProposalPublic() ||
-            User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CHANGE_PROPOSALS) ||
+            User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS) ||
             ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
         ));
     }

@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\components\{diff\AmendmentRewriter, diff\SingleAmendmentMergeViewParagraphData, HTMLTools, UrlHelper};
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, User};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationUserGroup, User};
 use app\models\exceptions\{Internal, NotFound};
 use app\models\forms\MergeSingleAmendmentForm;
 use app\models\sectionTypes\ISectionType;
@@ -34,7 +34,7 @@ trait AmendmentMergingTrait
 
         $otherAmendments = $amendment->getMyMotion()->getAmendmentsRelevantForCollisionDetection([$amendment]);
 
-        if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
+        if ($amendment->getMyConsultation()->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
         } else {
             $otherAmendmentsStatus = [];
@@ -126,7 +126,7 @@ trait AmendmentMergingTrait
         $motion        = $amendment->getMyMotion();
         $mergingPolicy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
 
-        if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
+        if ($amendment->getMyConsultation()->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             $collisionHandling   = true;
             $allowStatusChanging = true;
         } elseif ($mergingPolicy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION) {

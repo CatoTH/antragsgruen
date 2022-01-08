@@ -3,7 +3,7 @@
 namespace app\models\policies;
 
 use app\components\UrlHelper;
-use app\models\db\{ConsultationMotionType, User};
+use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 
@@ -83,7 +83,7 @@ abstract class IPolicy
     {
         if (!$this->motionType->isInDeadline($deadlineType)) {
             $consultation = $this->motionType->getConsultation();
-            if (!User::havePrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
+            if (!User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;
             }
         }

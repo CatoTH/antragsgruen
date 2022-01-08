@@ -1,6 +1,6 @@
 <?php
 use app\components\UrlHelper;
-use app\models\db\{Motion, User};
+use app\models\db\{ConsultationUserGroup, Motion, User};
 use yii\helpers\Html;
 
 /**
@@ -21,7 +21,7 @@ $consultation = $controller->consultation;
 $hasTags        = (count($consultation->tags) > 0);
 $motionStatuses = $consultation->getStatuses()->getStatusNames();
 $viewUrl        = UrlHelper::createMotionUrl($entry);
-if (User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
     $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
 } else {
     $editUrl = null;

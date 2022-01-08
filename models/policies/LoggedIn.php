@@ -3,7 +3,7 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\models\db\{ConsultationMotionType, User};
+use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
 
 class LoggedIn extends IPolicy
 {
@@ -88,7 +88,7 @@ class LoggedIn extends IPolicy
         }
 
         if ($allowAdmins && User::getCurrentUser()) {
-            if (User::havePrivilege($this->motionType->getConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+            if (User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
                 return true;
             }
         }

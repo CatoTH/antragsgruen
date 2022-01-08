@@ -138,6 +138,7 @@ class ConsultationCreateForm extends Model
         foreach ($this->template->userGroups as $userGroup) {
             $newGroup = new ConsultationUserGroup();
             $newGroup->setAttributes($userGroup->getAttributes(), false);
+            $newGroup->id = null;
             $newGroup->consultationId = $consultation->id;
             if (!$newGroup->save()) {
                 throw new FormError(implode(', ', $newGroup->getErrors()));

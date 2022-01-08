@@ -547,10 +547,7 @@ class Consultation extends ActiveRecord
         return array_merge($motions, $noAgendaMotions);
     }
 
-    /**
-     * @param int|int[] $privilege
-     */
-    public function havePrivilege($privilege): bool
+    public function havePrivilege(int $privilege): bool
     {
         $user = User::getCurrentUser();
         if (!$user) {

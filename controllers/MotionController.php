@@ -8,6 +8,7 @@ use app\models\db\{Amendment,
     ConsultationLog,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
+    ConsultationUserGroup,
     ISupporter,
     Motion,
     MotionSupporter,
@@ -40,7 +41,7 @@ class MotionController extends Base
 
         $motion = $this->getMotionWithCheck($motionSlug);
         $this->motion = $motion;
-        if (User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if ($this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
         } else {
             $adminEdit = null;
@@ -354,9 +355,9 @@ class MotionController extends Base
             }
         }
 
-        $form        = new MotionEditForm($motionType, $agendaItem, null);
+        $form = new MotionEditForm($motionType, $agendaItem, null);
         $supportType = $motionType->getMotionSupportTypeClass();
-        $iAmAdmin    = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $iAmAdmin = $this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING);
 
         if ($this->isPostSet('save')) {
             try {
@@ -453,7 +454,7 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
         $user = User::getCurrentUser();
-        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+        if (!$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::createMotionUrl($motion));

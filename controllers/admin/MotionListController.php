@@ -4,7 +4,7 @@ namespace app\controllers\admin;
 
 use app\components\Tools;
 use app\components\ZipWriter;
-use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
+use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, Motion, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\forms\AdminMotionFilterForm;
 use app\models\settings\AntragsgruenApp;
@@ -159,8 +159,8 @@ class MotionListController extends AdminBase
     public function actionIndex(?string $motionId = null): string
     {
         $consultation       = $this->consultation;
-        $privilegeScreening = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
-        $privilegeProposals = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+        $privilegeScreening = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SCREENING);
+        $privilegeProposals = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
         if (!($privilegeScreening || $privilegeProposals)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_acccess'));
 

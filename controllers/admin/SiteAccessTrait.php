@@ -364,7 +364,7 @@ trait SiteAccessTrait
     {
         $consultation = $this->consultation;
 
-        if (!User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
+        if (!User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             throw new ExitException();
         }
@@ -464,7 +464,7 @@ trait SiteAccessTrait
         $site = $this->site;
         $con  = $this->consultation;
 
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SITE_ADMIN)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return '';
         }

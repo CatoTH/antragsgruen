@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\ConsultationUserGroup;
 use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
@@ -17,7 +18,7 @@ foreach ($consultation->motionTypes as $motionType) {
         $hasProposedProcedures = true;
     }
 }
-$btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONSULTATION_SETTINGS) && (!$hasResponsibilities || !$hasProposedProcedures);
+$btnFunctions = $consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS) && (!$hasResponsibilities || !$hasProposedProcedures);
 
 if ($btnFunctions) {
     ?>

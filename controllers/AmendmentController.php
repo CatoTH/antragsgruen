@@ -9,6 +9,7 @@ use app\models\db\{Amendment,
     AmendmentSupporter,
     ConsultationLog,
     ConsultationSettingsTag,
+    ConsultationUserGroup,
     ISupporter,
     Motion,
     User};
@@ -180,7 +181,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        if (User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if ($this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);
         } else {
             $adminEdit = null;
@@ -403,7 +404,7 @@ class AmendmentController extends Base
 
         $form = new AmendmentEditForm($motion, $agendaItem, null);
         $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
-        $iAmAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $iAmAdmin = $this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING);
 
         if ($this->isPostSet('save')) {
             try {
@@ -504,7 +505,7 @@ class AmendmentController extends Base
             \Yii::$app->response->statusCode = 404;
             return 'Amendment not found';
         }
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;
             return 'Not permitted to change the status';
         }
@@ -678,7 +679,7 @@ class AmendmentController extends Base
             \Yii::$app->response->statusCode = 404;
             return 'Amendment not found';
         }
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;
             return 'Not permitted to change the status';
         }
@@ -744,7 +745,7 @@ class AmendmentController extends Base
                 'collisions' => [],
             ]);
         }
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;
             return json_encode([
                 'error' => 'Not permitted to change the status',

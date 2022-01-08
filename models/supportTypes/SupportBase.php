@@ -4,7 +4,7 @@ namespace app\models\supportTypes;
 
 use app\components\Tools;
 use app\controllers\Base;
-use app\models\db\{Amendment, AmendmentSupporter, ConsultationMotionType, ISupporter, Motion, MotionSupporter, User};
+use app\models\db\{Amendment, AmendmentSupporter, ConsultationMotionType, ConsultationUserGroup, ISupporter, Motion, MotionSupporter, User};
 use app\models\exceptions\{FormError, Internal};
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
 use app\models\settings\InitiatorForm;
@@ -329,10 +329,7 @@ abstract class SupportBase
             $initiator->dateCreation = date('Y-m-d H:i:s');
             $initiator->role         = MotionSupporter::ROLE_INITIATOR;
         }
-        $othersPrivilege = User::havePrivilege(
-            $motionType->getConsultation(),
-            User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
-        );
+        $othersPrivilege = User::havePrivilege($motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS);
         $isForOther      = false;
         if ($othersPrivilege) {
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
@@ -375,7 +372,7 @@ abstract class SupportBase
                 $supporters[] = $supporter;
             }
         }
-        $screeningPrivilege = User::havePrivilege($motionType->getConsultation(), User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::havePrivilege($motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_SCREENING);
         $isForOther         = false;
         if ($screeningPrivilege) {
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
@@ -406,10 +403,7 @@ abstract class SupportBase
         $return = [];
 
         $post            = \Yii::$app->request->post();
-        $othersPrivilege = User::havePrivilege(
-            $this->motionType->getConsultation(),
-            User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
-        );
+        $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS);
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
         if (\Yii::$app->user->isGuest) {
@@ -515,10 +509,7 @@ abstract class SupportBase
         $return = [];
         $post   = \Yii::$app->request->post();
 
-        $othersPrivilege = User::havePrivilege(
-            $this->motionType->getConsultation(),
-            User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
-        );
+        $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS);
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
         if (\Yii::$app->user->isGuest) {

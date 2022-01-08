@@ -6,7 +6,7 @@ use app\models\consultationLog\ProposedProcedureChange;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site;
 use app\components\{Tools, UrlHelper, ZipWriter};
-use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, User};
+use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, ConsultationUserGroup, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
@@ -227,7 +227,7 @@ class AmendmentController extends AdminBase
      */
     public function actionUpdate(string $amendmentId)
     {
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return '';
         }

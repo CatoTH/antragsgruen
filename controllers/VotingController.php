@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\models\db\{Motion, User, VotingBlock, VotingQuestion};
+use app\models\db\{ConsultationUserGroup, Motion, User, VotingBlock, VotingQuestion};
 use app\components\{ResourceLock, VotingMethods};
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
@@ -49,7 +49,7 @@ class VotingController extends Base
     private function getVotingBlockAndCheckAdminPermission(string $votingBlockId): VotingBlock
     {
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
             $this->returnRestResponse(403, $this->getError('Missing privileges'));
             die();
         }
@@ -84,7 +84,7 @@ class VotingController extends Base
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
             $this->returnRestResponse(403, $this->getError('Missing privileges'));
             die();
         }
@@ -140,7 +140,7 @@ class VotingController extends Base
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
             $this->returnRestResponse(403, $this->getError('Missing privileges'));
             die();
         }

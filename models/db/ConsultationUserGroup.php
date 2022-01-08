@@ -27,6 +27,19 @@ class ConsultationUserGroup extends ActiveRecord
     public const PERMISSION_ADMIN_ALL = 'admin-all';
     public const PERMISSION_ADMIN_SPEECH_LIST = 'admin-speech-list';
 
+    // Hint: privileges are mostly grouped into the permissions above;
+    // "Any" and "Site admin" have special semantics
+    public const PRIVILEGE_ANY                       = 0;
+    public const PRIVILEGE_CONSULTATION_SETTINGS     = 1;
+    public const PRIVILEGE_CONTENT_EDIT              = 2;
+    public const PRIVILEGE_SCREENING                 = 3;
+    public const PRIVILEGE_MOTION_EDIT               = 4;
+    public const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
+    public const PRIVILEGE_SITE_ADMIN                = 6;
+    public const PRIVILEGE_CHANGE_PROPOSALS          = 7;
+    public const PRIVILEGE_SPEECH_QUEUES             = 8;
+    public const PRIVILEGE_VOTINGS                   = 9;
+
     public const TEMPLATE_SITE_ADMIN = 1;
     public const TEMPLATE_CONSULTATION_ADMIN = 2;
     public const TEMPLATE_PROPOSED_PROCEDURE = 3;
@@ -76,6 +89,40 @@ class ConsultationUserGroup extends ActiveRecord
             return explode(',', $this->permissions);
         } else {
             return [];
+        }
+    }
+
+    public function containsPrivilege(int $privilege): bool
+    {
+        $permission = $this->getPermissions();
+        switch ($privilege) {
+            // Special case "any": everyone having any kind of special privilege
+            case static::PRIVILEGE_ANY:
+                return in_array(static::PERMISSION_PROPOSED_PROCEDURE, $permission, true) ||
+                       in_array(static::PERMISSION_ADMIN_ALL, $permission, true) ||
+                       in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $permission, true);
+
+            // Special case "site admin": has all permissions - for all consultations
+            case static::PRIVILEGE_SITE_ADMIN:
+                return in_array(static::PERMISSION_ADMIN_ALL, $permission, true) &&
+                       $this->consultationId === null;
+
+            // Regular cases
+            case static::PRIVILEGE_CONSULTATION_SETTINGS:
+            case static::PRIVILEGE_CONTENT_EDIT:
+            case static::PRIVILEGE_SCREENING:
+            case static::PRIVILEGE_MOTION_EDIT:
+            case static::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
+            case static::PRIVILEGE_VOTINGS:
+                return in_array(static::PERMISSION_ADMIN_ALL, $permission, true);
+            case static::PRIVILEGE_CHANGE_PROPOSALS:
+                return in_array(static::PERMISSION_PROPOSED_PROCEDURE, $permission, true) ||
+                       in_array(static::PERMISSION_ADMIN_ALL, $permission, true);
+            case static::PRIVILEGE_SPEECH_QUEUES:
+                return in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $permission, true) ||
+                       in_array(static::PERMISSION_ADMIN_ALL, $permission, true);
+            default:
+                return false;
         }
     }
 

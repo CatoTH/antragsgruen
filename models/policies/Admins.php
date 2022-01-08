@@ -4,6 +4,7 @@ namespace app\models\policies;
 
 use app\components\DateTools;
 use app\models\db\ConsultationMotionType;
+use app\models\db\ConsultationUserGroup;
 use app\models\db\User;
 
 class Admins extends IPolicy
@@ -56,6 +57,6 @@ class Admins extends IPolicy
 
     public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        return User::havePrivilege($this->motionType->getConsultation(), User::PRIVILEGE_MOTION_EDIT);
+        return User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT);
     }
 }

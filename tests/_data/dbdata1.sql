@@ -1074,6 +1074,73 @@ VALUES
   (8, 1, 1, 1, 0, 0, 0, 1);
 
 --
+-- Dumping data for table `consultationUserGroup`
+--
+
+INSERT INTO `###TABLE_PREFIX###consultationUserGroup` (`id`, `externalId`, `templateId`, `title`, `consultationId`, `siteId`, `selectable`, `permissions`) VALUES
+(1, NULL, 1, 'Site admin', NULL, 1, 1, 'admin-all'),
+(2, NULL, 2, 'Consultation admin', 1, 1, 1, 'admin-all'),
+(3, NULL, 3, 'Proposed procedure', 1, 1, 1, 'proposed-procedure'),
+(4, NULL, 4, 'Participant', 1, 1, 1, ''),
+(5, NULL, 1, 'Site admin', NULL, 2, 1, 'admin-all'),
+(6, NULL, 2, 'Consultation admin', 2, 2, 1, 'admin-all'),
+(7, NULL, 3, 'Proposed procedure', 2, 2, 1, 'proposed-procedure'),
+(8, NULL, 4, 'Participant', 2, 2, 1, ''),
+(9, NULL, 1, 'Site admin', NULL, 3, 1, 'admin-all'),
+(10, NULL, 2, 'Consultation admin', 3, 3, 1, 'admin-all'),
+(11, NULL, 3, 'Proposed procedure', 3, 3, 1, 'proposed-procedure'),
+(12, NULL, 4, 'Participant', 3, 3, 1, ''),
+(13, NULL, 1, 'Site admin', NULL, 4, 1, 'admin-all'),
+(14, NULL, 2, 'Consultation admin', 4, 4, 1, 'admin-all'),
+(15, NULL, 3, 'Proposed procedure', 4, 4, 1, 'proposed-procedure'),
+(16, NULL, 4, 'Participant', 4, 4, 1, ''),
+(17, NULL, 1, 'Site admin', NULL, 5, 1, 'admin-all'),
+(18, NULL, 2, 'Consultation admin', 5, 5, 1, 'admin-all'),
+(19, NULL, 3, 'Proposed procedure', 5, 5, 1, 'proposed-procedure'),
+(20, NULL, 4, 'Participant', 5, 5, 1, ''),
+(21, NULL, 1, 'Site admin', NULL, 6, 1, 'admin-all'),
+(22, NULL, 2, 'Consultation admin', 6, 6, 1, 'admin-all'),
+(23, NULL, 3, 'Proposed procedure', 6, 6, 1, 'proposed-procedure'),
+(24, NULL, 4, 'Participant', 6, 6, 1, ''),
+(25, NULL, 1, 'Site admin', NULL, 7, 1, 'admin-all'),
+(26, NULL, 2, 'Consultation admin', 7, 7, 1, 'admin-all'),
+(27, NULL, 3, 'Proposed procedure', 7, 7, 1, 'proposed-procedure'),
+(28, NULL, 4, 'Participant', 7, 7, 1, ''),
+(29, NULL, 1, 'Site admin', NULL, 8, 1, 'admin-all'),
+(30, NULL, 2, 'Consultation admin', 8, 8, 1, 'admin-all'),
+(31, NULL, 3, 'Proposed procedure', 8, 8, 1, 'proposed-procedure'),
+(32, NULL, 4, 'Participant', 8, 8, 1, ''),
+(33, NULL, 2, 'Consultation admin', 9, 8, 1, 'admin-all'),
+(34, NULL, 3, 'Proposed procedure', 9, 8, 1, 'proposed-procedure'),
+(35, NULL, 4, 'Participant', 9, 8, 1, ''),
+(36, NULL, 2, 'Consultation admin', 10, 8, 1, 'admin-all'),
+(37, NULL, 3, 'Proposed procedure', 10, 8, 1, 'proposed-procedure'),
+(38, NULL, 4, 'Participant', 10, 8, 1, '');
+
+--
+-- Dumping data for table `userGroup`
+--
+
+INSERT INTO `###TABLE_PREFIX###userGroup` (`userId`, `groupId`) VALUES
+(1, 1),
+(1, 5),
+(1, 9),
+(1, 13),
+(1, 17),
+(1, 21),
+(1, 25),
+(6, 1),
+(6, 5),
+(6, 9),
+(6, 13),
+(6, 17),
+(6, 21),
+(6, 25),
+(6, 33),
+(7, 2),
+(8, 3);
+
+--
 -- Dumping data for table `motion`
 --
 

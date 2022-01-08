@@ -4,6 +4,7 @@ use app\models\db\Consultation;
 use app\models\db\ConsultationUserPrivilege;
 use yii\helpers\Html;
 
+return;
 /**
  * @var \app\controllers\Base $controller
  * @var Consultation $consultation

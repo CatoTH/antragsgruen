@@ -3,7 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\{HTMLTools, Tools, updater\UpdateChecker, UrlHelper};
-use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
+use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, ISupporter, Site, SpeechQueue, User};
 use app\models\AdminTodoItem;
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
@@ -15,8 +15,8 @@ class IndexController extends AdminBase
     use SiteAccessTrait;
 
     public static $REQUIRED_PRIVILEGES = [
-        User::PRIVILEGE_CONSULTATION_SETTINGS,
-        User::PRIVILEGE_SITE_ADMIN,
+        ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS,
+        ConsultationUserGroup::PRIVILEGE_SITE_ADMIN,
     ];
 
     public function actionIndex(): string
@@ -299,7 +299,7 @@ class IndexController extends AdminBase
     {
         $site = $this->site;
 
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SITE_ADMIN)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return '';
         }

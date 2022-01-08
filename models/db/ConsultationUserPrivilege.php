@@ -189,39 +189,11 @@ class ConsultationUserPrivilege extends ActiveRecord
     }
 
     /**
-     * @param int $permission
-     * @return boolean
-     */
-    public function containsPrivilege($permission)
-    {
-        switch ($permission) {
-            case User::PRIVILEGE_ANY:
-                return (
-                    $this->adminSuper === 1 || $this->adminContentEdit === 1 ||
-                    $this->adminScreen === 1 || $this->adminProposals === 1
-                );
-            case User::PRIVILEGE_CONSULTATION_SETTINGS:
-                return ($this->adminSuper === 1);
-            case User::PRIVILEGE_CONTENT_EDIT:
-                return ($this->adminContentEdit === 1);
-            case User::PRIVILEGE_SCREENING:
-                return ($this->adminScreen === 1);
-            case User::PRIVILEGE_CHANGE_PROPOSALS:
-                return ($this->adminProposals === 1);
-            case User::PRIVILEGE_MOTION_EDIT:
-                return ($this->adminSuper === 1);
-            case User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
-                return ($this->adminSuper === 1);
-            default:
-                return false;
-        }
-    }
-
-    /**
      * @return bool
      */
     public function isAskingForPermission()
     {
+        // @TODO Find another implementation for this
         return ($this->privilegeCreate === 0 && $this->privilegeView === 0 &&
             !$this->containsPrivilege(User::PRIVILEGE_ANY));
     }

@@ -2,6 +2,7 @@
 
 use app\components\updater\UpdateChecker;
 use app\components\UrlHelper;
+use app\models\db\ConsultationUserGroup;
 use app\models\db\User;
 use yii\helpers\Html;
 
@@ -71,7 +72,7 @@ echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(
 echo '</li>';
 echo '</ul></li>';
 
-if (User::havePrivilege($consultation, User::PRIVILEGE_VOTINGS)) {
+if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_voting'),
@@ -81,7 +82,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_VOTINGS)) {
     echo '</li>';
 }
 
-if (User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
+if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_access'),
@@ -149,7 +150,7 @@ if (User::currentUserIsSuperuser()) {
 
 echo '</aside></div>';
 
-if (User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
     if (count($site->consultations) === 1) {
         echo Html::beginForm('', 'post', ['class' => 'delSiteCaller']);
         echo '<button class="btn-link" type="submit" name="delSite">' .

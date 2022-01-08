@@ -53,17 +53,6 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_CONFIRMED   = 0;
     const STATUS_DELETED     = -1;
 
-    const PRIVILEGE_ANY                       = 0;
-    const PRIVILEGE_CONSULTATION_SETTINGS     = 1;
-    const PRIVILEGE_CONTENT_EDIT              = 2;
-    const PRIVILEGE_SCREENING                 = 3;
-    const PRIVILEGE_MOTION_EDIT               = 4;
-    const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
-    const PRIVILEGE_SITE_ADMIN                = 6;
-    const PRIVILEGE_CHANGE_PROPOSALS          = 7;
-    const PRIVILEGE_SPEECH_QUEUES             = 8;
-    const PRIVILEGE_VOTINGS                   = 9;
-
     const ORGANIZATION_DEFAULT = '0';
 
     /**
@@ -130,13 +119,27 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @param int|int[] $privilege
      */
-    public static function havePrivilege(?Consultation $consultation, $privilege): bool
+    public static function havePrivilege(?Consultation $consultation, int $privilege): bool
     {
         $user = static::getCurrentUser();
         if (!$user) {
             return false;
         }
         return $user->hasPrivilege($consultation, $privilege);
+    }
+
+    public static function haveOneOfPrivileges(?Consultation $consultation, array $privileges): bool
+    {
+        $user = static::getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+        foreach ($privileges as $privilege) {
+            if ($user->hasPrivilege($consultation, $privilege)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static function currentUserIsSuperuser(): bool
@@ -610,13 +613,9 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
-     * Checks if this user has the given privilege or at least one of the given privileges (binary OR)
-     * for the given consultation
-     *
-     * @param int|int[] $privilege
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * Checks if this user has the given privilege for the given consultation
      */
-    public function hasPrivilege(?Consultation $consultation, $privilege): bool
+    public function hasPrivilege(?Consultation $consultation, int $privilege): bool
     {
         if (!$consultation) {
             return false;
@@ -626,29 +625,9 @@ class User extends ActiveRecord implements IdentityInterface
             return true;
         }
 
-        foreach ($consultation->site->admins as $admin) {
-            if ($admin->id === $this->id) {
+        foreach ($this->getUserGroupsForConsultation($consultation) as $userGroup) {
+            if ($userGroup->containsPrivilege($privilege)) {
                 return true;
-            }
-        }
-
-        // Only site adminitrators are allowed to administer users.
-        // All other rights are granted to every consultation-level administrator
-        if ($privilege === User::PRIVILEGE_SITE_ADMIN) {
-            return false;
-        }
-
-        $privilege = (is_array($privilege) ? $privilege : [$privilege]);
-
-        foreach ($consultation->userPrivileges as $userPrivilege) {
-            if ($userPrivilege->userId === $this->id) {
-                $foundMatch = false;
-                foreach ($privilege as $priv) {
-                    if ($userPrivilege->containsPrivilege($priv)) {
-                        $foundMatch = true;
-                    }
-                }
-                return $foundMatch;
             }
         }
 

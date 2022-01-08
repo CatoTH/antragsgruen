@@ -1,6 +1,6 @@
 <?php
 
-use app\models\db\User;
+use app\models\db\{ConsultationUserGroup, User};
 use app\models\proposedProcedure\Agenda;
 use yii\helpers\Html;
 
@@ -18,7 +18,7 @@ $layout->loadBootstrapToggle();
 $this->title = Yii::t('con', 'proposal_title');
 $layout->addBreadcrumb(Yii::t('con', 'proposal_bc'));
 
-$iAmAdmin  = User::havePrivilege($controller->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+$iAmAdmin  = User::havePrivilege($controller->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
 $reloadUrl = \app\components\UrlHelper::createUrl('consultation/proposed-procedure-ajax');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
