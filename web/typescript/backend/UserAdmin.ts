@@ -26,6 +26,8 @@ export class UserAdmin {
                 <user-admin-widget :users="users"
                                    :groups="groups"
                                    @save-user-groups="saveUserGroups"
+                                   @remove-user="removeUser"
+                                   ref="user-admin-widget"
                 ></user-admin-widget>
             </div>`,
             data() {
@@ -64,6 +66,12 @@ export class UserAdmin {
                         groups
                     });
                 },
+                removeUser(user) {
+                    this._performOperation({
+                        op: 'remove-user',
+                        userId: user.id
+                    });
+                },
                 setUserGroups(users, groups) {
                     const usersJson = JSON.stringify(users),
                         groupsJson = JSON.stringify(groups);
@@ -98,5 +106,8 @@ export class UserAdmin {
                 this.startPolling()
             }
         });
+
+        // Used by tests to control vue-select
+        window['userWidget'] = this.widget;
     }
 }

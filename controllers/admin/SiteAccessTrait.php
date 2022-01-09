@@ -48,91 +48,6 @@ trait SiteAccessTrait
         }
     }
 
-    private function unlinkConsultationAdmin(User $user): void
-    {
-        $privilege = $this->consultation->getUserPrivilege($user);
-
-        $privilege->adminSuper       = 0;
-        $privilege->adminScreen      = 0;
-        $privilege->adminContentEdit = 0;
-        $privilege->adminProposals   = 0;
-        $privilege->save();
-    }
-
-    private function saveAdmins(): void
-    {
-        $replyTos    = \Yii::$app->request->post('ppReplyTo', []);
-        foreach ($replyTos as $userId => $replyTo) {
-            $user                = User::findOne($userId);
-            $settings            = $user->getSettingsObj();
-            if (filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
-                $settings->ppReplyTo = $replyTos[$userId];
-            } else {
-                $settings->ppReplyTo = '';
-            }
-            $user->setSettingsObj($settings);
-            $user->save();
-        }
-
-        $permissions = \Yii::$app->request->post('adminTypes', []);
-        foreach ($permissions as $userId => $types) {
-            if ($userId === User::getCurrentUser()->id) {
-                continue;
-            }
-
-            $user      = User::findOne($userId);
-            $privilege = $this->consultation->getUserPrivilege($user);
-
-            if (in_array('site', $types)) {
-                try {
-                    $this->site->link('admins', $user);
-                } catch (\Exception $e) {
-                }
-
-                $privilege->adminSuper       = 0;
-                $privilege->adminScreen      = 0;
-                $privilege->adminContentEdit = 0;
-                $privilege->adminProposals   = 0;
-            } else {
-                $this->site->unlink('admins', $user, true);
-
-                $privilege->privilegeCreate = 1;
-                $privilege->privilegeView   = 1;
-                if (in_array('consultation', $types)) {
-                    $privilege->adminSuper       = 1;
-                    $privilege->adminScreen      = 1;
-                    $privilege->adminContentEdit = 1;
-                } else {
-                    $privilege->adminSuper       = 0;
-                    $privilege->adminScreen      = 0;
-                    $privilege->adminContentEdit = 0;
-                }
-                if (in_array('proposal', $types)) {
-                    $privilege->adminProposals = 1;
-                } else {
-                    $privilege->adminProposals = 0;
-                }
-            }
-
-            $privilege->save();
-        }
-    }
-
-    private function addAdminGruenesNetz(string $username): void
-    {
-        $newUser = User::findByAuthTypeAndName(\app\models\settings\Site::LOGIN_GRUENES_NETZ, $username);
-        if (!$newUser) {
-            $newUser                  = new User();
-            $newUser->auth            = User::gruenesNetzId2Auth($username);
-            $newUser->status          = User::STATUS_CONFIRMED;
-            $newUser->name            = '';
-            $newUser->email           = '';
-            $newUser->organizationIds = '';
-            $newUser->save();
-        }
-        $this->linkConsultationAdmin($newUser, $username);
-    }
-
     /**
      * @param string $email
      * @throws \Yii\base\Exception
@@ -250,19 +165,6 @@ trait SiteAccessTrait
             }
             \Yii::$app->session->setFlash('success', $msg);
         }
-    }
-
-    /**
-     * Hint: later it will be possible to select a group when inviting the user. Until then, it's a hard-coded group.
-     */
-    private function getDefaultUserGroup(): ?ConsultationUserGroup
-    {
-        foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
-            if ($userGroup->templateId === ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
-                return $userGroup;
-            }
-        }
-        return null;
     }
 
     /**
@@ -391,6 +293,19 @@ trait SiteAccessTrait
                 \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_user_added_0'));
             }
         }
+    }
+
+    /**
+     * Hint: later it will be possible to select a group when inviting the user. Until then, it's a hard-coded group.
+     */
+    private function getDefaultUserGroup(): ?ConsultationUserGroup
+    {
+        foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
+            if ($userGroup->templateId === ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
+                return $userGroup;
+            }
+        }
+        return null;
     }
 
     private function saveUsers()
@@ -532,6 +447,16 @@ trait SiteAccessTrait
         $consultation->refresh();
     }
 
+    public function removeUser(Consultation $consultation, int $userId): void
+    {
+        $user = User::findOne(['id' => $userId]);
+        foreach ($user->getUserGroupsForConsultation($consultation) as $userGroup) {
+            $user->unlink('userGroups', $userGroup, true);
+        }
+
+        $consultation->refresh();
+    }
+
     public function actionUsers(): string
     {
         $consultation = $this->getConsultationAndCheckAdminPermission();
@@ -564,6 +489,9 @@ trait SiteAccessTrait
                     intval(\Yii::$app->request->post('userId')),
                     array_map('intval', \Yii::$app->request->post('groups', []))
                 );
+                break;
+            case 'remove-user':
+                $this->removeUser($consultation, intval(\Yii::$app->request->post('userId')));
                 break;
         }
 
@@ -607,23 +535,6 @@ trait SiteAccessTrait
                 case 'email':
                     $this->addAdminEmail($post['addUsername']);
                     break;
-            }
-        }
-
-        if ($this->isPostSet('saveAdmin')) {
-            $this->saveAdmins();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_saved'));
-        }
-
-        if ($this->isPostSet('removeAdmin')) {
-            /** @var User $todel */
-            $todel = User::findOne($post['removeAdmin']);
-            if ($todel && $todel->id !== User::getCurrentUser()->id) {
-                $this->site->unlink('admins', $todel, true);
-                $this->unlinkConsultationAdmin($todel);
-                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_admin_del_done'));
-            } else {
-                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_admin_del_notf'));
             }
         }
 

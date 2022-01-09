@@ -235,13 +235,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUserGroupsForConsultation(Consultation $consultation): array
     {
         return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
-            if ($group->consultationId === $consultation->id) {
-                return true;
-            } elseif ($group->consultation === null) {
-                return ($group->siteId === $consultation->siteId);
-            } else {
-                return false;
-            }
+            return $group->isRelevantForConsultation($consultation);
         });
     }
 

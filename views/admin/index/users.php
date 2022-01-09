@@ -24,7 +24,7 @@ $layout->addVueTemplate('@app/views/admin/index/users.vue.php');
 $userSaveUrl = UrlHelper::createUrl(['/admin/index/users-save']);
 $userPollUrl = UrlHelper::createUrl(['/admin/index/users-poll']);
 
-echo '<h1>' . Yii::t('admin', 'siteacc_title') . '</h1>';
+echo '<h1>' . Yii::t('admin', 'siteacc_accounts_title') . '</h1>';
 
 echo '<div class="content">';
 

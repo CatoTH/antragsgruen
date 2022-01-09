@@ -6,6 +6,7 @@ return [
     'Yesterday'             => 'Gestern',
     'save'                  => 'Speichern',
     'saved'                 => 'Gespeichert.',
+    'abort'                 => 'Abbrechen',
     'edit'                  => 'Bearbeiten',
     'Home'                  => 'Start',
     'home_back'             => 'Zur Startseite',

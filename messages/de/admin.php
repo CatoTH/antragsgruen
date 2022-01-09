@@ -299,7 +299,6 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_logins'             => 'Folgende Login-Varianten sind möglich',
     'siteacc_useraccounts'       => 'Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>',
     'siteacc_ww'                 => 'Grünes Netz <small>(v.a. Parteimitglieder)</small>',
-    'siteacc_otherlogins'        => 'OpenID',
     'siteacc_con_pw'             => 'Diese Veranstaltung mit einem Passwort versehen',
     'siteacc_con_pw_place'       => 'Neues Veranstaltungspasswort',
     'siteacc_con_pw_set'         => 'Neues Passwort setzen',
@@ -323,6 +322,9 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_del_btn'            => 'Löschen',
     'siteacc_user_del_done'      => 'Die ausgewählte Berechtigung für diese Veranstaltung wurde entfernt.',
     'siteacc_accounts_title'     => 'Benutzer*innen-Accounts',
+    'siteacc_groups_edit'        => '%USERNAME% bearbeiten',
+    'siteacc_groups_del'         => '%USERNAME% entfernen',
+    'siteacc_del_confirm'        => '%USERNAME% wirklich aus der Liste entfernen?',
     'siteacc_email_text_pre'     => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .

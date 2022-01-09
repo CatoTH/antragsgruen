@@ -298,7 +298,6 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_logins'            => 'The following login variants are possible',
     'siteacc_useraccounts'      => 'Standard Antragsgrün accounts <small>(everyone with a valid e-mail address)</small>',
     'siteacc_ww'                => 'Grünes Netz <small>(members of the german green party)</small>',
-    'siteacc_otherlogins'       => 'OpenID',
     'siteacc_con_pw'            => 'Protect this consultation with a password',
     'siteacc_con_pw_set'        => 'Set new password',
     'siteacc_con_pw_place'      => 'New consultation password',
@@ -322,6 +321,9 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_del_btn'           => 'Delete',
     'siteacc_user_del_done'     => 'The user was remove from this consultation.',
     'siteacc_accounts_title'    => 'User accounts',
+    'siteacc_groups_edit'       => 'Edit %USERNAME%',
+    'siteacc_groups_del'        => 'Remove %USERNAME%',
+    'siteacc_del_confirm'       => 'Do you really want to remove %USERNAME% from the list?',
     'siteacc_email_text_pre'    => 'Hi,
 
 we have just created an Antragsgrün account for you. Now you can join the discussion on the motions / drafts.

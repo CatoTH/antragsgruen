@@ -6,6 +6,7 @@ return [
     'Yesterday'             => 'Yesterday',
     'save'                  => 'Save',
     'saved'                 => 'Saved.',
+    'abort'                 => 'Cancel',
     'edit'                  => 'Edit',
     'Home'                  => 'Home',
     'home_back'             => 'Back to home',

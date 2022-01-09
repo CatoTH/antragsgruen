@@ -1536,6 +1536,9 @@ label.legend {
 
     > .userInfo {
       flex-basis: 50%;
+      .name {
+        font-weight: bold;
+      }
     }
 
     > .groupsDisplay {
@@ -1551,15 +1554,39 @@ label.legend {
       flex-basis: 50px;
       text-align: right;
       padding: 2px;
+    }
 
-      .btn {
-        padding: 0;
+    .btnEdit {
+      margin-left: 7px;
+      margin-right: 7px;
+    }
+
+    .btnRemove {
+      color: $colorDelLink;
+      opacity: 0.5;
+      margin-right: -15px;
+
+      html.no-touchevents & {
+        opacity: 0;
+        &:active, &:focus {
+          opacity: 0.5;
+        }
       }
+    }
 
-      .btnLinkAbort {
-        color: $colorDelLink;
+    html.no-touchevents &:hover {
+      .btnRemove {
         opacity: 0.5;
       }
     }
+  }
+
+  .btn {
+    padding: 0;
+  }
+
+  .btnLinkAbort, .btnRemove {
+    color: $colorDelLink;
+    opacity: 0.5;
   }
 }
