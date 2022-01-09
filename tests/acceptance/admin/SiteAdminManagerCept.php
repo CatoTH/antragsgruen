@@ -13,24 +13,26 @@ $I->wantTo('Logout again');
 $I->logout();
 
 
-$I->wantTo('Login in as an admin');
-$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->see(mb_strtoupper('Administrator*innen'), 'h2');
-
-
 $I->wantTo('Add testuser as admin');
-$I->executeJS('$("input[name=addType]").val("email");');
-$I->fillField('#addUsername', 'testuser@example.org');
-$I->submitForm('#adminAddForm', [], 'addAdmin');
-$I->see('testuser@example.org');
 
-$I->seeElement('.admin2 .typeCon');
-$I->seeElement('.admin2 .typeProposal');
-$I->checkOption('.admin2 .typeSite input');
-$I->dontSeeElement('.admin2 .typeCon');
-$I->dontSeeElement('.admin2 .typeProposal');
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 
-$I->submitForm('#adminForm', [], 'saveAdmin');
+$I->dontSeeElement('.user2');
+$I->clickJS('.addUsersOpener.email');
+$I->fillField('#emailAddresses', 'testuser@example.org');
+$I->fillField('#names', 'ignored');
+$I->submitForm('#accountsCreateForm', [], 'addUsers');
+
+$I->wait(1);
+$I->seeElement('.user2');
+$I->dontSeeElement('.vs__dropdown-toggle');
+$I->clickJS('.user2 .btnEdit');
+$I->seeElement('.vs__dropdown-toggle');
+$I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([1], { id: 2 });');
+$I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 2});');
+$I->wait(0.5);
+$I->see('Seiten-Admin', '.user2');
+
 
 $I->wantTo('Login in as testuser');
 $I->logout();
@@ -39,21 +41,16 @@ $I->loginAsStdUser();
 $I->see('Einstellungen', '#adminLink');
 
 
-$I->wantTo('Go to admin administration');
-$I->gotoStdAdminPage()->gotoSiteAccessPage();
-
-
-$I->executeJS('$("input[name=addType]").val("gruenesnetz");');
-$I->fillField('#addUsername', 'HoesslTo');
-$I->submitForm('#adminAddForm', [], 'addAdmin');
-$I->see('HoesslTo');
-
-
 $I->wantTo('Remove testadmin as admin');
+$I->gotoStdAdminPage()->gotoUserAdministration();
+$I->wait(1);
+
 $I->see('testadmin@example.org');
-$I->executeJS('$(".admin1 .removeAdmin").trigger("click");');
-$I->seeBootboxDialog('Admin-Rechte entziehen');
+$I->clickJS('.userAdminList .user1 .btnRemove');
+$I->wait(1);
+$I->seeBootboxDialog('Testadmin wirklich aus der Liste entfernen?');
 $I->acceptBootboxConfirm();
+$I->wait(1);
 $I->dontSee('testadmin@example.org');
 
 

@@ -6,7 +6,6 @@ use app\tests\_pages\{AdminAdminConsultationsPage,
     AdminConsultationPage,
     AdminMotionListPage,
     AdminMotionTypePage,
-    AdminSiteAccessPage,
     AdminTranslationPage,
     AdminUsersPage};
 
@@ -37,9 +36,8 @@ $I->openPage(AdminTranslationPage::class, ['subdomain' => 'stdparteitag', 'consu
 $I->seeElement('#wordingBaseForm');
 $I->openPage(AdminMotionTypePage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag', 'motionTypeId' => 1]);
 $I->seeElement('.adminTypeForm');
-$I->openPage(AdminSiteAccessPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
-$I->see('Kein Zugriff auf diese Seite');
-$I->dontSeeElement('#siteSettingsForm');
+$I->openPage(AdminUsersPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->seeElement('.userAdminList');
 $I->openPage(AdminAdminConsultationsPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->see('Kein Zugriff auf diese Seite');
 $I->dontSeeElement('.consultationEditForm');
