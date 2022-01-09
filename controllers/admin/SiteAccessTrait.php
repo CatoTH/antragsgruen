@@ -3,7 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\{ConsultationAccessPassword, UrlHelper, mail\Tools as MailTools};
-use app\models\db\{ConsultationUserGroup, ConsultationUserPrivilege, EMailLog, Site, Consultation, User};
+use app\models\db\{ConsultationUserGroup, EMailLog, Site, Consultation, User};
 use app\models\exceptions\{AlreadyExists, MailNotSent};
 use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
@@ -173,7 +173,44 @@ trait SiteAccessTrait
         }
     }
 
-    private function addUsersSamlWw()
+    /**
+     * @throws AlreadyExists
+     */
+    private function addUserBySamlWw(string $username, ConsultationUserGroup $initGroup): User
+    {
+        $auth = 'openid:https://service.gruene.de/openid/' . $username;
+
+        /** @var User $user */
+        $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
+        if ($user) {
+            // If the user already exist AND is already in the group, we will abort
+            foreach ($user->userGroups as $userGroup) {
+                if ($userGroup->id === $initGroup->id) {
+                    throw new AlreadyExists();
+                }
+            }
+        } else {
+            $user                  = new User();
+            $user->auth            = $auth;
+            $user->email           = '';
+            $user->name            = '';
+            $user->emailConfirmed  = 0;
+            $user->pwdEnc          = null;
+            $user->status          = User::STATUS_CONFIRMED;
+            $user->organizationIds = '';
+            $user->save();
+        }
+
+        foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
+            if ($userGroup->id === $initGroup->id) {
+                $user->link('userGroups', $userGroup);
+            }
+        }
+
+        return $user;
+    }
+
+    private function addUsersBySamlWw(): void
     {
         $usernames = explode("\n", \Yii::$app->request->post('samlWW', ''));
 
@@ -186,7 +223,8 @@ trait SiteAccessTrait
                 continue;
             }
             try {
-                ConsultationUserPrivilege::createWithUserSamlWW($this->consultation, $usernames[$i]);
+                $initGroup = $this->getDefaultUserGroup();
+                $this->addUserBySamlWw($usernames[$i], $initGroup);
                 $created++;
             } catch (AlreadyExists $e) {
                 $alreadyExisted[] = $usernames[$i];
@@ -202,8 +240,7 @@ trait SiteAccessTrait
             \Yii::$app->session->setFlash('error', $errMsg);
         }
         if (count($alreadyExisted) > 0) {
-            \Yii::$app->session->setFlash('info', \Yii::t('admin', 'siteacc_user_had') . ': ' .
-                implode(', ', $alreadyExisted));
+            \Yii::$app->session->setFlash('info', \Yii::t('admin', 'siteacc_user_had') . ': ' . implode(', ', $alreadyExisted));
         }
         if ($created > 0) {
             if ($created == 1) {
@@ -215,7 +252,89 @@ trait SiteAccessTrait
         }
     }
 
-    private function addUsersEmail()
+    /**
+     * Hint: later it will be possible to select a group when inviting the user. Until then, it's a hard-coded group.
+     */
+    private function getDefaultUserGroup(): ?ConsultationUserGroup
+    {
+        foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
+            if ($userGroup->templateId === ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
+                return $userGroup;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @throws AlreadyExists
+     */
+    private function addUserByEmail(string $email, string $name, ?string $setPassword, ConsultationUserGroup $initGroup, string $emailText): User
+    {
+        $email = mb_strtolower($email);
+        $auth  = 'email:' . $email;
+
+        /** @var User $user */
+        $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
+        if ($user) {
+            // If the user already exist AND is already in the group, we will abort
+            foreach ($user->userGroups as $userGroup) {
+                if ($userGroup->id === $initGroup->id) {
+                    throw new AlreadyExists();
+                }
+            }
+            $accountText = '';
+        } else {
+            if ($setPassword) {
+                $password = $setPassword;
+            } else {
+                $password = User::createPassword();
+            }
+
+            $user = new User();
+            $user->auth = $auth;
+            $user->email = $email;
+            $user->name = $name;
+            $user->pwdEnc = password_hash($password, PASSWORD_DEFAULT);
+            $user->status = User::STATUS_CONFIRMED;
+            $user->emailConfirmed = 1;
+            $user->organizationIds = '';
+            $user->save();
+
+            $accountText = str_replace(
+                ['%EMAIL%', '%PASSWORD%'],
+                [$email, $password],
+                \Yii::t('user', 'acc_grant_email_userdata')
+            );
+        }
+
+        foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
+            if ($userGroup->id === $initGroup->id) {
+                $user->link('userGroups', $userGroup);
+            }
+        }
+
+        $consUrl   = UrlHelper::absolutizeLink(UrlHelper::homeUrl());
+        $emailText = str_replace('%LINK%', $consUrl, $emailText);
+
+        try {
+            MailTools::sendWithLog(
+                EMailLog::TYPE_ACCESS_GRANTED,
+                $this->consultation,
+                $email,
+                $user->id,
+                \Yii::t('user', 'acc_grant_email_title'),
+                $emailText,
+                '',
+                ['%ACCOUNT%' => $accountText]
+            );
+        } catch (MailNotSent $e) {
+            \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+        }
+
+        return $user;
+    }
+
+    private function addUsersByEmail()
     {
         $params   = $this->getParams();
         $post     = \Yii::$app->request->post();
@@ -239,12 +358,12 @@ trait SiteAccessTrait
                     continue;
                 }
                 try {
-                    ConsultationUserPrivilege::createWithUserEmail(
-                        $this->consultation,
+                    $this->addUserByEmail(
                         trim($emails[$i]),
                         trim($names[$i]),
-                        ($hasEmail ? $post['emailText'] : ''),
-                        ($hasEmail ? null : $passwords[$i])
+                        ($hasEmail ? null : $passwords[$i]),
+                        $this->getDefaultUserGroup(),
+                        ($hasEmail ? $post['emailText'] : '')
                     );
                     $created++;
                 } catch (AlreadyExists $e) {
@@ -364,7 +483,7 @@ trait SiteAccessTrait
     {
         $consultation = $this->consultation;
 
-        if (!User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+        if (!User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             throw new ExitException();
         }
@@ -416,6 +535,15 @@ trait SiteAccessTrait
     public function actionUsers(): string
     {
         $consultation = $this->getConsultationAndCheckAdminPermission();
+
+        if ($this->isPostSet('addUsers')) {
+            if (trim(\Yii::$app->request->post('emailAddresses', '')) !== '') {
+                $this->addUsersByEmail();
+            }
+            if (trim(\Yii::$app->request->post('samlWW', '')) !== '' && $this->getParams()->isSamlActive()) {
+                $this->addUsersBySamlWw();
+            }
+        }
 
         return $this->render('users', [ 'widgetData' => $this->getUsersWidgetData($consultation) ]);
     }
@@ -574,10 +702,10 @@ trait SiteAccessTrait
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_saved'));
         } elseif ($this->isPostSet('addUsers')) {
             if (trim(\Yii::$app->request->post('emailAddresses', '')) !== '') {
-                $this->addUsersEmail();
+                $this->addUsersByEmail();
             }
             if (trim(\Yii::$app->request->post('samlWW', '')) !== '' && $this->getParams()->isSamlActive()) {
-                $this->addUsersSamlWw();
+                $this->addUsersBySamlWw();
             }
         }
 

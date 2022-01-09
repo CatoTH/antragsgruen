@@ -1,7 +1,6 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{ConsultationUserGroup, User};
 use yii\helpers\Html;
 
 /**
@@ -29,6 +28,18 @@ echo '<h1>' . Yii::t('admin', 'siteacc_title') . '</h1>';
 
 echo '<div class="content">';
 
+echo $controller->showErrors();
+
+$success = Yii::$app->session->getFlash('success_login', null, true);
+if ($success) {
+    echo '<div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                <span class="sr-only">' . Yii::t('base', 'aria_success') . ':</span>
+                ' . Html::encode($success) . '
+            </div>';
+}
+
+
 ?>
 
 <div data-antragsgruen-widget="backend/UserAdmin"
@@ -42,3 +53,6 @@ echo '<div class="content">';
 
 <?php
 echo '</div>';
+
+
+echo $this->render('_users_add_accounts');

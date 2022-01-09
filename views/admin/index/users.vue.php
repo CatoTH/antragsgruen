@@ -3,7 +3,6 @@
 ob_start();
 ?>
 <section>
-    <h2>Users</h2>
     <ul class="userAdminList">
         <li v-for="user in users">
             <div class="userInfo">

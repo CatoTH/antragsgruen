@@ -90,7 +90,9 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADM
         ['class' => 'siteAccessLink']
     );
     echo '</li>';
+}
 
+if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_user_list'),
@@ -98,7 +100,9 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADM
         ['class' => 'siteUsers']
     );
     echo '</li>';
+}
 
+if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_consultations'),

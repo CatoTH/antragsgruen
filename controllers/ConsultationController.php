@@ -26,13 +26,9 @@ class ConsultationController extends Base
     /**
      * @param \yii\base\Action $action
      *
-     * @return bool
      * @throws \Exception
-     * @throws Internal
-     * @throws \yii\base\ExitException
-     * @throws \yii\web\BadRequestHttpException
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         $return = parent::beforeAction($action);
         if (!$this->consultation) {
@@ -47,7 +43,6 @@ class ConsultationController extends Base
     /**
      * @return string
      * @throws Internal
-     * @throws \yii\base\ExitException
      */
     public function actionSearch()
     {
@@ -93,7 +88,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws Internal
      */
     public function actionFeedmotions()
     {
@@ -124,7 +118,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws Internal
      */
     public function actionFeedamendments()
     {
@@ -286,7 +279,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionHome()
     {
@@ -299,7 +291,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionIndex()
     {

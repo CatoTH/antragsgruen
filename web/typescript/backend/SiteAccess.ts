@@ -4,7 +4,6 @@ class SiteAccess {
     constructor() {
         this.initSite();
         this.initUserList();
-        this.initAddUsers();
         this.initDelUser();
         this.initAdmins();
         this.initConPwd();
@@ -18,45 +17,6 @@ class SiteAccess {
                 $(".showManagedUsers").addClass('hidden');
             }
         }).trigger("change");
-    }
-
-    private initAddUsers() {
-        $(".addUsersOpener").on("click", (ev) => {
-            const type = $(ev.currentTarget).data("type");
-            $(".addUsersByLogin").addClass("hidden");
-            $(".addUsersByLogin." + type).removeClass("hidden");
-        });
-
-        $("#accountsCreateForm").on("submit", (ev) => {
-            if (!$(".addUsersByLogin.email").hasClass("hidden")) {
-                let text = $("#emailText").val() as string;
-                if (text.indexOf("%ACCOUNT%") == -1) {
-                    bootbox.alert(__t("admin", "emailMissingCode"));
-                    ev.preventDefault();
-                }
-                if (text.indexOf("%LINK%") == -1) {
-                    bootbox.alert(__t("admin", "emailMissingLink"));
-                    ev.preventDefault();
-                }
-
-                let emails = ($("#emailAddresses").val() as string).split("\n"),
-                    names = ($("#names").val() as string).split("\n");
-                if (emails.length == 1 && emails[0] == "") {
-                    ev.preventDefault();
-                    bootbox.alert(__t("admin", "emailMissingTo"));
-                }
-                if (emails.length != names.length) {
-                    bootbox.alert(__t("admin", "emailNumberMismatch"));
-                    ev.preventDefault();
-                }
-            }
-            if (!$(".addUsersByLogin.samlWW").hasClass("hidden")) {
-                if ($("#samlWW").val() === "") {
-                    ev.preventDefault();
-                    bootbox.alert(__t("admin", "emailMissingUsername"));
-                }
-            }
-        });
     }
 
     private initDelUser() {
