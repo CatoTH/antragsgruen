@@ -2,7 +2,7 @@
 
 namespace app\controllers\admin;
 
-use app\components\{HTMLTools, Tools, updater\UpdateChecker, UrlHelper};
+use app\components\{ConsultationAccessPassword, HTMLTools, Tools, updater\UpdateChecker, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, ISupporter, Site, SpeechQueue, User};
 use app\models\AdminTodoItem;
 use app\models\exceptions\FormError;
@@ -28,7 +28,7 @@ class IndexController extends AdminBase
 
         if ($this->isPostSet('delSite')) {
             $this->site->setDeleted();
-            return $this->render('site_deleted', []);
+            return $this->render('site_deleted');
         }
 
         return $this->render(
@@ -58,6 +58,21 @@ class IndexController extends AdminBase
             $settings->saveConsultationForm($settingsInput, $post['settingsFields']);
             $settings->setOrganisationsFromInput($post['organisations'] ?? []);
 
+            if ($model->havePrivilege(ConsultationUserGroup::TEMPLATE_SITE_ADMIN)) {
+                if ($this->isPostSet('pwdProtected') && $this->isPostSet('consultationPassword')) {
+                    if (trim($post['consultationPassword'])) {
+                        $pwdTools = new ConsultationAccessPassword($model);
+                        $pwd = trim($post['consultationPassword']);
+                        $settings->accessPwd = password_hash($pwd, PASSWORD_DEFAULT);
+                        if ($post['otherConsultations'] === '1') {
+                            $pwdTools->setPwdForOtherConsultations($settings->accessPwd);
+                        }
+                    }
+                } else {
+                    $settings->accessPwd = null;
+                }
+            }
+
             $model->setSettings($settings);
 
             if (preg_match('/^[\w_-]+$/i', $data['urlPath']) && trim($data['urlPath']) !== 'rest') {
@@ -70,6 +85,24 @@ class IndexController extends AdminBase
                 if ($model->site->currentConsultationId === $model->id) {
                     $model->site->status = ($settings->maintenanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
                 }
+
+                if ($model->havePrivilege(ConsultationUserGroup::TEMPLATE_SITE_ADMIN)) {
+                    $settings = $model->site->getSettings();
+                    if ($this->isPostSet('login')) {
+                        $settings->loginMethods = array_map('IntVal', $post['login']);
+                    } else {
+                        $settings->loginMethods = [];
+                    }
+                    // Prevent locking out myself
+                    if (User::getCurrentUser()->getAuthType() === \app\models\settings\Site::LOGIN_STD) {
+                        $settings->loginMethods[] = \app\models\settings\Site::LOGIN_STD;
+                    }
+                    if (User::getCurrentUser()->getAuthType() === \app\models\settings\Site::LOGIN_EXTERNAL) {
+                        $settings->loginMethods[] = \app\models\settings\Site::LOGIN_EXTERNAL;
+                    }
+                    $model->site->setSettings($settings);
+                }
+
                 $model->site->save();
 
                 if (!$model->getSettings()->adminsMayEdit) {
@@ -503,10 +536,10 @@ class IndexController extends AdminBase
         }));
         usort($files, function (ConsultationFile $file1, ConsultationFile $file2) {
             $currentCon = $this->consultation->id;
-            if ($file1->consultationId === $currentCon && $file1->consultationId !== $currentCon) {
+            if ($file1->consultationId === $currentCon && $file2->consultationId !== $currentCon) {
                 return -1;
             }
-            if ($file1->consultationId !== $currentCon && $file1->consultationId === $currentCon) {
+            if ($file1->consultationId !== $currentCon && $file2->consultationId === $currentCon) {
                 return 1;
             }
             return Tools::compareSqlTimes($file1->dateCreation, $file2->dateCreation);

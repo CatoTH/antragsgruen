@@ -2,7 +2,7 @@
 
 namespace app\controllers\admin;
 
-use app\components\{ConsultationAccessPassword, UrlHelper, mail\Tools as MailTools};
+use app\components\{UrlHelper, mail\Tools as MailTools};
 use app\models\db\{ConsultationUserGroup, EMailLog, Site, Consultation, User};
 use app\models\exceptions\{AlreadyExists, MailNotSent};
 use app\models\policies\IPolicy;
@@ -598,50 +598,6 @@ trait SiteAccessTrait
         }
 
         $post = \Yii::$app->request->post();
-
-        if ($this->isPostSet('saveLogin')) {
-            $settings = $site->getSettings();
-            if ($this->isPostSet('login')) {
-                $settings->loginMethods = array_map('IntVal', $post['login']);
-            } else {
-                $settings->loginMethods = [];
-            }
-            // Prevent locking out myself
-            if (User::getCurrentUser()->getAuthType() === \app\models\settings\Site::LOGIN_STD) {
-                $settings->loginMethods[] = \app\models\settings\Site::LOGIN_STD;
-            }
-            if (User::getCurrentUser()->getAuthType() === \app\models\settings\Site::LOGIN_EXTERNAL) {
-                $settings->loginMethods[] = \app\models\settings\Site::LOGIN_EXTERNAL;
-            }
-            $site->setSettings($settings);
-
-            $conSettings                      = $con->getSettings();
-            $conSettings->forceLogin          = isset($post['forceLogin']);
-            $conSettings->managedUserAccounts = isset($post['managedUserAccounts']);
-
-            if ($this->isPostSet('pwdProtected') && $this->isPostSet('consultationPassword')) {
-                if (trim($post['consultationPassword'])) {
-                    $pwdTools               = new ConsultationAccessPassword($con);
-                    $pwd                    = trim($post['consultationPassword']);
-                    $conSettings->accessPwd = password_hash($pwd, PASSWORD_DEFAULT);
-                    if ($post['otherConsultations'] === '1') {
-                        $pwdTools->setPwdForOtherConsultations($conSettings->accessPwd);
-                    }
-                }
-            } else {
-                $conSettings->accessPwd = null;
-            }
-
-            $con->setSettings($conSettings);
-
-
-            if ($site->save() && $con->save()) {
-                \Yii::$app->session->setFlash('success_login', \Yii::t('base', 'saved'));
-            } else {
-                \Yii::$app->session->setFlash('error_login', 'An error occurred: ' . print_r($site->getErrors(), true));
-            }
-            $site->refresh();
-        }
 
         if ($this->isPostSet('addAdmin')) {
             switch ($post['addType']) {

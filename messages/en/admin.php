@@ -294,7 +294,7 @@ The user administration below is only fully functional when read rights or the r
 If this site should only be <em>visible</em> to users included below, select the settings immediately below the reference. If the site should be visible to all but only registered users can submit motions, then you can set this automatically here:',
     'siteacc_policy_login'      => 'Restrict to users',
     'siteacc_forcelogin'        => 'Only logged in users are allowed to access (incl. <em>reading</em>)',
-    'siteacc_managedusers'      => 'Only allow selected users to log in <small class="showManagedUsers">(see below)</small>',
+    'siteacc_managedusers'      => 'Only allow selected users to log in',
     'siteacc_logins'            => 'The following login variants are possible',
     'siteacc_useraccounts'      => 'Standard Antragsgrün accounts <small>(everyone with a valid e-mail address)</small>',
     'siteacc_ww'                => 'Grünes Netz <small>(members of the german green party)</small>',

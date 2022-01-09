@@ -6,7 +6,10 @@ ob_start();
     <ul class="userAdminList">
         <li v-for="user in users">
             <div class="userInfo">
-                {{ user.name }}
+                <div class="name">{{ user.name }}</div>
+                <div class="additional">
+                    {{ user.email }}, {{ user.organization }}
+                </div>
             </div>
             <div class="groupsDisplay" v-if="!isGroupChanging(user)">
                 {{ userGroupsDisplay(user) }}

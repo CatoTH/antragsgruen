@@ -15,14 +15,14 @@ $I->submitForm('.consultationCreateForm', [], 'createConsultation');
 
 
 $I->wantTo('set a password for the first consultation');
-$I->gotoStdAdminPage('stdparteitag', 'std-parteitag')->gotoSiteAccessPage();
+$page = $I->gotoStdAdminPage('stdparteitag', 'std-parteitag')->gotoConsultation();
 $I->dontSeeCheckboxIsChecked("//input[@name='pwdProtected']");
 $I->dontSeeElement('.setPasswordHolder');
 $I->executeJS('$("input[name=\'pwdProtected\']").click();');
 $I->wait(0.5);
 $I->seeElement('.setPasswordHolder');
 $I->fillField("//input[@name='consultationPassword']", "stdParteitagPwd");
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
+$page->saveForm();
 $I->seeCheckboxIsChecked("//input[@name='pwdProtected']");
 $I->seeElement('.setNewPassword');
 
@@ -60,7 +60,7 @@ $I->fillField('#username', 'testadmin@example.org');
 $I->fillField('#passwordInput', 'testadmin');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
-$I->gotoStdAdminPage('stdparteitag', 'test3')->gotoSiteAccessPage();
+$page = $I->gotoStdAdminPage('stdparteitag', 'test3')->gotoConsultation();
 $I->seeElement('.setNewPassword');
 $I->executeJS('$(".setNewPassword").click()');
 $I->wait(0.5);
@@ -68,7 +68,7 @@ $I->seeElement('.setPasswordHolder');
 $I->seeCheckboxIsChecked("//input[@name='otherConsultations'][@value='1']");
 $I->fillField("//input[@name='consultationPassword']", "Test3Pwd");
 $I->checkOption("//input[@name='otherConsultations'][@value='0']");
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
+$page->saveForm();
 $I->logout();
 
 

@@ -5,11 +5,14 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('check the basic configuration');
-$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->checkOption('input[name=managedUserAccounts]');
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
+$page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->checkOption('.managedUserAccounts input');
+$page->saveForm();
 
-$I->click('.addUsersOpener.email');
+$I->gotoStdAdminPage()->gotoUserAdministration();
+
+$I->clickJS('.addUsersOpener.email');
+$I->wait(0.1);
 $I->see('Benachrichtigungs-E-Mail', '.alert-info');
 $I->dontSee('Datenschutzgründen', '.alert-info');
 $I->dontSeeElement('#passwords');
@@ -19,14 +22,12 @@ $I->wantTo('disable e-mails');
 
 $I->setAntragsgruenConfiguration(['mailService' => ['transport' => 'none']]);
 
-$I->gotoConsultationHome();
-$I->click('#adminLink');
-$I->click('.siteAccessLink');
+$I->gotoStdAdminPage()->gotoUserAdministration();
 
 $I->wantTo('create an user');
 
 $I->dontSeeElement('#emailAddresses');
-$I->click('.addUsersOpener.email');
+$I->clickJS('.addUsersOpener.email');
 $I->dontSee('Benachrichtigungs-E-Mail', '.alert-info');
 $I->see('Datenschutzgründen', '.alert-info');
 
@@ -38,8 +39,9 @@ $I->fillField('#passwords', 'bliblablubb');
 $I->fillField('#names', 'Kasper');
 $I->submitForm('#accountsCreateForm', [], 'addUsers');
 
-$I->see('Kasper', '.accountListTable');
-$I->see('blibla@example.org', '.accountListTable');
+$I->wait(0.5);
+$I->see('Kasper', '.userAdminList');
+$I->see('blibla@example.org', '.userAdminList');
 
 
 

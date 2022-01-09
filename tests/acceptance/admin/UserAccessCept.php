@@ -5,11 +5,9 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('enforce login on this site');
-$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-
-$I->checkOption('input[name=forceLogin]');
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
-$I->see('Gespeichert.', '#siteSettingsForm');
+$page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->checkOption('.forceLogin input');
+$page->saveForm();
 
 $I->logout();
 $I->gotoConsultationHome(false);
@@ -26,16 +24,11 @@ $I->logout();
 $I->wantTo('restrict login');
 
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage()->gotoSiteAccessPage();
+$page = $I->gotoStdAdminPage()->gotoConsultation();
+$I->checkOption('.managedUserAccounts input');
+$page->saveForm();
 
-$I->dontSeeElement('#accountsCreateForm');
-$I->checkOption('input[name=managedUserAccounts]');
-$I->wait(1);
-$I->seeElement('#accountsCreateForm');
-
-
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
-$I->see('Gespeichert.', '#siteSettingsForm');
+$I->see('Gespeichert.');
 
 $I->logout();
 $I->gotoConsultationHome(false);
@@ -52,7 +45,7 @@ $I->logout();
 $I->wantTo('add my test user to the list (but make a mistake)');
 
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage()->gotoSiteAccessPage();
+$I->gotoStdAdminPage()->gotoUserAdministration();
 
 $I->seeElement('#accountsCreateForm');
 
@@ -112,7 +105,7 @@ $I->logout();
 $I->wantTo('restrict creating motions for registered users');
 
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage()->gotoSiteAccessPage();
+$I->gotoStdAdminPage()->gotoConsultation();
 $I->dontSeeElement('#policyRestrictForm');
 $I->uncheckOption('#siteSettingsForm .forceLogin input');
 $I->submitForm('#siteSettingsForm', [], 'saveLogin');

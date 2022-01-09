@@ -6,9 +6,9 @@ $I->populateDBData1();
 
 $I->wantTo('check that admins can always create motions');
 
-$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->checkOption('input[name=managedUserAccounts]');
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
+$page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->checkOption('.managedUserAccounts input');
+$page->saveForm();
 
 $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->selectOption('#typePolicyMotions', \app\models\policies\LoggedIn::getPolicyID());

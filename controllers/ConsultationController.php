@@ -485,7 +485,7 @@ class ConsultationController extends Base
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::homeUrl());
         }
 
         $unassignedQueue = null;
@@ -510,7 +510,7 @@ class ConsultationController extends Base
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::homeUrl());
         }
 
         return $this->render('@app/views/voting/admin-votings');

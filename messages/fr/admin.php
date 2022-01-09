@@ -185,7 +185,7 @@ Si cela ne doit être <em>visible</em> que pour les utilisateurs ci-dessous, val
     */
     'siteacc_policy_login'   => 'Restreindre aux utilisateurs',
     'siteacc_forcelogin'     => 'Seul-e-s les utilisateurs-trices peuvent accéder (y compris <em>la lecture</em>)',
-    'siteacc_managedusers'   => 'Autoriser seulement certain-e-s utilisateurs-trices à se connecter <small class="showManagedUsers">(voir ci-dessous)</small>',
+    'siteacc_managedusers'   => 'Autoriser seulement certain-e-s utilisateurs-trices à se connecter',
     'siteacc_logins'         => 'Les variantes de connexion suivantes sont possibles',
     'siteacc_useraccounts'   => 'Comptes Antragsgrün standards <small>(toute personne avec une adresse email valide)</small>',
     'siteacc_ww'             => 'Grünes-Netz <small>(toute personne ayant accès au système allemand Grünes Netz)</small>',

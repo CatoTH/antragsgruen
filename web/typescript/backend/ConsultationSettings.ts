@@ -1,10 +1,14 @@
 export class ConsultationSettings {
+    private element: HTMLFormElement;
+
     constructor(private $form: JQuery) {
+        this.element = $form[0] as HTMLFormElement;
         this.initUrlPath();
         this.initTags();
         this.initOrganisations();
         this.initAdminMayEdit();
         this.initSingleMotionMode();
+        this.initConPwd();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -56,5 +60,28 @@ export class ConsultationSettings {
     private initOrganisations() {
         const $tagList: any = this.$form.find("#organisationList select");
         $tagList.selectize({create: true, plugins: ["remove_button"]})
+    }
+
+    private initConPwd() {
+        const widget = this.element.querySelector('.conpw');
+        if (!widget) {
+            return;
+        }
+        const checkbox = widget.querySelector('.setter input[type=checkbox]') as HTMLInputElement;
+        const onCheckboxChange = () => {
+            if (checkbox.checked) {
+                widget.classList.add("checked");
+            } else {
+                widget.classList.remove("checked");
+            }
+        };
+        checkbox.addEventListener('change', onCheckboxChange);
+        onCheckboxChange();
+
+        widget.querySelector('.setNewPassword').addEventListener('click', ev => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            widget.classList.add('changePwd');
+        });
     }
 }
