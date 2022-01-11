@@ -1,11 +1,13 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\UserConsultationScreening;
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
  * @var array $widgetData
+ * @var UserConsultationScreening $screening
  */
 
 /** @var \app\controllers\Base $controller */
@@ -56,3 +58,6 @@ echo '</div>';
 
 
 echo $this->render('_users_add_accounts');
+if (count($screening) > 0) {
+    echo $this->render('_users_screening', ['screening' => $screening]);
+}

@@ -34,6 +34,15 @@ class m220102_130212_user_groups extends Migration
         $this->addForeignKey('usergroup_fk_user', 'userGroup', 'userId', 'user', 'id');
         $this->addForeignKey('usergroup_fk_group', 'userGroup', 'groupId', 'consultationUserGroup', 'id');
 
+        $this->createTable('userConsultationScreening', [
+            'userId' => 'INTEGER NOT NULL',
+            'consultationId' => 'INTEGER NULL DEFAULT NULL',
+            'dateCreation' => 'TIMESTAMP NULL DEFAULT NULL',
+        ]);
+        $this->addPrimaryKey('userscreen_pk', 'userConsultationScreening', ['userId', 'consultationId']);
+        $this->createIndex('userscreen_con_ix', 'userConsultationScreening', 'consultationId');
+        $this->addForeignKey('userscreen_fk_user', 'userConsultationScreening', 'userId', 'user', 'id');
+        $this->addForeignKey('userscreen_fk_con', 'userConsultationScreening', 'consultationId', 'consultation', 'id');
 
         \Yii::$app->db->schema->getTableSchema('consultationUserGroup', true);
         \Yii::$app->db->schema->getTableSchema('userGroup', true);
@@ -80,5 +89,11 @@ class m220102_130212_user_groups extends Migration
         $this->dropTable('consultationUserGroup');
 
         $this->dropColumn('user', 'dateLastLogin');
+
+        $this->dropForeignKey('userscreen_fk_con', 'userConsultationScreening');
+        $this->dropForeignKey('userscreen_fk_user', 'userConsultationScreening');
+        $this->dropIndex('userscreen_con_ix', 'userConsultationScreening');
+        $this->dropPrimaryKey('userscreen_pk', 'userConsultationScreening');
+        $this->dropTable('userConsultationScreening');
     }
 }

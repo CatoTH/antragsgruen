@@ -38,12 +38,6 @@ class AdminIndexPage extends BasePage
         $this->actor->click('.siteUsers');
     }
 
-    public function gotoSiteAccessPage(): AdminSiteAccessPage
-    {
-        $this->actor->click('.siteAccessLink');
-        return new AdminSiteAccessPage($this->actor);
-    }
-
     public function gotoConsultationCreatePage(): void
     {
         $this->actor->click('.siteConsultationsLink');

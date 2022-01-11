@@ -2,6 +2,7 @@
 
 ## Version 4.10.0 [not released yet]
 
+- The user permission system was now replaced by user groups.
 - Votings can now have simple questions that are not attached to any motion or amendment.
 - Votings have different answer options: besides "Yes/No/Abstention", it is now also possible to have simple "Yes/No"- and "Presence"-votings (Roll calls)
 

@@ -14,18 +14,10 @@ $controller = $this->context;
 
 $idBase = $type . $imotion->id;
 
-$users      = [];
+$users = [];
 $foundUsers = [];
-foreach ($controller->consultation->userPrivileges as $privilege) {
-    if ($privilege->adminProposals || $privilege->adminSuper) {
-        if (!in_array($privilege->user->id, $foundUsers)) {
-            $users[]      = $privilege->user;
-            $foundUsers[] = $privilege->user->id;
-        }
-    }
-}
-foreach ($controller->site->admins as $user) {
-    if (!in_array($user->id, $foundUsers)) {
+foreach ($controller->consultation->getUsersInAnyGroup() as $user) {
+    if ($user->hasPrivilege($controller->consultation, \app\models\db\ConsultationUserGroup::PRIVILEGE_ANY)) {
         $users[]      = $user;
         $foundUsers[] = $user->id;
     }

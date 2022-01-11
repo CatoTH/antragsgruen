@@ -26,8 +26,10 @@ class LoggedIn extends IPolicy
         if (!$this->motionType->getConsultation()->getSettings()->managedUserAccounts) {
             return false;
         }
-        $privilege = $this->motionType->getConsultation()->getUserPrivilege($user);
-        return ($privilege->privilegeCreate == 0);
+
+        // It's forbidden if user accounts are managed and the user is NOT in any consultation-specific user group
+        $userGroups = $user->getUserGroupsForConsultation($this->motionType->getConsultation());
+        return count($userGroups) === 0;
     }
 
     public function getOnCreateDescription(): string

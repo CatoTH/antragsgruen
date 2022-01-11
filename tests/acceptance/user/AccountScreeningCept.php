@@ -8,10 +8,10 @@ $username = 'testaccount@example.org';
 $password = 'testpassword';
 
 $I->wantTo('activate managed accounts');
-$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
+$page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
 $I->checkOption('.forceLogin input');
 $I->checkOption('.managedUserAccounts input');
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
+$page->saveForm();
 $I->logout();
 
 
@@ -42,12 +42,14 @@ $I->logout();
 
 
 $I->wantTo('not grant access as an admin');
-$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->dontSee('testaccount@example.org', '#accountsEditForm');
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
+$I->wait(1);
+$I->dontSee('testaccount@example.org', '.userAdminList');
 $I->see('testaccount@example.org', '#accountsScreenForm');
 $I->checkOption('#screenUser' . AcceptanceTester::FIRST_FREE_USER_ID);
 $I->submitForm('#accountsScreenForm', [], 'noAccess');
-$I->dontSee('testaccount@example.org', '#accountsEditForm');
+$I->wait(1);
+$I->dontSee('testaccount@example.org', '.userAdminList');
 $I->dontSee('testaccount@example.org', '#accountsScreenForm');
 $I->gotoConsultationHome();
 $I->logout();
@@ -70,12 +72,14 @@ $I->logout();
 
 
 $I->wantTo('grant access this time');
-$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->dontSee('testaccount@example.org', '#accountsEditForm');
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
+$I->wait(1);
+$I->dontSee('testaccount@example.org', '.userAdminList');
 $I->see('testaccount@example.org', '#accountsScreenForm');
 $I->checkOption('#screenUser' . AcceptanceTester::FIRST_FREE_USER_ID);
 $I->submitForm('#accountsScreenForm', [], 'grantAccess');
-$I->see('testaccount@example.org', '#accountsEditForm');
+$I->wait(1);
+$I->see('testaccount@example.org', '.userAdminList');
 $I->dontSee('testaccount@example.org', '#accountsScreenForm');
 $I->gotoConsultationHome();
 $I->logout();

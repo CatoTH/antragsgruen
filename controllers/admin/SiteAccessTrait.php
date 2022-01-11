@@ -20,34 +20,6 @@ use yii\web\Response;
  */
 trait SiteAccessTrait
 {
-    private function linkConsultationAdmin(User $user, string $username): void
-    {
-        try {
-            $privilege = $this->consultation->getUserPrivilege($user);
-
-            $privilege->privilegeView    = 1;
-            $privilege->privilegeCreate  = 1;
-            $privilege->adminSuper       = 1;
-            $privilege->adminScreen      = 1;
-            $privilege->adminContentEdit = 1;
-            $privilege->adminProposals   = 1;
-            $privilege->save();
-
-            $str = \Yii::t('admin', 'siteacc_admin_add_done');
-            \Yii::$app->session->setFlash('success', str_replace('%username%', $username, $str));
-
-            $this->consultation->refresh();
-            $this->site->refresh();
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (IntegrityException $e) {
-            if (mb_strpos($e->getMessage(), 1062) !== false) {
-                $str = str_replace('%username%', $username, \Yii::t('admin', 'siteacc_admin_add_had'));
-                \Yii::$app->session->setFlash('success_login', $str);
-            } else {
-                \Yii::$app->session->setFlash('error_login', \Yii::t('base', 'err_unknown'));
-            }
-        }
-    }
-
     /**
      * @param string $email
      * @throws \Yii\base\Exception
@@ -73,7 +45,6 @@ trait SiteAccessTrait
             $authText = \Yii::t('admin', 'siteacc_mail_youracc');
             $authText = str_replace('%EMAIL%', $email, $authText);
         }
-        $this->linkConsultationAdmin($newUser, $email);
 
         $subject = \Yii::t('admin', 'sitacc_admmail_subj');
         $link    = UrlHelper::createUrl('consultation/index');
@@ -470,7 +441,47 @@ trait SiteAccessTrait
             }
         }
 
-        return $this->render('users', [ 'widgetData' => $this->getUsersWidgetData($consultation) ]);
+        if ($this->isPostSet('grantAccess')) {
+            $userIds = array_map('intval', \Yii::$app->request->post('userId', []));
+            $defaultGroup = $this->getDefaultUserGroup();
+            foreach ($this->consultation->screeningUsers as $screeningUser) {
+                if (!in_array($screeningUser->userId, $userIds)) {
+                    continue;
+                }
+                $user = $screeningUser->user;
+                $user->link('userGroups', $defaultGroup);
+                $screeningUser->delete();
+
+                $consUrl = UrlHelper::createUrl('consultation/index');
+                $consUrl = UrlHelper::absolutizeLink($consUrl);
+                $emailText = str_replace('%LINK%', $consUrl, \Yii::t('user', 'access_granted_email'));
+
+                MailTools::sendWithLog(
+                    EMailLog::TYPE_ACCESS_GRANTED,
+                    $this->consultation,
+                    $user->email,
+                    $user->id,
+                    \Yii::t('user', 'acc_grant_email_title'),
+                    $emailText
+                );
+            }
+            $this->consultation->refresh();
+        }
+
+        if ($this->isPostSet('noAccess')) {
+            $userIds = array_map('intval', \Yii::$app->request->post('userId', []));
+            foreach ($this->consultation->screeningUsers as $screeningUser) {
+                if (in_array($screeningUser->userId, $userIds)) {
+                    $screeningUser->delete();
+                }
+            }
+            $this->consultation->refresh();
+        }
+
+        return $this->render('users', [
+            'widgetData' => $this->getUsersWidgetData($consultation),
+            'screening' => $consultation->screeningUsers,
+        ]);
     }
 
     public function actionUsersSave(): string
@@ -538,22 +549,7 @@ trait SiteAccessTrait
             }
         }
 
-        if ($this->isPostSet('grantAccess') && isset($post['userId']) && count($post['userId']) > 0) {
-            foreach ($this->consultation->userPrivileges as $privilege) {
-                if (in_array($privilege->userId, $post['userId'])) {
-                    $privilege->grantPermission();
-                }
-            }
-        }
 
-        if ($this->isPostSet('noAccess') && isset($post['userId']) && count($post['userId']) > 0) {
-            foreach ($this->consultation->userPrivileges as $privilege) {
-                if (in_array($privilege->userId, $post['userId'])) {
-                    $privilege->delete();
-                }
-            }
-            $this->consultation->refresh();
-        }
 
         if ($this->isPostSet('deleteUser')) {
             $toDeleteUserId = IntVal($post['deleteUser']);

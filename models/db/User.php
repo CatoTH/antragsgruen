@@ -256,29 +256,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param Consultation $consultation
-     * @return ConsultationUserPrivilege
-     */
-    public function getConsultationPrivilege(Consultation $consultation)
-    {
-        foreach ($this->consultationPrivileges as $priv) {
-            if ($priv->consultationId == $consultation->id) {
-                return $priv;
-            }
-        }
-        $priv                   = new ConsultationUserPrivilege();
-        $priv->consultationId   = $consultation->id;
-        $priv->userId           = $this->id;
-        $priv->privilegeCreate  = 0;
-        $priv->privilegeView    = 0;
-        $priv->adminContentEdit = 0;
-        $priv->adminScreen      = 0;
-        $priv->adminSuper       = 0;
-        $priv->adminProposals   = 0;
-        return $priv;
-    }
-
-    /**
      * @return array
      */
     public function rules()
@@ -882,8 +859,11 @@ class User extends ActiveRecord implements IdentityInterface
         $this->recoveryAt      = null;
         $this->save(false);
 
+        foreach ($this->userGroups as $userGroup) {
+            $this->unlink('userGroups', $userGroup, true);
+        }
+
         ConsultationUserPrivilege::deleteAll(['userId' => $this->id]);
-        ConsultationUserGroup::deleteAll(['userId' => $this->id]);
 
         $this->trigger(User::EVENT_DELETED, new UserEvent($this));
     }

@@ -82,16 +82,6 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)
     echo '</li>';
 }
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
-    echo '<li>';
-    echo Html::a(
-        Yii::t('admin', 'index_site_access'),
-        UrlHelper::createUrl('/admin/index/siteaccess'),
-        ['class' => 'siteAccessLink']
-    );
-    echo '</li>';
-}
-
 if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
     echo '<li>';
     echo Html::a(

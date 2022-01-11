@@ -39,6 +39,7 @@ use yii\db\ActiveRecord;
  * @property UserNotification[] $userNotifications
  * @property VotingBlock[] $votingBlocks
  * @property VotingQuestion[] $votingQuestions
+ * @property UserConsultationScreening[] $screeningUsers
  */
 class Consultation extends ActiveRecord
 {
@@ -273,6 +274,11 @@ class Consultation extends ActiveRecord
         return $this->hasMany(ConsultationUserGroup::class, ['consultationId' => 'id']);
     }
 
+    public function getScreeningUsers()
+    {
+        return $this->hasMany(UserConsultationScreening::class, ['consultationId' => 'id']);
+    }
+
     /**
      * @return ConsultationUserGroup[]
      */
@@ -296,25 +302,6 @@ class Consultation extends ActiveRecord
     public function getFiles()
     {
         return $this->hasMany(ConsultationFile::class, ['consultationId' => 'id']);
-    }
-
-    public function getUserPrivilege(User $user): ConsultationUserPrivilege
-    {
-        foreach ($this->userPrivileges as $priv) {
-            if ($priv->userId == $user->id) {
-                return $priv;
-            }
-        }
-        $priv                   = new ConsultationUserPrivilege();
-        $priv->consultationId   = $this->id;
-        $priv->userId           = $user->id;
-        $priv->privilegeCreate  = 0;
-        $priv->privilegeView    = 0;
-        $priv->adminContentEdit = 0;
-        $priv->adminScreen      = 0;
-        $priv->adminSuper       = 0;
-        $priv->adminProposals   = 0;
-        return $priv;
     }
 
     /**

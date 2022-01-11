@@ -40,7 +40,7 @@ $I->submitForm('.motionSupportForm', [], 'motionSupport');
 
 $I->seeNumberOfElements('section.supporters ul li', 3);
 $thirdName = $I->executeJS('return $("section.supporters ul li:nth(2)").text()');
-$I->assertContains('My login-name', $thirdName);
+$I->assertStringContainsString('My login-name', $thirdName);
 
 $I->logout();
 
@@ -62,7 +62,7 @@ $I->openPage(MotionPage::class, [
     'motionSlug'       => 116,
 ]);
 $firstName = $I->executeJS('return $("section.supporters ul li:nth(0)").text()');
-$I->assertContains('My login-name 2', $firstName);
+$I->assertStringContainsString('My login-name 2', $firstName);
 
 
 
@@ -89,6 +89,6 @@ $I->openPage(MotionPage::class, [
 ]);
 
 $fifthName = $I->executeJS('return $("section.supporters ul li:nth(4)").text()');
-$I->assertContains('Another Name 3', $fifthName);
+$I->assertStringContainsString('Another Name 3', $fifthName);
 $fourthName = $I->executeJS('return $("section.supporters ul li:nth(3)").text()');
-$I->assertContains('KV München', $fourthName);
+$I->assertStringContainsString('KV München', $fourthName);

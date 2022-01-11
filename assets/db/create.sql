@@ -738,6 +738,18 @@ CREATE TABLE `###TABLE_PREFIX###user` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `userConsultationScreening`
+--
+
+CREATE TABLE `###TABLE_PREFIX###userConsultationScreening` (
+  `userId` int(11) NOT NULL,
+  `consultationId` int(11) NOT NULL,
+  `dateCreation` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `userGroup`
 --
 
@@ -1116,6 +1128,13 @@ ALTER TABLE `###TABLE_PREFIX###texTemplate`
 ALTER TABLE `###TABLE_PREFIX###user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `auth_UNIQUE` (`auth`);
+
+--
+-- Indexes for table `userConsultationScreening`
+--
+ALTER TABLE `###TABLE_PREFIX###userConsultationScreening`
+  ADD PRIMARY KEY (`userId`,`consultationId`),
+  ADD KEY `userscreen_con_ix` (`consultationId`);
 
 --
 -- Indexes for table `userGroup`
@@ -1607,6 +1626,13 @@ ALTER TABLE `###TABLE_PREFIX###speechQueueItem`
 --
 ALTER TABLE `###TABLE_PREFIX###texTemplate`
   ADD CONSTRAINT `texTemplate_ibfk_1` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`);
+
+--
+-- Constraints for table `userConsultationScreening`
+--
+ALTER TABLE `###TABLE_PREFIX###userConsultationScreening`
+  ADD CONSTRAINT `userscreen_fk_con` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
+  ADD CONSTRAINT `userscreen_fk_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`);
 
 --
 -- Constraints for table `userNotification`

@@ -8,7 +8,6 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
 use app\models\db\ConsultationUserGroup;
-use app\models\db\ConsultationUserPrivilege;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
@@ -123,15 +122,6 @@ class ConsultationCreateForm extends Model
             $newTag->id             = null;
             if (!$newTag->save()) {
                 throw new FormError(implode(', ', $newTag->getErrors()));
-            }
-        }
-
-        foreach ($this->template->userPrivileges as $priv) {
-            $newPriv = new ConsultationUserPrivilege();
-            $newPriv->setAttributes($priv->getAttributes(), false);
-            $newPriv->consultationId = $consultation->id;
-            if (!$newPriv->save()) {
-                throw new FormError(implode(', ', $newPriv->getErrors()));
             }
         }
 

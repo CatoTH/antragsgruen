@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\components\{Captcha, ConsultationAccessPassword, Tools, UrlHelper, GruenesNetzSamlClient};
-use app\models\db\{AmendmentSupporter, ConsultationUserPrivilege, EMailBlocklist, MotionSupporter, User, UserNotification};
+use app\models\db\{AmendmentSupporter, EMailBlocklist, MotionSupporter, User, UserConsultationScreening, UserNotification};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
 use app\models\forms\LoginUsernamePasswordForm;
@@ -171,7 +171,7 @@ class UserController extends Base
                     $this->loginUser($user);
 
                     if ($this->consultation && $this->consultation->getSettings()->managedUserAccounts) {
-                        ConsultationUserPrivilege::askForConsultationPermission($user, $this->consultation);
+                        UserConsultationScreening::askForConsultationPermission($user, $this->consultation);
                         $needsAdminScreening = true;
                     } else {
                         $needsAdminScreening = false;
@@ -538,15 +538,15 @@ class UserController extends Base
         $user = User::getCurrentUser();
 
         if ($this->isPostSet('askPermission')) {
-            ConsultationUserPrivilege::askForConsultationPermission($user, $this->consultation);
+            UserConsultationScreening::askForConsultationPermission($user, $this->consultation);
             $this->consultation->refresh();
         }
 
         if ($user) {
             $askForPermission   = true;
             $askedForPermission = false;
-            foreach ($this->consultation->userPrivileges as $privilege) {
-                if ($privilege->userId === $user->id) {
+            foreach ($this->consultation->screeningUsers as $screening) {
+                if ($screening->userId === $user->id) {
                     $askForPermission   = false;
                     $askedForPermission = true;
                 }
