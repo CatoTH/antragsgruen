@@ -8,7 +8,6 @@ use app\models\exceptions\{AlreadyExists, MailNotSent};
 use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
 use yii\base\ExitException;
-use yii\db\IntegrityException;
 use yii\web\Response;
 
 /**
@@ -521,91 +520,5 @@ trait SiteAccessTrait
 
         $responseData = $this->getUsersWidgetData($consultation);
         return $this->returnRestResponse(200, json_encode($responseData));
-    }
-
-    /**
-     * @throws \Yii\base\Exception|\Throwable
-     */
-    public function actionSiteaccess(): string
-    {
-        $site = $this->site;
-        $con  = $this->consultation;
-
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return '';
-        }
-
-        $post = \Yii::$app->request->post();
-
-        if ($this->isPostSet('addAdmin')) {
-            switch ($post['addType']) {
-                case 'gruenesnetz':
-                    $this->addAdminGruenesNetz($post['addUsername']);
-                    break;
-                case 'email':
-                    $this->addAdminEmail($post['addUsername']);
-                    break;
-            }
-        }
-
-
-
-        if ($this->isPostSet('deleteUser')) {
-            $toDeleteUserId = IntVal($post['deleteUser']);
-            foreach ($this->consultation->userPrivileges as $privilege) {
-                if ($privilege->userId === $toDeleteUserId) {
-                    $privilege->delete();
-                    \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_del_done'));
-                }
-            }
-            $this->consultation->refresh();
-        } elseif ($this->isPostSet('saveUsers')) {
-            $this->saveUsers();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_saved'));
-        } elseif ($this->isPostSet('addUsers')) {
-            if (trim(\Yii::$app->request->post('emailAddresses', '')) !== '') {
-                $this->addUsersByEmail();
-            }
-            if (trim(\Yii::$app->request->post('samlWW', '')) !== '' && $this->getParams()->isSamlActive()) {
-                $this->addUsersBySamlWw();
-            }
-        }
-
-        if ($this->isPostSet('policyRestrictToUsers')) {
-            $this->restrictToUsers();
-            \Yii::$app->session->setFlash('success_login', \Yii::t('admin', 'siteacc_user_restr_done'));
-        }
-
-        $policyWarning = $this->needsPolicyWarning();
-
-        $admins = [];
-        foreach ($site->admins as $admin) {
-            $admins[$admin->id] = ['user' => $admin, 'types' => ['site']];
-        }
-        foreach ($this->consultation->userPrivileges as $privilege) {
-            if (!isset($admins[$privilege->userId])) {
-                if (!$privilege->user) {
-                    continue; // User is deleted and an obsolete privilege entry remains
-                }
-                $privileges = [];
-                if ($privilege->adminProposals) {
-                    $privileges[] = 'proposal';
-                }
-                if ($privilege->adminSuper || $privilege->adminScreen || $privilege->adminContentEdit) {
-                    $privileges[] = 'consultation';
-                }
-                if (count($privileges) > 0) {
-                    $admins[$privilege->userId] = ['user' => $privilege->user, 'types' => $privileges];
-                }
-            }
-        }
-
-        return $this->render('site_access', [
-            'consultation'  => $this->consultation,
-            'site'          => $site,
-            'policyWarning' => $policyWarning,
-            'admins'        => $admins,
-        ]);
     }
 }
