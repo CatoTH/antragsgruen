@@ -371,9 +371,6 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'siteacc_mail_yourdata'      => "Du kannst dich mit folgenden Angaben einloggen:\nBenutzer*innenname: %EMAIL%\n" .
                                     "Passwort: %PASSWORD%",
     'siteacc_mail_youracc'       => 'Du kannst dich mit deinem Benutzer*innenname %EMAIL% einloggen.',
-    'sitacc_admmail_subj'        => 'Antragsgrün-Administration',
-    'sitacc_admmail_body'        => "Hallo!\n\nDu hast eben Admin-Zugang zu folgender Antragsgrün-Seite bekommen: %LINK%\n\n" .
-                                    "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team",
     'siteacc_err_linenumber'     => 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein',
     'siteacc_err_occ'            => 'Es sind Fehler aufgetreten',
     'siteacc_err_siteprivesc'    => 'Nur Seiten-Administrator*innen selbst können ebendiese Gruppe verwalten',

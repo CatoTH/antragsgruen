@@ -231,9 +231,6 @@ Au revoir,
     'siteacc_mail_yourdata'       => 'Tu peux te connecter en utilisant les données suivantes :\nusername: %EMAIL%\n" .
         "Password: %PASSWORD%"',
     'siteacc_mail_youracc'        => 'Tu peux te connecter en utilisant ton nom d\'utilisateur %EMAIL%.',
-    'sitacc_admmail_subj'         => 'Administration Antragsgrün',
-    'sitacc_admmail_body'         => "Salut!\n\n Tu viens de recevoir les droits d\'administration pour le site Antragsgrün suivant : %LINK%\n\n" .
-        "%ACCOUNT%\n\n A bientôt !,\n L\'équipe Antragsgrün.",
     'siteacc_err_linenumber'      => 'Le nombre d\'adresses email et de noms ne correspond pas',
     'siteacc_err_occ'             => 'Une erreur s\'est produite',
     'siteacc_user_had'            => 'Les utilisateurs suivants ont déjà accès',

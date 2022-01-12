@@ -369,9 +369,6 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'siteacc_mail_yourdata'       => "You can log in using the following data:\nusername: %EMAIL%\n" .
                                      "Password: %PASSWORD%",
     'siteacc_mail_youracc'        => 'You can log in using your username %EMAIL%.',
-    'sitacc_admmail_subj'         => 'Antragsgrün administration',
-    'sitacc_admmail_body'         => "Hi!\n\nYou just received admin permissions for the following Antragsgrün site: %LINK%\n\n" .
-                                     "%ACCOUNT%\n\nBye,\n Antragsgrün Team",
     'siteacc_err_linenumber'      => 'The number of e-mail addresses and names do not match',
     'siteacc_err_occ'             => 'An error occurred',
     'siteacc_err_siteprivesc'     => 'Only site administrators themselves can add or remove users from this group',

@@ -19,45 +19,6 @@ use yii\web\Response;
 trait SiteAccessTrait
 {
     /**
-     * @param string $email
-     * @throws \Yii\base\Exception
-     */
-    private function addAdminEmail($email)
-    {
-        $newUser = User::findByAuthTypeAndName(\app\models\settings\Site::LOGIN_STD, $email);
-        if (!$newUser) {
-            $newPassword              = User::createPassword();
-            $newUser                  = new User();
-            $newUser->auth            = 'email:' . $email;
-            $newUser->status          = User::STATUS_CONFIRMED;
-            $newUser->email           = $email;
-            $newUser->emailConfirmed  = 1;
-            $newUser->pwdEnc          = password_hash($newPassword, PASSWORD_DEFAULT);
-            $newUser->name            = '';
-            $newUser->organizationIds = '';
-            $newUser->save();
-
-            $authText = \Yii::t('admin', 'siteacc_mail_yourdata');
-            $authText = str_replace(['%EMAIL%', '%PASSWORD%'], [$email, $newPassword], $authText);
-        } else {
-            $authText = \Yii::t('admin', 'siteacc_mail_youracc');
-            $authText = str_replace('%EMAIL%', $email, $authText);
-        }
-
-        $subject = \Yii::t('admin', 'sitacc_admmail_subj');
-        $link    = UrlHelper::createUrl('consultation/index');
-        $link    = UrlHelper::absolutizeLink($link);
-        $text    = str_replace(['%LINK%', '%ACCOUNT%'], [$link, $authText], \Yii::t('admin', 'sitacc_admmail_body'));
-        try {
-            $consultation = $this->consultation;
-            MailTools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $consultation, $email, $newUser->id, $subject, $text);
-        } catch (MailNotSent $e) {
-            $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-            \Yii::$app->session->setFlash('error', $errMsg);
-        }
-    }
-
-    /**
      * @throws AlreadyExists
      */
     private function addUserBySamlWw(string $username, ConsultationUserGroup $initGroup): User
@@ -74,13 +35,13 @@ trait SiteAccessTrait
                 }
             }
         } else {
-            $user                  = new User();
-            $user->auth            = $auth;
-            $user->email           = '';
-            $user->name            = '';
-            $user->emailConfirmed  = 0;
-            $user->pwdEnc          = null;
-            $user->status          = User::STATUS_CONFIRMED;
+            $user = new User();
+            $user->auth = $auth;
+            $user->email = '';
+            $user->name = '';
+            $user->emailConfirmed = 0;
+            $user->pwdEnc = null;
+            $user->status = User::STATUS_CONFIRMED;
             $user->organizationIds = '';
             $user->save();
         }
