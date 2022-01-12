@@ -801,13 +801,20 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->emailChange;
     }
 
-    public function getUserAdminApiObject(): array
+    public function getUserAdminApiObject(?Consultation $consultation): array
     {
         $data = $this->getUserdataExportObject();
         $data['id'] = $this->id;
+
+        $groups = $this->userGroups;
+        if ($consultation) {
+            $groups = array_values(array_filter($groups, function (ConsultationUserGroup $group) use ($consultation): bool {
+                return $group->isRelevantForConsultation($consultation);
+            }));
+        }
         $data['groups'] = array_map(function (ConsultationUserGroup $group): int {
             return $group->id;
-        }, $this->userGroups);
+        }, $groups);
 
         return $data;
     }

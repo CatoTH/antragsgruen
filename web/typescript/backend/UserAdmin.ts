@@ -50,11 +50,14 @@ export class UserAdmin {
                     postData = Object.assign(postData, additionalProps);
                     const widget = this;
                     $.post(userSaveUrl, postData, function (data) {
-                        if (data.success !== undefined && !data.success) {
-                            alert(data.message);
-                            return;
+                        if (data.msg_success) {
+                            bootbox.alert(data.msg_success);
                         }
-                        widget.setUserGroups(data.users, data.groups);
+                        if (data.msg_error) {
+                            bootbox.alert(data.msg_error);
+                        } else {
+                            widget.setUserGroups(data.users, data.groups);
+                        }
                     }).catch(function (err) {
                         alert(err.responseText);
                     });
@@ -88,7 +91,7 @@ export class UserAdmin {
                     $.get(pollUrl, function (data) {
                         widget.setUserGroups(data.users, data.groups);
                     }).catch(function (err) {
-                        console.error("Could not load voting data from backend", err);
+                        console.error("Could not load user data from backend", err);
                     });
                 },
                 startPolling: function () {

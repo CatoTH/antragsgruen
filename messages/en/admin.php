@@ -374,6 +374,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
                                      "%ACCOUNT%\n\nBye,\n Antragsgrün Team",
     'siteacc_err_linenumber'      => 'The number of e-mail addresses and names do not match',
     'siteacc_err_occ'             => 'An error occurred',
+    'siteacc_err_siteprivesc'     => 'Only site administrators themselves can add or remove users from this group',
+    'siteacc_err_lockout'     => 'You cannot remove your own permissions to access this site',
     'siteacc_user_had'            => 'The following users already have access',
     'siteacc_user_added_1'        => '%NUM% user was added.',
     'siteacc_user_added_x'        => '%NUM% users were added.',

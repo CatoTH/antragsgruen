@@ -376,6 +376,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
                                     "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team",
     'siteacc_err_linenumber'     => 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein',
     'siteacc_err_occ'            => 'Es sind Fehler aufgetreten',
+    'siteacc_err_siteprivesc'    => 'Nur Seiten-Administrator*innen selbst können ebendiese Gruppe verwalten',
+    'siteacc_err_lockout'        => 'Es ist nicht möglich, sich selbst die Rechte zu dieser Seite zu entziehen',
     'siteacc_user_had'           => 'Folgende Benutzer*innen hatten bereits Zugriff',
     'siteacc_user_added_1'       => '%NUM% BenutzerIn wurde eingetragen.',
     'siteacc_user_added_x'       => '%NUM% Benutzer*innen wurden eingetragen.',

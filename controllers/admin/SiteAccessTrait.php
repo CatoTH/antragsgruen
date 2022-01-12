@@ -4,8 +4,7 @@ namespace app\controllers\admin;
 
 use app\components\{UrlHelper, mail\Tools as MailTools};
 use app\models\db\{ConsultationUserGroup, EMailLog, Site, Consultation, User};
-use app\models\exceptions\{AlreadyExists, MailNotSent};
-use app\models\policies\IPolicy;
+use app\models\exceptions\{AlreadyExists, MailNotSent, UserEditFailed};
 use app\models\settings\AntragsgruenApp;
 use yii\base\ExitException;
 use yii\web\Response;
@@ -278,92 +277,6 @@ trait SiteAccessTrait
         return null;
     }
 
-    private function saveUsers()
-    {
-        $postAccess = \Yii::$app->request->post('access');
-        foreach ($this->consultation->userPrivileges as $privilege) {
-            if (isset($postAccess[$privilege->userId])) {
-                $access                     = $postAccess[$privilege->userId];
-                $privilege->privilegeView   = (in_array('view', $access) ? 1 : 0);
-                $privilege->privilegeCreate = (in_array('create', $access) ? 1 : 0);
-            } else {
-                $privilege->privilegeView   = 0;
-                $privilege->privilegeCreate = 0;
-            }
-            $privilege->save();
-        }
-    }
-
-    private function restrictToUsers()
-    {
-        $allowed = [IPolicy::POLICY_NOBODY, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_LOGGED_IN];
-        foreach ($this->consultation->motionTypes as $type) {
-            if (!in_array($type->policyMotions, $allowed)) {
-                $type->policyMotions = IPolicy::POLICY_LOGGED_IN;
-            }
-            if (!in_array($type->policyAmendments, $allowed)) {
-                $type->policyAmendments = IPolicy::POLICY_LOGGED_IN;
-            }
-            if (!in_array($type->policyComments, $allowed)) {
-                $type->policyComments = IPolicy::POLICY_LOGGED_IN;
-            }
-            if (!in_array($type->policySupportMotions, $allowed)) {
-                $type->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
-            }
-            if (!in_array($type->policySupportAmendments, $allowed)) {
-                $type->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
-            }
-            $type->save();
-        }
-    }
-
-    /*
-     * This checks if there are regular users manually registered for this consultation,
-     * but no restriction like "only registered users may create motions" or "force login to view the page" is set up.
-     * If so, a warning should be shown.
-     */
-    private function needsPolicyWarning(): bool
-    {
-        $policyWarning = false;
-
-        $siteAdminIds = array_map(function(User $user): int {
-            return $user->id;
-        }, $this->consultation->site->admins);
-
-        $usersWithReadWriteAccess = false;
-        foreach ($this->consultation->userPrivileges as $privilege) {
-            // Users that have regular privilges, not consultation/site-admins
-            if (($privilege->privilegeCreate || $privilege->privilegeView) && !(
-                $privilege->adminContentEdit || $privilege->adminProposals || $privilege->adminScreen || $privilege->adminSuper ||
-                in_array($privilege->userId, $siteAdminIds)
-            )) {
-                $usersWithReadWriteAccess = true;
-            }
-        }
-
-        if (!$this->consultation->getSettings()->forceLogin && $usersWithReadWriteAccess) {
-            $allowed = [IPolicy::POLICY_NOBODY, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_LOGGED_IN];
-            foreach ($this->consultation->motionTypes as $type) {
-                if (!in_array($type->policyMotions, $allowed)) {
-                    $policyWarning = true;
-                }
-                if (!in_array($type->policyAmendments, $allowed)) {
-                    $policyWarning = true;
-                }
-                if (!in_array($type->policyComments, $allowed)) {
-                    $policyWarning = true;
-                }
-                if (!in_array($type->policySupportMotions, $allowed)) {
-                    $policyWarning = true;
-                }
-                if (!in_array($type->policySupportAmendments, $allowed)) {
-                    $policyWarning = true;
-                }
-            }
-        }
-        return $policyWarning;
-    }
-
     private function getConsultationAndCheckAdminPermission(): Consultation
     {
         $consultation = $this->consultation;
@@ -378,8 +291,8 @@ trait SiteAccessTrait
 
     private function getUsersWidgetData(Consultation $consultation): array
     {
-        $usersArr = array_map(function (User $user): array {
-            return $user->getUserAdminApiObject();
+        $usersArr = array_map(function (User $user) use ($consultation): array {
+            return $user->getUserAdminApiObject($consultation);
         }, $consultation->getUsersInAnyGroup());
         $groupsArr = array_map(function (ConsultationUserGroup $group): array {
             return $group->getUserAdminApiObject();
@@ -391,6 +304,49 @@ trait SiteAccessTrait
         ];
     }
 
+    /**
+     * Someone with only consultation-level privileges may not grant site-level privileges
+     *
+     * @throws UserEditFailed
+     */
+    private function preventInvalidSiteAdminEdit(Consultation $consultation, ConsultationUserGroup $group): void
+    {
+        if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+            // This check is not relevant if the user is Site Admin
+            return;
+        }
+
+        if ($group->consultationId === null) {
+            throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_siteprivesc'));
+        }
+    }
+
+    /**
+     * @throws UserEditFailed
+     */
+    private function preventRemovingMyself(Consultation $consultation, ConsultationUserGroup $group, User $user): void
+    {
+        $myself = User::getCurrentUser();
+        if ($myself->havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+            // You cannot unassign yourself from a siteAdmin-role if you are site-admin.
+            // But everyone else and yourself from any other role
+            if ($group->containsPrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN) && $user->id === $myself->id) {
+                throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_lockout'));
+            } else {
+                return;
+            }
+        }
+
+        // Now we assume, the user is a regular consultation-level admin.
+        // They can remove other users from admin roles, or themselves from non-admin roles
+        if ($group->containsPrivilege(ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS) && $user->id === $myself->id) {
+            throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_lockout'));
+        }
+    }
+
+    /**
+     * @throws UserEditFailed
+     */
     private function setUserGroups(Consultation $consultation, int $userId, array $groupIds): void
     {
         $user = User::findOne(['id' => $userId]);
@@ -404,12 +360,16 @@ trait SiteAccessTrait
                 continue;
             }
             if (!in_array($userGroup->id, $groupIds)) {
+                $this->preventInvalidSiteAdminEdit($consultation, $userGroup);
+                $this->preventRemovingMyself($consultation, $userGroup, $user);
+                /** @noinspection PhpUnhandledExceptionInspection */
                 $user->unlink('userGroups', $userGroup, true);
             }
         }
 
         foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
             if (in_array($userGroup->id, $groupIds) && !in_array($userGroup->id, $userHasGroups)) {
+                $this->preventInvalidSiteAdminEdit($consultation, $userGroup);
                 $user->link('userGroups', $userGroup);
             }
         }
@@ -417,10 +377,24 @@ trait SiteAccessTrait
         $consultation->refresh();
     }
 
-    public function removeUser(Consultation $consultation, int $userId): void
+    /**
+     * @throws UserEditFailed
+     */
+    private function removeUser(Consultation $consultation, int $userId): void
     {
+        $myself = User::getCurrentUser();
+        if ($userId === $myself->id) {
+            throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_lockout'));
+        }
+
         $user = User::findOne(['id' => $userId]);
+        if ($user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN) &&
+            !$myself->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+            throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_siteprivesc'));
+        }
+
         foreach ($user->getUserGroupsForConsultation($consultation) as $userGroup) {
+            /** @noinspection PhpUnhandledExceptionInspection */
             $user->unlink('userGroups', $userGroup, true);
         }
 
@@ -449,6 +423,7 @@ trait SiteAccessTrait
                 }
                 $user = $screeningUser->user;
                 $user->link('userGroups', $defaultGroup);
+                /** @noinspection PhpUnhandledExceptionInspection */
                 $screeningUser->delete();
 
                 $consUrl = UrlHelper::createUrl('consultation/index');
@@ -471,6 +446,7 @@ trait SiteAccessTrait
             $userIds = array_map('intval', \Yii::$app->request->post('userId', []));
             foreach ($this->consultation->screeningUsers as $screeningUser) {
                 if (in_array($screeningUser->userId, $userIds)) {
+                    /** @noinspection PhpUnhandledExceptionInspection */
                     $screeningUser->delete();
                 }
             }
@@ -492,21 +468,31 @@ trait SiteAccessTrait
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        switch (\Yii::$app->request->post('op')) {
-            case 'save-user-groups':
-                $this->setUserGroups(
-                    $consultation,
-                    intval(\Yii::$app->request->post('userId')),
-                    array_map('intval', \Yii::$app->request->post('groups', []))
-                );
-                break;
-            case 'remove-user':
-                $this->removeUser($consultation, intval(\Yii::$app->request->post('userId')));
-                break;
+        $additionalData = [
+            'msg_success' => null,
+            'msg_error' => null,
+        ];
+        try {
+            switch (\Yii::$app->request->post('op')) {
+                case 'save-user-groups':
+                    $this->setUserGroups(
+                        $consultation,
+                        intval(\Yii::$app->request->post('userId')),
+                        array_map('intval', \Yii::$app->request->post('groups', []))
+                    );
+                    break;
+                case 'remove-user':
+                    $this->removeUser($consultation, intval(\Yii::$app->request->post('userId')));
+                    break;
+            }
+        } catch (UserEditFailed $failed) {
+            $additionalData['msg_error'] = $failed->getMessage();
         }
 
-        $responseData = $this->getUsersWidgetData($consultation);
-        return $this->returnRestResponse(200, json_encode($responseData));
+        return $this->returnRestResponse(200, json_encode(array_merge(
+            $this->getUsersWidgetData($consultation),
+            $additionalData
+        )));
     }
 
     public function actionUsersPoll(): string
