@@ -51,7 +51,6 @@ $I->logout();
 
 $I->wantTo('Assign the site admin role to consultationadmin');
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->wait(1);
 $I->dontSeeElement('.vs__dropdown-toggle');
 $I->clickJS('.user7 .btnEdit');
 $I->seeElement('.vs__dropdown-toggle');
@@ -90,7 +89,6 @@ $I->gotoConsultationHome();
 $I->logout();
 
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->wait(1);
 $I->dontSeeElement('.vs__dropdown-toggle');
 $I->clickJS('.user7 .btnEdit');
 $I->seeElement('.vs__dropdown-toggle');
@@ -119,8 +117,6 @@ $I->logout();
 
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 $I->see('consultationadmin@example.org');
-
-$I->wait(1);
 $I->clickJS('.userAdminList .user7 .btnRemove');
 $I->wait(1);
 $I->seeBootboxDialog('Single-Consultation Admin wirklich aus der Liste entfernen?');

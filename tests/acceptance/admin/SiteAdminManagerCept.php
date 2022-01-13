@@ -43,7 +43,6 @@ $I->see('Einstellungen', '#adminLink');
 
 $I->wantTo('Remove testadmin as admin');
 $I->gotoStdAdminPage()->gotoUserAdministration();
-$I->wait(1);
 
 $I->see('testadmin@example.org');
 $I->clickJS('.userAdminList .user1 .btnRemove');

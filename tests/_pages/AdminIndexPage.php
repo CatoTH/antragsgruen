@@ -36,6 +36,7 @@ class AdminIndexPage extends BasePage
     public function gotoUserAdministration()
     {
         $this->actor->click('.siteUsers');
+        $this->actor->wait(1);
     }
 
     public function gotoConsultationCreatePage(): void

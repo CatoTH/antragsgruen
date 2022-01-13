@@ -43,7 +43,6 @@ $I->logout();
 
 $I->wantTo('not grant access as an admin');
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->wait(1);
 $I->dontSee('testaccount@example.org', '.userAdminList');
 $I->see('testaccount@example.org', '#accountsScreenForm');
 $I->checkOption('#screenUser' . AcceptanceTester::FIRST_FREE_USER_ID);
@@ -73,7 +72,6 @@ $I->logout();
 
 $I->wantTo('grant access this time');
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->wait(1);
 $I->dontSee('testaccount@example.org', '.userAdminList');
 $I->see('testaccount@example.org', '#accountsScreenForm');
 $I->checkOption('#screenUser' . AcceptanceTester::FIRST_FREE_USER_ID);

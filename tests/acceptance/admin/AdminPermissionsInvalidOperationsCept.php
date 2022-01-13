@@ -8,7 +8,6 @@ $I->populateDBData1();
 $I->gotoConsultationHome();
 $I->loginAsConsultationAdmin();
 $I->gotoStdAdminPage()->gotoUserAdministration();
-$I->wait(1);
 
 $I->wantTo('Remove admin permissions from the site admin');
 $I->clickJS('.user1 .btnEdit');
