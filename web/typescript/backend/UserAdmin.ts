@@ -27,6 +27,8 @@ export class UserAdmin {
                                    :groups="groups"
                                    @save-user-groups="saveUserGroups"
                                    @remove-user="removeUser"
+                                   @create-user-group="createUserGroup"
+                                   @remove-group="removeUserGroup"
                                    ref="user-admin-widget"
                 ></user-admin-widget>
             </div>`,
@@ -85,6 +87,18 @@ export class UserAdmin {
                     this.usersJson = usersJson;
                     this.groups = groups;
                     this.groupsJson = groupsJson;
+                },
+                createUserGroup(groupName) {
+                    this._performOperation({
+                        op: 'create-user-group',
+                        groupName
+                    });
+                },
+                removeUserGroup(group) {
+                    this._performOperation({
+                        op: 'remove-group',
+                        groupId: group.id
+                    });
                 },
                 reloadData: function () {
                     const widget = this;

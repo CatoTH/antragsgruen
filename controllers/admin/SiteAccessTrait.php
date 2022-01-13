@@ -362,6 +362,42 @@ trait SiteAccessTrait
         $consultation->refresh();
     }
 
+    private function createUserGroup(Consultation $consultation, string $groupName): void
+    {
+        $group = new ConsultationUserGroup();
+        $group->siteId = $consultation->siteId;
+        $group->consultationId = $consultation->id;
+        $group->title = $groupName;
+        $group->externalId = null;
+        $group->templateId = null;
+        $group->permissions = '';
+        $group->selectable = 1;
+        $group->save();
+    }
+
+    /**
+     * @throws UserEditFailed
+     */
+    private function removeUserGroup(Consultation $consultation, int $groupId): void
+    {
+        $group = ConsultationUserGroup::findOne(['id' => $groupId]);
+        if (!$group) {
+            throw new UserEditFailed('Group does not exist');
+        }
+        if (!$group->isUserDeletable()) {
+            throw new UserEditFailed('Group cannot be deleted');
+        }
+
+        $defaultGroup = $this->getDefaultUserGroup();
+        foreach ($group->users as $user) {
+            $user->unlink('userGroups', $group, true);
+            if (count($user->getUserGroupsForConsultation($consultation)) === 0) {
+                $user->link('userGroups', $defaultGroup);
+            }
+        }
+        $group->delete();
+    }
+
     public function actionUsers(): string
     {
         $consultation = $this->getConsultationAndCheckAdminPermission();
@@ -444,6 +480,12 @@ trait SiteAccessTrait
                     break;
                 case 'remove-user':
                     $this->removeUser($consultation, intval(\Yii::$app->request->post('userId')));
+                    break;
+                case 'create-user-group':
+                    $this->createUserGroup($consultation, \Yii::$app->request->post('groupName'));
+                    break;
+                case 'remove-group':
+                    $this->removeUserGroup($consultation, intval(\Yii::$app->request->post('groupId')));
                     break;
             }
         } catch (UserEditFailed $failed) {

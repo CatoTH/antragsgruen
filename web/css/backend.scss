@@ -1520,73 +1520,114 @@ label.legend {
 
 
 .userAdminList {
-  display: block;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  ul.userList, ul.groupList {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
-  > li {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
 
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-bottom: solid 1px lightgray;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      border-bottom: solid 1px lightgray;
 
-    > .userInfo {
-      flex-basis: 50%;
-      .name {
-        font-weight: bold;
+      &:last-child {
+        border-bottom: none;
       }
     }
+  }
 
-    > .groupsDisplay {
-      flex-basis: 60%;
-      text-align: right;
+  .userInfo {
+    flex-basis: 50%;
+
+    .name {
+      font-weight: bold;
     }
+  }
 
-    > .groupsChange {
-      flex-basis: 55%;
+  .groupsDisplay {
+    flex-basis: 60%;
+    text-align: right;
+  }
+
+  .groupsChange {
+    flex-basis: 55%;
+  }
+
+  .groupsChangeOps {
+    flex-basis: 50px;
+    text-align: right;
+    padding: 2px;
+  }
+
+
+  .groupInfo {
+    flex-grow: 1;
+    .name {
+      font-weight: bold;
     }
+  }
+  .groupActions {
+    text-align: right;
+  }
 
-    > .groupsChangeOps {
-      flex-basis: 50px;
-      text-align: right;
-      padding: 2px;
-    }
+  .btn.btn-link {
+    padding: 0;
+  }
 
-    .btnEdit {
-      margin-left: 7px;
-      margin-right: 7px;
-    }
+  .btnLinkAbort, .btnRemove, .btnCancel {
+    color: $colorDelLink;
+    opacity: 0.5;
+  }
 
-    .btnRemove {
-      color: $colorDelLink;
-      opacity: 0.5;
-      margin-right: -15px;
+  .btnEdit {
+    margin-left: 7px;
+    margin-right: 7px;
+  }
 
-      html.no-touchevents & {
-        opacity: 0;
-        &:active, &:focus {
-          opacity: 0.5;
-        }
-      }
-    }
+  .btnRemove {
+    color: $colorDelLink;
+    opacity: 0.5;
+    margin-right: -15px;
 
-    html.no-touchevents &:hover {
-      .btnRemove {
+    html.no-touchevents & {
+      opacity: 0;
+
+      &:active, &:focus {
         opacity: 0.5;
       }
     }
   }
 
-  .btn {
-    padding: 0;
+  html.no-touchevents & li:hover {
+    .btnRemove {
+      opacity: 0.5;
+    }
   }
 
-  .btnLinkAbort, .btnRemove {
-    color: $colorDelLink;
-    opacity: 0.5;
+  .btnGroupCreate {
+    font-weight: normal;
+  }
+
+  .addGroupForm {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: solid 1px lightgray;
+
+    > * {
+      flex-grow: 1;
+    }
+    .actions {
+      text-align: right;
+      padding-top: 18px;
+    }
   }
 }

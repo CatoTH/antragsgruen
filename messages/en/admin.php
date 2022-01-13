@@ -321,9 +321,14 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_del_btn'           => 'Delete',
     'siteacc_user_del_done'     => 'The user was remove from this consultation.',
     'siteacc_accounts_title'    => 'User accounts',
-    'siteacc_groups_edit'       => 'Edit %USERNAME%',
-    'siteacc_groups_del'        => 'Remove %USERNAME%',
-    'siteacc_del_confirm'       => 'Do you really want to remove %USERNAME% from the list?',
+    'siteacc_groups_title'      => 'Groups',
+    'siteacc_groups_add_open'   => 'Add group',
+    'siteacc_groups_add_name'   => 'Name of the group',
+    'siteacc_group_del'         => 'Remove %GROUPNAME%',
+    'siteacc_usergroups_edit'   => 'Edit %USERNAME%',
+    'siteacc_usergroups_del'    => 'Remove %USERNAME%',
+    'siteacc_userdel_confirm'   => 'Do you really want to remove %USERNAME% from the list?',
+    'siteacc_groupdel_confirm'  => 'Really delete %GROUPNAME%? The group with be unassigned from all accounts. Account without group will be assigned to "Participants".',
     'siteacc_email_text_pre'    => 'Hi,
 
 we have just created an Antragsgrün account for you. Now you can join the discussion on the motions / drafts.

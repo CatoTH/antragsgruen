@@ -142,6 +142,22 @@ class ConsultationUserGroup extends ActiveRecord
         }
     }
 
+    public function getNormalizedDescription(): ?string
+    {
+        switch ($this->templateId) {
+            case static::TEMPLATE_SITE_ADMIN:
+                return \Yii::t('user', 'group_template_siteadmin_h');
+            case static::TEMPLATE_CONSULTATION_ADMIN:
+                return \Yii::t('user', 'group_template_consultationadmin_h');
+            case static::TEMPLATE_PROPOSED_PROCEDURE:
+                return \Yii::t('user', 'group_template_proposed_h');
+            case static::TEMPLATE_PARTICIPANT:
+                return \Yii::t('user', 'group_template_participant_h');
+            default:
+                return null;
+        }
+    }
+
     public function addUser(User $user): void
     {
         $this->link('users', $user);
@@ -152,6 +168,8 @@ class ConsultationUserGroup extends ActiveRecord
         return [
             'id' => $this->id,
             'title' => $this->getNormalizedTitle(),
+            'description' => $this->getNormalizedDescription(),
+            'deletable' => $this->isUserDeletable(),
             'permissions' => $this->getPermissions(),
         ];
     }
@@ -163,6 +181,11 @@ class ConsultationUserGroup extends ActiveRecord
         } else {
             return $this->siteId === $consultation->siteId;
         }
+    }
+
+    public function isUserDeletable(): bool
+    {
+        return $this->templateId === null;
     }
 
     public static function createDefaultGroupSiteAdmin(Site $site): self

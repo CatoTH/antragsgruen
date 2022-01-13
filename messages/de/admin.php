@@ -322,9 +322,14 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_del_btn'            => 'Löschen',
     'siteacc_user_del_done'      => 'Die ausgewählte Berechtigung für diese Veranstaltung wurde entfernt.',
     'siteacc_accounts_title'     => 'Benutzer*innen-Accounts',
-    'siteacc_groups_edit'        => '%USERNAME% bearbeiten',
-    'siteacc_groups_del'         => '%USERNAME% entfernen',
-    'siteacc_del_confirm'        => '%USERNAME% wirklich aus der Liste entfernen?',
+    'siteacc_groups_title'       => 'Gruppen',
+    'siteacc_groups_add_open'    => 'Gruppe anlegen',
+    'siteacc_groups_add_name'    => 'Name der Gruppe',
+    'siteacc_group_del'          => '%GROUPNAME% entfernen',
+    'siteacc_usergroups_edit'    => '%USERNAME% bearbeiten',
+    'siteacc_usergroups_del'     => '%USERNAME% entfernen',
+    'siteacc_userdel_confirm'    => '%USERNAME% wirklich aus der Liste entfernen?',
+    'siteacc_groupdel_confirm'   => '%GROUPNAME% wirklich löschen? Die Gruppe wird von allen Benutzer*innen entfernt. Accounts, die danach keiner Gruppe mehr angehören, werden "Teilnehmer*innen" zugeordnet.',
     'siteacc_email_text_pre'     => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .
