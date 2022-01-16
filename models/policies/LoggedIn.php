@@ -23,12 +23,12 @@ class LoggedIn extends IPolicy
         if (!$user) {
             return false;
         }
-        if (!$this->motionType->getConsultation()->getSettings()->managedUserAccounts) {
+        if (!$this->baseObject->getConsultation()->getSettings()->managedUserAccounts) {
             return false;
         }
 
         // It's forbidden if user accounts are managed and the user is NOT in any consultation-specific user group
-        $userGroups = $user->getUserGroupsForConsultation($this->motionType->getConsultation());
+        $userGroups = $user->getUserGroupsForConsultation($this->consultation);
         return count($userGroups) === 0;
     }
 
@@ -42,7 +42,7 @@ class LoggedIn extends IPolicy
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_motion_denied');
         }
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('structure', 'policy_logged_motion_denied');
@@ -53,7 +53,7 @@ class LoggedIn extends IPolicy
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_amend_denied');
         }
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('structure', 'policy_logged_amend_denied');
@@ -73,11 +73,12 @@ class LoggedIn extends IPolicy
             return \Yii::t('structure', 'policy_specuser_comm_denied');
         }
         $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
-        if (!$this->motionType->isInDeadline($deadlineType)) {
-            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlinesByType($deadlineType));
+        if (!$this->baseObject->isInDeadline($deadlineType)) {
+            $deadlines = DateTools::formatDeadlineRanges($this->baseObject->getDeadlinesByType($deadlineType));
             return \Yii::t('structure', 'policy_deadline_over_comm') . ' ' . $deadlines;
         }
-        if ($this->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+        $baseObject = $this->baseObject;
+        if (is_a($baseObject, ConsultationMotionType::class) && $baseObject->getCommentPolicy()->checkCurrUser(true, true)) {
             return \Yii::t('amend', 'comments_please_log_in');
         }
         return \Yii::t('structure', 'policy_logged_comm_denied');
@@ -90,7 +91,7 @@ class LoggedIn extends IPolicy
         }
 
         if ($allowAdmins && User::getCurrentUser()) {
-            if (User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+            if (User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
                 return true;
             }
         }

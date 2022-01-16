@@ -24,7 +24,7 @@ class All extends IPolicy
 
     public function getPermissionDeniedMotionMsg(): string
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return '';
@@ -32,7 +32,7 @@ class All extends IPolicy
 
     public function getPermissionDeniedAmendmentMsg(): string
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return '';
@@ -46,8 +46,8 @@ class All extends IPolicy
     public function getPermissionDeniedCommentMsg(): string
     {
         $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
-        if (!$this->motionType->isInDeadline($deadlineType)) {
-            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlinesByType($deadlineType));
+        if (!$this->baseObject->isInDeadline($deadlineType)) {
+            $deadlines = DateTools::formatDeadlineRanges($this->baseObject->getDeadlinesByType($deadlineType));
             return \Yii::t('structure', 'policy_deadline_over_comm') . ' ' . $deadlines;
         }
         return '';

@@ -45,7 +45,7 @@ class Nobody extends IPolicy
     public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if ($allowAdmins && User::getCurrentUser()) {
-            if (User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+            if (User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
                 return true;
             }
         }

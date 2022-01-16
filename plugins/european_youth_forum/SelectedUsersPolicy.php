@@ -2,7 +2,7 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{ConsultationMotionType, User};
+use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
 use app\models\policies\IPolicy;
 
 class SelectedUsersPolicy extends IPolicy
@@ -24,7 +24,7 @@ class SelectedUsersPolicy extends IPolicy
 
     public function getPermissionDeniedMotionMsg(): string
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return 'Only selected users are allowed to create a motion';
@@ -32,7 +32,7 @@ class SelectedUsersPolicy extends IPolicy
 
     public function getPermissionDeniedAmendmentMsg(): string
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return 'Only selected users are allowed to create an amendment';
@@ -59,12 +59,8 @@ class SelectedUsersPolicy extends IPolicy
             }
         }
 
-        if ($allowAdmins) {
-            foreach ($this->motionType->getConsultation()->site->admins as $admin) {
-                if ($admin->id == User::getCurrentUser()->id) {
-                    return true;
-                }
-            }
+        if ($allowAdmins && $this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+            return true;
         }
 
         if (!$user->email || !$user->emailConfirmed) {

@@ -21,11 +21,11 @@ use yii\db\ActiveRecord;
  * @property int $pdfLayout
  * @property int|null $texTemplateId
  * @property string $deadlines
- * @property int $policyMotions
- * @property int $policyAmendments
- * @property int $policyComments
- * @property int $policySupportMotions
- * @property int $policySupportAmendments
+ * @property string $policyMotions
+ * @property string $policyAmendments
+ * @property string $policyComments
+ * @property string $policySupportMotions
+ * @property string $policySupportAmendments
  * @property int $initiatorsCanMergeAmendments
  * @property int $motionLikesDislikes
  * @property int $amendmentLikesDislikes
@@ -43,7 +43,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationAgendaItem[] $agendaItems
  * @property TexTemplate $texTemplate
  */
-class ConsultationMotionType extends ActiveRecord
+class ConsultationMotionType extends ActiveRecord implements IHasPolicies
 {
     const STATUS_VISIBLE = 0;
     const STATUS_DELETED = -1;
@@ -138,22 +138,22 @@ class ConsultationMotionType extends ActiveRecord
 
     public function getMotionPolicy(): IPolicy
     {
-        return IPolicy::getInstanceByID($this->policyMotions, $this);
+        return IPolicy::getInstanceFromDb($this->policyMotions, $this->getConsultation(), $this);
     }
 
     public function getAmendmentPolicy(): IPolicy
     {
-        return IPolicy::getInstanceByID($this->policyAmendments, $this);
+        return IPolicy::getInstanceFromDb($this->policyAmendments, $this->getConsultation(), $this);
     }
 
     public function getCommentPolicy(): IPolicy
     {
-        return IPolicy::getInstanceByID($this->policyComments, $this);
+        return IPolicy::getInstanceFromDb($this->policyComments, $this->getConsultation(), $this);
     }
 
     public function getMotionSupportPolicy(): IPolicy
     {
-        return IPolicy::getInstanceByID($this->policySupportMotions, $this);
+        return IPolicy::getInstanceFromDb($this->policySupportMotions, $this->getConsultation(), $this);
     }
 
     public function getAmendmentSupporterSettings(): InitiatorForm
@@ -172,7 +172,7 @@ class ConsultationMotionType extends ActiveRecord
 
     public function getAmendmentSupportPolicy(): IPolicy
     {
-        return IPolicy::getInstanceByID($this->policySupportAmendments, $this);
+        return IPolicy::getInstanceFromDb($this->policySupportAmendments, $this->getConsultation(), $this);
     }
 
     public function getMotionSupportTypeClass(): SupportBase
@@ -213,7 +213,7 @@ class ConsultationMotionType extends ActiveRecord
         if ($this->deadlinesObject === null) {
             $this->deadlinesObject = json_decode($this->deadlines, true);
         }
-        return (isset($this->deadlinesObject[$type]) ? $this->deadlinesObject[$type] : []);
+        return $this->deadlinesObject[$type] ?? [];
     }
 
     public function setAllDeadlines(array $deadlines): void
@@ -315,7 +315,6 @@ class ConsultationMotionType extends ActiveRecord
 
             [['id', 'consultationId', 'position', 'amendmentsOnly'], 'number'],
             [['status', 'amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
-            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'number'],
             [['initiatorsCanMergeAmendments', 'pdfLayout', 'sidebarCreateButton'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],

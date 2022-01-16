@@ -3,7 +3,7 @@
 namespace app\models\policies;
 
 use app\components\UrlHelper;
-use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
+use app\models\db\{Consultation, ConsultationMotionType, ConsultationUserGroup, IHasPolicies, User};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 
@@ -28,9 +28,7 @@ abstract class IPolicy
             static::POLICY_NOBODY    => Nobody::class,
         ];
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        if ($params->isSamlActive()) {
+        if (AntragsgruenApp::getInstance()->isSamlActive()) {
             $policies[static::POLICY_GRUENES_NETZ] = GruenesNetz::class;
         }
 
@@ -47,7 +45,7 @@ abstract class IPolicy
     /**
      * @return string[]
      */
-    public static function getPolicyNames()
+    public static function getPolicyNames(): array
     {
         $names = [];
         foreach (static::getPolicies() as $key => $pol) {
@@ -56,12 +54,20 @@ abstract class IPolicy
         return $names;
     }
 
-    /** @var ConsultationMotionType */
-    protected $motionType;
+    /** @var Consultation */
+    protected $consultation;
 
-    public function __construct(ConsultationMotionType $motionType)
+    /** @var IHasPolicies */
+    protected $baseObject;
+
+    /** @var array */
+    protected $data;
+
+    public function __construct(Consultation $consultation, IHasPolicies $baseObject, ?array $data)
     {
-        $this->motionType = $motionType;
+        $this->consultation = $consultation;
+        $this->baseObject = $baseObject;
+        $this->data = $data ?: [];
     }
 
 
@@ -81,9 +87,8 @@ abstract class IPolicy
 
     protected function checkCurrUserWithDeadline(string $deadlineType, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        if (!$this->motionType->isInDeadline($deadlineType)) {
-            $consultation = $this->motionType->getConsultation();
-            if (!User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_ANY) || !$allowAdmins) {
+        if (!$this->baseObject->isInDeadline($deadlineType)) {
+            if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;
             }
         }
@@ -116,13 +121,30 @@ abstract class IPolicy
 
     abstract public function getPermissionDeniedSupportMsg(): string;
 
-
-    public static function getInstanceByID(int $policyId, ConsultationMotionType $motionType): IPolicy
+    /**
+     * Hint: $policyData might either be a pure integer (saved as a string),
+     * or a JSON string with an "id" field
+     */
+    public static function getInstanceFromDb(?string $policyData, Consultation $consultation, IHasPolicies $baseObject): IPolicy
     {
-        /** @var IPolicy $polClass */
+        if ($policyData === null || trim($policyData) === '') {
+            return new Nobody($consultation, $baseObject, null);
+        }
+        if (is_numeric($policyData)) {
+            $policyId = intval($policyData);
+            $policyDataObj = null;
+        } else {
+            $policyDataObj = json_decode($policyData, true);
+            if (isset($policyDataObj['id'])) {
+                $policyId = $policyDataObj['id'];
+            } else {
+                throw new Internal('Could not read policy');
+            }
+        }
+
         foreach (static::getPolicies() as $polId => $polClass) {
-            if ($polId == $policyId) {
-                return new $polClass($motionType);
+            if ($polId === $policyId) {
+                return new $polClass($consultation, $baseObject, $policyDataObj);
             }
         }
         throw new Internal('Unknown Policy: ' . $policyId);

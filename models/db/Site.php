@@ -37,10 +37,7 @@ class Site extends ActiveRecord
 
     const TITLE_SHORT_MAX_LEN = 100;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'site';
     }
@@ -171,30 +168,6 @@ class Site extends ActiveRecord
         $domain = str_replace('<subdomain:[\w_-]+>', $this->subdomain, AntragsgruenApp::getInstance()->domainSubdomain);
 
         return trim(explode("//", $domain)[1], '/');
-    }
-
-    public function isAdmin(User $user): bool
-    {
-        foreach ($this->admins as $e) {
-            if ($e->id == $user->id) {
-                return true;
-            }
-        }
-        return in_array($user->id, AntragsgruenApp::getInstance()->adminUserIds);
-    }
-
-    public function isAdminCurUser(): bool
-    {
-        $user = \Yii::$app->user;
-        if ($user->isGuest) {
-            return false;
-        }
-        $myUser = User::find()->where(['auth' => $user->id])->andWhere('status != ' . User::STATUS_DELETED)->one();
-        /** @var User $myUser */
-        if ($myUser == null) {
-            return false;
-        }
-        return $this->isAdmin($myUser);
     }
 
     public function createDefaultSiteAdminGroup(): ConsultationUserGroup

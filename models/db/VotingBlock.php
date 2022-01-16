@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
+use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
@@ -20,7 +21,7 @@ use yii\db\ActiveRecord;
  * @property int|null $assignedToMotionId
  * @property string|null $usersPresentByOrga
  * @property string|null $answers
- * @property string|null $permissions
+ * @property string|null $policyVote
  * @property string|null $activityLog
  * @property int $votingStatus
  *
@@ -31,7 +32,7 @@ use yii\db\ActiveRecord;
  * @property Vote[] $votes
  * @property Motion|null $assignedToMotion
  */
-class VotingBlock extends ActiveRecord
+class VotingBlock extends ActiveRecord implements IHasPolicies
 {
     // HINT: keep in sync with admin-votings.vue.php & voting-block.vue.php
 
@@ -461,9 +462,9 @@ class VotingBlock extends ActiveRecord
         $this->answers = (string)json_encode($obj);
     }
 
-    public function getPermissions()
+    public function getVotingPolicy()
     {
-        // @TODO This is a placeholder and no permission system is really implemented yet
+        return IPolicy::getInstanceFromDb($this->policyVote, $this->getMyConsultation(), $this);
     }
 
     /**
@@ -597,5 +598,16 @@ class VotingBlock extends ActiveRecord
         return array_values(array_filter($consultation->votingBlocks, function (VotingBlock $votingBlock) {
             return $votingBlock->votingStatus === static::STATUS_CLOSED;
         }));
+    }
+
+    // Hint: deadlines for votings are not implemented yet
+    public function isInDeadline(string $type): bool
+    {
+        return true;
+    }
+
+    public function getDeadlinesByType(string $type): array
+    {
+        return [];
     }
 }
