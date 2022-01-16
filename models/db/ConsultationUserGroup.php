@@ -163,6 +163,16 @@ class ConsultationUserGroup extends ActiveRecord
         $this->link('users', $user);
     }
 
+    public function hasUser(User $user): bool
+    {
+        foreach ($this->users as $_user) {
+            if ($user->id === $_user->id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getUserAdminApiObject(): array
     {
         return [

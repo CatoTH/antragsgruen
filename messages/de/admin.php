@@ -442,6 +442,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_perm_merge'      => 'Überarbeiten',
     'motion_type_perm_supp_mot'   => 'Anträge unterstützen',
     'motion_type_perm_supp_amend' => 'Änderungsanträge unterstützen',
+    'motion_type_group_ph'        => 'Wähle die berechtigte Gruppen aus...',
+    'motion_type_group_title'     => 'Berechtigte Gruppen',
     'motion_type_create_caller'   => 'Neuen Antragstyp anlegen',
     'motion_type_create_head'     => 'Antragstyp anlegen',
     'motion_type_create_submit'   => 'Anlegen',

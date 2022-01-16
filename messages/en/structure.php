@@ -55,6 +55,13 @@ return [
     'policy_logged_supp_denied'     => 'You need to log in to support.',
     'policy_logged_comm_denied'     => 'You need to log in to comment.',
 
+    'policy_groups_title'           => 'Selected groups',
+    'policy_groups_desc'            => 'Entitled user groups',
+    'policy_groups_motion_denied'   => 'Only specified user groups can create motions.',
+    'policy_groups_amend_denied'    => 'Only specified user groups can create amendments.',
+    'policy_groups_supp_denied'     => 'Only specified user groups can support motions.',
+    'policy_groups_comm_denied'     => 'Only specified user groups can write comments.',
+
     'preset_bdk_name'           => 'German federal convention',
     'preset_bdk_desc'           => 'Presets similar to the federal convention of the German Green Party. This setting does not make sense outside of Germany.',
     'preset_election_name'      => 'Application / elections',

@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\policies\UserGroups;
 use app\components\{DateTools, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation,
     ConsultationLog,
@@ -88,13 +89,20 @@ class MotionController extends AdminBase
         }
     }
 
-    /**
-     * @param int $motionTypeId
-     *
-     * @return string
-     * @throws FormError
-     */
-    public function actionType($motionTypeId)
+    private function getPolicyFromUpdateData(ConsultationMotionType $motionType, array $data): IPolicy
+    {
+        $consultation = $motionType->getConsultation();
+        $policy = IPolicy::getInstanceFromDb($data['id'], $consultation, $motionType);
+        if (is_a($policy, UserGroups::class)) {
+            $groups = array_filter($consultation->getAllAvailableUserGroups(), function(ConsultationUserGroup $group) use ($data): bool {
+                return in_array($group->id, $data['groups'] ?? []);
+            });
+            $policy->setAllowedUserGroups($groups);
+        }
+        return $policy;
+    }
+
+    public function actionType(string $motionTypeId): string
     {
         $motionTypeId = intval($motionTypeId);
 
@@ -124,6 +132,11 @@ class MotionController extends AdminBase
             $motionType->setAttributes($input);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
             $motionType->sidebarCreateButton         = (isset($input['sidebarCreateButton']) ? 1 : 0);
+            $motionType->setMotionPolicy($this->getPolicyFromUpdateData($motionType, $input['policyMotions']));
+            $motionType->setMotionSupportPolicy($this->getPolicyFromUpdateData($motionType, $input['policySupportMotions']));
+            $motionType->setAmendmentPolicy($this->getPolicyFromUpdateData($motionType, $input['policyAmendments']));
+            $motionType->setAmendmentSupportPolicy($this->getPolicyFromUpdateData($motionType, $input['policySupportAmendments']));
+            $motionType->setCommentPolicy($this->getPolicyFromUpdateData($motionType, $input['policyComments']));
 
             $deadlineForm = DeadlineForm::createFromInput(\Yii::$app->request->post('deadlines'));
             $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());

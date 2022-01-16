@@ -435,6 +435,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_perm_merge'      => 'Merge',
     'motion_type_perm_comment'    => 'Comments',
     'motion_type_perm_supp'       => 'Likes / dislikes',
+    'motion_type_group_ph'        => 'Please choose the eligible grops...',
+    'motion_type_group_title'     => 'Eligible groups',
     'motion_type_create_caller'   => 'Create new motion type',
     'motion_type_create_head'     => 'Create a motion type',
     'motion_type_create_submit'   => 'Create',

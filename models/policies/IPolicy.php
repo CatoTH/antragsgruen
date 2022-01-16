@@ -12,6 +12,7 @@ abstract class IPolicy
     const POLICY_NOBODY       = 0;
     const POLICY_ALL          = 1;
     const POLICY_LOGGED_IN    = 2;
+    const POLICY_USER_GROUPS  = 6;
     const POLICY_ADMINS       = 3;
     const POLICY_GRUENES_NETZ = 4;
     const POLICY_ORGANIZATION = 5;
@@ -22,10 +23,11 @@ abstract class IPolicy
     public static function getPolicies(): array
     {
         $policies = [
-            static::POLICY_ADMINS    => Admins::class,
-            static::POLICY_ALL       => All::class,
+            static::POLICY_ADMINS => Admins::class,
+            static::POLICY_ALL => All::class,
             static::POLICY_LOGGED_IN => LoggedIn::class,
-            static::POLICY_NOBODY    => Nobody::class,
+            static::POLICY_USER_GROUPS => UserGroups::class,
+            static::POLICY_NOBODY => Nobody::class,
         ];
 
         if (AntragsgruenApp::getInstance()->isSamlActive()) {
@@ -148,5 +150,11 @@ abstract class IPolicy
             }
         }
         throw new Internal('Unknown Policy: ' . $policyId);
+    }
+
+    // Will be overridden in some sub-classes
+    public function serializeInstanceForDb(): string
+    {
+        return (string)static::getPolicyID();
     }
 }

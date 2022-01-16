@@ -21,6 +21,7 @@ $layout->addBreadcrumb(Yii::t('admin', 'bread_types'));
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
+$layout->loadSelectize();
 $layout->addAMDModule('backend/MotionTypeEdit');
 
 $myUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);

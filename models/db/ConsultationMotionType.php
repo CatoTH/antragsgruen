@@ -141,9 +141,19 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         return IPolicy::getInstanceFromDb($this->policyMotions, $this->getConsultation(), $this);
     }
 
+    public function setMotionPolicy(IPolicy $policy): void
+    {
+        $this->policyMotions = $policy->serializeInstanceForDb();
+    }
+
     public function getAmendmentPolicy(): IPolicy
     {
         return IPolicy::getInstanceFromDb($this->policyAmendments, $this->getConsultation(), $this);
+    }
+
+    public function setAmendmentPolicy(IPolicy $policy): void
+    {
+        $this->policyAmendments = $policy->serializeInstanceForDb();
     }
 
     public function getCommentPolicy(): IPolicy
@@ -151,9 +161,29 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         return IPolicy::getInstanceFromDb($this->policyComments, $this->getConsultation(), $this);
     }
 
+    public function setCommentPolicy(IPolicy $policy): void
+    {
+        $this->policyComments = $policy->serializeInstanceForDb();
+    }
+
     public function getMotionSupportPolicy(): IPolicy
     {
         return IPolicy::getInstanceFromDb($this->policySupportMotions, $this->getConsultation(), $this);
+    }
+
+    public function setMotionSupportPolicy(IPolicy $policy): void
+    {
+        $this->policySupportMotions = $policy->serializeInstanceForDb();
+    }
+
+    public function getAmendmentSupportPolicy(): IPolicy
+    {
+        return IPolicy::getInstanceFromDb($this->policySupportAmendments, $this->getConsultation(), $this);
+    }
+
+    public function setAmendmentSupportPolicy(IPolicy $policy): void
+    {
+        $this->policySupportAmendments = $policy->serializeInstanceForDb();
     }
 
     public function getAmendmentSupporterSettings(): InitiatorForm
@@ -168,11 +198,6 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     public function getMotionSupporterSettings(): InitiatorForm
     {
         return new InitiatorForm($this->supportTypeMotions);
-    }
-
-    public function getAmendmentSupportPolicy(): IPolicy
-    {
-        return IPolicy::getInstanceFromDb($this->policySupportAmendments, $this->getConsultation(), $this);
     }
 
     public function getMotionSupportTypeClass(): SupportBase
