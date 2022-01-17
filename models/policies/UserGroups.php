@@ -71,21 +71,20 @@ class UserGroups extends IPolicy
         return \Yii::t('structure', 'policy_groups_comm_denied');
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        $currentUser = User::getCurrentUser();
-        if ($currentUser === null) {
+        if ($user === null) {
             // If the user is not logged into, permission is usually not granted. If $assumeLoggedIn is true,
             // then permission is granted (to lead the user to a login form)
             return $assumeLoggedIn;
         }
 
-        if ($allowAdmins && User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if ($allowAdmins && $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return true;
         }
 
         foreach ($this->groups as $group) {
-            if ($group->hasUser($currentUser)) {
+            if ($group->hasUser($user)) {
                 return true;
             }
         }
@@ -109,11 +108,16 @@ class UserGroups extends IPolicy
 
     public function getApiObject(): array
     {
+        $groupNames = array_map(function (ConsultationUserGroup $group): string {
+            return $group->getNormalizedTitle();
+        }, $this->groups);
+
         return [
             'id' => static::getPolicyID(),
             'user_groups' => array_map(function(ConsultationUserGroup $group): int {
                 return $group->id;
             }, $this->groups),
+            'description' => \Yii::t('structure', 'policy_groups_desc') . ' (' . implode(', ', $groupNames) . ')',
         ];
     }
 

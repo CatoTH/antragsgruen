@@ -85,12 +85,18 @@ abstract class IPolicy
 
     abstract public function getOnCreateDescription(): string;
 
-    abstract public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool;
+    abstract public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool;
+
+    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    {
+        return $this->checkUser(User::getCurrentUser(), $allowAdmins, $assumeLoggedIn);
+    }
 
     public function getApiObject(): array
     {
         return [
             'id' => static::getPolicyID(),
+            'description' => static::getPolicyName(),
         ];
     }
 

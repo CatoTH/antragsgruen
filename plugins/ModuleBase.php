@@ -179,11 +179,6 @@ class ModuleBase extends Module
         return null;
     }
 
-    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IVotingItem $item): ?bool
-    {
-        return null;
-    }
-
     public static function getMotionExtraSettingsForm(Motion $motion): string
     {
         return '';

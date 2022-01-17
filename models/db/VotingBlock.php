@@ -260,16 +260,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             return false;
         }
 
-        // In case a plugin provides eligibility check, we take its result. The first plugin providing the check wins.
-        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $allowed = $plugin::userIsAllowedToVoteFor($this, $user, $item);
-            if ($allowed !== null) {
-                return $allowed;
-            }
-        }
-
-        // If no plugin
-        return true;
+        return $this->getVotingPolicy()->checkUser($user, false, false);
     }
 
     public function userIsCurrentlyAllowedToVoteFor(User $user, IVotingItem $item): bool

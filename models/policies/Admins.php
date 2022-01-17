@@ -53,8 +53,11 @@ class Admins extends IPolicy
         return \Yii::t('structure', 'policy_admin_comm_denied');
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        return User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT);
+        if (!$user) {
+            return false;
+        }
+        return $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT);
     }
 }

@@ -45,10 +45,18 @@ ob_start();
         </label>
     </h2>
     <div class="content votingShow" v-if="!settingsOpened">
-        <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
-             v-if="isPreparing && majorityType.id === voting.majority_type && votingHasMajority">
-            <strong>{{ majorityType.name }}</strong><br>
-            <small>{{ majorityType.description }}</small>
+
+        <div class="votingSettingsSummary">
+            <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
+                 v-if="isPreparing && majorityType.id === voting.majority_type && votingHasMajority">
+                <strong><?= Yii::t('voting', 'settings_majoritytype') ?>:</strong>
+                {{ majorityType.name }}
+                <span class="glyphicon glyphicon-info-sign" :aria-label="majorityType.description" v-tooltip="majorityType.description"></span>
+            </div>
+            <div>
+                <strong><?= Yii::t('voting', 'settings_votepolicy') ?>:</strong>
+                {{ voting.vote_policy.description }}
+            </div>
         </div>
         <div class="alert alert-success" v-if="isOpen">
             <p><?= Yii::t('voting', 'admin_status_opened') ?></p>
@@ -288,7 +296,7 @@ ob_start();
             </label>
         </fieldset>
         <fieldset class="votePolicy">
-            <legend><?= Yii::t('voting', 'settings_votepolicy') ?></legend>
+            <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
             <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)"></policy-select>
         </fieldset>
         <fieldset class="resultsPublicSettings">

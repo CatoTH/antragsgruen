@@ -3,7 +3,7 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\models\db\ConsultationMotionType;
+use app\models\db\{ConsultationMotionType, User};
 
 class All extends IPolicy
 {
@@ -53,7 +53,7 @@ class All extends IPolicy
         return '';
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         return true;
     }

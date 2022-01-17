@@ -84,16 +84,15 @@ class LoggedIn extends IPolicy
         return \Yii::t('structure', 'policy_logged_comm_denied');
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        $currentUser = User::getCurrentUser();
-        if ($currentUser === null) {
+        if ($user === null) {
             // If the user is not logged into, permission is usually not granted. If $assumeLoggedIn is true,
             // then permission is granted (to lead the user to a login form)
             return $assumeLoggedIn;
         }
 
-        if ($allowAdmins && User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+        if ($allowAdmins && $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }
 

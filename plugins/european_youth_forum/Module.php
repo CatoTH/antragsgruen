@@ -115,11 +115,4 @@ class Module extends ModuleBase
 
         return $results;
     }
-
-    public static function userIsAllowedToVoteFor(VotingBlock $votingBlock, User $user, IVotingItem $item): ?bool
-    {
-        $organizationIds = $user->getMyOrganizationIds();
-
-        return in_array('nyo', $organizationIds) || in_array('ingyo', $organizationIds);
-    }
 }

@@ -57,9 +57,8 @@ class GruenesNetz extends IPolicy
         return \Yii::t('structure', 'policy_ww_comm_denied');
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        $user = User::getCurrentUser();
         if (!$user) {
             if ($assumeLoggedIn) {
                 return true;
