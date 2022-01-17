@@ -1022,6 +1022,17 @@ label.legend {
   &.amendmentsOnly .hideForAmendmentsOnly {
     display: none;
   }
+
+  .policyWidget {
+    .selectize-control {
+      margin-top: 5px;
+    }
+    .selectize-input {
+      border-radius: 0.25rem;
+      padding-top: 5px;
+      padding-bottom: 4px;
+    }
+  }
 }
 
 .motionListExportRow {

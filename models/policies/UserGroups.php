@@ -73,15 +73,15 @@ class UserGroups extends IPolicy
 
     public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        if (\Yii::$app->user->isGuest && $assumeLoggedIn) {
-            return true;
+        $currentUser = User::getCurrentUser();
+        if ($currentUser === null) {
+            // If the user is not logged into, permission is usually not granted. If $assumeLoggedIn is true,
+            // then permission is granted (to lead the user to a login form)
+            return $assumeLoggedIn;
         }
 
-        $currentUser = User::getCurrentUser();
-        if ($allowAdmins && $currentUser) {
-            if (User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
-                return true;
-            }
+        if ($allowAdmins && User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+            return true;
         }
 
         foreach ($this->groups as $group) {

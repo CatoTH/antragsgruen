@@ -46,7 +46,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
     <label class="leftColumn" for="typePolicyMotions">
         <?= Yii::t('admin', 'motion_type_perm_motion') ?>:
     </label>
-    <div class="rightColumn policyWidget">
+    <div class="rightColumn policyWidget policyWidgetMotions">
         <?php
         $currentPolicy = $motionType->getMotionPolicy();
         echo Html::dropDownList(
@@ -67,7 +67,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
     <label class="leftColumn" for="typePolicySupportMotions">
         <?= Yii::t('admin', 'motion_type_perm_supp_mot') ?>:
     </label>
-    <div class="rightColumn policyWidget">
+    <div class="rightColumn policyWidget policyWidgetSupportMotions">
         <?php
         $currentPolicy = $motionType->getMotionSupportPolicy();
         echo Html::dropDownList(
@@ -125,7 +125,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
     <label class="leftColumn" for="typePolicyAmendments">
         <?= Yii::t('admin', 'motion_type_perm_amend') ?>:
     </label>
-    <div class="rightColumn policyWidget">
+    <div class="rightColumn policyWidget policyWidgetAmendments">
         <?php
         $currentPolicy = $motionType->getAmendmentPolicy();
         echo Html::dropDownList(
@@ -159,7 +159,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
     <label class="leftColumn" for="typePolicySupportAmendments">
         <?= Yii::t('admin', 'motion_type_perm_supp_amend') ?>:
     </label>
-    <div class="rightColumn policyWidget">
+    <div class="rightColumn policyWidget policyWidgetSupportAmendments">
         <?php
         $currentPolicy = $motionType->getAmendmentSupportPolicy();
         echo Html::dropDownList(
@@ -218,7 +218,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
     <label class="leftColumn" for="typePolicyComments">
         <?= Yii::t('admin', 'motion_type_perm_comment') ?>:
     </label>
-    <div class="rightColumn policyWidget">
+    <div class="rightColumn policyWidget policyWidgetComments">
         <?php
         $currentPolicy = $motionType->getCommentPolicy();
         echo Html::dropDownList(

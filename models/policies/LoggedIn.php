@@ -86,19 +86,20 @@ class LoggedIn extends IPolicy
 
     public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        if (\Yii::$app->user->isGuest && $assumeLoggedIn) {
-            return true;
+        $currentUser = User::getCurrentUser();
+        if ($currentUser === null) {
+            // If the user is not logged into, permission is usually not granted. If $assumeLoggedIn is true,
+            // then permission is granted (to lead the user to a login form)
+            return $assumeLoggedIn;
         }
 
-        if ($allowAdmins && User::getCurrentUser()) {
-            if (User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
-                return true;
-            }
+        if ($allowAdmins && User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+            return true;
         }
 
         if ($this->isWriteForbidden()) {
             return false;
         }
-        return (!\Yii::$app->user->isGuest);
+        return true;
     }
 }

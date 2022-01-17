@@ -3,6 +3,11 @@
 ## Version 4.10.0 [not released yet]
 
 - The user permission system was now replaced by user groups.
+  - The access to a site is now configured on the standard "consultation settings" page.
+  - The previous site access page is now exclusively used to configure users and user groups.
+  - There are a few pre-configured user groups with special meanings (Site administrator, consultation administrator, proposed procedure editor, participant)
+  - Arbitrary additional groups can be added.
+  - Creating motions, amendments, comments and supporting them can be restricted to one or several of these groups.
 - Votings can now have simple questions that are not attached to any motion or amendment.
 - Votings have different answer options: besides "Yes/No/Abstention", it is now also possible to have simple "Yes/No"- and "Presence"-votings (Roll calls)
 
