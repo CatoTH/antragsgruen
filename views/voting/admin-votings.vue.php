@@ -53,7 +53,7 @@ ob_start();
                 {{ majorityType.name }}
                 <span class="glyphicon glyphicon-info-sign" :aria-label="majorityType.description" v-tooltip="majorityType.description"></span>
             </div>
-            <div>
+            <div class="votingPolicy">
                 <strong><?= Yii::t('voting', 'settings_votepolicy') ?>:</strong>
                 {{ voting.vote_policy.description }}
             </div>
@@ -297,7 +297,7 @@ ob_start();
         </fieldset>
         <fieldset class="votePolicy">
             <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
-            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)"></policy-select>
+            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)" ref="policy-select"></policy-select>
         </fieldset>
         <fieldset class="resultsPublicSettings">
             <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
@@ -508,7 +508,6 @@ $html = ob_get_clean();
             },
             votePolicy: {
                 get: function () {
-                    console.log("Get vote policy", JSON.stringify(this.changedSettings.votePolicy));
                     return (this.changedSettings.votePolicy !== null ? this.changedSettings.votePolicy : this.voting.vote_policy);
                 },
                 set: function (value) {

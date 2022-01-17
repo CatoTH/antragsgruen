@@ -60,7 +60,11 @@ class VotingMethods
 
     private function getPolicyFromUpdateData(VotingBlock $votingBlock, array $data): IPolicy
     {
-        $submittedUserGroups = array_map('intval', $data['user_groups'] ?? []);
+        if (isset($data['user_groups']) && $data['user_groups'] === '') {
+            $submittedUserGroups = [];
+        } else {
+            $submittedUserGroups = array_map('intval', $data['user_groups'] ?? []);
+        }
 
         $consultation = $votingBlock->getMyConsultation();
         $policy = IPolicy::getInstanceFromDb($data['id'], $consultation, $votingBlock);

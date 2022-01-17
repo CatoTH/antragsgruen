@@ -37,6 +37,7 @@ export class VotingAdmin {
                                      @delete-voting="deleteVoting"
                                      @add-imotion="addIMotion"
                                      @add-question="addQuestion"
+                                     ref="voting-admin-widget"
                 ></voting-admin-widget>
             </div>`,
             data() {
@@ -193,6 +194,9 @@ export class VotingAdmin {
                 this.startPolling()
             }
         });
+
+        // Used by tests to control vue-select
+        window['votingAdminWidget'] = this.widget;
     }
 
     private initVotingCreater() {
