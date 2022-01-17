@@ -107,6 +107,16 @@ class UserGroups extends IPolicy
         $this->groups = $groups;
     }
 
+    public function getApiObject(): array
+    {
+        return [
+            'id' => static::getPolicyID(),
+            'user_groups' => array_map(function(ConsultationUserGroup $group): int {
+                return $group->id;
+            }, $this->groups),
+        ];
+    }
+
     public function serializeInstanceForDb(): string
     {
         return json_encode([

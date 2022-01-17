@@ -1642,3 +1642,12 @@ label.legend {
     }
   }
 }
+
+.v-policy-select {
+  .v-select {
+    margin-top: 7px;
+    .vs__dropdown-toggle {
+      border-radius: 3px;
+    }
+  }
+}

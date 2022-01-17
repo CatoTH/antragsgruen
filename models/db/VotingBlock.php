@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
 use app\models\policies\IPolicy;
+use app\models\policies\LoggedIn;
 use app\models\settings\AntragsgruenApp;
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
@@ -462,9 +463,15 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         $this->answers = (string)json_encode($obj);
     }
 
-    public function getVotingPolicy()
+    public function getVotingPolicy(): IPolicy
     {
-        return IPolicy::getInstanceFromDb($this->policyVote, $this->getMyConsultation(), $this);
+        $policy = ($this->policyVote === null || $this->policyVote === '' ? (string)LoggedIn::getPolicyID() : $this->policyVote);
+        return IPolicy::getInstanceFromDb($policy, $this->getMyConsultation(), $this);
+    }
+
+    public function setVotingPolicy(IPolicy $policy): void
+    {
+        $this->policyVote = $policy->serializeInstanceForDb();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace app\models\proposedProcedure;
 use app\models\db\{Amendment, ConsultationUserGroup, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\Access;
 use app\models\IMotionList;
+use app\models\policies\IPolicy;
 
 class AgendaVoting
 {
@@ -98,6 +99,12 @@ class AgendaVoting
                 ];
             }
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
+
+            if ($this->voting) {
+                $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
+            } else {
+                $votingBlockJson['vote_policy'] = ['id' => IPolicy::POLICY_NOBODY];
+            }
         }
         if ($this->voting) {
             list($total, $users) = $this->voting->getVoteStatistics();

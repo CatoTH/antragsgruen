@@ -20,7 +20,10 @@ $layout->addBreadcrumb(Yii::t('voting', 'bc'), UrlHelper::createUrl('consultatio
 $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
 
+$layout->addCSS('css/backend.css');
 $layout->loadVue();
+$layout->loadVueSelect();
+$layout->addVueTemplate('@app/views/voting/_policy-select.vue.php');
 $layout->addVueTemplate('@app/views/voting/admin-votings.vue.php');
 
 $apiData = [];
@@ -60,6 +63,10 @@ foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
     }
 }
 
+$userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): array {
+    return $group->getUserAdminApiObject();
+}, $consultation->getAllAvailableUserGroups());
+
 ?>
 <h1><?= Yii::t('voting', 'admin_title') ?></h1>
 
@@ -69,6 +76,7 @@ foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
      data-url-poll="<?= Html::encode($pollUrl) ?>"
      data-antragsgruen-widget="backend/VotingAdmin"
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
+     data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
      data-voting="<?= Html::encode(json_encode($apiData)) ?>">
     <div class="content">
         <button type="button" class="btn btn-default createVotingOpener">

@@ -87,6 +87,13 @@ abstract class IPolicy
 
     abstract public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool;
 
+    public function getApiObject(): array
+    {
+        return [
+            'id' => static::getPolicyID(),
+        ];
+    }
+
     protected function checkCurrUserWithDeadline(string $deadlineType, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if (!$this->baseObject->isInDeadline($deadlineType)) {

@@ -21,6 +21,7 @@ export class VotingAdmin {
         const addableMotions = JSON.parse(this.element.getAttribute('data-addable-motions'));
         const pollUrl = this.element.getAttribute('data-url-poll');
         const votingInitJson = this.element.getAttribute('data-voting');
+        const initUserGroups = JSON.parse(this.element.getAttribute('data-user-groups'));
 
         this.widget = new Vue({
             el: vueEl,
@@ -29,6 +30,7 @@ export class VotingAdmin {
                                      :voting="voting"
                                      :addableMotions="addableMotions"
                                      :alreadyAddedItems="alreadyAddedItems"
+                                     :userGroups="userGroups"
                                      @set-status="setStatus"
                                      @save-settings="saveSettings"
                                      @remove-item="removeItem"
@@ -41,6 +43,7 @@ export class VotingAdmin {
                 return {
                     votingsJson: null,
                     votings: null,
+                    userGroups: initUserGroups,
                     addableMotions,
                     csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                     pollingId: null
@@ -104,12 +107,13 @@ export class VotingAdmin {
                         }}),
                     });
                 },
-                saveSettings(votingBlockId, title, answerTemplate, majorityType, resultsPublic, votesPublic, assignedMotion) {
+                saveSettings(votingBlockId, title, answerTemplate, majorityType, votePolicy, resultsPublic, votesPublic, assignedMotion) {
                     this._performOperation(votingBlockId, {
                         op: 'save-settings',
                         title,
                         answerTemplate,
                         majorityType,
+                        votePolicy,
                         resultsPublic,
                         votesPublic,
                         assignedMotion,
