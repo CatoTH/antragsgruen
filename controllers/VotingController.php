@@ -157,6 +157,11 @@ class VotingController extends Base
             $newBlock->assignedToMotionId = null;
         }
         $newBlock->setAnswerTemplate(intval(\Yii::$app->request->post('answers')));
+        $newBlock->setVotingPolicy($this->votingMethods->getPolicyFromUpdateData(
+            $newBlock,
+            intval(\Yii::$app->request->post('votePolicy')),
+            \Yii::$app->request->post('userGroups', [])
+        ));
         // If the voting is created from the proposed procedure, we assume it's only used to show it there
         $newBlock->votingStatus = VotingBlock::STATUS_PREPARING;
         $newBlock->save();

@@ -58,16 +58,12 @@ class VotingMethods
         $votingBlock->deleteVoting();
     }
 
-    private function getPolicyFromUpdateData(VotingBlock $votingBlock, array $data): IPolicy
+    public function getPolicyFromUpdateData(VotingBlock $votingBlock, int $policyId, ?array $userGroups): IPolicy
     {
-        if (isset($data['user_groups']) && $data['user_groups'] === '') {
-            $submittedUserGroups = [];
-        } else {
-            $submittedUserGroups = array_map('intval', $data['user_groups'] ?? []);
-        }
+        $submittedUserGroups = array_map('intval', $userGroups ?? []);
 
         $consultation = $votingBlock->getMyConsultation();
-        $policy = IPolicy::getInstanceFromDb($data['id'], $consultation, $votingBlock);
+        $policy = IPolicy::getInstanceFromDb((string)$policyId, $consultation, $votingBlock);
         if (is_a($policy, UserGroups::class)) {
             $groups = array_filter($consultation->getAllAvailableUserGroups(), function(ConsultationUserGroup $group) use ($submittedUserGroups): bool {
                 return in_array($group->id, $submittedUserGroups);
@@ -99,7 +95,12 @@ class VotingMethods
                 $votingBlock->setAnswerTemplate(AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION);
             }
             if ($this->request->post('votePolicy') !== null) {
-                $votingBlock->setVotingPolicy($this->getPolicyFromUpdateData($votingBlock, $this->request->post('votePolicy', [])));
+                $policyData = $this->request->post('votePolicy', []);
+                $votingBlock->setVotingPolicy($this->getPolicyFromUpdateData(
+                    $votingBlock,
+                    intval($policyData['id']),
+                    $policyData['user_groups'] ?? []
+                ));
             }
             if ($this->request->post('votesPublic') !== null) {
                 $votingBlock->votesPublic = intval($this->request->post('votesPublic'));

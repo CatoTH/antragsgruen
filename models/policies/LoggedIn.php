@@ -23,7 +23,7 @@ class LoggedIn extends IPolicy
         if (!$user) {
             return false;
         }
-        if (!$this->baseObject->getConsultation()->getSettings()->managedUserAccounts) {
+        if (!$this->consultation->getSettings()->managedUserAccounts) {
             return false;
         }
 

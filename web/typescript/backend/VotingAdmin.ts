@@ -2,6 +2,8 @@ import { VueConstructor } from 'vue';
 
 declare var Vue: VueConstructor;
 
+const POLICY_USER_GROUPS  = 6;
+
 export class VotingAdmin {
     private widget;
     private element: HTMLElement;
@@ -125,7 +127,7 @@ export class VotingAdmin {
                         op: 'delete-voting',
                     });
                 },
-                createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, resultsPublic, votesPublic) {
+                createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, votePolicy, userGroups, resultsPublic, votesPublic) {
                     let postData = {
                         _csrf: this.csrf,
                         type,
@@ -134,6 +136,8 @@ export class VotingAdmin {
                         specificQuestion,
                         assignedMotion,
                         majorityType,
+                        votePolicy,
+                        userGroups,
                         resultsPublic,
                         votesPublic
                     };
@@ -199,6 +203,21 @@ export class VotingAdmin {
         window['votingAdminWidget'] = this.widget;
     }
 
+    private initPolicyWidget() {
+        const $widget = $(this.element);
+        const $select: any = $widget.find('.userGroupSelect');
+        $select.find("select").selectize({});
+
+        const $policySelect = $widget.find(".policySelect");
+        $policySelect.on("change", () => {
+            if (parseInt($policySelect.val() as string, 10) === POLICY_USER_GROUPS) {
+                $select.removeClass("hidden");
+            } else {
+                $select.addClass("hidden");
+            }
+        }).trigger("change");
+    }
+
     private initVotingCreater() {
         const opener = this.element.querySelector('.createVotingOpener'),
             form = this.element.querySelector('.createVotingHolder'),
@@ -245,6 +264,8 @@ export class VotingAdmin {
         });
         recalcAnswerTypeListener();
 
+        this.initPolicyWidget();
+
         form.querySelector('form').addEventListener('submit', (ev) => {
             ev.stopPropagation();
             ev.preventDefault();
@@ -256,7 +277,15 @@ export class VotingAdmin {
             const majorityType = parseInt(getRadioListValue('.majorityTypeSettings input', '1'), 10); // Default: simple majority
             const resultsPublic = parseInt(getRadioListValue('.resultsPublicSettings input', '1'), 10); // Default: everyone
             const votesPublic = parseInt(getRadioListValue('.votesPublicSettings input', '0'), 10); // Default: nobody
-            this.widget.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, resultsPublic, votesPublic);
+            const votePolicy = parseInt((form.querySelector('.policySelect') as HTMLSelectElement).value, 10);
+            let userGroups;
+            if (votePolicy === POLICY_USER_GROUPS) {
+                userGroups = (form.querySelector('.userGroupSelectList') as any).selectize.items.map(item => parseInt(item, 10));
+            } else {
+                userGroups = null;
+            }
+            console.log("Policy", votePolicy, userGroups);
+            this.widget.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic);
 
             form.classList.add('hidden');
             opener.classList.remove('hidden');

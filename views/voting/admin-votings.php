@@ -1,5 +1,6 @@
 <?php
 
+use app\models\policies\IPolicy;
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\majorityType\IMajorityType;
@@ -21,6 +22,7 @@ $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
 
 $layout->addCSS('css/backend.css');
+$layout->loadSelectize();
 $layout->loadVue();
 $layout->loadVueSelect();
 $layout->addVueTemplate('@app/views/voting/_policy-select.vue.php');
@@ -157,6 +159,32 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
                     <?php
                 }
                 ?>
+            </fieldset>
+            <fieldset class="votePolicy">
+                <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
+                <?php
+                $policies = [];
+                foreach (IPolicy::getPolicies() as $policy) {
+                    $policies[$policy::getPolicyID()] = $policy::getPolicyName();
+                }
+
+                echo Html::dropDownList(
+                    'votePolicyNew',
+                    \app\models\policies\LoggedIn::getPolicyID(),
+                    $policies,
+                    ['class' => 'stdDropdown policySelect', 'autocomplete' => 'off']
+                );
+                ?>
+                <div class="userGroupSelect">
+                    <select name="votePolicyGroupsNew[]" class="userGroupSelectList" multiple autocomplete="off"
+                            placeholder="<?= Yii::t('admin', 'motion_type_group_ph') ?>" title="<?= Yii::t('admin', 'motion_type_group_title') ?>">
+                        <?php
+                        foreach ($consultation->getAllAvailableUserGroups() as $group) {
+                            echo '<option value="' . $group->id . '">' . Html::encode($group->getNormalizedTitle()) . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
             </fieldset>
             <fieldset class="resultsPublicSettings">
                 <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>

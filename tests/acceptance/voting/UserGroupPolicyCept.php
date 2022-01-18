@@ -2,6 +2,8 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use app\models\policies\IPolicy;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -21,32 +23,40 @@ $I->gotoStdAdminPage()->gotoVotingPage();
 $I->dontSeeElement('form.creatingVoting');
 $I->clickJS('.createVotingOpener');
 $I->seeElement('form.creatingVoting');
-
 $I->assertSame('question', $I->executeJS('return $("input[name=votingTypeNew]:checked").val()'));
 $I->fillField('.creatingVoting .settingsTitle', 'Roll call');
 $I->fillField('.creatingVoting .settingsQuestion', 'Who is present?');
 $I->seeElement('.majorityTypeSettings');
-
 $I->clickJS("input[name=answersNew][value='" . \app\models\votings\AnswerTemplates::TEMPLATE_PRESENT . "']");
 $I->dontSeeElement('.majorityTypeSettings');
 $I->assertSame(1, intval($I->executeJS('return $("input[name=resultsPublicNew]:checked").val()')));
 $I->clickJS('input[name=votesPublicNew][value=\"2\"]');
 $I->clickJS('input[name=resultsPublicNew][value=\"1\"]');
+
+$I->dontSeeElement('.createVotingHolder .votePolicy .userGroupSelect');
+$I->selectOption('.createVotingHolder .votePolicy .policySelect', IPolicy::POLICY_USER_GROUPS);
+$I->wait(0.1);
+$I->seeElement('.createVotingHolder .votePolicy .userGroupSelect');
+$I->assertSame(0, $I->executeJS('return document.querySelector(".createVotingHolder .votePolicy .userGroupSelectList").selectize.items.length'));
+$I->executeJS('document.querySelector(".createVotingHolder .votePolicy .userGroupSelectList").selectize.addItem(1)');
+$I->assertSame(1, $I->executeJS('return document.querySelector(".createVotingHolder .votePolicy .userGroupSelectList").selectize.items.length'));
+
 $I->clickJS('form.creatingVoting button[type=submit]');
 $I->wait(0.3);
 
 $votingBaseId = '#voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID;
-$I->see('Eingeloggte', '.votingSettingsSummary .votingPolicy');
+$I->see('Berechtigte Gruppen (Seiten-Admin)', $votingBaseId . ' .votingSettingsSummary .votingPolicy');
 $I->clickJS($votingBaseId . ' .settingsToggleGroup button');
-$I->seeOptionIsSelected($votingBaseId . ' .v-policy-select .stdDropdown', 'Eingeloggte');
-$I->dontSeeElement($votingBaseId . ' .v-policy-select .v-select');
-$I->selectOption($votingBaseId . ' .v-policy-select .stdDropdown', \app\models\policies\UserGroups::getPolicyID());
+$I->seeOptionIsSelected($votingBaseId . ' .v-policy-select .stdDropdown', \app\models\policies\UserGroups::getPolicyName());
+$I->seeElement($votingBaseId . ' .v-policy-select .v-select');
+$selected = $I->executeJS('return votingAdminWidget.$refs["voting-admin-widget"][1].$refs["policy-select"].userGroups');
+$I->assertSame([1], $selected);
 $I->wait(0.1);
 $I->seeElement($votingBaseId . ' .v-policy-select .v-select');
 $I->executeJS('votingAdminWidget.$refs["voting-admin-widget"][1].$refs["policy-select"].setSelectedGroups([' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '])');
 $I->clickJS($votingBaseId . ' .btnSave');
 $I->wait(0.3);
-$I->see('Berechtigte Gruppen (Voting group)', '.votingSettingsSummary .votingPolicy');
+$I->see('Berechtigte Gruppen (Voting group)', $votingBaseId . ' .votingSettingsSummary .votingPolicy');
 $I->clickJS($votingBaseId . ' .btnOpen');
 
 
