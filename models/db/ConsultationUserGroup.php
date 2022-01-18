@@ -8,7 +8,7 @@ use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
- * @property int $id
+ * @property int|null $id
  * @property string|null $externalId
  * @property int|null $templateId
  * @property string $title

@@ -48,9 +48,8 @@ class MotionPolicy extends IPolicy
         return \Yii::t('member_petitions', 'policy_comm_denied');
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        $user = User::getCurrentUser();
         if (!$user) {
             if ($assumeLoggedIn) {
                 return true;
@@ -60,7 +59,7 @@ class MotionPolicy extends IPolicy
         }
 
         if ($allowAdmins) {
-            if ($this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+            if ($user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
                 return true;
             }
         }

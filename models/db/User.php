@@ -116,9 +116,6 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
-    /**
-     * @param int|int[] $privilege
-     */
     public static function havePrivilege(?Consultation $consultation, int $privilege): bool
     {
         $user = static::getCurrentUser();

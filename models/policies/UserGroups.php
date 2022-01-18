@@ -128,6 +128,6 @@ class UserGroups extends IPolicy
             'userGroups' => array_map(function(ConsultationUserGroup $group): int {
                 return $group->id;
             }, $this->groups),
-        ]);
+        ], JSON_THROW_ON_ERROR);
     }
 }

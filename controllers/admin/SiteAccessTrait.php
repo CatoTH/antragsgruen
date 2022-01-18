@@ -25,7 +25,7 @@ trait SiteAccessTrait
     {
         $auth = 'openid:https://service.gruene.de/openid/' . $username;
 
-        /** @var User $user */
+        /** @var User|null $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
         if ($user) {
             // If the user already exist AND is already in the group, we will abort
@@ -105,7 +105,7 @@ trait SiteAccessTrait
         $email = mb_strtolower($email);
         $auth  = 'email:' . $email;
 
-        /** @var User $user */
+        /** @var User|null $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
         if ($user) {
             // If the user already exist AND is already in the group, we will abort
@@ -160,13 +160,13 @@ trait SiteAccessTrait
                 ['%ACCOUNT%' => $accountText]
             );
         } catch (MailNotSent $e) {
-            \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+            \Yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
 
         return $user;
     }
 
-    private function addUsersByEmail()
+    private function addUsersByEmail(): void
     {
         $params   = $this->getParams();
         $post     = \Yii::$app->request->post();
@@ -495,7 +495,7 @@ trait SiteAccessTrait
         return $this->returnRestResponse(200, json_encode(array_merge(
             $this->getUsersWidgetData($consultation),
             $additionalData
-        )));
+        ), JSON_THROW_ON_ERROR));
     }
 
     public function actionUsersPoll(): string
@@ -508,6 +508,6 @@ trait SiteAccessTrait
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $responseData = $this->getUsersWidgetData($consultation);
-        return $this->returnRestResponse(200, json_encode($responseData));
+        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
     }
 }

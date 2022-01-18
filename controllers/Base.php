@@ -568,7 +568,7 @@ class Base extends Controller
                 'slug'           => $motionSlug
             ]);
         }
-        /** @var Motion $motion */
+        /** @var Motion|null $motion */
         if (!$motion) {
             if ($throwExceptions) {
                 throw new NotFound('Motion not found', 404);

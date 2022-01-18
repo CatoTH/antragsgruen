@@ -2,10 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\mail\Tools as MailTools;
-use app\components\UrlHelper;
-use app\models\exceptions\{AlreadyExists, FormError, MailNotSent};
-use app\models\notifications\UserAsksPermission;
+use app\models\exceptions\{AlreadyExists, FormError};
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
@@ -77,7 +74,7 @@ class ConsultationUserPrivilege extends ActiveRecord
         }
         $auth = 'openid:https://service.gruene.de/openid/' . $username;
 
-        /** @var User $user */
+        /** @var User|null $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
         if (!$user) {
             $user                  = new User();
@@ -91,7 +88,7 @@ class ConsultationUserPrivilege extends ActiveRecord
             $user->save();
         }
 
-        /** @var ConsultationUserPrivilege $privilege */
+        /** @var ConsultationUserPrivilege|null $privilege */
         $privilege = static::findOne(['userId' => $user->id, 'consultationId' => $consultation->id]);
         if ($privilege) {
             throw new AlreadyExists();
@@ -107,15 +104,5 @@ class ConsultationUserPrivilege extends ActiveRecord
             $privilege->privilegeView    = 1;
             $privilege->save();
         }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAskingForPermission()
-    {
-        // @TODO Find another implementation for this
-        return ($this->privilegeCreate === 0 && $this->privilegeView === 0 &&
-            !$this->containsPrivilege(User::PRIVILEGE_ANY));
     }
 }

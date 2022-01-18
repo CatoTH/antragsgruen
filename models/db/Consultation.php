@@ -274,6 +274,9 @@ class Consultation extends ActiveRecord
         return $this->hasMany(ConsultationUserGroup::class, ['consultationId' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getScreeningUsers()
     {
         return $this->hasMany(UserConsultationScreening::class, ['consultationId' => 'id']);

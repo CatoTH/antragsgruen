@@ -326,20 +326,20 @@ class SiteCreateForm extends Model
 
         $type->sidebarCreateButton = 1;
         if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
-            $type->policyMotions = IPolicy::POLICY_ADMINS;
+            $type->policyMotions = (string)IPolicy::POLICY_ADMINS;
         } elseif ($this->motionsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
-            $type->policyMotions = IPolicy::POLICY_LOGGED_IN;
+            $type->policyMotions = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
-            $type->policyMotions = IPolicy::POLICY_ALL;
+            $type->policyMotions = (string)IPolicy::POLICY_ALL;
         }
         if (!$this->hasAmendments) {
-            $type->policyAmendments = IPolicy::POLICY_NOBODY;
+            $type->policyAmendments = (string)IPolicy::POLICY_NOBODY;
         } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
-            $type->policyAmendments = IPolicy::POLICY_ADMINS;
+            $type->policyAmendments = (string)IPolicy::POLICY_ADMINS;
         } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
-            $type->policyAmendments = IPolicy::POLICY_LOGGED_IN;
+            $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
-            $type->policyAmendments = IPolicy::POLICY_ALL;
+            $type->policyAmendments = (string)IPolicy::POLICY_ALL;
         }
         if ($this->amendMerging) {
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
@@ -350,13 +350,13 @@ class SiteCreateForm extends Model
             if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
                 $type->policyComments = $type->policyAmendments;
             } else {
-                $type->policyComments = IPolicy::POLICY_ALL;
+                $type->policyComments = (string)IPolicy::POLICY_ALL;
             }
         } else {
-            $type->policyComments = IPolicy::POLICY_NOBODY;
+            $type->policyComments = (string)IPolicy::POLICY_NOBODY;
         }
-        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
+        $type->policySupportMotions        = (string)IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments     = (string)IPolicy::POLICY_NOBODY;
 
         $initiatorSettings              = new InitiatorForm(null);
         $initiatorSettings->type        = SupportBase::ONLY_INITIATOR;
@@ -390,20 +390,20 @@ class SiteCreateForm extends Model
 
         $type->sidebarCreateButton = 1;
         if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
-            $type->policyMotions = IPolicy::POLICY_ADMINS;
+            $type->policyMotions = (string)IPolicy::POLICY_ADMINS;
         } elseif ($this->motionsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
-            $type->policyMotions = IPolicy::POLICY_LOGGED_IN;
+            $type->policyMotions = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
-            $type->policyMotions = IPolicy::POLICY_ALL;
+            $type->policyMotions = (string)IPolicy::POLICY_ALL;
         }
         if (!$this->hasAmendments) {
-            $type->policyAmendments = IPolicy::POLICY_NOBODY;
+            $type->policyAmendments = (string)IPolicy::POLICY_NOBODY;
         } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
-            $type->policyAmendments = IPolicy::POLICY_ADMINS;
+            $type->policyAmendments = (string)IPolicy::POLICY_ADMINS;
         } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
-            $type->policyAmendments = IPolicy::POLICY_LOGGED_IN;
+            $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
-            $type->policyAmendments = IPolicy::POLICY_ALL;
+            $type->policyAmendments = (string)IPolicy::POLICY_ALL;
         }
         if ($this->amendMerging) {
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
@@ -414,13 +414,13 @@ class SiteCreateForm extends Model
             if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
                 $type->policyComments = $type->policyAmendments;
             } else {
-                $type->policyComments = IPolicy::POLICY_ALL;
+                $type->policyComments = (string)IPolicy::POLICY_ALL;
             }
         } else {
-            $type->policyComments = IPolicy::POLICY_NOBODY;
+            $type->policyComments = (string)IPolicy::POLICY_NOBODY;
         }
-        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
+        $type->policySupportMotions        = (string)IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments     = (string)IPolicy::POLICY_NOBODY;
         $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
 
         $initiatorSettings               = new InitiatorForm(null);
@@ -454,17 +454,17 @@ class SiteCreateForm extends Model
         $type = \app\models\motionTypeTemplates\Statutes::doCreateStatutesType($consultation);
 
         $type->sidebarCreateButton = 0;
-        $type->policyMotions = IPolicy::POLICY_ADMINS;
+        $type->policyMotions = (string)IPolicy::POLICY_ADMINS;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         $type->motionPrefix = 'S';
         if (!$this->hasAmendments) {
-            $type->policyAmendments = IPolicy::POLICY_NOBODY;
+            $type->policyAmendments = (string)IPolicy::POLICY_NOBODY;
         } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
-            $type->policyAmendments = IPolicy::POLICY_ADMINS;
+            $type->policyAmendments = (string)IPolicy::POLICY_ADMINS;
         } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
-            $type->policyAmendments = IPolicy::POLICY_LOGGED_IN;
+            $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
-            $type->policyAmendments = IPolicy::POLICY_ALL;
+            $type->policyAmendments = (string)IPolicy::POLICY_ALL;
         }
         if ($this->amendMerging) {
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
@@ -473,13 +473,13 @@ class SiteCreateForm extends Model
             if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
                 $type->policyComments = $type->policyAmendments;
             } else {
-                $type->policyComments = IPolicy::POLICY_ALL;
+                $type->policyComments = (string)IPolicy::POLICY_ALL;
             }
         } else {
-            $type->policyComments = IPolicy::POLICY_NOBODY;
+            $type->policyComments = (string)IPolicy::POLICY_NOBODY;
         }
-        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
+        $type->policySupportMotions        = (string)IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments     = (string)IPolicy::POLICY_NOBODY;
         $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
 
         $initiatorSettings               = new InitiatorForm(null);
