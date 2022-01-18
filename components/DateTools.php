@@ -2,13 +2,13 @@
 
 namespace app\components;
 
-use app\models\db\{Consultation, User};
+use app\models\db\{Consultation, ConsultationUserGroup, User};
 
 class DateTools
 {
     public static function isDeadlineDebugModeActive(?Consultation $consultation = null): bool
     {
-        if (!$consultation || !User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!$consultation || !User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return false;
         }
         return (\Yii::$app->session->get('deadline_debug_mode', null) === '1');
@@ -16,7 +16,7 @@ class DateTools
 
     public static function setDeadlineDebugMode(?Consultation $consultation, bool $active): void
     {
-        if ($consultation && User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if ($consultation && User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             if ($active) {
                 \Yii::$app->session->set('deadline_debug_mode', '1');
             } else {
@@ -28,7 +28,7 @@ class DateTools
 
     public static function setDeadlineTime(?Consultation $consultation, ?string $time): void
     {
-        if ($consultation && User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if ($consultation && User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             if ($time) {
                 \Yii::$app->session->set('deadline_simulate_time', $time);
             } else {
@@ -65,7 +65,7 @@ class DateTools
 
     public static function getSimulatedTime(?Consultation $consultation): ?string
     {
-        if (!$consultation || !User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!$consultation || !User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return null;
         }
         $time = \Yii::$app->session->get('deadline_simulate_time');
@@ -75,7 +75,7 @@ class DateTools
     public static function getCurrentTimestamp(): int
     {
         $consultation = UrlHelper::getCurrentConsultation();
-        if (!$consultation || !User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!$consultation || !User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return time();
         }
         if (\Yii::$app->session->get('deadline_debug_mode', null) !== '1') {

@@ -344,6 +344,53 @@ label.legend {
   .pillbox-add-item {
     min-width: 130px;
   }
+
+  .loginMethods {
+    margin-top: 20px;
+
+    div.checkbox {
+      margin-left: 15px;
+    }
+  }
+
+  .conpw {
+    .setPasswordHolder {
+      padding: 10px 20px;
+      display: none;
+    }
+
+    .setNewPassword {
+      display: none;
+    }
+
+    &.checked.hasPassword {
+      .setNewPassword {
+        display: inline;
+      }
+    }
+
+    &.checked.hasPassword.changePwd {
+      .setNewPassword {
+        display: none;
+      }
+    }
+
+    &.checked.noPassword, &.checked.hasPassword.changePwd {
+      .setPasswordHolder {
+        display: block;
+      }
+    }
+
+    @media (min-width: $screenMinWith) {
+      .setPasswordHolder input[type=password] {
+        width: 40%;
+      }
+    }
+
+    label.otherConsultations:first-of-type {
+      padding-left: 0;
+    }
+  }
 }
 
 .imageChooser {
@@ -1154,55 +1201,6 @@ label.legend {
   }
 }
 
-#siteSettingsForm {
-  .loginMethods {
-    margin-top: 20px;
-
-    div.checkbox {
-      margin-left: 15px;
-    }
-  }
-
-  .conpw {
-    .setPasswordHolder {
-      padding: 10px 20px;
-      display: none;
-    }
-
-    .setNewPassword {
-      display: none;
-    }
-
-    &.checked.hasPassword {
-      .setNewPassword {
-        display: inline;
-      }
-    }
-
-    &.checked.hasPassword.changePwd {
-      .setNewPassword {
-        display: none;
-      }
-    }
-
-    &.checked.noPassword, &.checked.hasPassword.changePwd {
-      .setPasswordHolder {
-        display: block;
-      }
-    }
-
-    @media (min-width: $screenMinWith) {
-      .setPasswordHolder input[type=password] {
-        width: 40%;
-      }
-    }
-
-    label.otherConsultations:first-of-type {
-      padding-left: 0;
-    }
-  }
-}
-
 .accountEditExplanation {
   font-size: 12px;
 
@@ -1517,5 +1515,140 @@ label.legend {
 
   .logoPreview img {
     max-width: 150px;
+  }
+}
+
+
+.userAdminList {
+  ul.userList, ul.groupList {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    > li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      padding-top: 5px;
+      padding-bottom: 5px;
+      border-bottom: solid 1px lightgray;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .userInfo {
+    flex-basis: 50%;
+
+    .name {
+      font-weight: bold;
+    }
+  }
+
+  .groupsDisplay {
+    flex-basis: 60%;
+    text-align: right;
+  }
+
+  .groupsChange {
+    flex-basis: 55%;
+  }
+
+  .groupsChangeOps {
+    flex-basis: 50px;
+    text-align: right;
+    padding: 2px;
+  }
+
+
+  .groupInfo {
+    flex-grow: 1;
+    .name {
+      font-weight: bold;
+    }
+  }
+  .groupActions {
+    text-align: right;
+  }
+
+  .btn.btn-link {
+    padding: 0;
+  }
+
+  .btnLinkAbort, .btnRemove, .btnCancel {
+    color: $colorDelLink;
+    opacity: 0.5;
+  }
+
+  .btnEdit {
+    margin-left: 7px;
+    margin-right: 7px;
+  }
+
+  .btnRemove {
+    color: $colorDelLink;
+    opacity: 0.5;
+    margin-right: -15px;
+
+    html.no-touchevents & {
+      opacity: 0;
+
+      &:active, &:focus {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  html.no-touchevents & li:hover {
+    .btnRemove {
+      opacity: 0.5;
+    }
+  }
+
+  .btnGroupCreate {
+    font-weight: normal;
+  }
+
+  .addGroupForm {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: solid 1px lightgray;
+
+    > * {
+      flex-grow: 1;
+    }
+    .actions {
+      text-align: right;
+      padding-top: 18px;
+    }
+  }
+}
+
+.policyWidget {
+  .selectize-control {
+    margin-top: 5px;
+  }
+
+  .selectize-input {
+    border-radius: 0.25rem;
+    padding-top: 5px;
+    padding-bottom: 4px;
+  }
+}
+
+.v-policy-select {
+  .v-select {
+    margin-top: 7px;
+    .vs__dropdown-toggle {
+      border-radius: 3px;
+    }
   }
 }

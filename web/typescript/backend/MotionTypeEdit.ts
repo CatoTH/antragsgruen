@@ -21,6 +21,8 @@ const TYPE_PDF_ATTACHMENT = 5;
 const TYPE_PDF_ALTERNATIVE = 6;
 const TYPE_VIDEO_EMBED = 7;
 
+const POLICY_USER_GROUPS = 6;
+
 class MotionTypeEdit {
     private motionsHaveSupporters: boolean;
     private amendmentsHaveSupporters: boolean;
@@ -39,12 +41,30 @@ class MotionTypeEdit {
         this.initInitiatorForm($("#motionSupportersForm"));
         this.initInitiatorForm($("#amendmentSupportersForm"));
 
+        $('.policyWidget').each((ix, el) => {
+            this.initPolicyWidget($(el));
+        });
+
         const $sameSettings = $("#sameInitiatorSettingsForAmendments input");
         $sameSettings.on("change", () => {
             if ($sameSettings.prop("checked")) {
                 $('section.amendmentSupporters').addClass("hidden");
             } else {
                 $('section.amendmentSupporters').removeClass("hidden");
+            }
+        }).trigger("change");
+    }
+
+    private initPolicyWidget($widget: JQuery) {
+        const $select: any = $widget.find('.userGroupSelect');
+        $select.find("select").selectize({});
+
+        const $policySelect = $widget.find(".policySelect");
+        $policySelect.on("change", () => {
+            if (parseInt($policySelect.val() as string, 10) === POLICY_USER_GROUPS) {
+                $select.removeClass("hidden");
+            } else {
+                $select.addClass("hidden");
             }
         }).trigger("change");
     }

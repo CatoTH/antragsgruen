@@ -29,9 +29,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
 
     const EVENT_PUBLISHED = 'published';
 
-    /**
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -41,7 +39,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     /**
      * @return string[]
      */
-    public static function getStatuses()
+    public static function getStatuses(): array
     {
         return [
             static::STATUS_SCREENING => \Yii::t('comment', 'status_screening'),
@@ -64,31 +62,18 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         return $query;
     }
 
-    /**
-     * @return Consultation
-     */
-    abstract public function getConsultation();
+    abstract public function getConsultation(): ?Consultation;
 
-    /**
-     * @return string
-     */
-    abstract public function getMotionTitle();
+    abstract public function getMotionTitle(): string;
 
     /**
      * @return IMotion
      */
     abstract public function getIMotion();
 
-    /**
-     * @return string
-     */
-    abstract public function getLink();
+    abstract public function getLink(): string;
 
-    /**
-     * @param int $maxLength
-     * @return string
-     */
-    public function getTextAbstract($maxLength)
+    public function getTextAbstract(int $maxLength): string
     {
         $urlsearch = $urlreplace = [];
         $wwwsearch = $wwwreplace = [];
@@ -125,26 +110,19 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         return $text;
     }
 
-    /**
-     * @param User|null $user
-     * @return bool
-     */
-    public function canDelete($user)
+    public function canDelete(?User $user): bool
     {
         if ($user === null) {
             return false;
         }
         if ($this->status !== static::STATUS_PRIVATE &&
-            $user->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
+            $user->hasPrivilege($this->getConsultation(), ConsultationUserGroup::PRIVILEGE_SCREENING)) {
             return true;
         }
         return ($this->userId && $this->userId === $user->id);
     }
 
-    /**
-     * @return bool
-     */
-    public function isVisibleCurrUser()
+    public function isVisibleCurrUser(): bool
     {
         $user = User::getCurrentUser();
         switch ($this->status) {
@@ -155,7 +133,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
             case static::STATUS_PRIVATE:
                 return ($user && $user->id === $this->userId);
             case static::STATUS_SCREENING:
-                if ($user && $user->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
+                if ($user && $user->hasPrivilege($this->getConsultation(), ConsultationUserGroup::PRIVILEGE_SCREENING)) {
                     return true;
                 } else {
                     return ($user && $user->id === $this->userId);
@@ -184,7 +162,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     /**
      * @return int[]
      */
-    public function getUserIdsBeingRepliedToByThis()
+    public function getUserIdsBeingRepliedToByThis(): array
     {
         if ($this->parentCommentId === null) {
             return [];
@@ -208,7 +186,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     /**
      * @return int[]
      */
-    public function getUserIdsActiveOnThisIMotion()
+    public function getUserIdsActiveOnThisIMotion(): array
     {
         $userIds = [];
 
@@ -229,21 +207,15 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         return $userIds;
     }
 
-    /**
-     */
-    public function notifyUsers()
+    public function notifyUsers(): void
     {
         UserNotification::notifyNewComment($this);
     }
 
-    /**
-     * @return array
-     */
-    abstract public function getUserdataExportObject();
+    abstract public function getUserdataExportObject(): array;
 
     /**
      * @param Consultation[] $consultations
-     * @param int $limit
      * @return IComment[]
      */
     public static function getNewestForConsultations(array $consultations, int $limit): array

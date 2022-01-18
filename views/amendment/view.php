@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{Amendment, User};
+use app\models\db\{Amendment, ConsultationUserGroup, User};
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
@@ -21,7 +21,7 @@ $consultation = $amendment->getMyConsultation();
 $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+$hasPpAdminbox = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;

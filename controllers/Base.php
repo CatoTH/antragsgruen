@@ -6,7 +6,7 @@ use app\models\exceptions\NotFound;
 use app\components\{ConsultationAccessPassword, HTMLTools, UrlHelper};
 use app\models\exceptions\Internal;
 use app\models\settings\{AntragsgruenApp, Layout};
-use app\models\db\{Amendment, Consultation, Motion, Site, User};
+use app\models\db\{Amendment, Consultation, ConsultationUserGroup, Motion, Site, User};
 use Yii;
 use yii\base\Module;
 use yii\helpers\Html;
@@ -202,7 +202,7 @@ class Base extends Controller
     public function renderContentPage(string $pageKey): string
     {
         if ($this->consultation) {
-            $admin = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
+            $admin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
         } else {
             $user  = User::getCurrentUser();
             $admin = ($user && in_array($user->id, $this->getParams()->adminUserIds));
@@ -246,7 +246,7 @@ class Base extends Controller
             Yii::$app->end();
         }
         if ($this->consultation && $this->consultation->getSettings()->maintenanceMode && !$alwaysEnabled) {
-            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+            if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
                 $this->returnRestResponseFromException(new \Exception('Consultation in maintenance mode', 404));
                 Yii::$app->end();
             }
@@ -297,23 +297,6 @@ class Base extends Controller
         return $app;
     }
 
-    /**
-     * @param int|int[] $privilege
-     * @return bool
-     * @throws Internal
-     */
-    public function currentUserHasPrivilege($privilege)
-    {
-        if (!$this->consultation) {
-            throw new Internal('No consultation set');
-        }
-        $user = User::getCurrentUser();
-        if (!$user) {
-            return false;
-        }
-        return $user->hasPrivilege($this->consultation, $privilege);
-    }
-
 
     /**
      * @throws \yii\base\ExitException
@@ -324,7 +307,7 @@ class Base extends Controller
             return false;
         }
         $settings = $this->consultation->getSettings();
-        $admin    = User::havePrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
+        $admin    = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS);
         if ($settings->maintenanceMode && !$admin) {
             $this->redirect(UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'maintenance']));
             return true;
@@ -348,12 +331,9 @@ class Base extends Controller
             return true;
         }
         if ($this->consultation->getSettings()->managedUserAccounts) {
-            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_ANY)) {
-                $privilege = User::getCurrentUser()->getConsultationPrivilege($this->consultation);
-                if (!$privilege || !$privilege->privilegeView) {
-                    $this->redirect(UrlHelper::createUrl('user/consultationaccesserror'));
-                    return true;
-                }
+            if (count(User::getCurrentUser()->getUserGroupsForConsultation($this->consultation)) === 0) {
+                $this->redirect(UrlHelper::createUrl('user/consultationaccesserror'));
+                return true;
             }
         }
         return false;
@@ -588,7 +568,7 @@ class Base extends Controller
                 'slug'           => $motionSlug
             ]);
         }
-        /** @var Motion $motion */
+        /** @var Motion|null $motion */
         if (!$motion) {
             if ($throwExceptions) {
                 throw new NotFound('Motion not found', 404);

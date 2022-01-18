@@ -185,11 +185,10 @@ Si cela ne doit être <em>visible</em> que pour les utilisateurs ci-dessous, val
     */
     'siteacc_policy_login'   => 'Restreindre aux utilisateurs',
     'siteacc_forcelogin'     => 'Seul-e-s les utilisateurs-trices peuvent accéder (y compris <em>la lecture</em>)',
-    'siteacc_managedusers'   => 'Autoriser seulement certain-e-s utilisateurs-trices à se connecter <small class="showManagedUsers">(voir ci-dessous)</small>',
+    'siteacc_managedusers'   => 'Autoriser seulement certain-e-s utilisateurs-trices à se connecter',
     'siteacc_logins'         => 'Les variantes de connexion suivantes sont possibles',
     'siteacc_useraccounts'   => 'Comptes Antragsgrün standards <small>(toute personne avec une adresse email valide)</small>',
     'siteacc_ww'             => 'Grünes-Netz <small>(toute personne ayant accès au système allemand Grünes Netz)</small>',
-    'siteacc_otherlogins'    => 'OpenID',
     'siteacc_admins_title'   => 'Administrateurs de ce site',
     'siteacc_admins_add'     => 'Ajouter',
     'siteacc_add_ww'         => 'Nom Grünes Netz',
@@ -232,9 +231,6 @@ Au revoir,
     'siteacc_mail_yourdata'       => 'Tu peux te connecter en utilisant les données suivantes :\nusername: %EMAIL%\n" .
         "Password: %PASSWORD%"',
     'siteacc_mail_youracc'        => 'Tu peux te connecter en utilisant ton nom d\'utilisateur %EMAIL%.',
-    'sitacc_admmail_subj'         => 'Administration Antragsgrün',
-    'sitacc_admmail_body'         => "Salut!\n\n Tu viens de recevoir les droits d\'administration pour le site Antragsgrün suivant : %LINK%\n\n" .
-        "%ACCOUNT%\n\n A bientôt !,\n L\'équipe Antragsgrün.",
     'siteacc_err_linenumber'      => 'Le nombre d\'adresses email et de noms ne correspond pas',
     'siteacc_err_occ'             => 'Une erreur s\'est produite',
     'siteacc_user_had'            => 'Les utilisateurs suivants ont déjà accès',

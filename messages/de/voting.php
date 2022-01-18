@@ -65,6 +65,7 @@ return [
     'settings_answers_present' => 'Anwesend',
     'settings_answers_presenth' => 'Für Abfragen, welche Mitglieder anwesend sind.',
     'settings_majoritytype' => 'Art der Mehrheit',
+    'settings_votepolicy' => 'Wer darf abstimmen',
     'settings_resultspublic' => 'Wer darf die Abstimmungsergebnisse in Zahlen sehen?',
     'settings_resultspublic_admins' => 'Admins',
     'settings_resultspublic_all' => 'Alle',

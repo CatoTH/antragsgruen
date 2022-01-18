@@ -3,7 +3,7 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\models\db\{ConsultationMotionType, User};
+use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
 
 class LoggedIn extends IPolicy
 {
@@ -23,11 +23,13 @@ class LoggedIn extends IPolicy
         if (!$user) {
             return false;
         }
-        if (!$this->motionType->getConsultation()->getSettings()->managedUserAccounts) {
+        if (!$this->consultation->getSettings()->managedUserAccounts) {
             return false;
         }
-        $privilege = $this->motionType->getConsultation()->getUserPrivilege($user);
-        return ($privilege->privilegeCreate == 0);
+
+        // It's forbidden if user accounts are managed and the user is NOT in any consultation-specific user group
+        $userGroups = $user->getUserGroupsForConsultation($this->consultation);
+        return count($userGroups) === 0;
     }
 
     public function getOnCreateDescription(): string
@@ -40,7 +42,7 @@ class LoggedIn extends IPolicy
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_motion_denied');
         }
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('structure', 'policy_logged_motion_denied');
@@ -51,7 +53,7 @@ class LoggedIn extends IPolicy
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_amend_denied');
         }
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('structure', 'policy_logged_amend_denied');
@@ -71,31 +73,32 @@ class LoggedIn extends IPolicy
             return \Yii::t('structure', 'policy_specuser_comm_denied');
         }
         $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
-        if (!$this->motionType->isInDeadline($deadlineType)) {
-            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlinesByType($deadlineType));
+        if (!$this->baseObject->isInDeadline($deadlineType)) {
+            $deadlines = DateTools::formatDeadlineRanges($this->baseObject->getDeadlinesByType($deadlineType));
             return \Yii::t('structure', 'policy_deadline_over_comm') . ' ' . $deadlines;
         }
-        if ($this->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+        $baseObject = $this->baseObject;
+        if (is_a($baseObject, ConsultationMotionType::class) && $baseObject->getCommentPolicy()->checkCurrUser(true, true)) {
             return \Yii::t('amend', 'comments_please_log_in');
         }
         return \Yii::t('structure', 'policy_logged_comm_denied');
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        if (\Yii::$app->user->isGuest && $assumeLoggedIn) {
-            return true;
+        if ($user === null) {
+            // If the user is not logged into, permission is usually not granted. If $assumeLoggedIn is true,
+            // then permission is granted (to lead the user to a login form)
+            return $assumeLoggedIn;
         }
 
-        if ($allowAdmins && User::getCurrentUser()) {
-            if (User::havePrivilege($this->motionType->getConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
-                return true;
-            }
+        if ($allowAdmins && $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+            return true;
         }
 
         if ($this->isWriteForbidden()) {
             return false;
         }
-        return (!\Yii::$app->user->isGuest);
+        return true;
     }
 }

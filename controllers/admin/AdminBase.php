@@ -4,12 +4,12 @@ namespace app\controllers\admin;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
-use app\models\db\User;
+use app\models\db\{ConsultationUserGroup, User};
 
 class AdminBase extends Base
 {
     public static $REQUIRED_PRIVILEGES = [
-        User::PRIVILEGE_ANY,
+        ConsultationUserGroup::PRIVILEGE_ANY,
     ];
 
     /**
@@ -38,7 +38,7 @@ class AdminBase extends Base
             return false;
         }
 
-        if (!User::havePrivilege($this->consultation, static::$REQUIRED_PRIVILEGES)) {
+        if (!User::haveOneOfPrivileges($this->consultation, static::$REQUIRED_PRIVILEGES)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return false;
         }
@@ -47,7 +47,7 @@ class AdminBase extends Base
 
     protected function activateFunctions(): void
     {
-        if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return;
         }
 

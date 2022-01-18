@@ -3,12 +3,14 @@
 namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\policies\{All, Nobody, UserGroups, IPolicy};
 use app\components\{DateTools, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation,
     ConsultationLog,
     ConsultationSettingsMotionSection,
     ConsultationMotionType,
     ConsultationSettingsTag,
+    ConsultationUserGroup,
     Motion,
     MotionSupporter,
     TexTemplate,
@@ -22,7 +24,6 @@ use app\models\motionTypeTemplates\{
     PDFApplication as PDFApplicationTemplate,
     Statutes as StatutesTemplate
 };
-use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionSection, MotionType, Site};
 use app\models\supportTypes\SupportBase;
@@ -31,7 +32,7 @@ use yii\web\Response;
 class MotionController extends AdminBase
 {
     public static $REQUIRED_PRIVILEGES = [
-        User::PRIVILEGE_CONTENT_EDIT,
+        ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT,
     ];
 
     /**
@@ -87,19 +88,24 @@ class MotionController extends AdminBase
         }
     }
 
-    /**
-     * @param int $motionTypeId
-     *
-     * @return string
-     * @throws FormError
-     * @throws \app\models\exceptions\Internal
-     * @throws \Yii\base\ExitException
-     */
-    public function actionType($motionTypeId)
+    private function getPolicyFromUpdateData(ConsultationMotionType $motionType, array $data): IPolicy
+    {
+        $consultation = $motionType->getConsultation();
+        $policy = IPolicy::getInstanceFromDb($data['id'], $consultation, $motionType);
+        if (is_a($policy, UserGroups::class)) {
+            $groups = array_filter($consultation->getAllAvailableUserGroups(), function(ConsultationUserGroup $group) use ($data): bool {
+                return in_array($group->id, $data['groups'] ?? []);
+            });
+            $policy->setAllowedUserGroups($groups);
+        }
+        return $policy;
+    }
+
+    public function actionType(string $motionTypeId): string
     {
         $motionTypeId = intval($motionTypeId);
 
-        if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return '';
         }
@@ -125,6 +131,11 @@ class MotionController extends AdminBase
             $motionType->setAttributes($input);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
             $motionType->sidebarCreateButton         = (isset($input['sidebarCreateButton']) ? 1 : 0);
+            $motionType->setMotionPolicy($this->getPolicyFromUpdateData($motionType, $input['policyMotions']));
+            $motionType->setMotionSupportPolicy($this->getPolicyFromUpdateData($motionType, $input['policySupportMotions']));
+            $motionType->setAmendmentPolicy($this->getPolicyFromUpdateData($motionType, $input['policyAmendments']));
+            $motionType->setAmendmentSupportPolicy($this->getPolicyFromUpdateData($motionType, $input['policySupportAmendments']));
+            $motionType->setCommentPolicy($this->getPolicyFromUpdateData($motionType, $input['policyComments']));
 
             $deadlineForm = DeadlineForm::createFromInput(\Yii::$app->request->post('deadlines'));
             $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());
@@ -209,19 +220,17 @@ class MotionController extends AdminBase
         $supportCollPolicyWarning = false;
         if ($motionType->getMotionSupporterSettings()->type === SupportBase::COLLECTING_SUPPORTERS) {
             if ($this->isPostSet('supportCollPolicyFix')) {
-                if ($motionType->policyMotions === IPolicy::POLICY_ALL) {
-                    $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
+                if (is_a($motionType->getMotionPolicy(), All::class)) {
+                    $motionType->policyMotions = (string)IPolicy::POLICY_LOGGED_IN;
                 }
-                $support = $motionType->policySupportMotions;
-                if ($support === IPolicy::POLICY_ALL || $support === IPolicy::POLICY_NOBODY) {
-                    $motionType->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
+                if (is_a($motionType->getMotionSupportPolicy(), All::class) || is_a($motionType->getMotionSupportPolicy(), Nobody::class)) {
+                    $motionType->policySupportMotions = (string)IPolicy::POLICY_LOGGED_IN;
                 }
-                if ($motionType->policyAmendments === IPolicy::POLICY_ALL) {
-                    $motionType->policyAmendments = IPolicy::POLICY_LOGGED_IN;
+                if (is_a($motionType->getAmendmentPolicy(), All::class)) {
+                    $motionType->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
                 }
-                $support = $motionType->policySupportAmendments;
-                if ($support === IPolicy::POLICY_ALL || $support === IPolicy::POLICY_NOBODY) {
-                    $motionType->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
+                if (is_a($motionType->getAmendmentSupportPolicy(), All::class) || is_a($motionType->getAmendmentSupportPolicy(), Nobody::class)) {
+                    $motionType->policySupportAmendments = (string)IPolicy::POLICY_LOGGED_IN;
                 }
                 $motionType->motionLikesDislikes    |= SupportBase::LIKEDISLIKE_SUPPORT;
                 $motionType->amendmentLikesDislikes |= SupportBase::LIKEDISLIKE_SUPPORT;
@@ -234,12 +243,10 @@ class MotionController extends AdminBase
                 }
             }
 
-            $supportMotion = $motionType->policySupportMotions;
-            $supportAmend  = $motionType->policySupportAmendments;
-            $createMotion  = ($motionType->policyMotions === IPolicy::POLICY_ALL);
-            $createAmend   = ($motionType->policyAmendments === IPolicy::POLICY_ALL);
-            $supportMotion = ($supportMotion === IPolicy::POLICY_ALL || $supportMotion === IPolicy::POLICY_NOBODY);
-            $supportAmend  = ($supportAmend === IPolicy::POLICY_ALL || $supportAmend === IPolicy::POLICY_NOBODY);
+            $createMotion  = (is_a($motionType->getMotionPolicy(), All::class));
+            $createAmend   = (is_a($motionType->getAmendmentPolicy(), All::class));
+            $supportMotion = (is_a($motionType->getMotionSupportPolicy(), All::class) || is_a($motionType->getMotionSupportPolicy(), Nobody::class));
+            $supportAmend  = (is_a($motionType->getAmendmentSupportPolicy(), All::class) || is_a($motionType->getAmendmentSupportPolicy(), Nobody::class));
             $noOffMotion   = (($motionType->motionLikesDislikes & SupportBase::LIKEDISLIKE_SUPPORT) === 0);
             $noOffAmend    = (($motionType->amendmentLikesDislikes & SupportBase::LIKEDISLIKE_SUPPORT) === 0);
             $noEmail       = !$this->consultation->getSettings()->initiatorConfirmEmails;
@@ -267,7 +274,7 @@ class MotionController extends AdminBase
      */
     public function actionTypecreate()
     {
-        if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
 
             return false;
@@ -301,11 +308,11 @@ class MotionController extends AdminBase
                 if (!$motionType) {
                     $motionType                               = new ConsultationMotionType();
                     $motionType->consultationId               = $this->consultation->id;
-                    $motionType->policyMotions                = IPolicy::POLICY_ALL;
-                    $motionType->policyAmendments             = IPolicy::POLICY_ALL;
-                    $motionType->policyComments               = IPolicy::POLICY_NOBODY;
-                    $motionType->policySupportMotions         = IPolicy::POLICY_ALL;
-                    $motionType->policySupportAmendments      = IPolicy::POLICY_ALL;
+                    $motionType->policyMotions                = (string)IPolicy::POLICY_ALL;
+                    $motionType->policyAmendments             = (string)IPolicy::POLICY_ALL;
+                    $motionType->policyComments               = (string)IPolicy::POLICY_NOBODY;
+                    $motionType->policySupportMotions         = (string)IPolicy::POLICY_ALL;
+                    $motionType->policySupportAmendments      = (string)IPolicy::POLICY_ALL;
                     $motionType->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
                     $motionType->motionLikesDislikes          = 0;
                     $motionType->amendmentLikesDislikes       = 0;

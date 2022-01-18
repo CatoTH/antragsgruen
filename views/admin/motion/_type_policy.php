@@ -16,6 +16,27 @@ foreach (IPolicy::getPolicies() as $policy) {
     $policies[$policy::getPolicyID()] = $policy::getPolicyName();
 }
 
+$printUserGroupSelector = function (string $id, string $formName, ConsultationMotionType $motionType, IPolicy $currentPolicy) {
+    ?>
+    <div class="userGroupSelect">
+        <select id="<?= $id ?>" name="type[<?= $formName ?>][groups][]" multiple
+                placeholder="<?= Yii::t('admin', 'motion_type_group_ph') ?>" title="<?= Yii::t('admin', 'motion_type_group_title') ?>">
+            <?php
+            foreach ($motionType->getConsultation()->getAllAvailableUserGroups() as $group) {
+                echo '<option value="' . $group->id . '"';
+                if (is_a($currentPolicy, \app\models\policies\UserGroups::class) && $currentPolicy->allowsUserGroup($group)) {
+                    echo ' selected';
+                }
+                echo '>';
+                echo Html::encode($group->getNormalizedTitle());
+                echo '</option>';
+            }
+            ?>
+        </select>
+    </div>
+    <?php
+}
+
 ?>
 <h2 class="h3"><?= Yii::t('admin', 'motion_type_perm') ?></h2>
 
@@ -25,14 +46,16 @@ foreach (IPolicy::getPolicies() as $policy) {
     <label class="leftColumn" for="typePolicyMotions">
         <?= Yii::t('admin', 'motion_type_perm_motion') ?>:
     </label>
-    <div class="rightColumn">
+    <div class="rightColumn policyWidget policyWidgetMotions">
         <?php
+        $currentPolicy = $motionType->getMotionPolicy();
         echo Html::dropDownList(
-            'type[policyMotions]',
-            $motionType->policyMotions,
+            'type[policyMotions][id]',
+            $currentPolicy::getPolicyID(),
             $policies,
-            ['id' => 'typePolicyMotions', 'class' => 'stdDropdown']
+            ['id' => 'typePolicyMotions', 'class' => 'stdDropdown policySelect']
         );
+        $printUserGroupSelector('typePolicyMotionsGroups', 'policyMotions', $motionType, $currentPolicy);
         ?>
     </div>
 </div>
@@ -44,14 +67,16 @@ foreach (IPolicy::getPolicies() as $policy) {
     <label class="leftColumn" for="typePolicySupportMotions">
         <?= Yii::t('admin', 'motion_type_perm_supp_mot') ?>:
     </label>
-    <div class="rightColumn">
+    <div class="rightColumn policyWidget policyWidgetSupportMotions">
         <?php
+        $currentPolicy = $motionType->getMotionSupportPolicy();
         echo Html::dropDownList(
-            'type[policySupportMotions]',
-            $motionType->policySupportMotions,
+            'type[policySupportMotions][id]',
+            $currentPolicy::getPolicyID(),
             $policies,
-            ['id' => 'typePolicySupportMotions', 'class' => 'stdDropdown']
+            ['id' => 'typePolicySupportMotions', 'class' => 'stdDropdown policySelect']
         );
+        $printUserGroupSelector('typePolicySupportMotionsGroups', 'policySupportMotions', $motionType, $currentPolicy);
         ?>
     </div>
 </div>
@@ -100,14 +125,17 @@ foreach (IPolicy::getPolicies() as $policy) {
     <label class="leftColumn" for="typePolicyAmendments">
         <?= Yii::t('admin', 'motion_type_perm_amend') ?>:
     </label>
-    <div class="rightColumn">
+    <div class="rightColumn policyWidget policyWidgetAmendments">
         <?php
+        $currentPolicy = $motionType->getAmendmentPolicy();
         echo Html::dropDownList(
-            'type[policyAmendments]',
-            $motionType->policyAmendments,
+            'type[policyAmendments][id]',
+            $currentPolicy::getPolicyID(),
             $policies,
-            ['id' => 'typePolicyAmendments', 'class' => 'stdDropdown']
-        ) ?>
+            ['id' => 'typePolicyAmendments', 'class' => 'stdDropdown policySelect']
+        );
+        $printUserGroupSelector('typePolicyAmendmentsGroups', 'policyAmendments', $motionType, $currentPolicy);
+        ?>
     </div>
 </div>
 <div class="adminTwoCols checkboxNoPadding">
@@ -131,14 +159,16 @@ foreach (IPolicy::getPolicies() as $policy) {
     <label class="leftColumn" for="typePolicySupportAmendments">
         <?= Yii::t('admin', 'motion_type_perm_supp_amend') ?>:
     </label>
-    <div class="rightColumn">
+    <div class="rightColumn policyWidget policyWidgetSupportAmendments">
         <?php
+        $currentPolicy = $motionType->getAmendmentSupportPolicy();
         echo Html::dropDownList(
-            'type[policySupportAmendments]',
-            $motionType->policySupportAmendments,
+            'type[policySupportAmendments][id]',
+            $currentPolicy::getPolicyID(),
             $policies,
-            ['id' => 'typePolicySupportAmendments', 'class' => 'stdDropdown']
+            ['id' => 'typePolicySupportAmendments', 'class' => 'stdDropdown policySelect']
         );
+        $printUserGroupSelector('typePolicySupportAmendmentsGroups', 'policySupportAmendments', $motionType, $currentPolicy);
         ?>
     </div>
 </div>
@@ -188,14 +218,17 @@ foreach (IPolicy::getPolicies() as $policy) {
     <label class="leftColumn" for="typePolicyComments">
         <?= Yii::t('admin', 'motion_type_perm_comment') ?>:
     </label>
-    <div class="rightColumn">
+    <div class="rightColumn policyWidget policyWidgetComments">
         <?php
+        $currentPolicy = $motionType->getCommentPolicy();
         echo Html::dropDownList(
-            'type[policyComments]',
-            $motionType->policyComments,
+            'type[policyComments][id]',
+            $currentPolicy::getPolicyID(),
             $policies,
-            ['id' => 'typePolicyComments', 'class' => 'stdDropdown']
-        ); ?>
+            ['id' => 'typePolicyComments', 'class' => 'stdDropdown policySelect']
+        );
+        $printUserGroupSelector('typePolicyCommentsGroups', 'policyComments', $motionType, $currentPolicy);
+        ?>
     </div>
 </div>
 

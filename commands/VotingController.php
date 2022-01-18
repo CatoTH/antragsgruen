@@ -8,22 +8,6 @@ use yii\console\Controller;
 
 class VotingController extends Controller
 {
-    private function isAllowedToVote(User $user): bool {
-        $votingBlock = new VotingBlock();
-        $motion = new Motion();
-
-        // In case a plugin provides eligibility check, we take its result. The first plugin providing the check wins.
-        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $allowed = $plugin::userIsAllowedToVoteFor($votingBlock, $user, $motion);
-            if ($allowed !== null) {
-                return $allowed;
-            }
-        }
-
-        // If no plugin
-        return true;
-    }
-
     public function actionExportUser()
     {
         /** @var User[] $users */
@@ -32,17 +16,15 @@ class VotingController extends Controller
         ob_start();
         $fp = fopen('php://output', 'w');
 
-        fputcsv($fp, ['Name', 'E-Mail', 'Organization', 'Pillar', 'Voting rights'], ';', '"');
+        fputcsv($fp, ['Name', 'E-Mail', 'Organization', 'Pillar'], ';', '"');
 
         foreach ($users as $user) {
-            $votingRights = $this->isAllowedToVote($user);
             $organisations = $user->getMyOrganizationIds();
             $arr = [
                 $user->name,
                 $user->email,
                 $user->organization,
                 (count($organisations) > 0 ? implode(',', $organisations) : ''),
-                ($votingRights ? 'YES' : ''),
             ];
 
             fputcsv($fp, $arr, ';', '"');

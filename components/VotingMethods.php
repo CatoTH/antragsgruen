@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\db\{Amendment, Consultation, IMotion, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
+use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use app\models\policies\IPolicy;
+use app\models\policies\UserGroups;
 use app\models\settings\VotingData;
 use app\models\votings\AnswerTemplates;
 use yii\web\Request;
@@ -56,6 +58,21 @@ class VotingMethods
         $votingBlock->deleteVoting();
     }
 
+    public function getPolicyFromUpdateData(VotingBlock $votingBlock, int $policyId, ?array $userGroups): IPolicy
+    {
+        $submittedUserGroups = array_map('intval', $userGroups ?? []);
+
+        $consultation = $votingBlock->getMyConsultation();
+        $policy = IPolicy::getInstanceFromDb((string)$policyId, $consultation, $votingBlock);
+        if (is_a($policy, UserGroups::class)) {
+            $groups = array_filter($consultation->getAllAvailableUserGroups(), function(ConsultationUserGroup $group) use ($submittedUserGroups): bool {
+                return in_array($group->id, $submittedUserGroups);
+            });
+            $policy->setAllowedUserGroups($groups);
+        }
+        return $policy;
+    }
+
     public function voteSaveSettings(VotingBlock $votingBlock): void
     {
         if ($this->request->post('title')) {
@@ -76,6 +93,14 @@ class VotingMethods
                 $votingBlock->setAnswerTemplate(intval($this->request->post('answerTemplate')));
             } else {
                 $votingBlock->setAnswerTemplate(AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION);
+            }
+            if ($this->request->post('votePolicy') !== null) {
+                $policyData = $this->request->post('votePolicy', []);
+                $votingBlock->setVotingPolicy($this->getPolicyFromUpdateData(
+                    $votingBlock,
+                    intval($policyData['id']),
+                    $policyData['user_groups'] ?? []
+                ));
             }
             if ($this->request->post('votesPublic') !== null) {
                 $votingBlock->votesPublic = intval($this->request->post('votesPublic'));

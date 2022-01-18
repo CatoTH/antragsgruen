@@ -232,7 +232,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     public function isReadable(): bool
     {
-        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT);
+        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
         if ($iAmAdmin && in_array($this->status, [static::STATUS_DRAFT, static::STATUS_DRAFT_ADMIN])) {
             return true;
         }
@@ -361,7 +361,8 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
      */
     public function getSortedSections(bool $withoutTitle = false, bool $includeNonPublicIfPossible = false): array
     {
-        if ($includeNonPublicIfPossible && ($this->iAmInitiator() || User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT))) {
+        if ($includeNonPublicIfPossible &&
+            ($this->iAmInitiator() ||User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT))) {
             $includeNonPublic = true;
         } else {
             $includeNonPublic = false;

@@ -2,7 +2,12 @@
 
 /** @var \Codeception\Scenario $scenario */
 
-use app\tests\_pages\{AdminAdminConsultationsPage, AdminConsultationPage, AdminMotionListPage, AdminMotionTypePage, AdminSiteAccessPage, AdminTranslationPage};
+use app\tests\_pages\{AdminAdminConsultationsPage,
+    AdminConsultationPage,
+    AdminMotionListPage,
+    AdminMotionTypePage,
+    AdminTranslationPage,
+    AdminUsersPage};
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -17,7 +22,7 @@ $I->seeElement('#consultationLink');
 $I->seeElement('#translationLink');
 $I->seeElement('#contentPages');
 $I->seeElement('.motionType1');
-$I->dontSeeElement('.siteAccessLink');
+$I->seeElement('.siteUsers');
 $I->dontSeeElement('.siteConsultationsLink');
 $I->dontSeeElement('.siteUserList');
 $I->dontSeeElement('.siteConfigLink');
@@ -31,9 +36,8 @@ $I->openPage(AdminTranslationPage::class, ['subdomain' => 'stdparteitag', 'consu
 $I->seeElement('#wordingBaseForm');
 $I->openPage(AdminMotionTypePage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag', 'motionTypeId' => 1]);
 $I->seeElement('.adminTypeForm');
-$I->openPage(AdminSiteAccessPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
-$I->see('Kein Zugriff auf diese Seite');
-$I->dontSeeElement('#siteSettingsForm');
+$I->openPage(AdminUsersPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->seeElement('.userAdminList');
 $I->openPage(AdminAdminConsultationsPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->see('Kein Zugriff auf diese Seite');
 $I->dontSeeElement('.consultationEditForm');
@@ -45,11 +49,15 @@ $I->gotoConsultationHome();
 $I->logout();
 
 
-$adminPage = $I->loginAndGotoStdAdminPage();
-$accessPage = $adminPage->gotoSiteAccessPage();
-$I->seeCheckboxIsChecked('.admin7 .typeCon input');
-$I->checkOption('.admin7 .typeSite input');
-$I->submitForm('#adminForm', [], 'saveAdmin');
+$I->wantTo('Assign the site admin role to consultationadmin');
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
+$I->dontSeeElement('.vs__dropdown-toggle');
+$I->clickJS('.user7 .btnEdit');
+$I->seeElement('.vs__dropdown-toggle');
+$I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([1], { id: 7 });');
+$I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
+$I->wait(0.5);
+$I->see('Seiten-Admin', '.user7');
 
 $I->logout();
 
@@ -64,12 +72,12 @@ $I->seeElement('#consultationLink');
 $I->seeElement('#translationLink');
 $I->seeElement('#contentPages');
 $I->seeElement('.motionType1');
-$I->seeElement('.siteAccessLink');
+$I->seeElement('.siteUsers');
 $I->seeElement('.siteConsultationsLink');
 
-$I->openPage(AdminSiteAccessPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->openPage(AdminUsersPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->dontSee('Kein Zugriff auf diese Seite');
-$I->seeElement('#siteSettingsForm');
+$I->seeElement('.userAdminList');
 $I->openPage(AdminAdminConsultationsPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->dontSee('Kein Zugriff auf diese Seite');
 $I->seeElement('.consultationEditForm');
@@ -80,15 +88,14 @@ $I->wantTo('be made to an proposed procedure admin');
 $I->gotoConsultationHome();
 $I->logout();
 
-$adminPage = $I->loginAndGotoStdAdminPage();
-$accessPage = $adminPage->gotoSiteAccessPage();
-$I->see('consultationadmin@example.org');
-$I->wait(1);
-$I->uncheckOption('.admin7 .typeSite input');
-$I->uncheckOption('.admin7 .typeCon input');
-$I->checkOption('.admin7 .typeProposal input');
-
-$I->submitForm('#adminForm', [], 'saveAdmin');
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
+$I->dontSeeElement('.vs__dropdown-toggle');
+$I->clickJS('.user7 .btnEdit');
+$I->seeElement('.vs__dropdown-toggle');
+$I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([3], { id: 7 });');
+$I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
+$I->wait(0.5);
+$I->see('Antragskommission', '.user7');
 
 $I->logout();
 
@@ -108,13 +115,11 @@ $I->gotoConsultationHome();
 $I->logout();
 
 
-$adminPage = $I->loginAndGotoStdAdminPage();
-$accessPage = $adminPage->gotoSiteAccessPage();
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 $I->see('consultationadmin@example.org');
+$I->clickJS('.userAdminList .user7 .btnRemove');
 $I->wait(1);
-$I->executeJS('$(".removeAdmin7").click();');
-$I->wait(1);
-$I->seeBootboxDialog('Admin-Rechte entziehen');
+$I->seeBootboxDialog('Single-Consultation Admin wirklich aus der Liste entfernen?');
 $I->acceptBootboxConfirm();
 $I->wait(1);
 $I->dontSee('consultationadmin@example.org');
@@ -133,14 +138,21 @@ $I->wantTo('be an admin like at the beginning');
 $I->gotoConsultationHome();
 $I->logout();
 
-$adminPage = $I->loginAndGotoStdAdminPage();
-$accessPage = $adminPage->gotoSiteAccessPage();
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
+
+$I->clickJS('.addUsersOpener.email');
+$I->fillField('#emailAddresses', 'consultationadmin@example.org');
+$I->fillField('#names', 'ignored');
+$I->submitForm('#accountsCreateForm', [], 'addUsers');
+
 $I->wait(1);
-$I->dontSee('consultationadmin@example.org');
-$I->selectOption('#adminAddForm select', 'email');
-$I->fillField('#addUsername', 'consultationadmin@example.org');
-$I->submitForm('#adminAddForm', [], 'addAdmin');
-$I->see('consultationadmin@example.org', '.admin7');
+$I->clickJS('.user7 .btnEdit');
+$I->seeElement('.vs__dropdown-toggle');
+$I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([2], { id: 7 });');
+$I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
+$I->wait(0.5);
+$I->see('Veranstaltungs-Admin', '.user7');
+
 
 $I->logout();
 $I->gotoConsultationHome();

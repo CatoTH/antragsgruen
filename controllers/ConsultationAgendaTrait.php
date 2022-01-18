@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\models\exceptions\NotFound;
 use app\views\consultation\LayoutHelper;
-use app\models\db\{Consultation, ConsultationAgendaItem, User};
+use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationUserGroup, User};
 use app\models\exceptions\FormError;
 use yii\web\Response;
 
@@ -49,7 +49,7 @@ trait ConsultationAgendaTrait
 
     public function actionSaveAgendaItemAjax(string $itemId)
     {
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             return $this->showErrorpage(403, 'No access');
         }
 
@@ -133,7 +133,7 @@ trait ConsultationAgendaTrait
 
     public function actionDelAgendaItemAjax(string $itemId)
     {
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             return $this->showErrorpage(403, 'No access');
         }
 
@@ -156,7 +156,7 @@ trait ConsultationAgendaTrait
 
     public function actionSaveAgendaOrderAjax()
     {
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             return $this->showErrorpage(403, 'No access');
         }
 

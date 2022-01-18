@@ -3,7 +3,17 @@
 namespace app\controllers;
 
 use app\components\{DateTools, RSSExporter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentComment, IComment, IRSSItem, Motion, Consultation, MotionComment, SpeechQueue, User, UserNotification};
+use app\models\db\{Amendment,
+    AmendmentComment,
+    ConsultationUserGroup,
+    IComment,
+    IRSSItem,
+    Motion,
+    Consultation,
+    MotionComment,
+    SpeechQueue,
+    User,
+    UserNotification};
 use app\models\exceptions\Internal;
 use app\models\forms\ConsultationActivityFilterForm;
 use app\models\proposedProcedure\Factory;
@@ -16,13 +26,9 @@ class ConsultationController extends Base
     /**
      * @param \yii\base\Action $action
      *
-     * @return bool
      * @throws \Exception
-     * @throws Internal
-     * @throws \yii\base\ExitException
-     * @throws \yii\web\BadRequestHttpException
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         $return = parent::beforeAction($action);
         if (!$this->consultation) {
@@ -37,7 +43,6 @@ class ConsultationController extends Base
     /**
      * @return string
      * @throws Internal
-     * @throws \yii\base\ExitException
      */
     public function actionSearch()
     {
@@ -76,14 +81,13 @@ class ConsultationController extends Base
         $form->setPage(intval($page));
 
         return $this->render('feeds', [
-            'admin' => User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
+            'admin' => User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT),
         ]);
     }
 
 
     /**
      * @return string
-     * @throws Internal
      */
     public function actionFeedmotions()
     {
@@ -114,7 +118,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws Internal
      */
     public function actionFeedamendments()
     {
@@ -276,7 +279,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionHome()
     {
@@ -289,7 +291,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionIndex()
     {
@@ -353,7 +354,7 @@ class ConsultationController extends Base
         }
 
         $showInvisible = false;
-        if ($showAll && User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if ($showAll && User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             $form->setShowUserInvisibleEvents(true);
             $showInvisible = true;
         }
@@ -481,10 +482,10 @@ class ConsultationController extends Base
         $this->layout = 'column2';
 
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::homeUrl());
         }
 
         $unassignedQueue = null;
@@ -506,10 +507,10 @@ class ConsultationController extends Base
         $this->layout = 'column2';
 
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, User::PRIVILEGE_VOTINGS)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::homeUrl());
         }
 
         return $this->render('@app/views/voting/admin-votings');

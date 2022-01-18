@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
-use app\models\db\{Motion, MotionComment, MotionSupporter, User};
+use app\models\db\{ConsultationUserGroup, Motion, MotionComment, MotionSupporter, User};
 use app\models\forms\CommentForm;
 use app\models\policies\{IPolicy, Nobody};
 use app\views\motion\LayoutHelper;
@@ -21,7 +21,7 @@ use yii\helpers\Html;
 
 $consultation = $motion->getMyConsultation();
 $hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = ($hasPp && !$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS));
+$hasPpAdminbox = ($hasPp && !$motion->isResolution() && User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS));
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -278,7 +278,7 @@ if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution() && !$
     echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
     echo '<h2 class="green" id="commentsTitle">' . Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
-    $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
+    $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_SCREENING);
 
     $screening = Yii::$app->session->getFlash('screening', null, true);
     if ($screening) {

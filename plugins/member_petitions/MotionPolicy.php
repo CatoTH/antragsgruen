@@ -2,7 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
-use app\models\db\{ConsultationMotionType, User};
+use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
 use app\models\policies\IPolicy;
 
 class MotionPolicy extends IPolicy
@@ -24,7 +24,7 @@ class MotionPolicy extends IPolicy
 
     public function getPermissionDeniedMotionMsg(): string
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('member_petitions', 'policy_motion_denied');
@@ -32,7 +32,7 @@ class MotionPolicy extends IPolicy
 
     public function getPermissionDeniedAmendmentMsg(): string
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('member_petitions', 'policy_amend_denied');
@@ -48,9 +48,8 @@ class MotionPolicy extends IPolicy
         return \Yii::t('member_petitions', 'policy_comm_denied');
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
-        $user = User::getCurrentUser();
         if (!$user) {
             if ($assumeLoggedIn) {
                 return true;
@@ -60,15 +59,13 @@ class MotionPolicy extends IPolicy
         }
 
         if ($allowAdmins) {
-            foreach ($this->motionType->getConsultation()->site->admins as $admin) {
-                if ($admin->id == User::getCurrentUser()->id) {
-                    return true;
-                }
+            if ($user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+                return true;
             }
         }
 
         /** @var ConsultationSettings $consultationSettings */
-        $consultationSettings = $this->motionType->getConsultation()->getSettings();
+        $consultationSettings = $this->consultation->getSettings();
 
         return in_array($consultationSettings->organizationId, $user->getMyOrganizationIds());
     }

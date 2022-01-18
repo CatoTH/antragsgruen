@@ -7,14 +7,14 @@ use app\models\notifications\MotionProposedProcedure;
 use app\components\{Tools, UrlHelper};
 use app\models\db\{ConsultationLog,
     ConsultationSettingsTag,
+    ConsultationUserGroup,
     IComment,
     Motion,
     MotionAdminComment,
     MotionComment,
     MotionSupporter,
     User,
-    Consultation,
-    VotingBlock};
+    Consultation};
 use app\models\exceptions\{DB, FormError, Internal, MailNotSent};
 use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;
@@ -39,7 +39,7 @@ trait MotionActionsTrait
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
-            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
                 throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
@@ -120,7 +120,7 @@ trait MotionActionsTrait
         if (!$comment || $comment->motionId !== $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -148,7 +148,7 @@ trait MotionActionsTrait
         if (!$comment || $comment->motionId !== $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -300,7 +300,7 @@ trait MotionActionsTrait
      */
     private function motionAddTag(Motion $motion): void
     {
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -315,7 +315,7 @@ trait MotionActionsTrait
      */
     private function motionDelTag(Motion $motion): void
     {
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -461,7 +461,7 @@ trait MotionActionsTrait
             \Yii::$app->response->statusCode = 404;
             return 'Motion not found';
         }
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;
             return 'Not permitted to change the status';
         }

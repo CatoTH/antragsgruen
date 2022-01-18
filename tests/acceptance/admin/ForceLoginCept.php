@@ -8,9 +8,9 @@ $I->gotoConsultationHome(false);
 $I->see('Test2', 'h1');
 
 $I->wantTo('enforce login');
-$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->checkOption('input[name=forceLogin]');
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
+$page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->checkOption('.forceLogin input');
+$page->saveForm();
 $I->logout();
 
 $I->gotoConsultationHome(false);
@@ -25,9 +25,9 @@ $I->wantTo('disable it again');
 $I->logout();
 $I->gotoConsultationHome(false);
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage()->gotoSiteAccessPage();
-$I->uncheckOption('input[name=forceLogin]');
-$I->submitForm('#siteSettingsForm', [], 'saveLogin');
+$page = $I->gotoStdAdminPage()->gotoConsultation();
+$I->uncheckOption('.forceLogin input');
+$page->saveForm();
 $I->logout();
 
 $I->gotoConsultationHome(false);

@@ -1,6 +1,6 @@
 <?php
 
-use app\models\db\{Amendment, AmendmentSupporter, Motion, MotionSupporter, User};
+use app\models\db\{Amendment, AmendmentSupporter, ConsultationUserGroup, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
 /**
@@ -18,7 +18,7 @@ $layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'consultationIndex';
 $this->title              = $consultation->title;
 
-$contentAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT);
+$contentAdmin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
 
 if ($contentAdmin) {
     $layout->loadCKEditor();

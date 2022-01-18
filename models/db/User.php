@@ -23,6 +23,7 @@ use yii\web\IdentityInterface;
  * @property int $emailConfirmed
  * @property string|null $auth
  * @property string $dateCreation
+ * @property string|null $dateLastLogin
  * @property int $status
  * @property string|null $pwdEnc
  * @property string|null $authKey
@@ -37,6 +38,7 @@ use yii\web\IdentityInterface;
  * @property null|MotionComment[] $motionComments
  * @property null|MotionSupporter[] $motionSupports
  * @property Site[] $adminSites
+ * @property ConsultationUserGroup[] $userGroups
  * @property ConsultationUserPrivilege[] $consultationPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
@@ -50,17 +52,6 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_UNCONFIRMED = 1;
     const STATUS_CONFIRMED   = 0;
     const STATUS_DELETED     = -1;
-
-    const PRIVILEGE_ANY                       = 0;
-    const PRIVILEGE_CONSULTATION_SETTINGS     = 1;
-    const PRIVILEGE_CONTENT_EDIT              = 2;
-    const PRIVILEGE_SCREENING                 = 3;
-    const PRIVILEGE_MOTION_EDIT               = 4;
-    const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
-    const PRIVILEGE_SITE_ADMIN                = 6;
-    const PRIVILEGE_CHANGE_PROPOSALS          = 7;
-    const PRIVILEGE_SPEECH_QUEUES             = 8;
-    const PRIVILEGE_VOTINGS                   = 9;
 
     const ORGANIZATION_DEFAULT = '0';
 
@@ -77,10 +68,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 
-    /**
-     * @return null|User
-     */
-    public static function getCurrentUser()
+    public static function getCurrentUser(): ?User
     {
         try {
             if (\Yii::$app->user->getIsGuest()) {
@@ -128,16 +116,27 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
-    /**
-     * @param int|int[] $privilege
-     */
-    public static function havePrivilege(?Consultation $consultation, $privilege): bool
+    public static function havePrivilege(?Consultation $consultation, int $privilege): bool
     {
         $user = static::getCurrentUser();
         if (!$user) {
             return false;
         }
         return $user->hasPrivilege($consultation, $privilege);
+    }
+
+    public static function haveOneOfPrivileges(?Consultation $consultation, array $privileges): bool
+    {
+        $user = static::getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+        foreach ($privileges as $privilege) {
+            if ($user->hasPrivilege($consultation, $privilege)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static function currentUserIsSuperuser(): bool
@@ -225,6 +224,21 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getUserGroups()
+    {
+        return $this->hasMany(ConsultationUserGroup::class, ['id' => 'groupId'])->viaTable('userGroup', ['userId' => 'id']);
+    }
+
+    public function getUserGroupsForConsultation(Consultation $consultation): array
+    {
+        return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
+            return $group->isRelevantForConsultation($consultation);
+        });
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getNotifications()
     {
         return $this->hasMany(UserNotification::class, ['userId' => 'id']);
@@ -236,29 +250,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function getVotes()
     {
         return $this->hasMany(Vote::class, ['userId' => 'id']);
-    }
-
-    /**
-     * @param Consultation $consultation
-     * @return ConsultationUserPrivilege
-     */
-    public function getConsultationPrivilege(Consultation $consultation)
-    {
-        foreach ($this->consultationPrivileges as $priv) {
-            if ($priv->consultationId == $consultation->id) {
-                return $priv;
-            }
-        }
-        $priv                   = new ConsultationUserPrivilege();
-        $priv->consultationId   = $consultation->id;
-        $priv->userId           = $this->id;
-        $priv->privilegeCreate  = 0;
-        $priv->privilegeView    = 0;
-        $priv->adminContentEdit = 0;
-        $priv->adminScreen      = 0;
-        $priv->adminSuper       = 0;
-        $priv->adminProposals   = 0;
-        return $priv;
     }
 
     /**
@@ -590,13 +581,9 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
-     * Checks if this user has the given privilege or at least one of the given privileges (binary OR)
-     * for the given consultation
-     *
-     * @param int|int[] $privilege
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * Checks if this user has the given privilege for the given consultation
      */
-    public function hasPrivilege(?Consultation $consultation, $privilege): bool
+    public function hasPrivilege(?Consultation $consultation, int $privilege): bool
     {
         if (!$consultation) {
             return false;
@@ -606,29 +593,9 @@ class User extends ActiveRecord implements IdentityInterface
             return true;
         }
 
-        foreach ($consultation->site->admins as $admin) {
-            if ($admin->id === $this->id) {
+        foreach ($this->getUserGroupsForConsultation($consultation) as $userGroup) {
+            if ($userGroup->containsPrivilege($privilege)) {
                 return true;
-            }
-        }
-
-        // Only site adminitrators are allowed to administer users.
-        // All other rights are granted to every consultation-level administrator
-        if ($privilege === User::PRIVILEGE_SITE_ADMIN) {
-            return false;
-        }
-
-        $privilege = (is_array($privilege) ? $privilege : [$privilege]);
-
-        foreach ($consultation->userPrivileges as $userPrivilege) {
-            if ($userPrivilege->userId === $this->id) {
-                $foundMatch = false;
-                foreach ($privilege as $priv) {
-                    if ($userPrivilege->containsPrivilege($priv)) {
-                        $foundMatch = true;
-                    }
-                }
-                return $foundMatch;
             }
         }
 
@@ -831,6 +798,24 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->emailChange;
     }
 
+    public function getUserAdminApiObject(?Consultation $consultation): array
+    {
+        $data = $this->getUserdataExportObject();
+        $data['id'] = $this->id;
+
+        $groups = $this->userGroups;
+        if ($consultation) {
+            $groups = array_values(array_filter($groups, function (ConsultationUserGroup $group) use ($consultation): bool {
+                return $group->isRelevantForConsultation($consultation);
+            }));
+        }
+        $data['groups'] = array_map(function (ConsultationUserGroup $group): int {
+            return $group->id;
+        }, $groups);
+
+        return $data;
+    }
+
     public function getUserdataExportObject(): array
     {
         switch ($this->status) {
@@ -860,7 +845,7 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public function deleteAccount()
+    public function deleteAccount(): void
     {
         $this->name            = '';
         $this->nameGiven       = '';
@@ -877,6 +862,10 @@ class User extends ActiveRecord implements IdentityInterface
         $this->recoveryToken   = null;
         $this->recoveryAt      = null;
         $this->save(false);
+
+        foreach ($this->userGroups as $userGroup) {
+            $this->unlink('userGroups', $userGroup, true);
+        }
 
         ConsultationUserPrivilege::deleteAll(['userId' => $this->id]);
 

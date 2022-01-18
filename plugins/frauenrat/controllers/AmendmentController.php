@@ -4,7 +4,7 @@ namespace app\plugins\frauenrat\controllers;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
-use app\models\db\{Motion, User};
+use app\models\db\{ConsultationUserGroup, Motion, User};
 
 class AmendmentController extends Base
 {
@@ -27,7 +27,7 @@ class AmendmentController extends Base
             \Yii::$app->response->statusCode = 500;
             return 'Inconsistent IDs';
         }
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;
             return 'Not permitted to change the status';
         }

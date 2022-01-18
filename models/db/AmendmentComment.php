@@ -25,7 +25,7 @@ use yii\db\ActiveQuery;
  */
 class AmendmentComment extends IComment
 {
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -60,10 +60,7 @@ class AmendmentComment extends IComment
 
     private $imotion = null;
 
-    /**
-     * @return Amendment|null
-     */
-    public function getIMotion()
+    public function getIMotion(): ?Amendment
     {
         if (!$this->imotion) {
             $current = Consultation::getCurrent();
@@ -165,10 +162,7 @@ class AmendmentComment extends IComment
         return $this->dateCreation;
     }
 
-    /**
-     * @return string
-     */
-    public function getLink()
+    public function getLink(): string
     {
         return UrlHelper::createAmendmentCommentUrl($this);
     }

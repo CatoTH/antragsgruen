@@ -5,6 +5,7 @@ namespace app\models\forms;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
+use app\models\db\ConsultationUserGroup;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\User;
@@ -43,7 +44,7 @@ class MotionMover
             if ($consultation->id === $this->consultation->id) {
                 continue;
             }
-            if (!$this->mover->hasPrivilege($consultation, User::PRIVILEGE_ANY)) {
+            if (!$this->mover->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_ANY)) {
                 continue;
             }
             if (count($this->getCompatibleMotionTypes($consultation)) > 0) {

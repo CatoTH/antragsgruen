@@ -33,10 +33,10 @@ class AdminIndexPage extends BasePage
         return new AdminAppearancePage($this->actor);
     }
 
-    public function gotoSiteAccessPage(): AdminSiteAccessPage
+    public function gotoUserAdministration()
     {
-        $this->actor->click('.siteAccessLink');
-        return new AdminSiteAccessPage($this->actor);
+        $this->actor->click('.siteUsers');
+        $this->actor->wait(1);
     }
 
     public function gotoConsultationCreatePage(): void

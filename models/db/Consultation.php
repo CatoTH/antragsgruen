@@ -31,6 +31,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationMotionType[] $motionTypes
  * @property ConsultationAgendaItem[] $agendaItems
+ * @property ConsultationUserGroup[] $userGroups
  * @property ConsultationUserPrivilege[] $userPrivileges
  * @property ConsultationFile[] $files
  * @property ConsultationLog[] $logEntries
@@ -38,6 +39,7 @@ use yii\db\ActiveRecord;
  * @property UserNotification[] $userNotifications
  * @property VotingBlock[] $votingBlocks
  * @property VotingQuestion[] $votingQuestions
+ * @property UserConsultationScreening[] $screeningUsers
  */
 class Consultation extends ActiveRecord
 {
@@ -47,7 +49,6 @@ class Consultation extends ActiveRecord
     private static $current = null;
 
     /**
-     * @param Consultation $consultation
      * @throws Internal
      */
     public static function setCurrent(Consultation $consultation)
@@ -58,26 +59,17 @@ class Consultation extends ActiveRecord
         static::$current = $consultation;
     }
 
-    /**
-     * @return Consultation|null
-     */
-    public static function getCurrent()
+    public static function getCurrent(): ?Consultation
     {
         return static::$current;
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultation';
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['title', 'dateCreation'], 'required'],
@@ -134,8 +126,6 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param ConsultationMotionType $type
-     *
      * @return Motion[]
      */
     public function getMotionsOfType(ConsultationMotionType $type): array
@@ -180,7 +170,7 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    public function flushMotionCache()
+    public function flushMotionCache(): void
     {
         $this->motionCache = [];
     }
@@ -279,32 +269,58 @@ class Consultation extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getUserGroups()
+    {
+        return $this->hasMany(ConsultationUserGroup::class, ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getScreeningUsers()
+    {
+        return $this->hasMany(UserConsultationScreening::class, ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return ConsultationUserGroup[]
+     */
+    public function getAllAvailableUserGroups(): array
+    {
+        $groups = [];
+        foreach ($this->site->userGroups as $userGroup) {
+            if ($userGroup->consultationId === null) {
+                $groups[] = $userGroup;
+            }
+        }
+        foreach ($this->userGroups as $userGroup) {
+            $groups[] = $userGroup;
+        }
+        return $groups;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getFiles()
     {
         return $this->hasMany(ConsultationFile::class, ['consultationId' => 'id']);
     }
 
     /**
-     * @param User $user
-     * @return ConsultationUserPrivilege
+     * @return User[]
      */
-    public function getUserPrivilege(User $user)
+    public function getUsersInAnyGroup(): array
     {
-        foreach ($this->userPrivileges as $priv) {
-            if ($priv->userId == $user->id) {
-                return $priv;
+        $users = [];
+        foreach ($this->getAllAvailableUserGroups() as $userGroup) {
+            foreach ($userGroup->users as $user) {
+                if (!isset($users[$user->id])) {
+                    $users[$user->id] = $user;
+                }
             }
         }
-        $priv                   = new ConsultationUserPrivilege();
-        $priv->consultationId   = $this->id;
-        $priv->userId           = $user->id;
-        $priv->privilegeCreate  = 0;
-        $priv->privilegeView    = 0;
-        $priv->adminContentEdit = 0;
-        $priv->adminScreen      = 0;
-        $priv->adminSuper       = 0;
-        $priv->adminProposals   = 0;
-        return $priv;
+        return array_values($users);
     }
 
     /**
@@ -408,10 +424,9 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $type
      * @return UserNotification[]
      */
-    public function getUserNotificationsType($type)
+    public function getUserNotificationsType(int $type): array
     {
         $notis = [];
         foreach ($this->userNotifications as $userNotification) {
@@ -478,11 +493,9 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param bool $withdrawnAreVisible
-     * @param bool $includeResolutions
      * @return Motion[]
      */
-    public function getVisibleMotions($withdrawnAreVisible = true, $includeResolutions = true)
+    public function getVisibleMotions(bool $withdrawnAreVisible = true, bool $includeResolutions = true): array
     {
         $return            = [];
         $invisibleStatuses = $this->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
@@ -524,12 +537,7 @@ class Consultation extends ActiveRecord
         return array_merge($motions, $noAgendaMotions);
     }
 
-    /**
-     * @param int|int[] $privilege
-     * @return bool
-     *
-     */
-    public function havePrivilege($privilege)
+    public function havePrivilege(int $privilege): bool
     {
         $user = User::getCurrentUser();
         if (!$user) {
@@ -538,6 +546,13 @@ class Consultation extends ActiveRecord
         return $user->hasPrivilege($this, $privilege);
     }
 
+    public function createDefaultUserGroups(): void
+    {
+        $this->link('userGroups', ConsultationUserGroup::createDefaultGroupConsultationAdmin($this));
+        $this->link('userGroups', ConsultationUserGroup::createDefaultGroupProposedProcedure($this));
+        $this->link('userGroups', ConsultationUserGroup::createDefaultGroupParticipant($this));
+        echo "COnsultation groups: " . count($this->userGroups) . "\n";
+    }
 
     /**
      * @return ConsultationSettingsTag[]
@@ -627,7 +642,7 @@ class Consultation extends ActiveRecord
      * @return SearchResult[]
      * @throws Internal
      */
-    public function fulltextSearch($text, $backParams)
+    public function fulltextSearch($text, $backParams): array
     {
         $results = [];
         foreach ($this->motions as $motion) {
@@ -775,7 +790,7 @@ class Consultation extends ActiveRecord
     /**
      * @return string[]
      */
-    public function getAdminEmails()
+    public function getAdminEmails(): array
     {
         $mails        = preg_split('/[,;]/', $this->adminEmail);
         $filtered     = [];

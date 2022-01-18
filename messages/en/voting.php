@@ -65,6 +65,7 @@ return [
     'settings_answers_present' => 'Present',
     'settings_answers_presenth' => 'For „votings” meant to ask which members are present, like roll calls.',
     'settings_majoritytype' => 'Majority type',
+    'settings_votepolicy' => 'Who may vote',
     'settings_resultspublic' => 'Who may see the voting results?',
     'settings_resultspublic_admins' => 'Admins',
     'settings_resultspublic_all' => 'Everyone',

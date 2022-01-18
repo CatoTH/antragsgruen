@@ -2,9 +2,10 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\{Amendment, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
+use app\models\db\{Amendment, ConsultationUserGroup, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\Access;
 use app\models\IMotionList;
+use app\models\policies\IPolicy;
 
 class AgendaVoting
 {
@@ -98,6 +99,12 @@ class AgendaVoting
                 ];
             }
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
+
+            if ($this->voting) {
+                $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
+            } else {
+                $votingBlockJson['vote_policy'] = ['id' => IPolicy::POLICY_NOBODY];
+            }
         }
         if ($this->voting) {
             list($total, $users) = $this->voting->getVoteStatistics();
@@ -190,7 +197,7 @@ class AgendaVoting
 
     public function getAdminApiObject(): array
     {
-        if (!$this->voting->getMyConsultation()->havePrivilege(User::PRIVILEGE_VOTINGS)) {
+        if (!$this->voting->getMyConsultation()->havePrivilege(ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
             throw new Access('No voting admin permissions');
         }
         return $this->getApiObject($this->title, null, AgendaVoting::API_CONTEXT_ADMIN);

@@ -45,10 +45,18 @@ ob_start();
         </label>
     </h2>
     <div class="content votingShow" v-if="!settingsOpened">
-        <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
-             v-if="isPreparing && majorityType.id === voting.majority_type && votingHasMajority">
-            <strong>{{ majorityType.name }}</strong><br>
-            <small>{{ majorityType.description }}</small>
+
+        <div class="votingSettingsSummary">
+            <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
+                 v-if="isPreparing && majorityType.id === voting.majority_type && votingHasMajority">
+                <strong><?= Yii::t('voting', 'settings_majoritytype') ?>:</strong>
+                {{ majorityType.name }}
+                <span class="glyphicon glyphicon-info-sign" :aria-label="majorityType.description" v-tooltip="majorityType.description"></span>
+            </div>
+            <div class="votingPolicy">
+                <strong><?= Yii::t('voting', 'settings_votepolicy') ?>:</strong>
+                {{ voting.vote_policy.description }}
+            </div>
         </div>
         <div class="alert alert-success" v-if="isOpen">
             <p><?= Yii::t('voting', 'admin_status_opened') ?></p>
@@ -287,6 +295,10 @@ ob_start();
                   :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
             </label>
         </fieldset>
+        <fieldset class="votePolicy">
+            <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
+            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+        </fieldset>
         <fieldset class="resultsPublicSettings">
             <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
             <label>
@@ -381,6 +393,7 @@ $html = ob_get_clean();
     const motionEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000'])) ?>;
     const amendmentEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000'])) ?>;
 
+    Vue.component('v-select', VueSelect.VueSelect);
     Vue.directive('tooltip', function (el, binding) {
         $(el).tooltip({
             title: binding.value,
@@ -391,7 +404,7 @@ $html = ob_get_clean();
 
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['voting', 'addableMotions', 'alreadyAddedItems'],
+        props: ['voting', 'addableMotions', 'alreadyAddedItems', 'userGroups'],
         data() {
             return {
                 activityClosed: true,
@@ -408,7 +421,8 @@ $html = ob_get_clean();
                     assignedMotion: null,
                     majorityType: null,
                     votesPublic: null,
-                    resultsPublic: null
+                    resultsPublic: null,
+                    votePolicy: null
                 },
                 shownVoteLists: []
             }
@@ -490,6 +504,14 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.changedSettings.answerTemplate = value;
+                }
+            },
+            votePolicy: {
+                get: function () {
+                    return (this.changedSettings.votePolicy !== null ? this.changedSettings.votePolicy : this.voting.vote_policy);
+                },
+                set: function (value) {
+                    this.changedSettings.votePolicy = value;
                 }
             },
             votesPublic: {
@@ -660,11 +682,15 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.votePolicy, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;
                 this.changedSettings.answerTemplate = null;
+                this.changedSettings.votePolicy = null;
                 this.settingsOpened = false;
+            },
+            setPolicy: function (data) {
+                this.votePolicy = data;
             },
             deleteVoting: function () {
                 const widget = this;

@@ -7,8 +7,10 @@
  */
 
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Site as SiteSettings;
+use app\models\settings\Consultation as ConsultationSettings;
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Consultation, Motion};
+use app\models\db\{Consultation, ConsultationUserGroup, Motion, User};
 use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */
@@ -25,13 +27,7 @@ $this->title = Yii::t('admin', 'con_h1');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'bread_consultation'));
 
-/**
- * @param \app\models\settings\Consultation $settings
- * @param string $field
- * @param array $handledSettings
- * @param string $description
- */
-$boolSettingRow = function ($settings, $field, &$handledSettings, $description) {
+$boolSettingRow = function (ConsultationSettings $settings, string $field, array &$handledSettings, string $description) {
     $handledSettings[] = $field;
     echo '<div><label>';
     echo Html::checkbox('settings[' . $field . ']', $settings->$field, ['id' => $field]) . ' ';
@@ -142,12 +138,90 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 </fieldset>
             </div>
         </div>
-
     </div>
+
+    <?php
+if ($consultation->havePrivilege(ConsultationUserGroup::TEMPLATE_SITE_ADMIN)) {
+    $conPwd = new \app\components\ConsultationAccessPassword($consultation);
+    ?>
+    <h2 class="green"><?= Yii::t('admin', 'siteacc_title') ?></h2>
+    <div class="content">
+        <?php $handledSettings[] = 'forceLogin'; ?>
+        <div class="forceLogin">
+            <label>
+                <?= Html::checkbox('settings[forceLogin]', $settings->forceLogin) ?>
+                <?= Yii::t('admin', 'siteacc_forcelogin') ?>
+            </label>
+        </div>
+
+        <?php $handledSettings[] = 'managedUserAccounts'; ?>
+        <div class="managedUserAccounts">
+            <label>
+                <?= Html::checkbox('settings[managedUserAccounts]', $settings->managedUserAccounts) ?>
+                <?= Yii::t('admin', 'siteacc_managedusers') ?>
+            </label>
+        </div>
+
+        <div class="conpw <?= ($conPwd->isPasswordSet() ? 'hasPassword' : 'noPassword') ?>">
+            <label class="setter">
+                <?= Html::checkbox('pwdProtected', $conPwd->isPasswordSet()) ?>
+                <?= Yii::t('admin', 'siteacc_con_pw') ?>
+                <button class="btn btn-xs btn-default setNewPassword" type="button">
+                    <?= Yii::t('admin', 'siteacc_con_pw_set') ?>
+                </button>
+            </label>
+            <div class="setPasswordHolder">
+                <input type="password" name="consultationPassword" class="form-control"
+                       placeholder="<?= Yii::t('admin', 'siteacc_con_pw_place') ?>"
+                       title="<?= Yii::t('admin', 'siteacc_con_pw_set') ?>">
+                <label class="otherConsultations">
+                    <input type="radio" name="otherConsultations" value="0"
+                        <?= ($conPwd->allHaveSamePwd() ? '' : 'checked') ?>>
+                    <?= Yii::t('admin', 'siteacc_con_pw_set_this') ?>
+                </label>
+                <label class="otherConsultations">
+                    <input type="radio" name="otherConsultations" value="1"
+                        <?= ($conPwd->allHaveSamePwd() ? 'checked' : '') ?>>
+                    <?= Yii::t('admin', 'siteacc_con_pw_set_all') ?>
+                </label>
+            </div>
+        </div>
+
+        <fieldset class="loginMethods">
+            <legend><?= Yii::t('admin', 'siteacc_logins') ?>:</legend>
+
+            <div class="std">
+                <label>
+                    <?php
+                    $method = SiteSettings::LOGIN_STD;
+                    if (User::getCurrentUser()->getAuthType() === SiteSettings::LOGIN_STD) {
+                        echo Html::checkbox('login[]', true, ['value' => $method, 'disabled' => 'disabled']);
+                    } else {
+                        echo Html::checkbox('login[]', in_array($method, $siteSettings->loginMethods), ['value' => $method]);
+                    }
+                    echo ' ' . Yii::t('admin', 'siteacc_useraccounts');
+                    ?>
+                </label>
+            </div>
+            <?php
+            if (AntragsgruenApp::getInstance()->isSamlActive()) {
+                $method = SiteSettings::LOGIN_GRUENES_NETZ;
+                echo '<div class="gruenesnetz"><label>' .
+                     Html::checkbox('login[]', in_array($method, $siteSettings->loginMethods), ['value' => $method]) .
+                     ' ' . Yii::t('admin', 'siteacc_ww') .
+                     '</label></div>';
+            }
+            ?>
+        </fieldset>
+    </div>
+    <?php
+}
+?>
+
     <h2 class="green"><?= Yii::t('admin', 'con_title_motions') ?></h2>
     <div class="content">
-
-        <div><label>
+        <div>
+            <label>
                 <?php
                 echo Html::checkbox(
                     'settings[singleMotionMode]',
@@ -156,7 +230,8 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 );
                 echo ' ' . Yii::t('admin', 'con_single_motion_mode');
                 ?>
-            </label></div>
+            </label>
+        </div>
 
 
         <?php

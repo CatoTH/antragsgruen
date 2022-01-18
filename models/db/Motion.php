@@ -228,7 +228,8 @@ class Motion extends IMotion implements IRSSItem
             $sections[] = $section;
         }
 
-        if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() && !User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT)) {
+        if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() &&
+            !User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             // @TODO Find a solution to edit motions before submitting when not logged in
             throw new Internal('Can only set showAdminSections for admins');
         }
@@ -558,7 +559,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function canCreateResolution(): bool
     {
-        return User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT);
+        return User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT);
     }
 
     public function canFinishSupportCollection(): bool

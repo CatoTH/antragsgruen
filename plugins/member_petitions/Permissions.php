@@ -2,7 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
-use app\models\db\{Motion, User};
+use app\models\db\{ConsultationUserGroup, Motion, User};
 
 class Permissions extends \app\models\siteSpecificBehavior\Permissions
 {
@@ -34,7 +34,7 @@ class Permissions extends \app\models\siteSpecificBehavior\Permissions
             }
         }
 
-        if ($motion->iAmInitiator() || User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+        if ($motion->iAmInitiator() || User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }
 

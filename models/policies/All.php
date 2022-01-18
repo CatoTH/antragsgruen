@@ -3,7 +3,7 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\models\db\ConsultationMotionType;
+use app\models\db\{ConsultationMotionType, User};
 
 class All extends IPolicy
 {
@@ -24,7 +24,7 @@ class All extends IPolicy
 
     public function getPermissionDeniedMotionMsg(): string
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return '';
@@ -32,7 +32,7 @@ class All extends IPolicy
 
     public function getPermissionDeniedAmendmentMsg(): string
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
+        if (!$this->baseObject->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return '';
@@ -46,14 +46,14 @@ class All extends IPolicy
     public function getPermissionDeniedCommentMsg(): string
     {
         $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
-        if (!$this->motionType->isInDeadline($deadlineType)) {
-            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlinesByType($deadlineType));
+        if (!$this->baseObject->isInDeadline($deadlineType)) {
+            $deadlines = DateTools::formatDeadlineRanges($this->baseObject->getDeadlinesByType($deadlineType));
             return \Yii::t('structure', 'policy_deadline_over_comm') . ' ' . $deadlines;
         }
         return '';
     }
 
-    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
+    public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         return true;
     }

@@ -1,7 +1,7 @@
 <?php
 
 use app\components\HTMLTools;
-use app\models\db\{Amendment, ConsultationMotionType, ConsultationSettingsTag, IMotion, Motion, User};
+use app\models\db\{Amendment, ConsultationMotionType, ConsultationSettingsTag, ConsultationUserGroup, IMotion, Motion, User};
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 
 /**
@@ -173,7 +173,7 @@ foreach ($imotions as $imotion) {
     } else {
         foreach ($motionType->motionSections as $section) {
             $text = '';
-            if (User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+            if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
                 $sections = $imotion->getActiveSections(null, true);
             } else {
                 $sections = $imotion->getActiveSections();

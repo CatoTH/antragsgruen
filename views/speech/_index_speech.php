@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\ConsultationUserGroup;
 use app\models\db\User;
 use yii\helpers\Html;
 
@@ -58,7 +59,7 @@ if ($user) {
     <div class="content">
         <?php
         $user = User::getCurrentUser();
-        if ($user && $user->hasPrivilege($consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+        if ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
             $url = UrlHelper::createUrl(['consultation/admin-speech']);
             echo '<a href="' . Html::encode($url) . '" class="speechAdminLink">';
             echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';

@@ -1,7 +1,7 @@
 <?php
 
 use app\components\HashedStaticFileCache;
-use app\models\db\{ConsultationSettingsMotionSection, Motion};
+use app\models\db\{ConsultationSettingsMotionSection, ConsultationUserGroup, Motion};
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
 use app\views\motion\LayoutHelper;
@@ -66,7 +66,7 @@ foreach ($sections as $i => $section) {
     if ($section->getSettings()->getSettingsObj()->public !== \app\models\settings\MotionSection::PUBLIC_YES) {
         if ($motion->iAmInitiator()) {
             $nonPublicHint = '<div class="alert alert-info alertNonPublicSection"><p>' . Yii::t('motion', 'nonpublic_see_user') . '</p></div>';
-        } elseif (\app\models\db\User::havePrivilege($motion->getMyConsultation(), \app\models\db\User::PRIVILEGE_CONTENT_EDIT)) {
+        } elseif (\app\models\db\User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             $nonPublicHint = '<div class="alert alert-info alertNonPublicSection"><p>' . Yii::t('motion', 'nonpublic_see_admin') . '</p></div>';
         } else {
             throw new \app\models\exceptions\Internal('Not allowed to see this content');

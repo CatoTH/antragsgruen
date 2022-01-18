@@ -26,6 +26,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationText[] $texts
  * @property ConsultationFile[] $files
  * @property User[] $admins
+ * @property ConsultationUserGroup[] $userGroups
  * @property TexTemplate $texTemplates
  */
 class Site extends ActiveRecord
@@ -36,10 +37,7 @@ class Site extends ActiveRecord
 
     const TITLE_SHORT_MAX_LEN = 100;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'site';
     }
@@ -58,6 +56,14 @@ class Site extends ActiveRecord
     public function getConsultations()
     {
         return $this->hasMany(Consultation::class, ['siteId' => 'id'])->where('consultation.dateDeletion IS NULL');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserGroups()
+    {
+        return $this->hasMany(ConsultationUserGroup::class, ['siteId' => 'id']);
     }
 
     /**
@@ -164,28 +170,13 @@ class Site extends ActiveRecord
         return trim(explode("//", $domain)[1], '/');
     }
 
-    public function isAdmin(User $user): bool
+    public function createDefaultSiteAdminGroup(): ConsultationUserGroup
     {
-        foreach ($this->admins as $e) {
-            if ($e->id == $user->id) {
-                return true;
-            }
-        }
-        return in_array($user->id, AntragsgruenApp::getInstance()->adminUserIds);
-    }
+        $group = ConsultationUserGroup::createDefaultGroupSiteAdmin($this);
+        $this->link('userGroups', $group);
+        echo "Site groups: " . count($this->userGroups) . "\n";
 
-    public function isAdminCurUser(): bool
-    {
-        $user = \Yii::$app->user;
-        if ($user->isGuest) {
-            return false;
-        }
-        $myUser = User::find()->where(['auth' => $user->id])->andWhere('status != ' . User::STATUS_DELETED)->one();
-        /** @var User $myUser */
-        if ($myUser == null) {
-            return false;
-        }
-        return $this->isAdmin($myUser);
+        return $group;
     }
 
     /**

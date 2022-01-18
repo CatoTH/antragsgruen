@@ -55,6 +55,13 @@ return [
     'policy_logged_supp_denied'     => 'Du musst dich einloggen, um Anträge unterstützen zu können.',
     'policy_logged_comm_denied'     => 'Du musst dich einloggen, um Kommentare schreiben zu können.',
 
+    'policy_groups_title'           => 'Ausgewählte Gruppen',
+    'policy_groups_desc'            => 'Berechtigte Gruppen',
+    'policy_groups_motion_denied'   => 'Nur zugelassene Gruppen können Anträge stellen.',
+    'policy_groups_amend_denied'    => 'Nur zugelassene Gruppen können Änderungsanträge stellen.',
+    'policy_groups_supp_denied'     => 'Nur zugelassene Gruppen können Anträge unterstützen.',
+    'policy_groups_comm_denied'     => 'Nur zugelassene Gruppen können Kommentare schreiben.',
+
     'preset_bdk_name'           => 'BDK-ähnlich',
     'preset_bdk_desc'           => 'Benutzer*innen mit Grüne,-Netz-Zugang können Anträge und Änderungsanträge stellen, die zunächst von der Antragskommission auf Zulässigkeit geprüft werden. Neben der Antragsteller*in müssen 19 Unterstützer*innen angegegeb werden. Das Grüne CI ist standardmäßig voreingestellt.',
     'preset_election_name'      => 'Bewerbungsverfahren',

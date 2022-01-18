@@ -314,6 +314,12 @@ class Layout
         $this->addJS('npm/vue.min.js');
     }
 
+    public function loadVueSelect(): void
+    {
+        $this->addJS('npm/vue-select.js');
+        $this->addCSS('npm/vue-select.css');
+    }
+
     public function loadTypeahead(): void
     {
         $this->addJs('npm/typeahead.bundle.min.js');

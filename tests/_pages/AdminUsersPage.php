@@ -7,7 +7,7 @@ use Helper\BasePage;
 /**
  * @property \AcceptanceTester|\FunctionalTester $actor
  */
-class AdminSiteAccessPage extends BasePage
+class AdminUsersPage extends BasePage
 {
-    public $route = 'admin/index/siteaccess';
+    public $route = 'admin/index/users';
 }
