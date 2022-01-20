@@ -58,7 +58,7 @@ class IndexController extends AdminBase
             $settings->saveConsultationForm($settingsInput, $post['settingsFields']);
             $settings->setOrganisationsFromInput($post['organisations'] ?? []);
 
-            if ($model->havePrivilege(ConsultationUserGroup::TEMPLATE_SITE_ADMIN)) {
+            if ($model->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
                 if ($this->isPostSet('pwdProtected') && $this->isPostSet('consultationPassword')) {
                     if (trim($post['consultationPassword'])) {
                         $pwdTools = new ConsultationAccessPassword($model);
@@ -86,7 +86,7 @@ class IndexController extends AdminBase
                     $model->site->status = ($settings->maintenanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
                 }
 
-                if ($model->havePrivilege(ConsultationUserGroup::TEMPLATE_SITE_ADMIN)) {
+                if ($model->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
                     $settings = $model->site->getSettings();
                     if ($this->isPostSet('login')) {
                         $settings->loginMethods = array_map('IntVal', $post['login']);
