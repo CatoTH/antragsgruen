@@ -25,7 +25,7 @@ class User
     private $defaultPassword;
 
     /**
-     * @var float
+     * @var string
      * @SerializedName("vote_weight")
      */
     private $voteWeight;
@@ -152,12 +152,12 @@ class User
         $this->defaultPassword = $defaultPassword;
     }
 
-    public function getVoteWeight(): float
+    public function getVoteWeight(): string
     {
         return $this->voteWeight;
     }
 
-    public function setVoteWeight(float $voteWeight): void
+    public function setVoteWeight(string $voteWeight): void
     {
         $this->voteWeight = $voteWeight;
     }

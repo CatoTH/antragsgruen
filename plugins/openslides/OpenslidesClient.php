@@ -9,8 +9,13 @@ use app\plugins\openslides\DTO\LoginResponse;
 use GuzzleHttp\{Client, RequestOptions};
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
-use Symfony\Component\Serializer\{Encoder\JsonEncoder, Mapping\Factory\ClassMetadataFactory, Mapping\Loader\AnnotationLoader,
-    Normalizer\ObjectNormalizer, Serializer, SerializerInterface};
+use Symfony\Component\Serializer\{Encoder\JsonEncoder,
+    Mapping\Factory\ClassMetadataFactory,
+    Mapping\Loader\AnnotationLoader,
+    NameConverter\MetadataAwareNameConverter,
+    Normalizer\ObjectNormalizer,
+    Serializer,
+    SerializerInterface};
 
 class OpenslidesClient
 {
@@ -43,8 +48,9 @@ class OpenslidesClient
     {
         if ($this->serializer === null) {
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+            $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
             $encoders = [new JsonEncoder()];
-            $normalizers = [new ObjectNormalizer($classMetadataFactory, null, null, new ReflectionExtractor())];
+            $normalizers = [new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, new ReflectionExtractor())];
             $this->serializer = new Serializer($normalizers, $encoders);
         }
         return $this->serializer;

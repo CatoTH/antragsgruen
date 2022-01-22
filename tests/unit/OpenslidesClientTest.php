@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace unit;
 
+use app\plugins\openslides\controllers\AutoupdateController;
 use app\plugins\openslides\DTO\LoginResponse;
 use app\plugins\openslides\OpenslidesClient;
 use app\plugins\openslides\SiteSettings;
@@ -73,7 +74,6 @@ class OpenslidesClientTest extends TestBase
         }';
         $this->mockHandler->append(new Response(200, ['Content-Type' => 'application/json'], $successJson));
 
-        /** @var LoginResponse $loginResponse */
         $loginResponse = $client->login('username', 'password');
 
         $this->assertFalse($loginResponse->isGuestEnabled());
@@ -89,5 +89,22 @@ class OpenslidesClientTest extends TestBase
         $request = $this->getRequestNo(0);
         $this->assertSame('apps/users/login/', $request->getUri()->getPath());
         $this->assertJsonStringEqualsJsonString('{"username":"username","password":"password"}', $request->getBody()->getContents());
+    }
+
+    public function testParseAutoupdaterCallbackParsing()
+    {
+        $json = file_get_contents(__DIR__ . '/../_data/openslides-autoupdate-fullload.json');
+        $data = AutoupdateController::parseRequest($json);
+
+        $this->assertCount(44, $data->getChanged()->getUsersUsers());
+        $this->assertCount(5, $data->getChanged()->getUsersGroups());
+
+        $this->assertSame(2, $data->getChanged()->getUsersGroups()[1]->getId());
+        $this->assertSame('Admin', $data->getChanged()->getUsersGroups()[1]->getName());
+        $this->assertSame([], $data->getChanged()->getUsersGroups()[1]->getPermissions());
+
+        $this->assertSame([5], $data->getChanged()->getUsersUsers()[43]->getGroupsId());
+        $this->assertSame('Vorstand', $data->getChanged()->getUsersUsers()[43]->getUsername());
+        $this->assertSame(43, $data->getChanged()->getUsersUsers()[43]->getId());
     }
 }

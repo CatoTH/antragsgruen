@@ -38,4 +38,13 @@ class Module extends ModuleBase
             '@app/plugins/openslides/views/admin/consultation_settings', ['consultation' => $consultation]
         );
     }
+
+    public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
+    {
+        $urls = parent::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
+
+        $urls[$dom . '<consultationPath:[\w_-]+>/openslides/autoupdate'] = '/openslides/autoupdate/callback';
+
+        return $urls;
+    }
 }

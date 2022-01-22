@@ -1,0 +1,6 @@
+### This is the demo request taken from https://demo.openslides.org/
+
+POST http://stdparteitag.antragsgruen.test/std-parteitag/openslides/autoupdate
+Content-Type: application/json
+
+< ../../../tests/_data/openslides-autoupdate-fullload.json
