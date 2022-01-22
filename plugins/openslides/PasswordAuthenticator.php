@@ -15,20 +15,19 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
     /** @var OpenslidesClient $osClient */
     private $osClient;
 
-    public function __construct(SiteSettings $settings, OpenslidesClient $osClient)
+    /** @var AutoupdateSyncService */
+    private $syncService;
+
+    public function __construct(SiteSettings $settings, OpenslidesClient $osClient, AutoupdateSyncService $syncService)
     {
         $this->settings = $settings;
         $this->osClient = $osClient;
+        $this->syncService = $syncService;
     }
 
     public function getAuthPrefix(): string
     {
-        $url = parse_url($this->settings->osBaseUri);
-        if (is_array($url) && isset($url['host'])) {
-            return 'openslides-' . $url['host'];
-        } else {
-            throw new Internal('Could not parse osBaseUri');
-        }
+        return $this->settings->getAuthPrefix();
     }
 
     public function supportsCreatingAccounts(): bool
@@ -64,32 +63,7 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
         }
         $osUser = $loginResponse->getUser();
 
-
-        $auth    = $this->getAuthPrefix() . ':' . $osUser->getId();
-        /** @var User|null $userObj */
-        $userObj = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
-        if (!$userObj) {
-            $userObj                  = new User();
-            $userObj->auth            = $auth;
-            $userObj->emailConfirmed  = 1;
-            $userObj->pwdEnc          = '';
-            $userObj->organizationIds = '';
-            $userObj->status          = User::STATUS_CONFIRMED;
-        }
-
-        // Set this with every login
-        $userObj->name         = $osUser->getUsername();
-        $userObj->nameFamily   = $osUser->getLastName();
-        $userObj->nameGiven    = $osUser->getFirstName();
-        $userObj->organization = '';
-        $userObj->email        = $osUser->getEmail();
-        $userObj->fixedData    = 1;
-        if (!$userObj->save()) {
-            var_dump($userObj->getErrors());
-            throw new Login('Could not create the user');
-        }
-
-        return $userObj;
+        return $this->syncService->syncUser($osUser);
     }
 
     public function performRegistration(string $username, string $password): User

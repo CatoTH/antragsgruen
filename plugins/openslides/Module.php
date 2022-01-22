@@ -14,10 +14,14 @@ class Module extends ModuleBase
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {
         if (self::$authenticator === null) {
+            $site = UrlHelper::getCurrentSite();
             /** @var SiteSettings $settings */
-            $settings = UrlHelper::getCurrentSite()->getSettings();
+            $settings = $site->getSettings();
             $osClient = new OpenslidesClient($settings);
-            self::$authenticator = new PasswordAuthenticator($settings, $osClient);
+            $syncService = new AutoupdateSyncService();
+            $syncService->setRequestData($site);
+
+            self::$authenticator = new PasswordAuthenticator($settings, $osClient, $syncService);
         }
         return self::$authenticator;
     }

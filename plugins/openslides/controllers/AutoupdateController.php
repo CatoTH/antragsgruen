@@ -4,41 +4,25 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides\controllers;
 
-use app\plugins\openslides\DTO\AutoupdateUpdate;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
-use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerInterface;
+use app\plugins\openslides\AutoupdateSyncService;
 
 class AutoupdateController extends \app\controllers\Base
 {
     public $enableCsrfValidation = false;
 
-    private static function getSerializer(): SerializerInterface
-    {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
-        $encoders = [new JsonEncoder()];
-        $normalizers = [
-            new ArrayDenormalizer(),
-            new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, new ReflectionExtractor()),
-        ];
+    /** @var AutoupdateSyncService */
+    private $syncService;
 
-        return new Serializer($normalizers, $encoders);
-    }
-
-    /**
-     * The purpose of this method is to make the parsing of the configured Serializer testable
-     */
-    public static function parseRequest(string $postedJson): AutoupdateUpdate
+    public function beforeAction($action)
     {
-        return self::getSerializer()->deserialize($postedJson, AutoupdateUpdate::class, 'json');
+        $result = parent::beforeAction($action);
+
+        if ($result) {
+            $this->syncService = new AutoupdateSyncService();
+            $this->syncService->setRequestData($this->site);
+        }
+
+        return $result;
     }
 
     public function actionCallback(): ?string
@@ -47,8 +31,13 @@ class AutoupdateController extends \app\controllers\Base
             return $this->returnRestResponse(405, json_encode(['success' => false, 'error' => 'Only POST is allowed'], JSON_THROW_ON_ERROR));
         }
 
-        $data = self::parseRequest($this->getPostBody());
-
+        $data = $this->syncService->parseRequest($this->getPostBody());
+        if ($data->getChanged()->getUsersGroups() !== null) {
+            $this->syncService->syncUsergroups($data->getChanged()->getUsersGroups(), $data->isAllData());
+        }
+        if ($data->getChanged()->getUsersUsers() !== null) {
+            $this->syncService->syncUsers($data->getChanged()->getUsersUsers(), $data->isAllData());
+        }
 
         return $this->returnRestResponse(200, json_encode(['success' => true], JSON_THROW_ON_ERROR));
     }

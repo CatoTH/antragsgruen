@@ -198,6 +198,11 @@ class ConsultationUserGroup extends ActiveRecord
         return $this->templateId === null;
     }
 
+    public function belongsToExternalAuth(string $authPrefix): bool
+    {
+        return $this->externalId && (stripos($this->externalId, $authPrefix . ':') === 0);
+    }
+
     public static function createDefaultGroupSiteAdmin(Site $site): self
     {
         $group = new ConsultationUserGroup();

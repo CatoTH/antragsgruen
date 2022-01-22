@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace unit;
 
+use app\plugins\openslides\AutoupdateSyncService;
 use app\plugins\openslides\controllers\AutoupdateController;
 use app\plugins\openslides\DTO\LoginResponse;
 use app\plugins\openslides\OpenslidesClient;
@@ -94,7 +95,8 @@ class OpenslidesClientTest extends TestBase
     public function testParseAutoupdaterCallbackParsing()
     {
         $json = file_get_contents(__DIR__ . '/../_data/openslides-autoupdate-fullload.json');
-        $data = AutoupdateController::parseRequest($json);
+        $service = new AutoupdateSyncService();
+        $data = $service->parseRequest($json);
 
         $this->assertCount(44, $data->getChanged()->getUsersUsers());
         $this->assertCount(5, $data->getChanged()->getUsersGroups());

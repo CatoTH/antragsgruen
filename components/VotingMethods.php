@@ -7,9 +7,7 @@ namespace app\components;
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
-use app\models\policies\IPolicy;
-use app\models\policies\UserGroups;
-use app\models\settings\VotingData;
+use app\models\policies\{IPolicy, UserGroups};
 use app\models\votings\AnswerTemplates;
 use yii\web\Request;
 
