@@ -2,10 +2,8 @@
 
 namespace app\plugins\openslides;
 
-use app\components\ExternalPasswordAuthenticatorInterface;
-use app\components\UrlHelper;
-use app\models\db\Consultation;
-use app\models\db\Site;
+use app\components\{ExternalPasswordAuthenticatorInterface, UrlHelper};
+use app\models\db\{Consultation, Site};
 use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
@@ -15,27 +13,21 @@ class Module extends ModuleBase
 
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {
-        if (static::$authenticator === null) {
+        if (self::$authenticator === null) {
+            /** @var SiteSettings $settings */
             $settings = UrlHelper::getCurrentSite()->getSettings();
-            static::$authenticator = new PasswordAuthenticator($settings);
+            $osClient = new OpenslidesClient($settings);
+            self::$authenticator = new PasswordAuthenticator($settings, $osClient);
         }
-        return static::$authenticator;
+        return self::$authenticator;
     }
 
-    /**
-     * @return string|SiteSettings
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getSiteSettingsClass(Site $site)
+    public static function getSiteSettingsClass(Site $site): string
     {
         return SiteSettings::class;
     }
 
-    /**
-     * @return string|ConsultationSettings
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getConsultationSettingsClass(Consultation $consultation): ?string
+    public static function getConsultationSettingsClass(Consultation $consultation): string
     {
         return ConsultationSettings::class;
     }

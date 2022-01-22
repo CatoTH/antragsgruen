@@ -3,7 +3,6 @@
 namespace unit;
 
 use app\components\yii\UrlManager;
-use app\models\settings\AntragsgruenApp;
 use Codeception\Specify;
 use yii\web\Request;
 
