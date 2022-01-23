@@ -64,8 +64,7 @@ class Base extends Controller
         }
 
         $params = Yii::$app->request->resolve();
-        /** @var AntragsgruenApp $appParams */
-        $appParams = Yii::$app->params;
+        $appParams = AntragsgruenApp::getInstance();
 
         if ($appParams->updateKey) {
             $this->showErrorpage(503, Yii::t('base', 'err_update_mode'));
@@ -162,6 +161,21 @@ class Base extends Controller
         $response = parent::redirect($url, $statusCode);
         Yii::$app->end();
         return $response;
+    }
+
+    protected function getHttpMethod(): string
+    {
+        return Yii::$app->request->method;
+    }
+
+    protected function getHttpHeader(string $headerName): ?string
+    {
+        return Yii::$app->request->headers->get($headerName);
+    }
+
+    protected function getPostBody(): string
+    {
+        return \Yii::$app->request->getRawBody();
     }
 
     protected function isPostSet(string $name): bool

@@ -12,6 +12,10 @@
   - Votings can now have simple questions that are not attached to any motion or amendment.
   - Votings have different answer options: besides "Yes/No/Abstention", it is now also possible to have simple "Yes/No"- and "Presence"-votings (Roll calls).
   - It is possible to restrict voting to specific user groups.
+- Antragsgrün now comes with a plugin to integrate the user administration with OpenSlides:
+  - It allows to log in into Antragsgrün using the username/password of an OpenSlides page.
+  - Using a separate proxy app, it allows to automatically synchronize users and user groups from OpenSlides to Antragsgrün.
+  - It needs to be set up by a system administrator per site.
 
 ## Version 4.9.0 (2021-12-12)
 

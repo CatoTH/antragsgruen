@@ -100,6 +100,10 @@ class IndexController extends AdminBase
                     if (User::getCurrentUser()->getAuthType() === \app\models\settings\Site::LOGIN_EXTERNAL) {
                         $settings->loginMethods[] = \app\models\settings\Site::LOGIN_EXTERNAL;
                     }
+
+                    $settingsInput = $post['siteSettings'] ?? [];
+                    $settings->saveForm($settingsInput, $post['siteSettingsFields']);
+
                     $model->site->setSettings($settings);
                 }
 
