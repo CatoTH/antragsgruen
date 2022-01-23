@@ -27,12 +27,12 @@ class ByLDKPDF extends IPdfWriter
         $keepmargins = false,
         $tocpage = false,
         $footer = true
-    ) {
+    ): void {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }
 
-    public function Header()
+    public function Header(): void
     {
         if (count($this->pagegroups) === 0) {
             // This is most likely a PDF-only application => we don't need page numbers
@@ -43,7 +43,7 @@ class ByLDKPDF extends IPdfWriter
     }
 
     // @codingStandardsIgnoreStart
-    public function Footer()
+    public function Footer(): void
     {
         if (count($this->pagegroups) === 0) {
             // This is most likely a PDF-only application => we don't need page numbers

@@ -12,8 +12,8 @@ class Layout
 
     public static function addHook(Hooks $hook): void
     {
-        if (!in_array($hook, static::$hooks)) {
-            static::$hooks[] = $hook;
+        if (!in_array($hook, self::$hooks)) {
+            self::$hooks[] = $hook;
         }
     }
 
@@ -24,7 +24,7 @@ class Layout
     private static function callHook(string $name, array $args = [], $initValue = '')
     {
         $out = $initValue;
-        foreach (static::$hooks as $hook) {
+        foreach (self::$hooks as $hook) {
             $callArgs = array_merge([$out], $args);
             $out      = call_user_func_array([$hook, $name], $callArgs);
         }
@@ -33,176 +33,176 @@ class Layout
 
     public static function beforePage(): string
     {
-        return static::callHook('beforePage');
+        return self::callHook('beforePage');
     }
 
     public static function beginPage(): string
     {
-        return static::callHook('beginPage');
+        return self::callHook('beginPage');
     }
 
     public static function favicons(): string
     {
-        return static::callHook('favicons');
+        return self::callHook('favicons');
     }
 
     public static function endOfHead(?Consultation $consultation): string
     {
-        return static::callHook('endOfHead', [$consultation]);
+        return self::callHook('endOfHead', [$consultation]);
     }
 
     public static function logoRow(): string
     {
-        return static::callHook('logoRow');
+        return self::callHook('logoRow');
     }
 
     public static function beforeContent(): string
     {
-        return static::callHook('beforeContent');
+        return self::callHook('beforeContent');
     }
 
     public static function afterContent(): string
     {
-        return static::callHook('afterContent');
+        return self::callHook('afterContent');
     }
 
     public static function beginContent(): string
     {
-        return static::callHook('beginContent');
+        return self::callHook('beginContent');
     }
 
     public static function endPage(): string
     {
-        return static::callHook('endPage');
+        return self::callHook('endPage');
     }
 
     public static function renderSidebar(): string
     {
-        return static::callHook('renderSidebar');
+        return self::callHook('renderSidebar');
     }
 
     public static function getSearchForm(): string
     {
-        return static::callHook('getSearchForm');
+        return self::callHook('getSearchForm');
     }
 
     public static function getAntragsgruenAd(): string
     {
-        return static::callHook('getAntragsgruenAd');
+        return self::callHook('getAntragsgruenAd');
     }
 
     /**
      * @param ConsultationMotionType[] $motionTypes
      * @return string
      */
-    public static function setSidebarCreateMotionButton($motionTypes): string
+    public static function setSidebarCreateMotionButton(array $motionTypes): string
     {
-        return static::callHook('setSidebarCreateMotionButton', [$motionTypes]);
+        return self::callHook('setSidebarCreateMotionButton', [$motionTypes]);
     }
 
     public static function getStdNavbarHeader(): string
     {
-        return static::callHook('getStdNavbarHeader');
+        return self::callHook('getStdNavbarHeader');
     }
 
     public static function footerLine(): string
     {
-        return static::callHook('footerLine');
+        return self::callHook('footerLine');
     }
 
     public static function breadcrumbs(): string
     {
-        return static::callHook('breadcrumbs');
+        return self::callHook('breadcrumbs');
     }
 
     public static function beforeMotionView(Motion $motion): string
     {
-        return static::callHook('beforeMotionView', [$motion]);
+        return self::callHook('beforeMotionView', [$motion]);
     }
 
     public static function afterMotionView(Motion $motion): string
     {
-        return static::callHook('afterMotionView', [$motion]);
+        return self::callHook('afterMotionView', [$motion]);
     }
 
     public static function getMotionAlternativeComments(Motion $motion): string
     {
-        return static::callHook('getMotionAlternativeComments', [$motion]);
+        return self::callHook('getMotionAlternativeComments', [$motion]);
     }
 
     public static function getMotionFormattedAmendmentList(Motion $motion): string
     {
-        return static::callHook('getMotionFormattedAmendmentList', [$motion]);
+        return self::callHook('getMotionFormattedAmendmentList', [$motion]);
     }
 
     public static function getMotionViewData(array $motionData, Motion $motion): array
     {
-        return static::callHook('getMotionViewData', [$motion], $motionData);
+        return self::callHook('getMotionViewData', [$motion], $motionData);
     }
 
     public static function getAmendmentViewData(array $amendmentData, Amendment $amendment): array
     {
-        return static::callHook('getAmendmentViewData', [$amendment], $amendmentData);
+        return self::callHook('getAmendmentViewData', [$amendment], $amendmentData);
     }
 
     public static function getAmendmentBookmarkName(Amendment $amendment): string
     {
-        return static::callHook('getAmendmentBookmarkName', [$amendment], '');
+        return self::callHook('getAmendmentBookmarkName', [$amendment], '');
     }
 
     public static function getAmendmentAlternativeComments(Amendment $amendment): string
     {
-        return static::callHook('getAmendmentAlternativeComments', [$amendment]);
+        return self::callHook('getAmendmentAlternativeComments', [$amendment]);
     }
 
     public static function getConsultationPreWelcome(): string
     {
-        return static::callHook('getConsultationPreWelcome', [], '');
+        return self::callHook('getConsultationPreWelcome', [], '');
     }
 
     public static function getFormattedMotionStatus(string $origStatus, Motion $motion): string
     {
-        return static::callHook('getFormattedMotionStatus', [$motion], $origStatus);
+        return self::callHook('getFormattedMotionStatus', [$motion], $origStatus);
     }
 
     public static function getFormattedAmendmentStatus(string $origStatus, Amendment $amendment): string
     {
-        return static::callHook('getFormattedAmendmentStatus', [$amendment], $origStatus);
+        return self::callHook('getFormattedAmendmentStatus', [$amendment], $origStatus);
     }
 
     public static function getFormattedUsername(string $origName, User $user): string
     {
-        return static::callHook('getFormattedUsername', [$user], $origName);
+        return self::callHook('getFormattedUsername', [$user], $origName);
     }
 
     public static function getConsultationMotionLineContent(string $origLine, Motion $motion): string
     {
-        return static::callHook('getConsultationMotionLineContent', [$motion], $origLine);
+        return self::callHook('getConsultationMotionLineContent', [$motion], $origLine);
     }
 
     public static function getConsultationAmendmentLineContent(string $origLine, Amendment $amendment): string
     {
-        return static::callHook('getConsultationAmendmentLineContent', [$amendment], $origLine);
+        return self::callHook('getConsultationAmendmentLineContent', [$amendment], $origLine);
     }
 
     public static function getMotionDetailsInitiatorName(string $origLine, ISupporter $supporter): string
     {
-        return static::callHook('getMotionDetailsInitiatorName', [$supporter], $origLine);
+        return self::callHook('getMotionDetailsInitiatorName', [$supporter], $origLine);
     }
 
     public static function getSupporterNameWithOrga(ISupporter $supporter): string
     {
-        return static::callHook('getSupporterNameWithOrga', [$supporter], '');
+        return self::callHook('getSupporterNameWithOrga', [$supporter], '');
     }
 
     public static function getSupporterNameWithResolutionDate(ISupporter $supporter, bool $html): string
     {
-        return static::callHook('getSupporterNameWithResolutionDate', [$supporter, $html], '');
+        return self::callHook('getSupporterNameWithResolutionDate', [$supporter, $html], '');
     }
 
     public static function getAdminIndexHint(Consultation $consultation): string
     {
-        return static::callHook('getAdminIndexHint', [$consultation]);
+        return self::callHook('getAdminIndexHint', [$consultation]);
     }
 
     /**
@@ -210,7 +210,7 @@ class Layout
      */
     public static function getSitewidePublicWarnings(Site $site): array
     {
-        return static::callHook('getSitewidePublicWarnings', [$site], []);
+        return self::callHook('getSitewidePublicWarnings', [$site], []);
     }
 
     /**
@@ -218,31 +218,31 @@ class Layout
      */
     public static function getConsultationwidePublicWarnings(Consultation $consultation): array
     {
-        return static::callHook('getConsultationwidePublicWarnings', [$consultation], []);
+        return self::callHook('getConsultationwidePublicWarnings', [$consultation], []);
     }
 
     public static function renderMotionSection(MotionSection $section, Motion $motion): ?string
     {
-        return static::callHook('renderMotionSection', [$section, $motion], null);
+        return self::callHook('renderMotionSection', [$section, $motion], null);
     }
 
     public static function getMotionPublishedInitiatorEmail(Motion $motion): ?array
     {
-        return static::callHook('getMotionPublishedInitiatorEmail', [$motion], null);
+        return self::callHook('getMotionPublishedInitiatorEmail', [$motion], null);
     }
 
     public static function getAmendmentPublishedInitiatorEmail(Amendment $amendment): ?array
     {
-        return static::callHook('getAmendmentPublishedInitiatorEmail', [$amendment], null);
+        return self::callHook('getAmendmentPublishedInitiatorEmail', [$amendment], null);
     }
 
     public static function getVotingAlternativeAdminResults(Consultation $consultation): ?string
     {
-        return static::callHook('getVotingAlternativeAdminResults', [$consultation], null);
+        return self::callHook('getVotingAlternativeAdminResults', [$consultation], null);
     }
 
     public static function getVotingAlternativeUserResults(VotingData $votingData): ?array
     {
-        return static::callHook('getVotingAlternativeUserResults', [$votingData], null);
+        return self::callHook('getVotingAlternativeUserResults', [$votingData], null);
     }
 }

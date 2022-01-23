@@ -18,7 +18,7 @@ class IPdfWriter extends Fpdi
      *
      * @return string[]
      */
-    private function printMotionToPDFAddLinebreaks($linesArr)
+    private function printMotionToPDFAddLinebreaks(array $linesArr): array
     {
         for ($i = 1; $i < count($linesArr); $i++) {
             // Does this line start with an ol/ul/li?
@@ -63,7 +63,7 @@ class IPdfWriter extends Fpdi
         $this->SetFont($fontName, '', $textSize);
         $this->Ln(7);
 
-        $hasLineNumbers = $section->getSettings()->lineNumbers;
+        $hasLineNumbers = !!$section->getSettings()->lineNumbers;
         if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
             $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
             foreach ($paragraphs as $paragraph) {

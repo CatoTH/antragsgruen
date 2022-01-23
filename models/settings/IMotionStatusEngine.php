@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace app\models\settings;
 
 use app\components\MotionSorter;
-use app\models\db\Amendment;
-use app\models\db\IMotion;
+use app\models\db\{Amendment, IMotion};
 
 class IMotionStatusEngine
 {

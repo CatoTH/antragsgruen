@@ -48,15 +48,15 @@ abstract class IPDFLayout
 
     /** @var null|array */
     private static $_availableClassesWithLatex = null;
-    
+
     public static function getAvailableClassesWithLatex(): array
     {
-        if (static::$_availableClassesWithLatex) {
-            return static::$_availableClassesWithLatex;
+        if (self::$_availableClassesWithLatex) {
+            return self::$_availableClassesWithLatex;
         }
 
         $return = [];
-        foreach (static::getAvailableTcpdfClasses() as $data) {
+        foreach (self::getAvailableTcpdfClasses() as $data) {
             $return['php' . $data['id']] = $data;
         }
 
@@ -78,14 +78,12 @@ abstract class IPDFLayout
             }
         }
 
-        static::$_availableClassesWithLatex = $return;
+        self::$_availableClassesWithLatex = $return;
 
         return $return;
     }
 
     /**
-     * @param int $classId
-     *
      * @return IPDFLayout|string|null
      * @throws Internal
      */
@@ -120,14 +118,14 @@ abstract class IPDFLayout
     {
     }
 
-    public function printSectionHeading(string $text)
+    public function printSectionHeading(string $text): void
     {
         $this->pdf->SetFont('helvetica', '', 12);
         $this->pdf->ln(2);
         $this->pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, '', '', true, 0, true);
     }
 
-    protected function setHeaderLogo(Consultation $consultation, int $abs, ?float $maxWidth, ?float $maxHeight)
+    protected function setHeaderLogo(Consultation $consultation, int $abs, ?float $maxWidth, ?float $maxHeight): void
     {
         $logo = $consultation->getAbsolutePdfLogo();
         if ($logo && !$this->headerlogo) {

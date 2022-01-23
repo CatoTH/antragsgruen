@@ -44,7 +44,7 @@ $settings = $consultation->getSettings();
                for="minDiscussionTimeId"><?= Yii::t('member_petitions', 'sett_minDiscussionTime') ?>:</label>
         <div class="col-sm-9">
             <input type="number" required name="settings[minDiscussionTime]"
-                   value="<?= Html::encode($settings->minDiscussionTime) ?>"
+                   value="<?= Html::encode((string)$settings->minDiscussionTime) ?>"
                    class="form-control" id="minDiscussionTimeId">
             <input type="hidden" name="settingsFields[]" value="minDiscussionTime">
         </div>
@@ -56,7 +56,7 @@ $settings = $consultation->getSettings();
         </label>
         <div class="col-sm-9">
             <input type="number" required name="settings[maxOverallTime]"
-                   value="<?= Html::encode($settings->maxOverallTime) ?>"
+                   value="<?= Html::encode((string)$settings->maxOverallTime) ?>"
                    class="form-control" id="maxOverallTime">
             <input type="hidden" name="settingsFields[]" value="maxOverallTime">
         </div>
@@ -66,7 +66,7 @@ $settings = $consultation->getSettings();
                for="replyDeadlineId"><?= Yii::t('member_petitions', 'sett_replydeadline') ?>:</label>
         <div class="col-sm-9">
             <input type="number" required name="settings[replyDeadline]"
-                   value="<?= Html::encode($settings->replyDeadline) ?>"
+                   value="<?= Html::encode((string)$settings->replyDeadline) ?>"
                    class="form-control" id="replyDeadlineId">
             <input type="hidden" name="settingsFields[]" value="replyDeadline">
         </div>

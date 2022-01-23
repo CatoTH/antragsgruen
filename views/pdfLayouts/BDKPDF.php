@@ -28,7 +28,7 @@ class BDKPDF extends IPdfWriter
         $keepmargins = false,
         $tocpage = false,
         $footer = true
-    ) {
+    ): void {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }
@@ -37,7 +37,7 @@ class BDKPDF extends IPdfWriter
      * @param string $prefix
      * @param string $title
      */
-    public function setMotionTitle($prefix, $title)
+    public function setMotionTitle($prefix, $title): void
     {
         $this->headerPrefix = $prefix;
         $this->headerTitle  = $title;
@@ -45,7 +45,7 @@ class BDKPDF extends IPdfWriter
 
     // @codingStandardsIgnoreStart
 
-    public function Header()
+    public function Header(): void
     {
         if (count($this->pagegroups) === 0) {
             // This is most likely a PDF-only application => we don't need the header
@@ -69,7 +69,7 @@ class BDKPDF extends IPdfWriter
         );
     }
 
-    public function Footer()
+    public function Footer(): void
     {
         if (count($this->pagegroups) === 0) {
             // This is most likely a PDF-only application => we don't need page numbers

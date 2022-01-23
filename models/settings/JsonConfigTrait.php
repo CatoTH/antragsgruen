@@ -2,13 +2,12 @@
 
 namespace app\models\settings;
 
-use app\models\exceptions\ConfigurationError;
-use app\models\exceptions\FormError;
+use app\models\exceptions\{ConfigurationError, FormError};
 
 trait JsonConfigTrait
 {
     /**
-     * @var null|string|array @data
+     * @param null|string|array $data
      */
     public function __construct($data)
     {
@@ -16,10 +15,10 @@ trait JsonConfigTrait
     }
 
     /**
-     * @var null|string|array @data
+     * @param null|string|array $data
      * @throws ConfigurationError
      */
-    protected function setPropertiesFromJSON($data)
+    protected function setPropertiesFromJSON($data): void
     {
         if (!$data) {
             return;
@@ -45,7 +44,7 @@ trait JsonConfigTrait
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }

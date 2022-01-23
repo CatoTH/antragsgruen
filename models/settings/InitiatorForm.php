@@ -6,30 +6,46 @@ class InitiatorForm implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    const CONTACT_NONE     = 0;
+    const CONTACT_NONE = 0;
     const CONTACT_OPTIONAL = 1;
     const CONTACT_REQUIRED = 2;
 
+    /** @var int */
     public $type = 0;
 
-    public $initiatorCanBePerson       = true;
+    /** @var bool */
+    public $initiatorCanBePerson = true;
+    /** @var bool */
     public $initiatorCanBeOrganization = true;
 
-    public $minSupporters       = 1;
+    /** @var int */
+    public $minSupporters = 1;
+    /** @var null|int */
     public $minSupportersFemale = null;
-    public $maxPdfSupporters    = null;
-    public $hasOrganizations    = true;
+    /** @var null|int */
+    public $maxPdfSupporters = null;
+    /** @var bool */
+    public $hasOrganizations = true;
+    /** @var bool */
     public $allowMoreSupporters = true;
-    public $hasResolutionDate   = 2;
+    /** @var int */
+    public $hasResolutionDate = 2;
+    /** @var bool */
     public $allowSupportingAfterPublication = false;
+    /** @var bool */
     public $offerNonPublicSupports = false;
 
     // Used for CollectBeforePublish
+    /** @var bool */
     public $skipForOrganizations = true;
 
-    public $contactName   = 0;
-    public $contactPhone  = 1;
-    public $contactEmail  = 2;
+    /** @var int */
+    public $contactName = 0;
+    /** @var int */
+    public $contactPhone = 1;
+    /** @var int */
+    public $contactEmail = 2;
+    /** @var int */
     public $contactGender = 0;
 
     /**
