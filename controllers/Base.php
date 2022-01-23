@@ -168,6 +168,11 @@ class Base extends Controller
         return Yii::$app->request->method;
     }
 
+    protected function getHttpHeader(string $headerName): ?string
+    {
+        return Yii::$app->request->headers->get($headerName);
+    }
+
     protected function getPostBody(): string
     {
         return \Yii::$app->request->getRawBody();

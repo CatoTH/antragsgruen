@@ -213,6 +213,17 @@ Add the following settings to your config.json (and adapt them to your needs):
 }
 ```
 
+### Integrating OpenSlides
+
+Antragsgrün has an official plugin that allows using OpenSlides as a backend for the user administration. This allows two things:
+
+- Logging in on Antragsgrün with the user credentials of an OpenSlides instance.
+- Automatically synchronizing the user accouns and user groups from OpenSlides to Antragsgrün, e.g. for restricting motion creation or voting rights on Antragsgrün to a user group administrated on OpenSlides.
+
+To set it up:
+- Enable the `openslides` plugin on the Antragsgrün site
+- Set up the OpenSlides Base URI in the configuration of the consultation (e.g. `https://demo.openslides.org/`), and specify an API key
+- Set up the [OpenSlides-Proxy](https://github.com/CatoTH/OpenSlides-Proxy), specifying the OpenSlides Base URI, Antragsgrün's Callback URI and the API key.
 
 ### Command Line Commands
 

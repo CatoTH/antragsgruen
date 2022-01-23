@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\plugins\openslides\controllers;
 
 use app\plugins\openslides\AutoupdateSyncService;
+use app\plugins\openslides\SiteSettings;
 
 class AutoupdateController extends \app\controllers\Base
 {
@@ -29,6 +30,12 @@ class AutoupdateController extends \app\controllers\Base
     {
         if ($this->getHttpMethod() !== 'POST') {
             return $this->returnRestResponse(405, json_encode(['success' => false, 'error' => 'Only POST is allowed'], JSON_THROW_ON_ERROR));
+        }
+
+        /** @var SiteSettings $settings */
+        $settings = $this->site->getSettings();
+        if ($this->getHttpHeader('X-API-Key') === null || $this->getHttpHeader('X-API-Key') !== $settings->osApiKey) {
+            return $this->returnRestResponse(401, json_encode(['success' => false, 'error' => 'No or invalid X-API-Key given'], JSON_THROW_ON_ERROR));
         }
 
         $data = $this->syncService->parseRequest($this->getPostBody());
