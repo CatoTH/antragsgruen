@@ -4,7 +4,6 @@ namespace app\plugins\neos;
 
 use app\models\db\{Consultation, Site};
 use app\models\settings\Layout;
-use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
 use yii\web\View;
 
@@ -33,27 +32,23 @@ class Module extends ModuleBase
         ];
     }
 
-    public static function overridesDefaultLayout(): ?string
+    public static function overridesDefaultLayout(): string
     {
         return 'layout-plugin-neos-std';
     }
 
     /**
-     * @param Consultation $consultation
-     * @return string|ConsultationSettings
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getConsultationSettingsClass(Consultation $consultation): ?string
+    public static function getConsultationSettingsClass(Consultation $consultation): string
     {
         return ConsultationSettings::class;
     }
 
     /**
-     * @param Site $site
-     * @return null|DefaultBehavior|string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSpecificBehavior(Site $site)
+    public static function getSiteSpecificBehavior(Site $site): string
     {
         return SiteSpecificBehavior::class;
     }
@@ -65,7 +60,7 @@ class Module extends ModuleBase
         ];
     }
 
-    public static function getDefaultLogo(): ?array
+    public static function getDefaultLogo(): array
     {
         return [
             'image/png',

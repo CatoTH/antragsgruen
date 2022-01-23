@@ -19,11 +19,9 @@ class Tools
     }
 
     /**
-     * @param Site $site
-     * @param User $user
      * @return Consultation[]
      */
-    public static function getUserConsultations(Site $site,  ?User $user)
+    public static function getUserConsultations(Site $site,  ?User $user): array
     {
         if (!$user) {
             return [];
@@ -75,7 +73,7 @@ class Tools
      * @param Consultation[] $consultations
      * @return Motion[]
      */
-    public static function getAllMotions($consultations)
+    public static function getAllMotions(array $consultations): array
     {
         $all = [];
         foreach ($consultations as $consultation) {
@@ -91,10 +89,9 @@ class Tools
     }
 
     /**
-     * @param Consultation $consultation
      * @return Motion[]
      */
-    public static function getMotionsInDiscussion(Consultation $consultation)
+    public static function getMotionsInDiscussion(Consultation $consultation): array
     {
         $motions = Tools::getDiscussionType($consultation)->getVisibleMotions(false);
         return array_filter($motions, function (Motion $motion) {
@@ -106,7 +103,7 @@ class Tools
      * @param Consultation[] $consultations
      * @return Motion[]
      */
-    public static function getAllMotionsInDiscussion($consultations)
+    public static function getAllMotionsInDiscussion(array $consultations): array
     {
         $all = [];
         foreach ($consultations as $consultation) {
@@ -119,10 +116,9 @@ class Tools
     }
 
     /**
-     * @param Consultation $consultation
      * @return Motion[]
      */
-    public static function getMotionsAnswered(Consultation $consultation)
+    public static function getMotionsAnswered(Consultation $consultation): array
     {
         $motions = Tools::getPetitionType($consultation)->getVisibleMotions(true); // true: wg. processed
         return array_filter($motions, function (Motion $motion) {
@@ -134,7 +130,7 @@ class Tools
      * @param Consultation[] $consultations
      * @return Motion[]
      */
-    public static function getAllMotionsAnswered($consultations)
+    public static function getAllMotionsAnswered(array $consultations): array
     {
         $all = [];
         foreach ($consultations as $consultation) {
@@ -147,10 +143,9 @@ class Tools
     }
 
     /**
-     * @param Consultation $consultation
      * @return Motion[]
      */
-    public static function getMotionsUnanswered(Consultation $consultation)
+    public static function getMotionsUnanswered(Consultation $consultation): array
     {
         $motions = Tools::getPetitionType($consultation)->getVisibleMotions(false);
         return array_filter($motions, function (Motion $motion) {
@@ -162,7 +157,7 @@ class Tools
      * @param Consultation[] $consultations
      * @return Motion[]
      */
-    public static function getAllMotionsUnanswered($consultations)
+    public static function getAllMotionsUnanswered(array $consultations): array
     {
         $all = [];
         foreach ($consultations as $consultation) {
@@ -175,10 +170,9 @@ class Tools
     }
 
     /**
-     * @param Consultation $consultation
      * @return Motion[]
      */
-    public static function getMotionsCollecting(Consultation $consultation)
+    public static function getMotionsCollecting(Consultation $consultation): array
     {
         $motions = Tools::getPetitionType($consultation)->motions; // Collecting phase is not visible by default
         return array_filter($motions, function (Motion $motion) {
@@ -190,7 +184,7 @@ class Tools
      * @param Consultation[] $consultations
      * @return Motion[]
      */
-    public static function getAllMotionsCollection($consultations)
+    public static function getAllMotionsCollection(array $consultations): array
     {
         $all = [];
         foreach ($consultations as $consultation) {
@@ -203,10 +197,9 @@ class Tools
     }
 
     /**
-     * @param Site $site
      * @return Motion[]
      */
-    public static function getMyMotions(Site $site)
+    public static function getMyMotions(Site $site): array
     {
         $motions = [];
         $user    = User::getCurrentUser();
@@ -235,10 +228,9 @@ class Tools
     }
 
     /**
-     * @param Site $site
      * @return Motion[]
      */
-    public static function getSupportedMotions(Site $site)
+    public static function getSupportedMotions(Site $site): array
     {
         $motions = [];
         $user    = User::getCurrentUser();
@@ -259,10 +251,7 @@ class Tools
         return $motions;
     }
 
-    /**
-     * @return bool
-     */
-    public static function canRespondToPetition(IMotion $motion)
+    public static function canRespondToPetition(IMotion $motion): bool
     {
         $consultation = $motion->getMyConsultation();
 
@@ -300,10 +289,6 @@ class Tools
         ]);
     }
 
-    /**
-     * @param IMotion $motion
-     * @return \DateTime|null
-     */
     public static function getPetitionResponseDeadline(IMotion $motion): ?\DateTime
     {
         $typePetition = Tools::getPetitionType($motion->getMyConsultation());
@@ -328,11 +313,9 @@ class Tools
     }
 
     /**
-     * @param IMotion $motion
-     * @return bool
      * @throws \Exception
      */
-    public static function isMotionDeadlineOver(IMotion $motion)
+    public static function isMotionDeadlineOver(IMotion $motion): bool
     {
         $deadline = static::getPetitionResponseDeadline($motion);
         if (!$deadline) {
@@ -341,10 +324,6 @@ class Tools
         return $deadline->getTimestamp() < time();
     }
 
-    /**
-     * @param IMotion $motion
-     * @return \DateTime|null
-     */
     public static function getDiscussionUntil(IMotion $motion): ?\DateTime
     {
         $typeDiscussion = Tools::getDiscussionType($motion->getMyConsultation());
@@ -367,22 +346,20 @@ class Tools
         }
     }
 
-    public static function isDiscussion(IMotion $motion)
+    public static function isDiscussion(IMotion $motion): bool
     {
         return $motion->getMyMotionType()->id === Tools::getDiscussionType($motion->getMyConsultation())->id;
     }
 
-    public static function isPetition(IMotion $motion)
+    public static function isPetition(IMotion $motion): bool
     {
         return $motion->getMyMotionType()->id === Tools::getPetitionType($motion->getMyConsultation())->id;
     }
 
     /**
-     * @param Motion $motion
-     * @return \DateTime|null
      * @throws \Exception
      */
-    public static function getMotionOverallLimit(Motion $motion)
+    public static function getMotionOverallLimit(Motion $motion): ?\DateTime
     {
         /** @var ConsultationSettings $settings */
         $settings = $motion->getMyConsultation()->getSettings();
@@ -424,11 +401,9 @@ class Tools
     }
 
     /**
-     * @param Motion $motion
-     * @return bool
      * @throws \Exception
      */
-    public static function isMotionOverallDeadlineOver(Motion $motion)
+    public static function isMotionOverallDeadlineOver(Motion $motion): bool
     {
         $deadline = static::getMotionOverallLimit($motion);
         if (!$deadline) {
@@ -437,11 +412,7 @@ class Tools
         return $deadline->getTimestamp() < time();
     }
 
-    /**
-     * @param IMotion $motion
-     * @return int
-     */
-    public static function getMotionPhaseNumber(IMotion $motion)
+    public static function getMotionPhaseNumber(IMotion $motion): int
     {
         if ($motion->getMyMotionType()->id === Tools::getDiscussionType($motion->getMyConsultation())->id) {
             return 1; // In Discussion
@@ -459,11 +430,9 @@ class Tools
     }
 
     /**
-     * @param IMotion $motion
-     * @return bool
      * @throws \Exception
      */
-    public static function isDiscussionUntilOver(IMotion $motion)
+    public static function isDiscussionUntilOver(IMotion $motion): bool
     {
         $deadline = static::getDiscussionUntil($motion);
         if (!$deadline) {
@@ -473,10 +442,9 @@ class Tools
     }
 
     /**
-     * @param MotionEvent $event
      * @throws \app\models\exceptions\FormError
      */
-    public static function onMerged(MotionEvent $event)
+    public static function onMerged(MotionEvent $event): void
     {
         $motion = $event->motion;
         if ($motion->motionTypeId !== static::getDiscussionType($motion->getMyConsultation())->id) {
@@ -502,11 +470,10 @@ class Tools
     }
 
     /**
-     * @param MotionEvent $event
      * @throws \app\models\exceptions\MailNotSent
      * @throws \app\models\exceptions\ServerConfiguration
      */
-    public static function onPublishedFirst(MotionEvent $event)
+    public static function onPublishedFirst(MotionEvent $event): void
     {
         $motion = $event->motion;
         if (static::isPetitionsActive($motion->getMyConsultation())) {
@@ -519,11 +486,7 @@ class Tools
         }
     }
 
-    /**
-     * @param IMotion $motion
-     * @return int
-     */
-    public static function getMotionTimestamp(IMotion $motion)
+    public static function getMotionTimestamp(IMotion $motion): int
     {
         if ($motion->datePublication) {
             return DateTools::dateSql2timestamp($motion->datePublication);

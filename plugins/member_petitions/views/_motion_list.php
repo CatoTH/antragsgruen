@@ -124,9 +124,7 @@ foreach ($motions as $motion) {
     }
 
     if (Tools::isPetitionsActive($motion->getMyConsultation())) {
-        if ($motion->getMyConsultation()->getSettings()) {
-            $deadline = Tools::getPetitionResponseDeadline($motion);
-        }
+        $deadline = Tools::getPetitionResponseDeadline($motion);
         if ($deadline) {
             echo ', ' . Yii::t('member_petitions', 'index_remaining') . ': ';
             echo \app\components\Tools::formatRemainingTime($deadline);

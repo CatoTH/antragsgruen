@@ -2,7 +2,7 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{Consultation, IVotingItem, Site, User, Vote, VotingBlock};
+use app\models\db\{Consultation, Site, Vote, VotingBlock};
 use app\models\settings\Layout;
 use app\models\UserOrganization;
 use app\plugins\ModuleBase;
@@ -25,20 +25,17 @@ class Module extends ModuleBase
     }
 
     /**
-     * @return SiteSpecificBehavior|string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSpecificBehavior(Site $site)
+    public static function getSiteSpecificBehavior(Site $site): string
     {
         return SiteSpecificBehavior::class;
     }
 
     /**
-     * @param Consultation $consultation
-     * @return string|VotingData
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getVotingDataClass(Consultation $consultation): ?string
+    public static function getVotingDataClass(Consultation $consultation): string
     {
         return VotingData::class;
     }

@@ -6,11 +6,17 @@ use app\models\settings\Consultation;
 
 class ConsultationSettings extends Consultation
 {
+    /** @var string */
     public $organizationId = '';
+    /** @var int */
     public $replyDeadline = 14;
+    /** @var int */
     public $minDiscussionTime = 21;
+    /** @var int */
     public $maxOverallTime = 0;
+    /** @var bool */
     public $petitionPage = true;
+    /** @var bool */
     public $canAlwaysRespond = false;
 
     public function getStartLayoutView(): string
@@ -31,10 +37,7 @@ class ConsultationSettings extends Consultation
         }
     }
 
-    /**
-     * @return null|string|LayoutSettings
-     */
-    public function getSpecializedLayoutClass(): ?string
+    public function getSpecializedLayoutClass(): string
     {
         return LayoutSettings::class;
     }

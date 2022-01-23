@@ -4,8 +4,7 @@ namespace app\plugins\member_petitions\commands;
 
 use app\models\db\Consultation;
 use app\models\settings\AntragsgruenApp;
-use app\plugins\member_petitions\notifications\AdminResponseRequired;
-use app\plugins\member_petitions\notifications\DiscussionOver;
+use app\plugins\member_petitions\notifications\{AdminResponseRequired, DiscussionOver};
 use app\plugins\member_petitions\Tools;
 use yii\console\Controller;
 
@@ -16,7 +15,7 @@ class NotificationsController extends Controller
     /**
      * @return Consultation[]
      */
-    private function getConsultations()
+    private function getConsultations(): array
     {
         $consultations = Consultation::findAll(['dateDeletion' => null]);
         $valid         = [];
@@ -33,7 +32,7 @@ class NotificationsController extends Controller
     /**
      * Notify the user that the discussion period is over
      */
-    private function sendDiscussionOverNotifications()
+    private function sendDiscussionOverNotifications(): void
     {
         foreach ($this->getConsultations() as $consultation) {
             foreach (Tools::getDiscussionType($consultation)->motions as $motion) {
@@ -53,7 +52,7 @@ class NotificationsController extends Controller
     /**
      * A reminder to the administrators to reply to a petition
      */
-    private function sendAdminAnswerReminders()
+    private function sendAdminAnswerReminders(): void
     {
         foreach ($this->getConsultations() as $consultation) {
             foreach (Tools::getPetitionType($consultation)->motions as $motion) {
@@ -73,11 +72,9 @@ class NotificationsController extends Controller
     /**
      * Send notifications
      */
-    public function actionSend()
+    public function actionSend(): void
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
-        \Yii::$app->urlManager->baseUrl = $app->domainPlain;
+        \Yii::$app->urlManager->baseUrl = AntragsgruenApp::getInstance()->domainPlain;
         $this->sendDiscussionOverNotifications();
         $this->sendAdminAnswerReminders();
     }

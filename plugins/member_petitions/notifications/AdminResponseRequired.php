@@ -3,18 +3,14 @@
 namespace app\plugins\member_petitions\notifications;
 
 use app\models\db\Motion;
-use app\models\notifications\Base;
-use app\models\notifications\IEmailAdmin;
+use app\models\notifications\{Base, IEmailAdmin};
 use app\models\settings\AntragsgruenApp;
 
 class AdminResponseRequired extends Base implements IEmailAdmin
 {
+    /** @var Motion */
     protected $motion;
 
-    /**
-     * AdminResponseRequired constructor.
-     * @param Motion $motion
-     */
     public function __construct(Motion $motion)
     {
         $this->motion       = $motion;

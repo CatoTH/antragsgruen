@@ -38,21 +38,17 @@ class Module extends ModuleBase
     }
 
     /**
-     * @param Site $site
-     * @return null|DefaultBehavior|string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSpecificBehavior(Site $site)
+    public static function getSiteSpecificBehavior(Site $site): string
     {
         return SiteSpecificBehavior::class;
     }
 
     /**
-     * @param Consultation $consultation
-     * @return string|ConsultationSettings
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getConsultationSettingsClass(Consultation $consultation): ?string
+    public static function getConsultationSettingsClass(Consultation $consultation): string
     {
         return ConsultationSettings::class;
     }

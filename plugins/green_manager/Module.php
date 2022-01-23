@@ -54,11 +54,9 @@ class Module extends ModuleBase
     }
 
     /**
-     * @param Site $site
-     * @return string|SiteSettings
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSettingsClass(Site $site)
+    public static function getSiteSettingsClass(Site $site): string
     {
         return SiteSettings::class;
     }
@@ -73,10 +71,7 @@ class Module extends ModuleBase
         return "@app/plugins/green_manager/views/sitedata_subdomain";
     }
 
-    /**
-     * @param UserEvent $event
-     */
-    public static function onAccountConfirmed(UserEvent $event)
+    public static function onAccountConfirmed(UserEvent $event): void
     {
         foreach ($event->user->adminSites as $site) {
             /** @var SiteSettings $settings */

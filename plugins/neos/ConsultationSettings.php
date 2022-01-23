@@ -6,10 +6,7 @@ use app\models\settings\Consultation;
 
 class ConsultationSettings extends Consultation
 {
-    /**
-     * @return null|string|LayoutSettings
-     */
-    public function getSpecializedLayoutClass(): ?string
+    public function getSpecializedLayoutClass(): string
     {
         return LayoutSettings::class;
     }
