@@ -87,7 +87,7 @@ class Factory
                     continue;
                 }
                 $block->items[]   = $motion;
-                $handledMotions[] = $motion->id;
+                $handledIMotions->addIMotion($motion);
 
                 if (is_a($motion, Motion::class)) {
                     $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);

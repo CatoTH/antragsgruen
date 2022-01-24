@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.9.1 [not released yet]
+
+- Bugfix: If both an agenda and a proposed procedure is used, some motions could appear twice on the proposed procedure.
+
 ## Version 4.9.0 (2021-12-12)
 
 - Online voting functionality was added. Admins can now define voting blocks, where users can vote on amendments and motions to be adopted or rejected. A documentation about this feature is located at https://sandbox.motion.tools/help#votings .
