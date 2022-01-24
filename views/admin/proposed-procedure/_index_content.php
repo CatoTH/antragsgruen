@@ -66,7 +66,7 @@ foreach ($proposedAgenda as $proposedItem) {
     }
 
     if (!$expandAll && $tagId === null && $proposedItem->blockId !== $expandId) {
-        $expandUrl   = UrlHelper::createUrl(['/admin/proposed-procedure/index', 'expandId' => $proposedItem->blockId]);
+        $expandUrl   = UrlHelper::createUrl(['/admin/proposed-procedure/index', 'expandId' => $proposedItem->blockId]) . '#motionHolder' . $proposedItem->blockId;
         $expandTitle = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Html::encode($proposedItem->title);
         ?>
         <section class="motionHolder motionHolder<?= $proposedItem->blockId ?> proposedProcedureOverview openable">
@@ -79,7 +79,7 @@ foreach ($proposedAgenda as $proposedItem) {
     }
 
     ?>
-    <section class="motionHolder motionHolder<?= $proposedItem->blockId ?> proposedProcedureOverview">
+    <section class="motionHolder motionHolder<?= $proposedItem->blockId ?> proposedProcedureOverview" id="motionHolder<?= $proposedItem->blockId ?>">
         <h2 class="green">
             <?php
             if (!$expandAll) {

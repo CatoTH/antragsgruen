@@ -100,6 +100,19 @@ usort($motionsInvisible, function(Motion $motion1, Motion $motion2) {
 $allUrl = UrlHelper::createUrl(['admin/motion-list/index', 'motionId' => 'all']);
 echo Html::a('<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Yii::t('admin', 'list_show_all'), $allUrl) . "<br>";
 
+echo '<h2>' . Yii::t('admin', 'filter_agenda_item') . '</h2>';
+
+foreach ($consultation->agendaItems as $agendaItem) {
+    $num = count($agendaItem->motions);
+    if ($num > 0) {
+        $route = UrlHelper::createUrl(['/admin/motion-list/index', 'motionId' => 'all', 'Search[agendaItem]' => $agendaItem->id]);
+        echo '<a href="' . Html::encode($route) . '"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
+        echo Html::encode($agendaItem->title);
+        echo '</a> (' . $num . ')<br>';
+        $agendaItems[$agendaItem->id] = $agendaItem->title . ' (' . $num . ')';
+    }
+}
+
 echo '<h2>' . Yii::t('admin', 'list_visibles') . '</h2>';
 
 foreach ($motionsVisible as $entry) {
