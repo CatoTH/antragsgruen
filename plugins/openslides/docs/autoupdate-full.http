@@ -1,7 +1,17 @@
 ### This is the demo request taken from https://demo.openslides.org/
 
-POST http://stdparteitag.antragsgruen.test/std-parteitag/openslides/autoupdate
+POST http://stdparteitag.antragsgruen.test/openslides/autoupdate
 Content-Type: application/json
 X-Api-Key: 9876543
 
 < ../../../tests/_data/openslides-autoupdate-fullload.json
+
+###
+
+### This is the demo request taken from https://demo.openslides.org/
+
+POST http://stdparteitag.antragsgruen.test/openslides/autoupdate
+Content-Type: application/json
+X-Api-Key: 9876543
+
+< ../../../tests/_data/openslides-autoupdate-fullload3.json

@@ -38,12 +38,20 @@ class AutoupdateController extends \app\controllers\Base
             return $this->returnRestResponse(401, json_encode(['success' => false, 'error' => 'No or invalid X-API-Key given'], JSON_THROW_ON_ERROR));
         }
 
-        $data = $this->syncService->parseRequest($this->getPostBody());
-        if ($data->getChanged()->getUsersGroups() !== null) {
-            $this->syncService->syncUsergroups($data->getChanged()->getUsersGroups(), $data->isAllData());
-        }
-        if ($data->getChanged()->getUsersUsers() !== null) {
-            $this->syncService->syncUsers($data->getChanged()->getUsersUsers(), $data->isAllData());
+        $body = $this->getPostBody();
+        $arr = json_decode($body, true);
+        if (isset($arr['changed'])) {
+            $data = $this->syncService->parseRequest($body);
+            if ($data->getChanged()->getUsersGroups() !== null) {
+                $this->syncService->syncUsergroups($data->getChanged()->getUsersGroups(), $data->isAllData());
+            }
+            if ($data->getChanged()->getUsersUsers() !== null) {
+                $this->syncService->syncUsers($data->getChanged()->getUsersUsers(), $data->isAllData());
+            }
+        } elseif (isset($arr['connected'])) {
+            // Ignoring
+        } else {
+            return $this->returnRestResponse(422, json_encode(['success' => false, 'error' => 'Unknown message'], JSON_THROW_ON_ERROR));
         }
 
         return $this->returnRestResponse(200, json_encode(['success' => true], JSON_THROW_ON_ERROR));

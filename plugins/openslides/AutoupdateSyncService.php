@@ -133,11 +133,11 @@ class AutoupdateSyncService
                     $userObj->link('userGroups', $userGroup);
                 }
             }
+        }
 
-            foreach ($userObj->userGroups as $userGroup) {
-                if ($userGroup->belongsToExternalAuth($this->siteSettings->getAuthPrefix()) && !in_array(strtolower($userGroup->externalId), $foundOsGroupIds)) {
-                    $userObj->unlink('userGroups', $userGroup, true);
-                }
+        foreach ($userObj->userGroups as $userGroup) {
+            if ($userGroup->belongsToExternalAuth($this->siteSettings->getAuthPrefix()) && !in_array(strtolower($userGroup->externalId), $foundOsGroupIds)) {
+                $userObj->unlink('userGroups', $userGroup, true);
             }
         }
 

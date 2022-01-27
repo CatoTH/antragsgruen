@@ -47,7 +47,7 @@ class Module extends ModuleBase
     {
         $urls = parent::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
 
-        $urls[$dom . '<consultationPath:[\w_-]+>/openslides/autoupdate'] = '/openslides/autoupdate/callback';
+        $urls[$dom . 'openslides/autoupdate'] = '/openslides/autoupdate/callback';
 
         return $urls;
     }
