@@ -3,7 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\{latex\Content, Tools, UrlHelper};
-use app\models\db\{Consultation, MotionSection};
+use app\models\db\{AmendmentSection, Consultation, MotionSection};
 use app\models\exceptions\{FormError, Internal};
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -260,7 +260,10 @@ class Image extends ISectionType
 
     public function isEmpty(): bool
     {
-        return ($this->section->getData() === '');
+        // Hint: when an image is set to amendable and no image is given for the amendment, then the data is copied
+        // but no metadata is set. Don't show the image in this case, as nothing was to be changed anyway.
+        $invalidAmendmentImageWorkaround = (is_a($this->section, AmendmentSection::class) && $this->section->metadata === null);
+        return ($this->section->getData() === '' || $invalidAmendmentImageWorkaround);
     }
 
     /**

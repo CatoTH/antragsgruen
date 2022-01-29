@@ -3,6 +3,7 @@
 ### Version 4.9.1 [not released yet]
 
 - Bugfix: If both an agenda and a proposed procedure is used, some motions could appear twice on the proposed procedure.
+- Bugfix: If an image section was accidentally set as amendable and an amendment was created without changing the image, the PDF could not be rendered.
 
 ## Version 4.9.0 (2021-12-12)
 
