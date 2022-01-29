@@ -113,7 +113,9 @@ ob_start();
             <li :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
                 'answer_template_' + answerTemplate,
-                (isClosed ? 'showResults' : ''), (isClosed ? 'showDetailedResults' : '')
+                (isClosed ? 'showResults' : ''),
+                (isClosed ? 'showDetailedResults' : ''),
+                (isVoteListShown(groupedVoting) ? 'voteListShown' : '')
             ]">
                 <div class="titleLink" :class="{'question': voting.answers.length === 1}">
                     <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">

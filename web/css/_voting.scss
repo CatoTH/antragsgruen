@@ -16,6 +16,10 @@
       padding-top: 10px;
       padding-bottom: 10px;
       border-bottom: solid 1px #ccc;
+      &.voteListShown {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
 
       // Always shown
       .titleLink {

@@ -282,9 +282,8 @@ export class VotingAdmin {
             if (votePolicy === POLICY_USER_GROUPS) {
                 userGroups = (form.querySelector('.userGroupSelectList') as any).selectize.items.map(item => parseInt(item, 10));
             } else {
-                userGroups = null;
+                userGroups = [];
             }
-            console.log("Policy", votePolicy, userGroups);
             this.widget.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic);
 
             form.classList.add('hidden');

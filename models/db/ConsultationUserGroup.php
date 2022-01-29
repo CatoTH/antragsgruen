@@ -173,6 +173,15 @@ class ConsultationUserGroup extends ActiveRecord
         return false;
     }
 
+    public function getVotingApiObject(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->getNormalizedTitle(),
+            'member_count' => count($this->users),
+        ];
+    }
+
     public function getUserAdminApiObject(): array
     {
         return [

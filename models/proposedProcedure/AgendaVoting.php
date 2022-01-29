@@ -85,19 +85,19 @@ class AgendaVoting
             'results_public' => ($this->voting ? $this->voting->resultsPublic : null),
             'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'majority_type' => ($this->voting ? $this->voting->majorityType : null),
+            'user_groups' => [],
             'answers' => $answers,
             'answers_template' => ($this->voting ? $this->voting->getAnswerTemplate() : null),
             'items' => [],
         ];
-        if ($context === static::API_CONTEXT_ADMIN) {
-            $votingBlockJson['user_organizations'] = [];
-            foreach (User::getSelectableUserOrganizations(true) as $organization) {
-                $votingBlockJson['user_organizations'][] = [
-                    'id' => $organization->id,
-                    'title' => $organization->title,
-                    'members_present' => ($this->voting ? $this->voting->getUserPresentByOrganization($organization->id) : null),
-                ];
+
+        if ($this->voting) {
+            foreach ($this->voting->getMyConsultation()->getAllAvailableUserGroups() as $userGroup) {
+                $votingBlockJson['user_groups'][] = $userGroup->getVotingApiObject();
             }
+        }
+
+        if ($context === static::API_CONTEXT_ADMIN) {
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
 
             if ($this->voting) {
@@ -177,12 +177,12 @@ class AgendaVoting
                     return false;
                 }
             }));
-            $data['votes'] = array_map(function (Vote $vote) use ($answers): array {
+            $data['votes'] = array_map(function (Vote $vote) use ($answers, $voting): array {
                 return [
                     'vote' => $vote->getVoteForApi($answers),
                     'user_id' => $vote->userId,
-                    'user_name' => ($vote->user ? $vote->user->getAuthUsername() : null),
-                    'user_organizations' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),
+                    'user_name' => ($vote->getUser() ? $vote->getUser()->getAuthUsername() : null),
+                    'user_groups' => ($vote->getUser() ? $vote->getUser()->getConsultationUserGroupIds($voting->getMyConsultation()) : null),
                 ];
             }, $singleVotes);
         }
