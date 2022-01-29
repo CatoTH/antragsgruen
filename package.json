@@ -30,7 +30,7 @@
         "gulp": "^4.0.2",
         "gulp-concat": "^2.6.1",
         "gulp-postcss": "^9.0.1",
-        "gulp-sass": "^4.1.1",
+        "gulp-sass": "^5",
         "gulp-sourcemaps": "^3.0.0",
         "gulp-terser": "^2.0.1",
         "gulp-typescript": "^5.0.1",
@@ -52,8 +52,10 @@
         "corejs-typeahead": "^1.3.1",
         "isotope-layout": "^3.0.6",
         "moment": "^2.29.1",
-        "postcss": "^8.3.6",
-        "remove-trailing-separator": "^1.1.0"
+        "node-sass": "^7.0.1",
+        "postcss": "^8.4.5",
+        "remove-trailing-separator": "^1.1.0",
+        "vue-select": "^3.16.0"
     },
     "browserslist": [
         ">1%",
