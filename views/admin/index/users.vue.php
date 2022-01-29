@@ -5,6 +5,10 @@ ob_start();
 <div class="userAdminList">
     <section class="content">
         <div class="filterHolder">
+            <div class="groupFilter">
+                <v-select :options="userGroupFilter" :reduce="group => group.id" :value="filterGroup"
+                          @input="setFilterGroup($event)" ></v-select>
+            </div>
             <div class="usernameFilter">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="<?= Yii::t('admin', 'siteacc_userfilter_place')?>"
@@ -95,6 +99,8 @@ $html = ob_get_clean();
 <script>
     const removeUserConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_userdel_confirm')) ?>;
     const removeGroupConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_groupdel_confirm')) ?>;
+    const showAllGroups = <?= json_encode(Yii::t('admin', 'siteacc_userfilter_allgr')) ?>;
+
     Vue.component('v-select', VueSelect.VueSelect);
     Vue.directive('focus', {
         inserted: function (el) {
@@ -111,10 +117,25 @@ $html = ob_get_clean();
                 changedUserGroups: [],
                 creatingGroups: false,
                 addGroupName: '',
-                filterUsername: ''
+                filterUsername: '',
+                filterGroup: ''
             };
         },
         computed: {
+            userGroupFilter: function () {
+                return [
+                    {
+                        label: showAllGroups,
+                        id: '',
+                    },
+                    ...this.groups.map(function(group) {
+                        return {
+                            label: group.title,
+                            id: group.id,
+                        }
+                    })
+                ];
+            },
             userGroupOptions: function () {
                 return this.groups.map(function(group) {
                     return {
@@ -129,6 +150,13 @@ $html = ob_get_clean();
                 if (username !== '') {
                     users = this.users.filter(function(user) {
                         return user.name.toLowerCase().indexOf(username) !== -1;
+                    });
+                }
+                if (this.filterGroup > 0) {
+                    const filterGroup = this.filterGroup;
+                    console.log(filterGroup);
+                    users = users.filter(function(user) {
+                        return user.groups.indexOf(filterGroup) !== -1;
                     });
                 }
                 return users.sort(function (user1, user2) {
@@ -172,6 +200,10 @@ $html = ob_get_clean();
                         '<strong>' + this.escapeHtml(username.substr(pos, this.filterUsername.length)) + '</strong>' +
                         this.escapeHtml(username.substr(pos + this.filterUsername.length));
                 }
+            },
+            setFilterGroup: function ($event) {
+                console.log($event);
+                this.filterGroup = $event;
             },
             userGroupsDisplay: function (user) {
                 return this.groups.filter(function (group) {

@@ -1522,9 +1522,22 @@ label.legend {
 .userAdminList {
   .filterHolder {
     text-align: right;
-    .usernameFilter {
+    margin-bottom: 20px;
+    .usernameFilter, .groupFilter {
       display: inline-block;
-      max-width: 200px;
+      width: 200px;
+      vertical-align: top;
+    }
+    .groupFilter {
+      .vs__dropdown-toggle {
+        padding: 2px 0 5px;
+      }
+      .vs__selected {
+        width: 130px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
   ul.userList, ul.groupList {

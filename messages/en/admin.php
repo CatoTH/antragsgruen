@@ -322,6 +322,7 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_user_del_done'     => 'The user was remove from this consultation.',
     'siteacc_userfilter_place'  => 'Name...',
     'siteacc_userfilter_aria'   => 'Filter the user list',
+    'siteacc_userfilter_allgr'  => 'All groups',
     'siteacc_accounts_title'    => 'User accounts',
     'siteacc_groups_title'      => 'Groups',
     'siteacc_groups_add_open'   => 'Add group',
