@@ -321,6 +321,8 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_add_btn'            => 'Hinzufügen',
     'siteacc_del_btn'            => 'Löschen',
     'siteacc_user_del_done'      => 'Die ausgewählte Berechtigung für diese Veranstaltung wurde entfernt.',
+    'siteacc_userfilter_place'   => 'Name...',
+    'siteacc_userfilter_aria'    => 'Benutzer*innenliste filtern',
     'siteacc_accounts_title'     => 'Benutzer*innen-Accounts',
     'siteacc_groups_title'       => 'Gruppen',
     'siteacc_groups_add_open'    => 'Gruppe anlegen',

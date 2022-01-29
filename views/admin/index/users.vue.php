@@ -4,10 +4,20 @@ ob_start();
 ?>
 <div class="userAdminList">
     <section class="content">
+        <div class="filterHolder">
+            <div class="usernameFilter">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="<?= Yii::t('admin', 'siteacc_userfilter_place')?>"
+                           aria-label="<?= Yii::t('admin', 'siteacc_userfilter_aria')?>" v-model="filterUsername">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                </div>
+            </div>
+        </div>
         <ul class="userList">
-            <li v-for="user in users" :class="'user' + user.id">
+            <li v-for="user in usersFiltered" :class="'user' + user.id">
                 <div class="userInfo">
-                    <div class="name">{{ user.name }}</div>
+                    <div class="nameUnfiltered" v-if="!filterUsername">{{ user.name }}</div>
+                    <div class="nameFiltered" v-if="filterUsername" v-html="formatUsername(user.name)"></div>
                     <div class="additional">{{ userAdditionalData(user) }}</div>
                 </div>
                 <div class="groupsDisplay" v-if="!isGroupChanging(user)">
@@ -100,7 +110,8 @@ $html = ob_get_clean();
                 changingGroupUsers: [],
                 changedUserGroups: [],
                 creatingGroups: false,
-                addGroupName: ''
+                addGroupName: '',
+                filterUsername: ''
             };
         },
         computed: {
@@ -110,6 +121,18 @@ $html = ob_get_clean();
                         label: group.title,
                         id: group.id,
                     }
+                });
+            },
+            usersFiltered: function () {
+                const username = this.filterUsername.toLowerCase();
+                let users = this.users;
+                if (username !== '') {
+                    users = this.users.filter(function(user) {
+                        return user.name.toLowerCase().indexOf(username) !== -1;
+                    });
+                }
+                return users.sort(function (user1, user2) {
+                    return user1.name.localeCompare(user2.name);
                 });
             }
         },
@@ -132,6 +155,23 @@ $html = ob_get_clean();
                         widget.$emit('remove-user', user);
                     }
                 });
+            },
+            escapeHtml: function (text) {
+                return text.replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            },
+            formatUsername: function (username) {
+                if (this.filterUsername === '') {
+                    return '<strong>' + this.escapeHtml(username) + '</strong>';
+                } else {
+                    const pos = username.toLowerCase().indexOf(this.filterUsername.toLowerCase());
+                    return this.escapeHtml(username.substr(0, pos)) +
+                        '<strong>' + this.escapeHtml(username.substr(pos, this.filterUsername.length)) + '</strong>' +
+                        this.escapeHtml(username.substr(pos + this.filterUsername.length));
+                }
             },
             userGroupsDisplay: function (user) {
                 return this.groups.filter(function (group) {

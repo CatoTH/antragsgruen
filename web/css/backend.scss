@@ -1520,6 +1520,13 @@ label.legend {
 
 
 .userAdminList {
+  .filterHolder {
+    text-align: right;
+    .usernameFilter {
+      display: inline-block;
+      max-width: 200px;
+    }
+  }
   ul.userList, ul.groupList {
     display: block;
     list-style: none;
@@ -1544,7 +1551,7 @@ label.legend {
   .userInfo {
     flex-basis: 50%;
 
-    .name {
+    .nameUnfiltered {
       font-weight: bold;
     }
   }
