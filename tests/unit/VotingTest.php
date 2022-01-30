@@ -114,7 +114,6 @@ class VotingTest extends DBTestBase
 
         // Set from Offline to Preparing
         $votingMethods = $this->getVotingMethods([
-            'organizations' => [['id' => '0', 'members_present' => '10']],
             'status' => VotingBlock::STATUS_PREPARING,
         ]);
         $votingBlock = VotingBlock::findOne(1);
@@ -123,7 +122,6 @@ class VotingTest extends DBTestBase
 
         $votingBlock->refresh();
         $this->assertSame(VotingBlock::STATUS_PREPARING, $votingBlock->votingStatus);
-        $this->assertSame(10, $votingBlock->getUserPresentByOrganization('0'));
 
         // Set from Preparing to Open
         $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_OPEN]);
@@ -131,7 +129,6 @@ class VotingTest extends DBTestBase
 
         $votingBlock->refresh();
         $this->assertSame(VotingBlock::STATUS_OPEN, $votingBlock->votingStatus);
-        $this->assertSame(10, $votingBlock->getUserPresentByOrganization('0'));
 
         // Set from Open to Closed
         $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED]);

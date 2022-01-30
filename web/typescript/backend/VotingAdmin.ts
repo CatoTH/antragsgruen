@@ -100,14 +100,10 @@ export class VotingAdmin {
                     this.votings = data;
                     this.votingsJson = null;
                 },
-                setStatus(votingBlockId, newStatus, organizations) {
+                setStatus(votingBlockId, newStatus) {
                     this._performOperation(votingBlockId, {
                         op: 'update-status',
                         status: newStatus,
-                        organizations: organizations.map(orga => { return {
-                            id: orga.id,
-                            members_present: orga.members_present,
-                        }}),
                     });
                 },
                 saveSettings(votingBlockId, title, answerTemplate, majorityType, votePolicy, resultsPublic, votesPublic, assignedMotion) {

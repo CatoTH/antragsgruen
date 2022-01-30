@@ -171,7 +171,7 @@ $html = ob_get_clean();
     // Votings that have been created and will be using Antragsgrün, but are not active yet
     const STATUS_PREPARING = <?= VotingBlock::STATUS_PREPARING ?>;
 
-    // Currently open for voting. Currently there should only be one voting in this status at a time.
+    // Currently open for voting.
     const STATUS_OPEN = <?= VotingBlock::STATUS_OPEN ?>;
 
     // Vorting is closed.

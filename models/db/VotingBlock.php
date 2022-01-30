@@ -399,31 +399,6 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return in_array($this->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING, VotingBlock::STATUS_CLOSED]);
     }
 
-    public function getUsersPresentByOrganizations(): array {
-        if (!$this->usersPresentByOrga) {
-            return [];
-        }
-        return json_decode($this->usersPresentByOrga, true);
-    }
-
-    public function setUserPresentByOrganization(string $organization, ?int $users): void
-    {
-        $present = $this->getUsersPresentByOrganizations();
-        if ($users !== null) {
-            $present[$organization] = $users;
-        } elseif (isset($present[$organization])) {
-            unset($present[$organization]);
-        }
-        $this->usersPresentByOrga = json_encode($present);
-    }
-
-    public function getUserPresentByOrganization(string $organization): ?int
-    {
-        $present = $this->getUsersPresentByOrganizations();
-
-        return $present[$organization] ?? null;
-    }
-
     /**
      * @return Answer[]
      */
