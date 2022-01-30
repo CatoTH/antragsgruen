@@ -33,7 +33,7 @@ class Vote extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'vote';
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return User::getCachedUser($this->userId);
     }

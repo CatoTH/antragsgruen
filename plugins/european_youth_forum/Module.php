@@ -82,6 +82,9 @@ class Module extends ModuleBase
             ],
         ];
         foreach ($votes as $vote) {
+            if (!$vote->getUser()) {
+                continue;
+            }
             $voteType = $vote->getVoteForApi($answers);
             if (in_array('nyo', $vote->getUser()->getMyOrganizationIds())) {
                 $orga = 'nyo';
