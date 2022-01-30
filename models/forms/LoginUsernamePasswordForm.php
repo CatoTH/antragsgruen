@@ -226,7 +226,15 @@ class LoginUsernamePasswordForm extends Model
         }
 
         if ($this->externalAuthenticator) {
-            return $this->externalAuthenticator->performLogin($this->username, $this->password);
+            try {
+                return $this->externalAuthenticator->performLogin($this->username, $this->password);
+            } catch (Login $e) {
+                if ($this->externalAuthenticator->replacesLocalUserAccounts()) {
+                    throw $e;
+                }
+                // Only continue with local authentication if the authenticator does NOT replace local user accounts
+                // and if the user was not found. If it was found, and the password was wrong, still throw an exception.
+            }
         }
 
         $candidates = $this->getCandidates($site);

@@ -9,9 +9,10 @@ interface ExternalPasswordAuthenticatorInterface
 {
     public function getAuthPrefix(): string;
 
-    public function supportsCreatingAccounts(): bool; // Only false supported as of yet
-    public function supportsChangingPassword(): bool; // Only false supported as of yet
-    public function supportsResetPassword(): bool; // Only false supported as of yet
+    public function supportsCreatingAccounts(): bool; // Only false supported yet
+    public function supportsChangingPassword(): bool; // Only false supported yet
+    public function supportsResetPassword(): bool; // Only false supported yet
+    public function replacesLocalUserAccounts(): bool;
     public function resetPasswordAlternativeLink(): ?string;
 
     /**

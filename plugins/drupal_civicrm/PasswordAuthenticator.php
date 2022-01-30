@@ -87,6 +87,11 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
         return false;
     }
 
+    public function replacesLocalUserAccounts(): bool
+    {
+        return true;
+    }
+
     public function resetPasswordAlternativeLink(): ?string
     {
         return ($this->config->resetAlternativeLink ? $this->config->resetAlternativeLink : null);
