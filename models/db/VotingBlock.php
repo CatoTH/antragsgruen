@@ -43,7 +43,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     // Votings that have been created and will be using Antragsgrün, but are not active yet
     const STATUS_PREPARING = 1;
 
-    // Currently open for voting. Currently there should only be one voting in this status at a time.
+    // Open for voting.
     const STATUS_OPEN = 2;
 
     // Vorting is closed.
@@ -72,10 +72,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     const ACTIVITY_TYPE_RESET = 3;
     const ACTIVITY_TYPE_REOPENED = 4;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'votingBlock';
     }

@@ -164,12 +164,7 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-                <div class="singleVoteList" v-for="answer in voting.answers">
-                    <strong>{{ answer.title }}:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, answer.api_id)">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
+                <voting-vote-list :voting="voting" :groupedVoting="groupedVoting"></voting-vote-list>
             </li>
             </template>
         </ul>
@@ -383,6 +378,7 @@ $html = ob_get_clean();
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting', 'addableMotions', 'alreadyAddedItems', 'userGroups'],
+        mixins: [VOTING_COMMON_MIXIN],
         data() {
             return {
                 activityClosed: true,
@@ -406,23 +402,6 @@ $html = ob_get_clean();
             }
         },
         computed: {
-            groupedVotings: function () {
-                const knownGroupIds = {};
-                const allGroups = [];
-                this.voting.items.forEach(function(item) {
-                    if (item.item_group_same_vote) {
-                        if (knownGroupIds[item.item_group_same_vote] !== undefined) {
-                            allGroups[knownGroupIds[item.item_group_same_vote]].push(item);
-                        } else {
-                            knownGroupIds[item.item_group_same_vote] = allGroups.length;
-                            allGroups.push([item]);
-                        }
-                    } else {
-                        allGroups.push([item]);
-                    }
-                });
-                return allGroups;
-            },
             isUsed: {
                 get() {
                     return this.voting.status !== STATUS_OFFLINE;
@@ -621,7 +600,7 @@ $html = ob_get_clean();
                 return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
             },
             hasVoteList: function (groupedItem) {
-                return groupedItem[0].votes !== undefined;
+                return groupedItem[0].votes !== undefined && (this.isOpen || this.isClosed);
             },
             isVoteListShown: function (groupedItem) {
                 const showId = groupedItem[0].type + '-' + groupedItem[0].id;
@@ -634,10 +613,6 @@ $html = ob_get_clean();
             hideVoteList: function (groupedItem) {
                 const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
                 this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
-            },
-            getVoteListVotes: function (groupedItem, type) {
-                return groupedItem[0].votes
-                    .filter(vote => vote.vote === type);
             },
             openSettings: function () {
                 this.settingsOpened = true;

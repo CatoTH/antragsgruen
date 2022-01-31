@@ -18,6 +18,8 @@ $layout->addBreadcrumb(Yii::t('voting', 'bc'));
 $this->title = Yii::t('voting', 'results_title');
 
 $layout->loadVue();
+$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
+$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
 $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 
 $apiData = [];

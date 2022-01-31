@@ -99,17 +99,14 @@ class AgendaVoting
 
         if ($context === static::API_CONTEXT_ADMIN) {
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
-
-            if ($this->voting) {
-                $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
-            } else {
-                $votingBlockJson['vote_policy'] = ['id' => IPolicy::POLICY_NOBODY];
-            }
         }
         if ($this->voting) {
             list($total, $users) = $this->voting->getVoteStatistics();
             $votingBlockJson['votes_total'] = $total;
             $votingBlockJson['votes_users'] = $users;
+            $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
+        } else {
+            $votingBlockJson['vote_policy'] = ['id' => IPolicy::POLICY_NOBODY];
         }
 
         foreach ($this->items as $item) {
