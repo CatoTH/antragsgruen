@@ -73,7 +73,7 @@ class Agenda
                     $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
                     $originalData = $section->getOriginalMotionSection()->getData();
                     $newData      = $section->data;
-                    if ($originalData == $newData) {
+                    if ($originalData === $newData) {
                         continue;
                     }
                     if ($format === static::FORMAT_ODS) {
