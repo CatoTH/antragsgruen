@@ -19,6 +19,7 @@
 
 ### Version 4.9.1 [not released yet]
 
+- Bugfix: A modified amendment text as proposed procedure only got shown in the internal list after saving it a second time.
 - Bugfix: If both an agenda and a proposed procedure is used, some motions could appear twice on the proposed procedure.
 - Bugfix: If an image section was accidentally set as amendable and an amendment was created without changing the image, the PDF could not be rendered.
 

@@ -60,8 +60,6 @@ trait CacheTrait
     }
 
     /**
-     * @param string $key
-     *
      * @return mixed
      */
     public function getCacheItem(string $key)
@@ -75,11 +73,9 @@ trait CacheTrait
     }
 
     /**
-     * @param string $key
      * @param mixed $value
-     * @param bool $save
      */
-    public function setCacheItem(string $key, $value, bool $save = true)
+    public function setCacheItem(string $key, $value, bool $save = true): void
     {
         $data           = $this->getCacheObj();
         $data[$key]     = $value;

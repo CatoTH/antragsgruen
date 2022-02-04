@@ -249,10 +249,10 @@ class TextSimple extends Text
             $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, $section->getSettings()->title];
             $cached    = HashedStaticCache::getCache('getAmendmentPlainHtml', $cacheDeps);
             if (!$cached) {
-                $str = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
-                if ($str !== '') {
-                    $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>' . $str;
-                    HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $str);
+                $cached = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
+                if ($cached !== '') {
+                    $cached = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>' . $cached;
+                    HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $cached);
                 }
             }
             return $cached;
