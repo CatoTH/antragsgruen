@@ -25,7 +25,11 @@ if (!defined('YII_ENV')) {
     $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
     $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
     if (!file_exists($configFile) && !file_exists($installFile)) {
-        die('Antragsgrün is not configured yet. Please create the config/INSTALLING file and call this site again to open the installation wizard.');
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'de') === 0) {
+            die('Antragsgrün ist noch nicht eingerichtet. Bitte lege die Datei config/INSTALLING an und öffne diese Seite erneut, um in den Installationsmodus zu gelangen.');
+        } else {
+            die('Antragsgrün is not configured yet. Please create the config/INSTALLING file and call this site again to open the installation wizard.');
+        }
     }
 }
 
@@ -45,11 +49,23 @@ try {
     (new \app\components\yii\Application($config))->run();
 } catch (\yii\base\InvalidConfigException $e) {
     $error = htmlentities($e->getMessage(), ENT_COMPAT, 'UTF-8');
-    $file  = (isset($_SERVER['ANTRAGSGRUEN_CONFIG']) ? $_SERVER['ANTRAGSGRUEN_CONFIG'] : 'config/config.json');
-    echo str_replace('%ERROR%', $error, 'Leider ist die Antragsgrün-Konfigurationsdatei (' . $file . ') fehlerhaft.
-    Die Fehlermeldung lautet: %ERROR%<br><br>
-    Du kannst auf folgende Weisen versuchen, sie zu korrigieren:<ul>
-    <li>Die Datei von Hand bearbeiten und den Fehler ausfindig machen und korrigieren.</li>
-    <li>Den Installationsmodus aktivieren (die Datei config/INSTALLING anlegen) und eine beliebige Seite aufrufen, um in den Installationsmodus zu gelangen.</li>
-    </ul>');
+    $file = $_SERVER['ANTRAGSGRUEN_CONFIG'] ?? 'config/config.json';
+
+    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'de') === 0) {
+        $message = 'Leider ist die Antragsgrün-Konfigurationsdatei (%FILE%) fehlerhaft.
+        Die Fehlermeldung lautet: %ERROR%<br><br>
+        Du kannst auf folgende Weisen versuchen, sie zu korrigieren:<ul>
+        <li>Die Datei von Hand bearbeiten und den Fehler ausfindig machen und korrigieren.</li>
+        <li>Den Installationsmodus aktivieren (die Datei config/INSTALLING anlegen) und eine beliebige Seite aufrufen, um in den Installationsmodus zu gelangen.</li>
+        </ul>';
+    } else {
+        $message = 'Unfortunately, the configuration file (%FILE%) is invalid.
+        The error message is: %ERROR%<br><br>
+        You can try to fix it using one of these methods:<ul>
+        <li>Find and fix the file by hand.</li>
+        <li>Activeate the installation mode (by creating the file config/INSTALLING) and open any page to enter the installation mode.</li>
+        </ul>';
+    }
+
+    echo str_replace(['%FILE%', '%ERROR%'], [$file, $error], $message);;
 }
