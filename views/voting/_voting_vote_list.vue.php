@@ -53,12 +53,6 @@ $html = ob_get_clean();
                     .filter(vote => vote.vote === type);
             },
             getVoteListForUserGroup: function (groupedItem, type, userGroup) {
-                console.log(JSON.parse(JSON.stringify(groupedItem[0].votes)));
-                groupedItem[0].votes.forEach(vote => {
-                   if (vote.user_groups === null) {
-                       console.log(JSON.stringify(vote));
-                   }
-                })
                 return groupedItem[0].votes
                     .filter(vote => vote.vote === type && vote.user_groups.indexOf(userGroup.id) !== -1);
             }

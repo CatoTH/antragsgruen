@@ -5,40 +5,69 @@ namespace app\plugins\european_youth_forum;
 use app\models\db\VotingBlock;
 
 class VotingData extends \app\models\settings\VotingData {
+    /** @var int|null */
     public $nycUsers;
+    /** @var int|null */
     public $ingyoUsers;
 
+    /** @var int|null */
     public $nycYes;
+    /** @var int|null */
     public $nycYesMultiplied;
+    /** @var int|null */
     public $nycNo;
+    /** @var int|null */
     public $nycNoMultiplied;
+    /** @var int|null */
     public $nycAbstention;
+    /** @var int|null */
     public $nycTotal;
+    /** @var int|null */
     public $nycTotalMultiplied;
 
+    /** @var int|null */
     public $ingyoYes;
+    /** @var int|null */
     public $ingyoYesMultiplied;
+    /** @var int|null */
     public $ingyoNo;
+    /** @var int|null */
     public $ingyoNoMultiplied;
+    /** @var int|null */
     public $ingyoAbstention;
+    /** @var int|null */
     public $ingyoTotal;
+    /** @var int|null */
     public $ingyoTotalMultiplied;
 
+    /** @var int|null */
     public $totalYes;
+    /** @var int|null */
     public $totalYesMultiplied;
+    /** @var int|null */
     public $totalNo;
+    /** @var int|null */
     public $totalNoMultiplied;
+    /** @var int|null */
     public $totalAbstention;
+    /** @var int|null */
     public $totalAbstentionMultiplied;
+    /** @var int|null */
     public $totalTotal;
+    /** @var int|null */
     public $totalTotalMultiplied;
 
     public function augmentWithResults(VotingBlock $voting, array $votes): \app\models\settings\VotingData
     {
+        if (!VotingHelper::isSetUpAsYfjVoting($voting)) {
+            return $this;
+        }
         $results = Module::calculateVoteResultsForApi($voting, $votes);
 
-        $this->nycUsers = $voting->getUserPresentByOrganization('nyc');
-        $this->ingyoUsers = $voting->getUserPresentByOrganization('ingyo');
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->nycUsers = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_NYC);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->ingyoUsers = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_INGYO);
 
         $this->nycYes = $results['nyc']['yes'];
         $this->nycYesMultiplied = $results['nyc']['yes_multiplied'];

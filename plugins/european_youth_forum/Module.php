@@ -92,15 +92,16 @@ class Module extends ModuleBase
             return $results;
         }
         $answers = $voting->getAnswers();
+        $consultation = $voting->getMyConsultation();
 
         foreach ($votes as $vote) {
             if (!$vote->getUser()) {
                 continue;
             }
             $voteType = $vote->getVoteForApi($answers);
-            if (VotingHelper::userIsGroup($vote->getUser(), VotingHelper::GROUP_NYC)) {
+            if (VotingHelper::userIsGroup($consultation, $vote->getUser(), VotingHelper::GROUP_NYC)) {
                 $orga = 'nyc';
-            } elseif (VotingHelper::userIsGroup($vote->getUser(), VotingHelper::GROUP_INGYO)) {
+            } elseif (VotingHelper::userIsGroup($consultation, $vote->getUser(), VotingHelper::GROUP_INGYO)) {
                 $orga = 'ingyo';
             } else {
                 continue;

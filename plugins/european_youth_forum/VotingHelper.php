@@ -3,7 +3,7 @@
 namespace app\plugins\european_youth_forum;
 
 use app\models\policies\UserGroups;
-use app\models\db\{ConsultationUserGroup, User, VotingBlock};
+use app\models\db\{Consultation, ConsultationUserGroup, User, VotingBlock};
 
 class VotingHelper
 {
@@ -15,10 +15,13 @@ class VotingHelper
         return strpos($group->title, $groupName) !== false;
     }
 
-    public static function userIsGroup(User $user, string $groupName): bool
+    public static function userIsGroup(Consultation $consultation, User $user, string $groupName): bool
     {
-        foreach ($user->userGroups as $userGroup) {
-            if (static::groupIs($userGroup, $groupName)) {
+        foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
+            if (!static::groupIs($userGroup, $groupName)) {
+                continue;
+            }
+            if (in_array($user->id, $userGroup->getUserIds())) {
                 return true;
             }
         }

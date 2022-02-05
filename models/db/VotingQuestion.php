@@ -21,10 +21,7 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
 {
     use VotingItemTrait;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'votingQuestion';
     }
@@ -32,7 +29,7 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
     public function getMyConsultation(): ?Consultation
     {
         $current = Consultation::getCurrent();
-        if ($current && $current->getMotion($this->id)) {
+        if ($current && $current->getVotingQuestion($this->id)) {
             return $current;
         } else {
             return Consultation::findOne($this->consultationId);

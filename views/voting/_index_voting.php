@@ -21,6 +21,8 @@ if (count($votingBlocksToRender) === 0 && !Factory::hasOnlineVotingBlocks($consu
 }
 
 $layout->loadVue();
+$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
+$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
 $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 
 $apiData = [];
