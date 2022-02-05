@@ -22,10 +22,7 @@ class Functional extends \Codeception\Module
         $this->deleteDB();
     }
 
-    /**
-     *
-     */
-    public function populateDBData1()
+    public function populateDBData1(): void
     {
         $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
             '..' . DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata1.sql');

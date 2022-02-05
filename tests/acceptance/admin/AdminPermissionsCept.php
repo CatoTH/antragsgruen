@@ -51,12 +51,12 @@ $I->logout();
 
 $I->wantTo('Assign the site admin role to consultationadmin');
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->dontSeeElement('.vs__dropdown-toggle');
+$I->dontSeeElement('.user7 .vs__dropdown-toggle');
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.vs__dropdown-toggle');
+$I->seeElement('.user7 .vs__dropdown-toggle');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([1], { id: 7 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
-$I->wait(0.5);
+$I->wait(0.3);
 $I->see('Seiten-Admin', '.user7');
 
 $I->logout();
@@ -89,12 +89,12 @@ $I->gotoConsultationHome();
 $I->logout();
 
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->dontSeeElement('.vs__dropdown-toggle');
+$I->dontSeeElement('.user7 .vs__dropdown-toggle');
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.vs__dropdown-toggle');
+$I->seeElement('.user7 .vs__dropdown-toggle');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([3], { id: 7 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
-$I->wait(0.5);
+$I->wait(0.3);
 $I->see('Antragskommission', '.user7');
 
 $I->logout();
@@ -118,10 +118,10 @@ $I->logout();
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 $I->see('consultationadmin@example.org');
 $I->clickJS('.userAdminList .user7 .btnRemove');
-$I->wait(1);
+$I->wait(0.5);
 $I->seeBootboxDialog('Single-Consultation Admin wirklich aus der Liste entfernen?');
 $I->acceptBootboxConfirm();
-$I->wait(1);
+$I->wait(0.5);
 $I->dontSee('consultationadmin@example.org');
 
 
@@ -145,12 +145,12 @@ $I->fillField('#emailAddresses', 'consultationadmin@example.org');
 $I->fillField('#names', 'ignored');
 $I->submitForm('#accountsCreateForm', [], 'addUsers');
 
-$I->wait(1);
+$I->wait(0.5);
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.vs__dropdown-toggle');
+$I->seeElement('.user7 .vs__dropdown-toggle');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([2], { id: 7 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
-$I->wait(0.5);
+$I->wait(0.3);
 $I->see('Veranstaltungs-Admin', '.user7');
 
 

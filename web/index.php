@@ -9,6 +9,9 @@ if (in_array(@$_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) && file_exists(__DI
     if ($_SERVER['HTTP_HOST'] === trim(file_get_contents(__DIR__ . '/../config/TEST_DOMAIN'))) {
         defined('YII_DEBUG') or define('YII_DEBUG', false);
         defined('YII_ENV') or define('YII_ENV', 'test');
+        if (!isset($_SERVER['ANTRAGSGRUEN_CONFIG'])) {
+            $_SERVER['ANTRAGSGRUEN_CONFIG'] = __DIR__ . '/../config/config_tests.json';
+        }
     }
 }
 
