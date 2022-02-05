@@ -10,7 +10,7 @@ class Egp extends IPDFLayout
     /** @var EgpPdf $pdf */
     protected $pdf;
 
-    protected function setHeaderLogo(Consultation $consultation, int $abs, ?float $maxWidth, ?float $maxHeight)
+    protected function setHeaderLogo(Consultation $consultation, int $abs, ?float $maxWidth, ?float $maxHeight): void
     {
         if ($consultation->urlPath === 'winter2021_council') {
             $logo = file_get_contents(__DIR__ . '/../assets/council-2021-12.png');

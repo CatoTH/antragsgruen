@@ -192,7 +192,7 @@ class Frauenrat extends IPDFLayout
         return $pdf;
     }
 
-    public function printSectionHeading(string $text)
+    public function printSectionHeading(string $text): void
     {
         if (strpos($_SERVER['REQUEST_URI'], 'TOP_5') !== false) {
             return;

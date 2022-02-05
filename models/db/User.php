@@ -332,22 +332,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Hint: there might be others, too, but they would not be assignable by the admin
-     * @return UserOrganization[]
-     */
-    public static function getSelectableUserOrganizations(bool $includeDefault = false): array
-    {
-        $groups = [];
-        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $groups = array_merge($groups, $plugin::getUserOrganizations());
-        }
-        if (count($groups) === 0) {
-            $groups[] = new UserOrganization(User::ORGANIZATION_DEFAULT, '');
-        }
-        return $groups;
-    }
-
-    /**
      * Returns the IDs of the organizations the user is enlisted in.
      * This has to be provided by and updated by the authentication mechanism (only SAML supports this at this point).
      *
