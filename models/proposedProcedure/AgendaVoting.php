@@ -166,7 +166,7 @@ class AgendaVoting
         }
         if ($canSeeVotes) {
             // Extra safeguard to prevent accidental exposure of votes, even if this case should not be triggerable through the interface
-            $singleVotes = array_values(array_filter($votes, function (Vote $vote) use ($isAdmin) {
+            $singleVotes = array_filter($votes, function (Vote $vote) use ($isAdmin): bool {
                 if ($vote->public === VotingBlock::VOTES_PUBLIC_ALL) {
                     return true;
                 } elseif ($vote->public === VotingBlock::VOTES_PUBLIC_ADMIN) {
@@ -174,7 +174,12 @@ class AgendaVoting
                 } else {
                     return false;
                 }
-            }));
+            });
+            // Filter out deleted users
+            $singleVotes = array_filter($singleVotes, function (Vote $vote): bool {
+                return !!$vote->getUser();
+            });
+            $singleVotes = array_values($singleVotes);
             $data['votes'] = array_map(function (Vote $vote) use ($answers, $voting): array {
                 return [
                     'vote' => $vote->getVoteForApi($answers),
