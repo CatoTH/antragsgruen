@@ -101,6 +101,10 @@ class UserGroups extends IPolicy
         return false;
     }
 
+    public function getAllowedUserGroups(): array {
+        return $this->groups;
+    }
+
     public function setAllowedUserGroups(array $groups): void
     {
         $this->groups = $groups;

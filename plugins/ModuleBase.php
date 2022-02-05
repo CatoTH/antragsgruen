@@ -153,12 +153,9 @@ class ModuleBase extends Module
         return null;
     }
 
-    /**
-     * @return UserOrganization[]
-     */
-    public static function getUserOrganizations(): array
+    public static function getVotingAdminSetupHintHtml(VotingBlock $votingBlock): ?string
     {
-        return [];
+        return null;
     }
 
     /**

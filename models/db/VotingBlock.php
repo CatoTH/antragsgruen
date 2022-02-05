@@ -570,6 +570,17 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         }));
     }
 
+    public function getAdminSetupHintHtml(): ?string
+    {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $hint = $plugin::getVotingAdminSetupHintHtml($this);
+            if ($hint) {
+                return $hint;
+            }
+        }
+        return null;
+    }
+
     // Hint: deadlines for votings are not implemented yet
     public function isInDeadline(string $type): bool
     {

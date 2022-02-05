@@ -5,16 +5,16 @@ namespace app\plugins\european_youth_forum;
 use app\models\db\VotingBlock;
 
 class VotingData extends \app\models\settings\VotingData {
-    public $nyoUsers;
+    public $nycUsers;
     public $ingyoUsers;
 
-    public $nyoYes;
-    public $nyoYesMultiplied;
-    public $nyoNo;
-    public $nyoNoMultiplied;
-    public $nyoAbstention;
-    public $nyoTotal;
-    public $nyoTotalMultiplied;
+    public $nycYes;
+    public $nycYesMultiplied;
+    public $nycNo;
+    public $nycNoMultiplied;
+    public $nycAbstention;
+    public $nycTotal;
+    public $nycTotalMultiplied;
 
     public $ingyoYes;
     public $ingyoYesMultiplied;
@@ -37,16 +37,16 @@ class VotingData extends \app\models\settings\VotingData {
     {
         $results = Module::calculateVoteResultsForApi($voting, $votes);
 
-        $this->nyoUsers = $voting->getUserPresentByOrganization('nyo');
+        $this->nycUsers = $voting->getUserPresentByOrganization('nyc');
         $this->ingyoUsers = $voting->getUserPresentByOrganization('ingyo');
 
-        $this->nyoYes = $results['nyo']['yes'];
-        $this->nyoYesMultiplied = $results['nyo']['yes_multiplied'];
-        $this->nyoNo = $results['nyo']['no'];
-        $this->nyoNoMultiplied = $results['nyo']['no_multiplied'];
-        $this->nyoAbstention = $results['nyo']['abstention'];
-        $this->nyoTotal = $results['nyo']['total'];
-        $this->nyoTotalMultiplied = $results['nyo']['total_multiplied'];
+        $this->nycYes = $results['nyc']['yes'];
+        $this->nycYesMultiplied = $results['nyc']['yes_multiplied'];
+        $this->nycNo = $results['nyc']['no'];
+        $this->nycNoMultiplied = $results['nyc']['no_multiplied'];
+        $this->nycAbstention = $results['nyc']['abstention'];
+        $this->nycTotal = $results['nyc']['total'];
+        $this->nycTotalMultiplied = $results['nyc']['total_multiplied'];
 
         $this->ingyoYes = $results['ingyo']['yes'];
         $this->ingyoYesMultiplied = $results['ingyo']['yes_multiplied'];

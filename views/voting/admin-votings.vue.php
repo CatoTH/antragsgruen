@@ -65,11 +65,13 @@ ob_start();
             <p><?= Yii::t('voting', 'admin_status_closed') ?></p>
         </div>
         <form method="POST" class="votingDataActions" v-if="isPreparing" @submit="openVoting($event)">
+            <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
             <div class="actions">
                 <button type="button" class="btn btn-primary btnOpen" @click="openVoting()"><?= Yii::t('voting', 'admin_btn_open') ?></button>
             </div>
         </form>
         <form method="POST" class="votingDataActions" v-if="isOpen || isClosed">
+            <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
             <div class="actions" v-if="isOpen">
                 <button type="button" class="btn btn-default btnReset" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
                 <button type="button" class="btn btn-primary btnClose" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
