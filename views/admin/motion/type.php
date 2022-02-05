@@ -69,7 +69,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_pdf_layout') ?></h2>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="pdfIntroduction">
             <?= Yii::t('admin', 'con_pdf_intro') ?>:
         </label>
@@ -80,7 +80,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
         </div>
     </div>
 
-    <div class="adminTwoCols" id="typeMaxPdfSupportersRow">
+    <div class="stdTwoCols" id="typeMaxPdfSupportersRow">
         <label class="leftColumn" for="typeMaxPdfSupporters">
             <?= Yii::t('admin', 'motion_type_supp_max_pdf') ?>:
             <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_max_pdfd')) ?>

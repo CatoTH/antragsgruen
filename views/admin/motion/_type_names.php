@@ -10,7 +10,7 @@ use yii\helpers\Html;
 
 ?>
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_names') ?></h2>
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeTitleSingular">
             <?= Yii::t('admin', 'motion_type_singular') ?>
         </label>
@@ -24,7 +24,7 @@ use yii\helpers\Html;
             ?></div>
     </div>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeTitlePlural">
             <?= Yii::t('admin', 'motion_type_plural') ?>
         </label>
@@ -40,7 +40,7 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeCreateTitle">
             <?= Yii::t('admin', 'motion_type_create_title') ?>
         </label>
@@ -55,7 +55,7 @@ use yii\helpers\Html;
             ?>
         </div>
     </div>
-    <div class="adminTwoCols checkboxNoPadding">
+    <div class="stdTwoCols checkboxNoPadding">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <?php
@@ -69,7 +69,7 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeMotionPrefix">
             <?= Yii::t('admin', 'motion_type_title_prefix') ?>
         </label>
@@ -81,7 +81,7 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeMotionIntro">
             <?= Yii::t('admin', 'motion_type_title_intro') ?>
         </label>
@@ -93,7 +93,7 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeProposedProcedure">
             <?= Yii::t('admin', 'motion_type_proposed') ?>
         </label>
@@ -109,7 +109,7 @@ use yii\helpers\Html;
         </div>
     </div>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeResponsibilities">
             <?= Yii::t('admin', 'motion_type_respons') ?>
         </label>

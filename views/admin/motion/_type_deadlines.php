@@ -27,7 +27,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
     ) ?>
 </div>
 
-<div class="adminTwoCols deadlineTypeSimple hideForAmendmentsOnly">
+<div class="stdTwoCols deadlineTypeSimple hideForAmendmentsOnly">
     <label class="leftColumn" for="typeSimpleDeadlineMotions">
         <?= Yii::t('admin', 'motion_sdeadline_mot') ?>
     </label>
@@ -41,7 +41,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
     </div>
 </div>
 
-<div class="adminTwoCols deadlineTypeSimple">
+<div class="stdTwoCols deadlineTypeSimple">
     <label class="leftColumn" for="typeSimpleDeadlineAmendments">
         <?= Yii::t('admin', 'motion_sdeadline_amend'); ?>
     </label>

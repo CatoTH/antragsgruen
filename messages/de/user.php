@@ -10,6 +10,8 @@ return [
     'pwd_change'                => 'Passwort ändern',
     'pwd_change_hint'           => 'Leer lassen, falls unverändert',
     'name'                      => 'Name',
+    'user_group'                => 'Gruppe',
+    'user_groups'               => 'Gruppen',
     'err_pwd_different'         => 'Die beiden Passwörter stimmen nicht überein.',
     'err_pwd_length'            => 'Das Passwort muss mindestens %MINLEN% Zeichen lang sein.',
     'err_user_acode_notfound'   => 'Benutzer*in nicht gefunden / Ungültiger Code',

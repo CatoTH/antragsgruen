@@ -13,7 +13,8 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\UserController $controller */
 $controller = $this->context;
-$layout     = $controller->layoutParams;
+$layout = $controller->layoutParams;
+$consultation = $controller->consultation;
 
 $this->title = Yii::t('user', 'my_acc_title');
 $layout->addBreadcrumb(Yii::t('user', 'my_acc_bread'));
@@ -27,44 +28,66 @@ echo '<h1>' . Yii::t('user', 'my_acc_title') . '</h1>';
 
 
 if ($externalAuthenticator === null) {
-    echo Html::beginForm($formUrl, 'post', ['class' => 'userAccountForm content form-horizontal']);
+    echo Html::beginForm($formUrl, 'post', ['class' => 'userAccountForm content']);
 
     echo $controller->showErrors();
     ?>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="userName"><?= Yii::t('user', 'name') ?>:</label>
-        <div class="col-md-4">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="userName"><?= Yii::t('user', 'name') ?>:</label>
+        <div class="rightColumn">
             <input type="text" name="name" value="<?= Html::encode($user->name) ?>" class="form-control"
                    id="userName" required>
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="userPwd"><?= Yii::t('user', 'pwd_change') ?>:</label>
-        <div class="col-md-4">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="userPwd"><?= Yii::t('user', 'pwd_change') ?>:</label>
+        <div class="rightColumn">
             <input type="password" name="pwd" value="" class="form-control" id="userPwd"
                    placeholder="<?= Yii::t('user', 'pwd_change_hint') ?>" data-min-len="<?= $pwMinLen ?>">
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="userPwd2"><?= Yii::t('user', 'pwd_confirm') ?>:</label>
-        <div class="col-md-4">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="userPwd2"><?= Yii::t('user', 'pwd_confirm') ?>:</label>
+        <div class="rightColumn">
             <input type="password" name="pwd2" value="" class="form-control" id="userPwd2">
         </div>
     </div>
 
     <?php
+
+    $toShowGroups = [];
+    foreach ($user->getUserGroupsForConsultation($consultation) as $userGroup) {
+        if ($userGroup->templateId !== \app\models\db\ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
+            $toShowGroups[] = $userGroup;
+        }
+    }
+    if (count($toShowGroups) > 0) {
+        ?>
+        <div class="stdTwoCols usergroupsRow">
+            <div class="leftColumn"><?= Yii::t('user', (count($toShowGroups) === 1 ? 'user_group' : 'user_groups')) ?>:</div>
+            <div class="rightColumn">
+                <?php
+                foreach ($toShowGroups as $userGroup) {
+                    echo Html::encode($userGroup->title) . '<br>';
+                }
+                ?>
+            </div>
+        </div>
+        <?php
+    }
+
     if ($user->email) {
-        echo '<div class="form-group emailExistingRow">
-    <label class="col-md-4 control-label">' . Yii::t('user', 'email_address') . ':</label>
-    <div class="col-md-8"><span class="currentEmail">';
+        echo '<div class="stdTwoCols emailExistingRow">
+    <label class="leftColumn control-label">' . Yii::t('user', 'email_address') . ':</label>
+    <div class="rightColumn"><span class="currentEmail">';
         if ($user->emailConfirmed) {
             echo Html::encode($user->email);
         } else {
             echo '<span style="color: gray;">' . Html::encode($user->email) . '</span> ' .
                  '(' . Yii::t('user', 'email_unconfirmed') . ')';
         }
-        echo '</span><a href="#" class="requestEmailChange">' . Yii::t('user', 'emailchange_call') . '</a>';
+        echo '</span><button type="button" class="btn btn-link requestEmailChange">' . Yii::t('user', 'emailchange_call') . '</button>';
 
         $changeRequested = $user->getChangeRequestedEmailAddress();
         if ($changeRequested) {
@@ -82,11 +105,11 @@ if ($externalAuthenticator === null) {
         echo '</div>
 </div>';
     }
-
     ?>
-    <div class="form-group emailChangeRow">
-        <label class="col-md-4 control-label" for="userEmail"><?= Yii::t('user', 'email_address_new') ?>:</label>
-        <div class="col-md-4">
+
+    <div class="stdTwoCols emailChangeRow">
+        <label class="leftColumn control-label" for="userEmail"><?= Yii::t('user', 'email_address_new') ?>:</label>
+        <div class="rightColumn">
             <?php
             $changeRequested = $user->getChangeRequestedEmailAddress();
             if ($changeRequested) {
@@ -105,9 +128,9 @@ if ($externalAuthenticator === null) {
     <?php
     if ($user->getSettingsObj()->ppReplyTo !== '') {
         ?>
-        <div class="form-group">
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
+        <div class="stdTwoCols">
+            <div class="leftColumn"></div>
+            <div class="rightColumn">
                 <?= Yii::t('user', 'email_pp_replyto') ?>:<br>
                 <strong><?= Html::encode($user->getSettingsObj()->ppReplyTo) ?></strong>
             </div>
