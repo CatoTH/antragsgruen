@@ -120,12 +120,7 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-                <div class="singleVoteList" v-for="answer in voting.answers">
-                    <strong>{{ answer.title }}:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, answer.api_id)">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
+                <voting-vote-list :voting="voting" :groupedVoting="groupedVoting"></voting-vote-list>
             </li>
             </template>
         </ul>
@@ -171,7 +166,7 @@ $html = ob_get_clean();
     // Votings that have been created and will be using Antragsgrün, but are not active yet
     const STATUS_PREPARING = <?= VotingBlock::STATUS_PREPARING ?>;
 
-    // Currently open for voting. Currently there should only be one voting in this status at a time.
+    // Currently open for voting.
     const STATUS_OPEN = <?= VotingBlock::STATUS_OPEN ?>;
 
     // Vorting is closed.
@@ -187,29 +182,13 @@ $html = ob_get_clean();
     Vue.component('voting-block-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
+        mixins: [VOTING_COMMON_MIXIN],
         data() {
             return {
                 shownVoteLists: []
             }
         },
         computed: {
-            groupedVotings: function () {
-                const knownGroupIds = {};
-                const allGroups = [];
-                this.voting.items.forEach(function(item) {
-                    if (item.item_group_same_vote) {
-                        if (knownGroupIds[item.item_group_same_vote] !== undefined) {
-                            allGroups[knownGroupIds[item.item_group_same_vote]].push(item);
-                        } else {
-                            knownGroupIds[item.item_group_same_vote] = allGroups.length;
-                            allGroups.push([item]);
-                        }
-                    } else {
-                        allGroups.push([item]);
-                    }
-                });
-                return allGroups;
-            },
             votingHasMajority: function () {
                 // Used for the currently running vote as it is
                 return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
@@ -292,10 +271,6 @@ $html = ob_get_clean();
             hideVoteList: function (groupedItem) {
                 const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
                 this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
-            },
-            getVoteListVotes: function (groupedItem, type) {
-                return groupedItem[0].votes
-                    .filter(vote => vote.vote === type);
             }
         }
     });

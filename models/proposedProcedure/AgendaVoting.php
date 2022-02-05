@@ -85,31 +85,29 @@ class AgendaVoting
             'results_public' => ($this->voting ? $this->voting->resultsPublic : null),
             'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'majority_type' => ($this->voting ? $this->voting->majorityType : null),
+            'user_groups' => [],
             'answers' => $answers,
             'answers_template' => ($this->voting ? $this->voting->getAnswerTemplate() : null),
             'items' => [],
         ];
-        if ($context === static::API_CONTEXT_ADMIN) {
-            $votingBlockJson['user_organizations'] = [];
-            foreach (User::getSelectableUserOrganizations(true) as $organization) {
-                $votingBlockJson['user_organizations'][] = [
-                    'id' => $organization->id,
-                    'title' => $organization->title,
-                    'members_present' => ($this->voting ? $this->voting->getUserPresentByOrganization($organization->id) : null),
-                ];
-            }
-            $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
 
-            if ($this->voting) {
-                $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
-            } else {
-                $votingBlockJson['vote_policy'] = ['id' => IPolicy::POLICY_NOBODY];
+        if ($this->voting) {
+            foreach ($this->voting->getMyConsultation()->getAllAvailableUserGroups() as $userGroup) {
+                $votingBlockJson['user_groups'][] = $userGroup->getVotingApiObject();
             }
+        }
+
+        if ($context === static::API_CONTEXT_ADMIN) {
+            $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
+            $votingBlockJson['admin_setup_hint_html'] = ($this->voting ? $this->voting->getAdminSetupHintHtml() : null);
         }
         if ($this->voting) {
             list($total, $users) = $this->voting->getVoteStatistics();
             $votingBlockJson['votes_total'] = $total;
             $votingBlockJson['votes_users'] = $users;
+            $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
+        } else {
+            $votingBlockJson['vote_policy'] = ['id' => IPolicy::POLICY_NOBODY];
         }
 
         foreach ($this->items as $item) {
@@ -168,7 +166,7 @@ class AgendaVoting
         }
         if ($canSeeVotes) {
             // Extra safeguard to prevent accidental exposure of votes, even if this case should not be triggerable through the interface
-            $singleVotes = array_values(array_filter($votes, function (Vote $vote) use ($isAdmin) {
+            $singleVotes = array_filter($votes, function (Vote $vote) use ($isAdmin): bool {
                 if ($vote->public === VotingBlock::VOTES_PUBLIC_ALL) {
                     return true;
                 } elseif ($vote->public === VotingBlock::VOTES_PUBLIC_ADMIN) {
@@ -176,13 +174,18 @@ class AgendaVoting
                 } else {
                     return false;
                 }
-            }));
-            $data['votes'] = array_map(function (Vote $vote) use ($answers): array {
+            });
+            // Filter out deleted users
+            $singleVotes = array_filter($singleVotes, function (Vote $vote): bool {
+                return !!$vote->getUser();
+            });
+            $singleVotes = array_values($singleVotes);
+            $data['votes'] = array_map(function (Vote $vote) use ($answers, $voting): array {
                 return [
                     'vote' => $vote->getVoteForApi($answers),
                     'user_id' => $vote->userId,
-                    'user_name' => ($vote->user ? $vote->user->getAuthUsername() : null),
-                    'user_organizations' => ($vote->user ? $vote->user->getMyOrganizationIds() : null),
+                    'user_name' => ($vote->getUser() ? $vote->getUser()->getAuthUsername() : null),
+                    'user_groups' => ($vote->getUser() ? $vote->getUser()->getConsultationUserGroupIds($voting->getMyConsultation()) : null),
                 ];
             }, $singleVotes);
         }

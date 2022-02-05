@@ -43,7 +43,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     // Votings that have been created and will be using Antragsgrün, but are not active yet
     const STATUS_PREPARING = 1;
 
-    // Currently open for voting. Currently there should only be one voting in this status at a time.
+    // Open for voting.
     const STATUS_OPEN = 2;
 
     // Vorting is closed.
@@ -72,10 +72,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     const ACTIVITY_TYPE_RESET = 3;
     const ACTIVITY_TYPE_REOPENED = 4;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'votingBlock';
     }
@@ -399,31 +396,6 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return in_array($this->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING, VotingBlock::STATUS_CLOSED]);
     }
 
-    public function getUsersPresentByOrganizations(): array {
-        if (!$this->usersPresentByOrga) {
-            return [];
-        }
-        return json_decode($this->usersPresentByOrga, true);
-    }
-
-    public function setUserPresentByOrganization(string $organization, ?int $users): void
-    {
-        $present = $this->getUsersPresentByOrganizations();
-        if ($users !== null) {
-            $present[$organization] = $users;
-        } elseif (isset($present[$organization])) {
-            unset($present[$organization]);
-        }
-        $this->usersPresentByOrga = json_encode($present);
-    }
-
-    public function getUserPresentByOrganization(string $organization): ?int
-    {
-        $present = $this->getUsersPresentByOrganizations();
-
-        return $present[$organization] ?? null;
-    }
-
     /**
      * @return Answer[]
      */
@@ -596,6 +568,17 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return array_values(array_filter($consultation->votingBlocks, function (VotingBlock $votingBlock) {
             return $votingBlock->votingStatus === static::STATUS_CLOSED;
         }));
+    }
+
+    public function getAdminSetupHintHtml(): ?string
+    {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $hint = $plugin::getVotingAdminSetupHintHtml($this);
+            if ($hint) {
+                return $hint;
+            }
+        }
+        return null;
     }
 
     // Hint: deadlines for votings are not implemented yet

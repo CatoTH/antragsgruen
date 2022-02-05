@@ -109,7 +109,7 @@ function taskWatch() {
     gulp.watch(["web/js/bootstrap-datetimepicker.js"], taskBuildDatetimepicker);
     gulp.watch(["web/css/*.scss"], gulp.parallel(taskBuildCss, taskBuildPluginCss));
     gulp.watch(["plugins/**/*.scss"], taskBuildPluginCss);
-    gulp.watch(['./web/typescript/**/*.ts'], taskBuildTypescript);
+    gulp.watch(['web/typescript/**/*.ts'], taskBuildTypescript);
 }
 
 gulp.task('build-js', taskBuildJs);

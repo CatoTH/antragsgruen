@@ -2,7 +2,7 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{Consultation, Site, Vote, VotingBlock};
+use app\models\db\{Consultation, ConsultationUserGroup, Site, Vote, VotingBlock};
 use app\models\settings\Layout;
 use app\models\UserOrganization;
 use app\plugins\ModuleBase;
@@ -13,14 +13,6 @@ class Module extends ModuleBase
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)
-        ];
-    }
-
-    public static function getUserOrganizations(): array
-    {
-        return [
-            new UserOrganization('nyo', 'NYC'),
-            new UserOrganization('ingyo', 'INGYO'),
         ];
     }
 
@@ -40,17 +32,28 @@ class Module extends ModuleBase
         return VotingData::class;
     }
 
+    public static function getVotingAdminSetupHintHtml(VotingBlock $votingBlock): ?string
+    {
+        if (VotingHelper::isSetUpAsYfjVoting($votingBlock)) {
+            $html = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Voting IS set up as YFJ voting<br>';
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $html .= VotingHelper::getEligibleUserCountByGroup($votingBlock, VotingHelper::GROUP_NYC) .  ' NYC members<br>';
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $html .= VotingHelper::getEligibleUserCountByGroup($votingBlock, VotingHelper::GROUP_INGYO) .  ' INGYO members';
+
+            return $html;
+        } else {
+            return 'Voting is NOT set up as YFJ voting';
+        }
+    }
+
     /**
      * @param Vote[] $votes
      */
     public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): ?array
     {
-        $nyoVotes = $voting->getUserPresentByOrganization('nyo');
-        $ingyoVotes = $voting->getUserPresentByOrganization('ingyo');
-        $answers = $voting->getAnswers();
-
         $results = [
-            'nyo' => [
+            'nyc' => [
                 'yes' => 0,
                 'yes_multiplied' => null,
                 'no' => 0,
@@ -81,14 +84,24 @@ class Module extends ModuleBase
                 'total_multiplied' => null,
             ],
         ];
+
+        try {
+            $nycVotesTotal = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_NYC);
+            $ingyoVotesTotal = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_INGYO);
+        } catch (InvalidSetupException $e) {
+            return $results;
+        }
+        $answers = $voting->getAnswers();
+        $consultation = $voting->getMyConsultation();
+
         foreach ($votes as $vote) {
             if (!$vote->getUser()) {
                 continue;
             }
             $voteType = $vote->getVoteForApi($answers);
-            if (in_array('nyo', $vote->getUser()->getMyOrganizationIds())) {
-                $orga = 'nyo';
-            } elseif (in_array('ingyo', $vote->getUser()->getMyOrganizationIds())) {
+            if (VotingHelper::userIsGroup($consultation, $vote->getUser(), VotingHelper::GROUP_NYC)) {
+                $orga = 'nyc';
+            } elseif (VotingHelper::userIsGroup($consultation, $vote->getUser(), VotingHelper::GROUP_INGYO)) {
                 $orga = 'ingyo';
             } else {
                 continue;
@@ -99,19 +112,19 @@ class Module extends ModuleBase
             $results['total']['total']++;
         }
 
-        $results['nyo']['yes_multiplied'] = $results['nyo']['yes'] * $ingyoVotes;
-        $results['nyo']['no_multiplied'] = $results['nyo']['no'] * $ingyoVotes;
-        $results['nyo']['abstention_multiplied'] = $results['nyo']['abstention'] * $ingyoVotes;
-        $results['nyo']['total_multiplied'] = $results['nyo']['total'] * $ingyoVotes;
-        $results['ingyo']['yes_multiplied'] = $results['ingyo']['yes'] * $nyoVotes;
-        $results['ingyo']['no_multiplied'] = $results['ingyo']['no'] * $nyoVotes;
-        $results['ingyo']['abstention_multiplied'] = $results['ingyo']['abstention'] * $nyoVotes;
-        $results['ingyo']['total_multiplied'] = $results['ingyo']['total'] * $nyoVotes;
+        $results['nyc']['yes_multiplied'] = $results['nyc']['yes'] * $ingyoVotesTotal;
+        $results['nyc']['no_multiplied'] = $results['nyc']['no'] * $ingyoVotesTotal;
+        $results['nyc']['abstention_multiplied'] = $results['nyc']['abstention'] * $ingyoVotesTotal;
+        $results['nyc']['total_multiplied'] = $results['nyc']['total'] * $ingyoVotesTotal;
+        $results['ingyo']['yes_multiplied'] = $results['ingyo']['yes'] * $nycVotesTotal;
+        $results['ingyo']['no_multiplied'] = $results['ingyo']['no'] * $nycVotesTotal;
+        $results['ingyo']['abstention_multiplied'] = $results['ingyo']['abstention'] * $nycVotesTotal;
+        $results['ingyo']['total_multiplied'] = $results['ingyo']['total'] * $nycVotesTotal;
 
-        $results['total']['yes_multiplied'] = $results['nyo']['yes_multiplied'] + $results['ingyo']['yes_multiplied'];
-        $results['total']['no_multiplied'] = $results['nyo']['no_multiplied'] + $results['ingyo']['no_multiplied'];
-        $results['total']['abstention_multiplied'] = $results['nyo']['abstention_multiplied'] + $results['ingyo']['abstention_multiplied'];
-        $results['total']['total_multiplied'] = $results['nyo']['total_multiplied'] + $results['ingyo']['total_multiplied'];
+        $results['total']['yes_multiplied'] = $results['nyc']['yes_multiplied'] + $results['ingyo']['yes_multiplied'];
+        $results['total']['no_multiplied'] = $results['nyc']['no_multiplied'] + $results['ingyo']['no_multiplied'];
+        $results['total']['abstention_multiplied'] = $results['nyc']['abstention_multiplied'] + $results['ingyo']['abstention_multiplied'];
+        $results['total']['total_multiplied'] = $results['nyc']['total_multiplied'] + $results['ingyo']['total_multiplied'];
 
         return $results;
     }

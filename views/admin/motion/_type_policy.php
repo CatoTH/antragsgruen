@@ -42,7 +42,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
 
 <!-- Policy for creating motions -->
 
-<div class="adminTwoCols hideForAmendmentsOnly">
+<div class="stdTwoCols hideForAmendmentsOnly">
     <label class="leftColumn" for="typePolicyMotions">
         <?= Yii::t('admin', 'motion_type_perm_motion') ?>:
     </label>
@@ -63,7 +63,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
 <!--Support policy for motions -->
 
 
-<div class="adminTwoCols hideForAmendmentsOnly">
+<div class="stdTwoCols hideForAmendmentsOnly">
     <label class="leftColumn" for="typePolicySupportMotions">
         <?= Yii::t('admin', 'motion_type_perm_supp_mot') ?>:
     </label>
@@ -84,7 +84,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
 
 <!--Support types for motions (Likes, Dislikes, Official support) -->
 
-<div class="adminTwoCols hideForAmendmentsOnly">
+<div class="stdTwoCols hideForAmendmentsOnly">
     <div class="leftColumn"></div>
     <div class="rightColumn">
         <fieldset class="contactDetails motionSupportPolicy">
@@ -121,7 +121,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
 
 <!-- Policy for creating amendments -->
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn" for="typePolicyAmendments">
         <?= Yii::t('admin', 'motion_type_perm_amend') ?>:
     </label>
@@ -138,7 +138,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
         ?>
     </div>
 </div>
-<div class="adminTwoCols checkboxNoPadding">
+<div class="stdTwoCols checkboxNoPadding">
     <div class="leftColumn"></div>
     <div class="rightColumn">
         <?php
@@ -155,7 +155,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
 
 <!-- Support policy for amendments -->
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn" for="typePolicySupportAmendments">
         <?= Yii::t('admin', 'motion_type_perm_supp_amend') ?>:
     </label>
@@ -176,7 +176,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
 
 <!-- Support types for amendments (Likes, Dislikes, Official support) -->
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <div class="leftColumn"></div>
     <div class="rightColumn">
         <fieldset class="contactDetails amendmentSupportPolicy">
@@ -214,7 +214,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
 
 <!--Policy for creating comments -->
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn" for="typePolicyComments">
         <?= Yii::t('admin', 'motion_type_perm_comment') ?>:
     </label>
@@ -234,7 +234,7 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
 
 <!-- Are initiators allowed to merge amendments into their motions -->
 
-<div class="adminTwoCols initiatorsCanMergeRow hideForAmendmentsOnly">
+<div class="stdTwoCols initiatorsCanMergeRow hideForAmendmentsOnly">
     <div class="leftColumn">
         <?= Yii::t('admin', 'motion_type_initiators_merge') ?>:
     </div>

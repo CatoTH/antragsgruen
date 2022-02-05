@@ -24,13 +24,13 @@
     <tbody>
     <tr>
         <th>NYC</th>
-        <td><?= $result->nyoTotalMultiplied ?></td>
-        <td><?= $result->nyoYes ?></td>
-        <td><?= $result->nyoYesMultiplied ?></td>
-        <td><?= $result->nyoNo ?></td>
-        <td><?= $result->nyoNoMultiplied ?></td>
-        <td><?= $result->nyoAbstention ?></td>
-        <td><?= $result->nyoTotal ?></td>
+        <td><?= $result->nycTotalMultiplied ?></td>
+        <td><?= $result->nycYes ?></td>
+        <td><?= $result->nycYesMultiplied ?></td>
+        <td><?= $result->nycNo ?></td>
+        <td><?= $result->nycNoMultiplied ?></td>
+        <td><?= $result->nycAbstention ?></td>
+        <td><?= $result->nycTotal ?></td>
     </tr>
     <tr>
         <th>INGYO</th>

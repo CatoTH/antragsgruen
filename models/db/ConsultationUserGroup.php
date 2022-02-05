@@ -75,6 +75,29 @@ class ConsultationUserGroup extends ActiveRecord
                     ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
+    // Hint: this method can be used if the group assignment of all users need to be evaluated in a call.
+    // Iterating over the userIds attached to a user group is faster than over the groupIds of a user,
+    // as there are way more users, and we would need to perform more queries that way.
+    // Note that this method should only be used for read-only operations, as the cache is not flushed yet.
+    /** @var null|int[] */
+    private $userIdCache = null;
+    public function getUserIds(): array
+    {
+        if ($this->userIdCache === null) {
+            $tableName = AntragsgruenApp::getInstance()->tablePrefix . 'userGroup';
+            $rows = (new \yii\db\Query())
+                ->select(['userId'])
+                ->from($tableName)
+                ->where(['groupId' => $this->id])
+                ->all();
+            $this->userIdCache = [];
+            foreach ($rows as $row) {
+                $this->userIdCache[] = intval($row['userId']);
+            }
+        }
+        return $this->userIdCache;
+    }
+
     /**
      * @param string[] $permission
      */
@@ -171,6 +194,15 @@ class ConsultationUserGroup extends ActiveRecord
             }
         }
         return false;
+    }
+
+    public function getVotingApiObject(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->getNormalizedTitle(),
+            'member_count' => count($this->users),
+        ];
     }
 
     public function getUserAdminApiObject(): array

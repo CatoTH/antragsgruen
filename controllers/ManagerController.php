@@ -17,7 +17,7 @@ class ManagerController extends Base
             return parent::beforeAction($action);
         }
 
-        if (!$this->getParams()->multisiteMode && !in_array($action->id, ['siteconfig', 'userlist'])) {
+        if (!$this->getParams()->multisiteMode && !in_array($action->id, ['siteconfig'])) {
             return false;
         }
 
@@ -120,49 +120,6 @@ class ManagerController extends Base
             'config'             => $config,
             'editable'           => $editable,
             'makeEditabeCommand' => $makeEditabeCommand,
-        ]);
-    }
-
-    /**
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionUserlist()
-    {
-        if (!User::currentUserIsSuperuser()) {
-            $this->showErrorpage(403, 'Only admins are allowed to access this page.');
-            return '';
-        }
-
-        if ($this->isPostSet('deleteUser')) {
-            $user = User::findOne(['id' => \Yii::$app->request->post('deleteUser')]);
-            if ($user) {
-                $user->deleteAccount();
-                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_del_done'));
-            }
-        }
-
-        $users = User::find()->where('status != ' . intval(User::STATUS_DELETED))->orderBy('dateCreation DESC')->all();
-        $organizations = User::getSelectableUserOrganizations();
-        $savable = (count($organizations) > 0);
-
-        if ($savable && $this->isPostSet('save')) {
-            $savedUsers = \Yii::$app->request->post('user');
-            foreach ($users as $user) {
-                if (isset($savedUsers[$user->id]) && isset($savedUsers[$user->id]['organization']) && $savedUsers[$user->id]['organization'] !== '') {
-                    $user->organizationIds = json_encode([$savedUsers[$user->id]['organization']]);
-                } else {
-                    $user->organizationIds = json_encode([]);
-                }
-                $user->save();
-            }
-            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
-        }
-
-        return $this->render('userlist', [
-            'users' => $users,
-            'organizations' => $organizations,
-            'savable' => $savable,
         ]);
     }
 }

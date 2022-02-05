@@ -16,6 +16,10 @@
       padding-top: 10px;
       padding-bottom: 10px;
       border-bottom: solid 1px #ccc;
+      &.voteListShown {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
 
       // Always shown
       .titleLink {
@@ -55,22 +59,6 @@
 
       .btnShowVotes {
         font-weight: normal;
-      }
-    }
-
-    .singleVoteList {
-      flex-basis: 33.3%;
-      ul {
-        display: block;
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-
-        li {
-          display: block;
-          padding: 0;
-          margin: 0;
-        }
       }
     }
   }
@@ -373,5 +361,37 @@
     flex-basis: 360px;
     flex-grow: 1;
     text-align: right;
+  }
+}
+
+.v-vote-list {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 20px;
+
+  .regularVoteList {
+    flex-basis: 33%;
+    flex-grow: 1;
+
+    ul {
+      display: block;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        display: block;
+        padding: 0;
+        margin: 0;
+      }
+    }
+    .userGroupName {
+      margin-top: 10px;
+      text-decoration: underline;
+    }
+    .none {
+      font-style: italic;
+    }
   }
 }

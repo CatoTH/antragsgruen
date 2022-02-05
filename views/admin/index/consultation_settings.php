@@ -73,7 +73,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         </div>
 
 
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <div class="leftColumn"><?= Yii::t('admin', 'con_url_path') ?>:</div>
             <div class="rightColumn urlPathHolder">
                 <div class="shower">
@@ -90,7 +90,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             </div>
         </div>
 
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <label class="leftColumn" for="consultationTitle"><?= Yii::t('admin', 'con_title') ?>:</label>
             <div class="rightColumn">
                 <input type="text" required name="consultation[title]" value="<?= Html::encode($consultation->title) ?>"
@@ -98,7 +98,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             </div>
         </div>
 
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <label class="leftColumn" for="consultationTitleShort"><?= Yii::t('admin', 'con_title_short') ?>:</label>
             <div class="rightColumn">
                 <input type="text" required name="consultation[titleShort]"
@@ -109,7 +109,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         </div>
 
         <?php $handledSettings[] = 'lineLength'; ?>
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <label class="leftColumn" for="lineLength"><?= Yii::t('admin', 'con_line_len') ?>:</label>
             <div class="rightColumn">
                 <input type="number" required name="settings[lineLength]"
@@ -118,7 +118,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         </div>
 
         <?php $handledSettings[] = 'robotsPolicy'; ?>
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <div class="leftColumn">
                 <?= Yii::t('admin', 'con_robots') ?>:
                 <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_robots_hint')) ?>
@@ -243,7 +243,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
             }
         }
         ?>
-        <div class="adminTwoCols" id="forceMotionRow">
+        <div class="stdTwoCols" id="forceMotionRow">
             <label class="leftColumn" for="forceMotion"><?= Yii::t('admin', 'con_force_motion') ?>:</label>
             <div class="rightColumn">
                 <?= Html::dropDownList(
@@ -294,7 +294,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
 
         $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
         ?>
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <div class="leftColumn"><?= Yii::t('admin', 'con_topics') ?>:</div>
             <div class="rightColumn">
                 <div class="selectize-wrapper" id="tagsList">
@@ -337,7 +337,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
             $organisations = [];
         }
         ?>
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <div class="leftColumn">
                 <?= Yii::t('admin', 'con_organisations') ?>:
                 <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_organisations_hint')) ?>
@@ -359,7 +359,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
     <h2 class="green"><?= Yii::t('admin', 'con_title_amendments') ?></h2>
     <div class="content">
 
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <div class="leftColumn">
                 <?= Yii::t('admin', 'con_amend_number') ?>:
             </div>
@@ -443,7 +443,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
     </div>
     <h2 class="green"><?= Yii::t('admin', 'con_title_email') ?></h2>
     <div class="content">
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <label class="leftColumn" for="adminEmail"><?= Yii::t('admin', 'con_email_admins') ?>:</label>
             <div class="rightColumn">
                 <input type="text" name="consultation[adminEmail]"
@@ -456,7 +456,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
         $handledSettings[] = 'emailFromName';
         $placeholder       = str_replace('%NAME%', $params->mailFromName, Yii::t('admin', 'con_email_from_place'));
         ?>
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <label class="leftColumn" for="emailFromName">
                 <?= Yii::t('admin', 'con_email_from') ?>:
             </label>
@@ -468,7 +468,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
         </div>
 
         <?php $handledSettings[] = 'emailReplyTo'; ?>
-        <div class="adminTwoCols">
+        <div class="stdTwoCols">
             <label class="leftColumn" for="emailReplyTo">Reply-To:</label>
             <div class="rightColumn">
                 <input type="email" name="settings[emailReplyTo]" class="form-control" id="emailReplyTo"

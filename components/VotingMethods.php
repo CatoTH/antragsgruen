@@ -30,13 +30,6 @@ class VotingMethods
 
     public function voteStatusUpdate(VotingBlock $votingBlock): void
     {
-        if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
-            foreach ($this->request->post('organizations', []) as $organization) {
-                $users = ($organization['members_present'] !== '' ? intval($organization['members_present']) : null);
-                $votingBlock->setUserPresentByOrganization($organization['id'], $users);
-            }
-            $votingBlock->save();
-        }
         if ($this->request->post('status') !== null) {
             $newStatus = intval($this->request->post('status'));
             if ($newStatus === VotingBlock::STATUS_PREPARING) {

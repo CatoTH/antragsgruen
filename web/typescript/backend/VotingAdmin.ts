@@ -100,14 +100,10 @@ export class VotingAdmin {
                     this.votings = data;
                     this.votingsJson = null;
                 },
-                setStatus(votingBlockId, newStatus, organizations) {
+                setStatus(votingBlockId, newStatus) {
                     this._performOperation(votingBlockId, {
                         op: 'update-status',
                         status: newStatus,
-                        organizations: organizations.map(orga => { return {
-                            id: orga.id,
-                            members_present: orga.members_present,
-                        }}),
                     });
                 },
                 saveSettings(votingBlockId, title, answerTemplate, majorityType, votePolicy, resultsPublic, votesPublic, assignedMotion) {
@@ -282,9 +278,8 @@ export class VotingAdmin {
             if (votePolicy === POLICY_USER_GROUPS) {
                 userGroups = (form.querySelector('.userGroupSelectList') as any).selectize.items.map(item => parseInt(item, 10));
             } else {
-                userGroups = null;
+                userGroups = [];
             }
-            console.log("Policy", votePolicy, userGroups);
             this.widget.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic);
 
             form.classList.add('hidden');

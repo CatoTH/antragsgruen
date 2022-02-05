@@ -18,6 +18,8 @@ $layout->addBreadcrumb(Yii::t('voting', 'bc'));
 $this->title = Yii::t('voting', 'results_title');
 
 $layout->loadVue();
+$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
+$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
 $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 
 $apiData = [];
@@ -32,7 +34,7 @@ $pollUrl   = UrlHelper::createUrl(['/voting/get-closed-voting-blocks']);
 <?php
 if (count($apiData) === 0) {
     echo '<div class="content resultsNone"><div class="alert alert-info">';
-    echo \Yii::t('voting', 'results_none');
+    echo Yii::t('voting', 'results_none');
     echo '</div></div>';
 }
 ?>

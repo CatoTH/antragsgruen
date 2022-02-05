@@ -5,48 +5,77 @@ namespace app\plugins\european_youth_forum;
 use app\models\db\VotingBlock;
 
 class VotingData extends \app\models\settings\VotingData {
-    public $nyoUsers;
+    /** @var int|null */
+    public $nycUsers;
+    /** @var int|null */
     public $ingyoUsers;
 
-    public $nyoYes;
-    public $nyoYesMultiplied;
-    public $nyoNo;
-    public $nyoNoMultiplied;
-    public $nyoAbstention;
-    public $nyoTotal;
-    public $nyoTotalMultiplied;
+    /** @var int|null */
+    public $nycYes;
+    /** @var int|null */
+    public $nycYesMultiplied;
+    /** @var int|null */
+    public $nycNo;
+    /** @var int|null */
+    public $nycNoMultiplied;
+    /** @var int|null */
+    public $nycAbstention;
+    /** @var int|null */
+    public $nycTotal;
+    /** @var int|null */
+    public $nycTotalMultiplied;
 
+    /** @var int|null */
     public $ingyoYes;
+    /** @var int|null */
     public $ingyoYesMultiplied;
+    /** @var int|null */
     public $ingyoNo;
+    /** @var int|null */
     public $ingyoNoMultiplied;
+    /** @var int|null */
     public $ingyoAbstention;
+    /** @var int|null */
     public $ingyoTotal;
+    /** @var int|null */
     public $ingyoTotalMultiplied;
 
+    /** @var int|null */
     public $totalYes;
+    /** @var int|null */
     public $totalYesMultiplied;
+    /** @var int|null */
     public $totalNo;
+    /** @var int|null */
     public $totalNoMultiplied;
+    /** @var int|null */
     public $totalAbstention;
+    /** @var int|null */
     public $totalAbstentionMultiplied;
+    /** @var int|null */
     public $totalTotal;
+    /** @var int|null */
     public $totalTotalMultiplied;
 
     public function augmentWithResults(VotingBlock $voting, array $votes): \app\models\settings\VotingData
     {
+        if (!VotingHelper::isSetUpAsYfjVoting($voting)) {
+            return $this;
+        }
         $results = Module::calculateVoteResultsForApi($voting, $votes);
 
-        $this->nyoUsers = $voting->getUserPresentByOrganization('nyo');
-        $this->ingyoUsers = $voting->getUserPresentByOrganization('ingyo');
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->nycUsers = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_NYC);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->ingyoUsers = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_INGYO);
 
-        $this->nyoYes = $results['nyo']['yes'];
-        $this->nyoYesMultiplied = $results['nyo']['yes_multiplied'];
-        $this->nyoNo = $results['nyo']['no'];
-        $this->nyoNoMultiplied = $results['nyo']['no_multiplied'];
-        $this->nyoAbstention = $results['nyo']['abstention'];
-        $this->nyoTotal = $results['nyo']['total'];
-        $this->nyoTotalMultiplied = $results['nyo']['total_multiplied'];
+        $this->nycYes = $results['nyc']['yes'];
+        $this->nycYesMultiplied = $results['nyc']['yes_multiplied'];
+        $this->nycNo = $results['nyc']['no'];
+        $this->nycNoMultiplied = $results['nyc']['no_multiplied'];
+        $this->nycAbstention = $results['nyc']['abstention'];
+        $this->nycTotal = $results['nyc']['total'];
+        $this->nycTotalMultiplied = $results['nyc']['total_multiplied'];
 
         $this->ingyoYes = $results['ingyo']['yes'];
         $this->ingyoYesMultiplied = $results['ingyo']['yes_multiplied'];

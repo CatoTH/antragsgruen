@@ -20,7 +20,6 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    const POLICY_USER_GROUPS = <?= \app\models\policies\UserGroups::POLICY_USER_GROUPS ?>;
     const ALL_POLICIES = <?= json_encode($allPolicies) ?>;
 
     Vue.component('policy-select', {

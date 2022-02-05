@@ -39,51 +39,6 @@
   }
 }
 
-.adminTwoCols {
-  display: block;
-  width: 100%;
-  .leftColumn, .rightColumn {
-    text-align: left;
-    display: block;
-  }
-  .leftColumn {
-    font-weight: bold;
-  }
-  @media screen and (max-width: $screenMinWith - 1) {
-    .leftColumn {
-      padding-top: 7px;
-    }
-    .rightColumn {
-      padding-bottom: 7px;
-    }
-    &:first-child .leftColumn {
-      padding-top: 0; // Padding comes from .content here
-    }
-    &:last-child .rightColumn {
-      padding-bottom: 0; // Padding comes from .content here
-    }
-  }
-  @media screen and (min-width: $screenMinWith) {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    .leftColumn, .rightColumn {
-      flex-grow: 0;
-      min-height: 40px;
-      padding-top: 7px;
-    }
-    .leftColumn {
-      flex-basis: 30%;
-      text-align: right;
-      padding-right: 15px;
-    }
-    .rightColumn {
-      flex-basis: 70%;
-      padding-left: 15px;
-    }
-  }
-}
-
 .siteaccAdminsForm {
   .ppReplyToOpener {
     padding: 0 5px;

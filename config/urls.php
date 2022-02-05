@@ -32,7 +32,6 @@ $amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|me
 $amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check|del-proposal-comment';
 $userPaths            = 'login|logout|confirmregistration|emailblocklist|recovery';
 $userPaths            .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange|data-export';
-$domPlainPaths        = 'siteconfig|antragsgrueninit|antragsgrueninitdbtest|userlist';
 $adminMotionPaths     = 'type|typecreate|get-amendment-rewrite-collisions|move|move-check';
 $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist';
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides';
@@ -70,7 +69,7 @@ $urlRules = [
     $dom . 'page/<pageSlug:[^\/]+>'           => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
-    $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
+    $dom . 'admin/<_a:(siteconfig)>'          => 'manager/<_a>',
 
     $restBase                                                                        => 'consultation/rest-site',
     $restBaseCon                                                                     => 'consultation/rest',

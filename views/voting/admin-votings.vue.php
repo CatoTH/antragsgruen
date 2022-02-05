@@ -65,35 +65,13 @@ ob_start();
             <p><?= Yii::t('voting', 'admin_status_closed') ?></p>
         </div>
         <form method="POST" class="votingDataActions" v-if="isPreparing" @submit="openVoting($event)">
-            <div class="data form-inline" v-if="organizations.length === 1">
-                <label>
-                    <?= Yii::t('voting', 'admin_members_present') ?>:
-                    <input type="number" class="form-control" v-model="organizations[0].members_present">
-                </label>
-            </div>
-            <div class="data" v-if="organizations.length > 1">
-                <label v-for="orga in organizations">
-                    <?= Yii::t('voting', 'admin_members_present') ?> ({{ orga.title }}):<br>
-                    <input type="number" class="form-control" v-model="orga.members_present">
-                </label>
-            </div>
+            <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
             <div class="actions">
                 <button type="button" class="btn btn-primary btnOpen" @click="openVoting()"><?= Yii::t('voting', 'admin_btn_open') ?></button>
             </div>
         </form>
         <form method="POST" class="votingDataActions" v-if="isOpen || isClosed">
-            <div class="data" v-if="organizations.length > 0 && !(organizations.length === 1 && organizations[0].members_present === null)">
-                <div class="votingDetails" v-if="organizations.length === 1">
-                    <strong><?= Yii::t('voting', 'admin_members_present') ?>:</strong>
-                    {{ organizations[0].members_present }}
-                </div>
-                <div class="votingDetails" v-if="organizations.length > 1">
-                    <strong><?= Yii::t('voting', 'admin_members_present') ?>:</strong>
-                    <ul>
-                        <li v-for="orga in organizationsWithUsersEntered">{{ orga.members_present }} {{ orga.title }}</li>
-                    </ul>
-                </div>
-            </div>
+            <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
             <div class="actions" v-if="isOpen">
                 <button type="button" class="btn btn-default btnReset" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
                 <button type="button" class="btn btn-primary btnClose" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
@@ -113,7 +91,9 @@ ob_start();
             <li :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
                 'answer_template_' + answerTemplate,
-                (isClosed ? 'showResults' : ''), (isClosed ? 'showDetailedResults' : '')
+                (isClosed ? 'showResults' : ''),
+                (isClosed ? 'showDetailedResults' : ''),
+                (isVoteListShown(groupedVoting) ? 'voteListShown' : '')
             ]">
                 <div class="titleLink" :class="{'question': voting.answers.length === 1}">
                     <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">
@@ -186,12 +166,7 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-                <div class="singleVoteList" v-for="answer in voting.answers">
-                    <strong>{{ answer.title }}:</strong>
-                    <ul>
-                        <li v-for="vote in getVoteListVotes(groupedVoting, answer.api_id)">{{ vote.user_name }}</li>
-                    </ul>
-                </div>
+                <voting-vote-list :voting="voting" :groupedVoting="groupedVoting"></voting-vote-list>
             </li>
             </template>
         </ul>
@@ -405,6 +380,7 @@ $html = ob_get_clean();
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting', 'addableMotions', 'alreadyAddedItems', 'userGroups'],
+        mixins: [VOTING_COMMON_MIXIN],
         data() {
             return {
                 activityClosed: true,
@@ -428,23 +404,6 @@ $html = ob_get_clean();
             }
         },
         computed: {
-            groupedVotings: function () {
-                const knownGroupIds = {};
-                const allGroups = [];
-                this.voting.items.forEach(function(item) {
-                    if (item.item_group_same_vote) {
-                        if (knownGroupIds[item.item_group_same_vote] !== undefined) {
-                            allGroups[knownGroupIds[item.item_group_same_vote]].push(item);
-                        } else {
-                            knownGroupIds[item.item_group_same_vote] = allGroups.length;
-                            allGroups.push([item]);
-                        }
-                    } else {
-                        allGroups.push([item]);
-                    }
-                });
-                return allGroups;
-            },
             isUsed: {
                 get() {
                     return this.voting.status !== STATUS_OFFLINE;
@@ -476,11 +435,6 @@ $html = ob_get_clean();
             votingHasMajority: function () {
                 // Used for the currently running vote as it is
                 return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
-            },
-            organizationsWithUsersEntered: function () {
-                return this.organizations.filter(function (organization) {
-                    return organization.members_present !== null;
-                });
             },
             settingsTitle: {
                 get: function () {
@@ -624,12 +578,7 @@ $html = ob_get_clean();
                 this.statusChanged();
             },
             statusChanged: function () {
-                this.$emit('set-status', this.voting.id, this.voting.status, this.organizations);
-            },
-            updateOrganizations: function () {
-                if (this.organizations === undefined) {
-                    this.organizations = Object.assign([], this.voting.user_organizations);
-                }
+                this.$emit('set-status', this.voting.id, this.voting.status);
             },
             openActivities: function () {
                 this.activityClosed = false;
@@ -653,7 +602,7 @@ $html = ob_get_clean();
                 return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
             },
             hasVoteList: function (groupedItem) {
-                return groupedItem[0].votes !== undefined;
+                return groupedItem[0].votes !== undefined && (this.isOpen || this.isClosed);
             },
             isVoteListShown: function (groupedItem) {
                 const showId = groupedItem[0].type + '-' + groupedItem[0].id;
@@ -666,10 +615,6 @@ $html = ob_get_clean();
             hideVoteList: function (groupedItem) {
                 const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
                 this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
-            },
-            getVoteListVotes: function (groupedItem, type) {
-                return groupedItem[0].votes
-                    .filter(vote => vote.vote === type);
             },
             openSettings: function () {
                 this.settingsOpened = true;
@@ -703,10 +648,7 @@ $html = ob_get_clean();
         },
         updated() {
             $(this.$el).find('[data-toggle="tooltip"]').tooltip();
-            this.updateOrganizations();
         },
-        beforeMount: function () {
-            this.updateOrganizations();
-        }
+        beforeMount: function () {}
     });
 </script>

@@ -24,7 +24,7 @@ echo Html::beginForm('', 'post', [
 ]);
 
 ?>
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn">
         <?= Yii::t('admin', 'motion_type_templ') ?>:
     </label>
@@ -91,7 +91,7 @@ echo Html::beginForm('', 'post', [
 </div>
 
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn" for="typeTitleSingular">
         <?= Yii::t('admin', 'motion_type_singular') ?>:
     </label>
@@ -106,7 +106,7 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn" for="typeTitlePlural">
         <?= Yii::t('admin', 'motion_type_plural') ?>:
     </label>
@@ -121,7 +121,7 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn" for="typeCreateTitle">
         <?= Yii::t('admin', 'motion_type_create_title') ?>:
     </label>
@@ -136,7 +136,7 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn" for="typeMotionPrefix">
         <?= Yii::t('admin', 'motion_type_title_prefix') ?>:
     </label>
@@ -148,7 +148,7 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="adminTwoCols">
+<div class="stdTwoCols">
     <label class="leftColumn">
         <?= Yii::t('admin', 'motion_type_pdf_layout') ?>:
     </label>

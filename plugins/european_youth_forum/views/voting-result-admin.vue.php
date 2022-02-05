@@ -20,13 +20,13 @@
     <tbody>
     <tr>
         <th>NYC</th>
-        <td>{{ groupedVoting[0].vote_results['nyo'].total_multiplied }}</td>
-        <td>{{ groupedVoting[0].vote_results['nyo'].yes }}</td>
-        <td>{{ groupedVoting[0].vote_results['nyo'].yes_multiplied }}</td>
-        <td>{{ groupedVoting[0].vote_results['nyo'].no }}</td>
-        <td>{{ groupedVoting[0].vote_results['nyo'].no_multiplied }}</td>
-        <td>{{ groupedVoting[0].vote_results['nyo'].abstention }}</td>
-        <td>{{ groupedVoting[0].vote_results['nyo'].total }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyc'].total_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyc'].yes }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyc'].yes_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyc'].no }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyc'].no_multiplied }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyc'].abstention }}</td>
+        <td>{{ groupedVoting[0].vote_results['nyc'].total }}</td>
     </tr>
     <tr>
         <th>INGYO</th>

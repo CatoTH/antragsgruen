@@ -229,8 +229,26 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(ConsultationUserGroup::class, ['id' => 'groupId'])->viaTable('userGroup', ['userId' => 'id']);
     }
 
+    /**
+     * @return int[]
+     */
+    public function getConsultationUserGroupIds(Consultation $consultation): array
+    {
+        $ids = [];
+        foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
+            foreach ($userGroup->users as $user) {
+                if ($user->id === $this->id) {
+                    $ids[] = $userGroup->id;
+                }
+            }
+        }
+        return $ids;
+    }
+
     public function getUserGroupsForConsultation(Consultation $consultation): array
     {
+
+
         return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
             return $group->isRelevantForConsultation($consultation);
         });
@@ -311,22 +329,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Hint: there might be others, too, but they would not be assignable by the admin
-     * @return UserOrganization[]
-     */
-    public static function getSelectableUserOrganizations(bool $includeDefault = false): array
-    {
-        $groups = [];
-        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $groups = array_merge($groups, $plugin::getUserOrganizations());
-        }
-        if (count($groups) === 0) {
-            $groups[] = new UserOrganization(User::ORGANIZATION_DEFAULT, '');
-        }
-        return $groups;
     }
 
     /**

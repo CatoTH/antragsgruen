@@ -18,7 +18,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
 <section class="motionSupporters hideForAmendmentsOnly" id="motionSupportersForm">
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator') ?></h2>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeSupportType">
             <?= Yii::t('admin', 'motion_type_supp_form') ?>:
         </label>
@@ -39,7 +39,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" data-visibility="hasInitiator">
+    <div class="stdTwoCols" data-visibility="hasInitiator">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_person_type') ?>:
         </div>
@@ -61,7 +61,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" data-visibility="hasInitiator">
+    <div class="stdTwoCols" data-visibility="hasInitiator">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_contact_name') ?>:
         </div>
@@ -82,7 +82,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" data-visibility="hasInitiator">
+    <div class="stdTwoCols" data-visibility="hasInitiator">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_email') ?>:
         </div>
@@ -103,7 +103,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" data-visibility="hasInitiator">
+    <div class="stdTwoCols" data-visibility="hasInitiator">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_phone') ?>:
         </div>
@@ -124,7 +124,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
+    <div class="stdTwoCols formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_orga_resolution') ?>:
         </div>
@@ -145,7 +145,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupGender" data-visibility="initiatorCanBePerson">
+    <div class="stdTwoCols formGroupGender" data-visibility="initiatorCanBePerson">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_gender') ?>:
         </div>
@@ -166,7 +166,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupMinSupporters" id="typeMinSupportersRow" data-visibility="hasSupporters">
+    <div class="stdTwoCols formGroupMinSupporters" id="typeMinSupportersRow" data-visibility="hasSupporters">
         <label class="leftColumn" for="typeMinSupporters">
             <?= Yii::t('admin', 'motion_type_supp_min') ?>:
         </label>
@@ -177,7 +177,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupMinFemale" id="typeMinSupportersFemaleRow" data-visibility="allowFemaleQuota">
+    <div class="stdTwoCols formGroupMinFemale" id="typeMinSupportersFemaleRow" data-visibility="allowFemaleQuota">
         <label class="leftColumn control-label" for="typeMinSupportersFemale">
             <?= Yii::t('admin', 'motion_type_supp_female_min') ?>:
             <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
@@ -189,7 +189,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupAllowMore" data-visibility="hasSupporters">
+    <div class="stdTwoCols formGroupAllowMore" data-visibility="hasSupporters">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowMoreSupporters">
@@ -204,7 +204,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
+    <div class="stdTwoCols formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowSupportingAfterPublication">
@@ -220,7 +220,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
+    <div class="stdTwoCols formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="offerNonPublicSupports">
@@ -236,7 +236,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" id="typeHasOrgaRow" data-visibility="hasInitiator">
+    <div class="stdTwoCols" id="typeHasOrgaRow" data-visibility="hasInitiator">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="hasOrganizations">
@@ -252,7 +252,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
     </div>
 
 
-    <div class="adminTwoCols" id="sameInitiatorSettingsForAmendments">
+    <div class="stdTwoCols" id="sameInitiatorSettingsForAmendments">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <?php
@@ -270,7 +270,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
 <section class="amendmentSupporters" id="amendmentSupportersForm">
     <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator_amend') ?></h2>
 
-    <div class="adminTwoCols">
+    <div class="stdTwoCols">
         <label class="leftColumn" for="typeSupportTypeAmendment">
             <?= Yii::t('admin', 'motion_type_supp_form') ?>:
         </label>
@@ -291,7 +291,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" data-visibility="hasInitiator">
+    <div class="stdTwoCols" data-visibility="hasInitiator">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_person_type') ?>:
         </div>
@@ -313,7 +313,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" data-visibility="hasInitiator">
+    <div class="stdTwoCols" data-visibility="hasInitiator">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_contact_name') ?>:
         </div>
@@ -334,7 +334,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" data-visibility="hasInitiator">
+    <div class="stdTwoCols" data-visibility="hasInitiator">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_email') ?>
         </div>
@@ -355,7 +355,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" data-visibility="hasInitiator">
+    <div class="stdTwoCols" data-visibility="hasInitiator">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_phone') ?>
         </div>
@@ -376,7 +376,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
+    <div class="stdTwoCols formGroupResolutionDate" data-visibility="initiatorCanBeOrga">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_orga_resolution') ?>:
         </div>
@@ -397,7 +397,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupGender" data-visibility="initiatorCanBePerson">
+    <div class="stdTwoCols formGroupGender" data-visibility="initiatorCanBePerson">
         <div class="leftColumn">
             <?= Yii::t('admin', 'motion_type_gender') ?>:
         </div>
@@ -418,7 +418,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupMinSupporters" id="typeMinSupportersRowAmendment" data-visibility="hasSupporters">
+    <div class="stdTwoCols formGroupMinSupporters" id="typeMinSupportersRowAmendment" data-visibility="hasSupporters">
         <label class="leftColumn" for="typeMinSupportersAmendment">
             <?= Yii::t('admin', 'motion_type_supp_min') ?>:
         </label>
@@ -429,7 +429,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupMinFemale" id="typeMinSupportersFemaleRowAmendment" data-visibility="allowFemaleQuota">
+    <div class="stdTwoCols formGroupMinFemale" id="typeMinSupportersFemaleRowAmendment" data-visibility="allowFemaleQuota">
         <label class="leftColumn" for="typeMinSupportersFemaleAmendment">
             <?= Yii::t('admin', 'motion_type_supp_female_min') ?>:
             <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
@@ -441,7 +441,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupAllowMore" data-visibility="hasSupporters">
+    <div class="stdTwoCols formGroupAllowMore" data-visibility="hasSupporters">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowMoreSupporters">
@@ -456,7 +456,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
+    <div class="stdTwoCols formGroupAllowAfterPub" data-visibility="allowSupportAfterSubmission">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowSupportingAfterPublication">
@@ -472,7 +472,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
+    <div class="stdTwoCols formGroupOfferNonPublic" data-visibility="isCollectingSupporters">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="offerNonPublicSupports">
@@ -488,7 +488,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="adminTwoCols" id="typeHasOrgaRowAmendment" data-visibility="hasInitiator">
+    <div class="stdTwoCols" id="typeHasOrgaRowAmendment" data-visibility="hasInitiator">
         <div class="leftColumn"></div>
         <div class="rightColumn">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="hasOrganizations">
