@@ -12,17 +12,18 @@ ob_start();
             <div class="usernameFilter">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="<?= Yii::t('admin', 'siteacc_userfilter_place')?>"
-                           aria-label="<?= Yii::t('admin', 'siteacc_userfilter_aria')?>" v-model="filterUsername">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                           aria-label="<?= Yii::t('admin', 'siteacc_userfilter_aria')?>"
+                           v-model="filterUser" @keydown.esc="filterUser = ''">
+                    <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-search"></span></span>
                 </div>
             </div>
         </div>
         <ul class="userList">
             <li v-for="user in usersFiltered" :class="'user' + user.id">
                 <div class="userInfo">
-                    <div class="nameUnfiltered" v-if="!filterUsername">{{ user.name }}</div>
-                    <div class="nameFiltered" v-if="filterUsername" v-html="formatUsername(user.name)"></div>
-                    <div class="additional">{{ userAdditionalData(user) }}</div>
+                    <div class="nameUnfiltered" v-if="!filterUser">{{ user.name }}</div>
+                    <div class="nameFiltered" v-if="filterUser" v-html="formatUsername(user.name)"></div>
+                    <div class="additional" v-html="formatUserAdditionalData(user)"></div>
                 </div>
                 <div class="groupsDisplay" v-if="!isGroupChanging(user)">
                     {{ userGroupsDisplay(user) }}
@@ -117,7 +118,7 @@ $html = ob_get_clean();
                 changedUserGroups: [],
                 creatingGroups: false,
                 addGroupName: '',
-                filterUsername: '',
+                filterUser: '',
                 filterGroup: ''
             };
         },
@@ -145,16 +146,17 @@ $html = ob_get_clean();
                 });
             },
             usersFiltered: function () {
-                const username = this.filterUsername.toLowerCase();
+                const searchTerm = this.filterUser.toLowerCase();
                 let users = this.users;
-                if (username !== '') {
+                if (searchTerm !== '') {
                     users = this.users.filter(function(user) {
-                        return user.name.toLowerCase().indexOf(username) !== -1;
+                        return user.name.toLowerCase().indexOf(searchTerm) !== -1
+                            || (user.email && user.email.toLowerCase().indexOf(searchTerm) !== -1)
+                            || (user.organization && user.organization.toLowerCase().indexOf(searchTerm) !== -1)
                     });
                 }
                 if (this.filterGroup > 0) {
                     const filterGroup = this.filterGroup;
-                    console.log(filterGroup);
                     users = users.filter(function(user) {
                         return user.groups.indexOf(filterGroup) !== -1;
                     });
@@ -191,18 +193,47 @@ $html = ob_get_clean();
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
             },
+            formatSubstrOcurrences: function (str, needle) {
+                const normalizedStr = this.escapeHtml(str.toLowerCase()),
+                    normalizedNeedle = this.escapeHtml(needle.toLowerCase());
+                let pos = normalizedStr.lastIndexOf(normalizedNeedle);
+                while (pos !== -1) {
+                    str = str.substr(0, pos) + '<strong>' + str.substr(pos, normalizedNeedle.length) + '</strong>' + str.substr(pos + normalizedNeedle.length);
+                    if (pos === 0) {
+                        // Prevent an endless loop, as "test".lastIndexOf("t", -1) === 0
+                        pos = -1;
+                    } else {
+                        pos = normalizedStr.lastIndexOf(normalizedNeedle, pos - 1);
+                    }
+                }
+                return str;
+            },
             formatUsername: function (username) {
-                if (this.filterUsername === '') {
+                if (this.filterUser === '') {
                     return '<strong>' + this.escapeHtml(username) + '</strong>';
                 } else {
-                    const pos = username.toLowerCase().indexOf(this.filterUsername.toLowerCase());
-                    return this.escapeHtml(username.substr(0, pos)) +
-                        '<strong>' + this.escapeHtml(username.substr(pos, this.filterUsername.length)) + '</strong>' +
-                        this.escapeHtml(username.substr(pos + this.filterUsername.length));
+                    return this.formatSubstrOcurrences(username, this.filterUser);
+                }
+            },
+            formatUserAdditionalData: function (user) {
+                let str = user.email;
+                if (user.organization) {
+                    str += ", " + user.organization;
+                }
+
+                if (this.filterUser === '') {
+                    return this.escapeHtml(str);
+                } else {
+                    const pos = str.toLowerCase().indexOf(this.filterUser.toLowerCase());
+                    if (pos === -1) {
+                        return str;
+                    }
+                    return this.escapeHtml(str.substr(0, pos)) +
+                        '<strong>' + this.escapeHtml(str.substr(pos, this.filterUser.length)) + '</strong>' +
+                        this.escapeHtml(str.substr(pos + this.filterUser.length));
                 }
             },
             setFilterGroup: function ($event) {
-                console.log($event);
                 this.filterGroup = $event;
             },
             userGroupsDisplay: function (user) {
@@ -211,13 +242,6 @@ $html = ob_get_clean();
                 }).map(function (group) {
                     return group.title;
                 }).join(", ");
-            },
-            userAdditionalData: function (user) {
-                let str = user.email;
-                if (user.organization) {
-                    str += ", " + user.organization;
-                }
-                return str;
             },
             selectedGroups: function (user) {
                 return this.changedUserGroups[user.id];
