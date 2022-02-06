@@ -16,6 +16,7 @@ $I->wantTo('Create three organisations');
 
 $page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
 
+$I->wait(0.2);
 $I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: environment");');
 $I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: infrastructure");');
 $I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: education");');

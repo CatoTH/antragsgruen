@@ -21,7 +21,8 @@ class TestApi extends \Codeception\Module
 
     private function executeCall($subdomain, $consultationUrl, $operation, $data)
     {
-        $url = 'http://antragsgruen-test.local/' . $subdomain . '/' . $consultationUrl . '/test/' . $operation;
+        $baseUrl = str_replace(['{SUBDOMAIN}', '{PATH}'], [$subdomain, $consultationUrl], \AcceptanceTester::ABSOLUTE_URL_TEMPLATE_SITE);
+        $url = $baseUrl . '/test/' . $operation;
 
         $handle = curl_init();
         curl_setopt($handle, CURLOPT_URL, $url);

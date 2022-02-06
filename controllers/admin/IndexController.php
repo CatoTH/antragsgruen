@@ -102,7 +102,7 @@ class IndexController extends AdminBase
                     }
 
                     $settingsInput = $post['siteSettings'] ?? [];
-                    $settings->saveForm($settingsInput, $post['siteSettingsFields']);
+                    $settings->saveForm($settingsInput, $post['siteSettingsFields'] ?? []);
 
                     $model->site->setSettings($settings);
                 }

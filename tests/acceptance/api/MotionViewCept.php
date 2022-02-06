@@ -29,7 +29,7 @@ $I->submitForm('#consultationAppearanceForm', [], 'save');
 
 $request = $client->get('rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/283');
 
-$baseUri = 'http://antragsgruen-test.local/stdparteitag/'; // "stdparteitag" is the subdomain
+$baseUri = 'http://' . AcceptanceTester::ABSOLUTE_URL_DOMAIN . '/stdparteitag/'; // "stdparteitag" is the subdomain
 $I->assertEquals(200, $request->getStatusCode());
 $I->assertJsonStringEqualsJsonString('{
     "type": "amendment",

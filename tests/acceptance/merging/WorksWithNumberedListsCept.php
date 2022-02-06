@@ -22,4 +22,4 @@ $I->submitForm('.motionMergeForm', [], 'save');
 $ols = $I->executeJS('return $(".paragraph ol[start=4]").length');
 $I->assertEquals(1, $ols);
 $text = $I->executeJS('return $(".paragraph ol[start=4]").text()');
-$I->assertContains("Seltsame Zeichen", $text);
+$I->assertStringContainsString("Seltsame Zeichen", $text);

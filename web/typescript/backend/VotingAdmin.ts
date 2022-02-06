@@ -137,6 +137,7 @@ export class VotingAdmin {
                         resultsPublic,
                         votesPublic
                     };
+
                     const widget = this;
                     $.post(voteCreateUrl, postData, function (data) {
                         if (data.success !== undefined && !data.success) {

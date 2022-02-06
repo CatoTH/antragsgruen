@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\policies\IPolicy;
+use app\models\policies\Nobody;
 use yii\helpers\Html;
 
 /**
@@ -26,13 +26,13 @@ $hasMotions    = false;
 $hasAmendments = false;
 
 foreach ($consultation->motionTypes as $type) {
-    if ($type->policyComments !== IPolicy::POLICY_NOBODY) {
+    if (!is_a($type->getCommentPolicy(), Nobody::class)) {
         $hasComments = true;
     }
-    if ($type->policyMotions !== IPolicy::POLICY_NOBODY) {
+    if (!is_a($type->getMotionPolicy(), Nobody::class)) {
         $hasMotions = true;
     }
-    if ($type->policyAmendments !== IPolicy::POLICY_NOBODY) {
+    if (!is_a($type->getAmendmentPolicy(), Nobody::class)) {
         $hasAmendments = true;
     }
 }

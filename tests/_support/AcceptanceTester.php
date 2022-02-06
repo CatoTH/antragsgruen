@@ -42,8 +42,9 @@ class AcceptanceTester extends \Codeception\Actor
     public const FIRST_FREE_TAG_ID                 = 14;
     public const FIRST_FREE_USERGROUP_ID           = 39;
 
-    public const ABSOLUTE_URL_TEMPLATE_SITE = 'http://antragsgruen-test.local/{SUBDOMAIN}/{PATH}';
-    public const ABSOLUTE_URL_TEMPLATE = 'http://antragsgruen-test.local/{SUBDOMAIN}/{CONSULTATION}/{PATH}';
+    public const ABSOLUTE_URL_DOMAIN = 'test.antragsgruen.test';
+    public const ABSOLUTE_URL_TEMPLATE_SITE = 'http://test.antragsgruen.test/{SUBDOMAIN}/{PATH}';
+    public const ABSOLUTE_URL_TEMPLATE = 'http://test.antragsgruen.test/{SUBDOMAIN}/{CONSULTATION}/{PATH}';
 
     public static $ACCEPTED_HTML_ERRORS = [
         'Bad value “popup” for attribute “rel”',

@@ -25,9 +25,9 @@ $I->submitForm('#accountsCreateForm', [], 'addUsers');
 
 $I->wait(1);
 $I->seeElement('.user2');
-$I->dontSeeElement('.vs__dropdown-toggle');
+$I->dontSeeElement('.user2 .vs__dropdown-toggle');
 $I->clickJS('.user2 .btnEdit');
-$I->seeElement('.vs__dropdown-toggle');
+$I->seeElement('.user2 .vs__dropdown-toggle');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([1], { id: 2 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 2});');
 $I->wait(0.5);

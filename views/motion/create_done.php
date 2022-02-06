@@ -82,7 +82,7 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
         <div class="hidden clipboard-done"><?= Yii::t('motion', 'copy_to_clipboard_done') ?></div>
     </div>
     <?php
-    if ($motion->motionType->policySupportMotions === \app\models\policies\IPolicy::POLICY_GRUENES_NETZ) {
+    if (is_a($motion->getMyMotionType()->getMotionSupportPolicy(), \app\models\policies\GruenesNetz::class)) {
         echo '<div class="alert alert-info">';
         echo $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'confirmed_support_phase_ww');
         echo '</div>';

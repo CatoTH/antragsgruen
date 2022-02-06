@@ -19,11 +19,11 @@ trait Application
         $type->createTitle                  = \Yii::t('structure', 'preset_app_call');
         $type->position                     = 0;
         $type->amendmentsOnly               = 0;
-        $type->policyMotions                = IPolicy::POLICY_ALL;
-        $type->policyAmendments             = IPolicy::POLICY_NOBODY;
-        $type->policyComments               = IPolicy::POLICY_NOBODY;
-        $type->policySupportMotions         = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments      = IPolicy::POLICY_NOBODY;
+        $type->policyMotions                = (string)IPolicy::POLICY_ALL;
+        $type->policyAmendments             = (string)IPolicy::POLICY_NOBODY;
+        $type->policyComments               = (string)IPolicy::POLICY_NOBODY;
+        $type->policySupportMotions         = (string)IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments      = (string)IPolicy::POLICY_NOBODY;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         $type->amendmentMultipleParagraphs  = 0;
         $type->motionLikesDislikes          = 0;

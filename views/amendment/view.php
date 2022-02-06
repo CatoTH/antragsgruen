@@ -111,7 +111,7 @@ if ($supportCollectingStatus) {
             echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], $textTmpl);
         }
     }
-    if ($motion->getMyMotionType()->policySupportAmendments !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
+    if (!is_a($motion->getMyMotionType()->getAmendmentSupportPolicy(), \app\models\policies\All::class) && !User::getCurrentUser()) {
         $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
         echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
         echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
@@ -193,6 +193,6 @@ echo MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $su
 $alternativeCommentView = \app\models\layoutHooks\Layout::getAmendmentAlternativeComments($amendment);
 if ($alternativeCommentView) {
     echo $alternativeCommentView;
-} elseif ($motion->getMyMotionType()->policyComments !== IPolicy::POLICY_NOBODY) {
+} elseif (!is_a($motion->getMyMotionType()->getCommentPolicy(), \app\models\policies\Nobody::class)) {
     echo $this->render('_view_comments', ['amendment' => $amendment, 'commentForm' => $commentForm]);
 }

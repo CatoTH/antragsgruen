@@ -22,11 +22,11 @@ trait Manifesto
         $type->createTitle                  = \Yii::t('structure', 'preset_manifesto_call');
         $type->position                     = 0;
         $type->amendmentsOnly               = 0;
-        $type->policyMotions                = IPolicy::POLICY_ADMINS;
-        $type->policyAmendments             = IPolicy::POLICY_ALL;
-        $type->policyComments               = IPolicy::POLICY_ALL;
-        $type->policySupportMotions         = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments      = IPolicy::POLICY_NOBODY;
+        $type->policyMotions                = (string)IPolicy::POLICY_ADMINS;
+        $type->policyAmendments             = (string)IPolicy::POLICY_ALL;
+        $type->policyComments               = (string)IPolicy::POLICY_ALL;
+        $type->policySupportMotions         = (string)IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments      = (string)IPolicy::POLICY_NOBODY;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         $type->texTemplateId                = ($config->xelatexPath || $config->lualatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs  = 1;

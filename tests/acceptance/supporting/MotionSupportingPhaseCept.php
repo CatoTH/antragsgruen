@@ -15,7 +15,7 @@ $I->dontSeeElementInDOM('#sidebar .collecting');
 
 $I->wantTo('check the admin settings and enable gender support and the supporting page');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
-$I->seeInField('#typeMinSupporters', 1);
+$I->seeInField('#typeMinSupporters', '1');
 $I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
 $I->dontSeeElement('#typeMinSupporters');
 $I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);

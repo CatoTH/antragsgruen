@@ -13,6 +13,7 @@ $I->dontSeeElementInDOM('#votingResultsLink');
 
 $I->wantTo('Create a new voting block for the amendment');
 $page = $I->loginAndGotoMotionList()->gotoAmendmentEdit(1);
+$I->wait(0.3);
 $I->dontSeeElement('.votingDataHolder');
 $I->clickJS('.votingDataOpener');
 $I->seeElement('.votingDataHolder');

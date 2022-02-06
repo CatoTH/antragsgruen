@@ -66,8 +66,10 @@ $I->see('Login', 'h1');
 
 $I->loginAsStdUser();
 $I->click('#votingResultsLink');
+$I->wait(0.3);
 $I->see('1', '.voting_question_1 .voteCount_present');
 $I->dontSeeElement('.voting_question_1 .result .accepted');
-$I->dontSeeElement('.singleVoteList');
+$I->dontSeeElement('.regularVoteList');
 $I->clickJS('.voting_question_1 .btnShowVotes');
-$I->see('testadmin@example.org', '.singleVoteList');
+$I->wait(0.3);
+$I->see('testadmin@example.org', '.regularVoteList');

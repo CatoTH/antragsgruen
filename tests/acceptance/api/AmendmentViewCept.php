@@ -31,7 +31,7 @@ $request = $client->get('rest/std-parteitag/motion/Moving_test-47262/amendment/2
 
 $I->assertEquals(200, $request->getStatusCode());
 
-$baseUri = 'http://antragsgruen-test.local/stdparteitag/'; // "stdparteitag" is the subdomain
+$baseUri = 'http://'. AcceptanceTester::ABSOLUTE_URL_DOMAIN . '/stdparteitag/'; // "stdparteitag" is the subdomain
 $I->assertJsonStringEqualsJsonString('{
     "type": "amendment",
     "id": 278,

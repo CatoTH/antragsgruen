@@ -3,10 +3,10 @@
 namespace app\models\forms;
 
 use app\components\Tools;
+use app\models\policies\{All, LoggedIn, IPolicy};
 use app\models\motionTypeTemplates\{Application, Manifesto, PDFApplication};
 use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationText, Motion, MotionSupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
-use app\models\policies\IPolicy;
 use app\models\settings\{AntragsgruenApp, InitiatorForm};
 use app\models\supportTypes\SupportBase;
 use yii\base\Model;
@@ -347,7 +347,8 @@ class SiteCreateForm extends Model
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }
         if ($this->hasComments) {
-            if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
+            $policyAmend = $type->getAmendmentPolicy();
+            if (is_a($policyAmend, All::class) || is_a($policyAmend, LoggedIn::class)) {
                 $type->policyComments = $type->policyAmendments;
             } else {
                 $type->policyComments = (string)IPolicy::POLICY_ALL;
@@ -411,7 +412,8 @@ class SiteCreateForm extends Model
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }
         if ($this->hasComments) {
-            if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
+            $policyAmend = $type->getAmendmentPolicy();
+            if (is_a($policyAmend, All::class) || is_a($policyAmend, LoggedIn::class)) {
                 $type->policyComments = $type->policyAmendments;
             } else {
                 $type->policyComments = (string)IPolicy::POLICY_ALL;
@@ -470,7 +472,8 @@ class SiteCreateForm extends Model
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
         }
         if ($this->hasComments) {
-            if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
+            $policyAmend = $type->getAmendmentPolicy();
+            if (is_a($policyAmend, All::class) || is_a($policyAmend, LoggedIn::class)) {
                 $type->policyComments = $type->policyAmendments;
             } else {
                 $type->policyComments = (string)IPolicy::POLICY_ALL;

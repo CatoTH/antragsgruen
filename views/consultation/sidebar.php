@@ -1,8 +1,8 @@
 <?php
 
+use app\models\policies\Nobody;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, ConsultationMotionType, Motion, VotingBlock};
-use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
 /**
@@ -30,13 +30,13 @@ $pinkButtonCreates = [];
 $creatableTypes = [];
 
 foreach ($consultation->motionTypes as $type) {
-    if ($type->policyComments !== IPolicy::POLICY_NOBODY) {
+    if (!is_a($type->getCommentPolicy(), Nobody::class)) {
         $hasComments = true;
     }
-    if ($type->policyMotions !== IPolicy::POLICY_NOBODY) {
+    if (!is_a($type->getMotionPolicy(), Nobody::class)) {
         $hasMotions = true;
     }
-    if ($type->policyAmendments !== IPolicy::POLICY_NOBODY) {
+    if (!is_a($type->getAmendmentPolicy(), Nobody::class)) {
         $hasAmendments = true;
     }
     if ($type->getPDFLayoutClass() !== null) {
@@ -127,6 +127,7 @@ if ($consultation->getSettings()->proposalProcedurePage || count($closedVotings)
     $html = '<section class="sidebar-box" aria-labelledby="sidebarPpTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarPpTitle">' . Yii::t('con', 'sidebar_procedure') . '</li>';
 
+    $url = '';
     if ($consultation->getSettings()->proposalProcedurePage) {
         $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'proposed_procedure');
         $url = UrlHelper::createUrl('consultation/proposed-procedure');
@@ -152,7 +153,7 @@ if ($hasMotions && $consultation->getSettings()->sidebarNewMotions) {
         foreach ($newestMotions as $motion) {
             $motionLink = UrlHelper::createMotionUrl($motion);
             $name       = '<span class="' . Html::encode($motion->getIconCSSClass()) . '"></span>' .
-                HTMLTools::encodeAddShy($motion->title ? $motion->title : '-');
+                HTMLTools::encodeAddShy($motion->title ?: '-');
             $html       .= '<li class="motionTitle">' . Html::a($name, $motionLink) . "</li>\n";
         }
     }
@@ -194,11 +195,9 @@ if ($hasComments) {
             $html .= '<strong>' . Html::encode($comment->name) . '</strong>, ';
             $html .= Tools::formatMysqlDateTime($comment->dateCreation);
             if (is_a($comment, \app\models\db\MotionComment::class)) {
-                /** @var \app\models\db\MotionComment $comment */
                 $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
                     Html::encode($comment->getIMotion()->titlePrefix) . '</div>';
             } elseif (is_a($comment, \app\models\db\AmendmentComment::class)) {
-                /** @var \app\models\db\AmendmentComment $comment */
                 $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
                     Html::encode($comment->getIMotion()->titlePrefix) . '</div>';
             }

@@ -59,6 +59,7 @@ $I->seeElement('.currentSpeechInline .appliedMe');
 $I->see('1', '.currentSpeechInline .number');
 $I->see('Testadmin', '.currentSpeechInline .nameList');
 $I->executeJS('var btn = document.querySelector(".waitingSingle .btnWithdraw"), evt = document.createEvent("HTMLEvents"); evt.initEvent("click", false, true); btn.dispatchEvent(evt);');
+$I->wait(0.2);
 $I->see('0', '.currentSpeechInline .number');
 $I->dontSee('Testadmin', '.currentSpeechInline .nameList');
 
