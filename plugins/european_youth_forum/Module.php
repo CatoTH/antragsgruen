@@ -2,9 +2,8 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{Consultation, ConsultationUserGroup, Site, Vote, VotingBlock};
+use app\models\db\{Consultation, Site, Vote, VotingBlock};
 use app\models\settings\Layout;
-use app\models\UserOrganization;
 use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
@@ -52,6 +51,9 @@ class Module extends ModuleBase
      */
     public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): ?array
     {
+        if (!VotingHelper::isSetUpAsYfjVoting($voting)) {
+            return null;
+        }
         $results = [
             'nyc' => [
                 'yes' => 0,

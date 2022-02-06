@@ -9,6 +9,7 @@ use app\models\policies\LoggedIn;
 use app\models\settings\AntragsgruenApp;
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -77,10 +78,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return AntragsgruenApp::getInstance()->tablePrefix . 'votingBlock';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
@@ -94,28 +92,19 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAmendments()
+    public function getAmendments(): ActiveQuery
     {
         return $this->hasMany(Amendment::class, ['votingBlockId' => 'id'])
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotions()
+    public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['votingBlockId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getQuestions()
+    public function getQuestions(): ActiveQuery
     {
         return $this->hasMany(VotingQuestion::class, ['votingBlockId' => 'id']);
     }
@@ -130,15 +119,12 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return null;
     }
 
-    public function getAssignedToMotion()
+    public function getAssignedToMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'assignedToMotionId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotes()
+    public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['votingBlockId' => 'id']);
     }

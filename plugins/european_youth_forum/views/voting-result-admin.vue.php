@@ -1,4 +1,4 @@
-<table class="votingResultTable votingResultTableMultiple">
+<table class="votingResultTable votingResultTableMultiple" v-if="groupedVoting[0].vote_results['nyc'] && groupedVoting[0].vote_results['ingyo']">
     <thead>
     <tr>
         <th rowspan="2"></th>
@@ -48,3 +48,23 @@
     </tr>
     </tbody>
 </table>
+<div v-if="groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0]">
+    <table class="votingTable votingTableSingle">
+        <thead>
+        <tr>
+            <th v-for="answer in voting.answers">{{ answer.title }}</th>
+            <th v-if="voting.answers.length > 1"><?= Yii::t('voting', 'admin_votes_total') ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td v-for="answer in voting.answers" :class="'voteCount_' + answer.api_id">
+                {{ groupedVoting[0].vote_results[0][answer.api_id] }}
+            </td>
+            <td class="voteCountTotal total" v-if="voting.answers.length > 1">
+                {{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

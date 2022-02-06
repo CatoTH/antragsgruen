@@ -4,7 +4,9 @@ namespace app\models\db;
 
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\VotingData;
 use app\models\votings\Answer;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -25,10 +27,7 @@ use yii\db\ActiveRecord;
  */
 class Vote extends ActiveRecord
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'vote';
     }
@@ -38,35 +37,23 @@ class Vote extends ActiveRecord
         return User::getCachedUser($this->userId);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotingBlock()
+    public function getVotingBlock(): ActiveQuery
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotion()
+    public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAmendment()
+    public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getQuestion()
+    public function getQuestion(): ActiveQuery
     {
         return $this->hasOne(VotingQuestion::class, ['id' => 'questionId']);
     }
@@ -124,14 +111,14 @@ class Vote extends ActiveRecord
 
         $answers = $voting->getAnswers();
         $results = [
-            User::ORGANIZATION_DEFAULT => [],
+            VotingData::ORGANIZATION_DEFAULT => [],
         ];
         foreach ($answers as $answer) {
-            $results[User::ORGANIZATION_DEFAULT][$answer->apiId] = 0;
+            $results[VotingData::ORGANIZATION_DEFAULT][$answer->apiId] = 0;
         }
         foreach ($votes as $vote) {
             $voteType = $vote->getVoteForApi($answers);
-            $results[User::ORGANIZATION_DEFAULT][$voteType]++;
+            $results[VotingData::ORGANIZATION_DEFAULT][$voteType]++;
         }
         return $results;
     }

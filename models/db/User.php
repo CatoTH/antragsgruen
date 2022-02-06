@@ -8,7 +8,7 @@ use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, Gr
 use app\models\events\UserEvent;
 use app\models\exceptions\{FormError, MailNotSent, ServerConfiguration};
 use app\models\settings\AntragsgruenApp;
-use yii\db\{ActiveRecord, Expression};
+use yii\db\{ActiveQuery, ActiveRecord, Expression};
 use yii\web\IdentityInterface;
 
 /**
@@ -46,14 +46,12 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const EVENT_ACCOUNT_CONFIRMED = 'account_confirmed';
-    const EVENT_DELETED           = 'deleted';
+    public const EVENT_ACCOUNT_CONFIRMED = 'account_confirmed';
+    public const EVENT_DELETED           = 'deleted';
 
-    const STATUS_UNCONFIRMED = 1;
-    const STATUS_CONFIRMED   = 0;
-    const STATUS_DELETED     = -1;
-
-    const ORGANIZATION_DEFAULT = '0';
+    public const STATUS_UNCONFIRMED = 1;
+    public const STATUS_CONFIRMED   = 0;
+    public const STATUS_DELETED     = -1;
 
     /**
      * @return string[]
@@ -149,82 +147,52 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'user';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionComments()
+    public function getMotionComments(): ActiveQuery
     {
         return $this->hasMany(MotionComment::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionSupports()
+    public function getMotionSupports(): ActiveQuery
     {
         return $this->hasMany(MotionSupporter::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAmendmentComments()
+    public function getAmendmentComments(): ActiveQuery
     {
         return $this->hasMany(AmendmentComment::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAmendmentSupports()
+    public function getAmendmentSupports(): ActiveQuery
     {
         return $this->hasMany(AmendmentSupporter::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEmailLogs()
+    public function getEmailLogs(): ActiveQuery
     {
         return $this->hasMany(EMailLog::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLogEntries()
+    public function getLogEntries(): ActiveQuery
     {
         return $this->hasMany(ConsultationLog::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAdminSites()
+    public function getAdminSites(): ActiveQuery
     {
         return $this->hasMany(Site::class, ['id' => 'siteId'])->viaTable('siteAdmin', ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultationPrivileges()
+    public function getConsultationPrivileges(): ActiveQuery
     {
         return $this->hasMany(ConsultationUserPrivilege::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserGroups()
+    public function getUserGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationUserGroup::class, ['id' => 'groupId'])->viaTable('userGroup', ['userId' => 'id']);
     }
@@ -247,33 +215,22 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserGroupsForConsultation(Consultation $consultation): array
     {
-
-
         return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
             return $group->isRelevantForConsultation($consultation);
         });
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNotifications()
+    public function getNotifications(): ActiveQuery
     {
         return $this->hasMany(UserNotification::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotes()
+    public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['userId' => 'id']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['auth', 'status'], 'required'],
@@ -415,10 +372,9 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return string
      * @throws \Yii\base\Exception
      */
-    public static function createPassword()
+    public static function createPassword(): string
     {
         return \Yii::$app->getSecurity()->generateRandomString(8);
     }
@@ -497,7 +453,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param Consultation $consultation
      * @return MotionSupporter[]
      */
     public function getMySupportedMotionsByConsultation(Consultation $consultation)
@@ -516,7 +471,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param Consultation $consultation
      * @return AmendmentSupporter[]
      */
     public function getMySupportedAmendmentsByConsultation(Consultation $consultation)
@@ -558,7 +512,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param Consultation $consultation
      * @param string $subject
      * @param string $text
      * @param int $mailType

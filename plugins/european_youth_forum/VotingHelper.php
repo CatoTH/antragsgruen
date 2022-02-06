@@ -3,6 +3,7 @@
 namespace app\plugins\european_youth_forum;
 
 use app\models\policies\UserGroups;
+use app\models\votings\AnswerTemplates;
 use app\models\db\{Consultation, ConsultationUserGroup, User, VotingBlock};
 
 class VotingHelper
@@ -39,6 +40,11 @@ class VotingHelper
         return null;
     }
 
+    /**
+     * A YFJ Voting gets special treatment if:
+     * - Policy is set to UserGroups, and both a NYC and INGYO user group is set
+     * - Answers are set to Yes/No/Abstention
+     */
     public static function isSetUpAsYfjVoting(VotingBlock $votingBlock): bool
     {
         /** @var UserGroups $policy */
@@ -46,9 +52,29 @@ class VotingHelper
         if (!is_a($policy, UserGroups::class)) {
             return false;
         }
+
         $nyc = self::getGroupFromVoting($policy, self::GROUP_NYC);
         $ingyo = self::getGroupFromVoting($policy, self::GROUP_INGYO);
-        return $nyc && $ingyo;
+        if (!$nyc || !$ingyo) {
+            return false;
+        }
+
+        $hasYes = false;
+        $hasNo = false;
+        $hasAbstention = false;
+        foreach ($votingBlock->getAnswers() as $answer) {
+            if ($answer->dbId === AnswerTemplates::VOTE_YES) {
+                $hasYes = true;
+            }
+            if ($answer->dbId === AnswerTemplates::VOTE_NO) {
+                $hasNo = true;
+            }
+            if ($answer->dbId === AnswerTemplates::VOTE_ABSTENTION) {
+                $hasAbstention = true;
+            }
+        }
+
+        return $hasYes && $hasNo && $hasAbstention;
     }
 
     /**

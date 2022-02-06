@@ -6,6 +6,8 @@ use app\models\db\{Vote, VotingBlock};
 
 class VotingData implements \JsonSerializable
 {
+    const ORGANIZATION_DEFAULT = '0';
+
     use JsonConfigTrait;
 
     /** @var null|string - casting a "yes" for Item 1 implies a "yes" for Item 2 of the same item group */
@@ -62,7 +64,7 @@ class VotingData implements \JsonSerializable
     public function augmentWithResults(VotingBlock $voting, array $votes): self
     {
         $results = Vote::calculateVoteResultsForApi($voting, $votes);
-        $orga = \app\models\db\User::ORGANIZATION_DEFAULT;
+        $orga = self::ORGANIZATION_DEFAULT;
         if (isset($results[$orga])) {
             $this->votesYes = $results[$orga]['yes'] ?? null;
             $this->votesNo = $results[$orga]['no'] ?? null;
