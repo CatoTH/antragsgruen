@@ -6,6 +6,7 @@
 - Bugfix: If both an agenda and a proposed procedure is used, some motions could appear twice on the proposed procedure.
 - Bugfix: If an image section was accidentally set as amendable and an amendment was created without changing the image, the PDF could not be rendered.
 - Bugfix: Votings could break after a participant has deleted their account.
+- Bugfix: If creating statute amendments was restricted to logged in users, the create link did not work properly.
 
 ## Version 4.9.0 (2021-12-12)
 

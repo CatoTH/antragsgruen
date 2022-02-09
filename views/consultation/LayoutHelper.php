@@ -248,8 +248,8 @@ class LayoutHelper
         echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
 
         $motionType = $agendaItem->getMyMotionType();
-        if ($motionType && $motionType->getMotionPolicy()->checkCurrUserMotion(false, true) && $agendaItem->getIMotionCreateLink()) {
-            $createLink = $agendaItem->getIMotionCreateLink();
+        if ($motionType && $motionType->mayCreateIMotion(false, true) && $agendaItem->getIMotionCreateLink(false, true)) {
+            $createLink = $agendaItem->getIMotionCreateLink(false, true);
             echo '<a href="' . Html::encode($createLink) . '" class="motionCreateLink btn btn-default btn-xs"';
             echo ' title="' . Html::encode($agendaItem->title . ': ' . $motionType->createTitle) . '"';
             echo ' rel="nofollow"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ';

@@ -367,7 +367,7 @@ class ConsultationMotionType extends ActiveRecord
             if (in_array($motion->status, $this->getConsultation()->getStatuses()->getUnreadableStatuses())) {
                 continue;
             }
-            if (!$this->getAmendmentPolicy()->checkCurrUserMotion($allowAdmins, $assumeLoggedIn)) {
+            if (!$this->getAmendmentPolicy()->checkCurrUserAmendment($allowAdmins, $assumeLoggedIn)) {
                 continue;
             }
             $return[] = $motion;
@@ -375,10 +375,19 @@ class ConsultationMotionType extends ActiveRecord
         return $return;
     }
 
-    public function getCreateLink(): ?string
+    public function mayCreateIMotion(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if ($this->amendmentsOnly) {
-            $motions = $this->getAmendableOnlyMotions();
+            return $this->getAmendmentPolicy()->checkCurrUserAmendment($allowAdmins, $assumeLoggedIn);
+        } else {
+            return $this->getMotionPolicy()->checkCurrUserMotion($allowAdmins, $assumeLoggedIn);
+        }
+    }
+
+    public function getCreateLink(bool $allowAdmins = true, bool $assumeLoggedIn = false): ?string
+    {
+        if ($this->amendmentsOnly) {
+            $motions = $this->getAmendableOnlyMotions($allowAdmins, $assumeLoggedIn);
             if (count($motions) === 1) {
                 return UrlHelper::createUrl(['/amendment/create', 'motionSlug' => $motions[0]->getMotionSlug()]);
             } elseif (count($motions) > 1) {
