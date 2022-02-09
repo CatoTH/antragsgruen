@@ -404,14 +404,14 @@ class ConsultationAgendaItem extends ActiveRecord
         return $dow . ', ' . $date->format('j') . '. ' . $month . ' ' . $date->format('Y');
     }
 
-    public function getIMotionCreateLink(): ?string
+    public function getIMotionCreateLink(bool $allowAdmins = true, bool $assumeLoggedIn = false): ?string
     {
         $motionType = $this->getMyMotionType();
         if (!$motionType) {
             return null;
         }
         if ($motionType->amendmentsOnly) {
-            $motions = $motionType->getAmendableOnlyMotions();
+            $motions = $motionType->getAmendableOnlyMotions($allowAdmins, $assumeLoggedIn);
             if (count($motions) === 1) {
                 return UrlHelper::createUrl(['/amendment/create', 'motionSlug' => $motions[0]->getMotionSlug(), 'agendaItemId' => $this->id]);
             } elseif (count($motions) > 1) {

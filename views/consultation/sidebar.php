@@ -77,7 +77,7 @@ if ($showCreate || count($pinkButtonCreates) > 0) {
       aria-expanded="false">' . Yii::t('con', 'create_new') . ' <span class="caret"></span></a>
                     <ul class="dropdown-menu">';
         foreach ($creatableTypes as $creatableType) {
-            $motionCreateLink = $creatableType->getCreateLink();
+            $motionCreateLink = $creatableType->getCreateLink(false, true);
 
             $html .= '<li class="createMotion' . $creatableType->id . '">';
             $html .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
