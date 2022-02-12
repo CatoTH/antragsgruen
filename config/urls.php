@@ -91,6 +91,7 @@ $urlRules = [
     $restBaseCon . '/votings/create' => '/voting/create-voting-block',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/settings' => '/voting/post-vote-settings',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/vote' => '/voting/post-vote',
+    $restBaseCon . '/votings/<votingBlockId:[^\/]+>/results.<format:[^\/]+>' => '/voting/download-voting-results',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',

@@ -61,4 +61,8 @@ return [
     'pdf_merging_init'      => 'Selected amendments',
     'truncated_supp_1'      => 'and 1 more proposer that can be seen on Antragsgrün.',
     'truncated_supp_x'      => 'and %NUM% more proposers that can be seen on Antragsgrün.',
+    'voting_export_date'    => 'Exported on',
+    'voting_unknown_user'   => 'Unknown user',
+    'voting_total_ans'      => 'Total votes per answer',
+    'voting_userlist'       => 'List of users',
 ];

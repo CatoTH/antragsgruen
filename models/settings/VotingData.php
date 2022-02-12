@@ -2,6 +2,8 @@
 
 namespace app\models\settings;
 
+use app\models\votings\Answer;
+use app\models\votings\AnswerTemplates;
 use app\models\db\{Vote, VotingBlock};
 
 class VotingData implements \JsonSerializable
@@ -77,6 +79,21 @@ class VotingData implements \JsonSerializable
 
     public function renderDetailedResults(): ?string
     {
+        return null;
+    }
+
+    public function getTotalVotesForAnswer(Answer $answer): ?int
+    {
+        switch ($answer->dbId) {
+            case AnswerTemplates::VOTE_YES:
+                return $this->votesYes;
+            case AnswerTemplates::VOTE_NO:
+                return $this->votesNo;
+            case AnswerTemplates::VOTE_ABSTENTION:
+                return $this->votesAbstention;
+            case AnswerTemplates::VOTE_PRESENT:
+                return $this->votesPresent;
+        }
         return null;
     }
 }

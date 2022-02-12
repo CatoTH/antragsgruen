@@ -61,4 +61,8 @@ return [
     'pdf_merging_init'      => 'Ausgewählte Änderungsanträge',
     'truncated_supp_1'      => 'sowie 1 weitere Antragsteller*in, die online auf Antragsgrün eingesehen werden kann.',
     'truncated_supp_x'      => 'sowie %NUM% weitere Antragsteller*innen, die online auf Antragsgrün eingesehen werden können.',
+    'voting_export_date'    => 'Exportiert am',
+    'voting_unknown_user'   => 'Unbekannte Nutzerin',
+    'voting_total_ans'      => 'Stimmen pro Antwort',
+    'voting_userlist'       => 'Abstimmende',
 ];

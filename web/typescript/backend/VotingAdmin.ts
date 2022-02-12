@@ -20,6 +20,7 @@ export class VotingAdmin {
         const vueEl = this.element.querySelector(".votingAdmin");
         const voteSettingsUrl = this.element.getAttribute('data-url-vote-settings');
         const voteCreateUrl = this.element.getAttribute('data-vote-create');
+        const voteDownloadUrl = this.element.getAttribute('data-url-vote-download');
         const addableMotions = JSON.parse(this.element.getAttribute('data-addable-motions'));
         const pollUrl = this.element.getAttribute('data-url-poll');
         const votingInitJson = this.element.getAttribute('data-voting');
@@ -33,6 +34,7 @@ export class VotingAdmin {
                                      :addableMotions="addableMotions"
                                      :alreadyAddedItems="alreadyAddedItems"
                                      :userGroups="userGroups"
+                                     :voteDownloadUrl="voteDownloadUrl"
                                      @set-status="setStatus"
                                      @save-settings="saveSettings"
                                      @remove-item="removeItem"
@@ -47,6 +49,7 @@ export class VotingAdmin {
                     votingsJson: null,
                     votings: null,
                     userGroups: initUserGroups,
+                    voteDownloadUrl,
                     addableMotions,
                     csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                     pollingId: null

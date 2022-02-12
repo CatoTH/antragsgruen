@@ -21,6 +21,7 @@ return [
 
     'results_title' => 'Voting results',
     'results_none' => 'No voting results have been published yet',
+    'results_download' => 'Results as Spreadsheet',
 
     'admin_title' => 'Voting administration',
     'admin_bc' => 'Administration',

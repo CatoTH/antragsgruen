@@ -64,7 +64,15 @@
   }
 
   .votingListAdmin {
-    // nothing yet
+    .voteResults {
+      display: block;
+      .actions {
+        float: right;
+        .btn {
+          font-weight: normal;
+        }
+      }
+    }
   }
 
   .votesDetailed {

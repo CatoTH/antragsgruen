@@ -40,7 +40,8 @@
     "symfony/lock": "^5.4",
     "symfony/serializer": "^5.4",
     "doctrine/annotations": "^1.13",
-    "symfony/property-access": "^5.4"
+    "symfony/property-access": "^5.4",
+    "phpoffice/phpspreadsheet": "^1.21"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.1.3",

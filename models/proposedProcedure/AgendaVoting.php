@@ -65,6 +65,13 @@ class AgendaVoting
         }
     }
 
+    public static function getFromVotingBlock(VotingBlock $votingBlock): self
+    {
+        $voting = new AgendaVoting($votingBlock->title, $votingBlock);
+        $voting->addItemsFromBlock(true);
+        return $voting;
+    }
+
     public function getId(): string
     {
         if ($this->voting) {

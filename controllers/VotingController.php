@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\models\proposedProcedure\AgendaVoting;
 use app\models\db\{ConsultationUserGroup, Motion, User, VotingBlock, VotingQuestion};
 use app\components\{ResourceLock, VotingMethods};
 use app\models\proposedProcedure\Factory;
@@ -180,6 +181,29 @@ class VotingController extends Base
             'votings' => $votingData,
             'created_voting' => $newBlock->id,
         ]));
+    }
+
+    public function actionDownloadVotingResults(string $votingBlockId, string $format)
+    {
+        $this->handleRestHeaders(['GET'], true);
+        $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
+        $agendaVoting = AgendaVoting::getFromVotingBlock($votingBlock);
+
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        switch ($format) {
+            case 'ods':
+                \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+                \Yii::$app->response->headers->add('Content-disposition', 'filename="voting-results.ods"');
+                break;
+            case 'xlsx':
+                \Yii::$app->response->headers->add('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                \Yii::$app->response->headers->add('Content-disposition', 'filename="voting-results.xslx"');
+                break;
+            default:
+                \Yii::$app->response->headers->add('Content-Type', 'text/html');
+        }
+
+        return $this->renderPartial('admin-download-results', ['agendaVoting' => $agendaVoting, 'format' => $format]);
     }
 
     // *** User-facing methods ***

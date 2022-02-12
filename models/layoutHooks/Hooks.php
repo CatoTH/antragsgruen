@@ -2,8 +2,18 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site, User};
+use app\models\db\{Amendment,
+    Consultation,
+    ConsultationMotionType,
+    ISupporter,
+    IVotingItem,
+    Motion,
+    MotionSection,
+    Site,
+    User};
+use app\models\proposedProcedure\AgendaVoting;
 use app\models\settings\VotingData;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class Hooks
 {
@@ -229,5 +239,10 @@ class Hooks
     public function getVotingAlternativeUserResults(?array $before, VotingData $votingData): ?array
     {
         return $before;
+    }
+
+    public function printVotingAlternativeSpreadsheetResults(int $rowsBefore, Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int
+    {
+        return $rowsBefore;
     }
 }

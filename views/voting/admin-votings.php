@@ -39,6 +39,7 @@ foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
 $pollUrl = UrlHelper::createUrl(['/voting/get-admin-voting-blocks']);
 $voteCreateUrl = UrlHelper::createUrl(['/voting/create-voting-block']);
 $voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
+$voteDownloadUrl = UrlHelper::createUrl(['/voting/download-voting-results', 'votingBlockId' => 'VOTINGBLOCKID', 'format' => 'FORMAT']);
 
 $addableMotionsData = [];
 foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
@@ -76,6 +77,7 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
 
 <div class="manageVotings votingCommon"
      data-url-vote-settings="<?= Html::encode($voteSettingsUrl) ?>"
+     data-url-vote-download="<?= Html::encode($voteDownloadUrl) ?>"
      data-vote-create="<?= Html::encode($voteCreateUrl) ?>"
      data-url-poll="<?= Html::encode($pollUrl) ?>"
      data-antragsgruen-widget="backend/VotingAdmin"

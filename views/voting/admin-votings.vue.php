@@ -166,6 +166,12 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
+                <div class="actions">
+                    <a class="btn btn-xs btn-link" :href="resultDownloadLink">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                        <?= Yii::t('voting', 'results_download') ?>
+                    </a>
+                </div>
                 <voting-vote-list :voting="voting" :groupedVoting="groupedVoting"></voting-vote-list>
             </li>
             </template>
@@ -379,7 +385,7 @@ $html = ob_get_clean();
 
     Vue.component('voting-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['voting', 'addableMotions', 'alreadyAddedItems', 'userGroups'],
+        props: ['voting', 'addableMotions', 'alreadyAddedItems', 'userGroups', 'voteDownloadUrl'],
         mixins: [VOTING_COMMON_MIXIN],
         data() {
             return {
@@ -495,6 +501,9 @@ $html = ob_get_clean();
             },
             motionsAssignable: function () {
                 return this.addableMotions.filter(motion => motion.type === 'motion'); // All, save for statute amendments
+            },
+            resultDownloadLink: function () {
+                return this.voteDownloadUrl.replace(/VOTINGBLOCKID/, this.voting.id).replace(/FORMAT/, 'ods');
             }
         },
         methods: {

@@ -21,6 +21,7 @@ return [
 
     'results_title' => 'Abstimmungsergebnisse',
     'results_none' => 'Es wurden noch keine Abstimmungsergebnisse veröffentlicht',
+    'results_download' => 'Ergebnisse als Spreadsheet',
 
     'admin_title' => 'Abstimmungen: Verwaltung',
     'admin_bc' => 'Verwaltung',

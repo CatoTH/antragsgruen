@@ -61,16 +61,12 @@ final class AnswerTemplates
      */
     private static function getCollectionPresent(): array
     {
-        $answer = new Answer();
-        $answer->dbId = static::VOTE_PRESENT;
-        $answer->apiId = 'present';
-        $answer->title = \Yii::t('voting', 'vote_present');
-        $answer->statusId = null;
-
-        return [$answer];
+        return [
+            static::getPresent()
+        ];
     }
 
-    private static function getYes(): Answer
+    public static function getYes(): Answer
     {
         $answer = new Answer();
         $answer->dbId = static::VOTE_YES;
@@ -80,7 +76,7 @@ final class AnswerTemplates
         return $answer;
     }
 
-    private static function getNo(): Answer
+    public static function getNo(): Answer
     {
         $answer = new Answer();
         $answer->dbId = static::VOTE_NO;
@@ -90,13 +86,23 @@ final class AnswerTemplates
         return $answer;
     }
 
-    private static function getAbstention(): Answer
+    public static function getAbstention(): Answer
     {
         $answer = new Answer();
         $answer->dbId = static::VOTE_ABSTENTION;
         $answer->apiId = 'abstention';
         $answer->title = \Yii::t('voting', 'vote_abstention');
         $answer->statusId = null;
+        return $answer;
+    }
+
+    public static function getPresent(): Answer {
+        $answer = new Answer();
+        $answer->dbId = static::VOTE_PRESENT;
+        $answer->apiId = 'present';
+        $answer->title = \Yii::t('voting', 'vote_present');
+        $answer->statusId = null;
+
         return $answer;
     }
 }

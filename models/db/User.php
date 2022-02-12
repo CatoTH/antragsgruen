@@ -3,7 +3,6 @@
 namespace app\models\db;
 
 use app\models\layoutHooks\Layout;
-use app\models\UserOrganization;
 use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, GruenesNetzSamlClient, mail\Tools as MailTools};
 use app\models\events\UserEvent;
 use app\models\exceptions\{FormError, MailNotSent, ServerConfiguration};
@@ -14,11 +13,11 @@ use yii\web\IdentityInterface;
 /**
  * @property int $id
  * @property string $name
- * @property string $nameGiven
- * @property string $nameFamily
- * @property string $organization
- * @property string $organizationIds
- * @property string $email
+ * @property string|null $nameGiven
+ * @property string|null $nameFamily
+ * @property string|null $organization
+ * @property string|null $organizationIds
+ * @property string|null $email
  * @property int $fixedData
  * @property int $emailConfirmed
  * @property string|null $auth
@@ -76,7 +75,7 @@ class User extends ActiveRecord implements IdentityInterface
                 $user = \Yii::$app->user->identity;
                 return $user;
             }
-        } catch (\yii\base\UnknownPropertyException $e) {
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (\yii\base\UnknownPropertyException $e) {
             // Can happen with console commands
             return null;
         }

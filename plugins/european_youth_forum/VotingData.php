@@ -60,7 +60,7 @@ class VotingData extends \app\models\settings\VotingData {
     public function augmentWithResults(VotingBlock $voting, array $votes): \app\models\settings\VotingData
     {
         if (!VotingHelper::isSetUpAsYfjVoting($voting)) {
-            return $this;
+            return parent::augmentWithResults($voting, $votes);
         }
         $results = Module::calculateVoteResultsForApi($voting, $votes);
 
