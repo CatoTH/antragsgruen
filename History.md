@@ -1,12 +1,13 @@
 # Version history
 
-### Version 4.9.1 [not released yet]
+### Version 4.9.1 (2022-02-12)
 
 - Bugfix: A modified amendment text as proposed procedure only got shown in the internal list after saving it a second time.
 - Bugfix: If both an agenda and a proposed procedure is used, some motions could appear twice on the proposed procedure.
 - Bugfix: If an image section was accidentally set as amendable and an amendment was created without changing the image, the PDF could not be rendered.
 - Bugfix: Votings could break after a participant has deleted their account.
 - Bugfix: If creating statute amendments was restricted to logged in users, the create link did not work properly.
+- Compatibility with PHP 8.1
 
 ## Version 4.9.0 (2021-12-12)
 
@@ -24,7 +25,6 @@
 - Bugfix: an empty "Supporting" section was shown in motions and amendments, if only the "liking" function was enabled.
 - Bugfix: Some bugs in edge cases with LaTeX-based PDF rendering were solved.
 - Bugfix: if fixed font width was specified but no line numbers, then line number placeholders where shown in the text.
-- Compatibility with PHP 8.1
 - Support for Internet Explorer was dropped.
 - PHP-Support: PHP 8.1 is not yet supported, please use PHP 8.0 until support will be added in the next minor version. This is the last version to support PHP 7.2.
 
