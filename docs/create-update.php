@@ -38,13 +38,7 @@ $GLOBALS["FILES_UPDATED"]     = [];
 $GLOBALS["FILES_UPDATED_MD5"] = [];
 $GLOBALS["FILES_DELETED"]     = [];
 
-/**
- * @param string $dirBase
- * @param string $dirRelative
- * @return array
- * @throws Exception
- */
-function getDirContent($dirBase, $dirRelative)
+function getDirContent(string $dirBase, string $dirRelative): array
 {
     if (!file_exists($dirBase . '/' . $dirRelative)) {
         return [[], []];
@@ -69,12 +63,7 @@ function getDirContent($dirBase, $dirRelative)
     return [$dirs, $files];
 }
 
-/**
- * @param string $file1
- * @param string $file2
- * @return bool
- */
-function filesAreEqual($file1, $file2)
+function filesAreEqual(string $file1, string $file2): bool
 {
     if (filesize($file1) !== filesize($file2)) {
         return false;
@@ -82,24 +71,14 @@ function filesAreEqual($file1, $file2)
     return file_get_contents($file1) === file_get_contents($file2);
 }
 
-/**
- * @param string $file
- * @return string
- */
-function getFileHash($file)
+function getFileHash(string $file): string
 {
     $content    = file_get_contents($file);
     $binaryHash = sodium_crypto_generichash($content);
     return base64_encode($binaryHash);
 }
 
-/**
- * @param string $dirOldBase
- * @param string $dirNewBase
- * @param string $dirRelative
- * @throws Exception
- */
-function compareDirectories($dirOldBase, $dirNewBase, $dirRelative)
+function compareDirectories(string $dirOldBase, string $dirNewBase, string $dirRelative): void
 {
     list($oldDirs, $oldFiles) = getDirContent($dirOldBase, $dirRelative);
     list($newDirs, $newFiles) = getDirContent($dirNewBase, $dirRelative);
@@ -131,12 +110,7 @@ function compareDirectories($dirOldBase, $dirNewBase, $dirRelative)
     }
 }
 
-/**
- * @param string $dir
- * @return string
- * @throws Exception
- */
-function readVersionFromDirectory($dir)
+function readVersionFromDirectory(string $dir): string
 {
     $defines = file_get_contents($dir . 'config/defines.php');
     $parts   = explode('ANTRAGSGRUEN_VERSION', $defines);
@@ -148,14 +122,7 @@ function readVersionFromDirectory($dir)
     return $version;
 }
 
-/**
- * @param string $dirNew
- * @param string $versionOld
- * @param string $versionNew
- * @return string
- * @throws Exception
- */
-function readChangelog($dirNew, $versionOld, $versionNew)
+function readChangelog(string $dirNew, string $versionOld, string $versionNew): string
 {
     $defines  = explode("\n", file_get_contents($dirNew . 'History.md'));
     $lines    = [];
@@ -208,7 +175,7 @@ $requirements   = [
 ];
 
 $updateFilename = $versionOld . "-" . $versionNew . ".zip";
-
+$updateDefFilename = $versionOld;
 
 $zipfile = new ZipArchive();
 if ($zipfile->open($dirUpdate . $updateFilename, ZipArchive::CREATE) !== true) {
@@ -241,14 +208,15 @@ $zipfile->addFromString('update.json.signature', $signature);
 $zipfile->close();
 
 $zipContent = file_get_contents($dirUpdate . $updateFilename);
-echo "Template for the update definition:\n" .
-    json_encode([
-        [
-            "type"      => "patch",
-            "version"   => $versionNew,
-            "changelog" => $changelog,
-            "url"       => "https://antragsgruen.de/updates/" . $updateFilename,
-            "filesize"  => strlen($zipContent),
-            "signature" => base64_encode(sodium_crypto_generichash($zipContent)),
-        ]
-    ], JSON_PRETTY_PRINT);
+$updateJson = json_encode([
+    [
+        "type"      => "patch",
+        "version"   => $versionNew,
+        "changelog" => $changelog,
+        "url"       => "https://antragsgruen.de/updates/" . $updateFilename,
+        "filesize"  => strlen($zipContent),
+        "signature" => base64_encode(sodium_crypto_generichash($zipContent)),
+    ]
+], JSON_PRETTY_PRINT);
+echo "Template for the update definition:\n" . $updateJson . "\n";
+file_put_contents($dirUpdate . $updateDefFilename, $updateJson);
