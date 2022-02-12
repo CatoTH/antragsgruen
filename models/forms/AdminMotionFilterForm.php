@@ -605,12 +605,12 @@ class AdminMotionFilterForm extends Model
         $str = '';
 
         $str    .= '<label class="filterPrefix">' . \Yii::t('admin', 'filter_prefix') . ':<br>';
-        $prefix = Html::encode($this->prefix);
+        $prefix = Html::encode($this->prefix ?: '');
         $str    .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
         $str    .= '</label>';
 
         $str   .= '<label class="filterTitle">' . \Yii::t('admin', 'filter_title') . ':<br>';
-        $title = Html::encode($this->title);
+        $title = Html::encode($this->title ?: '');
         $str   .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
         $str   .= '</label>';
 
@@ -719,7 +719,7 @@ class AdminMotionFilterForm extends Model
         $str .= '<div>
             <input id="initiatorSelect" class="typeahead form-control" type="text"
                 placeholder="' . \Yii::t('admin', 'filter_initiator_name') . '"
-                name="Search[initiator]" value="' . Html::encode($this->initiator) . '"
+                name="Search[initiator]" value="' . Html::encode($this->initiator ?: '') . '"
                 data-values="' . Html::encode(json_encode($values)) . '"></div>';
         $str .= '</div>';
 

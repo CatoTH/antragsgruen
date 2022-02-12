@@ -236,7 +236,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     public function getDeadlinesByType(string $type): array
     {
         if ($this->deadlinesObject === null) {
-            $this->deadlinesObject = json_decode($this->deadlines, true);
+            $this->deadlinesObject = ($this->deadlines ? json_decode($this->deadlines, true) : []);
         }
         return $this->deadlinesObject[$type] ?? [];
     }

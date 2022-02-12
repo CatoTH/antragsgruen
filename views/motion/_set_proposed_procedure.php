@@ -140,7 +140,7 @@ $voting = $motion->getVotingData();
                                 if (in_array($motion->id, $subitem->motionIds)) {
                                     echo ' selected';
                                 }
-                                echo ' data-group-name="' . Html::encode($subitem->groupName) . '"';
+                                echo ' data-group-name="' . Html::encode($subitem->groupName ?: '') . '"';
                                 echo '>' . Html::encode($subitem->getTitle($motion)) . '</option>';
                             }
                             ?>
@@ -319,7 +319,7 @@ $voting = $motion->getVotingData();
     <?php
     echo Html::textarea(
         'proposalExplanation',
-        $motion->proposalExplanation,
+        $motion->proposalExplanation ?: '',
         [
             'title' => Yii::t('amend', 'proposal_public_expl_title'),
             'class' => 'form-control',

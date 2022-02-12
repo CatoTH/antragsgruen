@@ -14,20 +14,20 @@ use yii\helpers\Html;
 
 $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
     $str = '<li><div class="supporterRow">';
-    $str .= '<input type="hidden" name="supporterId[]" value="' . Html::encode($supporter->id) . '">';
+    $str .= '<input type="hidden" name="supporterId[]" value="' . Html::encode($supporter->id ?: '') . '">';
 
     $title = Html::encode(Yii::t('admin', 'motion_supp_name'));
     $str   .= '<div class="nameCol">';
 
     $str .= '<span class="glyphicon glyphicon-resize-vertical moveHandle"></span> ';
 
-    $str .= '<input type="text" name="supporterName[]" value="' . Html::encode($supporter->name) . '" ';
+    $str .= '<input type="text" name="supporterName[]" value="' . Html::encode($supporter->name ?: '') . '" ';
     $str .= ' class="form-control supporterName" placeholder="' . $title . '" title="' . $title . '">';
     $str .= '</div>';
 
     $title = Html::encode(Yii::t('admin', 'motion_supp_orga'));
     $str   .= '<div>';
-    $str   .= '<input type="text" name="supporterOrga[]" value="' . Html::encode($supporter->organization) . '" ';
+    $str   .= '<input type="text" name="supporterOrga[]" value="' . Html::encode($supporter->organization ?: '') . '" ';
     $str   .= ' class="form-control supporterOrga" placeholder="' . $title . '" title="' . $title . '">';
     $str   .= '</div>';
 

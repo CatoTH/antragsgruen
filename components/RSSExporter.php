@@ -96,7 +96,7 @@ class RSSExporter
         $return .= '<atom:link href="' . Html::encode($this->feedLink) . '" rel="self" type="application/rss+xml" />
             <title>' . Html::encode($this->title) . '</title>
             <link>' . Html::encode($this->feedLink) . '</link>
-            <description>' . Html::encode($this->description) . '</description>
+            <description>' . Html::encode($this->description ?: '') . '</description>
             <image>
                 <url>' . Html::encode($rootUri . $this->image) . '</url>
                 <title>' . Html::encode($this->title) . '</title>

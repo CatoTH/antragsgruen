@@ -15,7 +15,7 @@ class DraftParagraph
     /** @var string */
     public $text;
 
-    /** @var string */
+    /** @var string|null */
     public $unchanged;
 
     /** @var int[] */

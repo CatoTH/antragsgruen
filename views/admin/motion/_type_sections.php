@@ -41,7 +41,7 @@ $sName = 'sections[' . $sectionId . ']';
             );
             ?>
             <label class="sectionTitle"><span class="sr-only"><?= Yii::t('admin', 'motion_section_name') ?></span>
-                <input type="text" name="<?= $sName ?>[title]" value="<?= Html::encode($section->title) ?>"
+                <input type="text" name="<?= $sName ?>[title]" value="<?= Html::encode($section->title ?: '') ?>"
                        required placeholder="Titel" class="form-control">
             </label>
 

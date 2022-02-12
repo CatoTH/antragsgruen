@@ -8,7 +8,7 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\{ISectionType, TabularDataType};
 use app\models\supportTypes\SupportBase;
 
-trait Application
+class Application
 {
     public static function doCreateApplicationType(Consultation $consultation): ConsultationMotionType
     {

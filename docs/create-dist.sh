@@ -26,7 +26,7 @@ if [[ ! -d ./local/antragsgruen-$ANTRAGSGRUEN_VERSION ]]; then
 fi
 
 npm ci
-gulp
+npx gulp
 
 rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 

@@ -463,7 +463,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
             <div class="rightColumn">
                 <input type="text" name="settings[emailFromName]" class="form-control" id="emailFromName"
                        placeholder="<?= Html::encode($placeholder) ?>"
-                       value="<?= Html::encode($settings->emailFromName) ?>">
+                       value="<?= Html::encode($settings->emailFromName ?: '') ?>">
             </div>
         </div>
 
@@ -473,7 +473,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
             <div class="rightColumn">
                 <input type="email" name="settings[emailReplyTo]" class="form-control" id="emailReplyTo"
                        placeholder="<?= Yii::t('admin', 'con_email_replyto_place') ?>"
-                       value="<?= Html::encode($settings->emailReplyTo) ?>">
+                       value="<?= Html::encode($settings->emailReplyTo ?: '') ?>">
             </div>
         </div>
 

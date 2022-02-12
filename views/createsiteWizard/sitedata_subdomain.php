@@ -55,8 +55,8 @@ use yii\helpers\Html;
                     <label class="url" for="subdomain"><?= $t('sitedata_subdomain') ?>:</label>
                     <div class="fakeurl">
                         <?php
-                        if (strpos($params->domainSubdomain, '<subdomain:[\w_-]+>') !== false) {
-                            echo str_replace('&lt;subdomain:[\w_-]+&gt;', $input, Html::encode($params->domainSubdomain));
+                        if (strpos($params->domainSubdomain ?: '', '<subdomain:[\w_-]+>') !== false) {
+                            echo str_replace('&lt;subdomain:[\w_-]+&gt;', $input, Html::encode($params->domainSubdomain ?: ''));
                         } else {
                             echo $input;
                         }
@@ -72,7 +72,7 @@ use yii\helpers\Html;
                         <small><?= $t('sitedata_contact_hint') ?></small>
                         <?= Html::textarea(
                             'SiteCreateForm[contact]',
-                            $model->contact,
+                            $model->contact ?: '',
                             ['rows' => 5, 'required' => 'required', 'id' => 'siteContact', 'class' => 'form-control']
                         ) ?>
                     </label>

@@ -238,7 +238,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
         <div class="col-md-9">
             <?php
             $options = ['class' => 'form-control', 'id' => 'amendmentNoteInternal'];
-            echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal, $options);
+            echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal ?: '', $options);
             ?>
         </div>
     </div>

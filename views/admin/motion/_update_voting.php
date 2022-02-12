@@ -93,7 +93,7 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
                             if (in_array($motion->id, $subitem->motionIds)) {
                                 echo ' selected';
                             }
-                            echo ' data-group-name="' . Html::encode($subitem->groupName) . '"';
+                            echo ' data-group-name="' . Html::encode($subitem->groupName ?: '') . '"';
                             echo '>' . Html::encode($subitem->getTitle($motion)) . '</option>';
                         }
                         ?>
