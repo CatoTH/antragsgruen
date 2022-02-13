@@ -402,4 +402,21 @@
       font-style: italic;
     }
   }
+
+  .userGroupSetter {
+    display: flex;
+    flex-direction: row;
+  }
+  html.no-touchevents & .userGroupSetter {
+    visibility: hidden;
+  }
+  html.no-touchevents & .showingSelector .userGroupSetter {
+    visibility: visible;
+  }
+  .voteListHolder:hover .userGroupSetter {
+    visibility: visible;
+  }
+  .userGroupSetter .btn {
+    font-weight: normal;
+  }
 }

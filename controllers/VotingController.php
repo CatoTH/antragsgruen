@@ -6,27 +6,30 @@ namespace app\controllers;
 
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\db\{ConsultationUserGroup, Motion, User, VotingBlock, VotingQuestion};
-use app\components\{ResourceLock, VotingMethods};
+use app\components\{ResourceLock, UserGroupAdminMethods, VotingMethods};
 use app\models\proposedProcedure\Factory;
-use yii\web\Response;
+use yii\web\{Application, Response};
 
 class VotingController extends Base
 {
     /** @var VotingMethods */
     private $votingMethods;
 
-    public function __construct($cid, $module, $config = [])
-    {
-        parent::__construct($cid, $module, $config);
-    }
+    /** @var UserGroupAdminMethods */
+    private $userGroupMethods;
 
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         $result = parent::beforeAction($action);
 
         if ($result) {
+            /** @var Application $app */
+            $app = \Yii::$app;
             $this->votingMethods = new VotingMethods();
-            $this->votingMethods->setRequestData($this->consultation, \Yii::$app->request);
+            $this->votingMethods->setRequestData($this->consultation, $app->request);
+
+            $this->userGroupMethods = new UserGroupAdminMethods();
+            $this->userGroupMethods->setRequestData($this->consultation, $app->request, $app->session);
         }
 
         return $result;
@@ -124,6 +127,11 @@ class VotingController extends Base
             case 'delete-voting':
                 $this->votingMethods->deleteVoting($votingBlock);
                 break;
+            case 'set-voters-to-user-group':
+                $userIds = array_map('intval', \Yii::$app->request->post('userIds', []));
+                $groupId = intval(\Yii::$app->request->post('newUserGroup'));
+                $this->userGroupMethods->setUserGroupUsers($groupId, $userIds);
+                break;
         }
 
         $responseData = $this->getAllVotingAdminData();
@@ -167,10 +175,10 @@ class VotingController extends Base
         $newBlock->votingStatus = VotingBlock::STATUS_PREPARING;
         $newBlock->save();
 
-        if (\Yii::$app->request->post('type') === 'question') {
+        if ($this->getPostValue('type') === 'question') {
             $question = new VotingQuestion();
             $question->consultationId = $newBlock->consultationId;
-            $question->title = \Yii::$app->request->post('specificQuestion', '-');
+            $question->title = $this->getPostValue('specificQuestion', '-');
             $question->votingBlockId = $newBlock->id;
             $question->save();
         }

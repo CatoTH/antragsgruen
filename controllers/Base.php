@@ -10,7 +10,7 @@ use app\models\db\{Amendment, Consultation, ConsultationUserGroup, Motion, Site,
 use Yii;
 use yii\base\Module;
 use yii\helpers\Html;
-use yii\web\{Controller, Response};
+use yii\web\{Controller, Request, Response};
 
 class Base extends Controller
 {
@@ -47,13 +47,12 @@ class Base extends Controller
 
     /**
      * @param \yii\base\Action $action
-     * @return bool
      * @throws Internal
      * @throws \Exception
      * @throws \yii\base\ExitException
      * @throws \yii\web\BadRequestHttpException
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         Yii::$app->response->headers->add('X-Xss-Protection', '1');
         Yii::$app->response->headers->add('X-Content-Type-Options', 'nosniff');
@@ -63,28 +62,28 @@ class Base extends Controller
             return false;
         }
 
-        $params = Yii::$app->request->resolve();
+        $params = $this->getHttpRequest()->resolve();
         $appParams = AntragsgruenApp::getInstance();
 
         if ($appParams->updateKey) {
             $this->showErrorpage(503, Yii::t('base', 'err_update_mode'));
         }
 
-        $inManager   = (get_class($this) === ManagerController::class);
+        $inManager = (get_class($this) === ManagerController::class);
         $inInstaller = (get_class($this) === InstallationController::class);
 
         if ($appParams->siteSubdomain) {
             if (strpos($appParams->siteSubdomain, 'xn--') === 0) {
                 HTMLTools::loadNetIdna2();
-                $idna      = new \Net_IDNA2();
+                $idna = new \Net_IDNA2();
                 $subdomain = $idna->decode($appParams->siteSubdomain);
             } else {
                 $subdomain = $appParams->siteSubdomain;
             }
 
-            $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
+            $consultation = $params[1]['consultationPath'] ?? '';
             if ($consultation === '' && $this->isGetSet('passConId')) {
-                $consultation = Yii::$app->request->get('passConId');
+                $consultation = $this->getHttpRequest()->get('passConId');
             }
             $this->loadConsultation($subdomain, $consultation);
             if ($this->site) {
@@ -95,15 +94,15 @@ class Base extends Controller
         } elseif (isset($params[1]['subdomain'])) {
             if (strpos($params[1]['subdomain'], 'xn--') === 0) {
                 HTMLTools::loadNetIdna2();
-                $idna      = new \Net_IDNA2();
+                $idna = new \Net_IDNA2();
                 $subdomain = $idna->decode($params[1]['subdomain']);
             } else {
                 $subdomain = $params[1]['subdomain'];
             }
 
-            $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
+            $consultation = $params[1]['consultationPath'] ?? '';
             if ($consultation === '' && $this->isGetSet('passConId')) {
-                $consultation = Yii::$app->request->get('passConId');
+                $consultation = $this->getHttpRequest()->get('passConId');
             }
             $this->loadConsultation($subdomain, $consultation);
             if ($this->site) {
@@ -163,30 +162,37 @@ class Base extends Controller
         return $response;
     }
 
+    protected function getHttpRequest(): Request
+    {
+        /** @var Request $request */
+        $request = Yii::$app->request;
+        return $request;
+    }
+
     protected function getHttpMethod(): string
     {
-        return Yii::$app->request->method;
+        return $this->getHttpRequest()->method;
     }
 
     protected function getHttpHeader(string $headerName): ?string
     {
-        return Yii::$app->request->headers->get($headerName);
+        return $this->getHttpRequest()->headers->get($headerName);
     }
 
     protected function getPostBody(): string
     {
-        return \Yii::$app->request->getRawBody();
+        return $this->getHttpRequest()->getRawBody();
     }
 
     protected function isPostSet(string $name): bool
     {
-        $post = Yii::$app->request->post();
+        $post = $this->getHttpRequest()->post();
         return isset($post[$name]);
     }
 
     protected function isGetSet(string $name): bool
     {
-        $get = Yii::$app->request->get();
+        $get = $this->getHttpRequest()->get();
         return isset($get[$name]);
     }
 
@@ -202,15 +208,24 @@ class Base extends Controller
      */
     public function getRequestValue($name, $default = null)
     {
-        $post = Yii::$app->request->post();
+        $post = $this->getHttpRequest()->post();
         if (isset($post[$name])) {
             return $post[$name];
         }
-        $get = Yii::$app->request->get();
+        $get = $this->getHttpRequest()->get();
         if (isset($get[$name])) {
             return $get[$name];
         }
         return $default;
+    }
+
+    /**
+     * @param mixed|null $default
+     * @return array|mixed|object
+     */
+    public function getPostValue(string $name, $default = null)
+    {
+        return $this->getHttpRequest()->post($name, $default);
     }
 
     public function renderContentPage(string $pageKey): string
@@ -269,16 +284,16 @@ class Base extends Controller
         if ($this->site->getSettings()->apiCorsOrigins) {
             if (in_array('*', $this->site->getSettings()->apiCorsOrigins)) {
                 Yii::$app->response->headers->add('Access-Control-Allow-Origin', '*');
-            } elseif (Yii::$app->request->origin && in_array(Yii::$app->request->origin, $this->site->getSettings()->apiCorsOrigins)) {
-                Yii::$app->response->headers->add('Access-Control-Allow-Origin', Yii::$app->request->origin);
+            } elseif ($this->getHttpRequest()->origin && in_array($this->getHttpRequest()->origin, $this->site->getSettings()->apiCorsOrigins)) {
+                Yii::$app->response->headers->add('Access-Control-Allow-Origin', $this->getHttpRequest()->origin);
             }
         }
         Yii::$app->response->headers->add('Access-Control-Allow-Methods', implode(', ', $allowedMethods));
 
-        if (Yii::$app->request->method === 'OPTIONS') {
+        if ($this->getHttpMethod() === 'OPTIONS') {
             Yii::$app->end();
         }
-        if (!in_array(Yii::$app->request->method, $allowedMethods)) {
+        if (!in_array($this->getHttpMethod(), $allowedMethods)) {
             $this->returnRestResponseFromException(new \Exception('Method not allowed', 405));
             Yii::$app->end();
         }
@@ -365,7 +380,7 @@ class Base extends Controller
         if (!$pwdChecker->isCookieLoggedIn()) {
             $loginUrl = UrlHelper::createUrl([
                 'user/login',
-                'backUrl'   => Yii::$app->request->url,
+                'backUrl'   => $this->getHttpRequest()->url,
                 'passConId' => $this->consultation->urlPath,
             ]);
             $this->redirect($loginUrl);
@@ -379,7 +394,7 @@ class Base extends Controller
     public function forceLogin(): void
     {
         if (Yii::$app->user->getIsGuest()) {
-            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
+            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => $this->getHttpRequest()->url]);
             $this->redirect($loginUrl);
             Yii::$app->end();
         }
@@ -495,15 +510,10 @@ class Base extends Controller
     }
 
     /**
-     * @param string $subdomain
-     * @param string $consultationId
-     * @param null|Motion $checkMotion
-     * @param null|Amendment $checkAmendment
-     * @return null|Consultation
      * @throws Internal
      * @throws \yii\base\ExitException
      */
-    public function loadConsultation($subdomain, $consultationId = '', $checkMotion = null, $checkAmendment = null)
+    public function loadConsultation(string $subdomain, string $consultationId = '', ?Motion $checkMotion = null, ?Amendment $checkAmendment = null): ?Consultation
     {
         if (is_null($this->site)) {
             $this->site = Site::findOne(['subdomain' => $subdomain]);

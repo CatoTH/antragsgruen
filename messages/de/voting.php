@@ -51,6 +51,7 @@ return [
     'admin_add_abort' => 'Hinzufügen abbrechen',
     'admin_settings_open' => 'Einstellungen anzeigen',
     'admin_settings_close' => 'Einstellungen schließen',
+    'admin_mvtoug_caller' => 'Abstimmende zu Benutzer*innengruppe',
 
     'settings_create' => 'Neue Abstimmung anlegen',
     'settings_open' => 'Einstellungen öffnen',

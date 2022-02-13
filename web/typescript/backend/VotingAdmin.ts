@@ -41,6 +41,7 @@ export class VotingAdmin {
                                      @delete-voting="deleteVoting"
                                      @add-imotion="addIMotion"
                                      @add-question="addQuestion"
+                                     @set-voters-to-user-group="setVotersToUserGroup"
                                      ref="voting-admin-widget"
                 ></voting-admin-widget>
             </div>`,
@@ -173,6 +174,13 @@ export class VotingAdmin {
                     this._performOperation(votingBlockId, {
                         op: 'add-question',
                         question
+                    });
+                },
+                setVotersToUserGroup(votingBlockId, userIds, newUserGroup) {
+                    this._performOperation(votingBlockId, {
+                        op: 'set-voters-to-user-group',
+                        userIds,
+                        newUserGroup
                     });
                 },
                 reloadData: function () {

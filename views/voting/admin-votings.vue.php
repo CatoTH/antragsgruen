@@ -172,7 +172,8 @@ ob_start();
                         <?= Yii::t('voting', 'results_download') ?>
                     </a>
                 </div>
-                <voting-vote-list :voting="voting" :groupedVoting="groupedVoting"></voting-vote-list>
+                <voting-vote-list :voting="voting" :groupedVoting="groupedVoting"
+                                  :setToUserGroupSelection="userGroups" @set-user-group="setVotersToUserGroup"></voting-vote-list>
             </li>
             </template>
         </ul>
@@ -624,6 +625,9 @@ $html = ob_get_clean();
             hideVoteList: function (groupedItem) {
                 const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
                 this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
+            },
+            setVotersToUserGroup: function (userIds, newUserGroup) {
+                this.$emit('set-voters-to-user-group', this.voting.id, userIds, newUserGroup);
             },
             openSettings: function () {
                 this.settingsOpened = true;

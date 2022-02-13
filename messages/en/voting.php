@@ -51,6 +51,7 @@ return [
     'admin_add_abort' => 'Abort adding',
     'admin_settings_open' => 'Show settings',
     'admin_settings_close' => 'Close settings',
+    'admin_mvtoug_caller' => 'Assign voters to a user group',
 
     'settings_create' => 'Create a new voting',
     'settings_open' => 'Show settings',

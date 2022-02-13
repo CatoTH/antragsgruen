@@ -15,10 +15,9 @@ class AdminBase extends Base
     /**
      * @param \yii\base\Action $action
      *
-     * @return bool
      * @throws \yii\web\BadRequestHttpException
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         if (!parent::beforeAction($action)) {
             return false;
@@ -29,7 +28,7 @@ class AdminBase extends Base
                 'motion-excellist', 'motion-odslist', 'motion-openslides', 'motion-yopenslidesusers',
             ])) {
             // Donwloading files is done by curl, not by chrome/firefox.
-            // Therefore the session is lost when downloading in the test environment
+            // Therefore, the session is lost when downloading in the test environment
             return true;
         }
 
