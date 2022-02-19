@@ -98,7 +98,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
                onClick="$('#abstimmungen').scrollintoview({top_offset: -30}); return false;">Abstimmungen</a>
             <ul>
                 <li><a href="#abstimmungen_grenzen" onClick="$('#abstimmungen_grenzen').scrollintoview({top_offset: -30}); return false;">Grenzen</a></li>
-                <li><a href="#abstimmungen_administration" onClick="$('#abstimmungen_administration').scrollintoview({top_offset: -30}); return false;">Administration</a></li>
+                <li><a href="#abstimmungen_administration" onClick="$('#abstimmungen_administration').scrollintoview({top_offset: -30}); return false;">Verwaltung</a></li>
                 <li><a href="#abstimmungen_user" onClick="$('#abstimmungen_user').scrollintoview({top_offset: -30}); return false;">Aus Sicht des Abstimmenden</a></li>
             </ul>
         </li>
@@ -402,34 +402,34 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         werden.</p>
     <p>Den Export gibt es für Admins der Veranstaltung im Menüpunkt „Antragsliste“, nachdem der Export einmalig auf dieser Seite
         unter „Funktionen” → „Openslides-Export” aktiviert wurde.</p>
+    <p>Zusätzlich kann Antragsgrün mit etwas Aufwand so konfiguriert werden, dass die selbe Benutzer*innen-Verwaltung
+        wie OpenSlides verwendet wird, um nicht zwei Zugänge pro Mitglied verwalten zu müssen. Falls diese Funktion
+        benötigt wird, kontaktieren Sie uns.</p>
 
     <h3 id="export_weitere">HTML, Plain Text, RSS, Weitere Formate</h3>
     <p>Generell ist es recht leicht, weitere Formate zu unterstützen. Ein paar weitere Formate werden daher bereits
         unterstützt: z.B. ein Export in reine formlose HTML-Seiten, in Plain-Text, und auch RSS-Feeds der aktuellen
         Anträge gibt es.</p>
-    <p>Falls weitere Formate benötigt werden, kontaktieren Sie uns einfach.</p>
 
     <h2 id="abstimmungen">Abstimmungen</h2>
 
-    <p>Auf Antragsgrün können Abstimmungen über Anträge und Änderungsanträge abgehalten werden.
-        Administrator*innen können flexibel bestimmen, wann über welchen Antrag abgestimmt wird.
-        Benutzer*innen können pro Antrag bzw. Änderungsantrag mit Ja, Nein und Enthaltung abstimmen.
-        Das Abstimmungssystem ist dabei darauf ausgerichtet, das Abstimmen den Benutzer*innen so leicht wie möglich zu machen.</p>
+    <p>Auf Antragsgrün können Abstimmungen über Anträge, Änderungsanträge und einfache Fragen abgehalten werden.
+        Es kann flexibel eingerichtet werden, sowohl was die Berechtigung zur Stimmabgabe, die Sichtbarkeit der Stimmen
+        und die genaue Art der Mehrheits angeht.<br>
+        Das Abstimmungssystem kann auch dafür verwendet werden, die Anwesenheit der Mitglieder abzufragen.
+        Es ist dabei darauf ausgerichtet, den Benutzer*innen das Abstimmen so leicht wie möglich zu machen.</p>
 
     <h3 id="abstimmungen_grenzen">Grenzen</h3>
 
-    <p>Abstimmungen sind aktuell <strong>halb-öffentlich</strong>. Reguläre Benutzer*innen können zwar nicht sehen, wer wie abgestimmt hat, Admins zur Kontrolle aber schon.
-        In Zukunft wird dies möglicherweise flexibler, um sowohl öffentliche als auch Abstimmungen zu ermöglichen, die nicht von Admins eingesehen werden können.
-        Eine komplett geheimes Wahlsystem ist aber technisch hoch komplex (oder unmöglich), weshalb Antragsgrün nicht für Personenwahlen eingesetzt werden darf.</p>
+    <p>Eine geheimes Wahlsystem ist technisch hoch komplex (oder unmöglich), weshalb Antragsgrün nicht für Personenwahlen eingesetzt werden darf.</p>
 
-    <p>Alle Eingeloggten Benutzer*innen können abstimmen. Eine genauere Rechtevergabe an Einzelne gibt es aktuell noch nicht - auch das wird aber bei Bedarf in Zukunft noch eingebaut.</p>
-
-    <h3 id="abstimmungen_administration">Administration</h3>
+    <h3 id="abstimmungen_administration">Verwaltung</h3>
 
     <h4>Abstimmungsblöcke</h4>
 
-    <p>Ein Abstimmungsblock ist eine Sammlung von (Änderungs-)Anträgen, die gleichzeitig nach dem selben Mehrheitsprinzip
-        abgestimmt wird. Er wird als Ganzes entweder auf der Startseite oder auf einer Antragsseite angezeigt.
+    <p>Ein Abstimmungsblock ist eine Sammlung von (Änderungs-)Anträgen und Fragen, für welche die selben Regeln gelten
+        (Öffentlichkeit, Abstimmungsrecht, Mehrheitsprinzip, ...).
+        Er wird als Ganzes entweder auf der Startseite oder auf einer Antragsseite angezeigt.
         Ein Abstimmungsblock hat demnach einen Namen, ein zugeordnetes Mehrheitsprinzip,
         Sichtbarkeitseinstellungen, bei Bedarf eine Zuordnung zu einem Antrag,
         und eine protokollierbare Zahl an anwesenden Mitgliedern.</p>
@@ -445,11 +445,33 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <p>Zu Beginn gibt es noch keine Abstimmungsblöcke. Sie können entweder auf der Administrationsseite (Einstellungen → Abstimmungen) oder auf der Bearbeitungsseite eines (Änderungs-)Antrags angelegt werden (siehe weiter unten).</p>
 
-    <p>Genauere Einstellungen zum Abstimmungblock sowie die Möglichkeit ihn wieder zu löschen finden sich, wenn man neben dem Titel des Blocks auf das Einstellungs-Icon klickt. Insbesondere lässt sich dort auch einstellen, nach welchem Prinzip die Mehrheit ermittelt wird:</p>
+    <p>Genauere Einstellungen zum Abstimmungblock sowie die Möglichkeit ihn wieder zu löschen finden sich, wenn man neben dem Titel des Blocks auf das Einstellungs-Icon klickt. Insbesondere gibt es folgende Einstellungsmöglichkeiten:</p>
+
+    <p><strong>Antwortmöglichkeiten:</strong></p>
+    <ul>
+        <li><strong>Ja, Nein, Enthaltung</strong> (Der Standard)</li>
+        <li><strong>Ja, Nein</strong> (Keine explizite Enthaltung möglich)</li>
+        <li><strong>Anwesend</strong> - Hier steht nur eine Antwortmöglichkeit zur Auswahl, die dazu genutzt werden kann, die Anwesenheit von Mitgliedern abzufragen.</li>
+    </ul>
+
+    <p><strong>Mehrheitsprinzip:</strong></p>
     <ul>
         <li><strong>Einfache Mehrheit</strong>: Ein Antrag gilt als angenommen, wenn die Zahl der Ja-Stimmen die der Nein-Stimmen übersteigt. Enthaltungen werden nicht mitgezählt.</li>
+        <li><strong>Absolute Mehrheit</strong>: Ein Antrag gilt als angenommen, wenn die Zahl der Ja-Stimmen die der Nein-Stimmen und Enthaltungen zusammen übersteigt.</li>
         <li><strong>2/3-Mehrheit</strong>: Ein Antrag gilt als angenommen, wenn mindestens doppelt so viele Ja- wie Nein-Stimmen abgegeben werden. Enthaltungen werden nicht mitgezählt.</li>
     </ul>
+    <p><strong>Öffentlichkeit:</strong></p>
+    <ul>
+        <li><strong>Abstimmungsergebnisse:</strong> Die Abstimmungsergebnisse können entweder für alle oder nur für Administrierende sichtbar sein.</li>
+        <li><strong>Einzelstimmen:</strong> Standardmäßig sind abgegebene Stimmen geheim. Es kann aber auch eine öffentliche Stimmabgabe oder eine nur für Administrierende sichtbare eingestellt werden. Vor der Stimmabgabe ist sichtbar, welche Sichtbarkeit gesetzt ist. Diese Einstellung kann nachträglich nicht geändert werden.</li>
+    </ul>
+    <p><strong>Berechtigung zur Stimmabgabe:</strong><br>Standardmäßig können alle registrierten Benutzer*innen abstimmen, die auf diese Veranstaltung Zugriff haben.
+       Allerdings kann auch das Gruppen-System genutzt werden, um die Berechtigung genauer auszudifferenzieren. Dazu wählt man „Ausgewählte Gruppen” und dann eine oder mehrere vorher angelegte Benutzer*innen-Gruppen.</p>
+
+    <h4>Eine einzelne Frage abstimmen lassen</h4>
+
+    <p>Um eine einfache Frage abzustimmen, die nicht direkt mit der Annahme oder Ablehnung eines (Änderungs-)Antrags zu tun hat, kann man den Button „Frage hinzufügen” am Ende eines jeden Abstimmungsblocks verwenden und dort die Fragestellung eingeben.</p>
+    <p>Beispielsweise kann dies eingesetzt werden, um über die Tagesordnung abzustimmen (Antwortmöglichkeiten: Ja, Nein, Enthaltung) or die Anwesenheit abzufragen (Antwortmöglichkeit: Anwesend).</p>
 
     <h4>Einen Antrag oder Änderungsantrag abstimmen lassen</h4>
 

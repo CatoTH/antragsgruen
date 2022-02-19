@@ -374,27 +374,24 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <h2 id="votings">Votings</h2>
 
-    <p>The voting system lets users cast votes (yes, no, abstention) on chosen motions or amendments directly on
-        the Antragsgrün site. Admins can choose flexibly which items to be voted for at what time.
+    <p>The voting system lets users cast votes on chosen motions, amendments and questions directly on
+        the Antragsgrün site. It provides a lot of flexibility in regards to the eligibility to vote,
+        the publicity of votes and voting results and the kind of majority.
+        It also can be used to conduct roll calls.
         The voting process is aimed to be as simple and quick for the users as possible.</p>
 
     <h3 id="voting_limitations">Limitations</h3>
 
-    <p>Votings are currently <strong>half-public</strong>. This means, regular users can only see how they voted themselves,
-        but not how other users have voted. Admins can see all votes.
-        Both aspects may become more flexible in the future, allowing completely open votings and half-hiding
-        votes from admins. However, system administrators with access to the database will always be able to see
-        the votings, so no real anonymous voting system will be supported anytime soon.
+    <p>System administrators with access to the database will always be able to see
+        the votes, so no real anonymous voting system will be supported anytime soon.
         For this reason, the voting system must not be used for use cases like elections.</p>
-
-    <p>All logged in users can vote, right now. No rights management is implemented yet in the default
-        version of the site. This might be added in the future.</p>
 
     <h3 id="voting_administration">Administration</h3>
 
     <h4>Voting Blocks</h4>
 
-    <p>A voting block is one or more motions / amendments that are voted for at the same time with the same majority rules.
+    <p>A voting block is one or more motions, amendments and/or questions that are voted for at the same time with the same settings
+        like majority rules or eligible users.
         They are presented to the users to be voted on as one block, either on the home page or on the page of a motion.
         In the settings of a voting block, the number of present members can be protocoled.</p>
 
@@ -409,11 +406,33 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <p>Initially, no votings block exist. They are either created on the administration page of the votings (Settings → Votings), or on the fly while setting motions and amendments to be voted for, as will be described in the next section.</p>
 
-    <p>More detailed settings on the visibility of a voting, the title, the assignment to a motion, the way how the majority is calculated, and a way to delete it again can be found when clicking on the settings-icon next to the title of the voting block. As for the majority types, the following are supported as of yet:</p>
+    <p>More detailed settings on the visibility of a voting, the title, the assignment to a motion, the way how the majority is calculated, and a way to delete it again can be found when clicking on the settings-icon next to the title of the voting block. Most notably, there are the following settings:</p>
+
+    <p><strong>Answers:</strong></p>
+    <ul>
+        <li><strong>Yes, No, Abstention</strong> (default)</li>
+        <li><strong>Yes, No</strong> (no explicit abstention)</li>
+        <li><strong>Present</strong> - used to perform roll calls among all registered users</li>
+    </ul>
+
+    <p><strong>Majority type:</strong></p>
     <ul>
         <li><strong>Simple majority</strong>: A motion is accepted if the number of yes-votes exceeds the number of no-votes. Abstentions are not counted.</li>
+        <li><strong>Absolute majority</strong>: A motion is accepted if the number of yes-votes exceeds the number of no-votes and abstentions combined.</li>
         <li><strong>2/3-majority</strong>: A motion is accepted if the number of yes-votes is at least twice as high as the number of no-votes. Abstentions are not counted.</li>
     </ul>
+    <p><strong>Publicity:</strong></p>
+    <ul>
+        <li><strong>Public voting results:</strong> The results can be either be public for all, or only visible for the administrators.</li>
+        <li><strong>Votes cast:</strong> votes can be anonymous (which is default), visible to administrators or to all users. Users will see which option is set up before voting and this setting cannot be changed after starting a vote anymore.</li>
+    </ul>
+    <p><strong>Permission to vote:</strong> By default, all registered users with permission to access the consultation can vote.
+        However, it is possible to use the user group system to restrict voting rights to one or more defined user groups.</p>
+
+    <h4>Setting up a question</h4>
+
+    <p>If you want to perform a voting over a simple question which is not directly connected to accepting a motion or amendment, simply use the „Add a question” button at the bottom of each voting block on the administration page. Here, you can enter the question. Users will be presented with the title of the voting block, the question and the selected options to answer.</p>
+    <p>Common use cases for this are accepting an agenda (answers: yes, no, abstention) or roll calls (answers: only „present”).</p>
 
     <h4>Setting up a voting for a motion or amendment</h4>
 
