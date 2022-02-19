@@ -166,12 +166,6 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-                <div class="actions">
-                    <a class="btn btn-xs btn-link" :href="resultDownloadLink">
-                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-                        <?= Yii::t('voting', 'results_download') ?>
-                    </a>
-                </div>
                 <voting-vote-list :voting="voting" :groupedVoting="groupedVoting"
                                   :setToUserGroupSelection="userGroups" @set-user-group="setVotersToUserGroup"></voting-vote-list>
             </li>
@@ -224,6 +218,12 @@ ob_start();
             </form>
         </div>
         <footer class="votingFooter" v-if="voting.log.length > 2" aria-label="<?= Yii::t('voting', 'activity_title') ?>">
+            <div class="downloadResults" v-if="isClosed">
+                <a class="btn btn-xs btn-link" :href="resultDownloadLink">
+                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                    <?= Yii::t('voting', 'results_download') ?>
+                </a>
+            </div>
             <div class="activityOpener" v-if="activityClosed">
                 <button type="button" class="btn btn-link btn-xs" @click="openActivities()">
                     <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>

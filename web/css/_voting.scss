@@ -66,12 +66,6 @@
   .votingListAdmin {
     .voteResults {
       display: block;
-      .actions {
-        float: right;
-        .btn {
-          font-weight: normal;
-        }
-      }
     }
   }
 
@@ -106,9 +100,7 @@
   .titleLink {
     line-height: 16px;
     overflow: hidden;
-    &.question {
-      font-weight: bold;
-    }
+    font-weight: bold;
     > div {
       margin-bottom: 7px;
     }
@@ -149,6 +141,14 @@
   .votingFooter {
     padding-top: 10px;
     border-top: solid 1px #ccc;
+  }
+
+  .downloadResults {
+    text-align: right;
+    margin-bottom: 10px;
+    .btn {
+      font-weight: normal;
+    }
   }
 
   .publicHint {

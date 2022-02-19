@@ -259,6 +259,22 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return $this->userIsGenerallyAllowedToVoteFor($user, $item);
     }
 
+    private function resetItemResults(): void
+    {
+        foreach ($this->motions as $motion) {
+            $motion->votingStatus = IMotion::STATUS_VOTE;
+            $motion->save();
+        }
+        foreach ($this->amendments as $amendment) {
+            $amendment->votingStatus = IMotion::STATUS_VOTE;
+            $amendment->save();
+        }
+        foreach ($this->questions as $question) {
+            $question->votingStatus = IMotion::STATUS_VOTE;
+            $question->save();
+        }
+    }
+
     public function switchToOfflineVoting(): void {
         if ($this->votingStatus === VotingBlock::STATUS_OPEN) {
             $this->addActivity(static::ACTIVITY_TYPE_RESET);
@@ -268,8 +284,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     public function switchToOnlineVoting(): void {
-        if ($this->votingStatus === VotingBlock::STATUS_OPEN) {
+        if ($this->votingStatus === VotingBlock::STATUS_OPEN || $this->votingStatus === VotingBlock::STATUS_CLOSED) {
             $this->addActivity(static::ACTIVITY_TYPE_RESET);
+            $this->resetItemResults();
         }
         $this->votingStatus = VotingBlock::STATUS_PREPARING;
         $this->save();
@@ -312,7 +329,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
     public function closeVoting(): void {
         if ($this->votingStatus !== VotingBlock::STATUS_CLOSED) {
-            $this->addActivity(static::ACTIVITY_TYPE_RESET);
+            $this->addActivity(static::ACTIVITY_TYPE_CLOSED);
         }
         $this->votingStatus = VotingBlock::STATUS_CLOSED;
         $this->save();

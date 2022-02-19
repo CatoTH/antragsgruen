@@ -116,8 +116,6 @@ class UrlHelper
 
     /**
      * @param string|array $route
-     * @param null|Consultation $forceConsultation
-     * @return string
      */
     public static function createUrl($route, ?Consultation $forceConsultation = null): string
     {
@@ -144,7 +142,6 @@ class UrlHelper
 
     /**
      * @param string|array $route
-     * @return string
      */
     public static function createLoginUrl($route): string
     {

@@ -34,7 +34,7 @@ ob_start();
                 (isClosed ? 'showResults' : ''),
                 (isClosed && resultsPublic ? 'showDetailedResults' : 'noDetailedResults')
             ]" >
-                <div class="titleLink" :class="{'question': voting.answers.length === 1}">
+                <div class="titleLink">
                     <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">
                         {{ groupedVoting[0].item_group_name }}
                     </div>
