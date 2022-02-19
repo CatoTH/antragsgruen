@@ -1524,6 +1524,12 @@ label.legend {
     }
   }
 
+  .loginTypeImg {
+    display: inline-block;
+    max-width: 16px;
+    max-height: 16px;
+  }
+
   .groupsDisplay {
     flex-basis: 60%;
     text-align: right;

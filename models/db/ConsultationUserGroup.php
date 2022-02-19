@@ -196,6 +196,18 @@ class ConsultationUserGroup extends ActiveRecord
         return false;
     }
 
+    public function getAuthType(): int
+    {
+        if ($this->externalId === null) {
+            return \app\models\settings\Site::LOGIN_STD;
+        }
+        $authparts = explode(':', $this->externalId);
+        if (preg_match('/^openslides\-/siu', $authparts[0])) {
+            return \app\models\settings\Site::LOGIN_OPENSLIDES;
+        }
+        return \app\models\settings\Site::LOGIN_STD;
+    }
+
     public function getVotingApiObject(): array
     {
         return [
@@ -213,6 +225,7 @@ class ConsultationUserGroup extends ActiveRecord
             'description' => $this->getNormalizedDescription(),
             'deletable' => $this->isUserDeletable(),
             'permissions' => $this->getPermissions(),
+            'auth_type' => $this->getAuthType(),
         ];
     }
 

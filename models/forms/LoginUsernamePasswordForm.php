@@ -92,7 +92,7 @@ class LoginUsernamePasswordForm extends Model
         if ($site) {
             $methods = $site->getSettings()->loginMethods;
         } else {
-            $methods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
+            $methods = SiteSettings::SITE_MANAGER_LOGIN_METHODS;
         }
 
         if (!in_array(SiteSettings::LOGIN_STD, $methods)) {
@@ -196,7 +196,7 @@ class LoginUsernamePasswordForm extends Model
         if ($site) {
             $methods = $site->getSettings()->loginMethods;
         } else {
-            $methods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
+            $methods = SiteSettings::SITE_MANAGER_LOGIN_METHODS;
         }
 
         $candidates = [];
@@ -217,7 +217,7 @@ class LoginUsernamePasswordForm extends Model
         if ($site) {
             $methods = $site->getSettings()->loginMethods;
         } else {
-            $methods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
+            $methods = SiteSettings::SITE_MANAGER_LOGIN_METHODS;
         }
 
         if (!in_array(SiteSettings::LOGIN_STD, $methods)) {

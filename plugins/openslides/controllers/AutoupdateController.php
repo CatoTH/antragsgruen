@@ -14,7 +14,7 @@ class AutoupdateController extends \app\controllers\Base
     /** @var AutoupdateSyncService */
     private $syncService;
 
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         $result = parent::beforeAction($action);
 

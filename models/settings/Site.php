@@ -28,9 +28,9 @@ class Site implements \JsonSerializable
     const LOGIN_STD = 0;
     const LOGIN_GRUENES_NETZ = 1;
     const LOGIN_EXTERNAL = 3;
-    const LOGIN_SAML = 4;
+    const LOGIN_OPENSLIDES = 4; // Only available if openslides-plugin is activated
 
-    public static $SITE_MANAGER_LOGIN_METHODS = [
+    public const SITE_MANAGER_LOGIN_METHODS = [
         self::LOGIN_STD,
         self::LOGIN_GRUENES_NETZ,
         self::LOGIN_EXTERNAL,

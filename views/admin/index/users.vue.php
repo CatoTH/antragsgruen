@@ -21,8 +21,12 @@ ob_start();
         <ul class="userList">
             <li v-for="user in usersFiltered" :class="'user' + user.id">
                 <div class="userInfo">
-                    <div class="nameUnfiltered" v-if="!filterUser">{{ user.name }}</div>
-                    <div class="nameFiltered" v-if="filterUser" v-html="formatUsername(user.name)"></div>
+                    <div>
+                        <span class="nameUnfiltered" v-if="!filterUser">{{ user.name }}</span>
+                        <span class="nameFiltered" v-if="filterUser" v-html="formatUsername(user.name)"></span>
+                        <img v-if="user.auth_type === LOGIN_OPENSLIDES" alt="OpenSlides-User" title="OpenSlides-User"
+                             src="/img/openslides-logo.svg" class="loginTypeImg">
+                    </div>
                     <div class="additional" v-html="formatUserAdditionalData(user)"></div>
                 </div>
                 <div class="groupsDisplay" v-if="!isGroupChanging(user)">
@@ -59,7 +63,11 @@ ob_start();
             <ul class="groupList">
                 <li v-for="group in groups" :class="'group' + group.id">
                     <div class="groupInfo">
-                        <div class="name">{{ group.title }}</div>
+                        <div class="name">
+                            {{ group.title }}
+                            <img v-if="group.auth_type === LOGIN_OPENSLIDES" alt="OpenSlides" title="OpenSlides"
+                                 src="/img/openslides-logo.svg" class="loginTypeImg">
+                        </div>
                         <div class="additional" v-if="group.description">{{ group.description }}</div>
                     </div>
                     <div class="groupActions" v-if="group.deletable">
@@ -101,6 +109,8 @@ $html = ob_get_clean();
     const removeUserConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_userdel_confirm')) ?>;
     const removeGroupConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_groupdel_confirm')) ?>;
     const showAllGroups = <?= json_encode(Yii::t('admin', 'siteacc_userfilter_allgr')) ?>;
+
+    const LOGIN_OPENSLIDES = <?= \app\models\settings\Site::LOGIN_OPENSLIDES ?>;
 
     Vue.component('v-select', VueSelect.VueSelect);
     Vue.directive('focus', {
@@ -217,8 +227,11 @@ $html = ob_get_clean();
             },
             formatUserAdditionalData: function (user) {
                 let str = user.email;
+                if (user.email && user.organization) {
+                    str += ", ";
+                }
                 if (user.organization) {
-                    str += ", " + user.organization;
+                    str += user.organization;
                 }
 
                 if (this.filterUser === '') {

@@ -26,7 +26,7 @@ $layout->addAMDModule('frontend/LoginForm');
 if ($controller->site) {
     $loginMethods = $controller->site->getSettings()->loginMethods;
 } else {
-    $loginMethods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
+    $loginMethods = SiteSettings::SITE_MANAGER_LOGIN_METHODS;
 }
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = Yii::$app->params;

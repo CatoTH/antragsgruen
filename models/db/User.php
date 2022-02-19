@@ -331,17 +331,16 @@ class User extends ActiveRecord implements IdentityInterface
      * @return boolean whether the given auth key is valid.
      * @see getAuthKey()
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): bool
     {
         return hash_equals($this->authKey, $authKey);
     }
 
     /**
      * @param bool $insert
-     * @return bool
      * @throws \Yii\base\Exception
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
@@ -606,6 +605,9 @@ class User extends ActiveRecord implements IdentityInterface
             return \app\models\settings\Site::LOGIN_GRUENES_NETZ;
         }
         $authparts = explode(':', $this->auth);
+        if (preg_match('/^openslides\-/siu', $authparts[0])) {
+            return \app\models\settings\Site::LOGIN_OPENSLIDES;
+        }
         switch ($authparts[0]) {
             case 'email':
                 return \app\models\settings\Site::LOGIN_STD;
@@ -796,6 +798,7 @@ class User extends ActiveRecord implements IdentityInterface
             'auth'             => $this->auth,
             'date_creation'    => $this->dateCreation,
             'status'           => $status,
+            'auth_type'        => $this->getAuthType(),
         ];
     }
 

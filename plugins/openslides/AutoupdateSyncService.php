@@ -112,7 +112,7 @@ class AutoupdateSyncService
         $userObj->name         = $osUser->getUsername();
         $userObj->nameFamily   = $osUser->getLastName();
         $userObj->nameGiven    = $osUser->getFirstName();
-        $userObj->organization = '';
+        $userObj->organization = $osUser->getStructureLevel();
         $userObj->email        = $osUser->getEmail();
         $userObj->fixedData    = 1;
         if (!$userObj->save()) {
