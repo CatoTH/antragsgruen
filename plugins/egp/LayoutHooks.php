@@ -12,7 +12,7 @@ use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
-    const CANDIDATURE_TYPES = [3];
+    const CANDIDATURE_TYPES = [3, 8, 14];
 
     public function beginPage(string $before): string
     {

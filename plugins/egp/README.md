@@ -18,3 +18,9 @@ An agenda needs to be configured by temporarily enabling the home page (disable 
 Candidature list is shown at /spring-2020/candidatures?agendaItemId=2
 
 The back button override / addition to the breadcrumb menu on the candidature page is done by hard-coding the affected motion type IDs into the LayoutHooks.php of this plugin.
+
+## PDFs / Spreadsheets
+
+The logo has to be added to two locations:
+- to LayoutHooks.php
+- to the template.ods
