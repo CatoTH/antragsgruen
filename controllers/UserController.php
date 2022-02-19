@@ -3,7 +3,13 @@
 namespace app\controllers;
 
 use app\components\{Captcha, ConsultationAccessPassword, Tools, UrlHelper, GruenesNetzSamlClient};
-use app\models\db\{AmendmentSupporter, EMailBlocklist, MotionSupporter, User, UserConsultationScreening, UserNotification};
+use app\models\db\{AmendmentSupporter,
+    EMailBlocklist,
+    FailedLoginAttempt,
+    MotionSupporter,
+    User,
+    UserConsultationScreening,
+    UserNotification};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
 use app\models\forms\LoginUsernamePasswordForm;
@@ -16,10 +22,7 @@ class UserController extends Base
 {
     public $enableCsrfValidation = false;
 
-    /**
-     * @return array
-     */
-    public function actions()
+    public function actions(): array
     {
         return [
             'auth' => [
@@ -29,19 +32,22 @@ class UserController extends Base
         ];
     }
 
-    /**
-     * @param User $user
-     */
-    protected function loginUser(User $user)
+    protected function loginUser(User $user): void
     {
         Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
+
+        $user->dateLastLogin = date('Y-m-d H:i:s');
+        $user->save();
+
+        $authParts = explode(':', $user->auth);
+        if (count($authParts) === 2) {
+            FailedLoginAttempt::resetAfterSuccessfulLogin($authParts[1]);
+        }
     }
 
     public function actionLoginsaml(string $backUrl = ''): string
     {
-        /** @var AntragsgruenApp $params */
-        $params = Yii::$app->params;
-        if (!$params->isSamlActive()) {
+        if (!AntragsgruenApp::getInstance()->isSamlActive()) {
             return 'SAML is not supported';
         }
 
@@ -135,7 +141,6 @@ class UserController extends Base
             Yii::$app->session->removeFlash('error');
         }
 
-
         return $this->render(
             'login',
             [
@@ -197,8 +202,6 @@ class UserController extends Base
     private function logoutSaml(string $backUrl = ''): string
     {
         try {
-            /** @var AntragsgruenApp $params */
-            $params        = Yii::$app->params;
             $backSubdomain = UrlHelper::getSubdomain($backUrl);
             $currDomain    = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
             $currSubdomain = UrlHelper::getSubdomain($currDomain);
@@ -210,7 +213,7 @@ class UserController extends Base
                 if (!isset($backParts['host'])) {
                     $backUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
                 }
-                $this->redirect($params->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
+                $this->redirect(AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
             } elseif ($backSubdomain) {
                 // Second step: we are on the main domain. Logout and redirect to the subdomain
                 $samlClient = new GruenesNetzSamlClient();

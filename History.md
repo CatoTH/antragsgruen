@@ -18,6 +18,7 @@
   - It allows to log in into Antragsgrün using the username/password of an OpenSlides page.
   - Using a separate proxy app, it allows to automatically synchronize users and user groups from OpenSlides to Antragsgrün.
   - It needs to be set up by a system administrator per site.
+- The CAPTCHA system is reset for an user after a successful login. This solves issues when multiple users are behind the same IP address.
 
 ### Version 4.9.1 (2022-02-12)
 

@@ -702,11 +702,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param string $newEmail
      * @throws MailNotSent
-     * @throws \app\models\exceptions\ServerConfiguration
+     * @throws ServerConfiguration
      */
-    public function sendEmailChangeMail($newEmail)
+    public function sendEmailChangeMail(string $newEmail)
     {
         $changeTs            = time();
         $this->emailChange   = $newEmail;
@@ -725,11 +724,9 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param string $newEmail
-     * @param string $code
      * @throws FormError
      */
-    public function changeEmailAddress($newEmail, $code)
+    public function changeEmailAddress(string $newEmail, string $code)
     {
         if (AntragsgruenApp::getInstance()->confirmEmailAddresses) {
             $this->checkEmailChangeToken($newEmail, $code);

@@ -94,4 +94,10 @@ class FailedLoginAttempt extends ActiveRecord
         }
         return false;
     }
+
+    public static function resetAfterSuccessfulLogin(string $username): void
+    {
+        FailedLoginAttempt::deleteAll(['username' => $username]);
+        FailedLoginAttempt::deleteAll(['ipHash' => static::getCurrentIpHash()]);
+    }
 }
