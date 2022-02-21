@@ -57,9 +57,8 @@ class Exporter
 
     /**
      * @param string[] $lines
-     * @return string
      */
-    public static function getMotionLinesToTeX($lines)
+    public static function getMotionLinesToTeX(array $lines): string
     {
         // Add ###LINEBREAK### where LaTeX will need to add a \\linebreak; that is, where there is inline text before the line end
         $str = implode('###LINEBREAK###', $lines);
@@ -222,7 +221,6 @@ class Exporter
                 case 'br':
                     return '\newline' . "\n";
                 case 'p':
-                    return $content . "\n";
                 case 'div':
                     return $content . "\n";
                 case 'strong':
@@ -391,6 +389,8 @@ class Exporter
 
         // \end{itemize} + \newline => \end{itemize} + \phantom{ }
         $out = preg_replace('/\\\\end\{itemize\}\n\\\\newline\n/siu', "\\end{itemize}\n\\phantom{ }\n", $out);
+        // \newline\n\n\newline => \newline\n\n\newline
+        $out = preg_replace('/\\\\newline\n\n\\\\newline/siu', "\\newline\n\\newline", $out);
 
         return $out;
     }
@@ -431,9 +431,6 @@ class Exporter
 
     public static function createContentString(Content $content): string
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
         $template                         = $content->template;
         $template                         = str_replace("\r", "", $template);
         $replaces                         = [];
@@ -463,7 +460,7 @@ class Exporter
         if ($content->logoData) {
             $fileExt                           = Image::getFileExtensionFromMimeType($content->logoData[0]);
             $filenameBase                      = uniqid('motion-pdf-image') . '.' . $fileExt;
-            $tmpPath                           = $params->getTmpDir() . $filenameBase;
+            $tmpPath                           = AntragsgruenApp::getInstance()->getTmpDir() . $filenameBase;
             $replaces['%LOGO%']                = '\includegraphics[width=4.9cm]{' . $tmpPath . '}';
             $content->imageData[$filenameBase] = $content->logoData[1];
         } else {
