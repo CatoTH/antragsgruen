@@ -165,6 +165,7 @@ return [
     'confirm_bread'                     => 'Confirm',
     'affects_x_paragraphs'              => 'Affects %num% paragraphs',
     'revert_changes'                    => 'Revert changes',
+    'err_one_change'                    => 'You may only amend one particular location. Please revert all changes except for one.',
     'err_create_permission'             => 'No permission to create amendments.',
     'err_create'                        => 'An error occurred while creating it',
     'err_save'                          => 'An error occurred while saving it',

@@ -145,8 +145,16 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
         echo HTMLTools::labeledCheckbox(
             'type[amendSinglePara]',
             Yii::t('admin', 'motion_type_amend_singlep'),
-            !$motionType->amendmentMultipleParagraphs,
+            ($motionType->amendmentMultipleParagraphs !== ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE),
             'typeAmendSinglePara'
+        );
+        echo '<br>';
+        echo HTMLTools::labeledCheckbox(
+            'type[typeAmendSingleChange]',
+            Yii::t('admin', 'motion_type_amend_singlec'),
+            ($motionType->amendmentMultipleParagraphs === ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_CHANGE),
+            'typeAmendSingleChange',
+            Yii::t('admin', 'motion_type_amend_singlech')
         );
         ?>
     </div>

@@ -235,6 +235,10 @@
   }
   .modifiedActions {
     text-align: right;
+    .btn {
+      font-weight: normal;
+      padding: 0;
+    }
   }
   .single-paragraph {
     .modifiedActions {
@@ -253,6 +257,14 @@
         > .texteditor {
           background-color: transparent;
         }
+      }
+    }
+    .oneChangeHint {
+      background-color: white;
+      padding: 5px 15px;
+      margin-top: -5px;
+      .alert {
+        margin-bottom: 0;
       }
     }
   }

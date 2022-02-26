@@ -423,7 +423,11 @@ class SiteCreateForm extends Model
         }
         $type->policySupportMotions        = (string)IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments     = (string)IPolicy::POLICY_NOBODY;
-        $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
+        if ($this->amendSinglePara) {
+            $type->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH;
+        } else {
+            $type->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE;
+        }
 
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
@@ -483,7 +487,11 @@ class SiteCreateForm extends Model
         }
         $type->policySupportMotions        = (string)IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments     = (string)IPolicy::POLICY_NOBODY;
-        $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
+        if ($this->amendSinglePara) {
+            $type->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH;
+        } else {
+            $type->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE;
+        }
 
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::NO_INITIATOR;

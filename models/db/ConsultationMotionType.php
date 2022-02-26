@@ -7,6 +7,7 @@ use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\IPDFLayout;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -45,18 +46,23 @@ use yii\db\ActiveRecord;
  */
 class ConsultationMotionType extends ActiveRecord implements IHasPolicies
 {
-    const STATUS_VISIBLE = 0;
-    const STATUS_DELETED = -1;
+    public const STATUS_VISIBLE = 0;
+    public const STATUS_DELETED = -1;
 
-    const INITIATORS_MERGE_NEVER          = 0;
-    const INITIATORS_MERGE_NO_COLLISION   = 1;
-    const INITIATORS_MERGE_WITH_COLLISION = 2;
+    public const INITIATORS_MERGE_NEVER          = 0;
+    public const INITIATORS_MERGE_NO_COLLISION   = 1;
+    public const INITIATORS_MERGE_WITH_COLLISION = 2;
 
-    const DEADLINE_MOTIONS    = 'motions';
-    const DEADLINE_AMENDMENTS = 'amendments';
-    const DEADLINE_COMMENTS   = 'comments';
-    const DEADLINE_MERGING    = 'merging';
-    public static $DEADLINE_TYPES = ['motions', 'amendments', 'comments', 'merging'];
+    public const DEADLINE_MOTIONS    = 'motions';
+    public const DEADLINE_AMENDMENTS = 'amendments';
+    public const DEADLINE_COMMENTS   = 'comments';
+    public const DEADLINE_MERGING    = 'merging';
+    public const DEADLINE_TYPES = ['motions', 'amendments', 'comments', 'merging'];
+
+    // Keep in sync with AmendmentEdit.ts
+    public const AMEND_PARAGRAPHS_MULTIPLE = 1;
+    public const AMEND_PARAGRAPHS_SINGLE_PARAGRAPH = 0;
+    public const AMEND_PARAGRAPHS_SINGLE_CHANGE = -1;
 
     protected $deadlinesObject = null;
 
@@ -92,45 +98,30 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotions()
+    public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['motionTypeId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultationTexts()
+    public function getConsultationTexts(): ActiveQuery
     {
         return $this->hasMany(ConsultationText::class, ['motionTypeId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTexTemplate()
+    public function getTexTemplate(): ActiveQuery
     {
         return $this->hasOne(TexTemplate::class, ['id' => 'texTemplateId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionSections()
+    public function getMotionSections(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsMotionSection::class, ['motionTypeId' => 'id'])
             ->where('status = ' . ConsultationSettingsMotionSection::STATUS_VISIBLE)
             ->orderBy('position');
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAgendaItems()
+    public function getAgendaItems(): ActiveQuery
     {
         return $this->hasMany(ConsultationAgendaItem::class, ['motionTypeId' => 'id']);
     }
@@ -303,7 +294,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     public function getAllCurrentDeadlines(bool $onlyNamed = false): array
     {
         $found = [];
-        foreach (static::$DEADLINE_TYPES as $type) {
+        foreach (static::DEADLINE_TYPES as $type) {
             foreach ($this->getDeadlinesByType($type) as $deadline) {
                 if ($onlyNamed && !$deadline['title']) {
                     continue;

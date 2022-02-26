@@ -1,14 +1,17 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\Tools;
+use app\components\{HTMLTools, Tools};
 use app\models\db\ConsultationMotionType;
 use yii\helpers\Html;
+
+/**
+ * @var \app\models\db\Consultation $consultation
+ */
 
 $namedPhases = [];
 
 foreach ($consultation->motionTypes as $motionType) {
-    foreach (ConsultationMotionType::$DEADLINE_TYPES as $deadlineType) {
+    foreach (ConsultationMotionType::DEADLINE_TYPES as $deadlineType) {
         foreach ($motionType->getDeadlinesByType($deadlineType) as $deadline) {
             if (!$deadline['title']) {
                 continue;
@@ -45,7 +48,7 @@ usort($namedPhases, function ($phase1, $phase2) {
 });
 
 foreach ($consultation->motionTypes as $motionType) {
-    foreach (ConsultationMotionType::$DEADLINE_TYPES as $deadlineType) {
+    foreach (ConsultationMotionType::DEADLINE_TYPES as $deadlineType) {
         switch ($deadlineType) {
             case ConsultationMotionType::DEADLINE_MOTIONS:
                 $deadlineName = $motionType->createTitle;

@@ -6,10 +6,10 @@ export class AmendmentEditSinglePara {
     constructor() {
         this.$paragraphs = $(".wysiwyg-textarea.single-paragraph");
 
-        this.$paragraphs.click((ev) => {
+        this.$paragraphs.on('click', (ev) => {
             this.startEditing(ev.delegateTarget);
         });
-        this.$paragraphs.find(".modifiedActions .revert").click((ev) => {
+        this.$paragraphs.find(".modifiedActions .revert").on('click', (ev) => {
             ev.preventDefault();
             ev.stopPropagation();
             this.revertChanges(ev.delegateTarget);
@@ -26,7 +26,7 @@ export class AmendmentEditSinglePara {
                 sectionId = $this.data("section-id"),
                 paraNo = $this.data("changed-para-no");
             if (paraNo > -1) {
-                $("#section_holder_" + sectionId + "_" + paraNo).click();
+                $("#section_holder_" + sectionId + "_" + paraNo).trigger('click');
             }
         });
     }
@@ -40,7 +40,7 @@ export class AmendmentEditSinglePara {
         }
         let aedit = new AntragsgruenEditor($textarea.attr("id")),
             editor = aedit.getEditor();
-        $textarea.parents("form").submit(() => {
+        $textarea.parents("form").on('submit', () => {
             $textarea.parent().find("textarea.raw").val(editor.getData());
             if (typeof(editor.plugins.lite) != 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();
@@ -78,7 +78,7 @@ export class AmendmentEditSinglePara {
             editor = aedit.getEditor();
         }
         $textarea.attr("contenteditable", "true");
-        $textarea.parents("form").submit(() => {
+        $textarea.parents("form").on('submit', () => {
             $textarea.parent().find("textarea.raw").val(editor.getData());
             if (typeof(editor.plugins.lite) != 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();

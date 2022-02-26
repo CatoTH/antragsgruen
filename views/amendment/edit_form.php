@@ -16,7 +16,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $motionType = $form->motion->getMyMotionType();
-$multipleParagraphs = $motionType->amendmentMultipleParagraphs;
+$multipleParagraphs = ($motionType->amendmentMultipleParagraphs === \app\models\db\ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE);
 
 if ($form->motion->titlePrefix !== '') {
     if ($consultation->getSettings()->hideTitlePrefix) {
@@ -84,7 +84,7 @@ echo Html::beginForm('', 'post', [
     'class'                     => 'motionEditForm draftForm',
     'enctype'                   => 'multipart/form-data',
     'data-antragsgruen-widget'  => 'frontend/AmendmentEdit',
-    'data-multi-paragraph-mode' => ($multipleParagraphs ? 1 : 0)
+    'data-multi-paragraph-mode' => $motionType->amendmentMultipleParagraphs,
 ]);
 
 echo '<h2 class="green">' . Yii::t('amend', 'merge_new_text') . '</h2>';

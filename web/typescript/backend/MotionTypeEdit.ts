@@ -53,6 +53,16 @@ class MotionTypeEdit {
                 $('section.amendmentSupporters').removeClass("hidden");
             }
         }).trigger("change");
+
+        const $typeAmendSinglePara = $("#typeAmendSinglePara"),
+            $typeAmendSingleChangeHolder = $("#typeAmendSingleChange").parents('label').first();
+        $typeAmendSinglePara.on('change', () => {
+            if ($typeAmendSinglePara.prop('checked')) {
+                $typeAmendSingleChangeHolder.removeClass('hidden');
+            } else {
+                $typeAmendSingleChangeHolder.addClass('hidden');
+            }
+        }).trigger('change');
     }
 
     private initPolicyWidget($widget: JQuery) {

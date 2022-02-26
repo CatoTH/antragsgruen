@@ -5,7 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
 use app\components\{HashedStaticCache, HTMLTools, LineSplitter, UrlHelper};
 use app\components\latex\{Content, Exporter};
-use app\models\db\{AmendmentSection, Consultation, Motion, MotionSection};
+use app\models\db\{AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
@@ -14,7 +14,8 @@ use CatoTH\HTML2OpenDocument\Text as ODTText;
 
 class TextSimple extends Text
 {
-    private $forceMultipleParagraphs = null;
+    /** @var bool */
+    private $forceMultipleParagraphs = false;
 
     public function forceMultipleParagraphMode(bool $active): void
     {
@@ -32,11 +33,11 @@ class TextSimple extends Text
         $fixedWidth                           = !!$this->section->getSettings()->fixedWidth;
 
         $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
-        if ($this->forceMultipleParagraphs !== null) {
-            $multipleParagraphs = $this->forceMultipleParagraphs;
+        if ($this->forceMultipleParagraphs) {
+            $multipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE;
         }
 
-        if ($multipleParagraphs) {
+        if ($multipleParagraphs === ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE) {
             /** @var AmendmentSection $section */
             $section = $this->section;
             $diff    = new Diff();
@@ -51,11 +52,13 @@ class TextSimple extends Text
 
             return $this->getTextAmendmentFormField(false, $amendmentHtml, $fixedWidth);
         } else {
-            return $this->getTextAmendmentFormFieldSingleParagraph($fixedWidth);
+            // On server side, we do not make a difference between single paragraph and single change mode, as this is enforced on client-side only
+            $singleChange = ($multipleParagraphs === ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_CHANGE);
+            return $this->getTextAmendmentFormFieldSingleParagraph($fixedWidth, $singleChange);
         }
     }
 
-    public function getTextAmendmentFormFieldSingleParagraph(bool $fixedWidth): string
+    public function getTextAmendmentFormFieldSingleParagraph(bool $fixedWidth, bool $singleChange): string
     {
         /** @var AmendmentSection $amSection */
         $amSection = $this->section;
@@ -97,9 +100,13 @@ class TextSimple extends Text
             $str .= $amParas[$paraNo];
             $str .= '</div>';
 
-            $str .= '<div class="modifiedActions"><a href="#" class="revert">';
+            $str .= '<div class="oneChangeHint hidden"><div class="alert alert-danger"><p>';
+            $str .= \Yii::t('amend', 'err_one_change');
+            $str .= '</p></div></div>';
+
+            $str .= '<div class="modifiedActions"><button type="button" class="btn btn-link revert">';
             $str .= \Yii::t('amend', 'revert_changes');
-            $str .= '</a></div>';
+            $str .= '</button></div>';
 
             $str .= '</div>';
         }
@@ -136,14 +143,15 @@ class TextSimple extends Text
         $post    = \Yii::$app->request->post();
 
         $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
-        if ($this->forceMultipleParagraphs !== null) {
-            $multipleParagraphs = $this->forceMultipleParagraphs;
+        if ($this->forceMultipleParagraphs) {
+            $multipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE;
         }
 
-        if ($multipleParagraphs) {
+        if ($multipleParagraphs === ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE) {
             $section->data    = HTMLTools::stripEmptyBlockParagraphs(HTMLTools::cleanSimpleHtml($data['consolidated']));
             $section->dataRaw = $data['raw'];
         } else {
+            // On server side, we do not make a difference between single paragraph and single change mode, as this is enforced on client-side only
             $moSection = $section->getOriginalMotionSection();
             $paras     = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
             $parasRaw  = $paras;

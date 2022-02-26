@@ -25,7 +25,7 @@ class Application
         $type->policySupportMotions         = (string)IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments      = (string)IPolicy::POLICY_NOBODY;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
-        $type->amendmentMultipleParagraphs  = 0;
+        $type->amendmentMultipleParagraphs  = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH;
         $type->motionLikesDislikes          = 0;
         $type->amendmentLikesDislikes       = 0;
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;

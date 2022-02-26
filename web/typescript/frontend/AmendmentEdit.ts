@@ -1,13 +1,19 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import {DraftSavingEngine} from "../shared/DraftSavingEngine";
 
+// Keep in sync with ConsultationMotionType.php
+const AMEND_PARAGRAPHS_MULTIPLE = 1;
+const AMEND_PARAGRAPHS_SINGLE_PARAGRAPH = 0;
+const AMEND_PARAGRAPHS_SINGLE_CHANGE = -1;
+
 export class AmendmentEdit {
     private lang: string;
     private $spmParagraphs: JQuery;
     private hasChanged: boolean = false;
+    private isSingleLocationMode = false;
 
     constructor(private $form: JQuery) {
-        let multiParagraphMode = $form.data("multi-paragraph-mode");
+        let multiParagraphMode = parseInt($form.data("multi-paragraph-mode"), 10);
         if (typeof(multiParagraphMode) == "undefined") {
             throw "data-multi-paragraph-mode needs to be set";
         }
@@ -22,9 +28,10 @@ export class AmendmentEdit {
             format: 'L'
         });
 
-        if (multiParagraphMode) {
+        if (multiParagraphMode === AMEND_PARAGRAPHS_MULTIPLE) {
             this.initMultiParagraphMode();
         } else {
+            this.isSingleLocationMode = multiParagraphMode === AMEND_PARAGRAPHS_SINGLE_CHANGE;
             this.spmInit();
         }
 
@@ -125,7 +132,15 @@ export class AmendmentEdit {
             editor = (new AntragsgruenEditor($textarea.attr("id"))).getEditor();
         }
         $textarea.attr("contenteditable", "true");
-        $textarea.parents("form").on("submit", () => {
+        $textarea.parents("form").on("submit", (ev) => {
+            if (this.isSingleLocationMode && hasMultipleChanges()) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                $para.find('.oneChangeHint').removeClass('hidden');
+                $para.scrollintoview({top_offset: -50});
+                return;
+            }
+
             $textarea.parent().find("textarea.raw").val(editor.getData());
             if (typeof(editor.plugins.lite) != 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();
@@ -133,8 +148,39 @@ export class AmendmentEdit {
             }
         });
 
+        const hasMultipleChanges = (): boolean => {
+            // Undo / Cmd/Ctrl-Z leaves behind strange characters, that's why we need to take care of some special cases
+            let countIns = 0,
+                countDel = 0;
+            $textarea.find(".ice-ins").each(function() {
+                if ($(this)[0].innerText.length > 0 && $(this)[0].innerText !== "\ufeff") {
+                    countIns++;
+                }
+            });
+            $textarea.find(".ice-del").each(function() {
+                if ($(this)[0].innerText.length > 0 && $(this)[0].innerText !== "\ufeff") {
+                    countDel++;
+                }
+            });
+            return (countIns > 1 || countDel > 1);
+        };
+
+        const setSingleLocWarning = () => {
+            if (!this.isSingleLocationMode) {
+                return;
+            }
+
+            if (hasMultipleChanges()) {
+                $para.find('.oneChangeHint').removeClass('hidden');
+            } else {
+                $para.find('.oneChangeHint').addClass('hidden');
+            }
+        };
+
         // The editor doesn't trigger change-events when tracking changes is enabled, therefore this work-around
-        $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
+        $("#" + $textarea.attr("id"))
+            .on('keypress', this.onContentChanged.bind(this))
+            .on('keyup', setSingleLocWarning.bind(this));
 
         $textarea.trigger("focus");
     }
@@ -143,8 +189,7 @@ export class AmendmentEdit {
         ev.preventDefault();
         ev.stopPropagation();
         let $para = $(ev.target).parents(".wysiwyg-textarea"),
-            $textarea = $para.find(".texteditor"),
-            id = $textarea.attr("id");
+            $textarea = $para.find(".texteditor");
 
         if (typeof(CKEDITOR.instances[$textarea.attr("id")]) !== "undefined") {
             AntragsgruenEditor.destroyInstanceById($textarea.attr("id"));
@@ -152,6 +197,7 @@ export class AmendmentEdit {
 
         $textarea.html($para.data("original"));
         $para.removeClass("modified");
+        $para.find('.oneChangeHint').addClass('hidden');
         this.spmSetModifyable();
     }
 
@@ -198,6 +244,7 @@ export class AmendmentEdit {
     }
 
     public onContentChanged() {
+
         if (!this.hasChanged) {
             this.hasChanged = true;
             if (!$("body").hasClass('testing')) {

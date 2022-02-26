@@ -129,7 +129,13 @@ class MotionController extends AdminBase
         if ($this->isPostSet('save')) {
             $input = \Yii::$app->request->post('type');
             $motionType->setAttributes($input);
-            $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
+            if (isset($input['typeAmendSingleChange'])) {
+                $motionType->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_CHANGE;
+            } elseif (isset($input['amendSinglePara'])) {
+                $motionType->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH;
+            } else {
+                $motionType->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE;
+            }
             $motionType->sidebarCreateButton         = (isset($input['sidebarCreateButton']) ? 1 : 0);
             $motionType->setMotionPolicy($this->getPolicyFromUpdateData($motionType, $input['policyMotions']));
             $motionType->setMotionSupportPolicy($this->getPolicyFromUpdateData($motionType, $input['policySupportMotions']));
@@ -316,7 +322,7 @@ class MotionController extends AdminBase
                     $motionType->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
                     $motionType->motionLikesDislikes          = 0;
                     $motionType->amendmentLikesDislikes       = 0;
-                    $motionType->amendmentMultipleParagraphs  = 1;
+                    $motionType->amendmentMultipleParagraphs  = ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE;
                     $motionType->amendmentsOnly               = 0;
                     $motionType->position                     = 0;
                     $motionType->status                       = 0;
