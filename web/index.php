@@ -25,7 +25,7 @@ if (!defined('YII_ENV')) {
     }
 
     $configDir   = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config';
-    $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+    $configFile = $_SERVER['ANTRAGSGRUEN_CONFIG'] ?? $configDir . DIRECTORY_SEPARATOR . 'config.json';
     $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
     if (!file_exists($configFile) && !file_exists($installFile)) {
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'de') === 0) {
@@ -70,5 +70,5 @@ try {
         </ul>';
     }
 
-    echo str_replace(['%FILE%', '%ERROR%'], [$file, $error], $message);;
+    echo str_replace(['%FILE%', '%ERROR%'], [$file, $error], $message);
 }
