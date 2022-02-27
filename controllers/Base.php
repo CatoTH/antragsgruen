@@ -32,6 +32,9 @@ class Base extends Controller
     /** @var string */
     public $layout = '@app/views/layouts/column1';
 
+    /** @var null|bool - currently only null (default) and true (allow not-logged in, e.g. by plugins) are supported. false to come. */
+    public $allowNotLoggedIn = null;
+
     /**
      * @param string $cid the ID of this controller.
      * @param Module $module the module that this controller belongs to.
@@ -117,8 +120,7 @@ class Base extends Controller
             $this->layoutParams->setLayout(Layout::getDefaultLayout());
         }
 
-        // Login and Mainainance mode is always allowed
-        if (get_class($this) === UserController::class) {
+        if ($this->allowNotLoggedIn === true) {
             return true;
         }
 
@@ -133,12 +135,6 @@ class Base extends Controller
         if (get_class($this) === PagesController::class && $action->id === 'file' && $this->consultation) {
             $logo = basename($this->consultation->getSettings()->logoUrl);
             if ($logo && isset($params[1]) && isset($params[1]['filename']) && $params[1]['filename'] === $logo) {
-                return true;
-            }
-        }
-
-        if (get_class($this) === ConsultationController::class && $action->id === 'home') {
-            if ($this->site && $this->site->getBehaviorClass()->siteHomeIsAlwaysPublic()) {
                 return true;
             }
         }
@@ -338,7 +334,7 @@ class Base extends Controller
         $settings = $this->consultation->getSettings();
         $admin    = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS);
         if ($settings->maintenanceMode && !$admin) {
-            $this->redirect(UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'maintenance']));
+            $this->redirect(UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'maintenance']));
             return true;
         }
         return false;
@@ -356,12 +352,12 @@ class Base extends Controller
             return false;
         }
         if (Yii::$app->user->getIsGuest()) {
-            $this->redirect(UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
+            $this->redirect(UrlHelper::createUrl(['/user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return true;
         }
         if ($this->consultation->getSettings()->managedUserAccounts) {
             if (count(User::getCurrentUser()->getUserGroupsForConsultation($this->consultation)) === 0) {
-                $this->redirect(UrlHelper::createUrl('user/consultationaccesserror'));
+                $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror'));
                 return true;
             }
         }
@@ -379,7 +375,7 @@ class Base extends Controller
         $pwdChecker = new ConsultationAccessPassword($this->consultation);
         if (!$pwdChecker->isCookieLoggedIn()) {
             $loginUrl = UrlHelper::createUrl([
-                'user/login',
+                '/user/login',
                 'backUrl'   => $this->getHttpRequest()->url,
                 'passConId' => $this->consultation->urlPath,
             ]);
@@ -394,7 +390,7 @@ class Base extends Controller
     public function forceLogin(): void
     {
         if (Yii::$app->user->getIsGuest()) {
-            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => $this->getHttpRequest()->url]);
+            $loginUrl = UrlHelper::createUrl(['/user/login', 'backUrl' => $this->getHttpRequest()->url]);
             $this->redirect($loginUrl);
             Yii::$app->end();
         }
@@ -489,7 +485,7 @@ class Base extends Controller
                 throw new Internal(Yii::t('base', 'err_cons_not_site'), 400);
             }
             Yii::$app->session->setFlash("error", Yii::t('base', 'err_cons_not_site'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
 
         if (is_object($checkMotion) && strtolower($checkMotion->getMyConsultation()->urlPath) !== $consultationPath) {
@@ -497,7 +493,7 @@ class Base extends Controller
                 throw new Internal(Yii::t('motion', 'err_not_found'), 404);
             }
             Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
 
         if ($checkAmendment !== null && ($checkMotion === null || $checkAmendment->motionId !== $checkMotion->id)) {
@@ -505,7 +501,7 @@ class Base extends Controller
                 throw new Internal(Yii::t('base', 'err_amend_not_consult'), 400);
             }
             Yii::$app->session->setFlash('error', Yii::t('base', 'err_amend_not_consult'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
     }
 
@@ -602,7 +598,7 @@ class Base extends Controller
                 $this->redirect($redirect);
             } else {
                 Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
-                $this->redirect(UrlHelper::createUrl('consultation/index'));
+                $this->redirect(UrlHelper::createUrl('/consultation/index'));
             }
             Yii::$app->end();
 
@@ -629,7 +625,7 @@ class Base extends Controller
             if ($throwExceptions) {
                 throw new Internal(Yii::t('amend', 'err_not_found'), 404);
             }
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            $this->redirect(UrlHelper::createUrl('/consultation/index'));
             return null;
         }
         if ($amendment->motionId !== $motion->id && $amendment->getMyConsultation()->id === $motion->consultationId) {

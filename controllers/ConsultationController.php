@@ -30,6 +30,12 @@ class ConsultationController extends Base
      */
     public function beforeAction($action): bool
     {
+        if ($action->id === 'home') {
+            if ($this->site && $this->site->getBehaviorClass()->siteHomeIsAlwaysPublic()) {
+                $this->allowNotLoggedIn = true;
+            }
+        }
+
         $return = parent::beforeAction($action);
         if (!$this->consultation) {
             $this->consultationNotFound();
