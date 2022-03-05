@@ -6,6 +6,7 @@ use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
 use app\models\policies\IPolicy;
 use app\models\policies\LoggedIn;
+use app\models\quorumType\IQuorumType;
 use app\models\settings\AntragsgruenApp;
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
@@ -18,6 +19,7 @@ use yii\db\ActiveRecord;
  * @property int $type
  * @property string $title
  * @property int|null $majorityType
+ * @property int|null $quorumType
  * @property int|null $votesPublic
  * @property int|null $resultsPublic
  * @property int|null $assignedToMotionId
@@ -215,6 +217,15 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return new $majorityTypes[$this->majorityType]();
     }
 
+    public function getQuorumType(): IQuorumType
+    {
+        $quorumTypes = IQuorumType::getQuorumTypes();
+        if (!isset($quorumTypes[$this->quorumType])) {
+            throw new Internal('Unsupported quorum type: ' . $this->quorumType);
+        }
+        return new $quorumTypes[$this->quorumType]();
+    }
+
     public function userIsGenerallyAllowedToVoteFor(User $user, IVotingItem $item): bool
     {
         $foundItem = false;
@@ -305,6 +316,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         if ($this->majorityType === null) {
             $this->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
         }
+        if ($this->quorumType === null) {
+            $this->quorumType = IQuorumType::QUORUM_TYPE_NONE;
+        }
         if ($this->votesPublic === null) {
             $this->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
         }
@@ -321,6 +335,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     {
         $item->setVotingData($votingData);
         if ($this->votingHasMajority()) {
+            // @TODO Take into account quorum
             $result = $this->getMajorityType()->calculateResult($votingData);
             $item->setVotingResult($result);
         }

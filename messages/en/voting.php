@@ -107,4 +107,10 @@ return [
     'majority_absolute_h' => 'A motion or amendment is adopted, if more yes- than no-votes and abstentions combined are cast.',
     'majority_twothirds' => '2/3 majority',
     'majority_twothirds_h' => 'A motion or amendment is adopted, if at least (including) twice as many yes- as no-votes are cast. Abstentions are not counted.',
+
+    'quorum_none' => 'No quorum',
+    'quorum_half' => 'Simple majority',
+    'quorum_half_h' => 'At least half of all eligible members have to cast a vote',
+    'quorum_two_third' => '2/3 majority',
+    'quorum_two_third_h' => 'At least two out of three of all eligible members have to cast a vote',
 ];

@@ -805,6 +805,7 @@ CREATE TABLE `###TABLE_PREFIX###votingBlock` (
   `consultationId` int(11) NOT NULL,
   `title` varchar(150) NOT NULL,
   `majorityType` tinyint(4) DEFAULT NULL,
+  `quorumType` tinyint(4) DEFAULT NULL,
   `votesPublic` tinyint(4) DEFAULT NULL,
   `resultsPublic` tinyint(4) DEFAULT NULL,
   `assignedToMotionId` int(11) DEFAULT NULL,

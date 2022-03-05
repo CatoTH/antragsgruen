@@ -92,6 +92,7 @@ class AgendaVoting
             'results_public' => ($this->voting ? $this->voting->resultsPublic : null),
             'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'majority_type' => ($this->voting ? $this->voting->majorityType : null),
+            'quorum_type' => ($this->voting ? $this->voting->quorumType : null),
             'user_groups' => [],
             'answers' => $answers,
             'answers_template' => ($this->voting ? $this->voting->getAnswerTemplate() : null),

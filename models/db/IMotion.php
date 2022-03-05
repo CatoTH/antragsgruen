@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\quorumType\IQuorumType;
 use app\models\settings\AntragsgruenApp;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
@@ -554,6 +555,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
                 $toSetVotingBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
                 $toSetVotingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
                 $toSetVotingBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
+                $toSetVotingBlock->quorumType = IQuorumType::QUORUM_TYPE_NONE;
                 // If the voting is created from the proposed procedure, we assume it's only used to show it there
                 $toSetVotingBlock->votingStatus = ($proposedProcedureContext ? VotingBlock::STATUS_OFFLINE : VotingBlock::STATUS_PREPARING);
                 $toSetVotingBlock->save();
