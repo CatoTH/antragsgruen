@@ -104,8 +104,8 @@ class VotingMethods
             } else {
                 $votingBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
             }
-            if ($this->request->post('quorumType') !== null) {
-                $votingBlock->quorumType = intval($this->request->post('quorumType'));
+            if ($this->request->post('quorumType') !== null && is_a($votingBlock->getVotingPolicy(), UserGroups::class)) {
+                $votingBlock->quorumType = intval($this->request->post('quorumType', IQuorumType::QUORUM_TYPE_NONE));
             } else {
                 $votingBlock->quorumType = IQuorumType::QUORUM_TYPE_NONE;
             }

@@ -2,6 +2,8 @@
 
 use app\components\UrlHelper;
 use app\models\majorityType\IMajorityType;
+use app\models\policies\IPolicy;
+use app\models\quorumType\IQuorumType;
 use app\models\votings\AnswerTemplates;
 use app\models\db\{IMotion, VotingBlock};
 use app\models\layoutHooks\Layout;
@@ -52,6 +54,12 @@ ob_start();
                 <strong><?= Yii::t('voting', 'settings_majoritytype') ?>:</strong>
                 {{ majorityType.name }}
                 <span class="glyphicon glyphicon-info-sign" :aria-label="majorityType.description" v-tooltip="majorityType.description"></span>
+            </div>
+            <div class="quorumType" v-for="quorumType in QUORUM_TYPES"
+                 v-if="isPreparing && quorumType.id === voting.quorum_type && votingHasQuorum">
+                <strong><?= Yii::t('voting', 'settings_quorumtype') ?>:</strong>
+                {{ quorumType.name }}
+                <span class="glyphicon glyphicon-info-sign" :aria-label="quorumType.description" v-tooltip="quorumType.description" v-if="quorumType.description !== ''"></span>
             </div>
             <div class="votingPolicy">
                 <strong><?= Yii::t('voting', 'settings_votepolicy') ?>:</strong>
@@ -274,18 +282,27 @@ ob_start();
                   :aria-label="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'" v-tooltip="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'"></span>
             </label>
         </fieldset>
+        <fieldset class="votePolicy">
+            <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
+            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+        </fieldset>
         <fieldset class="majorityTypeSettings" v-if="selectedAnswersHaveMajority">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
             <label v-for="majorityTypeDef in MAJORITY_TYPES">
                 <input type="radio" :value="majorityTypeDef.id" v-model="majorityType" :disabled="isOpen || isClosed">
                 {{ majorityTypeDef.name }}
                 <span class="glyphicon glyphicon-info-sign"
-                  :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
+                      :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
             </label>
         </fieldset>
-        <fieldset class="votePolicy">
-            <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
-            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+        <fieldset class="quorumTypeSettings" v-if="votePolicy.id === VOTE_POLICY_USERGROUPS">
+            <legend><?= Yii::t('voting', 'settings_quorumtype') ?></legend>
+            <label v-for="quorumTypeDef in QUORUM_TYPES">
+                <input type="radio" :value="quorumTypeDef.id" v-model="quorumType" :disabled="isOpen || isClosed">
+                {{ quorumTypeDef.name }}
+                <span class="glyphicon glyphicon-info-sign"
+                      :aria-label="quorumTypeDef.description" v-tooltip="quorumTypeDef.description"></span>
+            </label>
         </fieldset>
         <fieldset class="resultsPublicSettings">
             <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
@@ -363,6 +380,8 @@ $html = ob_get_clean();
     const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
 
+    const VOTE_POLICY_USERGROUPS = <?= IPolicy::POLICY_USER_GROUPS ?>;
+
     const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
     const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
     const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
@@ -374,6 +393,16 @@ $html = ob_get_clean();
             'description' => $className::getDescription(),
         ];
     }, IMajorityType::getMajorityTypes())); ?>;
+
+    const QUORUM_TYPES = <?= json_encode(array_map(function ($className) {
+        return [
+            'id' => $className::getID(),
+            'name' => $className::getName(),
+            'description' => $className::getDescription(),
+        ];
+    }, IQuorumType::getQuorumTypes())); ?>;
+
+    const QUORUM_TYPE_NONE = <?= IQuorumType::QUORUM_TYPE_NONE ?>;
 
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
     const deleteConfirmation = <?= json_encode(Yii::t('voting', 'settings_delete_bb')) ?>;
@@ -409,6 +438,7 @@ $html = ob_get_clean();
                     answerTemplate: null,
                     assignedMotion: null,
                     majorityType: null,
+                    quorumType: null,
                     votesPublic: null,
                     resultsPublic: null,
                     votePolicy: null
@@ -449,6 +479,9 @@ $html = ob_get_clean();
                 // Used for the currently running vote as it is
                 return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
             },
+            votingHasQuorum: function () {
+                return this.voting.quorum_type !== QUORUM_TYPE_NONE;
+            },
             settingsTitle: {
                 get: function () {
                     return (this.changedSettings.title !== null ? this.changedSettings.title : this.voting.title);
@@ -463,6 +496,14 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.changedSettings.majorityType = value;
+                }
+            },
+            quorumType: {
+                get: function () {
+                    return (this.changedSettings.quorumType !== null ? this.changedSettings.quorumType : this.voting.quorum_type);
+                },
+                set: function (value) {
+                    this.changedSettings.quorumType = value;
                 }
             },
             answerTemplate: {
@@ -646,9 +687,10 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.votePolicy, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.votePolicy, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;
+                this.changedSettings.quorumType = null;
                 this.changedSettings.answerTemplate = null;
                 this.changedSettings.votePolicy = null;
                 this.settingsOpened = false;

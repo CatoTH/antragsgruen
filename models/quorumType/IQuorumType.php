@@ -25,8 +25,8 @@ abstract class IQuorumType
     {
         return [
             static::QUORUM_TYPE_NONE => NoQuorum::class,
-            static::QUORUM_TYPE_HALF => AbsoluteMajority::class,
-            static::QUORUM_TYPE_TWO_THIRD => TwoThirdsMajority::class,
+            static::QUORUM_TYPE_HALF => HalfQuorum::class,
+            static::QUORUM_TYPE_TWO_THIRD => TwoThirdsQuorum::class,
         ];
     }
 
