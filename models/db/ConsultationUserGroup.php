@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -58,18 +59,12 @@ class ConsultationUserGroup extends ActiveRecord
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSite()
+    public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsers()
+    public function getUsers(): ActiveQuery
     {
         return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('userGroup', ['groupId' => 'id'])
                     ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
@@ -96,6 +91,18 @@ class ConsultationUserGroup extends ActiveRecord
             }
         }
         return $this->userIdCache;
+    }
+
+    /**
+     * @return User[]
+     */
+    public function getUsersCached(): array
+    {
+        $users = [];
+        foreach ($this->getUserIds() as $userId) {
+            $users[] = User::getCachedUser($userId);
+        }
+        return $users;
     }
 
     /**
@@ -213,7 +220,7 @@ class ConsultationUserGroup extends ActiveRecord
         return [
             'id' => $this->id,
             'title' => $this->getNormalizedTitle(),
-            'member_count' => count($this->users),
+            'member_count' => count($this->getUserIds()),
         ];
     }
 

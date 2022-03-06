@@ -11,9 +11,11 @@ class VotingHelper
     public const GROUP_NYC = 'NYC';
     public const GROUP_INGYO = 'INGYO';
 
+    public const GROUP_QUORUM_RELEVANT = 'Full Member';
+
     public static function groupIs(ConsultationUserGroup $group, string $groupName): bool
     {
-        return strpos($group->title, $groupName) !== false;
+        return mb_stripos($group->title, $groupName) !== false;
     }
 
     public static function userIsGroup(Consultation $consultation, User $user, string $groupName): bool

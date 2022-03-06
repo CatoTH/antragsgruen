@@ -2,7 +2,8 @@
 
 namespace app\plugins\european_youth_forum;
 
-use app\models\db\{Consultation, Site, Vote, VotingBlock};
+use app\models\quorumType\NoQuorum;
+use app\models\db\{Consultation, Site, User, Vote, VotingBlock};
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
 
@@ -29,6 +30,15 @@ class Module extends ModuleBase
     public static function getVotingDataClass(Consultation $consultation): string
     {
         return VotingData::class;
+    }
+
+    public static function userIsRelevantForQuorum(VotingBlock $votingBlock, User $user): ?bool
+    {
+        if (is_a($votingBlock->getQuorumType(), NoQuorum::class)) {
+            return false;
+        }
+
+        return VotingHelper::userIsGroup($votingBlock->getMyConsultation(), $user, VotingHelper::GROUP_QUORUM_RELEVANT);
     }
 
     public static function getVotingAdminSetupHintHtml(VotingBlock $votingBlock): ?string

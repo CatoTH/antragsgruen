@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\quorumType;
 
-use app\models\settings\VotingData;
-use app\models\db\{IMotion, Vote};
+use app\models\db\VotingBlock;
 
 class NoQuorum extends IQuorumType
 {
@@ -24,8 +23,9 @@ class NoQuorum extends IQuorumType
         return IQuorumType::QUORUM_TYPE_NONE;
     }
 
-    public function hasReachedQuorum(VotingData $votingData): bool
+
+    public function getQuorum(VotingBlock $votingBlock): int
     {
-        return true;
+        return 0;
     }
 }

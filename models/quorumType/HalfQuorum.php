@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\quorumType;
 
-use app\models\settings\VotingData;
-use app\models\db\{IMotion, Vote};
+use app\models\db\VotingBlock;
 
 class HalfQuorum extends IQuorumType
 {
@@ -24,9 +23,10 @@ class HalfQuorum extends IQuorumType
         return IQuorumType::QUORUM_TYPE_HALF;
     }
 
-    public function hasReachedQuorum(VotingData $votingData): bool
+    public function getQuorum(VotingBlock $votingBlock): int
     {
-        // @TODO
-        return false;
+        $userCount = $this->getRelevantEligibleVotersCount($votingBlock);
+
+        return (int)ceil($userCount / 2); // 42 users => quorum is 21. 43 users => quorum is 22.
     }
 }

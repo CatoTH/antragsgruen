@@ -59,6 +59,7 @@ ob_start();
                  v-if="isPreparing && quorumType.id === voting.quorum_type && votingHasQuorum">
                 <strong><?= Yii::t('voting', 'settings_quorumtype') ?>:</strong>
                 {{ quorumType.name }}
+                ({{ quorumIndicator }})
                 <span class="glyphicon glyphicon-info-sign" :aria-label="quorumType.description" v-tooltip="quorumType.description" v-if="quorumType.description !== ''"></span>
             </div>
             <div class="votingPolicy">
@@ -115,6 +116,9 @@ ob_start();
                            :class="'adminUrl' + item.id"><span class="glyphicon glyphicon-wrench" aria-label="<?= Html::encode(Yii::t('voting', 'voting_edit_amend')) ?>"></span></a>
                         <br>
                         <span class="amendmentBy" v-if="item.initiators_html"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
+                    </div>
+                    <div v-if="votingHasQuorum" class="quorumCounter">
+                        {{ quorumCounter(groupedVoting) }}
                     </div>
                     <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
                         <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
@@ -366,7 +370,7 @@ $html = ob_get_clean();
     // Votings that have been created and will be using Antragsgrün, but are not active yet
     const STATUS_PREPARING = <?= VotingBlock::STATUS_PREPARING ?>;
 
-    // Currently open for voting. Currently there should only be one voting in this status at a time.
+    // Currently open for voting. There should only be one voting in this status at a time.
     const STATUS_OPEN = <?= VotingBlock::STATUS_OPEN ?>;
 
     // Vorting is closed.
@@ -401,9 +405,10 @@ $html = ob_get_clean();
             'description' => $className::getDescription(),
         ];
     }, IQuorumType::getQuorumTypes())); ?>;
-
     const QUORUM_TYPE_NONE = <?= IQuorumType::QUORUM_TYPE_NONE ?>;
 
+    const quorumIndicator = <?= json_encode(Yii::t('voting', 'quorum_limit')) ?>;
+    const quorumCounter = <?= json_encode(Yii::t('voting', 'quorum_counter')) ?>;
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
     const deleteConfirmation = <?= json_encode(Yii::t('voting', 'settings_delete_bb')) ?>;
 
@@ -552,6 +557,9 @@ $html = ob_get_clean();
             },
             resultDownloadLink: function () {
                 return this.voteDownloadUrl.replace(/VOTINGBLOCKID/, this.voting.id).replace(/FORMAT/, 'ods');
+            },
+            quorumIndicator: function () {
+                return quorumIndicator.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
             }
         },
         methods: {
@@ -573,6 +581,9 @@ $html = ob_get_clean();
                 }
                 let date = new Date(logEntry['date']);
                 return date.toLocaleString() + ': ' + description;
+            },
+            quorumCounter: function (groupedVoting) {
+                return quorumCounter.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
             },
             removeItem: function (groupedVoting) {
                 this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);

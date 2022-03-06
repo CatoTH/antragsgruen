@@ -114,4 +114,6 @@ return [
     'quorum_half_h' => 'Mindestens die Hälfte aller Berechtigten müssen abstimmen',
     'quorum_two_third' => '2/3-Mehrheit',
     'quorum_two_third_h' => 'Mindestens zwei Drittel aller Berechtigten müssen abstimmen',
+    'quorum_limit' => '%QUORUM% von %ALL% Berechtigten',
+    'quorum_counter' => 'Quorum: %CURRENT% von %QUORUM% nötigen Stimmen',
 ];

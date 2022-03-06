@@ -7,6 +7,7 @@ use app\models\majorityType\IMajorityType;
 use app\models\policies\IPolicy;
 use app\models\policies\LoggedIn;
 use app\models\quorumType\IQuorumType;
+use app\models\quorumType\NoQuorum;
 use app\models\settings\AntragsgruenApp;
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
@@ -208,6 +209,18 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         }
     }
 
+    public function getVotesForVotingItem(IVotingItem $votingItem): array
+    {
+        if (is_a($votingItem, Amendment::class)) {
+            return $this->getVotesForAmendment($votingItem);
+        } elseif (is_a($votingItem, Motion::class)) {
+            return $this->getVotesForMotion($votingItem);
+        } else {
+            /** @var VotingQuestion $votingItem */
+            return $this->getVotesForQuestion($votingItem);
+        }
+    }
+
     public function getMajorityType(): IMajorityType
     {
         $majorityTypes = IMajorityType::getMajorityTypes();
@@ -219,6 +232,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
     public function getQuorumType(): IQuorumType
     {
+        if ($this->quorumType === null) {
+            return new NoQuorum();
+        }
         $quorumTypes = IQuorumType::getQuorumTypes();
         if (!isset($quorumTypes[$this->quorumType])) {
             throw new Internal('Unsupported quorum type: ' . $this->quorumType);

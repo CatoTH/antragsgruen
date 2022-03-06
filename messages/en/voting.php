@@ -111,7 +111,9 @@ return [
 
     'quorum_none' => 'No quorum',
     'quorum_half' => 'Simple majority',
-    'quorum_half_h' => 'At least half of all eligible members have to cast a vote',
+    'quorum_half_h' => 'At least half of all eligible users have to cast a vote',
     'quorum_two_third' => '2/3 majority',
-    'quorum_two_third_h' => 'At least two out of three of all eligible members have to cast a vote',
+    'quorum_two_third_h' => 'At least two out of three of all eligible users have to cast a vote',
+    'quorum_limit' => '%QUORUM% out of %ALL% users',
+    'quorum_counter' => 'Quorum: %CURRENT% out of %QUORUM% necessary votes',
 ];

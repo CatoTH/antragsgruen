@@ -84,7 +84,8 @@ class User extends ActiveRecord implements IdentityInterface
     private static $userCache = [];
     public static function getCachedUser(int $userId): ?User
     {
-        if (!isset(static::$userCache[$userId])) {
+        // Hint: also cache "null" entries
+        if (!in_array($userId, array_keys(static::$userCache))) {
             static::$userCache[$userId] = static::find()->where(['id' => $userId])->andWhere('status != ' . User::STATUS_DELETED)->one();
         }
         return static::$userCache[$userId];
@@ -203,8 +204,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $ids = [];
         foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
-            foreach ($userGroup->users as $user) {
-                if ($user->id === $this->id) {
+            foreach ($userGroup->getUserIds() as $userId) {
+                if ($userId === $this->id) {
                     $ids[] = $userGroup->id;
                 }
             }
