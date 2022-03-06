@@ -34,11 +34,11 @@ abstract class IQuorumType
 
     abstract public function getQuorum(VotingBlock $votingBlock): int;
 
-    public function hasReachedQuorum(VotingBlock $votingBlock): bool
+    public function hasReachedQuorum(VotingBlock $votingBlock, IVotingItem $votingItem): bool
     {
         $quorum = $this->getQuorum($votingBlock);
 
-        return $this->getRelevantEligibleVotersCount($votingBlock) >= $quorum;
+        return $this->getRelevantVotedCount($votingBlock, $votingItem) >= $quorum;
     }
 
     private function userIsRelevantForQuorum(VotingBlock $votingBlock, ?User $user): bool

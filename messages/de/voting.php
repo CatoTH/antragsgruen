@@ -11,6 +11,7 @@ return [
 
     'status_accepted' => 'Angenommen',
     'status_rejected' => 'Abgelehnt',
+    'status_quorum_missed' => 'Quorum verfehlt',
 
     'activity_title' => 'Protokoll',
     'activity_show_all' => 'Komplettes Protokoll anzeigen',

@@ -1,8 +1,8 @@
 <?php
 
-
 use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
+use app\models\quorumType\IQuorumType;
 use app\models\votings\AnswerTemplates;
 use app\models\db\{Consultation, ConsultationUserGroup, IMotion, User, VotingBlock};
 use yii\helpers\Html;
@@ -108,7 +108,7 @@ ob_start();
                     }
                     ?>
                 </div>
-                <div class="result" v-if="isClosed && votingHasMajority">
+                <div class="result" v-if="isClosed && (votingHasMajority || votingHasQuorum)">
                     <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_accepted') ?>
@@ -116,6 +116,10 @@ ob_start();
                     <div class="rejected" v-if="itemIsRejected(groupedVoting)">
                         <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_rejected') ?>
+                    </div>
+                    <div class="rejected" v-if="itemIsQuorumFailed(groupedVoting)">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        <?= Yii::t('voting', 'status_quorum_missed') ?>
                     </div>
                 </div>
             </li>
@@ -174,10 +178,13 @@ $html = ob_get_clean();
 
     const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
+    const VOTING_STATUS_QUORUM_MISSED = <?= IMotion::STATUS_QUORUM_MISSED ?>;
 
     const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
     const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
     const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
+
+    const QUORUM_TYPE_NONE = <?= IQuorumType::QUORUM_TYPE_NONE ?>;
 
     Vue.component('voting-block-widget', {
         template: <?= json_encode($html) ?>,
@@ -192,6 +199,9 @@ $html = ob_get_clean();
             votingHasMajority: function () {
                 // Used for the currently running vote as it is
                 return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
+            },
+            votingHasQuorum: function () {
+                return this.voting.quorum_type !== QUORUM_TYPE_NONE;
             },
             votingOptionButtons: function () {
                 return this.voting.answers.map((answer) => {
@@ -256,6 +266,9 @@ $html = ob_get_clean();
             },
             itemIsRejected: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
+            },
+            itemIsQuorumFailed: function (groupedItem) {
+                return groupedItem[0].voting_status === VOTING_STATUS_QUORUM_MISSED;
             },
             hasVoteList: function (groupedItem) {
                 return groupedItem[0].votes !== undefined;

@@ -11,6 +11,7 @@ return [
 
     'status_accepted' => 'Accepted',
     'status_rejected' => 'Rejected',
+    'status_quorum_missed' => 'Quorum missed',
 
     'activity_title' => 'Protocol',
     'activity_show_all' => 'Show complete protocol',

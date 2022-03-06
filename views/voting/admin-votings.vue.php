@@ -55,8 +55,7 @@ ob_start();
                 {{ majorityType.name }}
                 <span class="glyphicon glyphicon-info-sign" :aria-label="majorityType.description" v-tooltip="majorityType.description"></span>
             </div>
-            <div class="quorumType" v-for="quorumType in QUORUM_TYPES"
-                 v-if="isPreparing && quorumType.id === voting.quorum_type && votingHasQuorum">
+            <div class="quorumType" v-for="quorumType in QUORUM_TYPES" v-if="quorumType.id === voting.quorum_type && votingHasQuorum">
                 <strong><?= Yii::t('voting', 'settings_quorumtype') ?>:</strong>
                 {{ quorumType.name }}
                 ({{ quorumIndicator }})
@@ -166,7 +165,7 @@ ob_start();
                     }
                     ?>
                 </div>
-                <div class="result" v-if="isClosed && votingHasMajority">
+                <div class="result" v-if="isClosed && (votingHasMajority || votingHasQuorum)">
                     <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_accepted') ?>
@@ -174,6 +173,10 @@ ob_start();
                     <div class="rejected" v-if="itemIsRejected(groupedVoting)">
                         <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_rejected') ?>
+                    </div>
+                    <div class="rejected" v-if="itemIsQuorumFailed(groupedVoting)">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        <?= Yii::t('voting', 'status_quorum_missed') ?>
                     </div>
                 </div>
             </li>
@@ -383,6 +386,7 @@ $html = ob_get_clean();
 
     const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
+    const VOTING_STATUS_QUORUM_MISSED = <?= IMotion::STATUS_QUORUM_MISSED ?>;
 
     const VOTE_POLICY_USERGROUPS = <?= IPolicy::POLICY_USER_GROUPS ?>;
 
@@ -668,6 +672,9 @@ $html = ob_get_clean();
             },
             itemIsRejected: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
+            },
+            itemIsQuorumFailed: function (groupedItem) {
+                return groupedItem[0].voting_status === VOTING_STATUS_QUORUM_MISSED;
             },
             hasVoteList: function (groupedItem) {
                 return groupedItem[0].votes !== undefined && (this.isOpen || this.isClosed);

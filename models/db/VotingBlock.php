@@ -350,8 +350,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     private function closeVoting_setResultToItem(IVotingItem $item, VotingData $votingData): void
     {
         $item->setVotingData($votingData);
-        if ($this->votingHasMajority()) {
-            // @TODO Take into account quorum
+        if ($votingData->quorumReached === false) {
+            $item->setVotingResult(IMotion::STATUS_QUORUM_MISSED);
+        } elseif ($this->votingHasMajority()) {
             $result = $this->getMajorityType()->calculateResult($votingData);
             $item->setVotingResult($result);
         }
@@ -366,18 +367,15 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         $this->save();
 
         foreach ($this->motions as $motion) {
-            $votes = $this->getVotesForMotion($motion);
-            $votingData = $motion->getVotingData()->augmentWithResults($this, $votes);
+            $votingData = $motion->getVotingData()->augmentWithResults($this, $motion);
             $this->closeVoting_setResultToItem($motion, $votingData);
         }
         foreach ($this->amendments as $amendment) {
-            $votes = $this->getVotesForAmendment($amendment);
-            $votingData = $amendment->getVotingData()->augmentWithResults($this, $votes);
+            $votingData = $amendment->getVotingData()->augmentWithResults($this, $amendment);
             $this->closeVoting_setResultToItem($amendment, $votingData);
         }
         foreach ($this->questions as $question) {
-            $votes = $this->getVotesForQuestion($question);
-            $votingData = $question->getVotingData()->augmentWithResults($this, $votes);
+            $votingData = $question->getVotingData()->augmentWithResults($this, $question);
             $this->closeVoting_setResultToItem($question, $votingData);
         }
 
