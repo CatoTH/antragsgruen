@@ -355,6 +355,8 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         } elseif ($this->votingHasMajority()) {
             $result = $this->getMajorityType()->calculateResult($votingData);
             $item->setVotingResult($result);
+        } elseif ($votingData->quorumReached === true) {
+            $item->setVotingResult(IMotion::STATUS_QUORUM_REACHED);
         }
         $item->save();
     }

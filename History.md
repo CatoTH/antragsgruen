@@ -20,7 +20,7 @@
   - Using a separate proxy app, it allows to automatically synchronize users and user groups from OpenSlides to Antragsgrün.
   - It needs to be set up by a system administrator per site.
 - Amendments can now be further restricted to only affect one particular location within one paragraph.
-- There is a new motion status "Quorum missed".
+- There are new motion statuses "Quorum reached" and "Quorum missed".
 - The CAPTCHA system is reset for an user after a successful login. This solves issues when multiple users are behind the same IP address.
 
 ### Version 4.9.1 (2022-02-12)

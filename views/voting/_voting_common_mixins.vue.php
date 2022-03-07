@@ -23,6 +23,7 @@ use app\models\policies\UserGroups;
     const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
     const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
     const VOTING_STATUS_QUORUM_MISSED = <?= IMotion::STATUS_QUORUM_MISSED ?>;
+    const VOTING_STATUS_QUORUM_REACHED = <?= IMotion::STATUS_QUORUM_REACHED ?>;
 
     const QUORUM_TYPE_NONE = <?= IQuorumType::QUORUM_TYPE_NONE ?>;
 
@@ -68,6 +69,9 @@ use app\models\policies\UserGroups;
             },
             itemIsRejected: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
+            },
+            itemIsQuorumReached: function (groupedItem) {
+                return groupedItem[0].voting_status === VOTING_STATUS_QUORUM_REACHED;
             },
             itemIsQuorumFailed: function (groupedItem) {
                 return groupedItem[0].voting_status === VOTING_STATUS_QUORUM_MISSED;

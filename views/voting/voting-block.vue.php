@@ -117,6 +117,10 @@ ob_start();
                         <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_rejected') ?>
                     </div>
+                    <div class="accepted" v-if="itemIsQuorumReached(groupedVoting)">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <?= Yii::t('voting', 'status_quorum_reached') ?>
+                    </div>
                     <div class="rejected" v-if="itemIsQuorumFailed(groupedVoting)">
                         <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_quorum_missed') ?>

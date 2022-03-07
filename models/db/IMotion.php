@@ -77,6 +77,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public const STATUS_MODIFIED_ACCEPTED = 6;
     public const STATUS_PROCESSED = 17;
     public const STATUS_QUORUM_MISSED = 29;
+    public const STATUS_QUORUM_REACHED = 30;
 
     // This is the reply to a motion / member petition and is to be shown within the parent motion view.
     public const STATUS_INLINE_REPLY = 24;

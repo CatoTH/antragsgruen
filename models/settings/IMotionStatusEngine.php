@@ -82,6 +82,11 @@ class IMotionStatusEngine
             \Yii::t('structure', 'STATUS_QUORUM_MISSED'),
             \Yii::t('structure', 'STATUS_QUORUM_MISSED')
         );
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_QUORUM_REACHED,
+            \Yii::t('structure', 'STATUS_QUORUM_REACHED'),
+            \Yii::t('structure', 'STATUS_QUORUM_REACHED')
+        );
         $statuses[] = new IMotionStatus(IMotion::STATUS_COMPLETED, \Yii::t('structure', 'STATUS_COMPLETED'));
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_REFERRED,
@@ -360,6 +365,7 @@ class IMotionStatusEngine
             IMotion::STATUS_ACCEPTED => \Yii::t('structure', 'STATUS_ACCEPTED'),
             IMotion::STATUS_REJECTED => \Yii::t('structure', 'STATUS_REJECTED'),
             IMotion::STATUS_QUORUM_MISSED => \Yii::t('structure', 'STATUS_QUORUM_MISSED'),
+            IMotion::STATUS_QUORUM_REACHED => \Yii::t('structure', 'STATUS_QUORUM_REACHED'),
         ];
     }
 
