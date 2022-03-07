@@ -164,27 +164,9 @@ $html = ob_get_clean();
     const RESULTS_PUBLIC_YES = <?= VotingBlock::RESULTS_PUBLIC_YES ?>;
     const RESULTS_PUBLIC_NO = <?= VotingBlock::RESULTS_PUBLIC_NO ?>;
 
-    // The voting is not performed using Antragsgrün
-    const STATUS_OFFLINE = <?= VotingBlock::STATUS_OFFLINE ?>;
-
-    // Votings that have been created and will be using Antragsgrün, but are not active yet
-    const STATUS_PREPARING = <?= VotingBlock::STATUS_PREPARING ?>;
-
-    // Currently open for voting.
-    const STATUS_OPEN = <?= VotingBlock::STATUS_OPEN ?>;
-
-    // Vorting is closed.
-    const STATUS_CLOSED = <?= VotingBlock::STATUS_CLOSED ?>;
-
-    const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
-    const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
-    const VOTING_STATUS_QUORUM_MISSED = <?= IMotion::STATUS_QUORUM_MISSED ?>;
-
     const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
     const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
     const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
-
-    const QUORUM_TYPE_NONE = <?= IQuorumType::QUORUM_TYPE_NONE ?>;
 
     Vue.component('voting-block-widget', {
         template: <?= json_encode($html) ?>,
@@ -196,13 +178,6 @@ $html = ob_get_clean();
             }
         },
         computed: {
-            votingHasMajority: function () {
-                // Used for the currently running vote as it is
-                return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
-            },
-            votingHasQuorum: function () {
-                return this.voting.quorum_type !== QUORUM_TYPE_NONE;
-            },
             votingOptionButtons: function () {
                 return this.voting.answers.map((answer) => {
                     return this.voteAnswerToCss(answer);
@@ -220,12 +195,6 @@ $html = ob_get_clean();
             resultsPublic: function () {
                 return this.voting.results_public === RESULTS_PUBLIC_YES;
             },
-            isOpen: function () {
-                return this.voting.status === STATUS_OPEN;
-            },
-            isClosed: function () {
-                return this.voting.status === STATUS_CLOSED;
-            }
         },
         methods: {
             vote: function (groupedVoting, voteOption) {
@@ -260,30 +229,6 @@ $html = ob_get_clean();
             votedOption: function (group) {
                 const answer = this.getVoteOptionById(group.voted);
                 return this.voteAnswerToCss(answer);
-            },
-            itemIsAccepted: function (groupedItem) {
-                return groupedItem[0].voting_status === VOTING_STATUS_ACCEPTED;
-            },
-            itemIsRejected: function (groupedItem) {
-                return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
-            },
-            itemIsQuorumFailed: function (groupedItem) {
-                return groupedItem[0].voting_status === VOTING_STATUS_QUORUM_MISSED;
-            },
-            hasVoteList: function (groupedItem) {
-                return groupedItem[0].votes !== undefined;
-            },
-            isVoteListShown: function (groupedItem) {
-                const showId = groupedItem[0].type + '-' + groupedItem[0].id;
-                return this.shownVoteLists.indexOf(showId) !== -1;
-            },
-            showVoteList: function (groupedItem) {
-                const showId = groupedItem[0].type + '-' + groupedItem[0].id;
-                this.shownVoteLists.push(showId);
-            },
-            hideVoteList: function (groupedItem) {
-                const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
-                this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
             }
         }
     });

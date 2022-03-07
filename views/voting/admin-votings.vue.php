@@ -5,7 +5,7 @@ use app\models\majorityType\IMajorityType;
 use app\models\policies\IPolicy;
 use app\models\quorumType\IQuorumType;
 use app\models\votings\AnswerTemplates;
-use app\models\db\{IMotion, VotingBlock};
+use app\models\db\VotingBlock;
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
@@ -367,26 +367,10 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    // The voting is not performed using Antragsgrün
-    const STATUS_OFFLINE = <?= VotingBlock::STATUS_OFFLINE ?>;
-
-    // Votings that have been created and will be using Antragsgrün, but are not active yet
-    const STATUS_PREPARING = <?= VotingBlock::STATUS_PREPARING ?>;
-
-    // Currently open for voting. There should only be one voting in this status at a time.
-    const STATUS_OPEN = <?= VotingBlock::STATUS_OPEN ?>;
-
-    // Vorting is closed.
-    const STATUS_CLOSED = <?= VotingBlock::STATUS_CLOSED ?>;
-
     const ACTIVITY_TYPE_OPENED = <?= VotingBlock::ACTIVITY_TYPE_OPENED ?>;
     const ACTIVITY_TYPE_CLOSED = <?= VotingBlock::ACTIVITY_TYPE_CLOSED ?>;
     const ACTIVITY_TYPE_RESET = <?= VotingBlock::ACTIVITY_TYPE_RESET ?>;
     const ACTIVITY_TYPE_REOPENED = <?= VotingBlock::ACTIVITY_TYPE_REOPENED ?>;
-
-    const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
-    const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
-    const VOTING_STATUS_QUORUM_MISSED = <?= IMotion::STATUS_QUORUM_MISSED ?>;
 
     const VOTE_POLICY_USERGROUPS = <?= IPolicy::POLICY_USER_GROUPS ?>;
 
@@ -409,7 +393,6 @@ $html = ob_get_clean();
             'description' => $className::getDescription(),
         ];
     }, IQuorumType::getQuorumTypes())); ?>;
-    const QUORUM_TYPE_NONE = <?= IQuorumType::QUORUM_TYPE_NONE ?>;
 
     const quorumIndicator = <?= json_encode(Yii::t('voting', 'quorum_limit')) ?>;
     const quorumCounter = <?= json_encode(Yii::t('voting', 'quorum_counter')) ?>;
@@ -471,25 +454,9 @@ $html = ob_get_clean();
                     }
                 }
             },
-            isPreparing: function () {
-                return this.voting.status === STATUS_PREPARING;
-            },
-            isOpen: function () {
-                return this.voting.status === STATUS_OPEN;
-            },
-            isClosed: function () {
-                return this.voting.status === STATUS_CLOSED;
-            },
             selectedAnswersHaveMajority: function () {
                 // Used by the settings form
                 return this.answerTemplate === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answerTemplate === ANSWER_TEMPLATE_YES_NO;
-            },
-            votingHasMajority: function () {
-                // Used for the currently running vote as it is
-                return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
-            },
-            votingHasQuorum: function () {
-                return this.voting.quorum_type !== QUORUM_TYPE_NONE;
             },
             settingsTitle: {
                 get: function () {
@@ -666,15 +633,6 @@ $html = ob_get_clean();
                     return amendmentEditUrl.replace(/00000000/, item.id);
                 }
                 return null;
-            },
-            itemIsAccepted: function (groupedItem) {
-                return groupedItem[0].voting_status === VOTING_STATUS_ACCEPTED;
-            },
-            itemIsRejected: function (groupedItem) {
-                return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
-            },
-            itemIsQuorumFailed: function (groupedItem) {
-                return groupedItem[0].voting_status === VOTING_STATUS_QUORUM_MISSED;
             },
             hasVoteList: function (groupedItem) {
                 return groupedItem[0].votes !== undefined && (this.isOpen || this.isClosed);
