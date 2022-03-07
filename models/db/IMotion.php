@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\quorumType\IQuorumType;
 use app\models\settings\AntragsgruenApp;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
@@ -51,85 +52,87 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     use VotingItemTrait;
 
     // The motion has been deleted and is not visible anymore. Only admins can delete a motion.
-    const STATUS_DELETED = -2;
+    public const STATUS_DELETED = -2;
 
     // The motion has been withdrawn, either by the user or the admin.
-    const STATUS_WITHDRAWN = -1;
-    const STATUS_WITHDRAWN_INVISIBLE = -3;
+    public const STATUS_WITHDRAWN = -1;
+    public const STATUS_WITHDRAWN_INVISIBLE = -3;
 
     // The user has written the motion, but not yet confirmed to submit it.
-    const STATUS_DRAFT = 1;
+    public const STATUS_DRAFT = 1;
 
     // The user has submitted the motion, but it's not yet visible. It's up to the admin to screen it now.
-    const STATUS_SUBMITTED_UNSCREENED = 2;
-    const STATUS_SUBMITTED_UNSCREENED_CHECKED = 18;
+    public const STATUS_SUBMITTED_UNSCREENED = 2;
+    public const STATUS_SUBMITTED_UNSCREENED_CHECKED = 18;
 
     // The default state once the motion is visible
-    const STATUS_SUBMITTED_SCREENED = 3;
+    public const STATUS_SUBMITTED_SCREENED = 3;
 
     // These are statuses motions and amendments get as their final state.
     // "Processed" is mostly used for amendments after merging amendments into th motion,
     // if it's unclear if it was adopted or rejected.
     // For member petitions, "Processed" means the petition has been replied.
-    const STATUS_ACCEPTED = 4;
-    const STATUS_REJECTED = 5;
-    const STATUS_MODIFIED_ACCEPTED = 6;
-    const STATUS_PROCESSED = 17;
+    public const STATUS_ACCEPTED = 4;
+    public const STATUS_REJECTED = 5;
+    public const STATUS_MODIFIED_ACCEPTED = 6;
+    public const STATUS_PROCESSED = 17;
+    public const STATUS_QUORUM_MISSED = 29;
+    public const STATUS_QUORUM_REACHED = 30;
 
     // This is the reply to a motion / member petition and is to be shown within the parent motion view.
-    const STATUS_INLINE_REPLY = 24;
+    public const STATUS_INLINE_REPLY = 24;
 
     // The initiator is still collecting supporters to actually submit this motion.
     // It's visible only to those who know the link to it.
-    const STATUS_COLLECTING_SUPPORTERS = 15;
+    public const STATUS_COLLECTING_SUPPORTERS = 15;
 
     // Not yet visible, it's up to the admin to submit it
-    const STATUS_DRAFT_ADMIN = 16;
+    public const STATUS_DRAFT_ADMIN = 16;
 
     // Saved drafts while merging amendments into an motion
-    const STATUS_MERGING_DRAFT_PUBLIC = 19;
-    const STATUS_MERGING_DRAFT_PRIVATE = 20;
+    public const STATUS_MERGING_DRAFT_PUBLIC = 19;
+    public const STATUS_MERGING_DRAFT_PRIVATE = 20;
 
     // The modified version of an amendment, as proposed by the admins.
     // This amendment is being referenced by proposalReference of the modified amendment.
-    const STATUS_PROPOSED_MODIFIED_AMENDMENT = 21;
+    public const STATUS_PROPOSED_MODIFIED_AMENDMENT = 21;
 
     // Used as a status for amendment, which is the proposed move of an amendment to another motion.
     // The original amendment gets this status as `proposalStatus`, the internal new amendment (for the other motion) gets this status as `status`.
     // The internal new amendment should not be used-visible in the context of its motion (only when merging),
     // only within the amendment that references this one via its proposalReference
-    const STATUS_PROPOSED_MOVE_TO_OTHER_MOTION = 28;
+    public const STATUS_PROPOSED_MOVE_TO_OTHER_MOTION = 28;
 
     // An amendment or motion has been referred to another institution.
     // The institution is documented in statusString, or, in case of a change proposal, in proposalComment
-    const STATUS_REFERRED = 10;
+    public const STATUS_REFERRED = 10;
 
     // The motion still exists at the original place, but has been replaced by a copy at another consultation or agenda item.
     // This motion is referenced by the new motion as parentMotionId.
     // Amendments cannot be moved, they are always sticked to the motion.
-    const STATUS_MOVED = 27;
+    public const STATUS_MOVED = 27;
 
     // An amendment becomes obsoleted by another amendment. That one is referred by an id
     // in statusString (a bit unelegantely), or, in case of a change proposal, in proposalComment
-    const STATUS_OBSOLETED_BY = 22;
+    public const STATUS_OBSOLETED_BY = 22;
 
     // The exact status is specified in a free-text field; proposalComment if this status is used in proposalStatus
-    const STATUS_CUSTOM_STRING = 23;
+    public const STATUS_CUSTOM_STRING = 23;
 
     // The version of a motion that the convention has agreed upon
-    const STATUS_RESOLUTION_PRELIMINARY = 25;
-    const STATUS_RESOLUTION_FINAL = 26;
+    public const STATUS_RESOLUTION_PRELIMINARY = 25;
+    public const STATUS_RESOLUTION_FINAL = 26;
 
     // A new version of this motion exists that should be shown instead. Not visible on the home page.
-    const STATUS_MODIFIED = 7;
+    public const STATUS_MODIFIED = 7;
 
     // Purely informational statuses
-    const STATUS_ADOPTED = 8;
-    const STATUS_COMPLETED = 9;
-    const STATUS_VOTE = 11;
-    const STATUS_PAUSED = 12;
-    const STATUS_MISSING_INFORMATION = 13;
-    const STATUS_DISMISSED = 14;
+    public const STATUS_ADOPTED = 8;
+    public const STATUS_COMPLETED = 9;
+    public const STATUS_VOTE = 11;
+    public const STATUS_PAUSED = 12;
+    public const STATUS_MISSING_INFORMATION = 13;
+    public const STATUS_DISMISSED = 14;
 
     public function isInScreeningProcess(): bool
     {
@@ -156,10 +159,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         return $query;
     }
 
-    /**
-     * @return Permissions
-     */
-    public function getPermissionsObject()
+    public function getPermissionsObject(): Permissions
     {
         $behavior  = $this->getMyConsultation()->site->getBehaviorClass();
         $className = $behavior->getPermissionsClass();
@@ -554,6 +554,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
                 $toSetVotingBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
                 $toSetVotingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
                 $toSetVotingBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
+                $toSetVotingBlock->quorumType = IQuorumType::QUORUM_TYPE_NONE;
                 // If the voting is created from the proposed procedure, we assume it's only used to show it there
                 $toSetVotingBlock->votingStatus = ($proposedProcedureContext ? VotingBlock::STATUS_OFFLINE : VotingBlock::STATUS_PREPARING);
                 $toSetVotingBlock->save();

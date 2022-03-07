@@ -14,7 +14,7 @@ function printResultTable(Worksheet $worksheet, int $startRow, AgendaVoting $age
         return $doneRows;
     }
 
-    $voteResults = $voteItem->getVotingData()->augmentWithResults($agendaVoting->voting, $voteItem->votes);
+    $voteResults = $voteItem->getVotingData()->augmentWithResults($agendaVoting->voting, $voteItem);
     $rows = 0;
 
     $worksheet->mergeCells('A' . ($startRow + $rows) . ':B' . ($startRow + $rows));

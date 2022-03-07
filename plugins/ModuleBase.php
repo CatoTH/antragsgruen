@@ -3,7 +3,7 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Amendment, Consultation, Motion, Site, Vote, VotingBlock};
+use app\models\db\{Amendment, Consultation, Motion, Site, User, Vote, VotingBlock};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\{IMotionStatus, Layout, VotingData};
 use app\models\siteSpecificBehavior\DefaultBehavior;
@@ -166,11 +166,15 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Consultation $consultation
      * @return string|VotingData
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getVotingDataClass(Consultation $consultation): ?string
+    {
+        return null;
+    }
+
+    public static function userIsRelevantForQuorum(VotingBlock $votingBlock, User $user): ?bool
     {
         return null;
     }

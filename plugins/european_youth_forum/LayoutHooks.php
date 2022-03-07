@@ -32,7 +32,7 @@ class LayoutHooks extends Hooks
         }
 
         /** @var \app\plugins\european_youth_forum\VotingData $voteResults */
-        $voteResults = $voteItem->getVotingData()->augmentWithResults($agendaVoting->voting, $voteItem->votes);
+        $voteResults = $voteItem->getVotingData()->augmentWithResults($agendaVoting->voting, $voteItem);
         $rows = 0;
 
 

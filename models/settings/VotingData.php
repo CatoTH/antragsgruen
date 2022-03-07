@@ -2,9 +2,10 @@
 
 namespace app\models\settings;
 
+use app\models\quorumType\NoQuorum;
 use app\models\votings\Answer;
 use app\models\votings\AnswerTemplates;
-use app\models\db\{Vote, VotingBlock};
+use app\models\db\{IVotingItem, Vote, VotingBlock};
 
 class VotingData implements \JsonSerializable
 {
@@ -16,6 +17,9 @@ class VotingData implements \JsonSerializable
     public $itemGroupSameVote = null;
     /** @var null|string */
     public $itemGroupName = null;
+
+    /** @var null|bool */
+    public $quorumReached = null;
 
     // @TODO Migrate this to the more flexible answer system
     /** @var null|int */
@@ -63,8 +67,9 @@ class VotingData implements \JsonSerializable
         }
     }
 
-    public function augmentWithResults(VotingBlock $voting, array $votes): self
+    public function augmentWithResults(VotingBlock $voting, IVotingItem $votingItem): self
     {
+        $votes = $voting->getVotesForVotingItem($votingItem);
         $results = Vote::calculateVoteResultsForApi($voting, $votes);
         $orga = self::ORGANIZATION_DEFAULT;
         if (isset($results[$orga])) {
@@ -72,6 +77,13 @@ class VotingData implements \JsonSerializable
             $this->votesNo = $results[$orga]['no'] ?? null;
             $this->votesAbstention = $results[$orga]['abstention'] ?? null;
             $this->votesPresent = $results[$orga]['present'] ?? null;
+        }
+
+        $quorum = $voting->getQuorumType();
+        if (is_a($quorum, NoQuorum::class)) {
+            $this->quorumReached = null;
+        } else {
+            $this->quorumReached = $quorum->hasReachedQuorum($voting, $votingItem);
         }
 
         return $this;

@@ -2,7 +2,9 @@
 
 namespace app\plugins\european_youth_forum;
 
+use app\models\db\IVotingItem;
 use app\models\db\VotingBlock;
+use app\models\quorumType\NoQuorum;
 
 class VotingData extends \app\models\settings\VotingData {
     /** @var int|null */
@@ -57,11 +59,12 @@ class VotingData extends \app\models\settings\VotingData {
     /** @var int|null */
     public $totalTotalMultiplied;
 
-    public function augmentWithResults(VotingBlock $voting, array $votes): \app\models\settings\VotingData
+    public function augmentWithResults(VotingBlock $voting, IVotingItem $votingItem): \app\models\settings\VotingData
     {
         if (!VotingHelper::isSetUpAsYfjVoting($voting)) {
-            return parent::augmentWithResults($voting, $votes);
+            return parent::augmentWithResults($voting, $votingItem);
         }
+        $votes = $voting->getVotesForVotingItem($votingItem);
         $results = Module::calculateVoteResultsForApi($voting, $votes);
 
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -97,6 +100,13 @@ class VotingData extends \app\models\settings\VotingData {
         $this->votesYes = $this->totalYesMultiplied;
         $this->votesNo = $this->totalNoMultiplied;
         $this->votesAbstention = $this->totalAbstentionMultiplied;
+
+        $quorum = $voting->getQuorumType();
+        if (is_a($quorum, NoQuorum::class)) {
+            $this->quorumReached = null;
+        } else {
+            $this->quorumReached = $quorum->hasReachedQuorum($voting, $votingItem);
+        }
 
         return $this;
     }

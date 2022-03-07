@@ -2,7 +2,8 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\{Amendment, ConsultationUserGroup, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
+use app\models\quorumType\NoQuorum;
+use app\models\db\{ConsultationUserGroup, IVotingItem, User, Vote, VotingBlock};
 use app\models\exceptions\Access;
 use app\models\IMotionList;
 use app\models\policies\IPolicy;
@@ -92,6 +93,7 @@ class AgendaVoting
             'results_public' => ($this->voting ? $this->voting->resultsPublic : null),
             'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
             'majority_type' => ($this->voting ? $this->voting->majorityType : null),
+            'quorum_type' => ($this->voting ? $this->voting->quorumType : null),
             'user_groups' => [],
             'answers' => $answers,
             'answers_template' => ($this->voting ? $this->voting->getAnswerTemplate() : null),
@@ -113,6 +115,12 @@ class AgendaVoting
             $votingBlockJson['votes_total'] = $total;
             $votingBlockJson['votes_users'] = $users;
             $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
+
+            $quorumType = $this->voting->getQuorumType();
+            if (!is_a($quorumType, NoQuorum::class)) {
+                $votingBlockJson['quorum'] = $quorumType->getQuorum($this->voting);
+                $votingBlockJson['quorum_eligible'] = $quorumType->getRelevantEligibleVotersCount($this->voting);
+            }
         } else {
             $votingBlockJson['vote_policy'] = ['id' => IPolicy::POLICY_NOBODY];
         }
@@ -141,6 +149,12 @@ class AgendaVoting
 
     private function setApiObjectResultData(array &$data, VotingBlock $voting, IVotingItem $item, bool $isAdmin): void
     {
+        $quorumType = $voting->getQuorumType();
+        if (!is_a($quorumType, NoQuorum::class)) {
+            $quorumVotes = $quorumType->getRelevantVotedCount($voting, $item);
+            $data['quorum_votes'] = $quorumVotes;
+        }
+
         if ($voting->resultsPublic === VotingBlock::RESULTS_PUBLIC_YES) {
             $canSeeResults = true;
         } else {
@@ -159,15 +173,7 @@ class AgendaVoting
         }
 
         $answers = $voting->getAnswers();
-        if (is_a($item, Amendment::class)) {
-            $votes = $voting->getVotesForAmendment($item);
-        } elseif (is_a($item, Motion::class)) {
-            $votes = $voting->getVotesForMotion($item);
-        } else {
-            /** @var VotingQuestion $item */
-            $votes = $voting->getVotesForQuestion($item);
-
-        }
+        $votes = $voting->getVotesForVotingItem($item);
         if ($canSeeResults) {
             $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
         }

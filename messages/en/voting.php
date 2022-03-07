@@ -11,6 +11,8 @@ return [
 
     'status_accepted' => 'Accepted',
     'status_rejected' => 'Rejected',
+    'status_quorum_missed' => 'Quorum missed',
+    'status_quorum_reached' => 'Quorum reached',
 
     'activity_title' => 'Protocol',
     'activity_show_all' => 'Show complete protocol',
@@ -67,6 +69,7 @@ return [
     'settings_answers_present' => 'Present',
     'settings_answers_presenth' => 'For „votings” meant to ask which members are present, like roll calls.',
     'settings_majoritytype' => 'Majority type',
+    'settings_quorumtype' => 'Quorum',
     'settings_votepolicy' => 'Who may vote',
     'settings_resultspublic' => 'Who may see the voting results?',
     'settings_resultspublic_admins' => 'Admins',
@@ -107,4 +110,12 @@ return [
     'majority_absolute_h' => 'A motion or amendment is adopted, if more yes- than no-votes and abstentions combined are cast.',
     'majority_twothirds' => '2/3 majority',
     'majority_twothirds_h' => 'A motion or amendment is adopted, if at least (including) twice as many yes- as no-votes are cast. Abstentions are not counted.',
+
+    'quorum_none' => 'No quorum',
+    'quorum_half' => 'Simple majority',
+    'quorum_half_h' => 'At least half of all eligible users have to cast a vote',
+    'quorum_two_third' => '2/3 majority',
+    'quorum_two_third_h' => 'At least two out of three of all eligible users have to cast a vote',
+    'quorum_limit' => '%QUORUM% out of %ALL% users',
+    'quorum_counter' => 'Quorum: %CURRENT% out of %QUORUM% necessary votes',
 ];

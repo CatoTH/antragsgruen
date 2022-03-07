@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use app\models\proposedProcedure\AgendaVoting;
+use app\models\quorumType\IQuorumType;
 use app\models\db\{ConsultationUserGroup, Motion, User, VotingBlock, VotingQuestion};
 use app\components\{ResourceLock, UserGroupAdminMethods, VotingMethods};
 use app\models\proposedProcedure\Factory;
@@ -158,6 +159,7 @@ class VotingController extends Base
         $newBlock->consultationId = $this->consultation->id;
         $newBlock->title = \Yii::$app->request->post('title');
         $newBlock->majorityType = intval(\Yii::$app->request->post('majorityType'));
+        $newBlock->quorumType = intval(\Yii::$app->request->post('quorumType', IQuorumType::QUORUM_TYPE_NONE));
         $newBlock->votesPublic = intval(\Yii::$app->request->post('votesPublic'));
         $newBlock->resultsPublic = intval(\Yii::$app->request->post('resultsPublic'));
         if (\Yii::$app->request->post('assignedMotion') !== null && \Yii::$app->request->post('assignedMotion') > 0) {

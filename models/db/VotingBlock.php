@@ -6,6 +6,8 @@ use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
 use app\models\policies\IPolicy;
 use app\models\policies\LoggedIn;
+use app\models\quorumType\IQuorumType;
+use app\models\quorumType\NoQuorum;
 use app\models\settings\AntragsgruenApp;
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
@@ -18,6 +20,7 @@ use yii\db\ActiveRecord;
  * @property int $type
  * @property string $title
  * @property int|null $majorityType
+ * @property int|null $quorumType
  * @property int|null $votesPublic
  * @property int|null $resultsPublic
  * @property int|null $assignedToMotionId
@@ -206,6 +209,18 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         }
     }
 
+    public function getVotesForVotingItem(IVotingItem $votingItem): array
+    {
+        if (is_a($votingItem, Amendment::class)) {
+            return $this->getVotesForAmendment($votingItem);
+        } elseif (is_a($votingItem, Motion::class)) {
+            return $this->getVotesForMotion($votingItem);
+        } else {
+            /** @var VotingQuestion $votingItem */
+            return $this->getVotesForQuestion($votingItem);
+        }
+    }
+
     public function getMajorityType(): IMajorityType
     {
         $majorityTypes = IMajorityType::getMajorityTypes();
@@ -213,6 +228,18 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             throw new Internal('Unsupported majority type: ' . $this->majorityType);
         }
         return new $majorityTypes[$this->majorityType]();
+    }
+
+    public function getQuorumType(): IQuorumType
+    {
+        if ($this->quorumType === null) {
+            return new NoQuorum();
+        }
+        $quorumTypes = IQuorumType::getQuorumTypes();
+        if (!isset($quorumTypes[$this->quorumType])) {
+            throw new Internal('Unsupported quorum type: ' . $this->quorumType);
+        }
+        return new $quorumTypes[$this->quorumType]();
     }
 
     public function userIsGenerallyAllowedToVoteFor(User $user, IVotingItem $item): bool
@@ -305,6 +332,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         if ($this->majorityType === null) {
             $this->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
         }
+        if ($this->quorumType === null) {
+            $this->quorumType = IQuorumType::QUORUM_TYPE_NONE;
+        }
         if ($this->votesPublic === null) {
             $this->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
         }
@@ -320,9 +350,13 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     private function closeVoting_setResultToItem(IVotingItem $item, VotingData $votingData): void
     {
         $item->setVotingData($votingData);
-        if ($this->votingHasMajority()) {
+        if ($votingData->quorumReached === false) {
+            $item->setVotingResult(IMotion::STATUS_QUORUM_MISSED);
+        } elseif ($this->votingHasMajority()) {
             $result = $this->getMajorityType()->calculateResult($votingData);
             $item->setVotingResult($result);
+        } elseif ($votingData->quorumReached === true) {
+            $item->setVotingResult(IMotion::STATUS_QUORUM_REACHED);
         }
         $item->save();
     }
@@ -335,18 +369,15 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         $this->save();
 
         foreach ($this->motions as $motion) {
-            $votes = $this->getVotesForMotion($motion);
-            $votingData = $motion->getVotingData()->augmentWithResults($this, $votes);
+            $votingData = $motion->getVotingData()->augmentWithResults($this, $motion);
             $this->closeVoting_setResultToItem($motion, $votingData);
         }
         foreach ($this->amendments as $amendment) {
-            $votes = $this->getVotesForAmendment($amendment);
-            $votingData = $amendment->getVotingData()->augmentWithResults($this, $votes);
+            $votingData = $amendment->getVotingData()->augmentWithResults($this, $amendment);
             $this->closeVoting_setResultToItem($amendment, $votingData);
         }
         foreach ($this->questions as $question) {
-            $votes = $this->getVotesForQuestion($question);
-            $votingData = $question->getVotingData()->augmentWithResults($this, $votes);
+            $votingData = $question->getVotingData()->augmentWithResults($this, $question);
             $this->closeVoting_setResultToItem($question, $votingData);
         }
 

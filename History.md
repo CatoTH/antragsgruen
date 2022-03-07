@@ -14,11 +14,13 @@
   - It is possible to restrict voting to specific user groups.
   - Voting results can be exported into a spreadsheet.
   - Users responding to a "Presence" (Roll call) vote can be assigned to a customer user group, to be eligible for further votings, creating motions/amendments etc.
+  - If voting is restricted to one or more user groups, then a quorum can be set that needs to be reached for the voting to be valid.
 - Antragsgrün now comes with a plugin to integrate the user administration with OpenSlides:
   - It allows to log in into Antragsgrün using the username/password of an OpenSlides page.
   - Using a separate proxy app, it allows to automatically synchronize users and user groups from OpenSlides to Antragsgrün.
   - It needs to be set up by a system administrator per site.
 - Amendments can now be further restricted to only affect one particular location within one paragraph.
+- There are new motion statuses "Quorum reached" and "Quorum missed".
 - The CAPTCHA system is reset for an user after a successful login. This solves issues when multiple users are behind the same IP address.
 
 ### Version 4.9.1 (2022-02-12)

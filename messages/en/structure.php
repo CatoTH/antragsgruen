@@ -137,6 +137,8 @@ return [
     'STATUSV_ACCEPTED'                    => 'Accept',
     'STATUS_REJECTED'                     => 'Rejected',
     'STATUSV_REJECTED'                    => 'Reject',
+    'STATUS_QUORUM_MISSED'                => 'Quorum missed',
+    'STATUS_QUORUM_REACHED'               => 'Quorum reached',
     'STATUS_MODIFIED_ACCEPTED'            => 'Accepted (modified)',
     'STATUSV_MODIFIED_ACCEPTED'           => 'Accept (modified)',
     'STATUS_MODIFIED'                     => 'Modified',

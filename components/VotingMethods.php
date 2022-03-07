@@ -7,6 +7,7 @@ namespace app\components;
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use app\models\quorumType\IQuorumType;
 use app\models\policies\{IPolicy, UserGroups};
 use app\models\votings\AnswerTemplates;
 use yii\web\Request;
@@ -102,6 +103,11 @@ class VotingMethods
                 $votingBlock->majorityType = intval($this->request->post('majorityType'));
             } else {
                 $votingBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;
+            }
+            if ($this->request->post('quorumType') !== null && is_a($votingBlock->getVotingPolicy(), UserGroups::class)) {
+                $votingBlock->quorumType = intval($this->request->post('quorumType', IQuorumType::QUORUM_TYPE_NONE));
+            } else {
+                $votingBlock->quorumType = IQuorumType::QUORUM_TYPE_NONE;
             }
         }
 

@@ -2,8 +2,10 @@
 
 use app\components\UrlHelper;
 use app\models\majorityType\IMajorityType;
+use app\models\policies\IPolicy;
+use app\models\quorumType\IQuorumType;
 use app\models\votings\AnswerTemplates;
-use app\models\db\{IMotion, VotingBlock};
+use app\models\db\VotingBlock;
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
@@ -52,6 +54,12 @@ ob_start();
                 <strong><?= Yii::t('voting', 'settings_majoritytype') ?>:</strong>
                 {{ majorityType.name }}
                 <span class="glyphicon glyphicon-info-sign" :aria-label="majorityType.description" v-tooltip="majorityType.description"></span>
+            </div>
+            <div class="quorumType" v-for="quorumType in QUORUM_TYPES" v-if="quorumType.id === voting.quorum_type && votingHasQuorum">
+                <strong><?= Yii::t('voting', 'settings_quorumtype') ?>:</strong>
+                {{ quorumType.name }}
+                ({{ quorumIndicator }})
+                <span class="glyphicon glyphicon-info-sign" :aria-label="quorumType.description" v-tooltip="quorumType.description" v-if="quorumType.description !== ''"></span>
             </div>
             <div class="votingPolicy">
                 <strong><?= Yii::t('voting', 'settings_votepolicy') ?>:</strong>
@@ -108,6 +116,9 @@ ob_start();
                         <br>
                         <span class="amendmentBy" v-if="item.initiators_html"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
+                    <div v-if="votingHasQuorum" class="quorumCounter">
+                        {{ quorumCounter(groupedVoting) }}
+                    </div>
                     <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
                         <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
                         <?= Yii::t('voting', 'voting_show_votes') ?>
@@ -154,7 +165,7 @@ ob_start();
                     }
                     ?>
                 </div>
-                <div class="result" v-if="isClosed && votingHasMajority">
+                <div class="result" v-if="isClosed && (votingHasMajority || votingHasQuorum)">
                     <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_accepted') ?>
@@ -162,6 +173,14 @@ ob_start();
                     <div class="rejected" v-if="itemIsRejected(groupedVoting)">
                         <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'status_rejected') ?>
+                    </div>
+                    <div class="accepted" v-if="itemIsQuorumReached(groupedVoting)">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <?= Yii::t('voting', 'status_quorum_reached') ?>
+                    </div>
+                    <div class="rejected" v-if="itemIsQuorumFailed(groupedVoting)">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        <?= Yii::t('voting', 'status_quorum_missed') ?>
                     </div>
                 </div>
             </li>
@@ -274,18 +293,27 @@ ob_start();
                   :aria-label="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'" v-tooltip="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'"></span>
             </label>
         </fieldset>
+        <fieldset class="votePolicy">
+            <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
+            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+        </fieldset>
         <fieldset class="majorityTypeSettings" v-if="selectedAnswersHaveMajority">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
             <label v-for="majorityTypeDef in MAJORITY_TYPES">
                 <input type="radio" :value="majorityTypeDef.id" v-model="majorityType" :disabled="isOpen || isClosed">
                 {{ majorityTypeDef.name }}
                 <span class="glyphicon glyphicon-info-sign"
-                  :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
+                      :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
             </label>
         </fieldset>
-        <fieldset class="votePolicy">
-            <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
-            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+        <fieldset class="quorumTypeSettings" v-if="votePolicy.id === VOTE_POLICY_USERGROUPS">
+            <legend><?= Yii::t('voting', 'settings_quorumtype') ?></legend>
+            <label v-for="quorumTypeDef in QUORUM_TYPES">
+                <input type="radio" :value="quorumTypeDef.id" v-model="quorumType" :disabled="isOpen || isClosed">
+                {{ quorumTypeDef.name }}
+                <span class="glyphicon glyphicon-info-sign"
+                      :aria-label="quorumTypeDef.description" v-tooltip="quorumTypeDef.description"></span>
+            </label>
         </fieldset>
         <fieldset class="resultsPublicSettings">
             <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
@@ -343,25 +371,12 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    // The voting is not performed using Antragsgrün
-    const STATUS_OFFLINE = <?= VotingBlock::STATUS_OFFLINE ?>;
-
-    // Votings that have been created and will be using Antragsgrün, but are not active yet
-    const STATUS_PREPARING = <?= VotingBlock::STATUS_PREPARING ?>;
-
-    // Currently open for voting. Currently there should only be one voting in this status at a time.
-    const STATUS_OPEN = <?= VotingBlock::STATUS_OPEN ?>;
-
-    // Vorting is closed.
-    const STATUS_CLOSED = <?= VotingBlock::STATUS_CLOSED ?>;
-
     const ACTIVITY_TYPE_OPENED = <?= VotingBlock::ACTIVITY_TYPE_OPENED ?>;
     const ACTIVITY_TYPE_CLOSED = <?= VotingBlock::ACTIVITY_TYPE_CLOSED ?>;
     const ACTIVITY_TYPE_RESET = <?= VotingBlock::ACTIVITY_TYPE_RESET ?>;
     const ACTIVITY_TYPE_REOPENED = <?= VotingBlock::ACTIVITY_TYPE_REOPENED ?>;
 
-    const VOTING_STATUS_ACCEPTED = <?= IMotion::STATUS_ACCEPTED ?>;
-    const VOTING_STATUS_REJECTED = <?= IMotion::STATUS_REJECTED ?>;
+    const VOTE_POLICY_USERGROUPS = <?= IPolicy::POLICY_USER_GROUPS ?>;
 
     const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
     const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
@@ -375,6 +390,16 @@ $html = ob_get_clean();
         ];
     }, IMajorityType::getMajorityTypes())); ?>;
 
+    const QUORUM_TYPES = <?= json_encode(array_map(function ($className) {
+        return [
+            'id' => $className::getID(),
+            'name' => $className::getName(),
+            'description' => $className::getDescription(),
+        ];
+    }, IQuorumType::getQuorumTypes())); ?>;
+
+    const quorumIndicator = <?= json_encode(Yii::t('voting', 'quorum_limit')) ?>;
+    const quorumCounter = <?= json_encode(Yii::t('voting', 'quorum_counter')) ?>;
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
     const deleteConfirmation = <?= json_encode(Yii::t('voting', 'settings_delete_bb')) ?>;
 
@@ -409,6 +434,7 @@ $html = ob_get_clean();
                     answerTemplate: null,
                     assignedMotion: null,
                     majorityType: null,
+                    quorumType: null,
                     votesPublic: null,
                     resultsPublic: null,
                     votePolicy: null
@@ -432,22 +458,9 @@ $html = ob_get_clean();
                     }
                 }
             },
-            isPreparing: function () {
-                return this.voting.status === STATUS_PREPARING;
-            },
-            isOpen: function () {
-                return this.voting.status === STATUS_OPEN;
-            },
-            isClosed: function () {
-                return this.voting.status === STATUS_CLOSED;
-            },
             selectedAnswersHaveMajority: function () {
                 // Used by the settings form
                 return this.answerTemplate === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answerTemplate === ANSWER_TEMPLATE_YES_NO;
-            },
-            votingHasMajority: function () {
-                // Used for the currently running vote as it is
-                return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
             },
             settingsTitle: {
                 get: function () {
@@ -463,6 +476,14 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.changedSettings.majorityType = value;
+                }
+            },
+            quorumType: {
+                get: function () {
+                    return (this.changedSettings.quorumType !== null ? this.changedSettings.quorumType : this.voting.quorum_type);
+                },
+                set: function (value) {
+                    this.changedSettings.quorumType = value;
                 }
             },
             answerTemplate: {
@@ -511,6 +532,9 @@ $html = ob_get_clean();
             },
             resultDownloadLink: function () {
                 return this.voteDownloadUrl.replace(/VOTINGBLOCKID/, this.voting.id).replace(/FORMAT/, 'ods');
+            },
+            quorumIndicator: function () {
+                return quorumIndicator.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
             }
         },
         methods: {
@@ -532,6 +556,9 @@ $html = ob_get_clean();
                 }
                 let date = new Date(logEntry['date']);
                 return date.toLocaleString() + ': ' + description;
+            },
+            quorumCounter: function (groupedVoting) {
+                return quorumCounter.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
             },
             removeItem: function (groupedVoting) {
                 this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);
@@ -611,12 +638,6 @@ $html = ob_get_clean();
                 }
                 return null;
             },
-            itemIsAccepted: function (groupedItem) {
-                return groupedItem[0].voting_status === VOTING_STATUS_ACCEPTED;
-            },
-            itemIsRejected: function (groupedItem) {
-                return groupedItem[0].voting_status === VOTING_STATUS_REJECTED;
-            },
             hasVoteList: function (groupedItem) {
                 return groupedItem[0].votes !== undefined && (this.isOpen || this.isClosed);
             },
@@ -646,9 +667,10 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.votePolicy, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.votePolicy, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;
+                this.changedSettings.quorumType = null;
                 this.changedSettings.answerTemplate = null;
                 this.changedSettings.votePolicy = null;
                 this.settingsOpened = false;

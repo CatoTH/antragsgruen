@@ -11,6 +11,8 @@ return [
 
     'status_accepted' => 'Angenommen',
     'status_rejected' => 'Abgelehnt',
+    'status_quorum_missed' => 'Quorum verfehlt',
+    'status_quorum_reached' => 'Quorum erreicht',
 
     'activity_title' => 'Protokoll',
     'activity_show_all' => 'Komplettes Protokoll anzeigen',
@@ -67,6 +69,7 @@ return [
     'settings_answers_present' => 'Anwesend',
     'settings_answers_presenth' => 'Für Abfragen, welche Mitglieder anwesend sind.',
     'settings_majoritytype' => 'Art der Mehrheit',
+    'settings_quorumtype' => 'Quorum',
     'settings_votepolicy' => 'Wer darf abstimmen',
     'settings_resultspublic' => 'Wer darf die Abstimmungsergebnisse in Zahlen sehen?',
     'settings_resultspublic_admins' => 'Admins',
@@ -107,4 +110,12 @@ return [
     'majority_absolute_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen und Enthaltungen zusammen abgegeben werden.',
     'majority_twothirds' => '2/3-Mehrheit',
     'majority_twothirds_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mindestens (einschließlich) doppelt so viele Ja- wie Nein-Stimmen abgegeben werden. Enthaltungen werden nicht gezählt.',
+
+    'quorum_none' => 'Kein Quorum',
+    'quorum_half' => 'Einfache Mehrheit',
+    'quorum_half_h' => 'Mindestens die Hälfte aller Berechtigten müssen abstimmen',
+    'quorum_two_third' => '2/3-Mehrheit',
+    'quorum_two_third_h' => 'Mindestens zwei Drittel aller Berechtigten müssen abstimmen',
+    'quorum_limit' => '%QUORUM% von %ALL% Berechtigten',
+    'quorum_counter' => 'Quorum: %CURRENT% von %QUORUM% nötigen Stimmen',
 ];

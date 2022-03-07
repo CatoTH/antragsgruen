@@ -77,6 +77,16 @@ class IMotionStatusEngine
             \Yii::t('structure', 'STATUS_ADOPTED'),
             \Yii::t('structure', 'STATUSV_ADOPTED')
         );
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_QUORUM_MISSED,
+            \Yii::t('structure', 'STATUS_QUORUM_MISSED'),
+            \Yii::t('structure', 'STATUS_QUORUM_MISSED')
+        );
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_QUORUM_REACHED,
+            \Yii::t('structure', 'STATUS_QUORUM_REACHED'),
+            \Yii::t('structure', 'STATUS_QUORUM_REACHED')
+        );
         $statuses[] = new IMotionStatus(IMotion::STATUS_COMPLETED, \Yii::t('structure', 'STATUS_COMPLETED'));
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_REFERRED,
@@ -351,9 +361,11 @@ class IMotionStatusEngine
     public function getVotingStatuses(): array
     {
         return [
-            IMotion::STATUS_VOTE     => \Yii::t('structure', 'STATUS_VOTE'),
+            IMotion::STATUS_VOTE => \Yii::t('structure', 'STATUS_VOTE'),
             IMotion::STATUS_ACCEPTED => \Yii::t('structure', 'STATUS_ACCEPTED'),
             IMotion::STATUS_REJECTED => \Yii::t('structure', 'STATUS_REJECTED'),
+            IMotion::STATUS_QUORUM_MISSED => \Yii::t('structure', 'STATUS_QUORUM_MISSED'),
+            IMotion::STATUS_QUORUM_REACHED => \Yii::t('structure', 'STATUS_QUORUM_REACHED'),
         ];
     }
 
