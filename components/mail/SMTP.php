@@ -3,23 +3,26 @@
 namespace app\components\mail;
 
 use app\models\exceptions\ServerConfiguration;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class SMTP extends Base
 {
+    /** @var string */
     private $host;
+    /** @var int */
     private $port = 25;
-    private $name = 'localhost';
-    private $authenticator = null;
+    /** @var string */
     private $username = null;
+    /** @var string */
     private $password = null;
+    /** @var string */
     private $encryption = null;
 
     /**
-     * @param array $params
-     *
      * @throws ServerConfiguration
      */
-    public function __construct($params)
+    public function __construct(?array $params)
     {
         if (!isset($params['host'])) {
             throw new ServerConfiguration('host not set');
@@ -28,9 +31,6 @@ class SMTP extends Base
 
         if (isset($params['port'])) {
             $this->port = intval($params['port']);
-        }
-        if (isset($params['name'])) {
-            $this->name = $params['name'];
         }
         if (isset($params['encryption'])) {
             $this->encryption = $params['encryption'];
@@ -44,17 +44,8 @@ class SMTP extends Base
                 break;
             case 'plain':
             case 'login':
-                $this->authenticator = 'LOGIN';
-                $this->username      = $params['username'];
-                $this->password      = $params['password'];
-                break;
             case 'crammd5':
-                $this->authenticator = 'CRAM-MD5';
-                $this->username      = $params['username'];
-                $this->password      = $params['password'];
-                break;
             case 'plain_tls':
-                $this->authenticator = 'PLAIN';
                 $this->username      = $params['username'];
                 $this->password      = $params['password'];
                 break;
@@ -63,16 +54,9 @@ class SMTP extends Base
         }
     }
 
-    protected function getMessageClass($type)
+    protected function getTransport(): TransportInterface
     {
-        return new \Swift_Message();
-    }
-
-    /**
-     * @return \Swift_Mailer
-     */
-    protected function getTransport()
-    {
+        /*
         $encrypted = ($this->port !== 25);
         if ($encrypted && $this->encryption !== null) {
             $encryption = $this->encryption;
@@ -88,5 +72,10 @@ class SMTP extends Base
         }
 
         return new \Swift_Mailer($transport);
+        */
+        $dsn = 'smtp://' . urlencode($this->username) . ':' . urlencode($this->password) . '@' .
+            urlencode($this->host) . ':' . $this->port;
+
+        return Transport::fromDsn($dsn);
     }
 }

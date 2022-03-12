@@ -2,16 +2,16 @@
 
 namespace app\components\mail;
 
+use app\models\settings\AntragsgruenApp;
 use app\models\db\{Consultation, EMailLog, IMotion, User};
 use app\models\exceptions\{MailNotSent, ServerConfiguration};
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class Tools
 {
     public static function getDefaultMailFromName(?Consultation $consultation = null): string
     {
-        /** @var \app\models\settings\AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        $name   = $params->mailFromName;
+        $name = AntragsgruenApp::getInstance()->mailFromName;
         if ($consultation && $consultation->getSettings()->emailFromName) {
             $name = $consultation->getSettings()->emailFromName;
         }
@@ -20,9 +20,6 @@ class Tools
 
     public static function getDefaultReplyTo(?IMotion $imotion = null, ?Consultation $consultation = null, ?User $user = null): ?string
     {
-        /** @var \app\models\settings\AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
         if ($imotion && $imotion->responsibilityId && $imotion->responsibilityUser && $imotion->responsibilityUser->getSettingsObj()->ppReplyTo) {
             return $imotion->responsibilityUser->getSettingsObj()->ppReplyTo;
         }
@@ -38,7 +35,7 @@ class Tools
         if ($consultation) {
             if ($consultation->getSettings()->emailReplyTo) {
                 $replyTo = $consultation->getSettings()->emailReplyTo;
-            } elseif ($params->multisiteMode && $consultation->adminEmail) {
+            } elseif (AntragsgruenApp::getInstance()->multisiteMode && $consultation->adminEmail) {
                 $adminEmails = $consultation->getAdminEmails();
                 if (count($adminEmails) > 0) {
                     $replyTo = $adminEmails[0];
@@ -64,8 +61,7 @@ class Tools
         ?string $fromName = null,
         ?string $replyTo = null
     ) {
-        /** @var \app\models\settings\AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
         $mailer = Base::createMailer($params->mailService);
         if (!$mailer) {
             throw new MailNotSent('E-Mail not configured');
@@ -90,28 +86,26 @@ class Tools
             $replyTo = static::getDefaultReplyTo(null, $fromConsultation);
         }
 
-        $messageId = explode('@', $fromEmail);
-        if (count($messageId) === 2) {
-            $messageId = uniqid() . '@' . $messageId[1];
-        } else {
-            $messageId = uniqid() . '@antragsgruen.de';
-        }
-
         $exception = null;
+        $messageId = null;
         try {
             $message = $mailer->createMessage(
-                $mailType,
                 $subject,
                 $sendTextPlain,
                 $sendTextHtml,
                 $fromName,
                 $fromEmail,
                 $replyTo,
-                $messageId,
                 $fromConsultation
             );
-            $status  = $mailer->send($message, $toEmail);
-        } catch (\Exception $e) {
+            $result  = $mailer->send($message, $toEmail);
+            if (is_string($result)) {
+                $status = EMailLog::STATUS_SENT;
+                $messageId = $result;
+            } else {
+                $status = $result;
+            }
+        } catch (TransportExceptionInterface $e) {
             $status    = EMailLog::STATUS_DELIVERY_ERROR;
             $exception = $e;
         }

@@ -6,17 +6,17 @@ use app\components\HTMLTools;
 use app\models\settings\AntragsgruenApp;
 use app\models\db\{Consultation, EMailBlocklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Mime\{Address, Email};
 use yii\helpers\Html;
 
 abstract class Base
 {
     /**
-     * @param null|array $params
-     *
-     * @return Base|null
      * @throws ServerConfiguration
      */
-    public static function createMailer($params)
+    public static function createMailer(?array $params): ?Base
     {
         if (!is_array($params)) {
             return null;
@@ -25,44 +25,24 @@ abstract class Base
             throw new ServerConfiguration('Invalid E-Mail configuration');
         }
         switch ($params['transport']) {
-            /*
-            case 'mailgun':
-                return new Mailgun($params);
-                break;
-            case 'mandrill':
-                return new Mandrill($params);
-                break;
-            */
             case 'sendmail':
                 return new Sendmail();
-                break;
             case 'mailjet':
                 return new Mailjet($params);
-                break;
             case 'smtp':
                 return new SMTP($params);
-                break;
+            case 'ses':
+                return new AmazonSES($params);
             case 'none':
                 return new None();
-                break;
             default:
                 throw new ServerConfiguration('Invalid E-Mail-Transport: ' . $params['transport']);
         }
     }
 
-    /**
-     * @param int $type
-     *
-     * @return \Swift_Message
-     */
-    abstract protected function getMessageClass($type);
+    abstract protected function getTransport(): ?TransportInterface;
 
-    /**
-     * @return \Swift_Mailer|null
-     */
-    abstract protected function getTransport();
-
-    protected function getFallbackTransport(): ?\Swift_Mailer
+    protected function getFallbackTransport(): ?TransportInterface
     {
         return null;
     }
@@ -74,7 +54,7 @@ abstract class Base
         }
 
         $template = '@app/views/layouts/email';
-        foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $pluginClass) {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             if ($pluginClass::getCustomEmailTemplate()) {
                 $template = $pluginClass::getCustomEmailTemplate();
             }
@@ -88,19 +68,17 @@ abstract class Base
     }
 
     public function createMessage(
-        int $type,
         string $subject,
         string $plain,
         string $html,
         string $fromName,
         string $fromEmail,
         ?string $replyTo,
-        string $messageId,
         ?Consultation $consultation
-    ) {
-        $mail = $this->getMessageClass($type);
-        $mail->setFrom([$fromEmail => $fromName]);
-        $mail->setSubject($subject);
+    ): Email {
+        $mail = (new Email())
+            ->from(new Address($fromEmail, mb_encode_mimeheader($fromName)))
+            ->subject($subject);
 
         $html = $this->createHtmlPart($subject, $plain, $html, $consultation);
 
@@ -110,29 +88,26 @@ abstract class Base
 
         $converter   = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
         $contentHtml = $converter->convert($html);
-        $contentHtml = preg_replace("/ data\-[a-z0-9_-]+=\"[^\"]*\"/siu", "", $contentHtml);
+        $contentHtml = preg_replace("/ data-[a-z0-9_-]+=\"[^\"]*\"/siu", "", $contentHtml);
 
-        $mail->setBody($contentHtml, 'text/html');
-        $mail->addPart($plain, 'text/plain');
+        $mail->text($plain);
+        $mail->html($contentHtml);
 
         if ($replyTo) {
-            $mail->setReplyTo($replyTo);
-        }
-        if ($messageId) {
-            $mail->setId($messageId);
+            $mail->replyTo($replyTo);
         }
 
         return $mail;
     }
 
     /**
-     * @param \Swift_Message|array $message
-     * @param string $toEmail
+     * @return int|string
+     * - int for error codes
+     * - string: messageId if successful
      *
-     * @throws \Exception
-     * @return int
+     * @throws TransportExceptionInterface
      */
-    public function send($message, $toEmail)
+    public function send(Email $message, string $toEmail)
     {
         if (YII_ENV === 'test' || mb_strpos($toEmail, '@example.org') !== false) {
             return EMailLog::STATUS_SKIPPED_OTHER;
@@ -141,20 +116,22 @@ abstract class Base
             return EMailLog::STATUS_SKIPPED_BLOCKLIST;
         }
 
-        $message->setTo($toEmail);
+        $message->to($toEmail);
         try {
             $transport = $this->getTransport();
-            $transport->send($message);
-        } catch (\Exception $e) {
+            $sentMessage = $transport->send($message);
+
+            return $sentMessage->getMessageId();
+        } catch (TransportExceptionInterface $e) {
             $fallbackTransport = $this->getFallbackTransport();
             // "Expected response code 220 but got an empty response" is triggered is regular sendmail is not accessible
             if ($fallbackTransport && strpos($e->getMessage(), 'Expected response code 220') !== false) {
-                $fallbackTransport->send($message);
+                $sentMessage = $fallbackTransport->send($message);
+
+                return $sentMessage->getMessageId();
             } else {
                 throw $e;
             }
         }
-
-        return EMailLog::STATUS_SENT;
     }
 }

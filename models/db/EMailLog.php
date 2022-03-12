@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -24,49 +24,31 @@ use yii\db\ActiveRecord;
  */
 class EMailLog extends ActiveRecord
 {
-    const TYPE_OTHER                        = 0;
-    const TYPE_REGISTRATION                 = 1;
-    const TYPE_MOTION_NOTIFICATION_USER     = 2;
-    const TYPE_MOTION_NOTIFICATION_ADMIN    = 3;
-    const TYPE_ACCESS_GRANTED               = 4;
-    const TYPE_DEBUG                        = 5;
-    const TYPE_PASSWORD_RECOVERY            = 6;
-    const TYPE_SITE_ADMIN                   = 7;
-    const TYPE_MOTION_SUBMIT_CONFIRM        = 8;
-    const TYPE_EMAIL_CHANGE                 = 9;
-    const TYPE_MOTION_SUPPORTER_REACHED     = 10;
-    const TYPE_AMENDMENT_PROPOSED_PROCEDURE = 11;
-    const TYPE_MOTION_PROPOSED_PROCEDURE    = 12;
-    const TYPE_MEMBER_PETITION              = 13;
-    const TYPE_COMMENT_NOTIFICATION_USER    = 14;
+    public const TYPE_OTHER                        = 0;
+    public const TYPE_REGISTRATION                 = 1;
+    public const TYPE_MOTION_NOTIFICATION_USER     = 2;
+    public const TYPE_MOTION_NOTIFICATION_ADMIN    = 3;
+    public const TYPE_ACCESS_GRANTED               = 4;
+    public const TYPE_DEBUG                        = 5;
+    public const TYPE_PASSWORD_RECOVERY            = 6;
+    public const TYPE_SITE_ADMIN                   = 7;
+    public const TYPE_MOTION_SUBMIT_CONFIRM        = 8;
+    public const TYPE_EMAIL_CHANGE                 = 9;
+    public const TYPE_MOTION_SUPPORTER_REACHED     = 10;
+    public const TYPE_AMENDMENT_PROPOSED_PROCEDURE = 11;
+    public const TYPE_MOTION_PROPOSED_PROCEDURE    = 12;
+    public const TYPE_MEMBER_PETITION              = 13;
+    public const TYPE_COMMENT_NOTIFICATION_USER    = 14;
 
-    const STATUS_SENT              = 0;
-    const STATUS_SKIPPED_BLOCKLIST = 1;
-    const STATUS_DELIVERY_ERROR    = 2;
-    const STATUS_SKIPPED_OTHER     = 3;
-
-    public static $MANDRILL_TAGS = [
-        0  => 'other',
-        1  => 'registration',
-        2  => 'motion-notification-user',
-        3  => 'motion-notification-admin',
-        4  => 'access-granted',
-        5  => 'debug',
-        6  => 'password-recovery',
-        7  => 'site-admin',
-        8  => 'motion-submitted',
-        9  => 'email-change',
-        10 => 'motion-supporter-reached',
-        11 => 'amendment-proposed-procedure',
-        12 => 'motion-proposed-procedure',
-        13 => 'member-petitions',
-        14 => 'comment-notification-user',
-    ];
+    public const STATUS_SENT              = 0;
+    public const STATUS_SKIPPED_BLOCKLIST = 1;
+    public const STATUS_DELIVERY_ERROR    = 2;
+    public const STATUS_SKIPPED_OTHER     = 3;
 
     /**
      * @return string[]
      */
-    public static function getTypes()
+    public static function getTypes(): array
     {
         return [
             static::TYPE_OTHER                        => 'Sonstiges',
@@ -89,7 +71,7 @@ class EMailLog extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getStatusNames()
+    public static function getStatusNames(): array
     {
         return [
             static::STATUS_SENT              => 'Verschickt',
@@ -104,19 +86,13 @@ class EMailLog extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'emailLog';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'toUserId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFromSite()
+    public function getFromSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'fromSiteId']);
     }
@@ -133,7 +109,7 @@ class EMailLog extends ActiveRecord
             'message_id' => $this->messageId,
             'status'     => $this->status,
             'error'      => $this->error,
-            'type'       => (isset($types[$this->type]) ? $types[$this->type] : $this->type),
+            'type'       => $types[$this->type] ?? $this->type,
         ];
     }
 }

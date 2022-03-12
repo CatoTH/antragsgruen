@@ -2,33 +2,19 @@
 
 namespace app\components\mail;
 
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+
 class Sendmail extends Base
 {
-    /**
-     * @param int $type
-     *
-     * @return \Swift_Message
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    protected function getMessageClass($type)
+    protected function getTransport(): ?TransportInterface
     {
-        return new \Swift_Message();
+        return Transport::fromDsn('sendmail://default');
+
     }
 
-    /**
-     * @return \Swift_Mailer
-     */
-    protected function getTransport()
+    protected function getFallbackTransport(): ?TransportInterface
     {
-        $transport = new \Swift_SendmailTransport();
-
-        return new \Swift_Mailer($transport);
-    }
-
-    protected function getFallbackTransport(): ?\Swift_Mailer
-    {
-        $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -t');
-
-        return new \Swift_Mailer($transport);
+        return Transport::fromDsn('sendmail://default?command=/usr/sbin/sendmail%20-t');
     }
 }

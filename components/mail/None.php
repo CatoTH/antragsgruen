@@ -3,28 +3,17 @@
 namespace app\components\mail;
 
 use app\models\db\EMailLog;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Mime\Email;
 
 class None extends Base
 {
-    protected function getMessageClass($type)
-    {
-        return new \Swift_Message();
-    }
-
-    /**
-     * @return null
-     */
-    protected function getTransport()
+    protected function getTransport(): ?TransportInterface
     {
         return null;
     }
 
-    /**
-     * @param \Swift_Message $message
-     * @param string $toEmail
-     * @return int
-     */
-    public function send($message, $toEmail)
+    public function send(Email $message, string $toEmail)
     {
         return EMailLog::STATUS_SKIPPED_OTHER;
     }

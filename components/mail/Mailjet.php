@@ -4,18 +4,20 @@ namespace app\components\mail;
 
 use app\models\db\{Consultation, EMailBlocklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class Mailjet extends Base
 {
+    /** @var string */
     private $apiKey;
+    /** @var string */
     private $secret;
 
     /**
-     * @param array $params
-     *
      * @throws ServerConfiguration
      */
-    public function __construct($params)
+    public function __construct(?array $params)
     {
         if (!isset($params['apiKey'])) {
             throw new ServerConfiguration('Mailjet\'s apiKey not set');
@@ -24,6 +26,7 @@ class Mailjet extends Base
         $this->secret = $params['mailjetApiSecret'];
     }
 
+    /*
     public function createMessage(
         int $type,
         string $subject,
@@ -61,6 +64,7 @@ class Mailjet extends Base
 
         return $message;
     }
+    */
 
     /**
      * @param array $message
@@ -68,6 +72,7 @@ class Mailjet extends Base
      *
      * @return int
      */
+    /*
     public function send($message, $toEmail)
     {
         if (YII_ENV === 'test' || mb_strpos($toEmail, '@example.org') !== false) {
@@ -93,24 +98,10 @@ class Mailjet extends Base
             return EMailLog::STATUS_DELIVERY_ERROR;
         }
     }
+    */
 
-
-    /**
-     * @param int $type
-     *
-     * @return null
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    protected function getMessageClass($type)
+    protected function getTransport(): ?TransportInterface
     {
-        return null;
-    }
-
-    /**
-     * @return null
-     */
-    protected function getTransport()
-    {
-        return null;
+        return Transport::fromDsn('mailjet+api://' . $this->apiKey . ':' . $this->secret . '@default');
     }
 }
