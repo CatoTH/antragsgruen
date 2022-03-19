@@ -3,7 +3,7 @@
 ob_start();
 ?>
 <div class="userAdminList">
-    <section class="content">
+    <section class="content" aria-label="<?= Yii::t('admin', 'siteacc_accounts_title') ?>">
         <div class="filterHolder">
             <div class="groupFilter">
                 <v-select :options="userGroupFilter" :reduce="group => group.id" :value="filterGroup"
@@ -57,8 +57,8 @@ ob_start();
             </li>
         </ul>
     </section>
-    <section>
-        <h2 class="green"><?= Yii::t('admin', 'siteacc_groups_title') ?></h2>
+    <section aria-labelledby="userGroupsAdminTitle">
+        <h2 class="green" id="userGroupsAdminTitle"><?= Yii::t('admin', 'siteacc_groups_title') ?></h2>
         <div class="content">
             <ul class="groupList">
                 <li v-for="group in groups" :class="'group' + group.id">
@@ -261,6 +261,11 @@ $html = ob_get_clean();
             },
             setSelectedGroups: function($event, user) {
                 Vue.set(this.changedUserGroups, user.id, $event);
+            },
+            addSelectedGroup: function(groupId, user) {
+                let groups = this.selectedGroups(user);
+                groups.push(groupId);
+                this.setSelectedGroups(groups, user);
             },
             saveUser: function(user) {
                 this.unsetGroupChanging(user);

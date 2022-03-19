@@ -24,9 +24,10 @@ echo Html::beginForm('', 'post', [
     'id' => 'accountsCreateForm',
     'class' => 'adminForm form-horizontal',
     'data-antragsgruen-widget' => 'backend/UserAdminCreate',
+    'aria-labelledby' => 'newUserAdderTitle',
 ]);
 ?>
-    <h2 class="green"><?= Yii::t('admin', 'siteacc_new_users') ?></h2>
+    <h2 class="green" id="newUserAdderTitle"><?= Yii::t('admin', 'siteacc_new_users') ?></h2>
     <div class="addUserTypeChooser content">
         <button class="btn btn-default addUsersOpener email" type="button" data-type="email">
             <?= Yii::t('admin', 'siteacc_add_email_btn') ?>
