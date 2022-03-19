@@ -87,7 +87,7 @@ class Tools
         }
 
         $exception = null;
-        $messageId = null;
+        $messageId = '';
         try {
             $message = $mailer->createMessage(
                 $subject,

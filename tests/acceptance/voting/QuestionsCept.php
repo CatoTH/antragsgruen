@@ -6,6 +6,8 @@ $I->populateDBData1();
 
 $I->loginAndGotoStdAdminPage()->gotoVotingPage();
 
+$I->dontSeeElement('.quorumCounter');
+
 $I->wantTo('Create a voting with a question');
 $I->dontSeeElement('form.creatingVoting');
 $I->clickJS('.createVotingOpener');

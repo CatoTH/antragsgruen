@@ -51,7 +51,7 @@ use app\models\policies\UserGroups;
                 return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
             },
             votingHasQuorum: function () {
-                return this.voting.quorum_type !== QUORUM_TYPE_NONE;
+                return this.voting.quorum_type !== QUORUM_TYPE_NONE && this.voting.quorum_type !== null;
             },
             isPreparing: function () {
                 return this.voting.status === STATUS_PREPARING;
