@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
 use app\components\{Tools, UrlHelper};
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
@@ -21,55 +22,55 @@ use yii\helpers\Html;
  */
 class ConsultationLog extends ActiveRecord
 {
-    const MOTION_PUBLISH             = 0;
-    const MOTION_WITHDRAW            = 1;
-    const MOTION_DELETE              = 2;
-    const MOTION_DELETE_PUBLISHED    = 27;
-    const MOTION_SCREEN              = 3;
-    const MOTION_UNSCREEN            = 4;
-    const MOTION_COMMENT             = 5;
-    const MOTION_COMMENT_DELETE      = 6;
-    const MOTION_COMMENT_SCREEN      = 7;
-    const MOTION_LIKE                = 8;
-    const MOTION_UNLIKE              = 9;
-    const MOTION_DISLIKE             = 10;
-    const MOTION_CHANGE              = 12;
-    const MOTION_SUPPORT             = 24;
-    const MOTION_SUPPORT_FINISH      = 26;
-    const MOTION_SET_PROPOSAL        = 35;
-    const MOTION_NOTIFY_PROPOSAL     = 36;
-    const MOTION_ACCEPT_PROPOSAL     = 31;
-    const MOTION_PUBLISH_PROPOSAL    = 30;
-    const MOTION_VOTE_ACCEPTED       = 39;
-    const MOTION_VOTE_REJECTED       = 40;
-    const AMENDMENT_PUBLISH          = 13;
-    const AMENDMENT_WITHDRAW         = 14;
-    const AMENDMENT_DELETE           = 15;
-    const AMENDMENT_DELETE_PUBLISHED = 28;
-    const AMENDMENT_SCREEN           = 16;
-    const AMENDMENT_UNSCREEN         = 17;
-    const AMENDMENT_COMMENT          = 18;
-    const AMENDMENT_COMMENT_DELETE   = 19;
-    const AMENDMENT_COMMENT_SCREEN   = 20;
-    const AMENDMENT_LIKE             = 21;
-    const AMENDMENT_UNLIKE           = 22;
-    const AMENDMENT_DISLIKE          = 23;
-    const AMENDMENT_CHANGE           = 25;
-    const AMENDMENT_SUPPORT          = 33;
-    const AMENDMENT_SUPPORT_FINISH   = 34;
-    const AMENDMENT_SET_PROPOSAL     = 37;
-    const AMENDMENT_NOTIFY_PROPOSAL  = 38;
-    const AMENDMENT_ACCEPT_PROPOSAL  = 32;
-    const AMENDMENT_PUBLISH_PROPOSAL = 29;
-    const AMENDMENT_VOTE_ACCEPTED    = 41;
-    const AMENDMENT_VOTE_REJECTED    = 42;
-    const VOTING_OPEN                = 43;
-    const VOTING_CLOSE               = 44;
-    const VOTING_DELETE              = 45;
-    const VOTING_QUESTION_ACCEPTED   = 46;
-    const VOTING_QUESTION_REJECTED   = 47;
+    public const MOTION_PUBLISH             = 0;
+    public const MOTION_WITHDRAW            = 1;
+    public const MOTION_DELETE              = 2;
+    public const MOTION_DELETE_PUBLISHED    = 27;
+    public const MOTION_SCREEN              = 3;
+    public const MOTION_UNSCREEN            = 4;
+    public const MOTION_COMMENT             = 5;
+    public const MOTION_COMMENT_DELETE      = 6;
+    public const MOTION_COMMENT_SCREEN      = 7;
+    public const MOTION_LIKE                = 8;
+    public const MOTION_UNLIKE              = 9;
+    public const MOTION_DISLIKE             = 10;
+    public const MOTION_CHANGE              = 12;
+    public const MOTION_SUPPORT             = 24;
+    public const MOTION_SUPPORT_FINISH      = 26;
+    public const MOTION_SET_PROPOSAL        = 35;
+    public const MOTION_NOTIFY_PROPOSAL     = 36;
+    public const MOTION_ACCEPT_PROPOSAL     = 31;
+    public const MOTION_PUBLISH_PROPOSAL    = 30;
+    public const MOTION_VOTE_ACCEPTED       = 39;
+    public const MOTION_VOTE_REJECTED       = 40;
+    public const AMENDMENT_PUBLISH          = 13;
+    public const AMENDMENT_WITHDRAW         = 14;
+    public const AMENDMENT_DELETE           = 15;
+    public const AMENDMENT_DELETE_PUBLISHED = 28;
+    public const AMENDMENT_SCREEN           = 16;
+    public const AMENDMENT_UNSCREEN         = 17;
+    public const AMENDMENT_COMMENT          = 18;
+    public const AMENDMENT_COMMENT_DELETE   = 19;
+    public const AMENDMENT_COMMENT_SCREEN   = 20;
+    public const AMENDMENT_LIKE             = 21;
+    public const AMENDMENT_UNLIKE           = 22;
+    public const AMENDMENT_DISLIKE          = 23;
+    public const AMENDMENT_CHANGE           = 25;
+    public const AMENDMENT_SUPPORT          = 33;
+    public const AMENDMENT_SUPPORT_FINISH   = 34;
+    public const AMENDMENT_SET_PROPOSAL     = 37;
+    public const AMENDMENT_NOTIFY_PROPOSAL  = 38;
+    public const AMENDMENT_ACCEPT_PROPOSAL  = 32;
+    public const AMENDMENT_PUBLISH_PROPOSAL = 29;
+    public const AMENDMENT_VOTE_ACCEPTED    = 41;
+    public const AMENDMENT_VOTE_REJECTED    = 42;
+    public const VOTING_OPEN                = 43;
+    public const VOTING_CLOSE               = 44;
+    public const VOTING_DELETE              = 45;
+    public const VOTING_QUESTION_ACCEPTED   = 46;
+    public const VOTING_QUESTION_REJECTED   = 47;
 
-    public static $MOTION_ACTION_TYPES    = [
+    private const MOTION_ACTION_TYPES    = [
         self::MOTION_PUBLISH,
         self::MOTION_WITHDRAW,
         self::MOTION_DELETE,
@@ -93,7 +94,7 @@ class ConsultationLog extends ActiveRecord
         self::MOTION_VOTE_REJECTED,
     ];
 
-    public static $AMENDMENT_ACTION_TYPES = [
+    private const AMENDMENT_ACTION_TYPES = [
         self::AMENDMENT_PUBLISH,
         self::AMENDMENT_WITHDRAW,
         self::AMENDMENT_DELETE,
@@ -117,7 +118,7 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_VOTE_REJECTED,
     ];
 
-    public static $USER_INVISIBLE_EVENTS = [
+    private const USER_INVISIBLE_EVENTS = [
         self::MOTION_COMMENT_DELETE,
         self::AMENDMENT_COMMENT_DELETE,
         self::MOTION_DELETE,
@@ -156,26 +157,17 @@ class ConsultationLog extends ActiveRecord
     /** @var null|AmendmentComment */
     private $amendmentComment = null;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationLog';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
@@ -183,10 +175,10 @@ class ConsultationLog extends ActiveRecord
 
     public static function getLogForConsultation(int $consultationId, bool $showUserInvisible): array
     {
-        $query = static::find();
+        $query = self::find();
         $query->where(['consultationId' => $consultationId]);
         if (!$showUserInvisible) {
-            $query->andWhere(['NOT IN', 'actionType', static::$USER_INVISIBLE_EVENTS]);
+            $query->andWhere(['NOT IN', 'actionType', self::USER_INVISIBLE_EVENTS]);
         }
         $query->orderBy('actionTime DESC');
         return $query->all();
@@ -194,34 +186,31 @@ class ConsultationLog extends ActiveRecord
 
     public static function getLogForMotion(int $consultationId, int $motionId, bool $showUserInvisible): array
     {
-        $query = static::find();
+        $query = self::find();
         $query->where(['consultationId' => $consultationId]);
         $query->andWhere(['actionReferenceId' => $motionId]);
         if (!$showUserInvisible) {
-            $query->andWhere(['NOT IN', 'actionType', static::$USER_INVISIBLE_EVENTS]);
+            $query->andWhere(['NOT IN', 'actionType', self::USER_INVISIBLE_EVENTS]);
         }
-        $query->andWhere(['IN', 'actionType', static::$MOTION_ACTION_TYPES]);
+        $query->andWhere(['IN', 'actionType', self::MOTION_ACTION_TYPES]);
         $query->orderBy('actionTime DESC');
         return $query->all();
     }
 
     public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible): array
     {
-        $query = static::find();
+        $query = self::find();
         $query->where(['consultationId' => $consultationId]);
         $query->andWhere(['actionReferenceId' => $amendmentId]);
         if (!$showUserInvisible) {
-            $query->andWhere(['NOT IN', 'actionType', static::$USER_INVISIBLE_EVENTS]);
+            $query->andWhere(['NOT IN', 'actionType', self::USER_INVISIBLE_EVENTS]);
         }
-        $query->andWhere(['IN', 'actionType', static::$AMENDMENT_ACTION_TYPES]);
+        $query->andWhere(['IN', 'actionType', self::AMENDMENT_ACTION_TYPES]);
         $query->orderBy('actionTime DESC');
         return $query->all();
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['consultationId', 'actionTime'], 'required'],
@@ -251,7 +240,7 @@ class ConsultationLog extends ActiveRecord
     public static function logCurrUser(Consultation $consultation, int $type, int $typeRefId, ?array $data = null): void
     {
         $user = User::getCurrentUser();
-        static::log($consultation, ($user ? $user->id : null), $type, $typeRefId, $data);
+        self::log($consultation, ($user ? $user->id : null), $type, $typeRefId, $data);
     }
 
     /**
@@ -277,18 +266,18 @@ class ConsultationLog extends ActiveRecord
             return;
         }
 
-        if (in_array($this->actionType, [static::MOTION_COMMENT, static::MOTION_COMMENT_SCREEN])) {
+        if (in_array($this->actionType, [self::MOTION_COMMENT, self::MOTION_COMMENT_SCREEN])) {
             $this->motionComment = MotionComment::findOne($this->actionReferenceId);
             if ($this->motionComment) {
                 $this->motion = $this->motionComment->getIMotion();
                 $this->motionId = $this->motionComment->motionId;
             }
 
-        } elseif (in_array($this->actionType, static::$MOTION_ACTION_TYPES)) {
+        } elseif (in_array($this->actionType, self::MOTION_ACTION_TYPES)) {
             $this->motionId = $this->actionReferenceId;
             $this->motion   = Motion::findOne($this->actionReferenceId);
 
-        } elseif (in_array($this->actionType, [static::AMENDMENT_COMMENT, static::AMENDMENT_COMMENT_SCREEN])) {
+        } elseif (in_array($this->actionType, [self::AMENDMENT_COMMENT, self::AMENDMENT_COMMENT_SCREEN])) {
             $this->amendmentComment = AmendmentComment::findOne($this->actionReferenceId);
             if ($this->amendmentComment) {
                 $this->amendment = $this->amendmentComment->getIMotion();
@@ -299,14 +288,14 @@ class ConsultationLog extends ActiveRecord
                 }
             }
 
-        } elseif (in_array($this->actionType, static::$AMENDMENT_ACTION_TYPES)) {
+        } elseif (in_array($this->actionType, self::AMENDMENT_ACTION_TYPES)) {
             $this->amendmentId = $this->actionReferenceId;
             $this->amendment = Amendment::findOne($this->actionReferenceId);
             if ($this->amendment) {
                 $this->motionId = $this->amendment->motionId;
                 $this->motion = $this->amendment->getMyMotion();
             } else {
-                $this->motion = static::amendmentId2Motion($this->actionReferenceId);
+                $this->motion = self::amendmentId2Motion($this->actionReferenceId);
                 if ($this->motion) {
                     $this->motionId = $this->motion->id;
                 }
@@ -324,17 +313,17 @@ class ConsultationLog extends ActiveRecord
             return null;
         }
 
-        if (in_array($this->actionType, [static::MOTION_COMMENT, static::MOTION_COMMENT_SCREEN])) {
+        if (in_array($this->actionType, [self::MOTION_COMMENT, self::MOTION_COMMENT_SCREEN])) {
             if ($this->motionComment && $this->motionComment->getIMotion()) {
                 return UrlHelper::createMotionCommentUrl($this->motionComment);
             } else {
                 return null;
             }
 
-        } elseif (in_array($this->actionType, static::$MOTION_ACTION_TYPES)) {
+        } elseif (in_array($this->actionType, self::MOTION_ACTION_TYPES)) {
             return ($this->motion ? UrlHelper::createMotionUrl($this->motion) : null);
 
-        } elseif (in_array($this->actionType, [static::AMENDMENT_COMMENT, static::AMENDMENT_COMMENT_SCREEN])) {
+        } elseif (in_array($this->actionType, [self::AMENDMENT_COMMENT, self::AMENDMENT_COMMENT_SCREEN])) {
             if ($this->amendmentComment && $this->amendmentComment->getIMotion() &&
                 $this->amendmentComment->getIMotion()->getMyMotion()) {
                 return UrlHelper::createAmendmentCommentUrl($this->amendmentComment);
@@ -342,7 +331,7 @@ class ConsultationLog extends ActiveRecord
                 return null;
             }
 
-        } elseif (in_array($this->actionType, static::$AMENDMENT_ACTION_TYPES)) {
+        } elseif (in_array($this->actionType, self::AMENDMENT_ACTION_TYPES)) {
             return ($this->amendment && $this->amendment->getMyMotion() ? UrlHelper::createAmendmentUrl($this->amendment) : null);
         }
 
@@ -380,7 +369,7 @@ class ConsultationLog extends ActiveRecord
         if ($this->amendment) {
             $str = str_replace('###AMENDMENT###', $this->amendment->titlePrefix, $str);
         } elseif ($this->amendmentId) {
-            $prefix = static::amendmentId2Prefix($this->actionReferenceId) . ' ' . $deleted;
+            $prefix = self::amendmentId2Prefix($this->actionReferenceId) . ' ' . $deleted;
             $str    = str_replace('###AMENDMENT###', $prefix, $str);
         } else {
             $str = str_replace('###AMENDMENT###', $deleted, $str);
@@ -431,35 +420,35 @@ class ConsultationLog extends ActiveRecord
             return null;
         }
         switch ($this->actionType) {
-            case static::MOTION_PUBLISH:
+            case self::MOTION_PUBLISH:
                 $str      = \Yii::t('structure', 'activity_MOTION_PUBLISH');
                 $fallback = ($this->motion ? $this->motion->getInitiatorsStr() : '-');
                 $str      = $this->formatLogEntryUser($str, $fallback);
                 return $str;
-            case static::MOTION_DELETE:
+            case self::MOTION_DELETE:
                 $str    = \Yii::t('structure', 'activity_MOTION_DELETE');
-                $prefix = static::motionId2Prefix($this->actionReferenceId);
+                $prefix = self::motionId2Prefix($this->actionReferenceId);
                 $str    = str_replace('###MOTION###', $prefix, $str);
                 $str    = $this->formatLogEntryUser($str, '');
                 return $str;
-            case static::MOTION_DELETE_PUBLISHED:
+            case self::MOTION_DELETE_PUBLISHED:
                 $str    = \Yii::t('structure', 'activity_MOTION_DELETE_PUBLISHED');
                 $str    = $this->formatLogEntryUser($str, '');
-                $prefix = static::motionId2Prefix($this->actionReferenceId);
+                $prefix = self::motionId2Prefix($this->actionReferenceId);
                 $str    = str_replace('###MOTION###', $prefix, $str);
                 return $str;
-            case static::MOTION_CHANGE:
+            case self::MOTION_CHANGE:
                 $str = \Yii::t('structure', 'activity_MOTION_CHANGE');
                 $str = $this->formatLogEntryUser($str, '');
-                $prefix = static::motionId2Prefix($this->actionReferenceId);
+                $prefix = self::motionId2Prefix($this->actionReferenceId);
                 $str    = str_replace('###MOTION###', $prefix, $str);
                 return $str;
-            case static::MOTION_WITHDRAW:
+            case self::MOTION_WITHDRAW:
                 $str = \Yii::t('structure', 'activity_MOTION_WITHDRAW');
                 $str = $this->formatLogEntryUser($str, '');
                 return $str;
-            case static::MOTION_COMMENT:
-            case static::MOTION_COMMENT_SCREEN:
+            case self::MOTION_COMMENT:
+            case self::MOTION_COMMENT_SCREEN:
                 if ($this->motionComment) {
                     $abstract = $this->motionComment->getTextAbstract(190);
                     $str      = $this->formatLogEntryUser('###USER###', $this->motionComment->name) . ': ';
@@ -468,51 +457,51 @@ class ConsultationLog extends ActiveRecord
                 } else {
                     return null;
                 }
-            case static::MOTION_SCREEN:
+            case self::MOTION_SCREEN:
                 $str = \Yii::t('structure', 'activity_MOTION_SCREEN');
                 return $str;
-            case static::MOTION_UNSCREEN:
+            case self::MOTION_UNSCREEN:
                 return null;
-            case static::MOTION_SUPPORT:
+            case self::MOTION_SUPPORT:
                 $str = \Yii::t('structure', 'activity_MOTION_SUPPORT');
                 $str = $this->formatLogEntryUser($str, '');
                 return $str;
-            case static::MOTION_PUBLISH_PROPOSAL:
+            case self::MOTION_PUBLISH_PROPOSAL:
                 $str = \Yii::t('structure', 'activity_MOTION_PUBLISH_PROPOSAL');
                 $str = $this->formatLogEntryUser($str, '');
                 return $str;
-            case static::MOTION_SET_PROPOSAL:
+            case self::MOTION_SET_PROPOSAL:
                 $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
                 $str = $this->formatLogEntryUser($str, '');
                 // @TODO More detailed output
                 return $str;
-            case static::AMENDMENT_PUBLISH:
+            case self::AMENDMENT_PUBLISH:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
                 $str = $this->formatLogEntryAmendment($str);
                 $str = $this->formatLogEntryUser($str, ($this->amendment ? $this->amendment->getInitiatorsStr() : ''));
                 return $str;
-            case static::AMENDMENT_DELETE:
+            case self::AMENDMENT_DELETE:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_DELETE');
                 $str = $this->formatLogEntryAmendment($str);
                 $str = $this->formatLogEntryUser($str, '');
                 return $str;
-            case static::AMENDMENT_DELETE_PUBLISHED:
+            case self::AMENDMENT_DELETE_PUBLISHED:
                 $str    = \Yii::t('structure', 'activity_AMENDMENT_DELETE_PUBLISHED');
                 $str    = $this->formatLogEntryUser($str, '');
-                $prefix = static::amendmentId2Prefix($this->actionReferenceId);
+                $prefix = self::amendmentId2Prefix($this->actionReferenceId);
                 $str    = str_replace('###AMENDMENT###', $prefix, $str);
                 return $str;
-            case static::AMENDMENT_CHANGE:
+            case self::AMENDMENT_CHANGE:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_CHANGE');
                 $str = $this->formatLogEntryUser($str, '');
                 $str = $this->formatLogEntryAmendment($str);
                 return $str;
-            case static::AMENDMENT_WITHDRAW:
+            case self::AMENDMENT_WITHDRAW:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_WITHDRAW');
                 $str = $this->formatLogEntryAmendment($str);
                 return $str;
-            case static::AMENDMENT_COMMENT:
-            case static::AMENDMENT_COMMENT_SCREEN:
+            case self::AMENDMENT_COMMENT:
+            case self::AMENDMENT_COMMENT_SCREEN:
                 if ($this->amendmentComment) {
                     $abstract = $this->amendmentComment->getTextAbstract(190);
                     $str      = $this->formatLogEntryUser('###USER###', $this->amendmentComment->name) . ': ';
@@ -521,23 +510,23 @@ class ConsultationLog extends ActiveRecord
                 } else {
                     return null;
                 }
-            case static::AMENDMENT_SCREEN:
+            case self::AMENDMENT_SCREEN:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SCREEN');
                 $str = $this->formatLogEntryAmendment($str);
                 return $str;
-            case static::AMENDMENT_UNSCREEN:
+            case self::AMENDMENT_UNSCREEN:
                 return null;
-            case static::AMENDMENT_SUPPORT:
+            case self::AMENDMENT_SUPPORT:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SUPPORT');
                 $str = $this->formatLogEntryAmendment($str);
                 $str = $this->formatLogEntryUser($str, '');
                 return $str;
-            case static::AMENDMENT_PUBLISH_PROPOSAL:
+            case self::AMENDMENT_PUBLISH_PROPOSAL:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH_PROPOSAL');
                 $str = $this->formatLogEntryUser($str, '');
                 $str = $this->formatLogEntryAmendment($str);
                 return $str;
-            case static::AMENDMENT_SET_PROPOSAL:
+            case self::AMENDMENT_SET_PROPOSAL:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
                 $str = $this->formatLogEntryUser($str, '');
                 $str = $this->formatLogEntryAmendment($str);

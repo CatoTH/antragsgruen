@@ -16,7 +16,7 @@ class InstallationController extends Base
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         if (in_array($action->id, ['index', 'db-test'])) {
             // No cookieValidationKey is set in the beginning
@@ -96,7 +96,7 @@ class InstallationController extends Base
                     'consultationUrl'      => $consultationUrl,
                 ]);
             } catch (\Exception $e) {
-                Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         }
         if (!$this->getParams()->multisiteMode) {
@@ -172,9 +172,9 @@ class InstallationController extends Base
 
                 if ($dbForm->sqlCreateTables && $dbForm->verifyDBConnection(false) && !$dbForm->tablesAreCreated()) {
                     $dbForm->createTables();
-                    yii::$app->session->setFlash('success', Yii::t('manager', 'msg_site_created'));
+                    $this->getHttpSession()->setFlash('success', Yii::t('manager', 'msg_site_created'));
                 } else {
-                    yii::$app->session->setFlash('success', Yii::t('manager', 'msg_config_saved'));
+                    $this->getHttpSession()->setFlash('success', Yii::t('manager', 'msg_config_saved'));
                 }
 
                 $dbForm->overwriteYiiConnection();

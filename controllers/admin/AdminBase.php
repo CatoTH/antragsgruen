@@ -58,7 +58,7 @@ class AdminBase extends Base
                 $motionType->save();
             }
 
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_functions_activated_t'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_functions_activated_t'));
         }
         if (\Yii::$app->request->get('activate') === 'responsibilities') {
             foreach ($this->consultation->motionTypes as $motionType) {
@@ -68,7 +68,7 @@ class AdminBase extends Base
                 $motionType->save();
             }
 
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_functions_activated_t'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_functions_activated_t'));
         }
         if (\Yii::$app->request->get('activate') === 'openslides') {
             $settings = $this->consultation->getSettings();
@@ -76,7 +76,7 @@ class AdminBase extends Base
             $this->consultation->setSettings($settings);
             $this->consultation->save();
 
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_functions_activated_c'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_functions_activated_c'));
         }
     }
 }

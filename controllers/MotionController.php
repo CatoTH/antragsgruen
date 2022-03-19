@@ -31,7 +31,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @param int $commentId
-     * @param string|null $procedureToken
      *
      * @return string
      */
@@ -91,7 +90,7 @@ class MotionController extends Base
         try {
             $this->performShowActions($motion, intval($commentId), $motionViewParams);
         } catch (\Throwable $e) {
-            \Yii::$app->session->setFlash('error', $e->getMessage());
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
 
         $supportStatus = '';
@@ -122,7 +121,7 @@ class MotionController extends Base
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
         if (!$parentMotion || !$parentMotion->isReadable()) {
-            \Yii::$app->session->setFlash('error', 'The diff-view is not available');
+            $this->getHttpSession()->setFlash('error', 'The diff-view is not available');
 
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
@@ -131,7 +130,7 @@ class MotionController extends Base
             $changes = MotionSectionChanges::motionToSectionChanges($parentMotion, $motion);
         } catch (Inconsistency $e) {
             $changes = [];
-            \Yii::$app->session->setFlash('error', $e->getMessage());
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
 
         return $this->render('view_changes', [
@@ -164,7 +163,7 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -184,12 +183,12 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion || $motion->status !== Motion::STATUS_DRAFT) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
         if (!$motion->canEdit()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -230,13 +229,13 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canEdit()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -266,7 +265,7 @@ class MotionController extends Base
                     return $this->render('edit_done', ['motion' => $motion]);
                 }
             } catch (FormError $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
                 $form->setSectionTextWithoutSaving($motion, $post['sections']);
             }
         }
@@ -330,7 +329,7 @@ class MotionController extends Base
             $ret = $this->getMotionTypeForCreate(intval($motionTypeId), intval($agendaItemId), intval($cloneFrom));
             list($motionType, $agendaItem) = $ret;
         } catch (ExceptionBase $e) {
-            \Yii::$app->session->setFlash('error', $e->getMessage());
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
 
             return $this->redirect(UrlHelper::homeUrl());
         }
@@ -385,7 +384,7 @@ class MotionController extends Base
                     'draftId'  => $this->getRequestValue('draftId'),
                 ]));
             } catch (FormError $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         } elseif ($cloneFrom > 0) {
             $motion = $this->consultation->getMotion($cloneFrom);
@@ -418,13 +417,13 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canWithdraw()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_withdraw_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_withdraw_permission'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -435,7 +434,7 @@ class MotionController extends Base
 
         if ($this->isPostSet('withdraw')) {
             $motion->withdraw();
-            \Yii::$app->session->setFlash('success', \Yii::t('motion', 'withdraw_done'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'withdraw_done'));
 
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
@@ -449,13 +448,13 @@ class MotionController extends Base
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }

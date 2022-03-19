@@ -239,7 +239,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         if (!isset($quorumTypes[$this->quorumType])) {
             throw new Internal('Unsupported quorum type: ' . $this->quorumType);
         }
-        return new $quorumTypes[$this->quorumType]();
+        /** @var IQuorumType $quorumType */
+        $quorumType = new $quorumTypes[$this->quorumType]();
+        return $quorumType;
     }
 
     public function userIsGenerallyAllowedToVoteFor(User $user, IVotingItem $item): bool

@@ -20,7 +20,7 @@ $settings = $consultation->getSettings();
                for="discourseCategoryId"><?= Yii::t('discourse', 'sett_discourse_cat') ?>:</label>
         <div class="col-sm-9">
             <input type="text" name="settings[discourseCategoryId]"
-                   value="<?= Html::encode($settings->discourseCategoryId) ?>"
+                   value="<?= Html::encode((string)$settings->discourseCategoryId) ?>"
                    class="form-control" id="discourseCategoryId">
             <input type="hidden" name="settingsFields[]" value="discourseCategoryId">
         </div>

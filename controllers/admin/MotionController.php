@@ -123,7 +123,7 @@ class MotionController extends AdminBase
 
                 return $this->render('type_deleted');
             } else {
-                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_type_not_deletable'));
+                $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_type_not_deletable'));
             }
         }
         if ($this->isPostSet('save')) {
@@ -215,7 +215,7 @@ class MotionController extends AdminBase
 
             DateTools::setDeadlineDebugMode($this->consultation, $this->isPostSet('activateDeadlineDebugMode'));
 
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
 
             foreach ($this->consultation->getMotionsOfType($motionType) as $motion) {
@@ -264,7 +264,7 @@ class MotionController extends AdminBase
         }
 
         if ($this->isRequestSet('msg') && $this->getRequestValue('msg') === 'created') {
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
         }
 
         return $this->render('type', [
@@ -445,7 +445,7 @@ class MotionController extends AdminBase
         }
 
         if ($setUsername && !$user) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
             return;
         }
 
@@ -508,20 +508,20 @@ class MotionController extends AdminBase
 
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
             if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
-                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
+                $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $post['titlePrefix'];
                 $motion->save();
                 $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
-                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_screened'));
+                $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'motion_screened'));
             }
         }
 
         if ($this->isPostSet('delete')) {
             $motion->setDeleted();
             $motion->flushCacheStart(['lines']);
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_deleted'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'motion_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
 
             return '';
@@ -556,7 +556,7 @@ class MotionController extends AdminBase
                         $ppChanges
                     );
                 } catch (FormError $e) {
-                    \Yii::$app->session->setFlash('error', $e->getMessage());
+                    $this->getHttpSession()->setFlash('error', $e->getMessage());
                 }
                 if ($ppChanges->hasChanges()) {
                     ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
@@ -575,7 +575,7 @@ class MotionController extends AdminBase
                     $form->updateTextRewritingAmendments($motion, $newHtmls, $overrides);
                 }
             } catch (FormError $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
 
             if (intval($modat['motionType']) !== $motion->motionTypeId) {
@@ -587,7 +587,7 @@ class MotionController extends AdminBase
                     }
                     $motion->setMotionType($newType);
                 } catch (FormError $e) {
-                    \Yii::$app->session->setFlash('error', $e->getMessage());
+                    $this->getHttpSession()->setFlash('error', $e->getMessage());
                 }
             }
 
@@ -607,7 +607,7 @@ class MotionController extends AdminBase
                     }
                 }
                 if ($collision) {
-                    \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_url_path_err'));
+                    $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_url_path_err'));
                 } else {
                     $motion->slug = mb_strtolower($modat['slug']);
                 }
@@ -644,7 +644,7 @@ class MotionController extends AdminBase
             }
 
             if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
-                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
+                $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->titlePrefix = $post['motion']['titlePrefix'];
             }
@@ -670,7 +670,7 @@ class MotionController extends AdminBase
             $this->saveMotionInitiator($motion);
 
             $motion->flushCache(true);
-            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);

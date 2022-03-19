@@ -9,7 +9,7 @@ use app\models\quorumType\IQuorumType;
 use app\models\db\{ConsultationUserGroup, Motion, User, VotingBlock, VotingQuestion};
 use app\components\{ResourceLock, UserGroupAdminMethods, VotingMethods};
 use app\models\proposedProcedure\Factory;
-use yii\web\{Application, Response};
+use yii\web\Response;
 
 class VotingController extends Base
 {
@@ -24,13 +24,11 @@ class VotingController extends Base
         $result = parent::beforeAction($action);
 
         if ($result) {
-            /** @var Application $app */
-            $app = \Yii::$app;
             $this->votingMethods = new VotingMethods();
-            $this->votingMethods->setRequestData($this->consultation, $app->request);
+            $this->votingMethods->setRequestData($this->consultation, $this->getHttpRequest());
 
             $this->userGroupMethods = new UserGroupAdminMethods();
-            $this->userGroupMethods->setRequestData($this->consultation, $app->request, $app->session);
+            $this->userGroupMethods->setRequestData($this->consultation, $this->getHttpRequest(), $this->getHttpSession());
         }
 
         return $result;
@@ -109,7 +107,7 @@ class VotingController extends Base
         $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
         ResourceLock::lockVotingBlockForWrite($votingBlock);
 
-        switch (\Yii::$app->request->post('op')) {
+        switch ($this->getPostValue('op')) {
             case 'update-status':
                 $this->votingMethods->voteStatusUpdate($votingBlock);
                 break;
@@ -129,8 +127,8 @@ class VotingController extends Base
                 $this->votingMethods->deleteVoting($votingBlock);
                 break;
             case 'set-voters-to-user-group':
-                $userIds = array_map('intval', \Yii::$app->request->post('userIds', []));
-                $groupId = intval(\Yii::$app->request->post('newUserGroup'));
+                $userIds = array_map('intval', $this->getPostValue('userIds', []));
+                $groupId = intval($this->getPostValue('newUserGroup'));
                 $this->userGroupMethods->setUserGroupUsers($groupId, $userIds);
                 break;
         }
@@ -157,21 +155,21 @@ class VotingController extends Base
 
         $newBlock = new VotingBlock();
         $newBlock->consultationId = $this->consultation->id;
-        $newBlock->title = \Yii::$app->request->post('title');
-        $newBlock->majorityType = intval(\Yii::$app->request->post('majorityType'));
-        $newBlock->quorumType = intval(\Yii::$app->request->post('quorumType', IQuorumType::QUORUM_TYPE_NONE));
-        $newBlock->votesPublic = intval(\Yii::$app->request->post('votesPublic'));
-        $newBlock->resultsPublic = intval(\Yii::$app->request->post('resultsPublic'));
-        if (\Yii::$app->request->post('assignedMotion') !== null && \Yii::$app->request->post('assignedMotion') > 0) {
-            $newBlock->assignedToMotionId = \Yii::$app->request->post('assignedMotion');
+        $newBlock->title = $this->getPostValue('title');
+        $newBlock->majorityType = intval($this->getPostValue('majorityType'));
+        $newBlock->quorumType = intval($this->getPostValue('quorumType', IQuorumType::QUORUM_TYPE_NONE));
+        $newBlock->votesPublic = intval($this->getPostValue('votesPublic'));
+        $newBlock->resultsPublic = intval($this->getPostValue('resultsPublic'));
+        if ($this->getPostValue('assignedMotion') !== null && $this->getPostValue('assignedMotion') > 0) {
+            $newBlock->assignedToMotionId = $this->getPostValue('assignedMotion');
         } else {
             $newBlock->assignedToMotionId = null;
         }
-        $newBlock->setAnswerTemplate(intval(\Yii::$app->request->post('answers')));
+        $newBlock->setAnswerTemplate(intval($this->getPostValue('answers')));
         $newBlock->setVotingPolicy($this->votingMethods->getPolicyFromUpdateData(
             $newBlock,
-            intval(\Yii::$app->request->post('votePolicy')),
-            \Yii::$app->request->post('userGroups', [])
+            intval($this->getPostValue('votePolicy')),
+            $this->getPostValue('userGroups', [])
         ));
         // If the voting is created from the proposed procedure, we assume it's only used to show it there
         $newBlock->votingStatus = VotingBlock::STATUS_PREPARING;

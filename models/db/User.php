@@ -85,10 +85,10 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getCachedUser(int $userId): ?User
     {
         // Hint: also cache "null" entries
-        if (!in_array($userId, array_keys(static::$userCache))) {
-            static::$userCache[$userId] = static::find()->where(['id' => $userId])->andWhere('status != ' . User::STATUS_DELETED)->one();
+        if (!in_array($userId, array_keys(self::$userCache))) {
+            self::$userCache[$userId] = static::find()->where(['id' => $userId])->andWhere('status != ' . User::STATUS_DELETED)->one();
         }
-        return static::$userCache[$userId];
+        return self::$userCache[$userId];
     }
 
     public static function isCurrentUser(?User $user): bool

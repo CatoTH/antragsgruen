@@ -12,11 +12,11 @@ class Module extends ModuleBase
 
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {
-        if (static::$authenticator === null) {
+        if (self::$authenticator === null) {
             $config = file_get_contents(__DIR__ . '/../../config/drupal_civicrm.json');
             $configuration = new PasswordAuthenticatorConfiguration($config);
-            static::$authenticator = new PasswordAuthenticator($configuration);
+            self::$authenticator = new PasswordAuthenticator($configuration);
         }
-        return static::$authenticator;
+        return self::$authenticator;
     }
 }

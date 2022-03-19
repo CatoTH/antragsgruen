@@ -8,9 +8,11 @@ use app\models\exceptions\{Inconsistency, Internal};
 use app\models\mergeAmendments\{Draft, Merge, Init};
 use app\models\MotionSectionChanges;
 use yii\web\Response;
+use yii\web\Session;
 
 /**
  * @property Consultation $consultation
+ * @method Session getHttpSession()
  */
 trait MotionMergingTrait
 {
@@ -23,7 +25,7 @@ trait MotionMergingTrait
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -200,13 +202,13 @@ trait MotionMergingTrait
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canMergeAmendments()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -234,13 +236,13 @@ trait MotionMergingTrait
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canMergeAmendments()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -267,13 +269,13 @@ trait MotionMergingTrait
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
             return null;
         }
 
         if (!$motion->canMergeAmendments()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return null;
         }
@@ -324,13 +326,13 @@ trait MotionMergingTrait
     {
         $newMotion = $this->consultation->getMotion($motionSlug);
         if (!$newMotion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return '';
         }
 
         $oldMotion = $newMotion->replacedMotion;
         if (!$oldMotion->canMergeAmendments()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
             return '';
         }
 
@@ -401,7 +403,7 @@ trait MotionMergingTrait
                 return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm'));
             }
         } catch (\Exception $e) {
-            \Yii::$app->session->setFlash('error', $e->getMessage());
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
 
         if ($resumeDraft && !\Yii::$app->request->post('discard', 0) && count($resumeDraft->sections) === 1) {

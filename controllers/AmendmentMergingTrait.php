@@ -7,9 +7,11 @@ use app\models\db\{Amendment, Consultation, ConsultationMotionType, Consultation
 use app\models\exceptions\{Internal, NotFound};
 use app\models\forms\MergeSingleAmendmentForm;
 use app\models\sectionTypes\ISectionType;
+use yii\web\Session;
 
 /**
  * @method redirect($uri)
+ * @method Session getHttpSession()
  * @property Consultation $consultation
  */
 trait AmendmentMergingTrait
@@ -28,7 +30,7 @@ trait AmendmentMergingTrait
             throw new NotFound('Amendment not found');
         }
         if (!$amendment->canMergeIntoMotion()) {
-            \Yii::$app->session->setFlash('error', 'Not allowed to use this function');
+            $this->getHttpSession()->setFlash('error', 'Not allowed to use this function');
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
@@ -118,7 +120,7 @@ trait AmendmentMergingTrait
                     'collidingAmendments' => $amendment->getCollidingAmendments()
                 ]);
             } else {
-                \Yii::$app->session->setFlash('error', 'Not allowed to use this function');
+                $this->getHttpSession()->setFlash('error', 'Not allowed to use this function');
                 return $this->redirect(UrlHelper::createUrl('consultation/index'));
             }
         }

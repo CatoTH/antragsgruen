@@ -37,12 +37,12 @@ class MotionDeepCopy
         $newMotion->slug           = $slug;
         $newMotion->save();
 
-        static::copyTags($motion, $newMotion);
-        static::copyMotionSections($motion, $newMotion);
-        static::copyMotionSupporters($motion, $newMotion);
-        static::copyMotionAdminComments($motion, $newMotion);
-        static::copyMotionComments($motion, $newMotion);
-        static::copyAmendments($motion, $newMotion);
+        self::copyTags($motion, $newMotion);
+        self::copyMotionSections($motion, $newMotion);
+        self::copyMotionSupporters($motion, $newMotion);
+        self::copyMotionAdminComments($motion, $newMotion);
+        self::copyMotionComments($motion, $newMotion);
+        self::copyAmendments($motion, $newMotion);
 
         if ($newMotion->motionTypeId !== $motionType->id) {
             $newMotion->setMotionType($motionType);
@@ -127,10 +127,10 @@ class MotionDeepCopy
             $amendmentIdMapping[$amendment->id] = $newAmendment->id;
             $newAmendments[]                    = $newAmendment;
 
-            static::copyAmendmentSections($amendment, $newAmendment);
-            static::copyAmendmentSupporters($amendment, $newAmendment);
-            static::copyAmendmentComments($amendment, $newAmendment);
-            static::copyAmendmentAdminComments($amendment, $newAmendment);
+            self::copyAmendmentSections($amendment, $newAmendment);
+            self::copyAmendmentSupporters($amendment, $newAmendment);
+            self::copyAmendmentComments($amendment, $newAmendment);
+            self::copyAmendmentAdminComments($amendment, $newAmendment);
         }
 
         foreach ($newAmendments as $newAmendment) {

@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\components\Tools;
 use app\models\settings\AntragsgruenApp;
 use app\models\siteSpecificBehavior\DefaultBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -42,42 +43,27 @@ class Site extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'site';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCurrentConsultation()
+    public function getCurrentConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'currentConsultationId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultations()
+    public function getConsultations(): ActiveQuery
     {
         return $this->hasMany(Consultation::class, ['siteId' => 'id'])->where('consultation.dateDeletion IS NULL');
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserGroups()
+    public function getUserGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationUserGroup::class, ['siteId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTexTemplates()
+    public function getTexTemplates(): ActiveQuery
     {
         return $this->hasMany(TexTemplate::class, ['siteId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFiles()
+    public function getFiles(): ActiveQuery
     {
         return $this->hasMany(ConsultationFile::class, ['siteId' => 'id']);
     }
@@ -85,7 +71,7 @@ class Site extends ActiveRecord
     /**
      * @return ConsultationFile[]
      */
-    public function getFileImages()
+    public function getFileImages(): array
     {
         $images = array_filter($this->files, function (ConsultationFile $file) {
             return (in_array($file->mimetype, ['image/png', 'image/jpeg', 'image/gif']));
@@ -93,27 +79,18 @@ class Site extends ActiveRecord
         return array_values($images);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAdmins()
+    public function getAdmins(): ActiveQuery
     {
         return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('siteAdmin', ['siteId' => 'id'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTexts()
+    public function getTexts(): ActiveQuery
     {
         return $this->hasMany(ConsultationText::class, ['siteId' => 'id']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['subdomain', 'title', 'public', 'dateCreation'], 'required'],

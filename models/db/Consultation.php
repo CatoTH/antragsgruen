@@ -53,15 +53,15 @@ class Consultation extends ActiveRecord
      */
     public static function setCurrent(Consultation $consultation)
     {
-        if (static::$current) {
+        if (self::$current) {
             throw new Internal('Current consultation already set');
         }
-        static::$current = $consultation;
+        self::$current = $consultation;
     }
 
     public static function getCurrent(): ?Consultation
     {
-        return static::$current;
+        return self::$current;
     }
 
     public static function tableName(): string
@@ -111,11 +111,11 @@ class Consultation extends ActiveRecord
      */
     public function getMotions()
     {
-        if ($this->preloadedAllMotionData === static::PRELOAD_ALL) {
+        if ($this->preloadedAllMotionData === self::PRELOAD_ALL) {
             return $this->hasMany(Motion::class, ['consultationId' => 'id'])
                 ->with('amendments', 'tags', 'motionSupporters', 'amendments.amendmentSupporters')
                 ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
-        } elseif ($this->preloadedAllMotionData === static::PRELOAD_ONLY_AMENDMENTS) {
+        } elseif ($this->preloadedAllMotionData === self::PRELOAD_ONLY_AMENDMENTS) {
             return $this->hasMany(Motion::class, ['consultationId' => 'id'])
                 ->with('amendments', 'tags')
                 ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);

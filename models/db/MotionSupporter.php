@@ -40,8 +40,8 @@ class MotionSupporter extends ISupporter
         $this->on(static::EVENT_AFTER_INSERT, [$this, 'onSaved'], null, false);
         $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
 
-        if (!static::$handlersAttached) {
-            static::$handlersAttached = true;
+        if (!self::$handlersAttached) {
+            self::$handlersAttached = true;
             // This handler should be called at the end of the event chain
             Event::on(MotionSupporter::class, MotionSupporter::EVENT_SUPPORTED, [$this, 'checkOfficialSupportNumberReached'], null, true);
         }

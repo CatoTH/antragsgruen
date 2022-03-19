@@ -30,8 +30,8 @@ use yii\db\ActiveRecord;
  * @property int $initiatorsCanMergeAmendments
  * @property int $motionLikesDislikes
  * @property int $amendmentLikesDislikes
- * @property string $supportTypeMotions
- * @property string $supportTypeAmendments
+ * @property string|null $supportTypeMotions
+ * @property string|null $supportTypeAmendments
  * @property int $amendmentMultipleParagraphs
  * @property int $status
  * @property string $settings

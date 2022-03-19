@@ -203,7 +203,7 @@ class AmendmentController extends Base
         try {
             $this->performShowActions($amendment, intval($commentId), $amendmentViewParams);
         } catch (\Throwable $e) {
-            \Yii::$app->session->setFlash('error', $e->getMessage());
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
 
         $supportStatus = '';
@@ -274,11 +274,11 @@ class AmendmentController extends Base
             ]
         );
         if (!$amendment) {
-            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
         if (!$amendment->canEdit()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -321,12 +321,12 @@ class AmendmentController extends Base
             ]
         );
         if (!$amendment) {
-            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$amendment->canEdit()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_edit_forbidden'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_edit_forbidden'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
@@ -356,7 +356,7 @@ class AmendmentController extends Base
                     return $this->render('edit_done', ['amendment' => $amendment]);
                 }
             } catch (\Throwable $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         }
 
@@ -382,7 +382,7 @@ class AmendmentController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
@@ -436,7 +436,7 @@ class AmendmentController extends Base
                 ];
                 return $this->redirect(UrlHelper::createUrl($nextUrl));
             } catch (\Throwable $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         } elseif ($cloneFrom > 0) {
             $adoptAmend = $this->consultation->getAmendment($cloneFrom);
@@ -466,12 +466,12 @@ class AmendmentController extends Base
     {
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
-            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$amendment->canWithdraw()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_withdraw_forbidden'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_withdraw_forbidden'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
@@ -481,7 +481,7 @@ class AmendmentController extends Base
 
         if ($this->isPostSet('withdraw')) {
             $amendment->withdraw();
-            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'widthdraw_done'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'widthdraw_done'));
             return $this->redirect(UrlHelper::createAmendmentUrl($amendment));
         }
 

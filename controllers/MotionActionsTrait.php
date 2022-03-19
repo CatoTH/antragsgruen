@@ -21,10 +21,12 @@ use app\models\events\MotionEvent;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
 use yii\web\Response;
+use yii\web\Session;
 
 /**
  * @property Consultation $consultation
  * @method redirect($uri)
+ * @method Session getHttpSession()
  */
 trait MotionActionsTrait
 {
@@ -70,9 +72,9 @@ trait MotionActionsTrait
             $comment = $commentForm->saveMotionCommentWithChecks($motion);
 
             if ($comment->status === MotionComment::STATUS_SCREENING) {
-                \Yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
+                $this->getHttpSession()->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
             } else {
-                \Yii::$app->session->setFlash('screening', \Yii::t('comment', 'created'));
+                $this->getHttpSession()->setFlash('screening', \Yii::t('comment', 'created'));
             }
             $this->redirect(UrlHelper::createMotionCommentUrl($comment));
             \Yii::$app->end();
@@ -82,7 +84,7 @@ trait MotionActionsTrait
                 $viewParameters['openedComments'][$commentForm->sectionId] = [];
             }
             $viewParameters['openedComments'][$commentForm->sectionId][] = $commentForm->paragraphNo;
-            \Yii::$app->session->setFlash('error', $e->getMessage());
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
     }
 
@@ -107,7 +109,7 @@ trait MotionActionsTrait
             $comment->id
         );
 
-        \Yii::$app->session->setFlash('success', \Yii::t('comment', 'del_done'));
+        $this->getHttpSession()->setFlash('success', \Yii::t('comment', 'del_done'));
     }
 
     /**
@@ -177,7 +179,7 @@ trait MotionActionsTrait
 
         MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender, $nonPublic);
 
-        \Yii::$app->session->setFlash('success', $string);
+        $this->getHttpSession()->setFlash('success', $string);
     }
 
     /**
@@ -204,7 +206,7 @@ trait MotionActionsTrait
         }
         foreach ($motion->getSupporters(true) as $supporter) {
             if (User::getCurrentUser() && $supporter->userId === User::getCurrentUser()->id) {
-                \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_already'));
+                $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'support_already'));
                 return;
             }
         }
@@ -221,17 +223,17 @@ trait MotionActionsTrait
             $orga = \Yii::$app->request->post('motionSupportOrga', '');
         }
         if ($supportType->getSettingsObj()->hasOrganizations && $orga === '') {
-            \Yii::$app->session->setFlash('error', 'No organization entered');
+            $this->getHttpSession()->setFlash('error', 'No organization entered');
             return;
         }
         if (trim($name) === '') {
-            \Yii::$app->session->setFlash('error', 'You need to enter a name');
+            $this->getHttpSession()->setFlash('error', 'You need to enter a name');
             return;
         }
         $validGenderKeys = array_keys(SupportBase::getGenderSelection());
         if ($supportType->getSettingsObj()->contactGender === InitiatorForm::CONTACT_REQUIRED) {
             if (!in_array($gender, $validGenderKeys)) {
-                \Yii::$app->session->setFlash('error', 'You need to fill the gender field');
+                $this->getHttpSession()->setFlash('error', 'You need to fill the gender field');
                 return;
             }
         }
@@ -275,13 +277,13 @@ trait MotionActionsTrait
         }
 
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
-        \Yii::$app->session->setFlash('success', \Yii::t('motion', 'neutral_done'));
+        $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'neutral_done'));
     }
 
     private function motionSupportFinish(Motion $motion): void
     {
         if (!$motion->canFinishSupportCollection()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'support_finish_err'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'support_finish_err'));
             return;
         }
 
@@ -292,7 +294,7 @@ trait MotionActionsTrait
         }
 
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT_FINISH, $motion->id);
-        \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_finish_done'));
+        $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'support_finish_done'));
     }
 
     /**
@@ -329,13 +331,13 @@ trait MotionActionsTrait
     {
         $procedureToken = \Yii::$app->request->get('procedureToken');
         if (!$motion->canSeeProposedProcedure($procedureToken) || !$motion->proposalFeedbackHasBeenRequested()) {
-            \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
+            $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }
 
         $motion->proposalUserStatus = Motion::STATUS_ACCEPTED;
         $motion->save();
-        \Yii::$app->session->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
+        $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
 
     /**

@@ -104,7 +104,7 @@ class ManagerController extends Base
             fwrite($file, json_encode($config, JSON_PRETTY_PRINT));
             fclose($file);
 
-            \Yii::$app->session->setFlash('success', \Yii::t('manager', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('manager', 'saved'));
         }
 
         $editable = is_writable($configfile);

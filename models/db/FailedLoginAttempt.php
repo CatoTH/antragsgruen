@@ -37,9 +37,9 @@ class FailedLoginAttempt extends ActiveRecord
 
     public static function logFailedAttempt(string $username): void
     {
-        $normalizedUsername = static::normalizeUsername($username);
+        $normalizedUsername = self::normalizeUsername($username);
         $attempt = new FailedLoginAttempt();
-        $attempt->ipHash = static::getCurrentIpHash();
+        $attempt->ipHash = self::getCurrentIpHash();
         $attempt->username = $normalizedUsername;
         $attempt->dateAttempt = new Expression('NOW()');
         $attempt->save();
@@ -49,24 +49,24 @@ class FailedLoginAttempt extends ActiveRecord
 
     private static function needsLoginThrottlingByIp(): bool
     {
-        $interval = new Expression('NOW() - INTERVAL ' . intval(static::THROTTLING_DURATION_MINUTES) . ' MINUTE');
+        $interval = new Expression('NOW() - INTERVAL ' . intval(self::THROTTLING_DURATION_MINUTES) . ' MINUTE');
         $attempts = FailedLoginAttempt::find()
-            ->where(['=', 'ipHash', static::getCurrentIpHash()])
+            ->where(['=', 'ipHash', self::getCurrentIpHash()])
             ->andWhere(['>', 'dateAttempt', $interval])
             ->count();
 
-        return ($attempts >= static::THROTTLING_MIN_ATTEMPTS);
+        return ($attempts >= self::THROTTLING_MIN_ATTEMPTS);
     }
 
     private static function needsLoginThrottlingByUsername(string $username): bool
     {
-        $interval = new Expression('NOW() - INTERVAL ' . intval(static::THROTTLING_DURATION_MINUTES) . ' MINUTE');
+        $interval = new Expression('NOW() - INTERVAL ' . intval(self::THROTTLING_DURATION_MINUTES) . ' MINUTE');
         $attempts = FailedLoginAttempt::find()
-            ->where(['=', 'username', static::normalizeUsername($username)])
+            ->where(['=', 'username', self::normalizeUsername($username)])
             ->andWhere(['>', 'dateAttempt', $interval])
             ->count();
 
-        return ($attempts >= static::THROTTLING_MIN_ATTEMPTS);
+        return ($attempts >= self::THROTTLING_MIN_ATTEMPTS);
     }
 
     /**
@@ -86,10 +86,10 @@ class FailedLoginAttempt extends ActiveRecord
             // Edge case: someone logs in successfully (which leads to the session being reset), logs out and tries to login again
             \Yii::$app->session->set('loginLastFailedAttemptUsername', $username);
         }
-        if (static::needsLoginThrottlingByIp()) {
+        if (self::needsLoginThrottlingByIp()) {
             return true;
         }
-        if ($username && static::needsLoginThrottlingByUsername($username)) {
+        if ($username && self::needsLoginThrottlingByUsername($username)) {
             return true;
         }
         return false;
@@ -98,6 +98,6 @@ class FailedLoginAttempt extends ActiveRecord
     public static function resetAfterSuccessfulLogin(string $username): void
     {
         FailedLoginAttempt::deleteAll(['username' => $username]);
-        FailedLoginAttempt::deleteAll(['ipHash' => static::getCurrentIpHash()]);
+        FailedLoginAttempt::deleteAll(['ipHash' => self::getCurrentIpHash()]);
     }
 }

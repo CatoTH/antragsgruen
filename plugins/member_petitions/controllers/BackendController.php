@@ -22,12 +22,12 @@ class BackendController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
 
         if (!Tools::canRespondToPetition($motion)) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
@@ -80,7 +80,7 @@ class BackendController extends Base
                 }
             }
         } catch (\Exception $e) {
-            \Yii::$app->session->setFlash('error', $e->getMessage());
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
@@ -89,7 +89,7 @@ class BackendController extends Base
 
         new MotionResponded($motion);
 
-        \Yii::$app->session->setFlash('success', \Yii::t('member_petitions', 'respond_saved'));
+        $this->getHttpSession()->setFlash('success', \Yii::t('member_petitions', 'respond_saved'));
         return $this->redirect(UrlHelper::createMotionUrl($motion));
     }
 }

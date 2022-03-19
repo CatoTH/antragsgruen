@@ -67,7 +67,6 @@ abstract class IQuorumType
         }
 
         $userIds = [];
-        /** @var UserGroups $policy */
         foreach ($policy->getAllowedUserGroups() as $userGroup) {
             foreach ($userGroup->getUsersCached() as $user) {
                 if (!in_array($user->id, $userIds) && $this->userIsRelevantForQuorum($votingBlock, $user)) {

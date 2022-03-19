@@ -22,7 +22,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $motion->setScreened();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_screened'));
         }
         if ($this->isRequestSet('motionUnscreen')) {
             $motion = $this->consultation->getMotion($this->getRequestValue('motionUnscreen'));
@@ -30,7 +30,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $motion->setUnscreened();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_unscreened'));
         }
         if ($this->isRequestSet('motionDelete')) {
             $motion = $this->consultation->getMotion($this->getRequestValue('motionDelete'));
@@ -38,7 +38,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $motion->setDeleted();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_deleted'));
         }
 
         if (!$this->isRequestSet('motions') || !$this->isRequestSet('save')) {
@@ -52,7 +52,7 @@ class MotionListController extends AdminBase
                 }
                 $motion->setScreened();
             }
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened_pl'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_screened_pl'));
         }
 
         if ($this->isRequestSet('unscreen')) {
@@ -63,7 +63,7 @@ class MotionListController extends AdminBase
                 }
                 $motion->setUnscreened();
             }
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened_pl'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_unscreened_pl'));
         }
 
         if ($this->isRequestSet('delete')) {
@@ -74,7 +74,7 @@ class MotionListController extends AdminBase
                 }
                 $motion->setDeleted();
             }
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted_pl'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_deleted_pl'));
         }
     }
 
@@ -86,7 +86,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $amendment->setScreened();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_screened'));
         }
         if ($this->isRequestSet('amendmentUnscreen')) {
             $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentUnscreen'));
@@ -94,7 +94,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $amendment->setUnscreened();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
         }
         if ($this->isRequestSet('amendmentDelete')) {
             $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentDelete'));
@@ -102,7 +102,7 @@ class MotionListController extends AdminBase
                 return;
             }
             $amendment->setDeleted();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_deleted'));
         }
         if (!$this->isRequestSet('amendments') || !$this->isRequestSet('save')) {
             return;
@@ -115,7 +115,7 @@ class MotionListController extends AdminBase
                 }
                 $amendment->setScreened();
             }
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened_pl'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_screened_pl'));
         }
 
         if ($this->isRequestSet('unscreen')) {
@@ -126,7 +126,7 @@ class MotionListController extends AdminBase
                 }
                 $amendment->setUnscreened();
             }
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened_pl'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_unscreened_pl'));
         }
 
         if ($this->isRequestSet('delete')) {
@@ -137,7 +137,7 @@ class MotionListController extends AdminBase
                 }
                 $amendment->setDeleted();
             }
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted_pl'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_deleted_pl'));
         }
     }
 
@@ -151,7 +151,7 @@ class MotionListController extends AdminBase
                 }
                 $amendment->setProposalPublished();
             }
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_proposal_published_pl'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_proposal_published_pl'));
         }
     }
 

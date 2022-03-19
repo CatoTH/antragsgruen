@@ -13,7 +13,7 @@ use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
 use app\models\settings\Stylesheet;
 use yii\base\ExitException;
-use yii\web\{Request, Response};
+use yii\web\Response;
 
 class IndexController extends AdminBase
 {
@@ -31,9 +31,7 @@ class IndexController extends AdminBase
 
         if ($result) {
             $this->userGroupAdminMethods = new UserGroupAdminMethods();
-            /** @var Request $request */
-            $request = \Yii::$app->request;
-            $this->userGroupAdminMethods->setRequestData($this->consultation, $request, \Yii::$app->session);
+            $this->userGroupAdminMethods->setRequestData($this->consultation, $this->getHttpRequest(), $this->getHttpSession());
         }
 
         return $result;
@@ -43,7 +41,7 @@ class IndexController extends AdminBase
     {
         if ($this->isPostSet('flushCaches') && User::currentUserIsSuperuser()) {
             $this->consultation->flushCacheWithChildren(null);
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
         }
 
         if ($this->isPostSet('delSite')) {
@@ -98,7 +96,7 @@ class IndexController extends AdminBase
             if (preg_match('/^[\w_-]+$/i', $data['urlPath']) && trim($data['urlPath']) !== 'rest') {
                 $model->urlPath = $data['urlPath'];
             } else {
-                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'con_url_path_err'));
+                $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'con_url_path_err'));
             }
 
             if ($model->save()) {
@@ -139,9 +137,9 @@ class IndexController extends AdminBase
                 }
 
                 $model->flushCacheWithChildren(['lines']);
-                \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+                $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
             } else {
-                \Yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($model->getErrors()));
+                $this->getHttpSession()->setFlash('error', Tools::formatModelValidationErrors($model->getErrors()));
             }
         }
 
@@ -199,7 +197,7 @@ class IndexController extends AdminBase
                     $file              = ConsultationFile::uploadImage($this->consultation, 'newLogo', $user);
                     $settings->logoUrl = $file->getUrl();
                 } catch (FormError $e) {
-                    \Yii::$app->session->setFlash('error', $e->getMessage());
+                    $this->getHttpSession()->setFlash('error', $e->getMessage());
                 }
             }
             $consultation->setSettings($settings);
@@ -222,9 +220,9 @@ class IndexController extends AdminBase
                 $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
                 $this->layoutParams->setLayout($siteSettings->siteLayout);
 
-                \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+                $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
             } else {
-                \Yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($consultation->getErrors()));
+                $this->getHttpSession()->setFlash('error', Tools::formatModelValidationErrors($consultation->getErrors()));
             }
         }
 
@@ -269,7 +267,7 @@ class IndexController extends AdminBase
         if ($this->isPostSet('save') && $this->isPostSet('wordingBase')) {
             $consultation->wordingBase = \Yii::$app->request->post('wordingBase');
             $consultation->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         if ($this->isPostSet('save') && $this->isPostSet('string')) {
@@ -298,7 +296,7 @@ class IndexController extends AdminBase
                 }
             }
             $consultation->refresh();
-            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('translation', ['consultation' => $consultation, 'category' => $category]);
@@ -340,7 +338,7 @@ class IndexController extends AdminBase
                 }
             }
             $motionType->refresh();
-            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('translation_motion_type', ['motionType' => $motionType]);
@@ -381,11 +379,11 @@ class IndexController extends AdminBase
             }
             try {
                 $form->createConsultation();
-                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_new_created'));
+                $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'cons_new_created'));
 
                 $form = new ConsultationCreateForm($site);
             } catch (FormError $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
             $this->site->refresh();
         }
@@ -401,7 +399,7 @@ class IndexController extends AdminBase
                             $site->status = Site::STATUS_ACTIVE;
                         }
                         $site->save();
-                        \Yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_std_set_done'));
+                        $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'cons_std_set_done'));
                     }
                 }
             }
@@ -412,7 +410,7 @@ class IndexController extends AdminBase
                 $keys = array_keys($post['delete']);
                 if ($consultation->id === $keys[0] && $site->currentConsultationId !== $consultation->id) {
                     $consultation->setDeleted();
-                    \Yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_delete_done'));
+                    $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'cons_delete_done'));
                     if ($this->consultation->id === $consultation->id) {
                         $fallback = $this->site->currentConsultation->urlPath;
 
@@ -498,7 +496,7 @@ class IndexController extends AdminBase
 
                                 $stylesheet->$key = $file->getUrl();
                             } catch (FormError $e) {
-                                \Yii::$app->session->setFlash('error', $e->getMessage());
+                                $this->getHttpSession()->setFlash('error', $e->getMessage());
                             }
                         }
                         break;

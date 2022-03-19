@@ -113,7 +113,7 @@ class UserController extends Base
                         'email'   => $user->email,
                     ]);
                 } else {
-                    Yii::$app->session->setFlash('success', Yii::t('user', 'welcome'));
+                    $this->getHttpSession()->setFlash('success', Yii::t('user', 'welcome'));
                 }
 
                 /* 307 breaks user/NoEmailConfirmationCept
@@ -139,9 +139,9 @@ class UserController extends Base
             }
         }
 
-        if (Yii::$app->session->isActive && Yii::$app->session->getFlash('error')) {
-            $usernamePasswordForm->error = Yii::$app->session->getFlash('error');
-            Yii::$app->session->removeFlash('error');
+        if ($this->getHttpSession()->isActive && $this->getHttpSession()->getFlash('error')) {
+            $usernamePasswordForm->error = $this->getHttpSession()->getFlash('error');
+            $this->getHttpSession()->removeFlash('error');
         }
 
         return $this->render(
@@ -265,18 +265,18 @@ class UserController extends Base
 
             if (Captcha::needsCaptcha($email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
                 $msg = Yii::t('user', 'login_err_captcha');
-                Yii::$app->session->setFlash('error', $msg);
+                $this->getHttpSession()->setFlash('error', $msg);
             } elseif (!$user) {
                 $msg = str_replace('%USER%', $email, Yii::t('user', 'err_user_notfound'));
-                Yii::$app->session->setFlash('error', $msg);
+                $this->getHttpSession()->setFlash('error', $msg);
             } else {
                 try {
                     $user->sendRecoveryMail();
                     $msg = Yii::t('user', 'pwd_recovery_sent');
-                    Yii::$app->session->setFlash('success', $msg);
+                    $this->getHttpSession()->setFlash('success', $msg);
                 } catch (MailNotSent | ServerConfiguration | FormError $e) {
                     $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                    Yii::$app->session->setFlash('error', $errMsg);
+                    $this->getHttpSession()->setFlash('error', $errMsg);
                 }
             }
         }
@@ -289,13 +289,13 @@ class UserController extends Base
 
             if (Captcha::needsCaptcha($email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
                 $msg = Yii::t('user', 'login_err_captcha');
-                Yii::$app->session->setFlash('error', $msg);
+                $this->getHttpSession()->setFlash('error', $msg);
             } elseif (!$user) {
                 $msg = str_replace('%USER%', $email, Yii::t('user', 'err_user_notfound'));
-                Yii::$app->session->setFlash('error', $msg);
+                $this->getHttpSession()->setFlash('error', $msg);
             } elseif (mb_strlen($this->getRequestValue('newPassword')) < $pwMinLen) {
                 $msg = str_replace('%MINLEN%', (string)$pwMinLen, Yii::t('user', 'err_pwd_length'));
-                Yii::$app->session->setFlash('error', $msg);
+                $this->getHttpSession()->setFlash('error', $msg);
             } else {
                 try {
                     if ($user->checkRecoveryToken($this->getRequestValue('recoveryCode'))) {
@@ -303,7 +303,7 @@ class UserController extends Base
                         return $this->render('recovery_confirmed');
                     }
                 } catch (ExceptionBase $e) {
-                    Yii::$app->session->setFlash('error', $e->getMessage());
+                    $this->getHttpSession()->setFlash('error', $e->getMessage());
                 }
             }
         }
@@ -322,9 +322,9 @@ class UserController extends Base
         $user = User::getCurrentUser();
         try {
             $user->changeEmailAddress($email, $code);
-            Yii::$app->session->setFlash('success', Yii::t('user', 'emailchange_done'));
+            $this->getHttpSession()->setFlash('success', Yii::t('user', 'emailchange_done'));
         } catch (FormError $e) {
-            Yii::$app->session->setFlash('error', $e->getMessage());
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
         return $this->redirect(UrlHelper::createUrl('user/myaccount'));
     }
@@ -341,14 +341,14 @@ class UserController extends Base
             if ($changeRequested) {
                 $lastRequest = time() - Tools::dateSql2timestamp($user->emailChangeAt);
                 if ($lastRequest < 5 * 60) {
-                    Yii::$app->session->setFlash('error', Yii::t('user', 'err_emailchange_flood'));
+                    $this->getHttpSession()->setFlash('error', Yii::t('user', 'err_emailchange_flood'));
                 } else {
                     try {
                         $user->sendEmailChangeMail($changeRequested);
-                        Yii::$app->session->setFlash('success', Yii::t('user', 'emailchange_sent'));
+                        $this->getHttpSession()->setFlash('success', Yii::t('user', 'emailchange_sent'));
                     } catch (MailNotSent | ServerConfiguration $e) {
                         $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                        Yii::$app->session->setFlash('error', $errMsg);
+                        $this->getHttpSession()->setFlash('error', $errMsg);
                     }
                 }
             }
@@ -361,10 +361,10 @@ class UserController extends Base
 
             if ($post['pwd'] != '' || $post['pwd2'] != '') {
                 if ($post['pwd'] != $post['pwd2']) {
-                    Yii::$app->session->setFlash('error', Yii::t('user', 'err_pwd_different'));
+                    $this->getHttpSession()->setFlash('error', Yii::t('user', 'err_pwd_different'));
                 } elseif (mb_strlen($post['pwd']) < $pwMinLen) {
                     $msg = Yii::t('user', 'err_pwd_length');
-                    Yii::$app->session->setFlash('error', str_replace('%MINLEN%', (string)$pwMinLen, $msg));
+                    $this->getHttpSession()->setFlash('error', str_replace('%MINLEN%', (string)$pwMinLen, $msg));
                 } else {
                     $user->pwdEnc = password_hash($post['pwd'], PASSWORD_DEFAULT);
                 }
@@ -386,24 +386,24 @@ class UserController extends Base
                 if ($params->confirmEmailAddresses) {
                     $changeRequested = $user->getChangeRequestedEmailAddress();
                     if ($changeRequested && $changeRequested == $post['email']) {
-                        Yii::$app->session->setFlash('error', Yii::t('user', 'err_emailchange_mail_sent'));
+                        $this->getHttpSession()->setFlash('error', Yii::t('user', 'err_emailchange_mail_sent'));
                     } elseif (filter_var($post['email'], FILTER_VALIDATE_EMAIL)) {
                         try {
                             $user->sendEmailChangeMail($post['email']);
-                            Yii::$app->session->setFlash('success', Yii::t('user', 'emailchange_sent'));
+                            $this->getHttpSession()->setFlash('success', Yii::t('user', 'emailchange_sent'));
                         } catch (MailNotSent | ServerConfiguration $e) {
                             $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                            Yii::$app->session->setFlash('error', $errMsg);
+                            $this->getHttpSession()->setFlash('error', $errMsg);
                         }
                     } else {
-                        Yii::$app->session->setFlash('error', Yii::t('user', 'err_invalid_email'));
+                        $this->getHttpSession()->setFlash('error', Yii::t('user', 'err_invalid_email'));
                     }
                 } else {
                     $user->changeEmailAddress($post['email'], '');
-                    Yii::$app->session->setFlash('success', Yii::t('base', 'saved'));
+                    $this->getHttpSession()->setFlash('success', Yii::t('base', 'saved'));
                 }
             } else {
-                Yii::$app->session->setFlash('success', Yii::t('base', 'saved'));
+                $this->getHttpSession()->setFlash('success', Yii::t('base', 'saved'));
             }
         }
 
@@ -456,7 +456,7 @@ class UserController extends Base
                 EMailBlocklist::removeFromBlocklist($user->email);
             }
 
-            Yii::$app->session->setFlash('success', Yii::t('base', 'saved'));
+            $this->getHttpSession()->setFlash('success', Yii::t('base', 'saved'));
         }
 
         return $this->render('email_blocklist', [

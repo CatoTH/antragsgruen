@@ -54,7 +54,7 @@ class ConsultationController extends Base
     {
         $query = $this->getRequestValue('query');
         if (!$query || trim($query) == '') {
-            \Yii::$app->session->setFlash('error', \Yii::t('con', 'search_no_query'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('con', 'search_no_query'));
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -259,7 +259,7 @@ class ConsultationController extends Base
             } else {
                 UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_NEW_COMMENT);
             }
-            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         $notifications = UserNotification::getUserConsultationNotis($user, $this->consultation);
@@ -489,7 +489,7 @@ class ConsultationController extends Base
 
         $user = User::getCurrentUser();
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::homeUrl());
         }
@@ -514,7 +514,7 @@ class ConsultationController extends Base
 
         $user = User::getCurrentUser();
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return $this->redirect(UrlHelper::homeUrl());
         }

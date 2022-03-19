@@ -18,7 +18,7 @@ class DrupalPasswordHashing
     {
         $output = '';
         $i      = 0;
-        $itoa64 = static::_password_itoa64();
+        $itoa64 = self::_password_itoa64();
         do {
             $value  = ord($input[$i++]);
             $output .= $itoa64[$value & 0x3f];
@@ -49,7 +49,7 @@ class DrupalPasswordHashing
 
     private static function _password_get_count_log2($setting): int
     {
-        $itoa64 = static::_password_itoa64();
+        $itoa64 = self::_password_itoa64();
 
         return strpos($itoa64, $setting[3]);
     }
@@ -66,10 +66,10 @@ class DrupalPasswordHashing
         if ($setting[0] !== '$' || $setting[2] !== '$') {
             return false;
         }
-        $count_log2 = static::_password_get_count_log2($setting);
+        $count_log2 = self::_password_get_count_log2($setting);
 
         // Hashes may be imported from elsewhere, so we allow != DRUPAL_HASH_COUNT
-        if ($count_log2 < static::DRUPAL_MIN_HASH_COUNT || $count_log2 > static::DRUPAL_MAX_HASH_COUNT) {
+        if ($count_log2 < self::DRUPAL_MIN_HASH_COUNT || $count_log2 > self::DRUPAL_MAX_HASH_COUNT) {
             return false;
         }
         $salt = substr($setting, 4, 8);
@@ -88,13 +88,13 @@ class DrupalPasswordHashing
             $hash = hash($algo, $hash . $password, true);
         } while (--$count);
         $len    = strlen($hash);
-        $output = $setting . static::_password_base64_encode($hash, $len);
+        $output = $setting . self::_password_base64_encode($hash, $len);
 
         // _password_base64_encode() of a 16 byte MD5 will always be 22 characters.
         // _password_base64_encode() of a 64 byte sha512 will always be 86 characters.
         $expected = intval(12 + ceil(8 * $len / 6));
 
-        return strlen($output) === $expected ? substr($output, 0, static::DRUPAL_HASH_LENGTH) : false;
+        return strlen($output) === $expected ? substr($output, 0, self::DRUPAL_HASH_LENGTH) : false;
     }
 
     public static function userCheckPassword(string $password, string $hashed): bool
@@ -113,7 +113,7 @@ class DrupalPasswordHashing
             case '$S$':
 
                 // A normal Drupal 7 password using sha512.
-                $hash = static::_password_crypt('sha512', $password, $stored_hash);
+                $hash = self::_password_crypt('sha512', $password, $stored_hash);
                 break;
             case '$H$':
 
@@ -122,7 +122,7 @@ class DrupalPasswordHashing
 
                 // A phpass password generated using md5.  This is an
                 // imported password or from an earlier Drupal version.
-                $hash = static::_password_crypt('md5', $password, $stored_hash);
+                $hash = self::_password_crypt('md5', $password, $stored_hash);
                 break;
             default:
                 return false;

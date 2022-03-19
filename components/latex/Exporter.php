@@ -69,7 +69,7 @@ class Exporter
         // Enforce a workaround to enable empty lines by using <p><br></p>
         $str = preg_replace('/(<p[^>]*>)\s*<br>\s*(<\/p>)/siu', '$1 $2', $str);
 
-        $str = static::encodeHTMLString($str);
+        self::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak{}\n", $str);
 
@@ -115,7 +115,7 @@ class Exporter
                 $out  .= '\phantom{.}';
                 $line = substr($line, 1);
             }
-            $out .= str_replace(' ', '\ ', static::encodePlainString($line));
+            $out .= str_replace(' ', '\ ', self::encodePlainString($line));
             $out .= '\linebreak{}' . "\n";
         }
         $out .= '}' . "\n\n" . '\linenumbers';
@@ -133,7 +133,7 @@ class Exporter
     {
         if ($node->nodeType === XML_TEXT_NODE) {
             /** @var \DOMText $node */
-            $str = static::encodePlainString($node->data, false);
+            $str = self::encodePlainString($node->data, false);
             if (in_array('underlined', $extraStyles) || in_array('strike', $extraStyles)) {
                 $words = explode(' ', $str);
                 if (in_array('underlined', $extraStyles)) {
@@ -203,7 +203,7 @@ class Exporter
             if ($node->nodeName !== 'ol') {
                 foreach ($node->childNodes as $child) {
                     /** @var \DOMNode $child */
-                    $content .= static::encodeHTMLNode($child, $childStyles);
+                    $content .= self::encodeHTMLNode($child, $childStyles);
                 }
             }
 
@@ -251,7 +251,7 @@ class Exporter
                 case 'ul':
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
-                    return static::encodeOLNode($node, $extraStyles, $childStyles);
+                    return self::encodeOLNode($node, $extraStyles, $childStyles);
                 case 'li':
                     if ($liCounter) {
                         return '\item[' . $liCounter . '] ' . $content . "\n";
@@ -304,7 +304,7 @@ class Exporter
                     //return '\textcolor{Insert}{\uline{' . $content . '}}';
                     return '\textcolor{Insert}{' . $content . '}';
                 case 'pre':
-                    return static::encodePREString($content);
+                    return self::encodePREString($content);
                 default:
                     //return $content;
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
@@ -351,7 +351,7 @@ class Exporter
             $counter   = HTMLTools::getNextLiCounter($child, $counter);
             $formatted = HTMLTools::getLiValueFormatted($counter, $child->getAttribute('value'), $itemStyle);
 
-            $content .= static::encodeHTMLNode($child, $childStyles, $formatted);
+            $content .= self::encodeHTMLNode($child, $childStyles, $formatted);
         }
 
         return '\begin{enumerate}' . "\n" .
@@ -375,7 +375,7 @@ class Exporter
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             /** @var \DOMNode $child */
             $child = $body->childNodes->item($i);
-            $out   .= static::encodeHTMLNode($child);
+            $out   .= self::encodeHTMLNode($child);
         }
 
         if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
@@ -403,8 +403,8 @@ class Exporter
         $replaces['%LANGUAGE%']   = $layout->language;
         $replaces['%ASSETROOT%']  = $layout->assetRoot;
         $replaces['%PLUGINROOT%'] = $layout->pluginRoot;
-        $replaces['%TITLE%']      = static::encodePlainString($layout->title);
-        $replaces['%AUTHOR%']     = static::encodePlainString($layout->author);
+        $replaces['%TITLE%']      = self::encodePlainString($layout->title);
+        $replaces['%AUTHOR%']     = self::encodePlainString($layout->author);
         $template                 = str_replace(array_keys($replaces), array_values($replaces), $template);
         return $template;
     }
@@ -434,25 +434,25 @@ class Exporter
         $template                         = $content->template;
         $template                         = str_replace("\r", "", $template);
         $replaces                         = [];
-        $replaces['%TITLE%']              = static::encodePlainString($content->title);
-        $replaces['%TITLEPREFIX%']        = static::encodePlainString($content->titlePrefix);
-        $replaces['%TITLE_LONG%']         = static::encodePlainString($content->titleLong);
-        $replaces['%TITLE_RAW%']          = static::encodePlainString($content->titleRaw);
-        $replaces['%AUTHOR%']             = static::encodePlainString($content->author);
+        $replaces['%TITLE%']              = self::encodePlainString($content->title);
+        $replaces['%TITLEPREFIX%']        = self::encodePlainString($content->titlePrefix);
+        $replaces['%TITLE_LONG%']         = self::encodePlainString($content->titleLong);
+        $replaces['%TITLE_RAW%']          = self::encodePlainString($content->titleRaw);
+        $replaces['%AUTHOR%']             = self::encodePlainString($content->author);
         $replaces['%MOTION_DATA_TABLE%']  = $content->motionDataTable;
-        $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
-        $replaces['%INTRODUCTION_BIG%']   = static::encodePlainString($content->introductionBig);
-        $replaces['%INTRODUCTION_SMALL%'] = static::encodePlainString($content->introductionSmall);
-        $replaces['%PAGE_LABEL%']         = static::encodePlainString(\Yii::t('export', 'pdf_page_label'));
-        $replaces['%INITIATOR_LABEL%']    = static::encodePlainString(\Yii::t('export', 'Initiators'));
-        $replaces['%PUBLICATION_DATE%']   = static::encodePlainString($content->publicationDate);
-        $replaces['%MOTION_TYPE%']        = static::encodePlainString($content->typeName);
-        $replaces['%TITLE_LABEL%']        = static::encodePlainString(\Yii::t('export', 'title'));
+        $replaces['%TEXT%']               = self::createTextWithRightString($content->textMain, $content->textRight);
+        $replaces['%INTRODUCTION_BIG%']   = self::encodePlainString($content->introductionBig);
+        $replaces['%INTRODUCTION_SMALL%'] = self::encodePlainString($content->introductionSmall);
+        $replaces['%PAGE_LABEL%']         = self::encodePlainString(\Yii::t('export', 'pdf_page_label'));
+        $replaces['%INITIATOR_LABEL%']    = self::encodePlainString(\Yii::t('export', 'Initiators'));
+        $replaces['%PUBLICATION_DATE%']   = self::encodePlainString($content->publicationDate);
+        $replaces['%MOTION_TYPE%']        = self::encodePlainString($content->typeName);
+        $replaces['%TITLE_LABEL%']        = self::encodePlainString(\Yii::t('export', 'title'));
 
-        $replaces['%APP_TITLE%'] = static::encodePlainString(\Yii::t('export', 'pdf_app_title'));
+        $replaces['%APP_TITLE%'] = self::encodePlainString(\Yii::t('export', 'pdf_app_title'));
         if ($content->agendaItemName) {
-            $replaces['%APP_TOP_LABEL%'] = static::encodePlainString(\Yii::t('export', 'pdf_app_top_label'));
-            $replaces['%APP_TOP%']       = static::encodePlainString($content->agendaItemName);
+            $replaces['%APP_TOP_LABEL%'] = self::encodePlainString(\Yii::t('export', 'pdf_app_top_label'));
+            $replaces['%APP_TOP%']       = self::encodePlainString($content->agendaItemName);
         } else {
             $replaces['%APP_TOP_LABEL%'] = '';
             $replaces['%APP_TOP%']       = '';
@@ -480,7 +480,7 @@ class Exporter
         if (!$this->app->xelatexPath && !$this->app->lualatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
         }
-        $layoutStr   = static::createLayoutString($this->layout);
+        $layoutStr   = self::createLayoutString($this->layout);
         $contentStr  = '';
         $cacheDepend = '';
         $count       = 0;
@@ -505,7 +505,7 @@ class Exporter
                 continue;
             }
 
-            $contentStr .= static::createContentString($content);
+            $contentStr .= self::createContentString($content);
             foreach ($content->imageData as $fileName => $fileData) {
                 if (!preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/siu', $fileName)) {
                     throw new Internal('Invalid image filename');

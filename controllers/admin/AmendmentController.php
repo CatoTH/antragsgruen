@@ -208,7 +208,7 @@ class AmendmentController extends AdminBase
         }
 
         if ($setUsername && !$user) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
             return;
         }
 
@@ -244,20 +244,20 @@ class AmendmentController extends AdminBase
 
         if ($this->isPostSet('screen') && $amendment->isInScreeningProcess()) {
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
-                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
+                $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
                 $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
                 $amendment->titlePrefix = $post['titlePrefix'];
                 $amendment->save();
                 $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
-                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_screened'));
+                $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'amend_screened'));
             }
         }
 
         if ($this->isPostSet('delete')) {
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_deleted'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'amend_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
 
             return '';
@@ -278,7 +278,7 @@ class AmendmentController extends AdminBase
             try {
                 $form->saveAmendment($amendment);
             } catch (FormError $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
 
             $amdat                        = $post['amendment'];
@@ -301,7 +301,7 @@ class AmendmentController extends AdminBase
             }
 
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
-                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
+                $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
                 $amendment->titlePrefix = $post['amendment']['titlePrefix'];
             }
@@ -322,7 +322,7 @@ class AmendmentController extends AdminBase
                     $ppChanges
                 );
             } catch (FormError $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
             if ($ppChanges->hasChanges()) {
                 ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendment->id, $ppChanges->jsonSerialize());
@@ -346,7 +346,7 @@ class AmendmentController extends AdminBase
 
             $amendment->flushCache(true);
             $amendment->refresh();
-            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
         }
 
         $form = new AmendmentEditForm($amendment->getMyMotion(),$amendment->getMyAgendaItem(), $amendment);

@@ -6,10 +6,9 @@ use app\components\EmailNotifications;
 use app\models\events\AmendmentSupporterEvent;
 use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
+use yii\db\ActiveQuery;
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $amendmentId
  * @property int $position
@@ -38,29 +37,23 @@ class AmendmentSupporter extends ISupporter
     {
         parent::init();
 
-        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'onSaved'], null, false);
-        $this->on(static::EVENT_AFTER_INSERT, [$this, 'onSaved'], null, false);
-        $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
+        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'onSaved'], null, false);
+        $this->on(self::EVENT_AFTER_INSERT, [$this, 'onSaved'], null, false);
+        $this->on(self::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
 
         // This handler should be called at the end of the event chain
-        if (!static::$handlersAttached) {
-            static::$handlersAttached = true;
+        if (!self::$handlersAttached) {
+            self::$handlersAttached = true;
             Event::on(AmendmentSupporter::class, AmendmentSupporter::EVENT_SUPPORTED, [$this, 'checkOfficialSupportNumberReached'], null, true);
         }
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentSupporter';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAmendment()
+    public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
     }
@@ -78,7 +71,7 @@ class AmendmentSupporter extends ISupporter
 
     public static function addLoginlessSupportedAmendment(AmendmentSupporter $support)
     {
-        $pre   = static::getMyLoginlessSupportIds();
+        $pre   = self::getMyLoginlessSupportIds();
         $pre[] = intval($support->id);
         \Yii::$app->session->set('anonymous_amendment_supports', $pre);
     }
@@ -97,7 +90,7 @@ class AmendmentSupporter extends ISupporter
                 }
             }
         } else {
-            $alreadySupported = static::getMyLoginlessSupportIds();
+            $alreadySupported = self::getMyLoginlessSupportIds();
             foreach ($amendment->amendmentSupporters as $supp) {
                 if (in_array($supp->id, $alreadySupported)) {
                     $amendment->unlink('amendmentSupporters', $supp, true);
@@ -115,12 +108,12 @@ class AmendmentSupporter extends ISupporter
         $support->position     = $maxPos + 1;
         $support->role         = $role;
         $support->dateCreation = date('Y-m-d H:i:s');
-        $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, ($gender !== '' ? $gender : null));
-        $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_NON_PUBLIC, $nonPublic);
+        $support->setExtraDataEntry(self::EXTRA_DATA_FIELD_GENDER, ($gender !== '' ? $gender : null));
+        $support->setExtraDataEntry(self::EXTRA_DATA_FIELD_NON_PUBLIC, $nonPublic);
         $support->save();
 
         if (!$user) {
-            static::addLoginlessSupportedAmendment($support);
+            self::addLoginlessSupportedAmendment($support);
         }
 
         $amendment->refresh();
@@ -132,7 +125,7 @@ class AmendmentSupporter extends ISupporter
     public static function checkOfficialSupportNumberReached(AmendmentSupporterEvent $event): void
     {
         $support = $event->supporter;
-        if ($support->role !== static::ROLE_SUPPORTER) {
+        if ($support->role !== self::ROLE_SUPPORTER) {
             return;
         }
         /** @var Amendment $amendment */
@@ -144,10 +137,7 @@ class AmendmentSupporter extends ISupporter
         }
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['amendmentId', 'position', 'role'], 'required'],

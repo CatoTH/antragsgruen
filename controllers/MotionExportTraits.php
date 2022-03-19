@@ -13,6 +13,7 @@ use app\models\settings\AntragsgruenApp;
 use app\views\motion\LayoutHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\Session;
 
 /**
  * @property \Yii\base\Action $action
@@ -23,6 +24,7 @@ use yii\web\Response;
  * @method string redirect(string $url)
  * @method string renderPartial(string $template, array $params)
  * @method AntragsgruenApp getParams()
+ * @method Session getHttpSession()
  * @method string showErrorpage(int $error, string $message)
  */
 trait MotionExportTraits
@@ -402,7 +404,7 @@ trait MotionExportTraits
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
         if (!$parentMotion || !$parentMotion->isReadable()) {
-            \Yii::$app->session->setFlash('error', 'The diff-view is not available');
+            $this->getHttpSession()->setFlash('error', 'The diff-view is not available');
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 

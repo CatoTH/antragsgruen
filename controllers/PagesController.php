@@ -38,7 +38,7 @@ class PagesController extends Base
 
                 return \Yii::$app->response->redirect($page->getUrl());
             } catch (FormError $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         }
 

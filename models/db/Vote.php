@@ -86,7 +86,7 @@ class Vote extends ActiveRecord
         throw new FormError('Invalid vote: ' . $vote);
     }
 
-    public function isForVotingItem(IMotion $item): bool
+    public function isForVotingItem(IVotingItem $item): bool
     {
         if (is_a($item, Amendment::class)) {
             return $this->amendmentId === $item->id;

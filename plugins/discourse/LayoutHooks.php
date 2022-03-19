@@ -48,11 +48,11 @@ class LayoutHooks extends Hooks
 
     public function getMotionAlternativeComments(string $before, Motion $motion): string
     {
-        return static::showDiscouseCommentSection($motion);
+        return self::showDiscouseCommentSection($motion);
     }
 
     public function getAmendmentAlternativeComments(string $before, Amendment $amendment): string
     {
-        return static::showDiscouseCommentSection($amendment);
+        return self::showDiscouseCommentSection($amendment);
     }
 }

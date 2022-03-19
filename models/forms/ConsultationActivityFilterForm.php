@@ -107,7 +107,7 @@ class ConsultationActivityFilterForm extends Model
             return '';
         }
 
-        $maxPage = Ceil(($entries - 1) / $this->entriesPerPage);
+        $maxPage = (int)Ceil(($entries - 1) / $this->entriesPerPage);
 
         $str = '<nav><ul class="pagination pagination-sm">';
 

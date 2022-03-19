@@ -10,7 +10,7 @@ use app\models\db\{Amendment, Consultation, ConsultationUserGroup, Motion, Site,
 use Yii;
 use yii\base\Module;
 use yii\helpers\Html;
-use yii\web\{Controller, Request, Response};
+use yii\web\{Controller, Request, Response, Session};
 
 class Base extends Controller
 {
@@ -163,6 +163,13 @@ class Base extends Controller
         /** @var Request $request */
         $request = Yii::$app->request;
         return $request;
+    }
+
+    protected function getHttpSession(): Session
+    {
+        /** @var Session $session */
+        $session = Yii::$app->session;
+        return $session;
     }
 
     protected function getHttpMethod(): string
@@ -398,7 +405,7 @@ class Base extends Controller
 
     public function showErrors(bool $addBorder = false): string
     {
-        $session = Yii::$app->session;
+        $session = $this->getHttpSession();
         if (!$session->isActive) {
             return '';
         }
@@ -484,7 +491,7 @@ class Base extends Controller
             if ($throwExceptions) {
                 throw new Internal(Yii::t('base', 'err_cons_not_site'), 400);
             }
-            Yii::$app->session->setFlash("error", Yii::t('base', 'err_cons_not_site'));
+            $this->getHttpSession()->setFlash("error", Yii::t('base', 'err_cons_not_site'));
             $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
 
@@ -492,7 +499,7 @@ class Base extends Controller
             if ($throwExceptions) {
                 throw new Internal(Yii::t('motion', 'err_not_found'), 404);
             }
-            Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
+            $this->getHttpSession()->setFlash('error', Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
 
@@ -500,7 +507,7 @@ class Base extends Controller
             if ($throwExceptions) {
                 throw new Internal(Yii::t('base', 'err_amend_not_consult'), 400);
             }
-            Yii::$app->session->setFlash('error', Yii::t('base', 'err_amend_not_consult'));
+            $this->getHttpSession()->setFlash('error', Yii::t('base', 'err_amend_not_consult'));
             $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
     }
@@ -597,7 +604,7 @@ class Base extends Controller
             if ($redirect) {
                 $this->redirect($redirect);
             } else {
-                Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
+                $this->getHttpSession()->setFlash('error', Yii::t('motion', 'err_not_found'));
                 $this->redirect(UrlHelper::createUrl('/consultation/index'));
             }
             Yii::$app->end();

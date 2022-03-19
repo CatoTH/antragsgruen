@@ -85,10 +85,10 @@ class ManagerController extends Base
 
     private function addSidebar(bool $showAll): void
     {
-        if (\Yii::$app->user->isGuest) {
-            $this->addAnonymousSidebar();
-        } else {
+        if (User::getCurrentUser()) {
             $this->addUserSidebar($showAll);
+        } else {
+            $this->addAnonymousSidebar();
         }
     }
 
@@ -117,12 +117,11 @@ class ManagerController extends Base
 
     private function eligibleToCreateUser(): ?User
     {
-        if (\Yii::$app->user->isGuest) {
+        if (!User::getCurrentUser()) {
             return null;
         }
 
-        /** @var User $user */
-        $user = \Yii::$app->user->identity;
+        $user = User::getCurrentUser();
         if ($user->status === User::STATUS_CONFIRMED) {
             return $user;
         } else {

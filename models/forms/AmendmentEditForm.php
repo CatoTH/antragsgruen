@@ -201,7 +201,7 @@ class AmendmentEditForm extends Model
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
-                $errors[] = str_replace('%MAX%', $type->maxLen, \Yii::t('base', 'err_max_len_exceed'));
+                $errors[] = str_replace('%MAX%', (string)$type->maxLen, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
 
@@ -288,7 +288,7 @@ class AmendmentEditForm extends Model
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
-                $errors[] = str_replace('%MAX%', $type->maxLen, \Yii::t('base', 'err_max_len_exceed'));
+                $errors[] = str_replace('%MAX%', (string)$type->maxLen, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
 

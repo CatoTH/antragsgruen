@@ -39,17 +39,13 @@ class ManagerController extends Base
         ]);
     }
 
-    /**
-     * @return null|User
-     */
-    protected function eligibleToCreateUser()
+    protected function eligibleToCreateUser(): ?User
     {
-        if (\Yii::$app->user->isGuest) {
+        if (!User::getCurrentUser()) {
             return null;
         }
 
-        /** @var User $user */
-        $user = \Yii::$app->user->identity;
+        $user = User::getCurrentUser();
         if ($user->status === User::STATUS_CONFIRMED) {
             return $user;
         } else {
@@ -57,9 +53,7 @@ class ManagerController extends Base
         }
     }
 
-    /**
-     */
-    protected function requireEligibleToCreateUser()
+    protected function requireEligibleToCreateUser(): void
     {
         $user = $this->eligibleToCreateUser();
         if (!$user) {
@@ -69,7 +63,6 @@ class ManagerController extends Base
     }
 
     /**
-     * @param Consultation $consultation
      * @param string $name
      * @throws FormError
      */

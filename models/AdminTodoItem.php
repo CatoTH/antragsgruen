@@ -158,28 +158,22 @@ class AdminTodoItem
             return [];
         }
 
-        if (isset(static::$todoCache[$consultation->id])) {
-            return static::$todoCache[$consultation->id];
+        if (isset(self::$todoCache[$consultation->id])) {
+            return self::$todoCache[$consultation->id];
         }
 
         $todo = [];
-        $todo = static::addMissingStatutesItem($consultation, $todo);
-        $todo = static::addScreeningMotionsItems($consultation, $todo);
-        $todo = static::addScreeningAmendmentItems($consultation, $todo);
-        $todo = static::addScreeningMotionComments($consultation, $todo);
-        $todo = static::addScreeningAmendmentComments($consultation, $todo);
+        $todo = self::addMissingStatutesItem($consultation, $todo);
+        $todo = self::addScreeningMotionsItems($consultation, $todo);
+        $todo = self::addScreeningAmendmentItems($consultation, $todo);
+        $todo = self::addScreeningMotionComments($consultation, $todo);
+        $todo = self::addScreeningAmendmentComments($consultation, $todo);
 
         usort($todo, function (AdminTodoItem $todo1, AdminTodoItem $todo2) {
-            if ($todo1->timestamp < $todo2->timestamp) {
-                return -1;
-            }
-            if ($todo1->timestamp > $todo2->timestamp) {
-                return 1;
-            }
-            return 0;
+            return $todo1->timestamp <=> $todo2->timestamp;
         });
 
-        static::$todoCache[$consultation->id] = $todo;
+        self::$todoCache[$consultation->id] = $todo;
 
         return $todo;
     }
