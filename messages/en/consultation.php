@@ -73,9 +73,9 @@ return [
     'noti_amendments_all'   => 'All amendments',
     'noti_amendments_mine'  => 'Amendments to my motions',
     'noti_comments'         => 'New comments',
-    'noti_comments_replies' => 'Nur direkte Antworten auf meine Kommentare',
-    'noti_comments_motions' => 'Zu Anträgen, die ich gestellt / kommentiert habe',
-    'noti_comments_con'     => 'Alle Kommentare in dieser Veranstaltung',
+    'noti_comments_replies' => 'Only direct answers to my comments',
+    'noti_comments_motions' => 'Motions I commented on',
+    'noti_comments_con'     => 'Comments in all motions',
     'noti_save'             => 'Save',
 
     'search_results_title' => 'Search: „%QUERY%“',
