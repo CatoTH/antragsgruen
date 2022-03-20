@@ -28,7 +28,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/MotionShow');
 $layout->loadVue();
-$layout->addVueTemplate('@app/views/shared/fullscreen-projector.vue.php');
+$layout->addFullscreenTemplates();
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }

@@ -132,4 +132,19 @@
 
     }
   }
+
+  .motionDataTable {
+    // this adds to the styles from _styles.scss
+    margin-top: 21px;
+    margin-bottom: 30px;
+    font-size: 1.6vw;
+
+    > tbody > tr > th {
+      width: 20%;
+      padding-top: 7px;
+    }
+    > tbody > tr > td {
+      padding-top: 7px;
+    }
+  }
 }

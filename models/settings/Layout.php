@@ -314,6 +314,12 @@ class Layout
         $this->addJS('npm/vue.min.js');
     }
 
+    public function addFullscreenTemplates(): void
+    {
+        $this->addVueTemplate('@app/views/shared/fullscreen-projector.vue.php');
+        $this->addVueTemplate('@app/views/shared/fullscreen-imotion.vue.php');
+    }
+
     public function loadVueSelect(): void
     {
         $this->addJS('npm/vue-select.js');

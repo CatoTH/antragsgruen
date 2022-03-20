@@ -22,26 +22,8 @@ ob_start();
 
         <h1 v-if="imotion" class="hidden">{{ imotion.title_with_prefix }}</h1>
     </header>
-    <main v-if="imotion && !isTwoColumnLayout" class="motionTextHolder">
-        <section v-for="section in imotion.sections" class="paragraph lineNumbers" :class="[section.type]" v-if="section.html !== ''">
-            <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
-            <div v-html="section.html"></div>
-        </section>
-    </main>
-    <main v-if="imotion && isTwoColumnLayout" class="motionTextHolder row">
-        <div class="col-md-8">
-            <section v-for="section in leftSections" class="paragraph lineNumbers" :class="[section.type]"  v-if="section.html !== ''">
-                <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
-                <div v-html="section.html"></div>
-            </section>
-        </div>
-        <div class="col-md-4">
-            <section v-for="section in rightSections" class="paragraph lineNumbers" :class="[section.type]"  v-if="section.html !== ''">
-                <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
-                <div v-html="section.html"></div>
-            </section>
-        </div>
-    </main>
+
+    <fullscreen-imotion v-if="imotion" :imotion="imotion"></fullscreen-imotion>
 </article>
 <?php
 $html = ob_get_clean();
@@ -60,23 +42,6 @@ $html = ob_get_clean();
                 imotions: null,
                 imotion: null,
                 selectedIMotionId: null
-            }
-        },
-        computed: {
-            isTwoColumnLayout: function () {
-                return this.imotion && this.imotion.sections && this.imotion.sections.find(section => {
-                    return section.layout_right;
-                });
-            },
-            leftSections: function () {
-                return this.imotion.sections.filter(section => {
-                    return !section.layout_right;
-                });
-            },
-            rightSections: function () {
-                return this.imotion.sections.filter(section => {
-                    return section.layout_right;
-                });
             }
         },
         methods: {
@@ -99,6 +64,7 @@ $html = ob_get_clean();
                         return response.json();
                     })
                     .then(data => {
+                        console.log(JSON.parse(JSON.stringify(data)));
                         widget.imotion = data;
                         widget.selectedIMotionId = data.type + '-' + data.id;
                         widget.$emit('changed', data);
@@ -107,9 +73,6 @@ $html = ob_get_clean();
             },
             loadInitIMotion: function () {
                 this.loadIMotion(this.initdata.init_imotion_url);
-            },
-            showSectionTitle: function (section) {
-                return !section.layout_right && ['Image', 'PDFAttachment', 'PDFAlternative'].indexOf(section.type) === -1;
             },
             onChangeSelectedIMotion: function () {
                 let found = null;
