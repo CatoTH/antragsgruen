@@ -69,7 +69,7 @@ class Exporter
         // Enforce a workaround to enable empty lines by using <p><br></p>
         $str = preg_replace('/(<p[^>]*>)\s*<br>\s*(<\/p>)/siu', '$1 $2', $str);
 
-        self::encodeHTMLString($str);
+        $str = self::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak{}\n", $str);
 

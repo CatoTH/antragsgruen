@@ -11,20 +11,20 @@ class HTML2TexTest extends TestBase
     use Specify;
 
 
-    public function testEmptyLine()
+    public function testEmptyLine(): void
     {
         $orig   = "<p> </p>";
         $expect = "{\\color{white}.}\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
 
         $orig   = "<p>###LINENUMBER### </p>";
         $expect = "###LINENUMBER###{\\color{white}.}\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testLineBreaks()
+    public function testLineBreaks(): void
     {
         $orig   = [
             '<p>###LINENUMBER###Normaler Text <strong>fett und <em>kursiv</em></strong><br>',
@@ -33,7 +33,7 @@ class HTML2TexTest extends TestBase
         $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}\linebreak{}' . "\n" .
             'Zeilenumbruch \uline{unterstrichen}' . "\n";
         $out    = Exporter::getMotionLinesToTeX($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
 
         $orig   = '<p>Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, halbseidener, ' .
             'Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.<br>' .
@@ -46,68 +46,68 @@ class HTML2TexTest extends TestBase
 
         $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $out   = Exporter::getMotionLinesToTeX($lines);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
 
 
         $orig   = "<p><br></p>";
         $expect = "{\\color{white}.}\n";
         $out    = Exporter::getMotionLinesToTeX([$orig]);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
         }
 
-    public function testBold()
+    public function testBold(): void
     {
         $orig   = '<p>Normaler Text <strong>fett</strong></p>';
         $expect = 'Normaler Text \textbf{fett}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testItalic()
+    public function testItalic(): void
     {
         $orig   = '<p>Normaler Text <em>kursiv</em></p>';
         $expect = 'Normaler Text \emph{kursiv}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testUnderlines()
+    public function testUnderlines(): void
     {
         $orig   = '<p>Normaler Text <span class="underline">unterstrichen</span></p>';
         $expect = 'Normaler Text \uline{unterstrichen}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
 
         $orig   = '<p>Normaler Text <u>unterstrichen</u></p>';
         $expect = 'Normaler Text \uline{unterstrichen}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testStrike()
+    public function testStrike(): void
     {
         $orig   = '<p>Normaler Text <span class="strike">durchgestrichen</span></p>';
         $expect = 'Normaler Text \sout{durchgestrichen}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
 
         $orig   = '<p>Normaler Text <s>durchgestrichen</s></p>';
         $expect = 'Normaler Text \sout{durchgestrichen}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testBlockquote()
+    public function testBlockquote(): void
     {
         $orig   = '<p>Normaler Text</p><blockquote>Zitat</blockquote><p>Weiter</p>';
         $expect = 'Normaler Text' . "\n";
         $expect .= '\begin{quotation}\noindent' . "\n" . 'Zitat\end{quotation}' . "\n";
         $expect .= 'Weiter' . "\n";
         $out = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testUnnumbered()
+    public function testUnnumbered(): void
     {
         $orig   = '<ul><li>Punkt 1</li><li>Punkt 2</li></ul>';
         $expect = '\begin{itemize}' . "\n";
@@ -116,43 +116,43 @@ class HTML2TexTest extends TestBase
         $expect .= '\end{itemize}' . "\n";
 
         $out = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testLinks()
+    public function testLinks(): void
     {
         $orig   = 'Test <a href="https://www.antragsgruen.de/?q=Antragsgr%C3%BCn">Antragsgrün</a> Ende';
         $expect = 'Test \href{https://www.antragsgruen.de/?q=Antragsgr\%C3\%BCn}{Antragsgr\"un} Ende';
 
         $out = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testBrokenHtml()
+    public function testBrokenHtml(): void
     {
         $orig   = "<p>Test <em>kursiv</em> <ins>Neu</ins> </strong></p>";
         $expect = "Test \\emph{kursiv} \\textcolor{Insert}{\\uline{Neu}}\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testInserted()
+    public function testInserted(): void
     {
         $orig   = "<p class='inserted'>Neu <em>Neu2</em></p>";
         $expect = '\textcolor{Insert}{\uline{Neu}\uline{ }}\emph{\textcolor{Insert}{\uline{Neu2}}}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testDeleted()
+    public function testDeleted(): void
     {
         $orig   = "<p class='deleted'>Neu Neu2</p>";
         $expect = "\\textcolor{Delete}{\sout{Neu}\sout{ Neu2}}\n";
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testNestedLists()
+    public function testNestedLists(): void
     {
         $orig = [
             '<ol start="4"><li>###LINENUMBER###Test 2' . "\n",
@@ -173,10 +173,10 @@ class HTML2TexTest extends TestBase
 \item[5.] Test 5
 \end{enumerate}' . "\n";
         $out    = Exporter::getMotionLinesToTeX($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testDeletedInsertedLists()
+    public function testDeletedInsertedLists(): void
     {
         $orig = '<div><ol class="deleted" start="4"><li value="4">Test 2' . "\n" . '<ol class="decimalCircle"><li>Test a</li><li value="g">Test c</li><li value="i/">Test d</li><li>Test 9</li></ol></li></ol>' .
                 '<ol class="inserted" start="2"><li>Test3</li></ol><ol class="deleted" start="5"><li>Test3</li></ol></div>';
@@ -200,10 +200,10 @@ class HTML2TexTest extends TestBase
 ';
 
         $out = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testParagraphsAndLineBreaksInLists()
+    public function testParagraphsAndLineBreaksInLists(): void
     {
         $orig = '<ul>
  <li>
@@ -229,10 +229,11 @@ class HTML2TexTest extends TestBase
 
         $out    = Exporter::encodeHTMLString($orig);
 
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testNestedListsWithEmptyLines() {
+    public function testNestedListsWithEmptyLines(): void
+    {
         $orig = '<ul>
  <li>
  <p>Line 1</p>
@@ -275,10 +276,11 @@ class HTML2TexTest extends TestBase
 ';
 
         $out    = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testNestedListsWithEmptyLines2() {
+    public function testNestedListsWithEmptyLines2(): void
+    {
         $orig = '<ul>
  <li>
  <p>Line 1</p>
@@ -321,10 +323,10 @@ class HTML2TexTest extends TestBase
         $out = Exporter::getMotionLinesToTeX($byLines);
         $out = Exporter::fixLatexErrorsInFinalDocument($out);
 
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testListInBlock()
+    public function testListInBlock(): void
     {
         $orig = '<blockquote class="delete"><ul><li>Test 123</li></ul>';
         $expect = '\begin{quotation}
@@ -334,10 +336,10 @@ class HTML2TexTest extends TestBase
 \end{quotation}
 ';
         $out = Exporter::encodeHTMLString($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testDoubleBr()
+    public function testDoubleBr(): void
     {
         $orig = '<p>First line<br>
 <br>
@@ -350,10 +352,10 @@ Second line.
 
         $out = Exporter::getMotionLinesToTeX([$orig]);
         $out = Exporter::fixLatexErrorsInFinalDocument($out);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    public function testBrAfterBlockquote()
+    public function testBrAfterBlockquote(): void
     {
         $orig = '<p>Test1</p><blockquote>
 <p><strong>Line 1,<br />
