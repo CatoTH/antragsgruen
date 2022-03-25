@@ -41,7 +41,7 @@ class TextSimple extends Text
             /** @var AmendmentSection $section */
             $section = $this->section;
 
-            if ($section->getAmendment()->globalAlternative) {
+            if ($section->getAmendment() && $section->getAmendment()->globalAlternative) {
                 $amendmentHtml = $section->data;
             } else {
                 $diff = new Diff();

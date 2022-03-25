@@ -8,7 +8,7 @@ use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
 
 /**
- * @property int $amendmentId
+ * @property int|null $amendmentId
  * @property int $sectionId
  * @property string $data
  * @property string $dataRaw
@@ -57,6 +57,9 @@ class AmendmentSection extends IMotionSection
     {
         $current = Consultation::getCurrent();
         if ($current) {
+            if ($this->amendmentId === null) {
+                return $current;
+            }
             $amend = $current->getAmendment($this->amendmentId);
             if ($amend) {
                 return $current;
