@@ -1291,11 +1291,10 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param boolean $includeVoted
      * @return Amendment[]
      * @throws \app\models\exceptions\Internal
      */
-    public function collidesWithOtherProposedAmendments($includeVoted)
+    public function collidesWithOtherProposedAmendments(bool $includeVoted): array
     {
         $collidesWith = [];
 
@@ -1310,6 +1309,10 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         foreach ($this->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$this->id]) as $amendment) {
+            if ($this->globalAlternative || $amendment->globalAlternative) {
+                $collidesWith[] = $amendment;
+                continue;
+            }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {

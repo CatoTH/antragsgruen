@@ -40,15 +40,20 @@ class TextSimple extends Text
         if ($multipleParagraphs === ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE) {
             /** @var AmendmentSection $section */
             $section = $this->section;
-            $diff    = new Diff();
-            if ($section->getOriginalMotionSection()) {
-                $origParas = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->getData());
+
+            if ($section->getAmendment()->globalAlternative) {
+                $amendmentHtml = $section->data;
             } else {
-                $origParas = [];
+                $diff = new Diff();
+                if ($section->getOriginalMotionSection()) {
+                    $origParas = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->getData());
+                } else {
+                    $origParas = [];
+                }
+                $amendParas = HTMLTools::sectionSimpleHTML($section->data);
+                $amDiffSections = $diff->compareHtmlParagraphs($origParas, $amendParas, DiffRenderer::FORMATTING_ICE);
+                $amendmentHtml = implode('', $amDiffSections);
             }
-            $amendParas     = HTMLTools::sectionSimpleHTML($section->data);
-            $amDiffSections = $diff->compareHtmlParagraphs($origParas, $amendParas, DiffRenderer::FORMATTING_ICE);
-            $amendmentHtml  = implode('', $amDiffSections);
 
             return $this->getTextAmendmentFormField(false, $amendmentHtml, $fixedWidth);
         } else {
