@@ -1,8 +1,8 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\ConsultationUserGroup;
-use app\models\db\User;
+use app\models\api\SpeechUser;
+use app\models\db\{ConsultationUserGroup, User};
 use yii\helpers\Html;
 
 /**
@@ -25,28 +25,7 @@ $layout->loadVue();
 $layout->addVueTemplate('@app/views/speech/user-inline-widget.vue.php');
 
 $initData = $queue->getUserApiObject($user, $cookieUser);
-if ($user) {
-    $userData = [
-        'logged_in' => true,
-        'id'        => $user->id,
-        'token'     => null,
-        'name'      => $user->name,
-    ];
-} elseif ($cookieUser) {
-    $userData = [
-        'logged_in' => true,
-        'id'        => null,
-        'token'     => $cookieUser->userToken,
-        'name'      => $cookieUser->name,
-    ];
-} else {
-    $userData = [
-        'logged_in' => false,
-        'id'        => null,
-        'token'     => null,
-        'name'      => '',
-    ];
-}
+$userData = new SpeechUser($user, $cookieUser);
 
 ?>
 <section aria-labelledby="speechListUserTitle"
