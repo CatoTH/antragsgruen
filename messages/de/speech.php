@@ -4,6 +4,7 @@ return [
     'subqueue_male'   => 'Offen / Männer',
     'subqueue_female' => 'Frauen',
     'speaking_list'   => 'Redeliste',
+    'speaking_bc'     => 'Redeliste',
 
     'title_plain'        => 'Allgemeine Redeliste',
     'title_to'           => 'Redeliste zu %TITLE%',
@@ -39,7 +40,7 @@ return [
     'err_permission_admin' => 'Keine Berechtigung zum Bearbeiten der Redeliste',
     'err_permission_apply' => 'Die Redeliste ist geschlossen',
 
-    'admin_bc'               => 'Redeliste',
+    'admin_bc'               => 'Verwaltung',
     'admin_title_plain'      => 'Allgemeine Redeliste verwalten',
     'admin_title_to'         => 'Redeliste zu %TITLE% verwalten',
     'admin_setting'          => 'Redelisten-Einstellungen',

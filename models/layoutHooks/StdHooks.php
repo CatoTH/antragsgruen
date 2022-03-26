@@ -333,7 +333,7 @@ class StdHooks extends Hooks
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
             }
             if ($privilegeSpeech && $consultation->getSettings()->hasSpeechLists) {
-                $adminUrl = UrlHelper::createUrl(['consultation/admin-speech']);
+                $adminUrl = UrlHelper::createUrl(['consultation/speech']);
                 $adminTitle = \Yii::t('base', 'menu_speech_lists');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'speechAdminLink', 'aria-label' => $adminTitle]) . '</li>';
             }

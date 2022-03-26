@@ -483,6 +483,19 @@ class ConsultationController extends Base
         }
     }
 
+    private function getUnassignedQueueOrCreate(): SpeechQueue
+    {
+        foreach ($this->consultation->speechQueues as $queue) {
+            if ($queue->motionId === null && $queue->agendaItemId === null) {
+                return $queue;
+            }
+        }
+
+        $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation, false);
+        $unassignedQueue->save();
+        return $unassignedQueue;
+    }
+
     public function actionAdminSpeech(): string
     {
         $this->layout = 'column2';
@@ -494,18 +507,16 @@ class ConsultationController extends Base
             return $this->redirect(UrlHelper::homeUrl());
         }
 
-        $unassignedQueue = null;
-        foreach ($this->consultation->speechQueues as $queue) {
-            if ($unassignedQueue === null && $queue->motionId === null && $queue->agendaItemId === null) {
-                $unassignedQueue = $queue;
-            }
-        }
-        if ($unassignedQueue === null) {
-            $unassignedQueue = SpeechQueue::createWithSubqueues($this->consultation, false);
-            $unassignedQueue->save();
-        }
-
+        $unassignedQueue = $this->getUnassignedQueueOrCreate();
         return $this->render('@app/views/speech/admin-singlepage', ['queue' => $unassignedQueue]);
+    }
+
+    public function actionSpeech(): string
+    {
+        $this->layout = 'column2';
+
+        $unassignedQueue = $this->getUnassignedQueueOrCreate();
+        return $this->render('@app/views/speech/index-singlepage', ['queue' => $unassignedQueue]);
     }
 
     public function actionAdminVotings(): string

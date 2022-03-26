@@ -14,7 +14,14 @@ export class CurrentSpeechList {
             title: $element.data('title'),
             adminUrl: $element.data('admin-url'),
         };
-        if ($element.hasClass('currentSpeechInline')) {
+        if ($element.hasClass('currentSpeechFullPage')) {
+            this.widget = new Vue({
+                el: $vueEl[0],
+                template: `
+                    <speech-user-full-list-widget :queue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-full-list-widget>`,
+                data
+            });
+        } else if ($element.hasClass('currentSpeechInline')) {
             this.widget = new Vue({
                 el: $vueEl[0],
                 template: `

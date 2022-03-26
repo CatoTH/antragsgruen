@@ -4,6 +4,7 @@ return [
     'subqueue_male'   => 'Men',
     'subqueue_female' => 'Women',
     'speaking_list'   => 'Speaking list',
+    'speaking_bc'     => 'Speaking list',
 
     'title_plain'        => 'Speaking list',
     'title_to'           => 'Speaking list of %TITLE%',
@@ -39,7 +40,7 @@ return [
     'err_permission_admin' => 'No permision to edit this speaking list',
     'err_permission_apply' => 'The speaking list is closed',
 
-    'admin_bc'               => 'Speaking list',
+    'admin_bc'               => 'Administration',
     'admin_title_plain'      => 'Manage speaking list',
     'admin_title_to'         => 'Manage speaking list of %TITLE%',
     'admin_setting'          => 'Settings',
