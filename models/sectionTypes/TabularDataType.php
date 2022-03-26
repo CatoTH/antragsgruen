@@ -19,7 +19,7 @@ class TabularDataType implements \JsonSerializable
     /**
      * @return string[]
      */
-    public static function getDataTypes()
+    public static function getDataTypes(): array
     {
         return [
             static::TYPE_STRING  => \Yii::t('admin', 'tabulardatatype_string'),
@@ -51,9 +51,8 @@ class TabularDataType implements \JsonSerializable
      * @param string $nameId
      * @param string $value
      * @param bool $required
-     * @return string
      */
-    public function getFormField($nameId, $value, $required)
+    public function getFormField($nameId, $value, $required): string
     {
         $str = '';
         switch ($this->type) {

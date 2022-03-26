@@ -26,7 +26,9 @@ class MergeSingleAmendmentForm extends Model
 
     /** @var array */
     public $otherAmendStatuses;
+    /** @var array */
     public $otherAmendOverrides;
+    /** @var array */
     public $paragraphs;
 
     /**

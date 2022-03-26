@@ -43,7 +43,7 @@ class TabularData extends ISectionType
     /**
      * @param array $data
      */
-    public function setMotionData($data)
+    public function setMotionData($data): void
     {
         $type = $this->section->getSettings();
         $rows = static::getTabularDataRowsFromData($type->data);
@@ -61,7 +61,7 @@ class TabularData extends ISectionType
         $this->section->setData(json_encode($dataOut));
     }
 
-    public function deleteMotionData()
+    public function deleteMotionData(): void
     {
         $this->section->setData('');
     }
@@ -69,7 +69,7 @@ class TabularData extends ISectionType
     /**
      * @param array $data
      */
-    public function setAmendmentData($data)
+    public function setAmendmentData($data): void
     {
         $this->setMotionData($data);
     }
@@ -151,7 +151,7 @@ class TabularData extends ISectionType
      * @param string|null $data
      * @return TabularDataType[]
      */
-    public static function getTabularDataRowsFromData($data)
+    public static function getTabularDataRowsFromData($data): array
     {
         if ($data === null || $data == '') {
             return [];

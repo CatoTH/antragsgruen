@@ -15,17 +15,27 @@ class AntragsgruenInitDb extends Model
     /** @var string */
     public $language = 'en';
 
+    /** @var string */
     public $sqlType        = 'mysql';
+    /** @var string */
     public $sqlHost;
+    /** @var string */
     public $sqlUsername;
+    /** @var string */
     public $sqlPassword;
+    /** @var int */
     public $sqlPort        = 3306;
+    /** @var string */
     public $sqlDB;
+    /** @var string */
     public $sqlTablePrefix = '';
 
+    /** @var bool */
     public $prettyUrls;
 
+    /** @var string */
     public $adminUsername;
+    /** @var string */
     public $adminPassword;
 
     /** @var bool */
@@ -37,10 +47,7 @@ class AntragsgruenInitDb extends Model
     public $adminUser;
 
 
-    /**
-     * @param string $configFile
-     */
-    public function __construct($configFile)
+    public function __construct(string $configFile)
     {
         parent::__construct();
         $config = $this->readConfigFromFile($configFile);
@@ -53,10 +60,7 @@ class AntragsgruenInitDb extends Model
         $this->language = $config->baseLanguage;
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['sqlType', 'adminUsername', 'adminPassword'], 'required'],
@@ -92,10 +96,7 @@ class AntragsgruenInitDb extends Model
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function databaseParamsComeFromEnv()
+    public function databaseParamsComeFromEnv(): bool
     {
         return isset($_ENV['ANTRAGSGRUEN_MYSQL_USER']) && isset($_ENV['ANTRAGSGRUEN_MYSQL_PASSWORD']) &&
             isset($_ENV['ANTRAGSGRUEN_MYSQL_HOST']) && isset($_ENV['ANTRAGSGRUEN_MYSQL_DB']);
@@ -116,7 +117,7 @@ class AntragsgruenInitDb extends Model
     /**
      * @param array $params
      */
-    private function setDatabaseFromParams($params)
+    private function setDatabaseFromParams($params): void
     {
         if (!is_array($params) || !isset($params['dsn'])) {
             return;
@@ -143,8 +144,8 @@ class AntragsgruenInitDb extends Model
                 if ($parts[0] === 'host') {
                     $this->sqlHost = $parts[1];
                 }
-                if ($parts[0] === 'port') {
-                    $this->sqlPort = $parts[1];
+                if ($parts[0] === 'port' && $parts[1] > 0) {
+                    $this->sqlPort = (int)$parts[1];
                 }
             }
         }
@@ -152,10 +153,9 @@ class AntragsgruenInitDb extends Model
 
 
     /**
-     * @return array
      * @throws Internal
      */
-    protected function getDBConfig()
+    protected function getDBConfig(): array
     {
         if ($this->sqlType == 'mysql') {
             $dsn = 'mysql:host=' . $this->sqlHost . ';dbname=' . $this->sqlDB;
@@ -187,12 +187,10 @@ class AntragsgruenInitDb extends Model
 
 
     /**
-     * @param bool $exceptions
-     * @return bool
      * @throws Internal
      * @throws \Exception
      */
-    public function verifyDBConnection($exceptions = true)
+    public function verifyDBConnection(bool $exceptions = true): bool
     {
         try {
             $connConfig = $this->getDBConfig();

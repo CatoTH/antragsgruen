@@ -11,7 +11,9 @@ class Site implements \JsonSerializable
 
     /** @var bool */
     public $showAntragsgruenAd = true;
+    /** @var bool */
     public $showBreadcrumbs = true;
+    /** @var bool */
     public $apiEnabled = false;
 
     /** @var int[] */
@@ -23,6 +25,7 @@ class Site implements \JsonSerializable
 
     /** @var array */
     public $stylesheetSettings = [];
+    /** @var array */
     public $apiCorsOrigins = [];
 
     const LOGIN_STD = 0;

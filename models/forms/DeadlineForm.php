@@ -8,16 +8,16 @@ use app\models\exceptions\Internal;
 
 class DeadlineForm
 {
+    /** @var array */
     public $deadlinesMotions;
+    /** @var array */
     public $deadlinesAmendments;
+    /** @var array */
     public $deadlinesComments;
+    /** @var array */
     public $deadlinesMerging;
 
-    /**
-     * @param ConsultationMotionType $motionType
-     * @return DeadlineForm
-     */
-    public static function createFromMotionType(ConsultationMotionType $motionType)
+    public static function createFromMotionType(ConsultationMotionType $motionType): DeadlineForm
     {
         $form                      = new DeadlineForm();
         $form->deadlinesMotions    = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_MOTIONS);
@@ -29,9 +29,8 @@ class DeadlineForm
 
     /**
      * @param array $input
-     * @return DeadlineForm
      */
-    public static function createFromInput($input)
+    public static function createFromInput($input): DeadlineForm
     {
         $form = new DeadlineForm();
 
@@ -64,9 +63,8 @@ class DeadlineForm
 
     /**
      * @param array $rows
-     * @return array
      */
-    private function parseComplexRows($rows)
+    private function parseComplexRows($rows): array
     {
         $deadlines = [];
         for ($i = 0; $i < count($rows['start']); $i++) {
@@ -91,7 +89,7 @@ class DeadlineForm
     /**
      * @param array $input
      */
-    public function createFromInputComplex($input)
+    public function createFromInputComplex($input): void
     {
         $this->deadlinesMotions    = [];
         $this->deadlinesAmendments = [];
@@ -112,10 +110,7 @@ class DeadlineForm
         }
     }
 
-    /**
-     * @return boolean
-     */
-    public function isSimpleConfiguration()
+    public function isSimpleConfiguration(): bool
     {
         if (count($this->deadlinesComments) > 0 || count($this->deadlinesMerging) > 0) {
             return false;
@@ -155,10 +150,7 @@ class DeadlineForm
         return $this->deadlinesAmendments[0]['end'];
     }
 
-    /**
-     * @return array
-     */
-    public function generateDeadlineArray()
+    public function generateDeadlineArray(): array
     {
         return [
             ConsultationMotionType::DEADLINE_MOTIONS    => $this->deadlinesMotions,

@@ -123,7 +123,7 @@ class TextSimple extends Text
     /**
      * @param string $data
      */
-    public function setMotionData($data, bool $allowForbidden = false)
+    public function setMotionData($data, bool $allowForbidden = false): void
     {
         $type = $this->section->getSettings();
         $forbiddenFormattings = ($allowForbidden ? [] : $type->getForbiddenMotionFormattings());
@@ -141,7 +141,7 @@ class TextSimple extends Text
      * @param array $data
      * @throws \app\models\exceptions\Internal
      */
-    public function setAmendmentData($data)
+    public function setAmendmentData($data): void
     {
         /** @var AmendmentSection $section */
         $section = $this->section;

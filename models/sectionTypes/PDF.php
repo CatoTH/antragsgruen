@@ -15,8 +15,7 @@ class PDF extends ISectionType
 {
     public function getPdfUrl(bool $absolute = false, bool $showAlways = false): ?string
     {
-        /** @var AntragsgruenApp $app */
-        $app = \Yii::$app->params;
+        $app = AntragsgruenApp::getInstance();
         $externallySavedData = ($app->binaryFilePath !== null && trim($app->binaryFilePath) !== '');
 
         /** @var MotionSection $section */
@@ -60,7 +59,7 @@ class PDF extends ISectionType
         }
 
         $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
-        $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
+        $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign" aria-hidden="true"></span> ';
         $str     .= str_replace('%MB%', $maxSize, \Yii::t('motion', 'max_size_hint'));
         $str     .= '</div>';
 
@@ -90,7 +89,7 @@ class PDF extends ISectionType
      * @param array $data
      * @throws FormError
      */
-    public function setMotionData($data)
+    public function setMotionData($data): void
     {
         if (!isset($data['tmp_name'])) {
             throw new FormError('Invalid Image');
@@ -106,7 +105,7 @@ class PDF extends ISectionType
         $this->section->metadata = json_encode($metadata);
     }
 
-    public function deleteMotionData()
+    public function deleteMotionData(): void
     {
         $this->section->setData('');
         $this->section->metadata = '';
@@ -116,7 +115,7 @@ class PDF extends ISectionType
      * @param array $data
      * @throws FormError
      */
-    public function setAmendmentData($data)
+    public function setAmendmentData($data): void
     {
         $this->setMotionData($data);
     }
@@ -164,8 +163,7 @@ class PDF extends ISectionType
             return;
         }
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
 
         $abs = 5;
         $pdf->setY($pdf->getY() + $abs);

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f36f0b3b6df3138680bb8dccf90e7d8",
+    "content-hash": "1ff5fff48a93b8dbccbffc7c31b93de9",
     "packages": [
         {
             "name": "async-aws/core",
@@ -207,23 +207,24 @@
         },
         {
             "name": "catoth/html2opendocument",
-            "version": "0.15",
+            "version": "0.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/html2opendocument.git",
-                "reference": "17e6cef0f4368696acd34811bd349ee9895fccc2"
+                "reference": "ea77e4697fd9b8aafdc4259d237d1d9dc6609b18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/17e6cef0f4368696acd34811bd349ee9895fccc2",
-                "reference": "17e6cef0f4368696acd34811bd349ee9895fccc2",
+                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/ea77e4697fd9b8aafdc4259d237d1d9dc6609b18",
+                "reference": "ea77e4697fd9b8aafdc4259d237d1d9dc6609b18",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
+                "ext-mbstring": "*",
                 "ext-zip": "*",
                 "ezyang/htmlpurifier": "*",
-                "php": ">=7.1.0"
+                "php": ">=7.3.0"
             },
             "type": "library",
             "autoload": {
@@ -250,9 +251,9 @@
             ],
             "support": {
                 "issues": "https://github.com/CatoTH/html2opendocument/issues",
-                "source": "https://github.com/CatoTH/html2opendocument/tree/0.15"
+                "source": "https://github.com/CatoTH/html2opendocument/tree/rm"
             },
-            "time": "2021-05-22T06:17:15+00:00"
+            "time": "2022-03-26T07:21:21+00:00"
         },
         {
             "name": "cebe/markdown",

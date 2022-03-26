@@ -16,8 +16,11 @@ class SiteCreateForm extends Model
 {
     /** @var string */
     public $contact;
+    /** @var string */
     public $title;
+    /** @var string */
     public $subdomain;
+    /** @var string */
     public $organization;
 
     // Sync with SiteCreateWizard.ts
@@ -33,16 +36,24 @@ class SiteCreateForm extends Model
 
     /** @var bool */
     public $singleMotion    = false;
+    /** @var bool */
     public $hasAmendments   = true;
+    /** @var bool */
     public $amendSinglePara = false;
+    /** @var bool */
     public $amendMerging    = false;
+    /** @var bool */
     public $motionScreening = true;
+    /** @var bool */
     public $amendScreening  = true;
+    /** @var bool */
     public $speechLogin     = false;
+    /** @var bool */
     public $speechQuotas    = false;
 
     /** @var int */
     public $motionsInitiatedBy    = 2;
+    /** @var int */
     public $amendmentsInitiatedBy = 2;
     const MOTION_INITIATED_ADMINS    = 1;
     const MOTION_INITIATED_LOGGED_IN = 2;
@@ -56,11 +67,14 @@ class SiteCreateForm extends Model
     /** @var null|\DateTime */
     public $amendmentDeadline = null;
 
+    /** @var bool */
     public $needsSupporters = false;
+    /** @var int */
     public $minSupporters   = 3;
 
     /** @var bool */
     public $hasComments = false;
+    /** @var bool */
     public $openNow = false;
 
     /** @var Consultation|null */
@@ -76,10 +90,7 @@ class SiteCreateForm extends Model
         $this->language = \Yii::$app->language;
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['title', 'contact', 'subdomain'], 'required'],
@@ -667,8 +678,7 @@ class SiteCreateForm extends Model
         $user->dateCreation    = date('Y-m-d H:i:s');
         $user->pwdEnc          = password_hash('admin', PASSWORD_DEFAULT);
         $user->organizationIds = '';
-        $user->save();
-        if (!$user) {
+        if (!$user->save()) {
             var_dump($user->getErrors());
             die();
         }

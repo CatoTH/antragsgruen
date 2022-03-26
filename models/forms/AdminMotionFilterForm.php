@@ -22,14 +22,19 @@ class AdminMotionFilterForm extends Model
 
     /** @var int|null */
     public $status = null;
+    /** @var int|null */
     public $tag = null;
+    /** @var int|null */
     public $agendaItem = null;
     public $proposalStatus = null;
+    /** @var int|null */
     public $responsibility = null;
 
     /** @var string */
     public $initiator = null;
+    /** @var string */
     public $title = null;
+    /** @var string */
     public $prefix = null;
 
     /** @var Motion [] */
@@ -83,10 +88,7 @@ class AdminMotionFilterForm extends Model
         }
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['status', 'tag', 'sort', 'agendaItem', 'responsibility'], 'number'],

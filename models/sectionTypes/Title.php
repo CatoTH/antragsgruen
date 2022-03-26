@@ -52,12 +52,12 @@ class Title extends ISectionType
     /**
      * @param string $data
      */
-    public function setMotionData($data)
+    public function setMotionData($data): void
     {
         $this->section->setData($data);
     }
 
-    public function deleteMotionData()
+    public function deleteMotionData(): void
     {
         $this->section->setData('');
     }
@@ -65,7 +65,7 @@ class Title extends ISectionType
     /**
      * @param string $data
      */
-    public function setAmendmentData($data)
+    public function setAmendmentData($data): void
     {
         $this->setMotionData($data);
     }

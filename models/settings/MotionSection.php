@@ -17,6 +17,6 @@ class MotionSection implements \JsonSerializable
     /** @var bool */
     public $showInHtml = false; // Used for titles and PDF-alternatives
 
-    /** @var bool */
+    /** @var int */
     public $public = MotionSection::PUBLIC_YES;
 }

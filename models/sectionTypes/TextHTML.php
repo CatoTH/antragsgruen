@@ -28,13 +28,13 @@ class TextHTML extends Text
     /**
      * @param string $data
      */
-    public function setMotionData($data)
+    public function setMotionData($data): void
     {
         $this->section->dataRaw = $data;
         $this->section->setData(HTMLTools::correctHtmlErrors($data));
     }
 
-    public function deleteMotionData()
+    public function deleteMotionData(): void
     {
         $this->section->setData('');
         $this->section->dataRaw = '';
@@ -43,7 +43,7 @@ class TextHTML extends Text
     /**
      * @param array $data
      */
-    public function setAmendmentData($data)
+    public function setAmendmentData($data): void
     {
         /** @var AmendmentSection $section */
         $section          = $this->section;

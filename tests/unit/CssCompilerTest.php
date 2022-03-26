@@ -10,7 +10,7 @@ class CssCompilerTest extends TestBase
 {
     /** @noinspection PhpUnusedLocalVariableInspection */
     public function testCss() {
-        $stylesheetSettings = new Stylesheet(Stylesheet::$DEFAULTS_CLASSIC);
+        $stylesheetSettings = new Stylesheet(Stylesheet::DEFAULTS_CLASSIC);
         $format = \ScssPhp\ScssPhp\Formatter\Compact::class;
         ob_start();
         require(__DIR__ . '/../../views/pages/css.php');

@@ -51,14 +51,14 @@ class MotionDeepCopy
         return $newMotion;
     }
 
-    private static function copyTags(Motion $oldMotion, Motion $newMotion)
+    private static function copyTags(Motion $oldMotion, Motion $newMotion): void
     {
         foreach ($oldMotion->getPublicTopicTags() as $tag) {
             $newMotion->link('tags', $tag);
         }
     }
 
-    private static function copyMotionSections(Motion $oldMotion, Motion $newMotion)
+    private static function copyMotionSections(Motion $oldMotion, Motion $newMotion): void
     {
         foreach ($oldMotion->sections as $section) {
             $newSection = new MotionSection();
@@ -70,7 +70,7 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyMotionSupporters(Motion $oldMotion, Motion $newMotion)
+    private static function copyMotionSupporters(Motion $oldMotion, Motion $newMotion): void
     {
         foreach ($oldMotion->motionSupporters as $supporter) {
             $newSupporter = new MotionSupporter();
@@ -81,7 +81,7 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyMotionAdminComments(Motion $oldMotion, Motion $newMotion)
+    private static function copyMotionAdminComments(Motion $oldMotion, Motion $newMotion): void
     {
         foreach ($oldMotion->getAllAdminComments() as $comment) {
             $newComment = new MotionAdminComment();
@@ -92,7 +92,7 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyMotionComments(Motion $oldMotion, Motion $newMotion)
+    private static function copyMotionComments(Motion $oldMotion, Motion $newMotion): void
     {
         foreach ($oldMotion->comments as $comment) {
             $newComment = new MotionComment();
@@ -103,7 +103,7 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyAmendments(Motion $oldMotion, Motion $newMotion)
+    private static function copyAmendments(Motion $oldMotion, Motion $newMotion): void
     {
         $amendmentIdMapping = [];
         $newAmendments      = [];
@@ -141,7 +141,7 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyAmendmentSections(Amendment $oldAmendment, Amendment $newAmendment)
+    private static function copyAmendmentSections(Amendment $oldAmendment, Amendment $newAmendment): void
     {
         foreach ($oldAmendment->sections as $section) {
             $newSection = new AmendmentSection();
@@ -152,7 +152,7 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyAmendmentSupporters(Amendment $oldAmendment, Amendment $newAmendment)
+    private static function copyAmendmentSupporters(Amendment $oldAmendment, Amendment $newAmendment): void
     {
         foreach ($oldAmendment->amendmentSupporters as $supporter) {
             $newSupporter = new AmendmentSupporter();
@@ -163,7 +163,7 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyAmendmentComments(Amendment $oldAmendment, Amendment $newAmendment)
+    private static function copyAmendmentComments(Amendment $oldAmendment, Amendment $newAmendment): void
     {
         foreach ($oldAmendment->comments as $comment) {
             $newComment = new AmendmentComment();
@@ -174,7 +174,7 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyAmendmentAdminComments(Amendment $oldAmendment, Amendment $newAmendment)
+    private static function copyAmendmentAdminComments(Amendment $oldAmendment, Amendment $newAmendment): void
     {
         foreach ($oldAmendment->getAllAdminComments() as $comment) {
             $newComment = new AmendmentAdminComment();

@@ -127,15 +127,15 @@ abstract class ISectionType
      * @param string $data
      * @throws FormError
      */
-    abstract public function setMotionData($data);
+    abstract public function setMotionData($data): void;
 
-    abstract public function deleteMotionData();
+    abstract public function deleteMotionData(): void;
 
     /**
      * @param array $data
      * @throws FormError
      */
-    abstract public function setAmendmentData($data);
+    abstract public function setAmendmentData($data): void;
 
     abstract public function getSimple(bool $isRight, bool $showAlways = false): string;
 

@@ -45,7 +45,7 @@ class VotingData implements \JsonSerializable
     /**
      * @param array $votes
      */
-    public function setFromPostData($votes)
+    public function setFromPostData($votes): void
     {
         if (isset($votes['yes']) && is_numeric($votes['yes'])) {
             $this->votesYes = intval($votes['yes']);

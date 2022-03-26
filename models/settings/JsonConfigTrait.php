@@ -31,6 +31,7 @@ trait JsonConfigTrait
             $dataArr = json_decode($data, true);
         }
         if ($dataArr === null) {
+            /** @var string|null $data */
             throw new ConfigurationError('Invalid JSON string: ' . $data);
         }
 

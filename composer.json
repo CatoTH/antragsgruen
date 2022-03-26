@@ -28,7 +28,7 @@
     "tecnickcom/tcpdf": "^6.3",
     "setasign/fpdi": "^2.3",
     "tijsverkoyen/css-to-inline-styles": "^2.2.0",
-    "catoth/html2opendocument": "0.15",
+    "catoth/html2opendocument": "0.16",
     "paragonie/sodium_compat": "^1.6",
     "gregwar/captcha": "1.*",
     "scssphp/scssphp": "^1.4",

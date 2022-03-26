@@ -7,7 +7,7 @@ use app\models\db\Consultation;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
-use \CatoTH\HTML2OpenDocument\Text as ODTText;
+use CatoTH\HTML2OpenDocument\Text as ODTText;
 
 class VideoEmbed extends ISectionType
 {
@@ -72,12 +72,12 @@ class VideoEmbed extends ISectionType
         return $this->getMotionFormField();
     }
 
-    public function setMotionData($data)
+    public function setMotionData($data): void
     {
         $this->section->setData($data);
     }
 
-    public function deleteMotionData()
+    public function deleteMotionData(): void
     {
         $this->section->setData('');
         $this->section->metadata = '';
@@ -87,7 +87,7 @@ class VideoEmbed extends ISectionType
      * @param array $data
      * @throws FormError
      */
-    public function setAmendmentData($data)
+    public function setAmendmentData($data): void
     {
         $this->setMotionData($data);
     }

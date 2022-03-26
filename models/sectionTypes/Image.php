@@ -185,7 +185,7 @@ class Image extends ISectionType
      * @param array $data
      * @throws FormError
      */
-    public function setMotionData($data)
+    public function setMotionData($data): void
     {
         if (!isset($data['tmp_name'])) {
             throw new FormError('Invalid Image');
@@ -224,7 +224,7 @@ class Image extends ISectionType
         }
     }
 
-    public function deleteMotionData()
+    public function deleteMotionData(): void
     {
         $this->section->setData('');
         $this->section->metadata = '';
@@ -234,7 +234,7 @@ class Image extends ISectionType
      * @param array $data
      * @throws FormError
      */
-    public function setAmendmentData($data)
+    public function setAmendmentData($data): void
     {
         $this->setMotionData($data);
     }

@@ -16,45 +16,82 @@ class Stylesheet implements \JsonSerializable
     const DEFAULTS_LAYOUT_CLASSIC = 'layout-classic';
     const DEFAULTS_LAYOUT_DBJR = 'layout-dbjr';
 
+    /** @var string */
     public $bodyFont;
+    /** @var int */
     public $bodyFontSize;
+    /** @var int */
     public $containerSize;
+    /** @var string */
     public $colorLinks;
+    /** @var string */
     public $colorLinksLight;
+    /** @var string */
     public $colorDelLink;
+    /** @var string */
     public $brandPrimary;
+    /** @var string */
     public $buttonFont;
+    /** @var string */
     public $buttonSuccessBackground;
+    /** @var string */
     public $textColor;
+    /** @var int */
     public $sidebarWidth;
+    /** @var string */
     public $sidebarBackground;
+    /** @var string */
     public $sidebarActionFont;
+    /** @var string */
     public $createMotionBtnColor;
+    /** @var string */
     public $bookmarkAmendmentBackground;
+    /** @var string */
     public $bookmarkCommentColor;
+    /** @var string */
     public $headingFont;
+    /** @var string */
     public $headingPrimaryText;
+    /** @var string */
     public $headingPrimaryBackground;
+    /** @var int */
     public $headingPrimarySize;
+    /** @var string */
     public $headingSecondaryText;
+    /** @var string */
     public $headingSecondaryBackground;
+    /** @var int */
     public $headingSecondarySize;
+    /** @var string */
     public $headingTertiaryText;
+    /** @var string */
     public $headingTertiaryBackground;
+    /** @var int */
     public $headingTertiarySize;
+    /** @var bool */
     public $linkTextDecoration;
+    /** @var bool */
     public $useBoxShadow;
+    /** @var int */
     public $contentBorderRadius;
+    /** @var string */
     public $backgroundImage;
+    /** @var string */
     public $menuActive;
+    /** @var string */
     public $menuLink;
+    /** @var string */
     public $menuFont;
+    /** @var string */
     public $motionFixedFontColor;
+    /** @var string */
     public $motionFixedFont;
+    /** @var int */
     public $motionStdFontSize;
+    /** @var bool */
     public $uppercaseTitles;
 
-    public static $DEFAULTS_CLASSIC = [
+    public const DEFAULTS_CLASSIC = [
         'useBoxShadow'                => true,
         'containerSize'               => 1024,
         'contentBorderRadius'         => 10,
@@ -94,7 +131,7 @@ class Stylesheet implements \JsonSerializable
         'uppercaseTitles'             => false,
     ];
 
-    public static $DEFAULTS_DBJR = [
+    public const DEFAULTS_DBJR = [
         'useBoxShadow'                => true,
         'containerSize'               => 1024,
         'contentBorderRadius'         => 10,
@@ -324,7 +361,7 @@ class Stylesheet implements \JsonSerializable
             ],
         ];
 
-        $defaultsArr = ($defaults === static::DEFAULTS_LAYOUT_DBJR ? static::$DEFAULTS_DBJR : static::$DEFAULTS_CLASSIC);
+        $defaultsArr = ($defaults === self::DEFAULTS_LAYOUT_DBJR ? self::DEFAULTS_DBJR : self::DEFAULTS_CLASSIC);
         foreach ($defaultsArr as $key => $value) {
             $settings[$key]['default'] = $value;
         }
@@ -381,6 +418,6 @@ class Stylesheet implements \JsonSerializable
 
     public function getSettingsHash(): string
     {
-        return sha1(json_encode($this));
+        return sha1((string)json_encode($this));
     }
 }
