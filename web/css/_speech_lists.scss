@@ -521,6 +521,10 @@
 }
 
 .currentSpeechFullPage {
+  .speechAdminLink {
+    margin-top: 15px;
+    margin-right: 20px;
+  }
   .activeSpeaker .name {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -547,6 +551,9 @@
         font-size: 16px;
       }
     }
+  }
+  .apply {
+    max-width: 300px;
   }
 }
 

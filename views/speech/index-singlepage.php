@@ -20,6 +20,7 @@ $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache()
 
 
 $layout->loadVue();
+$layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/speech/user-full-list-widget.vue.php');
 
 $initData = $queue->getUserApiObject($user, $cookieUser);

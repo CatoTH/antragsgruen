@@ -39,8 +39,7 @@ class StdHooks extends Hooks
 
     public function favicons(string $before): string
     {
-        /** @var AntragsgruenApp $params */
-        $params       = \Yii::$app->params;
+        $params       = AntragsgruenApp::getInstance();
         $resourceBase = Html::encode($params->resourceBase);
         if (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true) {
             $resourceBase .= 'web/';
@@ -278,7 +277,7 @@ class StdHooks extends Hooks
             $privilegeProposal = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
             $privilegeSpeech = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES);
 
-            if ($controller->consultation) {
+            if ($consultation) {
                 if (User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
                     $icon = '<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>';
                     $icon .= '<span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>';
@@ -292,7 +291,7 @@ class StdHooks extends Hooks
                             Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink', 'aria-label' => \Yii::t('base', 'home_back')]) .
                             '</li>';
 
-                $pages = ConsultationText::getMenuEntries($controller->site, $controller->consultation);
+                $pages = ConsultationText::getMenuEntries($controller->site, $consultation);
                 foreach ($pages as $page) {
                     $options = ['class' => 'page' . $page->id, 'aria-label' => $page->title];
                     $out     .= '<li>' . Html::a($page->title, $page->getUrl(), $options) . '</li>';
@@ -309,6 +308,11 @@ class StdHooks extends Hooks
                 $loginTitle = \Yii::t('base', 'menu_login');
                 $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow', 'aria-label' => $loginTitle]) .
                                '</li>';
+            }
+            if ($consultation && $consultation->getSettings()->hasSpeechLists) {
+                $adminUrl = UrlHelper::createUrl(['/consultation/speech']);
+                $adminTitle = \Yii::t('base', 'menu_speech_list');
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'speechAdminLink', 'aria-label' => $adminTitle]) . '</li>';
             }
             if (User::getCurrentUser()) {
                 $link = Html::a(
@@ -332,13 +336,8 @@ class StdHooks extends Hooks
                 $adminTitle = \Yii::t('base', 'menu_motion_list');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
             }
-            if ($privilegeSpeech && $consultation->getSettings()->hasSpeechLists) {
-                $adminUrl = UrlHelper::createUrl(['consultation/speech']);
-                $adminTitle = \Yii::t('base', 'menu_speech_lists');
-                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'speechAdminLink', 'aria-label' => $adminTitle]) . '</li>';
-            }
             if ($privilegeScreening) {
-                $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
+                $todo = AdminTodoItem::getConsultationTodos($consultation);
                 if (count($todo) > 0) {
                     $adminUrl   = UrlHelper::createUrl('/admin/index/todo');
                     $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
