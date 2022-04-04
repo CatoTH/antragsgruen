@@ -3,6 +3,7 @@
 namespace app\plugins\egp\controllers;
 
 use app\controllers\Base;
+use app\models\db\IMotion;
 
 class CandidaturesController extends Base
 {
@@ -31,6 +32,10 @@ class CandidaturesController extends Base
 
             return false;
         }
+
+        usort($motions, function (IMotion $motion1, IMotion $motion2): int {
+            return strnatcasecmp($motion1->getTitleWithPrefix(), $motion2->getTitleWithPrefix());
+        });
 
         return $this->render('@app/plugins/egp/views/candidatures', [
             'agendaItem' => $agendaItem,

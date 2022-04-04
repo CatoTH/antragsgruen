@@ -1,11 +1,7 @@
 <?php
 
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\ConsultationMotionType;
-use app\models\db\Motion;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\PDF;
-use app\models\sectionTypes\VideoEmbed;
+use app\models\db\{ConsultationAgendaItem, ConsultationMotionType, Motion};
+use app\models\sectionTypes\{ISectionType, PDF, VideoEmbed};
 use yii\helpers\Html;
 
 /**
@@ -31,10 +27,6 @@ $layout->addBreadcrumb('Candidatures');
 $layout->fullWidth = true;
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
-
-usort($motions, function (Motion $motion1, Motion $motion2) {
-    return $motion1->title <=> $motion2->title;
-});
 
 ?>
 <div class="content egpCandidatures">

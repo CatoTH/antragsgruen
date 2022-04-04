@@ -21,7 +21,7 @@ class VideoEmbed extends ISectionType
         if (preg_match('/youtube\.com\/(watch)?\?v=(?<id>[a-z0-9]{11})/siu', $url, $matches)) {
             return $matches['id'];
         }
-        if (preg_match('/youtu\.be\/(?<id>[a-z0-9]{11})/siu', $url, $matches)) {
+        if (preg_match('/youtu\.be\/(?<id>[a-z0-9-]{11})/siu', $url, $matches)) {
             return $matches['id'];
         }
         if (preg_match('/youtube\.com\/embed\/(?<id>[a-z0-9]{11})/siu', $url, $matches)) {

@@ -94,7 +94,7 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
 
     public function resetPasswordAlternativeLink(): ?string
     {
-        return ($this->config->resetAlternativeLink ? $this->config->resetAlternativeLink : null);
+        return $this->config->resetAlternativeLink ?: null;
     }
 
     public function performLogin(string $username, string $password): User
@@ -133,9 +133,9 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
         $userObj->organization = $user['delegate_of'];
         $userObj->email        = $user['email'];
         $userObj->fixedData    = 1;
-        $userObj->save();
-        if (!$userObj) {
+        if (!$userObj->save()) {
             var_dump($userObj->getErrors());
+            die();
         }
 
         return $userObj;
