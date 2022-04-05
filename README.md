@@ -37,7 +37,7 @@ Installation
 ```bash
 # Using PHP8-packages from [deb.sury.org](https://deb.sury.org/):
 apt-get install php8.0 php8.0-cli php8.0-fpm php8.0-intl php8.0-gd php8.0-mysql \
-                php8.0-opcache php8.0-curl php8.0-xml php8.0-mbstring php8.0-zip
+                php8.0-opcache php8.0-curl php8.0-xml php8.0-mbstring php8.0-zip php8.0-iconv
 ```
 
 - Apache or nginx. Example files are provided here:

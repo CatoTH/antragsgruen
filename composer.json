@@ -23,6 +23,7 @@
     "ext-fileinfo": "*",
     "ext-intl": "*",
     "ext-curl": "*",
+    "ext-iconv": "*",
     "yiisoft/yii2": "~2.0.15",
     "yiisoft/yii2-authclient": "^2.2.4",
     "tecnickcom/tcpdf": "^6.3",
@@ -40,6 +41,7 @@
     "symfony/serializer": "^5.4",
     "symfony/string": "^5.4",
     "symfony/translation-contracts": "^2.4",
+    "symfony/polyfill-iconv": "^1.25",
     "doctrine/annotations": "^1.13",
     "symfony/property-access": "^5.4",
     "phpoffice/phpspreadsheet": "^1.21"

@@ -77,7 +77,7 @@ abstract class Base
         ?Consultation $consultation
     ): Email {
         $mail = (new Email())
-            ->from(new Address($fromEmail, mb_encode_mimeheader($fromName)))
+            ->from(new Address($fromEmail, $fromName))
             ->subject($subject);
 
         $html = $this->createHtmlPart($subject, $plain, $html, $consultation);
