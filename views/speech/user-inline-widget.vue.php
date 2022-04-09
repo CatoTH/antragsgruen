@@ -18,6 +18,10 @@ ob_start();
             <?= Yii::t('speech', 'current_nobody') ?>
         </span>
     </div>
+    <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
+        <span v-if="remainingSpeakingTime >= 0">{{ formattedRemainingTime }}</span>
+        <span v-if="remainingSpeakingTime <= 0">Over</span>
+    </div>
     <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
         <?= Yii::t('speech', 'next_speaker') ?>:
@@ -157,15 +161,14 @@ $html          = ob_get_clean();
         data() {
             return {
                 registerName: this.user.name,
-                showApplicationForm: false, // "null" is already taken by the default form
-                pollingId: null
+                showApplicationForm: false // "null" is already taken by the default form
             };
         },
-        beforeDestroy() {
-            window.clearInterval(this.pollingId)
-        },
         created() {
-            this.startPolling()
+            this.startPolling();
+        },
+        beforeDestroy() {
+            this.stopPolling();
         }
     });
 </script>

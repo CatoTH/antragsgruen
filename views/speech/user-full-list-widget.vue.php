@@ -162,15 +162,14 @@ $html          = ob_get_clean();
         data() {
             return {
                 registerName: this.user.name,
-                showApplicationForm: null, // null = default form
-                pollingId: null
+                showApplicationForm: null // null = default form
             };
         },
-        beforeDestroy() {
-            window.clearInterval(this.pollingId)
-        },
         created() {
-            this.startPolling()
+            this.startPolling();
+        },
+        beforeDestroy() {
+            this.stopPolling();
         }
     });
 </script>

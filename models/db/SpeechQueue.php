@@ -441,13 +441,17 @@ class SpeechQueue extends ActiveRecord
             }
         }
 
+        $settings = $this->getSettings();
+
         return [
             'id' => $this->id,
-            'is_open' => $this->getSettings()->isOpen,
+            'is_open' => $settings->isOpen,
             'have_applied' => $haveApplied,
             'subqueues' => $this->getUserApiSubqueues($user, $cookieUser),
             'slots' => $this->getActiveSlots(),
             'requires_login' => $this->getMyConsultation()->getSettings()->speechRequiresLogin,
+            'current_time' => round(microtime(true) * 1000), // needs to include milliseconds for accuracy
+            'speaking_time' => $settings->speakingTime,
         ];
     }
 }

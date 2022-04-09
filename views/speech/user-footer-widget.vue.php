@@ -138,14 +138,13 @@ $html          = ob_get_clean();
             return {
                 registerName: this.user.name,
                 showApplicationForm: false, // "null" is already taken by the default form
-                pollingId: null
             };
-        },
-        beforeDestroy() {
-            window.clearInterval(this.pollingId)
         },
         created() {
             this.startPolling()
+        },
+        beforeDestroy() {
+            this.stopPolling();
         }
     });
 </script>

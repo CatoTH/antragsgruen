@@ -51,6 +51,7 @@ return [
     'admin_deactivate_other' => 'Deaktiviert andere Redelisten',
     'admin_setting_open'     => 'Bewerbungen möglich',
     'admin_prefer_nonspeak'  => 'Personen bevorzugen, die noch nicht sprachen',
+    'admin_speaking_time'    => 'Redezeit anzeigen',
     'admin_goto_components'  => 'Quotierung, (De-)Aktivierung',
     'admin_prev_speakers'    => 'Bisherige Sprecher*innen',
     'admin_prev_show'        => 'Anzeigen',

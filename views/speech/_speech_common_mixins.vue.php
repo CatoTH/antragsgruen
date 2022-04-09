@@ -12,6 +12,14 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
     const unregisterUrl = <?= json_encode($unregisterUrl) ?>;
 
     const SPEECH_COMMON_MIXIN = {
+        data() {
+            return {
+                pollingId: null,
+                timerId: null,
+                timeOffset: 0, // milliseconds the browser is ahead of the server time
+                remainingSpeakingTime: null
+            }
+        },
         computed: {
             activeSpeaker: function () {
                 const active = this.queue.slots.filter(function (slot) {
@@ -26,6 +34,18 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
             },
             loginWarning: function () {
                 return this.queue.requires_login && !this.user.logged_in;
+            },
+            hasSpeakingTime: function () {
+                return this.queue.speaking_time > 0;
+            },
+            formattedRemainingTime: function () {
+                const minutes = Math.floor(this.remainingSpeakingTime / 60);
+                let seconds = this.remainingSpeakingTime - minutes * 60;
+                if (seconds < 10) {
+                    seconds = "0" + seconds;
+                }
+
+                return minutes + ":" + seconds;
             }
         },
         methods: {
@@ -71,10 +91,28 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                     alert(err.responseText);
                 });
             },
+            recalcTimeOffset: function (serverTime) {
+                const browserTime = (new Date()).getTime();
+                this.timeOffset = browserTime - serverTime.getTime();
+            },
+            recalcRemainingTime: function () {
+                const active = this.activeSpeaker;
+                if (!active) {
+                    this.remainingSpeakingTime = null;
+                    return;
+                }
+                const startedTs = (new Date(active.date_started)).getTime();
+                const currentTs = (new Date()).getTime() - this.timeOffset;
+                const secondsPassed = Math.round((currentTs - startedTs) / 1000);
+
+                this.remainingSpeakingTime = this.queue.speaking_time - secondsPassed;
+            },
             reloadData: function () {
                 const widget = this;
                 $.get(pollUrl.replace(/QUEUEID/, widget.queue.id), function (data) {
                     widget.queue = data;
+                    widget.recalcTimeOffset(new Date(data['current_time']));
+                    widget.recalcRemainingTime();
                 }).catch(function(err) {
                     console.error("Could not load speech queue data from backend", err);
                 });
@@ -84,6 +122,14 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                 this.pollingId = window.setInterval(function () {
                     widget.reloadData();
                 }, 3000);
+
+                this.timerId = window.setInterval(function () {
+                    widget.recalcRemainingTime();
+                }, 100);
+            },
+            stopPolling: function () {
+                window.clearInterval(this.pollingId);
+                window.clearInterval(this.timerId);
             }
         }
     };

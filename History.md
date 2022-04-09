@@ -19,6 +19,7 @@
   - It allows to log in into Antragsgrün using the username/password of an OpenSlides page.
   - Using a separate proxy app, it allows to automatically synchronize users and user groups from OpenSlides to Antragsgrün.
   - It needs to be set up by a system administrator per site.
+- The speaking list now has a separate site for users in the menu and supports setting a timer per speaker.
 - Amendments can now be further restricted to only affect one particular location within one paragraph.
 - There are new motion statuses "Quorum reached" and "Quorum missed".
 - The CAPTCHA system is reset for an user after a successful login. This solves issues when multiple users are behind the same IP address.

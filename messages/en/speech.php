@@ -51,6 +51,7 @@ return [
     'admin_deactivate_other' => 'deactivates other lists',
     'admin_setting_open'     => 'Applying is possible',
     'admin_prefer_nonspeak'  => 'Prefer persons who haven\'t talked yet',
+    'admin_speaking_time'    => 'Show speaking time',
     'admin_goto_components'  => 'Quota, (de-)activation',
     'admin_prev_speakers'    => 'Previous speakers',
     'admin_prev_show'        => 'Show',

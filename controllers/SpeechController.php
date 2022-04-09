@@ -170,6 +170,11 @@ class SpeechController extends Base
         $settings                   = $queue->getSettings();
         $settings->isOpen           = (intval(\Yii::$app->request->post('is_open')) > 0);
         $settings->preferNonspeaker = (intval(\Yii::$app->request->post('prefer_nonspeaker')) > 0);
+        if (\Yii::$app->request->post('speaking_time') > 0) {
+            $settings->speakingTime = intval(\Yii::$app->request->post('speaking_time'));
+        } else {
+            $settings->speakingTime = null;
+        }
         $queue->setSettings($settings);
 
         $queue->isActive = (intval(\Yii::$app->request->post('is_active')) > 0 ? 1 : 0);

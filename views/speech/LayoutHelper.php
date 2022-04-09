@@ -3,14 +3,14 @@
 namespace app\views\speech;
 
 use app\components\UrlHelper;
-use app\models\db\{Consultation, Motion, SpeechQueue};
+use app\models\db\{Consultation, IMotion, Motion, SpeechQueue};
 use yii\helpers\Html;
 
 class LayoutHelper
 {
-    private static function addQueueToSidebar(SpeechQueue $speechQueue, ?Motion $motion, string &$mainHtml, string &$miniHtml, SpeechQueue $selectedQueue)
+    private static function addQueueToSidebar(SpeechQueue $speechQueue, ?IMotion $motion, string &$mainHtml, string &$miniHtml, SpeechQueue $selectedQueue)
     {
-        if ($motion) {
+        if ($motion && is_a($motion, Motion::class)) {
             $url = UrlHelper::createMotionUrl($motion, 'admin-speech');
         } else {
             $url = UrlHelper::createUrl(['consultation/admin-speech']);
