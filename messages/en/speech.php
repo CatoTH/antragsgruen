@@ -12,6 +12,8 @@ return [
     'user_section_title' => 'Speaking list',
     'current'            => 'Currently',
     'current_nobody'     => 'nobody',
+    'remaining_time'     => 'Speaking time',
+    'remaining_time_over' => 'over',
     'next_speaker'       => 'Next speaker',
     'you'                => 'You',
     'login_warning'      => 'Log in',

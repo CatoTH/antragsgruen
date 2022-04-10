@@ -433,6 +433,20 @@
     }
   }
 
+  .remainingTime {
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+
+    .time {
+      font-weight: bold;
+    }
+    .over {
+      color: red;
+    }
+  }
+
   .upcomingSpeaker {
     margin-top: 20px;
     @if ($font-size-base < 16) {
@@ -535,6 +549,9 @@
     margin-bottom: 20px;
     text-align: center;
   }
+  .remainingTime {
+    text-align: center;
+  }
   .nameList {
     display: block;
     margin-top: 30px;
@@ -564,6 +581,11 @@
 
 
 .currentSpeechInline {
+  .remainingTime {
+    padding-left: 26px;
+    margin-top: 10px;
+  }
+
   .waitingMultiple {
     margin-top: 20px;
 
@@ -721,6 +743,13 @@
     .title {
       font-weight: bold;
     }
+
+    .remainingTime {
+      float: right;
+    }
+    .over {
+      color: red;
+    }
   }
 
   .waitingMultiple {
@@ -742,6 +771,14 @@
     padding: 5px 10px;
     flex-basis: 50%;
     flex-grow: 1;
+
+    .btnApply {
+      margin-top: 7px;
+    }
+
+    .appliedMe {
+      margin-top: 5px;
+    }
 
     form {
       display: inline-block;

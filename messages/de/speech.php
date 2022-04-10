@@ -12,6 +12,8 @@ return [
     'user_section_title' => 'Redeliste',
     'current'            => 'Laufender Redebeitrag',
     'current_nobody'     => 'Kein laufender Redebeitrag',
+    'remaining_time'     => 'Redezeit',
+    'remaining_time_over' => 'vorbei',
     'next_speaker'       => 'Nächste Redner*innen',
     'you'                => 'Du',
     'login_warning'      => 'Einloggen',

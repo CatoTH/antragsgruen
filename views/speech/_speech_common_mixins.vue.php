@@ -10,6 +10,8 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
     const pollUrl = <?= json_encode($pollUrl) ?>;
     const registerUrl = <?= json_encode($registerUrl) ?>;
     const unregisterUrl = <?= json_encode($unregisterUrl) ?>;
+    const msgPersonsWaiting1 = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>;
+    const msgPersonsWaitingX = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>;
 
     const SPEECH_COMMON_MIXIN = {
         data() {
@@ -51,6 +53,13 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
         methods: {
             isMe: function (slot) {
                 return slot.userId === this.user.id;
+            },
+            numAppliedTitle: function (subqueue) {
+                if (subqueue.num_applied === 1) {
+                    return msgPersonsWaiting1;
+                } else {
+                    return msgPersonsWaitingX.replace(/%NUM%/, subqueue.num_applied);
+                }
             },
             register: function ($event, subqueue) {
                 $event.preventDefault();

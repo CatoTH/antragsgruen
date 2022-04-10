@@ -26,6 +26,10 @@ ob_start();
         <span class="nobody" v-if="!activeSpeaker">
             <?= Yii::t('speech', 'footer_current_nobody') ?>
         </span>
+        <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
+            <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
+            <span v-if="remainingSpeakingTime <= 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
+        </div>
     </div>
     <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
@@ -58,7 +62,7 @@ ob_start();
             <div class="notPossible" v-if="!queue.is_open">
                 <?= Yii::t('speech', 'apply_closed') ?>
             </div>
-            <button class="btn btn-default btn-xs" type="button"
+            <button class="btn btn-default btn-xs btnApply" type="button"
                     v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id && !loginWarning"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >

@@ -20,6 +20,11 @@ ob_start();
                 <?= Yii::t('speech', 'current_nobody') ?>
             </span>
         </div>
+        <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
+            <?= Yii::t('speech', 'remaining_time') ?>:<br>
+            <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
+            <span v-if="remainingSpeakingTime <= 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
+        </div>
         <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
             <?= Yii::t('speech', 'next_speaker') ?>:
