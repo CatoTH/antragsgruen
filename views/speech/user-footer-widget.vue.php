@@ -28,7 +28,7 @@ ob_start();
         </span>
         <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
             <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
-            <span v-if="remainingSpeakingTime <= 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
+            <span v-if="remainingSpeakingTime < 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
         </div>
     </div>
     <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">

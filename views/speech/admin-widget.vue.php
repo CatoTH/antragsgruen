@@ -104,6 +104,12 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                     {{ activeSlot.name }}
                 </div>
 
+                <div class="remainingTime" v-if="hasSpeakingTime && remainingSpeakingTime !== null">
+                    <?= Yii::t('speech', 'remaining_time') ?>:
+                    <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
+                    <span v-if="remainingSpeakingTime < 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
+                </div>
+
                 <button type="button" class="btn btn-danger stop" @click="stopSlot($event, activeSlot)">
                     <span class="glyphicon glyphicon-stop" title="<?= Yii::t('speech', 'admin_stop') ?>" aria-hidden="true"></span>
                     <span class="sr-only"><?= Yii::t('speech', 'admin_stop') ?></span>
@@ -214,11 +220,13 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             return {
                 showPreviousList: false,
                 pollingId: null,
+                timerId: null,
                 dragging: false,
                 changedSettings: {
                     hasSpeakingTime: null,
-                    speakingTime: null,
-                }
+                    speakingTime: null
+                },
+                remainingSpeakingTime: null
             };
         },
         computed: {
@@ -227,7 +235,6 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                     return (this.changedSettings.hasSpeakingTime !== null ? this.changedSettings.hasSpeakingTime : this.queue.settings.speaking_time !== null);
                 },
                 set: function (value) {
-                    console.log(value);
                     this.changedSettings.hasSpeakingTime = value;
                 }
             },
@@ -236,7 +243,6 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                     return (this.changedSettings.speakingTime !== null ? this.changedSettings.speakingTime : this.queue.settings.speaking_time);
                 },
                 set: function (value) {
-                    console.log(value);
                     this.changedSettings.speakingTime = value;
                 }
             },
@@ -253,6 +259,15 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 return this.queue.slots.filter(function (slot) {
                     return slot.date_stopped !== null;
                 }).length > 0;
+            },
+            formattedRemainingTime: function () {
+                const minutes = Math.floor(this.remainingSpeakingTime / 60);
+                let seconds = this.remainingSpeakingTime - minutes * 60;
+                if (seconds < 10) {
+                    seconds = "0" + seconds;
+                }
+
+                return minutes + ":" + seconds;
             },
             sortedQueue: function () {
                 return this.queue.slots.filter(function (slot) {
@@ -417,23 +432,48 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                     alert(err.responseText);
                 });
             },
+            recalcTimeOffset: function (serverTime) {
+                const browserTime = (new Date()).getTime();
+                this.timeOffset = browserTime - serverTime.getTime();
+            },
+            recalcRemainingTime: function () {
+                const active = this.activeSlot;
+                if (!active) {
+                    this.remainingSpeakingTime = null;
+                    return;
+                }
+                const startedTs = (new Date(active.date_started)).getTime();
+                const currentTs = (new Date()).getTime() - this.timeOffset;
+                const secondsPassed = Math.round((currentTs - startedTs) / 1000);
+
+                this.remainingSpeakingTime = this.queue.settings.speaking_time - secondsPassed;
+            },
             reloadData: function () {
                 const widget = this;
                 $.get(pollUrl.replace(/QUEUEID/, widget.queue.id), function (data) {
                     widget.queue = data;
+                    widget.recalcTimeOffset(new Date(data['current_time']));
+                    widget.recalcRemainingTime();
                 }).catch(function(err) {
                     console.error("Could not load speech queue data from backend", err);
                 });
             },
             startPolling: function () {
+                this.recalcTimeOffset(new Date());
+
                 const widget = this;
                 this.pollingId = window.setInterval(function () {
                     widget.reloadData();
                 }, 3000);
+
+                this.timerId = window.setInterval(function () {
+                    widget.recalcRemainingTime();
+                }, 100);
             }
         },
         beforeDestroy() {
             window.clearInterval(this.pollingId)
+            window.clearInterval(this.timerId);
         },
         created() {
             this.startPolling()

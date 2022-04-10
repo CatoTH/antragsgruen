@@ -127,6 +127,8 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                 });
             },
             startPolling: function () {
+                this.recalcTimeOffset(new Date());
+
                 const widget = this;
                 this.pollingId = window.setInterval(function () {
                     widget.reloadData();

@@ -373,6 +373,7 @@ class SpeechQueue extends ActiveRecord
             'subqueues'         => $this->getAdminApiSubqueues(),
             'slots'             => $this->getActiveSlots(),
             'other_active_name' => $otherActiveName,
+            'current_time' => round(microtime(true) * 1000), // needs to include milliseconds for accuracy
         ];
     }
 
