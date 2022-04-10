@@ -26,6 +26,10 @@ ob_start();
         <span class="nobody" v-if="!activeSpeaker">
             <?= Yii::t('speech', 'footer_current_nobody') ?>
         </span>
+        <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
+            <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
+            <span v-if="remainingSpeakingTime <= 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
+        </div>
     </div>
     <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
@@ -58,7 +62,7 @@ ob_start();
             <div class="notPossible" v-if="!queue.is_open">
                 <?= Yii::t('speech', 'apply_closed') ?>
             </div>
-            <button class="btn btn-default btn-xs" type="button"
+            <button class="btn btn-default btn-xs btnApply" type="button"
                     v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id && !loginWarning"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
@@ -127,110 +131,24 @@ ob_start();
 
 <?php
 $html          = ob_get_clean();
-$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueId' => 'QUEUEID']);
-$registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
-$unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
 ?>
 
 <script>
-    const pollUrl = <?= json_encode($pollUrl) ?>;
-    const registerUrl = <?= json_encode($registerUrl) ?>;
-    const unregisterUrl = <?= json_encode($unregisterUrl) ?>;
-
     Vue.component('speech-user-footer-widget', {
         template: <?= json_encode($html) ?>,
         props: ['queue', 'csrf', 'user', 'title', 'adminUrl'],
+        mixins: [SPEECH_COMMON_MIXIN],
         data() {
             return {
                 registerName: this.user.name,
                 showApplicationForm: false, // "null" is already taken by the default form
-                pollingId: null
             };
-        },
-        computed: {
-            activeSpeaker: function () {
-                const active = this.queue.slots.filter(function (slot) {
-                    return slot.date_stopped === null && slot.date_started !== null;
-                });
-                return (active.length > 0 ? active[0] : null);
-            },
-            upcomingSpeakers: function () {
-                return this.queue.slots.filter(function (slot) {
-                    return slot.date_stopped === null && slot.date_started === null;
-                });
-            },
-            loginWarning: function () {
-                return this.queue.requires_login && !this.user.logged_in;
-            }
-        },
-        methods: {
-            isMe: function (slot) {
-                return slot.userId === this.user.id;
-            },
-            numAppliedTitle: function (subqueue) {
-                if (subqueue.num_applied === 1) {
-                    const msg = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>;
-                    return msg;
-                } else {
-                    const msg = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>;
-                    return msg.replace(/%NUM%/, subqueue.num_applied);
-                }
-            },
-            register: function ($event, subqueue) {
-                $event.preventDefault();
-
-                const widget = this;
-                $.post(registerUrl.replace(/QUEUEID/, widget.queue.id), {
-                    subqueue: subqueue.id,
-                    username: this.registerName,
-                    _csrf: this.csrf,
-                }, function (data) {
-                    widget.queue = data;
-                    widget.showApplicationForm = false;
-                }).catch(function (err) {
-                    alert(err.responseText);
-                });
-            },
-            onShowApplicationForm: function ($event, subqueue) {
-                $event.preventDefault();
-
-                this.showApplicationForm = subqueue.id;
-                this.$nextTick(function () {
-                    this.$refs.adderNameInput[0].focus();
-                });
-            },
-            removeMeFromQueue: function ($event) {
-                $event.preventDefault();
-
-                const widget = this;
-                $.post(unregisterUrl.replace(/QUEUEID/, widget.queue.id), {
-                    _csrf: this.csrf,
-                }, function (data) {
-                    widget.queue = data;
-                }).catch(function (err) {
-                    alert(err.responseText);
-                });
-            },
-            reloadData: function () {
-                const widget = this;
-                $.get(pollUrl.replace(/QUEUEID/, widget.queue.id), function (data) {
-                    widget.queue = data;
-                }).catch(function(err) {
-                    console.error("Could not load speech queue data from backend", err);
-                });
-            },
-            startPolling: function () {
-                const widget = this;
-                this.pollingId = window.setInterval(function () {
-                    widget.reloadData();
-                }, 3000);
-            }
-        },
-        beforeDestroy() {
-            window.clearInterval(this.pollingId)
         },
         created() {
             this.startPolling()
+        },
+        beforeDestroy() {
+            this.stopPolling();
         }
     });
 </script>

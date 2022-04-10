@@ -17,7 +17,7 @@ return [
     'menu_logout'           => 'Logout',
     'menu_motion_list'      => 'Antragsliste',
     'menu_todo'             => 'To Do',
-    'menu_speech_lists'     => 'Redelisten',
+    'menu_speech_list'      => 'Redeliste',
     'goto_main_content'     => 'Zum Inhalt der Seite',
     'toggle_dropdown'       => 'Auswahl öffnen',
     'privacy_statement'     => 'Datenschutz',

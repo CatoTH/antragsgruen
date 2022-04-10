@@ -41,6 +41,18 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                             <?= Yii::t('speech', 'admin_prefer_nonspeak') ?>
                         </label>
                     </li>
+                    <li class="checkbox">
+                        <label @click="$event.stopPropagation()">
+                            <input type="checkbox" class="hasSpeakingTime" v-model="hasSpeakingTime" @change="settingsChanged()">
+                            <?= Yii::t('speech', 'admin_speaking_time') ?>
+                        </label>
+                    </li>
+                    <li v-if="hasSpeakingTime" class="speakingTime">
+                        <label @click="$event.stopPropagation()" class="input-group input-group-sm">
+                            <input type="number" class="form-control" v-model="speakingTime" @change="settingsChanged()">
+                            <span class="input-group-addon">seconds</span>
+                        </label>
+                    </li>
                     <li class="link">
                         <a href="<?= Html::encode($componentAdminLink) ?>">
                             <span class="icon glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
@@ -202,10 +214,32 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             return {
                 showPreviousList: false,
                 pollingId: null,
-                dragging: false
+                dragging: false,
+                changedSettings: {
+                    hasSpeakingTime: null,
+                    speakingTime: null,
+                }
             };
         },
         computed: {
+            hasSpeakingTime: {
+                get: function () {
+                    return (this.changedSettings.hasSpeakingTime !== null ? this.changedSettings.hasSpeakingTime : this.queue.settings.speaking_time !== null);
+                },
+                set: function (value) {
+                    console.log(value);
+                    this.changedSettings.hasSpeakingTime = value;
+                }
+            },
+            speakingTime: {
+                get: function () {
+                    return (this.changedSettings.speakingTime !== null ? this.changedSettings.speakingTime : this.queue.settings.speaking_time);
+                },
+                set: function (value) {
+                    console.log(value);
+                    this.changedSettings.speakingTime = value;
+                }
+            },
             previousSpeakers: function () {
                 return this.queue.slots.filter(function (slot) {
                     return slot.date_stopped !== null;
@@ -350,15 +384,18 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 });
             },
             settingsChanged: function () {
-                console.log("settingsChanged");
                 const widget = this;
                 $.post(setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
                     is_active: (this.queue.is_active ? 1 : 0),
                     is_open: (this.queue.settings.is_open ? 1 : 0),
                     prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
+                    speaking_time: (this.hasSpeakingTime ? parseInt(this.speakingTime, 10) : null),
                     _csrf: this.csrf,
                 }, function (data) {
                     widget.queue = data['queue'];
+
+                    this.changedSettings.speakingTime = null;
+                    this.changedSettings.hasSpeakingTime = null;
 
                     if (data['sidebar'] && data['sidebar'][0] !== '') {
                         document.getElementById('sidebar').childNodes.item(0).innerHTML = data['sidebar'][0];

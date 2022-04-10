@@ -53,6 +53,11 @@
       text-align: right;
     }
 
+    .speakingTime {
+      padding-left: 30px;
+      padding-right: 25px;
+    }
+
     .deactivateOthers {
       font-size: 0.8em;
       font-style: italic;
@@ -407,7 +412,7 @@
 }
 
 
-.currentSpeechInline {
+.currentSpeechPageWidth {
   .speechAdminLink {
     float: right;
   }
@@ -425,6 +430,20 @@
     }
     .name {
       font-weight: bold;
+    }
+  }
+
+  .remainingTime {
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+
+    .time {
+      font-weight: bold;
+    }
+    .over {
+      color: red;
     }
   }
 
@@ -457,59 +476,6 @@
 
     .label {
       margin-left: 5px;
-    }
-  }
-
-  .waitingMultiple {
-    margin-top: 20px;
-
-    header {
-      @if ($font-size-base < 16) {
-        font-size: 16px;
-        line-height: 1.5em;
-      }
-    }
-
-    .notPossible {
-      line-height: 35px;
-      vertical-align: middle;
-      margin-left: 27px;
-      font-style: italic;
-      font-size: 0.8em;
-    }
-  }
-
-  .waitingSingle {
-    margin-top: 30px;
-
-    header {
-      @if ($font-size-base < 16) {
-        font-size: 16px;
-        line-height: 1.5em;
-      }
-    }
-
-    .apply {
-      margin-left: 25px;
-      .notPossible {
-        font-style: italic;
-        font-size: 0.8em;
-      }
-    }
-    .applyOpener {
-      margin-top: 10px;
-    }
-
-    .loginWarning {
-      display: inline-block;
-      font-size: 0.8em;
-      white-space: nowrap;
-    }
-
-    form {
-      margin-top: 10px;
-      display: inline-block;
-      vertical-align: middle;
     }
   }
 
@@ -571,6 +537,109 @@
       white-space: nowrap;
     }
   }
+}
+
+.currentSpeechFullPage {
+  .speechAdminLink {
+    margin-top: 15px;
+    margin-right: 20px;
+  }
+  .activeSpeaker .name {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .remainingTime {
+    text-align: center;
+  }
+  .nameList {
+    display: block;
+    margin-top: 30px;
+    margin-bottom: 50px;
+
+    > li {
+      margin-top: 20px;
+      margin-bottom: 20px;
+
+      .leftIcon {
+        float: left;
+        margin-left: -40px;
+      }
+
+      font-size: $font-size-base;
+      line-height: 1.5em;
+      font-weight: bold;
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+      }
+    }
+  }
+  .apply {
+    max-width: 300px;
+  }
+}
+
+
+.currentSpeechInline {
+  .remainingTime {
+    padding-left: 26px;
+    margin-top: 10px;
+  }
+
+  .waitingMultiple {
+    margin-top: 20px;
+
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+        line-height: 1.5em;
+      }
+    }
+
+    .notPossible {
+      line-height: 35px;
+      vertical-align: middle;
+      margin-left: 27px;
+      font-style: italic;
+      font-size: 0.8em;
+    }
+  }
+
+  .waitingSingle {
+    margin-top: 30px;
+
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+        line-height: 1.5em;
+      }
+    }
+
+    .apply {
+      margin-left: 25px;
+
+      .notPossible {
+        font-style: italic;
+        font-size: 0.8em;
+      }
+    }
+
+    .applyOpener {
+      margin-top: 10px;
+    }
+
+    .loginWarning {
+      display: inline-block;
+      font-size: 0.8em;
+      white-space: nowrap;
+    }
+
+    form {
+      margin-top: 10px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 
   .nameList {
     display: inline-block;
@@ -602,7 +671,6 @@
     }
   }
 }
-
 
 .currentSpeechFooter {
   position: fixed;
@@ -675,6 +743,13 @@
     .title {
       font-weight: bold;
     }
+
+    .remainingTime {
+      float: right;
+    }
+    .over {
+      color: red;
+    }
   }
 
   .waitingMultiple {
@@ -696,6 +771,14 @@
     padding: 5px 10px;
     flex-basis: 50%;
     flex-grow: 1;
+
+    .btnApply {
+      margin-top: 7px;
+    }
+
+    .appliedMe {
+      margin-top: 5px;
+    }
 
     form {
       display: inline-block;

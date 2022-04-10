@@ -11,11 +11,12 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-/** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
 if ($queue->motion) {
     $layout->addBreadcrumb($queue->motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($queue->motion));
+} else {
+    $layout->addBreadcrumb(Yii::t('speech', 'speaking_bc'), UrlHelper::createUrl(['/consultation/speech']));
 }
 $layout->addBreadcrumb(Yii::t('speech', 'admin_bc'));
 

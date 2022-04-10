@@ -17,7 +17,7 @@ return [
     'menu_logout'           => 'Logout',
     'menu_motion_list'      => 'Motions',
     'menu_todo'             => 'To Do',
-    'menu_speech_lists'     => 'Speaking lists',
+    'menu_speech_list'      => 'Speaking list',
     'goto_main_content'     => 'Skip to main content',
     'toggle_dropdown'       => 'Open selection',
     'privacy_statement'     => 'Privacy',

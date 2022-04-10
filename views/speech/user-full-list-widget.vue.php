@@ -9,47 +9,51 @@ ob_start();
 ?>
 
 <article class="speechUser">
-    <div class="activeSpeaker">
-        <span class="glyphicon glyphicon-comment leftIcon" aria-hidden="true"></span>
-        <span v-if="activeSpeaker" class="existing">
-            <?= Yii::t('speech', 'current') ?>: <span class="name">{{ activeSpeaker.name }}</span>
-        </span>
-        <span v-if="!activeSpeaker" class="notExisting">
-            <?= Yii::t('speech', 'current_nobody') ?>
-        </span>
-    </div>
-    <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
-        <?= Yii::t('speech', 'remaining_time') ?>:
-        <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
-        <span v-if="remainingSpeakingTime <= 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
-    </div>
-    <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
-        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-        <?= Yii::t('speech', 'next_speaker') ?>:
-        <ul class="upcomingSpeakerList">
-            <li v-for="speaker in upcomingSpeakers">
-                <span class="name">{{ speaker.name }}</span><!-- Fight unwanted whitespace
+    <div class="content">
+        <div class="activeSpeaker">
+            <span class="glyphicon glyphicon-comment leftIcon" aria-hidden="true"></span>
+            <span v-if="activeSpeaker" class="existing">
+                <?= Yii::t('speech', 'current') ?>:
+            </span>
+            <div v-if="activeSpeaker" class="name">{{ activeSpeaker.name }}</div>
+            <span v-if="!activeSpeaker" class="notExisting">
+                <?= Yii::t('speech', 'current_nobody') ?>
+            </span>
+        </div>
+        <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
+            <?= Yii::t('speech', 'remaining_time') ?>:<br>
+            <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
+            <span v-if="remainingSpeakingTime <= 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
+        </div>
+        <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            <?= Yii::t('speech', 'next_speaker') ?>:
+            <ul class="upcomingSpeakerList">
+                <li v-for="speaker in upcomingSpeakers">
+                    <span class="name">{{ speaker.name }}</span><!-- Fight unwanted whitespace
                 --><span class="label label-success" v-if="isMe(speaker)"><?= Yii::t('speech', 'you') ?></span><!-- Fight unwanted whitespace
-                -->
-                <button type="button" class="btn btn-link btnWithdraw" v-if="isMe(speaker)" @click="removeMeFromQueue($event)"
-                        title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    <span class="withdrawLabel"><?= Yii::t('speech', 'apply_revoke') ?></span>
-                </button>
-            </li>
-        </ul>
+                --><button type="button" class="btn btn-link btnWithdraw" v-if="isMe(speaker)"
+                            @click="removeMeFromQueue($event)"
+                            title="<?= Yii::t('speech', 'apply_revoke_aria') ?>"
+                            aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        <span class="withdrawLabel"><?= Yii::t('speech', 'apply_revoke') ?></span>
+                    </button>
+                </li>
+            </ul>
+        </div>
     </div>
 
+    <h2 class="green"><?= Yii::t('speech', 'waiting_list') ?>: {{ queue.subqueues[0].num_applied }}</h2>
+
+    <div class="content">
     <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" aria-label="<?= Yii::t('speech', 'waiting_aria_1') ?>">
         <header>
-            <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
-            <?= Yii::t('speech', 'waiting_list') ?>:
-
-            <span class="number" title="<?= Yii::t('speech', 'persons_waiting') ?>">
-                {{ queue.subqueues[0].num_applied }}
-            </span>
             <ol class="nameList" v-if="queue.subqueues[0].applied && queue.subqueues[0].applied.length > 0" title="<?= Yii::t('speech', 'persons_waiting') ?>">
-                <li v-for="applied in queue.subqueues[0].applied">{{ applied.name }}</li>
+                <li v-for="applied in queue.subqueues[0].applied">
+                    <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
+                    {{ applied.name }}
+                </li>
             </ol>
 
             <div v-if="queue.subqueues[0].have_applied" class="appliedMe">
@@ -66,7 +70,7 @@ ob_start();
             <div class="notPossible" v-if="!queue.is_open">
                 <?= Yii::t('speech', 'apply_closed') ?>
             </div>
-            <button class="btn btn-default btn-xs applyOpener" type="button"
+            <button class="btn btn-primary applyOpener" type="button"
                     v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id"
                     :disabled="loginWarning"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
@@ -83,7 +87,7 @@ ob_start();
                 <div class="input-group">
                     <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id" ref="adderNameInput">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
+                        <button class="btn btn-primary" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                     </span>
                 </div>
             </form>
@@ -124,7 +128,7 @@ ob_start();
                     <div v-if="subqueue.have_applied" class="appliedMe">
                         <span class="label label-success"><?= Yii::t('speech', 'applied') ?></span>
                         <button type="button" class="btn btn-link btnWithdraw" @click="removeMeFromQueue($event)"
-                            title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
+                                title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             <span class="withdrawLabel"><?= Yii::t('speech', 'apply_revoke') ?></span>
                         </button>
@@ -135,7 +139,7 @@ ob_start();
                         <div class="input-group">
                             <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInputs">
                             <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
+                                <button class="btn btn-primary" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                             </span>
                         </div>
                     </form>
@@ -147,6 +151,7 @@ ob_start();
             <?= Yii::t('speech', 'apply_closed') ?>
         </div>
     </section>
+    </div>
 </article>
 
 
@@ -155,14 +160,14 @@ $html          = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('speech-user-inline-widget', {
+    Vue.component('speech-user-full-list-widget', {
         template: <?= json_encode($html) ?>,
         props: ['queue', 'csrf', 'user', 'title'],
         mixins: [SPEECH_COMMON_MIXIN],
         data() {
             return {
                 registerName: this.user.name,
-                showApplicationForm: false // "null" is already taken by the default form
+                showApplicationForm: null // null = default form
             };
         },
         created() {

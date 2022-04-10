@@ -4,6 +4,7 @@ return [
     'subqueue_male'   => 'Offen / Männer',
     'subqueue_female' => 'Frauen',
     'speaking_list'   => 'Redeliste',
+    'speaking_bc'     => 'Redeliste',
 
     'title_plain'        => 'Allgemeine Redeliste',
     'title_to'           => 'Redeliste zu %TITLE%',
@@ -11,6 +12,8 @@ return [
     'user_section_title' => 'Redeliste',
     'current'            => 'Laufender Redebeitrag',
     'current_nobody'     => 'Kein laufender Redebeitrag',
+    'remaining_time'     => 'Redezeit',
+    'remaining_time_over' => 'vorbei',
     'next_speaker'       => 'Nächste Redner*innen',
     'you'                => 'Du',
     'login_warning'      => 'Einloggen',
@@ -39,7 +42,7 @@ return [
     'err_permission_admin' => 'Keine Berechtigung zum Bearbeiten der Redeliste',
     'err_permission_apply' => 'Die Redeliste ist geschlossen',
 
-    'admin_bc'               => 'Redeliste',
+    'admin_bc'               => 'Verwaltung',
     'admin_title_plain'      => 'Allgemeine Redeliste verwalten',
     'admin_title_to'         => 'Redeliste zu %TITLE% verwalten',
     'admin_setting'          => 'Redelisten-Einstellungen',
@@ -50,6 +53,7 @@ return [
     'admin_deactivate_other' => 'Deaktiviert andere Redelisten',
     'admin_setting_open'     => 'Bewerbungen möglich',
     'admin_prefer_nonspeak'  => 'Personen bevorzugen, die noch nicht sprachen',
+    'admin_speaking_time'    => 'Redezeit anzeigen',
     'admin_goto_components'  => 'Quotierung, (De-)Aktivierung',
     'admin_prev_speakers'    => 'Bisherige Sprecher*innen',
     'admin_prev_show'        => 'Anzeigen',

@@ -22,14 +22,16 @@ $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
 $layout->loadVue();
+$layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/speech/user-inline-widget.vue.php');
 
 $initData = $queue->getUserApiObject($user, $cookieUser);
 $userData = new SpeechUser($user, $cookieUser);
 
 ?>
-<section aria-labelledby="speechListUserTitle"
-         data-antragsgruen-widget="frontend/CurrentSpeechList" class="currentSpeechInline"
+<section class="currentSpeechInline currentSpeechPageWidth"
+         aria-labelledby="speechListUserTitle"
+         data-antragsgruen-widget="frontend/CurrentSpeechList"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"
@@ -39,7 +41,7 @@ $userData = new SpeechUser($user, $cookieUser);
         <?php
         $user = User::getCurrentUser();
         if ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
-            $url = UrlHelper::createUrl(['consultation/admin-speech']);
+            $url = UrlHelper::createUrl(['/consultation/admin-speech']);
             echo '<a href="' . Html::encode($url) . '" class="speechAdminLink">';
             echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
             echo Yii::t('speech', 'goto_admin');

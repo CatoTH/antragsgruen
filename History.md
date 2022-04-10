@@ -19,10 +19,12 @@
   - It allows to log in into Antragsgrün using the username/password of an OpenSlides page.
   - Using a separate proxy app, it allows to automatically synchronize users and user groups from OpenSlides to Antragsgrün.
   - It needs to be set up by a system administrator per site.
+- The speaking list now has a separate site for users in the menu and supports setting a timer per speaker.
 - Amendments can now be further restricted to only affect one particular location within one paragraph.
 - There are new motion statuses "Quorum reached" and "Quorum missed".
 - The CAPTCHA system is reset for an user after a successful login. This solves issues when multiple users are behind the same IP address.
 - The full-screen projector now also shows the initiator and status of a motion / amendment.
+- The menu at the top of the page was reordered into a more logical order.
 - A new e-mail-sending library (Symfony mailer) is used. Amazon SES can now be configured as mailer, too (by editing the config.json directly).
 - Bugfix: The button to apply for a speaking list was shown, even if applying was not possible.
 
