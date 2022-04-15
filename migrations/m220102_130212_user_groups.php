@@ -63,6 +63,9 @@ class m220102_130212_user_groups extends Migration
                 $groupParticipant = \app\models\db\ConsultationUserGroup::createDefaultGroupParticipant($consultation);
 
                 foreach ($consultation->userPrivileges as $privilege) {
+                    if (!$privilege->user) {
+                        continue;
+                    }
                     if ($privilege->adminSuper) {
                         $groupAdmin->addUser($privilege->user);
                     } elseif ($privilege->adminProposals) {
