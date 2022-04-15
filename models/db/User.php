@@ -800,7 +800,7 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public function deleteAccount(): void
+    public function deleteAccount2(): void
     {
         $this->name            = '';
         $this->nameGiven       = '';
