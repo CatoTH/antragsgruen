@@ -2,6 +2,7 @@
 
 namespace app\plugins\green_manager\controllers;
 
+use app\components\RequestContext;
 use app\components\yii\MessageSource;
 use app\components\UrlHelper;
 use app\controllers\Base;
@@ -116,10 +117,10 @@ class ManagerController extends Base
                     ]);
                     try {
                         $user = $userForm->checkLogin(null);
-                        \Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
+                        RequestContext::getUser()->login($user, $this->getParams()->autoLoginDuration);
                     } catch (LoginInvalidUser $e) {
                         $user = $userForm->doCreateAccount(null);
-                        \Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
+                        RequestContext::getUser()->login($user, $this->getParams()->autoLoginDuration);
                     }
                 }
 
@@ -169,21 +170,15 @@ class ManagerController extends Base
     }
 
     /**
-     * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionLegal()
+    public function actionLegal(): string
     {
         return $this->renderContentPage('legal');
     }
 
-    /**
-     * @return string
-     */
-    public function actionPrivacy()
+    public function actionPrivacy(): string
     {
         return $this->renderContentPage('privacy');
     }
-
-
 }

@@ -163,7 +163,7 @@ class ManagerController extends Base
             try {
                 $model->setAttributes($post['SiteCreateForm']);
                 if ($model->validate()) {
-                    if ($this->getParams()->mode == 'sandbox') {
+                    if ($this->getParams()->mode === 'sandbox') {
                         $user = $model->createSandboxUser();
                     } else {
                         $user = User::getCurrentUser();

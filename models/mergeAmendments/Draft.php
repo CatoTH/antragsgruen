@@ -36,8 +36,7 @@ class Draft implements \JsonSerializable
     /** @var int[] */
     public $removedSections;
 
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'amendmentStatuses'   => $this->amendmentStatuses,
@@ -54,9 +53,12 @@ class Draft implements \JsonSerializable
     {
         $this->origMotion  = $origMotion;
         $draftStatuses     = [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE];
-        $this->draftMotion = Motion::find()
-                                   ->where(['parentMotionId' => $origMotion->id])
-                                   ->andWhere(['status' => $draftStatuses])->one();
+
+        /** @var Motion|null $draftMotion */
+        $draftMotion = Motion::find()->where(['parentMotionId' => $origMotion->id])
+                                     ->andWhere(['status' => $draftStatuses])->one();
+        $this->draftMotion = $draftMotion;
+
         if ($this->draftMotion) {
             $this->draftMotion->dateCreation = date('Y-m-d H:i:s');
         } else {

@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\EmailNotifications;
+use app\components\RequestContext;
 use app\models\events\AmendmentSupporterEvent;
 use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
@@ -64,8 +65,8 @@ class AmendmentSupporter extends ISupporter
     public static function getMyLoginlessSupportIds(): array
     {
         return array_merge(
-            \Yii::$app->session->get('loginless_amendment_supports', []),
-            \Yii::$app->session->get('anonymous_amendment_supports', []) // @TODO After v4.8
+            RequestContext::getSession()->get('loginless_amendment_supports', []),
+            RequestContext::getSession()->get('anonymous_amendment_supports', []) // @TODO After v4.8
         );
     }
 
@@ -73,7 +74,7 @@ class AmendmentSupporter extends ISupporter
     {
         $pre   = self::getMyLoginlessSupportIds();
         $pre[] = intval($support->id);
-        \Yii::$app->session->set('anonymous_amendment_supports', $pre);
+        RequestContext::getSession()->set('anonymous_amendment_supports', $pre);
     }
 
     public static function createSupport(Amendment $amendment, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false): void

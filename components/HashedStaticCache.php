@@ -22,7 +22,7 @@ class HashedStaticCache
         if (YII_ENV === 'test') {
             return false;
         }
-        $key = md5($function . static::hashDependencies($dependencies));
+        $key = md5($function . self::hashDependencies($dependencies));
 
         return \Yii::$app->cache->get($key);
     }
@@ -36,7 +36,7 @@ class HashedStaticCache
         if (YII_ENV === 'test') {
             return;
         }
-        $key = md5($function . static::hashDependencies($dependencies));
+        $key = md5($function . self::hashDependencies($dependencies));
         \Yii::$app->cache->set($key, $data);
     }
 
@@ -48,7 +48,7 @@ class HashedStaticCache
         if (YII_ENV === 'test') {
             return;
         }
-        $key = md5($function . static::hashDependencies($dependencies));
+        $key = md5($function . self::hashDependencies($dependencies));
         \Yii::$app->cache->delete($key);
     }
 }

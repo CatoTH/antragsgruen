@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\exceptions\NotFound;
-use app\components\{ConsultationAccessPassword, HTMLTools, UrlHelper};
+use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
 use app\models\exceptions\Internal;
 use app\models\settings\{AntragsgruenApp, Layout};
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, Motion, Site, User};
@@ -167,9 +167,7 @@ class Base extends Controller
 
     protected function getHttpSession(): Session
     {
-        /** @var Session $session */
-        $session = Yii::$app->session;
-        return $session;
+        return RequestContext::getSession();
     }
 
     protected function getHttpMethod(): string
@@ -358,7 +356,7 @@ class Base extends Controller
         if (!$this->consultation->getSettings()->forceLogin) {
             return false;
         }
-        if (Yii::$app->user->getIsGuest()) {
+        if (RequestContext::getUser()->getIsGuest()) {
             $this->redirect(UrlHelper::createUrl(['/user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return true;
         }
@@ -373,7 +371,7 @@ class Base extends Controller
 
     public function testConsultationPwd(): bool
     {
-        if (!Yii::$app->user->getIsGuest()) {
+        if (!RequestContext::getUser()->getIsGuest()) {
             return false;
         }
         if (!$this->consultation || !$this->consultation->getSettings()->accessPwd) {
@@ -396,7 +394,7 @@ class Base extends Controller
 
     public function forceLogin(): void
     {
-        if (Yii::$app->user->getIsGuest()) {
+        if (RequestContext::getUser()->getIsGuest()) {
             $loginUrl = UrlHelper::createUrl(['/user/login', 'backUrl' => $this->getHttpRequest()->url]);
             $this->redirect($loginUrl);
             Yii::$app->end();

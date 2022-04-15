@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\{Captcha, ConsultationAccessPassword, Tools, UrlHelper, GruenesNetzSamlClient};
+use app\components\{Captcha, ConsultationAccessPassword, RequestContext, Tools, UrlHelper, GruenesNetzSamlClient};
 use app\models\db\{AmendmentSupporter,
     EMailBlocklist,
     FailedLoginAttempt,
@@ -37,7 +37,7 @@ class UserController extends Base
 
     protected function loginUser(User $user): void
     {
-        Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
+        RequestContext::getUser()->login($user, $this->getParams()->autoLoginDuration);
 
         $user->dateLastLogin = date('Y-m-d H:i:s');
         $user->save();
@@ -211,7 +211,7 @@ class UserController extends Base
 
             if ($currSubdomain) {
                 // First step on the subdomain: logout and redirect to the main domain
-                Yii::$app->user->logout();
+                RequestContext::getUser()->logout();
                 $backParts = parse_url($backUrl);
                 if (!isset($backParts['host'])) {
                     $backUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
@@ -250,7 +250,7 @@ class UserController extends Base
         if ($params->isSamlActive()) {
             return $this->logoutSaml($backUrl);
         } else {
-            Yii::$app->user->logout();
+            RequestContext::getUser()->logout();
             $this->redirect($backUrl, 307);
             return '';
         }
@@ -409,7 +409,7 @@ class UserController extends Base
 
         if ($this->isPostSet('accountDeleteConfirm') && $this->isPostSet('accountDelete')) {
             $user->deleteAccount();
-            Yii::$app->user->logout(true);
+            RequestContext::getUser()->logout(true);
             return $this->render('account_deleted');
         }
 

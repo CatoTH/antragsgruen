@@ -32,27 +32,18 @@ class AmendmentComment extends IComment
         $this->on(static::EVENT_PUBLISHED, [$this, 'logToConsultationLog'], null, false);
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentComment';
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . IntVal(User::STATUS_DELETED));
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getAmendment()
+    public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId'])
             ->andWhere(Amendment::tableName() . '.status != ' . IntVal(Amendment::STATUS_DELETED));
@@ -78,20 +69,14 @@ class AmendmentComment extends IComment
         return $this->imotion;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getParentComment()
+    public function getParentComment(): ActiveQuery
     {
         return $this->hasOne(AmendmentComment::class, ['id' => 'parentCommentId'])
             ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_DELETED))
             ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_PRIVATE));
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getReplies()
+    public function getReplies(): ActiveQuery
     {
         return $this->hasMany(AmendmentComment::class, ['parentCommentId' => 'id'])
             ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_DELETED))
@@ -104,10 +89,7 @@ class AmendmentComment extends IComment
         return $amendment->getMyConsultation();
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['amendmentId', 'paragraph', 'status', 'dateCreation'], 'required'],
@@ -125,13 +107,16 @@ class AmendmentComment extends IComment
     {
         $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
 
-        return static::find()->joinWith('amendment', true)->joinWith('amendment.motionJoin', true)
+        /** @var AmendmentComment[] $comments */
+        $comments = static::find()->joinWith('amendment', true)->joinWith('amendment.motionJoin', true)
             ->where('amendmentComment.status = ' . intval(static::STATUS_VISIBLE))
             ->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
             ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
             ->andWhere('motion.consultationId = ' . intval($consultation->id))
             ->orderBy('amendmentComment.dateCreation DESC')
             ->offset(0)->limit($limit)->all();
+
+        return $comments;
     }
 
     public function getMotionTitle(): string

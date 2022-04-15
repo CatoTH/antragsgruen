@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\db\{Amendment, IMotion, IVotingItem, Motion, VotingBlock, VotingQuestion};
+use app\models\db\{Amendment, IVotingItem, Motion, VotingBlock, VotingQuestion};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
-use Symfony\Component\Lock\{Lock, LockFactory, SharedLockInterface, Store\RedisStore, Store\SemaphoreStore};
+use Symfony\Component\Lock\{LockFactory,
+    LockInterface,
+    SharedLockInterface,
+    Store\RedisStore,
+    Store\SemaphoreStore};
 
 final class ResourceLock
 {
-    /** @var Lock[] */
+    /** @var LockInterface[] */
     private static $acquiredLocks = [];
     /** @var null|LockFactory */
     private static $lockFactory = null;

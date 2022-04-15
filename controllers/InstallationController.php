@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\RequestContext;
 use app\components\yii\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\User;
@@ -83,7 +84,7 @@ class InstallationController extends Base
                 $admin = User::findOne($siteForm->readConfigFromFile()->adminUserIds[0]);
                 $siteForm->create($admin);
 
-                Yii::$app->user->login($admin, $this->getParams()->autoLoginDuration);
+                RequestContext::getUser()->login($admin, $this->getParams()->autoLoginDuration);
 
                 $consultationUrl = UrlHelper::createUrl('consultation/index');
                 $consultationUrl = UrlHelper::absolutizeLink($consultationUrl);

@@ -46,7 +46,7 @@ class HTMLTools
         $def->addAttribute('ins', 'aria-label', 'Text');
         $def->addAttribute('del', 'aria-label', 'Text');
         $def->addAttribute('span', 'aria-label', 'Text');
-        foreach (static::$KNOWN_BLOCK_ELEMENTS as $element) {
+        foreach (self::$KNOWN_BLOCK_ELEMENTS as $element) {
             $def->addAttribute($element, 'aria-label', 'Text');
         }
 
@@ -83,7 +83,7 @@ class HTMLTools
 
     public static function cleanTrustedHtml(string $html): string
     {
-        $html = static::cleanMessedUpHtmlCharacters($html);
+        $html = self::cleanMessedUpHtmlCharacters($html);
         $html = str_replace("\r", '', $html);
         // @TODO
         return $html;
@@ -92,11 +92,11 @@ class HTMLTools
     public static function correctHtmlErrors(string $htmlIn, bool $linkify = false): string
     {
         $cacheKey = 'correctHtmlErrors_' . md5($htmlIn);
-        if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
+        if (self::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
             return \Yii::$app->getCache()->get($cacheKey);
         }
 
-        static::loadNetIdna2();
+        self::loadNetIdna2();
         $configInstance = \HTMLPurifier_Config::create([
             'HTML.Doctype'                            => 'HTML 4.01 Transitional',
             'HTML.AllowedElements'                    => null,
@@ -118,10 +118,10 @@ class HTMLTools
         $def->info_global_attr['data-moving-partner-id']        = new \HTMLPurifier_AttrDef_Text();
         $def->info_global_attr['data-moving-partner-paragraph'] = new \HTMLPurifier_AttrDef_Text();
 
-        $str = static::purify($configInstance, $htmlIn);
+        $str = self::purify($configInstance, $htmlIn);
 
-        $str = static::cleanMessedUpHtmlCharacters($str);
-        if (static::isStringCachable($htmlIn)) {
+        $str = self::cleanMessedUpHtmlCharacters($str);
+        if (self::isStringCachable($htmlIn)) {
             \Yii::$app->getCache()->set($cacheKey, $str);
         }
 
@@ -137,7 +137,7 @@ class HTMLTools
      */
     public static function cleanHtmlTranslationString($html)
     {
-        $html = static::correctHtmlErrors($html);
+        $html = self::correctHtmlErrors($html);
 
         $html = preg_replace_callback('/href\s*=([\'"]).*\\1/siuU', function ($matches) {
             $part = $matches[0];
@@ -152,7 +152,7 @@ class HTMLTools
 
     public static function wrapOrphanedTextWithP(string $html): string
     {
-        $dom = static::html2DOM($html);
+        $dom = self::html2DOM($html);
 
         $hasChanged = false;
         /** @var \DOMElement $wrapP */
@@ -161,7 +161,7 @@ class HTMLTools
             $childNode = $dom->childNodes->item($i);
             /** @var \DOMNode $childNode */
             $isText   = is_a($childNode, \DOMText::class);
-            $isInline = !in_array($childNode->nodeName, static::$KNOWN_BLOCK_ELEMENTS);
+            $isInline = !in_array($childNode->nodeName, self::$KNOWN_BLOCK_ELEMENTS);
             if ($isText || $isInline) {
                 $hasChanged = true;
                 if ($wrapP === null) {
@@ -199,7 +199,7 @@ class HTMLTools
             $dom->appendChild($wrapP);
         }
         if ($hasChanged) {
-            return static::renderDomToHtml($dom, true);
+            return self::renderDomToHtml($dom, true);
         } else {
             return $html;
         }
@@ -213,7 +213,7 @@ class HTMLTools
     public static function cleanSimpleHtml($htmlIn, $forbiddenFormattings = [])
     {
         $cacheKey = 'cleanSimpleHtml_' . implode(',', $forbiddenFormattings) . '_' . md5($htmlIn);
-        if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey) && false) {
+        if (self::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey) && false) {
             return \Yii::$app->getCache()->get($cacheKey);
         }
 
@@ -236,7 +236,7 @@ class HTMLTools
             'sub', 'sup', 'pre', 'h1', 'h2', 'h3', 'h4'
         ];
 
-        $allowedClasses = array_merge(['underline', 'subscript', 'superscript'], static::$KNOWN_OL_CLASSES);
+        $allowedClasses = array_merge(['underline', 'subscript', 'superscript'], self::$KNOWN_OL_CLASSES);
 
         if (!in_array('strike', $forbiddenFormattings)) {
             $allowedClasses[] = 'strike';
@@ -246,7 +246,7 @@ class HTMLTools
 
         $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
 
-        static::loadNetIdna2();
+        self::loadNetIdna2();
         $configInstance = \HTMLPurifier_Config::create([
             'HTML.Doctype'                            => 'HTML 4.01 Transitional',
             'HTML.AllowedElements'                    => implode(',', $allowedTags),
@@ -264,13 +264,13 @@ class HTMLTools
             'Output.Newline'                          => "\n"
         ]);
         $configInstance->autoFinalize = false;
-        $html = static::purify($configInstance, $html);
+        $html = self::purify($configInstance, $html);
 
         $html = str_replace('<p>###EMPTY###</p>', '<p></p>', $html);
 
         // Text always needs to be in a block container. This is the normal case anyway,
         // however sometimes CKEditor + Lite Change Tracking produces messed up HTML that we need to fix here
-        $html = static::wrapOrphanedTextWithP($html);
+        $html = self::wrapOrphanedTextWithP($html);
 
         $html = str_ireplace("</li>", "</li>\n", $html);
         $html = str_ireplace("<ul>", "<ul>\n", $html);
@@ -284,7 +284,7 @@ class HTMLTools
         $html = str_replace("<br>\n ", "<br>\n", $html);
         $html = str_replace('&nbsp;', ' ', $html);
 
-        $html = static::cleanMessedUpHtmlCharacters($html);
+        $html = self::cleanMessedUpHtmlCharacters($html);
         $html = preg_replace('/<p> +/siu', '<p>', $html);
         $html = preg_replace('/ +<\/p>/siu', '</p>', $html);
         $html = preg_replace('/ +<\/li>/siu', '</li>', $html);
@@ -292,7 +292,7 @@ class HTMLTools
 
         $html = trim($html);
 
-        if (static::isStringCachable($htmlIn)) {
+        if (self::isStringCachable($htmlIn)) {
             \Yii::$app->getCache()->set($cacheKey, $html);
         }
 
@@ -359,7 +359,7 @@ class HTMLTools
 
     public static function getLiValueFormatted(int $counter, ?string $value, string $formatting): string
     {
-        $value = static::getLiValue($counter, $value, $formatting);
+        $value = self::getLiValue($counter, $value, $formatting);
         switch ($formatting) {
             case HTMLTools::OL_DECIMAL_CIRCLE:
                 return '(' . $value . ')';
@@ -381,11 +381,11 @@ class HTMLTools
             if ($start !== null && $start > 0) {
                 $liCount = intval($start) - 1;
             }
-            $formatting = static::OL_DECIMAL_DOT;
+            $formatting = self::OL_DECIMAL_DOT;
             if ($element->hasAttribute('class')) {
                 $classes = explode(' ', $element->getAttribute('class'));
                 foreach ($classes as $class) {
-                    if ($element->nodeName === 'ol' && in_array($class, static::$KNOWN_OL_CLASSES)) {
+                    if ($element->nodeName === 'ol' && in_array($class, self::$KNOWN_OL_CLASSES)) {
                         $formatting = $class;
                     }
                 }
@@ -396,16 +396,16 @@ class HTMLTools
                     continue;
                 }
                 /** @var \DOMElement $child */
-                $liCount = static::getNextLiCounter($child, $liCount);
-                static::explicitlySetLiValuesInt($child, $liCount, $formatting);
+                $liCount = self::getNextLiCounter($child, $liCount);
+                self::explicitlySetLiValuesInt($child, $liCount, $formatting);
             }
             return;
         }
 
         if ($element->nodeName === 'li') {
-            $formatting = $formatting ?? static::OL_DECIMAL_DOT;
+            $formatting = $formatting ?? self::OL_DECIMAL_DOT;
             if (!$element->hasAttribute('value')) {
-                $liVal = static::getLiValue($counter, null, $formatting);
+                $liVal = self::getLiValue($counter, null, $formatting);
                 $element->setAttribute('value', $liVal);
             }
         }
@@ -415,16 +415,16 @@ class HTMLTools
                 continue;
             }
             /** @var \DOMElement $child */
-            static::explicitlySetLiValuesInt($child);
+            self::explicitlySetLiValuesInt($child);
         }
     }
 
     public static function explicitlySetLiValues(string $html): string
     {
-        $dom = static::html2DOM($html);
-        static::explicitlySetLiValuesInt($dom);
+        $dom = self::html2DOM($html);
+        self::explicitlySetLiValuesInt($dom);
 
-        return static::renderDomToHtml($dom, true);
+        return self::renderDomToHtml($dom, true);
     }
 
     /**
@@ -502,7 +502,7 @@ class HTMLTools
                         }
                         $newPre .= '>';
                         $newPost = '</' . $child->nodeName . '>';
-                        $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
+                        $newArrs = self::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                         if ($pendingInline === null) {
                             $pendingInline = '';
                         }
@@ -533,10 +533,10 @@ class HTMLTools
                             }
                             $newPre .= ' start="#LINO#">';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
+                            $newArrs = self::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } elseif ($child->nodeName === 'li') {
-                            $lino = static::getNextLiCounter($child, $lino);
+                            $lino = self::getNextLiCounter($child, $lino);
                             $value = $child->getAttribute('value');
                             $newPre  = str_replace('#LINO#', (string)$lino, $pre);
                             if ($value) {
@@ -545,12 +545,12 @@ class HTMLTools
                                 $newPre .= '<' . $child->nodeName . '>';
                             }
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
+                            $newArrs = self::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } elseif (in_array($child->nodeName, ['ul', 'blockquote', 'p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
+                            $newArrs = self::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } else {
                             throw new Internal('Unknown Tag: ' . $child->nodeName);
@@ -581,7 +581,7 @@ class HTMLTools
     public static function html2DOM(string $html, bool $correctBefore = true): \DOMElement
     {
         if ($correctBefore) {
-            $html = static::correctHtmlErrors($html);
+            $html = self::correctHtmlErrors($html);
         }
 
         $src_doc = new \DOMDocument();
@@ -618,8 +618,8 @@ class HTMLTools
             return $cache;
         }
 
-        $body = static::html2DOM($html);
-        $result = static::sectionSimpleHTMLInt($body, true, $splitListItems, '', '');
+        $body = self::html2DOM($html);
+        $result = self::sectionSimpleHTMLInt($body, true, $splitListItems, '', '');
 
         HashedStaticCache::setCache($cacheFunc, $cacheDeps, $result);
 
@@ -632,7 +632,7 @@ class HTMLTools
      */
     public static function removeSectioningFragments(string $html): string
     {
-        $body     = static::html2DOM($html);
+        $body     = self::html2DOM($html);
         $children = $body->childNodes;
         for ($i = 0; $i < $children->length; $i++) {
             $appendToPrev = false;
@@ -680,7 +680,7 @@ class HTMLTools
             }
         }
 
-        return static::renderDomToHtml($body, true);
+        return self::renderDomToHtml($body, true);
     }
 
     public static function plainToHtml(string $text, bool $insertLinks = true): string
@@ -733,8 +733,8 @@ class HTMLTools
         $html = str_replace("\r", "", $html);
         $html = str_replace(" />", ">", $html);
 
-        static::$LINKS      = $linksAtEnd;
-        static::$LINK_CACHE = [];
+        self::$LINKS      = $linksAtEnd;
+        self::$LINK_CACHE = [];
 
         $text = str_ireplace("<br>", "\n", $html);
         $text = preg_replace("/<img.*>/siU", "", $text);
@@ -762,9 +762,9 @@ class HTMLTools
                 return '';
             }
 
-            if (static::$LINKS) {
-                $newnr                      = count(static::$LINK_CACHE) + 1;
-                static::$LINK_CACHE[$newnr] = $matches[1];
+            if (self::$LINKS) {
+                $newnr                      = count(self::$LINK_CACHE) + 1;
+                self::$LINK_CACHE[$newnr] = $matches[1];
                 return $begr . " [$newnr]";
             } else {
                 return $begr . " ($matches[1])";
@@ -820,9 +820,9 @@ class HTMLTools
 
         $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
 
-        if ($linksAtEnd && count(static::$LINK_CACHE) > 0) {
+        if ($linksAtEnd && count(self::$LINK_CACHE) > 0) {
             $text .= "\n\n\nLinks:\n";
-            foreach (static::$LINK_CACHE as $nr => $link) {
+            foreach (self::$LINK_CACHE as $nr => $link) {
                 $text .= "[$nr] $link\n";
             }
         }
@@ -903,7 +903,7 @@ class HTMLTools
                 $str .= '>';
             }
             foreach ($node->childNodes as $child) {
-                $str .= static::renderDomToHtml($child);
+                $str .= self::renderDomToHtml($child);
             }
             if (!$skipBody || strtolower($node->nodeName) !== 'body') {
                 $str .= '</' . $node->nodeName . '>';
@@ -925,7 +925,7 @@ class HTMLTools
                 'children' => [],
             ];
             foreach ($node->childNodes as $child) {
-                $nodeArr['children'][] = static::getDomDebug($child);
+                $nodeArr['children'][] = self::getDomDebug($child);
             }
             return $nodeArr;
         } else {
@@ -1030,7 +1030,7 @@ class HTMLTools
         while ($node->childNodes->length > 0) {
             $child = $node->childNodes->item(0);
             $node->removeChild($child);
-            $modifiedChild = static::stripInsDelMarkersInt($child);
+            $modifiedChild = self::stripInsDelMarkersInt($child);
             $children      = array_merge($children, $modifiedChild);
         }
         foreach ($children as $child) {
@@ -1042,11 +1042,11 @@ class HTMLTools
 
     public static function stripInsDelMarkers(string $html): string
     {
-        $body         = static::html2DOM($html);
-        $strippedBody = static::stripInsDelMarkersInt($body);
+        $body         = self::html2DOM($html);
+        $strippedBody = self::stripInsDelMarkersInt($body);
         $str          = '';
         foreach ($strippedBody[0]->childNodes as $child) {
-            $str .= static::renderDomToHtml($child);
+            $str .= self::renderDomToHtml($child);
         }
         return $str;
     }
@@ -1066,7 +1066,7 @@ class HTMLTools
             $shortenedHtml .= '…';
         }
 
-        $shortenedHtml = static::correctHtmlErrors($shortenedHtml, false);
+        $shortenedHtml = self::correctHtmlErrors($shortenedHtml, false);
 
         return $shortenedHtml;
     }

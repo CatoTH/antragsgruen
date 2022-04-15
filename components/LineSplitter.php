@@ -143,13 +143,13 @@ class LineSplitter
                         $inlineTextSpool = '';
                     }
                     if (in_array($child->nodeName, $veryBigElements)) {
-                        $arr = static::splitHtmlToLinesInt($child, intval(floor($lineLength * 0.60)), $prependLines);
+                        $arr = self::splitHtmlToLinesInt($child, intval(floor($lineLength * 0.60)), $prependLines);
                     } elseif (in_array($child->nodeName, $bigElements)) {
-                        $arr = static::splitHtmlToLinesInt($child, intval(floor($lineLength * 0.75)), $prependLines);
+                        $arr = self::splitHtmlToLinesInt($child, intval(floor($lineLength * 0.75)), $prependLines);
                     } elseif (in_array($child->nodeName, $indentedElements)) {
-                        $arr = static::splitHtmlToLinesInt($child, $lineLength - 6, $prependLines);
+                        $arr = self::splitHtmlToLinesInt($child, $lineLength - 6, $prependLines);
                     } else {
-                        $arr = static::splitHtmlToLinesInt($child, $lineLength, $prependLines);
+                        $arr = self::splitHtmlToLinesInt($child, $lineLength, $prependLines);
                     }
                     foreach ($arr as $newEl) {
                         $out[] = $newEl;
@@ -201,7 +201,7 @@ class LineSplitter
             $spl = new LineSplitter($html, $lineLength);
             $result = $spl->splitLines();
         } else {
-            $result = static::splitHtmlToLinesInt($dom, $lineLength, $prependLines);
+            $result = self::splitHtmlToLinesInt($dom, $lineLength, $prependLines);
         }
 
         HashedStaticCache::setCache('splitHtmlToLines', $cache_depends, $result);
@@ -215,7 +215,7 @@ class LineSplitter
     public static function addLineNumbersToParagraphs(array $paragraphs, int $lineLength): array
     {
         for ($i = 0; $i < count($paragraphs); $i++) {
-            $lines          = static::splitHtmlToLines($paragraphs[$i], $lineLength, '###LINENUMBER###');
+            $lines          = self::splitHtmlToLines($paragraphs[$i], $lineLength, '###LINENUMBER###');
             $paragraphs[$i] = implode('', $lines);
         }
         return $paragraphs;

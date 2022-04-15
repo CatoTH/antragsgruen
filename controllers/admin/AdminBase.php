@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\components\RequestContext;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\{ConsultationUserGroup, User};
@@ -32,7 +33,7 @@ class AdminBase extends Base
             return true;
         }
 
-        if (\Yii::$app->user->isGuest) {
+        if (RequestContext::getUser()->isGuest) {
             $this->redirect(UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return false;
         }

@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\components\RequestContext;
 use app\components\Tools;
 use app\models\policies\{All, LoggedIn, IPolicy};
 use app\models\motionTypeTemplates\{Application, Manifesto, PDFApplication};
@@ -664,8 +665,8 @@ class SiteCreateForm extends Model
 
     public function createSandboxUser(): User
     {
-        if (\Yii::$app->user) {
-            \Yii::$app->user->logout();
+        if (!RequestContext::getUser()->isGuest) {
+            RequestContext::getUser()->logout();
         }
 
         $email                 = $this->subdomain . '@example.org';
@@ -683,7 +684,7 @@ class SiteCreateForm extends Model
             die();
         }
 
-        \Yii::$app->user->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
+        RequestContext::getUser()->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
 
         return $user;
     }

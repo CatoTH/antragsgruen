@@ -93,6 +93,7 @@ class Vote extends ActiveRecord
         } elseif (is_a($item, Motion::class)) {
             return $this->motionId === $item->id;
         } else {
+            /** @var VotingQuestion $item */
             return $this->questionId === $item->id;
         }
     }

@@ -3,6 +3,7 @@
 namespace app\models\notifications;
 
 use app\components\mail\Tools;
+use app\components\RequestContext;
 use app\models\db\Consultation;
 use app\models\db\EMailLog;
 use app\models\exceptions\MailNotSent;
@@ -37,7 +38,7 @@ abstract class Base
                 );
             } catch (MailNotSent | ServerConfiguration $e) {
                 $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                \Yii::$app->session->setFlash('error', $errMsg);
+                RequestContext::getSession()->setFlash('error', $errMsg);
             }
         }
     }

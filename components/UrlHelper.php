@@ -18,22 +18,22 @@ class UrlHelper
 
     public static function setCurrentSite(?Site $site): void
     {
-        static::$currentSite = $site;
+        self::$currentSite = $site;
     }
 
     public static function getCurrentSite(): ?Site
     {
-        return static::$currentSite;
+        return self::$currentSite;
     }
 
     public static function setCurrentConsultation(?Consultation $consultation): void
     {
-        static::$currentConsultation = $consultation;
+        self::$currentConsultation = $consultation;
     }
 
     public static function getCurrentConsultation(): ?Consultation
     {
-        return static::$currentConsultation;
+        return self::$currentConsultation;
     }
 
     private static function getParams(): AntragsgruenApp
@@ -73,9 +73,9 @@ class UrlHelper
 
     protected static function createSiteUrl(array $route): string
     {
-        $site         = static::$currentSite;
-        $consultation = static::$currentConsultation;
-        $routeParts   = static::getRouteParts($route[0]);
+        $site         = self::$currentSite;
+        $consultation = self::$currentConsultation;
+        $routeParts   = self::getRouteParts($route[0]);
 
         if ($consultation !== null && !isset($route['consultationPath'])) {
             // for pages/show-page, consultationPath is optional
@@ -83,7 +83,7 @@ class UrlHelper
                 $route['consultationPath'] = $consultation->urlPath;
             }
         }
-        if (static::getParams()->multisiteMode && $site !== null) {
+        if (self::getParams()->multisiteMode && $site !== null) {
             $route['subdomain'] = $site->subdomain;
         }
 
@@ -124,17 +124,17 @@ class UrlHelper
         }
 
         if ($forceConsultation) {
-            if (!static::$currentConsultation || $forceConsultation->id !== static::$currentConsultation->id) {
+            if (!self::$currentConsultation || $forceConsultation->id !== self::$currentConsultation->id) {
                 $route['consultationPath'] = $forceConsultation->urlPath;
             }
-            if (!static::$currentSite || $forceConsultation->site->id !== static::$currentSite->id) {
+            if (!self::$currentSite || $forceConsultation->site->id !== self::$currentSite->id) {
                 $route['subdomain'] = $forceConsultation->site->subdomain;
             }
         }
 
-        $routeParts = static::getRouteParts($route[0]);
+        $routeParts = self::getRouteParts($route[0]);
         if ($routeParts['controller'] !== 'manager') {
-            return static::createSiteUrl($route);
+            return self::createSiteUrl($route);
         } else {
             return Url::toRoute($route);
         }
@@ -145,9 +145,9 @@ class UrlHelper
      */
     public static function createLoginUrl($route): string
     {
-        $target_url = static::createUrl($route);
+        $target_url = self::createUrl($route);
         if (Yii::$app->user->isGuest) {
-            return static::createUrl(['/user/login', 'backUrl' => $target_url]);
+            return self::createUrl(['/user/login', 'backUrl' => $target_url]);
         } else {
             return $target_url;
         }
@@ -155,23 +155,23 @@ class UrlHelper
 
     public static function homeUrl(): ?string
     {
-        if (static::$currentConsultation) {
-            $consultation       = static::$currentConsultation;
+        if (self::$currentConsultation) {
+            $consultation       = self::$currentConsultation;
             $homeOverride       = $consultation->site->getBehaviorClass()->hasSiteHomePage();
             $preferConsultation = $consultation->site->getBehaviorClass()->preferConsultationSpecificHomeLink();
             if ($preferConsultation) {
-                $homeUrl = static::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
+                $homeUrl = self::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
             } elseif ($consultation->site->currentConsultationId === $consultation->id || $homeOverride) {
-                $homeUrl = static::createUrl('/consultation/home');
+                $homeUrl = self::createUrl('/consultation/home');
             } else {
-                $homeUrl = static::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
+                $homeUrl = self::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
             }
 
-            if (static::$currentConsultation->getSettings()->forceMotion) {
-                $forceMotion = static::$currentConsultation->getSettings()->forceMotion;
-                $motion      = static::$currentConsultation->getMotion($forceMotion);
+            if (self::$currentConsultation->getSettings()->forceMotion) {
+                $forceMotion = self::$currentConsultation->getSettings()->forceMotion;
+                $motion      = self::$currentConsultation->getMotion($forceMotion);
                 if ($motion) {
-                    return static::createMotionUrl($motion);
+                    return self::createMotionUrl($motion);
                 } else {
                     return $homeUrl;
                 }
@@ -181,7 +181,7 @@ class UrlHelper
         } else {
             foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
                 if ($pluginClass::getDefaultRouteOverride()) {
-                    return static::createUrl($pluginClass::getDefaultRouteOverride());
+                    return self::createUrl($pluginClass::getDefaultRouteOverride());
                 }
             }
             return null;
@@ -194,16 +194,16 @@ class UrlHelper
             return $url;
         }
 
-        $params = static::getParams();
+        $params = self::getParams();
 
-        if (static::$currentSite) {
+        if (self::$currentSite) {
             if ($params->domainSubdomain) {
                 if (mb_strpos($url, $params->resourceBase) === 0) {
                     $url = mb_substr($url, mb_strlen($params->resourceBase));
                 } elseif ($url[0] === '/') {
                     $url = mb_substr($url, 1);
                 }
-                $dom = str_replace('<subdomain:[\w_-]+>', static::$currentSite->subdomain, $params->domainSubdomain);
+                $dom = str_replace('<subdomain:[\w_-]+>', self::$currentSite->subdomain, $params->domainSubdomain);
                 return $dom . $url;
             } else {
                 if ($url[0] === '/') {
@@ -240,7 +240,7 @@ class UrlHelper
     public static function createMotionUrl(Motion $motion, string $mode = 'view', array $addParams = []): string
     {
         $params = array_merge(['/motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);
-        return static::createUrl($params, $motion->getMyConsultation());
+        return self::createUrl($params, $motion->getMyConsultation());
     }
 
     public static function createMotionCommentUrl(MotionComment $motionComment): string
@@ -251,7 +251,7 @@ class UrlHelper
             'commentId'  => $motionComment->id,
             '#'          => 'comm' . $motionComment->id
         ];
-        return static::createUrl($params, $motionComment->getIMotion()->getMyConsultation());
+        return self::createUrl($params, $motionComment->getIMotion()->getMyConsultation());
     }
 
     public static function createAmendmentUrl(Amendment $amendment, string $mode = 'view', array $addParams = []): string
@@ -264,7 +264,7 @@ class UrlHelper
             'motionSlug'  => $amendment->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendment->id
         ], $addParams);
-        return static::createUrl($params, $amendment->getMyConsultation());
+        return self::createUrl($params, $amendment->getMyConsultation());
     }
 
     public static function createAmendmentCommentUrl(AmendmentComment $amendmentComment): string
@@ -276,7 +276,7 @@ class UrlHelper
             'commentId'   => $amendmentComment->id,
             '#'           => 'comm' . $amendmentComment->id
         ];
-        return static::createUrl($params, $amendmentComment->getIMotion()->getMyConsultation());
+        return self::createUrl($params, $amendmentComment->getIMotion()->getMyConsultation());
     }
 
     /*

@@ -16,7 +16,7 @@ class DBConnection extends \yii\db\Connection
         try {
             parent::open();
         } catch (\yii\db\Exception $e) {
-            if (static::$catchedError) {
+            if (self::$catchedError) {
                 echo '<h1>Could not open database - and an endless loop occurred.</h1>';
                 echo 'This should not happen under any circumstance. You might consider opening a ';
                 echo '<a href="https://github.com/CatoTH/antragsgruen">bugreport</a>.';
