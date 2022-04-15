@@ -1,0 +1,25 @@
+name: phpstan-generate-baseline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-baseline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@v6
+        with:
+          php_version: "7.3"
+          php_extensions: zip intl gd
+      - name: Generate baseline
+        run: |
+          php vendor/bin/phpstan analyse --level=7 --error-format=github --generate-baseline
+      - name: Upload baseline
+        uses: actions/upload-artifact@v3
+        with:
+          name: phpstan-baseline.neon
+          path: phpstan-baseline.neon
