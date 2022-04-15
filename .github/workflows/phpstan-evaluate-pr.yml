@@ -1,0 +1,24 @@
+name: phpstan-evaluate-pr
+
+on:
+  pull_request: {}
+
+jobs:
+  evaluate-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@v6
+        with:
+          php_version: "8.0"
+          php_extensions: zip intl gd
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: .github/workflows/phpstan-generate-baseline.yml
+          workflow_conclusion: success
+          name: phpstan-baseline.neon
+      - name: phpstan
+        run: |
+          php vendor/bin/phpstan analyse --level=7 --error-format=github --configuration=phpstan.use-baseline.neon
