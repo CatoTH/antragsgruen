@@ -665,7 +665,7 @@ class SiteCreateForm extends Model
 
     public function createSandboxUser(): User
     {
-        if (RequestContext::getUser()) {
+        if (!RequestContext::getUser()->isGuest) {
             RequestContext::getUser()->logout();
         }
 

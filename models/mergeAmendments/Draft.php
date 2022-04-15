@@ -54,7 +54,7 @@ class Draft implements \JsonSerializable
         $this->origMotion  = $origMotion;
         $draftStatuses     = [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE];
 
-        /** @var Motion $draftMotion */
+        /** @var Motion|null $draftMotion */
         $draftMotion = Motion::find()->where(['parentMotionId' => $origMotion->id])
                                      ->andWhere(['status' => $draftStatuses])->one();
         $this->draftMotion = $draftMotion;

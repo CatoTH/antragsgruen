@@ -13,6 +13,6 @@ class InsDelGroup
     /** @var int */
     public $end;
 
-    /** @var string - Engine::DELETED, Engine::INSERTED*/
+    /** @var int - Engine::DELETED, Engine::INSERTED*/
     public $type;
 }
