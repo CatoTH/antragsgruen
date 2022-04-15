@@ -5,7 +5,7 @@ namespace app\models\notifications;
 use app\models\exceptions\ServerConfiguration;
 use app\models\layoutHooks\Layout;
 use app\models\db\{Consultation, EMailLog, ISupporter, Motion};
-use app\components\{mail\Tools as MailTools, HTMLTools, UrlHelper};
+use app\components\{mail\Tools as MailTools, HTMLTools, RequestContext, UrlHelper};
 use app\models\exceptions\MailNotSent;
 use yii\helpers\Html;
 
@@ -16,9 +16,6 @@ class MotionPublished
 
     /** @var Consultation */
     protected $consultation;
-
-    /** @var string[] */
-    protected $alreadyNotified = [];
 
     public function __construct(Motion $motion)
     {
@@ -90,7 +87,7 @@ class MotionPublished
             );
         } catch (MailNotSent | ServerConfiguration $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-            \Yii::$app->session->setFlash('error', $errMsg);
+            RequestContext::getSession()->setFlash('error', $errMsg);
         }
     }
 }

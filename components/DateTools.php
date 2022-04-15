@@ -11,17 +11,17 @@ class DateTools
         if (!$consultation || !User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return false;
         }
-        return (\Yii::$app->session->get('deadline_debug_mode', null) === '1');
+        return (RequestContext::getSession()->get('deadline_debug_mode', null) === '1');
     }
 
     public static function setDeadlineDebugMode(?Consultation $consultation, bool $active): void
     {
         if ($consultation && User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             if ($active) {
-                \Yii::$app->session->set('deadline_debug_mode', '1');
+                RequestContext::getSession()->set('deadline_debug_mode', '1');
             } else {
-                \Yii::$app->session->remove('deadline_debug_mode');
-                \Yii::$app->session->remove('deadline_simulate_time');
+                RequestContext::getSession()->remove('deadline_debug_mode');
+                RequestContext::getSession()->remove('deadline_simulate_time');
             }
         }
     }
@@ -30,9 +30,9 @@ class DateTools
     {
         if ($consultation && User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             if ($time) {
-                \Yii::$app->session->set('deadline_simulate_time', $time);
+                RequestContext::getSession()->set('deadline_simulate_time', $time);
             } else {
-                \Yii::$app->session->remove('deadline_simulate_time');
+                RequestContext::getSession()->remove('deadline_simulate_time');
             }
         }
     }
@@ -68,8 +68,8 @@ class DateTools
         if (!$consultation || !User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return null;
         }
-        $time = \Yii::$app->session->get('deadline_simulate_time');
-        return ($time ? $time : null);
+        $time = RequestContext::getSession()->get('deadline_simulate_time');
+        return $time ?: null;
     }
 
     public static function getCurrentTimestamp(): int
@@ -78,10 +78,10 @@ class DateTools
         if (!$consultation || !User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return time();
         }
-        if (\Yii::$app->session->get('deadline_debug_mode', null) !== '1') {
+        if (RequestContext::getSession()->get('deadline_debug_mode', null) !== '1') {
             return time();
         }
-        $time = \Yii::$app->session->get('deadline_simulate_time');
+        $time = RequestContext::getSession()->get('deadline_simulate_time');
         if ($time) {
             return Tools::dateSql2timestamp($time);
         } else {

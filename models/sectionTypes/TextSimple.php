@@ -194,6 +194,7 @@ class TextSimple extends Text
 
     public function getMotionPlainHtmlWithLineNumbers(): string
     {
+        /** @var MotionSection $section */
         $section = $this->section;
         $paragraphBegin = '<div class="text motionTextFormattings textOrig';
         if ($section->getSettings()->fixedWidth) {

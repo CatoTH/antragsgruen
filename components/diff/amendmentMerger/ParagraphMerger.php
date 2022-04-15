@@ -458,7 +458,7 @@ class ParagraphMerger
                     $pendingCurrAmend = $word->modifiedBy;
                 }
 
-                $toPrepend = static::appendedOrPrependedGroupsToPending($word->prependCollisionGroups, $CHANGESET_COUNTER);
+                $toPrepend = self::appendedOrPrependedGroupsToPending($word->prependCollisionGroups, $CHANGESET_COUNTER);
                 $pending .= $toPrepend;
                 if (preg_match("/^(?<orig>.*)###(INS|DEL)_START/siuU", $toPrepend, $matches)) {
                     // Scenario
@@ -473,7 +473,7 @@ class ParagraphMerger
                     }
                 }
                 $pending .= $word->modification;
-                $pending .= static::appendedOrPrependedGroupsToPending($word->appendCollisionGroups, $CHANGESET_COUNTER);
+                $pending .= self::appendedOrPrependedGroupsToPending($word->appendCollisionGroups, $CHANGESET_COUNTER);
             } else {
                 if (0 !== $pendingCurrAmend) {
                     $data = new GroupedParagraphData();
@@ -505,7 +505,7 @@ class ParagraphMerger
 
         $words = $this->paraData->words;
 
-        return static::groupParagraphData($words, $CHANGESET_COUNTER);
+        return self::groupParagraphData($words, $CHANGESET_COUNTER);
     }
 
     /**
@@ -592,10 +592,10 @@ class ParagraphMerger
                 }
             }
 
-            $data = static::groupParagraphData($words);
+            $data = self::groupParagraphData($words);
             foreach ($data as $i => $dat) {
                 if ($dat->amendment == 0) {
-                    $data[$i]->text = static::stripUnchangedLiFromColliding($dat->text);
+                    $data[$i]->text = self::stripUnchangedLiFromColliding($dat->text);
                 }
             }
             $grouped[$changeSet->amendment] = $data;

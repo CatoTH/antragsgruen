@@ -3,7 +3,12 @@
 namespace app\models\db;
 
 use app\models\layoutHooks\Layout;
-use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, GruenesNetzSamlClient, mail\Tools as MailTools};
+use app\components\{ExternalPasswordAuthenticatorInterface,
+    RequestContext,
+    Tools,
+    UrlHelper,
+    GruenesNetzSamlClient,
+    mail\Tools as MailTools};
 use app\models\events\UserEvent;
 use app\models\exceptions\{FormError, MailNotSent, ServerConfiguration};
 use app\models\settings\AntragsgruenApp;
@@ -68,11 +73,11 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getCurrentUser(): ?User
     {
         try {
-            if (\Yii::$app->user->getIsGuest()) {
+            if (RequestContext::getUser()->getIsGuest()) {
                 return null;
             } else {
                 /** @var User $user */
-                $user = \Yii::$app->user->identity;
+                $user = RequestContext::getUser()->identity;
                 return $user;
             }
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (\yii\base\UnknownPropertyException $e) {
@@ -529,7 +534,7 @@ class User extends ActiveRecord implements IdentityInterface
         try {
             MailTools::sendWithLog($mailType, $consultation, $this->email, $this->id, $subject, $text);
         } catch (MailNotSent | ServerConfiguration $e) {
-            \Yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+            RequestContext::getSession()->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
     }
 

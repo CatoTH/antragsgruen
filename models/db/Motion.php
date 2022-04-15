@@ -9,7 +9,7 @@ use app\models\notifications\{MotionProposedProcedure,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
 use app\models\settings\AntragsgruenApp;
-use app\components\{HashedStaticFileCache, MotionSorter, RSSExporter, Tools, UrlHelper};
+use app\components\{HashedStaticFileCache, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
@@ -520,7 +520,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function iAmInitiator(): bool
     {
-        $user = \Yii::$app->user;
+        $user = RequestContext::getUser();
         if ($user->isGuest) {
             return false;
         }

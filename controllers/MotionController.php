@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\RequestContext;
 use app\components\UrlHelper;
 use app\models\db\{Amendment,
     ConsultationAgendaItem,
@@ -94,7 +95,7 @@ class MotionController extends Base
         }
 
         $supportStatus = '';
-        if (!\Yii::$app->user->isGuest) {
+        if (!RequestContext::getUser()->isGuest) {
             foreach ($motion->motionSupporters as $supp) {
                 if ($supp->userId === User::getCurrentUser()->id) {
                     $supportStatus = $supp->role;

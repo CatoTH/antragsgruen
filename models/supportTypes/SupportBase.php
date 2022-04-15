@@ -2,6 +2,7 @@
 
 namespace app\models\supportTypes;
 
+use app\components\RequestContext;
 use app\components\Tools;
 use app\controllers\Base;
 use app\models\db\{Amendment, AmendmentSupporter, ConsultationMotionType, ConsultationUserGroup, ISupporter, Motion, MotionSupporter, User};
@@ -406,7 +407,7 @@ abstract class SupportBase
         $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS);
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
-        if (\Yii::$app->user->isGuest) {
+        if (RequestContext::getUser()->isGuest) {
             $init               = new MotionSupporter();
             $init->dateCreation = date('Y-m-d H:i:s');
             $init->userId       = null;
@@ -512,7 +513,7 @@ abstract class SupportBase
         $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS);
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
-        if (\Yii::$app->user->isGuest) {
+        if (RequestContext::getUser()->isGuest) {
             $init               = new AmendmentSupporter();
             $init->dateCreation = date('Y-m-d H:i:s');
             $init->userId       = null;

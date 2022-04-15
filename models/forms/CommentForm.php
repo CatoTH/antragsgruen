@@ -3,6 +3,7 @@
 namespace app\models\forms;
 
 use app\components\AntiSpam;
+use app\components\RequestContext;
 use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
 use app\models\db\ConsultationMotionType;
@@ -138,7 +139,7 @@ class CommentForm extends Model
      */
     private function checkWritePermissions()
     {
-        if (\Yii::$app->user->isGuest) {
+        if (RequestContext::getUser()->isGuest) {
             $jsToken = AntiSpam::createToken($this->motionType->consultationId);
             if ($jsToken !== \Yii::$app->request->post('jsprotection')) {
                 throw new Access(\Yii::t('base', 'err_js_or_login'));

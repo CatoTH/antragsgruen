@@ -5,7 +5,7 @@ namespace app\models\notifications;
 use app\components\mail\Tools as MailTools;
 use app\models\exceptions\ServerConfiguration;
 use app\models\layoutHooks\Layout;
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{HTMLTools, RequestContext, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, EMailLog, ISupporter, UserNotification};
 use app\models\exceptions\MailNotSent;
 use yii\helpers\Html;
@@ -91,7 +91,7 @@ class AmendmentPublished
             $this->alreadyNotified[] = strtolower($initiator->getContactOrUserEmail());
         } catch (MailNotSent | ServerConfiguration $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-            \Yii::$app->session->setFlash('error', $errMsg);
+            RequestContext::getSession()->setFlash('error', $errMsg);
         }
     }
 

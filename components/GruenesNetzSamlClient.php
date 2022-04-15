@@ -104,7 +104,7 @@ class GruenesNetzSamlClient implements ClientInterface
         if ($this->auth->isAuthenticated()) {
             $this->auth->logout();
         }
-        \Yii::$app->user->logout();
+        RequestContext::getUser()->logout();
     }
 
     /**

@@ -17,10 +17,7 @@ class ArrayMatcher
         $this->diffEngine = new Engine();
     }
 
-    /**
-     * @param string $str
-     */
-    public function addIgnoredString($str)
+    public function addIgnoredString(string $str): void
     {
         $this->ignoredStrings[] = $str;
         $this->diffEngine->setIgnoreStr($str); // @TODO does not work with multiple strings yet
@@ -70,7 +67,7 @@ class ArrayMatcher
             }
             $begin[] = array_shift($tmpMatchArr);
             array_shift($tmpReference);
-            $recVariants = static::calcVariants($tmpReference, $tmpMatchArr);
+            $recVariants = self::calcVariants($tmpReference, $tmpMatchArr);
             foreach ($recVariants as $recVariant) {
                 $mergedVariant = array_merge($begin, $recVariant);
                 $variants[]    = $mergedVariant;
@@ -95,8 +92,8 @@ class ArrayMatcher
             throw new Internal('calcSimilarity: The number of elements does not match');
         }
         $cacheKey = md5(serialize($arr1) . serialize($arr2));
-        if (isset(static::$calcSimilarityCache[$cacheKey])) {
-            return static::$calcSimilarityCache[$cacheKey];
+        if (isset(self::$calcSimilarityCache[$cacheKey])) {
+            return self::$calcSimilarityCache[$cacheKey];
         }
 
         $replaces = [];
@@ -109,12 +106,12 @@ class ArrayMatcher
             $val2 = str_replace($this->ignoredStrings, $replaces, $arr2[$i]);
 
             $cacheKey2 = md5("1" . $val1 . "2" . $val2);
-            if (!isset(static::$calcSimilarityCache[$cacheKey2])) {
-                static::$calcSimilarityCache[$cacheKey2] = similar_text($val1, $val2);
+            if (!isset(self::$calcSimilarityCache[$cacheKey2])) {
+                self::$calcSimilarityCache[$cacheKey2] = similar_text($val1, $val2);
             }
-            $similarity += static::$calcSimilarityCache[$cacheKey2];
+            $similarity += self::$calcSimilarityCache[$cacheKey2];
         }
-        static::$calcSimilarityCache[$cacheKey] = $similarity;
+        self::$calcSimilarityCache[$cacheKey] = $similarity;
         return $similarity;
     }
 
@@ -130,7 +127,7 @@ class ArrayMatcher
         $bestVariant           = null;
         $bestVariantSimilarity = 0;
         foreach ($variants as $variant) {
-            $similarity = static::calcSimilarity($reference, $variant);
+            $similarity = self::calcSimilarity($reference, $variant);
             if ($similarity > $bestVariantSimilarity) {
                 $bestVariantSimilarity = $similarity;
                 $bestVariant           = $variant;

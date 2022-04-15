@@ -88,8 +88,8 @@ class AmendmentRewriter
         $inDiffMotion = $inDiffAmendment = false;
         $new          = [];
 
-        list($wordsNewMotion, $wordsAmendment) = static::moveInsertsIntoTheirOwnWords($wordsNewMotion, $wordsAmendment);
-        list($wordsAmendment, $wordsNewMotion) = static::moveInsertsIntoTheirOwnWords($wordsAmendment, $wordsNewMotion);
+        list($wordsNewMotion, $wordsAmendment) = self::moveInsertsIntoTheirOwnWords($wordsNewMotion, $wordsAmendment);
+        list($wordsAmendment, $wordsNewMotion) = self::moveInsertsIntoTheirOwnWords($wordsAmendment, $wordsNewMotion);
 
         for ($i = 0; $i < count($wordsNewMotion[0]); $i++) {
             $wordNewMotion = $wordsNewMotion[0][$i]->diff;
@@ -145,8 +145,8 @@ class AmendmentRewriter
         $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
         $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldParas, $amendmentParas, false);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldParas, $motionNewParas, false);
+        $affectedByAmendment = self::computeAffectedParagraphs($motionOldParas, $amendmentParas, false);
+        $affectedByNewMotion = self::computeAffectedParagraphs($motionOldParas, $motionNewParas, false);
 
         $colliding = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
         foreach ($colliding as $col) {
@@ -154,7 +154,7 @@ class AmendmentRewriter
                 continue;
             }
             try {
-                static::createMerge($motionOldParas[$col], $affectedByNewMotion[$col], $affectedByAmendment[$col]);
+                self::createMerge($motionOldParas[$col], $affectedByNewMotion[$col], $affectedByAmendment[$col]);
             } catch (\Exception $e) {
                 //var_dump($e->getMessage());
                 //die();
@@ -206,8 +206,8 @@ class AmendmentRewriter
         $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
         $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldParas, $amendmentParas, $asDiff);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldParas, $motionNewParas, $asDiff);
+        $affectedByAmendment = self::computeAffectedParagraphs($motionOldParas, $amendmentParas, $asDiff);
+        $affectedByNewMotion = self::computeAffectedParagraphs($motionOldParas, $motionNewParas, $asDiff);
 
         if ($debug) {
             echo "====\n";
@@ -230,7 +230,7 @@ class AmendmentRewriter
                     var_dump($affectedByNewMotion[$paraNo]);
                     var_dump($affectedByAmendment[$paraNo]);
                 }
-                $merge = static::createMerge(
+                $merge = self::createMerge(
                     $motionOldParas[$paraNo],
                     $affectedByNewMotion[$paraNo],
                     $affectedByAmendment[$paraNo]
@@ -276,15 +276,15 @@ class AmendmentRewriter
         $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
         $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldParas, $amendmentParas, false);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldParas, $motionNewParas, false);
+        $affectedByAmendment = self::computeAffectedParagraphs($motionOldParas, $amendmentParas, false);
+        $affectedByNewMotion = self::computeAffectedParagraphs($motionOldParas, $motionNewParas, false);
 
         $newVersion = [];
         for ($paragraphNo = 0; $paragraphNo < count($motionOldParas); $paragraphNo++) {
             if (isset($overrides[$paragraphNo])) {
                 $newVersion[$paragraphNo] = $overrides[$paragraphNo];
             } elseif (isset($affectedByAmendment[$paragraphNo]) && isset($affectedByNewMotion[$paragraphNo])) {
-                $newVersion[$paragraphNo] = static::createMerge(
+                $newVersion[$paragraphNo] = self::createMerge(
                     $motionOldParas[$paragraphNo],
                     $affectedByNewMotion[$paragraphNo],
                     $affectedByAmendment[$paragraphNo]

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
+use app\components\RequestContext;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -44,7 +45,7 @@ class FailedLoginAttempt extends ActiveRecord
         $attempt->dateAttempt = new Expression('NOW()');
         $attempt->save();
 
-        \Yii::$app->session->set('loginLastFailedAttemptUsername', $normalizedUsername);
+        RequestContext::getSession()->set('loginLastFailedAttemptUsername', $normalizedUsername);
     }
 
     private static function needsLoginThrottlingByIp(): bool
@@ -81,10 +82,10 @@ class FailedLoginAttempt extends ActiveRecord
     {
         if ($username === null) {
             // Coming from the login form, not the actual login
-            $username = \Yii::$app->session->get('loginLastFailedAttemptUsername');
+            $username = RequestContext::getSession()->get('loginLastFailedAttemptUsername');
         } else {
             // Edge case: someone logs in successfully (which leads to the session being reset), logs out and tries to login again
-            \Yii::$app->session->set('loginLastFailedAttemptUsername', $username);
+            RequestContext::getSession()->set('loginLastFailedAttemptUsername', $username);
         }
         if (self::needsLoginThrottlingByIp()) {
             return true;

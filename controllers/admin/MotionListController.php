@@ -253,12 +253,12 @@ class MotionListController extends AdminBase
         \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $imotions = [];
-        foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $motion) {
-            if ($motion->motionTypeId === $motionTypeId) {
+        foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $imotion) {
+            if (is_a($imotion, Motion::class) && $imotion->motionTypeId === $motionTypeId) {
                 if ($motionType->amendmentsOnly) {
-                    $imotions = array_merge($imotions, $motion->getVisibleAmendments($withdrawn));
+                    $imotions = array_merge($imotions, $imotion->getVisibleAmendments($withdrawn));
                 } else {
-                    $imotions[] = $motion;
+                    $imotions[] = $imotion;
                 }
             }
         }
@@ -309,7 +309,7 @@ class MotionListController extends AdminBase
 
         $motions = [];
         foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $motion) {
-            if ($motion->motionTypeId == $motionTypeId) {
+            if (is_a($motion, Motion::class) && $motion->motionTypeId == $motionTypeId) {
                 $motions[] = $motion;
             }
         }

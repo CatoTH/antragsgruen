@@ -338,6 +338,7 @@ class MotionController extends AdminBase
 
                     $motionType->setSettingsObj(new MotionType(null));
 
+                    /** @var TexTemplate[] $texTemplates */
                     $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
                 }

@@ -25,8 +25,8 @@ class CookieUser
             $cookieUser->name      = trim($matches['name']);
 
             return $cookieUser;
-        } elseif (static::$userCache) {
-            return static::$userCache;
+        } elseif (self::$userCache) {
+            return self::$userCache;
         } else {
             return null;
         }

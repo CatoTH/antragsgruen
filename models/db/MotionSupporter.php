@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\EmailNotifications;
+use app\components\RequestContext;
 use app\models\events\MotionSupporterEvent;
 use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
@@ -69,8 +70,8 @@ class MotionSupporter extends ISupporter
     public static function getMyLoginlessSupportIds(): array
     {
         return array_merge(
-            \Yii::$app->session->get('loginless_motion_supports', []),
-            \Yii::$app->session->get('anonymous_motion_supports', []) // @TODO After v4.8
+            RequestContext::getSession()->get('loginless_motion_supports', []),
+            RequestContext::getSession()->get('anonymous_motion_supports', []) // @TODO After v4.8
         );
     }
 
@@ -78,7 +79,7 @@ class MotionSupporter extends ISupporter
     {
         $pre   = static::getMyLoginlessSupportIds();
         $pre[] = intval($support->id);
-        \Yii::$app->session->set('loginless_motion_supports', $pre);
+        RequestContext::getSession()->set('loginless_motion_supports', $pre);
     }
 
     public static function createSupport(Motion $motion, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false): void

@@ -152,7 +152,7 @@ class ConsultationFile extends ActiveRecord
         $file->title            = ($title ? $title : $filename);
         $file->dateCreation     = date('Y-m-d H:i:s');
         $file->downloadPosition = $maxPosition + 1;
-        $file->mimetype         = static::getMimeType($data);
+        $file->mimetype         = self::getMimeType($data);
         if (in_array($file->mimetype, ['image/png', 'image/jpeg', 'image/gif'])) {
             $info = getimagesizefromstring($data);
             if ($info) {

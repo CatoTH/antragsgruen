@@ -159,9 +159,9 @@ class AffectedLinesFilter
         $currLine        = $firstLine;
 
         $addToOut = function ($inlineHtml, $currLine) use (&$out, $context) {
-            $lines    = static::splitToLines($inlineHtml, $currLine);
-            $affected = static::filterAffectedBlocks($lines, $context);
-            $grouped  = static::groupAffectedDiffBlocks($affected);
+            $lines    = self::splitToLines($inlineHtml, $currLine);
+            $affected = self::filterAffectedBlocks($lines, $context);
+            $grouped  = self::groupAffectedDiffBlocks($affected);
 
             for ($i = 0; $i < count($grouped); $i++) {
                 $grouped[$i]['text'] = HTMLTools::correctHtmlErrors($grouped[$i]['text']);
@@ -185,11 +185,11 @@ class AffectedLinesFilter
                     $classes = explode(' ', $classes);
                     if (in_array('inserted', $classes) || in_array('deleted', $classes)) {
                         $inlineHtml = HTMLTools::renderDomToHtml($child);
-                        $lines      = static::splitToLines($inlineHtml, $currLine);
-                        $grouped    = static::groupAffectedDiffBlocks($lines);
+                        $lines      = self::splitToLines($inlineHtml, $currLine);
+                        $grouped    = self::groupAffectedDiffBlocks($lines);
                         $out        = array_merge($out, $grouped);
                     } else {
-                        $arr = static::splitToAffectedLinesInt($child, $currLine, $context);
+                        $arr = self::splitToAffectedLinesInt($child, $currLine, $context);
                         foreach ($arr as $newEl) {
                             $out[] = $newEl;
                         }
@@ -230,8 +230,8 @@ class AffectedLinesFilter
             return [];
         }
         /** @var \DOMElement $dom */
-        $lines = static::splitToAffectedLinesInt($dom, $firstLine, $context);
+        $lines = self::splitToAffectedLinesInt($dom, $firstLine, $context);
 
-        return static::groupAffectedDiffBlocks($lines);
+        return self::groupAffectedDiffBlocks($lines);
     }
 }

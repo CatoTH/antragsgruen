@@ -41,7 +41,7 @@ class DiffRenderer
     {
         $this->formatting = $formatting;
 
-        if ($this->formatting == static::FORMATTING_ICE) {
+        if ($this->formatting == self::FORMATTING_ICE) {
             $this->setInsCallback(function ($node, $params) {
                 /** @var \DOMElement $node */
                 $classes = explode(' ', $node->getAttribute('class'));
@@ -109,10 +109,10 @@ class DiffRenderer
 
     public static function nodeStartInsDel(\DOMNode $node): bool
     {
-        if (preg_match(static::INS_START_MATCH, $node->nodeValue)) {
+        if (preg_match(self::INS_START_MATCH, $node->nodeValue)) {
             return true;
         }
-        if (preg_match(static::DEL_START_MATCH, $node->nodeValue)) {
+        if (preg_match(self::DEL_START_MATCH, $node->nodeValue)) {
             return true;
         }
         return false;
@@ -138,11 +138,11 @@ class DiffRenderer
     private function createIns($param, \DOMNode $childNode): \DOMElement
     {
         $ins = $this->nodeCreator->createElement('ins');
-        if ($this->formatting === static::FORMATTING_INLINE) {
+        if ($this->formatting === self::FORMATTING_INLINE) {
             $ins->setAttribute('style', 'color: green; text-decoration: underline;');
         }
-        if ($this->formatting === static::FORMATTING_CLASSES_ARIA) {
-            $childText = static::nodeToPlainText($childNode);
+        if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
+            $childText = self::nodeToPlainText($childNode);
             $text      = str_replace('%INS%', $childText, \Yii::t('diff', 'aria_ins'));
             $ins->setAttribute('aria-label', $text);
         }
@@ -155,11 +155,11 @@ class DiffRenderer
     private function createDel($param, \DOMNode $childNode): \DOMElement
     {
         $ins = $this->nodeCreator->createElement('del');
-        if ($this->formatting === static::FORMATTING_INLINE) {
+        if ($this->formatting === self::FORMATTING_INLINE) {
             $ins->setAttribute('style', 'color: red; text-decoration: line-through;');
         }
-        if ($this->formatting === static::FORMATTING_CLASSES_ARIA) {
-            $childText = static::nodeToPlainText($childNode);
+        if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
+            $childText = self::nodeToPlainText($childNode);
             $text      = str_replace('%DEL%', $childText, \Yii::t('diff', 'aria_del'));
             $ins->setAttribute('aria-label', $text);
         }
@@ -171,12 +171,12 @@ class DiffRenderer
 
     private function addInsStyles(\DOMElement $element, string $param): void
     {
-        static::nodeAddClass($element, 'inserted');
-        if ($this->formatting === static::FORMATTING_INLINE) {
+        self::nodeAddClass($element, 'inserted');
+        if ($this->formatting === self::FORMATTING_INLINE) {
             $element->setAttribute('style', 'color: green; text-decoration: underline;');
         }
-        if ($this->formatting === static::FORMATTING_CLASSES_ARIA) {
-            $childText = static::nodeToPlainText($element);
+        if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
+            $childText = self::nodeToPlainText($element);
             $text      = str_replace('%INS%', $childText, \Yii::t('diff', 'aria_ins'));
             $element->setAttribute('aria-label', $text);
         }
@@ -187,12 +187,12 @@ class DiffRenderer
 
     private function addDelStyles(\DOMElement $element, string $param): void
     {
-        static::nodeAddClass($element, 'deleted');
-        if ($this->formatting === static::FORMATTING_INLINE) {
+        self::nodeAddClass($element, 'deleted');
+        if ($this->formatting === self::FORMATTING_INLINE) {
             $element->setAttribute('style', 'color: red; text-decoration: line-through;');
         }
-        if ($this->formatting === static::FORMATTING_CLASSES_ARIA) {
-            $childText = static::nodeToPlainText($element);
+        if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
+            $childText = self::nodeToPlainText($element);
             $text      = str_replace('%DEL%', $childText, \Yii::t('diff', 'aria_del'));
             $element->setAttribute('aria-label', $text);
         }
@@ -279,9 +279,9 @@ class DiffRenderer
                         $nodes[] = $newText;
                     }
                     $text = $split[3];
-                    if (preg_match(static::INS_START_MATCH, $split[1])) {
+                    if (preg_match(self::INS_START_MATCH, $split[1])) {
                         $inIns = $split[2];
-                    } elseif (preg_match(static::DEL_START_MATCH, $split[1])) {
+                    } elseif (preg_match(self::DEL_START_MATCH, $split[1])) {
                         $inDel = $split[2];
                     }
                 } else {
@@ -304,26 +304,26 @@ class DiffRenderer
      */
     protected function renderHtmlWithPlaceholdersIntElement(\DOMElement $child, &$newChildren, &$inIns, &$inDel)
     {
-        if ($inIns !== false && static::nodeContainsText($child, static::INS_END)) {
+        if ($inIns !== false && self::nodeContainsText($child, self::INS_END)) {
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child, $inIns);
             $newChildren = array_merge($newChildren, $currNewChildren);
-        } elseif ($inDel !== false && static::nodeContainsText($child, static::DEL_END)) {
+        } elseif ($inDel !== false && self::nodeContainsText($child, self::DEL_END)) {
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child, $inDel);
             $newChildren = array_merge($newChildren, $currNewChildren);
         } elseif ($inIns !== false) {
             /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName === 'ins');
-            if ($prevIsIns && static::nodeCanBeAttachedToDelIns($child)) {
-                $lastEl->appendChild(static::cloneNode($child));
-            } elseif (static::nodeCanBeAttachedToDelIns($child)) {
-                $clonedChild = static::cloneNode($child);
+            if ($prevIsIns && self::nodeCanBeAttachedToDelIns($child)) {
+                $lastEl->appendChild(self::cloneNode($child));
+            } elseif (self::nodeCanBeAttachedToDelIns($child)) {
+                $clonedChild = self::cloneNode($child);
                 $insNode     = $this->createIns($inIns, $clonedChild);
                 $insNode->appendChild($clonedChild);
                 $newChildren[] = $insNode;
             } else {
                 /** @var \DOMElement $clone */
-                $clone = static::cloneNode($child);
+                $clone = self::cloneNode($child);
                 $this->addInsStyles($clone, $inIns);
                 $newChildren[] = $clone;
             }
@@ -331,16 +331,16 @@ class DiffRenderer
             /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
-            if ($prevIsDel && static::nodeCanBeAttachedToDelIns($child)) {
-                $lastEl->appendChild(static::cloneNode($child));
-            } elseif (static::nodeCanBeAttachedToDelIns($child)) {
-                $clonedChild = static::cloneNode($child);
+            if ($prevIsDel && self::nodeCanBeAttachedToDelIns($child)) {
+                $lastEl->appendChild(self::cloneNode($child));
+            } elseif (self::nodeCanBeAttachedToDelIns($child)) {
+                $clonedChild = self::cloneNode($child);
                 $delNode     = $this->createDel($inDel, $clonedChild);
                 $delNode->appendChild($clonedChild);
                 $newChildren[] = $delNode;
             } else {
                 /** @var \DOMElement $clone */
-                $clone = static::cloneNode($child);
+                $clone = self::cloneNode($child);
                 $this->addDelStyles($clone, $inDel);
                 $newChildren[] = $clone;
             }
@@ -357,7 +357,7 @@ class DiffRenderer
      */
     protected function renderHtmlWithPlaceholdersIntInIns($dom, $inIns)
     {
-        if (!static::nodeContainsText($dom, static::INS_END)) {
+        if (!self::nodeContainsText($dom, self::INS_END)) {
             return [[$this->cloneNode($dom)], $inIns, false];
         }
 
@@ -393,7 +393,7 @@ class DiffRenderer
      */
     protected function renderHtmlWithPlaceholdersIntInDel($dom, $inDel)
     {
-        if (!static::nodeContainsText($dom, static::DEL_END)) {
+        if (!self::nodeContainsText($dom, self::DEL_END)) {
             return [[$this->cloneNode($dom)], false, $inDel];
         }
 
@@ -420,7 +420,7 @@ class DiffRenderer
 
     protected function renderHtmlWithPlaceholdersIntNormal(\DOMElement $dom): array
     {
-        if (!static::nodeStartInsDel($dom)) {
+        if (!self::nodeStartInsDel($dom)) {
             return [[$this->cloneNode($dom)], false, false];
         }
         $inIns       = $inDel = false;

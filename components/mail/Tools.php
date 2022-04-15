@@ -2,6 +2,7 @@
 
 namespace app\components\mail;
 
+use app\components\RequestContext;
 use app\models\settings\AntragsgruenApp;
 use app\models\db\{Consultation, EMailLog, IMotion, User};
 use app\models\exceptions\{MailNotSent, ServerConfiguration};
@@ -133,8 +134,8 @@ class Tools
         }
 
         if (YII_ENV === 'test') {
-            $pre = \Yii::$app->session->getFlash('email', '');
-            \Yii::$app->session->setFlash('email', $pre . 'E-Mail sent to: ' . $toEmail . " (Type $mailType)\n");
+            $pre = RequestContext::getSession()->getFlash('email', '');
+            RequestContext::getSession()->setFlash('email', $pre . 'E-Mail sent to: ' . $toEmail . " (Type $mailType)\n");
         }
     }
 }

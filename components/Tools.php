@@ -226,10 +226,10 @@ class Tools
     {
         list($usec, $sec) = explode(' ', microtime());
         $time = sprintf('%14.0f', intval($sec) * 10000 + floatval($usec) * 10000);
-        if (static::$last_time) {
-            echo 'Time (' . $name . '): ' . ($time - static::$last_time) . ' (' . date('Y-m-d H:i:s') . ')<br>';
+        if (self::$last_time) {
+            echo 'Time (' . $name . '): ' . ($time - self::$last_time) . ' (' . date('Y-m-d H:i:s') . ')<br>';
         }
-        static::$last_time = $time;
+        self::$last_time = $time;
     }
 
     public static function formatMysqlDateWithAria(?string $mysqldate, ?string $locale = null, bool $allowRelativeDates = true): string
@@ -334,8 +334,8 @@ class Tools
 
     public static function compareSqlTimes(string $dateTime1, string $dateTime2): int
     {
-        $ts1 = ($dateTime1 ? static::dateSql2timestamp($dateTime1) : 0);
-        $ts2 = ($dateTime2 ? static::dateSql2timestamp($dateTime2) : 0);
+        $ts1 = ($dateTime1 ? self::dateSql2timestamp($dateTime1) : 0);
+        $ts2 = ($dateTime2 ? self::dateSql2timestamp($dateTime2) : 0);
         if ($ts1 < $ts2) {
             return -1;
         } elseif ($ts1 > $ts2) {
@@ -400,8 +400,8 @@ class Tools
 
     public static function getMaxUploadSize(): int
     {
-        $post_max_size = static::parsePhpSize(ini_get('post_max_size'));
-        $upload_size   = static::parsePhpSize(ini_get('upload_max_filesize'));
+        $post_max_size = self::parsePhpSize(ini_get('post_max_size'));
+        $upload_size   = self::parsePhpSize(ini_get('upload_max_filesize'));
         if ($upload_size < $post_max_size) {
             return $upload_size;
         } else {

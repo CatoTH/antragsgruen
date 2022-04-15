@@ -218,11 +218,11 @@ class Engine
         $pendingSince = null;
         $pendingType  = null;
         for ($i = 0; $i < count($diff); $i++) {
-            if ($diff[$i][1] == static::INSERTED) {
+            if ($diff[$i][1] == self::INSERTED) {
                 if (!$pendingSince) {
                     $pendingSince = $i;
-                    $pendingType  = static::INSERTED;
-                } elseif ($pendingType != static::INSERTED) {
+                    $pendingType  = self::INSERTED;
+                } elseif ($pendingType != self::INSERTED) {
                     $group        = new InsDelGroup();
                     $group->start = $pendingSince;
                     $group->end   = $i - 1;
@@ -230,13 +230,13 @@ class Engine
                     $groups[] = $group;
 
                     $pendingSince = $i;
-                    $pendingType = static::INSERTED;
+                    $pendingType = self::INSERTED;
                 }
-            } elseif ($diff[$i][1] == static::DELETED) {
+            } elseif ($diff[$i][1] == self::DELETED) {
                 if (!$pendingSince) {
                     $pendingSince = $i;
-                    $pendingType  = static::DELETED;
-                } elseif ($pendingType != static::DELETED) {
+                    $pendingType  = self::DELETED;
+                } elseif ($pendingType != self::DELETED) {
                     $group        = new InsDelGroup();
                     $group->start = $pendingSince;
                     $group->end   = $i - 1;
@@ -244,7 +244,7 @@ class Engine
                     $groups[] = $group;
 
                     $pendingSince = $i;
-                    $pendingType  = static::DELETED;
+                    $pendingType  = self::DELETED;
                 }
             } else {
                 if ($pendingSince) {
@@ -282,7 +282,7 @@ class Engine
      */
     public static function shiftMisplacedHTMLTags($diff)
     {
-        $groups = static::findInsDelGroups($diff);
+        $groups = self::findInsDelGroups($diff);
 
         $forwardShiftingTags = ['<p>', '<ul>', '<ol>', '<blockquote>'];
         foreach ($groups as $group) {
@@ -291,18 +291,18 @@ class Engine
             if ($start === 0) {
                 continue;
             }
-            if ($diff[$start - 1][1] != static::UNMODIFIED) {
+            if ($diff[$start - 1][1] != self::UNMODIFIED) {
                 continue;
             }
             $prevTag = $diff[$start - 1][0];
             $lastTag = $diff[$end][0];
             if (in_array($prevTag, $forwardShiftingTags) && $prevTag == $lastTag) {
                 $diff[$start - 1][1] = $diff[$end][1];
-                $diff[$end][1]       = static::UNMODIFIED;
+                $diff[$end][1]       = self::UNMODIFIED;
             }
         }
 
-        $groups = static::findInsDelGroups($diff);
+        $groups = self::findInsDelGroups($diff);
 
         $backwardShiftingTags = ['</p>', '</ul>', '</ol>', '</blockquote>'];
         foreach ($groups as $group) {
@@ -311,14 +311,14 @@ class Engine
             if ($end === count($diff) - 1) {
                 continue;
             }
-            if ($diff[$end + 1][1] != static::UNMODIFIED) {
+            if ($diff[$end + 1][1] != self::UNMODIFIED) {
                 continue;
             }
             $nextTag  = $diff[$end + 1][0];
             $firstTag = $diff[$start][0];
             if (in_array($nextTag, $backwardShiftingTags) && $nextTag == $firstTag) {
                 $diff[$end + 1][1] = $diff[$start][1];
-                $diff[$start][1]   = static::UNMODIFIED;
+                $diff[$start][1]   = self::UNMODIFIED;
             }
         }
 

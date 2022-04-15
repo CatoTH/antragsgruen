@@ -15,7 +15,7 @@ use yii\db\ActiveRecord;
  * @property int $siteId
  * @property int $amendmentNumbering
  *
- * @property string $urlPath
+ * @property string|null $urlPath
  * @property string $title
  * @property string $titleShort
  * @property string $wordingBase

@@ -26,8 +26,8 @@ class HashedStaticFileCache
         if (!AntragsgruenApp::getInstance()->viewCacheFilePath) {
             return HashedStaticCache::getCache($function, $dependencies);
         }
-        $key = md5($function . static::hashDependencies($dependencies));
-        $directory = static::getDirectory($key);
+        $key = md5($function . self::hashDependencies($dependencies));
+        $directory = self::getDirectory($key);
         if (!file_exists($directory)) {
             return null;
         }
@@ -49,8 +49,8 @@ class HashedStaticFileCache
             return;
         }
 
-        $key = md5($function . static::hashDependencies($dependencies));
-        $directory = static::getDirectory($key);
+        $key = md5($function . self::hashDependencies($dependencies));
+        $directory = self::getDirectory($key);
         if (!file_exists($directory)) {
             mkdir($directory, 0700);
         }
@@ -68,8 +68,8 @@ class HashedStaticFileCache
             return;
         }
 
-        $key = md5($function . static::hashDependencies($dependencies));
-        $directory = static::getDirectory($key);
+        $key = md5($function . self::hashDependencies($dependencies));
+        $directory = self::getDirectory($key);
         if (file_exists($directory . '/' . $key)) {
             unlink($directory . '/' . $key);
         }

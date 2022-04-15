@@ -366,7 +366,7 @@ trait MotionExportTraits
 
     /**
      * @param string $motionSlug
-     * @param ?string|null $lineNumbers
+     * @param string|null $lineNumbers
      * @return string
      */
     public function actionRest($motionSlug, ?string $lineNumbers = null)

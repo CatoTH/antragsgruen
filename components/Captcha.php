@@ -24,15 +24,15 @@ class Captcha
         $builder->build(300, 80);
 
         $phrase = $builder->getPhrase();
-        \Yii::$app->session->set('captcha', $phrase);
+        RequestContext::getSession()->set('captcha', $phrase);
 
         return $builder->inline();
     }
 
     public static function checkEnteredCaptcha(?string $captcha): bool
     {
-        $savedCaptcha = \Yii::$app->session->get('captcha');
-        \Yii::$app->session->set('captcha', null);
+        $savedCaptcha = RequestContext::getSession()->get('captcha');
+        RequestContext::getSession()->set('captcha', null);
         if (!$captcha || !$savedCaptcha || mb_strlen($savedCaptcha) < 5) {
             return false;
         }
