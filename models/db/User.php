@@ -770,32 +770,6 @@ class User extends ActiveRecord implements IdentityInterface
         return $data;
     }
 
-    public function getSpeechListApiObject(): array
-    {
-        if ($user) {
-            $userData = [
-                'logged_in' => true,
-                'id'        => $user->id,
-                'token'     => null,
-                'name'      => $user->name,
-            ];
-        } elseif ($cookieUser) {
-            $userData = [
-                'logged_in' => true,
-                'id'        => null,
-                'token'     => $cookieUser->userToken,
-                'name'      => $cookieUser->name,
-            ];
-        } else {
-            $userData = [
-                'logged_in' => false,
-                'id'        => null,
-                'token'     => null,
-                'name'      => '',
-            ];
-        }
-    }
-
     public function getUserdataExportObject(): array
     {
         switch ($this->status) {
