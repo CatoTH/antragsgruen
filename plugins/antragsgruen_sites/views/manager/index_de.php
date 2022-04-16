@@ -17,7 +17,7 @@ $controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/';
 $controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/'];
 
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
+$params = Yii::$app->params;
 
 ?>
 <h1 id="antragsgruenTitle">Antragsgrün - das grüne Antragstool</h1>
@@ -65,6 +65,7 @@ $params = \Yii::$app->params;
             <li>Beliebige <strong>Textformatierungen</strong> in redaktionellen Texten (u.a. auch YouTube/Vimeo-Videos,
                 Grafiken etc.). Bei Anträgen und Änderungsanträgen sind einige Standard-Textformatierungen möglich.
             </li>
+            <li><strong>Redelisten</strong> auf Veranstaltungen, auch Quotierte.</li>
             <li>Automatisch erzeugte <strong>PDF</strong>-Versionen und <strong>Spreadsheet-Listen</strong>
                 der Anträge und Änderungsanträge.
             </li>

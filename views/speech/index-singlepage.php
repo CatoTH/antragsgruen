@@ -22,6 +22,7 @@ $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache()
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/speech/user-full-list-widget.vue.php');
+$layout->addFullscreenTemplates();
 
 $initData = $queue->getUserApiObject($user, $cookieUser);
 $userData = new SpeechUser($user, $cookieUser);
@@ -31,8 +32,23 @@ if ($queue->motion) {
 } else {
     $this->title = Yii::t('speech', 'speaking_bc');
 }
+
+if (User::getCurrentUser()) {
+    $fullscreenInitData = json_encode([
+        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
+        'init_page' => 'speech'
+    ]);
+    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
+        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
+        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
+    </button>';
+} else {
+    $fullscreenButton = '';
+}
+
 ?>
-<h1 id="speechListUserTitle"><?= Html::encode($this->title) ?></h1>
+<h1 id="speechListUserTitle"><?= Html::encode($this->title) . $fullscreenButton ?></h1>
 
 <section class="currentSpeechFullPage currentSpeechPageWidth"
          aria-labelledby="speechListUserTitle"

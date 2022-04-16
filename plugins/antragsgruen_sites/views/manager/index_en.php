@@ -17,7 +17,7 @@ $controller->layoutParams->canonicalUrl      = 'https://motion.tools/';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
 
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
+$params = Yii::$app->params;
 
 ?>
 <h1>Antragsgrün / Motion.Tools<br>
@@ -49,7 +49,8 @@ $params = \Yii::$app->params;
                 on preference, the comments function can be open to everybody or restricted to registered users. No comments
                 required? The comments function can be easily deactivated.
             </li>
-            <li><strong>Vote</strong> on motions and amendments.</li>
+            <li><strong>Voting</strong> on motions and amendments.</li>
+            <li><strong>Speaking lists</strong> on live events</li>
             <li><strong>Sophisticated administration tools</strong><br>
                 Automatic email messaging for all essential results.<br>
                 Filter and sorting options for all motions / amendments<br>

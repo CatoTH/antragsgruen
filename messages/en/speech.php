@@ -78,4 +78,7 @@ return [
 
     'sidebar_title'  => 'All speaking lists',
     'sidebar_active' => 'Active speaking list',
+
+    'fullscreen_title_s' => 'Speaking list',
+    'fullscreen_title_p' => 'Speaking lists',
 ];

@@ -318,6 +318,10 @@ class Layout
     {
         $this->addVueTemplate('@app/views/shared/fullscreen-projector.vue.php');
         $this->addVueTemplate('@app/views/shared/fullscreen-imotion.vue.php');
+        if ($this->consultation->getSettings()->hasSpeechLists) {
+            $this->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
+            $this->addVueTemplate('@app/views/speech/user-fullscreen-widget.vue.php');
+        }
     }
 
     public function loadVueSelect(): void
