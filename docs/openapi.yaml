@@ -201,6 +201,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MotionLinkWithAmendmentLinks'
+        speaking_lists:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakingList'
         url_json:
           type: string
           example: https://test.antragsgruen.de/rest/consultation
@@ -567,6 +571,116 @@ components:
         procedure:
           type: string
           example: "<p>Abstimmung (Angenommen)</p><p class=\"explanation\">Das Thema der Abstimmung wird an mehreren Stellen im Antrag beantragt. Die Antragskommission schlägt vor, eine Abstimmung zwischen W-01-034-2 und W-01-035 durchzuführen. Wenn W-01-034-2 angenommen wird, sind W-01-433 und W-01-599 in den Beschlusstext übernommen. Wenn W-01-035 angenommen wird, werden die beiden Anträge W-01-433 und W-01-599 nicht in den Beschlusstext übernommen.</p>"
+    SpeakingList:
+      properties:
+        id:
+          type: number
+          example: 23
+        is_open:
+          type: boolean
+          example: true
+          description: if true, then users can apply for the speaking list
+        have_applied:
+          type: boolean
+          example: true
+          description: indicates if the current user has already applied for the speaking list.
+        requires_login:
+          type: boolean
+          example: true
+          description: indicates if users need to be logged in to apply
+        subqueues:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakingListSubqueue'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakingListSlot'
+        current_time:
+          type: number
+          example: 1650106796832
+          description: unix timestamp in milliseconds of the time the request was served on server side. Can be used to calculate time offset of the browser.
+        speaking_time:
+          type: number
+          example: 300
+          description: if not null, then this indicates the time in seconds each speaker has
+    SpeakingListSubqueue:
+      properties:
+        id:
+          type: number
+          example: 23
+          description: can be null, if this is a default subqueue
+        name:
+          type: string
+          example: Member group 1
+          description: can be null, if this is a default subqueue
+        num_applied:
+          type: number
+          example: 4
+          description: number of users that have already applied for this subqueue
+        have_applied:
+          type: boolean
+          example: true
+          description: if the currently logged in user has applied for this subqueue
+        applied:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakingListApplicant'
+          description: list of users that have applied. Only provided if list the list is public.
+    SpeakingListApplicant:
+      properties:
+        id:
+          type: number
+          example: 23
+          description: application id
+        name:
+          type: string
+          example: Johanna Doe
+        user_id:
+          type: number
+          example: 23
+          description: user id
+        applied_at:
+          type: string
+          example: "2015-03-30T03:27:20+02:00"
+    SpeakingListSlot:
+      properties:
+        id:
+          type: number
+          example: 23
+          description: can be null, if this is a default subqueue
+        subqueue:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 23
+              description: can be null, if this is a default subqueue
+            name:
+              type: string
+              example: Member group 1
+              description: can be null, if this is a default subqueue
+        name:
+          type: string
+          example: Johanna Doe
+        user_id:
+          type: number
+          example: 123
+        position:
+          type: number
+          example: 1
+        date_started:
+          type: string
+          example: "2015-03-30T03:27:20+02:00"
+          description: When the speaking started. null if not yet started.
+        date_stopped:
+          type: string
+          example: "2015-03-30T03:27:20+02:00"
+          description: When the speaking stopped. null if not yet stopped. If this is null and date_started is set, then the person is currently speaking.
+        date_applied:
+          type: string
+          example: "2015-03-30T03:27:20+02:00"
+          description: When the speaker applied. Always set.
     ErrorNotFound:
       properties:
         success:

@@ -12,7 +12,7 @@ class SpeechQueue implements \JsonSerializable
     public $preferNonspeaker = false;
     /** @var bool */
     public $showNames = true;
-    /** @var null|int - in seconds*/
+    /** @var null|int - in seconds */
     public $speakingTime = null;
 
     public function getAdminApiObject(): array

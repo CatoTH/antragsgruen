@@ -31,8 +31,6 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    const iMotionListUrl = <?= json_encode(UrlHelper::createUrl(['/consultation/rest'])) ?>;
-
     Vue.component('fullscreen-projector', {
         template: <?= json_encode($html) ?>,
         props: ['initdata'],
@@ -64,7 +62,6 @@ $html = ob_get_clean();
                         return response.json();
                     })
                     .then(data => {
-                        console.log(JSON.parse(JSON.stringify(data)));
                         widget.imotion = data;
                         widget.selectedIMotionId = data.type + '-' + data.id;
                         widget.$emit('changed', data);

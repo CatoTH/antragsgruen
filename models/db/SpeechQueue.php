@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\CookieUser;
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -22,18 +23,12 @@ use yii\db\ActiveRecord;
  */
 class SpeechQueue extends ActiveRecord
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'speechQueue';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
@@ -47,42 +42,27 @@ class SpeechQueue extends ActiveRecord
         }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAgendaItem()
+    public function getAgendaItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotion()
+    public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSubqueues()
+    public function getSubqueues(): ActiveQuery
     {
         return $this->hasMany(SpeechSubqueue::class, ['queueId' => 'id'])->orderBy('position ASC');
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getItems()
+    public function getItems(): ActiveQuery
     {
         return $this->hasMany(SpeechQueueItem::class, ['queueId' => 'id']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['consultationId', 'isActive'], 'required'],
@@ -103,7 +83,7 @@ class SpeechQueue extends ActiveRecord
         return $this->settingsObject;
     }
 
-    public function setSettings(?\app\models\settings\SpeechQueue $settings)
+    public function setSettings(?\app\models\settings\SpeechQueue $settings): void
     {
         $this->settingsObject = $settings;
         $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
@@ -451,7 +431,7 @@ class SpeechQueue extends ActiveRecord
             'subqueues' => $this->getUserApiSubqueues($user, $cookieUser),
             'slots' => $this->getActiveSlots(),
             'requires_login' => $this->getMyConsultation()->getSettings()->speechRequiresLogin,
-            'current_time' => round(microtime(true) * 1000), // needs to include milliseconds for accuracy
+            'current_time' => (int)round(microtime(true) * 1000), // needs to include milliseconds for accuracy
             'speaking_time' => $settings->speakingTime,
         ];
     }
