@@ -104,12 +104,12 @@ function taskBuildPluginCss() {
 }
 
 function taskWatch() {
-    gulp.watch(main_js_files, {usePolling: false}, taskBuildJs);
-    gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], {usePolling: false}, taskBuildJs);
-    gulp.watch(["web/js/bootstrap-datetimepicker.js"], {usePolling: false}, taskBuildDatetimepicker);
-    gulp.watch(["web/css/*.scss"], {usePolling: false}, gulp.parallel(taskBuildCss, taskBuildPluginCss));
-    gulp.watch(["plugins/**/*.scss"], {usePolling: false}, taskBuildPluginCss);
-    gulp.watch(['web/typescript/**/*.ts'], {usePolling: false}, taskBuildTypescript);
+    gulp.watch(main_js_files, {usePolling: true}, taskBuildJs);
+    gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], {usePolling: true}, taskBuildJs);
+    gulp.watch(["web/js/bootstrap-datetimepicker.js"], {usePolling: true}, taskBuildDatetimepicker);
+    gulp.watch(["web/css/*.scss"], {usePolling: true}, gulp.parallel(taskBuildCss, taskBuildPluginCss));
+    gulp.watch(["plugins/**/*.scss"], {usePolling: true}, taskBuildPluginCss);
+    gulp.watch(['web/typescript/**/*.ts'], {usePolling: true}, taskBuildTypescript);
 }
 
 gulp.task('build-js', taskBuildJs);

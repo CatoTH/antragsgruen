@@ -24,6 +24,9 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
         },
         computed: {
             activeSpeaker: function () {
+                if (!this.queue) {
+                    return null; // Currently loading
+                }
                 const active = this.queue.slots.filter(function (slot) {
                     return slot.date_stopped === null && slot.date_started !== null;
                 });

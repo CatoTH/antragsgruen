@@ -73,9 +73,6 @@
     padding: 0 3vw 0 3vw;
   }
 
-  .imotionSelector {
-  }
-
   h1 {
     font-size: inherit;
     font-weight: inherit;
@@ -145,6 +142,45 @@
     }
     > tbody > tr > td {
       padding-top: 7px;
+    }
+  }
+
+  .speechLists {
+    // this adds to the styles from _speech_lists.scss
+    .activeSpeaker, .remainingTime {
+      text-align: center;
+      font-size: 2.5vw;
+    }
+    .activeSpeaker {
+      margin-top: 5vh;
+    }
+    .remainingTime {
+      margin-top: 3vh;
+    }
+    .leftIcon {
+      font-size: 2vw
+    }
+    h2.green {
+      @include stdHeading($headingSecondaryText, $headingSecondaryBackground, $headingSecondarySize);
+      margin: 3vh 0;
+      padding-left: 24vw;
+    }
+    .nameList {
+      display: block;
+      margin-left: 25vw;
+
+      > li {
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        .leftIcon {
+          float: left;
+          margin-left: -5vw;
+        }
+
+        font-size: 2vw;
+        line-height: 3vw;
+      }
     }
   }
 }

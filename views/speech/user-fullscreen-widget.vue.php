@@ -3,8 +3,8 @@
 ob_start();
 ?>
 
-<article class="speechUser">
-    <div class="content">
+<article class="speechLists currentSpeechPageWidth">
+    <div class="content" v-if="queue">
         <div class="activeSpeaker">
             <span class="glyphicon glyphicon-comment leftIcon" aria-hidden="true"></span>
             <span v-if="activeSpeaker" class="existing">
@@ -39,20 +39,16 @@ ob_start();
         </div>
     </div>
 
-    <h2 class="green"><?= Yii::t('speech', 'waiting_list') ?>: {{ queue.subqueues[0].num_applied }}</h2>
+    <div v-if="queue">
+        <h2 class="green"><?= Yii::t('speech', 'waiting_list') ?>: {{ queue.subqueues[0].num_applied }}</h2>
 
-    <div class="content">
         <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" aria-label="<?= Yii::t('speech', 'waiting_aria_1') ?>">
-            <header>
-                <ol class="nameList" v-if="queue.subqueues[0].applied && queue.subqueues[0].applied.length > 0" title="<?= Yii::t('speech', 'persons_waiting') ?>">
-                    <li v-for="applied in queue.subqueues[0].applied">
-                        <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
-                        {{ applied.name }}
-                    </li>
-                </ol>
-            </header>
-
-
+            <ol class="nameList" v-if="queue.subqueues[0].applied && queue.subqueues[0].applied.length > 0" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                <li v-for="applied in queue.subqueues[0].applied">
+                    <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
+                    {{ applied.name }}
+                </li>
+            </ol>
         </section>
 
         <section class="waiting waitingMultiple" v-if="queue.subqueues.length > 1" aria-label="<?= Yii::t('speech', 'waiting_aria_x') ?>">

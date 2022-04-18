@@ -85,8 +85,12 @@ $html = ob_get_clean();
                     })
                     .catch(err => alert(err));
             },
-            loadInitIMotion: function () {
-                this.loadIMotion(this.initdata.init_imotion_url);
+            loadInitContent: function () {
+                if (this.initdata.init_imotion_url) {
+                    this.loadIMotion(this.initdata.init_imotion_url);
+                } else if (this.initdata.init_page === 'speech') {
+                    this.dropdownSelection = 'speech';
+                }
             },
             onChangeSelectedIMotion: function () {
                 let foundImotion = null;
@@ -115,7 +119,7 @@ $html = ob_get_clean();
         created() {
             this.consultationUrl = this.initdata.consultation_url;
             this.loadIMotionList();
-            this.loadInitIMotion();
+            this.loadInitContent();
         }
     });
 </script>
