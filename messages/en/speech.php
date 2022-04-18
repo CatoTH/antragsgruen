@@ -74,7 +74,7 @@ return [
     'admin_subq_no_applic' => 'no applications',
     'admin_subq_add' => 'Add',
     'admin_subq_name' => 'Name',
-    'admin_move_here' => 'Hierher verschieben',
+    'admin_move_here' => 'Move here',
 
     'sidebar_title'  => 'All speaking lists',
     'sidebar_active' => 'Active speaking list',
