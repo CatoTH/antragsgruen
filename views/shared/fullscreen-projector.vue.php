@@ -1,14 +1,14 @@
 <?php
 
-use app\components\UrlHelper;
-
 ob_start();
 ?>
 
 <article class="projectorWidget">
     <header>
         <div class="imotionSelector">
-            <select v-if="imotions" v-model="selectedIMotionId" @change="onChangeSelectedIMotion()" class="stdDropdown">
+            <select v-if="imotions" v-model="dropdownSelection" @change="onChangeSelectedIMotion()" class="stdDropdown">
+                <option :value="'speech'" v-if="hasOneSpeakingList"><?= Yii::t('speech', 'fullscreen_title_s') ?></option>
+                <!-- @TODO Multiple speaking lists -->
                 <template v-for="imotion in imotions">
                     <option :value="imotion.type + '-' + imotion.id">{{ imotion.title_with_prefix }}</option>
                     <option v-if="imotion.amendment_links" v-for="amendment in imotion.amendment_links" :value="'amendment-' + amendment.id">▸ {{ amendment.prefix }}</option>
@@ -24,6 +24,8 @@ ob_start();
     </header>
 
     <fullscreen-imotion v-if="imotion" :imotion="imotion"></fullscreen-imotion>
+
+    <fullscreen-speech v-if="dropdownSelection === 'speech'" :queue="selectedSpeakingList" :user="null" :csrf="null" :title="'Speaking List'"></fullscreen-speech>
 </article>
 <?php
 $html = ob_get_clean();
@@ -31,8 +33,6 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    const iMotionListUrl = <?= json_encode(UrlHelper::createUrl(['/consultation/rest'])) ?>;
-
     Vue.component('fullscreen-projector', {
         template: <?= json_encode($html) ?>,
         props: ['initdata'],
@@ -40,8 +40,20 @@ $html = ob_get_clean();
             return {
                 consultationUrl: null,
                 imotions: null,
+                speakingLists: null,
                 imotion: null,
-                selectedIMotionId: null
+                dropdownSelection: null
+            }
+        },
+        computed: {
+            hasOneSpeakingList: function() {
+                return this.speakingLists && this.speakingLists.length === 1;
+            },
+            hasMultipleSpeakingLists: function () {
+                return this.speakingLists && this.speakingLists.length > 1;
+            },
+            selectedSpeakingList: function () {
+                return this.dropdownSelection === 'speech' && this.speakingLists ? this.speakingLists[0] : null;
             }
         },
         methods: {
@@ -52,7 +64,10 @@ $html = ob_get_clean();
                         if (!response.ok) throw response.statusText;
                         return response.json();
                     })
-                    .then(data => widget.imotions = data.motion_links)
+                    .then(data => {
+                        widget.imotions = data.motion_links;
+                        widget.speakingLists = data.speaking_lists;
+                    })
                     .catch(err => alert(err));
             },
             loadIMotion: function (url) {
@@ -64,32 +79,37 @@ $html = ob_get_clean();
                         return response.json();
                     })
                     .then(data => {
-                        console.log(JSON.parse(JSON.stringify(data)));
                         widget.imotion = data;
-                        widget.selectedIMotionId = data.type + '-' + data.id;
+                        widget.dropdownSelection = data.type + '-' + data.id;
                         widget.$emit('changed', data);
                     })
                     .catch(err => alert(err));
             },
-            loadInitIMotion: function () {
-                this.loadIMotion(this.initdata.init_imotion_url);
+            loadInitContent: function () {
+                if (this.initdata.init_imotion_url) {
+                    this.loadIMotion(this.initdata.init_imotion_url);
+                } else if (this.initdata.init_page === 'speech') {
+                    this.dropdownSelection = 'speech';
+                }
             },
             onChangeSelectedIMotion: function () {
-                let found = null;
+                let foundImotion = null;
                 this.imotions.forEach(imotion => {
-                    if ((imotion.type + '-' + imotion.id) === this.selectedIMotionId) {
-                        found = imotion;
+                    if ((imotion.type + '-' + imotion.id) === this.dropdownSelection) {
+                        foundImotion = imotion;
                     }
                     if (imotion.amendment_links) {
                         imotion.amendment_links.forEach(amendment => {
-                            if (('amendment-' + amendment.id) === this.selectedIMotionId) {
-                                found = amendment;
+                            if (('amendment-' + amendment.id) === this.dropdownSelection) {
+                                foundImotion = amendment;
                             }
                         });
                     }
                 });
-                if (found) {
-                    this.loadIMotion(found.url_json);
+                if (foundImotion) {
+                    this.loadIMotion(foundImotion.url_json);
+                } else {
+                    this.imotion = null;
                 }
             },
             close: function () {
@@ -99,7 +119,7 @@ $html = ob_get_clean();
         created() {
             this.consultationUrl = this.initdata.consultation_url;
             this.loadIMotionList();
-            this.loadInitIMotion();
+            this.loadInitContent();
         }
     });
 </script>

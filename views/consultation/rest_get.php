@@ -2,8 +2,19 @@
 
 /** @var \app\models\db\Consultation $consultation */
 
-use app\components\UrlHelper;
-use app\models\db\{Amendment, IMotion, Motion};
+use app\components\{CookieUser, UrlHelper};
+use app\models\db\{Amendment, IMotion, Motion, SpeechQueue, User};
+
+if ($consultation->getSettings()->hasSpeechLists) {
+    $user = User::getCurrentUser();
+    $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
+
+    $speakingLists = array_map(function (SpeechQueue $queue) use ($user, $cookieUser): array {
+        return $queue->getUserApiObject($user, $cookieUser);
+    }, $consultation->speechQueues);
+} else {
+    $speakingLists = null;
+}
 
 $json = [
     'title' => $consultation->title,
@@ -52,6 +63,7 @@ $json = [
             'url_html' => $htmlLink,
         ];
     }, $consultation->getVisibleIMotionsSorted(false)),
+    'speaking_lists' => $speakingLists,
     'url_json' => UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/rest')),
     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')),
 ];

@@ -322,6 +322,11 @@ class StdHooks extends Hooks
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink', 'aria-label' => $adminTitle]) . '</li>';
             }
 
+            if (get_class($controller) === UserController::class) {
+                $backUrl = UrlHelper::createUrl('/consultation/index');
+            } else {
+                $backUrl = \Yii::$app->request->url;
+            }
             if (User::getCurrentUser()) {
                 $link = Html::a(
                     \Yii::t('base', 'menu_account'),
@@ -330,20 +335,10 @@ class StdHooks extends Hooks
                 );
                 $out  .= '<li>' . $link . '</li>';
 
-                if (get_class($controller) === UserController::class) {
-                    $backUrl = UrlHelper::createUrl('/consultation/index');
-                } else {
-                    $backUrl = \Yii::$app->request->url;
-                }
                 $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => $backUrl]);
                 $logoutTitle = \Yii::t('base', 'menu_logout');
                 $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink', 'aria-label' => $logoutTitle]) . '</li>';
             } else {
-                if (get_class($controller) === UserController::class) {
-                    $backUrl = UrlHelper::createUrl('/consultation/index');
-                } else {
-                    $backUrl = \Yii::$app->request->url;
-                }
                 $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => $backUrl]);
                 $loginTitle = \Yii::t('base', 'menu_login');
                 $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow', 'aria-label' => $loginTitle]) .

@@ -78,4 +78,7 @@ return [
 
     'sidebar_title'  => 'Alle Redelisten',
     'sidebar_active' => 'Aktive Redeliste',
+
+    'fullscreen_title_s' => 'Redeliste',
+    'fullscreen_title_p' => 'Redelisten',
 ];

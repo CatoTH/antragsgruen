@@ -62,7 +62,6 @@ $htmlHeader = ob_get_clean();
     Vue.component('fullscreen-imotion', {
         template: <?= json_encode($htmlMain) ?>,
         props: ['imotion'],
-        data() {},
         computed: {
             isTwoColumnLayout: function () {
                 return this.imotion.sections && this.imotion.sections.find(section => {
