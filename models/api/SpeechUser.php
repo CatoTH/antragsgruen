@@ -25,7 +25,11 @@ class SpeechUser implements \JsonSerializable
             $this->loggedIn = true;
             $this->id = $user->id;
             $this->token = null;
-            $this->name = $user->name;
+            if ($user->organization) {
+                $this->name = $user->name . ' (' . $user->organization . ')';
+            } else {
+                $this->name = $user->name;
+            }
         } elseif ($cookieUser) {
             $this->loggedIn = true;
             $this->id = null;
