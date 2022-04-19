@@ -3,39 +3,12 @@
 namespace app\commands;
 
 use app\components\SitePurger;
-use app\models\db\{Amendment, Consultation, Motion, Site, User};
+use app\models\db\{Amendment, Consultation, Motion, Site};
 use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
 class AdminController extends Controller
 {
-    /**
-     * Resets the password for a given user
-     *
-     * @param string $auth
-     * @param string $password
-     */
-    public function actionSetUserPassword($auth, $password)
-    {
-        if (mb_strpos($auth, ':') === false) {
-            if (mb_strpos($auth, '@') !== false) {
-                $auth = 'email:' . $auth;
-            } else {
-                $auth = User::gruenesNetzId2Auth($auth);
-            }
-        }
-        /** @var User|null $user */
-        $user = User::findOne(['auth' => $auth]);
-        if (!$user) {
-            $this->stderr('User not found: ' . $auth . "\n");
-
-            return;
-        }
-
-        $user->changePassword($password);
-        $this->stdout('The password has been changed.' . "\n");
-    }
-
     private function getConsultationFromParams($subdomain, $consultation): ?Consultation
     {
         if ($subdomain == '' || $consultation == '') {
@@ -95,8 +68,7 @@ class AdminController extends Controller
      */
     public function actionBuildConsultationCaches($subdomain, $consultation)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
 
         $con = $this->getConsultationFromParams($subdomain, $consultation);
         if (!$con) {
@@ -135,9 +107,7 @@ class AdminController extends Controller
      */
     public function actionBuildMotionCache($motionSlug)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
+        $params = AntragsgruenApp::getInstance();
 
         $motions = Motion::findAll(['slug' => $motionSlug]);
         echo 'Found ' . count($motions) . ' motion(s)' . "\n";
@@ -170,7 +140,7 @@ class AdminController extends Controller
     /**
      * Delete all sites ready for purging.
      */
-    public function actionPurgeFromDatabase()
+    public function actionPurgeFromDatabase(): void
     {
         $app = AntragsgruenApp::getInstance();
         $sql = 'SELECT * FROM `' . $app->tablePrefix . 'site` WHERE `dateDeletion` IS NOT NULL';
@@ -194,7 +164,7 @@ class AdminController extends Controller
     /**
      * Delete all sites older than 3 days. Only available in Sandbox mode.
      */
-    public function actionDeleteOldSandboxInstances()
+    public function actionDeleteOldSandboxInstances(): void
     {
         $app = AntragsgruenApp::getInstance();
         if ($app->mode != 'sandbox') {
