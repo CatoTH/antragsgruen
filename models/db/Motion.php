@@ -19,6 +19,7 @@ use app\models\sectionTypes\{Image, ISectionType, PDF};
 use app\models\settings\MotionSection as MotionSectionSettings;
 use app\models\supportTypes\SupportBase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
 /**
@@ -73,7 +74,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return string[]
      */
-    public static function getProposedChangeStatuses()
+    public static function getProposedChangeStatuses(): array
     {
         $statuses = [
             IMotion::STATUS_ACCEPTED,
@@ -90,10 +91,7 @@ class Motion extends IMotion implements IRSSItem
         return $statuses;
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'motion';
     }
@@ -112,20 +110,14 @@ class Motion extends IMotion implements IRSSItem
         return $result;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getComments()
+    public function getComments(): ActiveQuery
     {
         return $this->hasMany(MotionComment::class, ['motionId' => 'id'])
                     ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED)
                     ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPrivateComments()
+    public function getPrivateComments(): ActiveQuery
     {
         $userId = User::getCurrentUser()->id;
 
@@ -150,12 +142,9 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param int[] $types
-     * @param string $sort
-     * @param int|null $limit
-     *
      * @return MotionAdminComment[]
      */
-    public function getAdminComments($types, $sort = 'desc', $limit = null)
+    public function getAdminComments(array $types, string $sort = 'desc', ?int $limit = null): array
     {
         return MotionAdminComment::find()
                                  ->where(['motionId' => $this->id, 'status' => $types])
@@ -166,41 +155,29 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return MotionAdminComment[]
      */
-    public function getAllAdminComments()
+    public function getAllAdminComments(): array
     {
         return MotionAdminComment::find()->where(['motionId' => $this->id])->all();
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionSupporters()
+    public function getMotionSupporters(): ActiveQuery
     {
         return $this->hasMany(MotionSupporter::class, ['motionId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAmendments()
+    public function getAmendments(): ActiveQuery
     {
         return $this->hasMany(Amendment::class, ['motionId' => 'id'])
                     ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTags()
+    public function getTags(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['id' => 'tagId'])
                     ->viaTable('motionTag', ['motionId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSections()
+    public function getSections(): ActiveQuery
     {
         return $this->hasMany(MotionSection::class, ['motionId' => 'id']);
     }
@@ -243,75 +220,48 @@ class Motion extends IMotion implements IRSSItem
         return (count($section) > 0 && $section[0]->getData() !== '' ? $section[0] : null);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionType()
+    public function getMotionType(): ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAgendaItem()
+    public function getAgendaItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getReplacedMotion()
+    public function getReplacedMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'parentMotionId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotingBlock()
+    public function getVotingBlock(): ActiveQuery
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAssignedVotingBlocks()
+    public function getAssignedVotingBlocks(): ActiveQuery
     {
         return $this->hasMany(VotingBlock::class, ['assignedToMotionId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotes()
+    public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['motionId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getReplacedByMotions()
+    public function getReplacedByMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['parentMotionId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpeechQueues()
+    public function getSpeechQueues(): ActiveQuery
     {
         return $this->hasMany(SpeechQueue::class, ['motionId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getResponsibilityUser()
+    public function getResponsibilityUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'responsibilityId']);
     }

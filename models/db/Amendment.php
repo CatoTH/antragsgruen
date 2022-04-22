@@ -85,10 +85,7 @@ class Amendment extends IMotion implements IRSSItem
         return $statuses;
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'amendment';
     }
@@ -112,28 +109,19 @@ class Amendment extends IMotion implements IRSSItem
         return $result;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getAgendaItem()
+    public function getAgendaItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getComments()
+    public function getComments(): ActiveQuery
     {
         return $this->hasMany(AmendmentComment::class, ['amendmentId' => 'id'])
             ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED)
             ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_PRIVATE);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getPrivateComments()
+    public function getPrivateComments(): ActiveQuery
     {
         $userId = User::getCurrentUser()->id;
         return $this->hasMany(AmendmentComment::class, ['amendmentId' => 'id'])
@@ -155,47 +143,40 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * @param int[] $types
-     * @param string $sort
-     * @param int|null $limit
-     * @return MotionAdminComment[]
+     * @return AmendmentAdminComment[]
      */
-    public function getAdminComments($types, $sort = 'desc', $limit = null)
+    public function getAdminComments(array $types, string $sort = 'desc', ?int $limit = null): array
     {
-        return AmendmentAdminComment::find()
+        /** @var AmendmentAdminComment[] $comments */
+        $comments = AmendmentAdminComment::find()
             ->where(['amendmentId' => $this->id, 'status' => $types])
             ->orderBy(['dateCreation' => $sort])
             ->limit($limit)->all();
+        return $comments;
     }
 
     /**
-     * @return MotionAdminComment[]
+     * @return AmendmentAdminComment[]
      */
-    public function getAllAdminComments()
+    public function getAllAdminComments(): array
     {
-        return AmendmentAdminComment::find()->where(['amendmentId' => $this->id])->all();
+        /** @var AmendmentAdminComment[] $comments */
+        $comments = AmendmentAdminComment::find()->where(['amendmentId' => $this->id])->all();
+        return $comments;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getAmendmentSupporters()
+    public function getAmendmentSupporters(): ActiveQuery
     {
         return $this->hasMany(AmendmentSupporter::class, ['amendmentId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTags()
+    public function getTags(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['id' => 'tagId'])
                     ->viaTable('amendmentTag', ['amendmentId' => 'id']);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getSections()
+    public function getSections(): ActiveQuery
     {
         return $this->hasMany(AmendmentSection::class, ['amendmentId' => 'id']);
     }
@@ -241,35 +222,23 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getProposalReferencedBy()
+    public function getProposalReferencedBy(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getVotingBlock()
+    public function getVotingBlock(): ActiveQuery
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getResponsibilityUser()
+    public function getResponsibilityUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'responsibilityId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotes()
+    public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['amendmentId' => 'id']);
     }
@@ -288,10 +257,7 @@ class Amendment extends IMotion implements IRSSItem
         return null;
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['motionId'], 'required'],
@@ -402,10 +368,7 @@ class Amendment extends IMotion implements IRSSItem
         return $this->myMotion;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getMotionJoin()
+    public function getMotionJoin(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
@@ -587,7 +550,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return Amendment[]
      */
-    public static function getScreeningAmendments(Consultation $consultation)
+    public static function getScreeningAmendments(Consultation $consultation): array
     {
         $query = Amendment::find();
         $statuses = array_map('intval', $consultation->getStatuses()->getScreeningStatuses());

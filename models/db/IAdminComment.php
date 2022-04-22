@@ -2,11 +2,9 @@
 
 namespace app\models\db;
 
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
- * @package app\models\db
- *
  * @property int|null $id
  * @property int $userId
  * @property int $status
@@ -23,10 +21,7 @@ abstract class IAdminComment extends ActiveRecord
     const SORT_DESC = 'desc';
     const SORT_ASC = 'asc';
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);

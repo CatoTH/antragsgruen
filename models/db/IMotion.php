@@ -712,12 +712,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     /**
      * @param int[] $types
-     * @param string $sort
-     * @param int|null $limit
-     *
      * @return IAdminComment[]
      */
-    abstract public function getAdminComments($types, $sort = 'desc', $limit = null);
+    abstract public function getAdminComments(array $types, string $sort = 'desc', ?int $limit = null): array;
 
     abstract public function getUserdataExportObject(): array;
 

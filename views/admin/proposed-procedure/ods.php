@@ -30,8 +30,10 @@ $doc = new Spreadsheet([
 $doc->setMargins("20mm", "10mm", "10mm", "20mm");
 $doc->setPageOrientation("297mm", "210mm", "landscape");
 
-
-$formatComments = function ($currentComments) {
+/**
+ * @param IAdminComment[] $currentComments
+ */
+$formatComments = function ($currentComments): string {
     $commentsStr = '';
     $first = true;
     foreach ($currentComments as $currentComment) {
@@ -156,8 +158,8 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
 
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
 
+    $allComments = $amendment->getAdminComments([IAdminComment::PROPOSED_PROCEDURE], IAdminComment::SORT_ASC);
     if ($comments) {
-        $allComments = $amendment->getAdminComments([IAdminComment::PROPOSED_PROCEDURE], IAdminComment::SORT_ASC);
         $commentsStr = $formatComments($allComments);
         $doc->setCell($row, $COL_COMMENTS, Spreadsheet::TYPE_HTML, $commentsStr);
         $minHeight = max($minHeight, count($allComments) * 2);
@@ -183,7 +185,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
         $proposal = '';
     } else {
         $proposal = '<p>' . $motion->getFormattedProposalStatus() . '</p>';
-        if (strlen($proposal) > 200) {
+        if (mb_strlen($proposal) > 200) {
             $minHeight += 2;
         }
         if ($motion->proposalExplanation) {
