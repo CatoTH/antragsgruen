@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\CookieUser;
+use app\components\UrlHelper;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -89,6 +90,17 @@ class SpeechQueue extends ActiveRecord
         $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
+    public function getAdminLink(): string
+    {
+        if ($this->motionId) {
+            return UrlHelper::createMotionUrl($this->motion, 'admin-speech');
+        } elseif ($this->agendaItemId) {
+            return UrlHelper::createUrl(['/consultation/admin-speech', 'queue' => $this->id]);
+        } else {
+            return UrlHelper::createUrl(['/consultation/admin-speech']);
+        }
+    }
+
     public function getTitle(): string
     {
         $consultation = $this->getMyConsultation();
@@ -98,8 +110,9 @@ class SpeechQueue extends ActiveRecord
             return str_replace('%TITLE%', $motion->titlePrefix, \Yii::t('speech', 'title_to'));
         } elseif ($this->agendaItemId && $consultation->getAgendaItem($this->agendaItemId)) {
             $item = $consultation->getAgendaItem($this->agendaItemId);
+            $title = $item->getShownCode(true) . ' ' . $item->title;
 
-            return str_replace('%TITLE%', $item->getShownCode(true), \Yii::t('speech', 'title_to'));
+            return str_replace('%TITLE%', $title, \Yii::t('speech', 'title_to'));
         } else {
             return \Yii::t('speech', 'title_plain');
         }
@@ -170,6 +183,22 @@ class SpeechQueue extends ActiveRecord
         }
 
         return $queue;
+    }
+
+    public function deleteWithSubqueues(): void
+    {
+        if ($this->agendaItemId === null && $this->motionId === null) {
+            // The default queue cannot be deleted
+            return;
+        }
+
+        foreach ($this->items as $item) {
+            $item->delete();
+        }
+        foreach ($this->subqueues as $subqueue) {
+            $subqueue->delete();
+        }
+        $this->delete();
     }
 
     public function getSubqueueById(int $subqueueId): ?SpeechSubqueue
@@ -434,5 +463,27 @@ class SpeechQueue extends ActiveRecord
             'current_time' => (int)round(microtime(true) * 1000), // needs to include milliseconds for accuracy
             'speaking_time' => $settings->speakingTime,
         ];
+    }
+
+    /**
+     * @return ConsultationAgendaItem[]
+     */
+    public static function findAvailableAgendaItems(Consultation $consultation): array
+    {
+        $usedAgendaItems = [];
+        foreach ($consultation->speechQueues as $speechQueue) {
+            if ($speechQueue->agendaItemId !== null) {
+                $usedAgendaItems[] = $speechQueue->agendaItemId;
+            }
+        }
+
+        $unusedItems = [];
+        foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $agendaItem) {
+            if (!in_array($agendaItem->id, $usedAgendaItems)) {
+                $unusedItems[] = $agendaItem;
+            }
+        }
+
+        return $unusedItems;
     }
 }

@@ -36,6 +36,8 @@ $initData = $queue->getAdminApiObject();
 
 if ($queue->motion) {
     $this->title = str_replace('%TITLE%', $queue->motion->titlePrefix, Yii::t('speech', 'admin_title_to'));
+} elseif ($queue->agendaItem) {
+    $this->title = str_replace('%TITLE%', $queue->agendaItem->title, Yii::t('speech', 'admin_title_to'));
 } else {
     $this->title = Yii::t('speech', 'admin_title_plain');
 }

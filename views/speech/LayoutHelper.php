@@ -10,12 +10,6 @@ class LayoutHelper
 {
     private static function addQueueToSidebar(SpeechQueue $speechQueue, ?IMotion $motion, string &$mainHtml, string &$miniHtml, SpeechQueue $selectedQueue)
     {
-        if ($motion && is_a($motion, Motion::class)) {
-            $url = UrlHelper::createMotionUrl($motion, 'admin-speech');
-        } else {
-            $url = UrlHelper::createUrl(['consultation/admin-speech']);
-        }
-
         if ($speechQueue->isActive) {
             $mainHtml .= '<li class="active">';
             $mainHtml .= '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>';
@@ -23,9 +17,9 @@ class LayoutHelper
             $mainHtml .= '<li>';
         }
         if ($selectedQueue->id === $speechQueue->id) {
-            $mainHtml .= Html::encode($speechQueue->getTitle());
+            $mainHtml .= '<strong>' . Html::encode($speechQueue->getTitle()) . '</strong>';
         } else {
-            $mainHtml .= Html::a(Html::encode($speechQueue->getTitle()), $url);
+            $mainHtml .= Html::a(Html::encode($speechQueue->getTitle()), $speechQueue->getAdminLink());
         }
         if ($speechQueue->isActive) {
             $mainHtml .= '<div class="activeLabel">' . \Yii::t('speech', 'sidebar_active') . '</div>';

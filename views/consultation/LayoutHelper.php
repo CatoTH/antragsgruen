@@ -288,24 +288,37 @@ class LayoutHelper
             $opts = ['class' => 'form-control'];
             echo Html::dropDownList('motionType', ($typeId > 0 ? $typeId : 0), $motionTypes, $opts);
             echo '</div>';
-            if ($hasProposedProcedure) {
-                echo '
-                <div class="dropdown extraSettings">
+            echo '<div class="dropdown extraSettings">
                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <span class="glyphicon glyphicon-wrench"></span>
                         <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li class="checkbox inProposedProcedures">
+                    <ul class="dropdown-menu dropdown-menu-right">';
+            if ($hasProposedProcedure) {
+                echo '<li class="checkbox inProposedProcedures">
                             <label>
                                 ' . Html::checkbox('inProposedProcedures', $settings->inProposedProcedures) . '
                                 ' . \Yii::t('con', 'agenda_pp') . '
                             </label>
+                        </li>';
+            }
+
+            $hasSpeakingList = false;
+            $speakingOptions = ['autocomplete' => 'off'];
+            foreach ($agendaItem->speechQueues as $speechQueue) {
+                $hasSpeakingList = true;
+                if (count($speechQueue->items) > 0) {
+                    $speakingOptions['disabled'] = 'disabled';
+                }
+            }
+            echo '<li class="checkbox hasSpeakingList">
+                            <label>
+                                ' . Html::checkbox('hasSpeakingList', $hasSpeakingList, $speakingOptions) . '
+                                ' . \Yii::t('con', 'agenda_speaking') . '
+                            </label>
                         </li>
                     </ul>
-                </div>';
-            }
-            echo '
+                </div>
                 <div class="ok">
                     <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
                 </div>

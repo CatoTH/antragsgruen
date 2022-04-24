@@ -4,12 +4,9 @@ namespace app\models\db;
 
 use app\models\settings\{AgendaItem, AntragsgruenApp};
 use app\components\{MotionSorter, Tools, UrlHelper};
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
- * Class ConsultationAgendaItem
- * @package app\models\db
- *
  * @property int $id
  * @property int $consultationId
  * @property int|null $parentItemId
@@ -25,21 +22,16 @@ use yii\db\ActiveRecord;
  * @property ConsultationAgendaItem[] $childItems
  * @property ConsultationMotionType $motionType
  * @property Motion[] $motions
+ * @property SpeechQueue[] $speechQueues
  */
 class ConsultationAgendaItem extends ActiveRecord
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationAgendaItem';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
@@ -54,26 +46,17 @@ class ConsultationAgendaItem extends ActiveRecord
         }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getParentItem()
+    public function getParentItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'parentItemId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getChildItems()
+    public function getChildItems(): ActiveQuery
     {
         return $this->hasMany(ConsultationAgendaItem::class, ['parentItemId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionType()
+    public function getMotionType(): ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
@@ -95,13 +78,15 @@ class ConsultationAgendaItem extends ActiveRecord
         return $this->motionType;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotions()
+    public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['agendaItemId' => 'id'])
-                    ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+    }
+
+    public function getSpeechQueues(): ActiveQuery
+    {
+        return $this->hasMany(SpeechQueue::class, ['agendaItemId' => 'id']);
     }
 
     /**
@@ -179,10 +164,7 @@ class ConsultationAgendaItem extends ActiveRecord
         $this->delete();
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['consultationId'], 'required'],
@@ -249,9 +231,7 @@ class ConsultationAgendaItem extends ActiveRecord
             }
         };
 
-        $getSubItems = function ($consultation, $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode, $separator) {
-            /** @var Consultation $consultation $items */
-            /** @var ConsultationAgendaItem $item */
+        $getSubItems = function (Consultation $consultation, ConsultationAgendaItem $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode, $separator) {
             if ($fullCodePrefix === '') {
                 $fullCodePrefix = '0' . $separator;
             }
@@ -297,21 +277,12 @@ class ConsultationAgendaItem extends ActiveRecord
      *
      * @return ConsultationAgendaItem[]
      */
-    public static function sortItems($items)
+    public static function sortItems(array $items): array
     {
         usort(
             $items,
-            function ($it1, $it2) {
-                /** @var ConsultationAgendaItem $it1 */
-                /** @var ConsultationAgendaItem $it2 */
-                if ($it1->position < $it2->position) {
-                    return -1;
-                }
-                if ($it1->position > $it2->position) {
-                    return 1;
-                }
-
-                return 0;
+            function (ConsultationAgendaItem $it1, ConsultationAgendaItem $it2) {
+                return $it1->position <=> $it2->position;
             }
         );
 
@@ -322,7 +293,7 @@ class ConsultationAgendaItem extends ActiveRecord
     private $shownCode = null;
     private $shownCodeFull = null;
 
-    protected function setShownCode(string $code, string $codeFull)
+    protected function setShownCode(string $code, string $codeFull): void
     {
         $this->shownCode     = $code;
         $this->shownCodeFull = $codeFull;
@@ -376,7 +347,7 @@ class ConsultationAgendaItem extends ActiveRecord
 
     public function isDateSeparator(): bool
     {
-        return ($this->time && preg_match('/^\d{4}\-\d{2}\-\d{2}$/', $this->time));
+        return ($this->time && preg_match('/^\d{4}-\d{2}-\d{2}$/', $this->time));
     }
 
     public function getTime(): ?string
@@ -421,6 +392,26 @@ class ConsultationAgendaItem extends ActiveRecord
             }
         } else {
             return UrlHelper::createUrl(['/motion/create', 'agendaItemId' => $this->id]);
+        }
+    }
+
+    public function addSpeakingListIfNotExistant(): void
+    {
+        if (count($this->speechQueues) > 0) {
+            return;
+        }
+        $speakingList = SpeechQueue::createWithSubqueues($this->getMyConsultation(), false);
+        $speakingList->agendaItemId = $this->id;
+        $speakingList->save();
+    }
+
+    public function removeSpeakingListsIfPossible(): void
+    {
+        foreach ($this->speechQueues as $speechQueue) {
+            if (count($speechQueue->items) > 0) {
+                continue;
+            }
+            $speechQueue->deleteWithSubqueues();
         }
     }
 }

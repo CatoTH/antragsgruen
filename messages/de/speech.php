@@ -43,7 +43,7 @@ return [
     'err_permission_apply' => 'Die Redeliste ist geschlossen',
 
     'admin_bc'               => 'Verwaltung',
-    'admin_title_plain'      => 'Allgemeine Redeliste verwalten',
+    'admin_title_plain'      => 'Redeliste verwalten',
     'admin_title_to'         => 'Redeliste zu %TITLE% verwalten',
     'admin_setting'          => 'Redelisten-Einstellungen',
     'admin_is_active'        => 'Aktive Redeliste',

@@ -29,6 +29,8 @@ $userData = new SpeechUser($user, $cookieUser);
 
 if ($queue->motion) {
     $this->title = str_replace('%TITLE%', $queue->motion->titlePrefix, Yii::t('speech', 'admin_title_to'));
+} elseif ($queue->agendaItem) {
+    $this->title = str_replace('%TITLE%', $queue->agendaItem->title, Yii::t('speech', 'admin_title_to'));
 } else {
     $this->title = Yii::t('speech', 'speaking_bc');
 }
@@ -60,8 +62,7 @@ if (User::getCurrentUser()) {
     <?php
     $user = User::getCurrentUser();
     if ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
-        $url = UrlHelper::createUrl(['consultation/admin-speech']);
-        echo '<a href="' . Html::encode($url) . '" class="speechAdminLink">';
+        echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink">';
         echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
         echo Yii::t('speech', 'goto_admin');
         echo '</a>';

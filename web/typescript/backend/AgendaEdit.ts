@@ -108,6 +108,7 @@ export class AgendaEdit {
         } else {
             saveData['type'] = 'agendaItem';
             saveData['inProposedProcedures'] = $form.find('input[name=inProposedProcedures]').prop('checked');
+            saveData['hasSpeakingList'] = $form.find('input[name=hasSpeakingList]').prop('checked');
             saveData['motionType'] = parseInt($form.find('select[name=motionType]').val() as string);
             saveData['time'] = $form.find('input[name=time]').val() as string;
             saveData['code'] = $form.find('input[name=code]').val() as string;

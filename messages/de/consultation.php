@@ -109,6 +109,7 @@ return [
     'agenda_comment' => 'Kommentar',
     'agenda_date'    => 'Datum',
     'agenda_pp'      => 'Im Verfahrensvorschlag',
+    'agenda_speaking' => 'Hat eine Redeliste',
 
     'discuss_comments_title'  => 'Aktuell diskutiert',
     'discuss_comment_link'    => 'weiter',

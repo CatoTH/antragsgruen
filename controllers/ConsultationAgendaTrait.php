@@ -15,13 +15,10 @@ use yii\web\Response;
 trait ConsultationAgendaTrait
 {
     /**
-     * @param array $arr
-     * @param int|null $parentId
-     *
      * @return int[]
      * @throws FormError
      */
-    private function saveAgendaArr(array $arr, ?int $parentId)
+    private function saveAgendaArr(array $arr, ?int $parentId): array
     {
         $items = [];
         foreach ($arr as $i => $jsitem) {
@@ -100,6 +97,13 @@ trait ConsultationAgendaTrait
             $item->setSettingsObj($settings);
 
             $item->save();
+
+            if (isset($data['hasSpeakingList']) && $data['hasSpeakingList']) {
+                $item->addSpeakingListIfNotExistant();
+            } else {
+                $item->removeSpeakingListsIfPossible();
+            }
+
             $item->refresh();
 
             ob_start();
