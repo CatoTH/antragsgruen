@@ -496,7 +496,7 @@ class ConsultationController extends Base
         return $unassignedQueue;
     }
 
-    public function actionAdminSpeech(): string
+    public function actionAdminSpeech(?string $queue = null): string
     {
         $this->layout = 'column2';
 
@@ -507,16 +507,38 @@ class ConsultationController extends Base
             return $this->redirect(UrlHelper::homeUrl());
         }
 
-        $unassignedQueue = $this->getUnassignedQueueOrCreate();
-        return $this->render('@app/views/speech/admin-singlepage', ['queue' => $unassignedQueue]);
+        $foundQueue = null;
+        if ($queue) {
+            $queueId = intval($queue);
+            foreach ($this->consultation->speechQueues as $speechQueue) {
+                if ($speechQueue->id === $queueId) {
+                    $foundQueue = $speechQueue;
+                }
+            }
+        } else {
+            $foundQueue = $this->getUnassignedQueueOrCreate();
+        }
+        if (!$foundQueue) {
+            return $this->showErrorpage(404, 'Speaking list not found');
+        }
+
+        return $this->render('@app/views/speech/admin-singlepage', ['queue' => $foundQueue]);
     }
 
     public function actionSpeech(): string
     {
         $this->layout = 'column2';
 
-        $unassignedQueue = $this->getUnassignedQueueOrCreate();
-        return $this->render('@app/views/speech/index-singlepage', ['queue' => $unassignedQueue]);
+        $queue = null;
+        foreach ($this->consultation->speechQueues as $speechQueue) {
+            if ($speechQueue->isActive) {
+                $queue = $speechQueue;
+            }
+        }
+        if (!$queue) {
+            $queue = $this->getUnassignedQueueOrCreate();
+        }
+        return $this->render('@app/views/speech/index-singlepage', ['queue' => $queue]);
     }
 
     public function actionAdminVotings(): string

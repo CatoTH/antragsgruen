@@ -109,6 +109,7 @@ return [
     'agenda_comment' => 'Comment',
     'agenda_date'    => 'Date',
     'agenda_pp'      => 'In proposed procedure',
+    'agenda_speaking' => 'Has a speaking list',
 
     'discuss_comments_title'  => 'Discussed recently',
     'discuss_comment_link'    => 'more',

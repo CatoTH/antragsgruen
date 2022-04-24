@@ -29,7 +29,7 @@ $initData = $queue->getUserApiObject($user, $cookieUser);
 $userData = new SpeechUser($user, $cookieUser);
 
 if ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
-    $adminUrl = UrlHelper::createUrl(['/consultation/admin-speech']);
+    $adminUrl = $queue->getAdminLink();
 } else {
     $adminUrl = '';
 }

@@ -28,6 +28,12 @@ $layout->addVueTemplate('@app/views/speech/user-inline-widget.vue.php');
 $initData = $queue->getUserApiObject($user, $cookieUser);
 $userData = new SpeechUser($user, $cookieUser);
 
+if ($queue->motionId || $queue->agendaItemId) {
+    $title = $queue->getTitle();
+} else {
+    $title = Yii::t('speech', 'user_section_title');
+}
+
 ?>
 <section class="currentSpeechInline currentSpeechPageWidth"
          aria-labelledby="speechListUserTitle"
@@ -36,14 +42,13 @@ $userData = new SpeechUser($user, $cookieUser);
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"
 >
-    <h2 class="green" id="speechListUserTitle"><?= Yii::t('speech', 'user_section_title') ?></h2>
+    <h2 class="green" id="speechListUserTitle"><?= Html::encode($title) ?></h2>
     <div class="content">
         <?php
         $user = User::getCurrentUser();
         if ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
-            $url = UrlHelper::createUrl(['/consultation/admin-speech']);
-            echo '<a href="' . Html::encode($url) . '" class="speechAdminLink">';
-            echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
+            echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink">';
+            echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
             echo Yii::t('speech', 'goto_admin');
             echo '</a>';
         }
