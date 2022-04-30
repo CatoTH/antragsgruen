@@ -28,73 +28,75 @@ if ($controller->getParams()->isSamlActive()) {
 }
 
 ?>
-<section id="accountsCreateForm" class="adminForm form-horizontal"
+<section id="accountsCreateForm" class="adminForm form-horizontal accountsCreateForm"
          data-antragsgruen-widget="backend/UserAdminCreate"
          aria-labelledby="newUserAdderTitle">
     <h2 class="green" id="newUserAdderTitle"><?= Yii::t('admin', 'siteacc_new_users') ?></h2>
     <div class="content">
         <form action="<?= Html::encode(UrlHelper::createUrl('/admin/users/add-single-init')) ?>"
-              class="row addSingleInit">
-            <div class="col-md-3 adminType">
+              class="stdTwoCols addSingleInit">
+            <div class="leftColumn adminType">
                 <?= Html::dropDownList('authType', 'email', $authTypes, ['class' => 'stdDropdown adminTypeSelect']) ?>
             </div>
-            <div class="col-md-4">
-                <input type="email" name="addEmail" value="" class="form-control inputEmail"
-                       title="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_title')) ?>"
-                       placeholder="<?= Html::encode(Yii::t('admin', 'siteacc_add_email_place')) ?>" required>
-                <input type="text" name="addUsername" value="" class="form-control inputUsername hidden"
-                       title="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_title')) ?>"
-                       placeholder="<?= Html::encode(Yii::t('admin', 'siteacc_add_username_place')) ?>">
-            </div>
-            <div class="col-md-3">
-                <button class="btn btn-default addUsersOpener singleuser" type="submit" data-type="singleuser">
-                    <?= Yii::t('admin', 'siteacc_add_std_btn') ?>
-                </button>
+            <div class="rightColumn">
+                <div class="textHolder">
+                    <input type="email" name="addEmail" value="" class="form-control inputEmail"
+                           title="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_title')) ?>"
+                           placeholder="<?= Html::encode(Yii::t('admin', 'siteacc_add_email_place')) ?>" required>
+                    <input type="text" name="addUsername" value="" class="form-control inputUsername hidden"
+                           title="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_title')) ?>"
+                           placeholder="<?= Html::encode(Yii::t('admin', 'siteacc_add_username_place')) ?>">
+                </div>
+                <div class="btnHolder">
+                    <button class="btn btn-default addUsersOpener singleuser" type="submit" data-type="singleuser">
+                        <?= Yii::t('admin', 'siteacc_add_std_btn') ?>
+                    </button>
+                </div>
             </div>
         </form>
 
         <div class="alert alert-danger alreadyMember hidden">
-            <p>This user was already added to this consultation.</p>
+            <p><?= Yii::t('admin', 'siteacc_new_err_already') ?></p>
         </div>
         <?php
 
         echo Html::beginForm(UrlHelper::createUrl('/admin/users/add-single'), 'post', ['class' => 'addUsersByLogin singleuser hidden']);
         ?>
         <div class="stdTwoCols showIfNew">
-            <label for="addSingleNameGiven" class="leftColumn">Given name:</label>
+            <label for="addSingleNameGiven" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_given') ?>:</label>
             <div class="rightColumn">
                 <input type="text" name="nameGiven" class="form-control" id="addSingleNameGiven">
             </div>
         </div>
         <div class="stdTwoCols showIfNew">
-            <label for="addSingleNameFamily" class="leftColumn">Family name:</label>
+            <label for="addSingleNameFamily" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_family') ?>:</label>
             <div class="rightColumn">
                 <input type="text" name="nameGiven" class="form-control" id="addSingleNameFamily">
             </div>
         </div>
         <div class="stdTwoCols showIfNew">
-            <label for="addSingleOrganization" class="leftColumn">Organization:</label>
+            <label for="addSingleOrganization" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_orga') ?>:</label>
             <div class="rightColumn">
                 <input type="text" name="organization" class="form-control" id="addSingleOrganization">
             </div>
         </div>
         <div class="stdTwoCols showIfNew">
-            <label for="addUserPassword" class="leftColumn">Password:</label>
+            <label for="addUserPassword" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_pass') ?>:</label>
             <div class="rightColumn">
                 <label>
                     <input type="checkbox" name="generatePassword" checked id="addSingleGeneratePassword">
-                    Auto-generate password
+                    <?= Yii::t('admin', 'siteacc_new_name_pass_auto') ?>
                 </label>
                 <input type="password" name="password" class="form-control" id="addUserPassword">
             </div>
         </div>
 
         <div class="alert alert-info showIfExists">
-            <p>This user already has an account. You can grant him/her permissions.</p>
+            <p><?= Yii::t('admin', 'siteacc_new_hint_accexists') ?></p>
         </div>
 
         <div class="stdTwoCols">
-            <label for="addSingleOrganization" class="leftColumn">User groups:</label>
+            <label for="addSingleOrganization" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_groups') ?>:</label>
             <div class="rightColumn">
                 <?php
                 foreach ($controller->consultation->userGroups as $userGroup) {
@@ -102,7 +104,7 @@ if ($controller->getParams()->isSamlActive()) {
                     if ($userGroup->templateId === \app\models\db\ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
                         echo ' checked';
                     }
-                    echo '> ' . Html::encode($userGroup->title) . '</label><br>';
+                    echo '> ' . Html::encode($userGroup->getNormalizedTitle()) . '</label><br>';
                 }
                 ?>
             </div>
@@ -110,9 +112,13 @@ if ($controller->getParams()->isSamlActive()) {
 
         <?php if ($hasEmail) { ?>
         <div class="stdTwoCols welcomeEmail">
-            <div class="leftColumn">Welcome e-mail:</div>
+            <div class="leftColumn"><?= Yii::t('admin', 'siteacc_new_mail') ?>:</div>
             <div class="rightColumn">
-                <textarea id="emailText" name="emailText" rows="15" cols="80"
+                <label>
+                    <input type="checkbox" name="sendEmail" checked id="addSingleSendEmail">
+                    <?= Yii::t('admin', 'siteacc_new_mail_send') ?>
+                </label>
+                <textarea id="addSingleEmailText" name="emailText" rows="11" cols="80"
                           title="<?= Yii::t('admin', 'siteacc_new_text') ?>"><?= Html::encode($preText) ?></textarea>
             </div>
         </div>
@@ -125,10 +131,9 @@ if ($controller->getParams()->isSamlActive()) {
         </div>
         <?php
         echo Html::endForm();
-
         ?>
 
-        <div class="addMultiple">
+        <div class="addMultipleOpener">
             <?= Yii::t('admin', 'siteacc_add_multiple') ?>:
             <button class="btn btn-link addUsersOpener email" type="button" data-type="email">
                 <?= Yii::t('admin', 'siteacc_add_email_btn') ?>
@@ -174,7 +179,7 @@ if ($controller->getParams()->isSamlActive()) {
                 'class' => 'addUsersByLogin multiuser email hidden',
             ]);
             ?>
-            <div class="accountEditExplanation alert alert-info">
+            <div class="mailExplanation alert alert-info">
                 <?= Yii::t('admin', 'siteacc_acc_expl_mail') ?>
             </div>
             <div class="row">
@@ -206,7 +211,7 @@ if ($controller->getParams()->isSamlActive()) {
                 'class' => 'addUsersByLogin email hidden',
             ]);
             ?>
-            <div class="accountEditExplanation alert alert-info">
+            <div class="mailExplanation alert alert-info">
                 <?= Yii::t('admin', 'siteacc_acc_expl_nomail') ?>
             </div>
             <div class="row">

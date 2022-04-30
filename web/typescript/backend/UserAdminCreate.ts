@@ -10,7 +10,7 @@ export class UserAdminCreate {
     }
 
     private initAddMultiple() {
-        this.element.querySelectorAll(".addMultiple .addUsersOpener").forEach(openerEl => {
+        this.element.querySelectorAll(".addMultipleOpener .addUsersOpener").forEach(openerEl => {
             openerEl.addEventListener('click', ev => {
                 const type = (ev.currentTarget as HTMLButtonElement).getAttribute('data-type');
                 this.element.querySelectorAll('.addUsersByLogin').forEach(el => {
@@ -152,6 +152,8 @@ export class UserAdminCreate {
     {
         const form = this.element.querySelector('.addUsersByLogin.singleuser') as HTMLFormElement,
             autoGeneratePassword = form.querySelector('#addSingleGeneratePassword') as HTMLInputElement,
+            sendEmail = form.querySelector('#addSingleSendEmail') as HTMLInputElement,
+            emailText = form.querySelector('#addSingleEmailText') as HTMLTextAreaElement,
             passwordInput = form.querySelector('#addUserPassword') as HTMLInputElement;
 
         const onAutoGeneratePasswordChanged = () => {
@@ -165,5 +167,15 @@ export class UserAdminCreate {
         };
         autoGeneratePassword.addEventListener('change', onAutoGeneratePasswordChanged);
         onAutoGeneratePasswordChanged();
+
+        const onSendEmailChanged = () => {
+            if (sendEmail.checked) {
+                emailText.classList.remove('hidden');
+            } else {
+                emailText.classList.add('hidden');
+            }
+        };
+        sendEmail.addEventListener('change', onSendEmailChanged);
+        onSendEmailChanged();
     }
 }

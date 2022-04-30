@@ -198,8 +198,9 @@ if ($externalAuthenticator === null) {
     <section aria-labelledby="delAccountTitle">
         <h2 class="green" id="delAccountTitle"><?= Yii::t('user', 'del_title') ?></h2>
         <?= Html::beginForm($formUrl, 'post', ['class' => 'accountDeleteForm content']) ?>
-        <div class="accountEditExplanation alert alert-info">
-            <?= Yii::t('user', 'del_explanation') ?></div>
+        <div class="alert alert-info">
+            <?= Yii::t('user', 'del_explanation') ?>
+        </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="checkbox">
