@@ -1156,14 +1156,43 @@ label.legend {
   }
 }
 
-.accountEditExplanation {
-  font-size: 12px;
+.accountsCreateForm {
+  .addMultipleOpener {
+    margin-top: 15px;
+    text-align: right;
 
-  h3 {
-    margin: 0;
-    margin-bottom: 10px;
-    font-size: 16px;
-    font-weight: bold;
+    .btn {
+      font-weight: normal;
+      padding-top: 3px;
+    }
+  }
+  .addSingleInit {
+    .rightColumn {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+    .textHolder {
+      flex-basis: 70%;
+      padding-right: 30px;
+    }
+    .btnHolder {
+      flex-basis: 30%;
+      text-align: right;
+    }
+  }
+  .addUsersByLogin {
+    margin-top: 15px;
+  }
+  .mailExplanation {
+    font-size: 12px;
+
+    h3 {
+      margin: 0;
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
 }
 
