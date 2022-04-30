@@ -55,18 +55,59 @@ class UsersController extends AdminBase
         ];
     }
 
+    public function actionAddSingleInit(): string
+    {
+        $this->getConsultationAndCheckAdminPermission();
+
+        if ($this->getPostValue('type') === 'gruenesnetz') {
+            $type = \app\models\settings\Site::LOGIN_GRUENES_NETZ;
+        } else {
+            $type = \app\models\settings\Site::LOGIN_STD;
+        }
+
+        $user = User::findByAuthTypeAndName($type, $this->getPostValue('username'));
+        if ($user) {
+            $thisConRoles = $user->getConsultationUserGroupIds($this->consultation);
+            $response = ['exists' => true, 'already_member' => (count($thisConRoles) > 0)];
+        } else {
+            $response = ['exists' => false];
+        }
+
+        return $this->returnRestResponse(200, json_encode($response, JSON_THROW_ON_ERROR));
+    }
+
+    public function actionAddSingle(): string
+    {
+        var_dump($_POST);
+        die();
+        // @TODO
+    }
+
+    public function actionAddMultipleWw(): string
+    {
+        $this->getConsultationAndCheckAdminPermission();
+
+        if (trim($this->getPostValue('samlWW', '')) !== '' && AntragsgruenApp::getInstance()->isSamlActive()) {
+            $this->userGroupAdminMethods->addUsersBySamlWw();
+        }
+
+        return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
+    }
+
+    public function actionAddMultipleEmail(): string
+    {
+        $this->getConsultationAndCheckAdminPermission();
+
+        if (trim($this->getPostValue('emailAddresses', '')) !== '') {
+            $this->userGroupAdminMethods->addUsersByEmail();
+        }
+
+        return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
+    }
+
     public function actionIndex(): string
     {
         $consultation = $this->getConsultationAndCheckAdminPermission();
-
-        if ($this->isPostSet('addUsers')) {
-            if (trim($this->getPostValue('emailAddresses', '')) !== '') {
-                $this->userGroupAdminMethods->addUsersByEmail();
-            }
-            if (trim($this->getPostValue('samlWW', '')) !== '' && AntragsgruenApp::getInstance()->isSamlActive()) {
-                $this->userGroupAdminMethods->addUsersBySamlWw();
-            }
-        }
 
         if ($this->isPostSet('grantAccess')) {
             $userIds = array_map('intval', $this->getPostValue('userId', []));
