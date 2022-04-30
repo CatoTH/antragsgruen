@@ -9,5 +9,5 @@ use Helper\BasePage;
  */
 class AdminUsersPage extends BasePage
 {
-    public $route = 'admin/index/users';
+    public $route = 'admin/users/index';
 }

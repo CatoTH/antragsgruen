@@ -86,7 +86,7 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTA
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_user_list'),
-        UrlHelper::createUrl('/admin/index/users'),
+        UrlHelper::createUrl('/admin/users/index'),
         ['class' => 'siteUsers']
     );
     echo '</li>';

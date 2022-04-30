@@ -165,6 +165,13 @@ class Base extends Controller
         return $request;
     }
 
+    protected function getHttpResponse(): Response
+    {
+        /** @var Response $response */
+        $response = Yii::$app->response;
+        return $response;
+    }
+
     protected function getHttpSession(): Session
     {
         return RequestContext::getSession();

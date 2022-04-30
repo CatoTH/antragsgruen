@@ -22,7 +22,7 @@ class UserAsksPermission extends Base implements IEmailAdmin
 
     public function getEmailAdminText(): string
     {
-        $actionlink = UrlHelper::absolutizeLink(UrlHelper::createUrl('/admin/index/users'))
+        $actionlink = UrlHelper::absolutizeLink(UrlHelper::createUrl('/admin/users/index'))
             . '#accountsScreenForm';
 
         return str_replace(

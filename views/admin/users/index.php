@@ -21,10 +21,10 @@ $layout->addBreadcrumb(Yii::t('admin', 'users_bc'));
 
 $layout->loadVue();
 $layout->loadVueSelect();
-$layout->addVueTemplate('@app/views/admin/index/users.vue.php');
+$layout->addVueTemplate('@app/views/admin/users/users.vue.php');
 
-$userSaveUrl = UrlHelper::createUrl(['/admin/index/users-save']);
-$userPollUrl = UrlHelper::createUrl(['/admin/index/users-poll']);
+$userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);
+$userPollUrl = UrlHelper::createUrl(['/admin/users/poll']);
 
 echo '<h1>' . Yii::t('admin', 'siteacc_accounts_title') . '</h1>';
 
