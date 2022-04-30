@@ -1,15 +1,16 @@
 export class UserAdminCreate {
-    private element: HTMLFormElement;
+    private element: HTMLElement;
 
     constructor(private $el: JQuery) {
-        this.element = $el[0] as HTMLFormElement;
+        this.element = $el[0] as HTMLElement;
 
-        this.initOpener();
-        this.initSubmit();
+        this.initAddMultiple();
+        this.initAddSingleInit();
+        this.initAddSingleShow();
     }
 
-    private initOpener() {
-        this.element.querySelectorAll(".addUsersOpener").forEach(openerEl => {
+    private initAddMultiple() {
+        this.element.querySelectorAll(".addMultiple .addUsersOpener").forEach(openerEl => {
             openerEl.addEventListener('click', ev => {
                 const type = (ev.currentTarget as HTMLButtonElement).getAttribute('data-type');
                 this.element.querySelectorAll('.addUsersByLogin').forEach(el => {
@@ -18,9 +19,13 @@ export class UserAdminCreate {
                 this.element.querySelector('.addUsersByLogin.' + type).classList.remove('hidden');
             });
         });
+
+        this.element.querySelectorAll('.addUsersByLogin.multiuser').forEach(formEl => {
+            formEl.addEventListener('submit', this.checkMultipleSubmit.bind(this));
+        });
     }
 
-    private checkSubmit(ev: Event) {
+    private checkMultipleSubmit(ev: Event) {
         const samlLoginBtn = this.element.querySelector(".addUsersByLogin.samlWW");
         const emailLoginBtn = this.element.querySelector(".addUsersByLogin.email");
         const hasEmailText = !!this.element.querySelector('#emailText'); // If e-mail-sending is deactivated, this will be false
@@ -59,7 +64,106 @@ export class UserAdminCreate {
         }
     }
 
-    private initSubmit() {
-        this.element.addEventListener('submit', this.checkSubmit.bind(this));
+    private initAddSingleInit() {
+        const form = this.element.querySelector('.addSingleInit') as HTMLFormElement,
+            typeSelect = this.element.querySelector('.adminTypeSelect') as HTMLSelectElement,
+            inputEmail = this.element.querySelector('.inputEmail') as HTMLInputElement,
+            inputUsername = this.element.querySelector('.inputUsername') as HTMLInputElement;
+
+        typeSelect.addEventListener('change', () => {
+            if (typeSelect.value === 'email') {
+                inputEmail.classList.remove('hidden');
+                inputUsername.classList.add('hidden');
+                inputEmail.required = true;
+                inputUsername.required = false;
+            }
+            if (typeSelect.value === 'gruenesnetz') {
+                inputEmail.classList.add('hidden');
+                inputUsername.classList.remove('hidden');
+                inputEmail.required = false;
+                inputUsername.required = true;
+            }
+        });
+
+        form.addEventListener('submit', (ev: Event) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+
+            const postData = {
+                _csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
+                type: typeSelect.value,
+                username: ''
+            }
+            if (typeSelect.value === 'email') {
+                postData.username = inputEmail.value;
+            }
+            if (typeSelect.value === 'gruenesnetz') {
+                postData.username = inputUsername.value;
+            }
+
+            if (!postData.username) {
+                return;
+            }
+
+            $.post(form.action, postData, (data) => {
+                this.showAddSingleShowFromResponse(data);
+            }).catch(function (err) {
+                alert(err.responseText);
+            });
+        });
+    }
+
+    /**
+     * Functions that are to be called when showing the form
+     */
+    private showAddSingleShowFromResponse(response)
+    {
+        const alreadyMember = this.element.querySelector('.alreadyMember') as HTMLDivElement;
+        const form = this.element.querySelector('.addUsersByLogin.singleuser') as HTMLFormElement;
+
+        if (response['exists'] && response['already_member']) {
+            alreadyMember.classList.remove('hidden');
+            form.classList.add('hidden');
+            return;
+        }
+
+        form.classList.remove('hidden');
+        alreadyMember.classList.add('hidden');
+
+        if (response['exists']) {
+            form.querySelectorAll('.showIfNew').forEach(el => {
+                el.classList.add('hidden');
+            });
+        } else {
+            form.querySelectorAll('.showIfExists').forEach(el => {
+                el.classList.add('hidden');
+            });
+            (form.querySelector('#addSingleNameGiven') as HTMLInputElement).setAttribute('required', '');
+            (form.querySelector('#addSingleNameFamily') as HTMLInputElement).setAttribute('required', '');
+            (form.querySelector('#addSingleOrganization') as HTMLInputElement).setAttribute('required', '');
+
+            window.setTimeout(() => {
+                (form.querySelector('input[name=nameGiven]') as HTMLInputElement).focus();
+            }, 1);
+        }
+    }
+
+    private initAddSingleShow()
+    {
+        const form = this.element.querySelector('.addUsersByLogin.singleuser') as HTMLFormElement,
+            autoGeneratePassword = form.querySelector('#addSingleGeneratePassword') as HTMLInputElement,
+            passwordInput = form.querySelector('#addUserPassword') as HTMLInputElement;
+
+        const onAutoGeneratePasswordChanged = () => {
+            if (autoGeneratePassword.checked) {
+                passwordInput.classList.add('hidden');
+                passwordInput.removeAttribute('required');
+            } else {
+                passwordInput.classList.remove('hidden');
+                passwordInput.setAttribute('required', '');
+            }
+        };
+        autoGeneratePassword.addEventListener('change', onAutoGeneratePasswordChanged);
+        onAutoGeneratePasswordChanged();
     }
 }
