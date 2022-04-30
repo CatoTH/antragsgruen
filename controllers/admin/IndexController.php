@@ -2,17 +2,13 @@
 
 namespace app\controllers\admin;
 
-use app\models\exceptions\UserEditFailed;
-use app\models\settings\AntragsgruenApp;
-use app\components\mail\Tools as MailTools;
 use app\components\updater\UpdateChecker;
-use app\components\{ConsultationAccessPassword, HTMLTools, Tools, UrlHelper, UserGroupAdminMethods};
-use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, EMailLog, ISupporter, Site, SpeechQueue, User};
+use app\components\{ConsultationAccessPassword, HTMLTools, Tools, UrlHelper};
+use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, ISupporter, Site, SpeechQueue, User};
 use app\models\AdminTodoItem;
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
 use app\models\settings\Stylesheet;
-use yii\base\ExitException;
 use yii\web\Response;
 
 class IndexController extends AdminBase
@@ -21,21 +17,6 @@ class IndexController extends AdminBase
         ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS,
         ConsultationUserGroup::PRIVILEGE_SITE_ADMIN,
     ];
-
-    /** @var UserGroupAdminMethods */
-    private $userGroupAdminMethods;
-
-    public function beforeAction($action): bool
-    {
-        $result = parent::beforeAction($action);
-
-        if ($result) {
-            $this->userGroupAdminMethods = new UserGroupAdminMethods();
-            $this->userGroupAdminMethods->setRequestData($this->consultation, $this->getHttpRequest(), $this->getHttpSession());
-        }
-
-        return $result;
-    }
 
     public function actionIndex(): string
     {
@@ -598,144 +579,5 @@ class IndexController extends AdminBase
         $updateKey = $form->activateUpdate();
 
         return $this->redirect($this->getParams()->resourceBase . 'update.php?set_key=' . $updateKey);
-    }
-
-    private function getConsultationAndCheckAdminPermission(): Consultation
-    {
-        $consultation = $this->consultation;
-
-        if (!User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            throw new ExitException();
-        }
-
-        return $consultation;
-    }
-
-    private function getUsersWidgetData(Consultation $consultation): array
-    {
-        $usersArr = array_map(function (User $user) use ($consultation): array {
-            return $user->getUserAdminApiObject($consultation);
-        }, $consultation->getUsersInAnyGroup());
-        $groupsArr = array_map(function (ConsultationUserGroup $group): array {
-            return $group->getUserAdminApiObject();
-        }, $consultation->getAllAvailableUserGroups());
-
-        return [
-            'users' => $usersArr,
-            'groups' => $groupsArr,
-        ];
-    }
-
-    public function actionUsers(): string
-    {
-        $consultation = $this->getConsultationAndCheckAdminPermission();
-
-        if ($this->isPostSet('addUsers')) {
-            if (trim(\Yii::$app->request->post('emailAddresses', '')) !== '') {
-                $this->userGroupAdminMethods->addUsersByEmail();
-            }
-            if (trim(\Yii::$app->request->post('samlWW', '')) !== '' && AntragsgruenApp::getInstance()->isSamlActive()) {
-                $this->userGroupAdminMethods->addUsersBySamlWw();
-            }
-        }
-
-        if ($this->isPostSet('grantAccess')) {
-            $userIds = array_map('intval', \Yii::$app->request->post('userId', []));
-            $defaultGroup = $this->userGroupAdminMethods->getDefaultUserGroup();
-            foreach ($this->consultation->screeningUsers as $screeningUser) {
-                if (!in_array($screeningUser->userId, $userIds)) {
-                    continue;
-                }
-                $user = $screeningUser->user;
-                $user->link('userGroups', $defaultGroup);
-                /** @noinspection PhpUnhandledExceptionInspection */
-                $screeningUser->delete();
-
-                $consUrl = UrlHelper::createUrl('consultation/index');
-                $consUrl = UrlHelper::absolutizeLink($consUrl);
-                $emailText = str_replace('%LINK%', $consUrl, \Yii::t('user', 'access_granted_email'));
-
-                MailTools::sendWithLog(
-                    EMailLog::TYPE_ACCESS_GRANTED,
-                    $this->consultation,
-                    $user->email,
-                    $user->id,
-                    \Yii::t('user', 'acc_grant_email_title'),
-                    $emailText
-                );
-            }
-            $this->consultation->refresh();
-        }
-
-        if ($this->isPostSet('noAccess')) {
-            $userIds = array_map('intval', \Yii::$app->request->post('userId', []));
-            foreach ($this->consultation->screeningUsers as $screeningUser) {
-                if (in_array($screeningUser->userId, $userIds)) {
-                    /** @noinspection PhpUnhandledExceptionInspection */
-                    $screeningUser->delete();
-                }
-            }
-            $this->consultation->refresh();
-        }
-
-        return $this->render('users', [
-            'widgetData' => $this->getUsersWidgetData($consultation),
-            'screening' => $consultation->screeningUsers,
-        ]);
-    }
-
-    public function actionUsersSave(): string
-    {
-        $consultation = $this->getConsultationAndCheckAdminPermission();
-
-        $this->handleRestHeaders(['POST'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        $additionalData = [
-            'msg_success' => null,
-            'msg_error' => null,
-        ];
-        try {
-            switch (\Yii::$app->request->post('op')) {
-                case 'save-user-groups':
-                    $this->userGroupAdminMethods->setUserGroupsToUser(
-                        intval(\Yii::$app->request->post('userId')),
-                        array_map('intval', \Yii::$app->request->post('groups', []))
-                    );
-                    break;
-                case 'remove-user':
-                    $this->userGroupAdminMethods->removeUser(intval(\Yii::$app->request->post('userId')));
-                    break;
-                case 'create-user-group':
-                    $this->userGroupAdminMethods->createUserGroup(\Yii::$app->request->post('groupName'));
-                    break;
-                case 'remove-group':
-                    $this->userGroupAdminMethods->removeUserGroup(intval(\Yii::$app->request->post('groupId')));
-                    break;
-            }
-        } catch (UserEditFailed $failed) {
-            $additionalData['msg_error'] = $failed->getMessage();
-        }
-
-        return $this->returnRestResponse(200, json_encode(array_merge(
-            $this->getUsersWidgetData($consultation),
-            $additionalData
-        ), JSON_THROW_ON_ERROR));
-    }
-
-    public function actionUsersPoll(): string
-    {
-        $consultation = $this->getConsultationAndCheckAdminPermission();
-
-        $this->handleRestHeaders(['GET'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        $responseData = $this->getUsersWidgetData($consultation);
-        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
     }
 }
