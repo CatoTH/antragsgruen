@@ -225,9 +225,23 @@ $html = ob_get_clean();
                     return this.formatSubstrOcurrences(username, this.filterUser);
                 }
             },
+            getAuthUsername: function (user) {
+                const parts = user.auth.split(':');
+                if (parts[0] === 'openid') {
+                    const parts2 = user.auth.split('/');
+                    return parts2[parts2.length - 1];
+                } else {
+                    if (parts.length > 1) {
+                        return parts[1];
+                    } else {
+                        return user.email;
+                    }
+                }
+            },
             formatUserAdditionalData: function (user) {
-                let str = user.email;
-                if (user.email && user.organization) {
+                const username = this.getAuthUsername(user);
+                let str = username;
+                if (username && user.organization) {
                     str += ", ";
                 }
                 if (user.organization) {

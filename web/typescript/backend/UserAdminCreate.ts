@@ -75,7 +75,8 @@ export class UserAdminCreate {
         const form = this.element.querySelector('.addSingleInit') as HTMLFormElement,
             typeSelect = this.element.querySelector('.adminTypeSelect') as HTMLSelectElement,
             inputEmail = this.element.querySelector('.inputEmail') as HTMLInputElement,
-            inputUsername = this.element.querySelector('.inputUsername') as HTMLInputElement;
+            inputUsername = this.element.querySelector('.inputUsername') as HTMLInputElement,
+            welcomeEmailHolder = this.element.querySelector('.welcomeEmail') as HTMLDivElement|null;
 
         typeSelect.addEventListener('change', () => {
             if (typeSelect.value === 'email') {
@@ -83,7 +84,15 @@ export class UserAdminCreate {
                 inputUsername.classList.add('hidden');
                 inputEmail.required = true;
                 inputUsername.required = false;
+                if (welcomeEmailHolder) {
+                    welcomeEmailHolder.classList.remove('hidden');
+                }
+            } else {
+                if (welcomeEmailHolder) {
+                    welcomeEmailHolder.classList.add('hidden');
+                }
             }
+
             if (typeSelect.value === 'gruenesnetz') {
                 inputEmail.classList.add('hidden');
                 inputUsername.classList.remove('hidden');

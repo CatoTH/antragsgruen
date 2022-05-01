@@ -118,7 +118,7 @@ if ($controller->getParams()->isSamlActive()) {
                 <label>
                     <input type="checkbox" name="sendEmail" checked id="addSingleSendEmail">
                     <?= Yii::t('admin', 'siteacc_new_mail_send') ?>
-                </label>
+                </label><br>
                 <textarea id="addSingleEmailText" name="emailText" rows="11" cols="80"
                           title="<?= Yii::t('admin', 'siteacc_new_text') ?>"><?= Html::encode($preText) ?></textarea>
                 <small><?= Yii::t('admin', 'siteacc_new_mail_hint') ?></small>

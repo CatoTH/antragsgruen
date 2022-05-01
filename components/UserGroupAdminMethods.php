@@ -360,7 +360,7 @@ class UserGroupAdminMethods
             $user->auth = $auth;
             $user->email = $email;
             $user->name = $name;
-            $user->pwdEnc = password_hash($plainPassword, PASSWORD_DEFAULT);
+            $user->pwdEnc = (string)password_hash($plainPassword, PASSWORD_DEFAULT);
             $user->status = User::STATUS_CONFIRMED;
             $user->emailConfirmed = 1;
             $user->organizationIds = '';
@@ -411,7 +411,7 @@ class UserGroupAdminMethods
         $user->nameGiven = $nameGiven;
         $user->name = $nameGiven . ' ' . $nameFamily;
         $user->organization = $organization;
-        $user->pwdEnc = password_hash($password, PASSWORD_DEFAULT);
+        $user->pwdEnc = (string)password_hash($password, PASSWORD_DEFAULT);
         $user->status = User::STATUS_CONFIRMED;
         $user->emailConfirmed = 1;
         $user->organizationIds = '';

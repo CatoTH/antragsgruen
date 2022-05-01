@@ -8,6 +8,7 @@ use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\{Internal, NotFound};
 use app\models\SearchResult;
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -234,50 +235,32 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTexts()
+    public function getTexts(): ActiveQuery
     {
         return $this->hasMany(ConsultationText::class, ['consultationId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOdtTemplates()
+    public function getOdtTemplates(): ActiveQuery
     {
         return $this->hasMany(ConsultationOdtTemplate::class, ['consultationId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAgendaItems()
+    public function getAgendaItems(): ActiveQuery
     {
         return $this->hasMany(ConsultationAgendaItem::class, ['consultationId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserPrivileges()
+    public function getUserPrivileges(): ActiveQuery
     {
         return $this->hasMany(ConsultationUserPrivilege::class, ['consultationId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserGroups()
+    public function getUserGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationUserGroup::class, ['consultationId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getScreeningUsers()
+    public function getScreeningUsers(): ActiveQuery
     {
         return $this->hasMany(UserConsultationScreening::class, ['consultationId' => 'id']);
     }
@@ -299,10 +282,7 @@ class Consultation extends ActiveRecord
         return $groups;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFiles()
+    public function getFiles(): ActiveQuery
     {
         return $this->hasMany(ConsultationFile::class, ['consultationId' => 'id']);
     }
@@ -323,18 +303,12 @@ class Consultation extends ActiveRecord
         return array_values($users);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTags()
+    public function getTags(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['consultationId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotingBlocks()
+    public function getVotingBlocks(): ActiveQuery
     {
         return $this->hasMany(VotingBlock::class, ['consultationId' => 'id'])
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
@@ -350,10 +324,7 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotingQuestions()
+    public function getVotingQuestions(): ActiveQuery
     {
         return $this->hasMany(VotingQuestion::class, ['consultationId' => 'id']);
     }
@@ -368,27 +339,18 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLogEntries()
+    public function getLogEntries(): ActiveQuery
     {
         return $this->hasMany(ConsultationLog::class, ['consultationId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionTypes()
+    public function getMotionTypes(): ActiveQuery
     {
         return $this->hasMany(ConsultationMotionType::class, ['consultationId' => 'id'])
             ->andWhere(ConsultationMotionType::tableName() . '.status != ' . ConsultationMotionType::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpeechQueues()
+    public function getSpeechQueues(): ActiveQuery
     {
         return $this->hasMany(SpeechQueue::class, ['consultationId' => 'id']);
     }
@@ -415,10 +377,7 @@ class Consultation extends ActiveRecord
         }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserNotifications()
+    public function getUserNotifications(): ActiveQuery
     {
         return $this->hasMany(UserNotification::class, ['consultationId' => 'id']);
     }
