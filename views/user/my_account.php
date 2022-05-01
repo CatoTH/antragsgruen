@@ -56,25 +56,29 @@ if ($externalAuthenticator === null) {
 
     <?php
 
-    $toShowGroups = [];
-    foreach ($user->getUserGroupsForConsultation($consultation) as $userGroup) {
-        if ($userGroup->templateId !== \app\models\db\ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
-            $toShowGroups[] = $userGroup;
+    if ($consultation) {
+        $toShowGroups = [];
+        foreach ($user->getUserGroupsForConsultation($consultation) as $userGroup) {
+            if ($userGroup->templateId !== \app\models\db\ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
+                $toShowGroups[] = $userGroup;
+            }
         }
-    }
-    if (count($toShowGroups) > 0) {
-        ?>
-        <div class="stdTwoCols usergroupsRow">
-            <div class="leftColumn"><?= Yii::t('user', (count($toShowGroups) === 1 ? 'user_group' : 'user_groups')) ?>:</div>
-            <div class="rightColumn">
-                <?php
-                foreach ($toShowGroups as $userGroup) {
-                    echo Html::encode($userGroup->title) . '<br>';
-                }
-                ?>
+        if (count($toShowGroups) > 0) {
+            ?>
+            <div class="stdTwoCols usergroupsRow">
+                <div class="leftColumn">
+                    <?= Yii::t('user', (count($toShowGroups) === 1 ? 'user_group' : 'user_groups')) ?>:
+                </div>
+                <div class="rightColumn">
+                    <?php
+                    foreach ($toShowGroups as $userGroup) {
+                        echo Html::encode($userGroup->title) . '<br>';
+                    }
+                    ?>
+                </div>
             </div>
-        </div>
-        <?php
+            <?php
+        }
     }
 
     if ($user->email) {
