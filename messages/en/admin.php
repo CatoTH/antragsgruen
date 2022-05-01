@@ -399,6 +399,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'siteacc_user_added_1'        => '%NUM% user was added.',
     'siteacc_user_added_x'        => '%NUM% users were added.',
     'siteacc_user_added_0'        => 'Nobody was added.',
+    'siteacc_user_added_single'  => 'The user was added.',
+    'siteacc_user_created_single' => 'The user account was created and added to this consultation.',
     'siteacc_user_saved'          => 'The permissions were saved.',
     'siteacc_user_restr_done'     => 'Now, only registered users can create content.',
     'siteacc_screen_users'        => 'Requested access',

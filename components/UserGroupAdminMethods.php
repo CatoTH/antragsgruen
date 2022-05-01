@@ -258,9 +258,9 @@ class UserGroupAdminMethods
     {
         $usernames = explode("\n", $this->request->post('samlWW', ''));
 
-        $errors         = [];
+        $errors = [];
         $alreadyExisted = [];
-        $created        = 0;
+        $created = 0;
 
         for ($i = 0; $i < count($usernames); $i++) {
             if (trim($usernames[$i]) === '') {
@@ -296,13 +296,48 @@ class UserGroupAdminMethods
         }
     }
 
+    private function sendWelcomeEmail(User $user, ?string $emailText, ?string $plainPassword): void
+    {
+        if ($emailText === null || trim($emailText) === '') {
+            return;
+        }
+
+        $consUrl = UrlHelper::absolutizeLink(UrlHelper::homeUrl());
+        $emailText = str_replace('%LINK%', $consUrl, $emailText);
+
+        if ($plainPassword && $user->isEmailAuthUser()) {
+            $accountText = str_replace(
+                ['%EMAIL%', '%PASSWORD%'],
+                [$user->email, $plainPassword],
+                \Yii::t('user', 'acc_grant_email_userdata')
+            );
+        } else {
+            $accountText = '';
+        }
+
+        try {
+            MailTools::sendWithLog(
+                EMailLog::TYPE_ACCESS_GRANTED,
+                $this->consultation,
+                $user->email,
+                $user->id,
+                \Yii::t('user', 'acc_grant_email_title'),
+                $emailText,
+                '',
+                ['%ACCOUNT%' => $accountText]
+            );
+        } catch (MailNotSent $e) {
+            $this->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+        }
+    }
+
     /**
      * @throws AlreadyExists
      */
     public function addUserByEmail(string $email, string $name, ?string $setPassword, ConsultationUserGroup $initGroup, string $emailText): User
     {
         $email = mb_strtolower($email);
-        $auth  = 'email:' . $email;
+        $auth = 'email:' . $email;
 
         /** @var User|null $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
@@ -313,29 +348,23 @@ class UserGroupAdminMethods
                     throw new AlreadyExists();
                 }
             }
-            $accountText = '';
+            $plainPassword = null;
         } else {
             if ($setPassword) {
-                $password = $setPassword;
+                $plainPassword = $setPassword;
             } else {
-                $password = User::createPassword();
+                $plainPassword = User::createPassword();
             }
 
             $user = new User();
             $user->auth = $auth;
             $user->email = $email;
             $user->name = $name;
-            $user->pwdEnc = password_hash($password, PASSWORD_DEFAULT);
+            $user->pwdEnc = password_hash($plainPassword, PASSWORD_DEFAULT);
             $user->status = User::STATUS_CONFIRMED;
             $user->emailConfirmed = 1;
             $user->organizationIds = '';
             $user->save();
-
-            $accountText = str_replace(
-                ['%EMAIL%', '%PASSWORD%'],
-                [$email, $password],
-                \Yii::t('user', 'acc_grant_email_userdata')
-            );
         }
 
         foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
@@ -344,23 +373,71 @@ class UserGroupAdminMethods
             }
         }
 
-        $consUrl   = UrlHelper::absolutizeLink(UrlHelper::homeUrl());
-        $emailText = str_replace('%LINK%', $consUrl, $emailText);
+        $this->sendWelcomeEmail($user, $emailText, $plainPassword);
 
-        try {
-            MailTools::sendWithLog(
-                EMailLog::TYPE_ACCESS_GRANTED,
-                $this->consultation,
-                $email,
-                $user->id,
-                \Yii::t('user', 'acc_grant_email_title'),
-                $emailText,
-                '',
-                ['%ACCOUNT%' => $accountText]
-            );
-        } catch (MailNotSent $e) {
-            $this->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+        return $user;
+    }
+
+    /**
+     * @param ConsultationUserGroup[] $userGroups
+     */
+    public function createSingleDetailedUser(
+        string $authType,
+        string $authUsername,
+        ?string $password,
+        string $nameGiven,
+        string $nameFamily,
+        string $organization,
+        array $userGroups,
+        ?string $emailText
+    ): User
+    {
+        if (!$password) {
+            $password = User::createPassword();
         }
+
+        if ($authType === 'gruenesnetz') {
+            $auth = User::gruenesNetzId2Auth($authUsername);
+            $email = null;
+        } else {
+            $auth = 'email:' . $authUsername;
+            $email = $authUsername;
+        }
+
+        $user = new User();
+        $user->auth = $auth;
+        $user->email = $email;
+        $user->nameFamily = $nameFamily;
+        $user->nameGiven = $nameGiven;
+        $user->name = $nameGiven . ' ' . $nameFamily;
+        $user->organization = $organization;
+        $user->pwdEnc = password_hash($password, PASSWORD_DEFAULT);
+        $user->status = User::STATUS_CONFIRMED;
+        $user->emailConfirmed = 1;
+        $user->organizationIds = '';
+        $user->save();
+
+        foreach ($userGroups as $userGroup) {
+            $user->link('userGroups', $userGroup);
+        }
+        $user->refresh();
+
+        $this->sendWelcomeEmail($user, $emailText, $password);
+
+        return $user;
+    }
+
+    /**
+     * @param ConsultationUserGroup[] $userGroups
+     */
+    public function addSingleDetailedUser(User $user, array $userGroups, ?string $emailText): User
+    {
+        foreach ($userGroups as $userGroup) {
+            $user->link('userGroups', $userGroup);
+        }
+        $user->refresh();
+
+        $this->sendWelcomeEmail($user, $emailText, null);
 
         return $user;
     }

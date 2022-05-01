@@ -33,8 +33,7 @@ if ($controller->getParams()->isSamlActive()) {
          aria-labelledby="newUserAdderTitle">
     <h2 class="green" id="newUserAdderTitle"><?= Yii::t('admin', 'siteacc_new_users') ?></h2>
     <div class="content">
-        <form action="<?= Html::encode(UrlHelper::createUrl('/admin/users/add-single-init')) ?>"
-              class="stdTwoCols addSingleInit">
+        <form action="<?= Html::encode(UrlHelper::createUrl('/admin/users/add-single-init')) ?>" class="stdTwoCols addSingleInit">
             <div class="leftColumn adminType">
                 <?= Html::dropDownList('authType', 'email', $authTypes, ['class' => 'stdDropdown adminTypeSelect']) ?>
             </div>
@@ -62,6 +61,8 @@ if ($controller->getParams()->isSamlActive()) {
 
         echo Html::beginForm(UrlHelper::createUrl('/admin/users/add-single'), 'post', ['class' => 'addUsersByLogin singleuser hidden']);
         ?>
+        <input type="hidden" name="authType">
+        <input type="hidden" name="authUsername">
         <div class="stdTwoCols showIfNew">
             <label for="addSingleNameGiven" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_given') ?>:</label>
             <div class="rightColumn">
@@ -71,7 +72,7 @@ if ($controller->getParams()->isSamlActive()) {
         <div class="stdTwoCols showIfNew">
             <label for="addSingleNameFamily" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_family') ?>:</label>
             <div class="rightColumn">
-                <input type="text" name="nameGiven" class="form-control" id="addSingleNameFamily">
+                <input type="text" name="nameFamily" class="form-control" id="addSingleNameFamily">
             </div>
         </div>
         <div class="stdTwoCols showIfNew">
@@ -96,10 +97,10 @@ if ($controller->getParams()->isSamlActive()) {
         </div>
 
         <div class="stdTwoCols">
-            <label for="addSingleOrganization" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_groups') ?>:</label>
+            <div class="leftColumn"><?= Yii::t('admin', 'siteacc_new_groups') ?>:</div>
             <div class="rightColumn">
                 <?php
-                foreach ($controller->consultation->userGroups as $userGroup) {
+                foreach ($controller->consultation->getAllAvailableUserGroups() as $userGroup) {
                     echo '<label><input type="checkbox" name="userGroups[]" value="' . Html::encode($userGroup->id) . '"';
                     if ($userGroup->templateId === \app\models\db\ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
                         echo ' checked';
@@ -120,6 +121,7 @@ if ($controller->getParams()->isSamlActive()) {
                 </label>
                 <textarea id="addSingleEmailText" name="emailText" rows="11" cols="80"
                           title="<?= Yii::t('admin', 'siteacc_new_text') ?>"><?= Html::encode($preText) ?></textarea>
+                <small><?= Yii::t('admin', 'siteacc_new_mail_hint') ?></small>
             </div>
         </div>
         <?php } ?>
