@@ -2,9 +2,8 @@
 
 namespace app\controllers\admin;
 
-use app\components\mail\Tools as MailTools;
-use app\components\UrlHelper;
-use app\components\UserGroupAdminMethods;
+use app\components\{mail\Tools as MailTools, UrlHelper, UserGroupAdminMethods};
+use app\models\exceptions\FormError;
 use app\models\db\{Consultation, ConsultationUserGroup, EMailLog, User};
 use app\models\exceptions\UserEditFailed;
 use app\models\settings\AntragsgruenApp;
@@ -55,17 +54,25 @@ class UsersController extends AdminBase
         ];
     }
 
-    public function actionAddSingleInit(): string
+    private function getUserForCreating(?string $type, ?string $username): ?User
     {
-        $this->getConsultationAndCheckAdminPermission();
-
-        if ($this->getPostValue('type') === 'gruenesnetz') {
+        if (!$type || !$username) {
+            throw new FormError('type and email has to be provided');
+        }
+        if ($type === 'gruenesnetz') {
             $type = \app\models\settings\Site::LOGIN_GRUENES_NETZ;
         } else {
             $type = \app\models\settings\Site::LOGIN_STD;
         }
 
-        $user = User::findByAuthTypeAndName($type, $this->getPostValue('username'));
+        return User::findByAuthTypeAndName($type, $username);
+    }
+
+    public function actionAddSingleInit(): string
+    {
+        $this->getConsultationAndCheckAdminPermission();
+
+        $user = $this->getUserForCreating($this->getPostValue('type'), $this->getPostValue('username'));
         if ($user) {
             $thisConRoles = $user->getConsultationUserGroupIds($this->consultation);
             $response = ['exists' => true, 'already_member' => (count($thisConRoles) > 0)];
@@ -78,9 +85,57 @@ class UsersController extends AdminBase
 
     public function actionAddSingle(): string
     {
-        var_dump($_POST);
-        die();
-        // @TODO
+        $this->getConsultationAndCheckAdminPermission();
+
+        $user = $this->getUserForCreating($this->getPostValue('authType'), $this->getPostValue('authUsername'));
+        if ($user) {
+            $thisConRoles = $user->getConsultationUserGroupIds($this->consultation);
+            if (count($thisConRoles) > 0) {
+                $this->getHttpSession()->setFlash('error', 'This user already has permissions for this consultation');
+            }
+        }
+
+        $toAssignGroupIds = array_map('intval', $this->getPostValue('userGroups', []));
+        $toAssignGroups = [];
+        foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
+            if (in_array($userGroup->id, $toAssignGroupIds)) {
+                $toAssignGroups[] = $userGroup;
+            }
+        }
+        if (count($toAssignGroups) === 0) {
+            $this->getHttpSession()->setFlash('error', 'You need to provide at least one user group');
+            return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
+        }
+
+        if ($this->isPostSet('sendEmail')) {
+            $emailText = $this->getPostValue('emailText');
+        } else {
+            $emailText = null;
+        }
+
+        if ($user) {
+            $this->userGroupAdminMethods->addSingleDetailedUser($user, $toAssignGroups, $emailText);
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'siteacc_user_added_single'));
+        } else {
+            if ($this->isPostSet('generatePassword')) {
+                $password = null;
+            } else {
+                $password = $this->getPostValue('password');
+            }
+            $this->userGroupAdminMethods->createSingleDetailedUser(
+                $this->getPostValue('authType'),
+                $this->getPostValue('authUsername'),
+                $password,
+                $this->getPostValue('nameGiven'),
+                $this->getPostValue('nameFamily'),
+                $this->getPostValue('organization'),
+                $toAssignGroups,
+                $emailText
+            );
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'siteacc_user_created_single'));
+        }
+
+        return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
     }
 
     public function actionAddMultipleWw(): string
@@ -121,8 +176,7 @@ class UsersController extends AdminBase
                 /** @noinspection PhpUnhandledExceptionInspection */
                 $screeningUser->delete();
 
-                $consUrl = UrlHelper::createUrl('consultation/index');
-                $consUrl = UrlHelper::absolutizeLink($consUrl);
+                $consUrl = UrlHelper::absolutizeLink(UrlHelper::createUrl('/consultation/index'));
                 $emailText = str_replace('%LINK%', $consUrl, \Yii::t('user', 'access_granted_email'));
 
                 MailTools::sendWithLog(

@@ -25,6 +25,19 @@ export class UserAdminCreate {
         });
     }
 
+    private validateEmailText(text: string): boolean
+    {
+        if (text.indexOf("%ACCOUNT%") === -1) {
+            bootbox.alert(__t("admin", "emailMissingCode"));
+            return false;
+        }
+        if (text.indexOf("%LINK%") === -1) {
+            bootbox.alert(__t("admin", "emailMissingLink"));
+            return false;
+        }
+        return true;
+    }
+
     private checkMultipleSubmit(ev: Event) {
         const samlLoginBtn = this.element.querySelector(".addUsersByLogin.samlWW");
         const emailLoginBtn = this.element.querySelector(".addUsersByLogin.email");
@@ -33,13 +46,7 @@ export class UserAdminCreate {
         if (emailLoginBtn && !emailLoginBtn.classList.contains('hidden')) {
             if (hasEmailText) {
                 const text = (this.element.querySelector('#emailText') as HTMLTextAreaElement).value;
-                if (text.indexOf("%ACCOUNT%") === -1) {
-                    bootbox.alert(__t("admin", "emailMissingCode"));
-                    ev.preventDefault();
-                    return;
-                }
-                if (text.indexOf("%LINK%") === -1) {
-                    bootbox.alert(__t("admin", "emailMissingLink"));
+                if (!this.validateEmailText(text)) {
                     ev.preventDefault();
                     return;
                 }
@@ -106,7 +113,7 @@ export class UserAdminCreate {
             }
 
             $.post(form.action, postData, (data) => {
-                this.showAddSingleShowFromResponse(data);
+                this.showAddSingleShowFromResponse(data, postData.type, postData.username);
             }).catch(function (err) {
                 alert(err.responseText);
             });
@@ -116,7 +123,7 @@ export class UserAdminCreate {
     /**
      * Functions that are to be called when showing the form
      */
-    private showAddSingleShowFromResponse(response)
+    private showAddSingleShowFromResponse(response, authType: string, authUsername: string)
     {
         const alreadyMember = this.element.querySelector('.alreadyMember') as HTMLDivElement;
         const form = this.element.querySelector('.addUsersByLogin.singleuser') as HTMLFormElement;
@@ -130,6 +137,9 @@ export class UserAdminCreate {
         form.classList.remove('hidden');
         alreadyMember.classList.add('hidden');
 
+        (this.element.querySelector('input[name=authType]') as HTMLInputElement).value = authType;
+        (this.element.querySelector('input[name=authUsername]') as HTMLInputElement).value = authUsername;
+
         if (response['exists']) {
             form.querySelectorAll('.showIfNew').forEach(el => {
                 el.classList.add('hidden');
@@ -140,7 +150,6 @@ export class UserAdminCreate {
             });
             (form.querySelector('#addSingleNameGiven') as HTMLInputElement).setAttribute('required', '');
             (form.querySelector('#addSingleNameFamily') as HTMLInputElement).setAttribute('required', '');
-            (form.querySelector('#addSingleOrganization') as HTMLInputElement).setAttribute('required', '');
 
             window.setTimeout(() => {
                 (form.querySelector('input[name=nameGiven]') as HTMLInputElement).focus();
@@ -177,5 +186,15 @@ export class UserAdminCreate {
         };
         sendEmail.addEventListener('change', onSendEmailChanged);
         onSendEmailChanged();
+
+        form.addEventListener('submit', ev => {
+            if (sendEmail) {
+                const text = emailText.value;
+                if (!this.validateEmailText(text)) {
+                    ev.preventDefault();
+                    return;
+                }
+            }
+        });
     }
 }
