@@ -246,6 +246,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge1_introduction'       => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.<br><br>
+            <strong>Warnung:</strong> Das lässt sich nicht rückgängig machen.<br><br>
             Falls sich durch diese Übernahme andere Änderungsanträge erübrigen, kannst du dies hier markieren.
             Ansonsten lass sie einfach unverändert.<br><br>
             <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
@@ -254,11 +255,12 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge1_introduction_user'  => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.<br><br>
+            <strong>Warnung:</strong> Das lässt sich nicht rückgängig machen.<br><br>
             <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
             Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollisionen.
             In diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
     'merge1_status_intro'       => 'Falls durch diese Übernahme andere Änderungsanträge hinfällig werden
-            (z.B. weil sie inhaltlich durch diesen mit behandelt werden oder zu Gunsten dieses abgelehnt wurden)
+            (z.B. weil sie inhaltlich durch diesen mit behandelt werden oder zugunsten dieses abgelehnt wurden)
             können sie hier entsprechend markiert werden.<br>
             Dadurch können auch keine Kollisionen mit diesem Änderungsantrag entstehen.<br>
             Bitte beachte aber, dass hierdurch ausschließlich der Status dieser Änderungsanträge gesetzt wird;

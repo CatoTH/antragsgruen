@@ -138,7 +138,16 @@ class MotionController extends Base
                 $motions[] = $motion;
             }
         }
-        $topPageFile = __DIR__ . '/../assets/top5_antragsspiegel.pdf';
+        switch ($this->consultation->urlPath) {
+            case 'mv2021':
+                $topPageFile = __DIR__ . '/../assets/2021_top5_antragsspiegel.pdf';
+                break;
+            case 'mv2022':
+                $topPageFile = __DIR__ . '/../assets/2022_top5_antragsspiegel.pdf';
+                break;
+            default:
+                return 'This consultation does not have a PDF template assigned';
+        }
 
         $pdf = $this->createPdfFromMotions($motions, 'Schwerpunktthemen', $topPageFile);
         $pdf->Output('TOP_5_Schwerpunktthemen.pdf');
@@ -152,7 +161,16 @@ class MotionController extends Base
                 $motions[] = $motion;
             }
         }
-        $topPageFile = __DIR__ . '/../assets/top6_antragsspiegel.pdf';
+        switch ($this->consultation->urlPath) {
+            case 'mv2021':
+                $topPageFile = __DIR__ . '/../assets/2021_top6_antragsspiegel.pdf';
+                break;
+            case 'mv2022':
+                $topPageFile = __DIR__ . '/../assets/2022_top6_antragsspiegel.pdf';
+                break;
+            default:
+                return 'This consultation does not have a PDF template assigned';
+        }
 
         $pdf = $this->createPdfFromMotions($motions, 'Sachanträge', $topPageFile);
         $pdf->Output('TOP_6_Sachantraege.pdf');
