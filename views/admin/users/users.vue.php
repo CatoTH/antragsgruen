@@ -134,14 +134,29 @@ $html = ob_get_clean();
         },
         computed: {
             userGroupFilter: function () {
+                const groupsUsers = {};
+                this.users.forEach(user => {
+                    user.groups.forEach(groupId => {
+                        if (groupsUsers[groupId.toString()] === undefined) {
+                            groupsUsers[groupId.toString()] = 1;
+                        } else {
+                            groupsUsers[groupId.toString()]++;
+                        }
+                    });
+                });
+
                 return [
                     {
                         label: showAllGroups,
                         id: '',
                     },
                     ...this.groups.map(function(group) {
+                        let title = group.title;
+                        if (groupsUsers[group.id.toString()] !== undefined) {
+                            title += ' (' + groupsUsers[group.id.toString()] + ')';
+                        }
                         return {
-                            label: group.title,
+                            label: title,
                             id: group.id,
                         }
                     })
