@@ -61,7 +61,7 @@ ob_start();
         <h2 class="green" id="userGroupsAdminTitle"><?= Yii::t('admin', 'siteacc_groups_title') ?></h2>
         <div class="content">
             <ul class="groupList">
-                <li v-for="group in groups" :class="'group' + group.id">
+                <li v-for="group in sortedGroups" :class="'group' + group.id">
                     <div class="groupInfo">
                         <div class="name">
                             {{ group.title }}
@@ -144,13 +144,14 @@ $html = ob_get_clean();
                         }
                     });
                 });
+                const sortedGroups = this.sortedGroups;
 
                 return [
                     {
                         label: showAllGroups,
                         id: '',
                     },
-                    ...this.groups.map(function(group) {
+                    ...sortedGroups.map(function(group) {
                         let title = group.title;
                         if (groupsUsers[group.id.toString()] !== undefined) {
                             title += ' (' + groupsUsers[group.id.toString()] + ')';
@@ -188,6 +189,19 @@ $html = ob_get_clean();
                 }
                 return users.sort(function (user1, user2) {
                     return user1.name.localeCompare(user2.name);
+                });
+            },
+            sortedGroups: function () {
+                return this.groups.sort((group1, group2) => {
+                    const name1 = group1.title.toUpperCase();
+                    const name2 = group2.title.toUpperCase(); // ignore upper and lowercase
+                    if (name1 < name2) {
+                        return -1;
+                    } else if (name1 > name2) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
                 });
             }
         },
