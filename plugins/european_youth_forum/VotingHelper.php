@@ -11,7 +11,7 @@ class VotingHelper
     public const GROUP_NYC = 'NYC';
     public const GROUP_INGYO = 'INGYO';
 
-    public const GROUP_QUORUM_RELEVANT = 'Official Delegate';
+    public const GROUP_QUORUM_RELEVANT = 'Full member';
 
     public static function groupIs(ConsultationUserGroup $group, string $groupName): bool
     {

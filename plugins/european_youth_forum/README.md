@@ -3,7 +3,7 @@
 ## Roll call setup
 
 - Permissions:
-  - One group with "Official Delegate" in the title (hard-coded logic).
+  - Two groups with "Full member" in the title (hard-coded logic).
   - Any number of other groups. Users of these groups can still participate in the roll call but will not count in the quorum
 
 After the roll call:
@@ -15,3 +15,4 @@ After the roll call:
 - Permissions: Two user groups:
   - One with "NYC" in the title (hard-coded logic)
   - One with "INGYO" in the title (hard-coded logic)
+- Answer choices: Yes, No, Abstention

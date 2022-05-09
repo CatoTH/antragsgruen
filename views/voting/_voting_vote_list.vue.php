@@ -13,7 +13,10 @@ ob_start();
         <strong>{{ answer.title }}:</strong>
         <ul>
             <li v-for="userGroup in relevantUserGroups" class="voteListHolder" :class="{showingSelector: isGroupSelectionShown(answer, userGroup)}">
-                <div class="userGroupName">{{ userGroup.title }}</div>
+                <div class="userGroupName">
+                    {{ userGroup.title }}
+                    <span v-if="getVoteListForUserGroup(answer.api_id, userGroup).length > 0">({{ getVoteListForUserGroup(answer.api_id, userGroup).length }})</span>
+                </div>
                 <ul>
                     <li v-for="vote in getVoteListForUserGroup(answer.api_id, userGroup)">{{ vote.user_name }}</li>
                     <li v-if="getVoteListForUserGroup(answer.api_id, userGroup).length === 0" class="none">
