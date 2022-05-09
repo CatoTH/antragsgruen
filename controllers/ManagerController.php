@@ -9,7 +9,7 @@ class ManagerController extends Base
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         if (in_array($action->id, ['siteconfig'])) {
             // No cookieValidationKey is set in the beginning
