@@ -50,6 +50,9 @@ use app\models\policies\UserGroups;
                 // Used for the currently running vote as it is
                 return this.voting.answers_template === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === ANSWER_TEMPLATE_YES_NO;
             },
+            votingIsPresenceCall: function () {
+                return (this.voting.answers_template === ANSWER_TEMPLATE_PRESENT);
+            },
             votingHasQuorum: function () {
                 return this.voting.quorum_type !== QUORUM_TYPE_NONE && this.voting.quorum_type !== null;
             },

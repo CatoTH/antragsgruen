@@ -133,14 +133,27 @@ ob_start();
             </template>
         </ul>
         <footer class="votingFooter">
-            <div class="votedCounter">
+            <div class="votedCounter" v-if="!votingIsPresenceCall">
                 <strong><?= Yii::t('voting', 'voting_votes_status') ?>:</strong>
                 <span v-if="voting.votes_total === 0"><?= Yii::t('voting', 'voting_votes_0') ?></span>
                 <span v-if="voting.votes_total === 1"><?= Yii::t('voting', 'voting_votes_1_1') ?></span>
                 <span v-if="voting.votes_users === 1 && voting.votes_total > 1"><?= str_replace(['%VOTES%'], ['{{ voting.votes_total }}'],
                         Yii::t('voting', 'voting_votes_1_x')) ?></span>
-                <span v-if="voting.votes_users > 1"><?= str_replace(['%VOTES%', '%USERS%'], ['{{ voting.votes_total }}', '{{ voting.votes_users }}'],
+                <span v-if="voting.votes_users > 1 && voting.votes_users !== voting.votes_total"><?= str_replace(['%VOTES%', '%USERS%'], ['{{ voting.votes_total }}', '{{ voting.votes_users }}'],
                         Yii::t('voting', 'voting_votes_x')) ?></span>
+                <span v-if="voting.votes_users > 1 && voting.votes_users === voting.votes_total"><?= str_replace(['%VOTES%'], ['{{ voting.votes_total }}'],
+                        Yii::t('voting', 'voting_votes_x_same')) ?></span>
+            </div>
+            <div class="votedCounter" v-if="votingIsPresenceCall">
+                <strong><?= Yii::t('voting', 'voting_votes_status') ?>:</strong>
+                <span v-if="voting.votes_total === 0"><?= Yii::t('voting', 'voting_presence_0') ?></span>
+                <span v-if="voting.votes_total === 1"><?= Yii::t('voting', 'voting_presence_1_1') ?></span>
+                <span v-if="voting.votes_users === 1 && voting.votes_total > 1"><?= str_replace(['%VOTES%'], ['{{ voting.votes_total }}'],
+                        Yii::t('voting', 'voting_presence_1_x')) ?></span>
+                <span v-if="voting.votes_users > 1 && voting.votes_users !== voting.votes_total"><?= str_replace(['%VOTES%', '%USERS%'], ['{{ voting.votes_total }}', '{{ voting.votes_users }}'],
+                        Yii::t('voting', 'voting_presence_x')) ?></span>
+                <span v-if="voting.votes_users > 1 && voting.votes_users === voting.votes_total"><?= str_replace(['%VOTES%'], ['{{ voting.votes_total }}'],
+                        Yii::t('voting', 'voting_presence_x_same')) ?></span>
             </div>
         </footer>
         <div class="votingExplanation" v-if="isOpen">
