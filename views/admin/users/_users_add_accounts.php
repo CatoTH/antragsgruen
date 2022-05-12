@@ -105,7 +105,7 @@ if ($controller->getParams()->isSamlActive()) {
                     if ($userGroup->templateId === \app\models\db\ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
                         echo ' checked';
                     }
-                    echo '> ' . Html::encode($userGroup->getNormalizedTitle()) . '</label><br>';
+                    echo ' class="userGroup' . $userGroup->id . '"> ' . Html::encode($userGroup->getNormalizedTitle()) . '</label><br>';
                 }
                 ?>
             </div>
@@ -209,8 +209,8 @@ if ($controller->getParams()->isSamlActive()) {
             <?php
             echo Html::endForm();
         } else {
-            echo Html::beginForm(UrlHelper::createUrl('/admin/users/multiple-email'), 'post', [
-                'class' => 'addUsersByLogin email hidden',
+            echo Html::beginForm(UrlHelper::createUrl('/admin/users/add-multiple-email'), 'post', [
+                'class' => 'addUsersByLogin multiuser email hidden',
             ]);
             ?>
             <div class="mailExplanation alert alert-info">

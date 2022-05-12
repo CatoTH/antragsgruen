@@ -24,7 +24,7 @@ $I->setAntragsgruenConfiguration(['mailService' => ['transport' => 'none']]);
 
 $I->gotoStdAdminPage()->gotoUserAdministration();
 
-$I->wantTo('create an user');
+$I->wantTo('create an user using the old batch-creation mode');
 
 $I->dontSeeElement('#emailAddresses');
 $I->clickJS('.addUsersOpener.email');
@@ -37,7 +37,7 @@ $I->seeElement('#passwords');
 $I->fillField('#emailAddresses', 'blibla@example.org');
 $I->fillField('#passwords', 'bliblablubb');
 $I->fillField('#names', 'Kasper');
-$I->submitForm('#accountsCreateForm', [], 'addUsers');
+$I->submitForm('.addUsersByLogin.multiuser', [], 'addUsers');
 
 $I->wait(0.5);
 $I->see('Kasper', '.userAdminList');

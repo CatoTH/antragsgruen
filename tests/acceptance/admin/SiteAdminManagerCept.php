@@ -13,7 +13,7 @@ $I->wantTo('Logout again');
 $I->logout();
 
 
-$I->wantTo('Add testuser as admin');
+$I->wantTo('Add testuser as admin using the batch-creation mode');
 
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 
@@ -21,7 +21,7 @@ $I->dontSeeElement('.user2');
 $I->clickJS('.addUsersOpener.email');
 $I->fillField('#emailAddresses', 'testuser@example.org');
 $I->fillField('#names', 'ignored');
-$I->submitForm('#accountsCreateForm', [], 'addUsers');
+$I->submitForm('.addUsersByLogin.multiuser', [], 'addUsers');
 
 $I->wait(1);
 $I->seeElement('.user2');

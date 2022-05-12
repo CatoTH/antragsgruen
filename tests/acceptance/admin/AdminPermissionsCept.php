@@ -143,7 +143,7 @@ $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 $I->clickJS('.addUsersOpener.email');
 $I->fillField('#emailAddresses', 'consultationadmin@example.org');
 $I->fillField('#names', 'ignored');
-$I->submitForm('#accountsCreateForm', [], 'addUsers');
+$I->submitForm('.addUsersByLogin.multiuser', [], 'addUsers');
 
 $I->wait(0.5);
 $I->clickJS('.user7 .btnEdit');
