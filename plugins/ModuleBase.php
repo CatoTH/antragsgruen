@@ -179,6 +179,11 @@ class ModuleBase extends Module
         return null;
     }
 
+    public static function getRelevantEligibleVotersCount(VotingBlock $votingBlock): ?int
+    {
+        return null;
+    }
+
     public static function getMotionExtraSettingsForm(Motion $motion): string
     {
         return '';

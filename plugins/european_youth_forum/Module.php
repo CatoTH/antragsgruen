@@ -41,6 +41,11 @@ class Module extends ModuleBase
         return VotingHelper::userIsGroup($votingBlock->getMyConsultation(), $user, VotingHelper::GROUP_QUORUM_RELEVANT);
     }
 
+    public static function getRelevantEligibleVotersCount(VotingBlock $votingBlock): ?int
+    {
+        return null;
+    }
+
     public static function getVotingAdminSetupHintHtml(VotingBlock $votingBlock): ?string
     {
         if (VotingHelper::isSetUpAsYfjVoting($votingBlock)) {
