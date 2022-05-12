@@ -298,7 +298,7 @@ class UserGroupAdminMethods
 
     private function sendWelcomeEmail(User $user, ?string $emailText, ?string $plainPassword): void
     {
-        if ($emailText === null || trim($emailText) === '') {
+        if ($emailText === null || trim($emailText) === '' || !$user->email) {
             return;
         }
 
