@@ -216,6 +216,25 @@ class Factory
         }
     }
 
+    /**
+     * @param AgendaVoting[] $votings
+     * @return AgendaVoting[]
+     */
+    private static function sortVotingBlocks(array $votings): array
+    {
+        usort($votings, function (AgendaVoting $voting1, AgendaVoting $voting2): int {
+            if ($voting1->voting->position < $voting2->voting->position) {
+                return -1;
+            }
+            if ($voting1->voting->position > $voting2->voting->position) {
+                return 1;
+            }
+            return $voting1->voting->id <=> $voting2->voting->id;
+        });
+
+        return $votings;
+    }
+
 
     /**
      * @return AgendaVoting[]
@@ -223,11 +242,13 @@ class Factory
      */
     public static function getAllVotingBlocks(Consultation $consultation): array
     {
-        return array_map(function (VotingBlock $votingBlock): AgendaVoting {
+        $votings = array_map(function (VotingBlock $votingBlock): AgendaVoting {
             $voting = new AgendaVoting($votingBlock->title, $votingBlock);
             $voting->addItemsFromBlock(true);
             return $voting;
         }, $consultation->votingBlocks);
+
+        return self::sortVotingBlocks($votings);
     }
 
     /**
@@ -246,11 +267,13 @@ class Factory
                 return $voting->assignedToMotionId === null;
             }
         }));
-        return array_map(function (VotingBlock $votingBlock): AgendaVoting {
+        $votings = array_map(function (VotingBlock $votingBlock): AgendaVoting {
             $voting = new AgendaVoting($votingBlock->title, $votingBlock);
             $voting->addItemsFromBlock(true);
             return $voting;
         }, $openBlocks);
+
+        return self::sortVotingBlocks($votings);
     }
 
     /**
@@ -260,11 +283,13 @@ class Factory
     public static function getClosedVotingBlocks(Consultation $consultation): array
     {
         $closedBlocks = VotingBlock::getClosedVotings($consultation);
-        return array_map(function (VotingBlock $votingBlock): AgendaVoting {
+        $votings = array_map(function (VotingBlock $votingBlock): AgendaVoting {
             $voting = new AgendaVoting($votingBlock->title, $votingBlock);
             $voting->addItemsFromBlock(true);
             return $voting;
         }, $closedBlocks);
+
+        return self::sortVotingBlocks($votings);
     }
 
     public static function hasOnlineVotingBlocks(Consultation $consultation): bool

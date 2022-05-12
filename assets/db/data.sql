@@ -86,7 +86,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m211218_190505_voting_block_answers_permissions', '1639855318'),
   ('m220102_130212_user_groups', '1641129559'),
   ('m220116_154835_policy_data', '1642348557'),
-  ('m220305_160942_voting_quorum', '1646497937')
+  ('m220305_160942_voting_quorum', '1646497937'),
+  ('m220512_074519_voting_position', '1652344229')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

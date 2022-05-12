@@ -803,6 +803,7 @@ CREATE TABLE `###TABLE_PREFIX###vote` (
 CREATE TABLE `###TABLE_PREFIX###votingBlock` (
   `id` int(11) NOT NULL,
   `consultationId` int(11) NOT NULL,
+  `position` int(11) NOT NULL DEFAULT '0',
   `title` varchar(150) NOT NULL,
   `majorityType` tinyint(4) DEFAULT NULL,
   `quorumType` tinyint(4) DEFAULT NULL,

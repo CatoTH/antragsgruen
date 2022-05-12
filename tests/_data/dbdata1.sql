@@ -1694,6 +1694,6 @@ VALUES
 -- Dumping data for table `votingBlock`
 --
 
-INSERT INTO `###TABLE_PREFIX###votingBlock` (`id`, `consultationId`, `title`, `votingStatus`) VALUES
-  (1, 1, 'Ä2 or Ä3', 0),
-  (2, 6, 'Test', 0);
+INSERT INTO `###TABLE_PREFIX###votingBlock` (`id`, `consultationId`, `position`, `title`, `majorityType`, `quorumType`, `votesPublic`, `resultsPublic`, `assignedToMotionId`, `usersPresentByOrga`, `answers`, `policyVote`, `votingStatus`, `activityLog`) VALUES
+  (1, 1, 0, 'Ä2 or Ä3', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
+  (2, 6, 0, 'Test', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL);
