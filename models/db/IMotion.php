@@ -552,7 +552,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
                 $toSetVotingBlock = new VotingBlock();
                 $toSetVotingBlock->consultationId = $consultation->id;
                 $toSetVotingBlock->position = VotingBlock::getNextAvailablePosition($consultation);
-                $toSetVotingBlock->title = $newVotingBlockTitle;
+                $toSetVotingBlock->setTitle($newVotingBlockTitle);
                 $toSetVotingBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
                 $toSetVotingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
                 $toSetVotingBlock->majorityType = IMajorityType::MAJORITY_TYPE_SIMPLE;

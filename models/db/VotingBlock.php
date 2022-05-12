@@ -4,15 +4,12 @@ namespace app\models\db;
 
 use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
-use app\models\policies\IPolicy;
-use app\models\policies\LoggedIn;
-use app\models\quorumType\IQuorumType;
-use app\models\quorumType\NoQuorum;
+use app\models\policies\{IPolicy, LoggedIn};
+use app\models\quorumType\{IQuorumType, NoQuorum};
 use app\models\settings\AntragsgruenApp;
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -93,6 +90,15 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             return $current;
         } else {
             return Consultation::findOne($this->consultationId);
+        }
+    }
+
+    public function setTitle(string $title): void
+    {
+        if (mb_strlen($title) > 150) {
+            $this->title = mb_substr($title, 0, 147) . '...';
+        } else {
+            $this->title = $title;
         }
     }
 

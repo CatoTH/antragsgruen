@@ -68,7 +68,7 @@ class VotingMethods
     public function voteSaveSettings(VotingBlock $votingBlock): void
     {
         if ($this->request->post('title')) {
-            $votingBlock->title = $this->request->post('title');
+            $votingBlock->setTitle($this->request->post('title', ''));
         }
         if ($this->request->post('assignedMotion') !== null && $this->request->post('assignedMotion') > 0) {
             $votingBlock->assignedToMotionId = $this->request->post('assignedMotion');
