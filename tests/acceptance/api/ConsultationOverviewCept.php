@@ -33,6 +33,7 @@ $I->assertEquals(200, $request->getStatusCode());
 $I->assertJsonStringEqualsJsonString('{
     "title": "Test2",
     "title_short": "Test2",
+    "speaking_lists": null,
     "motion_links": [
         {
             "id": 2,

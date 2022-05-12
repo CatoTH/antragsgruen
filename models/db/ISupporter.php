@@ -171,8 +171,8 @@ abstract class ISupporter extends ActiveRecord
             $user = User::getCurrentUser();
             $supporter->userId = $user->id;
             $supporter->name = trim($user->name);
-            $supporter->organization = trim($user->organization);
-            $supporter->contactEmail = trim($user->email);
+            $supporter->organization = $user->organization !== null ? trim($user->organization) : null;
+            $supporter->contactEmail = $user->email !== null ? trim($user->email) : null;
             if ($supportType->getSettingsObj()->initiatorCanBePerson) {
                 $supporter->personType = static::PERSON_NATURAL;
             } else {

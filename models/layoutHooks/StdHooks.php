@@ -313,7 +313,7 @@ class StdHooks extends Hooks
             if ($consultation && $consultation->getSettings()->hasSpeechLists) {
                 $adminUrl = UrlHelper::createUrl(['/consultation/speech']);
                 $adminTitle = \Yii::t('base', 'menu_speech_list');
-                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'speechAdminLink', 'aria-label' => $adminTitle]) . '</li>';
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'speechLink', 'aria-label' => $adminTitle]) . '</li>';
             }
 
             if (User::haveOneOfPrivileges($consultation, IndexController::$REQUIRED_PRIVILEGES)) {

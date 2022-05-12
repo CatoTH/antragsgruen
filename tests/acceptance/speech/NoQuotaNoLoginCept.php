@@ -7,7 +7,7 @@ $I->populateDBData1();
 $I->wantTo('enable non-quota speech lists');
 $I->gotoConsultationHome();
 $I->dontSeeElement('.currentSpeechInline');
-$I->dontSeeElement('#speechAdminLink');
+$I->dontSeeElement('#speechLink');
 
 $I->loginAsStdAdmin();
 $page = $I->gotoStdAdminPage()->gotoAppearance();
@@ -27,9 +27,13 @@ $I->dontSee('.currentSpeechInline');
 $I->gotoMotion();
 $I->dontSeeElement('.currentSpeechFooter');
 
+$I->click('#speechLink');
+$I->see('Die Redeliste ist nicht geöffnet');
+
 // Goto admin widget & open for application
-$I->click('#speechAdminLink');
+$I->click('.speechAdminLink');
 $I->wait(0.1);
+
 
 $I->seeElement('.slotActive.inactive .nameNobody'); // Nobody is speaking
 $I->seeElement('.slotPlaceholder.inactive .nameNobody'); // Nobody is proposed
