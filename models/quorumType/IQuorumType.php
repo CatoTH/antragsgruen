@@ -61,6 +61,14 @@ abstract class IQuorumType
 
     public function getRelevantEligibleVotersCount(VotingBlock $votingBlock): int
     {
+        // Any plugin-provided rule has precedence
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $userCount = $plugin::getRelevantEligibleVotersCount($votingBlock);
+            if ($userCount !== null) {
+                return $userCount;
+            }
+        }
+
         $policy = $votingBlock->getVotingPolicy();
         if (!is_a($policy, UserGroups::class)) {
             return 0;
