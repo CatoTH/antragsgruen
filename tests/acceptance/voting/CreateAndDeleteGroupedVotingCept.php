@@ -99,7 +99,7 @@ $I->see('Ä1 zu A2: O’zapft is!', '.voting_motion_114');
 $I->see('Vote for Ä1 and A5 at the same time', '.voting_motion_114');
 $I->clickJS('.voting_motion_114 .btnYes');
 $I->wait(0.3);
-$I->see('1 Stimme von 1 Mitglied abgegeben');
+$I->see('1 Stimme abgegeben');
 $I->click('.votingsAdminLink');
 
 

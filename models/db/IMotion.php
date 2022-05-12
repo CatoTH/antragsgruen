@@ -542,6 +542,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         $this->votingStatus = $newVotingStatus;
 
         $votingBlockPre = $this->votingBlockId;
+        $consultation = $this->getMyConsultation();
 
         /** @var VotingBlock|null $toSetVotingBlock */
         $toSetVotingBlock = null;
@@ -549,7 +550,8 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
             $newVotingBlockTitle = trim($newVotingBlockTitle);
             if ($newVotingBlockTitle !== '') {
                 $toSetVotingBlock = new VotingBlock();
-                $toSetVotingBlock->consultationId = $this->getMyConsultation()->id;
+                $toSetVotingBlock->consultationId = $consultation->id;
+                $toSetVotingBlock->position = VotingBlock::getNextAvailablePosition($consultation);
                 $toSetVotingBlock->title = $newVotingBlockTitle;
                 $toSetVotingBlock->votesPublic = VotingBlock::VOTES_PUBLIC_NO;
                 $toSetVotingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
@@ -559,8 +561,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
                 $toSetVotingBlock->votingStatus = ($proposedProcedureContext ? VotingBlock::STATUS_OFFLINE : VotingBlock::STATUS_PREPARING);
                 $toSetVotingBlock->save();
             }
+            $consultation->refresh();
         } elseif ($votingBlockId > 0) {
-            $toSetVotingBlock = $this->getMyConsultation()->getVotingBlock(intval($votingBlockId));
+            $toSetVotingBlock = $consultation->getVotingBlock(intval($votingBlockId));
         }
 
         if ($toSetVotingBlock) {

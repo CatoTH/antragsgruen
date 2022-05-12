@@ -155,6 +155,7 @@ class VotingController extends Base
 
         $newBlock = new VotingBlock();
         $newBlock->consultationId = $this->consultation->id;
+        $newBlock->position = VotingBlock::getNextAvailablePosition($this->consultation);
         $newBlock->title = $this->getPostValue('title');
         $newBlock->majorityType = intval($this->getPostValue('majorityType'));
         $newBlock->quorumType = intval($this->getPostValue('quorumType', IQuorumType::QUORUM_TYPE_NONE));

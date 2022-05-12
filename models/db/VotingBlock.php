@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
 /**
  * @property int $id
  * @property int $consultationId
+ * @property int $position
  * @property int $type
  * @property string $title
  * @property int|null $majorityType
@@ -604,6 +605,18 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return array_values(array_filter($consultation->votingBlocks, function (VotingBlock $votingBlock) {
             return $votingBlock->votingStatus === static::STATUS_CLOSED;
         }));
+    }
+
+    public static function getNextAvailablePosition(Consultation $consultation): int
+    {
+        $position = 0;
+        foreach ($consultation->votingBlocks as $votingBlock) {
+            if ($votingBlock->position >= $position) {
+                $position = $votingBlock->position + 1;
+            }
+        }
+
+        return $position;
     }
 
     public function getAdminSetupHintHtml(): ?string
