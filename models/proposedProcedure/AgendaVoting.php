@@ -52,7 +52,17 @@ class AgendaVoting
                 $this->itemIds->addMotion($motion);
             }
         }
-        foreach ($this->voting->amendments as $vAmendment) {
+        $amendments = $this->voting->amendments;
+        usort($amendments, function (\app\models\db\Amendment $amendment1, \app\models\db\Amendment $amendment2): int {
+            if ($amendment1->id === 147) {
+                return -1;
+            }
+            if ($amendment2->id === 147) {
+                return 1;
+            }
+            return $amendment1->id <=> $amendment2->id;
+        });
+        foreach ($amendments as $vAmendment) {
             if (!$vAmendment->getMyMotion()) {
                 continue;
             }
