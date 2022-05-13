@@ -74,7 +74,12 @@ $html = ob_get_clean();
             },
             getVoteListForUserGroup: function (type, userGroup) {
                 return this.groupedVoting[0].votes
-                    .filter(vote => vote.vote === type && vote.user_groups.indexOf(userGroup.id) !== -1);
+                    .filter(vote => vote.vote === type && vote.user_groups.indexOf(userGroup.id) !== -1)
+                    .sort(function (vote1, vote2) {
+                        const name1 = (vote1.user_name ? vote1.user_name : '');
+                        const name2 = (vote2.user_name ? vote2.user_name : '');
+                        return name1.localeCompare(name2);
+                    });
             },
             isGroupSelectionShown: function (answer, userGroup) {
                 const id = answer.api_id + "-" + userGroup.id;
