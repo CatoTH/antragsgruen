@@ -78,7 +78,7 @@ $html = ob_get_clean();
         props: ['queue', 'csrf', 'user', 'title'],
         mixins: [SPEECH_COMMON_MIXIN],
         created() {
-            this.startPolling();
+            this.startPolling(true);
         },
         beforeDestroy() {
             this.stopPolling();

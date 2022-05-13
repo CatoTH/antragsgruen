@@ -145,7 +145,7 @@ $html          = ob_get_clean();
             };
         },
         created() {
-            this.startPolling()
+            this.startPolling(false);
         },
         beforeDestroy() {
             this.stopPolling();

@@ -464,7 +464,7 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 const widget = this;
                 this.pollingId = window.setInterval(function () {
                     widget.reloadData();
-                }, 3000);
+                }, 1000);
 
                 this.timerId = window.setInterval(function () {
                     widget.recalcRemainingTime();
@@ -472,11 +472,11 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             }
         },
         beforeDestroy() {
-            window.clearInterval(this.pollingId)
+            window.clearInterval(this.pollingId);
             window.clearInterval(this.timerId);
         },
         created() {
-            this.startPolling()
+            this.startPolling();
         }
     });
 </script>
