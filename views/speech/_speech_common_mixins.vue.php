@@ -129,13 +129,14 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                     console.error("Could not load speech queue data from backend", err);
                 });
             },
-            startPolling: function () {
+            startPolling: function (highfrequency) {
                 this.recalcTimeOffset(new Date());
+                const reloadTimer = (highfrequency ? 1000 : 3000);
 
                 const widget = this;
                 this.pollingId = window.setInterval(function () {
                     widget.reloadData();
-                }, 3000);
+                }, reloadTimer);
 
                 this.timerId = window.setInterval(function () {
                     widget.recalcRemainingTime();
