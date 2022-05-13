@@ -12,6 +12,8 @@ class Captcha
 {
     public static function needsCaptcha(?string $username): bool
     {
+        return false;
+        
         if (FailedLoginAttempt::needsLoginThrottling($username)) {
             return true;
         }

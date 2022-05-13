@@ -12,6 +12,8 @@ $contentAdmin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVIL
 
 $preWelcome = \app\models\layoutHooks\Layout::getConsultationPreWelcome();
 
+echo '<h2 class="green">Welcome to YFJ Votes</h2>';
+
 echo '<div class="content contentPage contentPageWelcome' . ($preWelcome ? ' hasDeadline' : '') . '">';
 
 echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::homeUrl()]);

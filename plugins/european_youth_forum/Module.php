@@ -43,7 +43,7 @@ class Module extends ModuleBase
 
     public static function getRelevantEligibleVotersCount(VotingBlock $votingBlock): ?int
     {
-        return null;
+        return 82;
     }
 
     public static function getVotingAdminSetupHintHtml(VotingBlock $votingBlock): ?string
