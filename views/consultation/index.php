@@ -30,6 +30,13 @@ echo '<h1>' . Html::encode($consultation->title) . '</h1>';
 
 echo $layout->getMiniMenu('sidebarSmall');
 
+if ($consultation->getSettings()->hasSpeechLists) {
+    $queue = $consultation->getActiveSpeechQueue();
+    echo $this->render('@app/views/speech/_index_speech', ['queue' => $queue]);
+}
+
+echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
+
 echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
@@ -122,13 +129,6 @@ if ($myself) {
         echo '</section>';
     }
 }
-
-if ($consultation->getSettings()->hasSpeechLists) {
-    $queue = $consultation->getActiveSpeechQueue();
-    echo $this->render('@app/views/speech/_index_speech', ['queue' => $queue]);
-}
-
-echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
 
 
 if (count($consultation->motionTypes) > 0) {
