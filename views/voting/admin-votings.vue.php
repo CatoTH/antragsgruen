@@ -265,7 +265,7 @@ ob_start();
                 <li v-for="logEntry in voting.log" v-html="formatLogEntry(logEntry)"></li>
             </ol>
         </footer>
-        <footer class="votingFooter" v-if="voting.log.length > 0 && voting.log.length < 2" aria-label="<?= Yii::t('voting', 'activity_title') ?>">
+        <footer class="votingFooter" v-if="voting.log.length > 0 && voting.log.length <= 2" aria-label="<?= Yii::t('voting', 'activity_title') ?>">
             <div class="downloadResults" v-if="isClosed">
                 <a class="btn btn-xs btn-link" :href="resultDownloadLink">
                     <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
