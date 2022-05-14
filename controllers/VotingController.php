@@ -199,14 +199,15 @@ class VotingController extends Base
         $agendaVoting = AgendaVoting::getFromVotingBlock($votingBlock);
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
+        $fileNameBase = 'voting-results-' . $votingBlockId;
         switch ($format) {
             case 'ods':
                 \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
-                \Yii::$app->response->headers->add('Content-disposition', 'filename="voting-results.ods"');
+                \Yii::$app->response->headers->add('Content-disposition', 'filename="' . $fileNameBase . '.ods"');
                 break;
             case 'xlsx':
                 \Yii::$app->response->headers->add('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                \Yii::$app->response->headers->add('Content-disposition', 'filename="voting-results.xslx"');
+                \Yii::$app->response->headers->add('Content-disposition', 'filename="' . $fileNameBase . '.xslx"');
                 break;
             default:
                 \Yii::$app->response->headers->add('Content-Type', 'text/html');
