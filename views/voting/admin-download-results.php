@@ -80,8 +80,10 @@ foreach ($agendaVoting->items as $i => $voteItem) {
             $title = $voteItem->title;
             break;
     }
+    $sheetTitle = preg_replace('/[^a-z0-9_ -]/siu', '', $title);
+    $sheetTitle = (mb_strlen($sheetTitle) > 30 ? mb_substr($sheetTitle, 0, 28) . '...' : $sheetTitle);
     $sheet->getStyle('A1')->applyFromArray(['font' => ['bold' => true]]);
-    $sheet->setTitle(preg_replace('/[^a-z0-9_ -]/siu', '', $title));
+    $sheet->setTitle($sheetTitle);
     $sheet->getColumnDimension('A')->setWidth($width, 'cm');
     $sheet->getColumnDimension('B')->setWidth($width, 'cm');
     $sheet->setCellValue('A1', $title);
