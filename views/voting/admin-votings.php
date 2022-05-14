@@ -191,7 +191,7 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
                 </div>
             </fieldset>
             <fieldset class="resultsPublicSettings">
-                <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
+                <legend><?= Yii::t('voting', 'settings_resultspublic') ?>:</legend>
                 <label>
                     <input type="radio" value="0" name="resultsPublicNew">
                     <?= Yii::t('voting', 'settings_resultspublic_admins') ?>
@@ -202,7 +202,7 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
                 </label>
             </fieldset>
             <fieldset class="votesPublicSettings">
-                <legend><?= Yii::t('voting', 'settings_votespublic') ?></legend>
+                <legend><?= Yii::t('voting', 'settings_votespublic') ?>:</legend>
                 <label>
                     <input type="radio" value="0" name="votesPublicNew" checked>
                     <?= Yii::t('voting', 'settings_votespublic_nobody') ?>
