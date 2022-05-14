@@ -66,7 +66,7 @@ ob_start();
                 {{ voting.vote_policy.description }}
             </div>
             <div class="votingVisibility">
-                <strong><?= Yii::t('voting', 'settings_votespublic') ?></strong>
+                <strong><?= Yii::t('voting', 'settings_votespublic') ?>:</strong>
                 <span v-if="voting.votes_public === 0"><?= Yii::t('voting', 'settings_votespublic_nobody') ?></span>
                 <span v-if="voting.votes_public === 1"><?= Yii::t('voting', 'settings_votespublic_admins') ?></span>
                 <span v-if="voting.votes_public === 2"><?= Yii::t('voting', 'settings_votespublic_all') ?></span>
@@ -322,7 +322,7 @@ ob_start();
             </label>
         </fieldset>
         <fieldset class="resultsPublicSettings">
-            <legend><?= Yii::t('voting', 'settings_resultspublic') ?></legend>
+            <legend><?= Yii::t('voting', 'settings_resultspublic') ?>:</legend>
             <label>
                 <input type="radio" value="0" v-model="resultsPublic">
                 <?= Yii::t('voting', 'settings_resultspublic_admins') ?>
@@ -333,7 +333,7 @@ ob_start();
             </label>
         </fieldset>
         <fieldset class="votesPublicSettings">
-            <legend><?= Yii::t('voting', 'settings_votespublic') ?></legend>
+            <legend><?= Yii::t('voting', 'settings_votespublic') ?>:</legend>
             <label>
                 <input type="radio" value="0" v-model="votesPublic" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_votespublic_nobody') ?>
