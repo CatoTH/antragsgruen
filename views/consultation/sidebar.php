@@ -127,21 +127,21 @@ if ($consultation->getSettings()->proposalProcedurePage || count($closedVotings)
     $html = '<section class="sidebar-box" aria-labelledby="sidebarPpTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarPpTitle">' . Yii::t('con', 'sidebar_procedure') . '</li>';
 
-    $url = '';
     if ($consultation->getSettings()->proposalProcedurePage) {
         $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'proposed_procedure');
         $url = UrlHelper::createUrl('consultation/proposed-procedure');
         $html .= '<li>' . Html::a($name, $url, ['id' => 'proposedProcedureLink']) . "</li>\n";
+        $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'proposed_procedure'), $url) . '</li>';
     }
     if (count($closedVotings) > 0) {
         $name = '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span>' . Yii::t('con', 'voting_results');
         $url = UrlHelper::createUrl('consultation/voting-results');
         $html .= '<li>' . Html::a($name, $url, ['id' => 'votingResultsLink']) . "</li>\n";
+        $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'voting_results'), $url) . '</li>';
     }
     $html .= "</ul></section>";
 
     $layout->menusHtml[] = $html;
-    $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'proposed_procedure'), $url) . '</li>';
 }
 
 if ($hasMotions && $consultation->getSettings()->sidebarNewMotions) {
