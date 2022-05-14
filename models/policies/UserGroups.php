@@ -121,7 +121,7 @@ class UserGroups extends IPolicy
             'user_groups' => array_map(function(ConsultationUserGroup $group): int {
                 return $group->id;
             }, $this->groups),
-            'description' => \Yii::t('structure', 'policy_groups_desc') . ' (' . implode(', ', $groupNames) . ')',
+            'description' => implode(', ', $groupNames),
         ];
     }
 

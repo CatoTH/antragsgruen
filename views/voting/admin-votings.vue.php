@@ -48,7 +48,7 @@ ob_start();
 
         <div class="votingSettingsSummary">
             <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
-                 v-if="isPreparing && majorityType.id === voting.majority_type && votingHasMajority">
+                 v-if="majorityType.id === voting.majority_type && votingHasMajority">
                 <strong><?= Yii::t('voting', 'settings_majoritytype') ?>:</strong>
                 {{ majorityType.name }}
                 <span class="glyphicon glyphicon-info-sign" :aria-label="majorityType.description" v-tooltip="majorityType.description"></span>
@@ -56,6 +56,12 @@ ob_start();
             <div class="votingPolicy">
                 <strong><?= Yii::t('voting', 'settings_votepolicy') ?>:</strong>
                 {{ voting.vote_policy.description }}
+            </div>
+            <div class="votingVisibility">
+                <strong><?= Yii::t('voting', 'settings_votespublic') ?></strong>
+                <span v-if="voting.votes_public === 0"><?= Yii::t('voting', 'settings_votespublic_nobody') ?></span>
+                <span v-if="voting.votes_public === 1"><?= Yii::t('voting', 'settings_votespublic_admins') ?></span>
+                <span v-if="voting.votes_public === 2"><?= Yii::t('voting', 'settings_votespublic_all') ?></span>
             </div>
         </div>
         <div class="alert alert-success" v-if="isOpen">

@@ -15,7 +15,7 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('voting', 'bc'));
-$this->title = Yii::t('voting', 'results_title');
+$this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT, 'UTF-8');
 
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
