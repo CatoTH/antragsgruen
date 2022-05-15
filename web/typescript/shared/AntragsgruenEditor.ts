@@ -102,7 +102,7 @@ export class AntragsgruenEditor {
 
         let strikeEl = (noStrike ? '' : ' s'),
             strikeClass = (noStrike ? '' : ',strike'),
-            autocolorizeClass = (autocolorize ? ',adminTyped' : ''),
+            autocolorizeClass = (autocolorize ? ',adminTyped1,adminTyped2' : ''),
             allowedContent = '';
 
         if (trackChanged || allowDiffFormattings) {
