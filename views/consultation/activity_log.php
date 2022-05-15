@@ -59,6 +59,10 @@ if (count($entries) === 0) {
 
         if ($motion = $entry->getMotion()) {
             echo '<div class="motion">' . $motion->getEncodedTitleWithPrefix() . '</div>';
+        } elseif ($voting = $entry->getVoting()) {
+            echo '<div class="voting">' . Html::encode($voting->title) . '</div>';
+        } elseif ($question = $entry->getVotingQuestion()) {
+            echo '<div class="voting">' . Html::encode($question->title) . '</div>';
         }
 
         echo '<div class="description">' . $entry->formatLogEntry($showInvisible) . '</div>';
