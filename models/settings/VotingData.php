@@ -108,4 +108,25 @@ class VotingData implements \JsonSerializable
         }
         return null;
     }
+
+    public function mapToApiResults(VotingBlock $voting): array
+    {
+        $results = [
+            VotingData::ORGANIZATION_DEFAULT => [],
+        ];
+        if ($this->votesYes !== null) {
+            $results[VotingData::ORGANIZATION_DEFAULT]['yes'] = $this->votesYes;
+        }
+        if ($this->votesNo !== null) {
+            $results[VotingData::ORGANIZATION_DEFAULT]['no'] = $this->votesNo;
+        }
+        if ($this->votesAbstention !== null) {
+            $results[VotingData::ORGANIZATION_DEFAULT]['abstention'] = $this->votesAbstention;
+        }
+        if ($this->votesPresent !== null) {
+            $results[VotingData::ORGANIZATION_DEFAULT]['present'] = $this->votesPresent;
+        }
+
+        return $results;
+    }
 }

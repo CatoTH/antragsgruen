@@ -185,7 +185,11 @@ class AgendaVoting
         $answers = $voting->getAnswers();
         $votes = $voting->getVotesForVotingItem($item);
         if ($canSeeResults) {
-            $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
+            if ($this->voting->votingStatus === VotingBlock::STATUS_CLOSED) {
+                $data['vote_results'] = $item->getVotingData()->mapToApiResults($this->voting);
+            } else {
+                $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
+            }
         }
         if ($canSeeVotes) {
             // Extra safeguard to prevent accidental exposure of votes, even if this case should not be triggerable through the interface

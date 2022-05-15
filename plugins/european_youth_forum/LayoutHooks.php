@@ -3,7 +3,7 @@
 namespace app\plugins\european_youth_forum;
 
 use app\models\proposedProcedure\AgendaVoting;
-use app\models\db\{Consultation, IVotingItem, User};
+use app\models\db\{Consultation, IVotingItem, User, VotingBlock};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\VotingData;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -32,7 +32,10 @@ class LayoutHooks extends Hooks
         }
 
         /** @var \app\plugins\european_youth_forum\VotingData $voteResults */
-        $voteResults = $voteItem->getVotingData()->augmentWithResults($agendaVoting->voting, $voteItem);
+        $voteResults = $voteItem->getVotingData();
+        if ($agendaVoting->voting->votingStatus !== VotingBlock::STATUS_CLOSED) {
+            $voteResults->augmentWithResults($agendaVoting->voting, $voteItem);
+        }
         $rows = 0;
 
 
