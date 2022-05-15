@@ -45,7 +45,7 @@ $I->clickJS('form.creatingVoting button[type=submit]');
 $I->wait(0.3);
 
 $votingBaseId = '#voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID;
-$I->see('Berechtigte Gruppen (Seiten-Admin)', $votingBaseId . ' .votingSettingsSummary .votingPolicy');
+$I->see('Seiten-Admin', $votingBaseId . ' .votingSettingsSummary .votingPolicy');
 $I->clickJS($votingBaseId . ' .settingsToggleGroup button');
 $I->seeOptionIsSelected($votingBaseId . ' .v-policy-select .stdDropdown', \app\models\policies\UserGroups::getPolicyName());
 $I->seeElement($votingBaseId . ' .v-policy-select .v-select');
@@ -56,7 +56,7 @@ $I->seeElement($votingBaseId . ' .v-policy-select .v-select');
 $I->executeJS('votingAdminWidget.$refs["voting-admin-widget"][1].$refs["policy-select"].setSelectedGroups([' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '])');
 $I->clickJS($votingBaseId . ' .btnSave');
 $I->wait(0.3);
-$I->see('Berechtigte Gruppen (Voting group)', $votingBaseId . ' .votingSettingsSummary .votingPolicy');
+$I->see('Voting group', $votingBaseId . ' .votingSettingsSummary .votingPolicy');
 $I->clickJS($votingBaseId . ' .btnOpen');
 
 
@@ -77,7 +77,7 @@ $I->dontSeeElement('.user2');
 $I->clickJS('.addUsersOpener.email');
 $I->fillField('#emailAddresses', 'testuser@example.org');
 $I->fillField('#names', 'ignored');
-$I->submitForm('#accountsCreateForm', [], 'addUsers');
+$I->submitForm('.addUsersByLogin.multiuser', [], 'addUsers');
 $I->wait(1);
 $I->seeElement('.user2');
 $I->dontSeeElement('.user2 .vs__dropdown-toggle');

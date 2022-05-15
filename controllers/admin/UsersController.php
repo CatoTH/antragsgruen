@@ -135,6 +135,12 @@ class UsersController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'siteacc_user_created_single'));
         }
 
+        foreach ($this->consultation->screeningUsers as $screeningUser) {
+            if ($screeningUser->userId === $user->id) {
+                $screeningUser->delete();
+            }
+        }
+
         return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
     }
 

@@ -17,7 +17,7 @@ $I->logout();
 
 $I->wantTo('create an account');
 $I->gotoConsultationHome(false);
-$I->wait(0.5);
+$I->wait(0.2);
 $I->dontSeeElement('.managedAccountHint');
 $I->checkOption('#createAccount');
 $I->seeElement('.managedAccountHint');
