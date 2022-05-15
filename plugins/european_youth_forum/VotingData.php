@@ -111,6 +111,46 @@ class VotingData extends \app\models\settings\VotingData {
         return $this;
     }
 
+    public function mapToApiResults(VotingBlock $voting): array
+    {
+        if (!VotingHelper::isSetUpAsYfjVoting($voting)) {
+            return parent::mapToApiResults($voting);
+        }
+
+        return [
+            'nyc' => [
+                'yes' => $this->nycYes,
+                'yes_multiplied' => $this->nycYesMultiplied,
+                'no' => $this->nycNo,
+                'no_multiplied' => $this->nycNoMultiplied,
+                'abstention' => $this->nycAbstention,
+                'abstention_multiplied' => $this->nycAbstention * $this->ingyoUsers,
+                'total' => $this->nycTotal,
+                'total_multiplied' => $this->nycTotalMultiplied,
+            ],
+            'ingyo' => [
+                'yes' => $this->ingyoYes,
+                'yes_multiplied' => $this->ingyoYesMultiplied,
+                'no' => $this->ingyoNo,
+                'no_multiplied' => $this->ingyoNoMultiplied,
+                'abstention' => $this->ingyoAbstention,
+                'abstention_multiplied' => $this->ingyoAbstention * $this->nycUsers,
+                'total' => $this->ingyoTotal,
+                'total_multiplied' => $this->ingyoTotalMultiplied,
+            ],
+            'total' => [
+                'yes' => $this->totalYes,
+                'yes_multiplied' => $this->totalYesMultiplied,
+                'no' => $this->totalNo,
+                'no_multiplied' => $this->totalNoMultiplied,
+                'abstention' => $this->totalAbstention,
+                'abstention_multiplied' => $this->totalAbstentionMultiplied,
+                'total' => $this->totalTotal,
+                'total_multiplied' => $this->totalTotalMultiplied,
+            ],
+        ];
+    }
+
     public function renderDetailedResults(): ?string
     {
         $result = $this;
