@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
 use app\models\policies\{IPolicy, LoggedIn};
@@ -137,6 +138,19 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['votingBlockId' => 'id']);
+    }
+
+    public function getUserLink(): string
+    {
+        if ($this->votingStatus === self::STATUS_CLOSED) {
+            return UrlHelper::createUrl('consultation/voting-results');
+        } else {
+            if ($this->assignedToMotionId && $this->assignedToMotion) {
+                return UrlHelper::createMotionUrl($this->assignedToMotion);
+            } else {
+                return UrlHelper::homeUrl();
+            }
+        }
     }
 
     public function getUserSingleItemVote(User $user, IVotingItem $item): ?Vote

@@ -222,6 +222,13 @@ return [
     'activity_AMENDMENT_SUPPORT'          => '###USER### <strong>supported the amendment ###AMENDMENT###</strong>',
     'activity_AMENDMENT_PUBLISH_PROPOSAL' => '###USER### <strong>published the proposed procedure of ###AMENDMENT###</strong>',
     'activity_AMENDMENT_SET_PROPOSAL'     => '###USER### <strong>edited the proposed procedure of ###AMENDMENT###</strong>',
+    'activity_AMENDMENT_VOTE_REJECTED'    => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>rejected</strong>.',
+    'activity_AMENDMENT_VOTE_ACCEPTED'    => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>accepted</strong>.',
+    'activity_VOTING_OPEN'                => 'The voting was <strong>opened</strong>',
+    'activity_VOTING_CLOSE'               => 'The voting was <strong>closed</strong>',
+    'activity_VOTING_DELETE'              => 'The voting was <strong>deleted</strong>',
+    'activity_VOTING_QUESTION_ACCEPTED'   => 'The question was <strong>accepted</strong>',
+    'activity_VOTING_QUESTION_REJECTED'   => 'The question was <strong>rejected</strong>',
 
     'remaining_over'    => 'over',
     'remaining_days'    => 'days',
