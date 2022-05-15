@@ -7,7 +7,7 @@ use app\models\settings\Site;
 
 class SiteSettings extends Site
 {
-    /** @var string */
+    /** @var string|null */
     public $osBaseUri; // https://demo.openslides.org/
 
     /** @var string */
@@ -15,6 +15,9 @@ class SiteSettings extends Site
 
     public function getAuthPrefix(): string
     {
+        if (!isset($this->osBaseUri)) {
+            throw new Internal('Could not parse osBaseUri');
+        }
         $url = parse_url($this->osBaseUri);
         if (is_array($url) && isset($url['host'])) {
             return 'openslides-' . $url['host'];

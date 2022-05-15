@@ -10,7 +10,7 @@ use app\components\{ExternalPasswordAuthenticatorInterface,
     GruenesNetzSamlClient,
     mail\Tools as MailTools};
 use app\models\events\UserEvent;
-use app\models\exceptions\{FormError, MailNotSent, ServerConfiguration};
+use app\models\exceptions\{ExceptionBase, FormError, Internal, MailNotSent, ServerConfiguration};
 use app\models\settings\AntragsgruenApp;
 use yii\db\{ActiveQuery, ActiveRecord, Expression};
 use yii\web\IdentityInterface;
@@ -566,8 +566,12 @@ class User extends ActiveRecord implements IdentityInterface
         $authparts = explode(':', $this->auth);
 
         $externalAuthenticator = static::getExternalAuthenticator();
-        if ($externalAuthenticator && $authparts[0] === $externalAuthenticator->getAuthPrefix()) {
-            return $externalAuthenticator->formatUsername($this);
+        try {
+            if ($externalAuthenticator && $authparts[0] === $externalAuthenticator->getAuthPrefix()) {
+                return $externalAuthenticator->formatUsername($this);
+            }
+        } catch (ExceptionBase $exception) {
+            return 'User authenticator not set up correctly';
         }
 
         switch ($authparts[0]) {
