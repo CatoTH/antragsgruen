@@ -466,7 +466,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         <li>Defining user groups to grant special permissions to a user group (like to participate in a vote or create amendments)</li>
     </ul>
 
-    <p>By default, a site can be accessed (view) by anyone and user registration is open. Two settings (under &ldquo;This consultation&rdquo; => &ldquo;Access to this consultation&rdquo;) can change this:</p>
+    <p>By default, a site can be accessed (view) by anyone and user registration is open. Two settings (under &ldquo;This consultation&rdquo; → &ldquo;Access to this consultation&rdquo;) can change this:</p>
     <ul>
         <li>&ldquo;Only logged in users are allowed to access (incl. reading)&rdquo;. Can be set to restrict the reading access to this consultation. By itself, user will still be able to register and then access. So this setting is often used in combination with the second one:</li>
         <li>&ldquo;Only allow selected users to log in&rdquo;. Once this is activated as well, administrators have full control over who can access the consultation and who no.</li>

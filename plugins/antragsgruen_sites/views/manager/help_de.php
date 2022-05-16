@@ -498,14 +498,14 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <h3 id="user_administration">Benutzer*innen-Verwaltung</h3>
 
-    <p>Die Benutzer*innen-Verwaltung (unter „Einstellungen” => „Registrierte Benutzer*innen”) kann für Mehreres verwendet werden:</p>
+    <p>Die Benutzer*innen-Verwaltung (unter „Einstellungen” → „Registrierte Benutzer*innen”) kann für Mehreres verwendet werden:</p>
     <ul>
         <li>Neue Administrator*innen eintragen</li>
         <li>Den Zugang zur Seite verwalten (sofern dies aktiviert wurde)</li>
         <li>Gruppen definieren, Mitgliedern einer Gruppe bestimmte Rechte zu geben (z.B. an Abstimmungen teilzunehmen oder Anträge anzulegen)</li>
     </ul>
 
-    <p>Standardmäßig kann eine Antragsgrün-Seite von allen (lesend) geöffnet werden, und jede und jeder kann sich registrieren. Mit zwei Einstellungsmöglichkeiten (unter „Diese Veranstaltung” => „Zugang zur Veranstaltung”) kann man dies anpassen:</p>
+    <p>Standardmäßig kann eine Antragsgrün-Seite von allen (lesend) geöffnet werden, und jede und jeder kann sich registrieren. Mit zwei Einstellungsmöglichkeiten (unter „Diese Veranstaltung” → „Zugang zur Veranstaltung”) kann man dies anpassen:</p>
     <ul>
         <li>&ldquo;Nur eingeloggte Benutzer*innen dürfen zugreifen (inkl. lesen)&rdquo;. Hiermit kann auch der lesende Zugriff auf registrierte Nutzer*innen eingeschränkt werden. Wenn nur dies gesetzt wird, ist die Registrierung aber immer noch möglich, weswegen dann oft auch die folgende Einstellung gesetzt wird:</li>
         <li>&ldquo;Nur ausgewählten Benutzer*innen das Login erlauben&rdquo;. Wenn dies aktiv ist, haben Administrator*innen genaue Kontrolle darüber, wer auf die Seite zugreifen können und wer nicht.</li>
