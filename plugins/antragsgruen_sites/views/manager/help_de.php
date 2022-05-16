@@ -107,7 +107,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
                onClick="$('#weitere_funktionen').scrollintoview({top_offset: -30}); return false;">Weitere
                 Funktionen</a>
             <ul>
-                <li><a href="#user_administration" onClick="$('#layout').scrollintoview({top_offset: -30}); return false;">Benutzer*innen-Verwaltung</a>
+                <li><a href="#user_administration" onClick="$('#user_administration').scrollintoview({top_offset: -30}); return false;">Benutzer*innen-Verwaltung</a>
                 <li><a href="#layout" onClick="$('#layout').scrollintoview({top_offset: -30}); return false;">Layout-Anpassbarkeit</a>
                 </li>
                 <li><a href="#zeilennummerierung"
