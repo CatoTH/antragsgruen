@@ -25,7 +25,7 @@
   - One speaking list per agenda item can be created.
 - Amendments can now be further restricted to only affect one particular location within one paragraph.
 - There are new motion statuses "Quorum reached" and "Quorum missed".
-- The CAPTCHA system is reset for an user after a successful login. This solves issues when multiple users are behind the same IP address.
+- The CAPTCHA system is reset for a user after a successful login. This solves issues when multiple users are behind the same IP address.
 - The full-screen projector now also shows the initiator and status of a motion / amendment.
 - The menu at the top of the page was reordered into a more logical order.
 - A new e-mail-sending library (Symfony mailer) is used. Amazon SES can now be configured as mailer, too (by editing the config.json directly).
@@ -85,11 +85,11 @@
   - Indications about line numbers of the original motion are now shown at the side.
   - Text could be striked through, but that formatting was not saved. It now is.
 - As long as the maintenance mode is activated, admins now get an alert on the page about it being active, including a link to the page where they can deactivate it.
-- If admins create a motion or amendment in behalf of an user, no confirmation mails about the submission is sent to the user anymore (if confirmation mails are activated in the first place).
+- If admins create a motion or amendment in behalf of a user, no confirmation mails about the submission is sent to the user anymore (if confirmation mails are activated in the first place).
 - When official supports are collected for a motion or amendments, it is now optionally possible to support them "non-publically". That is, only logged in users can see the names of those supports.
 - In the proposed procedure, admins can set internal tags to motions and amendments in order to filter them more efficiently later on in the motion list.
 - Export to OpenSlides is now an advanced feature than can be activated in the motion list under "Functionality".
-- When notifying an user about a proposed procedure of her motion or amendment, and an editor was set as responsible in the backend and has a Reply-To-E-Mail-address set, then this address will be taken, instead of the address of the editor actually triggering the notification.
+- When notifying a user about a proposed procedure of her motion or amendment, and an editor was set as responsible in the backend and has a Reply-To-E-Mail-address set, then this address will be taken, instead of the address of the editor actually triggering the notification.
 - Improvements for consultations with more than a thousand motions / amendments:
   - An internal consultation setting "adminListFilerByMotion" can now be set in the database to separate the admin list into one list per motion.
   - The caching of motion views was improved so that it does not need to be recalculated as often anymore
@@ -134,7 +134,7 @@
 - The URL slug of a motion can now be changed on the admin page.
 - Applications (or other motion types with images) now receive a `og:image` tag for better image detection when sharing the applications.
 - Bugfix: If e-mail-notifcations about published motions for the initiating users are set up, but the submission form does not explicitly ask for an e-mail-address, no e-mail was sent. Now, it is sent to the e-mail-address of the user account.
-- Bugfix: If an user has previously put her e-mail-address on the e-mail-blocklist, then saving the account settings lead to an error message.
+- Bugfix: If a user has previously put her e-mail-address on the e-mail-blocklist, then saving the account settings lead to an error message.
 - Bugfix: if the link to a proposed procedure was forwarded, only the proposed status and the accept button was shown, not the modified text of an amendment.
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
@@ -219,7 +219,7 @@
 - It is now possible to deactivate the breadcrumb links in the appearance settings.
 - Agenda items, including their motions, can be hidden from the proposed procedure.
 - When creating a resolution using the "merge amendments"-functionality, there is now a "remove text"-checkbox above the motion reason to exclude the reason from the final resolution more easily.
-- If there is a global password set for a consultation and it is still possible to log in as an user (e.g. as admin), the e-mail-based login form is now a bit more hidden, as the focus will be on the global password for most regular users.
+- If there is a global password set for a consultation and it is still possible to log in as a user (e.g. as admin), the e-mail-based login form is now a bit more hidden, as the focus will be on the global password for most regular users.
 - Bugfix: if a motion section was empty (e.g. a motion that did not have a reason), that section could not be edited when merging amendments.
 - Bugfix: too long motion titles are now breaking the layout and some functionality less than before.
 - When entering a organisation name when creating a motion/amendment, using brackets at the end of the name was not possible.
@@ -321,7 +321,7 @@
 - In the list of consultations, the newest consultation now appears at the top.
 - Clicking on changes in the public version of a merging draft now always opens a tooltip with the summary of the amendment, including the proposers of that amendment.
 - The custom status string is now also shown in the admin motion list.
-- When administering the list of users eligible to access a consultation, it is now possible to completely remove an user again.
+- When administering the list of users eligible to access a consultation, it is now possible to completely remove a user again.
 - System administrators can now delete user accounts from the site-wide user list.
 - Bugfix: the date of the last saved draft when merging motions was not set correctly on Safari.
 
@@ -471,7 +471,7 @@
 - Bugfix: When downloading the PDF-collection of motions / amendments, the file extension was sometimes lost.
 - Bugfix: When merging amendments into a motion that already had "NEU" / "NEW" in the prefix, the program could crash due to inconsistent handling of upper-/lowercase
 - Bugfix: The Open Document generation is now a bit more tolerant towards unsupported HTML tags
-- Bugfix: When an admin created an user account in the backend, sending e-mails to that user did not work.
+- Bugfix: When an admin created a user account in the backend, sending e-mails to that user did not work.
 - Internal: Refactoring of the layout hooks, allowing more site-specific custom codes.
 
 ## Version 3.7.5 (2017-11-15)

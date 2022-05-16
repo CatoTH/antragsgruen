@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->gotoConsultationHome();
-$I->wantTo('login as an user without e-mail');
+$I->wantTo('login as a user without e-mail');
 $I->click('#loginLink');
 $I->see('LOGIN', 'h1');
 $I->fillField('#username', 'noemail@example.org');

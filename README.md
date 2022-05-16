@@ -227,7 +227,7 @@ To set it up:
 
 ### Command Line Commands
 
-Force a new password for an user:
+Force a new password for a user:
 ```bash
 ./yii admin/set-user-password user@example.org mynewpassword
 ```

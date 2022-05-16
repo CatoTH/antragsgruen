@@ -107,6 +107,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
                onClick="$('#weitere_funktionen').scrollintoview({top_offset: -30}); return false;">Weitere
                 Funktionen</a>
             <ul>
+                <li><a href="#user_administration" onClick="$('#layout').scrollintoview({top_offset: -30}); return false;">Benutzer*innen-Verwaltung</a>
                 <li><a href="#layout" onClick="$('#layout').scrollintoview({top_offset: -30}); return false;">Layout-Anpassbarkeit</a>
                 </li>
                 <li><a href="#zeilennummerierung"
@@ -494,6 +495,42 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     <p>Solange die Abstimmung offen ist, können Nutzer*innen ihre Stimme auch wieder zurücknehmen und sich umentscheiden. Sobald die Abstimmung geschlossen wird, gibt es diese Möglichkeit nicht mehr, die Astimmung verschwindet von der Seite. Sie ist weiterhin auf einer separaten Seite sichtbar.</p>
 
     <h2 id="weitere_funktionen">Weitere Funktionen</h2>
+
+    <h3 id="user_administration">Benutzer*innen-Verwaltung</h3>
+
+    <p>Die Benutzer*innen-Verwaltung (unter „Einstellungen” => „Registrierte Benutzer*innen”) kann für Mehreres verwendet werden:</p>
+    <ul>
+        <li>Neue Administrator*innen eintragen</li>
+        <li>Den Zugang zur Seite verwalten (sofern dies aktiviert wurde)</li>
+        <li>Gruppen definieren, Mitgliedern einer Gruppe bestimmte Rechte zu geben (z.B. an Abstimmungen teilzunehmen oder Anträge anzulegen)</li>
+    </ul>
+
+    <p>Standardmäßig kann eine Antragsgrün-Seite von allen (lesend) geöffnet werden, und jede und jeder kann sich registrieren. Mit zwei Einstellungsmöglichkeiten (unter „Diese Veranstaltung” => „Zugang zur Veranstaltung”) kann man dies anpassen:</p>
+    <ul>
+        <li>&ldquo;Nur eingeloggte Benutzer*innen dürfen zugreifen (inkl. lesen)&rdquo;. Hiermit kann auch der lesende Zugriff auf registrierte Nutzer*innen eingeschränkt werden. Wenn nur dies gesetzt wird, ist die Registrierung aber immer noch möglich, weswegen dann oft auch die folgende Einstellung gesetzt wird:</li>
+        <li>&ldquo;Nur ausgewählten Benutzer*innen das Login erlauben&rdquo;. Wenn dies aktiv ist, haben Administrator*innen genaue Kontrolle darüber, wer auf die Seite zugreifen können und wer nicht.</li>
+    </ul>
+
+    <p>Wenn &ldquo;<strong>Nur ausgewählten Benutzer*innen das Login erlauben</strong>&rdquo; gesetzt ist, kann immer noch jede*r einen Account registrieren, diesen aber zunächst nur dafür nutzen, um Zugang zur Veranstaltung anzufragen. Admins erhalten daraufhin eine Benachrichtigungs-E-Mail und können auf der Benutzer*innen-Verwaltungs-Seite ganz unten die Anfrage annehmen oder ablehnen.</p>
+    <p>Bitte beachten: sowohl diese Einstellung als auch die Benutzer*innen-Verwaltung beziehen sich auf eine konkrete Veranstaltung innerhalb einer ganzen Antragsgrün-Seite. Wenn eine andere Veranstaltung der selben Seite andere Einstellungen hat, kann die selbe Nutzer*in durchaus auf die eine Veranstaltung Zugriff haben, auf die andere aber nicht.</p>
+
+    <p>Benutzer*innen sind standardmäßig der Gruppe &ldquo;<strong>Teilnehmer*in</strong>&rdquo; zugeordnet. Mit dieser Gruppe bekommt man Zugriff auf die Veranstaltung, aber keine besonderen Berechtigungen.</p>
+    <p>Jede Benutzer*in kann einer oder mehreren Gruppen zugeordnet werden - mindestens aber einer. Neben „Teilnehmer*in” gibt es noch drei weitere Standard-Gruppen:</p>
+    <ul>
+        <li><strong>Seiten-Admin</strong>: Benutzer*innen in dieser Gruppe haben volle Admin-Rechte für alle Veranstaltungen dieser Seite. Dies ist die einzige Gruppe, die für alle Veranstaltungen gleichzeitig gilt (alle anderen Gruppen existieren nur innerhalb einer einzigen Veranstaltung).</li>
+        <li><strong>Veranstaltungs-Admin</strong>: Benutzer*innen in dieser Gruppe haben volle Admin-Rechte für diese eine Veranstaltung.</li>
+        <li><strong>Antragskommission</strong>: Benutzer*innen in dieser Gruppe können Verfahrensvorschläge bearbeiten, aber nicht die Anträge selbst.</li>
+    </ul>
+
+    <p>Neben den hier verwalteten Admin-Rollen gibt es noch eine „Super-Admin”-Rolle für Personen, die System-Updates durchführen können. Wie diese Gruppe verwaltet wird, wird in einem separaten <a href="https://github.com/CatoTH/antragsgruen/blob/main/docs/update-troubleshooting.md#my-user-account-does-not-have-administrative-privileges">technischen Dokument</a> beschrieben.</p>
+
+    <p>Zusätzlich zu den vorgegebenen Gruppen ist es möglich, beliebig viele <strong>selbst definierte Gruppen</strong> anzulegen und jeweils beliebig viele Benutzer*innen zuzuordnen. Gründe hierfür können sein:</p>
+    <ul>
+        <li>Das Anlegen von Anträgen und Änderungsanträge auf eine oder mehrere Benutzer*innen-Gruppen beschränken</li>
+        <li>Das Unterstützen von (Änderungs-)Anträgen beschränken</li>
+        <li>Die Teilnahme an Abstimmungen über Anträge, Änderungsanträge und einfachen Fragestellungen auf eine oder mehrere Benutzer*innen-Gruppen beschränken.</li>
+    </ul>
+
     <h3 id="layout">Layout-Anpassbarkeit</h3>
     <p>Verschiedene Aspekte des Layouts von Antragsgrün lassen sich über das Administrationsinterface anpassen – die
         meisten davon unter „Einstellungen“ → „Aussehen und Bestandteile der Seite“.</p>

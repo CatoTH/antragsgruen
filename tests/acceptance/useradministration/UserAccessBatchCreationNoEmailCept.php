@@ -24,7 +24,7 @@ $I->setAntragsgruenConfiguration(['mailService' => ['transport' => 'none']]);
 
 $I->gotoStdAdminPage()->gotoUserAdministration();
 
-$I->wantTo('create an user using the old batch-creation mode');
+$I->wantTo('create a user using the old batch-creation mode');
 
 $I->dontSeeElement('#emailAddresses');
 $I->clickJS('.addUsersOpener.email');

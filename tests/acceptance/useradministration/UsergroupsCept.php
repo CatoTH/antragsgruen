@@ -41,7 +41,7 @@ $I->loginAsStdUser();
 $I->see('Nur zugelassene Gruppen können Änderungsanträge stellen', '#sidebar');
 
 
-$I->wantTo('assign the group to an user (Testuser)');
+$I->wantTo('assign the group to a user (Testuser)');
 $I->logout();
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 $I->dontSeeElement('.user2');

@@ -70,7 +70,7 @@ $I->see('Who is present?', '.voting_question_1');
 $I->dontSeeElement('.voting_question_1 .btnPresent');
 
 
-$I->wantTo('assign the group to an user (Testuser)');
+$I->wantTo('assign the group to a user (Testuser)');
 $I->logout();
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 $I->dontSeeElement('.user2');
