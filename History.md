@@ -30,6 +30,7 @@
 - The menu at the top of the page was reordered into a more logical order.
 - A new e-mail-sending library (Symfony mailer) is used. Amazon SES can now be configured as mailer, too (by editing the config.json directly).
 - Bugfix: The button to apply for a speaking list was shown, even if applying was not possible.
+- Bugfix: More than 26 numbered list points were not supported for latin character based numbering
 
 ### Version 4.9.1 (2022-02-12)
 

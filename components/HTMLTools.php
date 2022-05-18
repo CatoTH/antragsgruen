@@ -344,16 +344,30 @@ class HTMLTools
 
     public static function getLiValue(int $counter, ?string $value, string $formatting): string
     {
+        if ($value !== null && $value !== '') {
+            return $value;
+        }
         switch ($formatting) {
-            case HTMLTools::OL_DECIMAL_CIRCLE:
-                return ($value !== null && $value !== '' ? $value : $counter);
             case HTMLTools::OL_UPPER_ALPHA:
-                return ($value !== null && $value !== '' ? $value : chr(ord('A') + $counter - 1));
+                $first = (int)floor(($counter - 1) / 26);
+                $second = ($counter - 1) - $first * 26;
+                if ($first > 0) {
+                    return chr(ord('A') + $first - 1) . chr(ord('A') + $second);
+                } else {
+                    return chr(ord('A') + $second);
+                }
             case HTMLTools::OL_LOWER_ALPHA:
-                return ($value !== null && $value !== '' ? $value : chr(ord('a') + $counter - 1));
+                $first = (int)floor(($counter - 1) / 26);
+                $second = ($counter - 1) - $first * 26;
+                if ($first > 0) {
+                    return chr(ord('a') + $first - 1) . chr(ord('a') + $second);
+                } else {
+                    return chr(ord('a') + $second);
+                }
             case HTMLTools::OL_DECIMAL_DOT:
+            case HTMLTools::OL_DECIMAL_CIRCLE:
             default:
-                return ($value !== null && $value !== '' ? $value : $counter);
+                return (string)$counter;
         }
     }
 
