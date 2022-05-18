@@ -430,12 +430,12 @@
     }
     position: relative;
 
-    del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted {
+    del, ul.deleted, ol.deleted, li.deleted, blockquote.deleted, pre.deleted {
       color: #ff0000;
       text-decoration: line-through;
     }
 
-    ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted {
+    ins, ul.inserted, ol.inserted, li.inserted, blockquote.inserted, pre.inserted {
       text-decoration: underline;
     }
 
