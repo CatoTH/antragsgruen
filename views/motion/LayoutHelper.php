@@ -623,7 +623,7 @@ class LayoutHelper
 
         // Adds a padding="0" to all block elements
         $html = preg_replace_callback(
-            '/<(?<tag>p|ul|li|div|blockquote|h1|h2|h3|h4|h5|h6)(?<attributes> [^>]*)?>/siuU',
+            '/<(?<tag>p|ul|ol|li|div|blockquote|h1|h2|h3|h4|h5|h6)(?<attributes> [^>]*)?>/siuU',
             function ($matches) {
                 $str = '<' . $matches['tag'] . ' padding="0"';
                 if (isset($matches['attributes'])) {
@@ -635,6 +635,11 @@ class LayoutHelper
             },
             $html
         );
+
+        // This prevents ugly artifacts with nested lists
+        $html = str_replace('<ol', '<br><ol', $html);
+        $html = str_replace('<ul', '<br><ul', $html);
+        $html = str_replace('</li>', '<br></li>', $html);
 
         // Some attempts to fix the most severe broken HTML
 
