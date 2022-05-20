@@ -97,8 +97,10 @@ class Frauenrat extends IPDFLayout
         $initiatorTitle = (count($initiatorNames) > 1 ? \Yii::t('motion', 'initiators_x') : \Yii::t('motion', 'initiators_1'));
         $data = [
             $initiatorTitle      => implode(", ", $initiatorNames),
-            'Ansprechpartner*in' => implode("\n", $contact),
         ];
+        if (count($contact) > 0) {
+            $data['Ansprechpartner*in'] = implode("\n", $contact);
+        }
         if (count($topic) > 0) {
             $data['Themenbereich'] = implode(", ", $topic);
         }

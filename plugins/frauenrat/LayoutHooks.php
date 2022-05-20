@@ -287,6 +287,11 @@ class LayoutHooks extends Hooks
 .motionListBelowAgenda h4.amendments { color: #0071A6; }
 .motionTitle { font-weight: bold; }
 .motionMergeStyles .paragraphWrapper .leftToolbar .lineNumbers { color: black; }
+li.deleted { color: #880000; text-decoration: line-through; }
+li.inserted { color: #008800; text-decoration: underline; }
+.motionTextFormattings ol.lowerAlpha > li[value="-"]::before { content: \'\'; }
+.motionTextFormattings ol.lowerAlpha > li[value="-"] > p { margin-left: -42px; }
+.motionTextFormattings ol.lowerAlpha > li[value="-"] > p .lineNumber { left: -80px; }
 </style>
 <script>
 $(function() {

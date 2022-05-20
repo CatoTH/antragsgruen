@@ -94,15 +94,20 @@ class MotionController extends Base
     /**
      * @param Motion[] $motions
      */
-    private function createPdfFromMotions(array $motions, string $title, string $topPageFile): IPdfWriter
+    private function createPdfFromMotions(array $motions, string $title, ?string $topPageFile = null): IPdfWriter
     {
         $motionType = $motions[0]->getMyMotionType();
         $pdfLayout = new Frauenrat($motionType);
         /** @var FrauenratPdf $pdf */
         $pdf        = $pdfLayout->createPDFClass();
 
-        $pageCount = $pdf->setSourceFile($topPageFile);
-        $pdf->pageNumberStartPage = $pageCount + 1;
+        if ($topPageFile) {
+            $pageCount = $pdf->setSourceFile($topPageFile);
+            $pdf->pageNumberStartPage = $pageCount + 1;
+        } else {
+            $pageCount = 0;
+            $pdf->pageNumberStartPage = 1;
+        }
 
         $pdf->SetCreator('Deutscher Frauenrat');
         $pdf->SetAuthor('Deutscher Frauenrat');
@@ -138,7 +143,16 @@ class MotionController extends Base
                 $motions[] = $motion;
             }
         }
-        $topPageFile = __DIR__ . '/../assets/top5_antragsspiegel.pdf';
+        switch ($this->consultation->urlPath) {
+            case 'mv2021':
+                $topPageFile = __DIR__ . '/../assets/2021_top5_antragsspiegel.pdf';
+                break;
+            case 'mv2022':
+                $topPageFile = __DIR__ . '/../assets/2022_top5_antragsspiegel.pdf';
+                break;
+            default:
+                return 'This consultation does not have a PDF template assigned';
+        }
 
         $pdf = $this->createPdfFromMotions($motions, 'Schwerpunktthemen', $topPageFile);
         $pdf->Output('TOP_5_Schwerpunktthemen.pdf');
@@ -148,13 +162,35 @@ class MotionController extends Base
     {
         $motions = [];
         foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-            if (strpos($motion->titlePrefix, 'A') !== 0 && is_a($motion, Motion::class)) {
+            if (strpos($motion->titlePrefix, 'A') !== 0 && strpos($motion->titlePrefix, 'Z') !== 0 && is_a($motion, Motion::class)) {
                 $motions[] = $motion;
             }
         }
-        $topPageFile = __DIR__ . '/../assets/top6_antragsspiegel.pdf';
+        switch ($this->consultation->urlPath) {
+            case 'mv2021':
+                $topPageFile = __DIR__ . '/../assets/2021_top6_antragsspiegel.pdf';
+                break;
+            case 'mv2022':
+                $topPageFile = __DIR__ . '/../assets/2022_top6_antragsspiegel.pdf';
+                break;
+            default:
+                return 'This consultation does not have a PDF template assigned';
+        }
 
         $pdf = $this->createPdfFromMotions($motions, 'Sachanträge', $topPageFile);
+        $pdf->Output('TOP_6_Sachantraege.pdf');
+    }
+
+    public function actionBeschlussvorlagen()
+    {
+        $motions = [];
+        foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
+            if (strpos($motion->titlePrefix, 'Z') === 0) {
+                $motions[] = $motion;
+            }
+        }
+
+        $pdf = $this->createPdfFromMotions($motions, 'Beschlussvorlagen', null);
         $pdf->Output('TOP_6_Sachantraege.pdf');
     }
 }

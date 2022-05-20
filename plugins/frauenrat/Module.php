@@ -35,6 +35,7 @@ class Module extends ModuleBase
     {
         $urls = parent::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
 
+        $urls[$dom . '<consultationPath:[\w_-]+>/TOP_4_Beschlussvorlagen.pdf'] = '/frauenrat/motion/beschlussvorlagen';
         $urls[$dom . '<consultationPath:[\w_-]+>/TOP_5_Schwerpunktthemen.pdf'] = '/frauenrat/motion/schwerpunktthemen';
         $urls[$dom . '<consultationPath:[\w_-]+>/TOP_6_Sachantraege.pdf'] = '/frauenrat/motion/sachantraege';
 
