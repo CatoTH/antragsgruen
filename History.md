@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.10.0 [not released yet]
+## Version 4.10.0 (2022-05-21)
 
 - The user permission system was now replaced by user groups.
   - The access to a site is now configured on the standard "consultation settings" page.
