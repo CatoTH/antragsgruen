@@ -69,7 +69,20 @@ if ($longVersion) {
     $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
     foreach ($items as $agendaItem) {
         if (count($agendaItem->getVisibleIMotions(true, false)) > 0) {
-            echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
+            echo '<h2 class="green">' . Html::encode($agendaItem->title);
+            if (mb_strpos($agendaItem->title, 'Beschlussvorlag') !== false) {
+                $pdfLinkSpt = UrlHelper::createUrl(['/frauenrat/motion/beschlussvorlagen']);
+                echo '<a href="' . Html::encode($pdfLinkSpt) . '" class="btn btn-success btn-sm pull-right" style="margin-top: -8px; margin-left: 20px; box-shadow: 0px 0px 5px 3px #eee;">Beschlussvorlagen</a>';
+            }
+            if (mb_strpos($agendaItem->title, 'Schwerpunkt') !== false) {
+                $pdfLinkSpt = UrlHelper::createUrl(['/frauenrat/motion/schwerpunktthemen']);
+                echo '<a href="' . Html::encode($pdfLinkSpt) . '" class="btn btn-success btn-sm pull-right" style="margin-top: -8px; margin-left: 20px; box-shadow: 0px 0px 5px 3px #eee;">Anträge SPT</a>';
+            }
+            if (mb_strpos($agendaItem->title, 'Sachantr') !== false) {
+                $pdfLinkSachantraege = UrlHelper::createUrl(['/frauenrat/motion/sachantraege']);
+                echo '<a href="' . Html::encode($pdfLinkSachantraege) . '" class="btn btn-success btn-sm pull-right" style="margin-top: -8px; margin-left: 20px; box-shadow: 0px 0px 5px 3px #eee;">Antragsspiegel</a>';
+            }
+            echo '</h2>';
             echo '<ul class="motionList motionListStd motionListBelowAgenda agenda' . $agendaItem->id . '">';
             $imotions = MotionSorter::getSortedIMotionsFlat($consultation, $agendaItem->getVisibleIMotions());
             foreach ($imotions as $imotion) {
@@ -111,7 +124,7 @@ if (count($otherMotions) > 0) {
     echo '<ul class="motionList motionListStd motionListBelowAgenda agenda0">';
     foreach ($otherMotions as $motion) {
         if (is_a($motion, Motion::class)) {
-            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault, true);
+            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
         } else {
             /** @var Amendment $motion */
             echo LayoutHelper::showStatuteAmendment($motion, $consultation);
