@@ -62,6 +62,8 @@ rm -R vendor/doctrine/lexer/tests
 rm -R vendor/ezyang/htmlpurifier/tests
 rm -R vendor/yiisoft/yii2/test
 rm -R vendor/mailjet/mailjet-apiv3-php/test
+rm -R vendor/symfony/http-client-contracts/Test
+rm -R vendor/symfony/service-contracts/Test
 rm -R vendor/scssphp/scssphp/bin
 rm -R vendor/cebe/markdown/bin
 rm -R vendor/yiisoft/yii2/i18n/migrations
@@ -69,6 +71,8 @@ rm -R vendor/yiisoft/yii2/log/migrations
 rm -R vendor/bower-asset
 rm -Rf vendor/gregwar/captcha/demo/
 rm -Rf vendor/gregwar/captcha/tests/
+find vendor/ -name "README.md" -exec rm {} \;
+find vendor/ -name "CHANGELOG.md" -exec rm {} \;
 cp vendor/gregwar/captcha/src/Gregwar/Captcha/Font/captcha5.ttf vendor/gregwar/captcha/src/Gregwar/Captcha/Font/captcha4.ttf # the original 4 is too big
 find vendor -type l -exec rm {} \;
 rm -R vendor/cebe/markdown/tests
@@ -95,6 +99,7 @@ cp config/.htaccess vendor/
 cp config/.htaccess node_modules/
 sed -i -e 's/repository\-source/dist/g' config/defines.php
 rm config/defines.php-e
+rm phpstan.use-baseline.neon
 
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
