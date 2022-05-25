@@ -327,7 +327,7 @@ $(function() {
     {
         $pdfLinkSpt = UrlHelper::createUrl(['/frauenrat/motion/schwerpunktthemen']);
         $pdfLinkSachantraege = UrlHelper::createUrl(['/frauenrat/motion/sachantraege']);
-
+        return '';
         return '<a href="' . Html::encode($pdfLinkSachantraege) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">Antragsspiegel</a>' .
                '<a href="' . Html::encode($pdfLinkSpt) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">Anträge SPT</a>';
     }

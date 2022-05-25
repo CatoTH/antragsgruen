@@ -48,7 +48,7 @@ abstract class IPDFLayout
 
     /** @var null|array */
     private static $_availableClassesWithLatex = null;
-    
+
     public static function getAvailableClassesWithLatex(): array
     {
         if (static::$_availableClassesWithLatex) {

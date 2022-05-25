@@ -71,8 +71,12 @@ if ($longVersion) {
         if (count($agendaItem->getVisibleIMotions(true, false)) > 0) {
             echo '<h2 class="green">' . Html::encode($agendaItem->title);
             if (mb_strpos($agendaItem->title, 'Beschlussvorlag') !== false) {
-                $pdfLinkSpt = UrlHelper::createUrl(['/frauenrat/motion/beschlussvorlagen']);
-                echo '<a href="' . Html::encode($pdfLinkSpt) . '" class="btn btn-success btn-sm pull-right" style="margin-top: -8px; margin-left: 20px; box-shadow: 0px 0px 5px 3px #eee;">Beschlussvorlagen</a>';
+                $pdfLink = '/antraege/web/mv2022/mobile_arbeit_geschlechtergerecht_regulieren-47545/embedded-amendments-pdf';
+                echo '<a href="' . Html::encode($pdfLink) . '" class="btn btn-success btn-sm pull-right" style="margin-top: -8px; margin-left: 20px; box-shadow: 0px 0px 5px 3px #eee;">Mobile Arbeit</a>';
+                $pdfLink = '/antraege/web/mv2022/geschaeftsordnung_der_mitgliederversammlung_des_deutschen_frauenrats-63411/embedded-amendments-pdf';
+                echo '<a href="' . Html::encode($pdfLink) . '" class="btn btn-success btn-sm pull-right" style="margin-top: -8px; margin-left: 20px; box-shadow: 0px 0px 5px 3px #eee;">GO der MV</a>';
+                $pdfLink = '/antraege/web/mv2022/satzung_des_deutschen_frauenrats-6423/embedded-amendments-pdf';
+                echo '<a href="' . Html::encode($pdfLink) . '" class="btn btn-success btn-sm pull-right" style="margin-top: -8px; margin-left: 20px; box-shadow: 0px 0px 5px 3px #eee;">Satzung</a>';
             }
             if (mb_strpos($agendaItem->title, 'Schwerpunkt') !== false) {
                 $pdfLinkSpt = UrlHelper::createUrl(['/frauenrat/motion/schwerpunktthemen']);
