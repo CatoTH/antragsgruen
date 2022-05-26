@@ -6,6 +6,7 @@ use app\models\settings\AntragsgruenApp;
 use app\components\{diff\amendmentMerger\SectionMerger, HashedStaticCache, HTMLTools, LineSplitter};
 use app\models\sectionTypes\ISectionType;
 use app\models\exceptions\Internal;
+use yii\db\ActiveQuery;
 
 /**
  * @property int $motionId
@@ -113,10 +114,7 @@ class MotionSection extends IMotionSection
         return null;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getComments()
+    public function getComments(): ActiveQuery
     {
         return $this->hasMany(MotionComment::class, ['motionId' => 'motionId', 'sectionId' => 'sectionId'])
             ->where('status != ' . IntVal(IComment::STATUS_DELETED));
@@ -196,10 +194,7 @@ class MotionSection extends IMotionSection
         return $sections;
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['motionId'], 'required'],
@@ -411,10 +406,9 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return int
      * @throws Internal
      */
-    public function getFirstLineNumber()
+    public function getFirstLineNumber(): int
     {
         $motion   = $this->getConsultation()->getMotion($this->motionId);
         $lineNo   = $motion->getFirstLineNumber();
@@ -462,8 +456,19 @@ class MotionSection extends IMotionSection
 
     public function overrideSectionId(ConsultationSettingsMotionSection $section): bool
     {
+        $oldFilePath = ($this->hasExternallySavedData() ? $this->getExternallySavedFile() : null);
+
         $this->fixedSectionType = $section;
         $this->sectionId        = $section->id;
-        return $this->save();
+        $success = $this->save();
+
+        if ($success && $this->hasExternallySavedData()) {
+            $newFilePath = $this->getExternallySavedFile();
+            if (file_exists($oldFilePath)) {
+                rename($oldFilePath, $newFilePath);
+            }
+        }
+
+        return $success;
     }
 }
