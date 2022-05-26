@@ -1,5 +1,10 @@
 # Version history
 
+### Version 4.10.1 [not published yet]
+
+- Bugfix: Some constellations of whitespaces and line breaks at the end of list points could lead to problems with amendments.
+- Bugfix: When saving binary files to the file system was enabled, copying / moving motions to other consultations broke uploaded images and PDFs.
+
 ## Version 4.10.0 (2022-05-21)
 
 - The user permission system was now replaced by user groups.

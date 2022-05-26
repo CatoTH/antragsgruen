@@ -279,10 +279,12 @@ class HTMLTools
         $html = str_ireplace("<br>", "<br>\n", $html);
 
         $html = preg_replace("/\\n+/siu", "\n", $html);
-        $html = str_replace("<p><br>\n", "<p>", $html);
-        $html = str_replace("<br>\n</p>", "</p>", $html);
-        $html = str_replace("<br>\n ", "<br>\n", $html);
+        $html = str_replace(chr(194) . chr(160), ' ', $html); // Long space
         $html = str_replace('&nbsp;', ' ', $html);
+        $html = str_replace("<p><br>\n", "<p>", $html);
+        $html = preg_replace('/(?<tag><(p|ul|ol|li|div|blockquote)( [^>]*)>)<br>\\n/siu', '$1', $html);
+        $html = preg_replace('/<br>\\n *(?<tag><\/(p|ul|ol|li|div|blockquote)>)/siu', '$1', $html);
+        $html = str_replace("<br>\n ", "<br>\n", $html);
 
         $html = self::cleanMessedUpHtmlCharacters($html);
         $html = preg_replace('/<p> +/siu', '<p>', $html);
