@@ -40,7 +40,6 @@ DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationOdtTemplate`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationLatexTemplate`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationAgendaItem`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationTag`;
-DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationUserPrivilege`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###motionTag`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###amendmentTag`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationSettingsMotionSection`;

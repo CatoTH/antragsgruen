@@ -33,7 +33,6 @@ use yii\db\ActiveRecord;
  * @property ConsultationMotionType[] $motionTypes
  * @property ConsultationAgendaItem[] $agendaItems
  * @property ConsultationUserGroup[] $userGroups
- * @property ConsultationUserPrivilege[] $userPrivileges
  * @property ConsultationFile[] $files
  * @property ConsultationLog[] $logEntries
  * @property SpeechQueue[] $speechQueues
@@ -248,11 +247,6 @@ class Consultation extends ActiveRecord
     public function getAgendaItems(): ActiveQuery
     {
         return $this->hasMany(ConsultationAgendaItem::class, ['consultationId' => 'id']);
-    }
-
-    public function getUserPrivileges(): ActiveQuery
-    {
-        return $this->hasMany(ConsultationUserPrivilege::class, ['consultationId' => 'id']);
     }
 
     public function getUserGroups(): ActiveQuery

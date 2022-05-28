@@ -361,25 +361,6 @@ CREATE TABLE `###TABLE_PREFIX###consultationUserGroup` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `consultationUserPrivilege`
---
-
-CREATE TABLE `###TABLE_PREFIX###consultationUserPrivilege` (
-  `userId`           INT(11)    NOT NULL,
-  `consultationId`   INT(11)    NOT NULL,
-  `privilegeView`    TINYINT(4) NOT NULL DEFAULT '0',
-  `privilegeCreate`  TINYINT(4) NOT NULL DEFAULT '0',
-  `adminSuper`       TINYINT(4) NOT NULL DEFAULT '0',
-  `adminContentEdit` TINYINT(4) NOT NULL DEFAULT '0',
-  `adminScreen`      TINYINT(4) NOT NULL DEFAULT '0',
-  `adminProposals`   TINYINT(4) NOT NULL DEFAULT '0'
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `emailBlocklist`
 --
 
@@ -972,13 +953,6 @@ ALTER TABLE `###TABLE_PREFIX###consultationUserGroup`
 
 
 --
--- Indexes for table `consultationUserPrivilege`
---
-ALTER TABLE `###TABLE_PREFIX###consultationUserPrivilege`
-  ADD PRIMARY KEY (`userId`, `consultationId`),
-  ADD KEY `consultationId` (`consultationId`);
-
---
 -- Indexes for table `emailBlocklist`
 --
 ALTER TABLE `###TABLE_PREFIX###emailBlocklist`
@@ -1481,13 +1455,6 @@ ALTER TABLE `###TABLE_PREFIX###consultationText`
 ALTER TABLE `###TABLE_PREFIX###consultationUserGroup`
   ADD CONSTRAINT `usergroup_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
   ADD CONSTRAINT `usergroup_fk_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`);
-
---
--- Constraints for table `consultationUserPrivilege`
---
-ALTER TABLE `###TABLE_PREFIX###consultationUserPrivilege`
-  ADD CONSTRAINT `consultationUserPrivilege_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`),
-  ADD CONSTRAINT `consultationUserPrivilege_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
 
 --
 -- Constraints for table `emailLog`

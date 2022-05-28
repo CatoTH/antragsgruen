@@ -43,7 +43,6 @@ use yii\web\IdentityInterface;
  * @property null|MotionSupporter[] $motionSupports
  * @property Site[] $adminSites
  * @property ConsultationUserGroup[] $userGroups
- * @property ConsultationUserPrivilege[] $consultationPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
  * @property Vote[] $votes
@@ -190,11 +189,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function getAdminSites(): ActiveQuery
     {
         return $this->hasMany(Site::class, ['id' => 'siteId'])->viaTable('siteAdmin', ['userId' => 'id']);
-    }
-
-    public function getConsultationPrivileges(): ActiveQuery
-    {
-        return $this->hasMany(ConsultationUserPrivilege::class, ['userId' => 'id']);
     }
 
     public function getUserGroups(): ActiveQuery
