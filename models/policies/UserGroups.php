@@ -116,6 +116,17 @@ class UserGroups extends IPolicy
         $this->groups = $groups;
     }
 
+    public function getEligibilityByGroup(): ?array
+    {
+        $groups = [];
+
+        foreach ($this->groups as $group) {
+            $groups[] = EligibilityByGroup::fromUserGroup($group);
+        }
+
+        return $groups;
+    }
+
     public function getApiObject(): array
     {
         $groupNames = array_map(function (ConsultationUserGroup $group): string {

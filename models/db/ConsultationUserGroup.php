@@ -51,10 +51,7 @@ class ConsultationUserGroup extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationUserGroup';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
