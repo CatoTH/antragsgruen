@@ -510,7 +510,6 @@ class Consultation extends ActiveRecord
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupConsultationAdmin($this));
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupProposedProcedure($this));
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupParticipant($this));
-        echo "COnsultation groups: " . count($this->userGroups) . "\n";
     }
 
     /**

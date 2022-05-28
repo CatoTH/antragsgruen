@@ -151,7 +151,6 @@ class Site extends ActiveRecord
     {
         $group = ConsultationUserGroup::createDefaultGroupSiteAdmin($this);
         $this->link('userGroups', $group);
-        echo "Site groups: " . count($this->userGroups) . "\n";
 
         return $group;
     }
