@@ -2,6 +2,7 @@
 
 namespace app\models\settings;
 
+use app\models\policies\EligibilityByGroup;
 use app\models\quorumType\NoQuorum;
 use app\models\votings\Answer;
 use app\models\votings\AnswerTemplates;
@@ -32,6 +33,9 @@ class VotingData implements \JsonSerializable
     public $votesInvalid = null;
     /** @var null|int */
     public $votesPresent = null;
+
+    /** @var EligibilityByGroup[]|null */
+    public $eligibilityList = null;
 
     /** @var null|string */
     public $comment = null;
@@ -86,6 +90,8 @@ class VotingData implements \JsonSerializable
             $this->quorumReached = $quorum->hasReachedQuorum($voting, $votingItem);
         }
 
+        $this->eligibilityList = $voting->getVotingPolicy()->getEligibilityByGroup();
+
         return $this;
     }
 
@@ -128,5 +134,13 @@ class VotingData implements \JsonSerializable
         }
 
         return $results;
+    }
+
+    /**
+     * @return EligibilityByGroup[]|null
+     */
+    public function getEligibilityList(): ?array
+    {
+        return $this->eligibilityList;
     }
 }
