@@ -28,8 +28,15 @@ foreach (Factory::getClosedVotingBlocks($consultation) as $votingBlockToRender) 
 }
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-closed-voting-blocks']);
+
+$fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
+        data-antragsgruen-widget="frontend/FullscreenToggle">
+        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
+    </button>';
+
 ?>
-<h1><?= Yii::t('voting', 'results_title') ?></h1>
+<h1><?= Yii::t('voting', 'results_title') . $fullscreenButton ?></h1>
 
 <?php
 if (count($apiData) === 0) {
