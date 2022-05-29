@@ -14,7 +14,7 @@ class EligibilityByGroup implements \JsonSerializable
     /** @var string */
     public $groupTitle;
 
-    /** @var array - keys: id, username */
+    /** @var array - keys: user_id, user_name */
     public $users;
 
     public static function fromUserGroup(ConsultationUserGroup $group): self
@@ -24,8 +24,8 @@ class EligibilityByGroup implements \JsonSerializable
         $eligibility->groupTitle = $group->getNormalizedTitle();
         $eligibility->users = array_map(function (User $user): array {
             return [
-                'id' => $user->id,
-                'username' => $user->getAuthUsername(),
+                'user_id' => $user->id,
+                'user_name' => $user->getAuthUsername(),
             ];
         }, $group->users);
 

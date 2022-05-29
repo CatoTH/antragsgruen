@@ -128,7 +128,7 @@ ob_start();
                 </div>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-                <voting-vote-list :voting="voting" :groupedVoting="groupedVoting"></voting-vote-list>
+                <voting-vote-list :voting="voting" :groupedVoting="groupedVoting" :showNotVotedList="false"></voting-vote-list>
             </li>
             </template>
         </ul>

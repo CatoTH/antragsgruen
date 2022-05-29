@@ -41,6 +41,25 @@ ob_start();
             </li>
         </ul>
     </div>
+
+    <div v-if="showNotVotedList && hasVoteEligibilityList" class="regularVoteList notVotedList">
+        <strong v-if="voting.status === STATUS_CLOSED"><?= Yii::t('voting', 'voting_notvoted') ?></strong>
+        <strong v-if="voting.status !== STATUS_CLOSED"><?= Yii::t('voting', 'voting_notvoted_yet') ?></strong>
+        <ul>
+            <li v-for="userGroup in relevantUserGroups" class="voteListHolder">
+                <div class="userGroupName">
+                    {{ userGroup.title }}
+                    <span v-if="getNotVotedListForUserGroup(userGroup).length > 0">({{ getNotVotedListForUserGroup(userGroup).length }})</span>
+                </div>
+                <ul>
+                    <li v-for="user in getNotVotedListForUserGroup(userGroup)">{{ user.user_name }}</li>
+                    <li v-if="getNotVotedListForUserGroup(userGroup).length === 0" class="none">
+                        <?= Yii::t('voting', 'voting_notvoted_0') ?>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 </div>
 <?php
 $html = ob_get_clean();
@@ -49,7 +68,7 @@ $html = ob_get_clean();
 <script>
     Vue.component('voting-vote-list', {
         template: <?= json_encode($html) ?>,
-        props: ['voting', 'groupedVoting', 'setToUserGroupSelection'],
+        props: ['voting', 'groupedVoting', 'setToUserGroupSelection', 'showNotVotedList'],
         data() {
             return {
                 groupSelectionShown: [],
@@ -65,6 +84,9 @@ $html = ob_get_clean();
                 return this.voting.user_groups.filter(function (group) {
                     return policy.user_groups.indexOf(group.id) !== -1;
                 });
+            },
+            hasVoteEligibilityList: function () {
+                return !!this.groupedVoting[0].vote_eligibility;
             }
         },
         methods: {
@@ -80,6 +102,14 @@ $html = ob_get_clean();
                         const name2 = (vote2.user_name ? vote2.user_name : '');
                         return name1.localeCompare(name2);
                     });
+            },
+            getNotVotedListForUserGroup: function (userGroup) {
+                const userIds = this.groupedVoting[0].votes.map(vote => vote.user_id);
+                const group = this.groupedVoting[0].vote_eligibility.find(elGroup => elGroup.id === userGroup.id);
+                if (!group) {
+                    return [];
+                }
+                return group.users.filter(user => userIds.indexOf(user.user_id) === -1);
             },
             isGroupSelectionShown: function (answer, userGroup) {
                 const id = answer.api_id + "-" + userGroup.id;

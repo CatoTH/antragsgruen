@@ -108,6 +108,8 @@ class VotingData extends \app\models\settings\VotingData {
             $this->quorumReached = $quorum->hasReachedQuorum($voting, $votingItem);
         }
 
+        $this->eligibilityList = $voting->getVotingPolicy()->getEligibilityByGroup();
+
         return $this;
     }
 

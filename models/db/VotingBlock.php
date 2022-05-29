@@ -41,39 +41,39 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     // HINT: keep in sync with admin-votings.vue.php & voting-block.vue.php
 
     // The voting is not performed using Antragsgrün
-    const STATUS_OFFLINE = 0;
+    public const STATUS_OFFLINE = 0;
 
     // Votings that have been created and will be using Antragsgrün, but are not active yet
-    const STATUS_PREPARING = 1;
+    public const STATUS_PREPARING = 1;
 
     // Open for voting.
-    const STATUS_OPEN = 2;
+    public const STATUS_OPEN = 2;
 
     // Vorting is closed.
-    const STATUS_CLOSED = 3;
+    public const STATUS_CLOSED = 3;
 
     // Vorting is deleted - not accessible in the frontend.
-    const STATUS_DELETED = -1;
+    public const STATUS_DELETED = -1;
 
     // Nobody can see who voted how
-    const VOTES_PUBLIC_NO = 0;
+    public const VOTES_PUBLIC_NO = 0;
 
     // Admins can see who voted how
-    const VOTES_PUBLIC_ADMIN = 1;
+    public const VOTES_PUBLIC_ADMIN = 1;
 
     // Everyone with voting rights can see who voted how
-    const VOTES_PUBLIC_ALL = 2;
+    public const VOTES_PUBLIC_ALL = 2;
 
     // No detailed voting results are visible
-    const RESULTS_PUBLIC_NO = 0;
+    public const RESULTS_PUBLIC_NO = 0;
 
     // Detailed voting results (number of yes/no votes) are visible
-    const RESULTS_PUBLIC_YES = 1;
+    public const RESULTS_PUBLIC_YES = 1;
 
-    const ACTIVITY_TYPE_OPENED = 1;
-    const ACTIVITY_TYPE_CLOSED = 2;
-    const ACTIVITY_TYPE_RESET = 3;
-    const ACTIVITY_TYPE_REOPENED = 4;
+    public const ACTIVITY_TYPE_OPENED = 1;
+    public const ACTIVITY_TYPE_CLOSED = 2;
+    public const ACTIVITY_TYPE_RESET = 3;
+    public const ACTIVITY_TYPE_REOPENED = 4;
 
     public static function tableName(): string
     {
