@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -36,19 +37,13 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
         }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotingBlock()
+    public function getVotingBlock(): ActiveQuery
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVotes()
+    public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['questionId' => 'id']);
     }

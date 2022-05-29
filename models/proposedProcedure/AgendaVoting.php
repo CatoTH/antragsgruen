@@ -177,8 +177,10 @@ class AgendaVoting
         if ($canSeeResults) {
             if ($this->voting->votingStatus === VotingBlock::STATUS_CLOSED) {
                 $data['vote_results'] = $item->getVotingData()->mapToApiResults($this->voting);
+                $data['vote_eligibility'] = $item->getVotingData()->getEligibilityList();
             } else {
                 $data['vote_results'] = Vote::calculateVoteResultsForApi($this->voting, $votes);
+                $data['vote_eligibility'] = $voting->getVotingPolicy()->getEligibilityByGroup();
             }
         }
         if ($canSeeVotes) {

@@ -385,6 +385,10 @@
     flex-basis: 33%;
     flex-grow: 1;
 
+    &.notVotedList {
+      color: gray;
+    }
+
     ul {
       display: block;
       list-style-type: none;

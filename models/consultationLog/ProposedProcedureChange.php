@@ -99,11 +99,7 @@ class ProposedProcedureChange implements \JsonSerializable
         return $this->hasChanges;
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $arr = get_object_vars($this);
         unset($arr['hasChanges']);

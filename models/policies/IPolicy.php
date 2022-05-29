@@ -9,11 +9,11 @@ use app\models\settings\AntragsgruenApp;
 
 abstract class IPolicy
 {
-    const POLICY_NOBODY       = 0;
-    const POLICY_ALL          = 1;
-    const POLICY_LOGGED_IN    = 2;
-    const POLICY_USER_GROUPS  = 6;
-    const POLICY_ADMINS       = 3;
+    const POLICY_NOBODY = 0;
+    const POLICY_ALL = 1;
+    const POLICY_LOGGED_IN = 2;
+    const POLICY_USER_GROUPS = 6;
+    const POLICY_ADMINS = 3;
     const POLICY_GRUENES_NETZ = 4;
     const POLICY_ORGANIZATION = 5;
 
@@ -126,6 +126,14 @@ abstract class IPolicy
     {
         $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
         return $this->checkCurrUserWithDeadline($deadlineType, $allowAdmins, $assumeLoggedIn);
+    }
+
+    /**
+     * @return EligibilityByGroup[]|null
+     */
+    public function getEligibilityByGroup(): ?array
+    {
+        return null;
     }
 
     abstract public function getPermissionDeniedMotionMsg(): string;
