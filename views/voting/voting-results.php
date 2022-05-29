@@ -39,8 +39,7 @@ if (count($apiData) === 0) {
 }
 ?>
 
-<section data-url-poll="<?= Html::encode($pollUrl) ?>"
-         data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
+<section data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
          data-voting="<?= Html::encode(json_encode($apiData)) ?>"
 >
     <div class="currentVoting"></div>

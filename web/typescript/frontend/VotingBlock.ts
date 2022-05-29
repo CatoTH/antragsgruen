@@ -49,6 +49,9 @@ export class VotingBlock {
                     });
                 },
                 reloadData: function () {
+                    if (pollUrl === null) {
+                        return;
+                    }
                     const widget = this;
                     $.get(pollUrl, function (data) {
                         widget.votings = data;
