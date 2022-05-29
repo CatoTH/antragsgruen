@@ -42,6 +42,19 @@ class EligibilityByGroup implements \JsonSerializable
         return $eligibility;
     }
 
+    /**
+     * @return self[]|null
+     */
+    public static function listFromJsonArray(?array $data): ?array
+    {
+        if ($data === null) {
+            return null;
+        }
+        return array_map(function (array $dat): self {
+            return self::fromJsonArray($dat);
+        }, $data);
+    }
+
     public function jsonSerialize(): array
     {
         return [

@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\{Amendment, IVotingItem, Motion, Vote, VotingBlock, VotingQuestion};
+use app\models\policies\EligibilityByGroup;
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\votings\{Answer, AnswerTemplates};
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -48,6 +49,27 @@ function printVoteResults(Worksheet $worksheet, string $col, int $startRow, Answ
             $worksheet->setCellValue($col . $startRow, $name);
             $startRow++;
         }
+    }
+}
+
+/**
+ * @param EligibilityByGroup[] $groups
+ */
+function printEligibilityList(Worksheet $worksheet, string $col, int $startRow, array $groups): void {
+    $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['bold' => true]]);
+    $worksheet->setCellValue($col . $startRow, Yii::t('export', 'voting_eligible_all'));
+    $startRow++;
+
+    foreach ($groups as $group) {
+        $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['bold' => true]]);
+        $worksheet->setCellValue($col . $startRow, $group->groupTitle);
+        $startRow++;
+
+        foreach ($group->users as $user) {
+            $worksheet->setCellValue($col . $startRow, $user['user_name']);
+            $startRow++;
+        }
+        $startRow++;
     }
 }
 
@@ -105,9 +127,8 @@ foreach ($agendaVoting->items as $i => $voteItem) {
     $row += printResultTable($sheet, $row, $agendaVoting, $voteItem);
     $row++;
 
+    $col = 'A';
     if ($agendaVoting->voting->votesPublic === VotingBlock::VOTES_PUBLIC_ADMIN || $agendaVoting->voting->votesPublic === VotingBlock::VOTES_PUBLIC_ALL) {
-        $col = 'A';
-
         $sheet->mergeCells('A' . $row . ':B' . $row);
         $sheet->getStyle('A' . $row)->applyFromArray(['font' => ['bold' => true]]);
         $sheet->setCellValue('A' . $row, Yii::t('export', 'voting_userlist'));
@@ -117,6 +138,17 @@ foreach ($agendaVoting->items as $i => $voteItem) {
             printVoteResults($sheet, $col, $row, $answer, $voteItem->votes);
             $col = chr(ord($col) + 1);
         }
+    }
+
+    if ($agendaVoting->voting->votingStatus === VotingBlock::STATUS_CLOSED) {
+        $voteResults = $voteItem->getVotingData();
+        $eligibilityList = EligibilityByGroup::listFromJsonArray($voteResults->eligibilityList);
+    } else {
+        $eligibilityList = $agendaVoting->voting->getVotingPolicy()->getEligibilityByGroup();
+    }
+    if ($eligibilityList) {
+        $col = chr(ord($col) + 1);
+        printEligibilityList($sheet, $col, $row, $eligibilityList);
     }
 }
 
