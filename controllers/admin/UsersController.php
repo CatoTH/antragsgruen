@@ -166,6 +166,21 @@ class UsersController extends AdminBase
         return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
     }
 
+    public function actionSearchGroups(string $query): string
+    {
+        $this->handleRestHeaders(['GET'], true);
+
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
+
+        return json_encode(array_map(function (ConsultationUserGroup $group): array {
+            return [
+                'id' => $group->id,
+                'label' => $group->title,
+            ];
+        }, ConsultationUserGroup::findBySearchQuery($this->consultation, $query)), JSON_THROW_ON_ERROR);
+    }
+
     public function actionIndex(): string
     {
         $consultation = $this->getConsultationAndCheckAdminPermission();
