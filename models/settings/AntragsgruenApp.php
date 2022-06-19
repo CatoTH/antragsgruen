@@ -34,8 +34,6 @@ class AntragsgruenApp implements \JsonSerializable
     public $cookieDomain          = null;
     /** @var bool */
     public $hasSaml               = false;
-    /** @var string */
-    public $samlOrgaFile          = null;
     /** @var bool */
     public $prependWWWToSubdomain = true;
     /** @var bool */

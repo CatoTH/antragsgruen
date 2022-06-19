@@ -297,7 +297,7 @@ class ConsultationUserGroup extends ActiveRecord
         ];
     }
 
-    public function isRelevantForConsultation(Consultation $consultation): bool
+    public function isSpecificallyRelevantForConsultationOrSite(Consultation $consultation): bool
     {
         if ($this->consultationId) {
             return ($this->consultationId === $consultation->id);
