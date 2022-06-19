@@ -67,7 +67,8 @@ if ($externalAuthenticator === null) {
             ?>
             <div class="stdTwoCols usergroupsRow">
                 <div class="leftColumn">
-                    <?= Yii::t('user', (count($toShowGroups) === 1 ? 'user_group' : 'user_groups')) ?>:
+                    <?= Yii::t('user', (count($toShowGroups) === 1 ? 'user_group' : 'user_groups')) ?>
+                    (<?= Yii::t('user', 'user_groups_con') ?>):
                 </div>
                 <div class="rightColumn">
                     <?php
@@ -79,6 +80,24 @@ if ($externalAuthenticator === null) {
             </div>
             <?php
         }
+    }
+    $systemGroups = $user->getUserGroupsWithoutConsultation();
+    if (count($systemGroups) > 0) {
+        ?>
+        <div class="stdTwoCols usergroupsRow">
+            <div class="leftColumn">
+                <?= Yii::t('user', (count($systemGroups) === 1 ? 'user_group' : 'user_groups')) ?>
+                (<?= Yii::t('user', 'user_groups_system') ?>):
+            </div>
+            <div class="rightColumn">
+                <?php
+                foreach ($systemGroups as $userGroup) {
+                    echo Html::encode($userGroup->title) . '<br>';
+                }
+                ?>
+            </div>
+        </div>
+        <?php
     }
 
     if ($user->email) {

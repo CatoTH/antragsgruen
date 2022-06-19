@@ -215,7 +215,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUserGroupsForConsultation(Consultation $consultation): array
     {
         return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
-            return $group->isRelevantForConsultation($consultation);
+            return $group->isSpecificallyRelevantForConsultationOrSite($consultation);
+        });
+    }
+
+    public function getUserGroupsWithoutConsultation(): array
+    {
+        return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group): bool {
+            return $group->consultationId === null && $group->siteId === null;
         });
     }
 
@@ -763,7 +770,7 @@ class User extends ActiveRecord implements IdentityInterface
         $groups = $this->userGroups;
         if ($consultation) {
             $groups = array_values(array_filter($groups, function (ConsultationUserGroup $group) use ($consultation): bool {
-                return $group->isRelevantForConsultation($consultation);
+                return $group->isSpecificallyRelevantForConsultationOrSite($consultation);
             }));
         }
         $data['groups'] = array_map(function (ConsultationUserGroup $group): int {

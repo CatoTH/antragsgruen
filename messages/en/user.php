@@ -12,6 +12,8 @@ return [
     'name'                      => 'Name',
     'user_group'                => 'User group',
     'user_groups'               => 'User groups',
+    'user_groups_con'           => 'This site',
+    'user_groups_system'        => 'System-wide',
     'err_pwd_different'         => 'The two passwords are not the same.',
     'err_pwd_length'            => 'The password has to be at least %MINLEN% characters long.',
     'err_user_acode_notfound'   => 'User not found / invalid code',
