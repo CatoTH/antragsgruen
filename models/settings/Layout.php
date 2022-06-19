@@ -66,7 +66,7 @@ class Layout
      * @param View|null $view
      * @return string[][]
      */
-    public static function getCssLayouts($view = null)
+    public static function getCssLayouts(?View $view = null): array
     {
         $pluginLayouts = [];
         foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $pluginClass) {
@@ -79,19 +79,16 @@ class Layout
             }
         }
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
         return array_merge([
             'layout-classic' => [
                 'id'      => 'layout-classic',
                 'title'   => 'Standard',
-                'preview' => $params->resourceBase . 'img/layout-preview-std.png',
+                'preview' => AntragsgruenApp::getInstance()->resourceBase . 'img/layout-preview-std.png',
             ],
             'layout-dbjr'    => [
                 'id'      => 'layout-dbjr',
                 'title'   => 'DBJR',
-                'preview' => $params->resourceBase . 'img/layout-preview-dbjr.png',
+                'preview' => AntragsgruenApp::getInstance()->resourceBase . 'img/layout-preview-dbjr.png',
             ],
         ], $pluginLayouts);
     }
@@ -167,18 +164,16 @@ class Layout
     public function setConsultation(Consultation $consultation): void
     {
         $this->consultation = $consultation;
-        if ($consultation && count($this->breadcrumbs) === 0) {
+        if (count($this->breadcrumbs) === 0) {
             if ($consultation->getForcedMotion()) {
                 $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->getForcedMotion()->motionType->titleSingular;
             } else {
                 $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->titleShort;
             }
         }
-        if ($consultation) {
-            $language = substr($consultation->wordingBase, 0, 2);
-            if ($language && isset(MessageSource::getBaseLanguages()[$language])) {
-                \Yii::$app->language = $language;
-            }
+        $language = substr($consultation->wordingBase, 0, 2);
+        if ($language && isset(MessageSource::getBaseLanguages()[$language])) {
+            \Yii::$app->language = $language;
         }
     }
 
@@ -221,9 +216,7 @@ class Layout
     public function getHTMLLanguageCode(): string
     {
         if (!$this->consultation) {
-            /** @var AntragsgruenApp $params */
-            $params = \Yii::$app->params;
-            $lang   = explode('-', $params->baseLanguage);
+            $lang   = explode('-', AntragsgruenApp::getInstance()->baseLanguage);
             if (isset(MessageSource::getBaseLanguages()[$lang[0]])) {
                 return $lang[0];
             } else {
@@ -242,10 +235,8 @@ class Layout
     public function getJSLanguageCode(): string
     {
         if (!$this->consultation) {
-            /** @var AntragsgruenApp $params */
-            $params = \Yii::$app->params;
-            $lang   = explode('-', $params->baseLanguage);
-            if ($params->baseLanguage == 'en-gb') {
+            $lang   = explode('-', AntragsgruenApp::getInstance()->baseLanguage);
+            if (AntragsgruenApp::getInstance()->baseLanguage == 'en-gb') {
                 return 'en-gb';
             } else {
                 return $lang[0];
@@ -263,7 +254,7 @@ class Layout
     /**
      * @return string[]
      */
-    public function getJSFiles()
+    public function getJSFiles(): array
     {
         $jsLang  = $this->getJSLanguageCode();
         $files   = [];
@@ -352,10 +343,7 @@ class Layout
 
     public function getMiniMenu(string $htmlId): string
     {
-        $dropdownHtml = '';
-        foreach ($this->menusHtmlSmall as $menu) {
-            $dropdownHtml .= $menu;
-        }
+        $dropdownHtml = implode('', $this->menusHtmlSmall);
 
         $barBtn = '';
         $collapsed = '';
@@ -387,8 +375,6 @@ class Layout
 
     public static function resourceUrl(string $url): string
     {
-        /** @var AntragsgruenApp $params */
-        $params   = \Yii::$app->params;
         $absolute = \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR .
             str_replace('/', DIRECTORY_SEPARATOR, $url);
         $mtime    = (file_exists($absolute) ? filemtime($absolute) : 0);
@@ -397,7 +383,7 @@ class Layout
             $url .= (mb_strpos($url, '?') !== false ? '&' : '?');
             $url .= $mtime;
         }
-        $newUrl = $params->resourceBase . $url;
+        $newUrl = AntragsgruenApp::getInstance()->resourceBase . $url;
         return Html::encode($newUrl);
     }
 
@@ -408,9 +394,7 @@ class Layout
 
     public function getAMDLoader(): string
     {
-        /** @var AntragsgruenApp $params */
-        $params       = \Yii::$app->params;
-        $resourceBase = $params->resourceBase;
+        $resourceBase = AntragsgruenApp::getInstance()->resourceBase;
         $module       = $this->resourceUrl('js/build/Antragsgruen.js');
         $src          = $this->resourceUrl('npm/require.js');
         return '<script src="' . addslashes($src) . '"></script>' .
@@ -445,13 +429,12 @@ class Layout
     {
         /** @var Base $controller */
         $controller   = \Yii::$app->controller;
-        $resourceBase = $controller->getParams()->resourceBase;
 
         if ($controller->consultation && $controller->consultation->getSettings()->logoUrl) {
             $path     = parse_url($controller->consultation->getSettings()->logoUrl);
             $logoUrl  = $controller->consultation->getSettings()->logoUrl;
             if (!isset($path['host']) && $logoUrl[0] !== '/') {
-                $logoUrl = $resourceBase . $logoUrl;
+                $logoUrl = AntragsgruenApp::getInstance()->resourceBase . $logoUrl;
             }
             return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode(\Yii::t('base', 'logo_current')) . '">';
         } else {
