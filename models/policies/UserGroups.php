@@ -15,7 +15,7 @@ class UserGroups extends IPolicy
         parent::__construct($consultation, $baseObject, $data);
 
         $userGroupIds = $data['userGroups'] ?? [];
-        foreach ($consultation->getAllAvailableUserGroups() as $group) {
+        foreach ($consultation->getAllAvailableUserGroups($userGroupIds) as $group) {
             if (in_array($group->id, $userGroupIds)) {
                 $this->groups[] = $group;
             }
