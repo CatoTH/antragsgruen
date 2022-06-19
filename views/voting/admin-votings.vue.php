@@ -301,7 +301,7 @@ ob_start();
         </fieldset>
         <fieldset class="votePolicy">
             <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
-            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="userGroups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="voting.user_groups" @change="setPolicy($event)" ref="policy-select"></policy-select>
         </fieldset>
         <fieldset class="majorityTypeSettings" v-if="selectedAnswersHaveMajority">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>

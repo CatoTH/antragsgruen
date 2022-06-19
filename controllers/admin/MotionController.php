@@ -93,13 +93,7 @@ class MotionController extends AdminBase
         $consultation = $motionType->getConsultation();
         $policy = IPolicy::getInstanceFromDb($data['id'], $consultation, $motionType);
         if (is_a($policy, UserGroups::class)) {
-            $groups = [];
-            foreach ($data['groups'] ?? [] as $groupId) {
-                $group = ConsultationUserGroup::findOne(intval($groupId));
-                if ($group && $group->mayBeUsedForConsultation($motionType->getConsultation())) {
-                    $groups[] = $group;
-                }
-            }
+            $groups = ConsultationUserGroup::loadGroupsByIdForConsultation($motionType->getConsultation(), $data['groups'] ?? []);
             $policy->setAllowedUserGroups($groups);
         }
         return $policy;
