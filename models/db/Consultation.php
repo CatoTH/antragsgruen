@@ -262,18 +262,9 @@ class Consultation extends ActiveRecord
     /**
      * @return ConsultationUserGroup[]
      */
-    public function getAllAvailableUserGroups(): array
+    public function getAllAvailableUserGroups(array $additionalIds = []): array
     {
-        $groups = [];
-        foreach ($this->site->userGroups as $userGroup) {
-            if ($userGroup->consultationId === null) {
-                $groups[] = $userGroup;
-            }
-        }
-        foreach ($this->userGroups as $userGroup) {
-            $groups[] = $userGroup;
-        }
-        return $groups;
+        return ConsultationUserGroup::findByConsultation($this, $additionalIds);
     }
 
     public function getFiles(): ActiveQuery

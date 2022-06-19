@@ -20,7 +20,6 @@ class Site implements \JsonSerializable
     public $loginMethods = [
         self::LOGIN_STD,
         self::LOGIN_GRUENES_NETZ,
-        self::LOGIN_EXTERNAL,
     ];
 
     /** @var array */
@@ -28,15 +27,14 @@ class Site implements \JsonSerializable
     /** @var array */
     public $apiCorsOrigins = [];
 
-    const LOGIN_STD = 0;
-    const LOGIN_GRUENES_NETZ = 1;
-    const LOGIN_EXTERNAL = 3;
-    const LOGIN_OPENSLIDES = 4; // Only available if openslides-plugin is activated
+    public const LOGIN_STD = 0;
+    public const LOGIN_GRUENES_NETZ = 1;
+    public const LOGIN_EXTERNAL = 3;
+    public const LOGIN_OPENSLIDES = 4; // Only available if openslides-plugin is activated
 
     public const SITE_MANAGER_LOGIN_METHODS = [
         self::LOGIN_STD,
         self::LOGIN_GRUENES_NETZ,
-        self::LOGIN_EXTERNAL,
     ];
 
     public function getStylesheet(): Stylesheet
