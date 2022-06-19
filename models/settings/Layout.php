@@ -268,7 +268,7 @@ class Layout
         $jsLang  = $this->getJSLanguageCode();
         $files   = [];
         $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
-        $files[] = $this->resourceUrl('js/antragsgruen-' . $jsLang . '.js');
+        $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
         foreach ($this->extraJs as $extraJs) {
             $files[] = $this->resourceUrl($extraJs);
         }
