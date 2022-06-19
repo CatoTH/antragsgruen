@@ -214,8 +214,24 @@ export class VotingAdmin {
 
     private initPolicyWidget() {
         const $widget = $(this.element);
-        const $select: any = $widget.find('.userGroupSelect');
-        $select.find("select").selectize({});
+        const $select: any = $widget.find('.userGroupSelect'),
+            loadUrl = $select.data('load-url');
+        let selectizeOption = {};
+        if (loadUrl) {
+            selectizeOption = Object.assign(selectizeOption, {
+                loadThrottle: null,
+                valueField: 'id',
+                labelField: 'label',
+                searchField: 'label',
+                load: function (query, cb) {
+                    if (!query) return cb();
+                    return $.get(loadUrl, {query}).then(res => {
+                        cb(res);
+                    });
+                }
+            });
+        }
+        $select.find("select").selectize(selectizeOption);
 
         const $policySelect = $widget.find(".policySelect");
         $policySelect.on("change", () => {

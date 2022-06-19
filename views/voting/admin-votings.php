@@ -171,6 +171,11 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
                 foreach (IPolicy::getPolicies() as $policy) {
                     $policies[$policy::getPolicyID()] = $policy::getPolicyName();
                 }
+                if (\app\models\db\ConsultationUserGroup::consultationHasLoadableUserGroups($consultation)) {
+                    $groupLoadUrl = UrlHelper::createUrl('/admin/users/search-groups');
+                } else {
+                    $groupLoadUrl = '';
+                }
 
                 echo Html::dropDownList(
                     'votePolicyNew',
@@ -179,7 +184,7 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
                     ['class' => 'stdDropdown policySelect', 'autocomplete' => 'off']
                 );
                 ?>
-                <div class="userGroupSelect">
+                <div class="userGroupSelect" data-load-url="<?= Html::encode($groupLoadUrl) ?>">
                     <select name="votePolicyGroupsNew[]" class="userGroupSelectList" multiple autocomplete="off"
                             placeholder="<?= Yii::t('admin', 'motion_type_group_ph') ?>" title="<?= Yii::t('admin', 'motion_type_group_title') ?>">
                         <?php

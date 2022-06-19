@@ -119,6 +119,18 @@ class ConsultationUserGroup extends ActiveRecord
         }));
     }
 
+    public static function loadGroupsByIdForConsultation(Consultation $consultation, array $groupIds): array
+    {
+        $groups = [];
+        foreach ($groupIds as $groupId) {
+            $group = ConsultationUserGroup::findOne(intval($groupId));
+            if ($group && $group->mayBeUsedForConsultation($consultation)) {
+                $groups[] = $group;
+            }
+        }
+        return $groups;
+    }
+
     // Hint: this method can be used if the group assignment of all users need to be evaluated in a call.
     // Iterating over the userIds attached to a user group is faster than over the groupIds of a user,
     // as there are way more users, and we would need to perform more queries that way.

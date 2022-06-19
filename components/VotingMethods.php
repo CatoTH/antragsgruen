@@ -57,10 +57,7 @@ class VotingMethods
         $consultation = $votingBlock->getMyConsultation();
         $policy = IPolicy::getInstanceFromDb((string)$policyId, $consultation, $votingBlock);
         if (is_a($policy, UserGroups::class)) {
-            $groups = array_filter($consultation->getAllAvailableUserGroups(), function(ConsultationUserGroup $group) use ($submittedUserGroups): bool {
-                return in_array($group->id, $submittedUserGroups);
-            });
-            $policy->setAllowedUserGroups($groups);
+            $policy->setAllowedUserGroups(ConsultationUserGroup::loadGroupsByIdForConsultation($votingBlock->getMyConsultation(), $submittedUserGroups));
         }
         return $policy;
     }
