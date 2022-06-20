@@ -2,6 +2,7 @@
 
 namespace app\components;
 
+use app\models\db\ConsultationUserGroup;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use SimpleSAML\Auth\Simple;
@@ -77,21 +78,36 @@ class GruenesNetzSamlClient implements ClientInterface
         $user->auth            = $auth;
         $user->status          = User::STATUS_CONFIRMED;
         $user->organizationIds = json_encode($organizations);
+        $user->organization = '';
+        if (!$user->save()) {
+            throw new \Exception('Could not create user');
+        }
 
-        $params = AntragsgruenApp::getInstance();
-        if ($params->samlOrgaFile && file_exists($params->samlOrgaFile)) {
-            $orgas              = json_decode(file_get_contents($params->samlOrgaFile), true);
-            $user->organization = '';
-            foreach ($organizations as $organization) {
-                $orgaKv = substr($organization, 0, 6);
-                if (isset($orgas[$orgaKv])) {
-                    $user->organization = $this->formatKurzname($orgas[$orgaKv]['kurzname']);
+        $newUserGroupIds = [];
+        foreach ($organizations as $organization) {
+            $newUserGroupIds[] = 'gruenesnetz:' . substr($organization, 0, 6) . '00';
+        }
+
+        $oldUserGroupIds = [];
+        foreach ($user->userGroups as $userGroup) {
+            if ($userGroup->belongsToExternalAuth('gruenesnetz')) {
+                $oldUserGroupIds[] = $userGroup->externalId;
+                if (!in_array($userGroup->externalId, $newUserGroupIds)) {
+                    $user->unlink('userGroups', $userGroup, true);
                 }
             }
         }
 
-        if (!$user->save()) {
-            throw new \Exception('Could not create user');
+        foreach ($newUserGroupIds as $userGroupId) {
+            $userGroup = ConsultationUserGroup::findByExternalId($userGroupId);
+            if ($userGroup) {
+                $user->organization = $userGroup->title;
+                $user->save();
+
+                if (!in_array($userGroupId, $oldUserGroupIds)) {
+                    $user->link('userGroups', $userGroup);
+                }
+            }
         }
 
         return $user;

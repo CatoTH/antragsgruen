@@ -119,6 +119,11 @@ class ConsultationUserGroup extends ActiveRecord
         }));
     }
 
+    public static function findByExternalId(string $externalId): ?ConsultationUserGroup
+    {
+        return ConsultationUserGroup::findOne(['externalId' => $externalId]);
+    }
+
     public static function loadGroupsByIdForConsultation(Consultation $consultation, array $groupIds): array
     {
         $groups = [];
@@ -267,13 +272,13 @@ class ConsultationUserGroup extends ActiveRecord
     public function getAuthType(): int
     {
         if ($this->externalId === null) {
-            return \app\models\settings\Site::LOGIN_STD;
+            return SiteSettings::LOGIN_STD;
         }
         $authparts = explode(':', $this->externalId);
         if (preg_match('/^openslides\-/siu', $authparts[0])) {
-            return \app\models\settings\Site::LOGIN_OPENSLIDES;
+            return SiteSettings::LOGIN_OPENSLIDES;
         }
-        return \app\models\settings\Site::LOGIN_STD;
+        return SiteSettings::LOGIN_STD;
     }
 
     public function getVotingApiObject(): array
