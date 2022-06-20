@@ -63,7 +63,7 @@ class AutoupdateSyncService
         $foundExternalIds = [];
         foreach ($groups as $osGroup) {
             $externalId = $authPrefix . ':' . $osGroup->getId();
-            $internalGroup = ConsultationUserGroup::findOne(['externalId' => $externalId]);
+            $internalGroup = ConsultationUserGroup::findByExternalId($externalId);
             if (!$internalGroup) {
                 $internalGroup = new ConsultationUserGroup();
                 $internalGroup->siteId = $this->site->id;
@@ -126,7 +126,7 @@ class AutoupdateSyncService
         }, $userObj->userGroups);
         foreach ($osUser->getGroupsId() as $osGroupId) {
             $externalId = $this->siteSettings->getAuthPrefix() . ':' . $osGroupId;
-            $userGroup = ConsultationUserGroup::findOne(['externalId' => $externalId]);
+            $userGroup = ConsultationUserGroup::findByExternalId($externalId);
             if ($userGroup) {
                 $foundOsGroupIds[] = strtolower($userGroup->externalId);
                 if (!in_array(strtolower($userGroup->externalId), $userHasGroupIds)) {

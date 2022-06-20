@@ -2,6 +2,7 @@
 
 namespace app\components;
 
+use app\models\db\ConsultationUserGroup;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use SimpleSAML\Auth\Simple;
@@ -51,17 +52,16 @@ class GruenesNetzSamlClient implements ClientInterface
     }
 
     /**
-     * @return User
      * @throws \Exception
      */
-    public function getOrCreateUser()
+    public function getOrCreateUser(): User
     {
-        $email         = $this->params[static::PARAM_EMAIL][0];
-        $givenname     = (isset($this->params[static::PARAM_GIVEN_NAME]) ? $this->params[static::PARAM_GIVEN_NAME][0] : '');
-        $familyname    = (isset($this->params[static::PARAM_FAMILY_NAME]) ? $this->params[static::PARAM_FAMILY_NAME][0] : '');
-        $organizations = (isset($this->params[static::PARAM_ORGANIZATION]) ? $this->params[static::PARAM_ORGANIZATION] : []);
-        $username      = $this->params[static::PARAM_USERNAME][0];
-        $auth          = User::gruenesNetzId2Auth($username);
+        $email = $this->params[static::PARAM_EMAIL][0];
+        $givenname = (isset($this->params[static::PARAM_GIVEN_NAME]) ? $this->params[static::PARAM_GIVEN_NAME][0] : '');
+        $familyname = (isset($this->params[static::PARAM_FAMILY_NAME]) ? $this->params[static::PARAM_FAMILY_NAME][0] : '');
+        $organizations = $this->params[static::PARAM_ORGANIZATION] ?? [];
+        $username = $this->params[static::PARAM_USERNAME][0];
+        $auth = User::gruenesNetzId2Auth($username);
 
         /** @var User $user */
         $user = User::findOne(['auth' => $auth]);
@@ -78,28 +78,42 @@ class GruenesNetzSamlClient implements ClientInterface
         $user->auth            = $auth;
         $user->status          = User::STATUS_CONFIRMED;
         $user->organizationIds = json_encode($organizations);
+        $user->organization = '';
+        if (!$user->save()) {
+            throw new \Exception('Could not create user');
+        }
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        if ($params->samlOrgaFile && file_exists($params->samlOrgaFile)) {
-            $orgas              = json_decode(file_get_contents($params->samlOrgaFile), true);
-            $user->organization = '';
-            foreach ($organizations as $organization) {
-                $orgaKv = substr($organization, 0, 6);
-                if (isset($orgas[$orgaKv])) {
-                    $user->organization = $this->formatKurzname($orgas[$orgaKv]['kurzname']);
+        $newUserGroupIds = [];
+        foreach ($organizations as $organization) {
+            $newUserGroupIds[] = 'gruenesnetz:' . substr($organization, 0, 6) . '00';
+        }
+
+        $oldUserGroupIds = [];
+        foreach ($user->userGroups as $userGroup) {
+            if ($userGroup->belongsToExternalAuth('gruenesnetz')) {
+                $oldUserGroupIds[] = $userGroup->externalId;
+                if (!in_array($userGroup->externalId, $newUserGroupIds)) {
+                    $user->unlink('userGroups', $userGroup, true);
                 }
             }
         }
 
-        if (!$user->save()) {
-            throw new \Exception('Could not create user');
+        foreach ($newUserGroupIds as $userGroupId) {
+            $userGroup = ConsultationUserGroup::findByExternalId($userGroupId);
+            if ($userGroup) {
+                $user->organization = $userGroup->title;
+                $user->save();
+
+                if (!in_array($userGroupId, $oldUserGroupIds)) {
+                    $user->link('userGroups', $userGroup);
+                }
+            }
         }
 
         return $user;
     }
 
-    public function logout()
+    public function logout(): void
     {
         if ($this->auth->isAuthenticated()) {
             $this->auth->logout();
