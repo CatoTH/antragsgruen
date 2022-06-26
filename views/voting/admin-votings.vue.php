@@ -385,8 +385,6 @@ $html = ob_get_clean();
     const motionEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000'])) ?>;
     const amendmentEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000'])) ?>;
 
-    __setVueComponent('voting', 'component', 'v-select', VueSelect.VueSelect);
-
     __setVueComponent('voting', 'directive', 'tooltip', function (el, binding) {
         $(el).tooltip({
             title: binding.value,
@@ -604,10 +602,11 @@ $html = ob_get_clean();
                 this.statusChanged();
             },
             resetVoting: function () {
-                const widget = this;
+                const widget = this,
+                    newStatus = this.STATUS_PREPARING;
                 bootbox.confirm(resetConfirmation, function(result) {
                     if (result) {
-                        widget.voting.status = this.STATUS_PREPARING;
+                        widget.voting.status = newStatus;
                         widget.statusChanged();
                     }
                 });

@@ -24,7 +24,7 @@ $this->title = Yii::t('voting', 'admin_title');
 $layout->addCSS('css/backend.css');
 $layout->loadSelectize();
 $layout->loadVue();
-$layout->loadVueSelect();
+$layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/voting/_policy-select.vue.php');
 $layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
