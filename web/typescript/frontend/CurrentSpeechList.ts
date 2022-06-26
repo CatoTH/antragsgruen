@@ -1,6 +1,4 @@
-import { VueConstructor } from 'vue';
-
-declare var Vue: VueConstructor;
+declare var Vue: any;
 
 export class CurrentSpeechList {
     private widget;
@@ -16,25 +14,22 @@ export class CurrentSpeechList {
         };
         if ($element.hasClass('currentSpeechFullPage')) {
             this.widget = new Vue({
-                el: $vueEl[0],
                 template: `
                     <speech-user-full-list-widget :queue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-full-list-widget>`,
                 data
-            });
+            }).mount($vueEl[0]);
         } else if ($element.hasClass('currentSpeechInline')) {
             this.widget = new Vue({
-                el: $vueEl[0],
                 template: `
                     <speech-user-inline-widget :queue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-inline-widget>`,
                 data
-            });
+            }).mount($vueEl[0]);
         } else {
             this.widget = new Vue({
-                el: $vueEl[0],
                 template: `
                     <speech-user-footer-widget :queue="queue" :user="user" :csrf="csrf" :title="title" :adminUrl="adminUrl"></speech-user-footer-widget>`,
                 data
-            });
+            }).mount($vueEl[0]);
         }
     }
 }

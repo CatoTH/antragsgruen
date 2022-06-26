@@ -1,9 +1,8 @@
 import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 import ClickEvent = JQuery.ClickEvent;
-import { VueConstructor } from 'vue';
 
-declare var Vue: VueConstructor;
+declare var Vue: any;
 
 const STATUS_ACCEPTED = 4;
 const STATUS_MODIFIED_ACCEPTED = 6;
@@ -636,7 +635,6 @@ class MotionMergeAmendmentsParagraph {
         };
 
         para.statusWidget = new Vue({
-            el: this.$holder.find(".changeToolbar .statuses")[0],
             template: `
                 <div class="statuses">
                     <paragraph-amendment-settings v-for="data in amendmentParagraphData"
@@ -736,7 +734,7 @@ class MotionMergeAmendmentsParagraph {
                     para.hasUnsavedChanges = true;
                 }
             }
-        });
+        }).mount(this.$holder.find(".changeToolbar .statuses")[0]);
     }
 
     public onAmendmentVersionChanged(amendmentId: number, version: string) {
