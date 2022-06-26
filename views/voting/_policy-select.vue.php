@@ -24,18 +24,19 @@ ob_start();
     <select class="stdDropdown" @change="setPolicy($event)">
         <option v-for="policyIterator in ALL_POLICIES" :value="policyIterator.id" :selected="policy.id === policyIterator.id">{{ policyIterator.title }}</option>
     </select>
-    <v-select v-if="policy.id === POLICY_USER_GROUPS"
-              @search="onGroupSearch"
-              multiple :options="userGroupOptions" :reduce="group => group.id" :value="userGroups"
-              @input="setSelectedGroups($event)"></v-select>
+    <v-selectize v-if="policy.id === POLICY_USER_GROUPS" multiple
+                 @change="setSelectedGroups($event)"
+                 :options="userGroupOptions"
+                 :values="userGroups"
+                 :loadUrl="GROUP_LOAD_URL"
+    ></v-selectize>
+
 </div>
 <?php
 $html = ob_get_clean();
 ?>
 
 <script>
-    const GROUP_LOAD_URL = <?= json_encode($groupLoadUrl) ?>;
-
     __setVueComponent('voting', 'component', 'policy-select', {
         template: <?= json_encode($html) ?>,
         props: ['allGroups', 'allowAnonymous', 'policy'],
@@ -43,6 +44,7 @@ $html = ob_get_clean();
             return {
                 POLICY_USER_GROUPS: <?= IPolicy::POLICY_USER_GROUPS ?>,
                 ALL_POLICIES: <?= json_encode($allPolicies) ?>,
+                GROUP_LOAD_URL: <?= json_encode($groupLoadUrl) ?>,
                 changedUserGroups: null,
                 ajaxLoadedUserGroups: [],
             }
@@ -81,18 +83,6 @@ $html = ob_get_clean();
                     data.user_groups = this.changedUserGroups;
                 }
                 this.$emit('change', data);
-            },
-            onGroupSearch(search, loading) {
-                if(search.length) {
-                    loading(true);
-
-                    fetch(GROUP_LOAD_URL + '?query=' + encodeURIComponent(search)).then(res => {
-                        res.json().then(json => {
-                            loading(false);
-                            this.ajaxLoadedUserGroups = json;
-                        });
-                    });
-                }
             },
             setPolicy: function ($event) {
                 this.policy.id = parseInt($event.target.value, 10);

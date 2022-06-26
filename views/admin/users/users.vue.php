@@ -6,8 +6,9 @@ ob_start();
     <section class="content" aria-label="<?= Yii::t('admin', 'siteacc_accounts_title') ?>">
         <div class="filterHolder">
             <div class="groupFilter">
-                <v-select :options="userGroupFilter" :reduce="group => group.id" :value="filterGroup"
-                          @input="setFilterGroup($event)" ></v-select>
+                <v-selectize @change="setFilterGroup($event)"
+                             :options="userGroupFilter"
+                ></v-selectize>
             </div>
             <div class="usernameFilter">
                 <div class="input-group">
@@ -43,8 +44,10 @@ ob_start();
                     </button>
                 </div>
                 <div class="groupsChange" v-if="isGroupChanging(user)">
+                    <!--
                     <v-select multiple :options="userGroupOptions" :reduce="group => group.id" :value="selectedGroups(user)"
                               @input="setSelectedGroups($event, user)"></v-select>
+                              -->
                 </div>
                 <div class="groupsChangeOps" v-if="isGroupChanging(user)">
                     <button class="btn btn-link btnLinkAbort" @click="unsetGroupChanging(user)" title="<?= Yii::t('base', 'abort') ?>">
@@ -109,8 +112,6 @@ $html = ob_get_clean();
     const removeUserConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_userdel_confirm')) ?>;
     const removeGroupConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_groupdel_confirm')) ?>;
     const showAllGroups = <?= json_encode(Yii::t('admin', 'siteacc_userfilter_allgr')) ?>;
-
-    __setVueComponent('users', 'component', 'v-select', VueSelect.VueSelect);
 
     __setVueComponent('users', 'directive', 'focus', {
         mounted: function (el) {
@@ -290,7 +291,7 @@ $html = ob_get_clean();
                 }
             },
             setFilterGroup: function ($event) {
-                this.filterGroup = $event;
+                this.filterGroup = $event && $event.length > 0 ? parseInt($event[0]) : null;
             },
             userGroupsDisplay: function (user) {
                 return this.groups.filter(function (group) {
