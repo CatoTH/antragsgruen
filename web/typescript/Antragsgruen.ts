@@ -149,3 +149,28 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         return ANTRAGSGRUEN_STRINGS[category][str];
     };
 }(jQuery));
+
+// Components defined in HTML templates should be registered here, so the actual Vue app can initialize it on initialization
+const VUE_TO_REGISTER_COMPONENTS = {
+    "fullscreen": [],
+    "merging": [],
+    "speech": [],
+    "users": [],
+    "voting": [],
+};
+
+window['__setVueComponent'] = function(appId, componentType, componentName, componentData) {
+    VUE_TO_REGISTER_COMPONENTS[appId].push({componentType, componentName, componentData});
+}
+
+window['__initVueComponents'] = function(vueApp: any, appId: string) {
+    VUE_TO_REGISTER_COMPONENTS[appId].forEach(component => {
+        if (component.componentType === 'component') {
+            vueApp.component(component.componentName, component.componentData);
+        } else if (component.componentType === 'directive') {
+            vueApp.directive(component.componentName, component.componentData)
+        } else {
+            console.warn('Unknown component Type: ' + component.componentType);
+        }
+    })
+}

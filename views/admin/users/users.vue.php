@@ -110,16 +110,15 @@ $html = ob_get_clean();
     const removeGroupConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_groupdel_confirm')) ?>;
     const showAllGroups = <?= json_encode(Yii::t('admin', 'siteacc_userfilter_allgr')) ?>;
 
-    const LOGIN_OPENSLIDES = <?= \app\models\settings\Site::LOGIN_OPENSLIDES ?>;
+    __setVueComponent('users', 'component', 'v-select', VueSelect.VueSelect);
 
-    Vue.component('v-select', VueSelect.VueSelect);
-    Vue.directive('focus', {
-        inserted: function (el) {
+    __setVueComponent('users', 'directive', 'focus', {
+        mounted: function (el) {
             el.focus()
         }
     });
 
-    Vue.component('user-admin-widget', {
+    __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['users', 'groups'],
         data() {
@@ -129,7 +128,8 @@ $html = ob_get_clean();
                 creatingGroups: false,
                 addGroupName: '',
                 filterUser: '',
-                filterGroup: ''
+                filterGroup: '',
+                LOGIN_OPENSLIDES: <?= \app\models\settings\Site::LOGIN_OPENSLIDES ?>
             };
         },
         computed: {

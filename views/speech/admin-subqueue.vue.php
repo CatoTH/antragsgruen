@@ -93,7 +93,7 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('speech-admin-subqueue', {
+    __setVueComponent('speech', 'component', 'speech-admin-subqueue', {
         template: <?= json_encode($html) ?>,
         props: ['subqueue', 'allSubqueues', 'position'],
         data() {

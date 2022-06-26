@@ -130,14 +130,13 @@ ob_start();
 
 
 <?php
-$html          = ob_get_clean();
+$html = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('speech-user-footer-widget', {
+    __setVueComponent('speech', 'component', 'speech-user-footer-widget', {
         template: <?= json_encode($html) ?>,
         props: ['queue', 'csrf', 'user', 'title', 'adminUrl'],
-        mixins: [SPEECH_COMMON_MIXIN],
         data() {
             return {
                 registerName: this.user.name,
@@ -147,7 +146,7 @@ $html          = ob_get_clean();
         created() {
             this.startPolling(false);
         },
-        beforeDestroy() {
+        beforeUnmount() {
             this.stopPolling();
         }
     });

@@ -1,6 +1,4 @@
-import { VueConstructor } from 'vue';
-
-declare var Vue: VueConstructor;
+declare var Vue: any;
 
 export class VotingBlock {
     private widget;
@@ -12,8 +10,7 @@ export class VotingBlock {
             pollUrl = element.getAttribute('data-url-poll'),
             voteUrl = element.getAttribute('data-url-vote');
 
-        this.widget = new Vue({
-            el: vueEl,
+        this.widget = Vue.createApp({
             template: `
                 <div class="currentVotings">
                 <voting-block-widget v-for="voting in votings" :voting="voting" @vote="vote"></voting-block-widget>
@@ -66,12 +63,17 @@ export class VotingBlock {
                     }, 3000);
                 }
             },
-            beforeDestroy() {
+            beforeUnmount() {
                 window.clearInterval(this.pollingId)
             },
             created() {
                 this.startPolling()
             }
         });
+
+        this.widget.config.compilerOptions.whitespace = 'condense';
+        window['__initVueComponents'](this.widget, 'voting');
+
+        this.widget.mount(vueEl);
     }
 }

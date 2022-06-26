@@ -1,6 +1,4 @@
-import { VueConstructor } from 'vue';
-
-declare var Vue: VueConstructor;
+declare var Vue: any;
 
 export class FullscreenToggle {
     private readonly element: HTMLElement;
@@ -101,8 +99,7 @@ export class FullscreenToggle {
         if (this.element.getAttribute('data-vue-initdata')) {
             initdata = JSON.parse(this.element.getAttribute('data-vue-initdata'));
         }
-        this.vueWidget = new Vue({
-            el: this.holderElement.firstChild as HTMLElement,
+        this.vueWidget = Vue.createApp({
             template,
             data() {
                 return {
@@ -126,13 +123,18 @@ export class FullscreenToggle {
                     this.currIMotion = newIMotion;
                 }
             },
-            beforeDestroy() {},
+            beforeUnmount() {},
             created() {}
         });
+
+        this.vueWidget.config.compilerOptions.whitespace = 'condense';
+        window['__initVueComponents'](this.vueWidget, 'fullscreen');
+
+        this.vueWidget.mount(this.holderElement.firstChild);
     }
 
     private destroyVueElement(): void
     {
-        this.vueWidget.$destroy();
+        this.vueWidget.unmount();
     }
 }
