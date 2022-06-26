@@ -312,12 +312,6 @@ class Layout
         $this->addVueTemplate('@app/views/speech/user-fullscreen-widget.vue.php');
     }
 
-    public function loadVueSelect(): void
-    {
-        $this->addJS('npm/vue-select.js');
-        $this->addCSS('npm/vue-select.css');
-    }
-
     public function loadTypeahead(): void
     {
         $this->addJs('npm/typeahead.bundle.min.js');
