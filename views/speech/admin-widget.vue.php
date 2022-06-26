@@ -213,7 +213,7 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
     const itemPerformOperationUrl = <?= json_encode($itemPerformOpUrl) ?>;
     const resetConfirmation = <?= json_encode(Yii::t('speech', 'admin_reset_dialog')) ?>;
 
-    Vue.component('speech-admin-widget', {
+    __setVueComponent('speech', 'component', 'speech-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['queue', 'csrf'],
         data() {
@@ -471,7 +471,7 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 }, 100);
             }
         },
-        beforeDestroy() {
+        beforeUnmount() {
             window.clearInterval(this.pollingId);
             window.clearInterval(this.timerId);
         },

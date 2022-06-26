@@ -1,12 +1,14 @@
 <?php
 
+use app\models\policies\IPolicy;
+
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 /** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 
 $allPolicies = [];
-foreach (\app\models\policies\IPolicy::getPolicyNames() as $id => $name) {
+foreach (IPolicy::getPolicyNames() as $id => $name) {
     $allPolicies[] = ["id" => $id, "title" => $name];
 }
 
@@ -32,14 +34,15 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    const ALL_POLICIES = <?= json_encode($allPolicies) ?>;
     const GROUP_LOAD_URL = <?= json_encode($groupLoadUrl) ?>;
 
-    Vue.component('policy-select', {
+    __setVueComponent('voting', 'component', 'policy-select', {
         template: <?= json_encode($html) ?>,
         props: ['allGroups', 'allowAnonymous', 'policy'],
         data() {
             return {
+                POLICY_USER_GROUPS: <?= IPolicy::POLICY_USER_GROUPS ?>,
+                ALL_POLICIES: <?= json_encode($allPolicies) ?>,
                 changedUserGroups: null,
                 ajaxLoadedUserGroups: [],
             }
@@ -74,7 +77,7 @@ $html = ob_get_clean();
                 const data = {
                     'id': this.policy.id,
                 };
-                if (this.policy.id === POLICY_USER_GROUPS) {
+                if (this.policy.id === this.POLICY_USER_GROUPS) {
                     data.user_groups = this.changedUserGroups;
                 }
                 this.$emit('change', data);

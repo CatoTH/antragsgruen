@@ -184,7 +184,7 @@ $html = ob_get_clean();
     const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
     const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
 
-    Vue.component('voting-block-widget', {
+    __setVueComponent('voting', 'component', 'voting-block-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
         mixins: [VOTING_COMMON_MIXIN],

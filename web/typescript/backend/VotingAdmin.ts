@@ -1,6 +1,4 @@
-import { VueConstructor } from 'vue';
-
-declare var Vue: VueConstructor;
+declare var Vue: any;
 
 const POLICY_USER_GROUPS  = 6;
 
@@ -26,8 +24,8 @@ export class VotingAdmin {
         const votingInitJson = this.element.getAttribute('data-voting');
         const initUserGroups = JSON.parse(this.element.getAttribute('data-user-groups'));
 
-        this.widget = new Vue({
-            el: vueEl,
+
+        this.widget = Vue.createApp({
             template: `<div class="adminVotings">
                 <voting-admin-widget v-for="voting in votings"
                                      :voting="voting"
@@ -199,7 +197,7 @@ export class VotingAdmin {
                     }, 3000);
                 }
             },
-            beforeDestroy() {
+            beforeUnmount() {
                 window.clearInterval(this.pollingId)
             },
             created() {
@@ -207,6 +205,11 @@ export class VotingAdmin {
                 this.startPolling()
             }
         });
+
+        this.widget.config.compilerOptions.whitespace = 'condense';
+        window['__initVueComponents'](this.widget, 'voting');
+
+        this.widget.mount(vueEl);
 
         // Used by tests to control vue-select
         window['votingAdminWidget'] = this.widget;

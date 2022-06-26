@@ -89,7 +89,7 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('paragraph-amendment-settings', {
+    __setVueComponent('merging', 'component', 'paragraph-amendment-settings', {
         template: <?= json_encode($html) ?>,
         props: ['nameBase', 'amendment', 'active', 'idAdd', 'status', 'version', 'votingData'],
         data() {

@@ -23,9 +23,11 @@ async function taskCopyFiles() {
     await gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/isotope-layout/dist/isotope.pkgd.min.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/vue/dist/vue.min.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/vue-select/dist/vue-select.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/vue-select/dist/vue-select.css").pipe(gulp.dest('./web/npm/'));
+    //await gulp.src("node_modules/vue/dist/vue.global.js").pipe(gulp.dest('./web/npm/')); // @TODO Remove again
+    //await gulp.src("node_modules/vue/dist/vue.global.prod.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/@vue/compat/dist/vue.global.js").pipe(gulp.dest('./web/npm/'));
+    //await gulp.src("node_modules/vue-select/dist/vue-select.js").pipe(gulp.dest('./web/npm/'));
+    //await gulp.src("node_modules/vue-select/dist/vue-select.css").pipe(gulp.dest('./web/npm/'));
 }
 
 function taskBuildTypescript() {

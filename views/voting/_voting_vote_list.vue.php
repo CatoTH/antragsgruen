@@ -66,7 +66,7 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('voting-vote-list', {
+    __setVueComponent('voting', 'component', 'voting-vote-list', {
         template: <?= json_encode($html) ?>,
         props: ['voting', 'groupedVoting', 'setToUserGroupSelection', 'showNotVotedList'],
         data() {

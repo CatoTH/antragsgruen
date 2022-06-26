@@ -133,12 +133,12 @@ foreach ($layout->getJSFiles() as $jsFile) {
 foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
+echo $layout->getAMDClasses();
+echo $layout->getAMDLoader();
+
 foreach ($layout->vueTemplates as $vueTemplate) {
     echo $this->render($vueTemplate);
 }
-
-echo $layout->getAMDClasses();
-echo $layout->getAMDLoader();
 
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = Yii::$app->params;
