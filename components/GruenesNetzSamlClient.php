@@ -11,9 +11,9 @@ use app\models\db\User;
 class GruenesNetzSamlClient implements ClientInterface
 {
     const PARAM_EMAIL        = 'gmnMail';
-    const PARAM_USERNAME     = 'urn:oid:0.9.2342.19200300.100.1.1';
-    const PARAM_GIVEN_NAME   = 'urn:oid:2.5.4.42';
-    const PARAM_FAMILY_NAME  = 'urn:oid:2.5.4.4';
+    const PARAM_USERNAME     = 'uid';
+    const PARAM_GIVEN_NAME   = 'givenName';
+    const PARAM_FAMILY_NAME  = 'sn';
     const PARAM_ORGANIZATION = 'membershipOrganizationKey';
 
     /** @var Simple */
@@ -31,7 +31,7 @@ class GruenesNetzSamlClient implements ClientInterface
     /**
      * @throws \Exception
      */
-    public function requireAuth()
+    public function requireAuth(): void
     {
         $this->auth->requireAuth([]);
         if (!$this->auth->isAuthenticated()) {
@@ -40,28 +40,27 @@ class GruenesNetzSamlClient implements ClientInterface
         $this->params = $this->auth->getAttributes();
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    private function formatKurzname($name)
+    private function formatKurzname(string $name): string
     {
         // "Delmenhorst KV" => "KV Delmenhorst"
         return preg_replace("/^(.*) KV$/siu", "KV $1", $name);
     }
 
     /**
-     * @return User
      * @throws \Exception
      */
-    public function getOrCreateUser()
+    public function getOrCreateUser(): User
     {
-        $email         = $this->params[static::PARAM_EMAIL][0];
-        $givenname     = (isset($this->params[static::PARAM_GIVEN_NAME]) ? $this->params[static::PARAM_GIVEN_NAME][0] : '');
-        $familyname    = (isset($this->params[static::PARAM_FAMILY_NAME]) ? $this->params[static::PARAM_FAMILY_NAME][0] : '');
-        $organizations = (isset($this->params[static::PARAM_ORGANIZATION]) ? $this->params[static::PARAM_ORGANIZATION] : []);
-        $username      = $this->params[static::PARAM_USERNAME][0];
-        $auth          = User::gruenesNetzId2Auth($username);
+        $email = $this->params[static::PARAM_EMAIL][0];
+        $givenname = (isset($this->params[static::PARAM_GIVEN_NAME]) ? $this->params[static::PARAM_GIVEN_NAME][0] : '');
+        $familyname = (isset($this->params[static::PARAM_FAMILY_NAME]) ? $this->params[static::PARAM_FAMILY_NAME][0] : '');
+        $username = $this->params[static::PARAM_USERNAME][0];
+        $auth = User::gruenesNetzId2Auth($username);
+
+        $organizations = $this->params[static::PARAM_ORGANIZATION] ?? [];
+        $organizations = array_values(array_filter($organizations, function (string $key): bool {
+            return trim($key) !== '';
+        }));
 
         /** @var User $user */
         $user = User::findOne(['auth' => $auth]);
@@ -79,8 +78,7 @@ class GruenesNetzSamlClient implements ClientInterface
         $user->status          = User::STATUS_CONFIRMED;
         $user->organizationIds = json_encode($organizations);
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
         if ($params->samlOrgaFile && file_exists($params->samlOrgaFile)) {
             $orgas              = json_decode(file_get_contents($params->samlOrgaFile), true);
             $user->organization = '';
@@ -99,7 +97,7 @@ class GruenesNetzSamlClient implements ClientInterface
         return $user;
     }
 
-    public function logout()
+    public function logout(): void
     {
         if ($this->auth->isAuthenticated()) {
             $this->auth->logout();
