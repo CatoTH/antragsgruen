@@ -32,12 +32,12 @@ Installation
 #### Requirements:
 
 - A MySQL-database
-- PHP >= 7.3. Recommended: 7.4+. Required packages for Debian Linux:
+- PHP >= 7.3. Recommended: 8.0+. Required packages for Debian Linux:
 
 ```bash
 # Using PHP8-packages from [deb.sury.org](https://deb.sury.org/):
-apt-get install php8.0 php8.0-cli php8.0-fpm php8.0-intl php8.0-gd php8.0-mysql \
-                php8.0-opcache php8.0-curl php8.0-xml php8.0-mbstring php8.0-zip php8.0-iconv
+apt-get install php8.1 php8.1-cli php8.1-fpm php8.1-intl php8.1-gd php8.1-mysql \
+                php8.1-opcache php8.1-curl php8.1-xml php8.1-mbstring php8.1-zip php8.1-iconv
 ```
 
 - Apache or nginx. Example files are provided here:
