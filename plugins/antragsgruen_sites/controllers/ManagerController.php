@@ -42,11 +42,12 @@ class ManagerController extends Base
         $siteIds = [];
 
         $adminSites = [];
-        foreach ($user->adminSites as $adminSite) {
-            $addSiteTo($adminSites, $siteIds, $adminSite);
-        }
-        foreach ($user->consultationPrivileges as $adminConsultation) {
-            $addSiteTo($adminSites, $siteIds, $adminConsultation->consultation->site);
+        foreach ($user->userGroups as $userGroup) {
+            if ($userGroup->siteId && $userGroup->site) {
+                $addSiteTo($adminSites, $siteIds, $userGroup->site);
+            } elseif ($userGroup->consultationId && $userGroup->consultation) {
+                $addSiteTo($adminSites, $siteIds, $userGroup->consultation->site);
+            }
         }
 
         $userSites = [];
