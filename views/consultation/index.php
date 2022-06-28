@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\{Amendment, AmendmentSupporter, ConsultationUserGroup, Motion, MotionSupporter, User};
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /**
@@ -77,7 +78,11 @@ if ($myself) {
             $motion = $motionSupport->getIMotion();
             list($class, $title) = $getMyMotionAttrs($motion, $motionSupport);
             echo '<li class="' . $class . '"><div class="firstLine">';
-            $motionLink = \app\components\UrlHelper::createMotionUrl($motion);
+            if ($motion->status === \app\models\db\IMotion::STATUS_DRAFT) {
+                $motionLink = UrlHelper::createMotionUrl($motion, 'createconfirm', ['fromMode' => 'create']);
+            } else {
+                $motionLink = UrlHelper::createMotionUrl($motion);
+            }
             echo Html::a(Html::encode($motion->getTitleWithPrefix()), $motionLink, ['class' => 'motion' . $motion->id]);
             echo ' (' . Html::encode($title) . ')';
             echo ': ' . Html::encode($motion->getMyConsultation()->getStatuses()->getStatusName($motion->status));
@@ -104,7 +109,11 @@ if ($myself) {
             $amendment = $amendmentSupport->getIMotion();
             list($class, $title) = $getMyMotionAttrs($amendment, $amendmentSupport);
             echo '<li class="' . $class . '"><div class="firstLine">';
-            $amendmentUrl = \app\components\UrlHelper::createAmendmentUrl($amendment);
+            if ($amendment->status === \app\models\db\IMotion::STATUS_DRAFT) {
+                $amendmentUrl = UrlHelper::createAmendmentUrl($amendment, 'createconfirm', ['fromMode' => 'create']);
+            } else {
+                $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
+            }
             echo Html::a(Html::encode($amendment->getTitle()), $amendmentUrl, ['class' => 'amendment' . $amendment->id]);
             echo ' (' . Html::encode($title) . ')';
             echo ': ' . Html::encode($amendment->getMyConsultation()->getStatuses()->getStatusName($amendment->status));

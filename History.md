@@ -6,6 +6,7 @@
 - The voting result page now has a full screen mode and does not reload automatically anymore.
 - Bugfix: Some constellations of whitespaces and line breaks at the end of list points could lead to problems with amendments.
 - Bugfix: When saving binary files to the file system was enabled, copying / moving motions to other consultations broke uploaded images and PDFs.
+- Bugfix: If users started to create a motion or amendment but did not confirm them, the draft was visible on the home page, but not accessible.
 
 ## Version 4.10.0 (2022-05-21)
 
