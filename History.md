@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.11.0 [not released yet]
+
+- WARNING: if you are using a PHP 7.3 or older, then update to PHP 8.0 or newer first before installing this update!
+
 ### Version 4.10.1 (2022-07-01)
 
 - Public votings assigned to user groups now also show the users that have not voted yet in the admin view.
