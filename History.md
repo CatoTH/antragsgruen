@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.10.1 [not published yet]
+### Version 4.10.1 (2022-07-01)
 
 - Public votings assigned to user groups now also show the users that have not voted yet in the admin view.
 - The voting result page now has a full screen mode and does not reload automatically anymore.
