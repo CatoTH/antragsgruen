@@ -14,10 +14,10 @@ $I->wait(0.3);
 $I->see('Voting rights', '.groupList .group' . AcceptanceTester::FIRST_FREE_USERGROUP_ID);
 
 $I->dontSeeElement('.user2');
-$I->clickJS('.addUsersOpener');
+$I->clickJS('.addUsersOpener.email');
 $I->fillField('#emailAddresses', 'testuser@example.org');
 $I->fillField('#names', 'Testuser');
-$I->submitForm('#accountsCreateForm', [], 'addUsers');
+$I->submitForm('.addUsersByLogin.multiuser', [], 'addUsers');
 $I->seeElement('.alert-success');
 
 $I->wait(0.3);

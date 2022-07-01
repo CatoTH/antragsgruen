@@ -122,11 +122,6 @@ class SitePurger
             [':conId' => $consultationId]
         )->execute();
 
-        $connection->createCommand(
-            'DELETE FROM consultationUserprivilege WHERE consultationId = :conId',
-            [':conId' => $consultationId]
-        )->execute();
-
         $motionIds = $connection->createCommand(
             'SELECT id FROM motion WHERE consultationId = :conId',
             [':conId' => $consultationId]

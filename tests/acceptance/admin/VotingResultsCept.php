@@ -7,6 +7,7 @@ $I->populateDBData1();
 $I->wantTo('enter a voting result for a motion');
 
 $I->loginAndGotoMotionList()->gotoMotionEdit(2);
+$I->wait(0.1);
 
 $I->dontSeeElement('.votingDataHolder');
 $I->clickJS('.votingDataOpener');

@@ -825,8 +825,6 @@ class User extends ActiveRecord implements IdentityInterface
             $this->unlink('userGroups', $userGroup, true);
         }
 
-        ConsultationUserPrivilege::deleteAll(['userId' => $this->id]);
-
         $this->trigger(User::EVENT_DELETED, new UserEvent($this));
     }
 }
