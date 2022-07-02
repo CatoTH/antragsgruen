@@ -31,9 +31,9 @@ class Module extends ModuleBase
         ];
     }
 
-    public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
+    public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
-        $urls = parent::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
+        $urls = parent::getAllUrlRoutes($urls, $dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
 
         $urls[$dom . '<consultationPath:[\w_-]+>/TOP_5_Schwerpunktthemen.pdf'] = '/frauenrat/motion/schwerpunktthemen';
         $urls[$dom . '<consultationPath:[\w_-]+>/TOP_6_Sachantraege.pdf'] = '/frauenrat/motion/sachantraege';

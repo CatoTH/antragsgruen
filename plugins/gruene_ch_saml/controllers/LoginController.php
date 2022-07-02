@@ -2,6 +2,7 @@
 
 namespace app\plugins\gruene_ch_saml\controllers;
 
+use app\plugins\gruene_ch_saml\Module;
 use app\components\{RequestContext, UrlHelper};
 use app\controllers\Base;
 use app\models\db\User;
@@ -59,8 +60,12 @@ class LoginController extends Base
 
     public function actionLogin(string $backUrl = ''): void
     {
+        if (!in_array(Module::LOGIN_KEY, $this->site->getSettings()->loginMethods)) {
+            throw new \Exception('This login method is not enabled');
+        }
+
         if ($backUrl == '') {
-            $backUrl = \Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
+            $this->getPostValue('backUrl', UrlHelper::homeUrl());
         }
 
         try {
@@ -85,5 +90,10 @@ class LoginController extends Base
                 \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
             );
         }
+    }
+
+    public function actionLogout(): void
+    {
+        die("@TODO");
     }
 }

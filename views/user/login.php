@@ -100,7 +100,7 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
 
 foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
     $login = $plugins::getDedicatedLoginProvider();
-    if ($login) {
+    if ($login && in_array($login->getId(), $loginMethods, true)) {
         echo $login->renderLoginForm($backUrl);
     }
 }

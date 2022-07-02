@@ -9,6 +9,7 @@ use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
 {
+    public const LOGIN_KEY = 'gruene-ch';
     public const AUTH_KEY_USERS = 'gruene-ch';
 
     private static ?LoginProviderInterface $loginProvider = null;
@@ -28,12 +29,14 @@ class Module extends ModuleBase
         ];
     }
 
-    public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
+    public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
-        $urls = parent::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
-
-        $urls[$dom . '/verts-login'] = '/gruene_ch_saml/login/login';
-
-        return $urls;
+        return array_merge(
+            [
+                $dom . '/verts-login' => '/gruene_ch_saml/login/login',
+                $dom . '/verts-logout' => '/gruene_ch_saml/login/logout',
+            ],
+            parent::getAllUrlRoutes($urls, $dom, $dommotion, $dommotionOld, $domamend, $domamendOld)
+        );
     }
 }

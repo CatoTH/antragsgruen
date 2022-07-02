@@ -15,6 +15,11 @@ jobs:
         with:
           php_version: "7.4"
           php_extensions: zip intl gd
+      - uses: php-actions/composer@v6
+        with:
+          php_version: "7.4"
+          php_extensions: zip intl gd
+          command: require yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
       - name: Generate baseline
         run: |
           php vendor/bin/phpstan analyse --level=7 --error-format=github --generate-baseline

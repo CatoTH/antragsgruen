@@ -56,9 +56,8 @@ class ModuleBase extends Module
         return null;
     }
 
-    public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
+    public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
-        $urls = [];
         foreach (static::getMotionUrlRoutes() as $url => $route) {
             $urls[$dommotion . '/' . $url]    = $route;
             $urls[$dommotionOld . '/' . $url] = $route;

@@ -8,7 +8,7 @@ class SamlLogin implements LoginProviderInterface
 {
     public function getId(): string
     {
-        return 'gruene-ch';
+        return Module::LOGIN_KEY;
     }
 
     public function getName(): string
