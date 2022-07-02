@@ -7,10 +7,9 @@ use app\components\{ExternalPasswordAuthenticatorInterface,
     RequestContext,
     Tools,
     UrlHelper,
-    GruenesNetzSamlClient,
     mail\Tools as MailTools};
 use app\models\events\UserEvent;
-use app\models\exceptions\{ExceptionBase, FormError, Internal, MailNotSent, ServerConfiguration};
+use app\models\exceptions\{ExceptionBase, FormError, MailNotSent, ServerConfiguration};
 use app\models\settings\AntragsgruenApp;
 use yii\db\{ActiveQuery, ActiveRecord, Expression};
 use yii\web\IdentityInterface;
@@ -212,6 +211,9 @@ class User extends ActiveRecord implements IdentityInterface
         return $ids;
     }
 
+    /**
+     * @return ConsultationUserGroup[]
+     */
     public function getUserGroupsForConsultation(Consultation $consultation): array
     {
         return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
@@ -219,7 +221,10 @@ class User extends ActiveRecord implements IdentityInterface
         });
     }
 
-    public function getUserGroupsWithoutConsultation(): array
+    /**
+     * @return ConsultationUserGroup[]
+     */
+    public function getUserGroupsWithoutConsultation(?string $authType = null): array
     {
         return array_filter((array)$this->userGroups, function (ConsultationUserGroup $group): bool {
             return $group->consultationId === null && $group->siteId === null;
@@ -292,25 +297,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Returns the IDs of the organizations the user is enlisted in.
-     * This has to be provided by and updated by the authentication mechanism (only SAML supports this at this point).
-     *
-     * @return string[]
-     */
-    public function getMyOrganizationIds()
-    {
-        if ($this->organizationIds) {
-            $organizationIds = json_decode($this->organizationIds, true);
-            if ($this->isGruenesNetzUser()) {
-                $organizationIds = GruenesNetzSamlClient::resolveOrganizationIds($organizationIds);
-            }
-            return $organizationIds;
-        } else {
-            return [];
-        }
     }
 
     /**
@@ -800,7 +786,6 @@ class User extends ActiveRecord implements IdentityInterface
             'name_given'       => $this->nameGiven,
             'name_family'      => $this->nameFamily,
             'organization'     => $this->organization,
-            'organization_ids' => $this->getMyOrganizationIds(),
             'email'            => $this->email,
             'email_confirmed'  => ($this->emailConfirmed == 1),
             'auth'             => $this->auth,

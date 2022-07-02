@@ -88,40 +88,4 @@ class UserController extends Controller
 
         return 0;
     }
-
-    private function formatKurzname(string $name): string
-    {
-        // "Delmenhorst KV" => "KV Delmenhorst"
-        $name = preg_replace("/^(.*) KV$/siu", "KV $1", $name);
-        $name = preg_replace("/^(.*) RV$/siu", "RV $1", $name);
-        $name = preg_replace("/^(.*) LV$/siu", "LV $1", $name);
-
-        return $name;
-    }
-
-    /**
-     * Imports site-wide user groups
-     */
-    public function actionImportGroup(string $authType, string $filename): int
-    {
-        $groups = json_decode((string)file_get_contents($filename), true, 512, JSON_THROW_ON_ERROR);
-        foreach ($groups as $group) {
-            $externalId = $authType . ':' . $group['gliederungsschluessel'];
-
-            $internalGroup = ConsultationUserGroup::findOne(['externalId' => $externalId]);
-            if (!$internalGroup) {
-                $internalGroup = new ConsultationUserGroup();
-                $internalGroup->siteId = null;
-                $internalGroup->consultationId = null;
-                $internalGroup->externalId = $externalId;
-                $internalGroup->permissions = '';
-                $internalGroup->selectable = 1;
-            }
-            $internalGroup->title = $this->formatKurzname($group['kurzname']);
-            $internalGroup->templateId = null;
-            $internalGroup->save();
-        }
-
-        return 0;
-    }
 }
