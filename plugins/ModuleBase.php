@@ -4,6 +4,7 @@ namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\models\db\{Amendment, Consultation, Motion, Site, User, Vote, VotingBlock};
+use app\components\LoginProviderInterface;
 use app\models\layoutHooks\Hooks;
 use app\models\settings\{IMotionStatus, Layout, VotingData};
 use app\models\siteSpecificBehavior\DefaultBehavior;
@@ -148,6 +149,11 @@ class ModuleBase extends Module
     }
 
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
+    {
+        return null;
+    }
+
+    public static function getDedicatedLoginProvider(): ?LoginProviderInterface
     {
         return null;
     }

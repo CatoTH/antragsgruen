@@ -16,8 +16,7 @@ class Site implements \JsonSerializable
     /** @var bool */
     public $apiEnabled = false;
 
-    /** @var int[] */
-    public $loginMethods = [
+    public array $loginMethods = [
         self::LOGIN_STD,
         self::LOGIN_GRUENES_NETZ,
     ];
