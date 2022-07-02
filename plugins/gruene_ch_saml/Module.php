@@ -20,4 +20,20 @@ class Module extends ModuleBase
         }
         return self::$loginProvider;
     }
+
+    public static function getManagerUrlRoutes(string $domainPlain): array
+    {
+        return [
+            $domainPlain . '/verts-login' => '/gruene_ch_saml/login/login',
+        ];
+    }
+
+    public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
+    {
+        $urls = parent::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
+
+        $urls[$dom . '/verts-login'] = '/gruene_ch_saml/login/login';
+
+        return $urls;
+    }
 }
