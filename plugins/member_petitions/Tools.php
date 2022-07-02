@@ -2,6 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
+use app\plugins\gruene_de_saml\Module;
 use app\models\db\{Consultation, ConsultationMotionType, ConsultationUserGroup, IMotion, Motion, MotionSupporter, Site, User};
 use app\models\events\MotionEvent;
 use app\models\supportTypes\SupportBase;
@@ -27,7 +28,12 @@ class Tools
             return [];
         }
 
-        $organizations = $user->getMyOrganizationIds();
+        $organizations = [];
+        foreach ($user->getUserGroupsWithoutConsultation(Module::AUTH_KEY_GROUPS) as $userGroup) {
+            $orgas = explode(':', $userGroup->externalId);
+            $organizations[] = $orgas[1];
+        }
+
         $consultations = [];
         foreach ($site->consultations as $consultation) {
             /** @var ConsultationSettings $settings */

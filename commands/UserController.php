@@ -15,7 +15,12 @@ class UserController extends Controller
 
     public function options($actionID): array
     {
-        return ['groupIds', 'organization'];
+        switch ($actionID) {
+            case 'create':
+                return ['groupIds', 'organization'];
+            default:
+                return [];
+        }
     }
 
     /**

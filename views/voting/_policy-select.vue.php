@@ -1,8 +1,19 @@
 <?php
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+/** @var \app\models\db\Consultation */
+$consultation = $controller->consultation;
+
 $allPolicies = [];
 foreach (\app\models\policies\IPolicy::getPolicyNames() as $id => $name) {
     $allPolicies[] = ["id" => $id, "title" => $name];
+}
+
+if (\app\models\db\ConsultationUserGroup::consultationHasLoadableUserGroups($consultation)) {
+    $groupLoadUrl = \app\components\UrlHelper::createUrl('/admin/users/search-groups');
+} else {
+    $groupLoadUrl = '';
 }
 
 ob_start();
@@ -12,7 +23,8 @@ ob_start();
         <option v-for="policyIterator in ALL_POLICIES" :value="policyIterator.id" :selected="policy.id === policyIterator.id">{{ policyIterator.title }}</option>
     </select>
     <v-select v-if="policy.id === POLICY_USER_GROUPS"
-        multiple :options="userGroupOptions" :reduce="group => group.id" :value="userGroups"
+              @search="onGroupSearch"
+              multiple :options="userGroupOptions" :reduce="group => group.id" :value="userGroups"
               @input="setSelectedGroups($event)"></v-select>
 </div>
 <?php
@@ -21,6 +33,7 @@ $html = ob_get_clean();
 
 <script>
     const ALL_POLICIES = <?= json_encode($allPolicies) ?>;
+    const GROUP_LOAD_URL = <?= json_encode($groupLoadUrl) ?>;
 
     Vue.component('policy-select', {
         template: <?= json_encode($html) ?>,
@@ -28,16 +41,20 @@ $html = ob_get_clean();
         data() {
             return {
                 changedUserGroups: null,
+                ajaxLoadedUserGroups: [],
             }
         },
         computed: {
             userGroupOptions: function () {
-                return this.allGroups.map(function(group) {
-                    return {
-                        label: group.title,
-                        id: group.id,
-                    }
-                });
+                return [
+                    ...this.allGroups.map(function(group) {
+                        return {
+                            label: group.title,
+                            id: group.id,
+                        }
+                    }),
+                    ...this.ajaxLoadedUserGroups
+                ];
             },
             userGroups: {
                 get: function () {
@@ -60,8 +77,19 @@ $html = ob_get_clean();
                 if (this.policy.id === POLICY_USER_GROUPS) {
                     data.user_groups = this.changedUserGroups;
                 }
-                console.log("emitting policy change", JSON.stringify(data));
                 this.$emit('change', data);
+            },
+            onGroupSearch(search, loading) {
+                if(search.length) {
+                    loading(true);
+
+                    fetch(GROUP_LOAD_URL + '?query=' + encodeURIComponent(search)).then(res => {
+                        res.json().then(json => {
+                            loading(false);
+                            this.ajaxLoadedUserGroups = json;
+                        });
+                    });
+                }
             },
             setPolicy: function ($event) {
                 this.policy.id = parseInt($event.target.value, 10);

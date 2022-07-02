@@ -2,6 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
+use app\plugins\gruene_de_saml\Module;
 use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
 use app\models\policies\IPolicy;
 
@@ -67,6 +68,11 @@ class MotionPolicy extends IPolicy
         /** @var ConsultationSettings $consultationSettings */
         $consultationSettings = $this->consultation->getSettings();
 
-        return in_array($consultationSettings->organizationId, $user->getMyOrganizationIds());
+        foreach ($user->getUserGroupsWithoutConsultation(Module::AUTH_KEY_GROUPS) as $userGroup) {
+            if ($userGroup->externalId === Module::AUTH_KEY_GROUPS . ':' . $consultationSettings->organizationId) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
-use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use app\models\settings\{AntragsgruenApp, Site as SiteSettings};
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int|null $id
@@ -65,6 +64,76 @@ class ConsultationUserGroup extends ActiveRecord
     {
         return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('userGroup', ['groupId' => 'id'])
                     ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
+    }
+
+    public static function consultationHasLoadableUserGroups(Consultation $consultation): bool
+    {
+        return in_array(SiteSettings::LOGIN_GRUENES_NETZ, $consultation->site->getSettings()->loginMethods);
+    }
+
+    /**
+     * @return ConsultationUserGroup[]
+     */
+    public static function findBySearchQuery(Consultation $consultation, string $queryString): array
+    {
+        if (!self::consultationHasLoadableUserGroups($consultation)) {
+            return [];
+        }
+
+        $allowedExternalPatterns = ['or'];
+        if (in_array(SiteSettings::LOGIN_GRUENES_NETZ, $consultation->site->getSettings()->loginMethods)) {
+            $allowedExternalPatterns[] = ['like', 'externalId', 'gruenesnetz:%', false];
+        }
+
+        /** @var ConsultationUserGroup[] $groups */
+        $groups = ConsultationUserGroup::find()
+            ->where([
+                'and',
+                ['siteId' => null],
+                $allowedExternalPatterns,
+                ['like', 'title', explode(" ", $queryString)],
+            ])
+            ->orderBy('title')
+            ->limit(100)
+            ->all();
+
+        return array_values(array_filter($groups, function (ConsultationUserGroup $group) use ($consultation): bool {
+            return $group->mayBeUsedForConsultation($consultation);
+        }));
+    }
+
+    public static function findByConsultation(Consultation $consultation, array $additionalIds = []): array
+    {
+        /** @var ConsultationUserGroup[] $groups */
+        $groups = ConsultationUserGroup::find()
+            ->where([
+                'or',
+                ['siteId' => $consultation->siteId],
+                ['consultationId' => $consultation->id],
+                ['in', 'id', $additionalIds],
+            ])
+            ->all();
+
+        return array_values(array_filter($groups, function (ConsultationUserGroup $group) use ($consultation): bool {
+            return $group->mayBeUsedForConsultation($consultation);
+        }));
+    }
+
+    public static function findByExternalId(string $externalId): ?ConsultationUserGroup
+    {
+        return ConsultationUserGroup::findOne(['externalId' => $externalId]);
+    }
+
+    public static function loadGroupsByIdForConsultation(Consultation $consultation, array $groupIds): array
+    {
+        $groups = [];
+        foreach ($groupIds as $groupId) {
+            $group = ConsultationUserGroup::findOne(intval($groupId));
+            if ($group && $group->mayBeUsedForConsultation($consultation)) {
+                $groups[] = $group;
+            }
+        }
+        return $groups;
     }
 
     // Hint: this method can be used if the group assignment of all users need to be evaluated in a call.
@@ -203,13 +272,13 @@ class ConsultationUserGroup extends ActiveRecord
     public function getAuthType(): int
     {
         if ($this->externalId === null) {
-            return \app\models\settings\Site::LOGIN_STD;
+            return SiteSettings::LOGIN_STD;
         }
         $authparts = explode(':', $this->externalId);
         if (preg_match('/^openslides\-/siu', $authparts[0])) {
-            return \app\models\settings\Site::LOGIN_OPENSLIDES;
+            return SiteSettings::LOGIN_OPENSLIDES;
         }
-        return \app\models\settings\Site::LOGIN_STD;
+        return SiteSettings::LOGIN_STD;
     }
 
     public function getVotingApiObject(): array
@@ -233,7 +302,7 @@ class ConsultationUserGroup extends ActiveRecord
         ];
     }
 
-    public function isRelevantForConsultation(Consultation $consultation): bool
+    public function isSpecificallyRelevantForConsultationOrSite(Consultation $consultation): bool
     {
         if ($this->consultationId) {
             return ($this->consultationId === $consultation->id);
@@ -244,12 +313,28 @@ class ConsultationUserGroup extends ActiveRecord
 
     public function isUserDeletable(): bool
     {
-        return $this->templateId === null;
+        // Automatic template-based user groups and system-wide groups may not be deleted by users
+        return $this->templateId === null && ($this->siteId !== null || $this->consultationId !== null);
     }
 
     public function belongsToExternalAuth(string $authPrefix): bool
     {
         return $this->externalId && (stripos($this->externalId, $authPrefix . ':') === 0);
+    }
+
+    public function mayBeUsedForConsultation(Consultation $consultation): bool
+    {
+        if ($this->consultationId !== null) {
+            return $this->consultationId === $consultation->id;
+        } elseif ($this->siteId !== null) {
+            return $this->siteId === $consultation->siteId;
+        } else {
+            if ($this->belongsToExternalAuth('gruenesnetz')) {
+                return in_array(SiteSettings::LOGIN_GRUENES_NETZ, $consultation->site->getSettings()->loginMethods);
+            }
+        }
+
+        return false;
     }
 
     public static function createDefaultGroupSiteAdmin(Site $site): self

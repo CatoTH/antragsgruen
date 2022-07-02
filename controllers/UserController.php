@@ -2,7 +2,8 @@
 
 namespace app\controllers;
 
-use app\components\{Captcha, ConsultationAccessPassword, RequestContext, Tools, UrlHelper, GruenesNetzSamlClient};
+use app\plugins\gruene_de_saml\SamlClient;
+use app\components\{Captcha, ConsultationAccessPassword, RequestContext, Tools, UrlHelper};
 use app\models\db\{AmendmentSupporter,
     EMailBlocklist,
     FailedLoginAttempt,
@@ -59,7 +60,7 @@ class UserController extends Base
         }
 
         try {
-            $samlClient = new GruenesNetzSamlClient();
+            $samlClient = new SamlClient();
             $samlClient->requireAuth();
 
             $this->loginUser($samlClient->getOrCreateUser());
@@ -219,12 +220,12 @@ class UserController extends Base
                 $this->redirect(AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
             } elseif ($backSubdomain) {
                 // Second step: we are on the main domain. Logout and redirect to the subdomain
-                $samlClient = new GruenesNetzSamlClient();
+                $samlClient = new SamlClient();
                 $samlClient->logout();
                 $this->redirect($backUrl);
             } else {
                 // No subdomain is involved, local logout on the main domain
-                $samlClient = new GruenesNetzSamlClient();
+                $samlClient = new SamlClient();
                 $samlClient->logout();
                 $this->redirect($backUrl);
             }

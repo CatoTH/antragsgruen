@@ -2,9 +2,8 @@
 
 use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
-use app\models\quorumType\IQuorumType;
 use app\models\votings\AnswerTemplates;
-use app\models\db\{Consultation, ConsultationUserGroup, IMotion, User, VotingBlock};
+use app\models\db\{Consultation, ConsultationUserGroup, User, VotingBlock};
 use yii\helpers\Html;
 
 $user = User::getCurrentUser();

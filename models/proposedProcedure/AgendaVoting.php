@@ -2,6 +2,7 @@
 
 namespace app\models\proposedProcedure;
 
+use app\models\policies\UserGroups;
 use app\models\quorumType\NoQuorum;
 use app\models\db\{ConsultationUserGroup, IVotingItem, User, Vote, VotingBlock};
 use app\models\exceptions\Access;
@@ -101,7 +102,9 @@ class AgendaVoting
         ];
 
         if ($this->voting) {
-            foreach ($this->voting->getMyConsultation()->getAllAvailableUserGroups() as $userGroup) {
+            $policy = $this->voting->getVotingPolicy();
+            $additionalIds = (is_a($policy, UserGroups::class) ? $policy->getAllowedUserGroups() : []);
+            foreach (ConsultationUserGroup::findByConsultation($this->voting->getMyConsultation(), $additionalIds) as $userGroup) {
                 $votingBlockJson['user_groups'][] = $userGroup->getVotingApiObject();
             }
         }

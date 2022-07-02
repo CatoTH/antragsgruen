@@ -91,7 +91,7 @@ class UserGroupAdminMethods
         foreach ($user->userGroups as $userGroup) {
             $userHasGroups[] = $userGroup->id;
 
-            if (!$userGroup->isRelevantForConsultation($this->consultation)) {
+            if (!$userGroup->isSpecificallyRelevantForConsultationOrSite($this->consultation)) {
                 continue;
             }
             if (!in_array($userGroup->id, $groupIds)) {
