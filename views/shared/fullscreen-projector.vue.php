@@ -25,7 +25,7 @@ ob_start();
 
     <fullscreen-imotion v-if="imotion" :imotion="imotion"></fullscreen-imotion>
 
-    <fullscreen-speech v-if="dropdownSelection === 'speech'" :queue="selectedSpeakingList" :user="null" :csrf="null" :title="'Speaking List'"></fullscreen-speech>
+    <fullscreen-speech v-if="dropdownSelection === 'speech'" :initQueue="selectedSpeakingList" :user="null" :csrf="null" :title="'Speaking List'"></fullscreen-speech>
 </article>
 <?php
 $html = ob_get_clean();

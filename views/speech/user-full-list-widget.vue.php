@@ -162,14 +162,15 @@ $html = ob_get_clean();
 <script>
     __setVueComponent('speech', 'component', 'speech-user-full-list-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf', 'user', 'title'],
+        props: ['initQueue', 'csrf', 'user', 'title'],
+        mixins: [SPEECH_COMMON_MIXIN],
         data() {
             return {
                 registerName: this.user.name,
                 showApplicationForm: null // null = default form
             };
         },
-        created() {
+        beforeMount() {
             this.startPolling(false);
         },
         beforeUnmount() {

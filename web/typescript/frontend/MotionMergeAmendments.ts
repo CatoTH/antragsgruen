@@ -634,7 +634,7 @@ class MotionMergeAmendmentsParagraph {
             }
         };
 
-        para.statusWidget = new Vue({
+        para.statusWidget = Vue.createApp({
             template: `
                 <div class="statuses">
                     <paragraph-amendment-settings v-for="data in amendmentParagraphData"
@@ -648,9 +648,9 @@ class MotionMergeAmendmentsParagraph {
                                                   v-on:update="update($event)"
                     ></paragraph-amendment-settings>
                 </div>`,
-            data: {
+            data() { return {
                 amendmentParagraphData,
-            },
+            } },
             created() {
                 // Methods / callbacks called by the status manager
                 this.$on('status-updated', function (data) {
@@ -734,7 +734,11 @@ class MotionMergeAmendmentsParagraph {
                     para.hasUnsavedChanges = true;
                 }
             }
-        }).mount(this.$holder.find(".changeToolbar .statuses")[0]);
+        });
+
+        para.statusWidget.config.compilerOptions.whitespace = 'condense';
+        window['__initVueComponents'](para.statusWidget, 'merging');
+        para.statusWidget.mount(this.$holder.find(".changeToolbar .statuses")[0]);
     }
 
     public onAmendmentVersionChanged(amendmentId: number, version: string) {

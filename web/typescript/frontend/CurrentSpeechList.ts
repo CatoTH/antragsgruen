@@ -13,23 +13,27 @@ export class CurrentSpeechList {
             adminUrl: $element.data('admin-url'),
         };
         if ($element.hasClass('currentSpeechFullPage')) {
-            this.widget = new Vue({
+            this.widget = Vue.createApp({
                 template: `
-                    <speech-user-full-list-widget :queue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-full-list-widget>`,
-                data
-            }).mount($vueEl[0]);
+                    <speech-user-full-list-widget :initQueue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-full-list-widget>`,
+                data() { return data }
+            });
         } else if ($element.hasClass('currentSpeechInline')) {
-            this.widget = new Vue({
+            this.widget = Vue.createApp({
                 template: `
-                    <speech-user-inline-widget :queue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-inline-widget>`,
-                data
-            }).mount($vueEl[0]);
+                    <speech-user-inline-widget :initQueue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-inline-widget>`,
+                data() { return data }
+            });
         } else {
-            this.widget = new Vue({
+            this.widget = Vue.createApp({
                 template: `
-                    <speech-user-footer-widget :queue="queue" :user="user" :csrf="csrf" :title="title" :adminUrl="adminUrl"></speech-user-footer-widget>`,
-                data
-            }).mount($vueEl[0]);
+                    <speech-user-footer-widget :initQueue="queue" :user="user" :csrf="csrf" :title="title" :adminUrl="adminUrl"></speech-user-footer-widget>`,
+                data() { return data }
+            });
         }
+
+        this.widget.config.compilerOptions.whitespace = 'condense';
+        window['__initVueComponents'](this.widget, 'speech');
+        this.widget.mount($vueEl[0]);
     }
 }

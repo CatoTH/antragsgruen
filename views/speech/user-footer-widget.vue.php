@@ -136,14 +136,15 @@ $html = ob_get_clean();
 <script>
     __setVueComponent('speech', 'component', 'speech-user-footer-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf', 'user', 'title', 'adminUrl'],
+        props: ['initQueue', 'csrf', 'user', 'title', 'adminUrl'],
+        mixins: [SPEECH_COMMON_MIXIN],
         data() {
             return {
                 registerName: this.user.name,
                 showApplicationForm: false, // "null" is already taken by the default form
             };
         },
-        created() {
+        beforeMount() {
             this.startPolling(false);
         },
         beforeUnmount() {

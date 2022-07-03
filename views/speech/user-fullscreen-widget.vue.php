@@ -75,8 +75,9 @@ $html = ob_get_clean();
 <script>
     __setVueComponent('fullscreen', 'component', 'fullscreen-speech', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf', 'user', 'title'],
-        created() {
+        props: ['initQueue', 'csrf', 'user', 'title'],
+        mixins: [SPEECH_COMMON_MIXIN],
+        beforeMount() {
             this.startPolling(true);
         },
         beforeUnmount() {

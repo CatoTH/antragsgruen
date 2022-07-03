@@ -16,10 +16,19 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
     const SPEECH_COMMON_MIXIN = {
         data() {
             return {
+                queue: null,
                 pollingId: null,
                 timerId: null,
                 timeOffset: 0, // milliseconds the browser is ahead of the server time
                 remainingSpeakingTime: null
+            }
+        },
+        watch: {
+            initQueue: {
+                handler(newVal) {
+                    this.queue = newVal;
+                },
+                immediate: true
             }
         },
         computed: {
@@ -121,6 +130,10 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
             },
             reloadData: function () {
                 const widget = this;
+                if (!widget.queue) {
+                    return;
+                }
+
                 $.get(pollUrl.replace(/QUEUEID/, widget.queue.id), function (data) {
                     widget.queue = data;
                     widget.recalcTimeOffset(new Date(data['current_time']));
