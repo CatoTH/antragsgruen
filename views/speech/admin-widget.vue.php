@@ -215,9 +215,10 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
 
     __setVueComponent('speech', 'component', 'speech-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf'],
+        props: ['initQueue', 'csrf'],
         data() {
             return {
+                queue: null,
                 showPreviousList: false,
                 pollingId: null,
                 timerId: null,
@@ -228,6 +229,14 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 },
                 remainingSpeakingTime: null
             };
+        },
+        watch: {
+            initQueue: {
+                handler(newVal) {
+                    this.queue = newVal;
+                },
+                immediate: true
+            }
         },
         computed: {
             hasSpeakingTime: {

@@ -14,53 +14,30 @@ use yii\web\{AssetBundle, Controller, View};
 
 class Layout
 {
-    /** @var array */
-    public $menu                 = [];
-    /** @var array */
-    public $breadcrumbs          = [];
-    /** @var array */
-    public $multimenu            = [];
-    /** @var string */
-    public $preSidebarHtml       = '';
-    /** @var string */
-    public $postSidebarHtml      = '';
-    /** @var array */
-    public $menusHtml            = [];
-    /** @var array */
-    public $menusHtmlSmall       = [];
-    /** @var string */
-    public $menusSmallAttachment = '';
-    /** @var bool */
-    public $robotsNoindex        = false;
-    /** @var string */
-    public $ogImage              = '';
-    /** @var array */
-    public $extraCss             = [];
-    /** @var array */
-    public $extraJs              = [];
-    /** @var array */
-    public $vueTemplates         = [];
-    /** @var array */
-    public $bodyCssClasses       = [];
-    /** @var array */
-    public $onloadJs             = [];
-    /** @var bool */
-    public $fullWidth            = false;
-    /** @var bool */
-    public $fullScreen           = false;
-    /** @var null|string */
-    public $mainCssFile          = null;
-    /** @var array */
-    public $mainAMDModules       = [];
-    /** @var null|string */
-    public $canonicalUrl         = null;
-    /** @var array */
-    public $alternateLanuages    = [];
-    /** @var array */
-    public $feeds                = [];
+    public array $menu = [];
+    public array $breadcrumbs = [];
+    public array $multimenu = [];
+    public string $preSidebarHtml = '';
+    public string $postSidebarHtml = '';
+    public array $menusHtml = [];
+    public array $menusHtmlSmall = [];
+    public string $menusSmallAttachment = '';
+    public bool $robotsNoindex = false;
+    public string $ogImage = '';
+    public array $extraCss = [];
+    public array $extraJs = [];
+    public array $vueTemplates = [];
+    public array $bodyCssClasses = [];
+    public array $onloadJs = [];
+    public bool $fullWidth = false;
+    public bool $fullScreen = false;
+    public ?string $mainCssFile = null;
+    public array $mainAMDModules = [];
+    public ?string $canonicalUrl = null;
+    public array $alternateLanuages = [];
+    public array $feeds = [];
 
-    /** @var Consultation|null */
-    protected $consultation;
+    protected ?Consultation $consultation;
 
     /**
      * @return string[][]
@@ -301,7 +278,7 @@ class Layout
 
     public function loadVue(): void
     {
-        $this->addJS('npm/vue.global.js');
+        $this->addJS('npm/vue.global.prod.js');
     }
 
     public function addFullscreenTemplates(): void

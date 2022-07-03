@@ -5,7 +5,7 @@ export class SpeechListEdit {
 
     constructor(private $element: JQuery) {
         this.widget = Vue.createApp({
-            template: `<speech-admin-widget v-bind:queue="queue" v-bind:csrf="csrf"></speech-admin-widget>`,
+            template: `<speech-admin-widget :initQueue="queue" :csrf="csrf"></speech-admin-widget>`,
             data() { return {
                 queue: $element.data('queue'),
                 user: $element.data('user'),

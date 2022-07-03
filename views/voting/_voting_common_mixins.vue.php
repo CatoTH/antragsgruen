@@ -90,7 +90,7 @@ use app\models\policies\UserGroups;
             },
             votingHasMajority: function () {
                 // Used for the currently running vote as it is
-                return this.voting.answers_template === this.ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answers_template === this.ANSWER_TEMPLATE_YES_NO;
+                return this.voting.answers_template === this.ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.voting.answers_template === this.ANSWER_TEMPLATE_YES_NO;
             },
             votingIsPresenceCall: function () {
                 return (this.voting.answers_template === this.ANSWER_TEMPLATE_PRESENT);

@@ -18,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class Layout
 {
     /** @var Hooks[] */
-    private static $hooks = [];
+    private static array $hooks = [];
 
     public static function addHook(Hooks $hook): void
     {
