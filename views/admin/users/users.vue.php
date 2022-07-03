@@ -305,6 +305,7 @@ $html = ob_get_clean();
                 this.changedUserGroups[user.id] = $event;
             },
             addSelectedGroup: function(groupId, user) {
+                // Hint: this does not update the UI, is only used by test cases
                 let groups = this.selectedGroups(user);
                 groups.push(groupId);
                 this.setSelectedGroups(groups, user);

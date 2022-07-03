@@ -53,7 +53,11 @@
                 this.selectizeElement = $(this.$el).find("select").selectize(selectizeOption);
 
                 $(this.$el).find("select").on("change", () => {
-                    this.$emit('change', this.selectizeElement.val());
+                    var val = this.selectizeElement.val();
+                    if (typeof val !== "object") {
+                        val = [val];
+                    }
+                    this.$emit('change', val);
                 });
             },
         },

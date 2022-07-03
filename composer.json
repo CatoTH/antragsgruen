@@ -75,6 +75,7 @@
     },
     "optimize-autoloader": true,
     "allow-plugins": {
+      "simplesamlphp/composer-module-installer": true,
       "yiisoft/yii2-composer": true
     }
   },

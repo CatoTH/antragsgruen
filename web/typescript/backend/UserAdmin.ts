@@ -124,9 +124,9 @@ export class UserAdmin {
         this.widget.config.compilerOptions.whitespace = 'condense';
         window['__initVueComponents'](this.widget, 'users');
 
-        this.widget.mount(vueEl);
+        const userWidgetComponent = this.widget.mount(vueEl);
 
         // Used by tests to control vue-select
-        window['userWidget'] = this.widget;
+        window['userWidget'] = userWidgetComponent;
     }
 }

@@ -3,7 +3,7 @@
 use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
 use app\models\votings\AnswerTemplates;
-use app\models\db\{Consultation, ConsultationUserGroup, User, VotingBlock};
+use app\models\db\{Consultation, ConsultationUserGroup, IMotion, User, VotingBlock};
 use yii\helpers\Html;
 
 $user = User::getCurrentUser();
@@ -190,6 +190,8 @@ $html = ob_get_clean();
         mixins: [VOTING_COMMON_MIXIN],
         data() {
             return {
+                VOTING_STATUS_ACCEPTED: <?= IMotion::STATUS_ACCEPTED ?>,
+                VOTING_STATUS_REJECTED: <?= IMotion::STATUS_REJECTED ?>,
                 shownVoteLists: []
             }
         },
@@ -225,9 +227,9 @@ $html = ob_get_clean();
                     "title": answer.title,
                     "btnClass": "btn" + answer.api_id.charAt(0).toUpperCase() + answer.api_id.slice(1),
                 };
-                if (answer.status_id === VOTING_STATUS_ACCEPTED) {
+                if (answer.status_id === this.VOTING_STATUS_ACCEPTED) {
                     data.icon = 'yes';
-                } else if (answer.status_id === VOTING_STATUS_REJECTED) {
+                } else if (answer.status_id === this.VOTING_STATUS_REJECTED) {
                     data.icon = 'no';
                 } else {
                     data.icon = null;

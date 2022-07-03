@@ -63,7 +63,7 @@ return [
     'truncated_supp_x'      => 'sowie %NUM% weitere Antragsteller*innen, die online auf Antragsgrün eingesehen werden können.',
     'voting_export_date'    => 'Exportiert am',
     'voting_unknown_user'   => 'Unbekannte Nutzerin',
-    'voting_eligible_all'   => 'All eligible users',
+    'voting_eligible_all'   => 'Alle Berechtigte',
     'voting_total_ans'      => 'Stimmen pro Antwort',
     'voting_userlist'       => 'Abstimmende',
 ];

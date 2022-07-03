@@ -23,7 +23,7 @@ class Layout
     public array $menusHtmlSmall = [];
     public string $menusSmallAttachment = '';
     public bool $robotsNoindex = false;
-    public string $ogImage = '';
+    public ?string $ogImage = null;
     public array $extraCss = [];
     public array $extraJs = [];
     public array $vueTemplates = [];

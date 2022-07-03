@@ -3,7 +3,8 @@ declare var Vue: any;
 const POLICY_USER_GROUPS  = 6;
 
 export class VotingAdmin {
-    private widget;
+    private widget: any;
+    private widgetComponent: any;
     private element: HTMLElement;
 
     constructor($element: JQuery) {
@@ -209,10 +210,10 @@ export class VotingAdmin {
         this.widget.config.compilerOptions.whitespace = 'condense';
         window['__initVueComponents'](this.widget, 'voting');
 
-        this.widget.mount(vueEl);
+        this.widgetComponent = this.widget.mount(vueEl);
 
         // Used by tests to control vue-select
-        window['votingAdminWidget'] = this.widget;
+        window['votingAdminWidget'] = this.widgetComponent;
     }
 
     private initPolicyWidget() {
@@ -312,7 +313,7 @@ export class VotingAdmin {
             } else {
                 userGroups = [];
             }
-            this.widget.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic);
+            this.widgetComponent.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic);
 
             form.classList.add('hidden');
             opener.classList.remove('hidden');

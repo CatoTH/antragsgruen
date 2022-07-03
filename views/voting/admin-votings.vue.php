@@ -1,11 +1,6 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\majorityType\IMajorityType;
-use app\models\policies\IPolicy;
-use app\models\quorumType\IQuorumType;
-use app\models\votings\AnswerTemplates;
-use app\models\db\VotingBlock;
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
@@ -56,10 +51,10 @@ ob_start();
             </div>
             <div class="quorumType" v-if="getVotingQuorum(voting)">
                 <strong><?= Yii::t('voting', 'settings_quorumtype') ?>:</strong>
-                {{ getVotingQuorum().name }}
+                {{ getVotingQuorum(voting).name }}
                 ({{ quorumIndicator }})
-                <span class="glyphicon glyphicon-info-sign" :aria-label="getVotingQuorum().description"
-                      v-tooltip="getVotingQuorum().description" v-if="getVotingQuorum().description !== ''"></span>
+                <span class="glyphicon glyphicon-info-sign" :aria-label="getVotingQuorum(voting).description"
+                      v-tooltip="getVotingQuorum(voting).description" v-if="getVotingQuorum(voting).description !== ''"></span>
             </div>
             <div class="votingPolicy">
                 <strong><?= Yii::t('voting', 'settings_votepolicy') ?>:</strong>
@@ -301,7 +296,7 @@ ob_start();
         </fieldset>
         <fieldset class="votePolicy">
             <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
-            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="voting.user_groups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+            <policy-select allow-anonymous="false" :disabled="!isPreparing && !isOffline" :policy="votePolicy" :all-groups="voting.user_groups" @change="setPolicy($event)" ref="policy-select"></policy-select>
         </fieldset>
         <fieldset class="majorityTypeSettings" v-if="selectedAnswersHaveMajority">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
