@@ -33,8 +33,7 @@ class Module extends ModuleBase
     {
         return array_merge(
             [
-                $dom . '/verts-login' => '/gruene_ch_saml/login/login',
-                $dom . '/verts-logout' => '/gruene_ch_saml/login/logout',
+                $dom . 'verts-login' => '/gruene_ch_saml/login/login',
             ],
             parent::getAllUrlRoutes($urls, $dom, $dommotion, $dommotionOld, $domamend, $domamendOld)
         );
