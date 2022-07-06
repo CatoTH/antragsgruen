@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\updater\UpdateChecker;
+use app\models\settings\AntragsgruenApp;
 use app\components\{ConsultationAccessPassword, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, ISupporter, Site, SpeechQueue, User};
 use app\models\AdminTodoItem;
@@ -87,11 +88,22 @@ class IndexController extends AdminBase
 
                 if ($model->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
                     $settings = $model->site->getSettings();
-                    if ($this->isPostSet('login')) {
-                        $settings->loginMethods = array_map('IntVal', $post['login']);
-                    } else {
-                        $settings->loginMethods = [];
+
+                    $settings->loginMethods = [];
+                    // Hard-coded login types
+                    foreach ($post['login'] ?? [] as $loginIds) {
+                        if (is_numeric($loginIds)) {
+                            $settings->loginMethods[] = intval($loginIds);
+                        }
                     }
+                    // Plugin-provided login types
+                    foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                        $loginType = $plugin::getDedicatedLoginProvider();
+                        if ($loginType && isset($post['login']) && in_array($loginType->getId(), $post['login'], true)) {
+                            $settings->loginMethods[] = $loginType->getId();
+                        }
+                    }
+
                     // Prevent locking out myself
                     if (User::getCurrentUser()->getAuthType() === \app\models\settings\Site::LOGIN_STD) {
                         $settings->loginMethods[] = \app\models\settings\Site::LOGIN_STD;

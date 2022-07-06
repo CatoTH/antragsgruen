@@ -1,5 +1,6 @@
 <?php
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{Captcha, UrlHelper};
 use app\models\db\User;
 use app\models\forms\LoginUsernamePasswordForm;
@@ -28,15 +29,14 @@ if ($controller->site) {
 } else {
     $loginMethods = SiteSettings::SITE_MANAGER_LOGIN_METHODS;
 }
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = Yii::$app->params;
+$params = AntragsgruenApp::getInstance();
 
 $externalAuthenticator = User::getExternalAuthenticator();
 
 echo '<h1>' . Yii::t('user', 'login_title') . '</h1>';
 
 $loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login_pre');
-if ($loginText && trim($loginText->text) !== '') {
+if (trim($loginText->text) !== '') {
     echo '<div class="content contentPage">';
     echo $loginText->text;
     echo '</div>';
@@ -95,6 +95,13 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
             <?= Html::endForm() ?>
         </section>
         <?php
+    }
+}
+
+foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
+    $login = $plugins::getDedicatedLoginProvider();
+    if ($login && in_array($login->getId(), $loginMethods, true)) {
+        echo $login->renderLoginForm($backUrl);
     }
 }
 
@@ -257,7 +264,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
                 <?= Html::a(Yii::t('user', 'login_forgot_pw'), UrlHelper::createUrl('user/recovery')) ?>
             </div>
             <?php
-        } elseif ($externalAuthenticator && $externalAuthenticator->resetPasswordAlternativeLink()) {
+        } elseif ($externalAuthenticator->resetPasswordAlternativeLink()) {
             ?>
             <div class="col-md-6 passwordRecovery">
                 <?= Html::a(Yii::t('user', 'login_forgot_pw'), $externalAuthenticator->resetPasswordAlternativeLink()) ?>
@@ -280,7 +287,7 @@ if ($hide_ww_login) {
 }
 
 $loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login_post');
-if ($loginText && trim($loginText->text) !== '') {
+if (trim($loginText->text) !== '') {
     echo '<div class="content contentPage">';
     echo $loginText->text;
     echo '</div>';

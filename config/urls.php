@@ -122,7 +122,7 @@ if (YII_ENV === 'test') {
 }
 
 foreach ($params->getPluginClasses() as $pluginClass) {
-    $urlRules = array_merge($urlRules, $pluginClass::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld));
+    $urlRules = $pluginClass::getAllUrlRoutes($urlRules, $dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
 }
 
 // Catch-All-Routes, should be loaded last

@@ -211,6 +211,15 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
                      ' ' . Yii::t('admin', 'siteacc_ww') .
                      '</label></div>';
             }
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                $loginProvider = $plugin::getDedicatedLoginProvider();
+                if ($loginProvider) {
+                    $isSelected = in_array($loginProvider->getId(), $siteSettings->loginMethods, true);
+                    echo '<div class="' . Html::encode($loginProvider->getId()) . '"><label>';
+                    echo Html::checkbox('login[]', $isSelected, ['value' => $loginProvider->getId()]);
+                    echo ' ' . Html::encode($loginProvider->getName()) . '</label></div>';
+                }
+            }
             ?>
         </fieldset>
     </div>

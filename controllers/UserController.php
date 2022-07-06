@@ -55,7 +55,7 @@ class UserController extends Base
             return 'SAML is not supported';
         }
 
-        if ($backUrl == '') {
+        if ($backUrl === '') {
             $backUrl = Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
         }
 
@@ -207,7 +207,7 @@ class UserController extends Base
     {
         try {
             $backSubdomain = UrlHelper::getSubdomain($backUrl);
-            $currDomain    = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+            $currDomain    = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'];
             $currSubdomain = UrlHelper::getSubdomain($currDomain);
 
             if ($currSubdomain) {
@@ -215,7 +215,7 @@ class UserController extends Base
                 RequestContext::getUser()->logout();
                 $backParts = parse_url($backUrl);
                 if (!isset($backParts['host'])) {
-                    $backUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
+                    $backUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
                 }
                 $this->redirect(AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
             } elseif ($backSubdomain) {
@@ -241,14 +241,22 @@ class UserController extends Base
 
     public function actionLogout(string $backUrl = ''): string
     {
-        /** @var AntragsgruenApp $params */
-        $params = Yii::$app->params;
-
-        if ($backUrl == '') {
+        if ($backUrl === '') {
             $backUrl = Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
         }
 
-        if ($params->isSamlActive()) {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $loginProvider = $plugin::getDedicatedLoginProvider();
+            if ($loginProvider && $loginProvider->userWasLoggedInWithProvider(User::getCurrentUser())) {
+                $loginProvider->logoutCurrentUserIfRelevant();
+
+                RequestContext::getUser()->logout();
+                $this->redirect($backUrl, 307);
+                return '';
+            }
+        }
+
+        if (AntragsgruenApp::getInstance()->isSamlActive()) {
             return $this->logoutSaml($backUrl);
         } else {
             RequestContext::getUser()->logout();

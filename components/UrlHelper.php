@@ -10,11 +10,8 @@ use yii\helpers\Url;
 
 class UrlHelper
 {
-    /** @var null|Site */
-    private static $currentSite = null;
-
-    /** @var null|Consultation */
-    private static $currentConsultation = null;
+    private static ?Site $currentSite = null;
+    private static ?Consultation $currentConsultation = null;
 
     public static function setCurrentSite(?Site $site): void
     {
@@ -285,11 +282,10 @@ class UrlHelper
      */
     public static function getSubdomain(string $url): ?string
     {
-        /** @var AntragsgruenApp $params */
-        $params = Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
 
         $urlParts = parse_url($url);
-        $scheme   = $urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME'];
+        $scheme   = $urlParts['scheme'] ?? ($_SERVER['REQUEST_SCHEME'] ?? 'http');
         $host     = $urlParts['host'] ?? $_SERVER['HTTP_HOST'];
         $fullhost = $scheme . '://' . $host . '/';
         if ($params->domainPlain == $fullhost) {

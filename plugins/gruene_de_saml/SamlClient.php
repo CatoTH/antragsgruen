@@ -99,7 +99,7 @@ class SamlClient
 
         $organizations = $this->resolveAllOrgaIds($this->params[static::PARAM_ORGANIZATION] ?? []);
 
-        /** @var User $user */
+        /** @var User|null $user */
         $user = User::findOne(['auth' => $auth]);
         if (!$user) {
             $user = new User();

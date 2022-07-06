@@ -13,6 +13,11 @@ jobs:
         with:
           php_version: "7.4"
           php_extensions: zip intl gd
+      - uses: php-actions/composer@v6
+        with:
+          php_version: "7.4"
+          php_extensions: zip intl gd
+          command: require yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
