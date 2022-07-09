@@ -29,7 +29,7 @@ $I->dontSeeElement('#newAmendmentAlert');
 
 $I->wantTo('see the new amendments');
 
-// Make Ä6 and Ä7 invisible
+// Make Ä6 and Ä7 visible
 $I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 274, \app\models\db\IMotion::STATUS_SUBMITTED_SCREENED);
 $I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 276, \app\models\db\IMotion::STATUS_SUBMITTED_SCREENED);
 

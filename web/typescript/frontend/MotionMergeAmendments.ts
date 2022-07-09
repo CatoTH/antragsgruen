@@ -47,6 +47,7 @@ class AmendmentStatuses {
         AmendmentStatuses.statuses[amendmentId] = status;
         AmendmentStatuses.versions[amendmentId] = version;
         AmendmentStatuses.votingData[amendmentId] = votingData;
+        AmendmentStatuses.statusListeners[amendmentId] = [];
 
         console.log("registered new amendment status", AmendmentStatuses.statuses, AmendmentStatuses.versions, AmendmentStatuses.votingData);
     }
@@ -1074,23 +1075,28 @@ export class MotionMergeAmendments {
     }
 
     private onReceivedBackendStatus(newAmendments: any[], deletedAmendments: any[]) {
-        const newAmendmentStaticData = {};
+        const newAmendmentStaticData = {},
+            newAmendmentStatus = {};
         newAmendments['staticData'].forEach(amendmentData => {
-            newAmendmentStaticData[amendmentData['id']] = amendmentData;
             const status = newAmendments['status'][amendmentData['id']];
+            newAmendmentStaticData[amendmentData['id']] = amendmentData;
+            newAmendmentStatus[amendmentData['id']] = status;
+
             AmendmentStatuses.registerNewAmendment(amendmentData['id'], status['status'], status['version'], status['votingData']);
 
-            Object.keys(newAmendments['paragraphs']).forEach(typeId => {
-                Object.keys(newAmendments['paragraphs'][typeId]).forEach(paragraphNo => {
-                    const paraObj = this.paragraphsByTypeAndNo[typeId + '_' + paragraphNo];
-                    newAmendments['paragraphs'][typeId][paragraphNo].forEach(data => {
-                        const amendmentData = newAmendmentStaticData[data.amendmentId];
-                        paraObj.onAmendmentAdded(amendmentData, data['nameBase'], data['idAdd'], data['active'], status['status'], status['version'], status['votingData'])
-                    });
+            this.alertAboutNewAmendment(amendmentData['id'], amendmentData['titlePrefix']);
+        });
+
+        Object.keys(newAmendments['paragraphs']).forEach(typeId => {
+            Object.keys(newAmendments['paragraphs'][typeId]).forEach(paragraphNo => {
+                const paraObj = this.paragraphsByTypeAndNo[typeId + '_' + paragraphNo];
+                newAmendments['paragraphs'][typeId][paragraphNo].forEach(data => {
+                    const paraAmendmentData = newAmendmentStaticData[data.amendmentId];
+                    const status = newAmendmentStatus[data.amendmentId];
+                    paraObj.onAmendmentAdded(paraAmendmentData, data['nameBase'], data['idAdd'], data['active'], status['status'], status['version'], status['votingData'])
+                    AmendmentStatuses.registerParagraph(data.amendmentId, paraObj);
                 });
             });
-
-            this.alertAboutNewAmendment(amendmentData['id'], amendmentData['titlePrefix']);
         });
 
         deletedAmendments.forEach(amendmentId => {
