@@ -259,12 +259,21 @@ class Consultation extends ActiveRecord
         return $this->hasMany(UserConsultationScreening::class, ['consultationId' => 'id']);
     }
 
+    private array $availableUserGroupCache = [];
     /**
      * @return ConsultationUserGroup[]
      */
-    public function getAllAvailableUserGroups(array $additionalIds = []): array
+    public function getAllAvailableUserGroups(array $additionalIds = [], bool $allowCache = false): array
     {
-        return ConsultationUserGroup::findByConsultation($this, $additionalIds);
+        sort($additionalIds);
+        $cacheKey = (count($additionalIds) > 0 ? implode('-', $additionalIds) : 'default');
+        if ($allowCache && isset($this->availableUserGroupCache[$cacheKey])) {
+            return $this->availableUserGroupCache[$cacheKey];
+        }
+
+        $this->availableUserGroupCache[$cacheKey] =  ConsultationUserGroup::findByConsultation($this, $additionalIds);
+
+        return $this->availableUserGroupCache[$cacheKey];
     }
 
     public function getFiles(): ActiveQuery

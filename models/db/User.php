@@ -201,7 +201,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function getConsultationUserGroupIds(Consultation $consultation): array
     {
         $ids = [];
-        foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
+        foreach ($consultation->getAllAvailableUserGroups([], true) as $userGroup) {
             foreach ($userGroup->getUserIds() as $userId) {
                 if ($userId === $this->id) {
                     $ids[] = $userGroup->id;

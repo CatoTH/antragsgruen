@@ -8,14 +8,14 @@ use app\models\db\{Consultation, ConsultationMotionType, ConsultationUserGroup, 
 class UserGroups extends IPolicy
 {
     /** @var ConsultationUserGroup[] */
-    private $groups = [];
+    private array $groups = [];
 
     public function __construct(Consultation $consultation, IHasPolicies $baseObject, ?array $data)
     {
         parent::__construct($consultation, $baseObject, $data);
 
         $userGroupIds = $data['userGroups'] ?? [];
-        foreach ($consultation->getAllAvailableUserGroups($userGroupIds) as $group) {
+        foreach ($consultation->getAllAvailableUserGroups($userGroupIds, true) as $group) {
             if (in_array($group->id, $userGroupIds)) {
                 $this->groups[] = $group;
             }
