@@ -3,7 +3,7 @@
 use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
 use app\models\votings\AnswerTemplates;
-use app\models\db\{Consultation, ConsultationUserGroup, User, VotingBlock};
+use app\models\db\{Consultation, ConsultationUserGroup, IMotion, User, VotingBlock};
 use yii\helpers\Html;
 
 $user = User::getCurrentUser();
@@ -88,7 +88,7 @@ ob_start();
                             <thead>
                             <tr>
                                 <th v-for="answer in voting.answers">{{ answer.title }}</th>
-                                <th v-if="voting.answers.length > 1"><?= Yii::t('voting', 'admin_votes_total') ?></th>
+                                <th v-if="voting.answers.length > 1"><?= Yii::t('voting', '123admin_votes_total') ?></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -184,12 +184,14 @@ $html = ob_get_clean();
     const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
     const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
 
-    Vue.component('voting-block-widget', {
+    __setVueComponent('voting', 'component', 'voting-block-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
         mixins: [VOTING_COMMON_MIXIN],
         data() {
             return {
+                VOTING_STATUS_ACCEPTED: <?= IMotion::STATUS_ACCEPTED ?>,
+                VOTING_STATUS_REJECTED: <?= IMotion::STATUS_REJECTED ?>,
                 shownVoteLists: []
             }
         },
@@ -225,9 +227,9 @@ $html = ob_get_clean();
                     "title": answer.title,
                     "btnClass": "btn" + answer.api_id.charAt(0).toUpperCase() + answer.api_id.slice(1),
                 };
-                if (answer.status_id === VOTING_STATUS_ACCEPTED) {
+                if (answer.status_id === this.VOTING_STATUS_ACCEPTED) {
                     data.icon = 'yes';
-                } else if (answer.status_id === VOTING_STATUS_REJECTED) {
+                } else if (answer.status_id === this.VOTING_STATUS_REJECTED) {
                     data.icon = 'no';
                 } else {
                     data.icon = null;

@@ -1,6 +1,4 @@
-import { VueConstructor } from 'vue';
-
-declare var Vue: VueConstructor;
+declare var Vue: any;
 
 export class UserAdmin {
     private widget;
@@ -20,8 +18,7 @@ export class UserAdmin {
         const initGroupsJson = this.element.getAttribute('data-groups');
         const pollUrl = this.element.getAttribute('data-url-poll');
 
-        this.widget = new Vue({
-            el: vueEl,
+        this.widget = Vue.createApp({
             template: `<div class="adminUsers">
                 <user-admin-widget :users="users"
                                    :groups="groups"
@@ -115,7 +112,7 @@ export class UserAdmin {
                     }, 3000);
                 }
             },
-            beforeDestroy() {
+            beforeUnmount() {
                 window.clearInterval(this.pollingId)
             },
             created() {
@@ -124,7 +121,12 @@ export class UserAdmin {
             }
         });
 
+        this.widget.config.compilerOptions.whitespace = 'condense';
+        window['__initVueComponents'](this.widget, 'users');
+
+        const userWidgetComponent = this.widget.mount(vueEl);
+
         // Used by tests to control vue-select
-        window['userWidget'] = this.widget;
+        window['userWidget'] = userWidgetComponent;
     }
 }

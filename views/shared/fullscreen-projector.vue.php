@@ -11,7 +11,7 @@ ob_start();
                 <!-- @TODO Multiple speaking lists -->
                 <template v-for="imotion in imotions">
                     <option :value="imotion.type + '-' + imotion.id">{{ imotion.title_with_prefix }}</option>
-                    <option v-if="imotion.amendment_links" v-for="amendment in imotion.amendment_links" :value="'amendment-' + amendment.id">▸ {{ amendment.prefix }}</option>
+                    <option v-for="amendment in getImotionAmendmentLinks(imotion)" :value="'amendment-' + amendment.id">▸ {{ amendment.prefix }}</option>
                 </template>
             </select>
         </div>
@@ -25,7 +25,7 @@ ob_start();
 
     <fullscreen-imotion v-if="imotion" :imotion="imotion"></fullscreen-imotion>
 
-    <fullscreen-speech v-if="dropdownSelection === 'speech'" :queue="selectedSpeakingList" :user="null" :csrf="null" :title="'Speaking List'"></fullscreen-speech>
+    <fullscreen-speech v-if="dropdownSelection === 'speech'" :initQueue="selectedSpeakingList" :user="null" :csrf="null" :title="'Speaking List'"></fullscreen-speech>
 </article>
 <?php
 $html = ob_get_clean();
@@ -33,7 +33,7 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('fullscreen-projector', {
+    __setVueComponent('fullscreen', 'component', 'fullscreen-projector', {
         template: <?= json_encode($html) ?>,
         props: ['initdata'],
         data() {
@@ -111,6 +111,9 @@ $html = ob_get_clean();
                 } else {
                     this.imotion = null;
                 }
+            },
+            getImotionAmendmentLinks: function (imotion) {
+                return imotion.amendment_links ? imotion.amendment_links : [];
             },
             close: function () {
                 this.$emit('close', this.imotion.url_html);

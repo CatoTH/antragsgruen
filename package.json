@@ -41,7 +41,7 @@
         "requirejs": "^2.3.6",
         "sortablejs": "^1.14.0",
         "typescript": "^3.9.10",
-        "vue": "2.6.14"
+        "vue": "^3.2.0"
     },
     "directories": {
         "bin": "./bin/"
@@ -54,8 +54,7 @@
         "moment": "^2.29.1",
         "node-sass": "^7.0.1",
         "postcss": "^8.4.5",
-        "remove-trailing-separator": "^1.1.0",
-        "vue-select": "^3.16.0"
+        "remove-trailing-separator": "^1.1.0"
     },
     "browserslist": [
         ">1%",

@@ -73,14 +73,14 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('fullscreen-speech', {
+    __setVueComponent('fullscreen', 'component', 'fullscreen-speech', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf', 'user', 'title'],
+        props: ['initQueue', 'csrf', 'user', 'title'],
         mixins: [SPEECH_COMMON_MIXIN],
-        created() {
+        beforeMount() {
             this.startPolling(true);
         },
-        beforeDestroy() {
+        beforeUnmount() {
             this.stopPolling();
         }
     });

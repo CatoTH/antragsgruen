@@ -1,11 +1,6 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\majorityType\IMajorityType;
-use app\models\policies\IPolicy;
-use app\models\quorumType\IQuorumType;
-use app\models\votings\AnswerTemplates;
-use app\models\db\VotingBlock;
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
@@ -49,17 +44,17 @@ ob_start();
     <div class="content votingShow" v-if="!settingsOpened">
 
         <div class="votingSettingsSummary">
-            <div class="majorityType" v-for="majorityType in MAJORITY_TYPES"
-                 v-if="majorityType.id === voting.majority_type && votingHasMajority">
+            <div class="majorityType" v-if="getVotingMajority(voting)">
                 <strong><?= Yii::t('voting', 'settings_majoritytype') ?>:</strong>
-                {{ majorityType.name }}
-                <span class="glyphicon glyphicon-info-sign" :aria-label="majorityType.description" v-tooltip="majorityType.description"></span>
+                {{ getVotingMajority(voting).name }}
+                <span class="glyphicon glyphicon-info-sign" :aria-label="getVotingMajority(voting).description" v-tooltip="majorityType.description"></span>
             </div>
-            <div class="quorumType" v-for="quorumType in QUORUM_TYPES" v-if="quorumType.id === voting.quorum_type && votingHasQuorum">
+            <div class="quorumType" v-if="getVotingQuorum(voting)">
                 <strong><?= Yii::t('voting', 'settings_quorumtype') ?>:</strong>
-                {{ quorumType.name }}
+                {{ getVotingQuorum(voting).name }}
                 ({{ quorumIndicator }})
-                <span class="glyphicon glyphicon-info-sign" :aria-label="quorumType.description" v-tooltip="quorumType.description" v-if="quorumType.description !== ''"></span>
+                <span class="glyphicon glyphicon-info-sign" :aria-label="getVotingQuorum(voting).description"
+                      v-tooltip="getVotingQuorum(voting).description" v-if="getVotingQuorum(voting).description !== ''"></span>
             </div>
             <div class="votingPolicy">
                 <strong><?= Yii::t('voting', 'settings_votepolicy') ?>:</strong>
@@ -301,7 +296,7 @@ ob_start();
         </fieldset>
         <fieldset class="votePolicy">
             <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
-            <policy-select allow-anonymous="false" :policy="votePolicy" :all-groups="voting.user_groups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+            <policy-select allow-anonymous="false" :disabled="!isPreparing && !isOffline" :policy="votePolicy" :all-groups="voting.user_groups" @change="setPolicy($event)" ref="policy-select"></policy-select>
         </fieldset>
         <fieldset class="majorityTypeSettings" v-if="selectedAnswersHaveMajority">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
@@ -377,33 +372,6 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    const ACTIVITY_TYPE_OPENED = <?= VotingBlock::ACTIVITY_TYPE_OPENED ?>;
-    const ACTIVITY_TYPE_CLOSED = <?= VotingBlock::ACTIVITY_TYPE_CLOSED ?>;
-    const ACTIVITY_TYPE_RESET = <?= VotingBlock::ACTIVITY_TYPE_RESET ?>;
-    const ACTIVITY_TYPE_REOPENED = <?= VotingBlock::ACTIVITY_TYPE_REOPENED ?>;
-
-    const VOTE_POLICY_USERGROUPS = <?= IPolicy::POLICY_USER_GROUPS ?>;
-
-    const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
-    const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
-    const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
-
-    const MAJORITY_TYPES = <?= json_encode(array_map(function ($className) {
-        return [
-            'id' => $className::getID(),
-            'name' => $className::getName(),
-            'description' => $className::getDescription(),
-        ];
-    }, IMajorityType::getMajorityTypes())); ?>;
-
-    const QUORUM_TYPES = <?= json_encode(array_map(function ($className) {
-        return [
-            'id' => $className::getID(),
-            'name' => $className::getName(),
-            'description' => $className::getDescription(),
-        ];
-    }, IQuorumType::getQuorumTypes())); ?>;
-
     const quorumIndicator = <?= json_encode(Yii::t('voting', 'quorum_limit')) ?>;
     const quorumCounter = <?= json_encode(Yii::t('voting', 'quorum_counter')) ?>;
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
@@ -412,8 +380,7 @@ $html = ob_get_clean();
     const motionEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000'])) ?>;
     const amendmentEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000'])) ?>;
 
-    Vue.component('v-select', VueSelect.VueSelect);
-    Vue.directive('tooltip', function (el, binding) {
+    __setVueComponent('voting', 'directive', 'tooltip', function (el, binding) {
         $(el).tooltip({
             title: binding.value,
             placement: 'top',
@@ -421,7 +388,7 @@ $html = ob_get_clean();
         })
     });
 
-    Vue.component('voting-admin-widget', {
+    __setVueComponent('voting', 'component', 'voting-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting', 'addableMotions', 'alreadyAddedItems', 'userGroups', 'voteDownloadUrl'],
         mixins: [VOTING_COMMON_MIXIN],
@@ -451,22 +418,22 @@ $html = ob_get_clean();
         computed: {
             isUsed: {
                 get() {
-                    return this.voting.status !== STATUS_OFFLINE;
+                    return this.voting.status !== this.STATUS_OFFLINE;
                 },
                 set(val) {
-                    if (val && this.voting.status === STATUS_OFFLINE) {
-                        this.voting.status = STATUS_PREPARING;
+                    if (val && this.voting.status === this.STATUS_OFFLINE) {
+                        this.voting.status = this.STATUS_PREPARING;
                         this.statusChanged();
                     }
                     if (!val) {
-                        this.voting.status = STATUS_OFFLINE;
+                        this.voting.status = this.STATUS_OFFLINE;
                         this.statusChanged();
                     }
                 }
             },
             selectedAnswersHaveMajority: function () {
                 // Used by the settings form
-                return this.answerTemplate === ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answerTemplate === ANSWER_TEMPLATE_YES_NO;
+                return this.answerTemplate === this.ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answerTemplate === this.ANSWER_TEMPLATE_YES_NO;
             },
             settingsTitle: {
                 get: function () {
@@ -547,21 +514,37 @@ $html = ob_get_clean();
             formatLogEntry: function (logEntry) {
                 let description = '?';
                 switch (logEntry['type']) {
-                    case ACTIVITY_TYPE_OPENED:
+                    case this.ACTIVITY_TYPE_OPENED:
                         description = <?= json_encode(Yii::t('voting', 'activity_opened')) ?>;
                         break;
-                    case ACTIVITY_TYPE_RESET:
+                    case this.ACTIVITY_TYPE_RESET:
                         description = <?= json_encode(Yii::t('voting', 'activity_reset')) ?>;
                         break;
-                    case ACTIVITY_TYPE_CLOSED:
+                    case this.ACTIVITY_TYPE_CLOSED:
                         description = <?= json_encode(Yii::t('voting', 'activity_closed')) ?>;
                         break;
-                    case ACTIVITY_TYPE_REOPENED:
+                    case this.ACTIVITY_TYPE_REOPENED:
                         description = <?= json_encode(Yii::t('voting', 'activity_reopened')) ?>;
                         break;
                 }
                 let date = new Date(logEntry['date']);
                 return date.toLocaleString() + ': ' + description;
+            },
+            getVotingMajority: function (voting) {
+                if (!this.votingHasMajority) {
+                    return null;
+                }
+                return Object.values(this.MAJORITY_TYPES).find(majorityType => {
+                    return majorityType.id === voting.majority_type;
+                });
+            },
+            getVotingQuorum: function (voting) {
+                if (!this.votingHasQuorum) {
+                    return null;
+                }
+                return Object.values(this.QUORUM_TYPES).find(quorumType => {
+                   return quorumType.id === voting.quorum_type;
+                });
             },
             quorumCounter: function (groupedVoting) {
                 return quorumCounter.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
@@ -606,24 +589,25 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
-                this.voting.status = STATUS_OPEN;
+                this.voting.status = this.STATUS_OPEN;
                 this.statusChanged();
             },
             closeVoting: function () {
-                this.voting.status = STATUS_CLOSED;
+                this.voting.status = this.STATUS_CLOSED;
                 this.statusChanged();
             },
             resetVoting: function () {
-                const widget = this;
+                const widget = this,
+                    newStatus = this.STATUS_PREPARING;
                 bootbox.confirm(resetConfirmation, function(result) {
                     if (result) {
-                        widget.voting.status = STATUS_PREPARING;
+                        widget.voting.status = newStatus;
                         widget.statusChanged();
                     }
                 });
             },
             reopenVoting: function () {
-                this.voting.status = STATUS_OPEN;
+                this.voting.status = this.STATUS_OPEN;
                 this.statusChanged();
             },
             statusChanged: function () {

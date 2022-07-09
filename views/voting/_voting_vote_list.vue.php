@@ -1,4 +1,7 @@
 <?php
+
+use app\models\policies\UserGroups;
+
 ob_start();
 ?>
 <div class="v-vote-list">
@@ -66,18 +69,20 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('voting-vote-list', {
+    __setVueComponent('voting', 'component', 'voting-vote-list', {
         template: <?= json_encode($html) ?>,
         props: ['voting', 'groupedVoting', 'setToUserGroupSelection', 'showNotVotedList'],
         data() {
             return {
+                POLICY_USER_GROUPS: <?= UserGroups::POLICY_USER_GROUPS ?>,
+
                 groupSelectionShown: [],
                 groupSelected: {}
             }
         },
         computed: {
             showVotesByUserGroups: function () {
-                return this.voting.vote_policy.id === POLICY_USER_GROUPS;
+                return this.voting.vote_policy.id === this.POLICY_USER_GROUPS;
             },
             relevantUserGroups: function () {
                 const policy = this.voting.vote_policy;

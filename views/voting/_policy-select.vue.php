@@ -1,12 +1,14 @@
 <?php
 
+use app\models\policies\IPolicy;
+
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 /** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 
 $allPolicies = [];
-foreach (\app\models\policies\IPolicy::getPolicyNames() as $id => $name) {
+foreach (IPolicy::getPolicyNames() as $id => $name) {
     $allPolicies[] = ["id" => $id, "title" => $name];
 }
 
@@ -19,29 +21,44 @@ if (\app\models\db\ConsultationUserGroup::consultationHasLoadableUserGroups($con
 ob_start();
 ?>
 <div class="v-policy-select">
-    <select class="stdDropdown" @change="setPolicy($event)">
+    <select class="stdDropdown" @change="setPolicy($event)" :disabled="disabled">
         <option v-for="policyIterator in ALL_POLICIES" :value="policyIterator.id" :selected="policy.id === policyIterator.id">{{ policyIterator.title }}</option>
     </select>
-    <v-select v-if="policy.id === POLICY_USER_GROUPS"
-              @search="onGroupSearch"
-              multiple :options="userGroupOptions" :reduce="group => group.id" :value="userGroups"
-              @input="setSelectedGroups($event)"></v-select>
+    <v-selectize v-if="policyId === POLICY_USER_GROUPS" multiple
+                 @change="setSelectedGroups($event)"
+                 :disabled="disabled"
+                 :options="userGroupOptions"
+                 :values="userGroups"
+                 :loadUrl="GROUP_LOAD_URL"
+    ></v-selectize>
+
 </div>
 <?php
 $html = ob_get_clean();
 ?>
 
 <script>
-    const ALL_POLICIES = <?= json_encode($allPolicies) ?>;
-    const GROUP_LOAD_URL = <?= json_encode($groupLoadUrl) ?>;
-
-    Vue.component('policy-select', {
+    __setVueComponent('voting', 'component', 'policy-select', {
         template: <?= json_encode($html) ?>,
-        props: ['allGroups', 'allowAnonymous', 'policy'],
+        props: ['allGroups', 'allowAnonymous', 'policy', 'disabled'],
         data() {
             return {
+                POLICY_USER_GROUPS: <?= IPolicy::POLICY_USER_GROUPS ?>,
+                ALL_POLICIES: <?= json_encode($allPolicies) ?>,
+                GROUP_LOAD_URL: <?= json_encode($groupLoadUrl) ?>,
+                policyId: null,
                 changedUserGroups: null,
                 ajaxLoadedUserGroups: [],
+            }
+        },
+        watch: {
+            policy: {
+                handler(newVal) {
+                    if (newVal.id !== undefined) {
+                        this.policyId = newVal.id;
+                    }
+                },
+                immediate: true
             }
         },
         computed: {
@@ -70,32 +87,20 @@ $html = ob_get_clean();
             }
         },
         methods: {
-            onChange: function() {
+            onChange() {
                 const data = {
-                    'id': this.policy.id,
+                    'id': this.policyId,
                 };
-                if (this.policy.id === POLICY_USER_GROUPS) {
+                if (this.policyId === this.POLICY_USER_GROUPS) {
                     data.user_groups = this.changedUserGroups;
                 }
                 this.$emit('change', data);
             },
-            onGroupSearch(search, loading) {
-                if(search.length) {
-                    loading(true);
-
-                    fetch(GROUP_LOAD_URL + '?query=' + encodeURIComponent(search)).then(res => {
-                        res.json().then(json => {
-                            loading(false);
-                            this.ajaxLoadedUserGroups = json;
-                        });
-                    });
-                }
-            },
-            setPolicy: function ($event) {
-                this.policy.id = parseInt($event.target.value, 10);
+            setPolicy($event) {
+                this.policyId = parseInt($event.target.value, 10);
                 this.onChange();
             },
-            setSelectedGroups: function($event) {
+            setSelectedGroups($event) {
                 this.changedUserGroups = $event;
                 this.onChange();
             },

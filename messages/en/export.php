@@ -63,7 +63,7 @@ return [
     'truncated_supp_x'      => 'and %NUM% more proposers that can be seen on Antragsgrün.',
     'voting_export_date'    => 'Exported on',
     'voting_unknown_user'   => 'Unknown user',
-    'voting_eligible_all'   => 'Alle Berechtigte',
+    'voting_eligible_all'   => 'All eligible users',
     'voting_total_ans'      => 'Total votes per answer',
     'voting_userlist'       => 'List of users',
 ];

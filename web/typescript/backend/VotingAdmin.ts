@@ -1,11 +1,10 @@
-import { VueConstructor } from 'vue';
-
-declare var Vue: VueConstructor;
+declare var Vue: any;
 
 const POLICY_USER_GROUPS  = 6;
 
 export class VotingAdmin {
-    private widget;
+    private widget: any;
+    private widgetComponent: any;
     private element: HTMLElement;
 
     constructor($element: JQuery) {
@@ -26,8 +25,8 @@ export class VotingAdmin {
         const votingInitJson = this.element.getAttribute('data-voting');
         const initUserGroups = JSON.parse(this.element.getAttribute('data-user-groups'));
 
-        this.widget = new Vue({
-            el: vueEl,
+
+        this.widget = Vue.createApp({
             template: `<div class="adminVotings">
                 <voting-admin-widget v-for="voting in votings"
                                      :voting="voting"
@@ -199,7 +198,7 @@ export class VotingAdmin {
                     }, 3000);
                 }
             },
-            beforeDestroy() {
+            beforeUnmount() {
                 window.clearInterval(this.pollingId)
             },
             created() {
@@ -208,8 +207,13 @@ export class VotingAdmin {
             }
         });
 
+        this.widget.config.compilerOptions.whitespace = 'condense';
+        window['__initVueComponents'](this.widget, 'voting');
+
+        this.widgetComponent = this.widget.mount(vueEl);
+
         // Used by tests to control vue-select
-        window['votingAdminWidget'] = this.widget;
+        window['votingAdminWidget'] = this.widgetComponent;
     }
 
     private initPolicyWidget() {
@@ -309,7 +313,7 @@ export class VotingAdmin {
             } else {
                 userGroups = [];
             }
-            this.widget.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic);
+            this.widgetComponent.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic);
 
             form.classList.add('hidden');
             opener.classList.remove('hidden');

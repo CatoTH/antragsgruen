@@ -151,13 +151,13 @@ ob_start();
 
 
 <?php
-$html          = ob_get_clean();
+$html = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('speech-user-inline-widget', {
+    __setVueComponent('speech', 'component', 'speech-user-inline-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf', 'user', 'title'],
+        props: ['initQueue', 'csrf', 'user', 'title'],
         mixins: [SPEECH_COMMON_MIXIN],
         data() {
             return {
@@ -165,10 +165,10 @@ $html          = ob_get_clean();
                 showApplicationForm: false // "null" is already taken by the default form
             };
         },
-        created() {
+        beforeMount() {
             this.startPolling(false);
         },
-        beforeDestroy() {
+        beforeUnmount() {
             this.stopPolling();
         }
     });

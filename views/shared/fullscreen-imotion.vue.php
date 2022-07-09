@@ -3,21 +3,21 @@ ob_start();
 ?>
 <main v-if="!isTwoColumnLayout" class="motionTextHolder">
     <fullscreen-imotion-header :imotion="imotion"></fullscreen-imotion-header>
-    <section v-for="section in imotion.sections" class="paragraph lineNumbers" :class="[section.type]" v-if="section.html !== ''">
+    <section v-for="section in nonEmptySections" class="paragraph lineNumbers" :class="[section.type]">
         <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
         <div v-html="section.html"></div>
     </section>
 </main>
 <main v-if="isTwoColumnLayout" class="motionTextHolder row">
     <div class="col-md-8">
-        <section v-for="section in leftSections" class="paragraph lineNumbers" :class="[section.type]"  v-if="section.html !== ''">
+        <section v-for="section in nonEmptyLeftSections" class="paragraph lineNumbers" :class="[section.type]">
             <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
             <div v-html="section.html"></div>
         </section>
     </div>
     <div class="col-md-4">
         <fullscreen-imotion-header :imotion="imotion"></fullscreen-imotion-header>
-        <section v-for="section in rightSections" class="paragraph lineNumbers" :class="[section.type]"  v-if="section.html !== ''">
+        <section v-for="section in nonEmptyRightSections" class="paragraph lineNumbers" :class="[section.type]">
             <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
             <div v-html="section.html"></div>
         </section>
@@ -54,12 +54,12 @@ $htmlHeader = ob_get_clean();
 ?>
 
 <script>
-    Vue.component('fullscreen-imotion-header', {
+    __setVueComponent('fullscreen', 'component', 'fullscreen-imotion-header', {
         template: <?= json_encode($htmlHeader) ?>,
         props: ['imotion']
     });
 
-    Vue.component('fullscreen-imotion', {
+    __setVueComponent('fullscreen', 'component', 'fullscreen-imotion', {
         template: <?= json_encode($htmlMain) ?>,
         props: ['imotion'],
         computed: {
@@ -68,14 +68,19 @@ $htmlHeader = ob_get_clean();
                     return section.layout_right;
                 });
             },
-            leftSections: function () {
+            nonEmptyLeftSections: function () {
                 return this.imotion.sections.filter(section => {
-                    return !section.layout_right;
+                    return !section.layout_right && section.html !== '';
                 });
             },
-            rightSections: function () {
+            nonEmptyRightSections: function () {
                 return this.imotion.sections.filter(section => {
-                    return section.layout_right;
+                    return section.layout_right && section.html !== '';
+                });
+            },
+            nonEmptySections: function () {
+                return this.imotion.sections.filter(section => {
+                    return section.html !== '';
                 });
             }
         },

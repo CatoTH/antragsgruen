@@ -59,7 +59,7 @@ $votingId = '#voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID;
 $I->seeElement($votingId);
 $I->see('Roll call', $votingId . ' h2');
 $I->clickJS($votingId . ' .settingsToggleGroup .dropdown-toggle');
-$I->see('Voting rights', $votingId . ' .votingSettings .v-select');
+$I->seeElement($votingId . ' .votingSettings .selectize-control');
 $I->seeElement($votingId . ' .quorumTypeSettings');
 $I->clickJS($votingId . ' .quorumTypeSettings input[value=\"' . \app\models\quorumType\IQuorumType::QUORUM_TYPE_HALF . '\"]');
 $I->clickJS($votingId . ' .btnSave');

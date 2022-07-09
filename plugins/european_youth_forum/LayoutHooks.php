@@ -12,7 +12,10 @@ class LayoutHooks extends Hooks
 {
     public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
     {
-        return (string)file_get_contents(__DIR__ . '/views/voting-result-admin.vue.php');
+        $result = $this;
+        ob_start();
+        require(__DIR__ . '/views/voting-result-admin.vue.php');
+        return (string)ob_get_clean();
     }
 
     public function getVotingAlternativeUserResults(?array $before, VotingData $votingData): ?array

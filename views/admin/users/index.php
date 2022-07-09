@@ -20,7 +20,8 @@ $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('
 $layout->addBreadcrumb(Yii::t('admin', 'users_bc'));
 
 $layout->loadVue();
-$layout->loadVueSelect();
+$layout->loadSelectize();
+$layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/users.vue.php');
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);

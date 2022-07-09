@@ -11,7 +11,7 @@ $I->gotoStdAdminPage()->gotoUserAdministration();
 
 $I->wantTo('Remove admin permissions from the site admin');
 $I->clickJS('.user1 .btnEdit');
-$I->seeElement('.vs__dropdown-toggle');
+$I->seeElement('.selectize-control');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([], { id: 1 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 1});');
 $I->wait(0.5);
@@ -27,7 +27,7 @@ $I->acceptBootboxConfirm();
 
 $I->wantTo('Give myself higher privileges');
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.vs__dropdown-toggle');
+$I->seeElement('.selectize-control');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([1, 2], { id: 7 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
 $I->wait(0.5);
@@ -37,7 +37,7 @@ $I->acceptBootboxConfirm();
 
 $I->wantTo('lock myself out');
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.vs__dropdown-toggle');
+$I->seeElement('.selectize-control');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([], { id: 7 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
 $I->wait(0.5);

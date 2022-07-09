@@ -13,11 +13,8 @@ use yii\web\Response;
 
 class VotingController extends Base
 {
-    /** @var VotingMethods */
-    private $votingMethods;
-
-    /** @var UserGroupAdminMethods */
-    private $userGroupMethods;
+    private VotingMethods $votingMethods;
+    private UserGroupAdminMethods $userGroupMethods;
 
     public function beforeAction($action): bool
     {
