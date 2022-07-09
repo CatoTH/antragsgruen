@@ -56,14 +56,9 @@ abstract class IPolicy
         return $names;
     }
 
-    /** @var Consultation */
-    protected $consultation;
-
-    /** @var IHasPolicies */
-    protected $baseObject;
-
-    /** @var array */
-    protected $data;
+    protected Consultation $consultation;
+    protected IHasPolicies $baseObject;
+    protected array $data;
 
     public function __construct(Consultation $consultation, IHasPolicies $baseObject, ?array $data)
     {

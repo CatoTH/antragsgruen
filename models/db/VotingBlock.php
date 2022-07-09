@@ -170,7 +170,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     /** @var null|Vote[][] */
-    private $votesSortedByItemCache = null;
+    private ?array $votesSortedByItemCache = null;
 
     private function initVotesSortedCache(): void
     {
