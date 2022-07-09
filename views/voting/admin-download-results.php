@@ -3,12 +3,16 @@
 use app\models\db\{Amendment, IVotingItem, Motion, Vote, VotingBlock, VotingQuestion};
 use app\models\policies\EligibilityByGroup;
 use app\models\proposedProcedure\AgendaVoting;
-use app\models\votings\{Answer, AnswerTemplates};
+use app\models\votings\Answer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\{Xlsx, Html, Ods};
 
-function printResultTable(Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int
+/**
+ * @param EligibilityByGroup[]|null $eligibilityList
+ * @throws \PhpOffice\PhpSpreadsheet\Exception
+ */
+function printResultTable(Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, ?array $eligibilityList, IVotingItem $voteItem): int
 {
     $doneRows = \app\models\layoutHooks\Layout::printVotingAlternativeSpreadsheetResults($worksheet, $startRow, $agendaVoting, $voteItem);
     if ($doneRows > 0) {
@@ -24,11 +28,38 @@ function printResultTable(Worksheet $worksheet, int $startRow, AgendaVoting $age
     $worksheet->mergeCells('A' . ($startRow + $rows) . ':B' . ($startRow + $rows));
     $worksheet->getStyle('A' . ($startRow + $rows))->applyFromArray(['font' => ['bold' => true]]);
     $worksheet->setCellValue('A' . ($startRow + $rows), Yii::t('export', 'voting_total_ans'));
+    $worksheet->getStyle('B' . ($startRow + $rows))->applyFromArray(['font' => ['bold' => true]]);
+    $worksheet->setCellValue('B' . ($startRow + $rows), Yii::t('export', 'voting_groups_all'));
+
+    if ($agendaVoting->voting->votesPublic === VotingBlock::VOTES_PUBLIC_ADMIN || $agendaVoting->voting->votesPublic === VotingBlock::VOTES_PUBLIC_ALL) {
+        $col = 'B';
+        foreach ($eligibilityList ?? [] as $eligibility) {
+            $col = chr(ord($col) + 1);
+            $worksheet->getStyle($col . ($startRow + $rows))->applyFromArray(['font' => ['bold' => true]]);
+            $worksheet->setCellValue($col . ($startRow + $rows), $eligibility->groupTitle);
+        }
+    }
     $rows++;
 
     foreach ($agendaVoting->voting->getAnswers() as $answer) {
         $worksheet->setCellValue('A' . ($startRow + $rows), $answer->title);
         $worksheet->setCellValue('B' . ($startRow + $rows), $voteResults->getTotalVotesForAnswer($answer));
+
+        $col = 'B';
+        if ($agendaVoting->voting->votesPublic === VotingBlock::VOTES_PUBLIC_ADMIN || $agendaVoting->voting->votesPublic === VotingBlock::VOTES_PUBLIC_ALL) {
+            foreach ($eligibilityList ?? [] as $eligibility) {
+                $userIds = array_map(function (array $user): int { return $user['user_id']; }, $eligibility->users);
+                $votes = 0;
+                foreach ($agendaVoting->voting->votes as $vote) {
+                    if ($vote->vote === $answer->dbId && in_array($vote->userId, $userIds)) {
+                        $votes++;
+                    }
+                }
+                $col = chr(ord($col) + 1);
+                $worksheet->setCellValue($col . ($startRow + $rows), (string)$votes);
+            }
+        }
+
         $rows++;
     }
 
@@ -37,16 +68,55 @@ function printResultTable(Worksheet $worksheet, int $startRow, AgendaVoting $age
 
 /**
  * @param Vote[] $votes
+ * @param EligibilityByGroup[] $eligibilityList
  */
-function printVoteResults(Worksheet $worksheet, string $col, int $startRow, Answer $answer, array $votes): void
+function printVoteResults(Worksheet $worksheet, string $col, int $startRow, Answer $answer, array $votes, array $eligibilityList): void
 {
     $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['bold' => true]]);
     $worksheet->setCellValue($col . $startRow, $answer->title);
     $startRow++;
+
+    $votedUserIds = [];
     foreach ($votes as $vote) {
         if ($vote->vote === $answer->dbId) {
-            $name = ($vote->getUser() ? $vote->getUser()->getAuthUsername() : Yii::t('export', 'voting_unknown_user'));
-            $worksheet->setCellValue($col . $startRow, $name);
+            $votedUserIds[$vote->userId] = ($vote->getUser() ? $vote->getUser()->getAuthUsername() : Yii::t('export', 'voting_unknown_user'));
+        }
+    }
+
+    // Hint: a user can be shown in multiple groups
+    $shownUsers = [];
+    foreach ($eligibilityList as $eligibility) {
+        $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['underline' => true]]);
+        $worksheet->setCellValue($col . $startRow, $eligibility->groupTitle);
+        $startRow++;
+
+        $foundOne = false;
+        foreach ($eligibility->users as $user) {
+            if (isset($votedUserIds[$user['user_id']])) {
+                $foundOne = true;
+                $shownUsers[] = $user['user_id'];
+                $worksheet->setCellValue($col . $startRow, $user['user_name']);
+                $startRow++;
+            }
+        }
+        if (!$foundOne) {
+            $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['italic' => true]]);
+            $worksheet->setCellValue($col . $startRow, Yii::t('export', 'voting_no_users'));
+            $startRow++;
+        }
+        $startRow++;
+    }
+
+    $hasUnknown = false;
+    foreach ($votedUserIds as $votedUserId => $votedUserName) {
+        if (!in_array($votedUserId, $shownUsers)) {
+            if (!$hasUnknown) {
+                $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['underline' => true, 'italic' => true]]);
+                $worksheet->setCellValue($col . $startRow, Yii::t('export', 'voting_unknown_users'));
+                $hasUnknown = true;
+                $startRow++;
+            }
+            $worksheet->setCellValue($col . $startRow, $votedUserName);
             $startRow++;
         }
     }
@@ -69,6 +139,10 @@ function printEligibilityList(Worksheet $worksheet, string $col, int $startRow, 
             $worksheet->setCellValue($col . $startRow, $user['user_name']);
             $startRow++;
         }
+        if (count($group->users) === 0) {
+            $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['italic' => true]]);
+            $worksheet->setCellValue($col . $startRow, Yii::t('export', 'voting_no_users'));
+        }
         $startRow++;
     }
 }
@@ -88,6 +162,13 @@ foreach ($agendaVoting->items as $i => $voteItem) {
         $sheet = $spreadsheet->getActiveSheet();
     } else {
         $sheet = $spreadsheet->createSheet();
+    }
+
+    if ($agendaVoting->voting->votingStatus === VotingBlock::STATUS_CLOSED) {
+        $voteResults = $voteItem->getVotingData();
+        $eligibilityList = EligibilityByGroup::listFromJsonArray($voteResults->eligibilityList);
+    } else {
+        $eligibilityList = $agendaVoting->voting->getVotingPolicy()->getEligibilityByGroup();
     }
 
     $title = '';
@@ -124,7 +205,7 @@ foreach ($agendaVoting->items as $i => $voteItem) {
     }
 
     $row = 4;
-    $row += printResultTable($sheet, $row, $agendaVoting, $voteItem);
+    $row += printResultTable($sheet, $row, $agendaVoting, $eligibilityList, $voteItem);
     $row++;
 
     $col = 'A';
@@ -135,17 +216,11 @@ foreach ($agendaVoting->items as $i => $voteItem) {
         $row++;
 
         foreach ($agendaVoting->voting->getAnswers() as $answer) {
-            printVoteResults($sheet, $col, $row, $answer, $voteItem->votes);
+            printVoteResults($sheet, $col, $row, $answer, $voteItem->votes, $eligibilityList);
             $col = chr(ord($col) + 1);
         }
     }
 
-    if ($agendaVoting->voting->votingStatus === VotingBlock::STATUS_CLOSED) {
-        $voteResults = $voteItem->getVotingData();
-        $eligibilityList = EligibilityByGroup::listFromJsonArray($voteResults->eligibilityList);
-    } else {
-        $eligibilityList = $agendaVoting->voting->getVotingPolicy()->getEligibilityByGroup();
-    }
     if ($eligibilityList) {
         $col = chr(ord($col) + 1);
         printEligibilityList($sheet, $col, $row, $eligibilityList);
