@@ -51,9 +51,9 @@ $I->logout();
 
 $I->wantTo('Assign the site admin role to consultationadmin');
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->dontSeeElement('.user7 .vs__dropdown-toggle');
+$I->dontSeeElement('.user7 .selectize-control');
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.user7 .vs__dropdown-toggle');
+$I->seeElement('.user7 .selectize-control');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([1], { id: 7 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
 $I->wait(0.3);
@@ -89,9 +89,9 @@ $I->gotoConsultationHome();
 $I->logout();
 
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->dontSeeElement('.user7 .vs__dropdown-toggle');
+$I->dontSeeElement('.user7 .selectize-control');
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.user7 .vs__dropdown-toggle');
+$I->seeElement('.user7 .selectize-control');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([3], { id: 7 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
 $I->wait(0.3);
@@ -147,7 +147,7 @@ $I->submitForm('.addUsersByLogin.multiuser', [], 'addUsers');
 
 $I->wait(0.5);
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.user7 .vs__dropdown-toggle');
+$I->seeElement('.user7 .selectize-control');
 $I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([2], { id: 7 });');
 $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
 $I->wait(0.3);

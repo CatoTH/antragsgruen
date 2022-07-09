@@ -37,7 +37,7 @@ class Layout
     public array $alternateLanuages = [];
     public array $feeds = [];
 
-    protected ?Consultation $consultation;
+    protected ?Consultation $consultation = null;
 
     /**
      * @return string[][]
