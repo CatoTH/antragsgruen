@@ -83,7 +83,18 @@ ob_start();
             <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
             <div class="actions" v-if="isOpen">
                 <button type="button" class="btn btn-default btnReset" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
-                <button type="button" class="btn btn-primary btnClose" @click="closeVoting()"><?= Yii::t('voting', 'admin_btn_close') ?></button>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btnClose" @click="closeVoting(true, $event)"><?= Yii::t('voting', 'admin_btn_close') ?></button>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only"><?= Yii::t('voting', 'admin_btn_close_op') ?></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" @click="closeVoting(true, $event)"><?= Yii::t('voting', 'admin_btn_close_pub') ?></a></li>
+                        <li><a href="#" @click="closeVoting(false, $event)"><?= Yii::t('voting', 'admin_btn_close_nopub') ?></a></li>
+                    </ul>
+                </div>
             </div>
             <div class="actions" v-if="isClosed">
                 <button type="button" class="btn btn-default btnReset" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
@@ -592,7 +603,14 @@ $html = ob_get_clean();
                 this.voting.status = this.STATUS_OPEN;
                 this.statusChanged();
             },
-            closeVoting: function () {
+            closeVoting: function (publish, $event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                if (!publish) {
+                    alert("This is not implemented yet"); // @TODO
+                    return;
+                }
                 this.voting.status = this.STATUS_CLOSED;
                 this.statusChanged();
             },

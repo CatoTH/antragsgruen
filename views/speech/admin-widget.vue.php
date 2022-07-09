@@ -165,6 +165,11 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                     <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                     <span><?= Yii::t('speech', 'admin_start') ?></span>
                 </div>
+
+                <div class="operationDelete" @click="onItemDelete($event, slotProposal.id)" @keyup.enter="onItemDelete($event, item)" tabindex="0">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    <span><?= Yii::t('speech', 'admin_delete') ?></span>
+                </div>
             </li>
             <li class="slotPlaceholder inactive" v-if="!slotProposal">
                 <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
@@ -370,6 +375,12 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             },
             addItemToSlotsAndStart: function (itemId) {
                 this._performOperation(itemId, "set-slot-and-start");
+            },
+            onItemDelete: function ($event, itemId) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                alert("Not implemented yet"); // @TODO
             },
             moveItemToSubqueue: function (itemId, newSubqueueId, position) {
                 this._performOperation(itemId, "move", {newSubqueueId, position});

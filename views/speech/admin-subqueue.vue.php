@@ -18,14 +18,19 @@ ob_start();
             </li>
             <li class="subqueueItem" draggable="true" @dragstart="onItemDragStart($event, item)" @dragend="onItemDragEnd($event, item)">
                 <div class="starter" tabindex="0"
-                     v-on:click="onItemSelected($event, item)"
-                     v-on:keyup.enter="onItemSelected($event, item)"
+                     @click="onItemSelected($event, item)"
+                     @keyup.enter="onItemSelected($event, item)"
                      title="<?= Yii::t('speech', 'admin_subq_start') ?>" aria-label="<?= Yii::t('speech', 'admin_subq_start') ?>">
                     {{ item.name }}
 
                     <div class="operationsIndicator operationStart">
                         <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                         <span><?= Yii::t('speech', 'admin_start') ?></span>
+                    </div>
+
+                    <div class="operationDelete" @click="onItemDelete($event, item)" @keyup.enter="onItemDelete($event, item)" tabindex="0">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        <span><?= Yii::t('speech', 'admin_delete') ?></span>
                     </div>
                 </div>
 
@@ -139,6 +144,12 @@ $html = ob_get_clean();
                 $event.preventDefault();
                 // this.$emit('add-item-to-slots', item);
                 this.$emit('add-item-to-slots-and-start', item.id);
+            },
+            onItemDelete: function ($event, item) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                alert("Not implemented yet"); // @TODO
             },
             openAdder: function () {
                 this.adderOpened = true;
