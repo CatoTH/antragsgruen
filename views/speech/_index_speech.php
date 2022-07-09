@@ -1,6 +1,5 @@
 <?php
 
-use app\components\UrlHelper;
 use app\models\api\SpeechUser;
 use app\models\db\{ConsultationUserGroup, User};
 use yii\helpers\Html;
