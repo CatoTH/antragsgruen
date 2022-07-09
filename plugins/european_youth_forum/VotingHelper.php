@@ -20,7 +20,7 @@ class VotingHelper
 
     public static function userIsGroup(Consultation $consultation, User $user, string $groupName): bool
     {
-        foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
+        foreach ($consultation->getAllAvailableUserGroups([], true) as $userGroup) {
             if (!static::groupIs($userGroup, $groupName)) {
                 continue;
             }

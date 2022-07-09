@@ -141,7 +141,7 @@ class ConsultationUserGroup extends ActiveRecord
     // as there are way more users, and we would need to perform more queries that way.
     // Note that this method should only be used for read-only operations, as the cache is not flushed yet.
     /** @var null|int[] */
-    private $userIdCache = null;
+    private ?array $userIdCache = null;
     public function getUserIds(): array
     {
         if ($this->userIdCache === null) {

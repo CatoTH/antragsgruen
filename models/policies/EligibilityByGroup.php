@@ -8,14 +8,11 @@ use app\models\db\{ConsultationUserGroup, User};
 
 class EligibilityByGroup implements \JsonSerializable
 {
-    /** @var int */
-    public $groupId;
-
-    /** @var string */
-    public $groupTitle;
+    public int $groupId;
+    public string $groupTitle;
 
     /** @var array - keys: user_id, user_name */
-    public $users;
+    public array $users;
 
     public static function fromUserGroup(ConsultationUserGroup $group): self
     {

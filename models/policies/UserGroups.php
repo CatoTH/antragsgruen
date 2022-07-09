@@ -8,14 +8,14 @@ use app\models\db\{Consultation, ConsultationMotionType, ConsultationUserGroup, 
 class UserGroups extends IPolicy
 {
     /** @var ConsultationUserGroup[] */
-    private $groups = [];
+    private array $groups = [];
 
     public function __construct(Consultation $consultation, IHasPolicies $baseObject, ?array $data)
     {
         parent::__construct($consultation, $baseObject, $data);
 
         $userGroupIds = $data['userGroups'] ?? [];
-        foreach ($consultation->getAllAvailableUserGroups($userGroupIds) as $group) {
+        foreach ($consultation->getAllAvailableUserGroups($userGroupIds, true) as $group) {
             if (in_array($group->id, $userGroupIds)) {
                 $this->groups[] = $group;
             }
@@ -135,9 +135,9 @@ class UserGroups extends IPolicy
 
         return [
             'id' => static::getPolicyID(),
-            'user_groups' => array_map(function(ConsultationUserGroup $group): int {
+            'user_groups' => array_values(array_map(function(ConsultationUserGroup $group): int {
                 return $group->id;
-            }, $this->groups),
+            }, $this->groups)),
             'description' => implode(', ', $groupNames),
         ];
     }
@@ -146,9 +146,9 @@ class UserGroups extends IPolicy
     {
         return json_encode([
             'id' => static::getPolicyID(),
-            'userGroups' => array_map(function(ConsultationUserGroup $group): int {
+            'userGroups' => array_values(array_map(function(ConsultationUserGroup $group): int {
                 return $group->id;
-            }, $this->groups),
+            }, $this->groups)),
         ], JSON_THROW_ON_ERROR);
     }
 }

@@ -45,8 +45,7 @@ class Consultation extends ActiveRecord
 {
     const TITLE_SHORT_MAX_LEN = 45;
 
-    /** @var null|Consultation */
-    private static $current = null;
+    private static ?Consultation $current = null;
 
     /**
      * @throws Internal
@@ -78,18 +77,15 @@ class Consultation extends ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSite()
+    public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
     const PRELOAD_ONLY_AMENDMENTS = 'amendments';
     const PRELOAD_ALL = 'all';
-    private $preloadedAllMotionData = '';
-    private $preloadedAmendmentIds  = null;
+    private string $preloadedAllMotionData = '';
+    private ?array $preloadedAmendmentIds  = null;
 
     public function preloadAllMotionData(string $preloadType)
     {
@@ -106,10 +102,7 @@ class Consultation extends ActiveRecord
         return $this->preloadedAllMotionData;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotions()
+    public function getMotions(): ActiveQuery
     {
         if ($this->preloadedAllMotionData === self::PRELOAD_ALL) {
             return $this->hasMany(Motion::class, ['consultationId' => 'id'])
@@ -141,7 +134,7 @@ class Consultation extends ActiveRecord
     }
 
     /** @var Motion[]|null[] */
-    private $motionCache = [];
+    private array $motionCache = [];
 
     /**
      * @param string|null|int $motionSlug
@@ -185,12 +178,12 @@ class Consultation extends ActiveRecord
 
 
     /** @var Amendment[]|null[] */
-    private $amendmentCache = [];
+    private array $amendmentCache = [];
 
     /**
      * @param int $amendmentId
      */
-    public function getAmendment($amendmentId): ?Amendment
+    public function getAmendment(int $amendmentId): ?Amendment
     {
         $amendmentId = IntVal($amendmentId);
         if (isset($this->amendmentCache[$amendmentId])) {
@@ -224,10 +217,10 @@ class Consultation extends ActiveRecord
     /**
      * @param int $agendaItemId
      */
-    public function getAgendaItem($agendaItemId): ?ConsultationAgendaItem
+    public function getAgendaItem(int $agendaItemId): ?ConsultationAgendaItem
     {
         foreach ($this->agendaItems as $agendaItem) {
-            if ($agendaItem->id == $agendaItemId) {
+            if ($agendaItem->id === $agendaItemId) {
                 return $agendaItem;
             }
         }
@@ -259,12 +252,21 @@ class Consultation extends ActiveRecord
         return $this->hasMany(UserConsultationScreening::class, ['consultationId' => 'id']);
     }
 
+    private array $availableUserGroupCache = [];
     /**
      * @return ConsultationUserGroup[]
      */
-    public function getAllAvailableUserGroups(array $additionalIds = []): array
+    public function getAllAvailableUserGroups(array $additionalIds = [], bool $allowCache = false): array
     {
-        return ConsultationUserGroup::findByConsultation($this, $additionalIds);
+        sort($additionalIds);
+        $cacheKey = (count($additionalIds) > 0 ? implode('-', $additionalIds) : 'default');
+        if ($allowCache && isset($this->availableUserGroupCache[$cacheKey])) {
+            return $this->availableUserGroupCache[$cacheKey];
+        }
+
+        $this->availableUserGroupCache[$cacheKey] =  ConsultationUserGroup::findByConsultation($this, $additionalIds);
+
+        return $this->availableUserGroupCache[$cacheKey];
     }
 
     public function getFiles(): ActiveQuery
@@ -394,8 +396,7 @@ class Consultation extends ActiveRecord
         throw new NotFound('Motion Type not found');
     }
 
-    /** @var null|\app\models\settings\Consultation */
-    private $settingsObject = null;
+    private ?\app\models\settings\Consultation $settingsObject = null;
 
     public function getSettings(): \app\models\settings\Consultation
     {
@@ -425,8 +426,7 @@ class Consultation extends ActiveRecord
         return new $numberings[$this->amendmentNumbering]();
     }
 
-    /** @var null|IMotionStatusEngine */
-    private $statusEngine = null;
+    private ?IMotionStatusEngine $statusEngine = null;
 
     public function getStatuses(): IMotionStatusEngine
     {
@@ -580,12 +580,10 @@ class Consultation extends ActiveRecord
 
 
     /**
-     * @param string $text
-     * @param array $backParams
      * @return SearchResult[]
      * @throws Internal
      */
-    public function fulltextSearch($text, $backParams): array
+    public function fulltextSearch(string $text, array $backParams): array
     {
         $results = [];
         foreach ($this->motions as $motion) {

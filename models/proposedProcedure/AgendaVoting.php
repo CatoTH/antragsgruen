@@ -16,17 +16,12 @@ class AgendaVoting
     const API_CONTEXT_ADMIN = 'admin';
     const API_CONTEXT_RESULT = 'result';
 
-    /** @var string */
-    public $title;
-
-    /** @var VotingBlock|null */
-    public $voting;
+    public string $title;
+    public ?VotingBlock $voting;
+    public IMotionList $itemIds;
 
     /** @var IVotingItem[] */
-    public $items = [];
-
-    /** @var IMotionList */
-    public $itemIds;
+    public array $items = [];
 
     public function __construct(string $title, ?VotingBlock $voting)
     {
@@ -103,8 +98,9 @@ class AgendaVoting
 
         if ($this->voting) {
             $policy = $this->voting->getVotingPolicy();
-            $additionalIds = (is_a($policy, UserGroups::class) ? $policy->getAllowedUserGroups() : []);
-            foreach (ConsultationUserGroup::findByConsultation($this->voting->getMyConsultation(), $additionalIds) as $userGroup) {
+            $additionalIds = (is_a($policy, UserGroups::class) ? array_map(function (ConsultationUserGroup $group): int { return $group->id; }, $policy->getAllowedUserGroups()) : []);
+            $userGroups = $this->voting->getMyConsultation()->getAllAvailableUserGroups($additionalIds, true);
+            foreach ($userGroups as $userGroup) {
                 $votingBlockJson['user_groups'][] = $userGroup->getVotingApiObject();
             }
         }
