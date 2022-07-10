@@ -262,21 +262,6 @@ CREATE TABLE `###TABLE_PREFIX###consultationMotionType` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `consultationOdtTemplate`
---
-
-CREATE TABLE `###TABLE_PREFIX###consultationOdtTemplate` (
-  `id`             INT(11)    NOT NULL,
-  `consultationId` INT(11)    NOT NULL,
-  `type`           TINYINT(4) NOT NULL,
-  `data`           BLOB       NOT NULL
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `consultationSettingsMotionSection`
 --
 
@@ -912,13 +897,6 @@ ALTER TABLE `###TABLE_PREFIX###consultationMotionType`
   ADD KEY `texLayout` (`texTemplateId`);
 
 --
--- Indexes for table `consultationOdtTemplate`
---
-ALTER TABLE `###TABLE_PREFIX###consultationOdtTemplate`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_consultationIdx` (`consultationId`);
-
---
 -- Indexes for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationSettingsMotionSection`
@@ -1204,11 +1182,6 @@ ALTER TABLE `###TABLE_PREFIX###consultationLog`
 ALTER TABLE `###TABLE_PREFIX###consultationMotionType`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `consultationOdtTemplate`
---
-ALTER TABLE `###TABLE_PREFIX###consultationOdtTemplate`
-  MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationSettingsMotionSection`
@@ -1416,14 +1389,6 @@ ALTER TABLE `###TABLE_PREFIX###consultationLog`
 ALTER TABLE `###TABLE_PREFIX###consultationMotionType`
   ADD CONSTRAINT `consultationMotionType_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
   ADD CONSTRAINT `consultationMotionType_ibfk_2` FOREIGN KEY (`texTemplateId`) REFERENCES `###TABLE_PREFIX###texTemplate` (`id`);
-
---
--- Constraints for table `consultationOdtTemplate`
---
-ALTER TABLE `###TABLE_PREFIX###consultationOdtTemplate`
-  ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationSettingsMotionSection`
