@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\UrlHelper;
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -25,42 +26,30 @@ use yii\db\ActiveRecord;
  */
 class ConsultationText extends ActiveRecord
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public const DEFAULT_PAGE_WELCOME = 'welcome';
+    public const DEFAULT_PAGE_DOCUMENTS = 'documents';
+
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationText';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionType()
+    public function getMotionType(): ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSite()
+    public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['category', 'textId'], 'required'],
@@ -137,7 +126,7 @@ class ConsultationText extends ActiveRecord
             'help'        => \Yii::t('pages', 'content_help_title'),
             'legal'       => \Yii::t('pages', 'content_imprint_title'),
             'privacy'     => \Yii::t('pages', 'content_privacy_title'),
-            'welcome'     => \Yii::t('pages', 'content_welcome'),
+            self::DEFAULT_PAGE_WELCOME => \Yii::t('pages', 'content_welcome'),
             'login_pre'   => \Yii::t('pages', 'content_login_pre'),
             'login_post'  => \Yii::t('pages', 'content_login_post'),
             'feeds'       => \Yii::t('pages', 'content_feeds_title'),
@@ -250,7 +239,7 @@ class ConsultationText extends ActiveRecord
         $foundText = null;
         if (!in_array($pageKey, static::getSitewidePages())) {
             foreach ($consultation->texts as $text) {
-                if ($text->category == 'pagedata' && $text->textId == $pageKey) {
+                if ($text->category === 'pagedata' && mb_strtolower($text->textId) === mb_strtolower($pageKey)) {
                     $foundText = $text;
                 }
             }

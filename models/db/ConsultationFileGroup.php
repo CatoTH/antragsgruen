@@ -34,4 +34,16 @@ class ConsultationFileGroup extends ActiveRecord
     {
         return $this->hasMany(ConsultationFile::class, ['fileGroupId' => 'id']);
     }
+
+    /**
+     * @return ConsultationFileGroup[]
+     */
+    public static function getSortedGroupsFromConsultation(Consultation $consultation): array
+    {
+        $groups = $consultation->fileGroups;
+        usort($groups, function (ConsultationFileGroup $group1, ConsultationFileGroup $group2): int {
+            return $group1->position <=> $group2->position;
+        });
+        return $groups;
+    }
 }

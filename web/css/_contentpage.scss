@@ -122,3 +122,19 @@
     }
   }
 }
+
+.documentsPage {
+  .editCaller {
+    float: right;
+    margin-left: 10px;
+    font-weight: normal;
+  }
+
+  .fileGroupHolder .zipLink {
+    font-weight: normal;
+    float: right;
+    text-transform: none;
+    text-shadow: none;
+    font-size: 14px;
+  }
+}
