@@ -33,6 +33,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationAgendaItem[] $agendaItems
  * @property ConsultationUserGroup[] $userGroups
  * @property ConsultationFile[] $files
+ * @property ConsultationFileGroup[] $fileGroups
  * @property ConsultationLog[] $logEntries
  * @property SpeechQueue[] $speechQueues
  * @property UserNotification[] $userNotifications
@@ -266,6 +267,11 @@ class Consultation extends ActiveRecord
     public function getFiles(): ActiveQuery
     {
         return $this->hasMany(ConsultationFile::class, ['consultationId' => 'id']);
+    }
+
+    public function getFileGroups(): ActiveQuery
+    {
+        return $this->hasMany(ConsultationFileGroup::class, ['consultationId' => 'id']);
     }
 
     /**
