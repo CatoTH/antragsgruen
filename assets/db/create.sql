@@ -189,6 +189,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationFile` (
     `id`               int(11)      NOT NULL,
     `consultationId`   int(11)               DEFAULT NULL,
     `siteId`           int(11)               DEFAULT NULL,
+    `fileGroupId`      int(11)               DEFAULT NULL,
     `downloadPosition` mediumint(9)          DEFAULT NULL,
     `filename`         varchar(250) NOT NULL,
     `title`            text                  DEFAULT NULL,
@@ -200,6 +201,21 @@ CREATE TABLE `###TABLE_PREFIX###consultationFile` (
     `dataHash`         varchar(40)  NOT NULL,
     `uploadedById`     int(11)               DEFAULT NULL,
     `dateCreation`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `consultationFileGroup`
+--
+
+CREATE TABLE `consultationFileGroup` (
+    `id` int(11) NOT NULL,
+    `consultationId` int(11) NOT NULL,
+    `position` int(11) NOT NULL,
+    `title` varchar(250) NOT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -877,7 +893,15 @@ ALTER TABLE `###TABLE_PREFIX###consultationFile`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_file_consultation` (`consultationId`),
   ADD KEY `consultation_file_site` (`siteId`),
+  ADD KEY `fk_file_group` (`fileGroupId`),
   ADD KEY `fk_file_uploaded_by` (`uploadedById`);
+
+--
+-- Indexes for table `consultationFileGroup`
+--
+ALTER TABLE `###TABLE_PREFIX###consultationFileGroup`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_filegroup_consultation` (`consultationId`);
 
 --
 -- Indexes for table `consultationLog`
@@ -1172,6 +1196,11 @@ ALTER TABLE `###TABLE_PREFIX###consultationAgendaItem`
 ALTER TABLE `###TABLE_PREFIX###consultationFile`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `consultationFileGroup`
+--
+ALTER TABLE `###TABLE_PREFIX###consultationFileGroup`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `consultationLog`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationLog`
@@ -1374,7 +1403,14 @@ ALTER TABLE `###TABLE_PREFIX###consultationAgendaItem`
 ALTER TABLE `###TABLE_PREFIX###consultationFile`
   ADD CONSTRAINT `fk_consultation_file_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_file_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
+  ADD CONSTRAINT `fk_file_group` FOREIGN KEY (`fileGroupId`) REFERENCES `###TABLE_PREFIX###consultationFileGroup` (`id`),
   ADD CONSTRAINT `fk_file_uploaded_by` FOREIGN KEY (`uploadedById`) REFERENCES `###TABLE_PREFIX###user` (`id`);
+
+--
+-- Constraints for table `consultationFileGroup`
+--
+ALTER TABLE `###TABLE_PREFIX###consultationFileGroup`
+    ADD CONSTRAINT `fk_filegroup_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
 
 --
 -- Constraints for table `consultationLog`

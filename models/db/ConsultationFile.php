@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\components\UrlHelper;
 use app\models\exceptions\FormError;
 use app\models\settings\{AntragsgruenApp, Stylesheet};
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -24,30 +25,27 @@ use yii\db\ActiveRecord;
  * @property int|null $uploadedById
  *
  * @property Consultation $consultation
+ * @property ConsultationFileGroup|null $fileGroup
  * @property User|null $uploadedBy
  */
 class ConsultationFile extends ActiveRecord
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationFile';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUploadedBy()
+    public function getFileGroup(): ActiveQuery
+    {
+        return $this->hasOne(ConsultationFileGroup::class, ['id' => 'fileGroupId']);
+    }
+
+    public function getUploadedBy(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'uploadedById']);
     }
@@ -61,18 +59,12 @@ class ConsultationFile extends ActiveRecord
         }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSite()
+    public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['siteId', 'filename', 'filesize', 'mimetype', 'data', 'dataHash', 'dateCreation'], 'required'],
@@ -233,11 +225,6 @@ class ConsultationFile extends ActiveRecord
 
 
     /**
-     * @param Consultation $consultation
-     * @param string $formName
-     * @param User|null $user
-     *
-     * @return ConsultationFile
      * @throws FormError
      */
     public static function uploadImage(Consultation $consultation, string $formName, ?User $user): ConsultationFile
