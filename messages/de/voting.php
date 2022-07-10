@@ -21,6 +21,7 @@ return [
     'activity_reset' => 'Abstimmung zurückgesetzt',
     'activity_reopened' => 'Abstimmung erneut geöffnet',
 
+    'page_title' => 'Abstimmungen',
     'results_title' => 'Abstimmungsergebnisse',
     'results_none' => 'Es wurden noch keine Abstimmungsergebnisse veröffentlicht',
     'results_download' => 'Ergebnisse als Spreadsheet',

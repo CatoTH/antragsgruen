@@ -21,6 +21,7 @@ return [
     'activity_reset' => 'Voting reset',
     'activity_reopened' => 'Voting re-opened',
 
+    'page_title' => 'Votings',
     'results_title' => 'Voting results',
     'results_none' => 'No voting results have been published yet',
     'results_download' => 'Results as Spreadsheet',

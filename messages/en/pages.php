@@ -49,4 +49,6 @@ return [
     'settings_delete'  => 'Delete page',
     'create_btn'       => 'Create',
     'menu_add_btn'     => 'Create a new content page in the menu',
+
+    'documents_title' => 'Documents',
 ];
