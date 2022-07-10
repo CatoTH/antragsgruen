@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -17,34 +18,22 @@ use yii\db\ActiveRecord;
  */
 class TexTemplate extends ActiveRecord
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'texTemplate';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSite()
+    public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionTypes()
+    public function getMotionTypes(): ActiveQuery
     {
         return $this->hasMany(ConsultationMotionType::class, ['texTemplateId' => 'id']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['title', 'texLayout', 'texContent'], 'required'],

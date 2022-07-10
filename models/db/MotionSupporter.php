@@ -7,6 +7,7 @@ use app\components\RequestContext;
 use app\models\events\MotionSupporterEvent;
 use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
+use yii\db\ActiveQuery;
 
 /**
  * @property int|null $id
@@ -30,8 +31,8 @@ use yii\base\Event;
  */
 class MotionSupporter extends ISupporter
 {
-    const EVENT_SUPPORTED = 'supported_official'; // Called if a new support (like, dislike, official) was created; no initiators
-    private static $handlersAttached = false;
+    public const EVENT_SUPPORTED = 'supported_official'; // Called if a new support (like, dislike, official) was created; no initiators
+    private static bool $handlersAttached = false;
 
     public function init()
     {
@@ -48,18 +49,12 @@ class MotionSupporter extends ISupporter
         }
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionSupporter';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotion()
+    public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
@@ -142,10 +137,7 @@ class MotionSupporter extends ISupporter
         }
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['motionId', 'position', 'role'], 'required'],

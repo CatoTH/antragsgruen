@@ -40,23 +40,23 @@ class AmendmentComment extends IComment
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
-            ->andWhere(User::tableName() . '.status != ' . IntVal(User::STATUS_DELETED));
+            ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
     public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId'])
-            ->andWhere(Amendment::tableName() . '.status != ' . IntVal(Amendment::STATUS_DELETED));
+            ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
-    private $imotion = null;
+    private ?Amendment $imotion = null;
 
     public function getIMotion(): ?Amendment
     {
         if (!$this->imotion) {
             $current = Consultation::getCurrent();
             if ($current) {
-                $amendment = $current->getAmendment($this->imotion);
+                $amendment = $current->getAmendment($this->amendmentId);
                 if ($amendment) {
                     $this->imotion = $amendment;
                 } else {
@@ -72,15 +72,15 @@ class AmendmentComment extends IComment
     public function getParentComment(): ActiveQuery
     {
         return $this->hasOne(AmendmentComment::class, ['id' => 'parentCommentId'])
-            ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_DELETED))
-            ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_PRIVATE));
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED)
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_PRIVATE);
     }
 
     public function getReplies(): ActiveQuery
     {
         return $this->hasMany(AmendmentComment::class, ['parentCommentId' => 'id'])
-            ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_DELETED))
-            ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_PRIVATE));
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED)
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_PRIVATE);
     }
 
     public function getConsultation(): ?Consultation

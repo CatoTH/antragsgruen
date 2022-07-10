@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -15,29 +16,20 @@ use yii\db\ActiveRecord;
  */
 class SpeechSubqueue extends ActiveRecord
 {
-    const CONFIGURATION_NONE = 0;
-    const CONFIGURATION_GENDER = 1;
+    public const CONFIGURATION_NONE = 0;
+    public const CONFIGURATION_GENDER = 1;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'speechSubqueue';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getQueue()
+    public function getQueue(): ActiveQuery
     {
         return $this->hasOne(SpeechQueue::class, ['id' => 'queueId']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['queueId', 'name', 'position'], 'required'],
@@ -47,8 +39,6 @@ class SpeechSubqueue extends ActiveRecord
     }
 
     /**
-     * @param SpeechQueue $queue
-     *
      * @return SpeechQueueItem[]
      */
     public function getItems(SpeechQueue $queue): array

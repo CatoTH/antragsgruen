@@ -72,8 +72,7 @@ class SpeechQueue extends ActiveRecord
         ];
     }
 
-    /** @var null|\app\models\settings\SpeechQueue */
-    private $settingsObject = null;
+    private ?\app\models\settings\SpeechQueue $settingsObject = null;
 
     public function getSettings(): \app\models\settings\SpeechQueue
     {

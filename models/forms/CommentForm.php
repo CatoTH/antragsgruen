@@ -109,7 +109,7 @@ class CommentForm extends Model
                 if (isset($values['notificationsettings'])) {
                     $this->notificationsettings = IntVal($values['notificationsettings']);
                 } else {
-                    $this->notificationsettings = UserNotification::$COMMENT_SETTINGS[0];
+                    $this->notificationsettings = UserNotification::COMMENT_SETTINGS[0];
                 }
             } else {
                 $this->notifications        = false;

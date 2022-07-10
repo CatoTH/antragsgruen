@@ -253,7 +253,7 @@ class ConsultationController extends Base
                 if (isset($newNotis['commentsetting'])) {
                     $commentSetting = IntVal($newNotis['commentsetting']);
                 } else {
-                    $commentSetting = UserNotification::$COMMENT_SETTINGS[0];
+                    $commentSetting = UserNotification::COMMENT_SETTINGS[0];
                 }
                 UserNotification::addCommentNotification($user, $con, $commentSetting);
             } else {
