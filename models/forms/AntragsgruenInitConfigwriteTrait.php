@@ -5,16 +5,13 @@ namespace app\models\forms;
 use app\models\settings\AntragsgruenApp;
 
 /**
- * Class AntragsgruenInitConfigwriteTrait
- * @package app\models\forms
- *
  * @method protected setConfigValues(AntragsgruenApp $config)
  */
 trait AntragsgruenInitConfigwriteTrait
 {
-    protected $configFile = null;
+    protected ?string $configFile = null;
 
-    public function readConfigFromFile($configFile = null)
+    public function readConfigFromFile(?string $configFile = null): AntragsgruenApp
     {
         if ($configFile) {
             $this->configFile = $configFile;
@@ -31,17 +28,14 @@ trait AntragsgruenInitConfigwriteTrait
             $config = new AntragsgruenApp('');
         }
 
-        if ($config->randomSeed === null || $config->randomSeed == '') {
+        if ($config->randomSeed == '') {
             $config->randomSeed = \Yii::$app->getSecurity()->generateRandomString();
         }
 
         return $config;
     }
 
-
-    /**
-     */
-    public function saveConfig()
+    public function saveConfig(): void
     {
         $config = $this->readConfigFromFile();
         $this->setConfigValues($config);

@@ -288,7 +288,7 @@ class UrlHelper
         $scheme   = $urlParts['scheme'] ?? ($_SERVER['REQUEST_SCHEME'] ?? 'http');
         $host     = $urlParts['host'] ?? $_SERVER['HTTP_HOST'];
         $fullhost = $scheme . '://' . $host . '/';
-        if ($params->domainPlain == $fullhost) {
+        if ($params->domainPlain === $fullhost) {
             return null;
         } else {
             $preg = str_replace('<subdomain:[\\w_-]+>', '[\\w_-]+', $params->domainSubdomain);

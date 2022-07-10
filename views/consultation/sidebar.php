@@ -106,11 +106,9 @@ $title = '<span class="glyphicon glyphicon-bell" aria-hidden="true"></span>' . Y
 $link  = UrlHelper::createUrl('consultation/notifications');
 $html  .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
 
-if ($consultation->getSettings()->showFeeds) {
-    $title = '<span class="fontello fontello-rss-squared" aria-hidden="true"></span>' . Yii::t('con', 'feeds');
-    $link  = UrlHelper::createUrl('consultation/feeds');
-    $html  .= '<li class="feeds">' . Html::a($title, $link) . '</li>';
-}
+$title = '<span class="fontello fontello-rss-squared" aria-hidden="true"></span>' . Yii::t('con', 'feeds');
+$link  = UrlHelper::createUrl('consultation/feeds');
+$html  .= '<li class="feeds">' . Html::a($title, $link) . '</li>';
 
 if ($consultation->getSettings()->collectingPage) {
     $title = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'sb_collecting');

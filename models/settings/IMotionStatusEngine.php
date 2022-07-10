@@ -10,10 +10,9 @@ use app\models\db\{Amendment, IMotion};
 class IMotionStatusEngine
 {
     /** @var IMotionStatus[] */
-    private $allStatusesCache;
+    private array $allStatusesCache;
 
-    /** @var \app\models\db\Consultation */
-    private $consultation;
+    private \app\models\db\Consultation $consultation;
 
     public function __construct(\app\models\db\Consultation $consultation)
     {

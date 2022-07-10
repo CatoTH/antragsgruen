@@ -10,43 +10,27 @@ class InitiatorForm implements \JsonSerializable
     const CONTACT_OPTIONAL = 1;
     const CONTACT_REQUIRED = 2;
 
-    /** @var int */
-    public $type = 0;
+    public int $type = 0;
 
-    /** @var bool */
-    public $initiatorCanBePerson = true;
-    /** @var bool */
-    public $initiatorCanBeOrganization = true;
+    public bool $initiatorCanBePerson = true;
+    public bool $initiatorCanBeOrganization = true;
 
-    /** @var int */
-    public $minSupporters = 1;
-    /** @var null|int */
-    public $minSupportersFemale = null;
-    /** @var null|int */
-    public $maxPdfSupporters = null;
-    /** @var bool */
-    public $hasOrganizations = true;
-    /** @var bool */
-    public $allowMoreSupporters = true;
-    /** @var int */
-    public $hasResolutionDate = 2;
-    /** @var bool */
-    public $allowSupportingAfterPublication = false;
-    /** @var bool */
-    public $offerNonPublicSupports = false;
+    public int $minSupporters = 1;
+    public ?int $minSupportersFemale = null;
+    public ?int $maxPdfSupporters = null;
+    public bool $hasOrganizations = true;
+    public bool $allowMoreSupporters = true;
+    public int $hasResolutionDate = 2;
+    public bool $allowSupportingAfterPublication = false;
+    public bool $offerNonPublicSupports = false;
 
     // Used for CollectBeforePublish
-    /** @var bool */
-    public $skipForOrganizations = true;
+    public bool $skipForOrganizations = true;
 
-    /** @var int */
-    public $contactName = 0;
-    /** @var int */
-    public $contactPhone = 1;
-    /** @var int */
-    public $contactEmail = 2;
-    /** @var int */
-    public $contactGender = 0;
+    public int $contactName = self::CONTACT_NONE;
+    public int $contactPhone = self::CONTACT_OPTIONAL;
+    public int $contactEmail = self::CONTACT_REQUIRED;
+    public int $contactGender = self::CONTACT_NONE;
 
     /**
      * @throws \app\models\exceptions\FormError

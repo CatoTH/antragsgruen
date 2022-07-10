@@ -6,6 +6,5 @@ class User implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    /** @var string */
-    public $ppReplyTo = '';
+    public string $ppReplyTo = '';
 }

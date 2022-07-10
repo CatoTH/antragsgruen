@@ -58,7 +58,7 @@ $icon-font-path: "./fonts/";
 
 ';
 
-if ($stylesheetSettings->backgroundImage) {
+if (isset($stylesheetSettings->backgroundImage)) {
     $css .= '
 body {
     background: url("' . $stylesheetSettings->backgroundImage . '") no-repeat scroll center center transparent;

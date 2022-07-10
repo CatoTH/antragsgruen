@@ -6,25 +6,19 @@ class Site implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    /** @var string */
-    public $siteLayout = 'layout-classic';
+    public string $siteLayout = 'layout-classic';
 
-    /** @var bool */
-    public $showAntragsgruenAd = true;
-    /** @var bool */
-    public $showBreadcrumbs = true;
-    /** @var bool */
-    public $apiEnabled = false;
+    public bool $showAntragsgruenAd = true;
+    public bool $showBreadcrumbs = true;
+    public bool $apiEnabled = false;
 
     public array $loginMethods = [
         self::LOGIN_STD,
         self::LOGIN_GRUENES_NETZ,
     ];
 
-    /** @var array */
-    public $stylesheetSettings = [];
-    /** @var array */
-    public $apiCorsOrigins = [];
+    public array $stylesheetSettings = [];
+    public array $apiCorsOrigins = [];
 
     public const LOGIN_STD = 0;
     public const LOGIN_GRUENES_NETZ = 1;

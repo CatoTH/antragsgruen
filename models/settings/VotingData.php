@@ -14,31 +14,22 @@ class VotingData implements \JsonSerializable
 
     use JsonConfigTrait;
 
-    /** @var null|string - casting a "yes" for Item 1 implies a "yes" for Item 2 of the same item group */
-    public $itemGroupSameVote = null;
-    /** @var null|string */
-    public $itemGroupName = null;
-
-    /** @var null|bool */
-    public $quorumReached = null;
+    /** casting a "yes" for Item 1 implies a "yes" for Item 2 of the same item group */
+    public ?string $itemGroupSameVote = null;
+    public ?string $itemGroupName = null;
+    public ?bool $quorumReached = null;
 
     // @TODO Migrate this to the more flexible answer system
-    /** @var null|int */
-    public $votesYes = null;
-    /** @var null|int */
-    public $votesNo = null;
-    /** @var null|int */
-    public $votesAbstention = null;
-    /** @var null|int */
-    public $votesInvalid = null;
-    /** @var null|int */
-    public $votesPresent = null;
+    public ?int $votesYes = null;
+    public ?int $votesNo = null;
+    public ?int $votesAbstention = null;
+    public ?int $votesInvalid = null;
+    public ?int $votesPresent = null;
 
     /** @var EligibilityByGroup[]|null */
-    public $eligibilityList = null;
+    public ?array $eligibilityList = null;
 
-    /** @var null|string */
-    public $comment = null;
+    public ?string $comment = null;
 
     public function hasAnyData(): bool
     {
@@ -46,10 +37,7 @@ class VotingData implements \JsonSerializable
                $this->votesAbstention || $this->votesPresent || $this->comment;
     }
 
-    /**
-     * @param array $votes
-     */
-    public function setFromPostData($votes): void
+    public function setFromPostData(array $votes): void
     {
         if (isset($votes['yes']) && is_numeric($votes['yes'])) {
             $this->votesYes = intval($votes['yes']);
