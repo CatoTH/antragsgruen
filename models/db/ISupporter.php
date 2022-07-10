@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\supportTypes\SupportBase;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -25,22 +26,22 @@ use yii\db\ActiveRecord;
  */
 abstract class ISupporter extends ActiveRecord
 {
-    const ROLE_INITIATOR = 'initiates';
-    const ROLE_SUPPORTER = 'supports';
-    const ROLE_LIKE      = 'likes';
-    const ROLE_DISLIKE   = 'dislikes';
+    public const ROLE_INITIATOR = 'initiates';
+    public const ROLE_SUPPORTER = 'supports';
+    public const ROLE_LIKE      = 'likes';
+    public const ROLE_DISLIKE   = 'dislikes';
 
-    const PERSON_NATURAL      = 0;
-    const PERSON_ORGANIZATION = 1;
+    public const PERSON_NATURAL      = 0;
+    public const PERSON_ORGANIZATION = 1;
 
-    const EXTRA_DATA_FIELD_GENDER = 'gender';
-    const EXTRA_DATA_FIELD_CREATED_BY_ADMIN = 'createdByAdmin';
-    const EXTRA_DATA_FIELD_NON_PUBLIC = 'nonPublic';
+    public const EXTRA_DATA_FIELD_GENDER = 'gender';
+    public const EXTRA_DATA_FIELD_CREATED_BY_ADMIN = 'createdByAdmin';
+    public const EXTRA_DATA_FIELD_NON_PUBLIC = 'nonPublic';
 
     /**
      * @return string[]
      */
-    public static function getRoles()
+    public static function getRoles(): array
     {
         return [
             static::ROLE_INITIATOR => \Yii::t('structure', 'role_initiator'),
@@ -50,10 +51,7 @@ abstract class ISupporter extends ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);

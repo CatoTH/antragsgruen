@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 
 /**
  * @property int $motionId
@@ -10,26 +11,17 @@ use app\models\settings\AntragsgruenApp;
  */
 class MotionAdminComment extends IAdminComment
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionAdminComment';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotion()
+    public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['motionId', 'status', 'dateCreation'], 'required'],

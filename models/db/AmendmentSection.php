@@ -18,8 +18,7 @@ use app\models\sectionTypes\ISectionType;
  */
 class AmendmentSection extends IMotionSection
 {
-    /** @var null|MotionSection */
-    private $originalMotionSection = null;
+    private ?MotionSection $originalMotionSection = null;
 
     public static function tableName(): string
     {
@@ -74,10 +73,7 @@ class AmendmentSection extends IMotionSection
         }
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['amendmentId', 'sectionId'], 'required'],
@@ -90,7 +86,7 @@ class AmendmentSection extends IMotionSection
      * @return string[]
      * @throws Internal
      */
-    public function getTextParagraphs()
+    public function getTextParagraphs(): array
     {
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
@@ -143,7 +139,7 @@ class AmendmentSection extends IMotionSection
      *
      * @return int[]
      */
-    public function getParagraphLineNumberHelper()
+    public function getParagraphLineNumberHelper(): array
     {
         $motionParas     = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->getData());
         $lineLength      = $this->getMotion()->getMyConsultation()->getSettings()->lineLength;
@@ -165,7 +161,7 @@ class AmendmentSection extends IMotionSection
      * @param bool $splitListItems
      * @return MotionSectionParagraphAmendment[]
      */
-    public function diffDataToOrigParagraphs($origParagraphs, $splitListItems = true)
+    public function diffDataToOrigParagraphs(array $origParagraphs, bool $splitListItems = true): array
     {
         /*
         $cached = $this->getCacheItem('diffDataToOrigParagraphs');
@@ -212,11 +208,9 @@ class AmendmentSection extends IMotionSection
      * Returns a hashmap of changed paragraphs. Only the actual diff-string is returned.
      *
      * @param string[] $origParagraphs
-     * @param bool $splitListItems
-     * @param int $formatting
      * @return string[]
      */
-    public function diffStrToOrigParagraphs($origParagraphs, $splitListItems, $formatting)
+    public function diffStrToOrigParagraphs(array $origParagraphs, bool $splitListItems, int $formatting): array
     {
         $amParagraphs = [];
         $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
@@ -232,10 +226,9 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
-     * @param bool $splitListItems
      * @return string[]
      */
-    public function getParagraphsRelativeToOriginal($splitListItems = true)
+    public function getParagraphsRelativeToOriginal(bool $splitListItems = true): array
     {
         $newSections = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
         $oldSections = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->getData(), $splitListItems);
@@ -243,9 +236,7 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
-     * @param string $newMotionHtml
      * @param string[] $overrides
-     * @return bool
      * @throws Internal
      */
     public function canRewrite(string $newMotionHtml, array $overrides = []): bool
@@ -274,10 +265,9 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
-     * @param string $newMotionHtml
      * @param string[] $overrides
      */
-    public function performRewrite($newMotionHtml, $overrides = [])
+    public function performRewrite(string $newMotionHtml, array $overrides = []): void
     {
         $oldMotionHtml = $this->getOriginalMotionSection()->getData();
         $this->data    = AmendmentRewriter::performRewrite($oldMotionHtml, $newMotionHtml, $this->data, $overrides);

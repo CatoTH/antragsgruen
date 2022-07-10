@@ -45,30 +45,20 @@ abstract class IMotionSection extends ActiveRecord
         throw new Internal('Unknown Field Type: ' . $this->getSettings()->type);
     }
 
-
-    /**
-     * @return bool
-     */
-    public function checkLength()
+    public function checkLength(): bool
     {
         // @TODO
         return true;
     }
 
-    /**
-     * @return int
-     */
-    abstract public function getFirstLineNumber();
+    abstract public function getFirstLineNumber(): int;
 
     public function isLayoutRight(): bool
     {
         return ($this->getSettings()->positionRight == 1);
     }
 
-    /**
-     * @return string
-     */
-    public function getShowAlwaysToken()
+    public function getShowAlwaysToken(): string
     {
         return sha1('createToken' . AntragsgruenApp::getInstance()->randomSeed . $this->getData());
     }

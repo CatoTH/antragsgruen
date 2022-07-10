@@ -6,13 +6,6 @@ use app\components\RSSExporter;
 
 interface IRSSItem
 {
-    /**
-     * @param RSSExporter $feed
-     */
-    public function addToFeed(RSSExporter $feed);
-
-    /**
-     * @return string
-     */
-    public function getDate();
+    public function addToFeed(RSSExporter $feed): void;
+    public function getDate(): string;
 }

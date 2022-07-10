@@ -407,10 +407,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function getLink(bool $absolute = false): string;
 
-    /**
-     * @return string
-     */
-    public function getDate()
+    public function getDate(): string
     {
         return $this->dateCreation;
     }

@@ -17,8 +17,8 @@ use yii\db\Expression;
  */
 class FailedLoginAttempt extends ActiveRecord
 {
-    const THROTTLING_MIN_ATTEMPTS = 3;
-    const THROTTLING_DURATION_MINUTES = 60;
+    private const THROTTLING_MIN_ATTEMPTS = 3;
+    private const THROTTLING_DURATION_MINUTES = 60;
 
     public static function tableName(): string
     {

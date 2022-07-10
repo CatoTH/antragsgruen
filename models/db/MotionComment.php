@@ -148,10 +148,7 @@ class MotionComment extends IComment
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getDate()
+    public function getDate(): string
     {
         return $this->dateCreation;
     }
@@ -164,7 +161,7 @@ class MotionComment extends IComment
     /**
      * @return MotionComment[]
      */
-    public static function getScreeningComments(Consultation $consultation)
+    public static function getScreeningComments(Consultation $consultation): array
     {
         $query = MotionComment::find();
         $query->where('motionComment.status = ' . static::STATUS_SCREENING);
