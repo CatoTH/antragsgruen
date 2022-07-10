@@ -1,7 +1,5 @@
 <?php
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
-$pdfjsPath = $params->resourceBase . 'js/pdfjs-viewer/';
+$pdfjsPath = \app\models\settings\AntragsgruenApp::getInstance()->resourceBase . 'js/pdfjs-viewer/';
 
 ?><!DOCTYPE html>
 <!--

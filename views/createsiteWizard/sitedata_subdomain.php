@@ -41,8 +41,7 @@ use yii\helpers\Html;
 
                 <?php
 
-                /** @var \app\models\settings\AntragsgruenApp $params */
-                $params = \yii::$app->params;
+                $params = \app\models\settings\AntragsgruenApp::getInstance();
                 $requestUrl = \app\components\UrlHelper::createUrl(['manager/check-subdomain', 'test' => 'SUBDOMAIN']);
                 $input  = '<div class="form-group has-feedback">';
                 $opts = ['id' => 'siteSubdomain', 'class' => 'form-control', 'data-query-url' => $requestUrl, 'required' => 'required'];

@@ -20,8 +20,7 @@ $consultation = $controller->consultation;
 
 $DEBUG = false;
 
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = \yii::$app->params;
+$params =\app\models\settings\AntragsgruenApp::getInstance();
 
 $doc = new Spreadsheet([
     'tmpPath'   => $params->getTmpDir(),
@@ -33,7 +32,7 @@ $doc->setPageOrientation("297mm", "210mm", "landscape");
 /**
  * @param IAdminComment[] $currentComments
  */
-$formatComments = function ($currentComments): string {
+$formatComments = function (array $currentComments): string {
     $commentsStr = '';
     $first = true;
     foreach ($currentComments as $currentComment) {

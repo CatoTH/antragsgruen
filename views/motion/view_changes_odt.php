@@ -9,15 +9,12 @@ use yii\helpers\Html;
 /**
  * @var \app\models\db\Motion $oldMotion
  * @var \app\models\MotionSectionChanges[] $changes
- * @var \app\models\settings\AntragsgruenApp $config
  */
-
-$config = \yii::$app->params;
 
 $template = $oldMotion->motionType->getOdtTemplateFile();
 $doc      = new Text([
     'templateFile' => $template,
-    'tmpPath'      => $config->getTmpDir(),
+    'tmpPath'      => \app\models\settings\AntragsgruenApp::getInstance()->getTmpDir(),
     'trustHtml'    => true,
 ]);
 

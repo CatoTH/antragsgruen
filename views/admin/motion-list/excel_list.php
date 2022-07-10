@@ -4,7 +4,7 @@ use app\components\LineSplitter;
 use app\models\db\{ConsultationMotionType, ConsultationSettingsTag, Motion};
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Motion[] $motions
  * @var bool $textCombined
  * @var ConsultationMotionType $motionType
@@ -40,25 +40,25 @@ $COL_PROCEDURE = chr($currCol++);
 
 $objPHPExcel = new \PHPExcel();
 
-$objPHPExcel->getProperties()->setCreator(\Yii::t('export', 'default_creator'));
-$objPHPExcel->getProperties()->setLastModifiedBy(\Yii::t('export', 'default_creator'));
+$objPHPExcel->getProperties()->setCreator(Yii::t('export', 'default_creator'));
+$objPHPExcel->getProperties()->setLastModifiedBy(Yii::t('export', 'default_creator'));
 $objPHPExcel->getProperties()->setTitle($consultation->title);
-$objPHPExcel->getProperties()->setSubject(\Yii::t('export', 'motions'));
-$objPHPExcel->getProperties()->setDescription($consultation->title . ' - ' . \Yii::t('export', 'motions'));
+$objPHPExcel->getProperties()->setSubject(Yii::t('export', 'motions'));
+$objPHPExcel->getProperties()->setDescription($consultation->title . ' - ' . Yii::t('export', 'motions'));
 
 $objPHPExcel->setActiveSheetIndex(0);
 
-$objPHPExcel->getActiveSheet()->SetCellValue($COL_PREFIX . '2', \Yii::t('export', 'motions'));
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_PREFIX . '2', Yii::t('export', 'motions'));
 $objPHPExcel->getActiveSheet()->getStyle($COL_PREFIX . '2')->applyFromArray([
     'font' => [
         'bold' => true
     ]
 ]);
 
-$objPHPExcel->getActiveSheet()->SetCellValue($COL_PREFIX . '3', \Yii::t('export', 'prefix_short'));
-$objPHPExcel->getActiveSheet()->SetCellValue($COL_INITIATOR . '3', \Yii::t('export', 'initiator'));
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_PREFIX . '3', Yii::t('export', 'prefix_short'));
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_INITIATOR . '3', Yii::t('export', 'initiator'));
 if ($textCombined) {
-    $objPHPExcel->getActiveSheet()->SetCellValue($COL_TEXTS[0] . '3', \Yii::t('export', 'text'));
+    $objPHPExcel->getActiveSheet()->SetCellValue($COL_TEXTS[0] . '3', Yii::t('export', 'text'));
     $objPHPExcel->getActiveSheet()->getColumnDimension($COL_TEXTS[0])->setAutoSize(80);
 } else {
     foreach ($motionType->motionSections as $section) {
@@ -67,10 +67,10 @@ if ($textCombined) {
     }
 }
 if (isset($COL_TAGS)) {
-    $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS . '3', \Yii::t('export', 'tags'));
+    $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS . '3', Yii::t('export', 'tags'));
 }
-$objPHPExcel->getActiveSheet()->SetCellValue($COL_CONTACT . '3', \Yii::t('export', 'contact'));
-$objPHPExcel->getActiveSheet()->SetCellValue($COL_PROCEDURE . '3', \Yii::t('export', 'procedure'));
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_CONTACT . '3', Yii::t('export', 'contact'));
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_PROCEDURE . '3', Yii::t('export', 'procedure'));
 $objPHPExcel->getActiveSheet()->getStyle($COL_PREFIX . '3:' . $COL_PROCEDURE . '3')->applyFromArray([
     'font' => [
         'bold' => true
@@ -162,7 +162,7 @@ $objPHPExcel->getActiveSheet()->getColumnDimension($COL_CONTACT)->setWidth(24);
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_PROCEDURE)->setWidth(13);
 
 
-$objPHPExcel->getActiveSheet()->setTitle(\Yii::t('export', 'motions'));
+$objPHPExcel->getActiveSheet()->setTitle(Yii::t('export', 'motions'));
 
 // Save Excel 2007 file
 $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);

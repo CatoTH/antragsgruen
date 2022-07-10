@@ -24,25 +24,25 @@ if (!isset($name)) {
 switch ($httpStatus) {
     case 404:
         if ($message == '') {
-            $message = \Yii::t('base', 'err_site_404');
+            $message = Yii::t('base', 'err_site_404');
         }
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
         break;
     case 403:
         if ($message == '') {
-            $message = \Yii::t('base', 'err_site_403');
+            $message = Yii::t('base', 'err_site_403');
         }
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
         break;
     case 410:
         if ($message == '') {
-            $message = \Yii::t('base', 'err_site_410');
+            $message = Yii::t('base', 'err_site_410');
         }
         header($_SERVER['SERVER_PROTOCOL'] . ' 410 Gone');
         break;
     case 500:
         if ($message == '') {
-            $message = \Yii::t('base', 'err_site_500');
+            $message = Yii::t('base', 'err_site_500');
         }
         header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
         break;
