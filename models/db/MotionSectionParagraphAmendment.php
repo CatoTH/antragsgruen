@@ -4,14 +4,13 @@ namespace app\models\db;
 
 class MotionSectionParagraphAmendment
 {
-    /**
-     * @param int $amendmentId
-     * @param int $sectionId
-     * @param int $paragraphNo
-     * @param string $diff
-     * @param int $firstLine
-     */
-    public function __construct($amendmentId, $sectionId, $paragraphNo, $diff, $firstLine)
+    public string $strDiff;
+    public int $amendmentId;
+    public int $sectionId;
+    public int $origParagraphNo;
+    public int $firstAffectedLine;
+
+    public function __construct(int $amendmentId, int $sectionId, int $paragraphNo, string $diff, int $firstLine)
     {
         $this->amendmentId       = $amendmentId;
         $this->sectionId         = $sectionId;
@@ -19,13 +18,4 @@ class MotionSectionParagraphAmendment
         $this->strDiff           = $diff;
         $this->firstAffectedLine = $firstLine;
     }
-
-    /** @var string */
-    public $strDiff;
-
-    /** @var int */
-    public $amendmentId;
-    public $sectionId;
-    public $origParagraphNo;
-    public $firstAffectedLine;
 }

@@ -40,7 +40,7 @@ $amendmentSettingOptions = [
 ];
 
 $activeMotions    = $activeAmendments = $activeComments = false;
-$commentSetting   = UserNotification::$COMMENT_SETTINGS[0];
+$commentSetting   = UserNotification::COMMENT_SETTINGS[0];
 $amendmentSetting = 0;
 
 foreach ($notifications as $noti) {
@@ -56,7 +56,7 @@ foreach ($notifications as $noti) {
             break;
         case UserNotification::NOTIFICATION_NEW_COMMENT:
             $activeComments = true;
-            $commentSetting = $noti->getSettingByKey('comments', UserNotification::$COMMENT_SETTINGS[0]);
+            $commentSetting = $noti->getSettingByKey('comments', UserNotification::COMMENT_SETTINGS[0]);
             break;
         case UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION:
             $activeAmendments = true;

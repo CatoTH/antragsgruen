@@ -84,7 +84,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
-    private static $userCache = [];
+    private static array $userCache = [];
     public static function getCachedUser(int $userId): ?User
     {
         // Hint: also cache "null" entries
@@ -345,8 +345,7 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
-    /** @var null|\app\models\settings\User */
-    private $settingsObject = null;
+    private ?\app\models\settings\User $settingsObject = null;
 
     public function getSettingsObj(): \app\models\settings\User
     {

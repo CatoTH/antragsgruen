@@ -36,37 +36,25 @@ class MotionComment extends IComment
         $this->on(static::EVENT_PUBLISHED, [$this, 'logToConsultationLog'], null, false);
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionComment';
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getMotion()
+    public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
-    private $imotion = null;
+    private ?Motion $imotion = null;
 
-    /**
-     * @return Motion|null
-     */
-    public function getIMotion()
+    public function getIMotion(): ?Motion
     {
         if (!$this->imotion) {
             $current = Consultation::getCurrent();
@@ -84,46 +72,31 @@ class MotionComment extends IComment
         return $this->imotion;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getSupporters()
+    public function getSupporters(): ActiveQuery
     {
         return $this->hasMany(MotionCommentSupporter::class, ['motionCommentId' => 'id']);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getSection()
+    public function getSection(): ActiveQuery
     {
         return $this->hasOne(MotionSection::class, ['motionId' => 'motionId', 'sectionId' => 'sectionId']);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getParentComment()
+    public function getParentComment(): ActiveQuery
     {
         return $this->hasOne(MotionComment::class, ['id' => 'parentCommentId'])
             ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED)
             ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getReplies()
+    public function getReplies(): ActiveQuery
     {
         return $this->hasMany(MotionComment::class, ['parentCommentId' => 'id'])
             ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED)
             ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['motionId', 'paragraph', 'status', 'dateCreation'], 'required'],

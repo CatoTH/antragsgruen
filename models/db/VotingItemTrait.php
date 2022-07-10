@@ -15,9 +15,7 @@ use app\models\exceptions\FormError;
  */
 trait VotingItemTrait
 {
-    /** @var null|VotingData */
-    private $votingDataObject = null;
-
+    private ?VotingData $votingDataObject = null;
 
     abstract public function getMyConsultation(): ?Consultation;
 

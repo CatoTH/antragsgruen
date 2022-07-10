@@ -25,9 +25,9 @@ $settingOptions = [
     UserNotification::COMMENT_SAME_MOTIONS        => Yii::t('con', 'noti_comments_motions'),
     UserNotification::COMMENT_ALL_IN_CONSULTATION => Yii::t('con', 'noti_comments_con'),
 ];
-$setting        = UserNotification::$COMMENT_SETTINGS[0];
+$setting        = UserNotification::COMMENT_SETTINGS[0];
 if ($notiSettings) {
-    $setting = $notiSettings->getSettingByKey('comments', UserNotification::$COMMENT_SETTINGS[0]);
+    $setting = $notiSettings->getSettingByKey('comments', UserNotification::COMMENT_SETTINGS[0]);
 }
 
 $classes = 'commentForm motionComment form-horizontal';

@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\models\notifications\UserAsksPermission;
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -16,10 +17,7 @@ use yii\db\ActiveRecord;
  */
 class UserConsultationScreening extends ActiveRecord
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'userConsultationScreening';
     }
@@ -29,10 +27,7 @@ class UserConsultationScreening extends ActiveRecord
         return User::getCachedUser($this->userId);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }

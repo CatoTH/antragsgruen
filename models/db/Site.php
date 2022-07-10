@@ -32,11 +32,11 @@ use yii\db\ActiveRecord;
  */
 class Site extends ActiveRecord
 {
-    const STATUS_ACTIVE   = 0;
-    const STATUS_INACTIVE = 1;
-    const STATUS_DELETED  = -1;
+    public const STATUS_ACTIVE   = 0;
+    public const STATUS_INACTIVE = 1;
+    public const STATUS_DELETED  = -1;
 
-    const TITLE_SHORT_MAX_LEN = 100;
+    public const TITLE_SHORT_MAX_LEN = 100;
 
     public static function tableName(): string
     {
@@ -100,8 +100,7 @@ class Site extends ActiveRecord
     }
 
 
-    /** @var null|\app\models\settings\Site */
-    private $settingsObject = null;
+    private ?\app\models\settings\Site $settingsObject = null;
 
     public function getSettings(): \app\models\settings\Site
     {

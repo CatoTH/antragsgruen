@@ -49,11 +49,11 @@ use yii\helpers\Html;
  */
 class Amendment extends IMotion implements IRSSItem
 {
-    const EVENT_SUBMITTED       = 'submitted';
-    const EVENT_PUBLISHED       = 'published';
-    const EVENT_PUBLISHED_FIRST = 'published_first';
+    public const EVENT_SUBMITTED       = 'submitted';
+    public const EVENT_PUBLISHED       = 'published';
+    public const EVENT_PUBLISHED_FIRST = 'published_first';
 
-    const PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE = ['status', 'titlePrefix'];
+    public const PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE = ['status', 'titlePrefix'];
 
     public function init()
     {
@@ -243,11 +243,7 @@ class Amendment extends IMotion implements IRSSItem
         return $this->hasMany(Vote::class, ['amendmentId' => 'id']);
     }
 
-    /**
-     * @param int $sectionId
-     * @return AmendmentSection|null
-     */
-    public function getSection($sectionId)
+    public function getSection(int $sectionId): ?AmendmentSection
     {
         foreach ($this->sections as $section) {
             if ($section->sectionId == $sectionId) {
@@ -348,7 +344,7 @@ class Amendment extends IMotion implements IRSSItem
         return $this->getMyMotion()->tags;
     }
 
-    private $myMotion = null;
+    private ?Motion $myMotion = null;
 
     public function getMyMotion(): ?Motion
     {
@@ -407,7 +403,7 @@ class Amendment extends IMotion implements IRSSItem
      * @param string[] $original
      * @param string[] $new
      * @return int
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
     public static function calcFirstDiffLineCached($firstLine, $lineLength, $original, $new)
     {
@@ -441,10 +437,9 @@ class Amendment extends IMotion implements IRSSItem
 
 
     /**
-     * @return int
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
-    public function getFirstDiffLine()
+    public function getFirstDiffLine(): int
     {
         $cached = $this->getCacheItem('lines.getFirstDiffLine');
         if ($cached !== null) {
@@ -506,12 +501,11 @@ class Amendment extends IMotion implements IRSSItem
 
 
     /**
-     * @param Consultation $consultation
      * @param Amendment[] $amendments
      * @return Amendment[]
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
-    public static function sortByLineNumbers(Consultation $consultation, $amendments)
+    public static function sortByLineNumbers(Consultation $consultation, array $amendments): array
     {
         foreach ($amendments as $am) {
             $am->getFirstDiffLine(); // Initialize the cache
@@ -523,10 +517,9 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param int $limit
      * @return Amendment[]
      */
-    public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
+    public static function getNewestByConsultation(Consultation $consultation, int $limit = 5): array
     {
         $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
         $query             = Amendment::find();
@@ -747,7 +740,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
     public function canMergeIntoMotion(bool $ignoreCollisionProblems = false): bool
     {
@@ -773,15 +766,14 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /** @var null|MotionSectionParagraphAmendment[] */
-    private $changedParagraphCache = null;
+    private ?array $changedParagraphCache = null;
 
     /**
      * @param MotionSection[] $motionSections
-     * @param bool $lineNumbers
      * @return MotionSectionParagraphAmendment[]
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
-    public function getChangedParagraphs($motionSections, $lineNumbers)
+    public function getChangedParagraphs(array $motionSections, bool $lineNumbers): array
     {
         if ($lineNumbers && $this->changedParagraphCache !== null) {
             return $this->changedParagraphCache;
@@ -808,9 +800,9 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * @return Amendment[]
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
-    public function getCollidingAmendments()
+    public function getCollidingAmendments(): array
     {
         $mySections = [];
         foreach ($this->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -1092,7 +1084,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @throws FormError
      */
-    public function setMotionType(ConsultationMotionType $motionType)
+    public function setMotionType(ConsultationMotionType $motionType): void
     {
         if (!$this->getMyMotionType()->isCompatibleTo($motionType)) {
             throw new FormError('This amendment cannot be changed to the type ' . $motionType->titleSingular);
@@ -1255,7 +1247,7 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * @return Amendment[]
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
     public function collidesWithOtherProposedAmendments(bool $includeVoted): array
     {

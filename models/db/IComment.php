@@ -22,12 +22,12 @@ use yii\db\{ActiveQueryInterface, ActiveRecord};
 abstract class IComment extends ActiveRecord implements IRSSItem
 {
 
-    const STATUS_SCREENING = 1;
-    const STATUS_VISIBLE   = 0;
-    const STATUS_DELETED   = -1;
-    const STATUS_PRIVATE   = -2;
+    public const STATUS_SCREENING = 1;
+    public const STATUS_VISIBLE   = 0;
+    public const STATUS_DELETED   = -1;
+    public const STATUS_PRIVATE   = -2;
 
-    const EVENT_PUBLISHED = 'published';
+    public const EVENT_PUBLISHED = 'published';
 
     public function init(): void
     {
