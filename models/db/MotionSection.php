@@ -31,10 +31,7 @@ class MotionSection extends IMotionSection
         $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionSection';
     }
@@ -74,8 +71,7 @@ class MotionSection extends IMotionSection
         return $path;
     }
 
-    /** @var null|string */
-    private $toSaveDataSpool = null;
+    private ?string $toSaveDataSpool = null;
 
     public function onSaved(): void
     {
@@ -85,8 +81,7 @@ class MotionSection extends IMotionSection
         }
     }
 
-    /** @var ConsultationSettingsMotionSection|null */
-    private $fixedSectionType = null;
+    private ?ConsultationSettingsMotionSection $fixedSectionType = null;
 
     public function getSettings(): ?ConsultationSettingsMotionSection
     {
@@ -290,8 +285,8 @@ class MotionSection extends IMotionSection
     /**
      * @var MotionSectionParagraph[]
      */
-    private $paragraphObjectCacheWithLines    = null;
-    private $paragraphObjectCacheWithoutLines = null;
+    private ?array $paragraphObjectCacheWithLines    = null;
+    private ?array $paragraphObjectCacheWithoutLines = null;
 
     /**
      * @return MotionSectionParagraph[]
@@ -379,8 +374,7 @@ class MotionSection extends IMotionSection
         foreach ($paras as $para) {
             $return .= implode('', $para) . "\n";
         }
-        $return = trim($return);
-        return $return;
+        return trim($return);
     }
 
     public function getNumberOfCountableLines(): int
@@ -424,13 +418,13 @@ class MotionSection extends IMotionSection
         throw new Internal('Did not find myself: Motion ' . $this->motionId . ' / Section ' . $this->sectionId);
     }
 
-    /** @var null|SectionMerger[] */
-    private $mergers = [];
+    /** @var SectionMerger[] */
+    private array $mergers = [];
 
     /**
      * @param int[]|null $toMergeAmendmentIds
      */
-    public function getAmendmentDiffMerger($toMergeAmendmentIds): SectionMerger
+    public function getAmendmentDiffMerger(?array $toMergeAmendmentIds): SectionMerger
     {
         if ($toMergeAmendmentIds === null) {
             $key = '-';

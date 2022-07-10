@@ -32,7 +32,7 @@ use yii\db\ActiveQuery;
 class AmendmentSupporter extends ISupporter
 {
     const EVENT_SUPPORTED = 'supported_official'; // Called if a new support (like, dislike, official) was created; no initiators
-    private static $handlersAttached = false;
+    private static bool $handlersAttached = false;
 
     public function init()
     {

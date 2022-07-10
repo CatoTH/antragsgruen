@@ -28,7 +28,6 @@ use yii\db\ActiveRecord;
  * @property Site $site
  * @property Motion[] $motions
  * @property ConsultationText[] $texts
- * @property ConsultationOdtTemplate[] $odtTemplates
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationMotionType[] $motionTypes
  * @property ConsultationAgendaItem[] $agendaItems
@@ -230,11 +229,6 @@ class Consultation extends ActiveRecord
     public function getTexts(): ActiveQuery
     {
         return $this->hasMany(ConsultationText::class, ['consultationId' => 'id']);
-    }
-
-    public function getOdtTemplates(): ActiveQuery
-    {
-        return $this->hasMany(ConsultationOdtTemplate::class, ['consultationId' => 'id']);
     }
 
     public function getAgendaItems(): ActiveQuery

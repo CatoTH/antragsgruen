@@ -144,11 +144,6 @@ class SitePurger
         )->execute();
 
         $connection->createCommand(
-            'DELETE FROM consultationOdtTemplate WHERE consultationId = :conId',
-            [':conId' => $consultationId]
-        )->execute();
-
-        $connection->createCommand(
             'DELETE FROM consultationAgendaItem WHERE consultationId = :conId',
             [':conId' => $consultationId]
         )->execute();

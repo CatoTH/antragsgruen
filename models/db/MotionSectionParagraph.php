@@ -4,26 +4,19 @@ namespace app\models\db;
 
 class MotionSectionParagraph
 {
-    /** @var int */
-    public $paragraphNo;
-
-    /** @var string */
-    public $origStr;
+    public int $paragraphNo;
+    public string $origStr;
 
     /** @var string[] */
-    public $lines;
+    public array $lines;
 
-    /** MotionComment[] */
-    public $comments;
+    /** @var MotionComment[] */
+    public array $comments;
 
     /** @var MotionSectionParagraphAmendment[] */
-    public $amendmentSections;
+    public array $amendmentSections;
 
-    /**
-     * @param bool $screeningAdmin
-     * @return int
-     */
-    public function getNumOfAllVisibleComments($screeningAdmin)
+    public function getNumOfAllVisibleComments(bool $screeningAdmin): int
     {
         return count(array_filter($this->comments, function (IComment $comment) use ($screeningAdmin) {
             return ($comment->status === IComment::STATUS_VISIBLE ||
@@ -32,11 +25,10 @@ class MotionSectionParagraph
     }
 
     /**
-     * @param bool $screeningAdmin
      * @param null|int $parentId - null == only root level comments
      * @return MotionComment[]
      */
-    public function getVisibleComments($screeningAdmin, $parentId)
+    public function getVisibleComments(bool $screeningAdmin, ?int $parentId): array
     {
         $statuses = [MotionComment::STATUS_VISIBLE];
         if ($screeningAdmin) {

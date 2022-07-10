@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -16,19 +17,12 @@ use yii\db\ActiveRecord;
  */
 class MotionCommentSupporter extends ActiveRecord
 {
-
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionCommentSupporter';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionComment()
+    public function getMotionComment(): ActiveQuery
     {
         return $this->hasOne(MotionComment::class, ['id' => 'motionCommentId']);
     }

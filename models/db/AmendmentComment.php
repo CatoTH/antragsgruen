@@ -139,10 +139,7 @@ class AmendmentComment extends IComment
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getDate()
+    public function getDate(): string
     {
         return $this->dateCreation;
     }
@@ -155,7 +152,7 @@ class AmendmentComment extends IComment
     /**
      * @return AmendmentComment[]
      */
-    public static function getScreeningComments(Consultation $consultation)
+    public static function getScreeningComments(Consultation $consultation): array
     {
         $query = AmendmentComment::find();
         $query->where('amendmentComment.status = ' . intval(static::STATUS_SCREENING));
