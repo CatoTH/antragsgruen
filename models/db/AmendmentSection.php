@@ -38,6 +38,9 @@ class AmendmentSection extends IMotionSection
 
     public function getAmendment(): ?Amendment
     {
+        if ($this->amendmentId === null) {
+            return null;
+        }
         return $this->getCachedConsultation()->getAmendment($this->amendmentId);
     }
 

@@ -6,14 +6,11 @@ class SpeechQueue implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    /** @var bool */
-    public $isOpen = false;
-    /** @var bool */
-    public $preferNonspeaker = false;
-    /** @var bool */
-    public $showNames = true;
+    public bool $isOpen = false;
+    public bool $preferNonspeaker = false;
+    public bool $showNames = true;
     /** @var null|int - in seconds */
-    public $speakingTime = null;
+    public ?int $speakingTime = null;
 
     public function getAdminApiObject(): array
     {

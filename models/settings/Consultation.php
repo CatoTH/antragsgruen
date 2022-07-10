@@ -25,104 +25,60 @@ class Consultation implements \JsonSerializable
 
     // SETTINGS WITH TEST CASES
 
-    /** @var bool */
-    public $maintenanceMode = false;
-    /** @var bool */
-    public $screeningMotions = false;
-    /** @var bool */
-    public $screeningAmendments = false;
-    /** @var bool */
-    public $lineNumberingGlobal = false;
-    /** @var bool */
-    public $iniatorsMayEdit = false;
-    /** @var bool */
-    public $hideTitlePrefix = false;
-    /** @var bool */
-    public $showFeeds = true; // @TODO Obsolete since 2019-09. Remove sometimes in the future.
-    /** @var bool */
-    public $commentNeedsEmail = false;
-    /** @var bool */
-    public $screeningComments = false;
-    /** @var bool */
-    public $initiatorConfirmEmails = false;
-    /** @var bool */
-    public $adminsMayEdit = true;
-    /** @var bool */
-    public $editorialAmendments = true;
-    /** @var bool */
-    public $globalAlternatives = true;
-    /** @var bool */
-    public $proposalProcedurePage = false;
-    /** @var bool */
-    public $collectingPage = false;
-    /** @var bool */
-    public $sidebarNewMotions = true;
-    /** @var bool */
-    public $forceLogin = false;
-    /** @var bool */
-    public $managedUserAccounts = false;
-    /** @var bool */
-    public $amendmentBookmarksWithNames = false;
-    /** @var bool */
-    public $hasSpeechLists = false;
-    /** @var bool */
-    public $speechRequiresLogin = false;
-    /** @var bool */
-    public $allowMultipleTags = false;
-    /** @var bool */
-    public $amendmentsHaveTags = false;
-    /** @var bool */
-    public $openslidesExportEnabled = false;
+    public bool $maintenanceMode = false;
+    public bool $screeningMotions = false;
+    public bool $screeningAmendments = false;
+    public bool $lineNumberingGlobal = false;
+    public bool $iniatorsMayEdit = false;
+    public bool $hideTitlePrefix = false;
+    public bool $commentNeedsEmail = false;
+    public bool $screeningComments = false;
+    public bool $initiatorConfirmEmails = false;
+    public bool $adminsMayEdit = true;
+    public bool $editorialAmendments = true;
+    public bool $globalAlternatives = true;
+    public bool $proposalProcedurePage = false;
+    public bool $collectingPage = false;
+    public bool $sidebarNewMotions = true;
+    public bool $forceLogin = false;
+    public bool $managedUserAccounts = false;
+    public bool $amendmentBookmarksWithNames = false;
+    public bool $hasSpeechLists = false;
+    public bool $speechRequiresLogin = false;
+    public bool $allowMultipleTags = false;
+    public bool $amendmentsHaveTags = false;
+    public bool $openslidesExportEnabled = false;
 
-    /** @var null|int */
-    public $forceMotion = null;
+    public ?int $forceMotion = null;
 
-    /** @var null|string */
-    public $accessPwd = null;
-    /** @var null|string */
-    public $translationService = null;
+    public ?string $accessPwd = null;
+    public ?string $translationService = null;
 
     /** @var null|string[] */
-    public $organisations = null;
+    public ?array $organisations = null;
     /** @var null|string[] */
-    public $speechListSubqueues = [];
+    public ?array $speechListSubqueues = [];
 
     // SETTINGS WITHOUT TEST CASES
 
-    /** @var bool */
-    public $commentsSupportable = false;
-    /** @var bool */
-    public $screeningMotionsShown = false;
-    /** @var bool */
-    public $initiatorsMayReject = false;
-    /** @var bool */
-    public $odtExportHasLineNumers = true;
-    /** @var bool */
-    public $pProcedureExpandAll = true; // If false: only show max. 1 section in the internal proposed procedure
-    /** @var bool */
-    public $adminListFilerByMotion = false; // If true: the admin list is filtered by motion. To be activated manually.
+    public bool $commentsSupportable = false;
+    public bool $screeningMotionsShown = false;
+    public bool $odtExportHasLineNumers = true;
+    public bool $pProcedureExpandAll = true; // If false: only show max. 1 section in the internal proposed procedure
+    public bool $adminListFilerByMotion = false; // If true: the admin list is filtered by motion. To be activated manually.
 
-    /** @var int */
-    public $lineLength = 80;
-    /** @var int */
-    public $startLayoutType = 0;
-    /** @var int */
-    public $robotsPolicy = 1;
-    /** @var int */
-    public $motiondataMode = 0;
-    /** @var int */
-    public $discourseCategoryId = 0;
+    public int $lineLength = 80;
+    public int $startLayoutType = 0;
+    public int $robotsPolicy = 1;
+    public int $motiondataMode = 0;
+    public int $discourseCategoryId = 0;
 
-    /** @var string[] */
-    public $adminListAdditionalFields = [];
+    public array $adminListAdditionalFields = [];
 
-    /** @var null|string */
-    public $logoUrl = null;
+    public ?string $logoUrl = null;
 
-    /** @var null|string */
-    public $emailReplyTo = null;
-    /** @var null|string */
-    public $emailFromName = null;
+    public ?string $emailReplyTo = null;
+    public ?string $emailFromName = null;
 
     /**
      * @return string[]

@@ -3,19 +3,12 @@ namespace app\models\settings;
 
 class PDF
 {
-    /** @var string */
-    public $logo;
-    /** @var string */
-    public $initiators;
-    /** @var string */
-    public $motionTitle;
-    /** @var string */
-    public $motionTextTitle;
-    /** @var string */
-    public $motionTitlePrefix;
-    /** @var string */
-    public $fontFamily;
+    public string $logo;
+    public string $initiators;
+    public string $motionTitle;
+    public string $motionTextTitle;
+    public string $motionTitlePrefix;
+    public string $fontFamily;
 
-    /** @var int */
-    public $fontSize;
+    public int $fontSize;
 }

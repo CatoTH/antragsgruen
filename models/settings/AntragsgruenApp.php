@@ -8,89 +8,54 @@ class AntragsgruenApp implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    /** @var null|array */
-    public $dbConnection          = null;
-    /** @var null|string */
-    public $siteSubdomain         = null;
-    /** @var null|array */
-    public $redis                 = null;
-    /** @var bool */
-    public $prettyUrl             = true;
-    /** @var string */
-    public $tablePrefix           = '';
-    /** @var string */
-    public $resourceBase          = '/';
-    /** @var string */
-    public $baseLanguage          = 'en';
-    /** @var string */
-    public $randomSeed            = '';
-    /** @var bool */
-    public $multisiteMode         = false;
-    /** @var string */
-    public $domainPlain           = 'http://antragsgruen.local/';
-    /** @var string */
-    public $domainSubdomain       = '';
-    /** @var null|string */
-    public $cookieDomain          = null;
-    /** @var bool */
-    public $hasSaml               = false;
-    /** @var bool */
-    public $prependWWWToSubdomain = true;
-    /** @var bool */
-    public $confirmEmailAddresses = true;
-    /** @var bool */
-    public $dataPrivacyCheckbox   = false;
-    /** @var string */
-    public $mailFromName          = 'Antragsgrün';
-    /** @var string */
-    public $mailFromEmail         = '';
+    public ?array $dbConnection = null;
+    public ?string $siteSubdomain = null;
+    public ?array $redis = null;
+    public bool $prettyUrl = true;
+    public string $tablePrefix = '';
+    public string $resourceBase = '/';
+    public string $baseLanguage = 'en';
+    public string $randomSeed = '';
+    public bool $multisiteMode = false;
+    public string $domainPlain = 'http://antragsgruen.local/';
+    public ?string $domainSubdomain = null;
+    public ?string $cookieDomain = null;
+    public bool $hasSaml = false;
+    public bool $prependWWWToSubdomain = true;
+    public bool $confirmEmailAddresses = true;
+    public bool $dataPrivacyCheckbox = false;
+    public string $mailFromName = 'Antragsgrün';
+    public string $mailFromEmail = '';
     /** @var int[] */
-    public $adminUserIds          = [];
+    public array $adminUserIds = [];
     /** @var string[] */
-    public $siteBehaviorClasses   = [];
+    public array $siteBehaviorClasses = [];
     /** @var string[] */
-    public $authClientCollection  = [];
+    public array $authClientCollection = [];
     /** @var string[] */
-    public $blockedSubdomains     = ['www', 'rest', 'ftp', 'smtp', 'imap'];
-    /** @var int */
-    public $autoLoginDuration     = 31536000; // 1 Year
-    /** @var bool */
-    public $loginCaptcha          = false; // Forces captcha even at the first login attempt
-    /** @var null|string */
-    public $xelatexPath           = null; // @TODO OBSOLETE
-    /** @var null|string */
-    public $xdvipdfmx             = null; // @TODO OBSOLETE
-    /** @var null|string */
-    public $lualatexPath          = null;
-    /** @var null|string */
-    public $pdfunitePath          = null;
-    /** @var bool */
-    public $pdfExportConcat       = true;
-    /** @var bool */
-    public $pdfExportIntegFrame   = false;
-    /** @var array */
-    public $localMessages         = [];
-    /** @var null|string */
-    public $imageMagickPath       = null;
-    /** @var null|int */
-    public $sitePurgeAfterDays    = null;
-    /** @var null|string */
-    public $binaryFilePath        = null;
-    /** @var null|string */
-    public $viewCacheFilePath     = null; // If set, then view caches are saved to a separate directory, overriding the default and not using Redis
-    /** @var string */
-    public $mode                  = 'production'; // [production | sandbox]
-    /** @var null|string */
-    public $updateKey             = null;
+    public array $blockedSubdomains = ['www', 'rest', 'ftp', 'smtp', 'imap'];
+    public int $autoLoginDuration = 31536000; // 1 Year
+    public bool $loginCaptcha = false; // Forces captcha even at the first login attempt
+    public ?string $xelatexPath = null; // @TODO OBSOLETE
+    public ?string $xdvipdfmx = null; // @TODO OBSOLETE
+    public ?string $lualatexPath = null;
+    public bool $pdfExportConcat = true;
+    public bool $pdfExportIntegFrame = false;
+    public array $localMessages = [];
+    public ?string $imageMagickPath = null;
+    public ?int $sitePurgeAfterDays = null;
+    public ?string $binaryFilePath = null;
+    public ?string $viewCacheFilePath = null; // If set, then view caches are saved to a separate directory, overriding the default and not using Redis
+    public string $mode = 'production'; // [production | sandbox]
+    public ?string $updateKey = null;
 
     /** @var string[] */
-    protected $plugins = [];
+    protected array $plugins = [];
 
     /** @var string[][] */
-    protected $sitePlugins = [];
+    protected array $sitePlugins = [];
 
-    /** @var null|array */
-    public $mailService = ['transport' => 'sendmail'];
+    public array $mailService = ['transport' => 'sendmail'];
 
     public static function getInstance(): AntragsgruenApp
     {

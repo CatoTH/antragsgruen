@@ -6,17 +6,11 @@ class MotionType implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    /** @var string */
-    public $pdfIntroduction = '';
-    /** @var string */
-    public $cssIcon = '';
-    /** @var string */
-    public $motionTitleIntro = '';
+    public string $pdfIntroduction = '';
+    public ?string $cssIcon = null;
+    public string $motionTitleIntro = '';
 
-    /** @var bool */
-    public $hasProposedProcedure = false;
-    /** @var bool */
-    public $hasResponsibilities = false;
-    /** @var bool */
-    public $twoColMerging = false; // Can only be set manually as of yet
+    public bool $hasProposedProcedure = false;
+    public bool $hasResponsibilities = false;
+    public bool $twoColMerging = false; // Can only be set manually as of yet
 }

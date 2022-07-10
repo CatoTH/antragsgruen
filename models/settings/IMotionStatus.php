@@ -8,31 +8,21 @@ class IMotionStatus
 {
     /**
      * For plugin-defined IDs, use IDs of 100+
-     * @var int
      */
-    public $id;
+    public int $id;
 
     /**
      * e.g. "published"
-     * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * e.g. "publish"
-     * @var string|null
      */
-    public $nameVerb;
+    public ?string $nameVerb;
 
-    /**
-     * @var bool
-     */
-    public $adminInvisible;
-
-    /**
-     * @var bool
-     */
-    public $userInvisible;
+    public ?bool $adminInvisible;
+    public ?bool $userInvisible;
 
     public function __construct(int $id, string $name, ?string $nameVerb = null, ?bool $adminInvisible = false, ?bool $userInvisible = false)
     {

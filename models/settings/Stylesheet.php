@@ -16,80 +16,43 @@ class Stylesheet implements \JsonSerializable
     const DEFAULTS_LAYOUT_CLASSIC = 'layout-classic';
     const DEFAULTS_LAYOUT_DBJR = 'layout-dbjr';
 
-    /** @var string */
-    public $bodyFont;
-    /** @var int */
-    public $bodyFontSize;
-    /** @var int */
-    public $containerSize;
-    /** @var string */
-    public $colorLinks;
-    /** @var string */
-    public $colorLinksLight;
-    /** @var string */
-    public $colorDelLink;
-    /** @var string */
-    public $brandPrimary;
-    /** @var string */
-    public $buttonFont;
-    /** @var string */
-    public $buttonSuccessBackground;
-    /** @var string */
-    public $textColor;
-    /** @var int */
-    public $sidebarWidth;
-    /** @var string */
-    public $sidebarBackground;
-    /** @var string */
-    public $sidebarActionFont;
-    /** @var string */
-    public $createMotionBtnColor;
-    /** @var string */
-    public $bookmarkAmendmentBackground;
-    /** @var string */
-    public $bookmarkCommentColor;
-    /** @var string */
-    public $headingFont;
-    /** @var string */
-    public $headingPrimaryText;
-    /** @var string */
-    public $headingPrimaryBackground;
-    /** @var int */
-    public $headingPrimarySize;
-    /** @var string */
-    public $headingSecondaryText;
-    /** @var string */
-    public $headingSecondaryBackground;
-    /** @var int */
-    public $headingSecondarySize;
-    /** @var string */
-    public $headingTertiaryText;
-    /** @var string */
-    public $headingTertiaryBackground;
-    /** @var int */
-    public $headingTertiarySize;
-    /** @var bool */
-    public $linkTextDecoration;
-    /** @var bool */
-    public $useBoxShadow;
-    /** @var int */
-    public $contentBorderRadius;
-    /** @var string */
-    public $backgroundImage;
-    /** @var string */
-    public $menuActive;
-    /** @var string */
-    public $menuLink;
-    /** @var string */
-    public $menuFont;
-    /** @var string */
-    public $motionFixedFontColor;
-    /** @var string */
-    public $motionFixedFont;
-    /** @var int */
-    public $motionStdFontSize;
-    /** @var bool */
-    public $uppercaseTitles;
+    public string $bodyFont;
+    public int $bodyFontSize;
+    public int $containerSize;
+    public string $colorLinks;
+    public string $colorLinksLight;
+    public string $colorDelLink;
+    public string $brandPrimary;
+    public string $buttonFont;
+    public string $buttonSuccessBackground;
+    public string $textColor;
+    public int $sidebarWidth;
+    public string $sidebarBackground;
+    public string $sidebarActionFont;
+    public string$createMotionBtnColor;
+    public string$bookmarkAmendmentBackground;
+    public string $bookmarkCommentColor;
+    public string $headingFont;
+    public string $headingPrimaryText;
+    public string $headingPrimaryBackground;
+    public int $headingPrimarySize;
+    public string $headingSecondaryText;
+    public string $headingSecondaryBackground;
+    public int $headingSecondarySize;
+    public string $headingTertiaryText;
+    public string $headingTertiaryBackground;
+    public int $headingTertiarySize;
+    public bool $linkTextDecoration;
+    public bool $useBoxShadow;
+    public int $contentBorderRadius;
+    public ?string $backgroundImage;
+    public string $menuActive;
+    public string $menuLink;
+    public string $menuFont;
+    public string $motionFixedFontColor;
+    public string $motionFixedFont;
+    public int $motionStdFontSize;
+    public bool $uppercaseTitles;
 
     public const DEFAULTS_CLASSIC = [
         'useBoxShadow'                => true,
@@ -380,10 +343,12 @@ class Stylesheet implements \JsonSerializable
 
     public function getValue(string $field, string $defaults): string
     {
-        if (is_string($this->$field) && trim($this->$field) === '' && $field !== 'backgroundImage') {
+        $type = (string)(new \ReflectionProperty(self::class, $field))->getType();
+
+        if ($type === 'string' && (!isset($this->$field) || trim($this->$field) === '') && $field !== 'backgroundImage') {
             // Empty strings are only allowed for backgroundImage
             return (string)static::getAllSettings($defaults)[$field]['default'];
-        } elseif ($this->$field !== null) {
+        } elseif (isset($this->$field)) {
             return (string)$this->$field;
         } else {
             return (string)static::getAllSettings($defaults)[$field]['default'];

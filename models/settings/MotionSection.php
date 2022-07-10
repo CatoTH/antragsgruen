@@ -9,14 +9,9 @@ class MotionSection implements \JsonSerializable
     const PUBLIC_NO = 0;
     const PUBLIC_YES = 1;
 
-    /** @var int */
-    public $imgMaxWidth = 0;
-    /** @var int */
-    public $imgMaxHeight = 0;
+    public int $imgMaxWidth = 0;
+    public int $imgMaxHeight = 0;
 
-    /** @var bool */
-    public $showInHtml = false; // Used for titles and PDF-alternatives
-
-    /** @var int */
-    public $public = MotionSection::PUBLIC_YES;
+    public bool $showInHtml = false; // Used for titles and PDF-alternatives
+    public int $public = MotionSection::PUBLIC_YES;
 }
