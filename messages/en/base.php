@@ -18,6 +18,8 @@ return [
     'menu_motion_list'      => 'Motions',
     'menu_todo'             => 'To Do',
     'menu_speech_list'      => 'Speaking list',
+    'menu_documents'        => 'Documents',
+    'menu_votings'          => 'Votings',
     'goto_main_content'     => 'Skip to main content',
     'toggle_dropdown'       => 'Open selection',
     'privacy_statement'     => 'Privacy',

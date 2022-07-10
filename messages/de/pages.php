@@ -49,4 +49,6 @@ return [
     'settings_delete'  => 'Seite löschen',
     'create_btn'       => 'Anlegen',
     'menu_add_btn'     => 'Neue Inhalts-Seite im Menü anlegen',
+
+    'documents_title' => 'Dokumente',
 ];

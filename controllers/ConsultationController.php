@@ -541,6 +541,11 @@ class ConsultationController extends Base
         return $this->render('@app/views/speech/index-singlepage', ['queue' => $queue]);
     }
 
+    public function actionDocuments(): string
+    {
+        return $this->render('@app/views/consultation/documents');
+    }
+
     public function actionAdminVotings(): string
     {
         $this->layout = 'column2';
@@ -553,6 +558,14 @@ class ConsultationController extends Base
         }
 
         return $this->render('@app/views/voting/admin-votings');
+    }
+
+    public function actionVotings(): string
+    {
+        $this->forceLogin();
+        $this->layout = 'column2';
+
+        return $this->render('@app/views/voting/votings');
     }
 
     public function actionVotingResults(): string

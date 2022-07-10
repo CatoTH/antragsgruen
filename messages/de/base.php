@@ -18,6 +18,8 @@ return [
     'menu_motion_list'      => 'Antragsliste',
     'menu_todo'             => 'To Do',
     'menu_speech_list'      => 'Redeliste',
+    'menu_documents'        => 'Dokumente',
+    'menu_votings'          => 'Abstimmungen',
     'goto_main_content'     => 'Zum Inhalt der Seite',
     'toggle_dropdown'       => 'Auswahl öffnen',
     'privacy_statement'     => 'Datenschutz',
