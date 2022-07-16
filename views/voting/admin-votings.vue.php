@@ -10,7 +10,6 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-/** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 
 ob_start();

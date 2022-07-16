@@ -14,21 +14,23 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-/** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
-$layout       = $controller->layoutParams;
+$layout = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('voting', 'bc'), UrlHelper::createUrl('consultation/voting-results'));
 $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
 
 $layout->addCSS('css/backend.css');
 $layout->loadSelectize();
+$layout->loadSortable();
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/voting/_policy-select.vue.php');
 $layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
 $layout->addVueTemplate('@app/views/voting/admin-votings.vue.php');
+$layout->addVueTemplate('@app/views/voting/admin-voting-sort.vue.php');
+$layout->loadVueDraggable();
 
 $apiData = [];
 foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
@@ -85,10 +87,18 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
      data-voting="<?= Html::encode(json_encode($apiData)) ?>">
     <div class="content">
-        <button type="button" class="btn btn-default createVotingOpener">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            <?= Yii::t('voting', 'settings_create') ?>
-        </button>
+
+        <div class="votingOperations">
+            <button type="button" class="btn btn-default sortVotings">
+                <span class="glyphicon glyphicon-sort" aria-hidden="true"></span>
+                <?= Yii::t('voting', 'settings_sort') ?>
+            </button>
+
+            <button type="button" class="btn btn-primary createVotingOpener">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <?= Yii::t('voting', 'settings_create') ?>
+            </button>
+        </div>
 
         <?= Yii::t('voting', 'admin_intro') ?>
     </div>

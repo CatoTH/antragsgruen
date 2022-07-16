@@ -41,7 +41,8 @@
         "requirejs": "^2.3.6",
         "sortablejs": "^1.14.0",
         "typescript": "^3.9.10",
-        "vue": "^3.2.0"
+        "vue": "^3.2.0",
+        "vuedraggable": "^4.1.0"
     },
     "directories": {
         "bin": "./bin/"

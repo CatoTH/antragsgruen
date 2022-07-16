@@ -24,7 +24,7 @@ class UserController extends Base
     public $enableCsrfValidation = false;
 
     // Login and Mainainance mode is always allowed
-    public $allowNotLoggedIn = true;
+    public ?bool $allowNotLoggedIn = true;
 
     public function actions(): array
     {

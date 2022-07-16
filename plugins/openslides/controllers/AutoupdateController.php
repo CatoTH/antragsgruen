@@ -10,10 +10,8 @@ use app\plugins\openslides\SiteSettings;
 class AutoupdateController extends \app\controllers\Base
 {
     public $enableCsrfValidation = false;
-    public $allowNotLoggedIn = true;
-
-    /** @var AutoupdateSyncService */
-    private $syncService;
+    public  ?bool $allowNotLoggedIn = true;
+    private AutoupdateSyncService $syncService;
 
     public function beforeAction($action): bool
     {

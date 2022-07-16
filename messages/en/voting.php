@@ -58,7 +58,8 @@ return [
     'admin_settings_close' => 'Close settings',
     'admin_mvtoug_caller' => 'Assign voters to a user group',
 
-    'settings_create' => 'Create a new voting',
+    'settings_create' => 'New voting',
+    'settings_sort' => 'Sort',
     'settings_open' => 'Show settings',
     'settings_close' => 'Hide settings',
     'settings_votingtype' => 'What is voted?',
@@ -88,6 +89,7 @@ return [
     'settings_save' => 'Save',
     'settings_delete' => 'Delete the voting',
     'settings_delete_bb' => 'Do you want to delete the voting including all cast votes? The motions and amendments will remain untouched.',
+    'settings_sort_title' => 'Reorder votings',
 
     'voting_current_aria' => 'Currently active voting',
     'voting_show_amend' => 'Show amendment',

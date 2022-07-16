@@ -11,6 +11,7 @@ export class VotingAdmin {
         this.element = $element[0];
         this.createVueWidget();
         this.initVotingCreater();
+        this.initVotingSorter();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -28,24 +29,28 @@ export class VotingAdmin {
 
         this.widget = Vue.createApp({
             template: `<div class="adminVotings">
-                <voting-admin-widget v-for="voting in votings"
-                                     :voting="voting"
-                                     :addableMotions="addableMotions"
-                                     :alreadyAddedItems="alreadyAddedItems"
-                                     :userGroups="userGroups"
-                                     :voteDownloadUrl="voteDownloadUrl"
-                                     @set-status="setStatus"
-                                     @save-settings="saveSettings"
-                                     @remove-item="removeItem"
-                                     @delete-voting="deleteVoting"
-                                     @add-imotion="addIMotion"
-                                     @add-question="addQuestion"
-                                     @set-voters-to-user-group="setVotersToUserGroup"
-                                     ref="voting-admin-widget"
+                <voting-sort-widget :votings="votings" v-if="isSorting"></voting-sort-widget>
+                <voting-admin-widget
+                    v-if="!isSorting"
+                    v-for="voting in votings"
+                    :voting="voting"
+                    :addableMotions="addableMotions"
+                    :alreadyAddedItems="alreadyAddedItems"
+                    :userGroups="userGroups"
+                    :voteDownloadUrl="voteDownloadUrl"
+                    @set-status="setStatus"
+                    @save-settings="saveSettings"
+                    @remove-item="removeItem"
+                    @delete-voting="deleteVoting"
+                    @add-imotion="addIMotion"
+                    @add-question="addQuestion"
+                    @set-voters-to-user-group="setVotersToUserGroup"
+                    ref="voting-admin-widget"
                 ></voting-admin-widget>
             </div>`,
             data() {
                 return {
+                    isSorting: false,
                     votingsJson: null,
                     votings: null,
                     userGroups: initUserGroups,
@@ -102,6 +107,9 @@ export class VotingAdmin {
                 setVotingFromObject(data) {
                     this.votings = data;
                     this.votingsJson = null;
+                },
+                toggleSorting() {
+                    this.isSorting = !this.isSorting;
                 },
                 setStatus(votingBlockId, newStatus) {
                     this._performOperation(votingBlockId, {
@@ -245,6 +253,13 @@ export class VotingAdmin {
                 $select.addClass("hidden");
             }
         }).trigger("change");
+    }
+
+    private initVotingSorter() {
+        const sortToggle = this.element.querySelector('.sortVotings');
+        sortToggle.addEventListener('click', () => {
+            this.widgetComponent.toggleSorting();
+        });
     }
 
     private initVotingCreater() {

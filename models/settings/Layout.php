@@ -300,6 +300,11 @@ class Layout
         $this->addCSS('css/selectize.bootstrap3.css');
     }
 
+    public function loadVueDraggable(): void
+    {
+        $this->addJs('npm/vuedraggable.umd.min.js');
+    }
+
     public function registerPluginAssets(View $view, Controller $controller): void
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {

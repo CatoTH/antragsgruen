@@ -58,7 +58,8 @@ return [
     'admin_settings_close' => 'Einstellungen schließen',
     'admin_mvtoug_caller' => 'Abstimmende zu Benutzer*innengruppe',
 
-    'settings_create' => 'Neue Abstimmung anlegen',
+    'settings_create' => 'Abstimmung anlegen',
+    'settings_sort' => 'Umsortieren',
     'settings_open' => 'Einstellungen öffnen',
     'settings_close' => 'Einstellungen schließen',
     'settings_votingtype' => 'Was wird abgestimmt?',
@@ -88,6 +89,7 @@ return [
     'settings_save' => 'Speichern',
     'settings_delete' => 'Abstimmung löschen',
     'settings_delete_bb' => 'Soll diese Abstimmung mitsamt den abgegebenen Stimmen gelöscht werden? Die Anträge und Änderungsanträge bleiben dabei bestehen.',
+    'settings_sort_title' => 'Abstimmungen umsortieren',
 
     'voting_current_aria' => 'Aktuell laufende Abstimmung',
     'voting_show_amend' => 'Änderungsantrag anzeigen',
