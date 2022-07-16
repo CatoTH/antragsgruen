@@ -62,6 +62,7 @@ return [
     'admin_next'             => 'Next speaker',
     'admin_start'            => 'Start',
     'admin_stop'             => 'Finish',
+    'admin_delete'           => 'Remove',
     'admin_back_to_wait'     => 'Back to the waiting list',
     'admin_start_proposal'   => 'Start proposal',
     'admin_proposal_nobody'  => 'No proposal',

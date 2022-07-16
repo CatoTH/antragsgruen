@@ -154,14 +154,19 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                 </div>
             </li>
 
-            <li class="slotPlaceholder active" tabindex="0" v-if="slotProposal"
+            <li class="slotPlaceholder active" v-if="slotProposal"
                 @click="addItemToSlotsAndStart(slotProposal.id)"
                 @keyup.enter="addItemToSlotsAndStart(slotProposal.id)">
                 <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
                 <div class="title"><?= Yii::t('speech', 'admin_next') ?>:</div>
                 <div class="name">{{ slotProposal.name }}</div>
 
-                <div class="operationsIndicator operationStart">
+                <div class="operationDelete" @click="onItemDelete($event, slotProposal.id)" @keyup.enter="onItemDelete($event, item)" tabindex="0">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    <span><?= Yii::t('speech', 'admin_delete') ?></span>
+                </div>
+
+                <div class="operationStart" @click="addItemToSlotsAndStart(slotProposal.id)" @keyup.enter="addItemToSlotsAndStart(slotProposal.id)" tabindex="0">
                     <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                     <span><?= Yii::t('speech', 'admin_start') ?></span>
                 </div>
@@ -180,6 +185,7 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                                    :position="index > 0 ? 'right' : 'left'"
                                    @add-item-to-slots-and-start="addItemToSlotsAndStart"
                                    @add-item-to-subqueue="addItemToSubqueue"
+                                   @delete-item="deleteItem"
                                    @move-item-to-subqueue="moveItemToSubqueue"
                                    @item-drag-start="itemDragStart"
                                    @item-drag-end="itemDragEnd"
@@ -370,6 +376,14 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             },
             addItemToSlotsAndStart: function (itemId) {
                 this._performOperation(itemId, "set-slot-and-start");
+            },
+            onItemDelete: function ($event, itemId) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                this._performOperation(itemId, "delete");
+            },
+            deleteItem: function (itemId) {
+                this._performOperation(itemId, "delete");
             },
             moveItemToSubqueue: function (itemId, newSubqueueId, position) {
                 this._performOperation(itemId, "move", {newSubqueueId, position});

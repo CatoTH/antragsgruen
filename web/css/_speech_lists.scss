@@ -163,18 +163,40 @@
     }
   }
 
-  .operationsIndicator {
-    display: none;
+  .operationStart, .operationDelete {
     position: absolute;
     bottom: 0;
-    border-top: solid 1px #bdbdbd;
     padding: 0 5px;
     background-color: rgba(255, 255, 255, 0.5);
     font-size: 12px;
-
-    &.operationStart {
-      color: green;
+    opacity: 0;
+    cursor: pointer;
+    @include outlineOnFocusHasBorder();
+    &:focus {
+      opacity: 1;
     }
+  }
+
+  .slotPlaceholder:hover, .subqueueItem:hover {
+    .operationStart, .operationDelete {
+      opacity: 1;
+    }
+  }
+
+  .operationStart {
+    right: 0;
+    border-left: solid 1px #bdbdbd;
+    border-top-left-radius: 3px;
+    border-top: solid 1px #bdbdbd;
+    color: green;
+  }
+
+  .operationDelete {
+    left: 0;
+    border-top: solid 1px #bdbdbd;
+    border-right: solid 1px #bdbdbd;
+    border-top-right-radius: 3px;
+    color: red;
   }
 
   .slotPlaceholder {
@@ -207,17 +229,6 @@
         z-index: 1;
         border-radius: 3px;
         box-shadow: 0 0 4px rgba(0,0,0,0.25);
-      }
-    }
-
-    .operationsIndicator {
-        right: 0;
-        border-left: solid 1px #bdbdbd;
-        border-top-left-radius: 3px;
-    }
-    &:hover, &:focus {
-      .operationsIndicator {
-        display: block;
       }
     }
   }
@@ -297,6 +308,7 @@
     border: solid 1px $borderInactive;
     border-radius: 3px;
     min-height: 60px;
+    cursor: move;
     position: relative;
 
     .starter {
@@ -306,19 +318,7 @@
       top: 0;
       bottom: 0;
       padding: 10px;
-      cursor: pointer;
       background-color: $backgroundInactive;
-
-      @include outlineOnFocusHasBorder();
-
-      &:hover, &:focus {
-        background-color: darken($backgroundInactive, 5%);
-        box-shadow: 0 0 4px rgba(0,0,0,0.25);
-
-        .operationsIndicator {
-          display: block;
-        }
-      }
     }
   }
 
@@ -340,30 +340,6 @@
     .removeSlot {
       color: $colorDelLink;
     }
-  }
-  .subqueue.positionLeft .operations {
-    right: 0;
-    border-left: solid 1px $borderInactive;
-    border-top: solid 1px $borderInactive;
-    border-top-left-radius: 3px;
-  }
-  .subqueue.positionRight .operations {
-    left: 0;
-    border-right: solid 1px $borderInactive;
-    border-top: solid 1px $borderInactive;
-    border-top-right-radius: 3px;
-  }
-
-  .subqueue.positionRight .operationsIndicator {
-    right: 0;
-    border-left: solid 1px #bdbdbd;
-    border-top-left-radius: 3px;
-  }
-
-  .subqueue.positionLeft .operationsIndicator {
-    left: 0;
-    border-right: solid 1px #bdbdbd;
-    border-top-right-radius: 3px;
   }
 
   .queueResetSection {

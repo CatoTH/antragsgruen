@@ -3,6 +3,7 @@
 ## Version 4.11.0 [not released yet]
 
 - WARNING: if you are using a PHP 7.3 or older, then update to PHP 8.0 or newer first before installing this update!
+- In speaking lists, it is now possible to remove and reorder speakers
 
 ### Version 4.10.1 (2022-07-01)
 
