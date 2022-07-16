@@ -9,11 +9,8 @@ use app\models\settings\AntragsgruenApp;
 
 class Exporter
 {
-    /** @var Layout */
-    private $layout;
-
-    /** @var  AntragsgruenApp */
-    private $app;
+    private Layout $layout;
+    private AntragsgruenApp $app;
 
     public function __construct(Layout $layout, AntragsgruenApp $app)
     {
@@ -122,14 +119,7 @@ class Exporter
         return $out;
     }
 
-    /**
-     * @param \DOMNode $node
-     * @param array $extraStyles
-     * @param null $liCounter
-     *
-     * @return string
-     */
-    private static function encodeHTMLNode(\DOMNode $node, $extraStyles = [], $liCounter = null): string
+    private static function encodeHTMLNode(\DOMNode $node, array $extraStyles = [], ?string $liCounter = null): string
     {
         if ($node->nodeType === XML_TEXT_NODE) {
             /** @var \DOMText $node */
@@ -472,10 +462,9 @@ class Exporter
 
     /**
      * @param Content[] $contents
-     * @return string
      * @throws Internal
      */
-    public function createPDF($contents)
+    public function createPDF(array $contents): string
     {
         if (!$this->app->xelatexPath && !$this->app->lualatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');

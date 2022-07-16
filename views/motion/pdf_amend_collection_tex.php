@@ -18,8 +18,7 @@ $layout->template   = $texTemplate->texLayout;
 $layout->author     = Yii::t('export', 'default_creator');
 $layout->title      = $motion->getTitleWithPrefix();
 
-/** @var AntragsgruenApp $params */
-$params = yii::$app->params;
+$params = AntragsgruenApp::getInstance();
 try {
     $exporter   = new Exporter($layout, $params);
     $contents   = [];

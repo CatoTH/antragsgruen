@@ -17,10 +17,8 @@ $layout->template   = $texTemplate->texLayout;
 $layout->author     = Yii::t('export', 'default_creator');
 $layout->title      = $imotions[0]->getMyMotionType()->titlePlural;
 
-/** @var AntragsgruenApp $params */
-$params = yii::$app->params;
 try {
-    $exporter = new Exporter($layout, $params);
+    $exporter = new Exporter($layout, AntragsgruenApp::getInstance());
     $contents = [];
     foreach ($imotions as $imotion) {
         if (is_a($imotion, Motion::class)) {

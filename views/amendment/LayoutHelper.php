@@ -154,9 +154,7 @@ class LayoutHelper
         $layout->author     = $amendment->getInitiatorsStr();
         $layout->title      = $amendment->getTitle();
 
-        /** @var AntragsgruenApp $params */
-        $params   = \yii::$app->params;
-        $exporter = new Exporter($layout, $params);
+        $exporter = new Exporter($layout, AntragsgruenApp::getInstance());
         $content  = static::renderTeX($amendment, $texTemplate);
         $pdf      = $exporter->createPDF([$content]);
         \Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);

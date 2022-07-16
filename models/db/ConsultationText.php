@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\UrlHelper;
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -25,42 +26,27 @@ use yii\db\ActiveRecord;
  */
 class ConsultationText extends ActiveRecord
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationText';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionType()
+    public function getMotionType(): ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSite()
+    public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['category', 'textId'], 'required'],

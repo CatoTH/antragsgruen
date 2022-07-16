@@ -17,10 +17,8 @@ $layout->template   = $texTemplate->texLayout;
 $layout->author     = Yii::t('export', 'default_creator');
 $layout->title      = Yii::t('export', 'all_amendments_title');
 
-/** @var AntragsgruenApp $params */
-$params = Yii::$app->params;
 try {
-    $exporter = new Exporter($layout, $params);
+    $exporter = new Exporter($layout, AntragsgruenApp::getInstance());
     $contents = [];
     foreach ($amendments as $amendment) {
         try {
