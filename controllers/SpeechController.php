@@ -301,6 +301,9 @@ class SpeechController extends Base
                 $item->position = -1 * $newPosition - 1;
                 $item->save();
                 break;
+            case "delete":
+                $item->delete();
+                break;
         }
 
         $responseJson = json_encode($queue->getAdminApiObject());

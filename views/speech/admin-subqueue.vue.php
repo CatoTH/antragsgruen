@@ -17,20 +17,20 @@ ob_start();
                 <div class="hoveredIndicator"><?= Yii::t('speech', 'admin_move_here') ?></div>
             </li>
             <li class="subqueueItem" draggable="true" @dragstart="onItemDragStart($event, item)" @dragend="onItemDragEnd($event, item)">
-                <div class="starter" tabindex="0"
-                     @click="onItemSelected($event, item)"
-                     @keyup.enter="onItemSelected($event, item)"
-                     title="<?= Yii::t('speech', 'admin_subq_start') ?>" aria-label="<?= Yii::t('speech', 'admin_subq_start') ?>">
+                <div class="starter">
                     {{ item.name }}
-
-                    <div class="operationsIndicator operationStart">
-                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                        <span><?= Yii::t('speech', 'admin_start') ?></span>
-                    </div>
 
                     <div class="operationDelete" @click="onItemDelete($event, item)" @keyup.enter="onItemDelete($event, item)" tabindex="0">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                         <span><?= Yii::t('speech', 'admin_delete') ?></span>
+                    </div>
+
+                    <div class="operationsIndicator operationStart" tabindex="0"
+                         @click="onItemSelected($event, item)"
+                         @keyup.enter="onItemSelected($event, item)"
+                         title="<?= Yii::t('speech', 'admin_subq_start') ?>" aria-label="<?= Yii::t('speech', 'admin_subq_start') ?>">
+                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                        <span><?= Yii::t('speech', 'admin_start') ?></span>
                     </div>
                 </div>
 
@@ -148,8 +148,7 @@ $html = ob_get_clean();
             onItemDelete: function ($event, item) {
                 $event.preventDefault();
                 $event.stopPropagation();
-
-                alert("Not implemented yet"); // @TODO
+                this.$emit('delete-item', item.id);
             },
             openAdder: function () {
                 this.adderOpened = true;
