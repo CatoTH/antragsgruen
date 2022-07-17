@@ -228,7 +228,7 @@ class VotingController extends Base
     {
         $user = User::getCurrentUser();
         $votingData = [];
-        foreach (Factory::getClosedVotingBlocks($this->consultation) as $voting) {
+        foreach (Factory::getPublishedClosedVotingBlocks($this->consultation) as $voting) {
             $votingData[] = $voting->getUserResultsApiObject($user);
         }
 

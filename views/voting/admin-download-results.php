@@ -20,7 +20,7 @@ function printResultTable(Worksheet $worksheet, int $startRow, AgendaVoting $age
     }
 
     $voteResults = $voteItem->getVotingData();
-    if ($agendaVoting->voting->votingStatus !== VotingBlock::STATUS_CLOSED) {
+    if ($agendaVoting->voting->votingStatus !== VotingBlock::STATUS_CLOSED_PUBLISHED) {
         $voteResults->augmentWithResults($agendaVoting->voting, $voteItem);
     }
     $rows = 0;
@@ -164,7 +164,7 @@ foreach ($agendaVoting->items as $i => $voteItem) {
         $sheet = $spreadsheet->createSheet();
     }
 
-    if ($agendaVoting->voting->votingStatus === VotingBlock::STATUS_CLOSED) {
+    if ($agendaVoting->voting->isClosed()) {
         $voteResults = $voteItem->getVotingData();
         $eligibilityList = EligibilityByGroup::listFromJsonArray($voteResults->eligibilityList);
     } else {

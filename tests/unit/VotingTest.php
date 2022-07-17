@@ -62,7 +62,7 @@ class VotingTest extends DBTestBase
     private function closeVoting(VotingBlock $votingBlock)
     {
         $votingBlock->refresh();
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_PUBLISHED]);
         $votingMethods->voteStatusUpdate($votingBlock);
         $votingBlock->refresh();
     }
@@ -131,11 +131,11 @@ class VotingTest extends DBTestBase
         $this->assertSame(VotingBlock::STATUS_OPEN, $votingBlock->votingStatus);
 
         // Set from Open to Closed
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_PUBLISHED]);
         $votingMethods->voteStatusUpdate($votingBlock);
 
         $votingBlock->refresh();
-        $this->assertSame(VotingBlock::STATUS_CLOSED, $votingBlock->votingStatus);
+        $this->assertSame(VotingBlock::STATUS_CLOSED_PUBLISHED, $votingBlock->votingStatus);
     }
 
     public function testCannotChangeSettingsAfterOpened()

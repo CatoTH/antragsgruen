@@ -34,8 +34,10 @@ class VotingMethods
                 $votingBlock->switchToOnlineVoting();
             } elseif ($newStatus === VotingBlock::STATUS_OPEN) {
                 $votingBlock->openVoting();
-            } elseif ($newStatus === VotingBlock::STATUS_CLOSED) {
-                $votingBlock->closeVoting();
+            } elseif ($newStatus === VotingBlock::STATUS_CLOSED_PUBLISHED) {
+                $votingBlock->closeVoting(true);
+            } elseif ($newStatus === VotingBlock::STATUS_CLOSED_UNPUBLISHED) {
+                $votingBlock->closeVoting(false);
             } elseif ($newStatus === VotingBlock::STATUS_OFFLINE) {
                 $votingBlock->switchToOfflineVoting();
             }

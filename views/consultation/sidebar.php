@@ -120,7 +120,7 @@ $html                     .= '</ul></section>';
 $layout->menusHtml[]      = $html;
 $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'news'), $link) . '</li>';
 
-$closedVotings = VotingBlock::getClosedVotings($consultation);
+$closedVotings = VotingBlock::getPublishedClosedVotings($consultation);
 if ($consultation->getSettings()->proposalProcedurePage || count($closedVotings) > 0) {
     $html = '<section class="sidebar-box" aria-labelledby="sidebarPpTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarPpTitle">' . Yii::t('con', 'sidebar_procedure') . '</li>';

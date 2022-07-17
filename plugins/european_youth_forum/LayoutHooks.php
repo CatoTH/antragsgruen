@@ -36,7 +36,7 @@ class LayoutHooks extends Hooks
 
         /** @var \app\plugins\european_youth_forum\VotingData $voteResults */
         $voteResults = $voteItem->getVotingData();
-        if ($agendaVoting->voting->votingStatus !== VotingBlock::STATUS_CLOSED) {
+        if (!$agendaVoting->voting->isClosed()) {
             $voteResults->augmentWithResults($agendaVoting->voting, $voteItem);
         }
         $rows = 0;
