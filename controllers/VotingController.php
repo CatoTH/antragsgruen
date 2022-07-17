@@ -41,18 +41,23 @@ class VotingController extends Base
         return json_encode([
             'success' => false,
             'message' => $message,
-        ]);
+        ], JSON_THROW_ON_ERROR);
     }
 
     // *** Admin-facing methods ***
 
-    private function getVotingBlockAndCheckAdminPermission(string $votingBlockId): VotingBlock
+    private function ensureAdminPermissions(): void
     {
         $user = User::getCurrentUser();
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
             $this->returnRestResponse(403, $this->getError('Missing privileges'));
             die();
         }
+    }
+
+    private function getVotingBlockAndCheckAdminPermission(string $votingBlockId): VotingBlock
+    {
+        $this->ensureAdminPermissions();
 
         $block = $this->consultation->getVotingBlock(intval($votingBlockId));
         if (!$block) {
@@ -76,30 +81,19 @@ class VotingController extends Base
         return $apiData;
     }
 
-    public function actionGetAdminVotingBlocks()
+    public function actionGetAdminVotingBlocks(): ?string
     {
         $this->handleRestHeaders(['GET'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
-            $this->returnRestResponse(403, $this->getError('Missing privileges'));
-            die();
-        }
+        $this->ensureAdminPermissions();
 
         $responseData = $this->getAllVotingAdminData();
 
-        return $this->returnRestResponse(200, json_encode($responseData));
+        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
     }
 
-    public function actionPostVoteSettings(string $votingBlockId)
+    public function actionPostVoteSettings(string $votingBlockId): ?string
     {
         $this->handleRestHeaders(['POST'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
         ResourceLock::lockVotingBlockForWrite($votingBlock);
@@ -134,21 +128,25 @@ class VotingController extends Base
 
         ResourceLock::releaseAllLocks();
 
-        return $this->returnRestResponse(200, json_encode($responseData));
+        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
     }
 
-    public function actionCreateVotingBlock()
+    public function actionPostVoteOrder(): ?string
     {
         $this->handleRestHeaders(['POST'], true);
+        $this->ensureAdminPermissions();
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $votingIds = array_values(array_map('intval', $this->getPostValue('votingIds')));
+        $this->votingMethods->sortVotings($votingIds);
 
-        $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
-            $this->returnRestResponse(403, $this->getError('Missing privileges'));
-            die();
-        }
+        $responseData = $this->getAllVotingAdminData();
+        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
+    }
+
+    public function actionCreateVotingBlock(): ?string
+    {
+        $this->handleRestHeaders(['POST'], true);
+        $this->ensureAdminPermissions();
 
         $newBlock = new VotingBlock();
         $newBlock->consultationId = $this->consultation->id;
@@ -186,10 +184,10 @@ class VotingController extends Base
         return $this->returnRestResponse(200, json_encode([
             'votings' => $votingData,
             'created_voting' => $newBlock->id,
-        ]));
+        ], JSON_THROW_ON_ERROR));
     }
 
-    public function actionDownloadVotingResults(string $votingBlockId, string $format)
+    public function actionDownloadVotingResults(string $votingBlockId, string $format): ?string
     {
         $this->handleRestHeaders(['GET'], true);
         $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
@@ -223,7 +221,7 @@ class VotingController extends Base
             $votingData[] = $voting->getUserVotingApiObject($user);
         }
 
-        return json_encode($votingData);
+        return json_encode($votingData, JSON_THROW_ON_ERROR);
     }
 
     private function getClosedVotingsUserData(): string
@@ -234,10 +232,10 @@ class VotingController extends Base
             $votingData[] = $voting->getUserResultsApiObject($user);
         }
 
-        return json_encode($votingData);
+        return json_encode($votingData, JSON_THROW_ON_ERROR);
     }
 
-    public function actionGetOpenVotingBlocks($assignedToMotionId)
+    public function actionGetOpenVotingBlocks($assignedToMotionId): ?string
     {
         $this->handleRestHeaders(['GET'], true);
 
@@ -255,12 +253,9 @@ class VotingController extends Base
         return $this->returnRestResponse(200, $responseJson);
     }
 
-    public function actionGetClosedVotingBlocks()
+    public function actionGetClosedVotingBlocks(): ?string
     {
         $this->handleRestHeaders(['GET'], true);
-
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $responseJson = $this->getClosedVotingsUserData();
 
@@ -274,7 +269,7 @@ class VotingController extends Base
      * votes[0][vote]=yes
      * [optional] votes[0][public]=1
      */
-    public function actionPostVote($votingBlockId, $assignedToMotionId)
+    public function actionPostVote($votingBlockId, $assignedToMotionId): ?string
     {
         $this->handleRestHeaders(['POST'], true);
 

@@ -341,6 +341,24 @@
   }
 }
 
+.votingSorting {
+  .saveRow {
+    margin-top: 20px;
+    text-align: center;
+  }
+  .list-group-item {
+    cursor: move;
+
+    .sortIndicator {
+      float: right;
+    }
+
+    &.sortable-ghost {
+      background-color: #eee;
+    }
+  }
+}
+
 .votingDataActions {
   display: flex;
   flex-direction: row;
@@ -375,6 +393,10 @@
     flex-basis: 360px;
     flex-grow: 1;
     text-align: right;
+  }
+
+  .btnReset {
+    margin-right: 5px;
   }
 }
 

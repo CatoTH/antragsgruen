@@ -92,6 +92,7 @@ $urlRules = [
     $restBaseCon . '/votings/closed' => '/voting/get-closed-voting-blocks',
     $restBaseCon . '/votings/admin' => '/voting/get-admin-voting-blocks',
     $restBaseCon . '/votings/create' => '/voting/create-voting-block',
+    $restBaseCon . '/votings/sort' => '/voting/post-vote-order',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/settings' => '/voting/post-vote-settings',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/vote' => '/voting/post-vote',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/results.<format:[^\/]+>' => '/voting/download-voting-results',

@@ -17,11 +17,8 @@ use yii\web\Request;
  */
 class VotingMethods
 {
-    /** @var Consultation */
-    private $consultation;
-
-    /** @var Request */
-    private $request;
+    private Consultation $consultation;
+    private Request $request;
 
     public function setRequestData(Consultation $consultation, Request $request): void
     {
@@ -293,6 +290,28 @@ class VotingMethods
                 }
                 ResourceLock::unlockVotingItemForVoting($item);
             }
+        }
+    }
+
+    /**
+     * @param int[] $votingIds
+     */
+    public function sortVotings(array $votingIds): void
+    {
+        $positionById = [];
+        for ($pos = 0; $pos < count($votingIds); $pos++) {
+            $positionById[$votingIds[$pos]] = $pos;
+        }
+        $firstUnusedPos = $pos;
+
+        foreach ($this->consultation->votingBlocks as $votingBlock) {
+            if (isset($positionById[$votingBlock->id])) {
+                $votingBlock->position = $positionById[$votingBlock->id];
+            } else {
+                $votingBlock->position = $firstUnusedPos;
+                $firstUnusedPos++;
+            }
+            $votingBlock->save();
         }
     }
 }

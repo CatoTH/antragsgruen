@@ -4,7 +4,8 @@
 
 - WARNING: if you are using a PHP 7.3 or older, then update to PHP 8.0 or newer first before installing this update!
 - In speaking lists, it is now possible to remove and reorder speakers
-- Votings can now be reordered
+- The voting functionality was improved in several ways:
+  - Votings can now be reordered
 
 ### Version 4.10.1 (2022-07-01)
 

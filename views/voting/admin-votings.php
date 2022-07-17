@@ -39,6 +39,7 @@ foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
 }
 
 $pollUrl = UrlHelper::createUrl(['/voting/get-admin-voting-blocks']);
+$sortUrl = UrlHelper::createUrl(['/voting/post-vote-order']);
 $voteCreateUrl = UrlHelper::createUrl(['/voting/create-voting-block']);
 $voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
 $voteDownloadUrl = UrlHelper::createUrl(['/voting/download-voting-results', 'votingBlockId' => 'VOTINGBLOCKID', 'format' => 'FORMAT']);
@@ -82,6 +83,7 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
      data-url-vote-download="<?= Html::encode($voteDownloadUrl) ?>"
      data-vote-create="<?= Html::encode($voteCreateUrl) ?>"
      data-url-poll="<?= Html::encode($pollUrl) ?>"
+     data-url-sort="<?= Html::encode($sortUrl) ?>"
      data-antragsgruen-widget="backend/VotingAdmin"
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
@@ -89,7 +91,7 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
     <div class="content">
 
         <div class="votingOperations">
-            <button type="button" class="btn btn-default sortVotings">
+            <button type="button" class="btn btn-default sortVotings hidden">
                 <span class="glyphicon glyphicon-sort" aria-hidden="true"></span>
                 <?= Yii::t('voting', 'settings_sort') ?>
             </button>

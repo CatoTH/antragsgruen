@@ -90,6 +90,7 @@ return [
     'settings_delete' => 'Abstimmung löschen',
     'settings_delete_bb' => 'Soll diese Abstimmung mitsamt den abgegebenen Stimmen gelöscht werden? Die Anträge und Änderungsanträge bleiben dabei bestehen.',
     'settings_sort_title' => 'Abstimmungen umsortieren',
+    'settings_sort_save' => 'Neue Reihenfolge speichern',
 
     'voting_current_aria' => 'Aktuell laufende Abstimmung',
     'voting_show_amend' => 'Änderungsantrag anzeigen',

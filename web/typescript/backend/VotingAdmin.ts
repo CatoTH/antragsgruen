@@ -9,27 +9,31 @@ export class VotingAdmin {
 
     constructor($element: JQuery) {
         this.element = $element[0];
-        this.createVueWidget();
+
+        const votingInitJson = this.element.getAttribute('data-voting');
+        this.createVueWidget(votingInitJson);
         this.initVotingCreater();
-        this.initVotingSorter();
+        this.initVotingSorter(votingInitJson);
 
         $('[data-toggle="tooltip"]').tooltip();
     }
 
-    private createVueWidget() {
+    private createVueWidget(votingInitJson) {
         const vueEl = this.element.querySelector(".votingAdmin");
         const voteSettingsUrl = this.element.getAttribute('data-url-vote-settings');
         const voteCreateUrl = this.element.getAttribute('data-vote-create');
         const voteDownloadUrl = this.element.getAttribute('data-url-vote-download');
         const addableMotions = JSON.parse(this.element.getAttribute('data-addable-motions'));
         const pollUrl = this.element.getAttribute('data-url-poll');
-        const votingInitJson = this.element.getAttribute('data-voting');
         const initUserGroups = JSON.parse(this.element.getAttribute('data-user-groups'));
-
+        const sortUrl = this.element.getAttribute('data-url-sort');
 
         this.widget = Vue.createApp({
             template: `<div class="adminVotings">
-                <voting-sort-widget :votings="votings" v-if="isSorting"></voting-sort-widget>
+                <voting-sort-widget
+                    v-if="isSorting"
+                    :votings="votings"
+                    @sorted="onSorted"></voting-sort-widget>
                 <voting-admin-widget
                     v-if="!isSorting"
                     v-for="voting in votings"
@@ -128,6 +132,23 @@ export class VotingAdmin {
                         resultsPublic,
                         votesPublic,
                         assignedMotion,
+                    });
+                },
+                onSorted(sortedIds) {
+                    let postData = {
+                        _csrf: this.csrf,
+                        votingIds: sortedIds
+                    };
+                    const widget = this;
+                    $.post(sortUrl, postData, function (data) {
+                        if (data.success !== undefined && !data.success) {
+                            alert(data.message);
+                            return;
+                        }
+                        widget.votings = data;
+                        widget.isSorting = false;
+                    }).catch(function (err) {
+                        alert(err.responseText);
                     });
                 },
                 deleteVoting(votingBlockId) {
@@ -255,11 +276,14 @@ export class VotingAdmin {
         }).trigger("change");
     }
 
-    private initVotingSorter() {
+    private initVotingSorter(votingInitJson) {
         const sortToggle = this.element.querySelector('.sortVotings');
         sortToggle.addEventListener('click', () => {
             this.widgetComponent.toggleSorting();
         });
+        if (JSON.parse(votingInitJson).length > 1) {
+            sortToggle.classList.remove('hidden');
+        }
     }
 
     private initVotingCreater() {

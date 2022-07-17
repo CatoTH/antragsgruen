@@ -1,9 +1,5 @@
 <?php
 
-use app\components\UrlHelper;
-use app\models\layoutHooks\Layout;
-use yii\helpers\Html;
-
 /**
  * @var \yii\web\View $this
  */
@@ -14,16 +10,23 @@ $consultation = $controller->consultation;
 
 ob_start();
 ?>
-<section aria-labelledby="sortVotingsHeader">
+<section aria-labelledby="sortVotingsHeader" class="votingSorting">
     <h2 class="green" id="sortVotingsHeader"><?= Yii::t('voting', 'settings_sort_title') ?></h2>
-    <div class="content">
-        <draggable :list="votings" item-key="title">
+    <div class="content adminContent">
+        <draggable :list="votings" item-key="title" @change="onChange">
             <template #item="{ element }">
                 <div class="list-group-item">
+                    <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
                     {{ element.title }}
                 </div>
             </template>
         </draggable>
+
+        <div class="saveRow">
+            <button type="button" @click="saveOrder()" class="btn btn-primary btnSave">
+                <?= Yii::t('voting', 'settings_sort_save') ?>
+            </button>
+        </div>
     </div>
 </section>
 
@@ -38,12 +41,15 @@ $html = ob_get_clean();
         template: <?= json_encode($html) ?>,
         props: ['votings'],
         data() {
-            return {
-                list: [
-                    {name: "John", id: 0},
-                    {name: "Joao", id: 1},
-                    {name: "Jean", id: 2}
-                ],
+            return {}
+        },
+        methods: {
+            onChange: function () {},
+            saveOrder: function () {
+                const sortedIds = this.votings.map(voting => {
+                    return voting.id;
+                });
+                this.$emit('sorted', sortedIds);
             }
         }
     });

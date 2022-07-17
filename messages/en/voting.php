@@ -90,6 +90,7 @@ return [
     'settings_delete' => 'Delete the voting',
     'settings_delete_bb' => 'Do you want to delete the voting including all cast votes? The motions and amendments will remain untouched.',
     'settings_sort_title' => 'Reorder votings',
+    'settings_sort_save' => 'Save new order',
 
     'voting_current_aria' => 'Currently active voting',
     'voting_show_amend' => 'Show amendment',
