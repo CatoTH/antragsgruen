@@ -61,7 +61,8 @@ export class VotingAdmin {
                     voteDownloadUrl,
                     addableMotions,
                     csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
-                    pollingId: null
+                    pollingId: null,
+                    onReloadedCbs: []
                 };
             },
             computed: {
@@ -178,6 +179,9 @@ export class VotingAdmin {
                             return;
                         }
                         widget.votings = data['votings'];
+                        widget.onReloadedCbs.forEach(cb => {
+                            cb(widget.votings);
+                        });
 
                         window.setTimeout(() => {
                             $("#voting" + data['created_voting']).scrollintoview({top_offset: -100});
@@ -212,10 +216,16 @@ export class VotingAdmin {
                         newUserGroup
                     });
                 },
+                addReloadedCb: function (cb) {
+                    this.onReloadedCbs.push(cb);
+                },
                 reloadData: function () {
                     const widget = this;
                     $.get(pollUrl, function (data) {
                         widget.setVotingFromJson(data);
+                        widget.onReloadedCbs.forEach(cb => {
+                            cb(widget.votings);
+                        });
                     }, 'text').catch(function (err) {
                         console.error("Could not load voting data from backend", err);
                     });
@@ -284,6 +294,14 @@ export class VotingAdmin {
         if (JSON.parse(votingInitJson).length > 1) {
             sortToggle.classList.remove('hidden');
         }
+
+        this.widgetComponent.addReloadedCb(data => {
+            if (data.length > 1) {
+                sortToggle.classList.remove('hidden');
+            } else {
+                sortToggle.classList.add('hidden');
+            }
+        });
     }
 
     private initVotingCreater() {
