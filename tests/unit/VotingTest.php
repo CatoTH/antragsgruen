@@ -35,7 +35,7 @@ class VotingTest extends DBTestBase
         return $methods;
     }
 
-    private function openVotingWithSettings(?array $settings)
+    private function openVotingWithSettings(?array $settings): VotingBlock
     {
         $user = User::findOne(['email' => 'testadmin@example.org']);
         \Yii::$app->user->identity = $user;
@@ -59,7 +59,7 @@ class VotingTest extends DBTestBase
         return $votingBlock;
     }
 
-    private function closeVoting(VotingBlock $votingBlock)
+    private function closeVotingAndPublishResults(VotingBlock $votingBlock): void
     {
         $votingBlock->refresh();
         $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_PUBLISHED]);
@@ -67,7 +67,7 @@ class VotingTest extends DBTestBase
         $votingBlock->refresh();
     }
 
-    private function voteForFirstAmendment(VotingBlock $votingBlock, string $userEmail, string $vote)
+    private function voteForFirstAmendment(VotingBlock $votingBlock, string $userEmail, string $vote): void
     {
         $votingMethods = $this->getVotingMethods([
             'votes' => [
@@ -83,13 +83,13 @@ class VotingTest extends DBTestBase
         $votingMethods->userVote($votingBlock, $user);
     }
 
-    private function assertAmendmentVotingHasStatus(int $status)
+    private function assertAmendmentVotingHasStatus(int $status): void
     {
         $amendment = Amendment::findOne(['id' => '3']);
         $this->assertSame($status, $amendment->votingStatus);
     }
 
-    public function testSetSettings()
+    public function testSetSettings(): void
     {
         $votingMethods = $this->getVotingMethods([
             'title' => 'Test-Voting',
@@ -107,7 +107,7 @@ class VotingTest extends DBTestBase
         $this->assertSame('Test-Voting', $votingBlock->title);
     }
 
-    public function testStatusChanges()
+    public function testStatusChanges(): void
     {
         $user = User::findOne(['email' => 'testadmin@example.org']);
         \Yii::$app->user->identity = $user;
@@ -138,7 +138,7 @@ class VotingTest extends DBTestBase
         $this->assertSame(VotingBlock::STATUS_CLOSED_PUBLISHED, $votingBlock->votingStatus);
     }
 
-    public function testCannotChangeSettingsAfterOpened()
+    public function testCannotChangeSettingsAfterOpened(): void
     {
         $votingBlock = $this->openVotingWithSettings(null);
 
@@ -151,7 +151,7 @@ class VotingTest extends DBTestBase
         $this->assertSame(IMajorityType::MAJORITY_TYPE_SIMPLE, $votingBlock->majorityType); // Unchanged
     }
 
-    public function testVotingResultSimpleAccepted()
+    public function testVotingResultSimpleAccepted(): void
     {
         $votingBlock = $this->openVotingWithSettings(['majorityType' => IMajorityType::MAJORITY_TYPE_SIMPLE]);
         $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
@@ -159,36 +159,36 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'globaladmin@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'fixeddata@example.org', 'no');
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'no');
-        $this->closeVoting($votingBlock);
+        $this->closeVotingAndPublishResults($votingBlock);
 
         $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
     }
 
-    public function testVotingResultSimpleRejectedOnEqualNumbers()
+    public function testVotingResultSimpleRejectedOnEqualNumbers(): void
     {
         $votingBlock = $this->openVotingWithSettings(['majorityType' => IMajorityType::MAJORITY_TYPE_SIMPLE]);
         $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'testuser@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'fixeddata@example.org', 'no');
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'no');
-        $this->closeVoting($votingBlock);
+        $this->closeVotingAndPublishResults($votingBlock);
 
         $this->assertAmendmentVotingHasStatus(Amendment::STATUS_REJECTED);
     }
 
-    public function testVotingResultTwoThirdsAccepted()
+    public function testVotingResultTwoThirdsAccepted(): void
     {
         $votingBlock = $this->openVotingWithSettings(['majorityType' => IMajorityType::MAJORITY_TYPE_TWO_THIRD]);
         $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'testuser@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'fixeddata@example.org', 'no');
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'abstention');
-        $this->closeVoting($votingBlock);
+        $this->closeVotingAndPublishResults($votingBlock);
 
         $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
     }
 
-    public function testVotingResultTwoThirdsRejected()
+    public function testVotingResultTwoThirdsRejected(): void
     {
         $votingBlock = $this->openVotingWithSettings(['majorityType' => IMajorityType::MAJORITY_TYPE_TWO_THIRD]);
         $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
@@ -196,12 +196,12 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'globaladmin@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'fixeddata@example.org', 'no');
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'no');
-        $this->closeVoting($votingBlock);
+        $this->closeVotingAndPublishResults($votingBlock);
 
         $this->assertAmendmentVotingHasStatus(Amendment::STATUS_REJECTED);
     }
 
-    public function testVotingResultAbsoluteAccepted()
+    public function testVotingResultAbsoluteAccepted(): void
     {
         $votingBlock = $this->openVotingWithSettings(['majorityType' => IMajorityType::MAJORITY_TYPE_ABSOLUTE]);
         $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
@@ -209,20 +209,63 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'globaladmin@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'fixeddata@example.org', 'no');
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'abstention');
-        $this->closeVoting($votingBlock);
+        $this->closeVotingAndPublishResults($votingBlock);
 
         $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
     }
 
-    public function testVotingResultAbsoluteRejectedOnEqualNumbers()
+    public function testVotingResultAbsoluteRejectedOnEqualNumbers(): void
     {
         $votingBlock = $this->openVotingWithSettings(['majorityType' => IMajorityType::MAJORITY_TYPE_ABSOLUTE]);
         $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'testuser@example.org', 'yes');
         $this->voteForFirstAmendment($votingBlock, 'fixeddata@example.org', 'no');
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'abstention');
-        $this->closeVoting($votingBlock);
+        $this->closeVotingAndPublishResults($votingBlock);
 
         $this->assertAmendmentVotingHasStatus(Amendment::STATUS_REJECTED);
+    }
+
+    public function testVotingResultsVisibleOnlyAfterPublication(): void
+    {
+        $user = User::findOne(['email' => 'testadmin@example.org']);
+
+        $votingBlock = $this->openVotingWithSettings([]);
+        $this->voteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
+
+        // The voting is visible for the user
+        $votingMethods = $this->getVotingMethods(null);
+        $openVotings = $votingMethods->getOpenVotingsForUser(null, $user);
+        $this->assertCount(1, $openVotings);
+
+        // The voting will be set to closed, but unpublished
+        $votingBlock->refresh();
+        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_UNPUBLISHED]);
+        $votingMethods->voteStatusUpdate($votingBlock);
+        $votingBlock->refresh();
+
+        // The voting is visible neither on the opened nor on the results page
+        $votingMethods = $this->getVotingMethods(null);
+        $openVotings = $votingMethods->getOpenVotingsForUser(null, $user);
+        $this->assertCount(0, $openVotings);
+
+        $votingMethods = $this->getVotingMethods(null);
+        $publishedVotings = $votingMethods->getClosedPublishedVotingsForUser($user);
+        $this->assertCount(0, $publishedVotings);
+
+        // After closing the voting, it should be visible on the results page
+        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_PUBLISHED]);
+        $votingMethods->voteStatusUpdate($votingBlock);
+        $votingBlock->refresh();
+
+        $votingMethods = $this->getVotingMethods(null);
+        $openVotings = $votingMethods->getOpenVotingsForUser(null, $user);
+        $this->assertCount(0, $openVotings);
+
+        $votingMethods = $this->getVotingMethods(null);
+        $publishedVotings = $votingMethods->getClosedPublishedVotingsForUser($user);
+        $this->assertCount(1, $publishedVotings);
+
+        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
     }
 }

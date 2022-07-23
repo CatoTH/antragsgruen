@@ -88,13 +88,13 @@ ob_start();
 
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary btnClose" @click="closeVoting(true, $event)"><?= Yii::t('voting', 'admin_btn_close') ?></button>
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-primary dropdown-toggle btnClosePubOpener" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                         <span class="sr-only"><?= Yii::t('voting', 'admin_btn_close_op') ?></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li><a href="#" @click="closeVoting(true, $event)"><?= Yii::t('voting', 'admin_btn_close_pub') ?></a></li>
-                        <li><a href="#" @click="closeVoting(false, $event)"><?= Yii::t('voting', 'admin_btn_close_nopub') ?></a></li>
+                        <li><a href="#" @click="closeVoting(false, $event)" class="btnCloseNopub"><?= Yii::t('voting', 'admin_btn_close_nopub') ?></a></li>
                     </ul>
                 </div>
             </div>

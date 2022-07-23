@@ -213,28 +213,6 @@ class VotingController extends Base
 
     // *** User-facing methods ***
 
-    private function getOpenVotingsUserData(?Motion $assignedToMotion): string
-    {
-        $user = User::getCurrentUser();
-        $votingData = [];
-        foreach (Factory::getOpenVotingBlocks($this->consultation, $assignedToMotion) as $voting) {
-            $votingData[] = $voting->getUserVotingApiObject($user);
-        }
-
-        return json_encode($votingData, JSON_THROW_ON_ERROR);
-    }
-
-    private function getClosedVotingsUserData(): string
-    {
-        $user = User::getCurrentUser();
-        $votingData = [];
-        foreach (Factory::getPublishedClosedVotingBlocks($this->consultation) as $voting) {
-            $votingData[] = $voting->getUserResultsApiObject($user);
-        }
-
-        return json_encode($votingData, JSON_THROW_ON_ERROR);
-    }
-
     public function actionGetOpenVotingBlocks($assignedToMotionId): ?string
     {
         $this->handleRestHeaders(['GET'], true);
@@ -248,18 +226,18 @@ class VotingController extends Base
             $assignedToMotion = null;
         }
 
-        $responseJson = $this->getOpenVotingsUserData($assignedToMotion);
+        $response = $this->votingMethods->getOpenVotingsForUser($assignedToMotion, User::getCurrentUser());
 
-        return $this->returnRestResponse(200, $responseJson);
+        return $this->returnRestResponse(200, json_encode($response, JSON_THROW_ON_ERROR));
     }
 
     public function actionGetClosedVotingBlocks(): ?string
     {
         $this->handleRestHeaders(['GET'], true);
 
-        $responseJson = $this->getClosedVotingsUserData();
+        $response = $this->votingMethods->getClosedPublishedVotingsForUser(User::getCurrentUser());
 
-        return $this->returnRestResponse(200, $responseJson);
+        return $this->returnRestResponse(200, json_encode($response, JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -302,8 +280,8 @@ class VotingController extends Base
         ResourceLock::releaseAllLocks();
         $votingBlock->refresh();
 
-        $responseJson = $this->getOpenVotingsUserData($assignedToMotion);
+        $response = $this->votingMethods->getOpenVotingsForUser($assignedToMotion, User::getCurrentUser());
 
-        return $this->returnRestResponse(200, $responseJson);
+        return $this->returnRestResponse(200, json_encode($response, JSON_THROW_ON_ERROR));
     }
 }

@@ -7,6 +7,7 @@ namespace app\components;
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use app\models\proposedProcedure\Factory;
 use app\models\quorumType\IQuorumType;
 use app\models\policies\{IPolicy, UserGroups};
 use app\models\votings\AnswerTemplates;
@@ -293,6 +294,24 @@ class VotingMethods
                 ResourceLock::unlockVotingItemForVoting($item);
             }
         }
+    }
+
+    public function getOpenVotingsForUser(?Motion $assignedToMotion, User $user): array
+    {
+        $votingData = [];
+        foreach (Factory::getOpenVotingBlocks($this->consultation, $assignedToMotion) as $voting) {
+            $votingData[] = $voting->getUserVotingApiObject($user);
+        }
+        return $votingData;
+    }
+
+    public function getClosedPublishedVotingsForUser(User $user): array
+    {
+        $votingData = [];
+        foreach (Factory::getPublishedClosedVotingBlocks($this->consultation) as $voting) {
+            $votingData[] = $voting->getUserResultsApiObject($user);
+        }
+        return $votingData;
     }
 
     /**
