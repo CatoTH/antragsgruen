@@ -33,6 +33,7 @@ export class VotingAdmin {
                 <voting-sort-widget
                     v-if="isSorting"
                     :votings="votings"
+                    ref="voting-sort-widget"
                     @sorted="onSorted"></voting-sort-widget>
                 <voting-admin-widget
                     v-if="!isSorting"

@@ -45,11 +45,20 @@ $html = ob_get_clean();
         },
         methods: {
             onChange: function () {},
-            saveOrder: function () {
-                const sortedIds = this.votings.map(voting => {
+            getSortedIds: function () {
+                return this.votings.map(voting => {
                     return voting.id;
                 });
-                this.$emit('sorted', sortedIds);
+            },
+            saveOrder: function () {
+                this.$emit('sorted', this.getSortedIds());
+            },
+            setOrder: function (orderVotingIds) { // called by test cases
+                const indexedOrder = {};
+                orderVotingIds.forEach((votingId, idx) => indexedOrder[votingId.toString()] = idx);
+                this.votings = this.votings.sort((voting1, voting2) => {
+                    return indexedOrder[voting1.id] - indexedOrder[voting2.id];
+                });
             }
         }
     });
