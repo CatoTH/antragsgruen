@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+
+use app\tests\_pages\VotingResultsPage;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -43,7 +46,7 @@ $I->wait(0.3);
 $I->seeElement('.voting_question_1 span.present');
 
 
-$I->wantTo('Finish the voting');
+$I->wantTo('Finish the voting, but don\'t publish the results right away');
 $I->click('.votingsAdminLink');
 
 $I->see('1', '.voting_question_1 .voteCount_present');
@@ -52,11 +55,36 @@ $I->dontSeeElement('.voteResults');
 $I->clickJS('.voting_question_1 .btnShowVotes');
 $I->see('testadmin@example.org', '.voteResults');
 
-$I->clickJS($votingId . ' .btnClose');
+$I->dontSeeElement($votingId . ' .btnPublish');
+$I->dontSeeElement($votingId . ' .btnCloseNopub');
+$I->clickJS($votingId . ' .btnClosePubOpener');
+$I->seeElement($votingId . ' .btnCloseNopub');
+$I->clickJS($votingId . ' .btnCloseNopub');
+
 $I->wait(0.3);
+$I->seeElement($votingId . ' .btnPublish');
 
 
-$I->wantTo('not see it on the home page anymore, but in the results');
+$I->wantTo('not see it on the home page nor on the results page');
+$I->gotoConsultationHome();
+$I->dontSeeElement('.voting_question_1');
+
+$I->openPage(VotingResultsPage::class, [
+    'subdomain'        => 'stdparteitag',
+    'consultationPath' => 'std-parteitag',
+]);
+$I->seeElement('.resultsNone');
+$I->dontSeeElement('.voting_question_1');
+
+
+$I->wantTo('publish the results');
+$I->gotoStdAdminPage()->gotoVotingPage();
+$I->clickJS($votingId . ' .btnPublish');
+$I->wait(0.3);
+$I->dontSeeElement($votingId . ' .btnPublish');
+
+
+$I->wantTo('not see it on the home page, but in the results');
 $I->gotoConsultationHome();
 $I->dontSeeElement('.voting_question_1');
 
@@ -67,6 +95,7 @@ $I->see('Login', 'h1');
 $I->loginAsStdUser();
 $I->click('#votingResultsLink');
 $I->wait(0.3);
+$I->dontSeeElement('.resultsNone');
 $I->see('1', '.voting_question_1 .voteCount_present');
 $I->dontSeeElement('.voting_question_1 .result .accepted');
 $I->dontSeeElement('.regularVoteList');

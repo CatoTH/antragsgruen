@@ -14,26 +14,17 @@ use yii\web\{Controller, Request, Response, Session};
 
 class Base extends Controller
 {
-    /** @var Layout */
-    public $layoutParams = null;
-
-    /** @var null|Consultation */
-    public $consultation = null;
-
-    /** @var null|Motion */
-    public $motion = null;
-
-    /** @var null|Amendment */
-    public $amendment = null;
-
-    /** @var null|Site */
-    public $site = null;
+    public ?Layout $layoutParams = null;
+    public ?Consultation $consultation = null;
+    public ?Motion $motion = null;
+    public ?Amendment $amendment = null;
+    public ?Site $site = null;
 
     /** @var string */
     public $layout = '@app/views/layouts/column1';
 
     /** @var null|bool - currently only null (default) and true (allow not-logged in, e.g. by plugins) are supported. false to come. */
-    public $allowNotLoggedIn = null;
+    public ?bool $allowNotLoggedIn = null;
 
     /**
      * @param string $cid the ID of this controller.
@@ -537,6 +528,7 @@ class Base extends Controller
         if (is_null($this->consultation)) {
             $this->consultation = Consultation::findOne(['urlPath' => $consultationId, 'siteId' => $this->site->id]);
             if ($this->consultation && $this->consultation->getSettings()->getSpecializedLayoutClass()) {
+                /** @var Layout $layoutClass */
                 $layoutClass        = $this->consultation->getSettings()->getSpecializedLayoutClass();
                 $this->layoutParams = new $layoutClass();
             }

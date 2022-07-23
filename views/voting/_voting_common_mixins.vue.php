@@ -30,8 +30,11 @@ use app\models\policies\UserGroups;
                 // Currently open for voting.
                 STATUS_OPEN: <?= VotingBlock::STATUS_OPEN ?>,
 
-                // Voting is closed.
-                STATUS_CLOSED: <?= VotingBlock::STATUS_CLOSED ?>,
+                // Voting is closed, results are visible for users.
+                STATUS_CLOSED_PUBLISHED: <?= VotingBlock::STATUS_CLOSED_PUBLISHED ?>,
+
+                // Voting is closed, results are not visible for users.
+                STATUS_CLOSED_UNPUBLISHED: <?= VotingBlock::STATUS_CLOSED_UNPUBLISHED ?>,
 
                 QUORUM_TYPE_NONE: <?= IQuorumType::QUORUM_TYPE_NONE ?>,
 
@@ -105,7 +108,7 @@ use app\models\policies\UserGroups;
                 return this.voting.status === this.STATUS_OPEN;
             },
             isClosed: function () {
-                return this.voting.status === this.STATUS_CLOSED;
+                return this.voting.status === this.STATUS_CLOSED_PUBLISHED || this.voting.status === this.STATUS_CLOSED_UNPUBLISHED;
             }
         },
         methods: {

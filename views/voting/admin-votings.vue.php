@@ -10,7 +10,6 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-/** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 
 ob_start();
@@ -70,8 +69,11 @@ ob_start();
         <div class="alert alert-success" v-if="isOpen">
             <p><?= Yii::t('voting', 'admin_status_opened') ?></p>
         </div>
-        <div class="alert alert-info" v-if="isClosed">
+        <div class="alert alert-info" v-if="voting.status === STATUS_CLOSED_PUBLISHED">
             <p><?= Yii::t('voting', 'admin_status_closed') ?></p>
+        </div>
+        <div class="alert alert-info" v-if="voting.status === STATUS_CLOSED_UNPUBLISHED">
+            <p><?= Yii::t('voting', 'admin_status_closed_unpublished') ?></p>
         </div>
         <form method="POST" class="votingDataActions" v-if="isPreparing" @submit="openVoting($event)">
             <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
@@ -86,19 +88,21 @@ ob_start();
 
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary btnClose" @click="closeVoting(true, $event)"><?= Yii::t('voting', 'admin_btn_close') ?></button>
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-primary dropdown-toggle btnClosePubOpener" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                         <span class="sr-only"><?= Yii::t('voting', 'admin_btn_close_op') ?></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li><a href="#" @click="closeVoting(true, $event)"><?= Yii::t('voting', 'admin_btn_close_pub') ?></a></li>
-                        <li><a href="#" @click="closeVoting(false, $event)"><?= Yii::t('voting', 'admin_btn_close_nopub') ?></a></li>
+                        <li><a href="#" @click="closeVoting(false, $event)" class="btnCloseNopub"><?= Yii::t('voting', 'admin_btn_close_nopub') ?></a></li>
                     </ul>
                 </div>
             </div>
             <div class="actions" v-if="isClosed">
                 <button type="button" class="btn btn-default btnReset" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
                 <button type="button" class="btn btn-default btnReopen" @click="reopenVoting()"><?= Yii::t('voting', 'admin_btn_reopen') ?></button>
+                <button type="button" class="btn btn-primary btnPublish" @click="publishVoting()"
+                    v-if="voting.status === STATUS_CLOSED_UNPUBLISHED"><?= Yii::t('voting', 'admin_btn_publish') ?></button>
             </div>
         </form>
         <div v-if="groupedVotings.length === 0" class="noVotingsYet">
@@ -607,11 +611,12 @@ $html = ob_get_clean();
                 $event.preventDefault();
                 $event.stopPropagation();
 
-                if (!publish) {
-                    alert("This is not implemented yet"); // @TODO
-                    return;
+                if (publish) {
+                    this.voting.status = this.STATUS_CLOSED_PUBLISHED;
+                } else {
+                    this.voting.status = this.STATUS_CLOSED_UNPUBLISHED;
                 }
-                this.voting.status = this.STATUS_CLOSED;
+
                 this.statusChanged();
             },
             resetVoting: function () {
@@ -626,6 +631,10 @@ $html = ob_get_clean();
             },
             reopenVoting: function () {
                 this.voting.status = this.STATUS_OPEN;
+                this.statusChanged();
+            },
+            publishVoting: function () {
+                this.voting.status = this.STATUS_CLOSED_PUBLISHED;
                 this.statusChanged();
             },
             statusChanged: function () {

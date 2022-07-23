@@ -46,8 +46,8 @@ ob_start();
     </div>
 
     <div v-if="showNotVotedList && hasVoteEligibilityList" class="regularVoteList notVotedList">
-        <strong v-if="voting.status === STATUS_CLOSED"><?= Yii::t('voting', 'voting_notvoted') ?></strong>
-        <strong v-if="voting.status !== STATUS_CLOSED"><?= Yii::t('voting', 'voting_notvoted_yet') ?></strong>
+        <strong v-if="voting.status === STATUS_CLOSED_PUBLISHED || voting.status === STATUS_CLOSED_UNPUBLISHED"><?= Yii::t('voting', 'voting_notvoted') ?></strong>
+        <strong v-if="voting.status !== STATUS_CLOSED_PUBLISHED && voting.status !== STATUS_CLOSED_UNPUBLISHED"><?= Yii::t('voting', 'voting_notvoted_yet') ?></strong>
         <ul>
             <li v-for="userGroup in relevantUserGroups" class="voteListHolder">
                 <div class="userGroupName">

@@ -7,6 +7,7 @@ namespace app\components;
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use app\models\proposedProcedure\Factory;
 use app\models\quorumType\IQuorumType;
 use app\models\policies\{IPolicy, UserGroups};
 use app\models\votings\AnswerTemplates;
@@ -17,11 +18,8 @@ use yii\web\Request;
  */
 class VotingMethods
 {
-    /** @var Consultation */
-    private $consultation;
-
-    /** @var Request */
-    private $request;
+    private Consultation $consultation;
+    private Request $request;
 
     public function setRequestData(Consultation $consultation, Request $request): void
     {
@@ -37,8 +35,10 @@ class VotingMethods
                 $votingBlock->switchToOnlineVoting();
             } elseif ($newStatus === VotingBlock::STATUS_OPEN) {
                 $votingBlock->openVoting();
-            } elseif ($newStatus === VotingBlock::STATUS_CLOSED) {
-                $votingBlock->closeVoting();
+            } elseif ($newStatus === VotingBlock::STATUS_CLOSED_PUBLISHED) {
+                $votingBlock->closeVoting(true);
+            } elseif ($newStatus === VotingBlock::STATUS_CLOSED_UNPUBLISHED) {
+                $votingBlock->closeVoting(false);
             } elseif ($newStatus === VotingBlock::STATUS_OFFLINE) {
                 $votingBlock->switchToOfflineVoting();
             }
@@ -293,6 +293,46 @@ class VotingMethods
                 }
                 ResourceLock::unlockVotingItemForVoting($item);
             }
+        }
+    }
+
+    public function getOpenVotingsForUser(?Motion $assignedToMotion, User $user): array
+    {
+        $votingData = [];
+        foreach (Factory::getOpenVotingBlocks($this->consultation, $assignedToMotion) as $voting) {
+            $votingData[] = $voting->getUserVotingApiObject($user);
+        }
+        return $votingData;
+    }
+
+    public function getClosedPublishedVotingsForUser(User $user): array
+    {
+        $votingData = [];
+        foreach (Factory::getPublishedClosedVotingBlocks($this->consultation) as $voting) {
+            $votingData[] = $voting->getUserResultsApiObject($user);
+        }
+        return $votingData;
+    }
+
+    /**
+     * @param int[] $votingIds
+     */
+    public function sortVotings(array $votingIds): void
+    {
+        $positionById = [];
+        for ($pos = 0; $pos < count($votingIds); $pos++) {
+            $positionById[$votingIds[$pos]] = $pos;
+        }
+        $firstUnusedPos = $pos;
+
+        foreach ($this->consultation->votingBlocks as $votingBlock) {
+            if (isset($positionById[$votingBlock->id])) {
+                $votingBlock->position = $positionById[$votingBlock->id];
+            } else {
+                $votingBlock->position = $firstUnusedPos;
+                $firstUnusedPos++;
+            }
+            $votingBlock->save();
         }
     }
 }

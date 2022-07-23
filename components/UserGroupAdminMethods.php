@@ -10,14 +10,9 @@ use yii\web\{Request, Session};
 
 class UserGroupAdminMethods
 {
-    /** @var Consultation */
-    private $consultation;
-
-    /** @var Request */
-    private $request;
-
-    /** @var Session */
-    private $session;
+    private Consultation $consultation;
+    private Request $request;
+    private Session $session;
 
     public function setRequestData(Consultation $consultation, Request $request, Session $session): void
     {

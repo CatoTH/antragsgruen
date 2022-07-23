@@ -49,8 +49,11 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     // Open for voting.
     public const STATUS_OPEN = 2;
 
-    // Vorting is closed.
-    public const STATUS_CLOSED = 3;
+    // Vorting is closed, the results are visible for users.
+    public const STATUS_CLOSED_PUBLISHED = 3;
+
+    // Vorting is closed, the results are not visible for users.
+    public const STATUS_CLOSED_UNPUBLISHED = 4;
 
     // Vorting is deleted - not accessible in the frontend.
     public const STATUS_DELETED = -1;
@@ -142,7 +145,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
     public function getUserLink(): string
     {
-        if ($this->votingStatus === self::STATUS_CLOSED) {
+        if ($this->isClosed()) {
             return UrlHelper::createUrl('consultation/voting-results');
         } else {
             if ($this->assignedToMotionId && $this->assignedToMotion) {
@@ -334,7 +337,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     public function switchToOnlineVoting(): void {
-        if ($this->votingStatus === VotingBlock::STATUS_OPEN || $this->votingStatus === VotingBlock::STATUS_CLOSED) {
+        if ($this->votingStatus === VotingBlock::STATUS_OPEN || $this->isClosed()) {
             $this->addActivity(static::ACTIVITY_TYPE_RESET);
             $this->resetItemResults();
         }
@@ -347,7 +350,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     public function openVoting(): void {
-        if ($this->votingStatus === VotingBlock::STATUS_CLOSED) {
+        if ($this->isClosed()) {
             $this->addActivity(static::ACTIVITY_TYPE_REOPENED);
         } elseif ($this->votingStatus !== VotingBlock::STATUS_OPEN) {
             $this->addActivity(static::ACTIVITY_TYPE_OPENED);
@@ -384,11 +387,11 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         $item->save();
     }
 
-    public function closeVoting(): void {
-        if ($this->votingStatus !== VotingBlock::STATUS_CLOSED) {
+    public function closeVoting(bool $publish): void {
+        if (!$this->isClosed()) {
             $this->addActivity(static::ACTIVITY_TYPE_CLOSED);
         }
-        $this->votingStatus = VotingBlock::STATUS_CLOSED;
+        $this->votingStatus = ($publish ? VotingBlock::STATUS_CLOSED_PUBLISHED : VotingBlock::STATUS_CLOSED_UNPUBLISHED);
         $this->save();
 
         foreach ($this->motions as $motion) {
@@ -450,7 +453,12 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
     public function itemsCanBeRemoved(): bool
     {
-        return in_array($this->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING, VotingBlock::STATUS_CLOSED]);
+        return in_array($this->votingStatus, [
+            VotingBlock::STATUS_OFFLINE,
+            VotingBlock::STATUS_PREPARING,
+            VotingBlock::STATUS_CLOSED_PUBLISHED,
+            VotingBlock::STATUS_CLOSED_UNPUBLISHED
+        ]);
     }
 
     /**
@@ -620,10 +628,10 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     /**
      * @return VotingBlock[]
      */
-    public static function getClosedVotings(Consultation $consultation): array
+    public static function getPublishedClosedVotings(Consultation $consultation): array
     {
         return array_values(array_filter($consultation->votingBlocks, function (VotingBlock $votingBlock) {
-            return $votingBlock->votingStatus === static::STATUS_CLOSED;
+            return $votingBlock->votingStatus === VotingBlock::STATUS_CLOSED_PUBLISHED;
         }));
     }
 
@@ -648,6 +656,12 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             }
         }
         return null;
+    }
+
+    public function isClosed(): bool
+    {
+        return $this->votingStatus === VotingBlock::STATUS_CLOSED_UNPUBLISHED ||
+            $this->votingStatus === VotingBlock::STATUS_CLOSED_PUBLISHED;
     }
 
     // Hint: deadlines for votings are not implemented yet

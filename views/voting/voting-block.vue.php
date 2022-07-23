@@ -88,7 +88,7 @@ ob_start();
                             <thead>
                             <tr>
                                 <th v-for="answer in voting.answers">{{ answer.title }}</th>
-                                <th v-if="voting.answers.length > 1"><?= Yii::t('voting', '123admin_votes_total') ?></th>
+                                <th v-if="voting.answers.length > 1"><?= Yii::t('voting', 'admin_votes_total') ?></th>
                             </tr>
                             </thead>
                             <tbody>

@@ -174,7 +174,7 @@ class AgendaVoting
         $answers = $voting->getAnswers();
         $votes = $voting->getVotesForVotingItem($item);
         if ($canSeeResults) {
-            if ($this->voting->votingStatus === VotingBlock::STATUS_CLOSED) {
+            if ($this->voting->isClosed()) {
                 $data['vote_results'] = $item->getVotingData()->mapToApiResults($this->voting);
                 $data['vote_eligibility'] = $item->getVotingData()->getEligibilityList();
             } else {

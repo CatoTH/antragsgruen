@@ -280,9 +280,9 @@ class Factory
      * @return AgendaVoting[]
      * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
      */
-    public static function getClosedVotingBlocks(Consultation $consultation): array
+    public static function getPublishedClosedVotingBlocks(Consultation $consultation): array
     {
-        $closedBlocks = VotingBlock::getClosedVotings($consultation);
+        $closedBlocks = VotingBlock::getPublishedClosedVotings($consultation);
         $votings = array_map(function (VotingBlock $votingBlock): AgendaVoting {
             $voting = new AgendaVoting($votingBlock->title, $votingBlock);
             $voting->addItemsFromBlock(true);

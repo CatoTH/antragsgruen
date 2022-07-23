@@ -7,7 +7,7 @@ use Helper\BasePage;
 /**
  * @property \AcceptanceTester|\FunctionalTester $actor
  */
-class VotingAdminPage extends BasePage
+class VotingResultsPage extends BasePage
 {
-    public $route = 'consultation/admin-votings';
+    public $route = 'consultation/voting-results';
 }

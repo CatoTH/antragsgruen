@@ -23,7 +23,7 @@ $layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
 $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 
 $apiData = [];
-foreach (Factory::getClosedVotingBlocks($consultation) as $votingBlockToRender) {
+foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserResultsApiObject(User::getCurrentUser());
 }
 

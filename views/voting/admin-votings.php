@@ -14,21 +14,23 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-/** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
-$layout       = $controller->layoutParams;
+$layout = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('voting', 'bc'), UrlHelper::createUrl('consultation/voting-results'));
 $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
 
 $layout->addCSS('css/backend.css');
 $layout->loadSelectize();
+$layout->loadSortable();
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/voting/_policy-select.vue.php');
 $layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
 $layout->addVueTemplate('@app/views/voting/admin-votings.vue.php');
+$layout->addVueTemplate('@app/views/voting/admin-voting-sort.vue.php');
+$layout->loadVueDraggable();
 
 $apiData = [];
 foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
@@ -37,6 +39,7 @@ foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
 }
 
 $pollUrl = UrlHelper::createUrl(['/voting/get-admin-voting-blocks']);
+$sortUrl = UrlHelper::createUrl(['/voting/post-vote-order']);
 $voteCreateUrl = UrlHelper::createUrl(['/voting/create-voting-block']);
 $voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
 $voteDownloadUrl = UrlHelper::createUrl(['/voting/download-voting-results', 'votingBlockId' => 'VOTINGBLOCKID', 'format' => 'FORMAT']);
@@ -80,15 +83,24 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
      data-url-vote-download="<?= Html::encode($voteDownloadUrl) ?>"
      data-vote-create="<?= Html::encode($voteCreateUrl) ?>"
      data-url-poll="<?= Html::encode($pollUrl) ?>"
+     data-url-sort="<?= Html::encode($sortUrl) ?>"
      data-antragsgruen-widget="backend/VotingAdmin"
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
      data-voting="<?= Html::encode(json_encode($apiData)) ?>">
     <div class="content">
-        <button type="button" class="btn btn-default createVotingOpener">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            <?= Yii::t('voting', 'settings_create') ?>
-        </button>
+
+        <div class="votingOperations">
+            <button type="button" class="btn btn-default sortVotings hidden">
+                <span class="glyphicon glyphicon-sort" aria-hidden="true"></span>
+                <?= Yii::t('voting', 'settings_sort') ?>
+            </button>
+
+            <button type="button" class="btn btn-primary createVotingOpener">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <?= Yii::t('voting', 'settings_create') ?>
+            </button>
+        </div>
 
         <?= Yii::t('voting', 'admin_intro') ?>
     </div>

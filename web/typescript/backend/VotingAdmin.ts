@@ -9,50 +9,61 @@ export class VotingAdmin {
 
     constructor($element: JQuery) {
         this.element = $element[0];
-        this.createVueWidget();
+
+        const votingInitJson = this.element.getAttribute('data-voting');
+        this.createVueWidget(votingInitJson);
         this.initVotingCreater();
+        this.initVotingSorter(votingInitJson);
 
         $('[data-toggle="tooltip"]').tooltip();
     }
 
-    private createVueWidget() {
+    private createVueWidget(votingInitJson) {
         const vueEl = this.element.querySelector(".votingAdmin");
         const voteSettingsUrl = this.element.getAttribute('data-url-vote-settings');
         const voteCreateUrl = this.element.getAttribute('data-vote-create');
         const voteDownloadUrl = this.element.getAttribute('data-url-vote-download');
         const addableMotions = JSON.parse(this.element.getAttribute('data-addable-motions'));
         const pollUrl = this.element.getAttribute('data-url-poll');
-        const votingInitJson = this.element.getAttribute('data-voting');
         const initUserGroups = JSON.parse(this.element.getAttribute('data-user-groups'));
-
+        const sortUrl = this.element.getAttribute('data-url-sort');
 
         this.widget = Vue.createApp({
             template: `<div class="adminVotings">
-                <voting-admin-widget v-for="voting in votings"
-                                     :voting="voting"
-                                     :addableMotions="addableMotions"
-                                     :alreadyAddedItems="alreadyAddedItems"
-                                     :userGroups="userGroups"
-                                     :voteDownloadUrl="voteDownloadUrl"
-                                     @set-status="setStatus"
-                                     @save-settings="saveSettings"
-                                     @remove-item="removeItem"
-                                     @delete-voting="deleteVoting"
-                                     @add-imotion="addIMotion"
-                                     @add-question="addQuestion"
-                                     @set-voters-to-user-group="setVotersToUserGroup"
-                                     ref="voting-admin-widget"
+                <voting-sort-widget
+                    v-if="isSorting"
+                    :votings="votings"
+                    ref="voting-sort-widget"
+                    @sorted="onSorted"></voting-sort-widget>
+                <voting-admin-widget
+                    v-if="!isSorting"
+                    v-for="voting in votings"
+                    :voting="voting"
+                    :addableMotions="addableMotions"
+                    :alreadyAddedItems="alreadyAddedItems"
+                    :userGroups="userGroups"
+                    :voteDownloadUrl="voteDownloadUrl"
+                    @set-status="setStatus"
+                    @save-settings="saveSettings"
+                    @remove-item="removeItem"
+                    @delete-voting="deleteVoting"
+                    @add-imotion="addIMotion"
+                    @add-question="addQuestion"
+                    @set-voters-to-user-group="setVotersToUserGroup"
+                    ref="voting-admin-widget"
                 ></voting-admin-widget>
             </div>`,
             data() {
                 return {
+                    isSorting: false,
                     votingsJson: null,
                     votings: null,
                     userGroups: initUserGroups,
                     voteDownloadUrl,
                     addableMotions,
                     csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
-                    pollingId: null
+                    pollingId: null,
+                    onReloadedCbs: []
                 };
             },
             computed: {
@@ -103,6 +114,9 @@ export class VotingAdmin {
                     this.votings = data;
                     this.votingsJson = null;
                 },
+                toggleSorting() {
+                    this.isSorting = !this.isSorting;
+                },
                 setStatus(votingBlockId, newStatus) {
                     this._performOperation(votingBlockId, {
                         op: 'update-status',
@@ -120,6 +134,23 @@ export class VotingAdmin {
                         resultsPublic,
                         votesPublic,
                         assignedMotion,
+                    });
+                },
+                onSorted(sortedIds) {
+                    let postData = {
+                        _csrf: this.csrf,
+                        votingIds: sortedIds
+                    };
+                    const widget = this;
+                    $.post(sortUrl, postData, function (data) {
+                        if (data.success !== undefined && !data.success) {
+                            alert(data.message);
+                            return;
+                        }
+                        widget.votings = data;
+                        widget.isSorting = false;
+                    }).catch(function (err) {
+                        alert(err.responseText);
                     });
                 },
                 deleteVoting(votingBlockId) {
@@ -149,6 +180,9 @@ export class VotingAdmin {
                             return;
                         }
                         widget.votings = data['votings'];
+                        widget.onReloadedCbs.forEach(cb => {
+                            cb(widget.votings);
+                        });
 
                         window.setTimeout(() => {
                             $("#voting" + data['created_voting']).scrollintoview({top_offset: -100});
@@ -183,10 +217,16 @@ export class VotingAdmin {
                         newUserGroup
                     });
                 },
+                addReloadedCb: function (cb) {
+                    this.onReloadedCbs.push(cb);
+                },
                 reloadData: function () {
                     const widget = this;
                     $.get(pollUrl, function (data) {
                         widget.setVotingFromJson(data);
+                        widget.onReloadedCbs.forEach(cb => {
+                            cb(widget.votings);
+                        });
                     }, 'text').catch(function (err) {
                         console.error("Could not load voting data from backend", err);
                     });
@@ -245,6 +285,24 @@ export class VotingAdmin {
                 $select.addClass("hidden");
             }
         }).trigger("change");
+    }
+
+    private initVotingSorter(votingInitJson) {
+        const sortToggle = this.element.querySelector('.sortVotings');
+        sortToggle.addEventListener('click', () => {
+            this.widgetComponent.toggleSorting();
+        });
+        if (JSON.parse(votingInitJson).length > 1) {
+            sortToggle.classList.remove('hidden');
+        }
+
+        this.widgetComponent.addReloadedCb(data => {
+            if (data.length > 1) {
+                sortToggle.classList.remove('hidden');
+            } else {
+                sortToggle.classList.add('hidden');
+            }
+        });
     }
 
     private initVotingCreater() {
