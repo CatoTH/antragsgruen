@@ -6,7 +6,7 @@ return [
 
     'sidebar_open' => 'Laufende Abstimmungen',
     'sidebar_results' => 'Ergebnisse',
-    'sidebar_admin' => 'Administration',
+    'sidebar_admin' => 'Verwaltung',
 
     'title_user_single' => 'Abstimmung',
 

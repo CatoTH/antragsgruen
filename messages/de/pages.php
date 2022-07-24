@@ -51,4 +51,12 @@ return [
     'menu_add_btn'     => 'Neue Inhalts-Seite im Menü anlegen',
 
     'documents_title' => 'Dokumente',
+    'documents_intro_text' => 'Auf dieser Seite werden Dokumente zur Veranstaltung veröffentlicht.',
+    'documents_add_group_btn' => 'Neue Dokumentengruppe',
+    'documents_group_name' => 'Gruppenname',
+    'documents_group_add' => 'Anlegen',
+    'documents_group_delete' => 'Dokumentengruppe löschen',
+    'documents_group_delete_c' => 'Wirklich die Dokumentengruppe und alle enthaltenen Dokumente löschen?',
+    'documents_group_added' => 'Die Dokumentengruppe wurde angelegt',
+    'documents_group_deleted' => 'Die Dokumentengruppe wurde gelöscht',
 ];

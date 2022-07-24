@@ -59,4 +59,16 @@ class ConsultationFileGroup extends ActiveRecord
         });
         return $groups;
     }
+
+    public static function getNextAvailablePosition(Consultation $consultation): int
+    {
+        $position = 0;
+        foreach ($consultation->fileGroups as $fileGroup) {
+            if ($fileGroup->position >= $position) {
+                $position = $fileGroup->position + 1;
+            }
+        }
+
+        return $position;
+    }
 }

@@ -130,11 +130,23 @@
     font-weight: normal;
   }
 
-  .fileGroupHolder .zipLink {
+  .fileGroupHolder {
+    .zipLink {
+      font-weight: normal;
+      float: right;
+      text-transform: none;
+      text-shadow: none;
+      font-size: 14px;
+    }
+    .deleteForm {
+      display: inline;
+      float: right;
+      margin-right: 15px;
+    }
+  }
+
+  .btn.btn-link {
+    padding: 0;
     font-weight: normal;
-    float: right;
-    text-transform: none;
-    text-shadow: none;
-    font-size: 14px;
   }
 }

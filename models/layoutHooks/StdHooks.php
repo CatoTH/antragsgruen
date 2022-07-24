@@ -311,7 +311,7 @@ class StdHooks extends Hooks
             }
 
             if ($consultation && $consultation->getSettings()->documentPage) {
-                $adminUrl = UrlHelper::createUrl(['/consultation/documents']);
+                $adminUrl = UrlHelper::createUrl(['/pages/documents']);
                 $adminTitle = \Yii::t('base', 'menu_documents');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'documentsLink', 'aria-label' => $adminTitle]) . '</li>';
             }

@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{ConsultationFile, ConsultationText, ConsultationUserGroup, User};
+use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError};
 use app\models\settings\AntragsgruenApp;
 use yii\web\{NotFoundHttpException, Response};
@@ -52,7 +52,7 @@ class PagesController extends Base
 
         // Site-wide pages are always visible. Also, maintenance and legal/privacy pages are always visible.
         // For everything else, check for mainenance mode and login.
-        $allowedPages = ['maintenance', 'legal', 'privacy'];
+        $allowedPages = [ConsultationText::DEFAULT_PAGE_MAINTENANCE, ConsultationText::DEFAULT_PAGE_LEGAL, ConsultationText::DEFAULT_PAGE_PRIVACY];
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
             if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
                 $this->showErrorpage(404, 'Page not found');
@@ -223,7 +223,6 @@ class PagesController extends Base
      * @return \yii\console\Response|Response
      * @throws Access
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
     public function actionDeletePage($pageSlug)
     {
@@ -324,10 +323,10 @@ class PagesController extends Base
         }));
         usort($files, function (ConsultationFile $file1, ConsultationFile $file2) {
             $currentCon = $this->consultation->id;
-            if ($file1->consultationId === $currentCon && $file1->consultationId !== $currentCon) {
+            if ($file1->consultationId === $currentCon && $file2->consultationId !== $currentCon) {
                 return -1;
             }
-            if ($file1->consultationId !== $currentCon && $file1->consultationId === $currentCon) {
+            if ($file1->consultationId !== $currentCon && $file2->consultationId === $currentCon) {
                 return 1;
             }
 
@@ -388,5 +387,40 @@ class PagesController extends Base
         ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $toSaveData);
 
         return $data;
+    }
+
+    public function actionDocuments(): string
+    {
+        $iAmAdmin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
+        if ($iAmAdmin && $this->isPostSet('createGroup') && $this->getPostValue('name')) {
+            $group = new ConsultationFileGroup();
+            $group->title = trim($this->getPostValue('name'));
+            $group->consultationId = $this->consultation->id;
+            $group->parentGroupId = null;
+            $group->position = ConsultationFileGroup::getNextAvailablePosition($this->consultation);
+            $group->save();
+
+            $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_group_added'));
+            $this->consultation->refresh();
+        }
+
+        if ($iAmAdmin && $this->isPostSet('deleteGroup') && $this->getPostValue('groupId') > 0) {
+            $found = false;
+            foreach ($this->consultation->fileGroups as $fileGroup) {
+                if ($fileGroup->id === intval($this->getPostValue('groupId'))) {
+                    foreach ($fileGroup->files as $file) {
+                        $file->delete();
+                    }
+                    $fileGroup->delete();
+                    $found = true;
+                }
+            }
+            if ($found) {
+                $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_group_deleted'));
+                $this->consultation->refresh();
+            }
+        }
+
+        return $this->render('documents');
     }
 }

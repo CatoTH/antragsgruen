@@ -541,11 +541,6 @@ class ConsultationController extends Base
         return $this->render('@app/views/speech/index-singlepage', ['queue' => $queue]);
     }
 
-    public function actionDocuments(): string
-    {
-        return $this->render('@app/views/consultation/documents');
-    }
-
     public function actionAdminVotings(): string
     {
         $this->layout = 'column2';

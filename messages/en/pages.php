@@ -51,4 +51,12 @@ return [
     'menu_add_btn'     => 'Create a new content page in the menu',
 
     'documents_title' => 'Documents',
+    'documents_intro_text' => 'On this page, documents for this consultation are published.',
+    'documents_add_group_btn' => 'New file group',
+    'documents_group_name' => 'Group name',
+    'documents_group_add' => 'Create',
+    'documents_group_delete' => 'Delete file group',
+    'documents_group_delete_c' => 'Do you really want to delete the file group and all its contained files?',
+    'documents_group_added' => 'The file group was added',
+    'documents_group_deleted' => 'The file group was deleted',
 ];
