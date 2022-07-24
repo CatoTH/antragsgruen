@@ -7,6 +7,7 @@
 - The voting functionality was improved in several ways:
   - Votings can now be reordered.
   - When closing a voting, there is now an additional option to close it without publishing the results right away.
+  - A separate voting page can be enabled, showing up in the menu
 
 ### Version 4.10.1 (2022-07-01)
 

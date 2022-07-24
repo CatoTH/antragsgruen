@@ -11,11 +11,13 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-/** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
-$layout->addBreadcrumb(Yii::t('voting', 'bc'));
-$this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT, 'UTF-8');
+$layout->addBreadcrumb(Yii::t('voting', 'votings_bc'));
+$this->title = Yii::t('voting', 'page_title');
+
+$sidebarMode = 'open';
+include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
@@ -24,7 +26,7 @@ $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 
 $apiData = [];
 foreach (Factory::getOpenVotingBlocks($consultation, null) as $votingBlockToRender) {
-    $apiData[] = $votingBlockToRender->getUserResultsApiObject(User::getCurrentUser());
+    $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
 }
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '']);
@@ -32,6 +34,12 @@ $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTI
 
 ?>
 <h1><?= Yii::t('voting', 'page_title') ?></h1>
+
+<div class="content votingsNoneIndicator<?= (count($apiData) > 0 ? ' hidden' : '') ?>">
+    <div class="alert alert-info">
+        <?= Yii::t('voting', 'votings_none') ?>
+    </div>
+</div>
 
 <section data-url-poll="<?= Html::encode($pollUrl) ?>"
          data-url-vote="<?= Html::encode($voteUrl) ?>"
