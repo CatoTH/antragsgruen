@@ -57,6 +57,12 @@ return [
     'documents_group_add' => 'Create',
     'documents_group_delete' => 'Delete file group',
     'documents_group_delete_c' => 'Do you really want to delete the file group and all its contained files?',
+    'documents_file_delete' => 'Delete file',
+    'documents_file_delete_c' => 'Do you really want to delete this?',
     'documents_group_added' => 'The file group was added',
     'documents_group_deleted' => 'The file group was deleted',
+    'documents_file_deleted' => 'The file was deleted',
+    'documents_add_file_btn' => 'Upload new file',
+    'documents_file_add' => 'Upload file',
+    'documents_uploaded_file' => 'The file was uploaded.',
 ];

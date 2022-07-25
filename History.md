@@ -3,11 +3,12 @@
 ## Version 4.11.0 [not released yet]
 
 - WARNING: if you are using a PHP 7.3 or older, then update to PHP 8.0 or newer first before installing this update!
-- In speaking lists, it is now possible to remove and reorder speakers
+- In speaking lists, it is now possible to remove and reorder speakers.
 - The voting functionality was improved in several ways:
   - Votings can now be reordered.
   - When closing a voting, there is now an additional option to close it without publishing the results right away.
-  - A separate voting page can be enabled, showing up in the menu
+  - A separate voting page can be enabled, showing up in the menu.
+- A separate document page can be enabled, allowing to upload multiple files in folders.
 
 ### Version 4.10.1 (2022-07-01)
 

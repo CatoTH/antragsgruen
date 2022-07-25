@@ -57,6 +57,12 @@ return [
     'documents_group_add' => 'Anlegen',
     'documents_group_delete' => 'Dokumentengruppe löschen',
     'documents_group_delete_c' => 'Wirklich die Dokumentengruppe und alle enthaltenen Dokumente löschen?',
+    'documents_file_delete' => 'Dokument löschen',
+    'documents_file_delete_c' => 'Soll dieses Dokument wirklich gelöscht werden?',
     'documents_group_added' => 'Die Dokumentengruppe wurde angelegt',
     'documents_group_deleted' => 'Die Dokumentengruppe wurde gelöscht',
+    'documents_file_deleted' => 'Das Dokument wurde gelöscht',
+    'documents_add_file_btn' => 'Neues Dokument hochladen',
+    'documents_file_add' => 'Dokument hochladen',
+    'documents_uploaded_file' => 'Das Dokument wurde hochgeladen.',
 ];

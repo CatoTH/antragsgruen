@@ -69,10 +69,10 @@ foreach (ConsultationFileGroup::getSortedGroupsFromConsultation($consultation) a
             <a href="" class="zipLink"><span class="glyphicon glyphicon-download-alt"></span> ZIP</a>
             <?php
             if ($contentAdmin) {
-                echo Html::beginForm(UrlHelper::createUrl('/pages/documents'), 'POST', ['class' => 'deleteForm']);
+                echo Html::beginForm(UrlHelper::createUrl('/pages/documents'), 'POST', ['class' => 'deleteGroupForm']);
                 ?>
                 <input type="hidden" name="groupId" value="<?= $fileGroup->id ?>">
-                <button class="btn btn-link deleteBtn" type="submit" name="deleteGroup"
+                <button class="btn btn-link deleteGroupBtn" type="submit" name="deleteGroup"
                         data-confirm-msg="<?= Html::encode(Yii::t('pages', 'documents_group_delete_c')) ?>">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                     <span class="sr-only"><?= Yii::t('pages', 'documents_group_delete') ?></span>
@@ -82,22 +82,70 @@ foreach (ConsultationFileGroup::getSortedGroupsFromConsultation($consultation) a
             }
             ?>
         </h2>
+        <?php
+        if ($contentAdmin) {
+            echo Html::beginForm(UrlHelper::createUrl('/pages/documents'), 'POST', ['class' => 'deleteFileForm']);
+        }
+        ?>
         <ul class="motionList motionListStd motionListWithoutAgenda">
             <?php
             foreach ($fileGroup->files as $file) {
                 ?>
-                <li class="motion">
+                <li class="motion uploadedFileEntry">
                     <p class="title">
                         <a href="<?= Html::encode($file->getUrl()) ?>">
                             <span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>
                             <?= Html::encode($file->title) ?>
                         </a>
+                        <?php
+                        if ($contentAdmin) {
+                            ?>
+                            <button class="btn btn-link deleteFileBtn" type="submit" name="deleteFile[<?= $file->id ?>]"
+                                    data-file-id="<?= $file->id ?>"
+                                    data-confirm-msg="<?= Html::encode(Yii::t('pages', 'documents_file_delete_c')) ?>">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                <span class="sr-only"><?= Yii::t('pages', 'documents_file_delete') ?></span>
+                            </button>
+                            <?php
+                        }
+                        ?>
                     </p>
                 </li>
                 <?php
             }
             ?>
         </ul>
+        <?php
+        if ($contentAdmin) {
+            echo Html::endForm();
+
+            echo Html::beginForm(UrlHelper::createUrl('/pages/documents'), 'POST', [
+                'class' => 'fileAddForm',
+                'enctype' => 'multipart/form-data',
+            ]);
+            ?>
+                <input type="hidden" name="groupId" value="<?= Html::encode($fileGroup->id) ?>">
+                <div class="uploadCol">
+                    <label for="downloadableFileNew<?= $fileGroup->id ?>">
+                        <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+                        <span class="text" data-title="<?= Html::encode(Yii::t('pages', 'documents_add_file_btn')) ?>">
+                            <?= Yii::t('pages', 'documents_add_file_btn') ?>
+                        </span>
+                    </label>
+                    <input type="file" name="uploadedFile" id="downloadableFileNew<?= $fileGroup->id ?>">
+                </div>
+                <div class="titleCol hidden">
+                    <input type="text" name="fileTitle" id="downloadableFileTitle" class="form-control"
+                           placeholder="<?= Html::encode(Yii::t('admin', 'files_download_title')) ?>"
+                           title="<?= Html::encode(Yii::t('admin', 'files_download_title')) ?>">
+                </div>
+                <button type="submit" name="uploadFile" class="btn btn-primary btnUpload hidden">
+                    <?= Yii::t('pages', 'documents_file_add') ?>
+                </button>
+            <?php
+            echo Html::endForm();
+        }
+        ?>
     </section>
     <?php
 }

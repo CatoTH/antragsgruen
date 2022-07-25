@@ -218,13 +218,10 @@ class PagesController extends Base
     }
 
     /**
-     * @param string $pageSlug
-     *
      * @return \yii\console\Response|Response
      * @throws Access
-     * @throws \Throwable
      */
-    public function actionDeletePage($pageSlug)
+    public function actionDeletePage(string $pageSlug)
     {
         $page = $this->getPageForEdit($pageSlug);
 
@@ -245,8 +242,7 @@ class PagesController extends Base
 
     public function actionLegal(): string
     {
-        $params = AntragsgruenApp::getInstance();
-        if ($params->multisiteMode) {
+        if (AntragsgruenApp::getInstance()->multisiteMode) {
             $admin      = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
             $viewParams = ['pageKey' => 'legal', 'admin' => $admin];
 
@@ -417,6 +413,45 @@ class PagesController extends Base
             }
             if ($found) {
                 $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_group_deleted'));
+                $this->consultation->refresh();
+            }
+        }
+
+        if ($iAmAdmin && $this->isPostSet('uploadFile') && $this->getPostValue('groupId') > 0) {
+            $group = null;
+            foreach ($this->consultation->fileGroups as $fileGroup) {
+                if ($fileGroup->id === (int)$this->getPostValue('groupId')) {
+                    $group = $fileGroup;
+                }
+            }
+
+            if (isset($_FILES['uploadedFile']) && $_FILES['uploadedFile']['error'] === 0 && $_FILES['uploadedFile']['size'] > 0) {
+                $file = ConsultationFile::createDownloadableFile(
+                    $this->consultation,
+                    User::getCurrentUser(),
+                    (string)file_get_contents($_FILES['uploadedFile']['tmp_name']),
+                    $_FILES['uploadedFile']['name'],
+                    $this->getPostValue('fileTitle')
+                );
+
+                $group->link('files', $file);
+
+                $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_uploaded_file'));
+                $this->consultation->refresh();
+            }
+        }
+
+        if ($iAmAdmin && $this->isPostSet('deleteFile')) {
+            $toDeleteIds = array_map('intval', array_keys($this->getPostValue('deleteFile', [])));
+            $found = false;
+            foreach ($this->consultation->files as $file) {
+                if (in_array($file->id, $toDeleteIds)) {
+                    $file->delete();
+                    $found = true;
+                }
+            }
+            if ($found) {
+                $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_file_deleted'));
                 $this->consultation->refresh();
             }
         }
