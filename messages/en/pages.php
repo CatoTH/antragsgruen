@@ -65,4 +65,5 @@ return [
     'documents_add_file_btn' => 'Upload new file',
     'documents_file_add' => 'Upload file',
     'documents_uploaded_file' => 'The file was uploaded.',
+    'documents_download_all' => 'Download all',
 ];

@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
 use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError};
 use app\models\settings\AntragsgruenApp;
@@ -15,7 +15,7 @@ class PagesController extends Base
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             $this->showErrorpage(403, 'No permissions to edit this page');
 
-            return \Yii::$app->response;
+            return $this->getHttpResponse();
         }
 
         if (\Yii::$app->request->post('create')) {
@@ -36,14 +36,14 @@ class PagesController extends Base
                 $page->editDate       = date('Y-m-d H:i:s');
                 $page->save();
 
-                return \Yii::$app->response->redirect($page->getUrl());
+                return $this->getHttpResponse()->redirect($page->getUrl());
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         }
 
-        \Yii::$app->response->data = $this->render('list');
-        return \Yii::$app->response;
+        $this->getHttpResponse()->data = $this->render('list');
+        return $this->getHttpResponse();
     }
 
     public function actionShowPage(string $pageSlug): string
@@ -173,8 +173,8 @@ class PagesController extends Base
 
         $page->save();
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         return json_encode($result);
     }
@@ -209,8 +209,8 @@ class PagesController extends Base
             }
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         return json_encode([
             'success' => true,
@@ -231,7 +231,7 @@ class PagesController extends Base
 
         $textUrl = UrlHelper::createUrl('pages/list-pages');
 
-        return \Yii::$app->response->redirect($textUrl);
+        return $this->getHttpResponse()->redirect($textUrl);
     }
 
 
@@ -261,8 +261,8 @@ class PagesController extends Base
             throw new Access('No permissions to upload files');
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         try {
             $user = User::getCurrentUser();
@@ -346,22 +346,22 @@ class PagesController extends Base
             throw new NotFoundHttpException('file not found', 404);
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', $file->mimetype);
-        \Yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
-        \Yii::$app->response->headers->set('Pragma', 'cache');
-        \Yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', $file->mimetype);
+        $this->getHttpResponse()->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        $this->getHttpResponse()->headers->set('Pragma', 'cache');
+        $this->getHttpResponse()->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
         return $file->data;
     }
 
     public function actionCss(): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'text/css');
-        \Yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
-        \Yii::$app->response->headers->set('Pragma', 'cache');
-        \Yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'text/css');
+        $this->getHttpResponse()->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        $this->getHttpResponse()->headers->set('Pragma', 'cache');
+        $this->getHttpResponse()->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
         $stylesheetSettings = $this->site->getSettings()->getStylesheet();
         $file               = ConsultationFile::findStylesheetCache($this->site, $stylesheetSettings);
@@ -457,5 +457,26 @@ class PagesController extends Base
         }
 
         return $this->render('documents');
+    }
+
+    public function actionDocumentsZip(string $groupId): string
+    {
+        $zip = new ZipWriter();
+
+        foreach ($this->consultation->fileGroups as $fileGroup) {
+            $directory = Tools::sanitizeFilename($fileGroup->title, true);
+            if ($fileGroup->id === intval($groupId) || $groupId === 'all') {
+                foreach ($fileGroup->files as $file) {
+                    $filename = $directory . '/' . $file->filename;
+                    $zip->addFile($filename, $file->data);
+                }
+            }
+        }
+
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
+
+        return $zip->getContentAndFlush();
     }
 }

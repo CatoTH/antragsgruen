@@ -46,6 +46,12 @@ if ($contentAdmin) {
     echo Html::endForm();
 }
 
+$zipUrl = UrlHelper::createUrl(['/pages/documents-zip', 'groupId' => 'all']);
+echo '<a href="' . Html::encode($zipUrl) . '" class="btn btn-default documentsDownloadAll">';
+echo '<span class="glyphicon glyphicon-download" aria-hidden="true"></span> ';
+echo Yii::t('pages', 'documents_download_all');
+echo '</a>';
+
 echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';
@@ -61,12 +67,13 @@ echo '</div>';
 
 
 foreach (ConsultationFileGroup::getSortedGroupsFromConsultation($consultation) as $fileGroup) {
+    $zipUrl = UrlHelper::createUrl(['/pages/documents-zip', 'groupId' => $fileGroup->id]);
     ?>
     <section aria-labelledby="fileGroupTitle<?= $fileGroup->id ?>"
              class="fileGroupHolder fileGroupHolder<?= $fileGroup->id ?>">
         <h2 class="green">
             <span id="fileGroupTitle<?= $fileGroup->id ?>"><?= Html::encode($fileGroup->title) ?></span>
-            <a href="" class="zipLink"><span class="glyphicon glyphicon-download-alt"></span> ZIP</a>
+            <a href="<?= Html::encode($zipUrl) ?>" class="zipLink"><span class="glyphicon glyphicon-download-alt"></span> ZIP</a>
             <?php
             if ($contentAdmin) {
                 echo Html::beginForm(UrlHelper::createUrl('/pages/documents'), 'POST', ['class' => 'deleteGroupForm']);

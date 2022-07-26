@@ -64,6 +64,7 @@ $urlRules = [
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
     $domv . 'page'                            => 'pages/list-pages',
     $domv . 'documents'                       => 'pages/documents',
+    $domv . 'documents/<groupId:[^\/]+>.zip'  => 'pages/documents-zip',
     $domv . 'page/files/upload'               => 'pages/upload',
     $domv . 'page/files/delete'               => 'pages/delete-file',
     $domv . 'page/files/browse-images'        => 'pages/browse-images',

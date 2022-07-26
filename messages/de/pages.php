@@ -65,4 +65,5 @@ return [
     'documents_add_file_btn' => 'Neues Dokument hochladen',
     'documents_file_add' => 'Dokument hochladen',
     'documents_uploaded_file' => 'Das Dokument wurde hochgeladen.',
+    'documents_download_all' => 'Alle herunterladen',
 ];
