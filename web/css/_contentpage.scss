@@ -122,3 +122,76 @@
     }
   }
 }
+
+.documentsPage {
+  .editCaller {
+    float: right;
+    margin-left: 10px;
+    font-weight: normal;
+  }
+
+  .documentsDownloadAll {
+    float: right;
+    margin-top: 10px;
+  }
+
+  .fileGroupHolder {
+    .zipLink {
+      font-weight: normal;
+      float: right;
+      text-transform: none;
+      text-shadow: none;
+      font-size: 14px;
+    }
+  }
+
+  .deleteGroupForm {
+    display: inline;
+    float: right;
+    margin-right: 15px;
+
+    .deleteGroupBtn {
+      color: $colorDelLink;
+      opacity: 0;
+      &:active, &:focus {
+        opacity: 1;
+      }
+    }
+  }
+  .fileGroupHolder > h2:hover .deleteGroupBtn {
+    opacity: 1;
+  }
+
+  .deleteFileBtn {
+    display: inline;
+    margin-left: 15px;
+    color: $colorDelLink;
+    opacity: 0;
+    &:active, &:focus {
+      opacity: 1;
+    }
+  }
+  .motion .title:hover .deleteFileBtn {
+    opacity: 1;
+  }
+
+  .btn.btn-link {
+    padding: 0;
+    font-weight: normal;
+  }
+
+  .fileAddForm {
+    display: flex;
+    flex-direction: row;
+    margin-left: 32px;
+    margin-top: -25px;
+    margin-bottom: 40px;
+
+    .uploadCol {
+      label {
+        font-weight: normal;
+        color: $colorLinks;
+      }
+    }
+  }
+}

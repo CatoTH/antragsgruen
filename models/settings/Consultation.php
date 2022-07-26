@@ -80,6 +80,10 @@ class Consultation implements \JsonSerializable
     public ?string $emailReplyTo = null;
     public ?string $emailFromName = null;
 
+    public bool $documentPage = false;
+    public bool $votingPage = false;
+    public bool $speechPage = false;
+
     /**
      * @return string[]
      */
@@ -135,11 +139,9 @@ class Consultation implements \JsonSerializable
                 return 'index_layout_std';
             case Consultation::START_LAYOUT_TAGS:
                 return 'index_layout_tags';
-            case Consultation::START_LAYOUT_AGENDA:
-                return 'index_layout_agenda';
             case Consultation::START_LAYOUT_AGENDA_LONG:
-                return 'index_layout_agenda';
             case Consultation::START_LAYOUT_AGENDA_HIDE_AMEND:
+            case Consultation::START_LAYOUT_AGENDA:
                 return 'index_layout_agenda';
             case Consultation::START_LAYOUT_DISCUSSION_TAGS:
                 return 'index_layout_discussion_tags';

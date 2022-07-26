@@ -2,38 +2,28 @@
 
 namespace app\components;
 
+use app\models\settings\AntragsgruenApp;
+
 class ZipWriter
 {
-    /** @var \ZipArchive */
-    private $archive;
-
-    /** @var string */
-    private $zipFile;
+    private \ZipArchive $archive;
+    private string $zipFile;
 
     public function __construct()
     {
-        /** @var \app\models\settings\AntragsgruenApp $params */
-        $params        = \Yii::$app->params;
-        $this->zipFile = $params->getTmpDir() . uniqid('zip-');
+        $this->zipFile = AntragsgruenApp::getInstance()->getTmpDir() . uniqid('zip-');
         $this->archive = new \ZipArchive();
         if ($this->archive->open($this->zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
             throw new \Exception("cannot open <$this->zipFile>\n");
         }
     }
 
-    /**
-     * @param string $filename
-     * @param string $content
-     */
-    public function addFile($filename, $content)
+    public function addFile(string $filename, string $content): void
     {
         $this->archive->addFromString($filename, $content);
     }
 
-    /**
-     * @return string
-     */
-    public function getContentAndFlush()
+    public function getContentAndFlush(): string
     {
         $this->archive->close();
 

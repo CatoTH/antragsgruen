@@ -18,7 +18,7 @@ ob_start();
     <div class="content">
         <?php
         if ($iAmAdmin) {
-            $url = UrlHelper::createUrl(['consultation/admin-votings']);
+            $url = UrlHelper::createUrl(['/consultation/admin-votings']);
             echo '<a href="' . Html::encode($url) . '" class="votingsAdminLink">';
             echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
             echo Yii::t('voting', 'voting_admin_all');

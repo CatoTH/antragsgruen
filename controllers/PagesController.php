@@ -2,8 +2,8 @@
 
 namespace app\controllers;
 
-use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{ConsultationFile, ConsultationText, ConsultationUserGroup, User};
+use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
+use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError};
 use app\models\settings\AntragsgruenApp;
 use yii\web\{NotFoundHttpException, Response};
@@ -15,7 +15,7 @@ class PagesController extends Base
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             $this->showErrorpage(403, 'No permissions to edit this page');
 
-            return \Yii::$app->response;
+            return $this->getHttpResponse();
         }
 
         if (\Yii::$app->request->post('create')) {
@@ -36,14 +36,14 @@ class PagesController extends Base
                 $page->editDate       = date('Y-m-d H:i:s');
                 $page->save();
 
-                return \Yii::$app->response->redirect($page->getUrl());
+                return $this->getHttpResponse()->redirect($page->getUrl());
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         }
 
-        \Yii::$app->response->data = $this->render('list');
-        return \Yii::$app->response;
+        $this->getHttpResponse()->data = $this->render('list');
+        return $this->getHttpResponse();
     }
 
     public function actionShowPage(string $pageSlug): string
@@ -52,7 +52,7 @@ class PagesController extends Base
 
         // Site-wide pages are always visible. Also, maintenance and legal/privacy pages are always visible.
         // For everything else, check for mainenance mode and login.
-        $allowedPages = ['maintenance', 'legal', 'privacy'];
+        $allowedPages = [ConsultationText::DEFAULT_PAGE_MAINTENANCE, ConsultationText::DEFAULT_PAGE_LEGAL, ConsultationText::DEFAULT_PAGE_PRIVACY];
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
             if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
                 $this->showErrorpage(404, 'Page not found');
@@ -173,8 +173,8 @@ class PagesController extends Base
 
         $page->save();
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         return json_encode($result);
     }
@@ -209,8 +209,8 @@ class PagesController extends Base
             }
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         return json_encode([
             'success' => true,
@@ -218,14 +218,10 @@ class PagesController extends Base
     }
 
     /**
-     * @param string $pageSlug
-     *
      * @return \yii\console\Response|Response
      * @throws Access
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
-    public function actionDeletePage($pageSlug)
+    public function actionDeletePage(string $pageSlug)
     {
         $page = $this->getPageForEdit($pageSlug);
 
@@ -235,7 +231,7 @@ class PagesController extends Base
 
         $textUrl = UrlHelper::createUrl('pages/list-pages');
 
-        return \Yii::$app->response->redirect($textUrl);
+        return $this->getHttpResponse()->redirect($textUrl);
     }
 
 
@@ -246,8 +242,7 @@ class PagesController extends Base
 
     public function actionLegal(): string
     {
-        $params = AntragsgruenApp::getInstance();
-        if ($params->multisiteMode) {
+        if (AntragsgruenApp::getInstance()->multisiteMode) {
             $admin      = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
             $viewParams = ['pageKey' => 'legal', 'admin' => $admin];
 
@@ -266,8 +261,8 @@ class PagesController extends Base
             throw new Access('No permissions to upload files');
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         try {
             $user = User::getCurrentUser();
@@ -324,10 +319,10 @@ class PagesController extends Base
         }));
         usort($files, function (ConsultationFile $file1, ConsultationFile $file2) {
             $currentCon = $this->consultation->id;
-            if ($file1->consultationId === $currentCon && $file1->consultationId !== $currentCon) {
+            if ($file1->consultationId === $currentCon && $file2->consultationId !== $currentCon) {
                 return -1;
             }
-            if ($file1->consultationId !== $currentCon && $file1->consultationId === $currentCon) {
+            if ($file1->consultationId !== $currentCon && $file2->consultationId === $currentCon) {
                 return 1;
             }
 
@@ -351,22 +346,22 @@ class PagesController extends Base
             throw new NotFoundHttpException('file not found', 404);
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', $file->mimetype);
-        \Yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
-        \Yii::$app->response->headers->set('Pragma', 'cache');
-        \Yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', $file->mimetype);
+        $this->getHttpResponse()->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        $this->getHttpResponse()->headers->set('Pragma', 'cache');
+        $this->getHttpResponse()->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
         return $file->data;
     }
 
     public function actionCss(): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'text/css');
-        \Yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
-        \Yii::$app->response->headers->set('Pragma', 'cache');
-        \Yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'text/css');
+        $this->getHttpResponse()->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        $this->getHttpResponse()->headers->set('Pragma', 'cache');
+        $this->getHttpResponse()->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
         $stylesheetSettings = $this->site->getSettings()->getStylesheet();
         $file               = ConsultationFile::findStylesheetCache($this->site, $stylesheetSettings);
@@ -388,5 +383,100 @@ class PagesController extends Base
         ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $toSaveData);
 
         return $data;
+    }
+
+    public function actionDocuments(): string
+    {
+        $iAmAdmin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
+        if ($iAmAdmin && $this->isPostSet('createGroup') && $this->getPostValue('name')) {
+            $group = new ConsultationFileGroup();
+            $group->title = trim($this->getPostValue('name'));
+            $group->consultationId = $this->consultation->id;
+            $group->parentGroupId = null;
+            $group->position = ConsultationFileGroup::getNextAvailablePosition($this->consultation);
+            $group->save();
+
+            $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_group_added'));
+            $this->consultation->refresh();
+        }
+
+        if ($iAmAdmin && $this->isPostSet('deleteGroup') && $this->getPostValue('groupId') > 0) {
+            $found = false;
+            foreach ($this->consultation->fileGroups as $fileGroup) {
+                if ($fileGroup->id === intval($this->getPostValue('groupId'))) {
+                    foreach ($fileGroup->files as $file) {
+                        $file->delete();
+                    }
+                    $fileGroup->delete();
+                    $found = true;
+                }
+            }
+            if ($found) {
+                $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_group_deleted'));
+                $this->consultation->refresh();
+            }
+        }
+
+        if ($iAmAdmin && $this->isPostSet('uploadFile') && $this->getPostValue('groupId') > 0) {
+            $group = null;
+            foreach ($this->consultation->fileGroups as $fileGroup) {
+                if ($fileGroup->id === (int)$this->getPostValue('groupId')) {
+                    $group = $fileGroup;
+                }
+            }
+
+            if (isset($_FILES['uploadedFile']) && $_FILES['uploadedFile']['error'] === 0 && $_FILES['uploadedFile']['size'] > 0) {
+                $file = ConsultationFile::createDownloadableFile(
+                    $this->consultation,
+                    User::getCurrentUser(),
+                    (string)file_get_contents($_FILES['uploadedFile']['tmp_name']),
+                    $_FILES['uploadedFile']['name'],
+                    $this->getPostValue('fileTitle')
+                );
+
+                $group->link('files', $file);
+
+                $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_uploaded_file'));
+                $this->consultation->refresh();
+            }
+        }
+
+        if ($iAmAdmin && $this->isPostSet('deleteFile')) {
+            $toDeleteIds = array_map('intval', array_keys($this->getPostValue('deleteFile', [])));
+            $found = false;
+            foreach ($this->consultation->files as $file) {
+                if (in_array($file->id, $toDeleteIds)) {
+                    $file->delete();
+                    $found = true;
+                }
+            }
+            if ($found) {
+                $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_file_deleted'));
+                $this->consultation->refresh();
+            }
+        }
+
+        return $this->render('documents');
+    }
+
+    public function actionDocumentsZip(string $groupId): string
+    {
+        $zip = new ZipWriter();
+
+        foreach ($this->consultation->fileGroups as $fileGroup) {
+            $directory = Tools::sanitizeFilename($fileGroup->title, true);
+            if ($fileGroup->id === intval($groupId) || $groupId === 'all') {
+                foreach ($fileGroup->files as $file) {
+                    $filename = $directory . '/' . $file->filename;
+                    $zip->addFile($filename, $file->data);
+                }
+            }
+        }
+
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
+
+        return $zip->getContentAndFlush();
     }
 }

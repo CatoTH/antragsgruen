@@ -1,6 +1,13 @@
 <?php
 return [
-    'bc' => 'Abstimmungen',
+    'votings_bc' => 'Abstimmungen',
+    'results_bc' => 'Ergebnisse',
+    'admin_bc' => 'Verwaltung',
+
+    'sidebar_open' => 'Laufende Abstimmungen',
+    'sidebar_results' => 'Ergebnisse',
+    'sidebar_admin' => 'Verwaltung',
+
     'title_user_single' => 'Abstimmung',
 
     'vote_yes' => 'Ja',
@@ -21,12 +28,13 @@ return [
     'activity_reset' => 'Abstimmung zurückgesetzt',
     'activity_reopened' => 'Abstimmung erneut geöffnet',
 
+    'page_title' => 'Abstimmungen',
     'results_title' => 'Abstimmungsergebnisse',
     'results_none' => 'Es wurden noch keine Abstimmungsergebnisse veröffentlicht',
     'results_download' => 'Ergebnisse als Spreadsheet',
+    'votings_none' => 'Es laufen gerade keine Abstimmungen',
 
     'admin_title' => 'Abstimmungen: Verwaltung',
-    'admin_bc' => 'Verwaltung',
     'admin_intro' => '<strong>Hinweis:</strong> eine Einführung und Anleitung zu den Abstimmungen gibt es auf der <a href="https://antragsgruen.de/help#abstimmungen">Hilfe-Seite</a>.',
     'admin_aria_single' => 'Abstimmung verwalten',
     'admin_voting_use' => 'Online-Abstimmung',

@@ -11,11 +11,14 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-/** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
-$layout->addBreadcrumb(Yii::t('voting', 'bc'));
+$layout->addBreadcrumb(Yii::t('voting', 'votings_bc'), UrlHelper::createUrl('/consultation/votings'));
+$layout->addBreadcrumb(Yii::t('voting', 'results_bc'));
 $this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT, 'UTF-8');
+
+$sidebarMode = 'results';
+include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
@@ -38,13 +41,11 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
 ?>
 <h1><?= Yii::t('voting', 'results_title') . $fullscreenButton ?></h1>
 
-<?php
-if (count($apiData) === 0) {
-    echo '<div class="content resultsNone"><div class="alert alert-info">';
-    echo Yii::t('voting', 'results_none');
-    echo '</div></div>';
-}
-?>
+<div class="content votingsNoneIndicator<?= (count($apiData) > 0 ? ' hidden' : '') ?>">
+    <div class="alert alert-info">
+        <?= Yii::t('voting', 'results_none') ?>
+    </div>
+</div>
 
 <section data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
          data-voting="<?= Html::encode(json_encode($apiData)) ?>"

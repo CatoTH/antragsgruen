@@ -21,7 +21,7 @@ $restBase = $dom . 'rest';
 $restBaseCon = $restBase . '/<consultationPath:[\w_-]+>';
 
 $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax|del-agenda-item-ajax|save-agenda-order-ajax';
-$consultationPaths    .= '|voting-results|feeds|feedall|feedmotions|feedamendments|feedcomments';
+$consultationPaths    .= '|votings|voting-results|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|speech|admin-speech|admin-votings|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf|embedded-amendments-pdf';
 $motionPaths          .= '|admin-speech|withdraw|view-changes|view-changes-odt|save-proposal-status|del-proposal-comment';
@@ -63,6 +63,8 @@ $urlRules = [
     $dom . '<_a:(' . $userPaths . ')>'        => 'user/<_a>',
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
     $domv . 'page'                            => 'pages/list-pages',
+    $domv . 'documents'                       => 'pages/documents',
+    $domv . 'documents/<groupId:[^\/]+>.zip'  => 'pages/documents-zip',
     $domv . 'page/files/upload'               => 'pages/upload',
     $domv . 'page/files/delete'               => 'pages/delete-file',
     $domv . 'page/files/browse-images'        => 'pages/browse-images',

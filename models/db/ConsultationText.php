@@ -26,6 +26,16 @@ use yii\db\ActiveRecord;
  */
 class ConsultationText extends ActiveRecord
 {
+    public const DEFAULT_PAGE_WELCOME = 'welcome';
+    public const DEFAULT_PAGE_DOCUMENTS = 'documents';
+    public const DEFAULT_PAGE_MAINTENANCE = 'maintenance';
+    public const DEFAULT_PAGE_HELP = 'help';
+    public const DEFAULT_PAGE_PRIVACY = 'privacy';
+    public const DEFAULT_PAGE_LEGAL = 'legal';
+    public const DEFAULT_PAGE_FEEDS = 'feeds';
+    public const DEFAULT_PAGE_LOGIN_PRE = 'login_pre';
+    public const DEFAULT_PAGE_LOGIN_POST = 'login_post';
+
     public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationText';
@@ -119,14 +129,14 @@ class ConsultationText extends ActiveRecord
     public static function getDefaultPages(): array
     {
         return [
-            'maintenance' => \Yii::t('pages', 'content_maint_title'),
-            'help'        => \Yii::t('pages', 'content_help_title'),
-            'legal'       => \Yii::t('pages', 'content_imprint_title'),
-            'privacy'     => \Yii::t('pages', 'content_privacy_title'),
-            'welcome'     => \Yii::t('pages', 'content_welcome'),
-            'login_pre'   => \Yii::t('pages', 'content_login_pre'),
-            'login_post'  => \Yii::t('pages', 'content_login_post'),
-            'feeds'       => \Yii::t('pages', 'content_feeds_title'),
+            self::DEFAULT_PAGE_MAINTENANCE => \Yii::t('pages', 'content_maint_title'),
+            self::DEFAULT_PAGE_HELP => \Yii::t('pages', 'content_help_title'),
+            self::DEFAULT_PAGE_LEGAL => \Yii::t('pages', 'content_imprint_title'),
+            self::DEFAULT_PAGE_PRIVACY => \Yii::t('pages', 'content_privacy_title'),
+            self::DEFAULT_PAGE_WELCOME => \Yii::t('pages', 'content_welcome'),
+            self::DEFAULT_PAGE_LOGIN_PRE => \Yii::t('pages', 'content_login_pre'),
+            self::DEFAULT_PAGE_LOGIN_POST => \Yii::t('pages', 'content_login_post'),
+            self::DEFAULT_PAGE_FEEDS => \Yii::t('pages', 'content_feeds_title'),
         ];
     }
 
@@ -135,7 +145,7 @@ class ConsultationText extends ActiveRecord
      */
     public static function getSitewidePages(): array
     {
-        return ['legal', 'privacy', 'login_pre', 'login_post'];
+        return [self::DEFAULT_PAGE_LEGAL, self::DEFAULT_PAGE_PRIVACY, self::DEFAULT_PAGE_LOGIN_PRE, self::DEFAULT_PAGE_LOGIN_POST];
     }
 
     /**
@@ -145,7 +155,7 @@ class ConsultationText extends ActiveRecord
      */
     public static function getSystemwidePages(): array
     {
-        return ['legal', 'privacy'];
+        return [self::DEFAULT_PAGE_LEGAL, self::DEFAULT_PAGE_PRIVACY];
     }
 
     public static function getDefaultPage(string $pageKey): ConsultationText
@@ -154,45 +164,48 @@ class ConsultationText extends ActiveRecord
         $data->textId   = $pageKey;
         $data->category = 'pagedata';
         switch ($pageKey) {
-            case 'maintenance':
+            case self::DEFAULT_PAGE_MAINTENANCE:
                 $data->title      = \Yii::t('pages', 'content_maint_title');
                 $data->breadcrumb = \Yii::t('pages', 'content_maint_bread');
                 $data->text       = \Yii::t('pages', 'content_maint_text');
                 break;
-            case 'help':
+            case self::DEFAULT_PAGE_HELP:
                 $data->title      = \Yii::t('pages', 'content_help_title');
                 $data->breadcrumb = \Yii::t('pages', 'content_help_bread');
                 $data->text       = \Yii::t('pages', 'content_help_place');
                 break;
-            case 'legal':
+            case self::DEFAULT_PAGE_LEGAL:
                 $data->title      = \Yii::t('pages', 'content_imprint_title');
                 $data->breadcrumb = \Yii::t('pages', 'content_imprint_bread');
                 $data->text       = '<p>' . \Yii::t('pages', 'content_imprint_title') . '</p>';
                 break;
-            case 'privacy':
+            case self::DEFAULT_PAGE_PRIVACY:
                 $data->title      = \Yii::t('pages', 'content_privacy_title');
                 $data->breadcrumb = \Yii::t('pages', 'content_privacy_bread');
                 $data->text       = '';
                 break;
-            case 'welcome':
+            case self::DEFAULT_PAGE_WELCOME:
                 $data->title      = \Yii::t('pages', 'content_welcome');
                 $data->breadcrumb = \Yii::t('pages', 'content_welcome');
                 $data->text       = \Yii::t('pages', 'content_welcome_text');
                 break;
-            case 'login_pre':
+            case self::DEFAULT_PAGE_LOGIN_PRE:
                 $data->title      = \Yii::t('pages', 'content_login_pre');
                 $data->breadcrumb = \Yii::t('pages', 'content_login_pre');
                 $data->text       = '';
                 break;
-            case 'login_post':
+            case self::DEFAULT_PAGE_LOGIN_POST:
                 $data->title      = \Yii::t('pages', 'content_login_post');
                 $data->breadcrumb = \Yii::t('pages', 'content_login_post');
                 $data->text       = '';
                 break;
-            case 'feeds':
+            case self::DEFAULT_PAGE_FEEDS:
                 $data->title      = \Yii::t('pages', 'content_feeds_title');
                 $data->breadcrumb = \Yii::t('pages', 'content_feeds_title');
                 $data->text       = \Yii::t('pages', 'content_feeds_text');
+                break;
+            case self::DEFAULT_PAGE_DOCUMENTS:
+                $data->text = \Yii::t('pages', 'documents_intro_text');
                 break;
         }
 
@@ -236,7 +249,7 @@ class ConsultationText extends ActiveRecord
         $foundText = null;
         if (!in_array($pageKey, static::getSitewidePages())) {
             foreach ($consultation->texts as $text) {
-                if ($text->category == 'pagedata' && $text->textId == $pageKey) {
+                if ($text->category === 'pagedata' && mb_strtolower($text->textId) === mb_strtolower($pageKey)) {
                     $foundText = $text;
                 }
             }

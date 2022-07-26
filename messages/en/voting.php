@@ -1,6 +1,13 @@
 <?php
 return [
-    'bc' => 'Votings',
+    'votings_bc' => 'Votings',
+    'results_bc' => 'Results',
+    'admin_bc' => 'Administration',
+
+    'sidebar_open' => 'Open votings',
+    'sidebar_results' => 'Results',
+    'sidebar_admin' => 'Administration',
+
     'title_user_single' => 'Voting',
 
     'vote_yes' => 'Yes',
@@ -21,12 +28,13 @@ return [
     'activity_reset' => 'Voting reset',
     'activity_reopened' => 'Voting re-opened',
 
+    'page_title' => 'Votings',
     'results_title' => 'Voting results',
     'results_none' => 'No voting results have been published yet',
     'results_download' => 'Results as Spreadsheet',
+    'votings_none' => 'No votings are open',
 
     'admin_title' => 'Voting administration',
-    'admin_bc' => 'Administration',
     'admin_intro' => '<strong>Hint:</strong> you can find a manual for the voting functionality on the <a href="https://sandbox.motion.tools/help#advanced">help page</a>.',
     'admin_aria_single' => 'Administrate voting',
     'admin_voting_use' => 'Online voting',

@@ -310,10 +310,22 @@ class StdHooks extends Hooks
                 }
             }
 
-            if ($consultation && $consultation->getSettings()->hasSpeechLists) {
+            if ($consultation && $consultation->getSettings()->documentPage) {
+                $adminUrl = UrlHelper::createUrl(['/pages/documents']);
+                $adminTitle = \Yii::t('base', 'menu_documents');
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'documentsLink', 'aria-label' => $adminTitle]) . '</li>';
+            }
+
+            if ($consultation && $consultation->getSettings()->hasSpeechLists && $consultation->getSettings()->speechPage) {
                 $adminUrl = UrlHelper::createUrl(['/consultation/speech']);
                 $adminTitle = \Yii::t('base', 'menu_speech_list');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'speechLink', 'aria-label' => $adminTitle]) . '</li>';
+            }
+
+            if ($consultation && $consultation->getSettings()->votingPage) {
+                $adminUrl = UrlHelper::createUrl(['/consultation/votings']);
+                $adminTitle = \Yii::t('base', 'menu_votings');
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'votingsLink', 'aria-label' => $adminTitle]) . '</li>';
             }
 
             if (User::haveOneOfPrivileges($consultation, IndexController::$REQUIRED_PRIVILEGES)) {

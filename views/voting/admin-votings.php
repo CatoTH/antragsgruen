@@ -16,9 +16,12 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout = $controller->layoutParams;
-$layout->addBreadcrumb(Yii::t('voting', 'bc'), UrlHelper::createUrl('consultation/voting-results'));
+$layout->addBreadcrumb(Yii::t('voting', 'votings_bc'), UrlHelper::createUrl('/consultation/votings'));
 $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
+
+$sidebarMode = 'admin';
+include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
 $layout->addCSS('css/backend.css');
 $layout->loadSelectize();

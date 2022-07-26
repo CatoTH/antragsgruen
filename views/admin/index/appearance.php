@@ -2,6 +2,7 @@
 
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\Consultation;
+use app\models\settings\Consultation as ConsultationSettings;
 use yii\helpers\Html;
 
 /**
@@ -13,8 +14,6 @@ use yii\helpers\Html;
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = Yii::$app->params;
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
@@ -23,13 +22,7 @@ $this->title = Yii::t('admin', 'con_h1');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'bread_appearance'));
 
-/**
- * @param \app\models\settings\Consultation $settings
- * @param string $field
- * @param array $handledSettings
- * @param string $description
- */
-$boolSettingRow = function ($settings, $field, &$handledSettings, $description) {
+$boolSettingRow = function (ConsultationSettings $settings, string $field, array &$handledSettings, string $description): void {
     $handledSettings[] = $field;
     echo '<div><label>';
     echo Html::checkbox('settings[' . $field . ']', $settings->$field, ['id' => $field]) . ' ';
@@ -189,18 +182,25 @@ $handledSiteSettings = [];
             </fieldset>
             <br>
 
+            <?php
+            $boolSettingRow($settings, 'documentPage', $handledSettings, Yii::t('admin', 'con_document_page'));
+            $boolSettingRow($settings, 'votingPage', $handledSettings, Yii::t('admin', 'con_voting_page'));
+            ?>
+
             <div class="speechLists">
                 <?php
                 $boolSettingRow($settings, 'hasSpeechLists', $handledSettings, Yii::t('admin', 'con_speech_lists'));
-                $speechSubqueues = ($settings->speechListSubqueues ? $settings->speechListSubqueues : []);
+                $speechSubqueues = $settings->speechListSubqueues ?: [];
                 $name1 = (count($speechSubqueues) > 0 ? $speechSubqueues[0] : Yii::t('speech', 'subqueue_female'));
                 $name2 = (count($speechSubqueues) > 1 ? $speechSubqueues[1] : Yii::t('speech', 'subqueue_male'));
                 $handledSettings[] = 'speechRequiresLogin';
-                $speechAdminUrl = UrlHelper::createUrl(['consultation/admin-speech']);
+                $speechAdminUrl = UrlHelper::createUrl(['/consultation/admin-speech']);
                 $offerSpeechListActivate = (count($consultation->speechQueues) === 0);
                 ?>
                 <fieldset class="quotas">
                     <?php
+                    $boolSettingRow($settings, 'speechPage', $handledSettings, Yii::t('admin', 'con_speech_page'));
+
                     if ($offerSpeechListActivate) {
                         ?>
                         <label class="activateFirstSpeechList">

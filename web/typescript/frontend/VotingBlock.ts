@@ -1,7 +1,8 @@
 declare var Vue: any;
 
 export class VotingBlock {
-    private widget;
+    private widget: any;
+    private widgetComponent: any;
 
     constructor($element: JQuery) {
         const element = $element[0],
@@ -18,7 +19,8 @@ export class VotingBlock {
             data() {
                 return {
                     votings: JSON.parse(votingInitJson),
-                    pollingId: null
+                    pollingId: null,
+                    onReloadedCbs: []
                 };
             },
             methods: {
@@ -41,9 +43,15 @@ export class VotingBlock {
                             return;
                         }
                         widget.votings = data;
+                        widget.onReloadedCbs.forEach(cb => {
+                            cb(widget.votings);
+                        });
                     }).catch(function (err) {
                         alert(err.responseText);
                     });
+                },
+                addReloadedCb: function (cb) {
+                    this.onReloadedCbs.push(cb);
                 },
                 reloadData: function () {
                     if (pollUrl === null) {
@@ -52,6 +60,9 @@ export class VotingBlock {
                     const widget = this;
                     $.get(pollUrl, function (data) {
                         widget.votings = data;
+                        widget.onReloadedCbs.forEach(cb => {
+                            cb(widget.votings);
+                        });
                     }).catch(function (err) {
                         console.error("Could not load voting data from backend", err);
                     });
@@ -74,6 +85,15 @@ export class VotingBlock {
         this.widget.config.compilerOptions.whitespace = 'condense';
         window['__initVueComponents'](this.widget, 'voting');
 
-        this.widget.mount(vueEl);
+        this.widgetComponent = this.widget.mount(vueEl);
+
+        const noneIndicator = document.querySelectorAll('.votingsNoneIndicator')
+        this.widgetComponent.addReloadedCb(data => {
+            if (data.length === 0) {
+                noneIndicator.forEach(node => node.classList.remove('hidden'));
+            } else {
+                noneIndicator.forEach(node => node.classList.add('hidden'));
+            }
+        });
     }
 }
