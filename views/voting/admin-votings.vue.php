@@ -85,7 +85,14 @@ ob_start();
         </form>
         <form method="POST" class="votingDataActions" v-if="isOpen || isClosed">
             <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
+
             <div class="actions" v-if="isOpen">
+                <span class="remainingTime" v-if="isOpen && hasVotingTime && remainingVotingTime !== null">
+                    <?= Yii::t('speech', 'remaining_time') ?>:
+                    <span v-if="remainingVotingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
+                    <span v-if="remainingVotingTime < 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
+                </span>
+
                 <button type="button" class="btn btn-default btnReset" @click="resetVoting()"><?= Yii::t('voting', 'admin_btn_reset') ?></button>
 
                 <div class="btn-group">
@@ -368,6 +375,17 @@ ob_start();
             </label>
             <div class="hint"><?= Yii::t('voting', 'settings_votespublic_hint') ?></div>
         </fieldset>
+        <fieldset class="votesTimer">
+            <legend><?= Yii::t('voting', 'settings_timer') ?>:
+                <span class="glyphicon glyphicon-info-sign"
+                      aria-label="<?= Html::encode(Yii::t('voting', 'settings_timer_h')) ?>"
+                      v-tooltip="'<?= addslashes(Yii::t('voting', 'settings_timer_h')) ?>'"></span>
+            </legend>
+            <label class="input-group input-group-sm">
+                <input type="number" class="form-control" v-model="votingTime" autocomplete="off">
+                <span class="input-group-addon"><?= Yii::t('voting', 'settings_timer_sec') ?></span>
+            </label>
+        </fieldset>
         <label class="assignedMotion">
             <?= Yii::t('voting', 'settings_motionassign') ?>:
             <span class="glyphicon glyphicon-info-sign"
@@ -435,7 +453,8 @@ $html = ob_get_clean();
                     quorumType: null,
                     votesPublic: null,
                     resultsPublic: null,
-                    votePolicy: null
+                    votePolicy: null,
+                    votingTime: null
                 },
                 shownVoteLists: []
             }
@@ -514,6 +533,14 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.changedSettings.resultsPublic = value;
+                }
+            },
+            votingTime: {
+                get: function () {
+                    return (this.changedSettings.votingTime !== null ? this.changedSettings.votingTime : this.voting.voting_time);
+                },
+                set: function (value) {
+                    this.changedSettings.votingTime = value;
                 }
             },
             settingsAssignedMotion: {
@@ -694,12 +721,13 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.votePolicy, this.resultsPublic, this.votesPublic, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.votePolicy, this.resultsPublic, this.votesPublic, this.votingTime, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;
                 this.changedSettings.quorumType = null;
                 this.changedSettings.answerTemplate = null;
                 this.changedSettings.votePolicy = null;
+                this.changedSettings.votingTime = null;
                 this.settingsOpened = false;
             },
             setPolicy: function (data) {
@@ -717,6 +745,11 @@ $html = ob_get_clean();
         updated() {
             $(this.$el).find('[data-toggle="tooltip"]').tooltip();
         },
-        beforeMount: function () {}
+        beforeMount() {
+            this.startPolling();
+        },
+        beforeUnmount() {
+            this.stopPolling();
+        }
     });
 </script>

@@ -2,11 +2,9 @@
 
 namespace app\models\db;
 
-use app\components\CookieUser;
-use app\components\UrlHelper;
-use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use app\components\{CookieUser, UrlHelper};
+use app\models\settings\{AntragsgruenApp, SpeechQueue as SpeechQueueSettings};
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -72,21 +70,21 @@ class SpeechQueue extends ActiveRecord
         ];
     }
 
-    private ?\app\models\settings\SpeechQueue $settingsObject = null;
+    private ?SpeechQueueSettings $settingsObject = null;
 
-    public function getSettings(): \app\models\settings\SpeechQueue
+    public function getSettings(): SpeechQueueSettings
     {
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new \app\models\settings\SpeechQueue($this->settings);
+            $this->settingsObject = new SpeechQueueSettings($this->settings);
         }
 
         return $this->settingsObject;
     }
 
-    public function setSettings(?\app\models\settings\SpeechQueue $settings): void
+    public function setSettings(?SpeechQueueSettings $settings): void
     {
         $this->settingsObject = $settings;
-        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
+        $this->settings = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
     public function getAdminLink(): string

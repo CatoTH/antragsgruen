@@ -7,7 +7,7 @@ use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
 use app\models\policies\{IPolicy, LoggedIn};
 use app\models\quorumType\{IQuorumType, NoQuorum};
-use app\models\settings\AntragsgruenApp;
+use app\models\settings\{AntragsgruenApp, VotingBlock as VotingBlockSettings};
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
 use yii\db\{ActiveQuery, ActiveRecord};
@@ -28,6 +28,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property string|null $policyVote
  * @property string|null $activityLog
  * @property int $votingStatus
+ * @property string|null $settings
  *
  * @property Consultation $consultation
  * @property Amendment[] $amendments
@@ -141,6 +142,23 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['votingBlockId' => 'id']);
+    }
+
+    private ?VotingBlockSettings $settingsObject = null;
+
+    public function getSettings(): VotingBlockSettings
+    {
+        if (!is_object($this->settingsObject)) {
+            $this->settingsObject = new VotingBlockSettings($this->settings);
+        }
+
+        return $this->settingsObject;
+    }
+
+    public function setSettings(?VotingBlockSettings $settings): void
+    {
+        $this->settingsObject = $settings;
+        $this->settings = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
     public function getUserLink(): string
@@ -368,6 +386,11 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             $this->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
         }
         $this->votingStatus = VotingBlock::STATUS_OPEN;
+
+        $settings = $this->getSettings();
+        $settings->openedTs = time();
+        $this->setSettings($settings);
+
         $this->save();
 
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_OPEN, $this->id);

@@ -115,8 +115,6 @@
                     });
                 });
 
-                console.log(JSON.parse(JSON.stringify(groupedVoting[0])));
-
                 return results;
             }
         }

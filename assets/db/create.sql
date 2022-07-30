@@ -797,7 +797,8 @@ CREATE TABLE `###TABLE_PREFIX###votingBlock` (
   `answers` text DEFAULT NULL,
   `policyVote` text DEFAULT NULL,
   `votingStatus` tinyint(4) NOT NULL,
-  `activityLog` text DEFAULT NULL
+  `activityLog` text DEFAULT NULL,
+  `settings` text DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

@@ -73,7 +73,20 @@ use app\models\policies\UserGroups;
                         'name' => $className::getName(),
                         'description' => $className::getDescription(),
                     ];
-                }, IQuorumType::getQuorumTypes())); ?>
+                }, IQuorumType::getQuorumTypes())); ?>,
+
+                timerId: null,
+                timeOffset: 0, // milliseconds the browser is ahead of the server time
+                remainingVotingTime: null
+            }
+        },
+        watch: {
+            voting: {
+                handler(newVal) {
+                    this.recalcTimeOffset(new Date(newVal.current_time));
+                    this.recalcRemainingTime();
+                },
+                immediate: true
             }
         },
         computed: {
@@ -112,6 +125,18 @@ use app\models\policies\UserGroups;
             },
             isClosed: function () {
                 return this.voting.status === this.STATUS_CLOSED_PUBLISHED || this.voting.status === this.STATUS_CLOSED_UNPUBLISHED;
+            },
+            hasVotingTime: function () {
+                return this.voting.voting_time > 0;
+            },
+            formattedRemainingTime: function () {
+                const minutes = Math.floor(this.remainingVotingTime / 60);
+                let seconds = this.remainingVotingTime - minutes * 60;
+                if (seconds < 10) {
+                    seconds = "0" + seconds;
+                }
+
+                return minutes + ":" + seconds;
             }
         },
         methods: {
@@ -141,6 +166,32 @@ use app\models\policies\UserGroups;
             hideVoteList: function (groupedItem) {
                 const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
                 this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
+            },
+            recalcTimeOffset: function (serverTime) {
+                const browserTime = (new Date()).getTime();
+                this.timeOffset = browserTime - serverTime.getTime();
+            },
+            recalcRemainingTime: function () {
+                if (this.voting.opened_ts === null) {
+                    return;
+                }
+                const startedTs = (new Date(this.voting.opened_ts)).getTime();
+                const currentTs = (new Date()).getTime() - this.timeOffset;
+                const secondsPassed = Math.round((currentTs - startedTs) / 1000);
+
+                this.remainingVotingTime = this.voting.voting_time - secondsPassed;
+            },
+            startPolling: function () {
+                this.recalcTimeOffset(new Date());
+
+                const widget = this;
+
+                this.timerId = window.setInterval(function () {
+                    widget.recalcRemainingTime();
+                }, 100);
+            },
+            stopPolling: function () {
+                window.clearInterval(this.timerId);
             }
         }
     });

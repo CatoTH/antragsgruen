@@ -64,6 +64,8 @@ class VotingMethods
 
     public function voteSaveSettings(VotingBlock $votingBlock): void
     {
+        $settings = $votingBlock->getSettings();
+
         if ($this->request->post('title')) {
             $votingBlock->setTitle($this->request->post('title', ''));
         }
@@ -71,6 +73,11 @@ class VotingMethods
             $votingBlock->assignedToMotionId = $this->request->post('assignedMotion');
         } else {
             $votingBlock->assignedToMotionId = null;
+        }
+        if ($this->request->post('votingTime') !== null && $this->request->post('votingTime') > 0) {
+            $settings->votingTime = intval($this->request->post('votingTime'));
+        } else {
+            $settings->votingTime = null;
         }
         if ($this->request->post('resultsPublic') !== null) {
             $votingBlock->resultsPublic = intval($this->request->post('resultsPublic'));
@@ -107,6 +114,7 @@ class VotingMethods
                 $votingBlock->quorumType = IQuorumType::QUORUM_TYPE_NONE;
             }
         }
+        $votingBlock->setSettings($settings);
 
         $votingBlock->save();
     }

@@ -1,6 +1,5 @@
 <?php
 
-use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
 use app\models\votings\AnswerTemplates;
 use app\models\db\{Consultation, ConsultationUserGroup, IMotion, User, VotingBlock};
@@ -11,20 +10,26 @@ $consultation = Consultation::getCurrent();
 $iAmAdmin = ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS));
 
 ob_start();
+/*
+if ($iAmAdmin) {
+    $url = UrlHelper::createUrl(['/consultation/admin-votings']);
+    echo '<a href="' . Html::encode($url) . '" class="votingsAdminLink">';
+    echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
+    echo Yii::t('voting', 'voting_admin_all');
+    echo '</a>';
+}
+*/
 ?>
-
 <section class="voting" aria-label="<?= Yii::t('voting', 'voting_current_aria') ?>">
     <h2 class="green">{{ voting.title }}</h2>
     <div class="content">
-        <?php
-        if ($iAmAdmin) {
-            $url = UrlHelper::createUrl(['/consultation/admin-votings']);
-            echo '<a href="' . Html::encode($url) . '" class="votingsAdminLink">';
-            echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
-            echo Yii::t('voting', 'voting_admin_all');
-            echo '</a>';
-        }
-        ?>
+        <div class="remainingTime" v-if="isOpen && hasVotingTime && remainingVotingTime !== null">
+            <?= Yii::t('voting', 'remaining_time') ?>:
+            <span v-if="remainingVotingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
+            <span v-if="remainingVotingTime < 0"
+                  class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
+        </div>
+
         <ul class="votingListUser votingListCommon">
             <template v-for="groupedVoting in groupedVotings">
             <li :class="[
@@ -187,7 +192,7 @@ $html = ob_get_clean();
     __setVueComponent('voting', 'component', 'voting-block-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
-        mixins: [window.VOTING_COMMON_MIXINS],
+        mixins: window.VOTING_COMMON_MIXINS,
         data() {
             return {
                 VOTING_STATUS_ACCEPTED: <?= IMotion::STATUS_ACCEPTED ?>,
@@ -248,6 +253,12 @@ $html = ob_get_clean();
                 const answer = this.getVoteOptionById(group.voted);
                 return this.voteAnswerToCss(answer);
             }
+        },
+        beforeMount() {
+            this.startPolling();
+        },
+        beforeUnmount() {
+            this.stopPolling();
         }
     });
 </script>

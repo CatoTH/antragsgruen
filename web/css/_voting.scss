@@ -1,6 +1,19 @@
 @import "variables";
 
 .votingCommon {
+  .remainingTime {
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+
+    .time {
+      font-weight: bold;
+    }
+    .over {
+      color: red;
+    }
+  }
   .votingListCommon {
     display: block;
     margin: 0;
@@ -167,6 +180,9 @@
   .votingsAdminLink {
     float: right;
   }
+  .remainingTime {
+    float: right;
+  }
 
   .votingsAdminLink + .voteList {
     border-top: solid 1px #ccc;
@@ -304,6 +320,11 @@
         font-weight: normal;
         margin-right: 15px;
         margin-bottom: 0;
+      }
+
+      &.votesTimer label {
+        display: table;
+        max-width: 200px;
       }
     }
   }
