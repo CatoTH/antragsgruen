@@ -40,7 +40,7 @@ trait VotingItemTrait
     public function setVotingData(VotingData $data): void
     {
         $this->votingDataObject = $data;
-        $this->votingData = (string)json_encode($data, JSON_PRETTY_PRINT);
+        $this->votingData = json_encode($data, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 
     /**
