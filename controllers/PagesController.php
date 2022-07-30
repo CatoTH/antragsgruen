@@ -188,7 +188,8 @@ class PagesController extends Base
                 User::getCurrentUser(),
                 base64_decode($post['uploadDownloadableFile']),
                 $post['uploadDownloadableFilename'],
-                $post['uploadDownloadableTitle']
+                $post['uploadDownloadableTitle'],
+                null
             );
             $result['uploadedFile'] = [
                 'title' => $file->title,
@@ -426,15 +427,14 @@ class PagesController extends Base
             }
 
             if (isset($_FILES['uploadedFile']) && $_FILES['uploadedFile']['error'] === 0 && $_FILES['uploadedFile']['size'] > 0) {
-                $file = ConsultationFile::createDownloadableFile(
+                ConsultationFile::createDownloadableFile(
                     $this->consultation,
                     User::getCurrentUser(),
                     (string)file_get_contents($_FILES['uploadedFile']['tmp_name']),
                     $_FILES['uploadedFile']['name'],
-                    $this->getPostValue('fileTitle')
+                    $this->getPostValue('fileTitle'),
+                    $group
                 );
-
-                $group->link('files', $file);
 
                 $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_uploaded_file'));
                 $this->consultation->refresh();

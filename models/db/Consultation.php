@@ -717,10 +717,10 @@ class Consultation extends ActiveRecord
     /**
      * @return ConsultationFile[]
      */
-    public function getDownloadableFiles(): array
+    public function getDownloadableFiles(?int $groupId): array
     {
-        $files = array_filter($this->files, function(ConsultationFile $file) {
-            return $file->downloadPosition !== null;
+        $files = array_filter($this->files, function(ConsultationFile $file) use ($groupId) {
+            return $file->downloadPosition !== null && $file->fileGroupId === $groupId;
         });
         usort($files, function (ConsultationFile $file1, ConsultationFile $file2) {
            return $file1 <=> $file2;

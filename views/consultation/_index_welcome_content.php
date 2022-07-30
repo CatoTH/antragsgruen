@@ -39,7 +39,7 @@ echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';
 
-$files = $consultation->getDownloadableFiles();
+$files = $consultation->getDownloadableFiles(null);
 ?>
     <div class="downloadableFiles<?= (count($files) === 0 ? ' hidden' : '') ?>">
         <h2><?= Yii::t('admin', 'files_download') ?></h2>
