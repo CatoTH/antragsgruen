@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int|null $consultationId
  * @property int $siteId
+ * @property int|null $fileGroupId
  * @property int|null $downloadPosition
  * @property string $filename
  * @property string|null $title
@@ -128,10 +129,10 @@ class ConsultationFile extends ActiveRecord
         return $mime;
     }
 
-    public static function createDownloadableFile(Consultation $consultation, User $user, string $data, string $filename, string $title): ConsultationFile
+    public static function createDownloadableFile(Consultation $consultation, User $user, string $data, string $filename, string $title, ?ConsultationFileGroup $group): ConsultationFile
     {
         $maxPosition = 0;
-        foreach ($consultation->getDownloadableFiles() as $file) {
+        foreach ($consultation->getDownloadableFiles($group ? $group->id : null) as $file) {
             if ($file->downloadPosition > $maxPosition) {
                 $maxPosition = $file->downloadPosition;
             }
@@ -161,6 +162,10 @@ class ConsultationFile extends ActiveRecord
         $file->uploadedById = $user->id;
         $file->setData($data);
         $file->save();
+
+        if ($group) {
+            $group->link('files', $file);
+        }
 
         return $file;
     }
