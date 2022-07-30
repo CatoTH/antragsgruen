@@ -3,6 +3,7 @@
 namespace app\plugins\european_youth_forum;
 
 use app\models\proposedProcedure\AgendaVoting;
+use app\models\settings\Layout;
 use app\models\db\{Consultation, IVotingItem, User, VotingBlock};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\VotingData;
@@ -10,12 +11,26 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class LayoutHooks extends Hooks
 {
+    public function endOfHead(string $before): string
+    {
+        $before .= '<style>' . file_get_contents(__DIR__ . '/assets/styles.css') . '</style>';
+
+        return $before;
+    }
+
     public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
     {
         $result = $this;
         ob_start();
         require(__DIR__ . '/views/voting-result-admin.vue.php');
         return (string)ob_get_clean();
+    }
+
+    public function registerAdditionalVueVotingTemplates(?string $before, Consultation $consultation, Layout $layout): ?string
+    {
+        $layout->addVueTemplate('@app/plugins/european_youth_forum/views/votings.mixins.vue.php');
+
+        return null;
     }
 
     public function getVotingAlternativeUserResults(?array $before, VotingData $votingData): ?array

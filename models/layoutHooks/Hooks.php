@@ -12,20 +12,17 @@ use app\models\db\{Amendment,
     Site,
     User};
 use app\models\proposedProcedure\AgendaVoting;
-use app\models\settings\VotingData;
+use app\models\settings\{VotingData, Layout as LayoutSettings};
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class Hooks
 {
-    /** @var \app\models\settings\Layout */
-    protected $layout;
+    protected LayoutSettings $layout;
+    protected ?Consultation $consultation;
 
-    /** @var Consultation|null */
-    protected $consultation;
-
-    public function __construct(\app\models\settings\Layout $layout, ?Consultation $consultation)
+    public function __construct(LayoutSettings $layout, ?Consultation $consultation)
     {
-        $this->layout       = $layout;
+        $this->layout = $layout;
         $this->consultation = $consultation;
     }
 
@@ -92,7 +89,7 @@ class Hooks
     /**
      * @param ConsultationMotionType[] $motionTypes
      */
-    public function setSidebarCreateMotionButton(string $before, $motionTypes): string
+    public function setSidebarCreateMotionButton(string $before, array $motionTypes): string
     {
         return $before;
     }
@@ -239,6 +236,11 @@ class Hooks
     public function getVotingAlternativeUserResults(?array $before, VotingData $votingData): ?array
     {
         return $before;
+    }
+
+    public function registerAdditionalVueVotingTemplates(?string $before, Consultation $consultation, LayoutSettings $layout): ?string
+    {
+        return null;
     }
 
     public function printVotingAlternativeSpreadsheetResults(int $rowsBefore, Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int

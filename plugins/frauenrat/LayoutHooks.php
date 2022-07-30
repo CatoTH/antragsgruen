@@ -9,7 +9,7 @@ use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
-    public static $PROPOSALS = [
+    public const PROPOSALS = [
         ''              => '- keiner -',
         'accept'        => 'Annahme',
         'modified'      => 'Annahme mit Änderung',
@@ -103,7 +103,7 @@ class LayoutHooks extends Hooks
         $saveUrl   = UrlHelper::createUrl(['/frauenrat/motion/save-proposal', 'motionSlug' => $motion->getMotionSlug()]);
         $form      = Html::beginForm($saveUrl, 'post', ['class' => 'frauenratSelect']);
         $preselect = $this->getMotionProposalString($motion);
-        $form      .= Html::dropDownList('newProposal', $preselect, static::$PROPOSALS, ['class' => 'stdDropdown stdDropdownSmall']);
+        $form      .= Html::dropDownList('newProposal', $preselect, self::PROPOSALS, ['class' => 'stdDropdown stdDropdownSmall']);
         $form      .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
         $form      .= Html::endForm();
 
@@ -119,7 +119,7 @@ class LayoutHooks extends Hooks
         ]);
         $form      = Html::beginForm($saveUrl, 'post', ['class' => 'frauenratSelect']);
         $preselect = $this->getMotionProposalString($amendment);
-        $form      .= Html::dropDownList('newProposal', $preselect, static::$PROPOSALS, ['class' => 'stdDropdown stdDropdownSmall']);
+        $form      .= Html::dropDownList('newProposal', $preselect, self::PROPOSALS, ['class' => 'stdDropdown stdDropdownSmall']);
         $form      .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
         $form      .= Html::endForm();
 
@@ -179,8 +179,8 @@ class LayoutHooks extends Hooks
                     $motionData[$i]['content'] .= $this->getMotionProposalSavingForm($motion);
                 } elseif ($motion->isProposalPublic() && $motion->proposalStatus) {
                     $proposal = $this->getMotionProposalString($motion);
-                    if ($proposal && isset(static::$PROPOSALS[$proposal])) {
-                        $motionData[$i]['content'] .= Html::encode(static::$PROPOSALS[$proposal]);
+                    if ($proposal && isset(self::PROPOSALS[$proposal])) {
+                        $motionData[$i]['content'] .= Html::encode(self::PROPOSALS[$proposal]);
                     }
                 }
             }
@@ -249,8 +249,8 @@ class LayoutHooks extends Hooks
                     $amendmentData[$i]['content'] = $this->getAmendmentProposalSavingForm($amendment);
                 } elseif ($amendment->isProposalPublic() && $amendment->proposalStatus) {
                     $proposal = $this->getMotionProposalString($amendment);
-                    if ($proposal && isset(static::$PROPOSALS[$proposal])) {
-                        $amendmentData[$i]['content'] = Html::encode(static::$PROPOSALS[$proposal]);
+                    if ($proposal && isset(self::PROPOSALS[$proposal])) {
+                        $amendmentData[$i]['content'] = Html::encode(self::PROPOSALS[$proposal]);
                     }
                 }
             }

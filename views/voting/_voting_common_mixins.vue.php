@@ -9,7 +9,10 @@ use app\models\policies\UserGroups;
 
 ?>
 <script>
-    const VOTING_COMMON_MIXIN = {
+    if (window.VOTING_COMMON_MIXINS === undefined) {
+        window.VOTING_COMMON_MIXINS = [];
+    }
+    window.VOTING_COMMON_MIXINS.push({
         data() {
             return {
                 // Keep in sync with VotingBlock.php
@@ -140,5 +143,5 @@ use app\models\policies\UserGroups;
                 this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
             }
         }
-    }
+    });
 </script>

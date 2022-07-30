@@ -187,7 +187,7 @@ $html = ob_get_clean();
     __setVueComponent('voting', 'component', 'voting-block-widget', {
         template: <?= json_encode($html) ?>,
         props: ['voting'],
-        mixins: [VOTING_COMMON_MIXIN],
+        mixins: [window.VOTING_COMMON_MIXINS],
         data() {
             return {
                 VOTING_STATUS_ACCEPTED: <?= IMotion::STATUS_ACCEPTED ?>,

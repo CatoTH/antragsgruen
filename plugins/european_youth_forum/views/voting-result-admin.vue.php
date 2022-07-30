@@ -1,4 +1,6 @@
-<table class="votingResultTable votingResultTableMultiple" v-if="groupedVoting[0].vote_results['nyc'] && groupedVoting[0].vote_results['ingyo']">
+<table class="yfjVotingResultTable votingResultTable" v-if="isYfjVoting(groupedVoting)">
+    <caption v-if="isOpen">Voting Status</caption>
+    <caption v-if="isClosed">Voting Result</caption>
     <thead>
     <tr>
         <th rowspan="2"></th>

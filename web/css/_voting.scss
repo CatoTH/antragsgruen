@@ -11,6 +11,7 @@
     > li {
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
       width: 100%;
 
       padding-top: 10px;
@@ -311,14 +312,6 @@
 .votingResultTable {
   table-layout: fixed;
   width: 100%;
-
-  caption {
-    // @TODO Move into EYF plugin
-    margin-top: 15px;
-    font-size: 1.2em;
-    color: #333;
-    border-top: solid 1px #ccc;
-  }
 
   th {
     text-align: center;
