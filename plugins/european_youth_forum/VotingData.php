@@ -68,9 +68,9 @@ class VotingData extends \app\models\settings\VotingData {
         $results = Module::calculateVoteResultsForApi($voting, $votes);
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $this->nycUsers = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_NYC);
+        $this->nycUsers = VotingHelper::getEligibleUserCountByGroup($voting, [VotingHelper::class, 'conditionVotingIsNycGroup']);
         /** @noinspection PhpUnhandledExceptionInspection */
-        $this->ingyoUsers = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_INGYO);
+        $this->ingyoUsers = VotingHelper::getEligibleUserCountByGroup($voting, [VotingHelper::class, 'conditionVotingIsIngyoGroup']);
 
         $this->nycYes = $results['nyc']['yes'];
         $this->nycYesMultiplied = $results['nyc']['yes_multiplied'];

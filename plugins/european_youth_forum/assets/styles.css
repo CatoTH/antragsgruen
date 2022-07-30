@@ -1,7 +1,15 @@
-.yfjVotingResultTable caption {
+.yfjVotingResultTable caption, .yfjRollCallResultTable caption {
     margin-top: 15px;
     font-size: 1.1em;
     color: #333;
     border-top: solid 1px #ccc;
     text-align: center;
+}
+.yfjRollCallResultTable th {
+    text-align: left;
+    width: 33%;
+}
+.yfjRollCallResultTable td {
+    text-align: left;
+    width: 67%;
 }

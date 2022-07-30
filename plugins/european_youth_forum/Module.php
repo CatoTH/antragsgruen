@@ -38,7 +38,7 @@ class Module extends ModuleBase
             return false;
         }
 
-        return VotingHelper::userIsGroup($votingBlock->getMyConsultation(), $user, VotingHelper::GROUP_QUORUM_RELEVANT);
+        return VotingHelper::userHasGroupMatchingCondition($votingBlock->getMyConsultation(), $user, [VotingHelper::class, 'conditionRollCallQuorumRelevant']);
     }
 
     public static function getRelevantEligibleVotersCount(VotingBlock $votingBlock): ?int
@@ -49,15 +49,19 @@ class Module extends ModuleBase
     public static function getVotingAdminSetupHintHtml(VotingBlock $votingBlock): ?string
     {
         if (VotingHelper::isSetUpAsYfjVoting($votingBlock)) {
-            $html = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Voting IS set up as YFJ voting<br>';
+            $html = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Voting IS set up as <strong>YFJ Voting</strong><br>';
             /** @noinspection PhpUnhandledExceptionInspection */
-            $html .= VotingHelper::getEligibleUserCountByGroup($votingBlock, VotingHelper::GROUP_NYC) .  ' NYC members<br>';
+            $html .= VotingHelper::getEligibleUserCountByGroup($votingBlock, [VotingHelper::class, 'conditionVotingIsNycGroup']) . ' NYC members<br>';
             /** @noinspection PhpUnhandledExceptionInspection */
-            $html .= VotingHelper::getEligibleUserCountByGroup($votingBlock, VotingHelper::GROUP_INGYO) .  ' INGYO members';
+            $html .= VotingHelper::getEligibleUserCountByGroup($votingBlock, [VotingHelper::class, 'conditionVotingIsIngyoGroup']) . ' INGYO members';
+
+            return $html;
+        } elseif (VotingHelper::isSetUpAsYfjRollCall($votingBlock)) {
+            $html = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Voting IS set up as YFJ <strong>Roll Call</strong><br>';
 
             return $html;
         } else {
-            return 'Voting is NOT set up as YFJ voting';
+            return 'Voting is NEITHER set up as YFJ Voting nor YFJ Roll Call';
         }
     }
 
@@ -103,8 +107,8 @@ class Module extends ModuleBase
         ];
 
         try {
-            $nycVotesTotal = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_NYC);
-            $ingyoVotesTotal = VotingHelper::getEligibleUserCountByGroup($voting, VotingHelper::GROUP_INGYO);
+            $nycVotesTotal = VotingHelper::getEligibleUserCountByGroup($voting, [VotingHelper::class, 'conditionVotingIsNycGroup']);
+            $ingyoVotesTotal = VotingHelper::getEligibleUserCountByGroup($voting, [VotingHelper::class, 'conditionVotingIsIngyoGroup']);
         } catch (InvalidSetupException $e) {
             return $results;
         }
@@ -116,9 +120,9 @@ class Module extends ModuleBase
                 continue;
             }
             $voteType = $vote->getVoteForApi($answers);
-            if (VotingHelper::userIsGroup($consultation, $vote->getUser(), VotingHelper::GROUP_NYC)) {
+            if (VotingHelper::userHasGroupMatchingCondition($consultation, $vote->getUser(), [VotingHelper::class, 'conditionVotingIsNycGroup'])) {
                 $orga = 'nyc';
-            } elseif (VotingHelper::userIsGroup($consultation, $vote->getUser(), VotingHelper::GROUP_INGYO)) {
+            } elseif (VotingHelper::userHasGroupMatchingCondition($consultation, $vote->getUser(), [VotingHelper::class, 'conditionVotingIsIngyoGroup'])) {
                 $orga = 'ingyo';
             } else {
                 continue;
