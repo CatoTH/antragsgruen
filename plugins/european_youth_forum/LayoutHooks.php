@@ -43,19 +43,14 @@ class LayoutHooks extends Hooks
         return trim($user->organization ?: '') !== '' ? $user->organization : $user->name;
     }
 
-    public function printVotingAlternativeSpreadsheetResults(int $rowsBefore, Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int
+    private function printYfjVotingAlternativeSpreadsheetResults(int $rowsBefore, Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int
     {
-        if (!VotingHelper::isSetUpAsYfjVoting($agendaVoting->voting)) {
-            return 0;
-        }
-
         /** @var \app\plugins\european_youth_forum\VotingData $voteResults */
         $voteResults = $voteItem->getVotingData();
         if (!$agendaVoting->voting->isClosed()) {
             $voteResults->augmentWithResults($agendaVoting->voting, $voteItem);
         }
         $rows = 0;
-
 
         $worksheet->getStyle('A' . ($startRow + $rows + 0))->applyFromArray(['font' => ['bold' => true]]);
         $worksheet->setCellValue('A' . ($startRow + $rows), 'Eligible users');
@@ -143,5 +138,50 @@ class LayoutHooks extends Hooks
         $worksheet->setCellValue('G' . ($baseRow + 4), $voteResults->totalNoMultiplied);
 
         return 11;
+    }
+
+    private function printRollCallAlternativeSpreadsheetResults(int $rowsBefore, Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int
+    {
+        /** @var \app\plugins\european_youth_forum\VotingData $voteResults */
+        $voteResults = $voteItem->getVotingData();
+        if (!$agendaVoting->voting->isClosed()) {
+            $voteResults->augmentWithResults($agendaVoting->voting, $voteItem);
+        }
+        if ($agendaVoting->voting->votesPublic !== VotingBlock::VOTES_PUBLIC_ADMIN && $agendaVoting->voting->votesPublic !== VotingBlock::VOTES_PUBLIC_ALL) {
+            return 0;
+        }
+
+        $rows = 0;
+
+        foreach ($agendaVoting->voting->getAnswers() as $answer) {
+            $worksheet->getStyle('A' . ($startRow + $rows))->applyFromArray(['font' => ['bold' => true]]);
+            $worksheet->setCellValue('A' . ($startRow + $rows), $answer->title);
+            $worksheet->setCellValue('B' . ($startRow + $rows), $voteResults->getTotalVotesForAnswer($answer));
+
+            $rows++;
+        }
+
+        $results = VotingHelper::getRollCallResultTable($agendaVoting->voting->getMyConsultation(), $agendaVoting->voting);
+        foreach ($results as $result) {
+            $worksheet->getStyle('A' . ($startRow + $rows))->applyFromArray(['font' => ['bold' => true]]);
+            $worksheet->setCellValue('A' . ($startRow + $rows), $result['name']);
+            $worksheet->setCellValue('B' . ($startRow + $rows), $result['number']);
+
+            $rows++;
+        }
+
+        return $rows;
+    }
+
+    public function printVotingAlternativeSpreadsheetResults(int $rowsBefore, Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int
+    {
+        if (VotingHelper::isSetUpAsYfjVoting($agendaVoting->voting)) {
+            return $this->printYfjVotingAlternativeSpreadsheetResults($rowsBefore, $worksheet, $startRow, $agendaVoting, $voteItem);
+        }
+        if (VotingHelper::isSetUpAsYfjRollCall($agendaVoting->voting)) {
+            return $this->printRollCallAlternativeSpreadsheetResults($rowsBefore, $worksheet, $startRow, $agendaVoting, $voteItem);
+        }
+
+        return 0;
     }
 }

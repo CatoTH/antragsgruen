@@ -129,9 +129,10 @@ function printEligibilityList(Worksheet $worksheet, string $col, int $startRow, 
     $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['bold' => true]]);
     $worksheet->setCellValue($col . $startRow, Yii::t('export', 'voting_eligible_all'));
     $startRow++;
+    $startRow++;
 
     foreach ($groups as $group) {
-        $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['bold' => true]]);
+        $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['underline' => true]]);
         $worksheet->setCellValue($col . $startRow, $group->groupTitle);
         $startRow++;
 
@@ -188,27 +189,31 @@ foreach ($agendaVoting->items as $i => $voteItem) {
     }
     $sheetTitle = preg_replace('/[^a-z0-9_ -]/siu', '', $title);
     $sheetTitle = (mb_strlen($sheetTitle) > 30 ? mb_substr($sheetTitle, 0, 28) . '...' : $sheetTitle);
-    $sheet->getStyle('A1')->applyFromArray(['font' => ['bold' => true]]);
     $sheet->setTitle($sheetTitle);
     $sheet->getColumnDimension('A')->setWidth($width, 'cm');
     $sheet->getColumnDimension('B')->setWidth($width, 'cm');
-    $sheet->setCellValue('A1', $title);
 
-    $sheet->setCellValue('A2', Yii::t('export', 'voting_export_date') . ':');
+    $sheet->getStyle('A1')->applyFromArray(['font' => ['bold' => true]]);
+    $sheet->setCellValue('A1', $agendaVoting->voting->title);
+    $sheet->getStyle('A2')->applyFromArray(['font' => ['bold' => true]]);
+    $sheet->setCellValue('A2', $title);
+
+    $sheet->setCellValue('A3', Yii::t('export', 'voting_export_date') . ':');
     if ($format === 'xslx') {
-        $sheet->setCellValue('B2', \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(time()));
-        $sheet->getStyle('B2')
+        $sheet->setCellValue('B3', \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(time()));
+        $sheet->getStyle('B3')
             ->getNumberFormat()
             ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_DATETIME);
     } else {
-        $sheet->setCellValue('B2', date("Y-m-d H:i"));
+        $sheet->setCellValue('B3', date("Y-m-d H:i"));
     }
 
-    $row = 4;
+    $row = 5;
     $row += printResultTable($sheet, $row, $agendaVoting, $eligibilityList, $voteItem);
     $row++;
 
     $col = 'A';
+    $userListBaseRow = $row;
     if ($agendaVoting->voting->votesPublic === VotingBlock::VOTES_PUBLIC_ADMIN || $agendaVoting->voting->votesPublic === VotingBlock::VOTES_PUBLIC_ALL) {
         $sheet->mergeCells('A' . $row . ':B' . $row);
         $sheet->getStyle('A' . $row)->applyFromArray(['font' => ['bold' => true]]);
@@ -223,7 +228,7 @@ foreach ($agendaVoting->items as $i => $voteItem) {
 
     if ($eligibilityList) {
         $col = chr(ord($col) + 1);
-        printEligibilityList($sheet, $col, $row, $eligibilityList);
+        printEligibilityList($sheet, $col, $userListBaseRow, $eligibilityList);
     }
 }
 

@@ -135,6 +135,88 @@ class VotingHelper
     }
 
     /**
+     * Keep this logic consistent with votings.mixins.vue.php->getRollCallGroupsWithNumbers
+     */
+    public static function getRollCallResultTable(Consultation $consultation, VotingBlock $votingBlock): array
+    {
+        $results = [
+            "full_ingyo" => [
+                "name" => "Full Members INGYO",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool { return self::conditionRollCallIsIngyoFullMember($group); },
+            ],
+            "full_nyc" => [
+                "name" => "Full Members NYC",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool { return self::conditionRollCallIsNycFullMember($group); },
+            ],
+            "vote_ingyo" => [
+                "name" => "Votes INGYO",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool {
+                    return mb_stripos($group->title, 'with voting right') !== false && mb_stripos($group->title, 'ingyo') !== false;
+                },
+            ],
+            "vote_nyc" => [
+                "name" => "Votes NYC",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool {
+                    return mb_stripos($group->title, 'with voting right') !== false && mb_stripos($group->title, 'nyc') !== false;
+                },
+            ],
+            "candidate_ingyo" => [
+                "name" => "Candidate members INGYO",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool {
+                    return mb_stripos($group->title, 'candidate') !== false && mb_stripos($group->title, 'ingyo') !== false;
+                },
+            ],
+            "candidate_nyc" => [
+                "name" => "Candidate members NYC",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool {
+                    return mb_stripos($group->title, 'candidate') !== false && mb_stripos($group->title, 'nyc') !== false;
+                },
+            ],
+            "observer_ingyo" => [
+                "name" => "Observers INGYO",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool {
+                    return mb_stripos($group->title, 'observer') !== false && mb_stripos($group->title, 'ingyo') !== false;
+                },
+            ],
+            "observer_nyc" => [
+                "name" => "Observers NYC",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool {
+                    return mb_stripos($group->title, 'observer') !== false && mb_stripos($group->title, 'nyc') !== false;
+                },
+            ],
+            "associate" => [
+                "name" => "Associates",
+                "number" => 0,
+                "condition" => function (ConsultationUserGroup $group): bool {
+                    return mb_stripos($group->title, 'associate') !== false;
+                },
+            ]
+        ];
+
+        foreach ($votingBlock->votes as $vote) {
+            $user = $vote->getUser();
+            if (!$user) {
+                continue;
+            }
+            foreach ($results as $resultKey => $result) {
+                if (self::userHasGroupMatchingCondition($consultation, $user, $result['condition'])) {
+                    $results[$resultKey]['number']++;
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * @throws InvalidSetupException
      */
     public static function getEligibleUserCountByGroup(VotingBlock $votingBlock, callable $condition): int

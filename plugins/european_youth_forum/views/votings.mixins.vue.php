@@ -43,6 +43,7 @@
                     groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0];
             },
             getRollCallGroupsWithNumbers: function (groupedVoting) {
+                // Keep this logic consistent with VotingHelper.php::getRollCallResultTable
                 const results = {
                     "full_ingyo": {
                         "name": "Full Members INGYO",
@@ -85,28 +86,28 @@
                 groupedVoting[0].votes.forEach(vote => {
                     vote.user_groups.forEach(groupId => {
                         const groupName = this.getYfjUserGroupNameById(groupId).toLowerCase();
-                        if (groupName.indexOf('full member') > -1 && groupName.indexOf('ingyo')) {
+                        if (groupName.indexOf('full member') > -1 && groupName.indexOf('ingyo') > -1) {
                             results.full_ingyo.number++;
                         }
-                        if (groupName.indexOf('full member') > -1 && groupName.indexOf('nyc')) {
+                        if (groupName.indexOf('full member') > -1 && groupName.indexOf('nyc') > -1) {
                             results.full_nyc.number++;
                         }
-                        if (groupName.indexOf('with voting right') > -1 && groupName.indexOf('ingyo')) {
+                        if (groupName.indexOf('with voting right') > -1 && groupName.indexOf('ingyo') > -1) {
                             results.vote_ingyo.number++;
                         }
-                        if (groupName.indexOf('with voting right') > -1 && groupName.indexOf('nyc')) {
+                        if (groupName.indexOf('with voting right') > -1 && groupName.indexOf('nyc') > -1) {
                             results.vote_nyc.number++;
                         }
-                        if (groupName.indexOf('candidate') > -1 && groupName.indexOf('ingyo')) {
+                        if (groupName.indexOf('candidate') > -1 && groupName.indexOf('ingyo') > -1) {
                             results.candidate_ingyo.number++;
                         }
-                        if (groupName.indexOf('candidate') > -1 && groupName.indexOf('nyc')) {
+                        if (groupName.indexOf('candidate') > -1 && groupName.indexOf('nyc') > -1) {
                             results.candidate_nyc.number++;
                         }
-                        if (groupName.indexOf('observer') > -1 && groupName.indexOf('ingyo')) {
+                        if (groupName.indexOf('observer') > -1 && groupName.indexOf('ingyo') > -1) {
                             results.observer_ingyo.number++;
                         }
-                        if (groupName.indexOf('observer') > -1 && groupName.indexOf('nyc')) {
+                        if (groupName.indexOf('observer') > -1 && groupName.indexOf('nyc') > -1) {
                             results.observer_nyc.number++;
                         }
                         if (groupName.indexOf('associate') > -1) {
