@@ -355,6 +355,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationUserGroup` (
     `title`          varchar(150) NOT NULL,
     `consultationId` int(11)               DEFAULT NULL,
     `siteId`         int(11)               DEFAULT NULL,
+    `position`       int(11)      NOT NULL DEFAULT 0,
     `selectable`     tinyint(4)   NOT NULL DEFAULT 1,
     `permissions`    text                  DEFAULT NULL
 ) ENGINE = InnoDB
