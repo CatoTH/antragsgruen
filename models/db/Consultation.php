@@ -417,7 +417,7 @@ class Consultation extends ActiveRecord
     public function setSettings(?\app\models\settings\Consultation $settings)
     {
         $this->settingsObject = $settings;
-        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
+        $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 
     public function getAmendmentNumbering(): IAmendmentNumbering

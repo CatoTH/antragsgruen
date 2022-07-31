@@ -12,7 +12,7 @@ use app\models\db\{Amendment,
     Site,
     User};
 use app\models\proposedProcedure\AgendaVoting;
-use app\models\settings\VotingData;
+use app\models\settings\{VotingData, Layout as LayoutSettings};
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class Layout
@@ -254,6 +254,11 @@ class Layout
     public static function getVotingAlternativeUserResults(VotingData $votingData): ?array
     {
         return self::callHook('getVotingAlternativeUserResults', [$votingData], null);
+    }
+
+    public static function registerAdditionalVueVotingTemplates(Consultation $consultation, LayoutSettings $layout): void
+    {
+        self::callHook('registerAdditionalVueVotingTemplates', [$consultation, $layout], null);
     }
 
     public static function printVotingAlternativeSpreadsheetResults(Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int

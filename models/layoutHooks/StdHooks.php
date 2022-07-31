@@ -417,7 +417,7 @@ class StdHooks extends Hooks
     /**
      * @param ConsultationMotionType[] $motionTypes
      */
-    public function setSidebarCreateMotionButton(string $before, $motionTypes): string
+    public function setSidebarCreateMotionButton(string $before, array $motionTypes): string
     {
         $html      = '<div class="createMotionHolder1"><div class="createMotionHolder2">';
         $htmlSmall = '';

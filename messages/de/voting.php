@@ -33,6 +33,7 @@ return [
     'results_none' => 'Es wurden noch keine Abstimmungsergebnisse veröffentlicht',
     'results_download' => 'Ergebnisse als Spreadsheet',
     'votings_none' => 'Es laufen gerade keine Abstimmungen',
+    'remaining_time' => 'Zeit',
 
     'admin_title' => 'Abstimmungen: Verwaltung',
     'admin_intro' => '<strong>Hinweis:</strong> eine Einführung und Anleitung zu den Abstimmungen gibt es auf der <a href="https://antragsgruen.de/help#abstimmungen">Hilfe-Seite</a>.',
@@ -96,6 +97,9 @@ return [
     'settings_motionassign' => 'Im Antrag anzeigen',
     'settings_motionassign_h' => 'Wenn hier ein Antrag ausgewählt wird, wird die Abstimmung auf der Antragsseite statt auf der Startseite angezeigt.',
     'settings_motionassign_none' => 'Keiner',
+    'settings_timer' => 'Zeit zum Abstimmen',
+    'settings_timer_h' => 'Falls ein Wert in Sekunden gesetzt wird, erscheint ein Countdown bei den Abstimmungen. Dies ist aber unverbindlich, die Abstimmung muss dennoch ausdrücklich händisch geschlossen werden.',
+    'settings_timer_sec' => 'Sekunden',
     'settings_save' => 'Speichern',
     'settings_delete' => 'Abstimmung löschen',
     'settings_delete_bb' => 'Soll diese Abstimmung mitsamt den abgegebenen Stimmen gelöscht werden? Die Anträge und Änderungsanträge bleiben dabei bestehen.',

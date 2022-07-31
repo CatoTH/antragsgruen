@@ -77,7 +77,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public function setSettingsObj(\app\models\settings\MotionSection $settings): void
     {
         $this->settingsObject = $settings;
-        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
+        $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 
     public function setAdminAttributes(array $data): void

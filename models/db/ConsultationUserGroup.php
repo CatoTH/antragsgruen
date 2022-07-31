@@ -14,6 +14,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property string $title
  * @property int|null $consultationId
  * @property int|null $siteId
+ * @property int $position
  * @property int $selectable
  * @property string $permissions
  *

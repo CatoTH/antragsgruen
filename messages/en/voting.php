@@ -33,6 +33,7 @@ return [
     'results_none' => 'No voting results have been published yet',
     'results_download' => 'Results as Spreadsheet',
     'votings_none' => 'No votings are open',
+    'remaining_time' => 'Voting time',
 
     'admin_title' => 'Voting administration',
     'admin_intro' => '<strong>Hint:</strong> you can find a manual for the voting functionality on the <a href="https://sandbox.motion.tools/help#advanced">help page</a>.',
@@ -96,6 +97,9 @@ return [
     'settings_motionassign' => 'Assigned to motion',
     'settings_motionassign_h' => 'If this voting is assigned to a motion, it will be shown on the motion page, not on the home page',
     'settings_motionassign_none' => 'None',
+    'settings_timer' => 'Time for voting',
+    'settings_timer_h' => 'If a number of seconds is set, a countdown appears when the voting is open. This is just informal, though - the voting still needs to be explicitly closed manually.',
+    'settings_timer_sec' => 'Seconds',
     'settings_save' => 'Save',
     'settings_delete' => 'Delete the voting',
     'settings_delete_bb' => 'Do you want to delete the voting including all cast votes? The motions and amendments will remain untouched.',

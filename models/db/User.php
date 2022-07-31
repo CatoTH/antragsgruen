@@ -358,7 +358,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function setSettingsObj(\app\models\settings\User $settings): void
     {
         $this->settingsObject = $settings;
-        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
+        $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 
     /**

@@ -1,6 +1,19 @@
 @import "variables";
 
 .votingCommon {
+  .remainingTime {
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+
+    .time {
+      font-weight: bold;
+    }
+    .over {
+      color: red;
+    }
+  }
   .votingListCommon {
     display: block;
     margin: 0;
@@ -11,6 +24,7 @@
     > li {
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
       width: 100%;
 
       padding-top: 10px;
@@ -166,6 +180,9 @@
   .votingsAdminLink {
     float: right;
   }
+  .remainingTime {
+    float: right;
+  }
 
   .votingsAdminLink + .voteList {
     border-top: solid 1px #ccc;
@@ -304,6 +321,11 @@
         margin-right: 15px;
         margin-bottom: 0;
       }
+
+      &.votesTimer label {
+        display: table;
+        max-width: 200px;
+      }
     }
   }
 }
@@ -311,14 +333,6 @@
 .votingResultTable {
   table-layout: fixed;
   width: 100%;
-
-  caption {
-    // @TODO Move into EYF plugin
-    margin-top: 15px;
-    font-size: 1.2em;
-    color: #333;
-    border-top: solid 1px #ccc;
-  }
 
   th {
     text-align: center;
