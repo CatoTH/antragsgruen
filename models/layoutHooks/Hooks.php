@@ -228,6 +228,16 @@ class Hooks
         return $before;
     }
 
+    public function getAdditionalUserAdministrationVueTemplate(string $before, Consultation $consultation): string
+    {
+        return $before;
+    }
+
+    public function registerAdditionalVueUserAdministrationTemplates(?string $before, Consultation $consultation, LayoutSettings $layout): ?string
+    {
+        return null;
+    }
+
     public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
     {
         return $before;

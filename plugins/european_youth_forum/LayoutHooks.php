@@ -18,6 +18,21 @@ class LayoutHooks extends Hooks
         return $before;
     }
 
+    public function getAdditionalUserAdministrationVueTemplate(string $before, Consultation $consultation): string
+    {
+        $result = $this;
+        ob_start();
+        require(__DIR__ . '/views/user-admin-add.vue.php');
+        return $before . ob_get_clean();
+    }
+
+    public function registerAdditionalVueUserAdministrationTemplates(?string $before, Consultation $consultation, Layout $layout): ?string
+    {
+        $layout->addVueTemplate('@app/plugins/european_youth_forum/views/user-admin.mixins.vue.php');
+
+        return null;
+    }
+
     public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
     {
         $result = $this;

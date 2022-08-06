@@ -1,8 +1,14 @@
 <?php
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+
 ob_start();
 ?>
 <div class="userAdminList">
+    <?php
+    echo \app\models\layoutHooks\Layout::getAdditionalUserAdministrationVueTemplate($controller->consultation)
+    ?>
     <section class="content" aria-label="<?= Yii::t('admin', 'siteacc_accounts_title') ?>">
         <div class="filterHolder">
             <div class="groupFilter">
@@ -117,9 +123,14 @@ $html = ob_get_clean();
         }
     });
 
+    if (window.USER_ADMIN_MIXINS === undefined) {
+        window.USER_ADMIN_MIXINS = [];
+    }
+
     __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['users', 'groups', 'urlUserLog', 'urlUserGroupLog'],
+        mixins: window.USER_ADMIN_MIXINS,
         data() {
             return {
                 changingGroupUsers: [],

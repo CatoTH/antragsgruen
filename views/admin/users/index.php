@@ -2,6 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\UserConsultationScreening;
+use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
 /**
@@ -23,6 +24,7 @@ $layout->loadVue();
 $layout->loadSelectize();
 $layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/users.vue.php');
+Layout::registerAdditionalVueUserAdministrationTemplates($controller->consultation, $layout);
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);
 $userPollUrl = UrlHelper::createUrl(['/admin/users/poll']);
