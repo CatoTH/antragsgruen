@@ -98,6 +98,7 @@ return [
     'submitted_on'                       => 'Eingereicht',
     'created_on'                         => 'Angelegt',
     'created_on_str'                     => 'Angelegt am',
+    'edited_on'                          => 'Zuletzt bearbeitet am',
     'tag_tags'                           => 'Themenbereich',
     'tag'                                => 'Themenbereich',
     'tags'                               => 'Themenbereiche',

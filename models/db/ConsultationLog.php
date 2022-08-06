@@ -154,20 +154,13 @@ class ConsultationLog extends ActiveRecord
         self::VOTING_DELETE,
     ];
 
-    /** @var null|Motion */
-    private $motion = null;
-    /** @var null|Amendment */
-    private $amendment = null;
-    /** @var null|int */
-    private $amendmentId = null;
-    /** @var null|MotionComment */
-    private $motionComment = null;
-    /** @var null|AmendmentComment */
-    private $amendmentComment = null;
-    /** @var null|VotingBlock */
-    private $votingBlock = null;
-    /** @var null|VotingQuestion */
-    private $votingQuestion = null;
+    private ?Motion $motion = null;
+    private ?Amendment $amendment = null;
+    private ?int $amendmentId = null;
+    private ?MotionComment $motionComment = null;
+    private ?AmendmentComment $amendmentComment = null;
+    private ?VotingBlock $votingBlock = null;
+    private ?VotingQuestion $votingQuestion = null;
 
     public static function tableName(): string
     {

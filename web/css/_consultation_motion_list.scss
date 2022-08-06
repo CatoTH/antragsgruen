@@ -19,6 +19,31 @@
 }
 
 .motionList {
+  .date {
+    color: #757676;
+    display: block;
+    @media (min-width: $screenMinWith) {
+      margin-left: 20px;
+    }
+    @media (max-width: $screenMinWith - 1) {
+      margin-left: 12px;
+    }
+    position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
+    margin: 0;
+    @media (max-width: $screen-sm-max) {
+      position: relative;
+      top: 0;
+      right: 0;
+      float: right;
+    }
+
+    .edited {
+      font-size: 0.8em;
+      display: inline-block;
+      padding-right: 10px;
+    }
+  }
+
   .motion {
     position: relative;
     width: 100%;
@@ -29,23 +54,8 @@
     }
 
     > .date {
-      color: #757676;
-      @media (min-width: $screenMinWith) {
-        margin-left: 20px;
-      }
-      @media (max-width: $screenMinWith - 1) {
-        margin-left: 12px;
-      }
-      position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
       top: 12px;
       right: 12px;
-      margin: 0;
-      @media screen and (max-width: $screen-sm-max) {
-        position: relative;
-        top: 0;
-        right: 0;
-        float: right;
-      }
     }
 
     > .title {
@@ -157,24 +167,8 @@
         margin-right: 5px;
       }
       > .date {
-        color: #757676;
-        display: block;
-        @media (min-width: $screenMinWith) {
-          margin-left: 20px;
-        }
-        @media (max-width: $screenMinWith - 1) {
-          margin-left: 12px;
-        }
-        position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
         top: 0;
         right: -8px;
-        margin: 0;
-        @media (max-width: $screen-sm-max) {
-          position: relative;
-          top: 0;
-          right: 0;
-          float: right;
-        }
       }
     }
   }

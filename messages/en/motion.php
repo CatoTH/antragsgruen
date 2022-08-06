@@ -98,6 +98,7 @@ return [
     'submitted_on'                  => 'Submitted',
     'created_on'                    => 'Created',
     'created_on_str'                => 'Created on',
+    'edited_on'                     => 'Last edited on',
     'tag_tags'                      => 'Tags',
     'tag'                           => 'Tag',
     'tags'                          => 'Tags',

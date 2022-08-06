@@ -12,8 +12,7 @@ class LayoutHelper
 {
     private static function getMotionLineContent(Motion $motion, Consultation $consultation): string
     {
-        $return = '';
-        $return .= '<p class="title">' . "\n";
+        $return = '<p class="title">' . "\n";
 
         $motionUrl = UrlHelper::createMotionUrl($motion);
         $return    .= '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
@@ -36,7 +35,14 @@ class LayoutHelper
         $return .= "</p>\n";
 
 
-        $return .= '<p class="date"><span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
+        $return .= '<p class="date">';
+        if ($motion->getMyConsultation()->getSettings()->showIMotionEditDate && $motion->wasContentEdited()) {
+            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit"
+                aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
+            $return .= Tools::formatMysqlDateTime($motion->dateContentModification);
+            $return .= '</span>';
+        }
+        $return .= '<span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
                    Tools::formatMysqlDateWithAria($motion->dateCreation) . '</p>' . "\n";
 
         $return .= '<p class="info">';
@@ -69,8 +75,16 @@ class LayoutHelper
         $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
                    'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
 
-        $return .= '<p class="date"><span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
-                   Tools::formatMysqlDateWithAria($amendment->dateCreation) . '</p>' . "\n";
+        $return .= '<p class="date">';
+        if ($amendment->getMyConsultation()->getSettings()->showIMotionEditDate && $amendment->wasContentEdited()) {
+            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit"
+                aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
+            $return .= Tools::formatMysqlDateTime($amendment->dateContentModification);
+            $return .= '</span>';
+        }
+        $return .= '<span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
+                   Tools::formatMysqlDateWithAria($amendment->dateCreation);
+        $return .= '</p>' . "\n";
 
         $return .= '<span class="info">';
         $return .= Html::encode($amendment->getInitiatorsStr());

@@ -64,12 +64,13 @@ class Draft implements \JsonSerializable
         } else {
             $this->draftMotion = new Motion();
             $this->draftMotion->setAttributes($this->origMotion->getAttributes(), false);
-            $this->draftMotion->id             = null;
-            $this->draftMotion->dateCreation   = date('Y-m-d H:i:s');
-            $this->draftMotion->status         = Motion::STATUS_MERGING_DRAFT_PRIVATE;
-            $this->draftMotion->titlePrefix    = '';
+            $this->draftMotion->id = null;
+            $this->draftMotion->dateCreation = date('Y-m-d H:i:s');
+            $this->draftMotion->dateContentModification = date('Y-m-d H:i:s');
+            $this->draftMotion->status = Motion::STATUS_MERGING_DRAFT_PRIVATE;
+            $this->draftMotion->titlePrefix = '';
             $this->draftMotion->parentMotionId = $this->origMotion->id;
-            $this->draftMotion->slug           = null;
+            $this->draftMotion->slug = null;
         }
     }
 

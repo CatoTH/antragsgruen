@@ -10,6 +10,7 @@
   - When closing a voting, there is now an additional option to close it without publishing the results right away.
   - A separate voting page can be enabled, showing up in the menu.
   - Votings can have a timer, indicating a countdown to vote. (It is not binding though, it still needs to be closed by hand)
+- It is now possible for an admin to show the last edit date of a motion or amendment on the home page.
 
 ### Version 4.10.1 (2022-07-01)
 
