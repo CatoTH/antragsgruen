@@ -194,7 +194,6 @@ Si cela ne doit être <em>visible</em> que pour les utilisateurs ci-dessous, val
     'siteacc_add_ww'         => 'Nom Grünes Netz',
     'siteacc_add_email'      => 'Adresse Grünes Netz',
     'siteacc_add_name_title' => 'Nom d\'utilisateur Grünes Netz / adresse email',
-    'siteacc_add_name_place' => 'Nom',
     'siteacc_add_btn'        => 'Ajouter',
     'siteacc_accounts_title' => 'User accounts',
     'siteacc_email_text_pre' => 'Salut,

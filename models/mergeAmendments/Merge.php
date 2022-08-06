@@ -46,10 +46,11 @@ class Merge
             $newMotion->titlePrefix    = $this->origMotion->getNewTitlePrefix();
         }
         $newMotion->agendaItemId = $this->origMotion->agendaItemId;
-        $newMotion->cache        = '';
-        $newMotion->title        = '';
+        $newMotion->cache = '';
+        $newMotion->title = '';
         $newMotion->dateCreation = date('Y-m-d H:i:s');
-        $newMotion->status       = Motion::STATUS_DRAFT;
+        $newMotion->dateContentModification = date('Y-m-d H:i:s');
+        $newMotion->status = Motion::STATUS_DRAFT;
         if (!$newMotion->save()) {
             var_dump($newMotion->getErrors());
             throw new Internal();

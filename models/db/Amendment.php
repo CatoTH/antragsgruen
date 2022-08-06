@@ -373,7 +373,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return ConsultationSettingsMotionSection[]
      */
-    public function getTypeSections()
+    public function getTypeSections(): array
     {
         return $this->getMyMotionType()->motionSections;
     }

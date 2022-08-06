@@ -270,15 +270,16 @@ class MotionEditForm extends Model
 
         $this->createMotionVerify();
 
-        $motion->status         = Motion::STATUS_DRAFT;
+        $motion->status = Motion::STATUS_DRAFT;
         $motion->consultationId = $this->motionType->consultationId;
-        $motion->textFixed      = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
-        $motion->title          = '';
-        $motion->titlePrefix    = '';
-        $motion->dateCreation   = date('Y-m-d H:i:s');
-        $motion->motionTypeId   = $this->motionType->id;
-        $motion->cache          = '';
-        $motion->agendaItemId   = ($this->agendaItem ? $this->agendaItem->id : null);
+        $motion->textFixed = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
+        $motion->title = '';
+        $motion->titlePrefix = '';
+        $motion->dateCreation = date('Y-m-d H:i:s');
+        $motion->dateContentModification = date('Y-m-d H:i:s');
+        $motion->motionTypeId = $this->motionType->id;
+        $motion->cache = '';
+        $motion->agendaItemId = ($this->agendaItem ? $this->agendaItem->id : null);
 
         if ($motion->save()) {
             $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
@@ -386,6 +387,7 @@ class MotionEditForm extends Model
             $this->overwriteSections($motion);
 
             $motion->refreshTitle();
+            $motion->dateContentModification = date('Y-m-d H:i:s');
             $motion->save();
         } else {
             throw new FormError(\Yii::t('motion', 'err_create'));

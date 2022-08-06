@@ -21,12 +21,8 @@ class LayoutHelper
 {
     /**
      * @param ISupporter[] $initiators
-     * @param Consultation $consultation
-     * @param bool $expanded
-     * @param bool $adminMode
-     * @return string
      */
-    public static function formatInitiators($initiators, $consultation, $expanded = false, $adminMode = false)
+    public static function formatInitiators(array $initiators, Consultation $consultation, bool $expanded = false, bool $adminMode = false): string
     {
         $inits = [];
         foreach ($initiators as $supp) {
@@ -35,7 +31,7 @@ class LayoutHelper
 
             $admin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SCREENING) ||
                      User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
-            if ($admin && ($supp->contactEmail || $supp->contactPhone )) {
+            if ($admin && ($supp->contactEmail || $supp->contactPhone)) {
                 if (!$expanded) {
                     $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
                     $name .= \Yii::t('initiator', 'contact_show') . '</a>';

@@ -273,6 +273,9 @@ $handledSiteSettings = [];
             $propTitle = Yii::t('admin', 'con_am_bookmark_names');
             $boolSettingRow($settings, 'amendmentBookmarksWithNames', $handledSettings, $propTitle);
 
+            $propTitle = Yii::t('admin', 'con_imotion_edit_time');
+            $boolSettingRow($settings, 'showIMotionEditDate', $handledSettings, $propTitle);
+
             ?>
             <div class="translationService">
                 <label>

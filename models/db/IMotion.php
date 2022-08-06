@@ -26,6 +26,7 @@ use yii\helpers\Html;
  * @property string $dateCreation
  * @property string|null $datePublication
  * @property string|null $dateResolution
+ * @property string $dateContentModification
  * @property IComment[] $comments
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationAgendaItem|null $agendaItem
@@ -321,7 +322,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     abstract public function getMyAgendaItem(): ?ConsultationAgendaItem;
 
     /** @return ConsultationSettingsMotionSection[] */
-    abstract public function getTypeSections();
+    abstract public function getTypeSections(): array;
 
     /**
      * @return IMotionSection[]
@@ -439,6 +440,14 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         } else {
             return 0;
         }
+    }
+
+    public function wasContentEdited(): bool
+    {
+        $tsRef = $this->getTimestamp();
+        $tsMod = Tools::dateSql2timestamp($this->dateContentModification);
+
+        return $tsMod > $tsRef;
     }
 
     abstract public function isSupportingPossibleAtThisStatus(): bool;

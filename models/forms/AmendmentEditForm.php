@@ -237,18 +237,19 @@ class AmendmentEditForm extends Model
 
         $this->createAmendmentVerify();
 
-        $amendment->status            = Motion::STATUS_DRAFT;
-        $amendment->statusString      = '';
-        $amendment->motionId          = $this->motion->id;
-        $amendment->textFixed         = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
-        $amendment->titlePrefix       = '';
-        $amendment->dateCreation      = date('Y-m-d H:i:s');
-        $amendment->changeEditorial   = $this->editorial;
+        $amendment->status = Motion::STATUS_DRAFT;
+        $amendment->statusString = '';
+        $amendment->motionId = $this->motion->id;
+        $amendment->textFixed = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
+        $amendment->titlePrefix = '';
+        $amendment->dateCreation = date('Y-m-d H:i:s');
+        $amendment->dateContentModification = date('Y-m-d H:i:s');
+        $amendment->changeEditorial = $this->editorial;
         $amendment->changeExplanation = $this->reason;
         $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
-        $amendment->agendaItemId      = ($this->agendaItem ? $this->agendaItem->id : null);
-        $amendment->changeText        = '';
-        $amendment->cache             = '';
+        $amendment->agendaItemId = ($this->agendaItem ? $this->agendaItem->id : null);
+        $amendment->changeText = '';
+        $amendment->cache = '';
 
         if ($amendment->save()) {
             $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
@@ -348,6 +349,7 @@ class AmendmentEditForm extends Model
                 $clonedSection->save();
             }
 
+            $amendment->dateContentModification = date('Y-m-d H:i:s');
             $amendment->save();
         } else {
             throw new FormError(\Yii::t('base', 'err_unknown'));

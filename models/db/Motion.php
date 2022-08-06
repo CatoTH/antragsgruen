@@ -284,15 +284,12 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return ConsultationSettingsMotionSection[]
      */
-    public function getTypeSections()
+    public function getTypeSections(): array
     {
         return $this->getMyMotionType()->motionSections;
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['consultationId', 'motionTypeId'], 'required'],
@@ -417,7 +414,7 @@ class Motion extends IMotion implements IRSSItem
      *
      * @return Amendment[]
      */
-    public function getAmendmentsRelevantForCollisionDetection($exclude = null)
+    public function getAmendmentsRelevantForCollisionDetection(?array $exclude = null): array
     {
         $amendments = [];
         foreach ($this->amendments as $amendment) {

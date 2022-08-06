@@ -142,8 +142,7 @@ if ($adminMode) {
         <div class="col-md-4">
             <input type="text" name="initiatorSetUsername" id="initiatorSetUsername" class="form-control"
                    value="<?= Html::encode($initiator->user ? $initiator->user->getAuthUsername() : '') ?>"
-                   title="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_title')) ?>"
-                   placeholder="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_place')) ?>">
+                   title="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_title')) ?>">
         </div>
     </div>
     <?php
