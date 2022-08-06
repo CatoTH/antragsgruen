@@ -58,9 +58,9 @@
         "remove-trailing-separator": "^1.1.0"
     },
     "browserslist": [
-        ">1%",
+        ">0.5%",
         "last 10 versions",
-        "IE 9",
-        "Firefox 3"
+        "Firefox ESR",
+        "not dead"
     ]
 }
