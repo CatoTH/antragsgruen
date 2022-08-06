@@ -497,16 +497,13 @@ class MotionController extends Base
     /**
      * URL: /[consultationPrefix]/[motionPrefix]
      *
-     * @param string $prefix
-     *
-     * @return \yii\console\Response|Response
      * @throws NotFoundHttpException
      */
-    public function actionGotoPrefix($prefix)
+    public function actionGotoPrefix(string $prefix): Response
     {
         $redirect = $this->guessRedirectByPrefix($prefix);
         if ($redirect) {
-            return \Yii::$app->response->redirect($redirect);
+            return $this->getHttpResponse()->redirect($redirect);
         }
         throw new NotFoundHttpException();
     }

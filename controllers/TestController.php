@@ -18,8 +18,8 @@ class TestController extends Base
             die("Only accessible from localhost");
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         switch ($action) {
             case 'set-amendment-status':

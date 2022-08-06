@@ -92,10 +92,7 @@ class ConsultationController extends Base
     }
 
 
-    /**
-     * @return string
-     */
-    public function actionFeedmotions()
+    public function actionFeedmotions(): string
     {
         $newest = Motion::getNewestByConsultation($this->consultation, 20);
 
@@ -113,19 +110,16 @@ class ConsultationController extends Base
             $motion->addToFeed($feed);
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/xml');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/xml');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $feed->getFeed();
     }
 
-    /**
-     * @return string
-     */
-    public function actionFeedamendments()
+    public function actionFeedamendments(): string
     {
         $newest = Amendment::getNewestByConsultation($this->consultation, 20);
 
@@ -143,19 +137,16 @@ class ConsultationController extends Base
             $amend->addToFeed($feed);
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/xml');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/xml');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $feed->getFeed();
     }
 
-    /**
-     * @return string
-     */
-    public function actionFeedcomments()
+    public function actionFeedcomments(): string
     {
         $newest = IComment::getNewestByConsultation($this->consultation, 20);
 
@@ -173,19 +164,16 @@ class ConsultationController extends Base
             $comm->addToFeed($feed);
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/xml');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/xml');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $feed->getFeed();
     }
 
-    /**
-     * @return string
-     */
-    public function actionFeedall()
+    public function actionFeedall(): string
     {
         $items = array_merge(
             Motion::getNewestByConsultation($this->consultation, 20),
@@ -214,16 +202,16 @@ class ConsultationController extends Base
             $item->addToFeed($feed);
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/xml');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/xml');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $feed->getFeed();
     }
 
-    public function actionNotifications()
+    public function actionNotifications(): string
     {
         $this->forceLogin();
 
@@ -373,10 +361,7 @@ class ConsultationController extends Base
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionProposedProcedure()
+    public function actionProposedProcedure(): string
     {
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
@@ -404,13 +389,10 @@ class ConsultationController extends Base
         ]));
     }
 
-    /**
-     * @return string
-     */
-    public function actionProposedProcedureAjax()
+    public function actionProposedProcedureAjax(): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $proposalFactory = new Factory($this->consultation, false);
 
@@ -425,7 +407,7 @@ class ConsultationController extends Base
         ]);
     }
 
-    public function actionCollecting()
+    public function actionCollecting(): string
     {
         if (!$this->consultation->getSettings()->collectingPage) {
             return $this->showErrorpage(404, 'This site is not available');
@@ -461,8 +443,8 @@ class ConsultationController extends Base
 
     public function actionDebugbarAjax(): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         switch (\Yii::$app->request->post('action')) {
             case 'close':

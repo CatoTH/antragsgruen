@@ -430,8 +430,8 @@ trait MotionActionsTrait
      */
     public function actionDelProposalComment($motionSlug)
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->getMotionWithCheck($motionSlug);
         if (!$motion) {
@@ -455,16 +455,16 @@ trait MotionActionsTrait
      */
     public function actionSaveProposalStatus($motionSlug)
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->response->statusCode = 404;
+            $this->getHttpResponse()->statusCode = 404;
             return 'Motion not found';
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            \Yii::$app->response->statusCode = 403;
+            $this->getHttpResponse()->statusCode = 403;
             return 'Not permitted to change the status';
         }
 
@@ -599,7 +599,7 @@ trait MotionActionsTrait
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->motionId     = $motion->id;
             if (!$adminComment->save()) {
-                \Yii::$app->response->statusCode = 500;
+                $this->getHttpResponse()->statusCode = 500;
                 $response['success']             = false;
                 return json_encode($response);
             }

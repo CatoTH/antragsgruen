@@ -52,11 +52,11 @@ class AmendmentController extends Base
         }
 
         $filename                    = $amendment->getFilenameBase(false) . '.pdf';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
@@ -93,10 +93,10 @@ class AmendmentController extends Base
             $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
@@ -129,11 +129,11 @@ class AmendmentController extends Base
         }
 
         $filename                    = $amendment->getFilenameBase(false) . '.odt';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $this->renderPartial('view_odt', ['amendment' => $amendment]);
@@ -496,17 +496,17 @@ class AmendmentController extends Base
      */
     public function actionSaveProposalStatus($motionSlug, $amendmentId)
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            \Yii::$app->response->statusCode = 404;
+            $this->getHttpResponse()->statusCode = 404;
             return 'Amendment not found';
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            \Yii::$app->response->statusCode = 403;
+            $this->getHttpResponse()->statusCode = 403;
             return 'Not permitted to change the status';
         }
 
@@ -646,7 +646,7 @@ class AmendmentController extends Base
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->amendmentId  = $amendment->id;
             if (!$adminComment->save()) {
-                \Yii::$app->response->statusCode = 500;
+                $this->getHttpResponse()->statusCode = 500;
                 $response['success']             = false;
                 return json_encode($response);
             }
@@ -676,11 +676,11 @@ class AmendmentController extends Base
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            \Yii::$app->response->statusCode = 404;
+            $this->getHttpResponse()->statusCode = 404;
             return 'Amendment not found';
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            \Yii::$app->response->statusCode = 403;
+            $this->getHttpResponse()->statusCode = 403;
             return 'Not permitted to change the status';
         }
 
@@ -733,20 +733,20 @@ class AmendmentController extends Base
      */
     public function actionEditProposedChangeCheck($motionSlug, $amendmentId)
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            \Yii::$app->response->statusCode = 404;
+            $this->getHttpResponse()->statusCode = 404;
             return json_encode([
                 'error' => 'Amendment not found',
                 'collisions' => [],
             ]);
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            \Yii::$app->response->statusCode = 403;
+            $this->getHttpResponse()->statusCode = 403;
             return json_encode([
                 'error' => 'Not permitted to change the status',
                 'collisions' => [],
@@ -817,7 +817,7 @@ class AmendmentController extends Base
             ])->one();
 
             if ($amendment && $amendment->isReadable()) {
-                return \Yii::$app->response->redirect($amendment->getLink());
+                return $this->getHttpResponse()->redirect($amendment->getLink());
             }
         } catch (\Exception $e) {
             throw new NotFoundHttpException();

@@ -35,8 +35,8 @@ class VotingController extends Base
 
     private function getError(string $message): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         return json_encode([
             'success' => false,
@@ -193,19 +193,19 @@ class VotingController extends Base
         $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
         $agendaVoting = AgendaVoting::getFromVotingBlock($votingBlock);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
         $fileNameBase = 'voting-results-' . Tools::sanitizeFilename($votingBlock->title, true);
         switch ($format) {
             case 'ods':
-                \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
-                \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($fileNameBase) . '.ods"');
+                $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+                $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($fileNameBase) . '.ods"');
                 break;
             case 'xlsx':
-                \Yii::$app->response->headers->add('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($fileNameBase) . '.xslx"');
+                $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($fileNameBase) . '.xslx"');
                 break;
             default:
-                \Yii::$app->response->headers->add('Content-Type', 'text/html');
+                $this->getHttpResponse()->headers->add('Content-Type', 'text/html');
         }
 
         return $this->renderPartial('admin-download-results', ['agendaVoting' => $agendaVoting, 'format' => $format]);
@@ -217,8 +217,8 @@ class VotingController extends Base
     {
         $this->handleRestHeaders(['GET'], true);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         if ($assignedToMotionId) {
             $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);

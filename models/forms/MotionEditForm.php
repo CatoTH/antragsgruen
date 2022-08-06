@@ -9,28 +9,22 @@ use yii\base\Model;
 
 class MotionEditForm extends Model
 {
-    /** @var ConsultationMotionType */
-    public $motionType;
-
-    /** @var ConsultationAgendaItem|null */
-    public $agendaItem;
+    public ConsultationMotionType $motionType;
+    public ?ConsultationAgendaItem $agendaItem;
 
     /** @var MotionSupporter[] */
-    public $supporters = [];
-
-    /** @var array */
-    public $tags = [];
+    public array $supporters = [];
 
     /** @var MotionSection[] */
-    public $sections = [];
+    public array $sections = [];
 
-    /** @var null|int */
-    public $motionId = null;
+    public array $tags = [];
+    public ?int $motionId = null;
 
     /** @var string[] */
-    public $fileUploadErrors = [];
+    public array $fileUploadErrors = [];
 
-    private $adminMode = false;
+    private bool $adminMode = false;
 
     public function __construct(ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, ?Motion $motion)
     {
@@ -71,11 +65,7 @@ class MotionEditForm extends Model
         }
     }
 
-
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'type'], 'number'],
@@ -205,7 +195,7 @@ class MotionEditForm extends Model
      * @param string[] $newHtmls
      * @param array $overrides
      */
-    public function updateTextRewritingAmendments(Motion $motion, $newHtmls, $overrides = []): bool
+    public function updateTextRewritingAmendments(Motion $motion, array $newHtmls, array $overrides = []): bool
     {
         foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -245,7 +235,7 @@ class MotionEditForm extends Model
     /**
      * @param string[] $newHtmls
      */
-    public function setSectionTextWithoutSaving(Motion $motion, $newHtmls): void
+    public function setSectionTextWithoutSaving(Motion $motion, array $newHtmls): void
     {
         foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
             $section->setData($newHtmls[$section->sectionId]);

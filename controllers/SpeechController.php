@@ -36,8 +36,8 @@ class SpeechController extends Base
     {
         $this->handleRestHeaders(['GET'], true);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $user       = User::getCurrentUser();
         $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
@@ -55,8 +55,8 @@ class SpeechController extends Base
     {
         $this->handleRestHeaders(['POST'], true);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         if (!$user) {
@@ -104,8 +104,8 @@ class SpeechController extends Base
     {
         $this->handleRestHeaders(['POST'], true);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         $cookieUser = CookieUser::getFromCookieOrCache();
@@ -135,8 +135,8 @@ class SpeechController extends Base
 
     private function getQueueAndCheckMethodAndPermission(string $queueId): SpeechQueue
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {

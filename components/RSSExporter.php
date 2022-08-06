@@ -6,72 +6,46 @@ use yii\helpers\Html;
 
 class RSSExporter
 {
-    private $image       = null;
-    private $title       = null;
-    private $language    = null;
-    private $baseLink    = null;
-    private $feedLink    = null;
-    private $description = null;
+    private ?string $image       = null;
+    private ?string $title       = null;
+    private ?string $language    = null;
+    private ?string $baseLink    = null;
+    private ?string $feedLink    = null;
+    private ?string $description = null;
 
+    private array $entries = [];
 
-    private $entries = [];
-
-    /**
-     * @param string $image
-     */
-    public function setImage($image)
+    public function setImage(string $image): void
     {
         $this->image = $image;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @param string $language
-     */
-    public function setLanguage($language)
+    public function setLanguage(string $language): void
     {
         $this->language = $language;
     }
 
-    /**
-     * @param string $baseLink
-     */
-    public function setBaseLink($baseLink)
+    public function setBaseLink(string $baseLink): void
     {
         $this->baseLink = $baseLink;
     }
 
-    /**
-     * @param string $feedLink
-     */
-    public function setFeedLink($feedLink)
+    public function setFeedLink(string $feedLink): void
     {
         $this->feedLink = $feedLink;
     }
 
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * @param string $link
-     * @param string $title
-     * @param string $author
-     * @param string $description
-     * @param string $date
-     */
-    public function addEntry($link, $title, $author, $description, $date)
+    public function addEntry(string $link, string $title, string $author, string $description, string $date): void
     {
         $this->entries[] = [
             'link'        => $link,
@@ -82,16 +56,12 @@ class RSSExporter
         ];
     }
 
-    /**
-     *
-     */
-    public function getFeed()
+    public function getFeed(): string
     {
         $path = parse_url($this->baseLink);
         $rootUri = $path['scheme'] . '://' . $path['host'];
-        $return   = '';
 
-        $return .= '<?xml version="1.0" encoding="UTF-8"?>';
+        $return = '<?xml version="1.0" encoding="UTF-8"?>';
         $return .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>';
         $return .= '<atom:link href="' . Html::encode($this->feedLink) . '" rel="self" type="application/rss+xml" />
             <title>' . Html::encode($this->title) . '</title>
