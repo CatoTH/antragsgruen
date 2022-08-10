@@ -42,7 +42,7 @@ return [
 <br>
 Du kannst Interessierten folgenden Link schicken, damit sie deinen Änderungsantrag dort unterstützen können:',
     'confirmed_support_phase_addfemale' => ', darunter min. %MIN% Frauen',
-    'confirmed_support_phase_ww'        => 'Über diesen Link kann dein Änderungsantrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Änderungsantrag stellen.<br>
+    'confirmed_support_phase_ww'        => 'Über diesen Link kann dein Änderungsantrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit dir gemeinsam den Änderungsantrag stellen.<br>
 <br>
 Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ihren Zugangsdaten für das Grüne Netz einloggen und darüber verifizieren müssen.',
     'submitted_adminnoti_title'         => 'Neuer Änderungsantrag',
