@@ -59,7 +59,7 @@ return [
     'del_confirm'               => 'Löschen bestätigen',
     'del_do'                    => 'Löschen',
     'noti_greeting'             => 'Hallo %NAME%,',
-    'noti_bye'                  => "Liebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
+    'noti_bye'                  => "Mit freundlichen Grüßen,\n   Das Antragsgrün-Team\n\n--\n\n" .
         "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n",
     'noti_new_motion_title'     => '[Antragsgrün] Neuer Antrag:',
     'noti_new_motion_body'      => "Es wurde ein neuer Antrag eingereicht:\nAnlass: %CONSULTATION%\n" .
@@ -117,12 +117,12 @@ return [
         "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n" .
         "%BEST_LINK%\n\n"
         . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %CODE%\n\n"
-        . "Liebe Grüße,\n\tDas Antragsgrün-Team.",
+        . "Mit freundlichen Grüßen,\n\tDas Antragsgrün-Team.",
 
     'access_denied_title'  => 'Kein Zugriff',
     'access_denied_body'   => 'Dein Zugang ist für diese Seite nicht freigeschaltet.',
     'access_granted_email' => "Hallo,\n\ndu hast soeben Zugriff auf diese Veranstaltung bekommen:\n%LINK%\n\n"
-        . "Liebe Grüße,\n\tDas Antragsgrün-Team.",
+        . "Mit freundlichen Grüßen,\n\tDas Antragsgrün-Team.",
 
     'confirm_title'     => 'Zugang bestätigen',
     'confirm_username'  => 'E-Mail-Adresse / Benutzer*innenname',
