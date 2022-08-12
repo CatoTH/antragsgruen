@@ -10,6 +10,8 @@ $user = User::getCurrentUser();
 $consultation = Consultation::getCurrent();
 $iAmAdmin = ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS));
 
+$alternativeResultTemplate = Layout::getVotingAlternativeResults($consultation);
+
 ob_start();
 
 ?>
@@ -53,6 +55,15 @@ ob_start();
                                 aria-label="<?= Html::encode(Yii::t('voting', 'voting_show_amend')) ?>"></span></a><br>
                         <span class="amendmentBy" v-if="item.initiators_html"><?= Yii::t('voting', 'voting_by') ?> {{ item.initiators_html }}</span>
                     </div>
+                    <?php
+                    if ($alternativeResultTemplate === null) {
+                        ?>
+                        <div v-if="votingHasQuorum" class="quorumCounter">
+                            {{ quorumCounter(groupedVoting) }}
+                        </div>
+                        <?php
+                    }
+                    ?>
                     <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
                         <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
                         <?= Yii::t('voting', 'voting_show_votes') ?>
@@ -85,13 +96,10 @@ ob_start();
                         </button>
                     </div>
                 </template>
+                <?php
+                if ($alternativeResultTemplate === null) {
+                ?>
                 <div class="votesDetailed" v-if="isClosed && resultsPublic">
-                    <?php
-                    $alternativeResults = Layout::getVotingAlternativeAdminResults($consultation);
-                    if ($alternativeResults) {
-                        echo $alternativeResults;
-                    } else {
-                    ?>
                     <div v-if="groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0]">
                         <table class="votingTable votingTableSingle">
                             <thead>
@@ -112,10 +120,10 @@ ob_start();
                             </tbody>
                         </table>
                     </div>
-                    <?php
-                    }
-                    ?>
                 </div>
+                <?php
+                }
+                ?>
                 <div class="result" v-if="isClosed && (votingHasMajority || votingHasQuorum)">
                     <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -134,6 +142,11 @@ ob_start();
                         <?= Yii::t('voting', 'status_quorum_missed') ?>
                     </div>
                 </div>
+                <?php
+                if ($alternativeResultTemplate) {
+                    echo $alternativeResultTemplate;
+                }
+                ?>
             </li>
             <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
                 <voting-vote-list :voting="voting" :groupedVoting="groupedVoting" :showNotVotedList="false"></voting-vote-list>

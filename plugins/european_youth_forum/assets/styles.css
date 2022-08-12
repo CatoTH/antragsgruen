@@ -16,6 +16,15 @@
 .yfjVotingRounds .noVotingRights .glyphicon {
     opacity: 0;
 }
+.yfjVotingRounds ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+.yfjVotingRounds li {
+    margin: 0;
+    padding: 5px 0;
+}
 
 .yfjVotingResultTable caption, .yfjRollCallResultTable caption {
     margin-top: 15px;

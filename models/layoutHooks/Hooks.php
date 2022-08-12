@@ -238,7 +238,7 @@ class Hooks
         return null;
     }
 
-    public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
+    public function getVotingAlternativeResults(?string $before, Consultation $consultation): ?string
     {
         return $before;
     }

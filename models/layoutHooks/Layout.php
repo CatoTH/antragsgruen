@@ -256,9 +256,9 @@ class Layout
         self::callHook('registerAdditionalVueUserAdministrationTemplates', [$consultation, $layout], null);
     }
 
-    public static function getVotingAlternativeAdminResults(Consultation $consultation): ?string
+    public static function getVotingAlternativeResults(Consultation $consultation): ?string
     {
-        return self::callHook('getVotingAlternativeAdminResults', [$consultation], null);
+        return self::callHook('getVotingAlternativeResults', [$consultation], null);
     }
 
     public static function getVotingAlternativeUserResults(VotingData $votingData): ?array

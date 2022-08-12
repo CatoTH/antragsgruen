@@ -33,11 +33,11 @@ class LayoutHooks extends Hooks
         return null;
     }
 
-    public function getVotingAlternativeAdminResults(?string $before, Consultation $consultation): ?string
+    public function getVotingAlternativeResults(?string $before, Consultation $consultation): ?string
     {
         $result = $this;
         ob_start();
-        require(__DIR__ . '/views/voting-result-admin.vue.php');
+        require(__DIR__ . '/views/voting-result.vue.php');
         return (string)ob_get_clean();
     }
 
