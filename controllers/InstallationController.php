@@ -2,13 +2,10 @@
 
 namespace app\controllers;
 
-use app\components\RequestContext;
-use app\components\yii\MessageSource;
-use app\components\UrlHelper;
+use app\components\{yii\MessageSource, RequestContext, UrlHelper};
 use app\models\db\User;
 use app\models\exceptions\Internal;
 use app\models\forms\{AntragsgruenInitDb, AntragsgruenInitSite};
-use Yii;
 use yii\helpers\{Html, Url};
 use yii\web\Response;
 
@@ -21,12 +18,12 @@ class InstallationController extends Base
     {
         if (in_array($action->id, ['index', 'db-test'])) {
             // No cookieValidationKey is set in the beginning
-            Yii::$app->request->enableCookieValidation = false;
+            $this->getHttpRequest()->enableCookieValidation = false;
             $this->enableCsrfValidation                 = false;
             return parent::beforeAction($action);
         }
 
-        $currentHost = parse_url(Yii::$app->request->getAbsoluteUrl(), PHP_URL_HOST);
+        $currentHost = parse_url($this->getHttpRequest()->getAbsoluteUrl(), PHP_URL_HOST);
         $managerHost = parse_url($this->getParams()->domainPlain, PHP_URL_HOST);
         if ($currentHost !== $managerHost) {
             return $this->redirect($this->getParams()->domainPlain, 301);
@@ -36,18 +33,14 @@ class InstallationController extends Base
     }
 
 
-    /**
-     * @param AntragsgruenInitDb $dbForm
-     * @param string $delInstallFileCmd
-     * @param string $makeEditabeCommand
-     * @param string $configDir
-     * @param boolean $editable
-     * @return string
-     */
-    private function initDb($dbForm, $delInstallFileCmd, $makeEditabeCommand, $configDir, $editable)
+    private function initDb(AntragsgruenInitDb $dbForm, string $delInstallFileCmd, string $makeEditabeCommand, string $configDir, bool $editable): string
     {
         if (!version_compare(PHP_VERSION, ANTRAGSGRUEN_MIN_PHP_VERSION, '>=')) {
-            $phpVersionWarning = str_replace('%VERSION%', phpversion(), Yii::t('manager', 'err_php_version'));
+            $phpVersionWarning = str_replace(
+                ['%MIN_VERSION%', '%CURR_VERSION%'],
+                [ANTRAGSGRUEN_MIN_PHP_VERSION, phpversion()],
+                \Yii::t('manager', 'err_php_version')
+            );
         } else {
             $phpVersionWarning = null;
         }
@@ -62,20 +55,14 @@ class InstallationController extends Base
         ]);
     }
 
-    /**
-     * @param string $installFile
-     * @param string $delInstallFileCmd
-     * @param string $configDir
-     * @return string
-     */
-    private function createSite($installFile, $delInstallFileCmd, $configDir)
+    private function createSite(string $installFile, string $delInstallFileCmd, string $configDir): string
     {
         $configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
         $siteForm   = new AntragsgruenInitSite($configFile);
 
         if ($this->isPostSet('create')) {
             try {
-                $post = Yii::$app->request->post();
+                $post = $this->getHttpRequest()->post();
                 $siteForm->setAttributes($post['SiteCreateForm']);
                 $siteForm->prettyUrls = isset($post['SiteCreateForm']['prettyUrls']);
 
@@ -111,22 +98,16 @@ class InstallationController extends Base
         ]);
     }
 
-    /**
-     * @param string $language
-     * @return string
-     * @throws Internal
-     * @throws \yii\base\ExitException
-     */
-    public function actionIndex($language = '')
+    public function actionIndex(string $language = ''): string
     {
         $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
         $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
 
         if (!file_exists($installFile)) {
-            $msg = Yii::t('manager', 'already_created_reinit') . '<br><br>';
+            $msg = \Yii::t('manager', 'already_created_reinit') . '<br><br>';
             $url = Url::toRoute('manager/siteconfig');
-            $msg .= Html::a(Yii::t('manager', 'created_goon_std_config'), $url, ['class' => 'btn btn-primary']);
+            $msg .= Html::a(\Yii::t('manager', 'created_goon_std_config'), $url, ['class' => 'btn btn-primary']);
             $msg = str_replace('%FILE%', Html::encode($installFile), $msg);
             $this->showErrorpage(403, $msg);
             return '';
@@ -160,11 +141,11 @@ class InstallationController extends Base
         }
         if (isset(MessageSource::getBaseLanguages()[$language])) {
             $dbForm->language    = $language;
-            Yii::$app->language = $language;
+            \Yii::$app->language = $language;
         }
 
 
-        $post = Yii::$app->request->post();
+        $post = $this->getHttpRequest()->post();
         if ($this->isPostSet('saveDb')) {
             $dbForm->setAttributes($post);
 
@@ -173,9 +154,9 @@ class InstallationController extends Base
 
                 if ($dbForm->sqlCreateTables && $dbForm->verifyDBConnection(false) && !$dbForm->tablesAreCreated()) {
                     $dbForm->createTables();
-                    $this->getHttpSession()->setFlash('success', Yii::t('manager', 'msg_site_created'));
+                    $this->getHttpSession()->setFlash('success', \Yii::t('manager', 'msg_site_created'));
                 } else {
-                    $this->getHttpSession()->setFlash('success', Yii::t('manager', 'msg_config_saved'));
+                    $this->getHttpSession()->setFlash('success', \Yii::t('manager', 'msg_config_saved'));
                 }
 
                 $dbForm->overwriteYiiConnection();
@@ -195,14 +176,10 @@ class InstallationController extends Base
         }
     }
 
-    /**
-     * @return string
-     * @throws Internal
-     */
-    public function actionDbTest()
+    public function actionDbTest(): string
     {
-        yii::$app->response->format = Response::FORMAT_RAW;
-        yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
@@ -212,7 +189,7 @@ class InstallationController extends Base
             throw new Internal('Installation mode not activated');
         }
 
-        $post = Yii::$app->request->post();
+        $post = $this->getHttpRequest()->post();
         $form = new AntragsgruenInitDb($configFile);
         $form->setAttributes($post);
         if (isset($post['sqlPassword']) && $post['sqlPassword'] != '') {

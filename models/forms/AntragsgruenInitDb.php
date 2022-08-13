@@ -12,39 +12,26 @@ class AntragsgruenInitDb extends Model
 {
     use AntragsgruenInitConfigwriteTrait;
 
-    /** @var string */
-    public $language = 'en';
+    public string $language = 'en';
 
-    /** @var string */
-    public $sqlType        = 'mysql';
-    /** @var string */
-    public $sqlHost;
-    /** @var string */
-    public $sqlUsername;
-    /** @var string */
-    public $sqlPassword;
-    /** @var int */
-    public $sqlPort        = 3306;
-    /** @var string */
-    public $sqlDB;
-    /** @var string */
-    public $sqlTablePrefix = '';
+    public string $sqlType        = 'mysql';
+    public ?string $sqlHost = null;
+    public ?string $sqlUsername = null;
+    public ?string $sqlPassword = null;
+    public ?int $sqlPort        = 3306;
+    public ?string $sqlDB = null;
+    public string $sqlTablePrefix = '';
 
-    /** @var bool */
-    public $prettyUrls;
+    public ?bool $prettyUrls;
 
-    /** @var string */
-    public $adminUsername;
-    /** @var string */
-    public $adminPassword;
+    public ?string $adminUsername = null;
+    public ?string $adminPassword = null;
 
-    /** @var bool */
-    public $sqlCreateTables = true;
+    public bool $sqlCreateTables = true;
 
     /** @var int[] */
-    public $adminIds;
-    /** @var User */
-    public $adminUser;
+    public ?array $adminIds = null;
+    public ?User $adminUser = null;
 
 
     public function __construct(string $configFile)
@@ -56,7 +43,7 @@ class AntragsgruenInitDb extends Model
         } else {
             $this->setDatabaseFromParams($config->dbConnection);
         }
-        $this->adminIds = ($config->adminUserIds ? $config->adminUserIds : []);
+        $this->adminIds = ($config->adminUserIds ?: []);
         $this->language = $config->baseLanguage;
     }
 
@@ -114,10 +101,7 @@ class AntragsgruenInitDb extends Model
         }
     }
 
-    /**
-     * @param array $params
-     */
-    private function setDatabaseFromParams($params): void
+    private function setDatabaseFromParams(?array $params): void
     {
         if (!is_array($params) || !isset($params['dsn'])) {
             return;

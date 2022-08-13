@@ -92,7 +92,7 @@ return [
     'agenda_filter'                      => 'Tagesordnung',
     'agenda_item'                        => 'Tagesordnungspunkt',
     'resolution'                         => 'beschlossen',
-    'resolution_on'                      => 'beschlossen am',
+    'resolution_on'                      => 'dort beschlossen am',
     'Resolution'                         => 'Beschlossen',
     'resoluted_on'                       => 'Beschlossen am',
     'submitted_on'                       => 'Eingereicht',
