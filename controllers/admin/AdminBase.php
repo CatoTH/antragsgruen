@@ -51,7 +51,7 @@ class AdminBase extends Base
             return;
         }
 
-        if (\Yii::$app->request->get('activate') === 'procedure') {
+        if ($this->getHttpRequest()->get('activate') === 'procedure') {
             foreach ($this->consultation->motionTypes as $motionType) {
                 $settings                       = $motionType->getSettingsObj();
                 $settings->hasProposedProcedure = true;
@@ -61,7 +61,7 @@ class AdminBase extends Base
 
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_functions_activated_t'));
         }
-        if (\Yii::$app->request->get('activate') === 'responsibilities') {
+        if ($this->getHttpRequest()->get('activate') === 'responsibilities') {
             foreach ($this->consultation->motionTypes as $motionType) {
                 $settings                      = $motionType->getSettingsObj();
                 $settings->hasResponsibilities = true;
@@ -71,7 +71,7 @@ class AdminBase extends Base
 
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_functions_activated_t'));
         }
-        if (\Yii::$app->request->get('activate') === 'openslides') {
+        if ($this->getHttpRequest()->get('activate') === 'openslides') {
             $settings = $this->consultation->getSettings();
             $settings->openslidesExportEnabled = true;
             $this->consultation->setSettings($settings);

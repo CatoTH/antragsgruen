@@ -48,7 +48,7 @@ class IndexController extends AdminBase
 
         if ($this->isPostSet('save')) {
             $this->saveTags($model);
-            $post = \Yii::$app->request->post();
+            $post = $this->getHttpRequest()->post();
 
             $data = $post['consultation'];
             $model->setAttributes($data);
@@ -144,7 +144,7 @@ class IndexController extends AdminBase
         $consultation = $this->consultation;
 
         if ($this->isPostSet('save')) {
-            $post = \Yii::$app->request->post();
+            $post = $this->getHttpRequest()->post();
 
             $settingsInput = $post['settings'] ?? [];
             $settings      = $consultation->getSettings();
@@ -232,7 +232,7 @@ class IndexController extends AdminBase
     private function saveTags(Consultation $consultation): void
     {
         $foundTags = [];
-        $newTags   = \Yii::$app->request->post('tags', []);
+        $newTags   = $this->getHttpRequest()->post('tags', []);
         foreach ($newTags as $pos => $newTag) {
             $tag = $consultation->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $newTag, $pos);
             if ($tag->position !== $pos) {
@@ -258,13 +258,13 @@ class IndexController extends AdminBase
         $consultation = $this->consultation;
 
         if ($this->isPostSet('save') && $this->isPostSet('wordingBase')) {
-            $consultation->wordingBase = \Yii::$app->request->post('wordingBase');
+            $consultation->wordingBase = $this->getHttpRequest()->post('wordingBase');
             $consultation->save();
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         if ($this->isPostSet('save') && $this->isPostSet('string')) {
-            foreach (\Yii::$app->request->post('string') as $key => $val) {
+            foreach ($this->getHttpRequest()->post('string') as $key => $val) {
                 $key   = urldecode($key);
                 $found = false;
                 foreach ($consultation->texts as $text) {
@@ -304,7 +304,7 @@ class IndexController extends AdminBase
         $motionType = $consultation->getMotionType(intval($motionTypeId));
 
         if ($this->isPostSet('save')) {
-            foreach (\Yii::$app->request->post('categories', []) as $categoryId => $strings) {
+            foreach ($this->getHttpRequest()->post('categories', []) as $categoryId => $strings) {
                 foreach ($strings as $key => $val) {
                     $key = urldecode($key);
                     $found = false;
@@ -354,7 +354,7 @@ class IndexController extends AdminBase
 
         $form           = new ConsultationCreateForm($site);
         $form->template = $this->consultation;
-        $post           = \Yii::$app->request->post();
+        $post           = $this->getHttpRequest()->post();
 
         if ($this->isPostSet('createConsultation')) {
             $newcon = $post['newConsultation'];
@@ -429,10 +429,10 @@ class IndexController extends AdminBase
 
     public function actionOpenslidesusers(): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'text/csv');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=Participants.csv');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'text/csv');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=Participants.csv');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         /** @var ISupporter[] $users */
         $users = [];
@@ -458,7 +458,7 @@ class IndexController extends AdminBase
         $stylesheet   = $siteSettings->getStylesheet();
 
         if ($this->isPostSet('save')) {
-            $settings = \Yii::$app->request->post('stylesheet', []);
+            $settings = $this->getHttpRequest()->post('stylesheet', []);
             foreach (Stylesheet::getAllSettings($default) as $key => $setting) {
                 switch ($setting['type']) {
                     case Stylesheet::TYPE_CHECKBOX:
@@ -504,7 +504,7 @@ class IndexController extends AdminBase
         }
 
         if ($this->isPostSet('resetTheme')) {
-            $resetDefaults = \Yii::$app->request->post('defaults', $default);
+            $resetDefaults = $this->getHttpRequest()->post('defaults', $default);
             $data = [];
             foreach (Stylesheet::getAllSettings($resetDefaults) as $key => $setting) {
                 $data[$key] = $setting['default'];
@@ -526,11 +526,11 @@ class IndexController extends AdminBase
         $msgSuccess = '';
         $msgError   = '';
 
-        if (\Yii::$app->request->post('delete') !== null) {
+        if ($this->getHttpRequest()->post('delete') !== null) {
             try {
                 $file = ConsultationFile::findOne([
                     'siteId' => $this->consultation->site->id,
-                    'id'     => \Yii::$app->request->post('id'),
+                    'id'     => $this->getHttpRequest()->post('id'),
                 ]);
                 if ($file) {
                     $file->delete();

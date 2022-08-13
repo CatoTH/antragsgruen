@@ -31,10 +31,10 @@ class AmendmentController extends AdminBase
     {
         $withdrawn = (intval($withdrawn) === 1);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list', [
             'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn),
@@ -56,10 +56,10 @@ class AmendmentController extends AdminBase
         $maxLen       = intval($maxLen);
         $textCombined = (intval($textCombined) === 1);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list_short', [
             'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn),
@@ -106,10 +106,10 @@ class AmendmentController extends AdminBase
             }
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments_pdf.zip');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=amendments_pdf.zip');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $zip->getContentAndFlush();
     }
@@ -134,27 +134,23 @@ class AmendmentController extends AdminBase
             }
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments_odt.zip');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=amendments_odt.zip');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $zip->getContentAndFlush();
     }
 
     /**
-     * @param Amendment $amendment
-     *
      * @throws \Exception
-     * @throws \Throwable
-     * @throws \Yii\db\StaleObjectException
      */
     private function saveAmendmentSupporters(Amendment $amendment)
     {
-        $names         = \Yii::$app->request->post('supporterName', []);
-        $orgas         = \Yii::$app->request->post('supporterOrga', []);
-        $genders       = \Yii::$app->request->post('supporterGender', []);
-        $preIds        = \Yii::$app->request->post('supporterId', []);
+        $names         = $this->getHttpRequest()->post('supporterName', []);
+        $orgas         = $this->getHttpRequest()->post('supporterOrga', []);
+        $genders       = $this->getHttpRequest()->post('supporterGender', []);
+        $preIds        = $this->getHttpRequest()->post('supporterId', []);
         $newSupporters = [];
         /** @var AmendmentSupporter[] $preSupporters */
         $preSupporters = [];
@@ -196,11 +192,11 @@ class AmendmentController extends AdminBase
 
     private function saveAmendmentInitiator(Amendment $motion): void
     {
-        if (\Yii::$app->request->post('initiatorSet') !== '1') {
+        if ($this->getHttpRequest()->post('initiatorSet') !== '1') {
             return;
         }
-        $setType = \Yii::$app->request->post('initiatorSetType');
-        $setUsername = \Yii::$app->request->post('initiatorSetUsername');
+        $setType = $this->getHttpRequest()->post('initiatorSetType');
+        $setUsername = $this->getHttpRequest()->post('initiatorSetUsername');
 
         switch ($setType) {
             case 'email':
@@ -246,7 +242,7 @@ class AmendmentController extends AdminBase
 
         $this->layout = 'column2';
 
-        $post = \Yii::$app->request->post();
+        $post = $this->getHttpRequest()->post();
 
         if ($this->isPostSet('screen') && $amendment->isInScreeningProcess()) {
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
@@ -319,11 +315,11 @@ class AmendmentController extends AdminBase
             $ppChanges = new ProposedProcedureChange(null);
             try {
                 $amendment->setProposalVotingPropertiesFromRequest(
-                    \Yii::$app->request->post('votingStatus', null),
-                    \Yii::$app->request->post('votingBlockId', null),
-                    \Yii::$app->request->post('votingItemBlockId', []),
-                    \Yii::$app->request->post('votingItemBlockName', ''),
-                    \Yii::$app->request->post('newBlockTitle', ''),
+                    $this->getHttpRequest()->post('votingStatus', null),
+                    $this->getHttpRequest()->post('votingBlockId', null),
+                    $this->getHttpRequest()->post('votingItemBlockId', []),
+                    $this->getHttpRequest()->post('votingItemBlockName', ''),
+                    $this->getHttpRequest()->post('newBlockTitle', ''),
                     false,
                     $ppChanges
                 );
@@ -365,10 +361,10 @@ class AmendmentController extends AdminBase
      */
     public function actionOpenslides()
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'text/csv');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=Amendments.csv');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'text/csv');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=Amendments.csv');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         $amendments = [];
         foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {

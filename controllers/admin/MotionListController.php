@@ -216,10 +216,10 @@ class MotionListController extends AdminBase
     {
         // @TODO: support filtering for motion types and withdrawn motions
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list_all', [
             'items' => $this->consultation->getAgendaWithIMotions(),
@@ -247,10 +247,10 @@ class MotionListController extends AdminBase
         }
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false) . '.ods';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . $filename);
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=' . $filename);
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         $imotions = [];
         foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $imotion) {
@@ -300,10 +300,10 @@ class MotionListController extends AdminBase
         defined('PCLZIP_TEMPORARY_DIR') or define('PCLZIP_TEMPORARY_DIR', $this->getParams()->getTmpDir());
 
         $excelMime                   = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', $excelMime);
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', $excelMime);
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         error_reporting(E_ALL & ~E_DEPRECATED); // PHPExcel ./. PHP 7
 
@@ -340,10 +340,10 @@ class MotionListController extends AdminBase
         }
 
         $filename                    = rawurlencode($motionType->titlePlural);
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'text/csv');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . $filename . '.csv');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'text/csv');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=' . $filename . '.csv');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         $motions = [];
         foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
@@ -422,10 +422,10 @@ class MotionListController extends AdminBase
             }
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_pdf.zip');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions_pdf.zip');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $zip->getContentAndFlush();
     }
@@ -478,10 +478,10 @@ class MotionListController extends AdminBase
             }
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_odt.zip');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions_odt.zip');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $zip->getContentAndFlush();
     }
