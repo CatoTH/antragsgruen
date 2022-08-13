@@ -231,6 +231,8 @@ return [
     'activity_VOTING_DELETE'              => 'Die Abstimmung wurde gelöscht',
     'activity_VOTING_QUESTION_ACCEPTED'   => 'Die Fragestellung wurde <strong>angenommen</strong>',
     'activity_VOTING_QUESTION_REJECTED'   => 'Die Fragestellung wurde <strong>abgelehent</strong>',
+    'activity_USER_ADD_TO_GROUP'          => '###USER### wurde der Gruppe „###GROUP###” hinzugefügt.',
+    'activity_USER_REMOVE_FROM_GROUP'     => '###USER### wurde aus der Gruppe „###GROUP###” entfernt.',
 
     'remaining_over'    => 'vorbei',
     'remaining_days'    => 'Tage',

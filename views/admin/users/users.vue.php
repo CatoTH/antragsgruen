@@ -46,6 +46,8 @@ ob_start();
                                  @change="setSelectedGroups($event, user)"
                                  :options="userGroupOptions"
                                  :values="selectedGroups(user)"></v-selectize>
+
+                    <small><a :href="userLogUrl(user)"><span class="glyphicon glyphicon-chevron-right"></span> <?= Yii::t('admin','siteacc_usergroup_log') ?></a></small>
                 </div>
                 <div class="groupsChangeOps" v-if="isGroupChanging(user)">
                     <button class="btn btn-link btnLinkAbort" @click="unsetGroupChanging(user)" title="<?= Yii::t('base', 'abort') ?>">
@@ -71,8 +73,10 @@ ob_start();
                         </div>
                         <div class="additional" v-if="group.description">{{ group.description }}</div>
                     </div>
-                    <div class="groupActions" v-if="group.deletable">
-                        <button class="btn btn-link btnRemove" @click="removeGroup(group)"
+                    <div class="groupActions">
+                        <small><a :href="userGroupLogUrl(group)"><span class="glyphicon glyphicon-chevron-right"></span> <?= Yii::t('admin','siteacc_usergroup_log') ?></a></small>
+
+                        <button v-if="group.deletable" class="btn btn-link btnRemove" @click="removeGroup(group)"
                                 :title="'<?= Yii::t('admin', 'siteacc_group_del') ?>'.replace(/%GROUPNAME%/, group.title)"
                                 :aria-label="'<?= Yii::t('admin', 'siteacc_group_del') ?>'.replace(/%GROUPNAME%/, group.title)">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
@@ -119,7 +123,7 @@ $html = ob_get_clean();
 
     __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['users', 'groups'],
+        props: ['users', 'groups', 'urlUserLog', 'urlUserGroupLog'],
         data() {
             return {
                 changingGroupUsers: [],
@@ -223,6 +227,12 @@ $html = ob_get_clean();
                         widget.$emit('remove-user', user);
                     }
                 });
+            },
+            userLogUrl: function (user) {
+                return this.urlUserLog.replace(/%23/g, "#").replace(/###USER###/, user.id);
+            },
+            userGroupLogUrl: function (userGroup) {
+                return this.urlUserGroupLog.replace(/%23/g, "#").replace(/###GROUP###/, userGroup.id);
             },
             escapeHtml: function (text) {
                 return text.replace(/&/g, "&amp;")

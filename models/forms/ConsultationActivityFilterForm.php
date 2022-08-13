@@ -9,21 +9,19 @@ use yii\helpers\Html;
 
 class ConsultationActivityFilterForm extends Model
 {
-    /** @var Consultation */
-    private $consultation;
+    private Consultation $consultation;
 
-    /** @var null|int */
-    private $filterForMotionId = null;
+    private ?int $filterForMotionId = null;
+    private ?int $filterForAmendmentId = null;
+    private ?int $filterForUserId = null;
+    private ?int $filterForUserGroupId = null;
 
-    /** @var null|int */
-    private $filterForAmendmentId = null;
-
-    private $entriesPerPage          = 20;
-    private $page                    = 0;
-    private $showUserInvisibleEvents = false;
+    private int $entriesPerPage = 20;
+    private int $page = 0;
+    private bool $showUserInvisibleEvents = false;
 
     /** @var null|ConsultationLog[] */
-    private $loadedEntries = null;
+    private ?array $loadedEntries = null;
 
     public function __construct(Consultation $consultation)
     {
@@ -53,6 +51,16 @@ class ConsultationActivityFilterForm extends Model
         $this->filterForAmendmentId = $filterForAmendmentId;
     }
 
+    public function setFilterForUserId(?int $filterForUserId): void
+    {
+        $this->filterForUserId = $filterForUserId;
+    }
+
+    public function setFilterForUserGroupId(?int $filterForUserGroupId): void
+    {
+        $this->filterForUserGroupId = $filterForUserGroupId;
+    }
+
     /**
      * @return ConsultationLog[]
      */
@@ -66,6 +74,10 @@ class ConsultationActivityFilterForm extends Model
             $entries = ConsultationLog::getLogForMotion($this->consultation->id, $this->filterForMotionId, $this->showUserInvisibleEvents);
         } elseif ($this->filterForAmendmentId) {
             $entries = ConsultationLog::getLogForAmendment($this->consultation->id, $this->filterForAmendmentId, $this->showUserInvisibleEvents);
+        } elseif ($this->filterForUserId) {
+            $entries = ConsultationLog::getLogForUserId($this->consultation->id, $this->filterForUserId);
+        } elseif ($this->filterForUserGroupId) {
+            $entries = ConsultationLog::getLogForUserGroupId($this->consultation->id, $this->filterForUserGroupId);
         } else {
             $entries = ConsultationLog::getLogForConsultation($this->consultation->id, $this->showUserInvisibleEvents);
         }
@@ -92,6 +104,12 @@ class ConsultationActivityFilterForm extends Model
         }
         if ($this->filterForMotionId !== null) {
             $parts['motionId'] = $this->filterForMotionId;
+        }
+        if ($this->filterForUserId !== null) {
+            $parts['userId'] = $this->filterForUserId;
+        }
+        if ($this->filterForUserGroupId !== null) {
+            $parts['userGroupId'] = $this->filterForUserGroupId;
         }
         if ($this->showUserInvisibleEvents) {
             $parts['showAll'] = 1;

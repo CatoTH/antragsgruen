@@ -17,11 +17,15 @@ export class UserAdmin {
         const initUsersJson = this.element.getAttribute('data-users');
         const initGroupsJson = this.element.getAttribute('data-groups');
         const pollUrl = this.element.getAttribute('data-url-poll');
+        const urlUserLog = this.element.getAttribute('data-url-user-log');
+        const urlUserGroupLog = this.element.getAttribute('data-url-user-group-log');
 
         this.widget = Vue.createApp({
             template: `<div class="adminUsers">
                 <user-admin-widget :users="users"
                                    :groups="groups"
+                                   :urlUserLog="urlUserLog"
+                                   :urlUserGroupLog="urlUserGroupLog"
                                    @save-user-groups="saveUserGroups"
                                    @remove-user="removeUser"
                                    @create-user-group="createUserGroup"
@@ -36,7 +40,9 @@ export class UserAdmin {
                     groupsJson: null,
                     groups: null,
                     csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
-                    pollingId: null
+                    pollingId: null,
+                    urlUserLog,
+                    urlUserGroupLog,
                 };
             },
             computed: {

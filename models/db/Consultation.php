@@ -259,9 +259,19 @@ class Consultation extends ActiveRecord
             return $this->availableUserGroupCache[$cacheKey];
         }
 
-        $this->availableUserGroupCache[$cacheKey] =  ConsultationUserGroup::findByConsultation($this, $additionalIds);
+        $this->availableUserGroupCache[$cacheKey] = ConsultationUserGroup::findByConsultation($this, $additionalIds);
 
         return $this->availableUserGroupCache[$cacheKey];
+    }
+
+    public function getUserGroupById(int $groupId, bool $allowCache = false): ?ConsultationUserGroup
+    {
+        foreach ($this->getAllAvailableUserGroups([], $allowCache) as $group) {
+            if ($group->id === $groupId) {
+                return $group;
+            }
+        }
+        return null;
     }
 
     public function getFiles(): ActiveQuery
