@@ -4,8 +4,9 @@ namespace app\components;
 
 use app\components\mail\Tools as MailTools;
 use app\models\exceptions\{AlreadyExists, MailNotSent, UserEditFailed};
+use app\models\consultationLog\UserGroupChange;
 use app\models\settings\AntragsgruenApp;
-use app\models\db\{Consultation, ConsultationUserGroup, EMailLog, User};
+use app\models\db\{Consultation, ConsultationLog, ConsultationUserGroup, EMailLog, User};
 use yii\web\{Request, Session};
 
 class UserGroupAdminMethods
@@ -74,6 +75,18 @@ class UserGroupAdminMethods
         }
     }
 
+    private function logUserGroupAdd(User $user, ConsultationUserGroup $group): void
+    {
+        $changeData = UserGroupChange::create(User::getCurrentUser()->id, User::getCurrentUser()->auth)->jsonSerialize();
+        ConsultationLog::log($this->consultation, $user->id, ConsultationLog::USER_ADD_TO_GROUP, $group->id, $changeData);
+    }
+
+    private function logUserGroupRemove(User $user, ConsultationUserGroup $group): void
+    {
+        $changeData = UserGroupChange::create(User::getCurrentUser()->id, User::getCurrentUser()->auth)->jsonSerialize();
+        ConsultationLog::log($this->consultation, $user->id, ConsultationLog::USER_REMOVE_FROM_GROUP, $group->id, $changeData);
+    }
+
     /**
      * @throws UserEditFailed
      */
@@ -94,6 +107,7 @@ class UserGroupAdminMethods
                 $this->preventRemovingMyself($this->consultation, $userGroup, $user);
                 /** @noinspection PhpUnhandledExceptionInspection */
                 $user->unlink('userGroups', $userGroup, true);
+                $this->logUserGroupRemove($user, $userGroup);
             }
         }
 
@@ -101,6 +115,7 @@ class UserGroupAdminMethods
             if (in_array($userGroup->id, $groupIds) && !in_array($userGroup->id, $userHasGroups)) {
                 $this->preventInvalidSiteAdminEdit($this->consultation, $userGroup);
                 $user->link('userGroups', $userGroup);
+                $this->logUserGroupAdd($user, $userGroup);
             }
         }
 
@@ -130,8 +145,11 @@ class UserGroupAdminMethods
         foreach ($userGroup->users as $user) {
             if (!in_array($user->id, $userIds)) {
                 $user->unlink('userGroups', $userGroup, true);
+                $this->logUserGroupRemove($user, $userGroup);
+
                 if (count($user->getUserGroupsForConsultation($this->consultation)) === 0) {
                     $user->link('userGroups', $defaultGroup);
+                    $this->logUserGroupAdd($user, $userGroup);
                 }
             } else {
                 $existingUserIds[] = $user->id;
@@ -144,6 +162,7 @@ class UserGroupAdminMethods
             }
             $user = User::findOne(['id' => $userId]);
             $user->link('userGroups', $userGroup);
+            $this->logUserGroupAdd($user, $userGroup);
         }
 
         $userGroup->refresh();
@@ -169,6 +188,7 @@ class UserGroupAdminMethods
         foreach ($user->getUserGroupsForConsultation($this->consultation) as $userGroup) {
             /** @noinspection PhpUnhandledExceptionInspection */
             $user->unlink('userGroups', $userGroup, true);
+            $this->logUserGroupRemove($user, $userGroup);
         }
 
         $this->consultation->refresh();
@@ -204,8 +224,10 @@ class UserGroupAdminMethods
         foreach ($group->users as $user) {
             /** @noinspection PhpUnhandledExceptionInspection */
             $user->unlink('userGroups', $group, true);
+            $this->logUserGroupRemove($user, $group);
             if (count($user->getUserGroupsForConsultation($this->consultation)) === 0) {
                 $user->link('userGroups', $defaultGroup);
+                $this->logUserGroupAdd($user, $defaultGroup);
             }
         }
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -243,6 +265,7 @@ class UserGroupAdminMethods
         foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
             if ($userGroup->id === $initGroup->id) {
                 $user->link('userGroups', $userGroup);
+                $this->logUserGroupAdd($user, $userGroup);
             }
         }
 
@@ -365,6 +388,7 @@ class UserGroupAdminMethods
         foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
             if ($userGroup->id === $initGroup->id) {
                 $user->link('userGroups', $userGroup);
+                $this->logUserGroupAdd($user, $userGroup);
             }
         }
 
@@ -414,6 +438,7 @@ class UserGroupAdminMethods
 
         foreach ($userGroups as $userGroup) {
             $user->link('userGroups', $userGroup);
+            $this->logUserGroupAdd($user, $userGroup);
         }
         $user->refresh();
 
@@ -429,6 +454,7 @@ class UserGroupAdminMethods
     {
         foreach ($userGroups as $userGroup) {
             $user->link('userGroups', $userGroup);
+            $this->logUserGroupAdd($user, $userGroup);
         }
         $user->refresh();
 

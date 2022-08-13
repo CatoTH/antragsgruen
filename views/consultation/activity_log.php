@@ -5,6 +5,8 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  * @var \app\models\db\Motion|null $motion
  * @var \app\models\db\Amendment|null $amendment
+ * @var \app\models\db\User|null $user
+ * @var \app\models\db\ConsultationUserGroup|null $userGroup
  * @var bool $showInvisible
  */
 
@@ -29,6 +31,11 @@ if ($amendment) {
     $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
     $layout->addBreadcrumb($amendment->titlePrefix, $amendmentUrl);
 }
+if ($user || $userGroup) {
+    $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+    $layout->addBreadcrumb(Yii::t('admin', 'users_bc'), UrlHelper::createUrl('/admin/users/index'));
+}
+
 $layout->addBreadcrumb(Yii::t('con', 'activity_bc'));
 
 echo '<h1>' . Html::encode(Yii::t('con', 'activity_title')) . '</h1>';

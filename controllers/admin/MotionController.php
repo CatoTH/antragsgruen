@@ -41,10 +41,10 @@ class MotionController extends AdminBase
     private function sectionsSave(ConsultationMotionType $motionType): void
     {
         $position = 0;
-        if (!\Yii::$app->request->post('sections')) {
+        if (!$this->getHttpRequest()->post('sections')) {
             return;
         }
-        foreach (\Yii::$app->request->post('sections') as $sectionId => $data) {
+        foreach ($this->getHttpRequest()->post('sections') as $sectionId => $data) {
             if (preg_match('/^new[0-9]+$/', $sectionId)) {
                 $section               = new ConsultationSettingsMotionSection();
                 $section->motionTypeId = $motionType->id;
@@ -75,7 +75,7 @@ class MotionController extends AdminBase
         if (!$this->isPostSet('sectionsTodelete')) {
             return;
         }
-        foreach (\Yii::$app->request->post('sectionsTodelete') as $sectionId) {
+        foreach ($this->getHttpRequest()->post('sectionsTodelete') as $sectionId) {
             if ($sectionId > 0) {
                 $sectionId = intval($sectionId);
                 /** @var ConsultationSettingsMotionSection $section */
@@ -125,7 +125,7 @@ class MotionController extends AdminBase
             }
         }
         if ($this->isPostSet('save')) {
-            $input = \Yii::$app->request->post('type');
+            $input = $this->getHttpRequest()->post('type');
             $motionType->setAttributes($input);
             if (isset($input['typeAmendSingleChange'])) {
                 $motionType->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_CHANGE;
@@ -141,10 +141,10 @@ class MotionController extends AdminBase
             $motionType->setAmendmentSupportPolicy($this->getPolicyFromUpdateData($motionType, $input['policySupportAmendments']));
             $motionType->setCommentPolicy($this->getPolicyFromUpdateData($motionType, $input['policyComments']));
 
-            $deadlineForm = DeadlineForm::createFromInput(\Yii::$app->request->post('deadlines'));
+            $deadlineForm = DeadlineForm::createFromInput($this->getHttpRequest()->post('deadlines'));
             $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());
 
-            $pdfTemplate = \Yii::$app->request->post('pdfTemplate', '');
+            $pdfTemplate = $this->getHttpRequest()->post('pdfTemplate', '');
             if (strpos($pdfTemplate, 'php') === 0) {
                 $motionType->pdfLayout     = intval(str_replace('php', '', $pdfTemplate));
                 $motionType->texTemplateId = null;
@@ -175,8 +175,8 @@ class MotionController extends AdminBase
             // Motion Initiators / Supporters
             $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             $settings->saveFormTyped(
-                \Yii::$app->request->post('motionInitiatorSettings', []),
-                \Yii::$app->request->post('motionInitiatorSettingFields', [])
+                $this->getHttpRequest()->post('motionInitiatorSettings', []),
+                $this->getHttpRequest()->post('motionInitiatorSettingFields', [])
             );
             $settings->initiatorCanBeOrganization = $this->isPostSet('initiatorCanBeOrganization');
             $settings->initiatorCanBePerson       = $this->isPostSet('initiatorCanBePerson');
@@ -193,8 +193,8 @@ class MotionController extends AdminBase
                 // Amendment Initiators / Supporters
                 $settings = $motionType->getAmendmentSupportTypeClass()->getSettingsObj();
                 $settings->saveFormTyped(
-                    \Yii::$app->request->post('amendmentInitiatorSettings', []),
-                    \Yii::$app->request->post('amendmentInitiatorSettingFields', [])
+                    $this->getHttpRequest()->post('amendmentInitiatorSettings', []),
+                    $this->getHttpRequest()->post('amendmentInitiatorSettingFields', [])
                 );
                 $settings->initiatorCanBeOrganization = $this->isPostSet('amendmentInitiatorCanBeOrganization');
                 $settings->initiatorCanBePerson       = $this->isPostSet('amendmentInitiatorCanBePerson');
@@ -285,7 +285,7 @@ class MotionController extends AdminBase
         }
 
         if ($this->isPostSet('create')) {
-            $type         = \Yii::$app->request->post('type');
+            $type         = $this->getHttpRequest()->post('type');
             $sectionsFrom = null;
             if (isset($type['preset']) && $type['preset'] === 'application') {
                 $motionType = ApplicationTemplate::doCreateApplicationType($this->consultation);
@@ -381,10 +381,10 @@ class MotionController extends AdminBase
      */
     private function saveMotionSupporters(Motion $motion): void
     {
-        $names         = \Yii::$app->request->post('supporterName', []);
-        $orgas         = \Yii::$app->request->post('supporterOrga', []);
-        $genders       = \Yii::$app->request->post('supporterGender', []);
-        $preIds        = \Yii::$app->request->post('supporterId', []);
+        $names         = $this->getHttpRequest()->post('supporterName', []);
+        $orgas         = $this->getHttpRequest()->post('supporterOrga', []);
+        $genders       = $this->getHttpRequest()->post('supporterGender', []);
+        $preIds        = $this->getHttpRequest()->post('supporterId', []);
         $newSupporters = [];
         /** @var MotionSupporter[] $preSupporters */
         $preSupporters = [];
@@ -426,11 +426,11 @@ class MotionController extends AdminBase
 
     private function saveMotionInitiator(Motion $motion): void
     {
-        if (\Yii::$app->request->post('initiatorSet') !== '1') {
+        if ($this->getHttpRequest()->post('initiatorSet') !== '1') {
             return;
         }
-        $setType = \Yii::$app->request->post('initiatorSetType');
-        $setUsername = \Yii::$app->request->post('initiatorSetUsername');
+        $setType = $this->getHttpRequest()->post('initiatorSetType');
+        $setUsername = $this->getHttpRequest()->post('initiatorSetUsername');
 
         switch ($setType) {
             case 'email':
@@ -464,7 +464,7 @@ class MotionController extends AdminBase
      */
     public function actionGetAmendmentRewriteCollisions($motionId)
     {
-        $newSections = \Yii::$app->request->post('newSections', []);
+        $newSections = $this->getHttpRequest()->post('newSections', []);
 
         /** @var Motion $motion */
         $motion     = $this->consultation->getMotion($motionId);
@@ -503,7 +503,7 @@ class MotionController extends AdminBase
         $this->checkConsistency($motion);
 
         $this->layout = 'column2';
-        $post         = \Yii::$app->request->post();
+        $post         = $this->getHttpRequest()->post();
 
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
             if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
@@ -546,11 +546,11 @@ class MotionController extends AdminBase
                 $ppChanges = new ProposedProcedureChange(null);
                 try {
                     $motion->setProposalVotingPropertiesFromRequest(
-                        \Yii::$app->request->post('votingStatus', null),
-                        \Yii::$app->request->post('votingBlockId', null),
-                        \Yii::$app->request->post('votingItemBlockId', []),
-                        \Yii::$app->request->post('votingItemBlockName', ''),
-                        \Yii::$app->request->post('newBlockTitle', ''),
+                        $this->getHttpRequest()->post('votingStatus', null),
+                        $this->getHttpRequest()->post('votingBlockId', null),
+                        $this->getHttpRequest()->post('votingItemBlockId', []),
+                        $this->getHttpRequest()->post('votingItemBlockName', ''),
+                        $this->getHttpRequest()->post('newBlockTitle', ''),
                         false,
                         $ppChanges
                     );
@@ -689,7 +689,7 @@ class MotionController extends AdminBase
         $form = new MotionMover($this->consultation, $motion, User::getCurrentUser());
 
         if ($this->isPostSet('move')) {
-            $newMotion = $form->move(\Yii::$app->request->post());
+            $newMotion = $form->move($this->getHttpRequest()->post());
             if ($newMotion) {
                 if ($newMotion->consultationId === $this->consultation->id) {
                     return $this->redirect(UrlHelper::createMotionUrl($newMotion));
@@ -717,13 +717,13 @@ class MotionController extends AdminBase
         $result = null;
         if ($checkType === 'prefix') {
             // Returns true, if the provided motion prefix does not exist in the specified consultation yet
-            if (\Yii::$app->request->get('newConsultationId')) {
-                $consultationId = intval(\Yii::$app->request->get('newConsultationId'));
+            if ($this->getHttpRequest()->get('newConsultationId')) {
+                $consultationId = intval($this->getHttpRequest()->get('newConsultationId'));
             } else {
                 $consultationId = $this->consultation->id;
             }
 
-            $newMotionPrefix = \Yii::$app->request->get('newMotionPrefix');
+            $newMotionPrefix = $this->getHttpRequest()->get('newMotionPrefix');
             /** @var Consultation $newConsultation */
             $newConsultation = array_values(array_filter($this->site->consultations, function(Consultation $con) use ($consultationId) {
                 return ($con->id === $consultationId);

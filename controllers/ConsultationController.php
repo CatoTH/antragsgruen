@@ -322,29 +322,45 @@ class ConsultationController extends Base
         );
     }
 
-    public function actionActivitylog(string $page = "0", ?string $showAll = null, ?string $amendmentId = null, ?string $motionId = null): string
+    public function actionActivitylog(string $page = "0", ?string $showAll = null): string
     {
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
+        $isUserAdmin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS);
+
         $motion = null;
         $amendment = null;
+        $user = null;
+        $userGroup = null;
 
         $form = new ConsultationActivityFilterForm($this->consultation);
         $form->setPage(intval($page));
 
-        if ($amendmentId) {
-            $amendment = $this->consultation->getAmendment($amendmentId);
+        if ($this->getHttpRequest()->get('amendmentId')) {
+            $amendment = $this->consultation->getAmendment((int)$this->getHttpRequest()->get('amendmentId'));
             if (!$amendment) {
                 return $this->showErrorpage(404, 'Amendment not found');
             }
-            $form->setFilterForAmendmentId(intval($amendmentId));
-        } elseif ($motionId) {
-            $motion = $this->consultation->getMotion($motionId);
+            $form->setFilterForAmendmentId($amendment->id);
+        } elseif ($this->getHttpRequest()->get('motionId')) {
+            $motion = $this->consultation->getMotion((string)$this->getHttpRequest()->get('motionId'));
             if (!$motion) {
                 return $this->showErrorpage(404, 'Motion not found');
             }
-            $form->setFilterForMotionId(intval($motionId));
+            $form->setFilterForMotionId($motion->id);
+        } elseif ($isUserAdmin && $this->getHttpRequest()->get('userId')) {
+            $user = User::getCachedUser((int)$this->getHttpRequest()->get('userId'));
+            if (!$user) {
+                return $this->showErrorpage(404, 'User not found');
+            }
+            $form->setFilterForUserId($user->id);
+        } elseif ($isUserAdmin && $this->getHttpRequest()->get('userGroupId')) {
+            $userGroup = $this->consultation->getUserGroupById((int)$this->getHttpRequest()->get('userGroupId'), true);
+            if (!$userGroup) {
+                return $this->showErrorpage(404, 'User group not found');
+            }
+            $form->setFilterForUserGroupId($userGroup->id);
         }
 
         $showInvisible = false;
@@ -357,6 +373,8 @@ class ConsultationController extends Base
             'form' => $form,
             'motion' => $motion,
             'amendment' => $amendment,
+            'user' => $user,
+            'userGroup' => $userGroup,
             'showInvisible' => $showInvisible,
         ]);
     }

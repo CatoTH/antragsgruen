@@ -245,7 +245,7 @@ class MotionController extends Base
         $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if ($this->isPostSet('save')) {
-            $post = \Yii::$app->request->post();
+            $post = $this->getHttpRequest()->post();
             $motion->flushCache(true);
             $form->setAttributes([$post, $_FILES]);
             try {

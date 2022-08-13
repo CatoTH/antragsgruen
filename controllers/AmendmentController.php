@@ -300,7 +300,7 @@ class AmendmentController extends Base
             return $this->render('create_confirm', [
                 'amendment'     => $amendment,
                 'mode'          => $fromMode,
-                'deleteDraftId' => \Yii::$app->request->get('draftId'),
+                'deleteDraftId' => $this->getHttpRequest()->get('draftId'),
             ]);
         }
     }
@@ -335,7 +335,7 @@ class AmendmentController extends Base
 
         if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren(null);
-            $form->setAttributes([\Yii::$app->request->post(), $_FILES]);
+            $form->setAttributes([$this->getHttpRequest()->post(), $_FILES]);
             try {
                 $form->saveAmendment($amendment);
 
@@ -514,8 +514,8 @@ class AmendmentController extends Base
         $msgAlert = null;
         $ppChanges = new ProposedProcedureChange(null);
 
-        if (\Yii::$app->request->post('setStatus', null) !== null) {
-            $setStatus = intval(\Yii::$app->request->post('setStatus'));
+        if ($this->getHttpRequest()->post('setStatus', null) !== null) {
+            $setStatus = intval($this->getHttpRequest()->post('setStatus'));
             if ($amendment->proposalStatus !== $setStatus) {
                 $ppChanges->setProposalStatusChanges($amendment->proposalStatus, $setStatus);
                 if ($amendment->proposalUserStatus !== null) {
@@ -525,13 +525,13 @@ class AmendmentController extends Base
             }
             $amendment->proposalStatus  = $setStatus;
 
-            $ppChanges->setProposalCommentChanges($amendment->proposalComment, \Yii::$app->request->post('proposalComment', ''));
-            $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
+            $ppChanges->setProposalCommentChanges($amendment->proposalComment, $this->getHttpRequest()->post('proposalComment', ''));
+            $amendment->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
 
             $oldTags = $amendment->getProposedProcedureTags();
             $newTags = [];
             $changed = false;
-            foreach (\Yii::$app->request->post('tags', []) as $newTag) {
+            foreach ($this->getHttpRequest()->post('tags', []) as $newTag) {
                 $tag = $amendment->getMyConsultation()->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $newTag, 0);
                 if (!isset($oldTags[$tag->getNormalizedName()])) {
                     $amendment->link('tags', $tag);
@@ -550,18 +550,18 @@ class AmendmentController extends Base
             }
 
             $proposalExplanationPre = $amendment->proposalExplanation;
-            if (\Yii::$app->request->post('proposalExplanation', null) !== null) {
-                if (trim(\Yii::$app->request->post('proposalExplanation', '') === '')) {
+            if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
+                if (trim($this->getHttpRequest()->post('proposalExplanation', '') === '')) {
                     $amendment->proposalExplanation = null;
                 } else {
-                    $amendment->proposalExplanation = \Yii::$app->request->post('proposalExplanation', '');
+                    $amendment->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
                 }
             } else {
                 $amendment->proposalExplanation = null;
             }
             $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $amendment->proposalExplanation);
 
-            if (\Yii::$app->request->post('visible', 0)) {
+            if ($this->getHttpRequest()->post('visible', 0)) {
                 $amendment->setProposalPublished();
             } else {
                 $amendment->proposalVisibleFrom = null;
@@ -569,11 +569,11 @@ class AmendmentController extends Base
 
             try {
                 $amendment->setProposalVotingPropertiesFromRequest(
-                    \Yii::$app->request->post('votingStatus', null),
-                    \Yii::$app->request->post('votingBlockId', null),
-                    \Yii::$app->request->post('votingItemBlockId', []),
-                    \Yii::$app->request->post('votingItemBlockName', ''),
-                    \Yii::$app->request->post('votingBlockTitle', ''),
+                    $this->getHttpRequest()->post('votingStatus', null),
+                    $this->getHttpRequest()->post('votingBlockId', null),
+                    $this->getHttpRequest()->post('votingItemBlockId', []),
+                    $this->getHttpRequest()->post('votingItemBlockName', ''),
+                    $this->getHttpRequest()->post('votingBlockTitle', ''),
                     true,
                     $ppChanges
                 );
@@ -597,18 +597,18 @@ class AmendmentController extends Base
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,
                 'msgAlert'  => $msgAlert,
-                'context'   => \Yii::$app->request->post('context', 'view'),
+                'context'   => $this->getHttpRequest()->post('context', 'view'),
             ]);
             $response['proposalStr'] = $amendment->getFormattedProposalStatus(true);
         }
 
-        if (\Yii::$app->request->post('notifyProposer') || \Yii::$app->request->post('sendAgain')) {
+        if ($this->getHttpRequest()->post('notifyProposer') || $this->getHttpRequest()->post('sendAgain')) {
             try {
                 new AmendmentProposedProcedure(
                     $amendment,
-                    \Yii::$app->request->post('text'),
-                    \Yii::$app->request->post('fromName'),
-                    \Yii::$app->request->post('replyTo')
+                    $this->getHttpRequest()->post('text'),
+                    $this->getHttpRequest()->post('fromName'),
+                    $this->getHttpRequest()->post('replyTo')
                 );
                 $amendment->proposalNotification = date('Y-m-d H:i:s');
                 $amendment->save();
@@ -617,7 +617,7 @@ class AmendmentController extends Base
                 $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                     'amendment' => $amendment,
                     'msgAlert'  => $msgAlert,
-                    'context'   => \Yii::$app->request->post('context', 'view'),
+                    'context'   => $this->getHttpRequest()->post('context', 'view'),
                 ]);
             } catch (MailNotSent $e) {
                 $response['success'] = false;
@@ -625,7 +625,7 @@ class AmendmentController extends Base
             }
         }
 
-        if (\Yii::$app->request->post('setProposerHasAccepted')) {
+        if ($this->getHttpRequest()->post('setProposerHasAccepted')) {
             $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
             $amendment->save();
             $amendment->flushCacheItems(['procedure']);
@@ -634,14 +634,14 @@ class AmendmentController extends Base
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,
                 'msgAlert'  => $msgAlert,
-                'context'   => \Yii::$app->request->post('context', 'view'),
+                'context'   => $this->getHttpRequest()->post('context', 'view'),
             ]);
         }
 
-        if (\Yii::$app->request->post('writeComment')) {
+        if ($this->getHttpRequest()->post('writeComment')) {
             $adminComment               = new AmendmentAdminComment();
             $adminComment->userId       = User::getCurrentUser()->id;
-            $adminComment->text         = \Yii::$app->request->post('writeComment');
+            $adminComment->text         = $this->getHttpRequest()->post('writeComment');
             $adminComment->status       = AmendmentAdminComment::PROPOSED_PROCEDURE;
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->amendmentId  = $amendment->id;
@@ -685,7 +685,7 @@ class AmendmentController extends Base
         }
 
 
-        if (\Yii::$app->request->post('reset', null) !== null) {
+        if ($this->getHttpRequest()->post('reset', null) !== null) {
             $reference = $amendment->getMyProposalReference();
             if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                 foreach ($reference->sections as $section) {
@@ -705,8 +705,8 @@ class AmendmentController extends Base
         $msgSuccess = null;
         $msgAlert   = null;
 
-        if (\Yii::$app->request->post('save', null) !== null) {
-            $form->save(\Yii::$app->request->post(), $_FILES);
+        if ($this->getHttpRequest()->post('save', null) !== null) {
+            $form->save($this->getHttpRequest()->post(), $_FILES);
             $msgSuccess = \Yii::t('base', 'saved');
 
             if ($amendment->proposalUserStatus !== null) {
@@ -761,7 +761,7 @@ class AmendmentController extends Base
             ]);
         }
 
-        $newSections = \Yii::$app->request->post('sections', []);
+        $newSections = $this->getHttpRequest()->post('sections', []);
         foreach ($newSections as $sectionId => $section) {
             $newSections[$sectionId] = HTMLTools::cleanSimpleHtml($section);
         }

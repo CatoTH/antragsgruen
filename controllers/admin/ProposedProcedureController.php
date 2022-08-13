@@ -46,8 +46,8 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionIndexAjax($agendaItemId = 0, $expandId = null, $tagId = null)
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
@@ -98,10 +98,10 @@ class ProposedProcedureController extends AdminBase
         }
         $filename .= '.ods';
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . rawurlencode($filename));
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=' . rawurlencode($filename));
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods', [
             'proposedAgenda' => $proposalFactory->create(),
@@ -119,8 +119,8 @@ class ProposedProcedureController extends AdminBase
         $motionId = \Yii::$app->request->post('id');
         $text     = \Yii::$app->request->post('comment');
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
@@ -160,8 +160,8 @@ class ProposedProcedureController extends AdminBase
         $amendmentId = intval(\Yii::$app->request->post('id'));
         $text        = \Yii::$app->request->post('comment');
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getAmendment($amendmentId);
         if (!$motion) {
@@ -199,8 +199,8 @@ class ProposedProcedureController extends AdminBase
     {
         $motionId = \Yii::$app->request->post('id');
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
@@ -229,8 +229,8 @@ class ProposedProcedureController extends AdminBase
     {
         $amendmentId = \Yii::$app->request->post('id');
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
@@ -260,8 +260,8 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionSaveResponsibility(string $type, string $id)
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         /** @var null|IMotion $imotion */
         $imotion = null;

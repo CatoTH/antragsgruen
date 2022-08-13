@@ -68,6 +68,8 @@ class ConsultationLog extends ActiveRecord
     public const VOTING_DELETE              = 45;
     public const VOTING_QUESTION_ACCEPTED   = 46;
     public const VOTING_QUESTION_REJECTED   = 47;
+    public const USER_ADD_TO_GROUP          = 48;
+    public const USER_REMOVE_FROM_GROUP     = 49;
 
     private const MOTION_ACTION_TYPES    = [
         self::MOTION_PUBLISH,
@@ -128,6 +130,16 @@ class ConsultationLog extends ActiveRecord
         self::VOTING_QUESTION_ACCEPTED,
     ];
 
+    private const USER_ACTION_TYPES = [
+        self::USER_ADD_TO_GROUP,
+        self::USER_REMOVE_FROM_GROUP,
+    ];
+
+    private const USER_GROUP_ACTION_TYPES = [
+        self::USER_ADD_TO_GROUP,
+        self::USER_REMOVE_FROM_GROUP,
+    ];
+
     private const USER_INVISIBLE_EVENTS = [
         self::MOTION_COMMENT_DELETE,
         self::AMENDMENT_COMMENT_DELETE,
@@ -152,6 +164,8 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_ACCEPT_PROPOSAL,
         self::AMENDMENT_PUBLISH_PROPOSAL,
         self::VOTING_DELETE,
+        self::USER_ADD_TO_GROUP,
+        self::USER_REMOVE_FROM_GROUP,
     ];
 
     private ?Motion $motion = null;
@@ -161,6 +175,7 @@ class ConsultationLog extends ActiveRecord
     private ?AmendmentComment $amendmentComment = null;
     private ?VotingBlock $votingBlock = null;
     private ?VotingQuestion $votingQuestion = null;
+    private ?ConsultationUserGroup $userGroup = null;
 
     public static function tableName(): string
     {
@@ -202,6 +217,19 @@ class ConsultationLog extends ActiveRecord
         return $query->all();
     }
 
+    private static function getLogForUser(int $consultationId, int $userId, bool $showUserInvisible, array $actionTypes): array
+    {
+        $query = self::find();
+        $query->where(['consultationId' => $consultationId]);
+        $query->andWhere(['userId' => $userId]);
+        if (!$showUserInvisible) {
+            $query->andWhere(['NOT IN', 'actionType', self::USER_INVISIBLE_EVENTS]);
+        }
+        $query->andWhere(['IN', 'actionType', $actionTypes]);
+        $query->orderBy('actionTime DESC');
+        return $query->all();
+    }
+
     public static function getLogForMotion(int $consultationId, int $motionId, bool $showUserInvisible): array
     {
         return self::getLogForActionTypes($consultationId, $motionId, $showUserInvisible, self::MOTION_ACTION_TYPES);
@@ -210,6 +238,16 @@ class ConsultationLog extends ActiveRecord
     public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible): array
     {
         return self::getLogForActionTypes($consultationId, $amendmentId, $showUserInvisible, self::AMENDMENT_ACTION_TYPES);
+    }
+
+    public static function getLogForUserId(int $consultationId, int $userId): array
+    {
+        return self::getLogForUser($consultationId, $userId, true, self::USER_ACTION_TYPES);
+    }
+
+    public static function getLogForUserGroupId(int $consultationId, int $userGroupId): array
+    {
+        return self::getLogForActionTypes($consultationId, $userGroupId, true, self::USER_GROUP_ACTION_TYPES);
     }
 
     public function rules(): array
@@ -299,6 +337,8 @@ class ConsultationLog extends ActiveRecord
             $this->votingBlock = VotingBlock::findOne($this->actionReferenceId);
         } elseif (in_array($this->actionType, self::VOTING_QUESTION_ACTION_TYPES)) {
             $this->votingQuestion = VotingQuestion::findOne($this->actionReferenceId);
+        } elseif (in_array($this->actionType, self::USER_GROUP_ACTION_TYPES)) {
+            $this->userGroup = $this->consultation->getUserGroupById($this->actionReferenceId);
         }
     }
 
@@ -386,6 +426,21 @@ class ConsultationLog extends ActiveRecord
         } else {
             return str_replace('###USER###', Html::encode($fallback), $str);
         }
+    }
+
+    private function formatLogEntryUserGroup(string $str): string
+    {
+        if ($this->user) {
+            $user = $this->user->getAuthUsername();
+        } else {
+            $user = \Yii::t('structure', 'activity_someone');
+        }
+        if ($this->userGroup) {
+            $group = $this->userGroup->getNormalizedTitle();
+        } else {
+            $group = '???';
+        }
+        return str_replace(['###USER###', '###GROUP###'], [Html::encode($user), Html::encode($group)], $str);
     }
 
     private function formatLogEntryAmendment(string $str): string
@@ -561,6 +616,12 @@ class ConsultationLog extends ActiveRecord
                 return \Yii::t('structure', 'activity_VOTING_QUESTION_ACCEPTED');
             case self::VOTING_QUESTION_REJECTED:
                 return \Yii::t('structure', 'activity_VOTING_QUESTION_REJECTED');
+            case self::USER_ADD_TO_GROUP:
+                $str = \Yii::t('structure', 'activity_USER_ADD_TO_GROUP');
+                return $this->formatLogEntryUserGroup($str);
+            case self::USER_REMOVE_FROM_GROUP:
+                $str = \Yii::t('structure', 'activity_USER_REMOVE_FROM_GROUP');
+                return $this->formatLogEntryUserGroup($str);
             default:
                 return (string)$this->actionType;
         }

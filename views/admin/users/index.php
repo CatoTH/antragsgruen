@@ -26,6 +26,8 @@ $layout->addVueTemplate('@app/views/admin/users/users.vue.php');
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);
 $userPollUrl = UrlHelper::createUrl(['/admin/users/poll']);
+$userLogUrl = UrlHelper::createUrl(['/consultation/activitylog', 'userId' => '###USER###']);
+$userGroupLogUrl = UrlHelper::createUrl(['/consultation/activitylog', 'userGroupId' => '###GROUP###']);
 
 echo '<h1>' . Yii::t('admin', 'siteacc_accounts_title') . '</h1>';
 
@@ -48,6 +50,8 @@ if ($success) {
 <div data-antragsgruen-widget="backend/UserAdmin"
      data-url-user-save="<?= Html::encode($userSaveUrl) ?>"
      data-url-poll="<?= Html::encode($userPollUrl) ?>"
+     data-url-user-log="<?= Html::encode($userLogUrl) ?>"
+     data-url-user-group-log="<?= Html::encode($userGroupLogUrl) ?>"
      data-users="<?= Html::encode(json_encode($widgetData['users'])) ?>"
      data-groups="<?= Html::encode(json_encode($widgetData['groups'])) ?>"
 >

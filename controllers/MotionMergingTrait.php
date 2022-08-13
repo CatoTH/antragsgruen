@@ -7,12 +7,13 @@ use app\models\db\Consultation;
 use app\models\exceptions\{Inconsistency, Internal};
 use app\models\mergeAmendments\{Draft, Merge, Init};
 use app\models\MotionSectionChanges;
-use yii\web\Response;
-use yii\web\Session;
+use yii\web\{Request, Response, Session};
 
 /**
  * @property Consultation $consultation
  * @method Session getHttpSession()
+ * @method Response getHttpResponse()
+ * @method Request getHttpRequest()
  */
 trait MotionMergingTrait
 {
@@ -46,8 +47,8 @@ trait MotionMergingTrait
      */
     public function actionMergeAmendmentsPublicAjax($motionSlug)
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
@@ -76,8 +77,8 @@ trait MotionMergingTrait
      */
     public function actionMergeAmendmentsParagraphAjax($motionSlug, $sectionId, $paragraphNo, $amendments = ''): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -128,8 +129,8 @@ trait MotionMergingTrait
 
     public function actionMergeAmendmentsStatusAjax(string $motionSlug, string $knownAmendments): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -219,10 +220,10 @@ trait MotionMergingTrait
         }
 
         $filename                    = $motion->getFilenameBase(false) . '-Merging-Draft.pdf';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
 
         return $this->render('@app/views/merging/merging_draft_pdf', ['motion' => $motion, 'draft' => $draft]);
     }
@@ -305,10 +306,10 @@ trait MotionMergingTrait
         }
 
         $filename                    = $motion->getFilenameBase(false) . '-Merging-Selection.pdf';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
 
         return $this->render('@app/views/merging/init_pdf', [
             'motion'     => $motion,
@@ -339,8 +340,8 @@ trait MotionMergingTrait
         if ($this->isPostSet('modify')) {
             $merger = new Merge($oldMotion);
             $merger->updateDraftOnBackToModify(
-                array_map('IntVal', \Yii::$app->request->post('amendStatus', [])),
-                \Yii::$app->request->post('amendVotes', [])
+                array_map('intval', $this->getHttpRequest()->post('amendStatus', [])),
+                $this->getHttpRequest()->post('amendVotes', [])
             );
 
             return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'merge-amendments'));
@@ -350,11 +351,11 @@ trait MotionMergingTrait
             $merger = new Merge($oldMotion);
             $merger->confirm(
                 $newMotion,
-                array_map('IntVal', \Yii::$app->request->post('amendStatus', [])),
-                \Yii::$app->request->post('newStatus'),
-                \Yii::$app->request->post('newInitiator', ''),
-                \Yii::$app->request->post('votes', ''),
-                \Yii::$app->request->post('amendVotes', '')
+                array_map('intval', $this->getHttpRequest()->post('amendStatus', [])),
+                $this->getHttpRequest()->post('newStatus'),
+                $this->getHttpRequest()->post('newInitiator', ''),
+                $this->getHttpRequest()->post('votes', ''),
+                $this->getHttpRequest()->post('amendVotes', '')
             );
 
             return $this->render('@app/views/merging/done', [
@@ -394,7 +395,7 @@ trait MotionMergingTrait
         try {
             if ($this->isPostSet('save')) {
                 $public = ($resumeDraft ? $resumeDraft->public : false);
-                $draft  = Draft::initFromJson($motion, $public, new \DateTime('now'), \Yii::$app->request->post('mergeDraft', null));
+                $draft  = Draft::initFromJson($motion, $public, new \DateTime('now'), $this->getHttpRequest()->post('mergeDraft', null));
                 $draft->save();
 
                 $form      = new Merge($motion);
@@ -406,12 +407,12 @@ trait MotionMergingTrait
             $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
 
-        if ($resumeDraft && !\Yii::$app->request->post('discard', 0) && count($resumeDraft->sections) === 1) {
+        if ($resumeDraft && !$this->getHttpRequest()->post('discard', 0) && count($resumeDraft->sections) === 1) {
             $form = Init::initFromDraft($motion, $resumeDraft);
         } else {
             $form = Init::fromInitForm($motion,
-                \Yii::$app->request->post('amendments', []),
-                \Yii::$app->request->post('textVersion', [])
+                $this->getHttpRequest()->post('amendments', []),
+                $this->getHttpRequest()->post('textVersion', [])
             );
         }
 
@@ -423,13 +424,12 @@ trait MotionMergingTrait
     /**
      * @param string $motionSlug
      *
-     * @return string
      * @throws \Exception
      */
-    public function actionSaveMergingDraft($motionSlug)
+    public function actionSaveMergingDraft($motionSlug): string
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -439,8 +439,8 @@ trait MotionMergingTrait
             return json_encode(['success' => false, 'error' => 'Motion not editable']);
         }
 
-        $public = (IntVal(\Yii::$app->request->post('public', 0)) === 1);
-        $draft  = Draft::initFromJson($motion, $public, new \DateTime('now'), \Yii::$app->request->post('data', null));
+        $public = (IntVal($this->getHttpRequest()->post('public', 0)) === 1);
+        $draft  = Draft::initFromJson($motion, $public, new \DateTime('now'), $this->getHttpRequest()->post('data', null));
         $draft->save();
 
         return json_encode([

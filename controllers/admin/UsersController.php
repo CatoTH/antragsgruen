@@ -12,8 +12,7 @@ use yii\web\Response;
 
 class UsersController extends AdminBase
 {
-    /** @var UserGroupAdminMethods */
-    private $userGroupAdminMethods;
+    private UserGroupAdminMethods $userGroupAdminMethods;
 
     public function beforeAction($action): bool
     {
