@@ -20,6 +20,7 @@ use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
+use yii\web\Request;
 use yii\web\Response;
 use yii\web\Session;
 
@@ -27,6 +28,8 @@ use yii\web\Session;
  * @property Consultation $consultation
  * @method redirect($uri)
  * @method Session getHttpSession()
+ * @method Request getHttpRequest()
+ * @method Response getHttpResponse()
  */
 trait MotionActionsTrait
 {
@@ -50,7 +53,7 @@ trait MotionActionsTrait
 
     private function writeComment(Motion $motion, array &$viewParameters): void
     {
-        $postComment = \Yii::$app->request->post('comment');
+        $postComment = $this->getHttpRequest()->post('comment');
 
         $replyTo = null;
         if (isset($postComment['parentCommentId']) && $postComment['parentCommentId']) {
@@ -213,14 +216,14 @@ trait MotionActionsTrait
         $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
         $role = MotionSupporter::ROLE_SUPPORTER;
         $user = User::getCurrentUser();
-        $gender = \Yii::$app->request->post('motionSupportGender', '');
-        $nonPublic = ($supportType->getSettingsObj()->offerNonPublicSupports && \Yii::$app->request->post('motionSupportPublic') === null);
+        $gender = $this->getHttpRequest()->post('motionSupportGender', '');
+        $nonPublic = ($supportType->getSettingsObj()->offerNonPublicSupports && $this->getHttpRequest()->post('motionSupportPublic') === null);
         if ($user && $user->fixedData) {
             $name = $user->name;
             $orga = $user->organization;
         } else {
-            $name = \Yii::$app->request->post('motionSupportName', '');
-            $orga = \Yii::$app->request->post('motionSupportOrga', '');
+            $name = $this->getHttpRequest()->post('motionSupportName', '');
+            $orga = $this->getHttpRequest()->post('motionSupportOrga', '');
         }
         if ($supportType->getSettingsObj()->hasOrganizations && $orga === '') {
             $this->getHttpSession()->setFlash('error', 'No organization entered');
@@ -306,7 +309,7 @@ trait MotionActionsTrait
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            if ($tag->id == \Yii::$app->request->post('tagId')) {
+            if ($tag->id == $this->getHttpRequest()->post('tagId')) {
                 $motion->link('tags', $tag);
             }
         }
@@ -321,7 +324,7 @@ trait MotionActionsTrait
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            if ($tag->id === intval(\Yii::$app->request->post('tagId'))) {
+            if ($tag->id === intval($this->getHttpRequest()->post('tagId'))) {
                 $motion->unlink('tags', $tag, true);
             }
         }
@@ -329,7 +332,7 @@ trait MotionActionsTrait
 
     private function setProposalAgree(Motion $motion): void
     {
-        $procedureToken = \Yii::$app->request->get('procedureToken');
+        $procedureToken = $this->getHttpRequest()->get('procedureToken');
         if (!$motion->canSeeProposedProcedure($procedureToken) || !$motion->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
@@ -346,14 +349,14 @@ trait MotionActionsTrait
     private function savePrivateNote(Motion $motion): void
     {
         $user      = User::getCurrentUser();
-        $noteText  = trim(\Yii::$app->request->post('noteText', ''));
-        $paragraph = IntVal(\Yii::$app->request->post('paragraphNo', -1));
+        $noteText  = trim($this->getHttpRequest()->post('noteText', ''));
+        $paragraph = IntVal($this->getHttpRequest()->post('paragraphNo', -1));
         if (!$user) {
             return;
         }
 
-        if (\Yii::$app->request->post('sectionId', 0) > 0) {
-            $section = IntVal(\Yii::$app->request->post('sectionId', 0));
+        if ($this->getHttpRequest()->post('sectionId', 0) > 0) {
+            $section = IntVal($this->getHttpRequest()->post('sectionId', 0));
         } else {
             $section = null;
         }
@@ -389,7 +392,7 @@ trait MotionActionsTrait
      */
     private function performShowActions(Motion $motion, int $commentId, array &$viewParameters): void
     {
-        $post = \Yii::$app->request->post();
+        $post = $this->getHttpRequest()->post();
         if ($commentId === 0 && isset($post['commentId'])) {
             $commentId = intval($post['commentId']);
         }
@@ -438,7 +441,7 @@ trait MotionActionsTrait
             return json_encode(['success' => false, 'error' => 'Motion not found']);
         }
 
-        $commentId = \Yii::$app->request->post('id');
+        $commentId = $this->getHttpRequest()->post('id');
         $comment   = MotionAdminComment::findOne(['id' => $commentId, 'motionId' => $motion->id]);
         if ($comment && User::isCurrentUser($comment->getMyUser())) {
             $comment->delete();
@@ -472,8 +475,8 @@ trait MotionActionsTrait
         $msgAlert = null;
         $ppChanges = new ProposedProcedureChange(null);
 
-        if (\Yii::$app->request->post('setStatus', null) !== null) {
-            $setStatus = IntVal(\Yii::$app->request->post('setStatus'));
+        if ($this->getHttpRequest()->post('setStatus', null) !== null) {
+            $setStatus = IntVal($this->getHttpRequest()->post('setStatus'));
             if ($motion->proposalStatus !== $setStatus) {
                 $ppChanges->setProposalStatusChanges($motion->proposalStatus, $setStatus);
                 if ($motion->proposalUserStatus !== null) {
@@ -483,13 +486,13 @@ trait MotionActionsTrait
             }
             $motion->proposalStatus  = $setStatus;
 
-            $ppChanges->setProposalCommentChanges($motion->proposalComment, \Yii::$app->request->post('proposalComment', ''));
-            $motion->proposalComment = \Yii::$app->request->post('proposalComment', '');
+            $ppChanges->setProposalCommentChanges($motion->proposalComment, $this->getHttpRequest()->post('proposalComment', ''));
+            $motion->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
 
             $oldTags = $motion->getProposedProcedureTags();
             $newTags = [];
             $changed = false;
-            foreach (\Yii::$app->request->post('tags', []) as $newTag) {
+            foreach ($this->getHttpRequest()->post('tags', []) as $newTag) {
                 $tag = $motion->getMyConsultation()->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $newTag, 0);
                 if (!isset($oldTags[$tag->getNormalizedName()])) {
                     $motion->link('tags', $tag);
@@ -508,18 +511,18 @@ trait MotionActionsTrait
             }
 
             $proposalExplanationPre = $motion->proposalExplanation;
-            if (\Yii::$app->request->post('proposalExplanation', null) !== null) {
-                if (trim(\Yii::$app->request->post('proposalExplanation', '') === '')) {
+            if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
+                if (trim($this->getHttpRequest()->post('proposalExplanation', '') === '')) {
                     $motion->proposalExplanation = null;
                 } else {
-                    $motion->proposalExplanation = \Yii::$app->request->post('proposalExplanation', '');
+                    $motion->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
                 }
             } else {
                 $motion->proposalExplanation = null;
             }
             $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $motion->proposalExplanation);
 
-            if (\Yii::$app->request->post('visible', 0)) {
+            if ($this->getHttpRequest()->post('visible', 0)) {
                 $motion->setProposalPublished();
             } else {
                 $motion->proposalVisibleFrom = null;
@@ -527,11 +530,11 @@ trait MotionActionsTrait
 
             try {
                 $motion->setProposalVotingPropertiesFromRequest(
-                    \Yii::$app->request->post('votingStatus', null),
-                    \Yii::$app->request->post('votingBlockId', null),
-                    \Yii::$app->request->post('votingItemBlockId', []),
-                    \Yii::$app->request->post('votingItemBlockName', ''),
-                    \Yii::$app->request->post('votingBlockTitle', ''),
+                    $this->getHttpRequest()->post('votingStatus', null),
+                    $this->getHttpRequest()->post('votingBlockId', null),
+                    $this->getHttpRequest()->post('votingItemBlockId', []),
+                    $this->getHttpRequest()->post('votingItemBlockName', ''),
+                    $this->getHttpRequest()->post('votingBlockTitle', ''),
                     true,
                     $ppChanges
                 );
@@ -558,13 +561,13 @@ trait MotionActionsTrait
             $response['proposalStr'] = $motion->getFormattedProposalStatus(true);
         }
 
-        if (\Yii::$app->request->post('notifyProposer') || \Yii::$app->request->post('sendAgain')) {
+        if ($this->getHttpRequest()->post('notifyProposer') || $this->getHttpRequest()->post('sendAgain')) {
             try {
                 new MotionProposedProcedure(
                     $motion,
-                    \Yii::$app->request->post('text'),
-                    \Yii::$app->request->post('fromName'),
-                    \Yii::$app->request->post('replyTo')
+                    $this->getHttpRequest()->post('text'),
+                    $this->getHttpRequest()->post('fromName'),
+                    $this->getHttpRequest()->post('replyTo')
                 );
                 $motion->proposalNotification = date('Y-m-d H:i:s');
                 $motion->save();
@@ -572,7 +575,7 @@ trait MotionActionsTrait
                 $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                     'motion'   => $motion,
                     'msgAlert' => $msgAlert,
-                    'context'  => \Yii::$app->request->post('context', 'view'),
+                    'context'  => $this->getHttpRequest()->post('context', 'view'),
                 ]);
             } catch (MailNotSent $e) {
                 $response['success'] = false;
@@ -580,7 +583,7 @@ trait MotionActionsTrait
             }
         }
 
-        if (\Yii::$app->request->post('setProposerHasAccepted')) {
+        if ($this->getHttpRequest()->post('setProposerHasAccepted')) {
             $motion->proposalUserStatus = Motion::STATUS_ACCEPTED;
             $motion->save();
             ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id);
@@ -591,10 +594,10 @@ trait MotionActionsTrait
             ]);
         }
 
-        if (\Yii::$app->request->post('writeComment')) {
+        if ($this->getHttpRequest()->post('writeComment')) {
             $adminComment               = new MotionAdminComment();
             $adminComment->userId       = User::getCurrentUser()->id;
-            $adminComment->text         = \Yii::$app->request->post('writeComment');
+            $adminComment->text         = $this->getHttpRequest()->post('writeComment');
             $adminComment->status       = MotionAdminComment::PROPOSED_PROCEDURE;
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->motionId     = $motion->id;

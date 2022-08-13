@@ -10,38 +10,25 @@ class ProposedProcedureChange implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    /** @var null|int */
-    public $proposalStatusFrom = null;
-    /** @var null|int */
-    public $proposalStatusTo = null;
+    public ?int $proposalStatusFrom = null;
+    public ?int $proposalStatusTo = null;
 
-    /** @var null|string */
-    public $proposalCommentFrom = null;
-    /** @var null|string */
-    public $proposalCommentTo = null;
+    public ?string $proposalCommentFrom = null;
+    public ?string $proposalCommentTo = null;
 
-    /** @var null|int */
-    public $proposalVotingStatusFrom = null;
-    /** @var null|int */
-    public $proposalVotingStatusTo = null;
+    public ?int $proposalVotingStatusFrom = null;
+    public ?int $proposalVotingStatusTo = null;
 
-    /** @var null|string */
-    public $proposalExplanationFrom = null;
-    /** @var null|string */
-    public $proposalExplanationTo = null;
+    public ?string $proposalExplanationFrom = null;
+    public ?string $proposalExplanationTo = null;
 
-    /** @var null|array */
-    public $proposalTagsFrom = null;
-    /** @var null|array */
-    public $proposalTagsTo = null;
+    public ?array $proposalTagsFrom = null;
+    public ?array $proposalTagsTo = null;
 
-    /** @var null|int */
-    public $votingBlockIdFrom = null;
-    /** @var null|int */
-    public $votingBlockIdTo = null;
+    public ?int $votingBlockIdFrom = null;
+    public ?int $votingBlockIdTo = null;
 
-    /** @var bool */
-    private $hasChanges = false;
+    private bool $hasChanges = false;
 
     public function setProposalStatusChanges(?int $from, ?int $to): void
     {

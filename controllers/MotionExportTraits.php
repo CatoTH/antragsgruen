@@ -25,6 +25,7 @@ use yii\web\Session;
  * @method string renderPartial(string $template, array $params)
  * @method AntragsgruenApp getParams()
  * @method Session getHttpSession()
+ * @method Response getHttpResponse()
  * @method string showErrorpage(int $error, string $message)
  */
 trait MotionExportTraits
@@ -52,10 +53,10 @@ trait MotionExportTraits
                 }
 
                 $metadata                    = json_decode($section->metadata, true);
-                \Yii::$app->response->format = Response::FORMAT_RAW;
-                \Yii::$app->response->headers->add('Content-Type', $metadata['mime']);
+                $this->getHttpResponse()->format = Response::FORMAT_RAW;
+                $this->getHttpResponse()->headers->add('Content-Type', $metadata['mime']);
                 if (!$this->layoutParams->isRobotsIndex($this->action)) {
-                    \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+                    $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
                 }
                 return $section->getData();
             }
@@ -83,11 +84,11 @@ trait MotionExportTraits
                     return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
                 }
 
-                \Yii::$app->response->format = Response::FORMAT_RAW;
-                \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-                \Yii::$app->response->headers->add('Content-Disposition', 'inline');
+                $this->getHttpResponse()->format = Response::FORMAT_RAW;
+                $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
+                $this->getHttpResponse()->headers->add('Content-Disposition', 'inline');
                 if (!$this->layoutParams->isRobotsIndex($this->action)) {
-                    \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+                    $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
                 }
                 return $section->getData();
             }
@@ -125,11 +126,11 @@ trait MotionExportTraits
         }
 
         $filename                    = $motion->getFilenameBase(false) . '.pdf';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         if ($motion->getAlternativePdfSection()) {
@@ -164,11 +165,11 @@ trait MotionExportTraits
         }
 
         $filename                    = $motion->getFilenameBase(false) . '.collection.pdf';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         if ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
@@ -239,10 +240,10 @@ trait MotionExportTraits
             return '';
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         if ($hasLaTeX && $texTemplate) {
@@ -292,11 +293,11 @@ trait MotionExportTraits
         }
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false) . '.pdf';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         if ($hasLaTeX && $texTemplate) {
@@ -316,9 +317,9 @@ trait MotionExportTraits
 
         $form = Init::forEmbeddedAmendmentsExport($motion);
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
+        $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
 
         return $this->renderPartial('pdf_embedded_amendments_tcpdf', ['form' => $form]);
     }
@@ -336,11 +337,11 @@ trait MotionExportTraits
         }
 
         $filename                    = $motion->getFilenameBase(false) . '.odt';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $this->renderPartial('view_odt', ['motion' => $motion]);
@@ -358,7 +359,7 @@ trait MotionExportTraits
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $this->renderPartial('plain_html', ['motion' => $motion]);
@@ -409,11 +410,11 @@ trait MotionExportTraits
         }
 
         $filename                    = $motion->getFilenameBase(false) . '-changes.odt';
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
-        \Yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         try {
