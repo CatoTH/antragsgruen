@@ -68,6 +68,8 @@ class ConsultationLog extends ActiveRecord
     public const VOTING_DELETE              = 45;
     public const VOTING_QUESTION_ACCEPTED   = 46;
     public const VOTING_QUESTION_REJECTED   = 47;
+    public const USER_ADD_TO_GROUP          = 48;
+    public const USER_REMOVE_FROM_GROUP     = 49;
 
     private const MOTION_ACTION_TYPES    = [
         self::MOTION_PUBLISH,
@@ -128,6 +130,11 @@ class ConsultationLog extends ActiveRecord
         self::VOTING_QUESTION_ACCEPTED,
     ];
 
+    private const USER_GROUP_ACTION_TYPES = [
+        self::USER_ADD_TO_GROUP,
+        self::USER_REMOVE_FROM_GROUP,
+    ];
+
     private const USER_INVISIBLE_EVENTS = [
         self::MOTION_COMMENT_DELETE,
         self::AMENDMENT_COMMENT_DELETE,
@@ -152,6 +159,8 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_ACCEPT_PROPOSAL,
         self::AMENDMENT_PUBLISH_PROPOSAL,
         self::VOTING_DELETE,
+        self::USER_ADD_TO_GROUP,
+        self::USER_REMOVE_FROM_GROUP,
     ];
 
     private ?Motion $motion = null;
