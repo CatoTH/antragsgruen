@@ -346,7 +346,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'siteacc_err_linenumber'     => 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein',
     'siteacc_err_occ'            => 'Es sind Fehler aufgetreten',
     'siteacc_user_had'           => 'Folgende Benutzer*innen hatten bereits Zugriff',
-    'siteacc_user_added_1'       => '%NUM% BenutzerIn wurde eingetragen.',
+    'siteacc_user_added_1'       => '%NUM% Benutzer*in wurde eingetragen.',
     'siteacc_user_added_x'       => '%NUM% Benutzer*innen wurden eingetragen.',
     'siteacc_user_added_0'       => 'Es wurde niemand eingetragen.',
     'siteacc_user_saved'         => 'Die Berechtigungen wurden gespeichert.',
