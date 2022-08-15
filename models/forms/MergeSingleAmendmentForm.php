@@ -113,6 +113,7 @@ class MergeSingleAmendmentForm extends Model
         $this->newMotion->titlePrefix     = $this->newTitlePrefix;
         $this->newMotion->dateCreation    = date('Y-m-d H:i:s');
         $this->newMotion->datePublication = date('Y-m-d H:i:s');
+        $this->newMotion->dateContentModification = date('Y-m-d H:i:s');
         $this->newMotion->dateResolution  = $this->oldMotion->dateResolution;
         $this->newMotion->statusString    = $this->oldMotion->statusString;
         $this->newMotion->status          = $this->oldMotion->status;
