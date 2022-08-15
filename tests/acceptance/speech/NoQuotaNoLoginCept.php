@@ -18,11 +18,12 @@ $I->executeJS('$("#hasSpeechLists").prop("checked", true).trigger("change");');
 $I->wait(0.1);
 $I->seeElement('.quotas');
 $I->uncheckOption('#activateFirstSpeechList');
+$I->checkOption('#speechPage');
 $page->saveForm();
 
-// The widget is not yet visible now, but not yet open for application
+// The widget is not yet visible
 $I->gotoConsultationHome();
-$I->dontSee('.currentSpeechInline');
+$I->dontSeeElement('.currentSpeechInline');
 
 $I->gotoMotion();
 $I->dontSeeElement('.currentSpeechFooter');

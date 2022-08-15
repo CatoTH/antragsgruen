@@ -41,17 +41,18 @@ if ($queue->motionId || $queue->agendaItemId) {
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"
 >
-    <h2 class="green" id="speechListUserTitle"><?= Html::encode($title) ?></h2>
-    <div class="content">
-        <?php
+    <h2 class="green" id="speechListUserTitle"><?php
+        echo Html::encode($title);
+
         $user = User::getCurrentUser();
         if ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
-            echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink">';
+            echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink greenHeaderAdminLink">';
             echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
             echo Yii::t('speech', 'goto_admin');
             echo '</a>';
         }
-        ?>
+        ?></h2>
+    <div class="content">
         <div class="currentSpeechList"></div>
     </div>
 </section>

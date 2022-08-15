@@ -9,17 +9,20 @@ export class VotingBlock {
             vueEl = element.querySelector(".currentVoting"),
             votingInitJson = element.getAttribute('data-voting'),
             pollUrl = element.getAttribute('data-url-poll'),
-            voteUrl = element.getAttribute('data-url-vote');
+            voteUrl = element.getAttribute('data-url-vote'),
+            showAdminLink = element.getAttribute('data-show-admin-link');
+        console.log(showAdminLink);
 
         this.widget = Vue.createApp({
             template: `
                 <div class="currentVotings">
-                <voting-block-widget v-for="voting in votings" :voting="voting" @vote="vote"></voting-block-widget>
+                <voting-block-widget v-for="voting in votings" :voting="voting" @vote="vote" :showAdminLink="showAdminLink"></voting-block-widget>
                 </div>`,
             data() {
                 return {
                     votings: JSON.parse(votingInitJson),
                     pollingId: null,
+                    showAdminLink,
                     onReloadedCbs: []
                 };
             },

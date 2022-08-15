@@ -131,7 +131,7 @@ $I->seeElement('.voting_motion_114 .accepted');
 
 
 $I->wantTo('Delete the voting');
-$I->click('.votingsAdminLink');
+$I->click('.sidebarActions .admin a');
 $I->dontSeeElement($votingBaseId . ' .btnDelete');
 $I->clickJS($votingBaseId . ' .settingsToggleGroup button');
 $I->seeElement($votingBaseId . ' .btnDelete');

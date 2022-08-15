@@ -73,7 +73,7 @@ $I->openPage(VotingResultsPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
 ]);
-$I->seeElement('.resultsNone');
+$I->seeElement('.votingsNoneIndicator');
 $I->dontSeeElement('.voting_question_1');
 
 
@@ -95,7 +95,7 @@ $I->see('Login', 'h1');
 $I->loginAsStdUser();
 $I->click('#votingResultsLink');
 $I->wait(0.3);
-$I->dontSeeElement('.resultsNone');
+$I->dontSeeElement('.votingsNoneIndicator');
 $I->see('1', '.voting_question_1 .voteCount_present');
 $I->dontSeeElement('.voting_question_1 .result .accepted');
 $I->dontSeeElement('.regularVoteList');

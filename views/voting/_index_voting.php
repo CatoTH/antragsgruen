@@ -36,6 +36,7 @@ $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTI
 ?>
 <section data-url-poll="<?= Html::encode($pollUrl) ?>"
          data-url-vote="<?= Html::encode($voteUrl) ?>"
+         data-show-admin-link="true"
          data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
          data-voting="<?= Html::encode(json_encode($apiData)) ?>"
 >

@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
 use app\models\votings\AnswerTemplates;
 use app\models\db\{Consultation, ConsultationUserGroup, IMotion, User, VotingBlock};
@@ -10,18 +11,21 @@ $consultation = Consultation::getCurrent();
 $iAmAdmin = ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS));
 
 ob_start();
-/*
-if ($iAmAdmin) {
-    $url = UrlHelper::createUrl(['/consultation/admin-votings']);
-    echo '<a href="' . Html::encode($url) . '" class="votingsAdminLink">';
-    echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
-    echo Yii::t('voting', 'voting_admin_all');
-    echo '</a>';
-}
-*/
+
 ?>
 <section class="voting" aria-label="<?= Yii::t('voting', 'voting_current_aria') ?>">
-    <h2 class="green">{{ voting.title }}</h2>
+    <h2 class="green">
+        {{ voting.title }}
+        <?php
+        if ($iAmAdmin) {
+            $url = UrlHelper::createUrl(['/consultation/admin-votings']);
+            echo '<a href="' . Html::encode($url) . '" class="votingsAdminLink greenHeaderAdminLink" v-if="showAdminLink">';
+            echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
+            echo Yii::t('voting', 'voting_admin_all');
+            echo '</a>';
+        }
+        ?>
+    </h2>
     <div class="content">
         <div class="remainingTime" v-if="isOpen && hasVotingTime && remainingVotingTime !== null">
             <?= Yii::t('voting', 'remaining_time') ?>:
@@ -191,7 +195,7 @@ $html = ob_get_clean();
 
     __setVueComponent('voting', 'component', 'voting-block-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['voting'],
+        props: ['voting', 'showAdminLink'],
         mixins: window.VOTING_COMMON_MIXINS,
         data() {
             return {
