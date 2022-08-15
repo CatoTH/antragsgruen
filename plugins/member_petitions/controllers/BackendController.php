@@ -14,7 +14,6 @@ class BackendController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \Yii\base\ExitException
      * @throws \app\models\exceptions\MailNotSent
      * @throws \app\models\exceptions\ServerConfiguration
      */
@@ -32,15 +31,16 @@ class BackendController extends Base
         }
 
         try {
-            $newMotion                 = new Motion();
+            $newMotion = new Motion();
             $newMotion->consultationId = $motion->consultationId;
-            $newMotion->status         = Motion::STATUS_INLINE_REPLY;
+            $newMotion->status = Motion::STATUS_INLINE_REPLY;
             $newMotion->parentMotionId = $motion->id;
-            $newMotion->motionTypeId   = $motion->motionTypeId;
-            $newMotion->title          = $motion->title;
-            $newMotion->titlePrefix    = $motion->titlePrefix . "-Reply";
-            $newMotion->cache          = '';
-            $newMotion->dateCreation   = date('Y-m-d H:i:s');
+            $newMotion->motionTypeId = $motion->motionTypeId;
+            $newMotion->title = $motion->title;
+            $newMotion->titlePrefix = $motion->titlePrefix . "-Reply";
+            $newMotion->cache = '';
+            $newMotion->dateCreation = date('Y-m-d H:i:s');
+            $newMotion->dateContentModification = date('Y-m-d H:i:s');
 
             if (!$newMotion->save()) {
                 throw new DB($newMotion->getErrors());

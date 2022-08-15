@@ -1,11 +1,10 @@
 <?php
 
 use app\models\forms\SiteCreateForm;
-use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\helpers\{Html, Url};
 
 /**
- * @var \Yii\web\View $this
+ * @var Yii\web\View $this
  * @var SiteCreateForm $form
  * @var string $loginId
  * @var string $loginCode
@@ -18,7 +17,7 @@ $layout     = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manager_created';
 $layout->fullWidth = true;
 
-$this->title = \Yii::t('wizard', 'created_title');
+$this->title = Yii::t('wizard', 'created_title');
 
 if ($form->singleMotion) {
     $redirectUrl = Url::toRoute([
@@ -35,10 +34,10 @@ if ($form->singleMotion) {
     ]);
 }
 ?>
-<h1><?= \Yii::t('wizard', 'created_title') ?></h1>
+<h1><?= Yii::t('wizard', 'created_title') ?></h1>
 <div class="content">
     <div class="alert alert-success" role="alert">
-        <?= \Yii::t('wizard', 'created_msg') ?>
+        <?= Yii::t('wizard', 'created_msg') ?>
     </div>
     <?php
     echo Html::beginForm($redirectUrl, 'get', ['class' => 'createdForm']);
@@ -49,13 +48,13 @@ if ($form->singleMotion) {
         <button type="submit" class="btn btn-primary">
             <?php
             if ($form->singleMotion) {
-                if ($form->functionality == SiteCreateForm::FUNCTIONALITY_MANIFESTO) {
-                    echo \Yii::t('wizard', 'created_goto_manifesto');
+                if (in_array(SiteCreateForm::FUNCTIONALITY_MANIFESTO, $form->functionality)) {
+                    echo Yii::t('wizard', 'created_goto_manifesto');
                 } else {
-                    echo \Yii::t('wizard', 'created_goto_motion');
+                    echo Yii::t('wizard', 'created_goto_motion');
                 }
             } else {
-                echo \Yii::t('wizard', 'created_goto_con');
+                echo Yii::t('wizard', 'created_goto_con');
             }
             ?>
         </button>

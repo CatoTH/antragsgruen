@@ -4,21 +4,15 @@ namespace app\models\exceptions;
 
 class DB extends ExceptionBase
 {
-    private $errors;
+    private array $errors;
 
-    /**
-     * @param array $errors
-     */
-    public function __construct($errors)
+    public function __construct(array $errors)
     {
         $this->errors = $errors;
         parent::__construct($this->__toString());
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         $str = '';
         foreach ($this->errors as $errKey => $err) {

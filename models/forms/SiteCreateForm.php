@@ -15,75 +15,52 @@ use yii\helpers\Html;
 
 class SiteCreateForm extends Model
 {
-    /** @var string */
-    public $contact;
-    /** @var string */
-    public $title;
-    /** @var string */
-    public $subdomain;
-    /** @var string */
-    public $organization;
+    public string $contact = '';
+    public string $title = '';
+    public string $subdomain = '';
+    public string $organization = '';
 
     // Sync with SiteCreateWizard.ts
-    const FUNCTIONALITY_MOTIONS   = 1;
-    const FUNCTIONALITY_MANIFESTO = 2;
-    const FUNCTIONALITY_APPLICATIONS = 3;
-    const FUNCTIONALITY_AGENDA = 4;
-    const FUNCTIONALITY_STATUTE_AMENDMENTS = 6;
-    const FUNCTIONALITY_SPEECH_LISTS = 5;
+    public const FUNCTIONALITY_MOTIONS   = 1;
+    public const FUNCTIONALITY_MANIFESTO = 2;
+    public const FUNCTIONALITY_APPLICATIONS = 3;
+    public const FUNCTIONALITY_AGENDA = 4;
+    public const FUNCTIONALITY_STATUTE_AMENDMENTS = 6;
+    public const FUNCTIONALITY_SPEECH_LISTS = 5;
 
-    public $functionality = [1];
-    public $language;
+    public array $functionality = [1];
+    public string $language;
 
-    /** @var bool */
-    public $singleMotion    = false;
-    /** @var bool */
-    public $hasAmendments   = true;
-    /** @var bool */
-    public $amendSinglePara = false;
-    /** @var bool */
-    public $amendMerging    = false;
-    /** @var bool */
-    public $motionScreening = true;
-    /** @var bool */
-    public $amendScreening  = true;
-    /** @var bool */
-    public $speechLogin     = false;
-    /** @var bool */
-    public $speechQuotas    = false;
+    public bool $singleMotion    = false;
+    public bool $hasAmendments   = true;
+    public bool $amendSinglePara = false;
+    public bool $amendMerging    = false;
+    public bool $motionScreening = true;
+    public bool $amendScreening  = true;
+    public bool $speechLogin     = false;
+    public bool $speechQuotas    = false;
 
-    /** @var int */
-    public $motionsInitiatedBy    = 2;
-    /** @var int */
-    public $amendmentsInitiatedBy = 2;
-    const MOTION_INITIATED_ADMINS    = 1;
-    const MOTION_INITIATED_LOGGED_IN = 2;
-    const MOTION_INITIATED_ALL       = 3;
+    public int $motionsInitiatedBy    = 2;
+    public int $amendmentsInitiatedBy = 2;
 
-    /** @var int */
-    public $applicationType = 1;
+    public const MOTION_INITIATED_ADMINS    = 1;
+    public const MOTION_INITIATED_LOGGED_IN = 2;
+    public const MOTION_INITIATED_ALL       = 3;
 
-    /** @var null|\DateTime */
-    public $motionDeadline = null;
-    /** @var null|\DateTime */
-    public $amendmentDeadline = null;
+    public int $applicationType = 1;
 
-    /** @var bool */
-    public $needsSupporters = false;
-    /** @var int */
-    public $minSupporters   = 3;
+    public ?\DateTime $motionDeadline = null;
+    public ?\DateTime $amendmentDeadline = null;
 
-    /** @var bool */
-    public $hasComments = false;
-    /** @var bool */
-    public $openNow = false;
+    public bool $needsSupporters = false;
+    public int $minSupporters   = 3;
 
-    /** @var Consultation|null */
-    public $consultation = null;
-    /** @var Site|null */
-    public $site;
-    /** @var Motion|null */
-    public $motion;
+    public bool $hasComments = false;
+    public bool $openNow = false;
+
+    public ?Consultation $consultation = null;
+    public ?Site $site;
+    public ?Motion $motion;
 
     public function __construct(array $config = [])
     {
@@ -297,14 +274,15 @@ class SiteCreateForm extends Model
         }
 
         if ($this->singleMotion && $type) {
-            $motion                 = new Motion();
-            $motion->title          = '';
-            $motion->titlePrefix    = '';
-            $motion->cache          = '';
+            $motion = new Motion();
+            $motion->title = '';
+            $motion->titlePrefix = '';
+            $motion->cache = '';
             $motion->consultationId = $con->id;
-            $motion->motionTypeId   = $type->id;
-            $motion->dateCreation   = date('Y-m-d H:i:s');
-            $motion->status         = Motion::STATUS_DRAFT;
+            $motion->motionTypeId = $type->id;
+            $motion->dateCreation = date('Y-m-d H:i:s');
+            $motion->dateContentModification = date('Y-m-d H:i:s');
+            $motion->status = Motion::STATUS_DRAFT;
             if (!$motion->save()) {
                 throw new FormError($motion->getErrors());
             }
