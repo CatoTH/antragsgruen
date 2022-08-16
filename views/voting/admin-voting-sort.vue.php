@@ -13,7 +13,7 @@ ob_start();
 <section aria-labelledby="sortVotingsHeader" class="votingSorting">
     <h2 class="green" id="sortVotingsHeader"><?= Yii::t('voting', 'settings_sort_title') ?></h2>
     <div class="content adminContent">
-        <draggable :list="votings" item-key="title" @change="onChange">
+        <draggable :list="votingCache" item-key="title" @change="onChange">
             <template #item="{ element }">
                 <div class="list-group-item">
                     <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
@@ -41,12 +41,28 @@ $html = ob_get_clean();
         template: <?= json_encode($html) ?>,
         props: ['votings'],
         data() {
-            return {}
+            return {
+                votingCache: null,
+                votingCachedIds: null,
+            }
+        },
+        watch: {
+            votings: {
+                handler(votingArr) {
+                    // We need to prevent reloads in the outer component to reset the sorting - unless there is a significant change.
+                    const ids = votingArr.map(vot => vot.id).join("-");
+                    if (this.votingCachedIds !== ids) {
+                        this.votingCachedIds = ids;
+                        this.votingCache = votingArr;
+                    }
+                },
+                immediate: true
+            }
         },
         methods: {
             onChange: function () {},
             getSortedIds: function () {
-                return this.votings.map(voting => {
+                return this.votingCache.map(voting => {
                     return voting.id;
                 });
             },
@@ -56,7 +72,7 @@ $html = ob_get_clean();
             setOrder: function (orderVotingIds) { // called by test cases
                 const indexedOrder = {};
                 orderVotingIds.forEach((votingId, idx) => indexedOrder[votingId.toString()] = idx);
-                this.votings = this.votings.sort((voting1, voting2) => {
+                this.votingCache = this.votingCache.sort((voting1, voting2) => {
                     return indexedOrder[voting1.id] - indexedOrder[voting2.id];
                 });
             }
