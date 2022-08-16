@@ -43,7 +43,6 @@ if ($contentAdmin) {
     echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ';
     echo Yii::t('base', 'edit');
     echo '</button><br>';
-    echo Html::endForm();
 }
 
 $zipUrl = UrlHelper::createUrl(['/pages/documents-zip', 'groupId' => 'all']);
@@ -62,6 +61,7 @@ if ($contentAdmin) {
     echo '<div class="textSaver hidden">';
     echo '<button class="btn btn-primary submitBtn" type="submit">';
     echo Yii::t('base', 'save') . '</button></div>';
+    echo Html::endForm();
 }
 echo '</div>';
 

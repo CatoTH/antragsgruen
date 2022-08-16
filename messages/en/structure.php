@@ -229,8 +229,8 @@ return [
     'activity_VOTING_DELETE'              => 'The voting was <strong>deleted</strong>',
     'activity_VOTING_QUESTION_ACCEPTED'   => 'The question was <strong>accepted</strong>',
     'activity_VOTING_QUESTION_REJECTED'   => 'The question was <strong>rejected</strong>',
-    'activity_USER_ADD_TO_GROUP'          => '###USER### was added to the group \"###GROUP###\".',
-    'activity_USER_REMOVE_FROM_GROUP'     => '###USER### was removed from the group \"###GROUP###\".',
+    'activity_USER_ADD_TO_GROUP'          => '###USER### was added to the group "###GROUP###".',
+    'activity_USER_REMOVE_FROM_GROUP'     => '###USER### was removed from the group "###GROUP###".',
 
     'remaining_over'    => 'over',
     'remaining_days'    => 'days',

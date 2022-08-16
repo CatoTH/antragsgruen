@@ -23,8 +23,6 @@ ob_start();
                     <div>
                         <span class="nameUnfiltered" v-if="!filterUser">{{ user.name }}</span>
                         <span class="nameFiltered" v-if="filterUser" v-html="formatUsername(user.name)"></span>
-                        <img v-if="user.auth_type === LOGIN_OPENSLIDES" alt="OpenSlides-User" title="OpenSlides-User"
-                             src="/img/openslides-logo.svg" class="loginTypeImg">
                     </div>
                     <div class="additional" v-html="formatUserAdditionalData(user)"></div>
                 </div>
@@ -68,8 +66,6 @@ ob_start();
                     <div class="groupInfo">
                         <div class="name">
                             {{ group.title }}
-                            <img v-if="group.auth_type === LOGIN_OPENSLIDES" alt="OpenSlides" title="OpenSlides"
-                                 src="/img/openslides-logo.svg" class="loginTypeImg">
                         </div>
                         <div class="additional" v-if="group.description">{{ group.description }}</div>
                     </div>
@@ -131,8 +127,7 @@ $html = ob_get_clean();
                 creatingGroups: false,
                 addGroupName: '',
                 filterUser: '',
-                filterGroup: '',
-                LOGIN_OPENSLIDES: <?= \app\models\settings\Site::LOGIN_OPENSLIDES ?>
+                filterGroup: ''
             };
         },
         computed: {
