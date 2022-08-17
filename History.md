@@ -12,6 +12,7 @@
   - Votings can have a timer, indicating a countdown to vote. (It is not binding though, it still needs to be closed by hand)
 - It is now logged when users are added to or removed from a user group. A log is visible for admins.
 - It is now possible for an admin to show the last edit date of a motion or amendment on the home page.
+- Bugfix: Base statute texts were shown in the "New motions" section in the sidebar.
 
 ### Version 4.10.1 (2022-07-01)
 
