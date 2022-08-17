@@ -37,6 +37,9 @@ $I->wantTo('create an amendment');
 $I->logout();
 $I->loginAsStdUser();
 $I->gotoConsultationHome();
+
+$I->dontSee('Our statutes');
+
 $I->click('#sidebar .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE . ' a');
 
 $I->wait(0.5);

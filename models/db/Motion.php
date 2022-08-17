@@ -316,9 +316,19 @@ class Motion extends IMotion implements IRSSItem
     {
         $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
 
+        $statuteTypes = [];
+        foreach ($consultation->motionTypes as $motionType) {
+            if ($motionType->amendmentsOnly) {
+                $statuteTypes[] = $motionType->id;
+            }
+        }
+
         $query = Motion::find();
         $query->where('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
         $query->andWhere('motion.consultationId = ' . intval($consultation->id));
+        if (count($statuteTypes) > 0) {
+            $query->andWhere('motion.motionTypeId NOT IN (' . implode(', ', $statuteTypes) . ')');
+        }
         $query->orderBy("dateCreation DESC");
         $query->offset(0)->limit($limit);
 
