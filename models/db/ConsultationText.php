@@ -15,9 +15,9 @@ use yii\db\ActiveRecord;
  * @property string $category
  * @property string $textId
  * @property int $menuPosition
- * @property string $title
- * @property string $breadcrumb
- * @property string $text
+ * @property string|null $title
+ * @property string|null $breadcrumb
+ * @property string|null $text
  * @property string $editDate
  *
  * @property ConsultationMotionType|null $motionType
@@ -232,13 +232,7 @@ class ConsultationText extends ActiveRecord
             return $page->menuPosition !== null;
         });
         usort($pages, function (ConsultationText $page1, ConsultationText $page2) {
-            if ($page1->menuPosition < $page2->menuPosition) {
-                return -1;
-            } elseif ($page1->menuPosition > $page2->menuPosition) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return $page1->menuPosition <=> $page2->menuPosition;
         });
 
         return $pages;
@@ -292,10 +286,10 @@ class ConsultationText extends ActiveRecord
                 $foundText->consultationId = ($consultation ? $consultation->id : null);
             }
         } else {
-            if (!$foundText->breadcrumb && $defaultPage) {
+            if (!$foundText->breadcrumb) {
                 $foundText->breadcrumb = $defaultPage->breadcrumb;
             }
-            if (!$foundText->title && $defaultPage) {
+            if (!$foundText->title) {
                 $foundText->title = $defaultPage->title;
             }
         }
@@ -316,7 +310,7 @@ class ConsultationText extends ActiveRecord
             );
         }
         usort($pages, function ($page1, $page2) {
-            return strnatcasecmp($page1->title, $page2->title);
+            return strnatcasecmp($page1->title ?? '', $page2->title ?? '');
         });
 
         return $pages;
