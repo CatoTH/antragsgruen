@@ -60,6 +60,22 @@
                     return false;
                 }
                 return user.groups.indexOf(group.id) !== -1;
+            },
+            yfjDisableVoting: function (user, pillar) {
+                const group = this.groups.find(group => group.title === "Voting " + this.yfjSelectedVotingRound + ": " + pillar);
+                if (!group) {
+                    return false;
+                }
+
+                this.removeGroupFromUser(user, group.id);
+            },
+            yfjEnableVoting: function (user, pillar) {
+                const group = this.groups.find(group => group.title === "Voting " + this.yfjSelectedVotingRound + ": " + pillar);
+                if (!group) {
+                    return false;
+                }
+
+                this.addGroupToUser(user, group.id);
             }
         }
     });

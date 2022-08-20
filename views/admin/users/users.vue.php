@@ -330,6 +330,24 @@ $html = ob_get_clean();
                 this.unsetGroupChanging(user);
                 this.$emit('save-user-groups', user, this.changedUserGroups[user.id]);
             },
+            addGroupToUser: function (user, groupId) {
+                if (user.groups.indexOf(groupId) !== -1) {
+                    console.warn('Group is already set for this user', groupId, JSON.parse(JSON.stringify(user)));
+                } else {
+                    user.groups.push(groupId);
+                }
+                this.unsetGroupChanging(user);
+                this.$emit('save-user-groups', user, user.groups);
+            },
+            removeGroupFromUser: function (user, groupId) {
+                if (user.groups.indexOf(groupId) === -1) {
+                    console.warn('User does not have this group', groupId, JSON.parse(JSON.stringify(user)));
+                } else {
+                    user.groups = user.groups.filter(grp => grp !== groupId);
+                }
+                this.unsetGroupChanging(user);
+                this.$emit('save-user-groups', user, user.groups);
+            },
             addGroupSubmit: function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
