@@ -4,24 +4,30 @@
     }
 
     window.VOTING_COMMON_MIXINS.push({
-        methods: {
-            getYfjUserGroupNameById: function (id) {
-                for (let i = 0; i < this.voting.user_groups.length; i++) {
-                    if (this.voting.user_groups[i].id === id) {
-                        return this.voting.user_groups[i].title;
-                    }
-                }
-                return '';
-            },
-            isYfjVoting: function(groupedVoting) {
+        computed: {
+
+            isYfjVoting: function() {
                 if (this.voting.vote_policy.id !== this.VOTE_POLICY_USERGROUPS) {
                     return false;
                 }
 
-                // Keep this in consistent with VotingHelper.php
-                return groupedVoting[0].vote_results['nyc'] && groupedVoting[0].vote_results['ingyo'];
+                // Keep this consistent with VotingHelper.php
+                let hasNycGroup = false,
+                    hasIngyoGroup = false;
+
+                this.voting.vote_policy.user_groups.forEach(groupId => {
+                    const groupName = this.getYfjUserGroupNameById(groupId).toLowerCase();
+                    if (groupName.indexOf('nyc') !== -1 && groupName.indexOf('voting') !== -1) {
+                        hasNycGroup = true;
+                    }
+                    if (groupName.indexOf('ingyo') !== -1 && groupName.indexOf('voting') !== -1) {
+                        hasIngyoGroup = true;
+                    }
+                });
+
+                return hasNycGroup && hasIngyoGroup;
             },
-            isYfjRollCall: function (groupedVoting) {
+            isYfjRollCall: function () {
                 if (this.voting.vote_policy.id !== this.VOTE_POLICY_USERGROUPS) {
                     return false;
                 }
@@ -39,8 +45,18 @@
                     }
                 });
 
-                return nycFullMembers === 2 && ingyoFullMembers === 2 &&
-                    groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0];
+                return nycFullMembers > 0 && ingyoFullMembers > 0 &&
+                    this.voting.answers.length === 1 && this.voting.answers[0].api_id === 'present';
+            }
+        },
+        methods: {
+            getYfjUserGroupNameById: function (id) {
+                for (let i = 0; i < this.voting.user_groups.length; i++) {
+                    if (this.voting.user_groups[i].id === id) {
+                        return this.voting.user_groups[i].title;
+                    }
+                }
+                return '';
             },
             getRollCallGroupsWithNumbers: function (groupedVoting) {
                 // Keep this logic consistent with VotingHelper.php::getRollCallResultTable

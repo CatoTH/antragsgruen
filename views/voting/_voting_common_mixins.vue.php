@@ -9,6 +9,8 @@ use app\models\policies\UserGroups;
 
 ?>
 <script>
+    const quorumCounter = <?= json_encode(Yii::t('voting', 'quorum_counter')) ?>;
+
     if (window.VOTING_COMMON_MIXINS === undefined) {
         window.VOTING_COMMON_MIXINS = [];
     }
@@ -151,6 +153,9 @@ use app\models\policies\UserGroups;
             },
             itemIsQuorumFailed: function (groupedItem) {
                 return groupedItem[0].voting_status === this.VOTING_STATUS_QUORUM_MISSED;
+            },
+            quorumCounter: function (groupedVoting) {
+                return quorumCounter.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
             },
             hasVoteList: function (groupedItem) {
                 return groupedItem[0].votes !== undefined;

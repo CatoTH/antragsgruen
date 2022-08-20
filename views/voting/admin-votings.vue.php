@@ -12,7 +12,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 
-$alternativeResultTemplate = Layout::getVotingAlternativeAdminResults($consultation);
+$alternativeResultTemplate = Layout::getVotingAlternativeResults($consultation);
 
 ob_start();
 ?>
@@ -169,7 +169,7 @@ ob_start();
                 if ($alternativeResultTemplate === null) {
                 ?>
                 <div class="votesDetailed" v-if="isOpen || isClosed">
-                    <div v-if="groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0]">
+                    <div v-if="groupedVoting[0].vote_results && groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0]">
                         <table class="votingTable votingTableSingle">
                             <thead>
                             <tr>
@@ -416,7 +416,6 @@ $html = ob_get_clean();
 
 <script>
     const quorumIndicator = <?= json_encode(Yii::t('voting', 'quorum_limit')) ?>;
-    const quorumCounter = <?= json_encode(Yii::t('voting', 'quorum_counter')) ?>;
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
     const deleteConfirmation = <?= json_encode(Yii::t('voting', 'settings_delete_bb')) ?>;
 
@@ -597,9 +596,6 @@ $html = ob_get_clean();
                 return Object.values(this.QUORUM_TYPES).find(quorumType => {
                    return quorumType.id === voting.quorum_type;
                 });
-            },
-            quorumCounter: function (groupedVoting) {
-                return quorumCounter.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
             },
             removeItem: function (groupedVoting) {
                 this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);

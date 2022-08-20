@@ -1,4 +1,4 @@
-<div v-if="isYfjVoting(groupedVoting)">
+<div v-if="isYfjVoting && groupedVoting[0].vote_results && groupedVoting[0].vote_results['nyc']">
     <table class="yfjVotingResultTable votingResultTable">
         <caption v-if="isOpen">Voting Status</caption>
         <caption v-if="isClosed">Voting Result</caption>
@@ -55,7 +55,7 @@
         {{ quorumCounter(groupedVoting) }}
     </div>
 </div>
-<div v-if="isYfjRollCall(groupedVoting)">
+<div v-if="isYfjRollCall && groupedVoting[0].vote_results">
     <table class="yfjRollCallResultTable votingResultTable">
         <caption v-if="isOpen">Roll Call Status</caption>
         <caption v-if="isClosed">Roll Call Result</caption>
@@ -74,6 +74,27 @@
         {{ quorumCounter(groupedVoting) }}
     </div>
 </div>
-<div v-if="!isYfjRollCall(groupedVoting) && !isYfjVoting(groupedVoting)">
-
+<div v-if="!isYfjRollCall && !isYfjVoting">
+    <div class="votesDetailed" v-if="isOpen || isClosed">
+        <div v-if="groupedVoting[0].vote_results && groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0]">
+            <table class="votingTable votingTableSingle">
+                <thead>
+                <tr>
+                    <th v-for="answer in voting.answers">{{ answer.title }}</th>
+                    <th v-if="voting.answers.length > 1"><?= Yii::t('voting', 'admin_votes_total') ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td v-for="answer in voting.answers" :class="'voteCount_' + answer.api_id">
+                        {{ groupedVoting[0].vote_results[0][answer.api_id] }}
+                    </td>
+                    <td class="voteCountTotal total" v-if="voting.answers.length > 1">
+                        {{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

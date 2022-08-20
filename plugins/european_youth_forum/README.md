@@ -31,6 +31,6 @@ After the roll call:
 ## Voting setup
 
 - Permissions: Two user groups:
-  - One with "NYC" in the title (hard-coded logic)
-  - One with "INGYO" in the title (hard-coded logic)
+  - One with the title "Voting [number]: NYC" in the title (hard-coded logic), e.g. "Voting 7: NYC"
+  - One with the title "Voting [number]: INGYO" in the title (hard-coded logic), e.g. "Voting 7: INGYO"
 - Answer choices: Yes, No, Abstention

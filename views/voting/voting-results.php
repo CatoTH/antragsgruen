@@ -2,6 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\User;
+use app\models\layoutHooks\Layout;
 use app\models\proposedProcedure\Factory;
 use yii\helpers\Html;
 
@@ -24,6 +25,7 @@ $layout->loadVue();
 $layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
 $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
+Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
 
 $apiData = [];
 foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockToRender) {

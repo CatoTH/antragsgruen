@@ -1,8 +1,14 @@
 <?php
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+
 ob_start();
 ?>
 <div class="userAdminList">
+    <?php
+    echo \app\models\layoutHooks\Layout::getAdditionalUserAdministrationVueTemplate($controller->consultation)
+    ?>
     <section class="content" aria-label="<?= Yii::t('admin', 'siteacc_accounts_title') ?>">
         <div class="filterHolder">
             <div class="groupFilter">
@@ -117,9 +123,14 @@ $html = ob_get_clean();
         }
     });
 
+    if (window.USER_ADMIN_MIXINS === undefined) {
+        window.USER_ADMIN_MIXINS = [];
+    }
+
     __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
         props: ['users', 'groups', 'urlUserLog', 'urlUserGroupLog'],
+        mixins: window.USER_ADMIN_MIXINS,
         data() {
             return {
                 changingGroupUsers: [],
@@ -318,6 +329,24 @@ $html = ob_get_clean();
             saveUser: function(user) {
                 this.unsetGroupChanging(user);
                 this.$emit('save-user-groups', user, this.changedUserGroups[user.id]);
+            },
+            addGroupToUser: function (user, groupId) {
+                if (user.groups.indexOf(groupId) !== -1) {
+                    console.warn('Group is already set for this user', groupId, JSON.parse(JSON.stringify(user)));
+                } else {
+                    user.groups.push(groupId);
+                }
+                this.unsetGroupChanging(user);
+                this.$emit('save-user-groups', user, user.groups);
+            },
+            removeGroupFromUser: function (user, groupId) {
+                if (user.groups.indexOf(groupId) === -1) {
+                    console.warn('User does not have this group', groupId, JSON.parse(JSON.stringify(user)));
+                } else {
+                    user.groups = user.groups.filter(grp => grp !== groupId);
+                }
+                this.unsetGroupChanging(user);
+                this.$emit('save-user-groups', user, user.groups);
             },
             addGroupSubmit: function ($event) {
                 $event.preventDefault();
