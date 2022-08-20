@@ -24,6 +24,16 @@ class Module extends ModuleBase
         return SiteSpecificBehavior::class;
     }
 
+    public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
+    {
+        $urls = parent::getAllUrlRoutes($urls, $dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
+
+        $urls[$dom . '<consultationPath:[\w_-]+>/votings/admin/create-yfj-voting'] = '/european_youth_forum/admin/create-yfj-voting';
+        $urls[$dom . '<consultationPath:[\w_-]+>/votings/admin/create-roll-call'] = '/european_youth_forum/admin/create-roll-call';
+
+        return $urls;
+    }
+
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */

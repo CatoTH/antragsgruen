@@ -238,6 +238,11 @@ class Hooks
         return null;
     }
 
+    public function getVotingAlternativeAdminHeader(?string $before, Consultation $consultation): ?string
+    {
+        return $before;
+    }
+
     public function getVotingAlternativeResults(?string $before, Consultation $consultation): ?string
     {
         return $before;

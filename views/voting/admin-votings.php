@@ -93,6 +93,14 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
      data-voting="<?= Html::encode(json_encode($apiData)) ?>">
+
+    <?php
+    $alternativeHeader = Layout::getVotingAlternativeAdminHeader($consultation);
+    if ($alternativeHeader) {
+        echo $alternativeHeader;
+    } else {
+    ?>
+
     <div class="content">
 
         <div class="votingOperations">
@@ -109,6 +117,9 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
 
         <?= Yii::t('voting', 'admin_intro') ?>
     </div>
+    <?php
+    }
+    ?>
 
     <section class="createVotingHolder hidden" aria-labelledby="createVotingTitle">
         <h2 class="green" id="createVotingTitle">
