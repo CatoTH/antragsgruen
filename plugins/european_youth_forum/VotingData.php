@@ -7,57 +7,33 @@ use app\models\db\VotingBlock;
 use app\models\quorumType\NoQuorum;
 
 class VotingData extends \app\models\settings\VotingData {
-    /** @var int|null */
-    public $nycUsers;
-    /** @var int|null */
-    public $ingyoUsers;
+    public ?int $nycUsers = null;
+    public ?int $ingyoUsers = null;
 
-    /** @var int|null */
-    public $nycYes;
-    /** @var int|null */
-    public $nycYesMultiplied;
-    /** @var int|null */
-    public $nycNo;
-    /** @var int|null */
-    public $nycNoMultiplied;
-    /** @var int|null */
-    public $nycAbstention;
-    /** @var int|null */
-    public $nycTotal;
-    /** @var int|null */
-    public $nycTotalMultiplied;
+    public ?int $nycYes = null;
+    public ?int $nycYesMultiplied = null;
+    public ?int $nycNo = null;
+    public ?int $nycNoMultiplied = null;
+    public ?int $nycAbstention = null;
+    public ?int $nycTotal = null;
+    public ?int $nycTotalMultiplied = null;
 
-    /** @var int|null */
-    public $ingyoYes;
-    /** @var int|null */
-    public $ingyoYesMultiplied;
-    /** @var int|null */
-    public $ingyoNo;
-    /** @var int|null */
-    public $ingyoNoMultiplied;
-    /** @var int|null */
-    public $ingyoAbstention;
-    /** @var int|null */
-    public $ingyoTotal;
-    /** @var int|null */
-    public $ingyoTotalMultiplied;
+    public ?int $ingyoYes = null;
+    public ?int $ingyoYesMultiplied = null;
+    public ?int $ingyoNo = null;
+    public ?int $ingyoNoMultiplied = null;
+    public ?int $ingyoAbstention = null;
+    public ?int $ingyoTotal = null;
+    public ?int $ingyoTotalMultiplied = null;
 
-    /** @var int|null */
-    public $totalYes;
-    /** @var int|null */
-    public $totalYesMultiplied;
-    /** @var int|null */
-    public $totalNo;
-    /** @var int|null */
-    public $totalNoMultiplied;
-    /** @var int|null */
-    public $totalAbstention;
-    /** @var int|null */
-    public $totalAbstentionMultiplied;
-    /** @var int|null */
-    public $totalTotal;
-    /** @var int|null */
-    public $totalTotalMultiplied;
+    public ?int $totalYes = null;
+    public ?int $totalYesMultiplied = null;
+    public ?int $totalNo = null;
+    public ?int $totalNoMultiplied = null;
+    public ?int $totalAbstention = null;
+    public ?int $totalAbstentionMultiplied = null;
+    public ?int $totalTotal = null;
+    public ?int $totalTotalMultiplied = null;
 
     public function augmentWithResults(VotingBlock $voting, IVotingItem $votingItem): \app\models\settings\VotingData
     {

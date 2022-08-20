@@ -13,13 +13,30 @@ class VotingHelper
     }
 
     public static function conditionRollCallIsNycFullMember(ConsultationUserGroup $group): bool {
+        // Hint: This matches both members WITH and members with NO voting rights
         return mb_stripos($group->title, 'Full member') !== false &&
             mb_stripos($group->title, 'NYC') !== false;
     }
 
     public static function conditionRollCallIsIngyoFullMember(ConsultationUserGroup $group): bool {
+        // Hint: This matches both members WITH and members with NO voting rights
         return mb_stripos($group->title, 'Full member') !== false &&
             mb_stripos($group->title, 'INGYO') !== false;
+    }
+
+    public static function conditionShouldBeAssignedToRollCall(ConsultationUserGroup $group): bool {
+        if (self::conditionRollCallIsNycFullMember($group) || self::conditionRollCallIsIngyoFullMember($group)) {
+            return true;
+        }
+        if ((mb_stripos($group->title, 'observer') !== false || mb_stripos($group->title, 'candidate') !== false)
+            && (mb_stripos($group->title, 'nyc') !== false || mb_stripos($group->title, 'ingyo') !== false)) {
+            return true;
+        }
+        if (mb_stripos($group->title, 'associates') !== false) {
+            return true;
+        }
+
+        return false;
     }
 
     public static function conditionVotingIsNycGroup(ConsultationUserGroup $group): bool {

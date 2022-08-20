@@ -10,13 +10,13 @@ use app\models\settings\VotingData;
 abstract class IMajorityType
 {
     // More yes- than no-votes
-    const MAJORITY_TYPE_SIMPLE = 1;
+    public const MAJORITY_TYPE_SIMPLE = 1;
 
     // More yes- than no- and abstention-votes combined
-    const MAJORITY_TYPE_ABSOLUTE = 2;
+    public const MAJORITY_TYPE_ABSOLUTE = 2;
 
     // At least 2/3 of all yes- and no-votes have to be yes (abstentions not counted)
-    const MAJORITY_TYPE_TWO_THIRD = 3;
+    public const MAJORITY_TYPE_TWO_THIRD = 3;
 
     /**
      * @return string[]|IMajorityType[]
