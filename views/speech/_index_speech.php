@@ -46,7 +46,7 @@ if ($queue->motionId || $queue->agendaItemId) {
 
         $user = User::getCurrentUser();
         if ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
-            echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink greenHeaderAdminLink">';
+            echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink greenHeaderExtraLink">';
             echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
             echo Yii::t('speech', 'goto_admin');
             echo '</a>';

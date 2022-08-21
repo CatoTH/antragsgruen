@@ -22,6 +22,13 @@ if ($contentAdmin) {
     $layout->addAMDModule('backend/Documents');
 }
 
+$fileGroups = ConsultationFileGroup::getSortedGroupsFromConsultation($consultation);
+$hasFiles = false;
+foreach ($fileGroups as $fileGroup) {
+    if (count($fileGroup->files) > 0) {
+        $hasFiles = true;
+    }
+}
 
 echo '<h1>' . Yii::t('pages', 'documents_title') . '</h1>';
 
@@ -45,12 +52,6 @@ if ($contentAdmin) {
     echo '</button><br>';
 }
 
-$zipUrl = UrlHelper::createUrl(['/pages/documents-zip', 'groupId' => 'all']);
-echo '<a href="' . Html::encode($zipUrl) . '" class="btn btn-default documentsDownloadAll">';
-echo '<span class="glyphicon glyphicon-download" aria-hidden="true"></span> ';
-echo Yii::t('pages', 'documents_download_all');
-echo '</a>';
-
 echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';
@@ -66,15 +67,39 @@ if ($contentAdmin) {
 echo '</div>';
 
 
-foreach (ConsultationFileGroup::getSortedGroupsFromConsultation($consultation) as $fileGroup) {
+if ($hasFiles || $contentAdmin) {
+    echo '<div class="content downloadAndActions">';
+}
+if ($hasFiles) {
+    $zipUrl = UrlHelper::createUrl(['/pages/documents-zip', 'groupId' => 'all']);
+    echo '<a href="' . Html::encode($zipUrl) . '" class="btn btn-default documentsDownloadAll">';
+    echo '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> ';
+    echo Yii::t('pages', 'documents_download_all');
+    echo '</a>';
+}
+if ($hasFiles || $contentAdmin) {
+    echo '</div>';
+}
+
+
+
+if (count($fileGroups) === 0) {
+    echo '<div class="content"><div class="alert alert-info msgNoDocuments"><p>';
+    echo Yii::t('pages', 'documents_none_yet');
+    echo '</p></div></div>';
+}
+
+foreach ($fileGroups as $fileGroup) {
     $zipUrl = UrlHelper::createUrl(['/pages/documents-zip', 'groupId' => $fileGroup->id]);
     ?>
     <section aria-labelledby="fileGroupTitle<?= $fileGroup->id ?>"
              class="fileGroupHolder fileGroupHolder<?= $fileGroup->id ?>">
-        <h2 class="green">
-            <span id="fileGroupTitle<?= $fileGroup->id ?>"><?= Html::encode($fileGroup->title) ?></span>
-            <a href="<?= Html::encode($zipUrl) ?>" class="zipLink"><span class="glyphicon glyphicon-download-alt"></span> ZIP</a>
+        <div class="greenHeader">
+            <h2 id="fileGroupTitle<?= $fileGroup->id ?>"><?= Html::encode($fileGroup->title) ?></h2>
             <?php
+            if (count($fileGroup->files) > 0) {
+                echo '<a href="' . Html::encode($zipUrl) . '" class="greenHeaderExtraLink"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> ZIP</a>';
+            }
             if ($contentAdmin) {
                 echo Html::beginForm(UrlHelper::createUrl('/pages/documents'), 'POST', ['class' => 'deleteGroupForm']);
                 ?>
@@ -88,7 +113,7 @@ foreach (ConsultationFileGroup::getSortedGroupsFromConsultation($consultation) a
                 echo Html::endForm();
             }
             ?>
-        </h2>
+        </div>
         <?php
         if ($contentAdmin) {
             echo Html::beginForm(UrlHelper::createUrl('/pages/documents'), 'POST', ['class' => 'deleteFileForm']);

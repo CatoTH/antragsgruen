@@ -130,19 +130,8 @@
     font-weight: normal;
   }
 
-  .documentsDownloadAll {
-    float: right;
-    margin-top: 10px;
-  }
-
-  .fileGroupHolder {
-    .zipLink {
-      font-weight: normal;
-      float: right;
-      text-transform: none;
-      text-shadow: none;
-      font-size: 14px;
-    }
+  .downloadAndActions {
+    text-align: right;
   }
 
   .deleteGroupForm {

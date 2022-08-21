@@ -66,4 +66,5 @@ return [
     'documents_file_add' => 'Upload file',
     'documents_uploaded_file' => 'The file was uploaded.',
     'documents_download_all' => 'Download all',
+    'documents_none_yet' => 'No documents were published yet.',
 ];
