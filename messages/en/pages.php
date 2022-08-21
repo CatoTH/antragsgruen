@@ -67,4 +67,5 @@ return [
     'documents_uploaded_file' => 'The file was uploaded.',
     'documents_download_all' => 'Download all',
     'documents_none_yet' => 'No documents were published yet.',
+    'documents_sort' => 'Sort file groups',
 ];

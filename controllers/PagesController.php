@@ -18,17 +18,17 @@ class PagesController extends Base
             return $this->getHttpResponse();
         }
 
-        if (\Yii::$app->request->post('create')) {
+        if ($this->getHttpRequest()->post('create')) {
             try {
-                $url = \Yii::$app->request->post('url');
+                $url = $this->getHttpRequest()->post('url');
                 if (trim($url) === '' || preg_match('/[^\w_\-,\.äöüß]/siu', $url)) {
                     throw new FormError('Invalid character in the URL');
                 }
                 $page                 = new ConsultationText();
                 $page->category       = 'pagedata';
                 $page->textId         = $url;
-                $page->title          = \Yii::$app->request->post('title');
-                $page->breadcrumb     = \Yii::$app->request->post('title');
+                $page->title          = $this->getHttpRequest()->post('title');
+                $page->breadcrumb     = $this->getHttpRequest()->post('title');
                 $page->consultationId = $this->consultation->id;
                 $page->siteId         = $this->site->id;
                 $page->menuPosition   = 1;
@@ -68,8 +68,8 @@ class PagesController extends Base
      */
     protected function getPageForEdit(string $pageSlug): ?ConsultationText
     {
-        if (\Yii::$app->request->get('pageId')) {
-            $page = ConsultationText::findOne(\Yii::$app->request->get('pageId'));
+        if ($this->getHttpRequest()->get('pageId')) {
+            $page = ConsultationText::findOne($this->getHttpRequest()->get('pageId'));
         } else {
             $page = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
         }
@@ -106,24 +106,24 @@ class PagesController extends Base
         $needsReload = false;
         $message     = '';
 
-        $page->text     = HTMLTools::correctHtmlErrors(\Yii::$app->request->post('data'));
+        $page->text     = HTMLTools::correctHtmlErrors($this->getHttpRequest()->post('data'));
         $page->editDate = date('Y-m-d H:i:s');
 
         if (!in_array($page->textId, array_keys(ConsultationText::getDefaultPages()))) {
-            if (\Yii::$app->request->post('title')) {
+            if ($this->getHttpRequest()->post('title')) {
                 if ($page->breadcrumb === $page->title) {
-                    $page->breadcrumb = \Yii::$app->request->post('title');
+                    $page->breadcrumb = $this->getHttpRequest()->post('title');
                 }
-                $page->title = \Yii::$app->request->post('title');
+                $page->title = $this->getHttpRequest()->post('title');
             }
-            if (\Yii::$app->request->post('inMenu') !== null) {
-                $menuPos = (\Yii::$app->request->post('inMenu') ? 1 : null);
+            if ($this->getHttpRequest()->post('inMenu') !== null) {
+                $menuPos = ($this->getHttpRequest()->post('inMenu') ? 1 : null);
                 if ($menuPos !== $page->menuPosition) {
                     $needsReload = true;
                 }
                 $page->menuPosition = $menuPos;
             }
-            if (\Yii::$app->request->post('allConsultations') === '1' && $page->consultationId) {
+            if ($this->getHttpRequest()->post('allConsultations') === '1' && $page->consultationId) {
                 $alreadyCreatedPage = ConsultationText::findOne([
                     'category'       => 'pagedata',
                     'siteId'         => $page->siteId,
@@ -136,7 +136,7 @@ class PagesController extends Base
                     $page->consultationId = null;
                 }
             }
-            if (\Yii::$app->request->post('allConsultations') === '0' && $page->consultationId === null) {
+            if ($this->getHttpRequest()->post('allConsultations') === '0' && $page->consultationId === null) {
                 $alreadyCreatedPage = ConsultationText::findOne([
                     'category'       => 'pagedata',
                     'consultationId' => $this->consultation->id,
@@ -148,13 +148,13 @@ class PagesController extends Base
                     $page->consultationId = $this->consultation->id;
                 }
             }
-            $newTextId = \Yii::$app->request->post('url');
+            $newTextId = $this->getHttpRequest()->post('url');
             if ($newTextId && !preg_match('/[^\w_\-,\.äöüß]/siu', $newTextId) && $page->textId !== $newTextId) {
                 $page->textId = $newTextId;
                 $needsReload  = true;
             }
         }
-        if ($page->textId === 'help') {
+        if ($page->textId === ConsultationText::DEFAULT_PAGE_HELP) {
             $page->menuPosition = 1;
         }
 
@@ -168,7 +168,7 @@ class PagesController extends Base
             'redirectTo'       => ($needsReload ? $page->getUrl() : null),
         ];
 
-        $downloadableResult = $this->handleDownloadableFiles(\Yii::$app->request->post());
+        $downloadableResult = $this->handleDownloadableFiles($this->getHttpRequest()->post());
         $result             = array_merge($result, $downloadableResult);
 
         $page->save();
@@ -203,7 +203,7 @@ class PagesController extends Base
 
     public function actionDeleteFile(): string
     {
-        $fileId = intval(\Yii::$app->request->post('id'));
+        $fileId = intval($this->getHttpRequest()->post('id'));
         foreach ($this->consultation->files as $file) {
             if ($file->id === $fileId) {
                 $file->delete();
@@ -219,14 +219,14 @@ class PagesController extends Base
     }
 
     /**
-     * @return \yii\console\Response|Response
+     * @return Response
      * @throws Access
      */
     public function actionDeletePage(string $pageSlug)
     {
         $page = $this->getPageForEdit($pageSlug);
 
-        if (\Yii::$app->request->post('delete')) {
+        if ($this->getHttpRequest()->post('delete')) {
             $page->delete();
         }
 
@@ -296,11 +296,11 @@ class PagesController extends Base
         $msgSuccess = '';
         $msgError   = '';
 
-        if (\Yii::$app->request->post('delete') !== null) {
+        if ($this->getHttpRequest()->post('delete') !== null) {
             try {
                 $file = ConsultationFile::findOne([
                     'consultationId' => $this->consultation->id,
-                    'id'             => \Yii::$app->request->post('id'),
+                    'id'             => $this->getHttpRequest()->post('id'),
                 ]);
                 if ($file) {
                     $file->delete();
@@ -453,6 +453,20 @@ class PagesController extends Base
             if ($found) {
                 $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_file_deleted'));
                 $this->consultation->refresh();
+            }
+        }
+
+        if ($iAmAdmin && $this->isPostSet('sortDocuments') && $this->isPostSet('document')) {
+            $idPosition = [];
+            foreach ($this->getPostValue('document') as $pos => $documentId) {
+                $idPosition[(int)$documentId] = $pos;
+            }
+
+            foreach ($this->consultation->fileGroups as $fileGroup) {
+                if (isset($idPosition[$fileGroup->id])) {
+                    $fileGroup->position = $idPosition[$fileGroup->id];
+                    $fileGroup->save();
+                }
             }
         }
 

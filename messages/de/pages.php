@@ -67,4 +67,5 @@ return [
     'documents_uploaded_file' => 'Das Dokument wurde hochgeladen.',
     'documents_download_all' => 'Alle herunterladen',
     'documents_none_yet' => 'Es wurden noch keine Dokumente veröffentlicht.',
+    'documents_sort' => 'Dokumentengruppen anordnen',
 ];
