@@ -10,7 +10,7 @@ $consultation = $controller->consultation;
 
 ob_start();
 ?>
-<section aria-labelledby="sortVotingsHeader" class="votingSorting">
+<section aria-labelledby="sortVotingsHeader" class="votingSorting stdSortingWidget">
     <h2 class="green" id="sortVotingsHeader"><?= Yii::t('voting', 'settings_sort_title') ?></h2>
     <div class="content adminContent">
         <draggable :list="votingCache" item-key="title" @change="onChange">

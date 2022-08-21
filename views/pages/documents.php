@@ -20,6 +20,9 @@ $layout->addBreadcrumb(Yii::t('pages', 'documents_title'));
 $layout->bodyCssClasses[] = 'documentsPage';
 if ($contentAdmin) {
     $layout->addAMDModule('backend/Documents');
+    $layout->loadVue();
+    $layout->loadSortable();
+    $layout->loadVueDraggable();
 }
 
 $fileGroups = ConsultationFileGroup::getSortedGroupsFromConsultation($consultation);
@@ -66,9 +69,16 @@ if ($contentAdmin) {
 }
 echo '</div>';
 
-
-if ($hasFiles || $contentAdmin) {
+if ($hasFiles || ($contentAdmin && count($fileGroups) > 1)) {
     echo '<div class="content downloadAndActions">';
+}
+if ($contentAdmin && count($fileGroups) > 1) {
+    ?>
+    <button type="button" class="btn btn-default sortDocumentsOpener">
+        <span class="glyphicon glyphicon-sort" aria-hidden="true"></span>
+        <?= Yii::t('pages', 'documents_sort') ?>
+    </button>
+    <?php
 }
 if ($hasFiles) {
     $zipUrl = UrlHelper::createUrl(['/pages/documents-zip', 'groupId' => 'all']);
@@ -77,10 +87,13 @@ if ($hasFiles) {
     echo Yii::t('pages', 'documents_download_all');
     echo '</a>';
 }
-if ($hasFiles || $contentAdmin) {
+if ($hasFiles || ($contentAdmin && count($fileGroups) > 1)) {
     echo '</div>';
 }
 
+if ($contentAdmin && count($fileGroups) > 1) {
+    echo $this->render('_documents_sort', ['fileGroups' => $fileGroups]);
+}
 
 
 if (count($fileGroups) === 0) {
