@@ -13,13 +13,13 @@ class VotingHelper
     }
 
     public static function conditionRollCallIsNycFullMember(ConsultationUserGroup $group): bool {
-        // Hint: This matches both members WITH and members with NO voting rights
+        // Hint: This matches members WITH voting rights, with NO voting rights, and not participating
         return mb_stripos($group->title, 'Full member') !== false &&
             mb_stripos($group->title, 'NYC') !== false;
     }
 
     public static function conditionRollCallIsIngyoFullMember(ConsultationUserGroup $group): bool {
-        // Hint: This matches both members WITH and members with NO voting rights
+        // Hint: This matches members WITH voting rights, with NO voting rights, and not participating
         return mb_stripos($group->title, 'Full member') !== false &&
             mb_stripos($group->title, 'INGYO') !== false;
     }
@@ -144,7 +144,7 @@ class VotingHelper
 
         $nycMembers = self::getGroupsFromVoting($policy, [VotingHelper::class, 'conditionRollCallIsNycFullMember']);
         $ingyoMembers = self::getGroupsFromVoting($policy, [VotingHelper::class, 'conditionRollCallIsIngyoFullMember']);
-        if (count($nycMembers) !== 2 || count($ingyoMembers) !== 2) {
+        if (!in_array(count($nycMembers), [2, 3]) || !in_array(count($ingyoMembers), [2, 3])) {
             return false;
         }
 

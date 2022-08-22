@@ -7,6 +7,8 @@ The following user groups exist:
 - NYC Full member (OD) WITH Voting rights
 - INGYO Full member (OD) NO Voting rights
 - NYC Full member (OD) NO Voting rights
+- INGYO Full member NOT participating
+- NYC Full member NOT participating
 - INGYO Observer (OD)
 - NYC Observer (OD)
 - INGYO Candidate (OD)
