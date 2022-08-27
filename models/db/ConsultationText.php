@@ -26,6 +26,8 @@ use yii\db\ActiveRecord;
  */
 class ConsultationText extends ActiveRecord
 {
+    public const DEFAULT_CATEGORY = 'pagedata';
+
     public const DEFAULT_PAGE_WELCOME = 'welcome';
     public const DEFAULT_PAGE_DOCUMENTS = 'documents';
     public const DEFAULT_PAGE_MAINTENANCE = 'maintenance';
@@ -162,7 +164,7 @@ class ConsultationText extends ActiveRecord
     {
         $data           = new ConsultationText();
         $data->textId   = $pageKey;
-        $data->category = 'pagedata';
+        $data->category = self::DEFAULT_CATEGORY;
         switch ($pageKey) {
             case self::DEFAULT_PAGE_MAINTENANCE:
                 $data->title      = \Yii::t('pages', 'content_maint_title');
@@ -243,7 +245,7 @@ class ConsultationText extends ActiveRecord
         $foundText = null;
         if (!in_array($pageKey, static::getSitewidePages())) {
             foreach ($consultation->texts as $text) {
-                if ($text->category === 'pagedata' && mb_strtolower($text->textId) === mb_strtolower($pageKey)) {
+                if ($text->category === self::DEFAULT_CATEGORY && mb_strtolower($text->textId) === mb_strtolower($pageKey)) {
                     $foundText = $text;
                 }
             }
@@ -253,25 +255,25 @@ class ConsultationText extends ActiveRecord
             $foundText = ConsultationText::findOne([
                 'siteId'         => $siteId,
                 'consultationId' => null,
-                'category'       => 'pagedata',
+                'category'       => self::DEFAULT_CATEGORY,
                 'textId'         => $pageKey,
             ]);
         }
         if (!$foundText && in_array($pageKey, static::getSystemwidePages())) {
             $template = ConsultationText::findOne([
-                'siteId'   => null,
-                'category' => 'pagedata',
-                'textId'   => $pageKey,
+                'siteId' => null,
+                'category' => self::DEFAULT_CATEGORY,
+                'textId' => $pageKey,
             ]);
             if (!$template) {
                 $template = static::getDefaultPage($pageKey);
             }
-            $foundText             = new ConsultationText();
-            $foundText->category   = 'pagedata';
-            $foundText->textId     = $pageKey;
-            $foundText->text       = $template->text;
+            $foundText = new ConsultationText();
+            $foundText->category = self::DEFAULT_CATEGORY;
+            $foundText->textId = $pageKey;
+            $foundText->text = $template->text;
             $foundText->breadcrumb = $template->breadcrumb;
-            $foundText->title      = $template->title;
+            $foundText->title = $template->title;
             if ($site) {
                 $foundText->siteId = $site->id;
             }
@@ -302,11 +304,11 @@ class ConsultationText extends ActiveRecord
      */
     public static function getAllPages(Site $site, ?Consultation $consultation): array
     {
-        $pages = ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null, 'category' => 'pagedata']);
+        $pages = ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null, 'category' => self::DEFAULT_CATEGORY]);
         if ($consultation) {
             $pages = array_merge(
                 $pages,
-                ConsultationText::findAll(['consultationId' => $consultation->id, 'category' => 'pagedata'])
+                ConsultationText::findAll(['consultationId' => $consultation->id, 'category' => self::DEFAULT_CATEGORY])
             );
         }
         usort($pages, function ($page1, $page2) {
