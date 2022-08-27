@@ -248,7 +248,9 @@ class Consultation extends ActiveRecord
     }
 
     private array $availableUserGroupCache = [];
+
     /**
+     * @param int[] $additionalIds
      * @return ConsultationUserGroup[]
      */
     public function getAllAvailableUserGroups(array $additionalIds = [], bool $allowCache = false): array
