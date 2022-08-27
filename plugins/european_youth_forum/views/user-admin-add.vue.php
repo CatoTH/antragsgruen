@@ -2,6 +2,13 @@
 <section class="content yfjVotingRounds" aria-label="YFJ Voting Groups">
     <div class="roundChooserHolder">
         <div class="btn-group roundChooser" role="group" aria-label="Voting groups">
+            <button type="button" class="btn btn-primary" v-if="yfjSelectedVotingRound === 'remote'"
+                    @click="yfjResetVotingRound()">Remote users
+            </button>
+            <button type="button" class="btn btn-default" v-if="yfjSelectedVotingRound !== 'remote'"
+                    @click="yfjChooseVotingRound('remote')">Remote users
+            </button>
+
             <template v-for="round in yfjVotingRounds">
                 <button type="button" class="btn btn-primary" v-if="yfjSelectedVotingRound === round"
                         @click="yfjResetVotingRound()">Voting {{ round }}
@@ -12,7 +19,7 @@
             </template>
         </div>
     </div>
-    <div class="roundUsers" v-if="yfjSelectedVotingRound">
+    <div class="roundUsers" v-if="yfjSelectedVotingRound && yfjSelectedVotingRound !== 'remote'">
         <div class="nyc">
             <h3>NYC</h3>
             <ul>
@@ -45,6 +52,22 @@
                 </li>
             </ul>
         </div>
+    </div>
+
+    <div class="remoteUsers" v-if="yfjSelectedVotingRound === 'remote'">
+        <ul>
+            <li v-for="user in usersFiltered">
+                <button class="btn btn-xs btn-default votingRights" @click="yfjDisableRemote(user)" v-if="yfjIsRemote(user)">
+                    <span class="glyphicon glyphicon-ok" aria-label="Is"></span>
+                    Remote
+                </button>
+                <button class="btn btn-xs btn-default noVotingRights" @click="yfjEnableRemote(user)" v-if="!yfjIsRemote(user)">
+                    <span class="glyphicon glyphicon-remove" aria-label="Is not"></span>
+                    Remote
+                </button>
+                {{ user.name }} <small>({{ user.email }})</small>
+            </li>
+        </ul>
     </div>
 </section>
 <h2 class="green">User list</h2>

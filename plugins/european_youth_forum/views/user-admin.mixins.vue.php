@@ -76,6 +76,27 @@
                 }
 
                 this.addGroupToUser(user, group.id);
+            },
+            yfjIsRemote: function (user) {
+                const group = this.groups.find(group => group.title.indexOf('Remote') !== -1);
+                if (!group) {
+                    return false;
+                }
+                return user.groups.indexOf(group.id) !== -1;
+            },
+            yfjDisableRemote: function (user) {
+                const group = this.groups.find(group => group.title.indexOf('Remote') !== -1);
+                if (!group) {
+                    return false;
+                }
+                this.removeGroupFromUser(user, group.id);
+            },
+            yfjEnableRemote: function (user) {
+                const group = this.groups.find(group => group.title.indexOf('Remote') !== -1);
+                if (!group) {
+                    return false;
+                }
+                this.addGroupToUser(user, group.id);
             }
         }
     });
