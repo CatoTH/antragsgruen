@@ -196,19 +196,29 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return ConsultationUserGroup[]
+     */
+    public function getConsultationUserGroups(Consultation $consultation): array
+    {
+        $groups = [];
+        foreach ($consultation->getAllAvailableUserGroups([], true) as $userGroup) {
+            foreach ($userGroup->getUserIds() as $userId) {
+                if ($userId === $this->id) {
+                    $groups[] = $userGroup;
+                }
+            }
+        }
+        return $groups;
+    }
+
+    /**
      * @return int[]
      */
     public function getConsultationUserGroupIds(Consultation $consultation): array
     {
-        $ids = [];
-        foreach ($consultation->getAllAvailableUserGroups([], true) as $userGroup) {
-            foreach ($userGroup->getUserIds() as $userId) {
-                if ($userId === $this->id) {
-                    $ids[] = $userGroup->id;
-                }
-            }
-        }
-        return $ids;
+        return array_map(function (ConsultationUserGroup $group): int {
+            return $group->id;
+        }, $this->getConsultationUserGroups($consultation));
     }
 
     /**

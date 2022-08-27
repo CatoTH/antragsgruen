@@ -41,3 +41,10 @@
     text-align: left;
     width: 67%;
 }
+
+.speechUser .speechRegisterName {
+    display: none;
+}
+.speechUser .speechRegisterName[value=""] {
+    display: table-cell;
+}

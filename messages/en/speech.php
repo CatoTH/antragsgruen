@@ -76,6 +76,7 @@ return [
     'admin_subq_add' => 'Add',
     'admin_subq_name' => 'Name',
     'admin_move_here' => 'Move here',
+    'admin_time_seconds' => 'seconds',
 
     'sidebar_title'  => 'All speaking lists',
     'sidebar_active' => 'Active speaking list',

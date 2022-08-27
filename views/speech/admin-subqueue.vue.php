@@ -18,7 +18,7 @@ ob_start();
             </li>
             <li class="subqueueItem" draggable="true" @dragstart="onItemDragStart($event, item)" @dragend="onItemDragEnd($event, item)">
                 <div class="starter">
-                    {{ item.name }}
+                    <span v-html="formatUsernameHtml(item)"></span>
 
                     <div class="operationDelete" @click="onItemDelete($event, item)" @keyup.enter="onItemDelete($event, item)" tabindex="0">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
@@ -178,6 +178,14 @@ $html = ob_get_clean();
                     hoverable = false;
                 }
                 return hoverable;
+            },
+
+            formatUsernameHtml: function (item) {
+                let name = item.name;
+                name = name.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+
+                // Replaces patterns like [[Remote]] by labels.
+                return name.replaceAll(/\[\[(.*)]]/g, "<span class=\"label label-info\">$1</span>");
             },
 
             // When an item of this list gets dragged

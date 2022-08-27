@@ -50,7 +50,7 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                     <li v-if="hasSpeakingTime" class="speakingTime">
                         <label @click="$event.stopPropagation()" class="input-group input-group-sm">
                             <input type="number" class="form-control" v-model="speakingTime" @change="settingsChanged()">
-                            <span class="input-group-addon">seconds</span>
+                            <span class="input-group-addon"><?= Yii::t('speech', 'admin_time_seconds') ?></span>
                         </label>
                     </li>
                     <li class="link">
@@ -84,9 +84,7 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                     <header v-if="queue.subqueues.length > 1 && subqueue.name !== 'default'"><span>{{ subqueue.name }}</span></header>
                     <header v-if="queue.subqueues.length > 1 && subqueue.name === 'default'"><span><?= Yii::t('speech', 'waiting_list_1') ?></span></header>
                     <ol>
-                        <li v-for="item in getPreviousForSubqueue(subqueue)">
-                            {{ item.name }}
-                        </li>
+                        <li v-for="item in getPreviousForSubqueue(subqueue)" v-html="formatUsernameHtml(item)"></li>
                     </ol>
                 </div>
             </div>
@@ -100,9 +98,7 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                     <?= Yii::t('speech', 'admin_running') ?>:
                 </div>
 
-                <div class="name">
-                    {{ activeSlot.name }}
-                </div>
+                <div class="name" v-html="formatUsernameHtml(activeSlot)"></div>
 
                 <div class="remainingTime" v-if="hasSpeakingTime && remainingSpeakingTime !== null">
                     <?= Yii::t('speech', 'remaining_time') ?>:
@@ -137,9 +133,7 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
             <li v-for="slot in sortedQueue" class="slotEntry">
                 <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
 
-                <div class="name">
-                    {{ slot.name }}
-                </div>
+                <div class="name" v-html="formatUsernameHtml(slot)"></div>
 
                 <button type="button" class="btn btn-success start" @click="startSlot($event, slot)" title="<?= Yii::t('speech', 'admin_start') ?>">
                     <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
@@ -159,7 +153,7 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                 @keyup.enter="addItemToSlotsAndStart(slotProposal.id)">
                 <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
                 <div class="title"><?= Yii::t('speech', 'admin_next') ?>:</div>
-                <div class="name">{{ slotProposal.name }}</div>
+                <div class="name" v-html="formatUsernameHtml(slotProposal)"></div>
 
                 <div class="operationDelete" @click="onItemDelete($event, slotProposal.id)" @keyup.enter="onItemDelete($event, item)" tabindex="0">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
@@ -480,6 +474,13 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 }).catch(function(err) {
                     console.error("Could not load speech queue data from backend", err);
                 });
+            },
+            formatUsernameHtml: function (item) {
+                let name = item.name;
+                name = name.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+
+                // Replaces patterns like [[Remote]] by labels.
+                return name.replaceAll(/\[\[(.*)]]/g, "<span class=\"label label-info\">$1</span>");
             },
             startPolling: function () {
                 this.recalcTimeOffset(new Date());

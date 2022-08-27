@@ -20,7 +20,7 @@ ob_start();
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
         <span class="title"><?= Yii::t('speech', 'footer_current') ?>:</span>
         <span class="name" v-if="activeSpeaker">
-            {{ activeSpeaker.name }}
+            <span v-html="formatUsernameHtml(activeSpeaker)"></span>
             <span class="label label-success" v-if="isMe(activeSpeaker)"><?= Yii::t('speech', 'you') ?></span>
         </span>
         <span class="nobody" v-if="!activeSpeaker">
@@ -36,7 +36,7 @@ ob_start();
         <?= Yii::t('speech', 'next_speaker') ?>:
         <ul class="upcomingSpeakerList">
             <li v-for="speaker in upcomingSpeakers">
-                <span class="name">{{ speaker.name }}</span><!-- Fight unwanted whitespace
+                <span class="name" v-html="formatUsernameHtml(speaker)"></span><!-- Fight unwanted whitespace
                 --><span class="label label-success" v-if="isMe(speaker)"><?= Yii::t('speech', 'you') ?></span><!-- Fight unwanted whitespace
                 -->
                 <button type="button" class="btn btn-link btnWithdraw" v-if="isMe(speaker)" @click="removeMeFromQueue($event)"
@@ -76,7 +76,7 @@ ob_start();
             <form @submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].have_applied && showApplicationForm === queue.subqueues[0].id">
                 <label :for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
-                    <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id"
+                    <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id"
                            ref="adderNameInput">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
@@ -118,7 +118,7 @@ ob_start();
             <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">
                 <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
-                    <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
+                    <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                     </span>

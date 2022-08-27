@@ -4,20 +4,14 @@ namespace app\models\api;
 
 use app\components\CookieUser;
 use app\models\db\User;
+use app\models\layoutHooks\Layout;
 
 class SpeechUser implements \JsonSerializable
 {
-    /** @var bool */
-    public $loggedIn;
-
-    /** @var null|int */
-    public $id;
-
-    /** @var null|string */
-    public $token;
-
-    /** @var string */
-    public $name;
+    public bool $loggedIn;
+    public ?int $id;
+    public ?string $token;
+    public string $name;
 
     public function __construct(?User $user, ?CookieUser $cookieUser)
     {
@@ -25,11 +19,13 @@ class SpeechUser implements \JsonSerializable
             $this->loggedIn = true;
             $this->id = $user->id;
             $this->token = null;
+
             if ($user->organization) {
                 $this->name = $user->name . ' (' . $user->organization . ')';
             } else {
                 $this->name = $user->name;
             }
+            $this->name = Layout::getFormattedUsername($this->name, $user);
         } elseif ($cookieUser) {
             $this->loggedIn = true;
             $this->id = null;

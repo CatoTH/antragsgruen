@@ -15,7 +15,7 @@ ob_start();
             <span v-if="activeSpeaker" class="existing">
                 <?= Yii::t('speech', 'current') ?>:
             </span>
-            <div v-if="activeSpeaker" class="name">{{ activeSpeaker.name }}</div>
+            <div v-if="activeSpeaker" class="name" v-html="formatUsernameHtml(activeSpeaker)"></div>
             <span v-if="!activeSpeaker" class="notExisting">
                 <?= Yii::t('speech', 'current_nobody') ?>
             </span>
@@ -30,7 +30,7 @@ ob_start();
             <?= Yii::t('speech', 'next_speaker') ?>:
             <ul class="upcomingSpeakerList">
                 <li v-for="speaker in upcomingSpeakers">
-                    <span class="name">{{ speaker.name }}</span><!-- Fight unwanted whitespace
+                    <span class="name" v-html="formatUsernameHtml(speaker)"></span><!-- Fight unwanted whitespace
                 --><span class="label label-success" v-if="isMe(speaker)"><?= Yii::t('speech', 'you') ?></span><!-- Fight unwanted whitespace
                 --><button type="button" class="btn btn-link btnWithdraw" v-if="isMe(speaker)"
                             @click="removeMeFromQueue($event)"
@@ -52,7 +52,7 @@ ob_start();
             <ol class="nameList" v-if="queue.subqueues[0].applied && queue.subqueues[0].applied.length > 0" title="<?= Yii::t('speech', 'persons_waiting') ?>">
                 <li v-for="applied in queue.subqueues[0].applied">
                     <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
-                    {{ applied.name }}
+                    <span v-html="formatUsernameHtml(applied)"></span>
                 </li>
             </ol>
 
@@ -85,7 +85,7 @@ ob_start();
             <form @submit="register($event, queue.subqueues)" v-if="queue.is_open && !queue.subqueues[0].have_applied && showApplicationForm === queue.subqueues[0].id">
                 <label :for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
-                    <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id" ref="adderNameInput">
+                    <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id" ref="adderNameInput">
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                     </span>
@@ -122,7 +122,7 @@ ob_start();
                         {{ subqueue.num_applied }}
                     </span>
                     <ol class="nameList" v-if="subqueue.applied && subqueue.applied.length > 0 && showApplicationForm !== subqueue.id" title="<?= Yii::t('speech', 'persons_waiting') ?>">
-                        <li v-for="applied in subqueue.applied">{{ applied.name }}</li>
+                        <li v-for="applied in subqueue.applied" v-html="formatUsernameHtml(applied)"></li>
                     </ol>
 
                     <div v-if="subqueue.have_applied" class="appliedMe">
@@ -137,7 +137,7 @@ ob_start();
                     <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">
                         <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                         <div class="input-group">
-                            <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInputs">
+                            <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInputs">
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                             </span>

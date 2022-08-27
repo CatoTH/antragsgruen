@@ -16,6 +16,7 @@ The following user groups exist:
 - Associates
 - YFJ Board
 - YFJ Staff
+- Remote user
 
 Plus for each Roll Call two groups - e.g. for Roll Call no. 3 the two groups "Voting 3: INGYO" and "Voting 3: NYC"
 

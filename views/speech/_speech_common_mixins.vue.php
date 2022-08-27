@@ -73,6 +73,13 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                     return msgPersonsWaitingX.replace(/%NUM%/, subqueue.num_applied);
                 }
             },
+            formatUsernameHtml: function (item) {
+                let name = item.name;
+                name = name.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+
+                // Replaces patterns like [[Remote]] by labels.
+                return name.replaceAll(/\[\[(.*)]]/g, "<span class=\"label label-info\">$1</span>");
+            },
             register: function ($event, subqueue) {
                 $event.preventDefault();
 

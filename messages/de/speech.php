@@ -76,6 +76,7 @@ return [
     'admin_subq_add' => 'Hinzufügen',
     'admin_subq_name' => 'Name',
     'admin_move_here' => 'Hierher verschieben',
+    'admin_time_seconds' => 'Sekunden',
 
     'sidebar_title'  => 'Alle Redelisten',
     'sidebar_active' => 'Aktive Redeliste',

@@ -41,6 +41,15 @@ class SpeechQueueItem extends ActiveRecord
         return $this->hasOne(User::class, ['id' => 'userId']);
     }
 
+    public function getMyUser(): ?User
+    {
+        if ($this->userId) {
+            return User::getCachedUser($this->userId);
+        } else {
+            return null;
+        }
+    }
+
     public function rules(): array
     {
         return [

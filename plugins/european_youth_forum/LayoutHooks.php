@@ -4,13 +4,15 @@ namespace app\plugins\european_youth_forum;
 
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\settings\Layout;
-use app\models\db\{Consultation, IVotingItem, User, VotingBlock};
+use app\models\db\{Amendment, Consultation, ISupporter, IVotingItem, User, VotingBlock};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\VotingData;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class LayoutHooks extends Hooks
 {
+    private const USERGROUP_REMOTE_LABEL = 'Remote'; // This needs to be _part_ of a user group name
+
     public function endOfHead(string $before): string
     {
         $before .= '<style>' . file_get_contents(__DIR__ . '/assets/styles.css') . '</style>';
@@ -60,7 +62,12 @@ class LayoutHooks extends Hooks
 
     public function getFormattedUsername(string $before, User $user): string
     {
-        return trim($user->organization ?: '') !== '' ? $user->organization : $user->name;
+        $username = trim($user->organization ?: '') !== '' ? $user->organization : $user->name;
+        if ($this->consultation) {
+            $username .= self::getUserRemoteLabelIfRelevant($user, $this->consultation, false);
+        }
+
+        return $username;
     }
 
     private function printYfjVotingAlternativeSpreadsheetResults(int $rowsBefore, Worksheet $worksheet, int $startRow, AgendaVoting $agendaVoting, IVotingItem $voteItem): int
@@ -203,5 +210,33 @@ class LayoutHooks extends Hooks
         }
 
         return 0;
+    }
+
+    public static function getUserRemoteLabelIfRelevant(User $user, Consultation $consultation, bool $html): string
+    {
+        $isRemote = false;
+        foreach ($user->getConsultationUserGroups($consultation) as $group) {
+            if (str_contains($group->title, self::USERGROUP_REMOTE_LABEL)) {
+                $isRemote = true;
+            }
+        }
+        if ($isRemote) {
+            if ($html) {
+                return ' <span class="label label-info">Remote</span>';
+            } else {
+                return ' [[Remote]]'; // [[...]] is a pattern replaced by labels in the frontend
+            }
+        } else {
+            return '';
+        }
+    }
+
+    public function getMotionDetailsInitiatorName(string $before, ISupporter $supporter): string
+    {
+        $user = $supporter->getMyUser();
+        if (!$user) {
+            return $before;
+        }
+        return $before . self::getUserRemoteLabelIfRelevant($supporter->getMyUser(), $supporter->getIMotion()->getMyConsultation(), true);
     }
 }
