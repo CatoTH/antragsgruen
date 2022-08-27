@@ -27,25 +27,27 @@ class SiteCreateForm extends Model
     public const FUNCTIONALITY_AGENDA = 4;
     public const FUNCTIONALITY_STATUTE_AMENDMENTS = 6;
     public const FUNCTIONALITY_SPEECH_LISTS = 5;
+    public const FUNCTIONALITY_VOTINGS = 7;
+    public const FUNCTIONALITY_DOCUMENTS = 8;
 
     public array $functionality = [1];
     public string $language;
 
-    public bool $singleMotion    = false;
-    public bool $hasAmendments   = true;
+    public bool $singleMotion = false;
+    public bool $hasAmendments = true;
     public bool $amendSinglePara = false;
-    public bool $amendMerging    = false;
+    public bool $amendMerging = false;
     public bool $motionScreening = true;
-    public bool $amendScreening  = true;
-    public bool $speechLogin     = false;
-    public bool $speechQuotas    = false;
+    public bool $amendScreening = true;
+    public bool $speechLogin = false;
+    public bool $speechQuotas = false;
 
-    public int $motionsInitiatedBy    = 2;
+    public int $motionsInitiatedBy = 2;
     public int $amendmentsInitiatedBy = 2;
 
-    public const MOTION_INITIATED_ADMINS    = 1;
+    public const MOTION_INITIATED_ADMINS = 1;
     public const MOTION_INITIATED_LOGGED_IN = 2;
-    public const MOTION_INITIATED_ALL       = 3;
+    public const MOTION_INITIATED_ALL = 3;
 
     public int $applicationType = 1;
 
@@ -53,7 +55,7 @@ class SiteCreateForm extends Model
     public ?\DateTime $amendmentDeadline = null;
 
     public bool $needsSupporters = false;
-    public int $minSupporters   = 3;
+    public int $minSupporters = 3;
 
     public bool $hasComments = false;
     public bool $openNow = false;
@@ -165,6 +167,12 @@ class SiteCreateForm extends Model
         if (in_array(static::FUNCTIONALITY_SPEECH_LISTS, $this->functionality)) {
             $this->createSpeechList($con);
         }
+        if (in_array(static::FUNCTIONALITY_VOTINGS, $this->functionality)) {
+            $this->createVotings($con);
+        }
+        if (in_array(static::FUNCTIONALITY_DOCUMENTS, $this->functionality)) {
+            $this->createDocuments($con);
+        }
 
         $this->createPageData($site, $con);
 
@@ -191,12 +199,12 @@ class SiteCreateForm extends Model
 
         $settings                  = $con->getSettings();
         $settings->maintenanceMode = !$this->openNow;
-        if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
+        if ($this->motionsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $settings->screeningMotions = false;
         } else {
             $settings->screeningMotions = $this->motionScreening;
         }
-        if ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
+        if ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $settings->screeningAmendments = false;
         } else {
             $settings->screeningAmendments = $this->amendScreening;
@@ -299,8 +307,8 @@ class SiteCreateForm extends Model
 
             $this->motion = $motion;
 
-            $conSett                   = $this->consultation->getSettings();
-            $conSett->forceMotion      = $motion->id;
+            $conSett = $this->consultation->getSettings();
+            $conSett->forceMotion = $motion->id;
             $conSett->screeningMotions = false;
             $this->consultation->setSettings($conSett);
             $this->consultation->save();
@@ -315,18 +323,18 @@ class SiteCreateForm extends Model
         $type = Manifesto::doCreateManifestoType($consultation);
 
         $type->sidebarCreateButton = 1;
-        if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
+        if ($this->motionsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $type->policyMotions = (string)IPolicy::POLICY_ADMINS;
-        } elseif ($this->motionsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
+        } elseif ($this->motionsInitiatedBy === self::MOTION_INITIATED_LOGGED_IN) {
             $type->policyMotions = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyMotions = (string)IPolicy::POLICY_ALL;
         }
         if (!$this->hasAmendments) {
             $type->policyAmendments = (string)IPolicy::POLICY_NOBODY;
-        } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
+        } elseif ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $type->policyAmendments = (string)IPolicy::POLICY_ADMINS;
-        } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
+        } elseif ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_LOGGED_IN) {
             $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyAmendments = (string)IPolicy::POLICY_ALL;
@@ -380,18 +388,18 @@ class SiteCreateForm extends Model
         $type = \app\models\motionTypeTemplates\Motion::doCreateMotionType($consultation);
 
         $type->sidebarCreateButton = 1;
-        if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
+        if ($this->motionsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $type->policyMotions = (string)IPolicy::POLICY_ADMINS;
-        } elseif ($this->motionsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
+        } elseif ($this->motionsInitiatedBy === self::MOTION_INITIATED_LOGGED_IN) {
             $type->policyMotions = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyMotions = (string)IPolicy::POLICY_ALL;
         }
         if (!$this->hasAmendments) {
             $type->policyAmendments = (string)IPolicy::POLICY_NOBODY;
-        } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
+        } elseif ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $type->policyAmendments = (string)IPolicy::POLICY_ADMINS;
-        } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
+        } elseif ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_LOGGED_IN) {
             $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyAmendments = (string)IPolicy::POLICY_ALL;
@@ -411,8 +419,8 @@ class SiteCreateForm extends Model
         } else {
             $type->policyComments = (string)IPolicy::POLICY_NOBODY;
         }
-        $type->policySupportMotions        = (string)IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments     = (string)IPolicy::POLICY_NOBODY;
+        $type->policySupportMotions = (string)IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments = (string)IPolicy::POLICY_NOBODY;
         if ($this->amendSinglePara) {
             $type->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH;
         } else {
@@ -455,9 +463,9 @@ class SiteCreateForm extends Model
         $type->motionPrefix = 'S';
         if (!$this->hasAmendments) {
             $type->policyAmendments = (string)IPolicy::POLICY_NOBODY;
-        } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
+        } elseif ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $type->policyAmendments = (string)IPolicy::POLICY_ADMINS;
-        } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
+        } elseif ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_LOGGED_IN) {
             $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyAmendments = (string)IPolicy::POLICY_ALL;
@@ -596,6 +604,22 @@ class SiteCreateForm extends Model
         $unassignedQueue->save();
     }
 
+    private function createVotings(Consultation $consultation): void
+    {
+        $conSett = $consultation->getSettings();
+        $conSett->votingPage = true;
+        $consultation->setSettings($conSett);
+        $consultation->save();
+    }
+
+    private function createDocuments(Consultation $consultation): void
+    {
+        $conSett = $consultation->getSettings();
+        $conSett->documentPage = true;
+        $consultation->setSettings($conSett);
+        $consultation->save();
+    }
+
     /**
      * @throws FormError
      */
@@ -605,8 +629,8 @@ class SiteCreateForm extends Model
         $legalText                 = new ConsultationText();
         $legalText->consultationId = null;
         $legalText->siteId         = $site->id;
-        $legalText->category       = 'pagedata';
-        $legalText->textId         = 'legal';
+        $legalText->category       = ConsultationText::DEFAULT_CATEGORY;
+        $legalText->textId         = ConsultationText::DEFAULT_PAGE_LEGAL;
         $legalText->text           = str_replace('%CONTACT%', $contactHtml, \Yii::t('base', 'legal_template'));
         if (!$legalText->save()) {
             throw new FormError($legalText->getErrors());
@@ -614,18 +638,19 @@ class SiteCreateForm extends Model
 
         $params = AntragsgruenApp::getInstance();
         if ($params->mode === 'sandbox') {
-            $siteurl                   = str_replace('<subdomain:[\w_-]+>', $this->subdomain, $params->domainSubdomain);
-            $welcomeHtml               = str_replace(
+            $siteurl = str_replace('<subdomain:[\w_-]+>', $this->subdomain, $params->domainSubdomain);
+            $welcomeHtml = str_replace(
                 ['%ADMIN_USERNAME%', '%ADMIN_PASSWORD%', '%SITE_URL%'],
                 [$this->subdomain . '@example.org', 'admin', $siteurl],
                 \Yii::t('wizard', 'sandbox_dummy_welcome')
             );
-            $legalText                 = new ConsultationText();
-            $legalText->siteId         = $site->id;
+
+            $legalText = new ConsultationText();
+            $legalText->siteId = $site->id;
             $legalText->consultationId = $consultation->id;
-            $legalText->category       = 'pagedata';
-            $legalText->textId         = 'welcome';
-            $legalText->text           = $welcomeHtml;
+            $legalText->category = ConsultationText::DEFAULT_CATEGORY;
+            $legalText->textId = ConsultationText::DEFAULT_PAGE_WELCOME;
+            $legalText->text = $welcomeHtml;
             if (!$legalText->save()) {
                 throw new FormError($legalText->getErrors());
             }

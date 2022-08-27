@@ -23,6 +23,9 @@ return [
     'functionality_agenda'         => 'An agenda',
     'functionality_speech'         => 'Speaking lists',
     'functionality_statute_amendments' => 'Statutes<br>amendments',
+    'functionality_votings'        => 'Votings',
+    'functionality_documents_desc' => '(Document)',
+    'functionality_documents'      => 'Downloads',
 
     'language_title' => 'Language of the site',
 

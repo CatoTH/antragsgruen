@@ -23,6 +23,9 @@ return [
     'functionality_agenda'         => 'Tagesordnung',
     'functionality_speech'         => 'Redelisten',
     'functionality_statute_amendments' => 'Satzungs-<br>änderungen',
+    'functionality_votings'        => 'Abstimmungen',
+    'functionality_documents_desc' => '(Dokumenten-)',
+    'functionality_documents'      => 'Downloads',
 
     'language_title' => 'Sprache der Benutzeroberfläche?',
 

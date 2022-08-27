@@ -88,6 +88,28 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
+            <label class="radio-checkbox-label checkbox-label description-first value-votings">
+                <span class="description">&nbsp;</span>
+                <span class="title"><?=$t('functionality_votings')?></span>
+                <span class="input">
+                    <?= Html::checkbox(
+                        'SiteCreateForm[functionality][]',
+                        in_array(SiteCreateForm::FUNCTIONALITY_VOTINGS, $model->functionality),
+                        ['value' => SiteCreateForm::FUNCTIONALITY_VOTINGS]
+                    ); ?>
+                </span>
+            </label>
+            <label class="radio-checkbox-label checkbox-label description-first value-documents">
+                <span class="description"><?=$t('functionality_documents_desc')?></span>
+                <span class="title"><?=$t('functionality_documents')?></span>
+                <span class="input">
+                    <?= Html::checkbox(
+                        'SiteCreateForm[functionality][]',
+                        in_array(SiteCreateForm::FUNCTIONALITY_DOCUMENTS, $model->functionality),
+                        ['value' => SiteCreateForm::FUNCTIONALITY_DOCUMENTS]
+                    ); ?>
+                </span>
+            </label>
         </div>
     </fieldset>
     <div class="navigation">
