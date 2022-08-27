@@ -44,7 +44,8 @@
     "symfony/polyfill-iconv": "^1.25",
     "doctrine/annotations": "^1.13",
     "symfony/property-access": "^5.4",
-    "phpoffice/phpspreadsheet": "^1.21"
+    "phpoffice/phpspreadsheet": "^1.21",
+    "colinodell/json5": "^2.2"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.1.3",
