@@ -38,8 +38,13 @@
       flex: 1;
     }
 
-    .settingsOpen, .settingsActive {
+    .settingsActive {
       line-height: 35px;
+      font-weight: normal;
+      margin-bottom: 0;
+    }
+    .settingOpen {
+      display: block;
       font-weight: normal;
       margin-bottom: 0;
     }
@@ -528,14 +533,15 @@
   .remainingTime {
     text-align: center;
   }
+  .waitingMultiple {
+    .name {
+      vertical-align: top;
+    }
+  }
   .nameList {
     display: block;
-    margin-top: 30px;
-    margin-bottom: 50px;
 
     > li {
-      margin-top: 20px;
-      margin-bottom: 20px;
 
       .leftIcon {
         float: left;
@@ -548,6 +554,14 @@
       @if ($font-size-base < 16) {
         font-size: 16px;
       }
+    }
+  }
+  .waitingSingle .nameList {
+    margin-top: 30px;
+    margin-bottom: 50px;
+    > li {
+      margin-top: 20px;
+      margin-bottom: 20px;
     }
   }
   .apply {

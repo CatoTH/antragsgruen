@@ -70,8 +70,13 @@ ob_start();
             <div class="notPossible" v-if="!queue.is_open">
                 <?= Yii::t('speech', 'apply_closed') ?>
             </div>
+
+            <form @submit="register($event, queue.subqueues)" v-if="queue.is_open && !queue.have_applied && !queue.allow_custom_names && registerName">
+                <button class="btn btn-primary" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
+            </form>
+
             <button class="btn btn-primary applyOpener" type="button"
-                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id"
+                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id && !(!queue.allow_custom_names && registerName)"
                     :disabled="loginWarning"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
@@ -82,7 +87,7 @@ ob_start();
                 <?= Yii::t('speech', 'login_warning') ?>
             </a>
 
-            <form @submit="register($event, queue.subqueues)" v-if="queue.is_open && !queue.subqueues[0].have_applied && showApplicationForm === queue.subqueues[0].id">
+            <form @submit="register($event, queue.subqueues)" v-if="queue.is_open && !queue.subqueues[0].have_applied && showApplicationForm === queue.subqueues[0].id && !(!queue.allow_custom_names && registerName)">
                 <label :for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
                     <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id" ref="adderNameInput">
@@ -106,12 +111,17 @@ ob_start();
                 </div>
                 <div class="applied">
                     <button class="btn btn-default btn-xs" type="button"
-                            v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id"
+                            v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id && !(!queue.allow_custom_names && registerName)"
                             :disabled="loginWarning"
                             @click="onShowApplicationForm($event, subqueue)"
                     >
                         <?= Yii::t('speech', 'apply') ?>
                     </button>
+
+                    <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && !queue.allow_custom_names && registerName">
+                        <button class="btn btn-primary" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
+                    </form>
+
                     <a href="<?= Html::encode($loginUrl) ?>" class="loginWarning" v-if="loginWarning">
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                         <?= Yii::t('speech', 'login_warning') ?>
@@ -167,6 +177,7 @@ $html = ob_get_clean();
         data() {
             return {
                 registerName: this.user.name,
+                defaultApplicationForm: null, // null = default form
                 showApplicationForm: null // null = default form
             };
         },

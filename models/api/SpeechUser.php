@@ -19,13 +19,7 @@ class SpeechUser implements \JsonSerializable
             $this->loggedIn = true;
             $this->id = $user->id;
             $this->token = null;
-
-            if ($user->organization) {
-                $this->name = $user->name . ' (' . $user->organization . ')';
-            } else {
-                $this->name = $user->name;
-            }
-            $this->name = Layout::getFormattedUsername($this->name, $user);
+            $this->name = self::getFormattedUserName($user);
         } elseif ($cookieUser) {
             $this->loggedIn = true;
             $this->id = null;
@@ -37,6 +31,16 @@ class SpeechUser implements \JsonSerializable
             $this->token = null;
             $this->name = '';
         }
+    }
+
+    public static function getFormattedUserName(User $user): string
+    {
+        if ($user->organization) {
+            $name = $user->name . ' (' . $user->organization . ')';
+        } else {
+            $name = $user->name;
+        }
+        return Layout::getFormattedUsername($name, $user);
     }
 
     public function jsonSerialize(): array

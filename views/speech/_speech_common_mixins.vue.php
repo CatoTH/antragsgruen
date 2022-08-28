@@ -90,7 +90,7 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                     _csrf: this.csrf,
                 }, function (data) {
                     widget.queue = data;
-                    widget.showApplicationForm = false;
+                    widget.showApplicationForm = widget.defaultApplicationForm;
                 }).catch(function (err) {
                     alert(err.responseText);
                 });
@@ -102,7 +102,7 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                 this.$nextTick(function () {
                     if (this.$refs.adderNameInputs) {
                         this.$refs.adderNameInputs[0].focus();
-                    } else {
+                    } else if (this.$refs.adderNameInput) {
                         this.$refs.adderNameInput.focus();
                     }
                 });

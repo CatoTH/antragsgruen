@@ -62,8 +62,13 @@ ob_start();
             <div class="notPossible" v-if="!queue.is_open">
                 <?= Yii::t('speech', 'apply_closed') ?>
             </div>
+
+            <form @submit="register($event, queue.subqueues)" v-if="queue.is_open && !queue.have_applied && !queue.allow_custom_names && registerName">
+                <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
+            </form>
+
             <button class="btn btn-default btn-xs btnApply" type="button"
-                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id && !loginWarning"
+                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id && !loginWarning && !(!queue.allow_custom_names && registerName)"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
                 <?= Yii::t('speech', 'apply') ?>
@@ -104,8 +109,12 @@ ob_start();
                 </button>
             </div>
 
+            <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && !queue.allow_custom_names && registerName">
+                <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
+            </form>
+
             <button class="btn btn-default btn-xs applyBtn" type="button"
-                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id && !loginWarning"
+                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id && !loginWarning && !(!queue.allow_custom_names && registerName)"
                     @click="onShowApplicationForm($event, subqueue)"
             >
                 <?= Yii::t('speech', 'apply') ?>
@@ -141,6 +150,7 @@ $html = ob_get_clean();
         data() {
             return {
                 registerName: this.user.name,
+                defaultApplicationForm: false,
                 showApplicationForm: false, // "null" is already taken by the default form
             };
         },

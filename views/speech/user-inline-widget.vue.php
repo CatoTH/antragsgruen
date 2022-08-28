@@ -66,8 +66,12 @@ ob_start();
             <div class="notPossible" v-if="!queue.is_open">
                 <?= Yii::t('speech', 'apply_closed') ?>
             </div>
+            <form @submit="register($event, queue.subqueues)" v-if="queue.is_open && !queue.have_applied && !queue.allow_custom_names && registerName">
+                <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
+            </form>
+
             <button class="btn btn-default btn-xs applyOpener" type="button"
-                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id"
+                    v-if="queue.is_open && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id && !(!queue.allow_custom_names && registerName)"
                     :disabled="loginWarning"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
@@ -101,8 +105,12 @@ ob_start();
                     {{ subqueue.name }}:
                 </div>
                 <div class="applied">
+                    <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && !queue.allow_custom_names && registerName">
+                        <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
+                    </form>
+
                     <button class="btn btn-default btn-xs" type="button"
-                            v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id"
+                            v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id && !(!queue.allow_custom_names && registerName)"
                             :disabled="loginWarning"
                             @click="onShowApplicationForm($event, subqueue)"
                     >
@@ -162,6 +170,7 @@ $html = ob_get_clean();
         data() {
             return {
                 registerName: this.user.name,
+                defaultApplicationForm: false,
                 showApplicationForm: false // "null" is already taken by the default form
             };
         },
