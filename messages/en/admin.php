@@ -460,6 +460,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_amend_singlech'   => 'There may be only one insertion/deletion/replacement. The length and presentation of that change is not exactly controllable, so this setting is not too price.',
     'motion_type_perm_merge'      => 'Merge',
     'motion_type_perm_comment'    => 'Comments',
+    'motion_type_perm_comment_restrict' => 'Restrict reading of comments to people allowed to write comments',
     'motion_type_perm_supp_mot'   => 'Supporting motions',
     'motion_type_perm_supp_amend' => 'Supporting amendments',
     'motion_type_group_ph'        => 'Please choose the eligible grops...',

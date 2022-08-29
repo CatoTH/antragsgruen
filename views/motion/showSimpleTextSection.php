@@ -41,7 +41,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     if ($hasComments || $hasAmendments) {
         echo '<ul class="bookmarks">';
         if ($hasComments) {
-            $mayOpen     = $section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true);
+            $mayOpen     = $section->getMotion()->getMyMotionType()->maySeeIComments();
             $numComments = $paragraph->getNumOfAllVisibleComments($screenAdmin);
             if ($numComments > 0 || $mayOpen) {
                 echo '<li class="comment">';
@@ -129,7 +129,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         gc_collect_cycles();
     }
 
-    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS &&
+        $motion->getMyMotionType()->maySeeIComments()) {
         if (count($paragraph->comments) > 0 || $section->getMotion()->motionType->getCommentPolicy()) {
             echo '<section class="commentHolder" data-antragsgruen-widget="frontend/Comments">';
             $motion = $section->getMotion();
