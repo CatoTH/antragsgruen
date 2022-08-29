@@ -466,6 +466,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_amend_singlech'   => 'Es darf nur an eine Einfügung/Streichung/Ersetzung geben. Die genaue Länge und Darstellung der Änderung kann aber nicht begrenzt werden, daher ist diese Einstellung nicht 100% präzise.',
     'motion_type_perm_merge'      => 'Überarbeiten',
     'motion_type_perm_comment'    => 'Kommentieren',
+    'motion_type_perm_comment_restrict' => 'Auch das Lesen von Kommentaren auf diese Gruppe einschränken',
     'motion_type_perm_supp_mot'   => 'Anträge unterstützen',
     'motion_type_perm_supp_amend' => 'Änderungsanträge unterstützen',
     'motion_type_group_ph'        => 'Wähle die berechtigte Gruppen aus...',

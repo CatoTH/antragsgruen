@@ -311,6 +311,10 @@ class ConsultationLog extends ActiveRecord
             if ($this->motionComment) {
                 $this->motion = $this->motionComment->getIMotion();
             }
+            if (!$this->motion || !$this->motion->getMyMotionType()->maySeeIComments()) {
+                $this->motion = null;
+                $this->motionComment = null;
+            }
 
         } elseif (in_array($this->actionType, self::MOTION_ACTION_TYPES)) {
             $this->motion   = Motion::findOne($this->actionReferenceId);
@@ -323,6 +327,12 @@ class ConsultationLog extends ActiveRecord
                 if ($this->amendment) {
                     $this->motion = $this->amendment->getMyMotion();
                 }
+            }
+            if (!$this->motion || !$this->motion->getMyMotionType()->maySeeIComments()) {
+                $this->amendment = null;
+                $this->amendmentId = null;
+                $this->motion = null;
+                $this->amendmentComment = null;
             }
 
         } elseif (in_array($this->actionType, self::AMENDMENT_ACTION_TYPES)) {

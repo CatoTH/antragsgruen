@@ -116,7 +116,9 @@ class AmendmentComment extends IComment
             ->orderBy('amendmentComment.dateCreation DESC')
             ->offset(0)->limit($limit)->all();
 
-        return $comments;
+        return array_values(array_filter($comments, function (AmendmentComment $comment): bool {
+            return $comment->getIMotion()->getMyMotionType()->maySeeIComments();
+        }));
     }
 
     public function getMotionTitle(): string
