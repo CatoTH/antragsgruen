@@ -4,7 +4,7 @@ use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\db\{ConsultationUserGroup, Motion, MotionComment, MotionSupporter, User};
 use app\models\forms\CommentForm;
-use app\models\policies\{IPolicy, Nobody};
+use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
@@ -273,8 +273,8 @@ $alternativeCommentView = \app\models\layoutHooks\Layout::getMotionAlternativeCo
 if ($alternativeCommentView) {
     echo $alternativeCommentView;
 }
-$nobodyCanComment = ($motion->getMyMotionType()->getCommentPolicy()->getPolicyID() === Nobody::getPolicyID());
-if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution() && !$alternativeCommentView) {
+$maySeeComments = $motion->getMyMotionType()->maySeeIComments();
+if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alternativeCommentView) {
     echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
     echo '<h2 class="green" id="commentsTitle">' . Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;

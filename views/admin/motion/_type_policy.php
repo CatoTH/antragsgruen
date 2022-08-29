@@ -250,6 +250,21 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
     </div>
 </div>
 
+<div class="stdTwoCols checkboxNoPadding">
+    <div class="leftColumn"></div>
+    <div class="rightColumn">
+        <?php
+        echo HTMLTools::labeledCheckbox(
+            'type[commentsRestrictViewToWritables]',
+            Yii::t('admin', 'motion_type_perm_comment_restrict'),
+            $motionType->getSettingsObj()->commentsRestrictViewToWritables,
+            'commentsRestrictViewToWritables'
+        );
+        ?>
+    </div>
+</div>
+
+
 <!-- Are initiators allowed to merge amendments into their motions -->
 
 <div class="stdTwoCols initiatorsCanMergeRow hideForAmendmentsOnly">
