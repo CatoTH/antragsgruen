@@ -155,6 +155,7 @@ class MotionController extends AdminBase
             $settings->motionTitleIntro     = $input['typeMotionIntro'];
             $settings->hasProposedProcedure = isset($input['proposedProcedure']);
             $settings->hasResponsibilities  = isset($input['responsibilities']);
+            $settings->commentsRestrictViewToWritables = isset($input['commentsRestrictViewToWritables']);
             $motionType->setSettingsObj($settings);
 
             // Motion Initiators / Supporters

@@ -140,13 +140,16 @@ class MotionComment extends IComment
     public static function getNewestByConsultation(Consultation $consultation, int $limit = 5): array
     {
         $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
-
-        return static::find()->joinWith('motion', true)
+        $all = static::find()->joinWith('motion', true)
             ->where('motionComment.status = ' . intval(static::STATUS_VISIBLE))
             ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
             ->andWhere('motion.consultationId = ' . intval($consultation->id))
             ->orderBy('motionComment.dateCreation DESC')
             ->offset(0)->limit($limit)->all();
+
+        return array_values(array_filter($all, function (IComment $comment): bool {
+            return $comment->getIMotion()->getMyMotionType()->maySeeIComments();
+        }));
     }
 
     public function getConsultation(): ?Consultation

@@ -281,6 +281,11 @@ class ConsultationLog extends ActiveRecord
                 $this->motion = $this->motionComment->getIMotion();
                 $this->motionId = $this->motionComment->motionId;
             }
+            if (!$this->motion || !$this->motion->getMyMotionType()->maySeeIComments()) {
+                $this->motion = null;
+                $this->motionId = null;
+                $this->motionComment = null;
+            }
 
         } elseif (in_array($this->actionType, static::$MOTION_ACTION_TYPES)) {
             $this->motionId = $this->actionReferenceId;
@@ -295,6 +300,13 @@ class ConsultationLog extends ActiveRecord
                     $this->motion = $this->amendment->getMyMotion();
                     $this->motionId = $this->amendment->motionId;
                 }
+            }
+            if (!$this->motion || !$this->motion->getMyMotionType()->maySeeIComments()) {
+                $this->amendment = null;
+                $this->amendmentId = null;
+                $this->motion = null;
+                $this->motionId = null;
+                $this->amendmentComment = null;
             }
 
         } elseif (in_array($this->actionType, static::$AMENDMENT_ACTION_TYPES)) {

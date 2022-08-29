@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\policies\Nobody;
 use app\components\{DateTools, Tools, UrlHelper};
 use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
@@ -381,6 +382,15 @@ class ConsultationMotionType extends ActiveRecord
             return $this->getAmendmentPolicy()->checkCurrUserAmendment($allowAdmins, $assumeLoggedIn);
         } else {
             return $this->getMotionPolicy()->checkCurrUserMotion($allowAdmins, $assumeLoggedIn);
+        }
+    }
+
+    public function maySeeIComments(): bool
+    {
+        if ($this->getSettingsObj()->commentsRestrictViewToWritables) {
+            return $this->getCommentPolicy()->checkCurrUserComment(false, false);
+        } else {
+            return $this->getCommentPolicy()->getPolicyID() !== Nobody::getPolicyID();
         }
     }
 

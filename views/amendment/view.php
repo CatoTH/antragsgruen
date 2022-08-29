@@ -193,6 +193,6 @@ echo MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $su
 $alternativeCommentView = \app\models\layoutHooks\Layout::getAmendmentAlternativeComments($amendment);
 if ($alternativeCommentView) {
     echo $alternativeCommentView;
-} elseif ($motion->getMyMotionType()->policyComments !== IPolicy::POLICY_NOBODY) {
+} elseif ($motion->getMyMotionType()->maySeeIComments()) {
     echo $this->render('_view_comments', ['amendment' => $amendment, 'commentForm' => $commentForm]);
 }

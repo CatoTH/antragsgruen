@@ -127,14 +127,17 @@ class AmendmentComment extends IComment
     public static function getNewestByConsultation(Consultation $consultation, int $limit = 5): array
     {
         $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
-
-        return static::find()->joinWith('amendment', true)->joinWith('amendment.motionJoin', true)
+        $all = static::find()->joinWith('amendment', true)->joinWith('amendment.motionJoin', true)
             ->where('amendmentComment.status = ' . intval(static::STATUS_VISIBLE))
             ->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
             ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
             ->andWhere('motion.consultationId = ' . intval($consultation->id))
             ->orderBy('amendmentComment.dateCreation DESC')
             ->offset(0)->limit($limit)->all();
+
+        return array_values(array_filter($all, function (IComment $comment): bool {
+            return $comment->getIMotion()->getMyMotionType()->maySeeIComments();
+        }));
     }
 
     public function getMotionTitle(): string

@@ -433,6 +433,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_perm_amend'      => 'Änderungsanträge stellen',
     'motion_type_amend_singlep'   => 'Änderungsanträge dürfen sich nur auf einen Absatz beziehen',
     'motion_type_perm_comment'    => 'Kommentieren',
+    'motion_type_perm_comment_restrict' => 'Auch das Lesen von Kommentaren auf diese Gruppe einschränken',
     'motion_type_perm_merge'      => 'Überarbeiten',
     'motion_type_perm_supp_mot'   => 'Anträge unterstützen',
     'motion_type_perm_supp_amend' => 'Änderungsanträge unterstützen',
