@@ -13,6 +13,8 @@ The following user groups exist:
 - NYC Observer (OD)
 - INGYO Candidate (OD)
 - NYC Candidate (OD)
+- INGYO Substitute Delegate
+- NYC Substitute Delegate
 - Associates
 - YFJ Board
 - YFJ Staff
