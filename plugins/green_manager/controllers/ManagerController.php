@@ -30,8 +30,8 @@ class ManagerController extends Base
      */
     public function actionCheckSubdomain($test)
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $available = Site::isSubdomainAvailable($test);
         return json_encode([
@@ -100,7 +100,7 @@ class ManagerController extends Base
         $model  = new SiteCreateForm();
         $errors = [];
 
-        $post = \Yii::$app->request->post();
+        $post = $this->getHttpRequest()->post();
         if (isset($post['create'])) {
             $post['SiteCreateForm']['contact'] = $post['SiteCreateForm']['organization'];
 

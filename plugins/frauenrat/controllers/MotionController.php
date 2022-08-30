@@ -22,11 +22,11 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->response->statusCode = 404;
+            $this->getHttpResponse()->statusCode = 404;
             return 'Motion not found';
         }
         if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
-            \Yii::$app->response->statusCode = 403;
+            $this->getHttpResponse()->statusCode = 403;
             return 'Not permitted to change the tag';
         }
 
@@ -34,7 +34,7 @@ class MotionController extends Base
             $motion->unlink('tags', $tag, true);
         }
         foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            if ($tag->id === intval(\Yii::$app->request->post('newTag'))) {
+            if ($tag->id === intval($this->getHttpRequest()->post('newTag'))) {
                 $motion->link('tags', $tag);
             }
         }
@@ -52,15 +52,15 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->response->statusCode = 404;
+            $this->getHttpResponse()->statusCode = 404;
             return 'Motion not found';
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            \Yii::$app->response->statusCode = 403;
+            $this->getHttpResponse()->statusCode = 403;
             return 'Not permitted to change the status';
         }
 
-        $newStatus = \Yii::$app->request->post('newProposal');
+        $newStatus = $this->getHttpRequest()->post('newProposal');
         $motion->proposalVisibleFrom = date("Y-m-d H:i:s");
         switch ($newStatus) {
             case 'accept':

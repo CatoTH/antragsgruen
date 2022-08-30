@@ -19,20 +19,20 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            \Yii::$app->response->statusCode = 404;
+            $this->getHttpResponse()->statusCode = 404;
 
             return 'Motion not found';
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SCREENING)) {
-            \Yii::$app->response->statusCode = 403;
+            $this->getHttpResponse()->statusCode = 403;
 
             return 'Not permitted to change the tag';
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \Yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
-        \Yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('@app/plugins/egp/views/motion_ods', [
             'motion' => $motion,

@@ -25,8 +25,8 @@ class SwaggeruiController extends Base
 
     public function actionOpenapi()
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'text/yaml');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'text/yaml');
 
         return file_get_contents(__DIR__ . '/../../../docs/openapi.yaml');
     }

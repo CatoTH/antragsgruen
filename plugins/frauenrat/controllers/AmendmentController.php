@@ -20,19 +20,19 @@ class AmendmentController extends Base
         $motion = $this->consultation->getMotion($motionSlug);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$motion || !$amendment) {
-            \Yii::$app->response->statusCode = 404;
+            $this->getHttpResponse()->statusCode = 404;
             return 'Motion/Amendment not found';
         }
         if ($amendment->motionId !== $motion->id) {
-            \Yii::$app->response->statusCode = 500;
+            $this->getHttpResponse()->statusCode = 500;
             return 'Inconsistent IDs';
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            \Yii::$app->response->statusCode = 403;
+            $this->getHttpResponse()->statusCode = 403;
             return 'Not permitted to change the status';
         }
 
-        $newStatus = \Yii::$app->request->post('newProposal');
+        $newStatus = $this->getHttpRequest()->post('newProposal');
         $amendment->proposalVisibleFrom = date("Y-m-d H:i:s");
         switch ($newStatus) {
             case 'accept':

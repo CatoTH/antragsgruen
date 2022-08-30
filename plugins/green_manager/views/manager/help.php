@@ -18,8 +18,7 @@ $layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manager_help';
 $layout->fullWidth        = true;
 
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
+$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 ?>
 <h1>Discuss.green<br>
