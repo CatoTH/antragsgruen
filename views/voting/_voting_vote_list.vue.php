@@ -127,9 +127,9 @@ $html = ob_get_clean();
             setGroupSelection: function (answer, userGroup, $event) {
                 const id = answer.api_id + "-" + userGroup.id;
                 if ($event.target.value) {
-                    Vue.set(this.groupSelected, id, $event.target.value);
+                    this.groupSelected[id] = $event.target.value;
                 } else {
-                    Vue.set(this.groupSelected, id, undefined);
+                    this.groupSelected[id] = undefined;
                 }
             },
             isSelectDisabled: function (answer, userGroup) {
@@ -140,7 +140,7 @@ $html = ob_get_clean();
                 const id = answer.api_id + "-" + userGroup.id;
                 const userIds = this.getVoteListForUserGroup(answer.api_id, userGroup).map(vote => vote.user_id);
                 this.$emit('set-user-group', userIds, this.groupSelected[id]);
-                Vue.set(this.groupSelected, id, undefined);
+                this.groupSelected[id] = undefined;
                 this.groupSelectionShown = this.groupSelectionShown.filter(group => group !== id);
             }
         }
