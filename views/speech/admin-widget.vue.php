@@ -434,6 +434,7 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                     is_open: (this.queue.settings.is_open ? 1 : 0),
                     is_open_poo: (this.queue.settings.is_open_poo ? 1 : 0),
                     prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
+                    allow_custom_names: (this.queue.settings.allow_custom_names ? 1 : 0),
                     speaking_time: (this.hasSpeakingTime ? parseInt(this.speakingTime, 10) : null),
                     _csrf: this.csrf,
                 }, function (data) {

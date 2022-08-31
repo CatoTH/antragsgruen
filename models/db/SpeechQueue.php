@@ -220,13 +220,17 @@ class SpeechQueue extends ActiveRecord
         return null;
     }
 
-    public function createItemOnAppliedList(string $name, ?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser): SpeechQueueItem
+    public function createItemOnAppliedList(string $name, ?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser, bool $pointOfOrder): SpeechQueueItem
     {
         $position = -1;
         foreach ($this->items as $item) {
             if ($item->position <= $position) {
                 $position = $item->position - 1;
             }
+        }
+
+        if ($pointOfOrder) {
+            $name = SpeechQueueItem::POO_MARKER . ' ' . $name;
         }
 
         $item              = new SpeechQueueItem();
@@ -454,6 +458,8 @@ class SpeechQueue extends ActiveRecord
             'id' => $this->id,
             'is_open' => $settings->isOpen,
             'have_applied' => $haveApplied,
+            'allow_custom_names' => $settings->allowCustomNames,
+            'is_open_poo' => $settings->isOpenPoo,
             'subqueues' => $this->getUserApiSubqueues($user, $cookieUser),
             'slots' => $this->getActiveSlots(),
             'requires_login' => $this->getMyConsultation()->getSettings()->speechRequiresLogin,

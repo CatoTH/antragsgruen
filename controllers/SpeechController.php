@@ -97,7 +97,9 @@ class SpeechController extends Base
             $name = SpeechUser::getFormattedUserName($user);
         }
 
-        $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser);
+        $pointOfOrder = ($this->getHttpRequest()->post('pointOfOrder') > 0);
+
+        $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser, $pointOfOrder);
 
         $responseJson = json_encode($queue->getUserApiObject($user, $cookieUser));
         return $this->returnRestResponse(200, $responseJson);
@@ -173,6 +175,7 @@ class SpeechController extends Base
         $settings = $queue->getSettings();
         $settings->isOpen = ($this->getHttpRequest()->post('is_open') > 0);
         $settings->isOpenPoo = ($this->getHttpRequest()->post('is_open_poo') > 0);
+        $settings->allowCustomNames = ($this->getHttpRequest()->post('allow_custom_names') > 0);
         $settings->preferNonspeaker = (intval($this->getHttpRequest()->post('prefer_nonspeaker')) > 0);
         if ($this->getHttpRequest()->post('speaking_time') > 0) {
             $settings->speakingTime = intval($this->getHttpRequest()->post('speaking_time'));
@@ -333,7 +336,7 @@ class SpeechController extends Base
             return $this->returnRestResponse(400, $this->getError('No name entered'));
         }
 
-        $queue->createItemOnAppliedList($name, $subqueue, null, null);
+        $queue->createItemOnAppliedList($name, $subqueue, null, null, false);
 
         $responseJson = json_encode($queue->getAdminApiObject());
         return $this->returnRestResponse(200, $responseJson);

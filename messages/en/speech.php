@@ -28,6 +28,7 @@ return [
     'apply'              => 'Apply',
     'apply_name'         => 'Name',
     'apply_do'           => 'Apply',
+    'apply_poo_do'       => 'Point of Order',
     'apply_closed'       => 'The speaking list is not opened',
     'applied'            => 'Applied',
     'applied_aria'       => 'You applied to speak',

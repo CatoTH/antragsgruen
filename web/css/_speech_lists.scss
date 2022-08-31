@@ -537,6 +537,9 @@
     .name {
       vertical-align: top;
     }
+    .applyOpenerPoo {
+      font-weight: normal;
+    }
   }
   .nameList {
     display: block;
@@ -556,12 +559,19 @@
       }
     }
   }
-  .waitingSingle .nameList {
-    margin-top: 30px;
-    margin-bottom: 50px;
-    > li {
+  .waitingSingle {
+    .nameList {
+      margin-top: 30px;
+      margin-bottom: 50px;
+
+      > li {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+    }
+    .applyOpenerPoo {
+      font-weight: normal;
       margin-top: 20px;
-      margin-bottom: 20px;
     }
   }
   .apply {
@@ -660,6 +670,11 @@
       }
     }
   }
+
+  .applyOpenerPoo {
+    font-weight: normal;
+    margin-left: 20px;
+  }
 }
 
 .currentSpeechFooter {
@@ -703,7 +718,7 @@
   }
 
   .widgetTitle {
-    flex-basis: 150px;
+    flex-basis: 160px;
     font-size: 16px;
     line-height: $speechLineHeight;
     vertical-align: middle;
@@ -826,6 +841,11 @@
       padding: 0 5px;
       font-size: 75%; // Same as the .label next to it
     }
+  }
+
+  .applyOpenerPoo {
+    font-weight: normal;
+    margin-left: 10px;
   }
 
   .notPossible {
