@@ -102,7 +102,7 @@ $I->fillField('#resolutionDate', '07.12.2019');
 
 $I->submitForm('#amendmentEditForm', [], 'save');
 
-$I->see('Working group: infrastructure (beschlossen am: 07.12.2019)');
+$I->see('Working group: infrastructure (dort beschlossen am: 07.12.2019)');
 
 $I->submitForm('#amendmentConfirmForm', [], 'modify');
 

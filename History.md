@@ -14,6 +14,7 @@
 - It is now logged when users are added to or removed from a user group. A log is visible for admins.
 - It is now possible for an admin to show the last edit date of a motion or amendment on the home page.
 - Reading comments can now be restricted to the same user group as writing comments.
+- The comment sections of individual motions or amendments can now be closed without affecting others.
 - Bugfix: Base statute texts were shown in the "New motions" section in the sidebar.
 
 ### Version 4.10.1 (2022-07-01)

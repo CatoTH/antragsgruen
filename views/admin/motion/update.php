@@ -264,14 +264,20 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
 <?php } ?>
 
     <div class="form-group">
-        <label class="col-md-3 control-label" for="nonAmendable">
-            <?= Yii::t('admin', 'motion_non_amendable_title') ?>:
-        </label>
-        <div class="col-md-9 nonAmendable">
-            <label>
+        <div class="col-md-3 control-label preventFunctionality">
+            <?= Yii::t('admin', 'motion_prevent_functions') ?>:
+        </div>
+        <div class="col-md-9">
+            <label class="nonAmendable">
                 <input type="checkbox" name="motion[nonAmendable]" value="1" id="nonAmendable"
                     <?= ($motion->nonAmendable ? 'checked' : '') ?>>
                 <?= Yii::t('admin', 'motion_non_amendable') ?>
+            </label>
+            <br>
+            <label class="notCommentable">
+                <input type="checkbox" name="motion[notCommentable]" value="1" id="notCommentable"
+                    <?= ($motion->notCommentable ? 'checked' : '') ?>>
+                <?= Yii::t('admin', 'motion_not_commentable') ?>
             </label>
         </div>
     </div>

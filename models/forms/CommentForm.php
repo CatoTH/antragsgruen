@@ -8,6 +8,7 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
 use app\models\db\ConsultationMotionType;
 use app\models\db\IComment;
+use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSection;
@@ -21,6 +22,9 @@ use yii\base\Model;
 
 class CommentForm extends Model
 {
+    /** @var IMotion */
+    public $imotion;
+
     /** @var ConsultationMotionType */
     public $motionType;
 
@@ -44,13 +48,14 @@ class CommentForm extends Model
 
     /**
      * CommentForm constructor.
-     * @param ConsultationMotionType $motionType
+     * @param IMotion $imotion
      * @param IComment|null $replyTo
      * @param array $config
      */
-    public function __construct($motionType, $replyTo, $config = [])
+    public function __construct($imotion, $replyTo, $config = [])
     {
-        $this->motionType = $motionType;
+        $this->imotion = $imotion;
+        $this->motionType = $imotion->getMyMotionType();
         $this->replyTo    = $replyTo;
         parent::__construct($config);
 
@@ -148,6 +153,10 @@ class CommentForm extends Model
 
         if (!$this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
             throw new Access('No rights to write a comment');
+        }
+
+        if ($this->imotion->notCommentable) {
+            throw new Access('Comments are blocked from this document');
         }
     }
 
@@ -253,6 +262,16 @@ class CommentForm extends Model
 
     public function renderFormOrErrorMessage(bool $skipError = false): string
     {
+        if ($this->imotion->notCommentable) {
+            if ($skipError) {
+                return '';
+            } else {
+                return '<div class="alert alert-info" style="margin: 19px;" role="alert">
+        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ' .
+                    \Yii::t('motion', 'comment_blocked') . '</div>';
+            }
+        }
+
         if ($this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
             return \Yii::$app->controller->renderPartial('@app/views/motion/_comment_form', [
                 'form'         => $this,

@@ -74,7 +74,7 @@ return [
     'motion_prefix_hint'          => 'comme "A1", "A1nv", "S1"',
     'motion_prefix_unique'        => 'doit être unique.',
     'motion_title'                => 'Titre',
-    'motion_non_amendable_title'  => 'Empêcher les amendements au titre',
+    'motion_prevent_functions'    => 'Empêcher',
     'motion_non_amendable'        => 'Empêcher les amendements à cette motion en particulier',
     'motion_agenda_item'          => 'Point à l\'ordre du jour',
     'motion_status'               => 'Statut',
