@@ -81,6 +81,7 @@ return [
     'comment_screen_queue_1'             => '1 Kommentar wartet auf Freischaltung',
     'comment_screen_queue_x'             => '%NUM% Kommentare warten auf Freischaltung',
     'comment_login_hint'                 => 'Logge dich ein, um kommentieren zu können.',
+    'comment_blocked'                    => 'Der Kommentarbereich wurde geschlossen',
     'status'                             => 'Status',
     'voting_result'                      => 'Abstimmungsergebnis',
     'voting_yes'                         => 'Ja',

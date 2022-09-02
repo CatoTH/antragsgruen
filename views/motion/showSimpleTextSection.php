@@ -148,7 +148,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             }
 
             if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
-                $form = new CommentForm($motion->getMyMotionType(), null);
+                $form = new CommentForm($motion, null);
                 $form->setDefaultData($paragraphNo, $section->sectionId, User::getCurrentUser());
             }
 

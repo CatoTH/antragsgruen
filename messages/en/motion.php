@@ -81,6 +81,7 @@ return [
     'comment_screen_queue_1'        => '1 comment waiting for screening',
     'comment_screen_queue_x'        => '%NUM% comments waiting for screening',
     'comment_login_hint'            => 'Please log in to comment.',
+    'comment_blocked'               => 'The comments are closed',
     'status'                        => 'Status',
     'voting_result'                 => 'Voting result',
     'voting_yes'                    => 'Yes',

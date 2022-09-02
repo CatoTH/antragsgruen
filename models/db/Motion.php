@@ -30,6 +30,7 @@ use yii\helpers\Html;
  * @property int $status
  * @property string $statusString
  * @property int $nonAmendable
+ * @property int $notCommentable
  * @property string|null $noteInternal
  * @property string $cache
  * @property int $textFixed

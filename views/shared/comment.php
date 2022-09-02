@@ -86,7 +86,7 @@ if (count($comment->replies) > 0 || $canReply) {
     }
 
     if ($canReply) {
-        $replyForm = new CommentForm($imotion->getMyMotionType(), $comment);
+        $replyForm = new CommentForm($imotion, $comment);
         if (is_a($comment, MotionComment::class)) {
             /** @var MotionComment $comment */
             $replyForm->setDefaultData($comment->paragraph, $comment->sectionId, User::getCurrentUser());

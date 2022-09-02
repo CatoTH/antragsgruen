@@ -60,7 +60,7 @@ trait AmendmentActionsTrait
             }
         }
 
-        $commentForm = new CommentForm($amendment->getMyMotionType(), $replyTo);
+        $commentForm = new CommentForm($amendment, $replyTo);
         $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
 
         try {

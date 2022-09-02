@@ -61,7 +61,7 @@ trait MotionActionsTrait
             }
         }
 
-        $commentForm = new CommentForm($motion->getMyMotionType(), $replyTo);
+        $commentForm = new CommentForm($motion, $replyTo);
         $commentForm->setAttributes($postComment, $motion->getActiveSections());
 
         try {

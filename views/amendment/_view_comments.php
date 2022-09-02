@@ -17,7 +17,7 @@ echo '<h2 class="green" id="commentsTitle">' . Yii::t('amend', 'comments_title')
 $form = $commentForm;
 
 if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
-    $form = new \app\models\forms\CommentForm($amendment->getMyMotionType(), null);
+    $form = new \app\models\forms\CommentForm($amendment, null);
     $form->setDefaultData(-1, -1, User::getCurrentUser());
 }
 

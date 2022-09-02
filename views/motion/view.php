@@ -290,7 +290,7 @@ if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alt
     }
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
-        $form = new CommentForm($motion->getMyMotionType(), null);
+        $form = new CommentForm($motion, null);
         $form->setDefaultData(-1, -1, User::getCurrentUser());
     }
 

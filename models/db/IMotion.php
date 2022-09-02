@@ -29,6 +29,8 @@ use yii\helpers\Html;
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationAgendaItem|null $agendaItem
  * @property int $status
+ * @property string $statusString
+ * @property int $notCommentable
  * @property int|null $proposalStatus
  * @property int|null $proposalReferenceId
  * @property string|null $proposalVisibleFrom
