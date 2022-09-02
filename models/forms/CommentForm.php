@@ -22,37 +22,22 @@ use yii\base\Model;
 
 class CommentForm extends Model
 {
-    /** @var IMotion */
-    public $imotion;
+    public IMotion $imotion;
+    public ConsultationMotionType $motionType;
+    public ?IComment $replyTo;
 
-    /** @var ConsultationMotionType */
-    public $motionType;
+    public ?string $email = null;
+    public ?string $name = null;
+    public ?string $text = null;
 
-    /** @var IComment|null */
-    public $replyTo;
+    public ?int $paragraphNo = null;
+    public ?int $sectionId = null;
+    public ?int $userId = null;
 
-    /** @var string */
-    public $email;
-    public $name;
+    public bool $notifications = false;
+    public ?int $notificationsettings = null;
 
-    /** @var string */
-    public $text;
-
-    /** @var int */
-    public $paragraphNo;
-    public $sectionId = null;
-    public $userId;
-
-    public $notifications        = false;
-    public $notificationsettings = null;
-
-    /**
-     * CommentForm constructor.
-     * @param IMotion $imotion
-     * @param IComment|null $replyTo
-     * @param array $config
-     */
-    public function __construct($imotion, $replyTo, $config = [])
+    public function __construct(IMotion $imotion, ?IComment $replyTo, array $config = [])
     {
         $this->imotion = $imotion;
         $this->motionType = $imotion->getMyMotionType();
@@ -67,10 +52,7 @@ class CommentForm extends Model
         }
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['text', 'paragraphNo'], 'required'],
@@ -90,12 +72,12 @@ class CommentForm extends Model
         $this->sectionId = null;
         if (isset($values['sectionId']) && $values['sectionId'] > 0) {
             foreach ($validSections as $section) {
-                if ($section->sectionId == $values['sectionId']) {
-                    $this->sectionId = $values['sectionId'];
+                if ($section->sectionId === intval($values['sectionId'])) {
+                    $this->sectionId = intval($values['sectionId']);
                 }
             }
         }
-        if (isset($values['sectionId']) && $values['sectionId'] == -1) {
+        if (isset($values['sectionId']) && intval($values['sectionId']) === -1) {
             $this->sectionId = -1;
         }
 
@@ -112,7 +94,7 @@ class CommentForm extends Model
             if (isset($values['notifications'])) {
                 $this->notifications = true;
                 if (isset($values['notificationsettings'])) {
-                    $this->notificationsettings = IntVal($values['notificationsettings']);
+                    $this->notificationsettings = intval($values['notificationsettings']);
                 } else {
                     $this->notificationsettings = UserNotification::COMMENT_SETTINGS[0];
                 }
@@ -123,12 +105,7 @@ class CommentForm extends Model
         }
     }
 
-    /**
-     * @param int $paragraphNo
-     * @param int $sectionId
-     * @param User|null $user
-     */
-    public function setDefaultData($paragraphNo, $sectionId, $user)
+    public function setDefaultData(?int $paragraphNo, ?int $sectionId, ?User $user): void
     {
         $this->paragraphNo = $paragraphNo;
         $this->sectionId   = $sectionId;
@@ -142,7 +119,7 @@ class CommentForm extends Model
      * @throws Access
      * @throws Internal
      */
-    private function checkWritePermissions()
+    private function checkWritePermissions(): void
     {
         if (RequestContext::getUser()->isGuest) {
             $jsToken = AntiSpam::createToken($this->motionType->consultationId);
@@ -160,7 +137,7 @@ class CommentForm extends Model
         }
     }
 
-    public function saveNotificationSettings()
+    public function saveNotificationSettings(): void
     {
         $user = User::getCurrentUser();
         if (!$user) {
