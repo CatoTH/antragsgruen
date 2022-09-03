@@ -8,6 +8,7 @@ $I->wantTo('write a comment, but forget my name');
 $I->gotoConsultationHome()->gotoMotionView(2);
 
 $I->see('Kommentar schreiben', 'section.comments');
+$I->seeElement('#comment_-1_-1_text');
 $I->executeJS('$("#comment_-1_-1_name").removeAttr("required");');
 $I->fillField('#comment_-1_-1_name', '');
 $I->fillField('#comment_-1_-1_email', 'test@example.org');
@@ -43,18 +44,25 @@ $I->click('.feedAll');
 $I->seeInPageSource('My Name');
 
 
+$I->wantTo('disable comments for this specific motion');
+$I->gotoConsultationHome();
+$I->loginAsStdAdmin();
+
+$page = $I->gotoMotionList()->gotoMotionEdit(2);
+$I->checkOption('.preventFunctionality .notCommentable input');
+$page->saveForm();
+$I->gotoMotion(2);
+$I->seeElement('.commentsDeactivatedHint');
+$I->dontSeeElement('#comment_-1_-1_text');
 
 
 $I->wantTo('delete the comment');
-$I->gotoConsultationHome();
-$I->loginAsStdAdmin();
 $I->gotoConsultationHome()->gotoMotionView(2);
-
-$I->see('Kommentar schreiben', 'section.comments');
+$I->seeElement('#commentsTitle');
 
 $I->seeElementInDOM('section.comments .motionComment .delLink');
 
-$I->executeJS('$("section.comments #comment1 .delLink button").trigger("click");');
+$I->clickJS('section.comments #comment1 .delLink button');
 $I->wait(0.5);
 $I->seeBootboxDialog('Wirklich löschen');
 $I->acceptBootboxConfirm();

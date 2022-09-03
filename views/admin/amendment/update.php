@@ -225,8 +225,8 @@ if (count($consultation->agendaItems) > 0) {
     </div>
 <?php } ?>
 
-    <div class="form-group">
-        <div class="col-md-3 control-label preventFunctionality">
+    <div class="form-group preventFunctionality">
+        <div class="col-md-3 control-label">
             <?= Yii::t('admin', 'motion_prevent_functions') ?>:
         </div>
         <div class="col-md-9">

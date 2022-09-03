@@ -243,7 +243,7 @@ class CommentForm extends Model
             if ($skipError) {
                 return '';
             } else {
-                return '<div class="alert alert-info" style="margin: 19px;" role="alert">
+                return '<div class="alert alert-info commentsDeactivatedHint" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ' .
                     \Yii::t('motion', 'comment_blocked') . '</div>';
             }

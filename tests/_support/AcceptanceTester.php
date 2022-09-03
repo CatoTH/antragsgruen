@@ -46,19 +46,13 @@ class AcceptanceTester extends \Codeception\Actor
     public const ABSOLUTE_URL_TEMPLATE_SITE = 'http://test.antragsgruen.test/{SUBDOMAIN}/{PATH}';
     public const ABSOLUTE_URL_TEMPLATE = 'http://test.antragsgruen.test/{SUBDOMAIN}/{CONSULTATION}/{PATH}';
 
-    public static $ACCEPTED_HTML_ERRORS = [
+    public const ACCEPTED_HTML_ERRORS = [
         'Bad value “popup” for attribute “rel”',
         'CKEDITOR',
         'autocomplete'
     ];
 
-    /**
-     * @param bool $check
-     * @param string $subdomain
-     * @param string $path
-     * @return ConsultationHomePage
-     */
-    public function gotoConsultationHome($check = true, $subdomain = 'stdparteitag', $path = 'std-parteitag')
+    public function gotoConsultationHome(bool $check = true, string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): ConsultationHomePage
     {
         $page = ConsultationHomePage::openBy(
             $this,
@@ -73,12 +67,7 @@ class AcceptanceTester extends \Codeception\Actor
         return $page;
     }
 
-    /**
-     * @param bool $check
-     * @param string $motionSlug
-     * @return MotionPage
-     */
-    public function gotoMotion($check = true, $motionSlug = '321-o-zapft-is')
+    public function gotoMotion(bool $check = true, string $motionSlug = '321-o-zapft-is'): MotionPage
     {
         if (is_numeric($motionSlug)) {
             /** @var \app\models\db\Motion $motion */
@@ -100,13 +89,7 @@ class AcceptanceTester extends \Codeception\Actor
         return $page;
     }
 
-    /**
-     * @param bool $check
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @return AmendmentPage
-     */
-    public function gotoAmendment($check = true, $motionSlug = '321-o-zapft-is', $amendmentId = 1)
+    public function gotoAmendment(bool $check = true, string $motionSlug = '321-o-zapft-is', int $amendmentId = 1): AmendmentPage
     {
         $page = AmendmentPage::openBy(
             $this,
@@ -124,13 +107,7 @@ class AcceptanceTester extends \Codeception\Actor
         return $page;
     }
 
-    /**
-     * @param string $subdomain
-     * @param string $path
-     * @param int $motionTypeId
-     * @return MotionCreatePage
-     */
-    public function gotoMotionCreatePage($subdomain = 'stdparteitag', $path = 'std-parteitag', $motionTypeId = 1)
+    public function gotoMotionCreatePage(string $subdomain = 'stdparteitag', string $path = 'std-parteitag', int $motionTypeId = 1): MotionCreatePage
     {
         $page = MotionCreatePage::openBy(
             $this,
@@ -146,20 +123,14 @@ class AcceptanceTester extends \Codeception\Actor
 
     /**
      * @param BasePage|string $page
-     * @param $params
      * @return BasePage
      */
-    public function openPage($page, $params = [])
+    public function openPage($page, array $params = [])
     {
         return $page::openBy($this, $params);
     }
 
-    /**
-     * @param string $subdomain
-     * @param string $path
-     * @return AdminIndexPage
-     */
-    public function loginAndGotoStdAdminPage($subdomain = 'stdparteitag', $path = 'std-parteitag')
+    public function loginAndGotoStdAdminPage(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): AdminIndexPage
     {
         $this->gotoConsultationHome(false, $subdomain, $path);
         $this->loginAsStdAdmin();

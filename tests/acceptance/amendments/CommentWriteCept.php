@@ -60,16 +60,21 @@ $I->click(' .feedComments');
 $I->seeInPageSource('My Name');
 
 
+$I->wantTo('disable comments for this specific amendment');
+$I->gotoConsultationHome();
+$I->loginAsStdAdmin();
+
+$page = $I->gotoMotionList()->gotoAmendmentEdit(1);
+$I->checkOption('.preventFunctionality .notCommentable input');
+$page->saveForm();
+$I->gotoAmendment();
+$I->seeElement('.commentsDeactivatedHint');
+$I->dontSeeElement('#comment_-1_-1_text');
 
 
 $I->wantTo('delete the comment');
-$I->gotoConsultationHome();
-$I->loginAsStdAdmin();
-$I->gotoAmendment();
-
-
-$I->see('Kommentar schreiben', 'section.comments');
-$I->executeJS('$("section.comments #comment1 .delLink button").trigger("click");');
+$I->seeElement('#commentsTitle');
+$I->clickJS('section.comments #comment1 .delLink button');
 $I->seeBootboxDialog('Wirklich löschen', '.bootbox');
 $I->acceptBootboxConfirm();
 
