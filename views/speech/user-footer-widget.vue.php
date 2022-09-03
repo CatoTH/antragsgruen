@@ -99,7 +99,7 @@ ob_start();
                 </button>
             </form>
 
-            <button class="btn btn-link btn-xs applyOpener applyOpenerPoo" type="button"
+            <button class="btn btn-link btn-xs applyOpenerPoo" type="button"
                     v-if="queue.is_open_poo && !queue.have_applied && showApplicationForm !== queue.subqueues[0].id && showApplicationForm !== (queue.subqueues[0].id + '_poo') && !(!queue.allow_custom_names && registerName)"
                     :disabled="loginWarning"
                     @click="onShowApplicationForm($event, queue.subqueues[0], true)"
@@ -172,7 +172,7 @@ ob_start();
                 </button>
             </form>
 
-            <button class="btn btn-link btn-xs applyOpener applyOpenerPoo" type="button"
+            <button class="btn btn-link btn-xs applyOpenerPoo" type="button"
                     v-if="queue.is_open_poo && !queue.have_applied && showApplicationForm !== subqueue.id && showApplicationForm !== (subqueue.id + '_poo') && !(!queue.allow_custom_names && registerName)"
                     :disabled="loginWarning"
                     @click="onShowApplicationForm($event, subqueue, true)"

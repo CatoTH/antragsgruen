@@ -29,7 +29,7 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                 <input type="checkbox" v-model="queue.settings.is_open" @change="settingsChanged()">
                 <?= Yii::t('speech', 'admin_setting_open') ?>
             </label>
-            <label class="settingOpen" v-if="queue.is_active">
+            <label class="settingOpenPoo" v-if="queue.is_active">
                 <input type="checkbox" v-model="queue.settings.is_open_poo" @change="settingsChanged()">
                 <?= Yii::t('speech', 'admin_setting_open_poo') ?>
             </label>
@@ -294,6 +294,12 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 return this.queue.slots.filter(function (slot) {
                     return slot.date_started === null;
                 }).sort(function (slot1, slot2) {
+                    if (slot1.is_point_of_order && !slot2.is_point_of_order) {
+                        return -1;
+                    }
+                    if (slot2.is_point_of_order && !slot1.is_point_of_order) {
+                        return 1;
+                    }
                     return slot1.position - slot2.position;
                 });
             },
@@ -302,9 +308,6 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                     return slot.date_started !== null && slot.date_stopped === null;
                 });
                 return active.length > 0 ? active[0] : null;
-            },
-            upcomingSlot: function () {
-                return this.sortedQueue.length > 0 ? this.sortedQueue[0] : null;
             },
             slotProposal: function () {
                 const prevSpeakerNums = {};

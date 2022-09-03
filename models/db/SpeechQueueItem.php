@@ -97,4 +97,9 @@ class SpeechQueueItem extends ActiveRecord
 
         return false;
     }
+
+    public function isPointOfOrder(): bool
+    {
+        return strpos($this->name, self::POO_MARKER) === 0;
+    }
 }

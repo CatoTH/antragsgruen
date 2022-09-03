@@ -87,7 +87,7 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_Q
     echo Html::a(
         Yii::t('admin', 'index_site_speaking'),
         UrlHelper::createUrl(['/consultation/admin-speech']),
-        ['class' => 'speachAdminLink']
+        ['class' => 'speechAdminLink']
     );
     echo '</li>';
 }

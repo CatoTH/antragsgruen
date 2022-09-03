@@ -302,6 +302,7 @@ class SpeechController extends Base
                 break;
         }
 
+        $queue->refresh();
         $responseJson = json_encode($queue->getAdminApiObject());
         return $this->returnRestResponse(200, $responseJson);
     }

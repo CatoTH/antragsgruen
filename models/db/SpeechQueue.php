@@ -299,6 +299,12 @@ class SpeechQueue extends ActiveRecord
             }
         }
         usort($itemsApplied, function (SpeechQueueItem $item1, SpeechQueueItem $item2): int {
+            if ($item1->isPointOfOrder() && !$item2->isPointOfOrder()) {
+                return -1;
+            }
+            if (!$item1->isPointOfOrder() && $item2->isPointOfOrder()) {
+                return 1;
+            }
             // Numbers are reversed, hence e.g. -5 should come before -7
             return $item2->position <=> $item1->position;
         });
@@ -315,6 +321,7 @@ class SpeechQueue extends ActiveRecord
                     'id' => $item->id,
                     'name' => $item->name,
                     'user_id' => $item->userId,
+                    'is_point_of_order' => $item->isPointOfOrder(),
                     'position' => $item->position,
                 ];
             }, $this->getItemsOnList($subqueue)),
@@ -323,6 +330,7 @@ class SpeechQueue extends ActiveRecord
                     'id' => $item->id,
                     'name' => $item->name,
                     'user_id' => $item->userId,
+                    'is_point_of_order' => $item->isPointOfOrder(),
                     'applied_at' => $item->getDateApplied()->format('c'),
                 ];
             }, $this->getAppliedItems($subqueue)),
@@ -425,6 +433,7 @@ class SpeechQueue extends ActiveRecord
                     'id' => $item->id,
                     'name' => $item->name,
                     'user_id' => $item->userId,
+                    'is_point_of_order' => $item->isPointOfOrder(),
                     'applied_at' => $item->getDateApplied()->format('c'),
                 ];
             }, $appliedItems);
