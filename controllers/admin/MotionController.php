@@ -597,7 +597,7 @@ class MotionController extends AdminBase
             $motion->status       = intval($modat['status']);
             $motion->agendaItemId = (isset($modat['agendaItemId']) ? intval($modat['agendaItemId']) : null);
             $motion->nonAmendable = (isset($modat['nonAmendable']) ? 1 : 0);
-
+            $motion->notCommentable = (isset($modat['notCommentable']) ? 1 : 0);
 
             if (isset($modat['slug']) && preg_match('/^[\w_-]+$/i', $modat['slug'])) {
                 $collision = false;

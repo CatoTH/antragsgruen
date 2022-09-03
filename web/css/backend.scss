@@ -853,6 +853,19 @@ label.legend {
   }
 }
 
+.motionEditForm {
+  .control-label {
+    font-weight: bold;
+  }
+  .tagList, .preventFunctionality {
+    label {
+      font-weight: normal;
+      margin-top: 5px;
+      margin-right: 15px;
+    }
+  }
+}
+
 #motionUpdateForm {
   .urlSlugHolder .shower {
     margin-top: 7px;
@@ -860,15 +873,6 @@ label.legend {
   #motionTextEditCaller {
     text-align: center;
   }
-
-  .tagList, .nonAmendable {
-    label {
-      font-weight: normal;
-      margin-top: 5px;
-      margin-right: 15px;
-    }
-  }
-
   .checkButtonRow {
     text-align: center;
   }
@@ -886,13 +890,6 @@ label.legend {
   }
   .motionEditLinkHolder {
     padding-top: 7px;
-  }
-  .tagList, .nonAmendable {
-    label {
-      font-weight: normal;
-      margin-top: 5px;
-      margin-right: 15px;
-    }
   }
   #amendmentTextEditCaller {
     text-align: center;

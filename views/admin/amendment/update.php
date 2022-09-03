@@ -225,6 +225,20 @@ if (count($consultation->agendaItems) > 0) {
     </div>
 <?php } ?>
 
+    <div class="form-group preventFunctionality">
+        <div class="col-md-3 control-label">
+            <?= Yii::t('admin', 'motion_prevent_functions') ?>:
+        </div>
+        <div class="col-md-9">
+            <label class="notCommentable">
+                <input type="checkbox" name="amendment[notCommentable]" value="1" id="notCommentable"
+                    <?= ($amendment->notCommentable ? 'checked' : '') ?>>
+                <?= Yii::t('admin', 'motion_not_commentable_am') ?>
+            </label>
+        </div>
+    </div>
+
+
 <?php
 foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
     echo $plugin::getAmendmentExtraSettingsForm($amendment);

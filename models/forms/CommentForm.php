@@ -8,6 +8,7 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
 use app\models\db\ConsultationMotionType;
 use app\models\db\IComment;
+use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSection;
@@ -21,36 +22,25 @@ use yii\base\Model;
 
 class CommentForm extends Model
 {
-    /** @var ConsultationMotionType */
-    public $motionType;
+    public IMotion $imotion;
+    public ConsultationMotionType $motionType;
+    public ?IComment $replyTo;
 
-    /** @var IComment|null */
-    public $replyTo;
+    public ?string $email = null;
+    public ?string $name = null;
+    public ?string $text = null;
 
-    /** @var string */
-    public $email;
-    public $name;
+    public ?int $paragraphNo = null;
+    public ?int $sectionId = null;
+    public ?int $userId = null;
 
-    /** @var string */
-    public $text;
+    public bool $notifications = false;
+    public ?int $notificationsettings = null;
 
-    /** @var int */
-    public $paragraphNo;
-    public $sectionId = null;
-    public $userId;
-
-    public $notifications        = false;
-    public $notificationsettings = null;
-
-    /**
-     * CommentForm constructor.
-     * @param ConsultationMotionType $motionType
-     * @param IComment|null $replyTo
-     * @param array $config
-     */
-    public function __construct($motionType, $replyTo, $config = [])
+    public function __construct(IMotion $imotion, ?IComment $replyTo, array $config = [])
     {
-        $this->motionType = $motionType;
+        $this->imotion = $imotion;
+        $this->motionType = $imotion->getMyMotionType();
         $this->replyTo    = $replyTo;
         parent::__construct($config);
 
@@ -62,10 +52,7 @@ class CommentForm extends Model
         }
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['text', 'paragraphNo'], 'required'],
@@ -85,12 +72,12 @@ class CommentForm extends Model
         $this->sectionId = null;
         if (isset($values['sectionId']) && $values['sectionId'] > 0) {
             foreach ($validSections as $section) {
-                if ($section->sectionId == $values['sectionId']) {
-                    $this->sectionId = $values['sectionId'];
+                if ($section->sectionId === intval($values['sectionId'])) {
+                    $this->sectionId = intval($values['sectionId']);
                 }
             }
         }
-        if (isset($values['sectionId']) && $values['sectionId'] == -1) {
+        if (isset($values['sectionId']) && intval($values['sectionId']) === -1) {
             $this->sectionId = -1;
         }
 
@@ -107,7 +94,7 @@ class CommentForm extends Model
             if (isset($values['notifications'])) {
                 $this->notifications = true;
                 if (isset($values['notificationsettings'])) {
-                    $this->notificationsettings = IntVal($values['notificationsettings']);
+                    $this->notificationsettings = intval($values['notificationsettings']);
                 } else {
                     $this->notificationsettings = UserNotification::COMMENT_SETTINGS[0];
                 }
@@ -118,12 +105,7 @@ class CommentForm extends Model
         }
     }
 
-    /**
-     * @param int $paragraphNo
-     * @param int $sectionId
-     * @param User|null $user
-     */
-    public function setDefaultData($paragraphNo, $sectionId, $user)
+    public function setDefaultData(?int $paragraphNo, ?int $sectionId, ?User $user): void
     {
         $this->paragraphNo = $paragraphNo;
         $this->sectionId   = $sectionId;
@@ -137,7 +119,7 @@ class CommentForm extends Model
      * @throws Access
      * @throws Internal
      */
-    private function checkWritePermissions()
+    private function checkWritePermissions(): void
     {
         if (RequestContext::getUser()->isGuest) {
             $jsToken = AntiSpam::createToken($this->motionType->consultationId);
@@ -149,9 +131,13 @@ class CommentForm extends Model
         if (!$this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
             throw new Access('No rights to write a comment');
         }
+
+        if ($this->imotion->notCommentable) {
+            throw new Access('Comments are blocked from this document');
+        }
     }
 
-    public function saveNotificationSettings()
+    public function saveNotificationSettings(): void
     {
         $user = User::getCurrentUser();
         if (!$user) {
@@ -253,6 +239,16 @@ class CommentForm extends Model
 
     public function renderFormOrErrorMessage(bool $skipError = false): string
     {
+        if ($this->imotion->notCommentable) {
+            if ($skipError) {
+                return '';
+            } else {
+                return '<div class="alert alert-info commentsDeactivatedHint" style="margin: 19px;" role="alert">
+        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ' .
+                    \Yii::t('motion', 'comment_blocked') . '</div>';
+            }
+        }
+
         if ($this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
             return \Yii::$app->controller->renderPartial('@app/views/motion/_comment_form', [
                 'form'         => $this,
