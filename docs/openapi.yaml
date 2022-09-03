@@ -640,6 +640,9 @@ components:
           type: number
           example: 23
           description: user id
+        is_point_of_order:
+          type: boolean
+          description: Indicates if this is a point of order. If true, it should be higher prioritized
         applied_at:
           type: string
           example: "2015-03-30T03:27:20+02:00"

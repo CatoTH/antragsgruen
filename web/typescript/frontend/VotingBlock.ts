@@ -11,7 +11,6 @@ export class VotingBlock {
             pollUrl = element.getAttribute('data-url-poll'),
             voteUrl = element.getAttribute('data-url-vote'),
             showAdminLink = element.getAttribute('data-show-admin-link');
-        console.log(showAdminLink);
 
         this.widget = Vue.createApp({
             template: `

@@ -24,10 +24,16 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
             </button>
             <span v-if="queue.other_active_name" class="deactivateOthers">(<?= Yii::t('speech', 'admin_deactivate_other') ?>)</span>
         </div>
-        <label class="settingsOpen" v-if="queue.is_active">
-            <input type="checkbox" v-model="queue.settings.is_open" @change="settingsChanged()">
-            <?= Yii::t('speech', 'admin_setting_open') ?>
-        </label>
+        <div class="settingsOpen">
+            <label class="settingOpen" v-if="queue.is_active">
+                <input type="checkbox" v-model="queue.settings.is_open" @change="settingsChanged()">
+                <?= Yii::t('speech', 'admin_setting_open') ?>
+            </label>
+            <label class="settingOpenPoo" v-if="queue.is_active">
+                <input type="checkbox" v-model="queue.settings.is_open_poo" @change="settingsChanged()">
+                <?= Yii::t('speech', 'admin_setting_open_poo') ?>
+            </label>
+        </div>
         <div class="settingsPolicy">
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -35,6 +41,12 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                     <span class="caret" aria-hidden="true"></span>
                 </button>
                 <ul class="dropdown-menu">
+                    <li class="checkbox">
+                        <label @click="$event.stopPropagation()">
+                            <input type="checkbox" class="allowCustomNames" v-model="queue.settings.allow_custom_names" @change="settingsChanged()">
+                            <?= Yii::t('speech', 'admin_allow_custom_names') ?>
+                        </label>
+                    </li>
                     <li class="checkbox">
                         <label @click="$event.stopPropagation()">
                             <input type="checkbox" class="preferNonspeaker" v-model="queue.settings.prefer_nonspeaker" @change="settingsChanged()">
@@ -282,6 +294,12 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 return this.queue.slots.filter(function (slot) {
                     return slot.date_started === null;
                 }).sort(function (slot1, slot2) {
+                    if (slot1.is_point_of_order && !slot2.is_point_of_order) {
+                        return -1;
+                    }
+                    if (slot2.is_point_of_order && !slot1.is_point_of_order) {
+                        return 1;
+                    }
                     return slot1.position - slot2.position;
                 });
             },
@@ -290,9 +308,6 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                     return slot.date_started !== null && slot.date_stopped === null;
                 });
                 return active.length > 0 ? active[0] : null;
-            },
-            upcomingSlot: function () {
-                return this.sortedQueue.length > 0 ? this.sortedQueue[0] : null;
             },
             slotProposal: function () {
                 const prevSpeakerNums = {};
@@ -420,14 +435,16 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 $.post(setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
                     is_active: (this.queue.is_active ? 1 : 0),
                     is_open: (this.queue.settings.is_open ? 1 : 0),
+                    is_open_poo: (this.queue.settings.is_open_poo ? 1 : 0),
                     prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
+                    allow_custom_names: (this.queue.settings.allow_custom_names ? 1 : 0),
                     speaking_time: (this.hasSpeakingTime ? parseInt(this.speakingTime, 10) : null),
                     _csrf: this.csrf,
                 }, function (data) {
                     widget.queue = data['queue'];
 
-                    this.changedSettings.speakingTime = null;
-                    this.changedSettings.hasSpeakingTime = null;
+                    widget.changedSettings.speakingTime = null;
+                    widget.changedSettings.hasSpeakingTime = null;
 
                     if (data['sidebar'] && data['sidebar'][0] !== '') {
                         document.getElementById('sidebar').childNodes.item(0).innerHTML = data['sidebar'][0];

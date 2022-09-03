@@ -43,6 +43,7 @@ return [
     'index_appearance'            => 'Aussehen und Bestandteile der Seite',
     'index_motion_types'          => 'Antragstypen bearbeiten',
     'index_site_voting'           => 'Abstimmungen',
+    'index_site_speaking'         => 'Redelisten',
     'index_site_access'           => 'Login / Benutzer*innen / Admins',
     'index_site_consultations'    => 'Weitere Veranstaltungen anlegen / verwalten',
     'index_site_config'           => 'Konfiguration der Antragsgrün-Installation',

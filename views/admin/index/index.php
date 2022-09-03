@@ -82,6 +82,16 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)
     echo '</li>';
 }
 
+if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
+    echo '<li>';
+    echo Html::a(
+        Yii::t('admin', 'index_site_speaking'),
+        UrlHelper::createUrl(['/consultation/admin-speech']),
+        ['class' => 'speechAdminLink']
+    );
+    echo '</li>';
+}
+
 if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
     echo '<li>';
     echo Html::a(

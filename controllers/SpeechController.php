@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\CookieUser;
+use app\models\api\SpeechUser;
 use app\views\speech\LayoutHelper;
 use app\models\db\{ConsultationUserGroup, SpeechQueue, User};
 use yii\web\Response;
@@ -62,8 +63,8 @@ class SpeechController extends Base
         if (!$user) {
             if ($this->consultation->getSettings()->speechRequiresLogin) {
                 return $this->returnRestResponse(401, $this->getError('Not logged in'));
-            } elseif (\Yii::$app->request->post('username')) {
-                $cookieUser = CookieUser::getFromCookieOrCreate(\Yii::$app->request->post('username'));
+            } elseif ($this->getHttpRequest()->post('username')) {
+                $cookieUser = CookieUser::getFromCookieOrCreate($this->getHttpRequest()->post('username'));
             } else {
                 return $this->returnRestResponse(400, $this->getError('No name provided'));
             }
@@ -80,7 +81,7 @@ class SpeechController extends Base
         }
         if (count($queue->subqueues) > 0) {
             // Providing a subqueue is necessary if there are some; otherwise, it goes into the "default" subqueue
-            $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('subqueue')));
+            $subqueue = $queue->getSubqueueById(intval($this->getHttpRequest()->post('subqueue')));
             if (!$subqueue) {
                 return $this->returnRestResponse(400, $this->getError('No subqueue provided'));
             }
@@ -88,13 +89,17 @@ class SpeechController extends Base
             $subqueue = null;
         }
 
-        if (\Yii::$app->request->post('username')) {
-            $name = trim(\Yii::$app->request->post('username'));
+        if ($user && !$queue->getSettings()->allowCustomNames) {
+            $name = SpeechUser::getFormattedUserName($user);
+        } elseif ($this->getHttpRequest()->post('username')) {
+            $name = trim($this->getHttpRequest()->post('username'));
         } else {
-            $name = $user->name;
+            $name = SpeechUser::getFormattedUserName($user);
         }
 
-        $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser);
+        $pointOfOrder = ($this->getHttpRequest()->post('pointOfOrder') > 0);
+
+        $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser, $pointOfOrder);
 
         $responseJson = json_encode($queue->getUserApiObject($user, $cookieUser));
         return $this->returnRestResponse(200, $responseJson);
@@ -167,20 +172,29 @@ class SpeechController extends Base
         $this->handleRestHeaders(['POST'], true);
         $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
 
-        $settings                   = $queue->getSettings();
-        $settings->isOpen           = (intval(\Yii::$app->request->post('is_open')) > 0);
-        $settings->preferNonspeaker = (intval(\Yii::$app->request->post('prefer_nonspeaker')) > 0);
-        if (\Yii::$app->request->post('speaking_time') > 0) {
-            $settings->speakingTime = intval(\Yii::$app->request->post('speaking_time'));
+        $settings = $queue->getSettings();
+        $settings->isOpen = ($this->getHttpRequest()->post('is_open') > 0);
+        $settings->isOpenPoo = ($this->getHttpRequest()->post('is_open_poo') > 0);
+        $settings->allowCustomNames = ($this->getHttpRequest()->post('allow_custom_names') > 0);
+        $settings->preferNonspeaker = (intval($this->getHttpRequest()->post('prefer_nonspeaker')) > 0);
+        if ($this->getHttpRequest()->post('speaking_time') > 0) {
+            $settings->speakingTime = intval($this->getHttpRequest()->post('speaking_time'));
         } else {
             $settings->speakingTime = null;
         }
         $queue->setSettings($settings);
 
-        $queue->isActive = (intval(\Yii::$app->request->post('is_active')) > 0 ? 1 : 0);
+        $queue->isActive = ($this->getHttpRequest()->post('is_active') > 0 ? 1 : 0);
         $queue->save();
 
         if ($queue->isActive) {
+            $settings = $this->consultation->getSettings();
+            if (!$settings->hasSpeechLists) {
+                $settings->hasSpeechLists = true;
+                $this->consultation->setSettings($settings);
+                $this->consultation->save();
+            }
+
             foreach ($this->consultation->speechQueues as $otherQueue) {
                 if ($otherQueue->id !== $queue->id) {
                     $otherQueue->isActive = 0;
@@ -249,37 +263,19 @@ class SpeechController extends Base
                 }
 
                 $item->position    = $maxPosition + 1;
-                $item->dateStarted = date("Y-m-d H:i:s");
-                $item->dateStopped = null;
-                $item->save();
-
-                foreach ($queue->items as $cmpItem) {
-                    if ($cmpItem->id !== $item->id && $cmpItem->dateStarted !== null && $cmpItem->dateStopped === null) {
-                        $cmpItem->dateStopped = date("Y-m-d H:i:s");
-                        $cmpItem->save();
-                    }
-                }
+                $queue->startItem($item);
                 break;
             case "start":
-                $item->dateStarted = date("Y-m-d H:i:s");
-                $item->dateStopped = null;
-                $item->save();
-
-                foreach ($queue->items as $cmpItem) {
-                    if ($cmpItem->id !== $item->id && $cmpItem->dateStarted !== null && $cmpItem->dateStopped === null) {
-                        $cmpItem->dateStopped = date("Y-m-d H:i:s");
-                        $cmpItem->save();
-                    }
-                }
+                $queue->startItem($item);
                 break;
             case "stop":
                 $item->dateStopped = date("Y-m-d H:i:s");
                 $item->save();
                 break;
             case "move":
-                $newPosition = \Yii::$app->request->post('position');
-                if (\Yii::$app->request->post('newSubqueueId')) {
-                    $subqueue         = $queue->getSubqueueById(intval(\Yii::$app->request->post('newSubqueueId')));
+                $newPosition = $this->getHttpRequest()->post('position');
+                if ($this->getHttpRequest()->post('newSubqueueId')) {
+                    $subqueue         = $queue->getSubqueueById(intval($this->getHttpRequest()->post('newSubqueueId')));
                     $item->subqueueId = $subqueue->id;
                 } else {
                     $subqueue = null;
@@ -306,6 +302,7 @@ class SpeechController extends Base
                 break;
         }
 
+        $queue->refresh();
         $responseJson = json_encode($queue->getAdminApiObject());
         return $this->returnRestResponse(200, $responseJson);
     }
@@ -315,8 +312,8 @@ class SpeechController extends Base
         $this->handleRestHeaders(['POST'], true);
         $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
 
-        if (\Yii::$app->request->post('subqueue')) {
-            $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('subqueue')));
+        if ($this->getHttpRequest()->post('subqueue')) {
+            $subqueue = $queue->getSubqueueById(intval($this->getHttpRequest()->post('subqueue')));
         } else {
             $subqueue = null;
         }
@@ -324,12 +321,12 @@ class SpeechController extends Base
             return $this->returnRestResponse(400, $this->getError('No subqueue given'));
         }
 
-        $name = trim(\Yii::$app->request->post('name'));
+        $name = trim($this->getHttpRequest()->post('name'));
         if (!$name) {
             return $this->returnRestResponse(400, $this->getError('No name entered'));
         }
 
-        $queue->createItemOnAppliedList($name, $subqueue, null, null);
+        $queue->createItemOnAppliedList($name, $subqueue, null, null, false);
 
         $responseJson = json_encode($queue->getAdminApiObject());
         return $this->returnRestResponse(200, $responseJson);

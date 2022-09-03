@@ -220,13 +220,17 @@ class SpeechQueue extends ActiveRecord
         return null;
     }
 
-    public function createItemOnAppliedList(string $name, ?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser): SpeechQueueItem
+    public function createItemOnAppliedList(string $name, ?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser, bool $pointOfOrder): SpeechQueueItem
     {
         $position = -1;
         foreach ($this->items as $item) {
             if ($item->position <= $position) {
                 $position = $item->position - 1;
             }
+        }
+
+        if ($pointOfOrder) {
+            $name = SpeechQueueItem::POO_MARKER . ' ' . $name;
         }
 
         $item              = new SpeechQueueItem();
@@ -244,6 +248,20 @@ class SpeechQueue extends ActiveRecord
         $this->refresh();
 
         return $item;
+    }
+
+    public function startItem(SpeechQueueItem $item): void
+    {
+        $item->dateStarted = date("Y-m-d H:i:s");
+        $item->dateStopped = null;
+        $item->save();
+
+        foreach ($this->items as $cmpItem) {
+            if ($cmpItem->id !== $item->id && $cmpItem->dateStarted !== null && $cmpItem->dateStopped === null) {
+                $cmpItem->dateStopped = date("Y-m-d H:i:s");
+                $cmpItem->save();
+            }
+        }
     }
 
     /**
@@ -281,6 +299,12 @@ class SpeechQueue extends ActiveRecord
             }
         }
         usort($itemsApplied, function (SpeechQueueItem $item1, SpeechQueueItem $item2): int {
+            if ($item1->isPointOfOrder() && !$item2->isPointOfOrder()) {
+                return -1;
+            }
+            if (!$item1->isPointOfOrder() && $item2->isPointOfOrder()) {
+                return 1;
+            }
             // Numbers are reversed, hence e.g. -5 should come before -7
             return $item2->position <=> $item1->position;
         });
@@ -297,6 +321,7 @@ class SpeechQueue extends ActiveRecord
                     'id' => $item->id,
                     'name' => $item->name,
                     'user_id' => $item->userId,
+                    'is_point_of_order' => $item->isPointOfOrder(),
                     'position' => $item->position,
                 ];
             }, $this->getItemsOnList($subqueue)),
@@ -305,6 +330,7 @@ class SpeechQueue extends ActiveRecord
                     'id' => $item->id,
                     'name' => $item->name,
                     'user_id' => $item->userId,
+                    'is_point_of_order' => $item->isPointOfOrder(),
                     'applied_at' => $item->getDateApplied()->format('c'),
                 ];
             }, $this->getAppliedItems($subqueue)),
@@ -407,6 +433,7 @@ class SpeechQueue extends ActiveRecord
                     'id' => $item->id,
                     'name' => $item->name,
                     'user_id' => $item->userId,
+                    'is_point_of_order' => $item->isPointOfOrder(),
                     'applied_at' => $item->getDateApplied()->format('c'),
                 ];
             }, $appliedItems);
@@ -454,6 +481,8 @@ class SpeechQueue extends ActiveRecord
             'id' => $this->id,
             'is_open' => $settings->isOpen,
             'have_applied' => $haveApplied,
+            'allow_custom_names' => $settings->allowCustomNames,
+            'is_open_poo' => $settings->isOpenPoo,
             'subqueues' => $this->getUserApiSubqueues($user, $cookieUser),
             'slots' => $this->getActiveSlots(),
             'requires_login' => $this->getMyConsultation()->getSettings()->speechRequiresLogin,

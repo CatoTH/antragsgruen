@@ -25,9 +25,10 @@ use yii\db\ActiveRecord;
  */
 class SpeechQueueItem extends ActiveRecord
 {
+    public const POO_MARKER = '[[POINT OF ORDER]]';
+
     public static function tableName(): string
     {
-
         return AntragsgruenApp::getInstance()->tablePrefix . 'speechQueueItem';
     }
 
@@ -95,5 +96,10 @@ class SpeechQueueItem extends ActiveRecord
         }
 
         return false;
+    }
+
+    public function isPointOfOrder(): bool
+    {
+        return strpos($this->name, self::POO_MARKER) === 0;
     }
 }

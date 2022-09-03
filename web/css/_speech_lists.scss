@@ -38,8 +38,13 @@
       flex: 1;
     }
 
-    .settingsOpen, .settingsActive {
+    .settingsActive {
       line-height: 35px;
+      font-weight: normal;
+      margin-bottom: 0;
+    }
+    .settingOpen {
+      display: block;
       font-weight: normal;
       margin-bottom: 0;
     }
@@ -528,14 +533,18 @@
   .remainingTime {
     text-align: center;
   }
+  .waitingMultiple {
+    .name {
+      vertical-align: top;
+    }
+    .applyOpenerPoo {
+      font-weight: normal;
+    }
+  }
   .nameList {
     display: block;
-    margin-top: 30px;
-    margin-bottom: 50px;
 
     > li {
-      margin-top: 20px;
-      margin-bottom: 20px;
 
       .leftIcon {
         float: left;
@@ -548,6 +557,21 @@
       @if ($font-size-base < 16) {
         font-size: 16px;
       }
+    }
+  }
+  .waitingSingle {
+    .nameList {
+      margin-top: 30px;
+      margin-bottom: 50px;
+
+      > li {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+    }
+    .applyOpenerPoo {
+      font-weight: normal;
+      margin-top: 20px;
     }
   }
   .apply {
@@ -646,6 +670,12 @@
       }
     }
   }
+
+  .applyOpenerPoo {
+    font-weight: normal;
+    margin-left: 20px;
+    margin-top: 10px;
+  }
 }
 
 .currentSpeechFooter {
@@ -689,7 +719,7 @@
   }
 
   .widgetTitle {
-    flex-basis: 150px;
+    flex-basis: 160px;
     font-size: 16px;
     line-height: $speechLineHeight;
     vertical-align: middle;
@@ -812,6 +842,11 @@
       padding: 0 5px;
       font-size: 75%; // Same as the .label next to it
     }
+  }
+
+  .applyOpenerPoo {
+    font-weight: normal;
+    margin-left: 10px;
   }
 
   .notPossible {

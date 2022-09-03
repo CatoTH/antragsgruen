@@ -80,29 +80,33 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                 // Replaces patterns like [[Remote]] by labels.
                 return name.replaceAll(/\[\[(.*)]]/g, "<span class=\"label label-info\">$1</span>");
             },
-            register: function ($event, subqueue) {
+            register: function ($event, subqueue, pointOfOrder) {
                 $event.preventDefault();
 
                 const widget = this;
                 $.post(registerUrl.replace(/QUEUEID/, widget.queue.id), {
                     subqueue: subqueue.id,
                     username: this.registerName,
+                    pointOfOrder: (pointOfOrder ? '1' : '0'),
                     _csrf: this.csrf,
                 }, function (data) {
                     widget.queue = data;
-                    widget.showApplicationForm = false;
+                    widget.showApplicationForm = widget.defaultApplicationForm;
                 }).catch(function (err) {
                     alert(err.responseText);
                 });
             },
-            onShowApplicationForm: function ($event, subqueue) {
+            onShowApplicationForm: function ($event, subqueue, pointOfOrder) {
                 $event.preventDefault();
 
                 this.showApplicationForm = subqueue.id;
+                if (pointOfOrder) {
+                    this.showApplicationForm += '_poo';
+                }
                 this.$nextTick(function () {
                     if (this.$refs.adderNameInputs) {
                         this.$refs.adderNameInputs[0].focus();
-                    } else {
+                    } else if (this.$refs.adderNameInput) {
                         this.$refs.adderNameInput.focus();
                     }
                 });
