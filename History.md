@@ -5,6 +5,7 @@
 - WARNING: if you are using a PHP 7.3 or older, then update to PHP 8.0 or newer first before installing this update!
 - A separate document page can be enabled, allowing to upload multiple files in folders. The documents are visible to all users and can be downloaded individually or all in one as a ZIP.
 - Speaking lists were improved in a few ways:
+  - The speaking list administration is now directly linked from the admin page.
   - It is now possible to remove and reorder speakers.
   - Points of order are supported, always appearing at the top of the speaking list. Optionally they can be enabled even when the list is closed.
   - Admins can deactivate the possibility for users to change the name when applying for a speaking list (also making applying a click quicker).

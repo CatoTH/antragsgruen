@@ -188,6 +188,13 @@ class SpeechController extends Base
         $queue->save();
 
         if ($queue->isActive) {
+            $settings = $this->consultation->getSettings();
+            if (!$settings->hasSpeechLists) {
+                $settings->hasSpeechLists = true;
+                $this->consultation->setSettings($settings);
+                $this->consultation->save();
+            }
+
             foreach ($this->consultation->speechQueues as $otherQueue) {
                 if ($otherQueue->id !== $queue->id) {
                     $otherQueue->isActive = 0;
@@ -256,28 +263,10 @@ class SpeechController extends Base
                 }
 
                 $item->position    = $maxPosition + 1;
-                $item->dateStarted = date("Y-m-d H:i:s");
-                $item->dateStopped = null;
-                $item->save();
-
-                foreach ($queue->items as $cmpItem) {
-                    if ($cmpItem->id !== $item->id && $cmpItem->dateStarted !== null && $cmpItem->dateStopped === null) {
-                        $cmpItem->dateStopped = date("Y-m-d H:i:s");
-                        $cmpItem->save();
-                    }
-                }
+                $queue->startItem($item);
                 break;
             case "start":
-                $item->dateStarted = date("Y-m-d H:i:s");
-                $item->dateStopped = null;
-                $item->save();
-
-                foreach ($queue->items as $cmpItem) {
-                    if ($cmpItem->id !== $item->id && $cmpItem->dateStarted !== null && $cmpItem->dateStopped === null) {
-                        $cmpItem->dateStopped = date("Y-m-d H:i:s");
-                        $cmpItem->save();
-                    }
-                }
+                $queue->startItem($item);
                 break;
             case "stop":
                 $item->dateStopped = date("Y-m-d H:i:s");

@@ -250,6 +250,20 @@ class SpeechQueue extends ActiveRecord
         return $item;
     }
 
+    public function startItem(SpeechQueueItem $item): void
+    {
+        $item->dateStarted = date("Y-m-d H:i:s");
+        $item->dateStopped = null;
+        $item->save();
+
+        foreach ($this->items as $cmpItem) {
+            if ($cmpItem->id !== $item->id && $cmpItem->dateStarted !== null && $cmpItem->dateStopped === null) {
+                $cmpItem->dateStopped = date("Y-m-d H:i:s");
+                $cmpItem->save();
+            }
+        }
+    }
+
     /**
      * @return SpeechQueueItem[]
      */
