@@ -204,6 +204,11 @@ class MotionController extends AdminBase
                     $settings->initiatorCanBeOrganization = true;
                     $settings->initiatorCanBePerson       = true;
                 }
+                if (is_numeric($this->getHttpRequest()->post('maxPdfSupporters'))) {
+                    $settings->maxPdfSupporters = intval(\Yii::$app->request->post('maxPdfSupporters'));
+                } else {
+                    $settings->maxPdfSupporters = null;
+                }
                 $motionType->supportTypeAmendments = json_encode($settings, JSON_PRETTY_PRINT);
             }
 
