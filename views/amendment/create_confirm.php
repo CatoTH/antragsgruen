@@ -21,6 +21,10 @@ $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendme
 $layout->robotsNoindex = true;
 if (!$motion->getMyMotionType()->amendmentsOnly) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
+    if ($amendment->amendingAmendmentId) {
+        $amendedAmendment = $amendment->amendedAmendment;
+        $layout->addBreadcrumb($amendedAmendment->titlePrefix, UrlHelper::createAmendmentUrl($amendedAmendment));
+    }
     $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
 } else {
     $layout->addBreadcrumb($motion->getMyMotionType()->titleSingular, UrlHelper::createAmendmentUrl($amendment, 'edit'));

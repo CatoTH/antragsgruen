@@ -378,7 +378,7 @@ class AmendmentController extends Base
      * @throws \app\models\exceptions\Internal
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function actionCreate($motionSlug, $agendaItemId = 0, $cloneFrom = 0)
+    public function actionCreate($motionSlug, $agendaItemId = 0, $cloneFrom = 0, $createFromAmendment = 0)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -442,6 +442,12 @@ class AmendmentController extends Base
             $adoptAmend = $this->consultation->getAmendment($cloneFrom);
             $form->cloneSupporters($adoptAmend);
             $form->cloneAmendmentText($adoptAmend);
+        } elseif ($createFromAmendment > 0 && $motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
+            $adoptAmend = $this->consultation->getAmendment($createFromAmendment);
+            if ($adoptAmend->motionId === $motion->id) {
+                $form->cloneAmendmentText($adoptAmend);
+                $form->toAnotherAmendment = $adoptAmend->id;
+            }
         }
 
         if (count($form->supporters) == 0) {
