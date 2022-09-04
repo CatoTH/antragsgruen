@@ -27,7 +27,7 @@ if ($amendment->amendingAmendmentId && $amendment->amendedAmendment) {
     $amendmentData[] = [
         'rowClass' => 'amendingAmendmentRow',
         'title' => Yii::t('amend', 'based_on_amend'),
-        'content' => Html::a(Html::encode($amendment->getTitleWithPrefix()), UrlHelper::createAmendmentUrl($amendment->amendedAmendment)),
+        'content' => Html::a(Html::encode($amendment->amendedAmendment->getTitleWithPrefix()), UrlHelper::createAmendmentUrl($amendment->amendedAmendment)),
     ];
 }
 if (!$motionType->amendmentsOnly) {

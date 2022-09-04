@@ -53,7 +53,7 @@ abstract class IAmendmentNumbering
     }
 
     /**
-     * @param string[] $prefixes
+     * @param string[]|null[] $prefixes
      */
     public static function getMaxTitlePrefixNumber(array $prefixes): int
     {
@@ -61,11 +61,14 @@ abstract class IAmendmentNumbering
         $splitStrs = ['neu'];
 
         foreach ($prefixes as $prefix) {
+            if ($prefix === null) {
+                continue;
+            }
             foreach ($splitStrs as $split) {
                 $spl    = explode($split, $prefix);
                 $prefix = $spl[0];
             }
-            // Take the last consecutive number of the string
+            // Take the last consecutive numbers of the string
             $number = intval(preg_replace('/^(.*[^0-9])?([0-9]+)([^0-9]*)$/siu', '$2', $prefix));
             if ($number > $maxRev) {
                 $maxRev = $number;
