@@ -85,8 +85,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_max_pdfd')) ?>
         </label>
         <div class="rightColumn">
-            <input type="hidden" name="initiatorSettingFields[]" value="maxPdfSupporters">
-            <input type="number" name="initiatorSettings[maxPdfSupporters]" class="form-control" id="typeMaxPdfSupporters"
+            <input type="number" name="maxPdfSupporters" class="form-control" id="typeMaxPdfSupporters"
                    value="<?= Html::encode($supportSett->maxPdfSupporters !== null ? $supportSett->maxPdfSupporters : '') ?>">
         </div>
     </div>
