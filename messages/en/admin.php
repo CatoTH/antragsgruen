@@ -535,6 +535,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_edit'            => 'Edit motion type',
     'motion_type_perm_supp_mot'   => 'Supporting motions',
     'motion_type_perm_supp_amend' => 'Supporting amendments',
+    'motion_type_allow_amend_amend' => 'Allow amendments based on other (statute) amendments',
     'motion_type_email'           => 'E-mail',
     'motion_type_contact_name'    => 'Alternative contact person',
     'motion_type_person_type'     => 'Allowed to submit',

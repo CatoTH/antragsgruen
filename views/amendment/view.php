@@ -41,6 +41,10 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
         $motionUrl = UrlHelper::createMotionUrl($motion);
         $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
     }
+    if ($amendment->amendingAmendmentId) {
+        $amendedAmendment = $amendment->amendedAmendment;
+        $layout->addBreadcrumb($amendedAmendment->titlePrefix, UrlHelper::createAmendmentUrl($amendedAmendment));
+    }
     if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
         $layout->addBreadcrumb($amendment->titlePrefix);
     } else {
@@ -189,6 +193,30 @@ $supportType   = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
 $loginlessSupported = \app\models\db\AmendmentSupporter::getMyLoginlessSupportIds();
 echo MotionLayoutHelper::printSupportingSection($amendment, $supporters, $supportPolicy, $supportType, $loginlessSupported);
 echo MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
+
+$amendingAmendments = $amendment->getVisibleAmendingAmendments();
+if (count($amendingAmendments) > 0) {
+    echo '<section class="amendments" aria-labelledby="amendmentsTitle">' .
+        '<h2 class="green" id="amendmentsTitle">' . Yii::t('amend', 'amending_amendments') . '</h2>
+    <div class="content">';
+
+    echo '<ul class="amendments">';
+    foreach ($amendingAmendments as $amendingAmendment) {
+        echo '<li>';
+        $aename = $amendingAmendment->titlePrefix;
+        if ($aename === '') {
+            $aename = $amendingAmendment->id;
+        }
+        $amendLink     = UrlHelper::createAmendmentUrl($amendingAmendment);
+        $amendStatuses = $consultation->getStatuses()->getStatusNames();
+        echo Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amendingAmendment->id]);
+        echo ' (' . Html::encode($amendingAmendment->getInitiatorsStr() . ', ' . $amendStatuses[$amendingAmendment->status]) . ')';
+        echo '</li>';
+    }
+    echo '</ul>';
+
+    echo '</div></section>';
+}
 
 $alternativeCommentView = \app\models\layoutHooks\Layout::getAmendmentAlternativeComments($amendment);
 if ($alternativeCommentView) {

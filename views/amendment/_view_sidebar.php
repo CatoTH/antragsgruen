@@ -38,6 +38,41 @@ if ($amendment->canWithdraw()) {
     $sidebarRows++;
 }
 
+if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
+    try {
+        $amendment->getMyMotion()->isCurrentlyAmendable(true, true, true);
+
+        $html .= '<li class="amendmentCreate">';
+        $amendCreateUrl = UrlHelper::createUrl([
+            'amendment/create',
+            'motionSlug' => $amendment->getMyMotion()->getMotionSlug(),
+            'createFromAmendment' => $amendment->id,
+        ]);
+        $title          = '<span class="icon glyphicon glyphicon-flash" aria-hidden="true"></span>';
+        $title .= Yii::t('motion', 'amendment_create_based_on_amend');
+        if (!$amendment->getMyMotion()->isCurrentlyAmendable(false, true)) {
+            $title .= ' <span class="onlyAdmins">(' . Yii::t('motion', 'amendment_create_admin') . ')</span>';
+        }
+        $html .= Html::a($title, $amendCreateUrl, ['rel' => 'nofollow']) . '</li>';
+        $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '" ' .
+            'rel="nofollow">' . $title . '</a>';
+        $sidebarRows++;
+    } catch (\app\models\exceptions\NotAmendable $e) {
+        if ($e->isMessagePublic()) {
+            $createLi = '<li class="amendmentCreate deactivated">';
+            $createLi .= '<span><span class="icon glyphicon glyphicon-flash" aria-hidden="true"></span>';
+            $createLi .= Html::encode(Yii::t('motion', 'amendment_create_based_on_amend'));
+            $createLi .= '<br><span class="deactivatedMsg">';
+            $createLi .= Html::encode($e->getMessage()) . '</span></span></li>';
+
+            $html .= $createLi;
+            $layout->menusHtmlSmall[] = $createLi;
+
+            $sidebarRows++;
+        }
+    }
+}
+
 if ($amendment->canMergeIntoMotion(true)) {
     $html .= '<li class="mergeIntoMotion">';
     $title = '<span class="icon glyphicon glyphicon-wrench" aria-hidden="true"></span>' . Yii::t('amend', 'sidebar_mergeintomotion');

@@ -34,6 +34,9 @@ class AmendmentEditForm extends Model
     /** @var string */
     public $editorial = '';
 
+    /** @var null|int */
+    public $toAnotherAmendment = null;
+
     public $globalAlternative = false;
 
     private $adminMode = false;
@@ -185,6 +188,13 @@ class AmendmentEditForm extends Model
 
         $globalAlternativesAllowed = $this->motion->getMyConsultation()->getSettings()->globalAlternatives;
         $this->globalAlternative   = (isset($values['globalAlternative']) && $globalAlternativesAllowed);
+
+        if (isset($values['createFromAmendment']) && $this->motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
+            $baseAmendment = $this->motion->getMyConsultation()->getAmendment((int)$values['createFromAmendment']);
+            if ($baseAmendment && $baseAmendment->motionId === $this->motion->id) {
+                $this->toAnotherAmendment = $baseAmendment->id;
+            }
+        }
     }
 
 
@@ -249,6 +259,10 @@ class AmendmentEditForm extends Model
         $amendment->agendaItemId      = ($this->agendaItem ? $this->agendaItem->id : null);
         $amendment->changeText        = '';
         $amendment->cache             = '';
+
+        if ($this->toAnotherAmendment) {
+            $amendment->amendingAmendmentId = $this->toAnotherAmendment;
+        }
 
         if ($amendment->save()) {
             $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);

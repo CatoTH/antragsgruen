@@ -32,6 +32,10 @@ if ($form->motion->titlePrefix !== '') {
 $layout->robotsNoindex = true;
 $layout->loadCKEditor();
 $layout->addBreadcrumb($motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
+if ($form->toAnotherAmendment) {
+    $amendingAmendment = $consultation->getAmendment($form->toAnotherAmendment);
+    $layout->addBreadcrumb($amendingAmendment->titlePrefix, UrlHelper::createAmendmentUrl($amendingAmendment));
+}
 $layout->addBreadcrumb(Yii::t('amend', $mode === 'create' ? 'amendment_create' : 'amendment_edit'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
@@ -147,6 +151,9 @@ echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $contro
 if (!$multipleParagraphs) {
     echo '<input type="hidden" name="modifiedSectionId" value="">';
     echo '<input type="hidden" name="modifiedParagraphNo" value="">';
+}
+if ($form->toAnotherAmendment) {
+    echo '<input type="hidden" name="createFromAmendment" value="' . Html::encode($form->toAnotherAmendment) . '">';
 }
 
 ?>

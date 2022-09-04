@@ -10,6 +10,7 @@ return [
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
     'sidebar_title_aria'                 => 'Funktionen und Links zum Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',
+    'amendment_create_based_on_amend'    => 'Neuen ÄA auf dieser Basis stellen',
     'amendment_create_admin'             => 'Admin',
     'amendments_merge'                   => 'Änderungsanträge einpflegen',
     'amendments_merge_noamend'           => 'Änderungen einpflegen',

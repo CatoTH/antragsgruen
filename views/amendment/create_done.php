@@ -19,10 +19,12 @@ $layout      = $controller->layoutParams;
 
 if (!$motion->getMyMotionType()->amendmentsOnly) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
-    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
-} else {
-    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
 }
+if ($amendment->amendingAmendmentId) {
+    $amendedAmendment = $amendment->amendedAmendment;
+    $layout->addBreadcrumb($amendedAmendment->titlePrefix, UrlHelper::createAmendmentUrl($amendedAmendment));
+}
+$layout->addBreadcrumb($amendment->titlePrefix ?? Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 
 if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . Yii::t('amend', 'submitted_create') . '</h1>';
