@@ -361,7 +361,7 @@ class ConsultationMotionType extends ActiveRecord
     /**
      * @return Motion[]
      */
-    public function getAmendableOnlyMotions(bool $allowAdmins = true, bool $assumeLoggedIn = false): array
+    public function getAmendableOnlyMotions(bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $sorted = true): array
     {
         $return = [];
         foreach ($this->motions as $motion) {
@@ -372,6 +372,11 @@ class ConsultationMotionType extends ActiveRecord
                 continue;
             }
             $return[] = $motion;
+        }
+        if ($sorted) {
+            usort($return, function (Motion $motion1, Motion $motion2): int {
+                return strnatcasecmp($motion1->title, $motion2->title);
+            });
         }
         return $return;
     }
