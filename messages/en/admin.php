@@ -466,6 +466,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_perm_comment_restrict' => 'Restrict reading of comments to people allowed to write comments',
     'motion_type_perm_supp_mot'   => 'Supporting motions',
     'motion_type_perm_supp_amend' => 'Supporting amendments',
+    'motion_type_allow_amend_amend' => 'Allow amendments based on other (statute) amendments',
     'motion_type_group_ph'        => 'Please choose the eligible grops...',
     'motion_type_group_title'     => 'Eligible groups',
     'motion_type_create_caller'   => 'Create new motion type',

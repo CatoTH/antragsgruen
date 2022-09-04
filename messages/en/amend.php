@@ -6,6 +6,8 @@ return [
     'motion'                 => 'Motion',
     'initiator'              => 'Proposer',
     'initiators_title'       => 'Proposers',
+    'based_on_amend'         => 'Based on amendment',
+    'amending_amendments'    => 'Amendments to this amendments',
     'supporter'              => 'Supporter',
     'supporters'             => 'Supporters',
     'supporters_title'       => 'Supporters',

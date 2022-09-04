@@ -6,6 +6,8 @@ return [
     'motion'                            => 'Antrag',
     'initiator'                         => 'Antragsteller*in',
     'initiators_title'                  => 'Antragsteller*innen',
+    'based_on_amend'                    => 'Basiert auf dem Änderungsantrag',
+    'amending_amendments'               => 'Änderungsanträge zu diesem Änderungsantrag',
     'supporter'                         => 'Unterstützer*in',
     'supporters'                        => 'Unterstützer*innen',
     'supporters_title'                  => 'Unterstützer*innen',

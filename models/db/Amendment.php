@@ -23,6 +23,7 @@ use yii\helpers\Html;
 /**
  * @property int|null $id
  * @property int $motionId
+ * @property int|null $amendingAmendmentId
  * @property string|null $titlePrefix
  * @property string $changeEditorial
  * @property string $changeText
@@ -39,6 +40,8 @@ use yii\helpers\Html;
  * @property string|null $responsibilityComment
  * @property string|null $extraData
  *
+ * @property Amendment|null $amendedAmendment
+ * @property Amendment[] $amendingAmendments
  * @property AmendmentComment[] $comments
  * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
@@ -113,6 +116,24 @@ class Amendment extends IMotion implements IRSSItem
     public function getAgendaItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
+    }
+
+    /**
+     * This returns the amendment being amended by this amendment
+     */
+    public function getAmendedAmendment(): ActiveQuery
+    {
+        return $this->hasOne(Amendment::class, ['id' => 'amendingAmendmentId'])
+            ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
+    }
+
+    /**
+     * This returns the amendments amending this amendment
+     */
+    public function getAmendingAmendments(): ActiveQuery
+    {
+        return $this->hasMany(Amendment::class, ['amendingAmendmentId' => 'id'])
+            ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
     public function getComments(): ActiveQuery
@@ -377,6 +398,22 @@ class Amendment extends IMotion implements IRSSItem
     public function getTypeSections(): array
     {
         return $this->getMyMotionType()->motionSections;
+    }
+
+    /**
+     * @return Amendment[]
+     */
+    public function getVisibleAmendingAmendments(bool $includeWithdrawn = true): array
+    {
+        $filtered   = $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses($includeWithdrawn);
+        $amendments = [];
+        foreach ($this->amendingAmendments as $amend) {
+            if (!in_array($amend->status, $filtered)) {
+                $amendments[] = $amend;
+            }
+        }
+
+        return $amendments;
     }
 
     public function getInlineChangeData(string $changeId): array

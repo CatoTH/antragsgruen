@@ -93,7 +93,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m220710_114056_document_file_groups', '1657453642'),
   ('m220730_144556_voting_block_settings_usergroup_order', '1659192616'),
   ('m220806_131705_motion_modification_date', '1659792341'),
-  ('m220902_181010_motion_not_commentable', '1662143333')
+  ('m220902_181010_motion_not_commentable', '1662143333'),
+  ('m220904_083241_amendment_to_other_amendments', '1662280591')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

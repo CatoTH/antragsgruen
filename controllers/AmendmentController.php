@@ -28,12 +28,10 @@ class AmendmentController extends Base
     use AmendmentMergingTrait;
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionPdf($motionSlug, $amendmentId)
+    public function actionPdf(string $motionSlug, int $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
@@ -51,7 +49,7 @@ class AmendmentController extends Base
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
-        $filename                    = $amendment->getFilenameBase(false) . '.pdf';
+        $filename = $amendment->getFilenameBase(false) . '.pdf';
         $this->getHttpResponse()->format = Response::FORMAT_RAW;
         $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
         $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
@@ -67,14 +65,13 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param int $withdrawn
      * @return string
      */
-    public function actionPdfcollection($withdrawn = 0)
+    public function actionPdfcollection(int $withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn = ($withdrawn === 1);
         $motions   = $this->consultation->getVisibleIMotionsSorted($withdrawn);
-        if (count($motions) == 0) {
+        if (count($motions) === 0) {
             $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
         $amendments  = [];
@@ -111,12 +108,10 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionOdt($motionSlug, $amendmentId)
+    public function actionOdt(string $motionSlug, int $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
@@ -128,7 +123,7 @@ class AmendmentController extends Base
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
-        $filename                    = $amendment->getFilenameBase(false) . '.odt';
+        $filename = $amendment->getFilenameBase(false) . '.odt';
         $this->getHttpResponse()->format = Response::FORMAT_RAW;
         $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
@@ -140,12 +135,9 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     *
      * @return string
      */
-    public function actionRest($motionSlug, $amendmentId)
+    public function actionRest(string $motionSlug, int $amendmentId)
     {
         $this->handleRestHeaders(['GET']);
 
@@ -164,14 +156,10 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @param int $commentId
-     * @param string|null $procedureToken
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionView($motionSlug, $amendmentId, $commentId = 0, ?string $procedureToken = null)
+    public function actionView(string $motionSlug, int $amendmentId, int $commentId = 0, ?string $procedureToken = null)
     {
         $this->layout = 'column2';
 
@@ -221,11 +209,9 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
      * @return string
      */
-    public function actionAjaxDiff($motionSlug, $amendmentId)
+    public function actionAjaxDiff(string $motionSlug, int $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
@@ -237,12 +223,9 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @param string $fromMode
      * @return string
      */
-    public function actionCreatedone($motionSlug, $amendmentId, $fromMode)
+    public function actionCreatedone(string $motionSlug, int $amendmentId, string $fromMode)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         /** @var Amendment $amendment */
@@ -256,13 +239,10 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @param string $fromMode
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionCreateconfirm($motionSlug, $amendmentId, $fromMode)
+    public function actionCreateconfirm(string $motionSlug, int $amendmentId, string $fromMode)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         /** @var Amendment|null $amendment */
@@ -306,11 +286,9 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
      * @return string
      */
-    public function actionEdit($motionSlug, $amendmentId)
+    public function actionEdit(string $motionSlug, int $amendmentId)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         /** @var Amendment|null $amendment */
@@ -371,14 +349,11 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $agendaItemId
-     * @param int $cloneFrom
      * @return string
      * @throws \app\models\exceptions\Internal
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function actionCreate($motionSlug, $agendaItemId = 0, $cloneFrom = 0)
+    public function actionCreate(string $motionSlug, int $agendaItemId = 0, int $cloneFrom = 0, int $createFromAmendment = 0)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -442,6 +417,12 @@ class AmendmentController extends Base
             $adoptAmend = $this->consultation->getAmendment($cloneFrom);
             $form->cloneSupporters($adoptAmend);
             $form->cloneAmendmentText($adoptAmend);
+        } elseif ($createFromAmendment > 0 && $motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
+            $adoptAmend = $this->consultation->getAmendment($createFromAmendment);
+            if ($adoptAmend->motionId === $motion->id) {
+                $form->cloneAmendmentText($adoptAmend);
+                $form->toAnotherAmendment = $adoptAmend->id;
+            }
         }
 
         if (count($form->supporters) == 0) {
@@ -459,10 +440,9 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param int $amendmentId
      * @return string
      */
-    public function actionWithdraw($amendmentId)
+    public function actionWithdraw(int $amendmentId)
     {
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
@@ -489,12 +469,10 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionSaveProposalStatus($motionSlug, $amendmentId)
+    public function actionSaveProposalStatus(string $motionSlug, int $amendmentId)
     {
         $this->getHttpResponse()->format = Response::FORMAT_RAW;
         $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
@@ -666,12 +644,10 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionEditProposedChange($motionSlug, $amendmentId)
+    public function actionEditProposedChange(string $motionSlug, int $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
@@ -726,12 +702,10 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionEditProposedChangeCheck($motionSlug, $amendmentId)
+    public function actionEditProposedChangeCheck(string $motionSlug, int $amendmentId)
     {
         $this->getHttpResponse()->format = Response::FORMAT_RAW;
         $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
@@ -801,12 +775,9 @@ class AmendmentController extends Base
     /**
      * URL: /[consultationPrefix]/[motionPrefix]/[amendmentPrefix]
      *
-     * @param string $prefix1
-     * @param string $prefix2
-     * @return \yii\console\Response|Response
      * @throws NotFoundHttpException
      */
-    public function actionGotoPrefix($prefix1, $prefix2)
+    public function actionGotoPrefix(string $prefix1, string $prefix2): Response
     {
         try {
             /** @var Amendment|null $amendment */

@@ -14,4 +14,5 @@ class MotionType implements \JsonSerializable
     public bool $hasResponsibilities = false;
     public bool $twoColMerging = false; // Can only be set manually as of yet
     public bool $commentsRestrictViewToWritables = false;
+    public bool $allowAmendmentsToAmendments = false;
 }

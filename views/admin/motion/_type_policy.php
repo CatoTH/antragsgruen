@@ -169,6 +169,19 @@ $printUserGroupSelector = function (string $id, string $formName, ConsultationMo
         ?>
     </div>
 </div>
+<div class="stdTwoCols checkboxNoPadding">
+    <div class="leftColumn"></div>
+    <div class="rightColumn">
+        <?php
+        echo HTMLTools::labeledCheckbox(
+            'type[allowAmendmentsToAmendments]',
+            Yii::t('admin', 'motion_type_allow_amend_amend'),
+            $motionType->getSettingsObj()->allowAmendmentsToAmendments,
+            'allowAmendmentsToAmendments'
+        );
+        ?>
+    </div>
+</div>
 
 
 <!-- Support policy for amendments -->
