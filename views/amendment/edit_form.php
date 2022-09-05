@@ -43,7 +43,10 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
 echo '<div class="form content">';
 
 echo '<br><div class="alert alert-info">';
-if ($motionType->amendmentsOnly) {
+
+if ($form->toAnotherAmendment) {
+    echo $motionType->getConsultationTextWithFallback('amend', 'create_explanation_amendtoamend');
+} elseif ($motionType->amendmentsOnly) {
     echo $motionType->getConsultationTextWithFallback('amend', 'create_explanation_statutes');
 } else {
     echo $motionType->getConsultationTextWithFallback('amend', 'create_explanation');
