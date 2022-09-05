@@ -130,9 +130,11 @@ class AmendmentEditForm extends Model
         }
     }
 
-    public function cloneAmendmentText(Amendment $amendment): void
+    public function cloneAmendmentText(Amendment $amendment, bool $includeReason): void
     {
+        if ($includeReason) {
         $this->reason    = $amendment->changeExplanation;
+        }
         $this->editorial = $amendment->changeEditorial;
         /** @var AmendmentSection[] $byId */
         $byId = [];

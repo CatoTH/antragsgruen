@@ -440,11 +440,11 @@ class AmendmentController extends Base
         } elseif ($cloneFrom > 0) {
             $adoptAmend = $this->consultation->getAmendment($cloneFrom);
             $form->cloneSupporters($adoptAmend);
-            $form->cloneAmendmentText($adoptAmend);
+            $form->cloneAmendmentText($adoptAmend, true);
         } elseif ($createFromAmendment > 0 && $motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
             $adoptAmend = $this->consultation->getAmendment($createFromAmendment);
             if ($adoptAmend->motionId === $motion->id) {
-                $form->cloneAmendmentText($adoptAmend);
+                $form->cloneAmendmentText($adoptAmend, false);
                 $form->toAnotherAmendment = $adoptAmend->id;
             }
         }
