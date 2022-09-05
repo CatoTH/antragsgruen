@@ -8,14 +8,10 @@ use app\models\exceptions\Internal;
 
 class DeadlineForm
 {
-    /** @var array */
-    public $deadlinesMotions;
-    /** @var array */
-    public $deadlinesAmendments;
-    /** @var array */
-    public $deadlinesComments;
-    /** @var array */
-    public $deadlinesMerging;
+    public array $deadlinesMotions;
+    public array $deadlinesAmendments;
+    public array $deadlinesComments;
+    public array $deadlinesMerging;
 
     public static function createFromMotionType(ConsultationMotionType $motionType): DeadlineForm
     {
@@ -27,10 +23,7 @@ class DeadlineForm
         return $form;
     }
 
-    /**
-     * @param array $input
-     */
-    public static function createFromInput($input): DeadlineForm
+    public static function createFromInput(array $input): DeadlineForm
     {
         $form = new DeadlineForm();
 
@@ -42,10 +35,7 @@ class DeadlineForm
         return $form;
     }
 
-    /**
-     * @param array $input
-     */
-    public function createFromInputSimple($input)
+    public function createFromInputSimple(array $input)
     {
         try {
             $motionsEnd    = Tools::dateBootstraptime2sql($input['motionsSimple']);
@@ -61,10 +51,7 @@ class DeadlineForm
         $this->deadlinesAmendments = [['start' => null, 'end' => $amendmentsEnd, 'title' => null]];
     }
 
-    /**
-     * @param array $rows
-     */
-    private function parseComplexRows($rows): array
+    private function parseComplexRows(array $rows): array
     {
         $deadlines = [];
         for ($i = 0; $i < count($rows['start']); $i++) {
@@ -86,10 +73,7 @@ class DeadlineForm
         return $deadlines;
     }
 
-    /**
-     * @param array $input
-     */
-    public function createFromInputComplex($input): void
+    public function createFromInputComplex(array $input): void
     {
         $this->deadlinesMotions    = [];
         $this->deadlinesAmendments = [];
@@ -128,10 +112,7 @@ class DeadlineForm
         return ($simpleMotion && $simpleAmendment);
     }
 
-    /**
-     * @return null|string
-     */
-    public function getSimpleMotionsDeadline()
+    public function getSimpleMotionsDeadline(): ?string
     {
         if (count($this->deadlinesMotions) === 0) {
             return null;
@@ -139,10 +120,7 @@ class DeadlineForm
         return $this->deadlinesMotions[0]['end'];
     }
 
-    /**
-     * @return null|string
-     */
-    public function getSimpleAmendmentsDeadline()
+    public function getSimpleAmendmentsDeadline(): ?string
     {
         if (count($this->deadlinesAmendments) === 0) {
             return null;

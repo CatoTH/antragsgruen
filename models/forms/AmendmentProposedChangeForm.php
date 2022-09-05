@@ -8,26 +8,19 @@ use app\models\sectionTypes\ISectionType;
 
 class AmendmentProposedChangeForm
 {
-    /** @var Amendment */
-    protected $amendment;
+    protected Amendment $amendment;
 
     /** @var AmendmentSection[] */
-    protected $proposalSections;
+    protected array $proposalSections;
 
 
-    /**
-     * AmendmentProposedChangeForm constructor.
-     * @param Amendment $amendment
-     */
     public function __construct(Amendment $amendment)
     {
         $this->amendment = $amendment;
         $this->initProposal();
     }
 
-    /**
-     */
-    protected function initProposal()
+    protected function initProposal(): void
     {
         if ($this->amendment->getMyProposalReference()) {
             if ($this->amendment->getMyProposalReference()->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
@@ -48,17 +41,15 @@ class AmendmentProposedChangeForm
     /**
      * @return AmendmentSection[]
      */
-    public function getProposalSections()
+    public function getProposalSections(): array
     {
         return $this->proposalSections;
     }
 
     /**
-     * @param array $postParams
-     * @param array $files
      * @throws \app\models\exceptions\FormError
      */
-    private function setSectionData($postParams, $files)
+    private function setSectionData(array $postParams, array $files): void
     {
         foreach ($this->proposalSections as $section) {
             if (isset($postParams['sections'][$section->getSettings()->id])) {
@@ -83,10 +74,7 @@ class AmendmentProposedChangeForm
         }
     }
 
-    /**
-     * @return Amendment
-     */
-    private function getProposalAmendmentObject()
+    private function getProposalAmendmentObject(): Amendment
     {
         $reference = $this->amendment->getMyProposalReference();
         if ($reference) {
@@ -94,23 +82,21 @@ class AmendmentProposedChangeForm
                 return $reference;
             }
         }
-        $reference                    = new Amendment();
-        $reference->status            = Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT;
-        $reference->motionId          = $this->amendment->motionId;
-        $reference->dateCreation      = date('Y-m-d H:i:s');
-        $reference->changeEditorial   = '';
-        $reference->changeText        = '';
+        $reference = new Amendment();
+        $reference->status = Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT;
+        $reference->motionId = $this->amendment->motionId;
+        $reference->dateCreation = date('Y-m-d H:i:s');
+        $reference->changeEditorial = '';
+        $reference->changeText = '';
         $reference->changeExplanation = '';
-        $reference->cache             = '';
-        $reference->statusString      = '';
+        $reference->cache = '';
+        $reference->statusString = '';
+        $reference->dateContentModification = date('Y-m-d H:i:s');
+
         return $reference;
     }
 
-    /**
-     * @param array $postParams
-     * @param array $files
-     */
-    public function save($postParams, $files)
+    public function save(array $postParams, array $files): void
     {
         $this->setSectionData($postParams, $files);
         $propAmend = $this->getProposalAmendmentObject();

@@ -65,7 +65,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     public const AMEND_PARAGRAPHS_SINGLE_PARAGRAPH = 0;
     public const AMEND_PARAGRAPHS_SINGLE_CHANGE = -1;
 
-    protected $deadlinesObject = null;
+    protected ?array $deadlinesObject = null;
 
     public static function tableName(): string
     {
@@ -342,8 +342,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         ];
     }
 
-    /** @var null|MotionType */
-    private $settingsObject = null;
+    private ?MotionType $settingsObject = null;
 
     public function getSettingsObj(): MotionType
     {

@@ -10,41 +10,22 @@ use yii\base\Model;
 
 class MergeSingleAmendmentForm extends Model
 {
-    /** @var Motion */
-    public $oldMotion;
-    /** @var null|Motion */
-    public $newMotion = null;
+    public Motion $oldMotion;
+    public ?Motion $newMotion = null;
+    public string $newTitlePrefix;
+    public Amendment $mergeAmendment;
+    public int $mergeAmendStatus;
+    public array $otherAmendStatuses;
+    public array $otherAmendOverrides;
+    public array $paragraphs;
 
-    /** @var string */
-    public $newTitlePrefix;
-
-    /** @var Amendment */
-    public $mergeAmendment;
-
-    /** @var int */
-    public $mergeAmendStatus;
-
-    /** @var array */
-    public $otherAmendStatuses;
-    /** @var array */
-    public $otherAmendOverrides;
-    /** @var array */
-    public $paragraphs;
-
-    /**
-     * @param int $newStatus
-     * @param string $newTitlePrefix
-     * @param array $paragraphs
-     * @param array $otherAmendOverrides
-     * @param array $otherAmendStatuses
-     */
     public function __construct(
         Amendment $amendment,
-        $newTitlePrefix,
-        $newStatus,
-        $paragraphs,
-        $otherAmendOverrides,
-        $otherAmendStatuses
+        string $newTitlePrefix,
+        int $newStatus,
+        array $paragraphs,
+        array $otherAmendOverrides,
+        array $otherAmendStatuses
     )
     {
         parent::__construct();
