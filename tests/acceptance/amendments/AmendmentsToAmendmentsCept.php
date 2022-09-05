@@ -21,8 +21,10 @@ $I->click('#sidebar .amendmentCreate');
 $I->wait(0.3);
 $I->see('A small replacement', '#sections_2_wysiwyg .ice-ins');
 $I->see('At vero', '#sections_2_wysiwyg .ice-del');
+$I->dontSee('The first amendment');
 
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData().replace(/Stet clita kasd gubergren/, "Test 12345678"))');
+$I->executeJs('CKEDITOR.instances.amendmentReason_wysiwyg.setData("The follow-up amendment");');
 $I->fillField('#initiatorPrimaryName', 'A new person');
 $I->fillField('#initiatorEmail', 'test@example.org');
 
@@ -37,3 +39,4 @@ $I->click('.amendments .amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->see('Ä1', '.amendingAmendmentRow');
 $I->see('Test 12345678', 'ins');
 $I->see('A small replacement', 'ins');
+$I->see('The follow-up amendment');
