@@ -50,7 +50,8 @@ return [
     'create_select_statutes'       => 'There is more than one section to amend. Please choose which one you want to change.',
     'create_explanation'           => 'Please amend the motion as you like. Explain in the  &quot;Reason&quot; section below.<br>' . "\n" .
                                       'Please note, you can give an &quot;Editorial hint&quot;.',
-    'create_explanation_statutes'  => 'Please amend the statutes as you like. Explain in the  &quot;Reason&quot; section below.',
+    'create_explanation_statutes'  => 'Please amend the statutes as you like. Explain in the &quot;Reason&quot; section below.',
+    'create_explanation_amendtoamend' => 'Please amend the amendment as you like. Explain in the &quot;Reason&quot; section below. The changes will be published as a new amendment.',
     'editorial_hint'               => 'Editorial hint',
     'global_alternative'           => 'Global alternative',
     'merge_init_title'             => 'Refactor "%NAME%"',

@@ -137,6 +137,7 @@ class MessageSource extends \yii\i18n\MessageSource
             'amend' => [
                 'create_explanation',
                 'create_explanation_statutes',
+                'create_explanation_amendtoamend',
                 'support_collection_hint',
                 'support_collection_reached_hint',
                 'support_collect_explanation',
