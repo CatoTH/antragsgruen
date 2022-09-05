@@ -15,24 +15,16 @@ class LoginUsernamePasswordForm extends Model
 {
     const PASSWORD_MIN_LEN = 4;
 
-    /** @var string */
-    public $username;
-    /** @var string */
-    public $password;
-    /** @var string */
-    public $passwordConfirm;
-    /** @var string */
-    public $name;
-    /** @var string */
-    public $captcha;
-    /** @var string */
-    public $error;
+    public ?string $username = null;
+    public ?string $password = null;
+    public ?string $passwordConfirm = null;
+    public ?string $name = null;
+    public ?string $captcha = null;
+    public ?string $error = null;
 
-    /** @var bool */
-    public $createAccount = false;
+    public bool $createAccount = false;
 
-    /** @var ExternalPasswordAuthenticatorInterface|null */
-    private $externalAuthenticator;
+    private ?ExternalPasswordAuthenticatorInterface $externalAuthenticator;
 
     public function __construct(?ExternalPasswordAuthenticatorInterface $externalAuthenticator)
     {
@@ -40,10 +32,7 @@ class LoginUsernamePasswordForm extends Model
         $this->externalAuthenticator = $externalAuthenticator;
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['username', 'password'], 'required'],

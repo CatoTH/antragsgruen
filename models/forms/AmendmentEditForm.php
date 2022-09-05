@@ -10,36 +10,19 @@ use yii\base\Model;
 
 class AmendmentEditForm extends Model
 {
-    /** @var Motion */
-    public $motion;
-
-    /** @var ConsultationAgendaItem|null */
-    public $agendaItem;
+    public Motion $motion;
+    public ?ConsultationAgendaItem $agendaItem;
 
     /** @var AmendmentSupporter[] */
-    public $supporters = [];
-
-    /** @var array */
-    public $tags = [];
-
-    /** @var AmendmentSection[] */
-    public $sections = [];
-
-    /** @var null|int */
-    public $amendmentId = null;
-
-    /** @var string */
-    public $reason = '';
-
-    /** @var string */
-    public $editorial = '';
-
-    /** @var null|int */
-    public $toAnotherAmendment = null;
-
-    public $globalAlternative = false;
-
-    private $adminMode = false;
+    public array $supporters = [];
+    public array $tags = [];
+    public array $sections = [];
+    public ?int $amendmentId = null;
+    public string $reason = '';
+    public string $editorial = '';
+    public ?int $toAnotherAmendment = null;
+    public bool $globalAlternative = false;
+    private bool $adminMode = false;
 
     public function __construct(Motion $motion, ?ConsultationAgendaItem $agendaItem, ?Amendment $amendment)
     {
@@ -71,7 +54,7 @@ class AmendmentEditForm extends Model
             }
         }
         $this->sections = [];
-        foreach ($motion->motionType->motionSections as $sectionType) {
+        foreach ($motion->getMyMotionType()->motionSections as $sectionType) {
             if (!$sectionType->hasAmendments) {
                 continue;
             }
@@ -104,7 +87,7 @@ class AmendmentEditForm extends Model
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['type'], 'required'],
