@@ -291,6 +291,10 @@ class AmendmentController extends AdminBase
             $amendment->globalAlternative = (isset($amdat['globalAlternative']) ? 1 : 0);
             $amendment->dateResolution    = null;
             $amendment->notCommentable = (isset($amdat['notCommentable']) ? 1 : 0);
+            $amendment->setExtraDataKey(
+                Amendment::EXTRA_DATA_VIEW_MODE_FULL,
+                (isset($amdat['viewMode']) && $amdat['viewMode'] === '1')
+            );
             if ($amdat['dateResolution'] !== '') {
                 $amendment->dateResolution = Tools::dateBootstraptime2sql($amdat['dateResolution']);
             }
