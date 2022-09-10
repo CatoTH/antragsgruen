@@ -238,6 +238,23 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
+    <div class="form-group">
+        <div class="col-md-3 control-label defaultViewMode">
+            <?= Yii::t('admin', 'amend_default_view_mode') ?>:
+        </div>
+        <div class="col-md-9">
+            <label class="onlyChanges">
+                <input type="radio" name="amendment[viewMode]" value="0" id="defaultViewModeChanges"
+                    <?= ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) ? '' : 'checked') ?>>
+                <?= Yii::t('amend', 'textmode_only_changed') ?>
+            </label><br>
+            <label class="fullText">
+                <input type="radio" name="amendment[viewMode]" value="1" id="defaultViewModeFull"
+                    <?= ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) ? 'checked' : '') ?>>
+                <?= Yii::t('amend', 'textmode_full_text') ?>
+            </label>
+        </div>
+    </div>
 
 <?php
 foreach (AntragsgruenApp::getActivePlugins() as $plugin) {

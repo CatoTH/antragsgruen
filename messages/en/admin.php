@@ -410,6 +410,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'amend_edit_text_title'       => 'Edit text',
     'amend_edit_text'             => 'Edit',
     'amend_globalalt'             => 'Global alternative',
+    'amend_default_view_mode'     => 'Default view mode',
     'no_access'                   => 'No access to this consultation',
     'amend_pdf_list'              => 'Amendment PDFs',
     'motion_type_names'           => 'Names',

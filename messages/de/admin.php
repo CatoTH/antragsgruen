@@ -411,6 +411,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'amend_edit_text_title'      => 'Text bearbeiten',
     'amend_edit_text'            => 'Bearbeiten',
     'amend_globalalt'            => 'Globalalternative',
+    'amend_default_view_mode'    => 'Standard-Anzeige',
     'amend_deleted'              => 'Der Änderungsantrag wurde gelöscht.',
     'amend_screened'             => 'Der Änderungsantrag wurde freigeschaltet.',
     'amend_prefix_collision'     => 'Das angegebene Antragskürzel wird bereits von einem anderen Änderungsantrag verwendet.',
