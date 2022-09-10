@@ -59,6 +59,8 @@ class Amendment extends IMotion implements IRSSItem
 
     public const PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE = ['status', 'titlePrefix'];
 
+    public const EXTRA_DATA_VIEW_MODE_FULL = 'view_mode_full'; // Boolean value
+
     public function init()
     {
         parent::init();

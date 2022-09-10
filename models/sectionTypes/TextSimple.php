@@ -5,7 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
 use app\components\{HashedStaticCache, HTMLTools, LineSplitter, UrlHelper};
 use app\components\latex\{Content, Exporter};
-use app\models\db\{AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection};
+use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
@@ -14,8 +14,7 @@ use CatoTH\HTML2OpenDocument\Text as ODTText;
 
 class TextSimple extends Text
 {
-    /** @var bool */
-    private $forceMultipleParagraphs = false;
+    private bool $forceMultipleParagraphs = false;
 
     public function forceMultipleParagraphMode(bool $active): void
     {
@@ -30,7 +29,7 @@ class TextSimple extends Text
     public function getAmendmentFormField(): string
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
-        $fixedWidth                           = !!$this->section->getSettings()->fixedWidth;
+        $fixedWidth = !!$this->section->getSettings()->fixedWidth;
 
         $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
         if ($this->forceMultipleParagraphs) {
@@ -322,6 +321,7 @@ class TextSimple extends Text
             return '';
         }
 
+        $viewFullMode = ($section->getAmendment()->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true);
         if ($sectionTitlePrefix) {
             $sectionTitlePrefix .= ': ';
         }
@@ -334,8 +334,8 @@ class TextSimple extends Text
             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-right">
-          <li class="selected"><a href="#" class="showOnlyChanges">' . \Yii::t('amend', 'textmode_only_changed') . '</a></li>
-          <li><a href="#" class="showFullText">' . \Yii::t('amend', 'textmode_full_text') . '</a></li>
+          <li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' . \Yii::t('amend', 'textmode_only_changed') . '</a></li>
+          <li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' . \Yii::t('amend', 'textmode_full_text') . '</a></li>
           </ul>';
         $str .= '</h3>';
         $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
@@ -350,7 +350,7 @@ class TextSimple extends Text
         } else {
             $linkMotion = null;
         }
-        $str .= '<div class="onlyChangedText">';
+        $str .= '<div class="onlyChangedText' . ($viewFullMode ? ' hidden' : '') . '">';
         $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine, $linkMotion);
         $str .= '</div>';
 
@@ -358,7 +358,7 @@ class TextSimple extends Text
         if ($section->getSettings()->fixedWidth) {
             $str .= 'fixedWidthFont ';
         }
-        $str .= 'hidden">';
+        $str .= ($viewFullMode ? '' : ' hidden') . '">';
         $diffSections = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
         $lineNo = $firstLine;
         foreach ($diffSections as $diffSection) {
@@ -438,9 +438,7 @@ class TextSimple extends Text
     }
 
     /**
-     * @param CommentForm|null $commentForm
      * @param int[] $openedComments
-     * @return string
      */
     public function showMotionView(?CommentForm  $commentForm, array $openedComments): string
     {

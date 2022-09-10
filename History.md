@@ -5,6 +5,7 @@
 - WARNING: if you are using a PHP 7.3 or older, then update to PHP 8.0 or newer first before installing this update!
 - A separate document page can be enabled, allowing to upload multiple files in folders. The documents are visible to all users and can be downloaded individually or all in one as a ZIP.
 - For individual motion types, "amendments based on amendments" can be enabled. They allow users to propose alternative versions of an amendment. This is mainly targetet to statute amendments.
+- Single amendments can now be set to show the full motion text including changes by default, instead of only showing the changed parts of the motion.
 - Speaking lists were improved in a few ways:
   - The speaking list administration is now directly linked from the admin page.
   - It is now possible to remove and reorder speakers.
