@@ -15,6 +15,23 @@ trait JsonConfigTrait
     }
 
     /**
+     * @param \ReflectionClass<self> $reflectionClass
+     */
+    private function propertyIsInt(\ReflectionClass $reflectionClass, string $key): bool
+    {
+        $propertyType = $reflectionClass->getProperty($key)->getType();
+        if (is_a($propertyType, \ReflectionNamedType::class)) {
+            $typeName = $propertyType->getName();
+        } else {
+            // Use the deprecated method in PHP <= 7.4
+            /** @var \ReflectionType $propertyType */
+            $typeName = trim($propertyType->__toString(), '?');
+        }
+
+        return $typeName === 'int';
+    }
+
+    /**
      * @param null|string|array $data
      * @throws ConfigurationError
      */
@@ -35,9 +52,19 @@ trait JsonConfigTrait
             throw new ConfigurationError('Invalid JSON string: ' . $data);
         }
 
+        $reflect = new \ReflectionClass(static::class);
         foreach ($dataArr as $key => $val) {
             if (property_exists($this, $key)) {
-                $this->$key = $val;
+                if (is_string($val) && $this->propertyIsInt($reflect, $key)) {
+                    // Some database entries have stored integers as string, so let's try to typecast them
+                    if ($val === '' && $reflect->getProperty($key)->getType()->allowsNull()) {
+                        $this->$key = null;
+                    } else {
+                        $this->$key = $val;
+                    }
+                } else {
+                    $this->$key = $val;
+                }
             }
         }
     }

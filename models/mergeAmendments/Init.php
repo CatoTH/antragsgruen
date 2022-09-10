@@ -12,14 +12,13 @@ class Init
     const TEXT_VERSION_ORIGINAL = 'orig';
     const TEXT_VERSION_PROPOSAL = 'prop';
 
-    /** @var Motion */
-    public $motion;
+    public Motion $motion;
+    public ?Draft $draftData = null;
 
-    private $toMergeMainIds;
-    private $toMergeResolvedIds;
-
-    /** @var Draft */
-    public $draftData;
+    /** @var int[] */
+    private array $toMergeMainIds;
+    /** @var int[] */
+    private array $toMergeResolvedIds;
 
     public static function fromInitForm(Motion $motion, array $postAmendIds, array $textVersions): Init
     {
@@ -206,7 +205,7 @@ class Init
     /**
      * @param Amendment[] $amendmentsById
      */
-    public function getParagraphText(MotionSection $section, int $paragraphNo, $amendmentsById): string
+    public function getParagraphText(MotionSection $section, int $paragraphNo, array $amendmentsById): string
     {
         if ($this->draftData) {
             return $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo]->text;

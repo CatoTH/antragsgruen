@@ -7,34 +7,29 @@ use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable
 {
-    /** @var Motion */
-    public $origMotion;
-    /** @var Motion */
-    public $draftMotion;
+    public Motion $origMotion;
+    public ?Motion $draftMotion;
 
-    /** @var boolean */
-    public $public;
-
-    /** @var \DateTime|null */
-    public $time;
+    public bool $public = false;
+    public ?\DateTime $time = null;
 
     /** @var int[] */
-    public $amendmentStatuses;
+    public array $amendmentStatuses;
 
     /** @var string[] */
-    public $amendmentVersions;
+    public array $amendmentVersions;
 
     /** @var VotingData[] */
-    public $amendmentVotingData;
+    public array $amendmentVotingData;
 
     /** @var DraftParagraph[] */
-    public $paragraphs;
+    public array $paragraphs;
 
     /** @var string[] */
-    public $sections;
+    public array $sections;
 
     /** @var int[] */
-    public $removedSections;
+    public array $removedSections;
 
     public function jsonSerialize(): array
     {
@@ -49,7 +44,7 @@ class Draft implements \JsonSerializable
     }
 
 
-    private function init($origMotion)
+    private function init(Motion $origMotion): void
     {
         $this->origMotion  = $origMotion;
         $draftStatuses     = [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE];
