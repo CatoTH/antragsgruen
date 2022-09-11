@@ -91,9 +91,7 @@ export class UserAdminCreate {
                 if (welcomeEmailHolder) {
                     welcomeEmailHolder.classList.add('hidden');
                 }
-            }
 
-            if (typeSelect.value === 'gruenesnetz') {
                 inputEmail.classList.add('hidden');
                 inputUsername.classList.remove('hidden');
                 inputEmail.required = false;
@@ -112,8 +110,7 @@ export class UserAdminCreate {
             }
             if (typeSelect.value === 'email') {
                 postData.username = inputEmail.value;
-            }
-            if (typeSelect.value === 'gruenesnetz') {
+            } else {
                 postData.username = inputUsername.value;
             }
 

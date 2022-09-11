@@ -12,6 +12,7 @@ class Site implements \JsonSerializable
     public bool $showBreadcrumbs = true;
     public bool $apiEnabled = false;
 
+    // Hint: values can be either strings or integers. Don't compare with strong typing until all has been migrated to strings!
     public array $loginMethods = [
         self::LOGIN_STD,
         self::LOGIN_GRUENES_NETZ,

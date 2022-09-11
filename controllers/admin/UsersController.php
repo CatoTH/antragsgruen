@@ -3,7 +3,6 @@
 namespace app\controllers\admin;
 
 use app\components\{mail\Tools as MailTools, UrlHelper, UserGroupAdminMethods};
-use app\models\exceptions\FormError;
 use app\models\db\{Consultation, ConsultationUserGroup, EMailLog, User};
 use app\models\exceptions\UserEditFailed;
 use app\models\settings\AntragsgruenApp;
@@ -53,25 +52,11 @@ class UsersController extends AdminBase
         ];
     }
 
-    private function getUserForCreating(?string $type, ?string $username): ?User
-    {
-        if (!$type || !$username) {
-            throw new FormError('type and email has to be provided');
-        }
-        if ($type === 'gruenesnetz') {
-            $type = \app\models\settings\Site::LOGIN_GRUENES_NETZ;
-        } else {
-            $type = \app\models\settings\Site::LOGIN_STD;
-        }
-
-        return User::findByAuthTypeAndName($type, $username);
-    }
-
     public function actionAddSingleInit(): string
     {
         $this->getConsultationAndCheckAdminPermission();
 
-        $user = $this->getUserForCreating($this->getPostValue('type'), $this->getPostValue('username'));
+        $user = User::findByAuthTypeAndName($this->getPostValue('type'), $this->getPostValue('username'));
         if ($user) {
             $thisConRoles = $user->getConsultationUserGroupIds($this->consultation);
             $response = ['exists' => true, 'already_member' => (count($thisConRoles) > 0)];
@@ -86,7 +71,7 @@ class UsersController extends AdminBase
     {
         $this->getConsultationAndCheckAdminPermission();
 
-        $user = $this->getUserForCreating($this->getPostValue('authType'), $this->getPostValue('authUsername'));
+        $user = User::findByAuthTypeAndName($this->getPostValue('authType'), $this->getPostValue('authUsername'));
         if ($user) {
             $thisConRoles = $user->getConsultationUserGroupIds($this->consultation);
             if (count($thisConRoles) > 0) {

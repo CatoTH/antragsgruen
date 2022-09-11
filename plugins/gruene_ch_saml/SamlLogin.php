@@ -2,18 +2,17 @@
 
 namespace app\plugins\gruene_ch_saml;
 
-use app\components\LoginProviderInterface;
-use app\components\RequestContext;
+use app\components\{LoginProviderInterface, RequestContext};
 use app\models\db\User;
 use app\models\settings\AntragsgruenApp;
 use SimpleSAML\Auth\Simple;
 
 class SamlLogin implements LoginProviderInterface
 {
-    const PARAM_EMAIL = 'email';
-    const PARAM_USERNAME = 'username';
-    const PARAM_GIVEN_NAME = 'first_name';
-    const PARAM_FAMILY_NAME = 'last_name';
+    private const PARAM_EMAIL = 'email';
+    private const PARAM_USERNAME = 'username';
+    private const PARAM_GIVEN_NAME = 'first_name';
+    private const PARAM_FAMILY_NAME = 'last_name';
 
     public function getId(): string
     {
@@ -25,8 +24,11 @@ class SamlLogin implements LoginProviderInterface
         return 'Grüne / Les Vert-E-S';
     }
 
-    public function renderLoginForm(string $backUrl): string
+    public function renderLoginForm(string $backUrl, bool $active): string
     {
+        if (!$active) {
+            return '';
+        }
         return \Yii::$app->controller->renderPartial('@app/plugins/gruene_ch_saml/views/login', [
             'backUrl' => $backUrl
         ]);
@@ -37,10 +39,10 @@ class SamlLogin implements LoginProviderInterface
      */
     private function getOrCreateUser(array $params): User
     {
-        $email = $params[static::PARAM_EMAIL][0];
-        $givenname = (isset($params[static::PARAM_GIVEN_NAME]) ? $params[static::PARAM_GIVEN_NAME][0] : '');
-        $familyname = (isset($params[static::PARAM_FAMILY_NAME]) ? $params[static::PARAM_FAMILY_NAME][0] : '');
-        $username = $params[static::PARAM_USERNAME][0];
+        $email = $params[self::PARAM_EMAIL][0];
+        $givenname = (isset($params[self::PARAM_GIVEN_NAME]) ? $params[self::PARAM_GIVEN_NAME][0] : '');
+        $familyname = (isset($params[self::PARAM_FAMILY_NAME]) ? $params[self::PARAM_FAMILY_NAME][0] : '');
+        $username = $params[self::PARAM_USERNAME][0];
         $auth = Module::AUTH_KEY_USERS . ':' . $username;
 
         /** @var User|null $user */
@@ -94,16 +96,29 @@ class SamlLogin implements LoginProviderInterface
         return $authParts[0] === Module::AUTH_KEY_USERS;
     }
 
-    public function logoutCurrentUserIfRelevant(): void
+    public function usernameToAuth(string $username): string
+    {
+        return Module::AUTH_KEY_USERS . ':' . $username;
+    }
+
+
+    public function logoutCurrentUserIfRelevant(string $backUrl): ?string
     {
         $user = User::getCurrentUser();
         if (!$this->userWasLoggedInWithProvider($user)) {
-            return;
+            return null;
         }
 
         $samlClient = new Simple('gruene-ch');
         if ($samlClient->isAuthenticated()) {
             $samlClient->logout();
         }
+
+        return $backUrl;
+    }
+
+    public function renderAddMultipleUsersForm(): ?string
+    {
+        return null;
     }
 }

@@ -216,24 +216,6 @@ class UrlHelper
         }
     }
 
-    public static function createGruenesNetzLoginUrl(string $route): string
-    {
-        /** @var AntragsgruenApp $params */
-        $params = Yii::$app->params;
-
-        $target_url = Url::toRoute($route);
-
-        if (Yii::$app->user->isGuest) {
-            if ($params->isSamlActive()) {
-                return Url::toRoute(['/user/loginsaml', 'backUrl' => $target_url]);
-            } else {
-                return '';
-            }
-        } else {
-            return $target_url;
-        }
-    }
-
     public static function createMotionUrl(Motion $motion, string $mode = 'view', array $addParams = []): string
     {
         $params = array_merge(['/motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);

@@ -103,18 +103,23 @@ class User extends ActiveRecord implements IdentityInterface
         return $user->id === $currentUser->id;
     }
 
-    public static function findByAuthTypeAndName(int $authType, ?string $authName): ?User {
+    public static function findByAuthTypeAndName(?string $authType, ?string $authName): ?User {
         if ($authName === null) {
             return null;
         }
-        switch ($authType) {
-            case \app\models\settings\Site::LOGIN_STD:
-                return User::findOne(['auth' => 'email:' . $authName]);
-            case \app\models\settings\Site::LOGIN_GRUENES_NETZ:
-                return User::findOne(['auth' => static::gruenesNetzId2Auth($authName)]);
-            default:
-                return null;
+        if ($authType === 'email') {
+            return User::findOne(['auth' => 'email:' . $authName]);
         }
+
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($loginProvider = $plugin::getDedicatedLoginProvider()) {
+                if ($authType === $loginProvider->getId()) {
+                    return User::findOne(['auth' => $loginProvider->usernameToAuth($authName)]);
+                }
+            }
+        }
+
+        return null;
     }
 
     public static function havePrivilege(?Consultation $consultation, int $privilege): bool
@@ -426,11 +431,6 @@ class User extends ActiveRecord implements IdentityInterface
             return true;
         }
         return false;
-    }
-
-    public static function gruenesNetzId2Auth(string $username): string
-    {
-        return 'openid:https://service.gruene.de/openid/' . $username;
     }
 
     public function isEmailAuthUser(): bool

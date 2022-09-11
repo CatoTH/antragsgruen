@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\plugins\gruene_de_saml\SamlClient;
 use app\components\{Captcha, ConsultationAccessPassword, RequestContext, Tools, UrlHelper};
 use app\models\db\{AmendmentSupporter,
     EMailBlocklist,
@@ -15,7 +14,6 @@ use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
-use Yii;
 use yii\helpers\Html;
 use yii\web\Response;
 
@@ -49,33 +47,6 @@ class UserController extends Base
         }
     }
 
-    public function actionLoginsaml(string $backUrl = ''): string
-    {
-        if (!AntragsgruenApp::getInstance()->isSamlActive()) {
-            return 'SAML is not supported';
-        }
-
-        if ($backUrl === '') {
-            $backUrl = Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
-        }
-
-        try {
-            $samlClient = new SamlClient();
-            $samlClient->requireAuth();
-
-            $this->loginUser($samlClient->getOrCreateUser());
-
-            $this->redirect($backUrl);
-        } catch (\Exception $e) {
-            $this->showErrorpage(
-                500,
-                Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
-            );
-        }
-
-        return '';
-    }
-
     /**
      * @param string $backUrl
      * @return string
@@ -92,16 +63,16 @@ class UserController extends Base
         $usernamePasswordForm = new LoginUsernamePasswordForm(User::getExternalAuthenticator());
 
         $conPwdConsultation = $this->consultation;
-        if (Yii::$app->request->get('passConId')) {
+        if ($this->getHttpRequest()->get('passConId')) {
             foreach ($this->site->consultations as $consultation) {
-                if ($consultation->urlPath === Yii::$app->request->get('passConId')) {
+                if ($consultation->urlPath === $this->getHttpRequest()->get('passConId')) {
                     $conPwdConsultation = $consultation;
                 }
             }
         }
 
         if ($this->isPostSet('loginusernamepassword')) {
-            $usernamePasswordForm->setAttributes(Yii::$app->request->post());
+            $usernamePasswordForm->setAttributes($this->getHttpRequest()->post());
             try {
                 $user = $usernamePasswordForm->getOrCreateUser($this->site);
                 $this->loginUser($user);
@@ -114,7 +85,7 @@ class UserController extends Base
                         'email'   => $user->email,
                     ]);
                 } else {
-                    $this->getHttpSession()->setFlash('success', Yii::t('user', 'welcome'));
+                    $this->getHttpSession()->setFlash('success', \Yii::t('user', 'welcome'));
                 }
 
                 /* 307 breaks user/NoEmailConfirmationCept
@@ -122,7 +93,7 @@ class UserController extends Base
                 Yii::$app->end(307);
                 */
                 $this->redirect($backUrl);
-                Yii::$app->end(302);
+                \Yii::$app->end(302);
             } catch (Login $e) {
                 $usernamePasswordForm->error = $e->getMessage();
             }
@@ -131,10 +102,10 @@ class UserController extends Base
         $conPwdErr = null;
         if ($this->isPostSet('loginconpwd') && $conPwdConsultation) {
             $conPwd = new ConsultationAccessPassword($conPwdConsultation);
-            if ($conPwd->checkPassword(Yii::$app->request->post('password'))) {
+            if ($conPwd->checkPassword($this->getHttpRequest()->post('password'))) {
                 $conPwd->setCorrectCookie();
                 $this->redirect($backUrl);
-                Yii::$app->end(302);
+                \Yii::$app->end(302);
             } else {
                 $conPwdErr = 'Invalid password';
             }
@@ -169,9 +140,9 @@ class UserController extends Base
             /** @var User|null $user */
             $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             if (!$user) {
-                $msgError = Yii::t('user', 'err_email_acc_notfound');
+                $msgError = \Yii::t('user', 'err_email_acc_notfound');
             } elseif ($user->emailConfirmed === 1) {
-                $msgError = Yii::t('user', 'err_email_acc_confirmed');
+                $msgError = \Yii::t('user', 'err_email_acc_confirmed');
             } elseif ($user->checkEmailConfirmationCode(trim($this->getRequestValue('code')))) {
                 $user->emailConfirmed = 1;
                 $user->status         = User::STATUS_CONFIRMED;
@@ -189,7 +160,7 @@ class UserController extends Base
                     return $this->render('registration_confirmed', ['needsAdminScreening' => $needsAdminScreening]);
                 }
             } else {
-                $msgError = Yii::t('user', 'err_code_wrong');
+                $msgError = \Yii::t('user', 'err_code_wrong');
             }
         }
 
@@ -203,66 +174,32 @@ class UserController extends Base
         );
     }
 
-    private function logoutSaml(string $backUrl = ''): string
-    {
-        try {
-            $backSubdomain = UrlHelper::getSubdomain($backUrl);
-            $currDomain    = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'];
-            $currSubdomain = UrlHelper::getSubdomain($currDomain);
-
-            if ($currSubdomain) {
-                // First step on the subdomain: logout and redirect to the main domain
-                RequestContext::getUser()->logout();
-                $backParts = parse_url($backUrl);
-                if (!isset($backParts['host'])) {
-                    $backUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
-                }
-                $this->redirect(AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
-            } elseif ($backSubdomain) {
-                // Second step: we are on the main domain. Logout and redirect to the subdomain
-                $samlClient = new SamlClient();
-                $samlClient->logout();
-                $this->redirect($backUrl);
-            } else {
-                // No subdomain is involved, local logout on the main domain
-                $samlClient = new SamlClient();
-                $samlClient->logout();
-                $this->redirect($backUrl);
-            }
-        } catch (\Exception $e) {
-            $this->showErrorpage(
-                500,
-                Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
-            );
-        }
-        return '';
-    }
-
-
     public function actionLogout(string $backUrl = ''): string
     {
         if ($backUrl === '') {
-            $backUrl = Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
+            $backUrl = $this->getHttpRequest()->post('backUrl', UrlHelper::homeUrl());
         }
 
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $loginProvider = $plugin::getDedicatedLoginProvider();
-            if ($loginProvider && $loginProvider->userWasLoggedInWithProvider(User::getCurrentUser())) {
-                $loginProvider->logoutCurrentUserIfRelevant();
-
-                RequestContext::getUser()->logout();
-                $this->redirect($backUrl, 307);
-                return '';
+            if ($loginProvider = $plugin::getDedicatedLoginProvider()) {
+                try {
+                    $backUrl = $loginProvider->logoutCurrentUserIfRelevant($backUrl);
+                    if ($backUrl) {
+                        $this->redirect($backUrl, 307);
+                        return '';
+                    }
+                } catch (\Exception $e) {
+                    $this->showErrorpage(
+                        500,
+                        \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
+                    );
+                }
             }
         }
 
-        if (AntragsgruenApp::getInstance()->isSamlActive()) {
-            return $this->logoutSaml($backUrl);
-        } else {
-            RequestContext::getUser()->logout();
-            $this->redirect($backUrl, 307);
-            return '';
-        }
+        RequestContext::getUser()->logout();
+        $this->redirect($backUrl, 307);
+        return '';
     }
 
     public function actionRecovery(string $email = '', string $code = ''): string
@@ -273,18 +210,18 @@ class UserController extends Base
             $user = User::findOne(['auth' => 'email:' . $email]);
 
             if (Captcha::needsCaptcha($email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
-                $msg = Yii::t('user', 'login_err_captcha');
+                $msg = \Yii::t('user', 'login_err_captcha');
                 $this->getHttpSession()->setFlash('error', $msg);
             } elseif (!$user) {
-                $msg = str_replace('%USER%', $email, Yii::t('user', 'err_user_notfound'));
+                $msg = str_replace('%USER%', $email, \Yii::t('user', 'err_user_notfound'));
                 $this->getHttpSession()->setFlash('error', $msg);
             } else {
                 try {
                     $user->sendRecoveryMail();
-                    $msg = Yii::t('user', 'pwd_recovery_sent');
+                    $msg = \Yii::t('user', 'pwd_recovery_sent');
                     $this->getHttpSession()->setFlash('success', $msg);
                 } catch (MailNotSent | ServerConfiguration | FormError $e) {
-                    $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                    $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                     $this->getHttpSession()->setFlash('error', $errMsg);
                 }
             }
@@ -297,13 +234,13 @@ class UserController extends Base
             $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
             if (Captcha::needsCaptcha($email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
-                $msg = Yii::t('user', 'login_err_captcha');
+                $msg = \Yii::t('user', 'login_err_captcha');
                 $this->getHttpSession()->setFlash('error', $msg);
             } elseif (!$user) {
-                $msg = str_replace('%USER%', $email, Yii::t('user', 'err_user_notfound'));
+                $msg = str_replace('%USER%', $email, \Yii::t('user', 'err_user_notfound'));
                 $this->getHttpSession()->setFlash('error', $msg);
             } elseif (mb_strlen($this->getRequestValue('newPassword')) < $pwMinLen) {
-                $msg = str_replace('%MINLEN%', (string)$pwMinLen, Yii::t('user', 'err_pwd_length'));
+                $msg = str_replace('%MINLEN%', (string)$pwMinLen, \Yii::t('user', 'err_pwd_length'));
                 $this->getHttpSession()->setFlash('error', $msg);
             } else {
                 try {
@@ -331,7 +268,7 @@ class UserController extends Base
         $user = User::getCurrentUser();
         try {
             $user->changeEmailAddress($email, $code);
-            $this->getHttpSession()->setFlash('success', Yii::t('user', 'emailchange_done'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('user', 'emailchange_done'));
         } catch (FormError $e) {
             $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
@@ -350,29 +287,29 @@ class UserController extends Base
             if ($changeRequested) {
                 $lastRequest = time() - Tools::dateSql2timestamp($user->emailChangeAt);
                 if ($lastRequest < 5 * 60) {
-                    $this->getHttpSession()->setFlash('error', Yii::t('user', 'err_emailchange_flood'));
+                    $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_emailchange_flood'));
                 } else {
                     try {
                         $user->sendEmailChangeMail($changeRequested);
-                        $this->getHttpSession()->setFlash('success', Yii::t('user', 'emailchange_sent'));
+                        $this->getHttpSession()->setFlash('success', \Yii::t('user', 'emailchange_sent'));
                     } catch (MailNotSent | ServerConfiguration $e) {
-                        $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                         $this->getHttpSession()->setFlash('error', $errMsg);
                     }
                 }
             }
         }
         if ($this->isPostSet('save')) {
-            $post = Yii::$app->request->post();
+            $post = $this->getHttpRequest()->post();
             if (trim($post['name']) != '') {
                 $user->name = $post['name'];
             }
 
             if ($post['pwd'] != '' || $post['pwd2'] != '') {
                 if ($post['pwd'] != $post['pwd2']) {
-                    $this->getHttpSession()->setFlash('error', Yii::t('user', 'err_pwd_different'));
+                    $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_pwd_different'));
                 } elseif (mb_strlen($post['pwd']) < $pwMinLen) {
-                    $msg = Yii::t('user', 'err_pwd_length');
+                    $msg = \Yii::t('user', 'err_pwd_length');
                     $this->getHttpSession()->setFlash('error', str_replace('%MINLEN%', (string)$pwMinLen, $msg));
                 } else {
                     $user->pwdEnc = password_hash($post['pwd'], PASSWORD_DEFAULT);
@@ -390,29 +327,28 @@ class UserController extends Base
             }
 
             if ($post['email'] != '' && $post['email'] != $user->email) {
-                /** @var AntragsgruenApp $params */
-                $params = Yii::$app->params;
+                $params = AntragsgruenApp::getInstance();
                 if ($params->confirmEmailAddresses) {
                     $changeRequested = $user->getChangeRequestedEmailAddress();
                     if ($changeRequested && $changeRequested == $post['email']) {
-                        $this->getHttpSession()->setFlash('error', Yii::t('user', 'err_emailchange_mail_sent'));
+                        $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_emailchange_mail_sent'));
                     } elseif (filter_var($post['email'], FILTER_VALIDATE_EMAIL)) {
                         try {
                             $user->sendEmailChangeMail($post['email']);
-                            $this->getHttpSession()->setFlash('success', Yii::t('user', 'emailchange_sent'));
+                            $this->getHttpSession()->setFlash('success', \Yii::t('user', 'emailchange_sent'));
                         } catch (MailNotSent | ServerConfiguration $e) {
-                            $errMsg = Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                            $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                             $this->getHttpSession()->setFlash('error', $errMsg);
                         }
                     } else {
-                        $this->getHttpSession()->setFlash('error', Yii::t('user', 'err_invalid_email'));
+                        $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_invalid_email'));
                     }
                 } else {
                     $user->changeEmailAddress($post['email'], '');
-                    $this->getHttpSession()->setFlash('success', Yii::t('base', 'saved'));
+                    $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
                 }
             } else {
-                $this->getHttpSession()->setFlash('success', Yii::t('base', 'saved'));
+                $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
             }
         }
 
@@ -439,12 +375,12 @@ class UserController extends Base
     {
         $user = User::getUserByUnsubscribeCode($code);
         if (!$user) {
-            $this->showErrorpage(403, Yii::t('user', 'err_user_acode_notfound'));
+            $this->showErrorpage(403, \Yii::t('user', 'err_user_acode_notfound'));
             return '';
         }
 
         if ($this->isPostSet('save')) {
-            $post = Yii::$app->request->post();
+            $post = $this->getHttpRequest()->post();
             if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] === 'consultation') {
                 $notis = UserNotification::getUserConsultationNotis($user, $this->consultation);
                 foreach ($notis as $noti) {
@@ -465,7 +401,7 @@ class UserController extends Base
                 EMailBlocklist::removeFromBlocklist($user->email);
             }
 
-            $this->getHttpSession()->setFlash('success', Yii::t('base', 'saved'));
+            $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('email_blocklist', [
@@ -478,8 +414,8 @@ class UserController extends Base
         $this->forceLogin();
         $user = User::getCurrentUser();
 
-        Yii::$app->response->format = Response::FORMAT_RAW;
-        Yii::$app->response->headers->add('Content-Type', 'application/json');
+        $this->getHttpResponse()->format = Response::FORMAT_RAW;
+        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $data = [
             'user'                 => $user->getUserdataExportObject(),

@@ -23,6 +23,9 @@
 - The comment sections of individual motions or amendments can now be closed without affecting others.
 - Bugfix: setting the maximum number of printed initiators on PDFs was broken.
 - Bugfix: Base statute texts were shown in the "New motions" section in the sidebar.
+- The plugin system was enhanced to support integrating Single-Sign-On systems, specifically SAML-based ones.
+- The plugin for the Antragsgrün Site used by the german greens now supports restricting permissions to members of specific regional divisions of the party.
+- Vue.JS was upgraded from version 2 to 3
 
 ### Version 4.10.1 (2022-07-01)
 

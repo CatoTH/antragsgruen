@@ -171,7 +171,7 @@ $params = Yii::$app->params;
         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Seite anlegen</button></form>';
     } else {
         echo Html::beginForm(
-            UrlHelper::createGruenesNetzLoginUrl('manager/createsite'),
+            \app\plugins\gruene_de_saml\SamlLogin::createGruenesNetzLoginUrl('/manager/createsite'),
             'post',
             [
                 'class' => 'form-inline login_saml',
@@ -184,8 +184,8 @@ $params = Yii::$app->params;
         echo '<button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
 
         echo '<div class="privacyHint"><strong>Erklärung / Datenschutz:</strong><br>
-Du wirst, nachdem du hier deinen Benutzer*innenname eingegeben hast, auf eine "<span aria-label="Open I.D." lang="en">OpenID</span>"-Seite umgeleitet, die vom
-grünen Bundesverband betrieben wird (Adresse im Browser: https://service.gruene.de). Dort wirst du aufgefordert,
+Du wirst, nachdem du hier deinen Benutzer*innenname eingegeben hast, auf eine Login-Seite umgeleitet, die vom
+grünen Bundesverband betrieben wird (Adresse im Browser: https://saml.gruene.de/). Dort wirst du aufgefordert,
 deinen Benutzer*innenname und -Passwort des Grünen Netzes einzugeben. Diese Seite bestätigt
 gegenüber Antragsgrün, dass du Parteimitglied bist und leitet deinen Namen und E-Mail-Adresse weiter - nicht
 aber das Passwort.</div>';

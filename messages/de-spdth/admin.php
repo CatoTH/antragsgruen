@@ -4,7 +4,6 @@ return [
     'con_show_ad'             => '„Dein Antragstool“ in der Sidebar anzeigen',
 
     'siteacc_add_ww_btn'         => 'Via SDP-Login',
-    'siteacc_add_ww'             => 'SPD-Login-Name',
     'siteacc_email_text_pre'     => 'Hallo,
 wir haben dir soeben einen Zugang zu unserer SPD-Landesparteitags-Seite eingerichtet.
 Dort können Anträge eingereicht, angesehen und Änderungsanträge gestellt werden.

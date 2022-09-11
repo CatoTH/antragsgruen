@@ -99,7 +99,7 @@ class IndexController extends AdminBase
                     // Plugin-provided login types
                     foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                         $loginType = $plugin::getDedicatedLoginProvider();
-                        if ($loginType && isset($post['login']) && in_array($loginType->getId(), $post['login'], true)) {
+                        if ($loginType && isset($post['login']) && in_array($loginType->getId(), $post['login'])) {
                             $settings->loginMethods[] = $loginType->getId();
                         }
                     }

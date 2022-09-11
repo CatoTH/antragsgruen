@@ -31,8 +31,6 @@ class UserController extends Controller
         if (mb_strpos($auth, ':') === false) {
             if (mb_strpos($auth, '@') !== false) {
                 $auth = 'email:' . $auth;
-            } else {
-                $auth = User::gruenesNetzId2Auth($auth);
             }
         }
         /** @var User|null $user */

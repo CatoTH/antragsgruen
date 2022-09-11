@@ -2,6 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\Consultation;
+use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
 /**
@@ -15,16 +16,18 @@ $controller = $this->context;
 $preEmails = '';
 $preNames = '';
 $prePasswords = '';
-$preSamlWW = '';
 $preText = Yii::t('admin', 'siteacc_email_text_pre');
 $hasEmail = ($controller->getParams()->mailService['transport'] !== 'none');
-$hasSaml = $controller->getParams()->isSamlActive();
 
 $authTypes = [
     'email' => Yii::t('admin', 'siteacc_add_email'),
 ];
-if ($controller->getParams()->isSamlActive()) {
-    $authTypes['gruenesnetz'] = Yii::t('admin', 'siteacc_add_ww');
+$addMultipleForms = [];
+foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
+    if ($login = $plugins::getDedicatedLoginProvider()) {
+        $authTypes[$login->getId()] = $login->getName();
+        $addMultipleForms[$login->getId()] = $login->renderAddMultipleUsersForm();
+    }
 }
 
 ?>
@@ -141,40 +144,24 @@ if ($controller->getParams()->isSamlActive()) {
                 <?= Yii::t('admin', 'siteacc_add_email_btn') ?>
             </button>
             <?php
-            if ($hasSaml) {
-                ?>
-                <button class="btn btn-link addUsersOpener samlWW" type="button" data-type="samlWW">
-                    <?= Yii::t('admin', 'siteacc_add_ww_btn') ?>
-                </button>
-                <?php
+            foreach ($addMultipleForms as $authId => $form) {
+                if (!$form) {
+                    continue;
+                }
+                echo '<button class="btn btn-link addUsersOpener samlWW" type="button" data-type="samlWW">';
+                echo Html::encode($authTypes[$authId]);
+                echo '</button>';
             }
             ?>
         </div>
 
         <?php
-
-        if ($hasSaml) {
-            echo Html::beginForm(UrlHelper::createUrl('/admin/users/add-multiple-ww'), 'post', [
-                'class' => 'addUsersByLogin multiuser samlWW hidden',
-            ]);
-            ?>
-            <div class="row">
-                <label class="col-md-4 col-md-offset-4">
-                    <?= Yii::t('admin', 'siteacc_new_saml_ww') ?>
-                    <textarea id="samlWW" name="samlWW" rows="15"><?= Html::encode($preSamlWW) ?></textarea>
-                </label>
-            </div>
-
-            <br><br>
-            <div class="saveholder">
-                <button type="submit" name="addUsers" class="btn btn-primary">
-                    <?= Yii::t('admin', 'siteacc_new_do') ?>
-                </button>
-            </div>
-            <?php
-            echo Html::endForm();
+        foreach ($addMultipleForms as $authId => $form) {
+            if (!$form) {
+                continue;
+            }
+            echo $form;
         }
-
 
         if ($hasEmail) {
             echo Html::beginForm(UrlHelper::createUrl('/admin/users/add-multiple-email'), 'post', [
