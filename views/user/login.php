@@ -1,5 +1,6 @@
 <?php
 
+use app\models\db\ConsultationText;
 use app\models\settings\AntragsgruenApp;
 use app\components\{Captcha, UrlHelper};
 use app\models\db\User;
@@ -35,7 +36,7 @@ $externalAuthenticator = User::getExternalAuthenticator();
 
 echo '<h1>' . Yii::t('user', 'login_title') . '</h1>';
 
-$loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login_pre');
+$loginText = ConsultationText::getPageData($controller->site, $controller->consultation, ConsultationText::DEFAULT_PAGE_LOGIN_PRE);
 if (trim($loginText->text) !== '') {
     echo '<div class="content contentPage">';
     echo $loginText->text;
@@ -99,46 +100,9 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
 }
 
 foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
-    $login = $plugins::getDedicatedLoginProvider();
-    if ($login && in_array($login->getId(), $loginMethods, true)) {
-        echo $login->renderLoginForm($backUrl);
+    if ($login = $plugins::getDedicatedLoginProvider()) {
+        echo $login->renderLoginForm($backUrl, in_array($login->getId(), $loginMethods));
     }
-}
-
-$hide_ww_login = ($params->isSamlActive() && !in_array(SiteSettings::LOGIN_GRUENES_NETZ, $loginMethods));
-if ($params->isSamlActive()) {
-    echo '<section class="loginSimplesaml">';
-    if ($hide_ww_login) {
-        echo '<div id="admin_login_saml" class="hidden">';
-    }
-
-    echo '<h2 class="green">&quot;Grünes Netz&quot;-Login</h2>
-    <div class="content row">';
-
-    $action = $params->domainPlain . 'loginsaml';
-    echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'samlLoginForm']);
-
-    $absoluteBack = UrlHelper::absolutizeLink($backUrl);
-    echo '
-        <input type="hidden" name="backUrl" value="' . Html::encode($absoluteBack) . '">
-        <button type="submit" class="btn btn-primary" name="samlLogin">
-            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Grünes Netz: Login
-    </button>';
-
-    echo Html::endForm();
-    echo '<div id="loginSamlHint">
-    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter „https://saml.gruene.de/” umgeleitet,
-    die vom Bundesverband betrieben wird.<br>Dort musst du dein Benutzer*innenname/Passwort des Grünen Netzes
-    eingeben. Dein Passwort bleibt dabei geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
-    <br><br>
-    <strong>Zugangsdaten vergessen?</strong> Klicke auf „Einloggen” und auf der folgenden Seite auf „Passwort vergessen?”.
-        </div>
-</div>';
-
-    if ($hide_ww_login) {
-        echo '</div>';
-    }
-    echo '</section>';
 }
 
 if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
@@ -280,13 +244,15 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     </section>';
 }
 
+// Special handling for the main installation of Antragsgrün
+$hide_ww_login = ($params->isSamlActive() && !in_array(SiteSettings::LOGIN_GRUENES_NETZ, $loginMethods));
 if ($hide_ww_login) {
     echo '<div class="content">
         <a href="#" onClick="$(\'#admin_login_saml\').toggleClass(\'hidden\'); return false;">Admin-Login</a>
     </div>';
 }
 
-$loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login_post');
+$loginText = ConsultationText::getPageData($controller->site, $controller->consultation, ConsultationText::DEFAULT_PAGE_LOGIN_POST);
 if (trim($loginText->text) !== '') {
     echo '<div class="content contentPage">';
     echo $loginText->text;

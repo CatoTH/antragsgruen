@@ -23,6 +23,7 @@ $hasSaml = $controller->getParams()->isSamlActive();
 $authTypes = [
     'email' => Yii::t('admin', 'siteacc_add_email'),
 ];
+
 if ($controller->getParams()->isSamlActive()) {
     $authTypes['gruenesnetz'] = Yii::t('admin', 'siteacc_add_ww');
 }
