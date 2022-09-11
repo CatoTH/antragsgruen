@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\plugins\gruene_de_saml\SamlLogin;
 use app\components\{Captcha, ConsultationAccessPassword, RequestContext, Tools, UrlHelper};
 use app\models\db\{AmendmentSupporter,
     EMailBlocklist,
@@ -175,40 +174,6 @@ class UserController extends Base
         );
     }
 
-    private function logoutSaml(string $backUrl = ''): string
-    {
-        try {
-            $backSubdomain = UrlHelper::getSubdomain($backUrl);
-            $currDomain    = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'];
-            $currSubdomain = UrlHelper::getSubdomain($currDomain);
-
-            if ($currSubdomain) {
-                // First step on the subdomain: logout and redirect to the main domain
-                RequestContext::getUser()->logout();
-                $backParts = parse_url($backUrl);
-                if (!isset($backParts['host'])) {
-                    $backUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
-                }
-                $this->redirect(AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
-            } elseif ($backSubdomain) {
-                // Second step: we are on the main domain. Logout and redirect to the subdomain
-                SamlLogin::logout();
-                $this->redirect($backUrl);
-            } else {
-                // No subdomain is involved, local logout on the main domain
-                SamlLogin::logout();
-                $this->redirect($backUrl);
-            }
-        } catch (\Exception $e) {
-            $this->showErrorpage(
-                500,
-                \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
-            );
-        }
-        return '';
-    }
-
-
     public function actionLogout(string $backUrl = ''): string
     {
         if ($backUrl === '') {
@@ -218,21 +183,22 @@ class UserController extends Base
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $loginProvider = $plugin::getDedicatedLoginProvider();
             if ($loginProvider && $loginProvider->userWasLoggedInWithProvider(User::getCurrentUser())) {
-                $loginProvider->logoutCurrentUserIfRelevant();
-
-                RequestContext::getUser()->logout();
-                $this->redirect($backUrl, 307);
+                try {
+                    $backUrl = $loginProvider->logoutCurrentUserIfRelevant($backUrl);
+                    $this->redirect($backUrl, 307);
+                } catch (\Exception $e) {
+                    $this->showErrorpage(
+                        500,
+                        \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
+                    );
+                }
                 return '';
             }
         }
 
-        if (AntragsgruenApp::getInstance()->isSamlActive()) {
-            return $this->logoutSaml($backUrl);
-        } else {
-            RequestContext::getUser()->logout();
-            $this->redirect($backUrl, 307);
-            return '';
-        }
+        RequestContext::getUser()->logout();
+        $this->redirect($backUrl, 307);
+        return '';
     }
 
     public function actionRecovery(string $email = '', string $code = ''): string

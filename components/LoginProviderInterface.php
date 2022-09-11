@@ -12,5 +12,9 @@ interface LoginProviderInterface
     public function renderLoginForm(string $backUrl, bool $active): string;
     public function performLoginAndReturnUser(): User;
     public function userWasLoggedInWithProvider(?User $user): bool;
-    public function logoutCurrentUserIfRelevant(): void;
+
+    /**
+     * @throws \Exception
+     */
+    public function logoutCurrentUserIfRelevant(string $backUrl): string;
 }

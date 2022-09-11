@@ -10,6 +10,8 @@ use app\plugins\ModuleBase;
 class Module extends ModuleBase
 {
     public const AUTH_KEY_GROUPS = 'gruenesnetz';
+
+    // This key is legacy from the time when we used OpenID as provider but wanted to keep the user accounts when switching to SAML.
     public const AUTH_KEY_USERS = 'openid';
 
     private static ?LoginProviderInterface $loginProvider = null;

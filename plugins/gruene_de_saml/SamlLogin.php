@@ -3,7 +3,7 @@
 namespace app\plugins\gruene_de_saml;
 
 use app\models\db\ConsultationUserGroup;
-use app\components\{LoginProviderInterface, RequestContext};
+use app\components\{LoginProviderInterface, RequestContext, UrlHelper};
 use app\models\db\User;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site as SiteSettings;
@@ -102,14 +102,35 @@ class SamlLogin implements LoginProviderInterface
         return $authParts[0] === Module::AUTH_KEY_USERS;
     }
 
-    public function logoutCurrentUserIfRelevant(): void
+    public function logoutCurrentUserIfRelevant(string $backUrl): string
     {
         $user = User::getCurrentUser();
         if (!$this->userWasLoggedInWithProvider($user)) {
-            return;
+            return $backUrl;
         }
 
-        self::logout();
+        $backSubdomain = UrlHelper::getSubdomain($backUrl);
+        $currDomain    = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'];
+        $currSubdomain = UrlHelper::getSubdomain($currDomain);
+
+        if ($currSubdomain) {
+            // First step on the subdomain: logout and redirect to the main domain
+            RequestContext::getUser()->logout();
+            $backParts = parse_url($backUrl);
+            if (!isset($backParts['host'])) {
+                $backUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
+            }
+
+            $backUrl = AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl);
+        } elseif ($backSubdomain) {
+            // Second step: we are on the main domain. Logout and redirect to the subdomain
+            self::logout();
+        } else {
+            // No subdomain is involved, local logout on the main domain
+            self::logout();
+        }
+
+        return $backUrl;
     }
 
     public static function logout(): void
