@@ -318,7 +318,6 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_admins_one_con'    => 'Manage this consultation',
     'siteacc_admins_proposals'  => 'Edit proposed procedure',
     'siteacc_admins_pp_replyto' => 'Reply-To at proposed procedure e-mails',
-    'siteacc_add_ww'            => 'Grünes Netz name',
     'siteacc_add_multiple'      => 'Add multiple at once',
     'siteacc_add_email'         => 'E-mail address',
     'siteacc_add_email_btn'     => 'By e-mail',

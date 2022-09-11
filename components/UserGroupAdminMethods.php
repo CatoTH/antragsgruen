@@ -3,7 +3,7 @@
 namespace app\components;
 
 use app\components\mail\Tools as MailTools;
-use app\models\exceptions\{AlreadyExists, MailNotSent, UserEditFailed};
+use app\models\exceptions\{AlreadyExists, FormError, MailNotSent, UserEditFailed};
 use app\models\consultationLog\UserGroupChange;
 use app\models\settings\AntragsgruenApp;
 use app\models\db\{Consultation, ConsultationLog, ConsultationUserGroup, EMailLog, User};
@@ -415,12 +415,22 @@ class UserGroupAdminMethods
             $password = User::createPassword();
         }
 
-        if ($authType === 'gruenesnetz') {
-            $auth = User::gruenesNetzId2Auth($authUsername);
-            $email = null;
-        } else {
+        if ($authType === 'email') {
             $auth = 'email:' . $authUsername;
             $email = $authUsername;
+        } else {
+            $email = null;
+            $auth = null;
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                if ($loginProvider = $plugin::getDedicatedLoginProvider()) {
+                    if ($authType === $loginProvider->getId()) {
+                        $auth = $loginProvider->usernameToAuth($authUsername);
+                    }
+                }
+            }
+        }
+        if ($auth === null) {
+            throw new FormError('Could not create the auth name');
         }
 
         $user = new User();

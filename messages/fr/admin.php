@@ -191,7 +191,6 @@ Si cela ne doit être <em>visible</em> que pour les utilisateurs ci-dessous, val
     'siteacc_ww'             => 'Grünes-Netz <small>(toute personne ayant accès au système allemand Grünes Netz)</small>',
     'siteacc_admins_title'   => 'Administrateurs de ce site',
     'siteacc_admins_add'     => 'Ajouter',
-    'siteacc_add_ww'         => 'Nom Grünes Netz',
     'siteacc_add_email'      => 'Adresse Grünes Netz',
     'siteacc_add_name_title' => 'Nom d\'utilisateur Grünes Netz / adresse email',
     'siteacc_add_btn'        => 'Ajouter',

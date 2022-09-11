@@ -197,17 +197,7 @@ class AmendmentController extends AdminBase
         }
         $setType = $this->getHttpRequest()->post('initiatorSetType');
         $setUsername = $this->getHttpRequest()->post('initiatorSetUsername');
-
-        switch ($setType) {
-            case 'email':
-                $user = User::findByAuthTypeAndName(Site::LOGIN_STD, $setUsername);
-                break;
-            case 'gruenesnetz':
-                $user = User::findByAuthTypeAndName(Site::LOGIN_GRUENES_NETZ, $setUsername);
-                break;
-            default:
-                $user = null;
-        }
+        $user = User::findByAuthTypeAndName($setType, $setUsername);
 
         if ($setUsername && !$user) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_user_not_found'));

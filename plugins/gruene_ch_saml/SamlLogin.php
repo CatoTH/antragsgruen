@@ -96,6 +96,12 @@ class SamlLogin implements LoginProviderInterface
         return $authParts[0] === Module::AUTH_KEY_USERS;
     }
 
+    public function usernameToAuth(string $username): string
+    {
+        return Module::AUTH_KEY_USERS . ':' . $username;
+    }
+
+
     public function logoutCurrentUserIfRelevant(string $backUrl): ?string
     {
         $user = User::getCurrentUser();

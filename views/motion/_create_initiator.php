@@ -2,6 +2,7 @@
 
 use app\components\Tools;
 use app\models\db\ISupporter;
+use app\models\settings\AntragsgruenApp;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
@@ -126,18 +127,19 @@ if ($adminMode) {
         $loginTypes = [
             'email' => Yii::t('admin', 'siteacc_add_email') . ':',
         ];
-        if ($controller->getParams()->isSamlActive()) {
-            $loginTypes['gruenesnetz'] = Yii::t('admin', 'siteacc_add_ww') . ':';
-        }
-        if ($initiator->user && $initiator->user->getAuthType() === \app\models\settings\Site::LOGIN_GRUENES_NETZ) {
-            $logininit = 'gruenesnetz';
-        } else {
-            $logininit = 'email';
+        $logininit = 'email';
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($loginProvider = $plugin::getDedicatedLoginProvider()) {
+                $loginTypes[$loginProvider->getId()] = $loginProvider->getName();
+                if ($initiator->user && $loginProvider->userWasLoggedInWithProvider($initiator->user)) {
+                    $logininit = $loginProvider->getId();
+                }
+            }
         }
         ?>
         <div class="col-md-3 admin-type">
             <input type="hidden" name="initiatorSet" value="">
-            <?= Html::dropDownList('initiatorSetType', $logininit, $loginTypes) ?>
+            <?= Html::dropDownList('initiatorSetType', $logininit, $loginTypes, ['class' => 'stdDropdown']) ?>
         </div>
         <div class="col-md-4">
             <input type="text" name="initiatorSetUsername" id="initiatorSetUsername" class="form-control"

@@ -64,7 +64,7 @@ class SamlLogin implements LoginProviderInterface
         $givenname = (isset($params[self::PARAM_GIVEN_NAME]) ? $params[self::PARAM_GIVEN_NAME][0] : '');
         $familyname = (isset($params[self::PARAM_FAMILY_NAME]) ? $params[self::PARAM_FAMILY_NAME][0] : '');
         $username = $params[self::PARAM_USERNAME][0];
-        $auth = User::gruenesNetzId2Auth($username);
+        $auth = $this->usernameToAuth($username);
 
         $organizations = $this->resolveAllOrgaIds($this->params[self::PARAM_ORGANIZATION] ?? []);
 
@@ -100,6 +100,11 @@ class SamlLogin implements LoginProviderInterface
         $authParts = explode(':', $user->auth);
 
         return $authParts[0] === Module::AUTH_KEY_USERS;
+    }
+
+    public function usernameToAuth(string $username): string
+    {
+        return 'openid:https://service.gruene.de/openid/' . $username;
     }
 
     public function logoutCurrentUserIfRelevant(string $backUrl): ?string
