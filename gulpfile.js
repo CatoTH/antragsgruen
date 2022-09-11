@@ -1,7 +1,7 @@
 const gulp = require('gulp'),
     terser = require('gulp-terser'),
     concat = require('gulp-concat'),
-    sass = require('gulp-sass')(require('node-sass')),
+    sass = require('gulp-sass')(require('sass')),
     ts = require('gulp-typescript'),
     postcss = require('gulp-postcss'),
     autoprefixer = require('autoprefixer'),
