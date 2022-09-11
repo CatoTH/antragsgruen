@@ -267,7 +267,7 @@
     height: 1px;
     width: $markerWidth;
     top: -6px;
-    left: ($slotWidth - $markerWidth) / 2;
+    left: ($slotWidth - $markerWidth) * 0.5;
     border-bottom: dotted 1px gray;
   }
 
