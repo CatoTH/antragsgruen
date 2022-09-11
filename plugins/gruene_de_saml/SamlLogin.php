@@ -102,30 +102,36 @@ class SamlLogin implements LoginProviderInterface
         return $authParts[0] === Module::AUTH_KEY_USERS;
     }
 
-    public function logoutCurrentUserIfRelevant(string $backUrl): string
+    public function logoutCurrentUserIfRelevant(string $backUrl): ?string
     {
-        $user = User::getCurrentUser();
-        if (!$this->userWasLoggedInWithProvider($user)) {
-            return $backUrl;
-        }
-
         $backSubdomain = UrlHelper::getSubdomain($backUrl);
         $currDomain    = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'];
         $currSubdomain = UrlHelper::getSubdomain($currDomain);
 
         if ($currSubdomain) {
+            $user = User::getCurrentUser();
+            if (!$this->userWasLoggedInWithProvider($user)) {
+                return null;
+            }
+
             // First step on the subdomain: logout and redirect to the main domain
             RequestContext::getUser()->logout();
             $backParts = parse_url($backUrl);
-            if (!isset($backParts['host'])) {
+            if ($backParts === false || !isset($backParts['host'])) {
                 $backUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
             }
 
             $backUrl = AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl);
         } elseif ($backSubdomain) {
             // Second step: we are on the main domain. Logout and redirect to the subdomain
+            // Here, there might not be a user obect (NULL), so we will proceed anyway
             self::logout();
         } else {
+            $user = User::getCurrentUser();
+            if (!$this->userWasLoggedInWithProvider($user)) {
+                return null;
+            }
+
             // No subdomain is involved, local logout on the main domain
             self::logout();
         }
@@ -203,5 +209,10 @@ class SamlLogin implements LoginProviderInterface
             }
         }
         $user->save();
+    }
+
+    public function renderAddMultipleUsersForm(): ?string
+    {
+        return \Yii::$app->controller->renderPartial('@app/plugins/gruene_de_saml/views/users_add_multiple', []);
     }
 }

@@ -96,11 +96,11 @@ class SamlLogin implements LoginProviderInterface
         return $authParts[0] === Module::AUTH_KEY_USERS;
     }
 
-    public function logoutCurrentUserIfRelevant(string $backUrl): string
+    public function logoutCurrentUserIfRelevant(string $backUrl): ?string
     {
         $user = User::getCurrentUser();
         if (!$this->userWasLoggedInWithProvider($user)) {
-            return $backUrl;
+            return null;
         }
 
         $samlClient = new Simple('gruene-ch');
@@ -109,5 +109,10 @@ class SamlLogin implements LoginProviderInterface
         }
 
         return $backUrl;
+    }
+
+    public function renderAddMultipleUsersForm(): ?string
+    {
+        return null;
     }
 }

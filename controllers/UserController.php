@@ -181,18 +181,19 @@ class UserController extends Base
         }
 
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $loginProvider = $plugin::getDedicatedLoginProvider();
-            if ($loginProvider && $loginProvider->userWasLoggedInWithProvider(User::getCurrentUser())) {
+            if ($loginProvider = $plugin::getDedicatedLoginProvider()) {
                 try {
                     $backUrl = $loginProvider->logoutCurrentUserIfRelevant($backUrl);
-                    $this->redirect($backUrl, 307);
+                    if ($backUrl) {
+                        $this->redirect($backUrl, 307);
+                        return '';
+                    }
                 } catch (\Exception $e) {
                     $this->showErrorpage(
                         500,
                         \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
                     );
                 }
-                return '';
             }
         }
 

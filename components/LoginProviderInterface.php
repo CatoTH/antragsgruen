@@ -16,5 +16,7 @@ interface LoginProviderInterface
     /**
      * @throws \Exception
      */
-    public function logoutCurrentUserIfRelevant(string $backUrl): string;
+    public function logoutCurrentUserIfRelevant(string $backUrl): ?string;
+
+    public function renderAddMultipleUsersForm(): ?string;
 }
