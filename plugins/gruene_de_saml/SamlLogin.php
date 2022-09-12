@@ -66,7 +66,7 @@ class SamlLogin implements LoginProviderInterface
         $username = $params[self::PARAM_USERNAME][0];
         $auth = $this->usernameToAuth($username);
 
-        $organizations = $this->resolveAllOrgaIds($this->params[self::PARAM_ORGANIZATION] ?? []);
+        $organizations = $this->resolveAllOrgaIds($params[self::PARAM_ORGANIZATION] ?? []);
 
         /** @var User|null $user */
         $user = User::findOne(['auth' => $auth]);
@@ -174,10 +174,11 @@ class SamlLogin implements LoginProviderInterface
                 continue;
             }
 
-            $newOrgaIds[] = $orgaId; // BV / GJ
-            $newOrgaIds[] = substr($orgaId, 0, 6) . '00'; // LV
+            // Hint: The KV is the most important assignment, and the first entry is taken for the "organization" field in the user object
             $newOrgaIds[] = substr($orgaId, 0, 3) . '00000'; // KV
             $newOrgaIds[] = substr($orgaId, 0, 1) . '0000000'; // OV
+            $newOrgaIds[] = $orgaId; // BV / GJ
+            $newOrgaIds[] = substr($orgaId, 0, 6) . '00'; // LV
         }
 
         return array_values(array_unique($newOrgaIds));
