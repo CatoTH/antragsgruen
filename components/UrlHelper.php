@@ -87,7 +87,7 @@ class UrlHelper
             $route['subdomain'] = $site->subdomain;
         }
 
-        if ($routeParts['controller'] === 'user') {
+        if ($routeParts['controller'] === 'user' && $routeParts['action'] !== 'consultationaccesserror') {
             unset($route['consultationPath']);
         }
         if (in_array(

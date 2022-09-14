@@ -31,7 +31,7 @@ $motionPaths          .= '|merge-amendments-public|merge-amendments-public-ajax|
 $amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collisions|ajax-diff';
 $amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check|del-proposal-comment';
 $userPaths            = 'login|logout|confirmregistration|emailblocklist|recovery';
-$userPaths            .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange|data-export';
+$userPaths            .= '|loginsaml|logoutsaml|myaccount|emailchange|data-export';
 $adminMotionPaths     = 'type|typecreate|get-amendment-rewrite-collisions|move|move-check';
 $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist';
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides';
@@ -62,6 +62,7 @@ $urlRules = [
 
     $dom . '<_a:(' . $userPaths . ')>'        => 'user/<_a>',
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
+    $domv . 'consultationaccesserror'         => 'user/consultationaccesserror',
     $domv . 'page'                            => 'pages/list-pages',
     $domv . 'page/files/upload'               => 'pages/upload',
     $domv . 'page/files/delete'               => 'pages/delete-file',
