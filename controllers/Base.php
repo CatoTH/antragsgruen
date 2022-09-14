@@ -360,7 +360,7 @@ class Base extends Controller
         }
         if ($this->consultation->getSettings()->managedUserAccounts) {
             if (count(User::getCurrentUser()->getUserGroupsForConsultation($this->consultation)) === 0) {
-                $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror'));
+                $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
                 return true;
             }
         }

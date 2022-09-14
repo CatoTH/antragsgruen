@@ -30,8 +30,7 @@ $motionPaths          .= '|merge-amendments-init-pdf|merge-amendments-draft-pdf'
 $motionPaths          .= '|merge-amendments-public|merge-amendments-public-ajax|save-merging-draft';
 $amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collisions|ajax-diff';
 $amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check|del-proposal-comment';
-$userPaths            = 'login|logout|confirmregistration|emailblocklist|recovery';
-$userPaths            .= '|consultationaccesserror|myaccount|emailchange|data-export';
+$userPaths            = 'login|logout|confirmregistration|emailblocklist|recovery|myaccount|emailchange|data-export';
 $adminMotionPaths     = 'type|typecreate|get-amendment-rewrite-collisions|move|move-check';
 $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist';
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides';
@@ -62,6 +61,7 @@ $urlRules = [
 
     $dom . '<_a:(' . $userPaths . ')>'        => 'user/<_a>',
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
+    $domv . 'consultationaccesserror'         => 'user/consultationaccesserror',
     $domv . 'page'                            => 'pages/list-pages',
     $domv . 'documents'                       => 'pages/documents',
     $domv . 'documents/<groupId:[^\/]+>.zip'  => 'pages/documents-zip',
