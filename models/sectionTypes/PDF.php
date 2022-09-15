@@ -170,7 +170,7 @@ class PDF extends ISectionType
 
         if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
             $title = $this->section->getSettings()->title;
-            if (str_replace('pdf', '', strtolower($title)) == strtolower($title)) {
+            if (str_replace('pdf', '', strtolower($title)) === strtolower($title)) {
                 $title .= ' [PDF]';
             }
             $pdfLayout->printSectionHeading($title);
@@ -181,6 +181,7 @@ class PDF extends ISectionType
         try {
             $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (CrossReferenceException $e) {
+            $pdf->AddPage();
             $pdf->writeHTML('<p style="font-size: 12px; color: red;"><br>The embedded PDF can not be rendered:</p>');
             /** @noinspection CssNoGenericFontName */
             $pdf->writeHTML('<p style="font-size: 12px; font-family: Courier; color: red;"><br>' .

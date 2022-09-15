@@ -29,12 +29,12 @@ use yii\db\ActiveRecord;
  */
 class ConsultationSettingsMotionSection extends ActiveRecord
 {
-    const COMMENTS_NONE       = 0;
-    const COMMENTS_MOTION     = 1;
-    const COMMENTS_PARAGRAPHS = 2;
+    public const COMMENTS_NONE       = 0;
+    public const COMMENTS_MOTION     = 1;
+    public const COMMENTS_PARAGRAPHS = 2;
 
-    const STATUS_VISIBLE = 0;
-    const STATUS_DELETED = -1;
+    public const STATUS_VISIBLE = 0;
+    public const STATUS_DELETED = -1;
 
     public static function tableName(): string
     {
@@ -47,9 +47,9 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public static function getCommentTypes(): array
     {
         return [
-            static::COMMENTS_NONE       => \Yii::t('structure', 'section_comment_none'),
-            static::COMMENTS_MOTION     => \Yii::t('structure', 'section_comment_motion'),
-            static::COMMENTS_PARAGRAPHS => \Yii::t('structure', 'section_comment_paragraph'),
+            self::COMMENTS_NONE       => \Yii::t('structure', 'section_comment_none'),
+            self::COMMENTS_MOTION     => \Yii::t('structure', 'section_comment_motion'),
+            self::COMMENTS_PARAGRAPHS => \Yii::t('structure', 'section_comment_paragraph'),
         ];
     }
 
@@ -140,10 +140,10 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public function getAvailableCommentTypes(): array
     {
         if ($this->type === ISectionType::TYPE_TEXT_SIMPLE) {
-            return [static::COMMENTS_NONE, static::COMMENTS_MOTION, static::COMMENTS_PARAGRAPHS];
+            return [self::COMMENTS_NONE, self::COMMENTS_MOTION, self::COMMENTS_PARAGRAPHS];
         }
         if ($this->type === ISectionType::TYPE_TEXT_HTML) {
-            return [static::COMMENTS_NONE, static::COMMENTS_MOTION];
+            return [self::COMMENTS_NONE, self::COMMENTS_MOTION];
         }
         return [static::COMMENTS_NONE];
     }
