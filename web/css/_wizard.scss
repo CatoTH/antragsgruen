@@ -2,22 +2,20 @@
  * From: https://github.com/ExactTarget/fuelux
  * License: MIT
  */
-@use "sass:math";
-
 @mixin wizardHeight($size) {
   ul li {
     height: $size;
     line-height: $size;
     &:before {
-      border-top: math.div($size, 3) + 1px inset transparent;
-      border-bottom: math.div($size, 3) + 1px inset transparent;
-      border-left: math.div($size, 3) + 1px solid $wizardBorderColor;
+      border-top: $size / 3 + 1px inset transparent;
+      border-bottom: $size / 3 + 1px inset transparent;
+      border-left: $size / 3 + 1px solid $wizardBorderColor;
     }
     &:after {
-      border-top: math.div($size, 3) + 1px inset transparent;
-      border-bottom: math.div($size, 3) + 1px inset transparent;
-      border-left: math.div($size, 3) + 1px solid $wizardStepInactiveBackground;
-      right: math.div(-1 * $size, 3);
+      border-top: $size / 3 + 1px inset transparent;
+      border-bottom: $size / 3 + 1px inset transparent;
+      border-left: $size / 3 + 1px solid $wizardStepInactiveBackground;
+      right: (-1 * $size) / 3;
     }
   }
 }

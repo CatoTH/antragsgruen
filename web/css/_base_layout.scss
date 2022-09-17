@@ -67,8 +67,8 @@ body > footer {
   max-width: $container-md;
   margin-left: auto;
   margin-right: auto;
-  padding-right: floor(($grid-gutter-width * 0.5));
-  padding-left: ceil(($grid-gutter-width * 0.5));
+  padding-right: floor(($grid-gutter-width / 2));
+  padding-left: ceil(($grid-gutter-width / 2));
 
   p {
     height: $footer_height;
@@ -113,8 +113,8 @@ body > footer {
     max-width: $sidebarWidth;
     float: left;
     z-index: 0;
-    padding-right: floor(($grid-gutter-width * 0.5));
-    padding-left: ceil(($grid-gutter-width * 0.5));
+    padding-right: floor(($grid-gutter-width / 2));
+    padding-left: ceil(($grid-gutter-width / 2));
   }
 
   .sidebar-box {
