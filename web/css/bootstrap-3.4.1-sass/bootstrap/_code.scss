@@ -1,4 +1,3 @@
-@use "sass:math";
 //
 // Code (inline and block)
 // --------------------------------------------------
@@ -41,8 +40,8 @@ kbd {
 // Blocks of code
 pre {
   display: block;
-  padding: math.div(($line-height-computed - 1), 2);
-  margin: 0 0 math.div($line-height-computed, 2);
+  padding: (($line-height-computed - 1) / 2);
+  margin: 0 0 ($line-height-computed / 2);
   font-size: ($font-size-base - 1); // 14px to 13px
   line-height: $line-height-base;
   color: $pre-color;

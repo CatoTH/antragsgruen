@@ -1,4 +1,3 @@
-@use "sass:math";
 // Framework grid generation
 //
 // Used only by Bootstrap to generate the correct number of grid classes given
@@ -14,8 +13,8 @@
     // Prevent columns from collapsing when empty
     min-height: 1px;
     // Inner gutter via padding
-    padding-right: floor(math.div($grid-gutter-width, 2));
-    padding-left: ceil(math.div($grid-gutter-width, 2));
+    padding-right: floor(($grid-gutter-width / 2));
+    padding-left: ceil(($grid-gutter-width / 2));
   }
 }
 
@@ -32,34 +31,34 @@
 
 
 @mixin calc-grid-column($index, $class, $type) {
-  @if ($type == width) and ($index > 0) {
+  @if ($type == width and $index > 0) {
     .col-#{$class}-#{$index} {
-      width: percentage(math.div($index, $grid-columns));
+      width: percentage(($index / $grid-columns));
     }
   }
-  @if ($type == push) and ($index > 0) {
+  @if ($type == push and $index > 0) {
     .col-#{$class}-push-#{$index} {
-      left: percentage(math.div($index, $grid-columns));
+      left: percentage(($index / $grid-columns));
     }
   }
-  @if ($type == push) and ($index == 0) {
+  @if ($type == push and $index == 0) {
     .col-#{$class}-push-0 {
       left: auto;
     }
   }
-  @if ($type == pull) and ($index > 0) {
+  @if ($type == pull and $index > 0) {
     .col-#{$class}-pull-#{$index} {
-      right: percentage(math.div($index, $grid-columns));
+      right: percentage(($index / $grid-columns));
     }
   }
-  @if ($type == pull) and ($index == 0) {
+  @if ($type == pull and $index == 0) {
     .col-#{$class}-pull-0 {
       right: auto;
     }
   }
   @if ($type == offset) {
     .col-#{$class}-offset-#{$index} {
-      margin-left: percentage(math.div($index, $grid-columns));
+      margin-left: percentage(($index / $grid-columns));
     }
   }
 }
