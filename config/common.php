@@ -26,7 +26,6 @@ if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
     define('INSTALLING_MODE', true);
 } else {
     // Kind of a poor man's auto-loading, as Yii's auto-loading-mechanism is not active yet.
-    // Hopefully, this can be avoided in Yii 2.1
     foreach ($params->getPluginNames() as $pluginName) {
         require_once(__DIR__ . '/../plugins/ModuleBase.php');
         $filename = __DIR__ . '/../plugins/' . $pluginName . '/Module.php';

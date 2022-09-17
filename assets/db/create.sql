@@ -1390,7 +1390,7 @@ ALTER TABLE `###TABLE_PREFIX###amendmentTag`
 -- Constraints for table `consultation`
 --
 ALTER TABLE `###TABLE_PREFIX###consultation`
-  ADD CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`)
+  ADD CONSTRAINT `fk_consultation_site1` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 

@@ -115,7 +115,7 @@ class SetupController extends Controller
         $this->createTestAccountsForGroup($consultation, 'INGYO Observer (OD)', 'ingyo-ob', 'INYGO-OB', 2);
         $this->createTestAccountsForGroup($consultation, 'NYC Observer (OD)', 'nyc-ob', 'NYC-OB', 2);
         $this->createTestAccountsForGroup($consultation, 'INGYO Candidate (OD)', 'ingyo-can', 'INYGO-CAN', 2);
-        $this->createTestAccountsForGroup($consultation, 'NYC Candidate (OD)', 'NYC-can', 'NYC-CAN', 2);
+        $this->createTestAccountsForGroup($consultation, 'NYC Candidate (OD)', 'nyc-can', 'NYC-CAN', 2);
         $this->createTestAccountsForGroup($consultation, 'Associates', 'assoc', 'ASSOC', 1);
 
         echo "Created the dummy accounts.\n";
