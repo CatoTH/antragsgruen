@@ -13,6 +13,7 @@ config/config.*.json
 config/drupal_civicrm.json
 config/discourse.json
 config/config_tests.json
+config/config_tests_yfj.json
 config/DEBUG
 config/update-private.key
 config/latex-replaces.php

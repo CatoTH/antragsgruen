@@ -6,7 +6,11 @@ require_once($configDir . 'JsonConfigTrait.php');
 require_once($configDir . 'AntragsgruenApp.php');
 
 if (YII_ENV == 'test') {
-    $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json';
+    if (strpos($_SERVER['REQUEST_URI'] ?? '', '/std/yfj-test') === 0) {
+        $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests_yfj.json';
+    } else {
+        $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json';
+    }
 } elseif (isset($_SERVER['ANTRAGSGRUEN_CONFIG'])) {
     $configFile = $_SERVER['ANTRAGSGRUEN_CONFIG'];
 } else {
