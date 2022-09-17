@@ -15,7 +15,9 @@ ob_start();
     <div v-if="showVotesByUserGroups" class="regularVoteList" v-for="answer in voting.answers">
         <strong>{{ answer.title }}:</strong>
         <ul>
-            <li v-for="userGroup in relevantUserGroups" class="voteListHolder" :class="{showingSelector: isGroupSelectionShown(answer, userGroup)}">
+            <li v-for="userGroup in relevantUserGroups" class="voteListHolder "
+                :class="{showingSelector: isGroupSelectionShown(answer, userGroup)}"
+                :class="'voteListHolder' + userGroup.id">
                 <div class="userGroupName">
                     {{ userGroup.title }}
                     <span v-if="getVoteListForUserGroup(answer.api_id, userGroup).length > 0">({{ getVoteListForUserGroup(answer.api_id, userGroup).length }})</span>
@@ -27,7 +29,7 @@ ob_start();
                     </li>
                 </ul>
                 <div v-if="setToUserGroupSelection" class="userGroupSetter">
-                    <button type="button" class="btn btn-link btn-xs"
+                    <button type="button" class="btn btn-link btn-xs userGroupSetterOpener"
                             v-if="!isGroupSelectionShown(answer, userGroup)" @click="setGroupSelectionShown(answer, userGroup)">
                         <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                         <?= Yii::t('voting', 'admin_mvtoug_caller') ?>
@@ -36,7 +38,7 @@ ob_start();
                         <option value=""> - </option>
                         <option v-for="group in setToUserGroupSelection" :value="group.id">{{ group.title }}</option>
                     </select>
-                    <button v-if="isGroupSelectionShown(answer, userGroup)" type="button" class="btn btn-sm btn-default"
+                    <button v-if="isGroupSelectionShown(answer, userGroup)" type="button" class="btn btn-sm btn-default userGroupSetterDo"
                             :disabled="isSelectDisabled(answer, userGroup)" @click="setUserGroup(answer, userGroup)">
                         <?= Yii::t('base', 'save') ?>
                     </button>
