@@ -13,17 +13,17 @@ class Acceptance extends \Codeception\Module
 {
     use \app\tests\AntragsgruenSetupDB;
 
-    public function _before(TestCase $test)
+    public function _before(TestCase $test): void
     {
         $this->createDB();
     }
 
-    public function _after(TestCase $test)
+    public function _after(TestCase $test): void
     {
         $this->deleteDB();
     }
 
-    public function amOnPage2(string $page)
+    public function amOnPage2(string $page): void
     {
         $urlParts = parse_url($page);
         /** @var WebDriver $webdriver */
@@ -35,9 +35,15 @@ class Acceptance extends \Codeception\Module
         $webdriver->webDriver->get($page);
     }
 
-    public function populateDBData1()
+    public function populateDBData1(): void
     {
         $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
             '..' . DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata1.sql');
+    }
+
+    public function populateDBDataYfj(): void
+    {
+        $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+            '..' . DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata-yfj.sql');
     }
 }

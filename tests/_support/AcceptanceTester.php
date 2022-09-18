@@ -210,6 +210,12 @@ class AcceptanceTester extends \Codeception\Actor
         return $this->loginWithData('fixedadmin@example.org', 'testadmin');
     }
 
+    public function loginAsYfjUser(string $emailPrefix, int $userNo): self
+    {
+        $username = $emailPrefix . '-' . $userNo . '@example.org';
+        return $this->loginWithData($username, 'Test');
+    }
+
     public function loginAsGruenesNetzUser(): void
     {
         $this->see('LOGIN', '#loginLink');

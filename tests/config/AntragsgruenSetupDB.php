@@ -3,16 +3,14 @@
 namespace app\tests;
 
 use Yii;
+use yii\db\Connection;
 
 trait AntragsgruenSetupDB
 {
-    /** @var \yii\db\Connection */
-    protected $database;
+    protected ?Connection $database = null;
+    protected ?string $database_delete = null;
 
-    /** @var  string */
-    protected $database_delete;
-
-    protected function createDB()
+    protected function createDB(): void
     {
         $this->database = Yii::$app->db;
 
@@ -40,7 +38,7 @@ trait AntragsgruenSetupDB
         $command->execute();
     }
 
-    protected function deleteDB()
+    protected function deleteDB(): void
     {
         if ($this->database) {
             $command = $this->database->createCommand($this->database_delete);
@@ -49,10 +47,9 @@ trait AntragsgruenSetupDB
     }
 
     /**
-     * @param string $file
      * @throws \yii\db\Exception
      */
-    protected function populateDB($file)
+    protected function populateDB(string $file): void
     {
         $testdata = file_get_contents($file);
         $testdata = str_replace('###TABLE_PREFIX###', '', $testdata);
