@@ -12,13 +12,13 @@ $I->assertEquals('rgb(75, 112, 0)', $I->executeJS('return getComputedStyle($("#m
 $I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
 
 $I->wantTo('see that by default, the classic theme is activated');
-$I->seeInField('#stylesheet-menuLink', '4B7000');
+$I->seeInField('#stylesheet-menuLink', '#4B7000');
 
 $I->wantTo('see that DBJR-theme is preselected if necessary');
 $I->gotoStdAdminPage()->gotoAppearance();
 $I->executeJS('$(".thumbnailedLayoutSelector .layout.layout-dbjr").click();');
 $I->click('.editThemeLink');
-$I->seeInField('#stylesheet-menuLink', '646464');
+$I->seeInField('#stylesheet-menuLink', '#646464');
 
 $I->wantTo('change the settings');
 $I->fillField('#stylesheet-contentBorderRadius', '5');
@@ -47,7 +47,7 @@ $I->seeElementInDOM('.bootbox-prompt');
 $I->checkOption("//input[@name='bootbox-radio'][@value='layout-dbjr']");
 $I->executeJS('$(".bootbox-accept").click()');
 $I->wait(1);
-$I->seeInField('#stylesheet-menuLink', '646464');
+$I->seeInField('#stylesheet-menuLink', '#646464');
 $I->seeInField('#stylesheet-contentBorderRadius', '10');
 $I->assertEquals('rgb(100, 100, 100)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
 $I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
@@ -59,7 +59,7 @@ $I->seeElementInDOM('.bootbox-prompt');
 $I->checkOption("//input[@name='bootbox-radio'][@value='layout-classic']");
 $I->executeJS('$(".bootbox-accept").click()');
 $I->wait(1);
-$I->seeInField('#stylesheet-menuLink', '4B7000');
+$I->seeInField('#stylesheet-menuLink', '#4B7000');
 $I->seeInField('#stylesheet-contentBorderRadius', '10');
 
 $I->assertEquals('rgb(75, 112, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
