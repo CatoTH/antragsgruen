@@ -5,6 +5,8 @@
  * @var string $format
  */
 
+use ScssPhp\ScssPhp\OutputStyle;
+
 $css = '
 @charset "UTF-8";
 
@@ -92,7 +94,7 @@ $css .= '.logoImg {
 ';
 
 
-$scss = new \ScssPhp\ScssPhp\Compiler();
+$scss = new \app\components\CssCompiler();
 $scss->addImportPath(Yii::$app->basePath . '/web/css/');
-$scss->setFormatter($format);
-echo $scss->compile($css);
+$scss->setOutputStyle(OutputStyle::COMPRESSED);
+echo $scss->compileString($css)->getCss();
