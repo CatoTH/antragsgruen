@@ -2,22 +2,18 @@
 
 namespace app\models\forms;
 
-use app\components\AntiSpam;
-use app\components\RequestContext;
-use app\models\db\Amendment;
-use app\models\db\AmendmentComment;
-use app\models\db\ConsultationMotionType;
-use app\models\db\IComment;
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\MotionComment;
-use app\models\db\MotionSection;
-use app\models\db\User;
-use app\models\db\UserNotification;
-use app\models\exceptions\Access;
-use app\models\exceptions\DB;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
+use app\components\{AntiSpam, RequestContext};
+use app\models\db\{Amendment,
+    AmendmentComment,
+    ConsultationMotionType,
+    IComment,
+    IMotion,
+    Motion,
+    MotionComment,
+    MotionSection,
+    User,
+    UserNotification};
+use app\models\exceptions\{Access, DB, FormError, Internal};
 use yii\base\Model;
 
 class CommentForm extends Model
@@ -67,8 +63,6 @@ class CommentForm extends Model
      */
     public function setAttributes($values, $validSections = [])
     {
-        parent::setAttributes($values, true);
-
         $this->sectionId = null;
         if (isset($values['sectionId']) && $values['sectionId'] > 0) {
             foreach ($validSections as $section) {
@@ -80,6 +74,9 @@ class CommentForm extends Model
         if (isset($values['sectionId']) && intval($values['sectionId']) === -1) {
             $this->sectionId = -1;
         }
+        unset($values['sectionId']);
+
+        parent::setAttributes($values, true);
 
         if (User::getCurrentUser()) {
             $user         = User::getCurrentUser();
