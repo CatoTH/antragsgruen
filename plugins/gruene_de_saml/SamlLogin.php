@@ -175,10 +175,10 @@ class SamlLogin implements LoginProviderInterface
             }
 
             // Hint: The KV is the most important assignment, and the first entry is taken for the "organization" field in the user object
-            $newOrgaIds[] = substr($orgaId, 0, 3) . '00000'; // KV
-            $newOrgaIds[] = substr($orgaId, 0, 1) . '0000000'; // OV
-            $newOrgaIds[] = $orgaId; // BV / GJ
-            $newOrgaIds[] = substr($orgaId, 0, 6) . '00'; // LV
+            $newOrgaIds[] = substr($orgaId, 0, 6) . '00'; // KV
+            $newOrgaIds[] = $orgaId; // OV
+            $newOrgaIds[] = substr($orgaId, 0, 3) . '00000'; // LV
+            $newOrgaIds[] = substr($orgaId, 0, 1) . '0000000'; // BV / GJ
         }
 
         return array_values(array_unique($newOrgaIds));
@@ -186,12 +186,18 @@ class SamlLogin implements LoginProviderInterface
 
     private function syncUserGroups(User $user, array $newOrgaIds): void
     {
-        $user->organizationIds = json_encode($newOrgaIds, JSON_THROW_ON_ERROR);
-        $user->organization = '';
-
         $newUserGroupIds = array_map(function (string $orgaId): string {
             return Module::AUTH_KEY_GROUPS . ':' . $orgaId;
         }, $newOrgaIds);
+
+        $user->organizationIds = json_encode($newOrgaIds, JSON_THROW_ON_ERROR);
+        $user->organization = '';
+        for ($i = 0; $i < count($newUserGroupIds) && $user->organization === ''; $i++) {
+            $userGroup = ConsultationUserGroup::findByExternalId($newUserGroupIds[$i]);
+            if ($userGroup) {
+                $user->organization = $userGroup->title;
+            }
+        }
 
         $oldUserGroupIds = [];
         foreach ($user->userGroups as $userGroup) {
@@ -205,13 +211,8 @@ class SamlLogin implements LoginProviderInterface
 
         foreach ($newUserGroupIds as $userGroupId) {
             $userGroup = ConsultationUserGroup::findByExternalId($userGroupId);
-            if ($userGroup) {
-                $user->organization = $userGroup->title;
-                $user->save();
-
-                if (!in_array($userGroupId, $oldUserGroupIds)) {
-                    $user->link('userGroups', $userGroup);
-                }
+            if ($userGroup && !in_array($userGroupId, $oldUserGroupIds)) {
+                $user->link('userGroups', $userGroup);
             }
         }
         $user->save();
