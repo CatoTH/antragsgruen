@@ -147,8 +147,10 @@
       }
     }
   }
-  .fileGroupHolder > h2:hover .deleteGroupBtn {
-    opacity: 1;
+  .greenHeader:hover {
+    .deleteGroupForm .deleteGroupBtn {
+      opacity: 1;
+    }
   }
 
   .deleteFileBtn {
