@@ -152,7 +152,7 @@ return [
     'button_submit_create'              => 'Create',
     'button_submit_submit'              => 'Submit',
     'button_submit_publish'             => 'Publish',
-    'button_correct'                    => 'Correct',
+    'button_correct'                    => 'Go back',
     'confirm'                           => 'Confirm',
     'go_on'                             => 'Go on',
     'published_email_body'              => "Hi,\n\nyour amendment to \"%MOTION%\" has just been published on Antragsgrün. " .

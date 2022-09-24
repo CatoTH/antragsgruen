@@ -62,7 +62,7 @@ return [
     'created_bread_create'          => 'Created',
     'created_bread_submit'          => 'Submitted',
     'created_bread_publish'         => 'Published',
-    'button_correct'                => 'Correct',
+    'button_correct'                => 'Go back',
     'Prefix'                        => 'Signature',
     'Title'                         => 'Title',
     'replaces_motion'               => 'Replaces',
