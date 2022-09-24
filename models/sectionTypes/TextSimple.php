@@ -2,7 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
+use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, Diff, DiffRenderer};
 use app\components\{HashedStaticCache, HTMLTools, LineSplitter, UrlHelper};
 use app\components\latex\{Content, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection};
@@ -473,11 +473,14 @@ class TextSimple extends Text
         }, $text);
     }
 
+    /**
+     * @param AffectedLineBlock[] $diffGroups
+     */
     public static function formatDiffGroup(array $diffGroups, string $wrapStart = '', string $wrapEnd = '', int $firstLineOfSection = -1, ?Motion $linkMotion = null): string
     {
         $out = '';
         foreach ($diffGroups as $diff) {
-            $text      = $diff['text'];
+            $text      = $diff->text;
             $text      = static::stripAfterInsertedNewlines($text);
             $hasInsert = $hasDelete = false;
             if (mb_strpos($text, 'class="inserted"') !== false) {
@@ -494,20 +497,20 @@ class TextSimple extends Text
             }
             $out            .= $wrapStart;
             $out            .= '<h4 class="lineSummary">';
-            $isInsertedLine = (mb_strpos($diff['text'], '###LINENUMBER###') === false);
+            $isInsertedLine = (mb_strpos($diff->text, '###LINENUMBER###') === false);
             if ($isInsertedLine) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
                     $out .= \Yii::t('diff', 'after_line');
                 } elseif ($hasDelete) {
                     $out .= \Yii::t('diff', 'after_line_del');
                 } elseif ($hasInsert) {
-                    if ($diff['lineTo'] < $firstLineOfSection) {
-                        $out .= str_replace('#LINE#', (string)($diff['lineTo'] + 1), \Yii::t('diff', 'pre_line_ins'));
+                    if ($diff->lineTo < $firstLineOfSection) {
+                        $out .= str_replace('#LINE#', (string)($diff->lineTo + 1), \Yii::t('diff', 'pre_line_ins'));
                     } else {
                         $out .= \Yii::t('diff', 'after_line_ins');
                     }
                 }
-            } elseif ($diff['lineFrom'] == $diff['lineTo']) {
+            } elseif ($diff->lineFrom === $diff->lineTo) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
                     $out .= \Yii::t('diff', 'in_line');
                 } elseif ($hasDelete) {
@@ -524,8 +527,8 @@ class TextSimple extends Text
                     $out .= \Yii::t('diff', 'line_to_ins');
                 }
             }
-            $lineFrom = ($diff['lineFrom'] < $firstLineOfSection ? $firstLineOfSection : $diff['lineFrom']);
-            $out      = str_replace(['#LINETO#', '#LINEFROM#'], [(string)$diff['lineTo'], (string)$lineFrom], $out);
+            $lineFrom = ($diff->lineFrom < $firstLineOfSection ? $firstLineOfSection : $diff->lineFrom);
+            $out      = str_replace(['#LINETO#', '#LINEFROM#'], [(string)$diff->lineTo, (string)$lineFrom], $out);
             if ($linkMotion) {
                 $link = UrlHelper::createMotionUrl($linkMotion);
                 $out .= ' <span class="linkedMotion">(' . Html::a(Html::encode($linkMotion->getTitleWithPrefix()), $link) . ')</span>';
@@ -733,8 +736,8 @@ class TextSimple extends Text
 
         $unchanged = [];
         foreach ($diffGroups as $diffGroup) {
-            $lineFrom = ($diffGroup['lineFrom'] > 0 ? $diffGroup['lineFrom'] : 1);
-            $unchanged[] = LineSplitter::extractLines($originalData, $lineLength, $firstLine, $lineFrom, $diffGroup['lineTo']);
+            $lineFrom = ($diffGroup->lineFrom > 0 ? $diffGroup->lineFrom : 1);
+            $unchanged[] = LineSplitter::extractLines($originalData, $lineLength, $firstLine, $lineFrom, $diffGroup->lineTo);
         }
 
         return implode('<br><br>', $unchanged);
@@ -799,7 +802,7 @@ class TextSimple extends Text
             $formatter->setFirstLineNo($firstLine);
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
 
-            if (count($diffGroups) == 0) {
+            if (count($diffGroups) === 0) {
                 return;
             }
 

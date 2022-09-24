@@ -2,20 +2,17 @@
 
 namespace app\components\diff;
 
+use app\components\diff\DataTypes\AffectedLineBlock;
 use app\components\HTMLTools;
 use yii\helpers\Html;
 
 class AffectedLinesFilter
 {
-
     /**
-     * @param string $string
-     * @param int $firstLine
-     *
-     * @return string[]
+     * @return AffectedLineBlock[]
      * @internal
      */
-    public static function splitToLines($string, $firstLine)
+    public static function splitToLines(string $string, int $firstLine): array
     {
         $out   = [];
         $line  = $firstLine;
@@ -32,31 +29,36 @@ class AffectedLinesFilter
             if ($i == 0 && mb_strpos($parts[$i], '###LINENUMBER###') === false) {
                 $line--;
             }
-            $out[] = [
-                'text'     => $parts[$i],
-                'lineFrom' => $line,
-                'lineTo'   => $line,
-            ];
+
+            $affected = new AffectedLineBlock();
+            $affected->text = $parts[$i];
+            $affected->lineFrom = $line;
+            $affected->lineTo = $line;
+            $out[] = $affected;
             $line++;
         }
 
         return $out;
     }
 
+    /**
+     * @param AffectedLineBlock[] $blocks
+     * @return AffectedLineBlock[]
+     */
     public static function filterAffectedBlocks(array $blocks, int $context = 0): array
     {
         $inIns          = $inDel = false;
         $affectedBlocks = [];
 
         $unchangedBeforeNextSpool = [];
-        $unchangedAfterLastSpool  = [];
+        $unchangedAfterLastSpool = [];
 
-        foreach ($blocks as $blockNo => $block) {
-            if ($block['text'] === '') {
+        foreach ($blocks as $block) {
+            if ($block->text === '') {
                 continue;
             }
             $hadDiff = false;
-            if (preg_match_all('/<(\/?)(ins|del)( [^>]*)?>/siu', $block['text'], $matches)) {
+            if (preg_match_all('/<(\/?)(ins|del)( [^>]*)?>/siu', $block->text, $matches)) {
                 $hadDiff = true;
                 for ($i = 0; $i < count($matches[0]); $i++) {
                     if ($matches[1][$i] === '' && $matches[2][$i] === 'ins') {
@@ -101,11 +103,13 @@ class AffectedLinesFilter
             }
         }
 
-        $affectedBlocks = array_merge($affectedBlocks, $unchangedAfterLastSpool);
-
-        return $affectedBlocks;
+        return array_merge($affectedBlocks, $unchangedAfterLastSpool);
     }
 
+    /**
+     * @param AffectedLineBlock[] $blocks
+     * @return AffectedLineBlock[]
+     */
     public static function groupAffectedDiffBlocks(array $blocks): array
     {
         $currGroupedBlock = null;
@@ -113,13 +117,13 @@ class AffectedLinesFilter
         foreach ($blocks as $block) {
             if ($currGroupedBlock) {
                 $needsNewBlock = false;
-                if ($block['lineFrom'] > $currGroupedBlock['lineTo'] + 1) {
+                if ($block->lineFrom > $currGroupedBlock->lineTo + 1) {
                     $needsNewBlock = true;
                 }
-                $lineNumberPos = mb_strpos(strip_tags($block['text']), '###LINENUMBER###');
+                $lineNumberPos = mb_strpos(strip_tags($block->text), '###LINENUMBER###');
                 if ($lineNumberPos === false || $lineNumberPos !== 0) {
                     // This block was inserted => there is another line with the same number before
-                    if ($block['lineFrom'] > $currGroupedBlock['lineTo']) {
+                    if ($block->lineFrom > $currGroupedBlock->lineTo) {
                         $needsNewBlock = true;
                     }
                 }
@@ -130,18 +134,17 @@ class AffectedLinesFilter
                 if ($currGroupedBlock !== null) {
                     $groupedBlocks[] = $currGroupedBlock;
                 }
-                $currGroupedBlock = [
-                    'text'     => '',
-                    'lineFrom' => $block['lineFrom'],
-                    'lineTo'   => $block['lineTo'],
-                ];
+                $currGroupedBlock = new AffectedLineBlock();
+                $currGroupedBlock->text = '';
+                $currGroupedBlock->lineFrom = $block->lineFrom;
+                $currGroupedBlock->lineTo = $block->lineTo;
             }
-            $currGroupedBlock['text'] .= $block['text'];
+            $currGroupedBlock->text .= $block->text;
 
-            if ($block['lineTo'] > $currGroupedBlock['lineTo']) {
+            if ($block->lineTo > $currGroupedBlock->lineTo) {
                 // This is the normal case; there are some rare cases (see testLiSplitIntoTwo test case)
                 // in which the new block does not have line numbers and therefore a lower lineTo
-                $currGroupedBlock['lineTo'] = $block['lineTo'];
+                $currGroupedBlock->lineTo = $block->lineTo;
             }
         }
         if ($currGroupedBlock) {
@@ -152,6 +155,9 @@ class AffectedLinesFilter
     }
 
 
+    /**
+     * @return AffectedLineBlock[]
+     */
     private static function splitToAffectedLinesInt(\DOMElement $node, int $firstLine, int $context): array
     {
         $out             = [];
@@ -164,8 +170,8 @@ class AffectedLinesFilter
             $grouped  = self::groupAffectedDiffBlocks($affected);
 
             for ($i = 0; $i < count($grouped); $i++) {
-                $grouped[$i]['text'] = HTMLTools::correctHtmlErrors($grouped[$i]['text']);
-                $out[]               = $grouped[$i];
+                $grouped[$i]->text = HTMLTools::correctHtmlErrors($grouped[$i]->text);
+                $out[] = $grouped[$i];
             }
         };
 
@@ -213,13 +219,16 @@ class AffectedLinesFilter
             }
             $open .= '>';
             for ($i = 0; $i < count($out); $i++) {
-                $out[$i]['text'] = $open . $out[$i]['text'] . '</' . $node->nodeName . '>';
+                $out[$i]->text = $open . $out[$i]->text . '</' . $node->nodeName . '>';
             }
         }
 
         return $out;
     }
 
+    /**
+     * @return  AffectedLineBlock[]
+     */
     public static function splitToAffectedLines(string $html, int $firstLine, int $context = 0): array
     {
         // <del>###LINENUMBER### would mark the previous line as affected as well
@@ -229,7 +238,6 @@ class AffectedLinesFilter
         if (is_a($dom, \DOMText::class)) {
             return [];
         }
-        /** @var \DOMElement $dom */
         $lines = self::splitToAffectedLinesInt($dom, $firstLine, $context);
 
         return self::groupAffectedDiffBlocks($lines);

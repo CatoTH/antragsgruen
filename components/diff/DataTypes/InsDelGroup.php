@@ -7,12 +7,7 @@ namespace app\components\diff\DataTypes;
 
 class InsDelGroup
 {
-    /** @var int */
-    public $start;
-
-    /** @var int */
-    public $end;
-
-    /** @var int - Engine::DELETED, Engine::INSERTED*/
-    public $type;
+    public int $start;
+    public int $end;
+    public int $type; /** Engine::DELETED, Engine::INSERTED */
 }

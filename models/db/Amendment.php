@@ -465,7 +465,7 @@ class Amendment extends IMotion implements IRSSItem
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, 0);
 
             if (count($diffGroups) > 0) {
-                $firstLine = $diffGroups[0]['lineFrom'];
+                $firstLine = $diffGroups[0]->lineFrom;
                 HashedStaticCache::setCache($cacheFunc, $cacheDeps, $firstLine);
                 return $firstLine;
             }
