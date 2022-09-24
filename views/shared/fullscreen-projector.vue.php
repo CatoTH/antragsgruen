@@ -6,13 +6,15 @@ ob_start();
 <article class="projectorWidget">
     <header>
         <div class="imotionSelector">
-            <select v-if="imotions" v-model="dropdownSelection" @change="onChangeSelectedIMotion()" class="stdDropdown">
+            <select v-if="imotions || pages" v-model="dropdownSelection" @change="onChangeSelectedIMotion()" class="stdDropdown">
                 <option :value="'speech'" v-if="hasOneSpeakingList"><?= Yii::t('speech', 'fullscreen_title_s') ?></option>
                 <!-- @TODO Multiple speaking lists -->
                 <template v-for="imotion in imotions">
                     <option :value="imotion.type + '-' + imotion.id">{{ imotion.title_with_prefix }}</option>
                     <option v-for="amendment in getImotionAmendmentLinks(imotion)" :value="'amendment-' + amendment.id">▸ {{ amendment.prefix }}</option>
                 </template>
+                <option v-if="pages" disabled><?= Yii::t('pages', 'fullscr_select') ?>:</option>
+                <option v-for="page in pages" :value="'page-' + page.id">▸ {{ page.title }}</option>
             </select>
         </div>
 
@@ -41,7 +43,9 @@ $html = ob_get_clean();
                 consultationUrl: null,
                 imotions: null,
                 speakingLists: null,
+                pages: null,
                 imotion: null,
+                page: null,
                 dropdownSelection: null
             }
         },
@@ -67,6 +71,7 @@ $html = ob_get_clean();
                     .then(data => {
                         widget.imotions = data.motion_links;
                         widget.speakingLists = data.speaking_lists;
+                        widget.pages = data.page_links;
                     })
                     .catch(err => alert(err));
             },

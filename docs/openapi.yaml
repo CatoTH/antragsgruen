@@ -205,6 +205,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SpeakingList'
+        page_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/PageLinks'
         url_json:
           type: string
           example: https://test.antragsgruen.de/rest/consultation
@@ -257,6 +261,23 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
+    PageLinks:
+      properties:
+        id:
+          type: number
+          example: 23
+        in_menu:
+          type: boolean
+          description: Indicates if this page is shown in the main menu
+        title:
+          type: string
+          example: Pure title of the motion
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/rest/page/testpage
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation/page/testpage
     MotionLink:
       properties:
         id:

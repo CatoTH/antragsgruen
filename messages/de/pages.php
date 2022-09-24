@@ -49,6 +49,7 @@ return [
     'settings_delete'  => 'Seite löschen',
     'create_btn'       => 'Anlegen',
     'menu_add_btn'     => 'Neue Inhalts-Seite im Menü anlegen',
+    'fullscr_select'   => 'Redaktionelle Seiten',
 
     'documents_title' => 'Dokumente',
     'documents_intro_text' => 'Auf dieser Seite werden Dokumente zur Veranstaltung veröffentlicht.',

@@ -49,6 +49,7 @@ return [
     'settings_delete'  => 'Delete page',
     'create_btn'       => 'Create',
     'menu_add_btn'     => 'Create a new content page in the menu',
+    'fullscr_select'   => 'Content pages',
 
     'documents_title' => 'Documents',
     'documents_intro_text' => 'On this page, documents for this consultation are published.',

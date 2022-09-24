@@ -14,7 +14,7 @@ use yii\db\ActiveRecord;
  * @property int $siteId
  * @property string $category
  * @property string $textId
- * @property int $menuPosition
+ * @property int|null $menuPosition
  * @property string|null $title
  * @property string|null $breadcrumb
  * @property string|null $text
@@ -74,11 +74,19 @@ class ConsultationText extends ActiveRecord
             $params['consultationPath'] = $this->consultation->urlPath;
         }
 
-        if ($this->textId === 'feeds') {
+        if ($this->textId === self::DEFAULT_PAGE_FEEDS) {
             return UrlHelper::createUrl(['consultation/feeds']);
         } else {
             return UrlHelper::createUrl($params);
         }
+    }
+
+    public function getJsonUrl(): string {
+        $params = ['/pages/get-rest', 'pageSlug' => $this->textId];
+        if ($this->consultationId) {
+            $params['consultationPath'] = $this->consultation->urlPath;
+        }
+        return UrlHelper::createUrl($params);
     }
 
     public function getSaveUrl(): string
