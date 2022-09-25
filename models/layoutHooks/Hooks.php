@@ -5,6 +5,7 @@ namespace app\models\layoutHooks;
 use app\models\db\{Amendment,
     Consultation,
     ConsultationMotionType,
+    ConsultationText,
     ISupporter,
     IVotingItem,
     Motion,
@@ -195,6 +196,11 @@ class Hooks
     }
 
     public function getAdminIndexHint(string $before, Consultation $consultation): string
+    {
+        return $before;
+    }
+
+    public function getContentPageContent(string $before, ConsultationText $text, bool $admin): string
     {
         return $before;
     }

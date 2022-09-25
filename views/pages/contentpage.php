@@ -94,23 +94,27 @@ if ($admin) {
 }
 
 
-echo '<div class="content contentPage">';
+$contentMain = '<div class="content contentPage">';
 
 if ($admin) {
-    echo '<button type="button" class="btn btn-link editCaller">' . Yii::t('base', 'edit') . '</button><br>';
+    $contentMain .= '<button type="button" class="btn btn-link editCaller">' . Yii::t('base', 'edit') . '</button><br>';
 }
 
-echo '<article class="textHolder" id="stdTextHolder">';
-echo $pageData->text;
-echo '</article>';
+$contentMain .= '<article class="textHolder" id="stdTextHolder">';
+$contentMain .= $pageData->text;
+$contentMain .= '</article>';
 
 if ($admin) {
-    echo '<div class="textSaver hidden">';
-    echo '<button class="btn btn-primary submitBtn" type="submit">';
-    echo Yii::t('base', 'save') . '</button></div>';
+    $contentMain .= '<div class="textSaver hidden">';
+    $contentMain .= '<button class="btn btn-primary submitBtn" type="submit">';
+    $contentMain .= Yii::t('base', 'save') . '</button></div>';
 }
 
-echo '</div>';
+$contentMain .= '</div>';
+
+$contentMain = \app\models\layoutHooks\Layout::getContentPageContent($pageData, $admin, $contentMain);
+
+echo $contentMain;
 
 if ($admin) {
     $deleteUrl = UrlHelper::createUrl(['pages/delete-page', 'pageSlug' => $pageData->textId]);
