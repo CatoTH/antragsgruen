@@ -124,6 +124,10 @@ foreach ($proposedAgenda as $proposedItem) {
                     <?php
                     $currentMotion = null;
                     foreach ($items as $item) {
+                        if (is_a($item, Motion::class) && $item->getMyMotionType()->amendmentsOnly) {
+                            continue;
+                        }
+                        
                         if (is_a($item, Amendment::class)) {
                             $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-amendment-visible');
                             $type          = 'amendment';

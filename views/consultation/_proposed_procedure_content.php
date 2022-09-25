@@ -42,6 +42,9 @@ foreach ($proposedAgenda as $proposedItem) {
                     <?php
                     $currentMotion = null;
                     foreach ($votingBlock->items as $item) {
+                        if (is_a($item, Motion::class) && $item->getMyMotionType()->amendmentsOnly) {
+                            continue;
+                        }
                         $titlePre = '';
                         if (is_a($item, Amendment::class)) {
                             /** @var Amendment $item */
