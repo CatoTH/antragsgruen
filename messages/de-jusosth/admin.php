@@ -8,7 +8,7 @@ return array (
   'motion_edit_supporters' => 'Unterstützer:innen',
   'motion_edit_supporters_add' => 'Unterstützer:in hinzufügen',
   'list_initiators' => 'Initiator:innen',
-  'list_responsible_none' => 'keine regestrierte Nutzer:in',
+  'list_responsible_none' => 'keine registrierte Nutzer:in',
   'list_prop_user_accepted' => 'Die Antragsteller:in hat dem Verfahrensvorschlag zugestimmt',
   'list_prop_user_asked' => 'Die Antragsteller:in wurde kontaktiert, hat aber noch nicht zugestimmt',
   'list_prop_user_not_asked' => 'Die Antragsteller:in wurde noch nicht kontaktiert',
