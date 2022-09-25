@@ -1,14 +1,14 @@
 <?php
 ob_start();
 ?>
-<main v-if="!isTwoColumnLayout" class="motionTextHolder">
+<main v-if="!isTwoColumnLayout" class="motionTextHolder" :class="{'isAmendment': isAmendment}">
     <fullscreen-imotion-header :imotion="imotion"></fullscreen-imotion-header>
     <section v-for="section in nonEmptySections" class="paragraph lineNumbers" :class="[section.type]">
         <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
         <div v-html="section.html"></div>
     </section>
 </main>
-<main v-if="isTwoColumnLayout" class="motionTextHolder row">
+<main v-if="isTwoColumnLayout" class="motionTextHolder row" :class="{'isAmendment': isAmendment}">
     <div class="col-md-8">
         <section v-for="section in nonEmptyLeftSections" class="paragraph lineNumbers" :class="[section.type]">
             <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
@@ -82,6 +82,9 @@ $htmlHeader = ob_get_clean();
                 return this.imotion.sections.filter(section => {
                     return section.html !== '';
                 });
+            },
+            isAmendment: function () {
+                return this.imotion && this.imotion.type === 'amendment';
             }
         },
         methods: {

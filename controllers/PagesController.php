@@ -46,7 +46,7 @@ class PagesController extends Base
         return $this->getHttpResponse();
     }
 
-    public function actionShowPage(string $pageSlug): string
+    protected function getPageForView(string $pageSlug): ?ConsultationText
     {
         $pageData = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
 
@@ -56,11 +56,40 @@ class PagesController extends Base
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
             if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
                 $this->showErrorpage(404, 'Page not found');
-                return '';
+                return null;
             }
         }
 
+        return $pageData;
+    }
+
+    public function actionShowPage(string $pageSlug): string
+    {
+        if (!$this->getPageForView($pageSlug)) {
+            return '';
+        }
+
         return $this->renderContentPage($pageSlug);
+    }
+
+    public function actionGetRest(string $pageSlug): string
+    {
+        $pageData = $this->getPageForView($pageSlug);
+        if (!$pageData) {
+            return '';
+        }
+
+        $data = [
+            'id' => $pageData->id,
+            'in_menu' => $pageData->menuPosition !== null,
+            'text_id' => $pageData->textId,
+            'title' => $pageData->title,
+            'url_json' => $pageData->getJsonUrl(),
+            'url_html' => $pageData->getUrl(),
+            'html' => $pageData->text,
+        ];
+
+        return $this->returnRestResponse(200, json_encode($data, JSON_THROW_ON_ERROR));
     }
 
     /**

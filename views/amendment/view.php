@@ -59,7 +59,8 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 if (User::getCurrentUser()) {
     $fullscreenInitData = json_encode([
         'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
-        'init_imotion_url' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'rest')),
+        'init_page' => 'amendment-' . $amendment->id,
+        'init_content_url' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'rest')),
     ]);
     $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
         data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">

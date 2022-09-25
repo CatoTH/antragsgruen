@@ -53,7 +53,7 @@ return [
     'index_flushed_cached'        => 'Die Caches wurden geleert',
     'index_todo'                  => 'To Do',
     'index_site_del'              => 'Seite löschen',
-    'index_pages'                 => 'Redaktionelle Texte',
+    'index_pages'                 => 'Redaktionelle Seiten',
     'motion_prefix_collision'     => 'Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.',
     'motion_deleted'              => 'Der Antrag wurde gelöscht.',
     'motion_screened'             => 'Der Antrag wurde freigeschaltet.',

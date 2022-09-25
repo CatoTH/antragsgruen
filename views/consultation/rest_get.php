@@ -3,7 +3,7 @@
 /** @var \app\models\db\Consultation $consultation */
 
 use app\components\{CookieUser, UrlHelper};
-use app\models\db\{Amendment, IMotion, Motion, SpeechQueue, User};
+use app\models\db\{Amendment, ConsultationText, IMotion, Motion, SpeechQueue, User};
 
 if ($consultation->getSettings()->hasSpeechLists) {
     $user = User::getCurrentUser();
@@ -15,6 +15,11 @@ if ($consultation->getSettings()->hasSpeechLists) {
 } else {
     $speakingLists = null;
 }
+
+$allPages = ConsultationText::getAllPages($consultation->site, $consultation);
+$customPages = array_values(array_filter($allPages, function (ConsultationText $page): bool {
+    return $page->isCustomPage();
+}));
 
 $json = [
     'title' => $consultation->title,
@@ -64,6 +69,15 @@ $json = [
         ];
     }, $consultation->getVisibleIMotionsSorted(false)),
     'speaking_lists' => $speakingLists,
+    'page_links' => array_map(function (ConsultationText $page) {
+        return [
+            'id' => $page->id,
+            'in_menu' => $page->menuPosition !== null,
+            'title' => $page->title,
+            'url_json' => $page->getJsonUrl(),
+            'url_html' => $page->getUrl(),
+        ];
+    }, $customPages),
     'url_json' => UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/rest')),
     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')),
 ];
