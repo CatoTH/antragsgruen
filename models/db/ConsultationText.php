@@ -67,6 +67,13 @@ class ConsultationText extends ActiveRecord
         ];
     }
 
+    public function isCustomPage(): bool
+    {
+        $defaultPages = array_keys(self::getDefaultPages());
+
+        return !in_array($this->textId, $defaultPages);
+    }
+
     public function getUrl(): string
     {
         $params = ['/pages/show-page', 'pageSlug' => $this->textId];

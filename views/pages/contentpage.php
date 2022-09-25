@@ -7,7 +7,7 @@
  */
 
 use app\components\UrlHelper;
-use app\models\db\ConsultationText;
+use app\models\db\{ConsultationText, User};
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -18,16 +18,33 @@ $site         = ($consultation ? $consultation->site : null);
 $pageData     = ConsultationText::getPageData($site, $consultation, $pageKey);
 $saveUrl      = $pageData->getSaveUrl();
 
-$this->title = ($pageData->title ? $pageData->title : $pageData->textId);
+$this->title = $pageData->title ?: $pageData->textId;
 
 $layout = $controller->layoutParams;
 if ($controller->action->id !== 'home') {
-    $layout->addBreadcrumb($pageData->breadcrumb ? $pageData->breadcrumb : $pageData->textId);
+    $layout->addBreadcrumb($pageData->breadcrumb ?: $pageData->textId);
 } else {
     $layout->breadcrumbs = [];
 }
 
-echo '<h1 class="pageTitle">' . Html::encode($pageData->title ? $pageData->title : $pageData->textId) . '</h1>';
+if (User::getCurrentUser() && $pageData->isCustomPage()) {
+    $layout->loadVue();
+    $layout->addFullscreenTemplates();
+    $fullscreenInitData = json_encode([
+        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
+        'init_page' => 'page-' . $pageData->id,
+        'init_content_url' => UrlHelper::absolutizeLink($pageData->getJsonUrl()),
+    ]);
+    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
+        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
+        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
+    </button>';
+} else {
+    $fullscreenButton = '';
+}
+
+echo '<h1 class="pageTitle">' . Html::encode($pageData->title ?: $pageData->textId) . $fullscreenButton . '</h1>';
 
 if ($admin) {
     $layout->loadCKEditor();

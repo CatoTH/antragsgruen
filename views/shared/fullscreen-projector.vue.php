@@ -6,7 +6,7 @@ ob_start();
 <article class="projectorWidget">
     <header>
         <div class="imotionSelector">
-            <select v-if="imotions || pages" v-model="dropdownSelection" @change="onChangeSelectedIMotion()" class="stdDropdown">
+            <select v-if="imotions || pages" v-model="dropdownSelection" @change="onChangeSelectedContent()" class="stdDropdown">
                 <option :value="'speech'" v-if="hasOneSpeakingList"><?= Yii::t('speech', 'fullscreen_title_s') ?></option>
                 <!-- @TODO Multiple speaking lists -->
                 <template v-for="imotion in imotions">
@@ -28,6 +28,11 @@ ob_start();
     <fullscreen-imotion v-if="imotion" :imotion="imotion"></fullscreen-imotion>
 
     <fullscreen-speech v-if="dropdownSelection === 'speech'" :initQueue="selectedSpeakingList" :user="null" :csrf="null" :title="'Speaking List'"></fullscreen-speech>
+
+    <main class="contentPage" v-if="page">
+        <div class="content" v-html="page.html"></div>
+    </main>
+
 </article>
 <?php
 $html = ob_get_clean();
@@ -84,17 +89,51 @@ $html = ob_get_clean();
                         return response.json();
                     })
                     .then(data => {
+                        widget.page = null;
                         widget.imotion = data;
                         widget.dropdownSelection = data.type + '-' + data.id;
                         widget.$emit('changed', data);
                     })
                     .catch(err => alert(err));
             },
+            loadPage: function (url) {
+                const widget = this;
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) throw response.statusText;
+                        return response.json();
+                    })
+                    .then(data => {
+                        widget.page = data;
+                        widget.imotion = null;
+                        widget.dropdownSelection = 'page-' + data.id;
+                        widget.$emit('changed', data);
+                    })
+                    .catch(err => alert(err));
+            },
             loadInitContent: function () {
-                if (this.initdata.init_imotion_url) {
-                    this.loadIMotion(this.initdata.init_imotion_url);
-                } else if (this.initdata.init_page === 'speech') {
+                const documentType = this.initdata.init_page ? this.initdata.init_page.split("-")[0] : '';
+                if (documentType === 'motion' || documentType === 'amendment') {
+                    this.loadIMotion(this.initdata.init_content_url);
+                }
+                if (documentType === 'page') {
+                    this.loadPage(this.initdata.init_content_url);
+                }
+                if (documentType === 'speech') {
                     this.dropdownSelection = 'speech';
+                }
+            },
+            onChangeSelectedContent: function () {
+                const documentType = this.dropdownSelection ? this.dropdownSelection.split("-")[0] : '';
+                if (documentType === 'motion' || documentType === 'amendment') {
+                    this.onChangeSelectedIMotion();
+                }
+                if (documentType === 'page') {
+                    this.onChangeSelectedPage();
+                }
+                if (documentType === 'speech') {
+                    this.imotion = null;
+                    this.page = null;
                 }
             },
             onChangeSelectedIMotion: function () {
@@ -115,6 +154,20 @@ $html = ob_get_clean();
                     this.loadIMotion(foundImotion.url_json);
                 } else {
                     this.imotion = null;
+                }
+            },
+            onChangeSelectedPage: function () {
+                let foundPage = null;
+                this.pages.forEach(page => {
+                    if ('page-' + page.id === this.dropdownSelection) {
+                        foundPage = page;
+                    }
+                });
+                console.log(foundPage);
+                if (foundPage) {
+                    this.loadPage(foundPage.url_json);
+                } else {
+                    this.page = null;
                 }
             },
             getImotionAmendmentLinks: function (imotion) {

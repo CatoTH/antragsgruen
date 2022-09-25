@@ -62,7 +62,8 @@ $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPOR
 if (User::getCurrentUser()) {
     $fullscreenInitData = json_encode([
         'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
-        'init_imotion_url' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
+        'init_page' => 'motion-' . $motion->id,
+        'init_content_url' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
     ]);
     $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
         data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">

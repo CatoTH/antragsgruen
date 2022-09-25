@@ -16,6 +16,11 @@ if ($consultation->getSettings()->hasSpeechLists) {
     $speakingLists = null;
 }
 
+$allPages = ConsultationText::getAllPages($consultation->site, $consultation);
+$customPages = array_values(array_filter($allPages, function (ConsultationText $page): bool {
+    return $page->isCustomPage();
+}));
+
 $json = [
     'title' => $consultation->title,
     'title_short' => $consultation->titleShort,
@@ -72,7 +77,7 @@ $json = [
             'url_json' => $page->getJsonUrl(),
             'url_html' => $page->getUrl(),
         ];
-    }, ConsultationText::getAllPages($consultation->site, $consultation)),
+    }, $customPages),
     'url_json' => UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/rest')),
     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')),
 ];
