@@ -1,8 +1,6 @@
 <?php
-
 ob_start();
 ?>
-
 <article class="projectorWidget">
     <header>
         <div class="imotionSelector">
@@ -18,10 +16,6 @@ ob_start();
             </select>
         </div>
 
-        <button class="btn btn-link closeBtn" type="button" @click="close()" title="<?= Yii::t('base', 'aria_close') ?>" aria-label="<?= Yii::t('base', 'aria_close') ?>">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </button>
-
         <h1 v-if="imotion" class="hidden">{{ imotion.title_with_prefix }}</h1>
     </header>
 
@@ -35,13 +29,57 @@ ob_start();
 
 </article>
 <?php
-$html = ob_get_clean();
+$htmlPanel = ob_get_clean();
 
+
+ob_start();
 ?>
+<div class="fullscreenMainHolder" :class="{'splitscreen': splitscreen}">
+    <header>
+        <button class="btn btn-link splitscreenBtn" type="button" @click="toggleSplitscreen()"
+                title="<?= Yii::t('pages', 'fullscr_split') ?>" aria-label="<?= Yii::t('pages', 'fullscr_split') ?>">
+            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+        </button>
+        <button class="btn btn-link closeBtn" type="button" @click="close()" title="<?= Yii::t('base', 'aria_close') ?>" aria-label="<?= Yii::t('base', 'aria_close') ?>">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+    </header>
+
+    <fullscreen-panel class="primary" :class="{'splitscreen': splitscreen}" :initdata="initdata" @changed="onFirstContentChanged($event)"></fullscreen-panel>
+
+    <fullscreen-panel class="secondary" :class="{'splitscreen': splitscreen}" :initdata="initdata" v-if="splitscreen"></fullscreen-panel>
+</div>
+<?php
+$htmlMain = ob_get_clean();
+?>
+
 
 <script>
     __setVueComponent('fullscreen', 'component', 'fullscreen-projector', {
-        template: <?= json_encode($html) ?>,
+        template: <?= json_encode($htmlMain) ?>,
+        props: ['initdata'],
+        data() {
+            return {
+                splitscreen: false,
+                url_html: null
+            }
+        },
+        methods: {
+            close: function () {
+                this.$emit('close', this.url_html);
+            },
+            onFirstContentChanged: function ($event) {
+                this.url_html = $event.url_html;
+                this.$emit('changed', $event);
+            },
+            toggleSplitscreen: function () {
+                this.splitscreen = !this.splitscreen;
+            }
+        }
+    });
+
+    __setVueComponent('fullscreen', 'component', 'fullscreen-panel', {
+        template: <?= json_encode($htmlPanel) ?>,
         props: ['initdata'],
         data() {
             return {
@@ -172,9 +210,6 @@ $html = ob_get_clean();
             },
             getImotionAmendmentLinks: function (imotion) {
                 return imotion.amendment_links ? imotion.amendment_links : [];
-            },
-            close: function () {
-                this.$emit('close', this.imotion.url_html);
             }
         },
         created() {
