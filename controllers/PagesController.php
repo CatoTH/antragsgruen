@@ -19,7 +19,7 @@ class PagesController extends Base
             return $this->getHttpResponse();
         }
 
-        if ($this->getHttpRequest()->post('create')) {
+        if ($this->isPostSet('create')) {
             try {
                 $url = $this->getHttpRequest()->post('url');
                 if (trim($url) === '' || preg_match('/[^\w_\-,\.äöüß]/siu', $url)) {

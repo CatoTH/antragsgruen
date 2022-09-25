@@ -28,6 +28,9 @@ if ($contentAdmin) {
         'data-file-delete-url'     => $pageData->getFileDeleteUrl(),
         'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
         'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
+        'data-text-selector'       => '#stdTextHolder',
+        'data-save-selector'       => '.textSaver',
+        'data-edit-selector'       => '.editCaller',
     ]);
     echo '<button type="button" class="btn btn-sm btn-link editCaller">';
     echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ';

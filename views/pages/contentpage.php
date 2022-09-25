@@ -54,6 +54,9 @@ if ($admin) {
         'data-upload-url'          => $pageData->getUploadUrl(),
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
         'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
+        'data-text-selector'       => '#stdTextHolder',
+        'data-save-selector'       => '.textSaver',
+        'data-edit-selector'       => '.editCaller',
     ]);
 
     if (!in_array($pageData->textId, array_keys(ConsultationText::getDefaultPages()))) {
@@ -86,12 +89,15 @@ if ($admin) {
         </section>
         <?php
     }
+
+    echo Html::endForm();
 }
+
 
 echo '<div class="content contentPage">';
 
 if ($admin) {
-    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
+    echo '<button type="button" class="btn btn-link editCaller">' . Yii::t('base', 'edit') . '</button><br>';
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';
@@ -107,8 +113,6 @@ if ($admin) {
 echo '</div>';
 
 if ($admin) {
-    echo Html::endForm();
-
     $deleteUrl = UrlHelper::createUrl(['pages/delete-page', 'pageSlug' => $pageData->textId]);
     echo Html::beginForm($deleteUrl, 'post', ['class' => 'deletePageForm']);
     echo '<input type="hidden" name="delete" value="delete">';
