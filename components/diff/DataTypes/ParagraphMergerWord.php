@@ -9,18 +9,13 @@ use app\components\diff\amendmentMerger\ParagraphDiffGroup;
 
 class ParagraphMergerWord
 {
-    /** @var string */
-    public $orig = '';
-
-    /** @var null|string */
-    public $modification = null;
-
-    /** @var null|int */
-    public $modifiedBy = null;
+    public string $orig = '';
+    public ?string $modification = null;
+    public ?int $modifiedBy = null;
 
     /** @var null|ParagraphDiffGroup[] */
-    public $prependCollisionGroups = null;
+    public ?array $prependCollisionGroups = null;
 
     /** @var null|ParagraphDiffGroup[] */
-    public $appendCollisionGroups = null;
+    public ?array $appendCollisionGroups = null;
 }

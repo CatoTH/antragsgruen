@@ -7,12 +7,7 @@ namespace app\components\diff\DataTypes;
 
 class DiffWord
 {
-    /** @var string */
-    public $word = '';
-
-    /** @var string */
-    public $diff = '';
-
-    /** @var null|int */
-    public $amendmentId = null;
+    public string $word = '';
+    public string $diff = '';
+    public ?int $amendmentId = null;
 }

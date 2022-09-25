@@ -2,7 +2,7 @@
 
 namespace unit;
 
-use app\components\diff\{AmendmentSectionFormatter, DiffRenderer};
+use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
 use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
 
@@ -10,7 +10,17 @@ class AmendmentSectionFormatterTest extends TestBase
 {
     use Specify;
 
-    public function testKeepOLStart()
+    private static function getAffectedLinesBlock(int $from, int $to, string $text): AffectedLineBlock
+    {
+        $lines = new AffectedLineBlock();
+        $lines->text = $text;
+        $lines->lineFrom = $from;
+        $lines->lineTo = $to;
+
+        return $lines;
+    }
+
+    public function testKeepOLStart(): void
     {
         $strPre  = '<ol><li>Test 1</li><li>Test 2</li><li>Test 3</li><li>Test 4</li></ol>';
         $strPost = '<ol><li>Test 1</li><li>Test 2</li><li>Test 3neu</li><li>Test 4</li></ol>';
@@ -22,15 +32,11 @@ class AmendmentSectionFormatterTest extends TestBase
         $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals([
-            [
-                'text'     => '<ol start="3"><li value="3">###LINENUMBER###Test <del>3</del><ins>3neu</ins></li></ol>',
-                'lineFrom' => 3,
-                'lineTo'   => 3,
-            ]
+            self::getAffectedLinesBlock(3, 3, '<ol start="3"><li value="3">###LINENUMBER###Test <del>3</del><ins>3neu</ins></li></ol>'),
         ], $diffGroups);
     }
 
-    public function testOverlongLines()
+    public function testOverlongLines(): void
     {
         $orig      = '<p>[1] <a href="https://www.gruene.de/fileadmin/user_upload/Dokumente/Beschl%C3%BCsse/Humanitaeren_Zuzug_von_Roma_aus_Balkanstaaten_ermoeglichen.pdf">https://www.gruene.de/fileadmin/user_upload/Dokumente/Beschl%C3%BCsse/Humanitaeren_Zuzug_von_Roma_aus_Balkanstaaten_ermoeglichen.pdf</a></p>';
         $new       = $orig;
@@ -43,7 +49,7 @@ class AmendmentSectionFormatterTest extends TestBase
 
     }
 
-    public function testRemoveWhitespaces()
+    public function testRemoveWhitespaces(): void
     {
         $orig = '<p>Der eigene, existenzsichernde Job ist immer noch die beste Absicherung gegen Armut. Häufig ist der Weg dorthin aber für Alleinerziehende und gering verdienende Eltern sehr schwierig. Deswegen sind sie in besonderem Maße auf verlässliche und gute Betreuungs- und Bildungsangebote für ihre Kinder angewiesen. Aus- und Weiterbildungen in Teilzeit können ein Weg für Alleinerziehende sein, wieder einen existenzsichernden Arbeitsplatz zu finden. Dabei muss gewährleistet sein, dass in diesen Phasen das Existenzminimum von Alleinerziehenden und ihren Kindern ohne großen bürokratischen Aufwand durch lückenlose Leistungen gesichert ist. <strong>Wiedereinstiegshilfen nach der Babypause</strong> oder einer längeren Elternzeit wollen wir <strong>verbessern</strong>.</p>';
         $new  = '<p>Der eigene, existenzsichernde Job ist immer noch die beste Absicherung gegen Armut. Häufig ist der Weg dorthin aber für Alleinerziehende und gering verdienende Eltern sehr schwierig. Deswegen sind sie in besonderem Maße auf verlässliche, kostenlose und gute Betreuungs- und Bildungsangebote für ihre Kinder angewiesen. Aus- und Weiterbildungen in Teilzeit können ein Weg für Alleinerziehende sein, wieder einen existenzsichernden Arbeitsplatz zu finden. Dabei muss gewährleistet sein, dass in diesen Phasen das Existenzminimum von Alleinerziehenden und ihren Kindern ohne großen bürokratischen Aufwand durch lückenlose Leistungen gesichert ist. <strong>Wiedereinstiegshilfen nach der Babypause</strong> oder einer längeren Elternzeit wollen wir <strong>verbessern</strong>.</p>';
@@ -63,7 +69,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals(1, count($diffGroups));
     }
 
-    public function testCrashing()
+    public function testCrashing(): void
     {
         // This basically tests if the cache in ArrayMatcher's calcSimilarity does its job.
         // If it doesn't, this calculation will take ages
@@ -139,7 +145,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals(4, count($diffGroups));
     }
 
-    public function testEmptyDeletedSpaceAtEnd()
+    public function testEmptyDeletedSpaceAtEnd(): void
     {
         $this->markTestIncomplete('kommt noch'); // @TODO
 
@@ -158,7 +164,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals($expect, $text);
     }
 
-    public function testInlineFormatting()
+    public function testInlineFormatting(): void
     {
         $strPre  = '<p>Test 123</p>';
         $strPost = '<p>Test</p>';
@@ -176,21 +182,17 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals($expect, $text);
     }
 
-    public function testWhitespaceDeleted()
+    public function testWhitespaceDeleted(): void
     {
         $diffGroups = [
-            [
-                'text'     => '<ul><li value="1">###LINENUMBER###sich die Eltern flexibel untereinander aufteilen (8+8+8). Auch ###LINENUMBER###Alleinerziehende haben einen Anspruch auf 24 Monate FamilienZeitPlus<del aria-label="Streichen: „”"> </del></li></ul>',
-                'lineFrom' => 13,
-                'lineTo'   => 14,
-            ]
+            self::getAffectedLinesBlock(13, 14, '<ul><li value="1">###LINENUMBER###sich die Eltern flexibel untereinander aufteilen (8+8+8). Auch ###LINENUMBER###Alleinerziehende haben einen Anspruch auf 24 Monate FamilienZeitPlus<del aria-label="Streichen: „”"> </del></li></ul>')
         ];
         $text       = TextSimple::formatDiffGroup($diffGroups);
         $expect     = '<h4 class="lineSummary">Von Zeile 13 bis 14 löschen:</h4><div><ul><li value="1">sich die Eltern flexibel untereinander aufteilen (8+8+8). Auch Alleinerziehende haben einen Anspruch auf 24 Monate FamilienZeitPlus<del class="space" aria-label="Streichen: „Leerzeichen”">[Leerzeichen]</del></li></ul></div>';
         $this->assertEquals($expect, $text);
     }
 
-    public function testLineBreaksWithinParagraphs()
+    public function testLineBreaksWithinParagraphs(): void
     {
         // 'Line breaks within paragraphs'
         $orig = '<p>Um die ökonomischen, sozialen und ökologischen Probleme in Angriff zu nehmen, müssen wir umsteuern. Dazu brauchen wir einen Green New Deal für Europa, der eine umfassende Antwort auf die Krisen der Gegenwart gibt. Er enthält mehrere Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische Innovationen setzt statt auf maßlose Deregulierung; eine Politik der sozialen Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen Spaltung unserer Gesellschaften; eine Politik, die auch unpopuläre Strukturreformen angeht, wenn diese zu nachhaltigem Wachstum und mehr Gerechtigkeit beitragen; ein Politik die Probleme wie Korruption und mangelnde Rechtsstaatlichkeit angehen und eine Politik, die die Glaubwürdigkeit in Europa, dass Schulden auch bedient werden, untermauert.</p>
@@ -201,19 +203,14 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 <p>Die Kaputtsparpolitik ist gescheitert<br>
 Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichtiges Ziel erreicht: Der Euro, als entscheidendes Element der europäischen Integration und des europäischen Zusammenhalts, konnte bislang gerettet werden. Dafür hat Europa neue Instrumente und Mechanismen geschaffen, wie den Euro-Rettungsschirm mit dem Europäischen Stabilitätsmechanismus (ESM) oder die Bankenunion. Aber diese Instrumente allein werden die tiefgreifenden Probleme nicht lösen - weder politisch noch wirtschaftlich.</p>';
 
-        $expect = [
-            [
-                'text'     =>
-                    '<p>###LINENUMBER###Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische ' .
-                    '###LINENUMBER###Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ' .
-                    '###LINENUMBER###Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen ' .
-                    '###LINENUMBER###Spaltung unserer Gesellschaften; <del>eine Politik, die</del><ins>ein Wirtschaftsmodell, das</ins> auch <del>unpopuläre</del><ins>unbequeme</ins> ' .
-                    '###LINENUMBER###Strukturreformen <del>angeht</del><ins>mit einbezieht</ins>, wenn diese zu nachhaltigem Wachstum und mehr ' .
-                    '###LINENUMBER###Gerechtigkeit beitragen; ein Politik die Probleme wie Korruption und mangelnde </p>',
-                'lineFrom' => 4,
-                'lineTo'   => 9,
-            ]
-        ];
+        $expect = [self::getAffectedLinesBlock(4, 9,
+            '<p>###LINENUMBER###Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische ' .
+            '###LINENUMBER###Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ' .
+            '###LINENUMBER###Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen ' .
+            '###LINENUMBER###Spaltung unserer Gesellschaften; <del>eine Politik, die</del><ins>ein Wirtschaftsmodell, das</ins> auch <del>unpopuläre</del><ins>unbequeme</ins> ' .
+            '###LINENUMBER###Strukturreformen <del>angeht</del><ins>mit einbezieht</ins>, wenn diese zu nachhaltigem Wachstum und mehr ' .
+            '###LINENUMBER###Gerechtigkeit beitragen; ein Politik die Probleme wie Korruption und mangelnde </p>',
+        )];
 
         $formatter = new AmendmentSectionFormatter();
         $formatter->setTextOriginal($orig);
@@ -229,7 +226,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         // - <li>s that are deleted
     }
 
-    public function testGroupingChangedBlocks1()
+    public function testGroupingChangedBlocks1(): void
     {
         $blocks  = [
             '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ###LINENUMBER###eirmod tempor invidunt ut labore et dolore magna aliquyam erat</del><ins>Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro. De carne lumbering animata corpora quaeritis. Summus brains sit​​, morbo vel maleficia?</ins></p>',
@@ -248,7 +245,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         ], $grouped);
     }
 
-    public function testSeveralUnchangedLinesAtBeginning1()
+    public function testSeveralUnchangedLinesAtBeginning1(): void
     {
         $strPre  = '<p>Über den Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Daher verteidigen wir die Straffreiheit von Schwangerschaftsabbrüchen gegen die Angriffe von rechts. Frauen in Notlagen brauchen Unterstützung und Hilfe, keine Bevormundung und keine Strafe.</p>';
         $strPost = '<p>Über den Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Bei ungewollter Schwangerschaft brauchen Frauen wohnortnahe Unterstützung und Hilfe, keine Bevormundung und keine Strafe. Erst recht brauchen sie keinen Rückschritt bei bereits erkämpften Rechten und keine Einschränkungen erreichter Freiheiten.</p>';
@@ -260,16 +257,16 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES, 0);
         $this->assertEquals(1, count($diffGroups));
-        $this->assertEquals(3, $diffGroups[0]['lineFrom']);
-        $this->assertEquals(5, $diffGroups[0]['lineTo']);
+        $this->assertEquals(3, $diffGroups[0]->lineFrom);
+        $this->assertEquals(5, $diffGroups[0]->lineTo);
 
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES, 1);
         $this->assertEquals(1, count($diffGroups));
-        $this->assertEquals(2, $diffGroups[0]['lineFrom']);
-        $this->assertEquals(5, $diffGroups[0]['lineTo']);
+        $this->assertEquals(2, $diffGroups[0]->lineFrom);
+        $this->assertEquals(5, $diffGroups[0]->lineTo);
     }
 
-    public function testGroupingChangedBlocks2()
+    public function testGroupingChangedBlocks2(): void
     {
         // To cases in which the grouping has no effect: nested INS/DEL-Tags, and Paragraphs that are nur purely inserted/deleted
         $blocks  = [
@@ -280,7 +277,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $this->assertEquals($blocks, $grouped);
     }
 
-    public function testSeveralUnchangedLinesAtBeginning2()
+    public function testSeveralUnchangedLinesAtBeginning2(): void
     {
         $strPre  = '<p>Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Daher verteidigen wir die Straffreiheit von Schwangerschaftsabbrüchen gegen die Angriffe von rechts. Frauen in Notlagen brauchen Unterstützung und Hilfe, keine Bevormundung und keine Strafe.</p>';
         $strPost = '<p>Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Bei ungewollter Schwangerschaft brauchen Frauen wohnortnahe Unterstützung und Hilfe, keine Bevormundung und keine Strafe. Erst recht brauchen sie keinen Rückschritt bei bereits erkämpften Rechten und keine Einschränkungen erreichter Freiheiten.</p>';
@@ -292,7 +289,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals(1, count($diffGroups));
-        $this->assertEquals(1, $diffGroups[0]['lineFrom']);
-        $this->assertEquals(5, $diffGroups[0]['lineTo']);
+        $this->assertEquals(1, $diffGroups[0]->lineFrom);
+        $this->assertEquals(5, $diffGroups[0]->lineTo);
     }
 }

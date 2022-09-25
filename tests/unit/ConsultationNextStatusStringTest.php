@@ -12,10 +12,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
 {
     use Specify;
 
-    /**
-     *
-     */
-    public function testMotionPrefix()
+    public function testMotionPrefix(): void
     {
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(2);
@@ -32,6 +29,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->motionTypeId   = 3;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';
+        $dummyMotion->dateContentModification = date('Y-m-d H:i:s');
         $dummyMotion->save();
         $consultation->refresh();
 
@@ -47,6 +45,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->motionTypeId   = 4;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';
+        $dummyMotion->dateContentModification = date('Y-m-d H:i:s');
         $dummyMotion->save();
         $consultation->refresh();
 
@@ -62,6 +61,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->motionTypeId   = 3;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';
+        $dummyMotion->dateContentModification = date('Y-m-d H:i:s');
         $dummyMotion->save();
         $consultation->refresh();
 

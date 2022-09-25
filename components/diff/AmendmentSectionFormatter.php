@@ -2,6 +2,7 @@
 
 namespace app\components\diff;
 
+use app\components\diff\DataTypes\AffectedLineBlock;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\exceptions\Internal;
@@ -160,6 +161,9 @@ class AmendmentSectionFormatter
         }
     }
 
+    /**
+     * @return AffectedLineBlock[]
+     */
     public function getDiffGroupsWithNumbers(int $lineLength, int $diffFormatting, ?int $context = null): array
     {
         if ($context === null) {

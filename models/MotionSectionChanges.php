@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\components\diff\{AmendmentSectionFormatter, DiffRenderer};
+use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
 use app\models\db\{Motion, MotionSection};
 use app\models\exceptions\{Inconsistency, Internal};
 use app\models\sectionTypes\ISectionType;
@@ -95,6 +95,9 @@ class MotionSectionChanges
         return $this->getAnySection()->getSettings()->fixedWidth;
     }
 
+    /**
+     * @return AffectedLineBlock[]
+     */
     public function getSimpleTextDiffGroups(int $diffFormatting = DiffRenderer::FORMATTING_CLASSES): array
     {
         if (!$this->oldSection || !$this->newSection || $this->getSectionTypeId() !== ISectionType::TYPE_TEXT_SIMPLE) {

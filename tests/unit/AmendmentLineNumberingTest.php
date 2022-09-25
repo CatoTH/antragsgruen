@@ -2,12 +2,15 @@
 
 namespace unit;
 
-use app\components\diff\{AmendmentSectionFormatter, DiffRenderer};
+use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
 use app\models\db\Amendment;
 use app\models\sectionTypes\TextSimple;
 
 class AmendmentLineNumberingTest extends DBTestBase
 {
+    /**
+     * @return AffectedLineBlock[]
+     */
     private function getSectionDiff(int $amendmentId, int $sectionId): array
     {
         /** @var Amendment $amendment */
@@ -45,6 +48,16 @@ class AmendmentLineNumberingTest extends DBTestBase
         return $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, 0);
     }
 
+    private static function getAffectedLinesBlock(int $from, int $to, string $text): AffectedLineBlock
+    {
+        $lines = new AffectedLineBlock();
+        $lines->text = $text;
+        $lines->lineFrom = $from;
+        $lines->lineTo = $to;
+
+        return $lines;
+    }
+
     public function testFirstAffectedLine()
     {
         /** @var Amendment $amendment */
@@ -69,31 +82,23 @@ class AmendmentLineNumberingTest extends DBTestBase
         $diff = $this->getSectionDiffBlocks(270, 2);
         $text = '<ul><li value="1">###LINENUMBER###Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul><ul class="inserted"><li>Neue Zeile</li></ul>';
         $this->assertEquals([
-            [
-                'text'     => $text,
-                'lineFrom' => 9,
-                'lineTo'   => 9,
-            ],
-            [
-                'text' => '<ul><li value="1">###LINENUMBER###<del>Woibbadinga </del><ins><strong>Woibbadinga</strong> </ins>noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
-                'lineFrom' => 14,
-                'lineTo' => 14,
-            ]
+            self::getAffectedLinesBlock(9, 9, $text),
+            self::getAffectedLinesBlock(14, 14, '<ul><li value="1">###LINENUMBER###<del>Woibbadinga </del><ins><strong>Woibbadinga</strong> </ins>noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>'),
         ], $diff);
-        $this->assertEquals($text, $diff[0]['text']);
+        $this->assertEquals($text, $diff[0]->text);
     }
 
     public function testSection1()
     {
         $diff = $this->getSectionDiff(3, 2);
-        $this->assertEquals(9, $diff[0]['lineFrom']);
-        $this->assertEquals(9, $diff[0]['lineTo']);
-        $this->assertEquals(14, $diff[1]['lineFrom']);
-        $this->assertEquals(14, $diff[1]['lineTo']);
-        $this->assertEquals(31, $diff[2]['lineFrom']);
-        $this->assertEquals(31, $diff[2]['lineTo']);
-        $this->assertEquals(35, $diff[3]['lineFrom']);
-        $this->assertEquals(35, $diff[3]['lineTo']);
+        $this->assertEquals(9, $diff[0]->lineFrom);
+        $this->assertEquals(9, $diff[0]->lineTo);
+        $this->assertEquals(14, $diff[1]->lineFrom);
+        $this->assertEquals(14, $diff[1]->lineTo);
+        $this->assertEquals(31, $diff[2]->lineFrom);
+        $this->assertEquals(31, $diff[2]->lineTo);
+        $this->assertEquals(35, $diff[3]->lineFrom);
+        $this->assertEquals(35, $diff[3]->lineTo);
     }
 
     public function testSection1Wording()
@@ -109,12 +114,12 @@ class AmendmentLineNumberingTest extends DBTestBase
     public function testSection2()
     {
         $diff = $this->getSectionDiff(3, 4);
-        $this->assertEquals(35, $diff[0]['lineFrom']);
-        $this->assertEquals(35, $diff[0]['lineTo']);
-        $this->assertEquals(42, $diff[1]['lineFrom']);
-        $this->assertEquals(42, $diff[1]['lineTo']);
-        $this->assertEquals(49, $diff[2]['lineFrom']);
-        $this->assertEquals(53, $diff[2]['lineTo']);
+        $this->assertEquals(35, $diff[0]->lineFrom);
+        $this->assertEquals(35, $diff[0]->lineTo);
+        $this->assertEquals(42, $diff[1]->lineFrom);
+        $this->assertEquals(42, $diff[1]->lineTo);
+        $this->assertEquals(49, $diff[2]->lineFrom);
+        $this->assertEquals(53, $diff[2]->lineTo);
     }
 
     public function testSection2Wording()
@@ -127,26 +132,14 @@ class AmendmentLineNumberingTest extends DBTestBase
 
     public function testInvisibleSpaces()
     {
-        $in     = [
-            [
-                'text'     => '###LINENUMBER###Test<del> </del>Bla<ins> </ins>',
-                'lineFrom' => 16,
-                'lineTo'   => 16,
-            ],
-        ];
+        $in     = [self::getAffectedLinesBlock(16, 16, '###LINENUMBER###Test<del> </del>Bla<ins> </ins>')];
         $expect = '<h4 class="lineSummary">In Zeile 16:</h4><div><p>' .
             'Test<del class="space" aria-label="Streichen: „Leerzeichen”">[Leerzeichen]</del>Bla<ins class="space" aria-label="Einfügen: „Leerzeichen”">[Leerzeichen]</ins>' . '</p></div>';
 
         $filtered = TextSimple::formatDiffGroup($in);
         $this->assertEquals($expect, $filtered);
 
-        $in     = [
-            [
-                'text'     => '###LINENUMBER###Test<del><br></del>Bla<ins><br></ins>',
-                'lineFrom' => 16,
-                'lineTo'   => 16,
-            ],
-        ];
+        $in     = [self::getAffectedLinesBlock(16, 16, '###LINENUMBER###Test<del><br></del>Bla<ins><br></ins>')];
         $expect = '<h4 class="lineSummary">In Zeile 16:</h4><div><p>Test<del class="space" aria-label="Streichen: „Leerzeichen”">[Zeilenumbruch]</del>' .
             '<del><br></del>Bla<ins class="space" aria-label="Einfügen: „Zeilenumbruch”">[Zeilenumbruch]</ins><ins><br></ins></p></div>';
 
