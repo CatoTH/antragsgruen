@@ -24,16 +24,16 @@ class PagesController extends Base
                 if (trim($url) === '' || preg_match('/[^\w_\-,\.äöüß]/siu', $url)) {
                     throw new FormError('Invalid character in the URL');
                 }
-                $page                 = new ConsultationText();
-                $page->category       = 'pagedata';
-                $page->textId         = $url;
-                $page->title          = $this->getHttpRequest()->post('title');
-                $page->breadcrumb     = $this->getHttpRequest()->post('title');
+                $page = new ConsultationText();
+                $page->category = ConsultationText::DEFAULT_CATEGORY;
+                $page->textId = $url;
+                $page->title = $this->getHttpRequest()->post('title');
+                $page->breadcrumb = $this->getHttpRequest()->post('title');
                 $page->consultationId = $this->consultation->id;
-                $page->siteId         = $this->site->id;
-                $page->menuPosition   = 1;
-                $page->text           = '';
-                $page->editDate       = date('Y-m-d H:i:s');
+                $page->siteId = $this->site->id;
+                $page->menuPosition = ($this->isPostSet('inMenu') ? 1 : null);
+                $page->text = '';
+                $page->editDate = date('Y-m-d H:i:s');
                 $page->save();
 
                 return $this->getHttpResponse()->redirect($page->getUrl());

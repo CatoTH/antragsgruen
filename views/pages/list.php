@@ -87,6 +87,10 @@ $foundPageIds = [];
         <input type="text" class="form-control" name="title" value=""
                required id="contentTitle" maxlength="30">
     </div>
+    <label class="form-group">
+        <?= Html::checkbox('inMenu', true) ?>
+        <?= Yii::t('pages', 'settings_inmenu') ?>
+    </label>
     <div class="form-group">
         <button type="submit" class="btn btn-primary" name="create" value="create">
             <?= Yii::t('pages', 'create_btn') ?>
