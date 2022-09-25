@@ -22,5 +22,5 @@ The back button override / addition to the breadcrumb menu on the candidature pa
 ## PDFs / Spreadsheets
 
 The logo has to be added to two locations:
-- to LayoutHooks.php
+- to pdf/Egp.php
 - to the template.ods

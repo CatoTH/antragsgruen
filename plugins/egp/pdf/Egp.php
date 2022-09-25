@@ -12,7 +12,15 @@ class Egp extends IPDFLayout
 
     protected function setHeaderLogo(Consultation $consultation, int $abs, ?float $maxWidth, ?float $maxHeight): void
     {
-        if ($consultation->urlPath === 'spring2022_council') {
+        if ($consultation->urlPath === '36thEGPcouncil') {
+            $logo = file_get_contents(__DIR__ . '/../assets/council-2022-06.png');
+            $width = 904;
+            $height = 398;
+        } elseif ($consultation->urlPath === '6thEGPcongress') {
+            $logo = file_get_contents(__DIR__ . '/../assets/congress-2022-12.png');
+            $width = 678;
+            $height = 298;
+        } elseif ($consultation->urlPath === 'spring2022_council') {
             $logo = file_get_contents(__DIR__ . '/../assets/council-2022-06.png');
             $width = 905;
             $height = 398;
