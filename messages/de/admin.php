@@ -141,7 +141,7 @@ return [
     'list_date'                   => 'Eingereicht',
     'list_proposal'               => 'Verfahrensvorschlag',
     'list_responsible'            => 'Verantwortlich',
-    'list_responsible_none'       => 'keine regestrierte Nutzer*in',
+    'list_responsible_none'       => 'keine registrierte Nutzer*in',
     'list_responsible_comment'    => 'Kommentar / Zusatz',
     'list_responsible_edit'       => 'Verantwortlichkeit bearbeiten',
     'list_title'                  => 'Titel',

@@ -1,11 +1,12 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\{ConsultationUserGroup, IMotion, User};
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var \app\models\db\IMotion $imotion
+ * @var IMotion $imotion
  * @var string $type
  */
 
@@ -30,6 +31,9 @@ foreach ($controller->site->admins as $user) {
         $foundUsers[] = $user->id;
     }
 }
+usort($users, function (User $user1, User $user2): int {
+    return strnatcasecmp($user1->nameFamily ?? $user1->name, $user2->nameFamily ?? $user2->name);
+});
 
 $saveUrl = UrlHelper::createUrl([
     'admin/proposed-procedure/save-responsibility',
