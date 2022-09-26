@@ -45,6 +45,12 @@ echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->
         </div>
     </section>
 
+    <div class="content">
+        <div class="alert alert-info">
+            <p><?= Yii::t('motion', 'confirm_hint') ?></p>
+        </div>
+    </div>
+
 <?php
 $pdfUrl = UrlHelper::createMotionUrl($motion, 'pdf', ['showAlways' => $motion->getShowAlwaysToken()]);
 $iframeUrl = UrlHelper::createMotionUrl($motion, 'embeddedpdf', ['file' => $pdfUrl]);

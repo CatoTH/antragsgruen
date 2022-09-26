@@ -132,6 +132,7 @@ return [
 
     'unsaved_drafts'                    => 'There are unsaved drafts that can be restored:',
     'confirm_amendment'                 => 'Confirm amendment',
+    'confirm_hint'                      => 'Please check if you want to submit the amendment as shown and then <strong>confirm</strong> at the bottom of this page.',
     'amendment_submitted'               => 'Amendment submitted',
     'amendment_create'                  => 'Create an amendment',
     'amendment_edit'                    => 'Edit this amendment',

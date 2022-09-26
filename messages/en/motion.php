@@ -7,6 +7,7 @@ return [
     'confirm_bread'                 => 'Confirm',
     'confirm_view_web'              => 'Web version',
     'confirm_view_pdf'              => 'PDF version',
+    'confirm_hint'                  => 'Please check if you want to submit the motion as shown and then <strong>confirm</strong> at the bottom of this page.',
     'create_prerequisites'          => 'Requirements for a motion',
     'sidebar_title_aria'            => 'Functionality and links regarding this motion',
     'amendment_create'              => 'Create an amendment',

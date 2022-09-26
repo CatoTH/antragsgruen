@@ -33,6 +33,14 @@ $layout->addBreadcrumb(Yii::t('amend', 'confirm'));
 
 echo '<h1>' . Yii::t('amend', 'confirm_amendment') . '</h1>';
 
+?>
+    <div class="content">
+        <div class="alert alert-info">
+            <p><?= Yii::t('amend', 'confirm_hint') ?></p>
+        </div>
+    </div>
+<?php
+
 if ($amendment->changeEditorial !== '') {
     echo '<section id="section_editorial" class="motionTextHolder">';
     echo '<h3 class="green">' . Yii::t('amend', 'editorial_hint') . '</h3>';
