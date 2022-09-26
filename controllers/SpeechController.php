@@ -76,9 +76,6 @@ class SpeechController extends Base
         if (!$queue) {
             $this->returnRestResponse(404, $this->getError('Queue not found'));
         }
-        if (!$queue->getSettings()->isOpen) {
-            return $this->returnRestResponse(403, $this->getError(\Yii::t('speech', 'err_permission_apply')));
-        }
         if (count($queue->subqueues) > 0) {
             // Providing a subqueue is necessary if there are some; otherwise, it goes into the "default" subqueue
             $subqueue = $queue->getSubqueueById(intval($this->getHttpRequest()->post('subqueue')));
@@ -98,6 +95,15 @@ class SpeechController extends Base
         }
 
         $pointOfOrder = ($this->getHttpRequest()->post('pointOfOrder') > 0);
+        if ($pointOfOrder) {
+            if (!$queue->getSettings()->isOpenPoo) {
+                return $this->returnRestResponse(403, $this->getError(\Yii::t('speech', 'err_permission_apply')));
+            }
+        } else {
+            if (!$queue->getSettings()->isOpen) {
+                return $this->returnRestResponse(403, $this->getError(\Yii::t('speech', 'err_permission_apply')));
+            }
+        }
 
         $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser, $pointOfOrder);
 
