@@ -32,11 +32,6 @@ class PageController extends Base
         return null;
     }
 
-    private function formatImotionForSlide(IMotion $IMotion): string
-    {
-        return '<li>' . Html::encode($IMotion->getTitleWithPrefix()) . '</li>';
-    }
-
     public function actionFromImotions(string $pageSlug): void
     {
         $page = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
@@ -67,11 +62,9 @@ class PageController extends Base
         } elseif (count($imotions) > 0) {
             $this->getHttpSession()->setFlash('success', 'Success.');
 
-            $html = '<ul>';
-            foreach ($imotions as $imotion) {
-                $html .= $this->formatImotionForSlide($imotion);
-            }
-            $html .= '</ul>';
+            $html = \Yii::$app->controller->renderPartial(
+                '@app/plugins/motionslides/views/imotion-page', ['imotions' => $imotions]
+            );
 
             $page->text = $html;
             $page->save();
