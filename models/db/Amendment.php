@@ -1227,9 +1227,10 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /*
-     * If no proposed procedure is set, the checkbox in merge_amendments_init should always be preselected,
-     * except for global alternatives.
-     * If there is one, it depends if either the amendment, the proposed procedure or the vote was set as accepted,
+     * Global alternatives are never selected.
+     * For regular amendments, voting results always take precedence.
+     * In absence of a voting, if no proposed procedure is set, the checkbox should always be preselected.
+     * If there is one, it depends on if either the amendment, the proposed procedure or the vote was set as accepted,
      * or is set as "modified accepted".
      */
     public function markForMergingByDefault(bool $hasProposals): bool
@@ -1237,24 +1238,33 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->globalAlternative) {
             return false;
         }
+
+        if ($this->status === static::STATUS_REJECTED) {
+            return false;
+        }
+        if (in_array($this->status, [static::STATUS_ACCEPTED, static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION])) {
+            return true;
+        }
+        if (in_array($this->status, [static::STATUS_VOTE, static::STATUS_SUBMITTED_SCREENED]) || $this->proposalStatus === static::STATUS_VOTE) {
+            if ($this->votingStatus === static::STATUS_ACCEPTED) {
+                return true;
+            }
+            if ($this->votingStatus === static::STATUS_REJECTED) {
+                return false;
+            }
+        }
+
         if (!$hasProposals) {
             return true;
         }
-        if ($this->status === static::STATUS_ACCEPTED || $this->proposalStatus === static::STATUS_ACCEPTED) {
-            return true;
-        }
-        if ($this->status === static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+        if ($this->proposalStatus === static::STATUS_ACCEPTED) {
             return true;
         }
         if ($this->status === static::STATUS_PROPOSED_MODIFIED_AMENDMENT ||
             $this->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
             return true;
         }
-        if ($this->status === static::STATUS_VOTE || $this->proposalStatus === static::STATUS_VOTE) {
-            if ($this->votingStatus === static::STATUS_ACCEPTED) {
-                return true;
-            }
-        }
+
         return false;
     }
 
