@@ -50,7 +50,10 @@ if (User::getCurrentUser()) {
 }
 
 ?>
-<h1 id="speechListUserTitle"><?= Html::encode($this->title) . $fullscreenButton ?></h1>
+<div class="primaryHeader">
+    <h1 id="speechListUserTitle"><?= Html::encode($this->title) ?></h1>
+    <?= $fullscreenButton ?>
+</div>
 
 <section class="currentSpeechFullPage currentSpeechPageWidth"
          aria-labelledby="speechListUserTitle"

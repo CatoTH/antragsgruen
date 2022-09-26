@@ -44,7 +44,7 @@ if (User::getCurrentUser() && $pageData->isCustomPage()) {
     $fullscreenButton = '';
 }
 
-echo '<h1 class="pageTitle">' . Html::encode($pageData->title ?: $pageData->textId) . $fullscreenButton . '</h1>';
+echo '<div class="primaryHeader"><h1 class="pageTitle">' . Html::encode($pageData->title ?: $pageData->textId) . '</h1>' . $fullscreenButton . '</div>';
 
 if ($admin) {
     $layout->loadCKEditor();
