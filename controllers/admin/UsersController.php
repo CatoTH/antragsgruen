@@ -106,7 +106,7 @@ class UsersController extends AdminBase
             } else {
                 $password = $this->getPostValue('password');
             }
-            $this->userGroupAdminMethods->createSingleDetailedUser(
+            $user = $this->userGroupAdminMethods->createSingleDetailedUser(
                 $this->getPostValue('authType'),
                 $this->getPostValue('authUsername'),
                 $password,
