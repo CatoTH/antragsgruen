@@ -254,12 +254,8 @@ class MotionListController extends AdminBase
 
         $imotions = [];
         foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $imotion) {
-            if (is_a($imotion, Motion::class) && $imotion->motionTypeId === $motionTypeId) {
-                if ($motionType->amendmentsOnly) {
-                    $imotions = array_merge($imotions, $imotion->getVisibleAmendments($withdrawn));
-                } else {
-                    $imotions[] = $imotion;
-                }
+            if ($imotion->getMyMotionType()->id === $motionTypeId) {
+                $imotions[] = $imotion;
             }
         }
 
