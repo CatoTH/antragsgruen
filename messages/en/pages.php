@@ -28,7 +28,7 @@ return [
         <p>From then on this program will show you an overwiev of all new articles on these sites.</p>
         <p>A small selection of programs and web services to read RSS feeds:</p>
         <ul>
-            <li><a href="http://www.rssowl.org/">RSSOwl</a> (Linux, macOS, Windows)</li>
+            <li><a href="https://www.rssowl.org/">RSSOwl</a> (Linux, macOS, Windows)</li>
             <li><a href="https://ranchero.com/netnewswire/">NetNewsWire</a> (macOS)</li>
             <li><a href="https://reederapp.com/">Reeder</a> (macOS, iOS)</li>
             <li><a href="https://www.vienna-rss.com/">Vienna</a> (macOS)</li>
