@@ -28,8 +28,8 @@ return [
         <p>Ab dann bekommt man in diesem Programm automatisch eine Übersicht aller neuen Artikel, die auf diesen Seiten veröffentlicht wurden.</p>
         <p>Eine kleine Auswahl solcher Programme und Lesedienste:</p>
         <ul>
-            <li><a href="http://www.rssowl.org/">RSSOwl</a> (Linux, macOS, Windows)</li>
-            <li><a href="https://ranchero.com/netnewswire/">NetNewsWire</a> (macOS)</li>
+            <li><a href="https://www.rssowl.org/">RSSOwl</a> (Linux, macOS, Windows)</li>
+            <li><a href="https://netnewswire.com/">NetNewsWire</a> (macOS, iOS)</li>
             <li><a href="https://reederapp.com/">Reeder</a> (macOS, iOS)</li>
             <li><a href="https://www.vienna-rss.com/">Vienna</a> (macOS)</li>
             <li><a href="https://www.microsoft.com/en-us/p/newsflow/9nblggh58s5r">Newsflow</a> (Windows)</li>
