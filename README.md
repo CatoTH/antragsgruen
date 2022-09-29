@@ -95,7 +95,7 @@ A Dockerfile to compile and run the latest development version of Antragsgrün i
 
 ### Using the web-based updater
 
-Site administrators of an installation will see a Update-Box at the right side of the administration page of a consultation. The box indicates if an update is available. If so, you can switch the whole installation into Update mode. While the update mode is active, the whole site will not be available to other users.
+Site administrators of an installation will see an Update-Box on the right side of the administration page of a consultation. The box indicates if an update is available. If so, you can switch the whole installation into Update mode. While the update mode is active, the whole site will not be available to other users.
 
 Once the update mode is active, the ``/update.php`` script will be available to the site administrator. Here, the update can be performed in two to three steps:
 
@@ -218,7 +218,7 @@ Add the following settings to your config.json (and adapt them to your needs):
 Antragsgrün has an official plugin that allows using OpenSlides as a backend for the user administration. This allows two things:
 
 - Logging in on Antragsgrün with the user credentials of an OpenSlides instance.
-- Automatically synchronizing the user accouns and user groups from OpenSlides to Antragsgrün, e.g. for restricting motion creation or voting rights on Antragsgrün to a user group administrated on OpenSlides.
+- Automatically synchronizing the user accounts and user groups from OpenSlides to Antragsgrün, e.g. for restricting motion creation or voting rights on Antragsgrün to a user group administrated on OpenSlides.
 
 To set it up:
 - Enable the `openslides` plugin on the Antragsgrün site
@@ -252,7 +252,7 @@ To compile the JavaScript- and CSS-Files, you need to install Gulp:
 npm install # Installs all required packages
 
 npm run build # Compiles the regular JS/CSS-files
-npm run watch # Listens for changes in JS/CSS-files and compiles them immediatelly
+npm run watch # Listens for changes in JS/CSS-files and compiles them immediately
 ```
 
 After updating the source code from git, do:
@@ -298,7 +298,7 @@ Testing is currently done the following ways:
 
 - Ensuring that all functionality is accessible with the keyboard.
 - Screenreader functionality is currently tested using VoiceOver.
-- For validation, [Total Validator](https://www.totalvalidator.com/), [WAVE](https://wave.webaim.org/) and the Mozilla Firefox accessibility validation is used. **Known limitations** of Total Validator and WAVE here are the inaccurate contrast checking for gradients in headlines and buttons. Firefox checks them correctly. For Firefox, the main limitation is that it inaccurately classifys elements as interactive that have a `$(element).on("click", ".subselecor", handler)`-listener that is actually targeted to dynamic child elements.
+- For validation, [Total Validator](https://www.totalvalidator.com/), [WAVE](https://wave.webaim.org/) and the Mozilla Firefox accessibility validation is used. **Known limitations** of Total Validator and WAVE here are the inaccurate contrast checking for gradients in headlines and buttons. Firefox checks them correctly. For Firefox, the main limitation is that it inaccurately classifies elements as interactive that have a `$(element).on("click", ".subselecor", handler)`-listener that is actually targeted to dynamic child elements.
 
 Known limitations:
 
@@ -310,8 +310,8 @@ Known limitations:
 **The plugin system is still under heavy development.**
 
 * The plugin system is based on Yii2's [module system](https://www.yiiframework.com/doc/guide/2.0/en/structure-modules) and [asset bundles](https://www.yiiframework.com/doc/guide/2.0/en/structure-assets). 
-* Each plugins has a directory under [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
-* Custom URLs can be defined in the Modules.php, the corresponding controllers are in the ``controller``-subdirectory, the views in ``views``, custom commands need to be in a ``commands``-directory. A rather complex exmple containing a bit of everything can be seen in [member_petitions](plugins/member_petitions/).
+* Each plugin has a directory under [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
+* Custom URLs can be defined in the Modules.php, the corresponding controllers are in the ``controller``-subdirectory, the views in ``views``, custom commands need to be in a ``commands``-directory. A rather complex example containing a bit of everything can be seen in [member_petitions](plugins/member_petitions/).
 * Each plugin has a unique ID that is equivalent to the name of the directory. To activate a plugin, the ID has to be added to the ``plugins``-list in the ``config.json``:
 
 ```json
@@ -367,7 +367,7 @@ java -jar selenium-server-standalone-3.141.59.jar```
 vendor/bin/codecept run acceptance```
 * Run all unit tests: ```
 vendor/bin/codecept run unit```
-* Run a single acceptence-test: ```
+* Run a single acceptance-test: ```
 vendor/bin/codecept run acceptance motions/CreateCept```
 
 ### phpstan

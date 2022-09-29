@@ -110,7 +110,7 @@
 ## Version 4.8.0 (2021-06-27)
 
 - Statute amendments are now explicitly supported. They have the following characteristics:
-  - Admins can create the base statutes that can be amended. This base text will not be visible regularily.
+  - Admins can create the base statutes that can be amended. This base text will not be visible regularly.
   - Statute amendments are displayed and created like normal motions. That is, they will be shown like normal motions on the home page and receive a regular prefix like "S1". Their content is using the diff view of amendments, though.
 - If PDFs are uploaded as an image in applications, they will be converted to a PNG. Until now, this did not work at all. This only works if ImageMagick is set up on the server.
 - When selecting an image for uploading in applications, only supported file types are selectable now.
@@ -219,8 +219,8 @@
   - Easier navigation using the keyboard
   - Better contrasts
   - Generally, Antragsgrün aims to comply with the WCAG 2.0 AA rules
-- It is now easier to edit the agenda of a consultation, as the changes are immediatelly saved and it is not necessary anymore to explicitly use the Save-Button at the bottom of the agenda.
-- If a new amendment is screened / published while a new version of the motion is being created (by merging other amendments into it), this new amendment will automatically appear in the merging view. A small hint will appear, notifiying about this addition, and with a link to the first paragraph affected by this amendment. The new amendment is inactive, by default, and needs to be actively activated for merging into the affected paragraph. Vice-versa, if an amendment is unpublished while merging, the amendment hint vanishes automatically. Already applied changes remain, though.
+- It is now easier to edit the agenda of a consultation, as the changes are immediately saved and it is not necessary anymore to explicitly use the Save-Button at the bottom of the agenda.
+- If a new amendment is screened / published while a new version of the motion is being created (by merging other amendments into it), this new amendment will automatically appear in the merging view. A small hint will appear, notifying about this addition, and with a link to the first paragraph affected by this amendment. The new amendment is inactive, by default, and needs to be actively activated for merging into the affected paragraph. Vice-versa, if an amendment is unpublished while merging, the amendment hint vanishes automatically. Already applied changes remain, though.
 - Users can now support motions and amendments in all phases, if this is set up.
 - There is now an option to include the name of an amendment submitter to the bookmarks shown to the right of the motion text. As this has the danger of looking awkward once the names are getting too long, this is not activated by default.
 - If an amendment affects only one specific line of a motion paragraph, one line before and after the affected one are now also shown in the amendment (confirmation) view, to give more context when reading it.
@@ -292,14 +292,14 @@
 ## Version 4.3.0 (2019-10-21)
 
 - Hint: 4.3 will be the last version compatible with PHP versions below 7.1.
-- The merging of amendments into motion has greatly been improved. Instead of generating one big, monolithic text with all changes and conflicts, the motion is now split into different paragraphs. For each paragraph, the amendments to be merged into the motion can be selected separately and on-the-fly while editing the new vesion of the text.
+- The merging of amendments into motion has greatly been improved. Instead of generating one big, monolithic text with all changes and conflicts, the motion is now split into different paragraphs. For each paragraph, the amendments to be merged into the motion can be selected separately and on-the-fly while editing the new version of the text.
 - Please note that previous merging drafts that were not completed, are not accessible anymore after upgrading to this release due to incompatibilities with this new merging system.
 - The inline amendment mode in the regular motion view (using the green bookmarks at the right) can now be used on devices with small screens as well.
 - Several styling improvements, especially for devices with small screens (e.g. smartphones).
 - The "My motions" and "My amendments" sections on the consultation overview now list all motions/amendments that one has created, ininiated or expressed (dis)like towards. Not only the ones ininiated as before. This makes it easier to check on motions/amendments that are for some reason not visible anymore on this site (withdrawn, merged, ...)
 - The "Using Antragsgrün"-hint in the sidebar can now be disabled through the admin interface.
 - Several performance improvements for large installations with hundreds of amendments, especially in the motion view.
-- It is now possible to set a detailed voting result for motions and amendments, either from the backend when editing the motion/amendment, or when merging amendments into a motion when confirming the new motion or resultion.
+- It is now possible to set a detailed voting result for motions and amendments, either from the backend when editing the motion/amendment, or when merging amendments into a motion when confirming the new motion or resolution.
 - When creating a custom color theme, the values of the previously selected default theme will be taken as default values. Previously, always the default values of the green/magenta-theme were taken. When resetting the color values, you can now explicitly choose between the defaults.
 - RSS-Feeds have now a info page with some explanations about what RSS-Feeds actually are. The direct links in the sidebar are therefore replaced by a link to this info page.
 - In the proposed procedure, a second notification to the initiator of an amendment can be sent by mail, e.g. if the proposed procedure has been heavily modified.
@@ -342,7 +342,7 @@
 - It is now possible to modify the layout of Antragsgrün, e.g. by choosing custom colors or uploading a background image. To create a custom theme, go to "Settings" -> "This consultation" -> "Custom theme".
 - When logged in, users can now add private notes to each motion, amendment and motion paragraph.
 - If a site is set to be accessible only for a closed list of users, there is now an option for users to apply for this list. The admin will receive an e-mail in this case and will be able to accept or reject this request.
-- Administrators can now specifiy if only natural persons, only organizations or both can submit new motions and amendments. Default is both.
+- Administrators can now specify if only natural persons, only organizations or both can submit new motions and amendments. Default is both.
 - Improvements regarding uploaded images:
   - Images uploaded at one consultation can now be used in other consultations of the same site as well.
   - Distorted images in content pages are now prevented.
@@ -372,7 +372,7 @@
   - A new PDF template is introduced specifically for applications, if the LaTeX-based PDF-renderer is used.
   - For each section of a motion type, it is now possible to specify if the title will be explicitly printed in the PDF of not.
   - If the uploaded image is way too big (bigger than 1000x2000px), it is resized to keep the size of the PDF at a reasonable size.
-- Two new statuses are introduced: "Resoluton" and "Resolution (preliminary)". Motions of these states...
+- Two new statuses are introduced: "Resolution" and "Resolution (preliminary)". Motions of these states...
   - are shown on the consultation home page separately in a slightly different view (initiators are not mentioned anymore).
   - have a different header as regular motions in the web- and the PDF-view.
   - can neither have amendments nor comments.
@@ -464,7 +464,7 @@
 - Bugfix: When a motion type's create setting was set to "nobody", editing already created motions as an admin was impossible.
 - Bugfix: When creating a new version of a motion, it was not possible to merge none of the amendments.
 - Bugfix: After changing the line length, the old line was still in the cache for LaTeX-based PDF rendering.
-- Bugfix: When submitting an application containing a photo and the admin enabled submission confirmations by e-mail, the confirmation e-mail did not corretly link to the image.
+- Bugfix: When submitting an application containing a photo and the admin enabled submission confirmations by e-mail, the confirmation e-mail did not correctly link to the image.
 - Obsolete: The old, non-fuctional OpenID-based Wurzelwerk-login was removed.
 - Obsolete: The facebook image feature was removed, as nobody used it and was rather tricky to use anyway.
 
@@ -485,7 +485,7 @@
 - "Accept/Reject all changes" is only shown when merging amendments, if there are actually amendments to merge.
 - When creating an amendment, "Global alternative" is not shown anymore, if amendments are restricted to one paragraph, as it didn't work anyway.
 - Bugfix: The publication date and slug was not set when a motion was created by merging amendments.
-- Bugfix: When editing a motion in the backend without changing the submission/resulution date, the seconds in the timestamp were unnecessarily reset to zero.
+- Bugfix: When editing a motion in the backend without changing the submission/resolution date, the seconds in the timestamp were unnecessarily reset to zero.
 - Bugfix: Removing other admins from a consultation was not possible with some browsers.
 - Internal: Vendor prefixes are now added by default, slightly increasing the size of the CSS, but therefore adding some extra browser compatibility.
 
@@ -634,7 +634,7 @@ This release was mainly sponsored by the [German Federal Youth Council](http://w
 - Bugfix: The main page of the manager (introduction to Antragsgrün) was reachable on subdomains / from within a consultation
 - Bugfix: Withdrawing an amendments that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status (was implemented in 3.6.1, but not correctly)
 - Bugfix: ODT-Export of amendments did not work when the base motion did not have a prefix
-- Bugfix: a broken placeholer in a motion-supporting-INPUT
+- Bugfix: a broken placeholder in a motion-supporting-INPUT
 
 ### Version 3.6.1 (2017-03-19)
 
@@ -649,7 +649,7 @@ This release was mainly sponsored by the [German Federal Youth Council](http://w
 - Admins can merge an amendment into the base motion. This creates a new version of the motion. The original version of the motion and the amendment are kept for reference. If the changes of the amendment are conflicting with changes proposed by other amendments, the conflicts need to be resolved manually.
 - Single motions can now be set as non-amendable by the admin
 - Export to OpenSlides 2 is now supported (OpenSlides v2.1 or later required)
-- Local translations variants files can be created without commiting them to the repository
+- Local translations variants files can be created without committing them to the repository
 - Improvements to the support collection phase
 - Editorial changes in amendments can be deactivated
 - If a motion or amendment is withdrawn, a notification is sent to the admin
@@ -708,7 +708,7 @@ This release was mainly sponsored by the [German Green Party](https://www.gruene
 - Internationalized subdomains (IDNA) are now supported (containing characters like german Umlauts)
 - Motions are not amendable anymore before official publication (e.g. in support collection phase and during screening)
 - The login system was slightly improved: the login / logout action is now valid for all subdomains at once
-- Bugfix: a depencency necessary for direct SMTP-support for system e-mails was missing
+- Bugfix: a dependency necessary for direct SMTP-support for system e-mails was missing
 
 ### Version 3.3.4 (2016-06-11)
 
