@@ -40,7 +40,7 @@ return [
     'footer_current'        => 'Currenty',
     'footer_current_nobody' => 'Nobody',
 
-    'err_permission_admin' => 'No permision to edit this speaking list',
+    'err_permission_admin' => 'No permission to edit this speaking list',
     'err_permission_apply' => 'The speaking list is closed',
 
     'admin_bc'               => 'Administration',
