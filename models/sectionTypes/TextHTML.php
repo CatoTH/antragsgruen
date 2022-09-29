@@ -125,24 +125,24 @@ class TextHTML extends Text
 
     public function getMotionODS(): string
     {
-        return '<p>Full HTML is not convertable to Spreadsheets</p>';
+        return '<p>Full HTML is not convertible to Spreadsheets</p>';
     }
 
     public function getAmendmentODS(): string
     {
-        return '<p>Full HTML is not convertable to Spreadsheets</p>';
+        return '<p>Full HTML is not convertible to Spreadsheets</p>';
     }
 
     public function printMotionToODT(ODTText $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO
+        $odt->addHtmlTextBlock('[Full HTML is not convertible to ODT]', false); // @TODO
     }
 
     public function printAmendmentToODT(ODTText $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO
+        $odt->addHtmlTextBlock('[Full HTML is not convertible to ODT]', false); // @TODO
     }
 
     public function matchesFulltextSearch(string $text): bool

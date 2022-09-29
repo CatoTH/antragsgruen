@@ -45,7 +45,7 @@ return [
     'respond_title' => 'Respond to the motion',
     'respond_from'  => 'Response from',
     'respond_btn'   => 'Respond',
-    'respond_saved' => 'The resonse has been published.',
+    'respond_saved' => 'The response has been published.',
 
     'response_title' => 'Response',
     'response_from'  => 'Response from',

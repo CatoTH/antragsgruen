@@ -405,7 +405,7 @@
     &:before {
       display: block;
       content: attr(data-moving-msg);
-      // Absolute positioning is necessary, otherwise we can't cancel the text-decoration propert
+      // Absolute positioning is necessary, otherwise we can't cancel the text-decoration property
       position: absolute;
       top: -15px;
       left: 0;

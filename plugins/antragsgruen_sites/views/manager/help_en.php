@@ -612,7 +612,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         <li>
             Some changes can be made to the wording regarding specific motion types. For example, the confirmatin e-mail
             or explanation could be different when submitting a motion and an application. These specific texts can be
-            entered at the repective motion type at &ldquo;Motion type specific texts / translations&rdquo;.
+            entered at the respective motion type at &ldquo;Motion type specific texts / translations&rdquo;.
         </li>
     </ul>
 </div>

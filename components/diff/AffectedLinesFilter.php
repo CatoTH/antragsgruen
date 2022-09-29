@@ -90,7 +90,7 @@ class AffectedLinesFilter
                 $unchangedBeforeNextSpool = [];
             } else {
                 if (count($unchangedAfterLastSpool) < $context && count($affectedBlocks) > 0) {
-                    // unchangedAfterLastSpool will immediatelly be filled after a change (but only after the first change)
+                    // unchangedAfterLastSpool will immediately be filled after a change (but only after the first change)
                     // and always be appended
                     $unchangedAfterLastSpool[] = $block;
                 } else {

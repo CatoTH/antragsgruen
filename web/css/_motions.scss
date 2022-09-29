@@ -187,7 +187,7 @@
       left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
       width: 0;
       display: inline-block;
-      float: left; // otherwise problems appear at li > p constucts
+      float: left; // otherwise problems appear at li > p constructs
     }
   }
   .lineNumber:after {
@@ -214,7 +214,7 @@
       width: 0;
       bottom: auto;
       display: inline-block;
-      float: left; // otherwise problems appear at li > p constucts
+      float: left; // otherwise problems appear at li > p constructs
       z-index: -1; // Line number highlighting should be behind the text
     }
     .lineNumber:after {
