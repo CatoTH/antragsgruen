@@ -25,7 +25,6 @@ $html = '<section class="sidebar-box" id="sidebarYourSites" aria-labelledby="sid
             </a>
         </div>
     </div>
-    </div>
 </section>';
 
 $layout->menusHtml[] = $html;
