@@ -38,7 +38,7 @@ class AmendmentRewriter
     }
 
     /**
-     * AmendmentDiffMerger::moveInsertsIntoTheirOwnWords does about the same and should behave similarily
+     * AmendmentDiffMerger::moveInsertsIntoTheirOwnWords does about the same and should behave similarly
      *
      * @param DiffWord[][] $toCheckArr
      * @param DiffWord[][] $refArr

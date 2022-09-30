@@ -64,7 +64,7 @@ class AdminController extends Controller
 
     /**
      * Pre-caches some important data.
-     * HINT: Probably needs to be called several time, if the memory fills up or the execution time exeeds the limit
+     * HINT: Probably needs to be called several time, if the memory fills up or the execution time exceeds the limit
      */
     public function actionBuildConsultationCaches($subdomain, $consultation)
     {
@@ -103,7 +103,7 @@ class AdminController extends Controller
 
     /**
      * Pre-caches some important data.
-     * HINT: Probably needs to be called several time, if the memory fills up or the execution time exeeds the limit
+     * HINT: Probably needs to be called several time, if the memory fills up or the execution time exceeds the limit
      */
     public function actionBuildMotionCache($motionSlug)
     {

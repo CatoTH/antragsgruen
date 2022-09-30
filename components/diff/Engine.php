@@ -431,7 +431,7 @@ class Engine
     }
 
     /**
-     * Returns the partial diff for the specificed sequences, in reverse order.
+     * Returns the partial diff for the specified sequences, in reverse order.
      * The parameters are:
      *
      * @param array $table     - the table returned by the computeTable function

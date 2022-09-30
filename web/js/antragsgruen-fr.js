@@ -17,7 +17,7 @@ ANTRAGSGRUEN_STRINGS = {
         "initiated_by": "Proposed by",
         "title_open_in_blank": "Open the amendment in a new window",
         "title_del_title": "Remove the headline \"Colliding Amendment: ...\"",
-        "title_del_colliding": "Rmove the whole colliding paragraph",
+        "title_del_colliding": "Remove the whole colliding paragraph",
         "title": "Headline",
         "change_accept": "Acceptez",
         "change_reject": "Rejeter",

@@ -129,7 +129,7 @@ class SamlLogin implements LoginProviderInterface
             $backUrl = AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl);
         } elseif ($backSubdomain) {
             // Second step: we are on the main domain. Logout and redirect to the subdomain
-            // Here, there might not be a user obect (NULL), so we will proceed anyway
+            // Here, there might not be a user object (NULL), so we will proceed anyway
             self::logout();
         } else {
             $user = User::getCurrentUser();

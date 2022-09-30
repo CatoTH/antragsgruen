@@ -143,7 +143,7 @@ class ParagraphMerger
      * This isn't exactly very elegant, as the data structure mutates as we're iterating over it,
      * therefore we need to cancel out the side-effects.
      *
-     * AmendmentRewriter::moveInsertsIntoTheirOwnWords does about the same and should behave similarily
+     * AmendmentRewriter::moveInsertsIntoTheirOwnWords does about the same and should behave similarly
      */
     private function moveInsertsIntoTheirOwnWords(): void
     {
@@ -369,7 +369,7 @@ class ParagraphMerger
             $this->mergeParagraphRegularily($changeSet);
         }
 
-        //echo "======== REGULARILY MERGED WORDS ========\n";
+        //echo "======== REGULARLY MERGED WORDS ========\n";
         //var_dump($this->paraData->words);
         //echo "======== COLLIDING PARAGRAPHS ========\n";
         //var_dump($this->paraData->collidingParagraphs);

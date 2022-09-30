@@ -51,7 +51,7 @@ if (count($entries) === 0) {
     echo '<ul class="list-group activityLog">';
     foreach ($entries as $entry) {
         if ($entry->formatLogEntry($showInvisible) === null) {
-            // Deleted items; they break the pagination, but that's still better than eager-loading all dependant items
+            // Deleted items; they break the pagination, but that's still better than eager-loading all dependent items
             continue;
         }
 

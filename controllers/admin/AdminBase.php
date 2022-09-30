@@ -28,7 +28,7 @@ class AdminBase extends Base
                 'excellist', 'odslist', 'openslides', 'openslidesusers',
                 'motion-excellist', 'motion-odslist', 'motion-openslides', 'motion-yopenslidesusers',
             ])) {
-            // Donwloading files is done by curl, not by chrome/firefox.
+            // Downloading files is done by curl, not by chrome/firefox.
             // Therefore, the session is lost when downloading in the test environment
             return true;
         }

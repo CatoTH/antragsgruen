@@ -51,7 +51,7 @@ class PagesController extends Base
         $pageData = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
 
         // Site-wide pages are always visible. Also, maintenance and legal/privacy pages are always visible.
-        // For everything else, check for mainenance mode and login.
+        // For everything else, check for maintenance mode and login.
         $allowedPages = [ConsultationText::DEFAULT_PAGE_MAINTENANCE, ConsultationText::DEFAULT_PAGE_LEGAL, ConsultationText::DEFAULT_PAGE_PRIVACY];
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
             if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {

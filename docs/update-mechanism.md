@@ -1,4 +1,4 @@
-# Automatical Update-Mechanism
+# Automatic Update-Mechanism
 
 ## Functionality
 

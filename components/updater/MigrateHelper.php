@@ -46,7 +46,7 @@ class MigrateHelper extends MigrateController
         $migrations = $controller->getNewMigrations();
         foreach ($migrations as $migration) {
             if (!$controller->migrateUp($migration)) {
-                throw new \Exception('Migration failes: ' . $migration);
+                throw new \Exception('Migration failed: ' . $migration);
             }
         }
     }
