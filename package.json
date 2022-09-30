@@ -1,6 +1,7 @@
 {
     "name": "antragsgruen",
     "license": "AGPL-3.0",
+    "private": true,
     "repository": {
         "type": "git",
         "url": "https://github.com/CatoTH/antragsgruen"
