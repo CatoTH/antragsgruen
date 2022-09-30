@@ -12,6 +12,9 @@
         "watch": "gulp watch",
         "build": "gulp"
     },
+    "engines": {
+        "node": ">=16"
+    },
     "devDependencies": {
         "@types/bootbox": "^5.2.3",
         "@types/bootstrap": "^3.4.0",
