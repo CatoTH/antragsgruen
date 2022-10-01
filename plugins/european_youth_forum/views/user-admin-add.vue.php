@@ -11,10 +11,10 @@
 
             <template v-for="round in yfjVotingRounds">
                 <button type="button" class="btn btn-primary" v-if="yfjSelectedVotingRound === round"
-                        @click="yfjResetVotingRound()">Voting {{ round }}
+                        @click="yfjResetVotingRound()">Roll Call {{ round }}
                 </button>
                 <button type="button" class="btn btn-default" v-if="yfjSelectedVotingRound !== round"
-                        @click="yfjChooseVotingRound(round)">Voting {{ round }}
+                        @click="yfjChooseVotingRound(round)">Roll Call {{ round }}
                 </button>
             </template>
         </div>
@@ -33,6 +33,7 @@
                         Voting Rights
                     </button>
                     {{ user.name }}
+                    <small v-if="user.organization">({{ user.organization }})</small>
                 </li>
             </ul>
         </div>
@@ -49,6 +50,7 @@
                         Voting Rights
                     </button>
                     {{ user.name }}
+                    <small v-if="user.organization">({{ user.organization }})</small>
                 </li>
             </ul>
         </div>
