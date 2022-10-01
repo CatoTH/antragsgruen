@@ -500,6 +500,9 @@ class Consultation extends ActiveRecord
         }
         $noAgendaMotions = [];
         foreach ($this->getVisibleMotions($includeWithdrawn) as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
             if (!in_array($motion->id, $motionIds)) {
                 $noAgendaMotions[] = $motion;
                 $motionIds[]       = $motion->id;
