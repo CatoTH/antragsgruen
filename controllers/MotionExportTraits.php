@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\NotFound;
+use app\models\http\RestApiResponse;
 use app\models\mergeAmendments\Init;
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, Motion, TexTemplate, User};
 use app\models\exceptions\ExceptionBase;
@@ -365,12 +366,7 @@ trait MotionExportTraits
         return $this->renderPartial('plain_html', ['motion' => $motion]);
     }
 
-    /**
-     * @param string $motionSlug
-     * @param string|null $lineNumbers
-     * @return string
-     */
-    public function actionRest($motionSlug, ?string $lineNumbers = null)
+    public function actionRest(string $motionSlug, ?string $lineNumbers = null): RestApiResponse
     {
         $this->handleRestHeaders(['GET']);
 
@@ -386,7 +382,7 @@ trait MotionExportTraits
             return $this->returnRestResponseFromException(new NotFound('Motion is not readable'));
         }
 
-        return $this->returnRestResponse(200, $this->renderPartial('rest_get', [
+        return new RestApiResponse(200, null, $this->renderPartial('rest_get', [
             'motion' => $motion,
             'lineNumbers' => $lineNumbers,
         ]));

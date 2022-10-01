@@ -16,6 +16,7 @@ use app\models\db\{Amendment,
     SpeechQueue,
     User,
     UserNotification};
+use app\models\http\RedirectResponse;
 use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal};
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
@@ -499,11 +500,11 @@ class MotionController extends Base
      *
      * @throws NotFoundHttpException
      */
-    public function actionGotoPrefix(string $prefix): Response
+    public function actionGotoPrefix(string $prefix): RedirectResponse
     {
         $redirect = $this->guessRedirectByPrefix($prefix);
         if ($redirect) {
-            return $this->getHttpResponse()->redirect($redirect);
+            return new RedirectResponse($redirect);
         }
         throw new NotFoundHttpException();
     }

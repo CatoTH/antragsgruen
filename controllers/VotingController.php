@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\models\http\BinaryFileResponse;
+use app\models\http\ResponseInterface;
+use app\models\http\RestApiResponse;
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\quorumType\IQuorumType;
-use app\models\db\{ConsultationUserGroup, Motion, User, VotingBlock, VotingQuestion};
+use app\models\db\{ConsultationUserGroup, User, VotingBlock, VotingQuestion};
 use app\components\{ResourceLock, Tools, UserGroupAdminMethods, VotingMethods};
 use app\models\proposedProcedure\Factory;
-use yii\web\Response;
 
 class VotingController extends Base
 {
@@ -31,38 +33,29 @@ class VotingController extends Base
         return $result;
     }
 
-    // *** Shared methods ***
-
-    private function getError(string $message): string
-    {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
-        return json_encode([
-            'success' => false,
-            'message' => $message,
-        ], JSON_THROW_ON_ERROR);
-    }
-
     // *** Admin-facing methods ***
 
+    /**
+     * @throws \Exception
+     */
     private function ensureAdminPermissions(): void
     {
         $user = User::getCurrentUser();
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
-            $this->returnRestResponse(403, $this->getError('Missing privileges'));
-            die();
+            throw new \Exception('Missing privileges');
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     private function getVotingBlockAndCheckAdminPermission(string $votingBlockId): VotingBlock
     {
         $this->ensureAdminPermissions();
 
         $block = $this->consultation->getVotingBlock(intval($votingBlockId));
         if (!$block) {
-            $this->returnRestResponse(404, $this->getError('Voting block not found'));
-            die();
+            throw new \Exception('Voting block not found');
         }
 
         return $block;
@@ -81,21 +74,29 @@ class VotingController extends Base
         return $apiData;
     }
 
-    public function actionGetAdminVotingBlocks(): ?string
+    public function actionGetAdminVotingBlocks(): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
-        $this->ensureAdminPermissions();
+        try {
+            $this->ensureAdminPermissions();
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
 
         $responseData = $this->getAllVotingAdminData();
 
-        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $responseData);
     }
 
-    public function actionPostVoteSettings(string $votingBlockId): ?string
+    public function actionPostVoteSettings(string $votingBlockId): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
 
-        $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
+        try {
+            $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
         ResourceLock::lockVotingBlockForWrite($votingBlock);
 
         switch ($this->getPostValue('op')) {
@@ -128,25 +129,33 @@ class VotingController extends Base
 
         ResourceLock::releaseAllLocks();
 
-        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $responseData);
     }
 
-    public function actionPostVoteOrder(): ?string
+    public function actionPostVoteOrder(): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
-        $this->ensureAdminPermissions();
+        try {
+            $this->ensureAdminPermissions();
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
 
         $votingIds = array_values(array_map('intval', $this->getPostValue('votingIds')));
         $this->votingMethods->sortVotings($votingIds);
 
         $responseData = $this->getAllVotingAdminData();
-        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $responseData);
     }
 
-    public function actionCreateVotingBlock(): ?string
+    public function actionCreateVotingBlock(): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
-        $this->ensureAdminPermissions();
+        try {
+            $this->ensureAdminPermissions();
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
 
         $newBlock = new VotingBlock();
         $newBlock->consultationId = $this->consultation->id;
@@ -181,44 +190,46 @@ class VotingController extends Base
 
         $votingData = $this->getAllVotingAdminData();
 
-        return $this->returnRestResponse(200, json_encode([
+        return new RestApiResponse(200, [
             'votings' => $votingData,
             'created_voting' => $newBlock->id,
-        ], JSON_THROW_ON_ERROR));
+        ]);
     }
 
-    public function actionDownloadVotingResults(string $votingBlockId, string $format): ?string
+    public function actionDownloadVotingResults(string $votingBlockId, string $format): ResponseInterface
     {
         $this->handleRestHeaders(['GET'], true);
-        $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
+        try {
+            $votingBlock = $this->getVotingBlockAndCheckAdminPermission($votingBlockId);
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
         $agendaVoting = AgendaVoting::getFromVotingBlock($votingBlock);
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $fileNameBase = 'voting-results-' . Tools::sanitizeFilename($votingBlock->title, true);
         switch ($format) {
             case 'ods':
-                $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
-                $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($fileNameBase) . '.ods"');
+                $formatResponse = BinaryFileResponse::TYPE_ODS;
                 break;
             case 'xlsx':
-                $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($fileNameBase) . '.xslx"');
+                $formatResponse = BinaryFileResponse::TYPE_XSLX;
                 break;
             default:
-                $this->getHttpResponse()->headers->add('Content-Type', 'text/html');
+                $formatResponse = BinaryFileResponse::TYPE_HTML;
         }
 
-        return $this->renderPartial('admin-download-results', ['agendaVoting' => $agendaVoting, 'format' => $format]);
+        return new BinaryFileResponse(
+            $formatResponse,
+            $this->renderPartial('admin-download-results', ['agendaVoting' => $agendaVoting, 'format' => $format]),
+            true,
+            'voting-results-' . Tools::sanitizeFilename($votingBlock->title, true)
+        );
     }
 
     // *** User-facing methods ***
 
-    public function actionGetOpenVotingBlocks($assignedToMotionId): ?string
+    public function actionGetOpenVotingBlocks($assignedToMotionId): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         if ($assignedToMotionId) {
             $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);
@@ -228,16 +239,16 @@ class VotingController extends Base
 
         $response = $this->votingMethods->getOpenVotingsForUser($assignedToMotion, User::getCurrentUser());
 
-        return $this->returnRestResponse(200, json_encode($response, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $response);
     }
 
-    public function actionGetClosedVotingBlocks(): ?string
+    public function actionGetClosedVotingBlocks(): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
 
         $response = $this->votingMethods->getClosedPublishedVotingsForUser(User::getCurrentUser());
 
-        return $this->returnRestResponse(200, json_encode($response, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $response);
     }
 
     /**
@@ -247,7 +258,7 @@ class VotingController extends Base
      * votes[0][vote]=yes
      * [optional] votes[0][public]=1
      */
-    public function actionPostVote($votingBlockId, $assignedToMotionId): ?string
+    public function actionPostVote($votingBlockId, $assignedToMotionId): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
 
@@ -259,22 +270,22 @@ class VotingController extends Base
 
         $votingBlock = $this->consultation->getVotingBlock(intval($votingBlockId));
         if (!$votingBlock) {
-            return $this->getError('Voting not found');
+            return $this->returnRestResponseFromException(new \Exception('Voting not found'));
         }
         ResourceLock::lockVotingBlockForRead($votingBlock);
 
         if ($votingBlock->votingStatus !== VotingBlock::STATUS_OPEN) {
-            return $this->getError('Voting not open');
+            return $this->returnRestResponseFromException(new \Exception('Voting not open'));
         }
         $user = User::getCurrentUser();
         if (!$user) {
-            return $this->getError('Not logged in');
+            return $this->returnRestResponseFromException(new \Exception('Not logged in'));
         }
 
         try {
             $this->votingMethods->userVote($votingBlock, $user);
         } catch (\Exception $e) {
-            return $this->getError($e->getMessage());
+            return $this->returnRestResponseFromException($e);
         }
 
         ResourceLock::releaseAllLocks();
@@ -282,6 +293,6 @@ class VotingController extends Base
 
         $response = $this->votingMethods->getOpenVotingsForUser($assignedToMotion, User::getCurrentUser());
 
-        return $this->returnRestResponse(200, json_encode($response, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $response);
     }
 }
