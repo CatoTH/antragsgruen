@@ -10,20 +10,15 @@ use yii\helpers\Html;
 
 class Agenda
 {
-    const FORMAT_HTML = 0;
-    const FORMAT_ODS  = 1;
+    public const FORMAT_HTML = 0;
+    public const FORMAT_ODS  = 1;
 
-    /** @var string */
-    public $title;
-
-    /** @var int */
-    public $blockId;
+    public string $title;
+    public int $blockId;
+    public ?ConsultationAgendaItem $agendaItem;
 
     /** @var AgendaVoting[] */
-    public $votingBlocks = [];
-
-    /** @var ConsultationAgendaItem|null */
-    public $agendaItem;
+    public array $votingBlocks = [];
 
     public function __construct(int $blockId, string $title, ?ConsultationAgendaItem $agendaItem = null)
     {

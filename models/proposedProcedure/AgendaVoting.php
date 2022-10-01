@@ -11,10 +11,10 @@ use app\models\policies\IPolicy;
 
 class AgendaVoting
 {
-    const API_CONTEXT_PROPOSED_PROCEDURE = 'pp';
-    const API_CONTEXT_VOTING = 'voting';
-    const API_CONTEXT_ADMIN = 'admin';
-    const API_CONTEXT_RESULT = 'result';
+    public const API_CONTEXT_PROPOSED_PROCEDURE = 'pp';
+    public const API_CONTEXT_VOTING = 'voting';
+    public const API_CONTEXT_ADMIN = 'admin';
+    public const API_CONTEXT_RESULT = 'result';
 
     public string $title;
     public ?VotingBlock $voting;

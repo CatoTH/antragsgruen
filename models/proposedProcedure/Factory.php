@@ -9,14 +9,9 @@ use app\models\settings\Consultation as ConsultationSettings;
 
 class Factory
 {
-    /** @var Consultation */
-    public $consultation;
-
-    /** @var ConsultationAgendaItem|null */
-    public $agendaItem;
-
-    /** @var bool */
-    public $includeInvisible = false;
+    public Consultation $consultation;
+    public ?ConsultationAgendaItem $agendaItem;
+    public bool $includeInvisible = false;
 
     public function __construct(Consultation $consultation, bool $includeInvisible, ?ConsultationAgendaItem $agendaItem = null)
     {

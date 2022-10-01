@@ -9,13 +9,13 @@ use app\models\settings\AntragsgruenApp;
 
 abstract class IPolicy
 {
-    const POLICY_NOBODY = 0;
-    const POLICY_ALL = 1;
-    const POLICY_LOGGED_IN = 2;
-    const POLICY_USER_GROUPS = 6;
-    const POLICY_ADMINS = 3;
-    const POLICY_GRUENES_NETZ = 4;
-    const POLICY_ORGANIZATION = 5;
+    public const POLICY_NOBODY = 0;
+    public const POLICY_ALL = 1;
+    public const POLICY_LOGGED_IN = 2;
+    public const POLICY_USER_GROUPS = 6;
+    public const POLICY_ADMINS = 3;
+    public const POLICY_GRUENES_NETZ = 4;
+    public const POLICY_ORGANIZATION = 5;
 
     /**
      * @return IPolicy[]
@@ -23,15 +23,15 @@ abstract class IPolicy
     public static function getPolicies(): array
     {
         $policies = [
-            static::POLICY_ADMINS => Admins::class,
-            static::POLICY_ALL => All::class,
-            static::POLICY_LOGGED_IN => LoggedIn::class,
-            static::POLICY_USER_GROUPS => UserGroups::class,
-            static::POLICY_NOBODY => Nobody::class,
+            self::POLICY_ADMINS => Admins::class,
+            self::POLICY_ALL => All::class,
+            self::POLICY_LOGGED_IN => LoggedIn::class,
+            self::POLICY_USER_GROUPS => UserGroups::class,
+            self::POLICY_NOBODY => Nobody::class,
         ];
 
         if (AntragsgruenApp::getInstance()->isSamlActive()) {
-            $policies[static::POLICY_GRUENES_NETZ] = GruenesNetz::class;
+            $policies[self::POLICY_GRUENES_NETZ] = GruenesNetz::class;
         }
 
         $site = UrlHelper::getCurrentSite();
@@ -50,7 +50,7 @@ abstract class IPolicy
     public static function getPolicyNames(): array
     {
         $names = [];
-        foreach (static::getPolicies() as $key => $pol) {
+        foreach (self::getPolicies() as $key => $pol) {
             $names[$key] = $pol::getPolicyName();
         }
         return $names;
@@ -160,7 +160,7 @@ abstract class IPolicy
             }
         }
 
-        foreach (static::getPolicies() as $polId => $polClass) {
+        foreach (self::getPolicies() as $polId => $polClass) {
             if ($polId === $policyId) {
                 return new $polClass($consultation, $baseObject, $policyDataObj);
             }
