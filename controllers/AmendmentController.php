@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\http\{RedirectResponse, RestApiExceptionResponse, RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentAdminComment,
@@ -14,7 +15,7 @@ use app\models\db\{Amendment,
     Motion,
     User};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\{FormError, MailNotSent, NotFound};
+use app\models\exceptions\{FormError, MailNotSent};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
@@ -134,10 +135,7 @@ class AmendmentController extends Base
         return $this->renderPartial('view_odt', ['amendment' => $amendment]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionRest(string $motionSlug, int $amendmentId)
+    public function actionRest(string $motionSlug, int $amendmentId): RestApiResponse
     {
         $this->handleRestHeaders(['GET']);
 
@@ -145,14 +143,14 @@ class AmendmentController extends Base
             $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
             $this->amendment = $amendment;
         } catch (\Exception $e) {
-            return $this->returnRestResponseFromException($e);
+            return new RestApiExceptionResponse(404, $e->getMessage());
         }
 
         if (!$amendment->isReadable()) {
-            return $this->returnRestResponseFromException(new NotFound('Amendment is not readable'));
+            return new RestApiExceptionResponse(403, 'Amendment is not readable');
         }
 
-        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['amendment' => $amendment]));
+        return new RestApiResponse(200, null, $this->renderPartial('rest_get', ['amendment' => $amendment]));
     }
 
     /**
@@ -777,7 +775,7 @@ class AmendmentController extends Base
      *
      * @throws NotFoundHttpException
      */
-    public function actionGotoPrefix(string $prefix1, string $prefix2): Response
+    public function actionGotoPrefix(string $prefix1, string $prefix2): RedirectResponse
     {
         try {
             /** @var Amendment|null $amendment */
@@ -788,7 +786,7 @@ class AmendmentController extends Base
             ])->one();
 
             if ($amendment && $amendment->isReadable()) {
-                return $this->getHttpResponse()->redirect($amendment->getLink());
+                return new RedirectResponse($amendment->getLink());
             }
         } catch (\Exception $e) {
             throw new NotFoundHttpException();

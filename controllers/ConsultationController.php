@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\http\RestApiResponse;
 use app\components\{DateTools, RSSExporter, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentComment,
@@ -392,17 +393,14 @@ class ConsultationController extends Base
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionProposedProcedureRest()
+    public function actionProposedProcedureRest(): RestApiResponse
     {
         $this->handleRestHeaders(['GET']);
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         $proposalFactory = new Factory($this->consultation, false);
 
-        return $this->returnRestResponse(200, $this->renderPartial('proposed_procedure_rest_get', [
+        return new RestApiResponse(200, null, $this->renderPartial('proposed_procedure_rest_get', [
             'proposedAgenda' => $proposalFactory->create(),
         ]));
     }
@@ -437,26 +435,20 @@ class ConsultationController extends Base
         return $this->render('collecting');
     }
 
-    /**
-     * @return string
-     */
-    public function actionRest()
+    public function actionRest(): RestApiResponse
     {
         $this->handleRestHeaders(['GET']);
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
-        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['consultation' => $this->consultation]));
+        return new RestApiResponse(200, null, $this->renderPartial('rest_get', ['consultation' => $this->consultation]));
     }
 
-    /**
-     * @return string
-     */
-    public function actionRestSite()
+    public function actionRestSite(): RestApiResponse
     {
         $this->handleRestHeaders(['GET']);
 
-        return $this->returnRestResponse(200, $this->renderPartial('rest_site_get', ['site' => $this->site]));
+        return new RestApiResponse(200, null, $this->renderPartial('rest_site_get', ['site' => $this->site]));
     }
 
     public function actionDebugbarAjax(): string

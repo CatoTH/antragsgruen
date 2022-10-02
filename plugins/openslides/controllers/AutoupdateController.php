@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides\controllers;
 
-use app\plugins\openslides\AutoupdateSyncService;
-use app\plugins\openslides\SiteSettings;
+use app\models\http\RestApiResponse;
+use app\plugins\openslides\{AutoupdateSyncService, SiteSettings};
 
 class AutoupdateController extends \app\controllers\Base
 {
@@ -25,16 +25,16 @@ class AutoupdateController extends \app\controllers\Base
         return $result;
     }
 
-    public function actionCallback(): ?string
+    public function actionCallback(): RestApiResponse
     {
         if ($this->getHttpMethod() !== 'POST') {
-            return $this->returnRestResponse(405, json_encode(['success' => false, 'error' => 'Only POST is allowed'], JSON_THROW_ON_ERROR));
+            return new RestApiResponse(405, ['success' => false, 'error' => 'Only POST is allowed']);
         }
 
         /** @var SiteSettings $settings */
         $settings = $this->site->getSettings();
         if ($this->getHttpHeader('X-API-Key') === null || $this->getHttpHeader('X-API-Key') !== $settings->osApiKey) {
-            return $this->returnRestResponse(401, json_encode(['success' => false, 'error' => 'No or invalid X-API-Key given'], JSON_THROW_ON_ERROR));
+            return new RestApiResponse(401, ['success' => false, 'error' => 'No or invalid X-API-Key given']);
         }
 
         $body = $this->getPostBody();
@@ -50,9 +50,9 @@ class AutoupdateController extends \app\controllers\Base
         } elseif (isset($arr['connected'])) {
             // Ignoring
         } else {
-            return $this->returnRestResponse(422, json_encode(['success' => false, 'error' => 'Unknown message'], JSON_THROW_ON_ERROR));
+            return new RestApiResponse(422, ['success' => false, 'error' => 'Unknown message']);
         }
 
-        return $this->returnRestResponse(200, json_encode(['success' => true], JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, ['success' => true]);
     }
 }

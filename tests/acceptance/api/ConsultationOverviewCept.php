@@ -34,6 +34,7 @@ $I->assertJsonStringEqualsJsonString('{
     "title": "Test2",
     "title_short": "Test2",
     "speaking_lists": null,
+    "page_links": [],
     "motion_links": [
         {
             "id": 2,

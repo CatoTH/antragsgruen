@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
-use app\models\exceptions\NotFound;
+use app\models\exceptions\{ApiResponseException, NotFound, Internal};
+use app\models\http\{ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
-use app\models\exceptions\Internal;
 use app\models\settings\{AntragsgruenApp, Layout};
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, Motion, Site, User};
 use Yii;
@@ -136,6 +136,26 @@ class Base extends Controller
         return true;
     }
 
+    public function runAction($id, $params = []): ?string
+    {
+        try {
+            $response = parent::runAction($id, $params);
+        /** @phpstan-ignore-next-line */
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ApiResponseException $e) {
+            $response = new RestApiExceptionResponse($e->getCode(), $e->getMessage());
+            return $response->renderYii($this->layoutParams, $this->getHttpResponse());
+        }
+
+        if (is_string($response)) {
+            return $response;
+        }
+        if (is_object($response) && is_a($response, ResponseInterface::class)) {
+            /** @var ResponseInterface $response */
+            return $response->renderYii($this->layoutParams, $this->getHttpResponse());
+        }
+        return $response;
+    }
+
     /**
      * @param array|string $url
      * @param int $statusCode
@@ -260,23 +280,23 @@ class Base extends Controller
         return parent::render($view, $params);
     }
 
+    /**
+     * @throws ApiResponseException
+     */
     public function handleRestHeaders(array $allowedMethods, bool $alwaysEnabled = false): void
     {
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
 
         if (!$this->site->getSettings()->apiEnabled && !$alwaysEnabled && !User::getCurrentUser()) {
-            $this->returnRestResponseFromException(new \Exception('Public API disabled', 403));
-            Yii::$app->end();
+            throw new ApiResponseException('Public API disabled', 403);
         }
         if ($this->consultation && ($this->consultation->urlPath === null || $this->consultation->dateDeletion)) {
-            $this->returnRestResponseFromException(new \Exception('Consultation not found', 404));
-            Yii::$app->end();
+            throw new ApiResponseException('Consultation not found', 404);
         }
         if ($this->consultation && $this->consultation->getSettings()->maintenanceMode && !$alwaysEnabled) {
             if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
-                $this->returnRestResponseFromException(new \Exception('Consultation in maintenance mode', 404));
-                Yii::$app->end();
+                throw new ApiResponseException('Consultation in maintenance mode', 404);
             }
         }
 
@@ -293,29 +313,12 @@ class Base extends Controller
             Yii::$app->end();
         }
         if (!in_array($this->getHttpMethod(), $allowedMethods)) {
-            $this->returnRestResponseFromException(new \Exception('Method not allowed', 405));
-            Yii::$app->end();
+            throw new ApiResponseException('Method not allowed', 405);
         }
     }
 
-    public function returnRestResponse(int $statusCode, string $json)
-    {
-        $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
-        $this->layoutParams->robotsNoindex = true;
-        Yii::$app->response->format = Response::FORMAT_RAW;
-        Yii::$app->response->headers->add('Content-Type', 'application/json');
-        Yii::$app->response->statusCode = $statusCode;
-        Yii::$app->response->content = $json;
-        Yii::$app->end();
-
-        return null;
-    }
-
-    public function returnRestResponseFromException(\Exception $exception) {
-        return $this->returnRestResponse($exception->getCode() > 0 ? $exception->getCode() : 500, json_encode([
-            'success' => false,
-            'message' => $exception->getMessage()
-        ]));
+    public function returnRestResponseFromException(\Exception $exception): RestApiResponse {
+        return new RestApiExceptionResponse($exception->getCode() > 0 ? $exception->getCode() : 500, $exception->getMessage());
     }
 
     public function getParams(): AntragsgruenApp

@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\models\http\RestApiResponse;
 use app\components\{mail\Tools as MailTools, UrlHelper, UserGroupAdminMethods};
 use app\models\db\{Consultation, ConsultationUserGroup, EMailLog, User};
 use app\models\exceptions\UserEditFailed;
@@ -52,7 +53,7 @@ class UsersController extends AdminBase
         ];
     }
 
-    public function actionAddSingleInit(): string
+    public function actionAddSingleInit(): RestApiResponse
     {
         $this->getConsultationAndCheckAdminPermission();
 
@@ -64,7 +65,7 @@ class UsersController extends AdminBase
             $response = ['exists' => false];
         }
 
-        return $this->returnRestResponse(200, json_encode($response, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $response);
     }
 
     public function actionAddSingle(): string
@@ -213,7 +214,7 @@ class UsersController extends AdminBase
         ]);
     }
 
-    public function actionSave(): string
+    public function actionSave(): RestApiResponse
     {
         $consultation = $this->getConsultationAndCheckAdminPermission();
 
@@ -248,22 +249,18 @@ class UsersController extends AdminBase
             $additionalData['msg_error'] = $failed->getMessage();
         }
 
-        return $this->returnRestResponse(200, json_encode(array_merge(
+        return new RestApiResponse(200, array_merge(
             $this->getUsersWidgetData($consultation),
             $additionalData
-        ), JSON_THROW_ON_ERROR));
+        ));
     }
 
-    public function actionPoll(): string
+    public function actionPoll(): RestApiResponse
     {
         $consultation = $this->getConsultationAndCheckAdminPermission();
 
         $this->handleRestHeaders(['GET'], true);
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
-        $responseData = $this->getUsersWidgetData($consultation);
-        return $this->returnRestResponse(200, json_encode($responseData, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $this->getUsersWidgetData($consultation));
     }
 }

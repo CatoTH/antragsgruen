@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\http\RestApiResponse;
 use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
 use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError};
@@ -72,11 +73,11 @@ class PagesController extends Base
         return $this->renderContentPage($pageSlug);
     }
 
-    public function actionGetRest(string $pageSlug): string
+    public function actionGetRest(string $pageSlug): RestApiResponse
     {
         $pageData = $this->getPageForView($pageSlug);
         if (!$pageData) {
-            return '';
+            return $this->returnRestResponseFromException(new \Exception('page not found'));
         }
 
         $data = [
@@ -89,7 +90,7 @@ class PagesController extends Base
             'html' => $pageData->text,
         ];
 
-        return $this->returnRestResponse(200, json_encode($data, JSON_THROW_ON_ERROR));
+        return new RestApiResponse(200, $data);
     }
 
     /**
