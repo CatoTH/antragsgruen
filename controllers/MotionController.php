@@ -22,7 +22,7 @@ use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
 use app\models\events\MotionEvent;
-use yii\web\{NotFoundHttpException, Response};
+use yii\web\NotFoundHttpException;
 
 class MotionController extends Base
 {

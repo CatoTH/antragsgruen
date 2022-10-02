@@ -2,13 +2,9 @@
 
 namespace app\controllers;
 
-use app\models\exceptions\ApiResponseException;
-use app\models\exceptions\NotFound;
-use app\models\http\ResponseInterface;
-use app\models\http\RestApiExceptionResponse;
-use app\models\http\RestApiResponse;
+use app\models\exceptions\{ApiResponseException, NotFound, Internal};
+use app\models\http\{ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
-use app\models\exceptions\Internal;
 use app\models\settings\{AntragsgruenApp, Layout};
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, Motion, Site, User};
 use Yii;
@@ -144,6 +140,7 @@ class Base extends Controller
     {
         try {
             $response = parent::runAction($id, $params);
+        /** @phpstan-ignore-next-line */
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ApiResponseException $e) {
             $response = new RestApiExceptionResponse($e->getCode(), $e->getMessage());
             return $response->renderYii($this->layoutParams, $this->getHttpResponse());

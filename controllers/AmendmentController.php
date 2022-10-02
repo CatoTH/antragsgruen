@@ -3,9 +3,7 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
-use app\models\http\RedirectResponse;
-use app\models\http\RestApiExceptionResponse;
-use app\models\http\RestApiResponse;
+use app\models\http\{RedirectResponse, RestApiExceptionResponse, RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentAdminComment,
@@ -17,7 +15,7 @@ use app\models\db\{Amendment,
     Motion,
     User};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\{FormError, MailNotSent, NotFound};
+use app\models\exceptions\{FormError, MailNotSent};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;

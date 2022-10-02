@@ -2,19 +2,16 @@
 
 namespace app\controllers;
 
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{Tools, UrlHelper};
 use app\models\exceptions\NotFound;
-use app\models\http\RestApiResponse;
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, ResponseInterface, RestApiResponse};
 use app\models\mergeAmendments\Init;
-use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, Motion, TexTemplate, User};
+use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, Motion, TexTemplate};
 use app\models\exceptions\ExceptionBase;
 use app\models\MotionSectionChanges;
 use app\models\settings\AntragsgruenApp;
 use app\views\motion\LayoutHelper;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
-use yii\web\Session;
+use yii\web\{NotFoundHttpException, Response, Session};
 
 /**
  * @property \Yii\base\Action $action
@@ -31,80 +28,65 @@ use yii\web\Session;
  */
 trait MotionExportTraits
 {
-    /**
-     * @param string $motionSlug
-     * @param int $sectionId
-     * @param null|string $showAlways
-     * @return string
-     */
-    public function actionViewimage($motionSlug, $sectionId, $showAlways = null)
+    public function actionViewimage(string $motionSlug, int $sectionId, ?string $showAlways = null): ResponseInterface
     {
         $motion    = $this->getMotionWithCheck($motionSlug);
-        $sectionId = IntVal($sectionId);
 
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId === $sectionId) {
                 if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
                     !$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)
                 ) {
-                    return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+                    return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
                 }
                 if ($section->getSectionType()->isEmpty()) {
-                    return $this->showErrorpage(404, 'Image not found');
+                    return new HtmlErrorResponse('Image not found', 404);
                 }
-
                 $metadata                    = json_decode($section->metadata, true);
-                $this->getHttpResponse()->format = Response::FORMAT_RAW;
-                $this->getHttpResponse()->headers->add('Content-Type', $metadata['mime']);
-                if (!$this->layoutParams->isRobotsIndex($this->action)) {
-                    $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-                }
-                return $section->getData();
+                return new BinaryFileResponse(
+                    BinaryFileResponse::mimeTypeToType($metadata['mime']),
+                    $section->getData(),
+                    false,
+                    null,
+                    $this->layoutParams->isRobotsIndex($this->action)
+                );
             }
         }
-        return $this->showErrorpage(404, 'Image not found');
+        return new HtmlErrorResponse('Image not found', 404);
     }
 
     /**
-     * @param string $motionSlug
-     * @param int $sectionId
-     * @param string|null $showAlways
-     * @return string
      * @throws NotFoundHttpException
+     * @throws NotFound
      */
-    public function actionViewpdf($motionSlug, $sectionId, $showAlways = null)
+    public function actionViewpdf(string $motionSlug, int $sectionId, ?string $showAlways = null): ResponseInterface
     {
         $motion    = $this->getMotionWithCheck($motionSlug);
-        $sectionId = intval($sectionId);
 
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId === $sectionId) {
                 if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
                     !$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)
                 ) {
-                    return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+                    return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
                 }
 
-                $this->getHttpResponse()->format = Response::FORMAT_RAW;
-                $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
-                $this->getHttpResponse()->headers->add('Content-Disposition', 'inline');
-                if (!$this->layoutParams->isRobotsIndex($this->action)) {
-                    $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-                }
-                return $section->getData();
+                return new BinaryFileResponse(
+                    BinaryFileResponse::TYPE_PDF,
+                    $section->getData(),
+                    false,
+                    null,
+                    $this->layoutParams->isRobotsIndex($this->action)
+                );
             }
         }
 
         throw new NotFoundHttpException('Not found');
     }
 
-    /**
-     * @param string $file
-     * @return string
-     */
-    public function actionEmbeddedpdf($file)
+    public function actionEmbeddedpdf(string $file): HtmlResponse
     {
-        return $this->renderPartial('pdf_embed', ['file' => $file]);
+        return new HtmlResponse($this->renderPartial('pdf_embed', ['file' => $file]));
     }
 
     /**
