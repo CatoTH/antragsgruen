@@ -24,7 +24,7 @@ foreach ($controller->consultation->getUsersInAnyGroup() as $user) {
     }
 }
 usort($users, function (User $user1, User $user2): int {
-    return strnatcasecmp($user1->nameFamily ?? $user1->name, $user2->nameFamily ?? $user2->name);
+    return strnatcasecmp($user1->name ?? '', $user2->name ?? '');
 });
 
 $saveUrl = UrlHelper::createUrl([
