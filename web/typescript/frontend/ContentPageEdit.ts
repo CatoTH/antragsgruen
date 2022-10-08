@@ -10,9 +10,9 @@ export class ContentPageEdit {
 
     constructor(private $form: JQuery) {
         $form.on("submit", e => e.preventDefault()); // necessary for IE11
-        this.$textSaver = $form.find('.textSaver');
-        this.$textHolder = $form.find('.textHolder');
-        this.$editCaller = $form.find('.editCaller');
+        this.$textSaver = $(this.$form.data('save-selector'));
+        this.$textHolder = $(this.$form.data('text-selector'));
+        this.$editCaller = $(this.$form.data('edit-selector'));
         this.$contentSettings = $form.find('.contentSettingsToolbar');
         this.$downloadableFiles = $form.find('.downloadableFiles');
 

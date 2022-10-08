@@ -2,6 +2,11 @@
   margin-left: -1px;
   margin-right: -1px;
 
+  .editCaller {
+    float: right;
+    font-weight: normal;
+  }
+
   .textHolder {
     > h1, > h2.green, h2.darkgreen {
       margin-left: -20px;

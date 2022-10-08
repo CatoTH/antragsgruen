@@ -44,7 +44,7 @@ if (User::getCurrentUser() && $pageData->isCustomPage()) {
     $fullscreenButton = '';
 }
 
-echo '<h1 class="pageTitle">' . Html::encode($pageData->title ?: $pageData->textId) . $fullscreenButton . '</h1>';
+echo '<div class="primaryHeader"><h1 class="pageTitle">' . Html::encode($pageData->title ?: $pageData->textId) . '</h1>' . $fullscreenButton . '</div>';
 
 if ($admin) {
     $layout->loadCKEditor();
@@ -54,6 +54,9 @@ if ($admin) {
         'data-upload-url'          => $pageData->getUploadUrl(),
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
         'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
+        'data-text-selector'       => '#stdTextHolder',
+        'data-save-selector'       => '.textSaver',
+        'data-edit-selector'       => '.editCaller',
     ]);
 
     if (!in_array($pageData->textId, array_keys(ConsultationText::getDefaultPages()))) {
@@ -86,29 +89,34 @@ if ($admin) {
         </section>
         <?php
     }
-}
 
-echo '<div class="content contentPage">';
-
-if ($admin) {
-    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
-}
-
-echo '<article class="textHolder" id="stdTextHolder">';
-echo $pageData->text;
-echo '</article>';
-
-if ($admin) {
-    echo '<div class="textSaver hidden">';
-    echo '<button class="btn btn-primary submitBtn" type="submit">';
-    echo Yii::t('base', 'save') . '</button></div>';
-}
-
-echo '</div>';
-
-if ($admin) {
     echo Html::endForm();
+}
 
+
+$contentMain = '<div class="content contentPage">';
+
+if ($admin) {
+    $contentMain .= '<button type="button" class="btn btn-link editCaller">' . Yii::t('base', 'edit') . '</button><br>';
+}
+
+$contentMain .= '<article class="textHolder" id="stdTextHolder">';
+$contentMain .= $pageData->text;
+$contentMain .= '</article>';
+
+if ($admin) {
+    $contentMain .= '<div class="textSaver hidden">';
+    $contentMain .= '<button class="btn btn-primary submitBtn" type="submit">';
+    $contentMain .= Yii::t('base', 'save') . '</button></div>';
+}
+
+$contentMain .= '</div>';
+
+$contentMain = \app\models\layoutHooks\Layout::getContentPageContent($pageData, $admin, $contentMain);
+
+echo $contentMain;
+
+if ($admin) {
     $deleteUrl = UrlHelper::createUrl(['pages/delete-page', 'pageSlug' => $pageData->textId]);
     echo Html::beginForm($deleteUrl, 'post', ['class' => 'deletePageForm']);
     echo '<input type="hidden" name="delete" value="delete">';

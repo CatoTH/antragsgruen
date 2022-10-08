@@ -74,11 +74,14 @@ if (User::getCurrentUser()) {
     $fullscreenButton = '';
 }
 
+echo '<div class="primaryHeader">';
 if ($motion->isResolution()) {
-    echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . $fullscreenButton . '</h1>';
+    echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
 } else {
-    echo '<h1>' . $motion->getEncodedTitleWithPrefix() . $fullscreenButton . '</h1>';
+    echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 }
+echo $fullscreenButton;
+echo '</div>';
 
 if ($consultation->getSettings()->hasSpeechLists) {
     // Should be after h1 (because of CSS border-radius to .well :first-child),

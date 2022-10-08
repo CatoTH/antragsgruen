@@ -48,8 +48,11 @@ foreach ($consultation->motionTypes as $type) {
             'data-upload-url'          => $pageData->getUploadUrl(),
             'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
             'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
+            'data-text-selector'       => '#stdTextHolder',
+            'data-save-selector'       => '.textSaver',
+            'data-edit-selector'       => '.editCaller',
         ]);
-        echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
+        echo '<button type="button" class="btn btn-link editCaller">' . Yii::t('base', 'edit') . '</button><br>';
     }
 
     ?>

@@ -41,7 +41,10 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
     </button>';
 
 ?>
-<h1><?= Yii::t('voting', 'results_title') . $fullscreenButton ?></h1>
+<div class="primaryHeader">
+    <h1><?= Yii::t('voting', 'results_title') ?></h1>
+    <?= $fullscreenButton ?>
+</div>
 
 <div class="content votingsNoneIndicator<?= (count($apiData) > 0 ? ' hidden' : '') ?>">
     <div class="alert alert-info">

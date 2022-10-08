@@ -36,13 +36,20 @@
       @include border-radius-bottom();
     }
   }
-  h1 {
+  h1, .primaryHeader {
     @include stdHeading($headingPrimaryText, $headingPrimaryBackground, $headingPrimarySize);
     margin: -1px;
     overflow-wrap: break-word;
     small {
       color: white;
       font-size: 12px;
+    }
+
+    // Hint: once all H1s have primaryHeader classes, this can be removed again
+    > h1 {
+      margin: 0;
+      padding: 0;
+      background: transparent;
     }
 
     &.stickyHeader {
@@ -57,7 +64,7 @@
       padding: 0;
       float: right;
       margin-right: -10px;
-      margin-top: -2px;
+      margin-top: -20px;
       color: rgba(255, 255, 255, 0.5);
       &:hover, &.active {
         color: rgba(255, 255, 255, 0.8);

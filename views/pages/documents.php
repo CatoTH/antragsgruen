@@ -48,6 +48,9 @@ if ($contentAdmin) {
         'data-upload-url' => $pageData->getUploadUrl(),
         'data-image-browse-url' => $pageData->getImageBrowseUrl(),
         'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
+        'data-text-selector' => '#stdTextHolder',
+        'data-save-selector' => '.textSaver',
+        'data-edit-selector' => '.editCaller',
     ]);
     echo '<button type="button" class="btn btn-sm btn-link editCaller">';
     echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ';

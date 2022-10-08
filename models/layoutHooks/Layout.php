@@ -5,6 +5,7 @@ namespace app\models\layoutHooks;
 use app\models\db\{Amendment,
     Consultation,
     ConsultationMotionType,
+    ConsultationText,
     ISupporter,
     IVotingItem,
     Motion,
@@ -213,6 +214,11 @@ class Layout
     public static function getAdminIndexHint(Consultation $consultation): string
     {
         return self::callHook('getAdminIndexHint', [$consultation]);
+    }
+
+    public static function getContentPageContent(ConsultationText $text, bool $admin, string $default): string
+    {
+        return self::callHook('getContentPageContent', [$text, $admin], $default);
     }
 
     /**

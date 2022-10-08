@@ -275,6 +275,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         return $orgaInitiated;
     }
 
+    /**
+     * @param ISupporter[] $initiators
+     */
     public function getInitiatorsStrFromArray(array $initiators): string
     {
         $str   = [];

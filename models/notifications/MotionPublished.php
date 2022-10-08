@@ -11,11 +11,8 @@ use yii\helpers\Html;
 
 class MotionPublished
 {
-    /** @var Motion */
-    protected $motion;
-
-    /** @var Consultation */
-    protected $consultation;
+    protected Motion $motion;
+    protected Consultation $consultation;
 
     public function __construct(Motion $motion)
     {

@@ -37,6 +37,9 @@ echo Html::beginForm($saveUrl, 'post', [
     'data-upload-url'          => $pageData->getUploadUrl(),
     'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
     'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
+    'data-text-selector'       => '#stdTextHolder',
+    'data-save-selector'       => '.textSaver',
+    'data-edit-selector'       => '.editCaller',
 ]);
 
 echo '<div class="content">' . Yii::t('base', 'legal_multisite_hint') . '</div>';
@@ -46,7 +49,7 @@ echo '<h2 class="green">' . str_replace('%SITE%', $currHost, Yii::t('base', 'leg
 echo '<div class="content contentPage">';
 
 if ($admin) {
-    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
+    echo '<button type="button" class="btn btn-link editCaller">' . Yii::t('base', 'edit') . '</button><br>';
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';

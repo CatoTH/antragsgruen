@@ -71,7 +71,10 @@ if (User::getCurrentUser()) {
     $fullscreenButton = '';
 }
 
-echo '<h1>' . Html::encode($amendment->getTitle()) . $fullscreenButton . '</h1>';
+echo '<div class="primaryHeader">';
+echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
+echo $fullscreenButton;
+echo '</div>';
 
 if ($consultation->getSettings()->hasSpeechLists) {
     echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
