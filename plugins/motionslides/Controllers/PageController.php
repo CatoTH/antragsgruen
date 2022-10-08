@@ -2,17 +2,9 @@
 
 namespace app\plugins\motionslides\controllers;
 
-use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\exceptions\Access;
-use app\models\majorityType\IMajorityType;
-use app\models\policies\UserGroups;
-use app\models\quorumType\IQuorumType;
-use app\models\votings\AnswerTemplates;
-use app\plugins\european_youth_forum\VotingHelper;
-use app\models\db\{ConsultationText, ConsultationUserGroup, IMotion, User, VotingBlock, VotingQuestion};
-use yii\helpers\Html;
-use yii\web\NotFoundHttpException;
+use app\models\db\{ConsultationText, ConsultationUserGroup, IMotion, User};
 
 class PageController extends Base
 {

@@ -16,16 +16,18 @@ use yii\helpers\Html;
     <tbody>
     <?php
     foreach ($imotions as $imotion) {
+        $initiatorsStr = array_map(function (\app\models\db\ISupporter $supporter): string {
+            return $supporter->getNameWithOrga();
+        }, $imotion->getInitiators());
         ?>
         <tr>
             <th style="width: 45%;"><br>
                 <?= Html::encode($imotion->getTitleWithPrefix()) ?>
             </th>
             <td style="width: 35%;"><br>
-                <?= Html::encode($imotion->getInitiatorsStr()) ?>
+                <?= Html::encode(implode(", ", $initiatorsStr)) ?>
             </td>
             <td style="width: 20%; color: gray; text-align: right"><br>
-                <?= Tools::formatMysqlDateWithAria($imotion->dateCreation) ?>
             </td>
         </tr>
         <?php
