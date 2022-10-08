@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\http\RestApiResponse;
+use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface, RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
 use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError};
@@ -11,12 +11,10 @@ use yii\web\{NotFoundHttpException, Response};
 
 class PagesController extends Base
 {
-    public function actionListPages(): Response
+    public function actionListPages(): ResponseInterface
     {
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
-            $this->showErrorpage(403, 'No permissions to edit this page');
-
-            return $this->getHttpResponse();
+            return new HtmlErrorResponse('No permissions to edit this page', 403);
         }
 
         if ($this->isPostSet('create')) {
@@ -37,14 +35,13 @@ class PagesController extends Base
                 $page->editDate = date('Y-m-d H:i:s');
                 $page->save();
 
-                return $this->getHttpResponse()->redirect($page->getUrl());
+                return new RedirectResponse($page->getUrl());
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         }
 
-        $this->getHttpResponse()->data = $this->render('list');
-        return $this->getHttpResponse();
+        return new HtmlResponse($this->render('list'));
     }
 
     protected function getPageForView(string $pageSlug): ?ConsultationText
