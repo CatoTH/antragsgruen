@@ -23,8 +23,11 @@ ob_start();
         <h1 v-if="imotion" class="hidden">{{ imotion.title_with_prefix }}</h1>
     </header>
     <main v-if="imotion && !isTwoColumnLayout" class="motionTextHolder">
-        <section v-for="section in imotion.sections" class="paragraph lineNumbers" :class="[section.type]" v-if="section.html !== ''">
-            <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
+        <section v-for="(section, i) in imotion.sections" class="paragraph lineNumbers" :class="[section.type]" v-if="section.html !== ''">
+            <div class="motionSectionHeader">
+                <h2 class="motionTitle" v-if="showSectionTitle(section)">{{ section.title }}</h2>
+                <div class="motionPrefix" v-if="i === 0">{{ imotion.prefix }}</div>
+            </div>
             <div v-html="section.html"></div>
         </section>
     </main>
