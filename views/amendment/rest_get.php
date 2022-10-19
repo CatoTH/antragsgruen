@@ -37,10 +37,14 @@ if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
                 if ($section->getSectionType()->isEmpty()) {
                     continue;
                 }
+                $text = $section->getSectionType()->getAmendmentPlainHtml(true);
+                if ($text) {
+                    $text = '<div class="text motionTextFormattings textOrig">' . $text . '</div>';
+                }
                 $proposedProcedure['sections'][] = [
                     'type' => ISectionType::typeIdToApi($section->getSettings()->type),
                     'title' => $prefix . ': ' . $section->getSettings()->title,
-                    'html' => $section->getSectionType()->getAmendmentPlainHtml(),
+                    'html' => $text,
                 ];
             }
         }

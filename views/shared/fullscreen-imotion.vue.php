@@ -79,9 +79,16 @@ $htmlHeader = ob_get_clean();
                 });
             },
             nonEmptySections: function () {
-                return this.imotion.sections.filter(section => {
-                    return section.html !== '';
+                let sections = [];
+                if (this.imotion.proposed_procedure.sections) {
+                    this.imotion.proposed_procedure.sections.forEach(section => {
+                        if (section.html !== '') sections.push(section);
+                    });
+                }
+                this.imotion.sections.forEach(section => {
+                    if (section.html !== '') sections.push(section);
                 });
+                return sections;
             },
             isAmendment: function () {
                 return this.imotion && this.imotion.type === 'amendment';
