@@ -4,12 +4,11 @@ namespace app\components\latex;
 
 class Layout
 {
-    /** @var string */
-    public $template;
-    public $assetRoot;
-    public $pluginRoot;
-    public $language = 'ngerman'; // english
+    public string $template;
+    public string $assetRoot;
+    public string $pluginRoot;
+    public string $language = 'ngerman'; // english
 
-    public $title;
-    public $author;
+    public string $title;
+    public string $author;
 }
