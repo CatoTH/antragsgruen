@@ -4,21 +4,17 @@ namespace app\components\updater;
 
 class UpdatedFiles
 {
-    public $files_added;
-    public $files_added_md5;
-    public $files_updated;
-    public $files_updated_md5;
-    public $files_deleted;
-    public $from_version;
-    public $to_version;
-    public $requirements;
-    public $changelog;
+    public array $files_added;
+    public array $files_added_md5;
+    public array $files_updated;
+    public array $files_updated_md5;
+    public array $files_deleted;
+    public string $from_version;
+    public string $to_version;
+    public array $requirements;
+    public string $changelog;
 
-    /**
-     * UpdatedFiles constructor.
-     * @param string $json
-     */
-    public function __construct($json)
+    public function __construct(string $json)
     {
         $data                    = json_decode($json, true);
         $this->files_added       = $data['files_added'];
@@ -29,6 +25,6 @@ class UpdatedFiles
         $this->from_version      = $data['from_version'];
         $this->to_version        = $data['to_version'];
         $this->changelog         = $data['changelog'];
-        $this->requirements      = (isset($data['requirements']) ? $data['requirements'] : []);
+        $this->requirements      = $data['requirements'] ?? [];
     }
 }

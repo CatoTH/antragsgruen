@@ -4,25 +4,21 @@ namespace app\components\updater;
 
 class Update
 {
-    const TYPE_PATCH = 'patch';
+    private const TYPE_PATCH = 'patch';
 
-    public $type;
-    public $version;
-    public $changelog;
-    public $url;
-    public $filesize;
-    public $signature;
+    public string $type;
+    public string $version;
+    public string $changelog;
+    public string $url;
+    public int $filesize;
+    public string $signature;
 
-    /** @var null|UpdatedFiles */
-    private $updatedFiles = null;
+    private ?UpdatedFiles $updatedFiles = null;
 
     /**
-     * UpdateInformation constructor.
-     *
-     * @param array $json
      * @throws \Exception
      */
-    public function __construct($json)
+    public function __construct(array $json)
     {
         $this->type      = $json['type'];
         $this->version   = $json['version'];
@@ -31,23 +27,17 @@ class Update
         $this->filesize  = $json['filesize'];
         $this->signature = $json['signature'];
 
-        if ($this->type !== static::TYPE_PATCH) {
+        if ($this->type !== self::TYPE_PATCH) {
             throw new \Exception('Only patch releases are supported');
         }
     }
 
-    /**
-     * @return string
-     */
-    private function getBasePath()
+    private function getBasePath(): string
     {
         return __DIR__ . '/../../';
     }
 
-    /**
-     * @return string
-     */
-    private function getAbsolutePath()
+    private function getAbsolutePath(): string
     {
         $dir = $this->getBasePath() . 'runtime/updates/';
         if (!file_exists($dir)) {
@@ -58,11 +48,9 @@ class Update
     }
 
     /**
-     * @param string $version
-     * @return string
      * @throws \Exception
      */
-    private function getBackupPath($version)
+    private function getBackupPath(string $version): string
     {
         $dir = $this->getBasePath() . 'runtime/backups/' . $version . '/';
         if (!file_exists($dir)) {
@@ -73,11 +61,7 @@ class Update
         return $dir;
     }
 
-    /**
-     * @param string $content
-     * @return boolean
-     */
-    public function checkDownloadIntegrity($content)
+    public function checkDownloadIntegrity(string $content): bool
     {
         if (extension_loaded('sodium')) {
             return (base64_encode(sodium_crypto_generichash($content)) === $this->signature);
@@ -89,10 +73,7 @@ class Update
         }
     }
 
-    /**
-     * return bool
-     */
-    public function isDownloaded()
+    public function isDownloaded(): bool
     {
         if (!file_exists($this->getAbsolutePath())) {
             return false;
@@ -104,7 +85,7 @@ class Update
     /**
      * @throws \Exception
      */
-    public function download()
+    public function download(): void
     {
         $curlc = curl_init($this->url);
         curl_setopt($curlc, CURLOPT_RETURNTRANSFER, true);
@@ -127,10 +108,9 @@ class Update
     }
 
     /**
-     * @return UpdatedFiles
      * @throws \Exception
      */
-    public function readUpdateJson()
+    public function readUpdateJson(): UpdatedFiles
     {
         if (!$this->updatedFiles) {
             if (!$this->isDownloaded()) {
@@ -158,10 +138,9 @@ class Update
     }
 
     /**
-     * @param string $version
      * @throws \Exception
      */
-    public function backupOldFiles($version)
+    public function backupOldFiles(string $version): void
     {
         $basepath = $this->getBackupPath($version);
         $filesObj = $this->readUpdateJson();
@@ -183,10 +162,9 @@ class Update
     }
 
     /**
-     * @param array $requirements
      * @throws \Exception
      */
-    protected function checkRequirements($requirements)
+    protected function checkRequirements(array $requirements): void
     {
         if (isset($requirements['php']) && substr($requirements['php'], 0, 2) === '>=') {
             $minVersion = substr($requirements['php'], 2);
@@ -198,10 +176,9 @@ class Update
     }
 
     /**
-     * @param null|string $version
      * @throws \Exception
      */
-    public function verifyFileIntegrityAndPermissions($version = null)
+    public function verifyFileIntegrityAndPermissions(?string $version = null): void
     {
         $filesObj = $this->readUpdateJson();
 
@@ -299,10 +276,7 @@ class Update
         }
     }
 
-    /**
-     * @param string $dir
-     */
-    protected function createDirectoriesRecursively($dir)
+    protected function createDirectoriesRecursively(string $dir): void
     {
         if ($dir === '.' || file_exists($this->getBasePath() . $dir)) {
             return;
@@ -314,7 +288,7 @@ class Update
     /**
      * @throws \Exception
      */
-    public function performUpdate()
+    public function performUpdate(): void
     {
         $filesObj = $this->readUpdateJson();
 
