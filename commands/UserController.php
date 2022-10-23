@@ -8,41 +8,72 @@ use yii\console\Controller;
 
 class UserController extends Controller
 {
-    /** @var string */
-    public $groupIds;
-    /** @var string */
-    public $organization;
+    public ?string $groupIds = null;
+    public ?string $organization = null;
+    public ?string $password = null;
 
     public function options($actionID): array
     {
         switch ($actionID) {
             case 'create':
                 return ['groupIds', 'organization'];
+            case 'update':
+                return ['groupIds', 'organization', 'password'];
             default:
                 return [];
         }
     }
 
-    /**
-     * Resets the password for a given user
-     */
-    public function actionSetUserPassword(string $auth, string $password)
+    private function findUserByAuth(string $auth): ?User
     {
         if (mb_strpos($auth, ':') === false) {
             if (mb_strpos($auth, '@') !== false) {
                 $auth = 'email:' . $auth;
             }
         }
+        return User::findOne(['auth' => $auth]);
+    }
+
+    /**
+     * @return ConsultationUserGroup[]
+     */
+    private function getToSetUserGroups(): array
+    {
+        if (!$this->groupIds) {
+            return [];
+        }
+
+        $orgaIds = array_map('intval', explode(',', $this->groupIds));
+        $toUserGroups = [];
+        foreach ($orgaIds as $orgaId) {
+            $group = ConsultationUserGroup::findOne(['id' => $orgaId]);
+            if ($group) {
+                $toUserGroups[] = $group;
+            } else {
+                throw new \Exception('User group not found: ' . $orgaId);
+            }
+        }
+
+        return $toUserGroups;
+    }
+
+    /**
+     * Resets the password for a given user
+     */
+    public function actionSetUserPassword(string $auth, string $password): int
+    {
         /** @var User|null $user */
-        $user = User::findOne(['auth' => $auth]);
+        $user = $this->findUserByAuth($auth);
         if (!$user) {
             $this->stderr('User not found: ' . $auth . "\n");
 
-            return;
+            return 1;
         }
 
         $user->changePassword($password);
         $this->stdout('The password has been changed.' . "\n");
+
+        return 0;
     }
 
     /**
@@ -55,17 +86,7 @@ class UserController extends Controller
      */
     public function actionCreate(string $auth, string $email, string $givenName, string $familyName, string $password): int
     {
-        $orgaIds = array_map('intval', explode(',', $this->groupIds));
-        $toUserGroups = [];
-        foreach ($orgaIds as $orgaId) {
-            $group = ConsultationUserGroup::findOne(['id' => $orgaId]);
-            if ($group) {
-                $toUserGroups[] = $group;
-            } else {
-                $this->stderr('User group not found: ' . $orgaId);
-                return 1;
-            }
-        }
+        $toUserGroups = $this->getToSetUserGroups();
 
         $user = new User();
         $user->auth = $auth;
@@ -83,6 +104,45 @@ class UserController extends Controller
         foreach ($toUserGroups as $toUserGroup) {
             $user->link('userGroups', $toUserGroup);
         }
+
+        $this->stdout('Created the user');
+
+        return 0;
+    }
+
+    /**
+     * Creates a user
+     *
+     * Example:
+     * ./yii user/update email:test@example.org --password TestPassword --groupIds 1,2 --organization Antragsgrün
+     *
+     * "groupIds" refer to the primary IDs in "consultationUserGroup"
+     */
+    public function actionUpdate(string $auth): int
+    {
+        /** @var User|null $user */
+        $user = $this->findUserByAuth($auth);
+        if (!$user) {
+            $this->stderr('User not found: ' . $auth . "\n");
+
+            return 1;
+        }
+
+        $toUserGroups = $this->getToSetUserGroups();
+
+        if ($this->organization) {
+            $user->organization = $this->organization;
+            $user->save();
+        }
+        if ($this->password) {
+            $user->changePassword($this->password);
+        }
+
+        foreach ($toUserGroups as $toUserGroup) {
+            $user->link('userGroups', $toUserGroup);
+        }
+
+        $this->stdout('Updated the user');
 
         return 0;
     }
