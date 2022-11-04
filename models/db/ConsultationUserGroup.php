@@ -141,23 +141,23 @@ class ConsultationUserGroup extends ActiveRecord
     // Iterating over the userIds attached to a user group is faster than over the groupIds of a user,
     // as there are way more users, and we would need to perform more queries that way.
     // Note that this method should only be used for read-only operations, as the cache is not flushed yet.
-    /** @var null|int[] */
-    private ?array $userIdCache = null;
+    /** @var null|int[][] */
+    private static ?array $userIdCache = [];
     public function getUserIds(): array
     {
-        if ($this->userIdCache === null) {
+        if (!isset(self::$userIdCache[$this->id])) {
             $tableName = AntragsgruenApp::getInstance()->tablePrefix . 'userGroup';
             $rows = (new \yii\db\Query())
                 ->select(['userId'])
                 ->from($tableName)
                 ->where(['groupId' => $this->id])
                 ->all();
-            $this->userIdCache = [];
+            self::$userIdCache[$this->id] = [];
             foreach ($rows as $row) {
-                $this->userIdCache[] = intval($row['userId']);
+                self::$userIdCache[$this->id][] = intval($row['userId']);
             }
         }
-        return $this->userIdCache;
+        return self::$userIdCache[$this->id];
     }
 
     /**
