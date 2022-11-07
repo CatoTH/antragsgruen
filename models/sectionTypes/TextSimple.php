@@ -299,6 +299,40 @@ class TextSimple extends Text
         return $str;
     }
 
+    /**
+     * @return array{groups: AffectedLineBlock[], sections: array}
+     */
+    private function getMaybeCachedDiffGroups(AmendmentSection $section, int $lineLength, int $firstLine): array
+    {
+        // Only use cache for long motions
+        $useCache = strlen($section->getOriginalMotionSection()->getData()) > 10000;
+        $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA];
+
+        $diffGroupsAndSections = null;
+        if ($useCache) {
+            $diffGroupsAndSections = HashedStaticCache::getCache('getMaybeCachedDiffGroups', $cacheDeps);
+        }
+
+        if ($diffGroupsAndSections === false) {
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
+            $formatter->setTextNew($section->data);
+            $formatter->setFirstLineNo($firstLine);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
+            $diffSections = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
+            $diffGroupsAndSections = [
+                'groups' => $diffGroups,
+                'sections' => $diffSections,
+            ];
+        }
+
+        if ($useCache) {
+            HashedStaticCache::setCache('getMaybeCachedDiffGroups', $cacheDeps, $diffGroupsAndSections);
+        }
+
+        return $diffGroupsAndSections;
+    }
+
     public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
     {
         /** @var AmendmentSection $section */
@@ -311,13 +345,9 @@ class TextSimple extends Text
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
         $firstLine  = $section->getFirstLineNumber();
 
-        $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
-        $formatter->setTextNew($section->data);
-        $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
+        $diffGroupsAndSections = $this->getMaybeCachedDiffGroups($section, $lineLength, $firstLine);
 
-        if (count($diffGroups) === 0) {
+        if (count($diffGroupsAndSections['groups']) === 0) {
             return '';
         }
 
@@ -351,7 +381,7 @@ class TextSimple extends Text
             $linkMotion = null;
         }
         $str .= '<div class="onlyChangedText' . ($viewFullMode ? ' hidden' : '') . '">';
-        $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine, $linkMotion);
+        $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, $linkMotion);
         $str .= '</div>';
 
         $str .= '<div class="fullMotionText text motionTextFormattings textOrig ';
@@ -359,9 +389,8 @@ class TextSimple extends Text
             $str .= 'fixedWidthFont ';
         }
         $str .= ($viewFullMode ? '' : ' hidden') . '">';
-        $diffSections = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
         $lineNo = $firstLine;
-        foreach ($diffSections as $diffSection) {
+        foreach ($diffGroupsAndSections['sections'] as $diffSection) {
             $lineNumbers = substr_count($diffSection, '###LINENUMBER###');
             $str .= LineSplitter::replaceLinebreakPlaceholdersByMarkup($diffSection, $section->getSettings()->lineNumbers, $lineNo);
             $lineNo += $lineNumbers;

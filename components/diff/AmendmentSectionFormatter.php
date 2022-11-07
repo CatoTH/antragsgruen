@@ -10,14 +10,11 @@ use app\models\exceptions\Internal;
 class AmendmentSectionFormatter
 {
     /** @var string[] */
-    private $paragraphsOriginal;
-    private $paragraphsNew;
+    private array $paragraphsOriginal;
+    private array $paragraphsNew;
 
-    /** @var int */
-    private $firstLine = 0;
-
-    /** @var bool */
-    private $debug = false;
+    private int $firstLine = 0;
+    private bool $debug = false;
 
     public function setTextOriginal(string $text): void
     {
