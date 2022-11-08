@@ -31,7 +31,7 @@
     "tijsverkoyen/css-to-inline-styles": "^2.2.0",
     "catoth/html2opendocument": "0.16",
     "paragonie/sodium_compat": "^1.6",
-    "gregwar/captcha": "1.*",
+    "s1syphos/php-simple-captcha": "^2",
     "scssphp/scssphp": "^1.4",
     "guzzlehttp/guzzle": "^7.2",
     "symfony/amazon-mailer": "^5.4",

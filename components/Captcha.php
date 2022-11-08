@@ -6,7 +6,7 @@ namespace app\components;
 
 use app\models\db\FailedLoginAttempt;
 use app\models\settings\AntragsgruenApp;
-use Gregwar\Captcha\CaptchaBuilder;
+use SimpleCaptcha\Builder as CaptchaBuilder;
 
 class Captcha
 {
@@ -23,7 +23,7 @@ class Captcha
         $builder = new CaptchaBuilder();
         $builder->build(300, 80);
 
-        $phrase = $builder->getPhrase();
+        $phrase = $builder->phrase;
         RequestContext::getSession()->set('captcha', $phrase);
 
         return $builder->inline();
