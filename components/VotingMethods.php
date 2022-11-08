@@ -329,7 +329,7 @@ class VotingMethods
     {
         $positionById = [];
         for ($pos = 0; $pos < count($votingIds); $pos++) {
-            $positionById[$votingIds[$pos]] = $pos;
+            $positionById[$votingIds[$pos]] = count($votingIds) - $pos - 1;
         }
         $firstUnusedPos = $pos;
 

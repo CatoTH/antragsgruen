@@ -17,6 +17,7 @@
   - A separate voting page can be enabled, showing up in the menu.
   - Votings can have a timer, indicating a countdown to vote. (It is not binding though, it still needs to be closed by hand)
   - Votings can be chosen at the creation wizard of a site or consultation.
+  - Newest votings will be shown at the top of the voting list.
 - The full screen projector mode can now also show custom content pages.
 - The full screen projector can be set into a split screen mode, showing two motions / amendments / custom pages next to each other.
 - It is now logged when users are added to or removed from a user group. A log is visible for admins.

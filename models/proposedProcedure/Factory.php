@@ -219,12 +219,12 @@ class Factory
     {
         usort($votings, function (AgendaVoting $voting1, AgendaVoting $voting2): int {
             if ($voting1->voting->position < $voting2->voting->position) {
-                return -1;
-            }
-            if ($voting1->voting->position > $voting2->voting->position) {
                 return 1;
             }
-            return $voting1->voting->id <=> $voting2->voting->id;
+            if ($voting1->voting->position > $voting2->voting->position) {
+                return -1;
+            }
+            return $voting2->voting->id <=> $voting1->voting->id;
         });
 
         return $votings;
