@@ -60,7 +60,6 @@ rm -R vendor/tecnickcom/tcpdf/examples
 rm -R vendor/swiftmailer/swiftmailer/tests
 rm -R vendor/doctrine/lexer/tests
 rm -R vendor/ezyang/htmlpurifier/tests
-rm -R vendor/yiisoft/yii2/test
 rm -R vendor/mailjet/mailjet-apiv3-php/test
 rm -R vendor/symfony/http-client-contracts/Test
 rm -R vendor/symfony/service-contracts/Test
@@ -73,7 +72,10 @@ rm -Rf vendor/s1syphos/php-simple-captcha/demo/
 rm -Rf vendor/s1syphos/php-simple-captcha/tests/
 find vendor/ -name "README.md" -exec rm {} \;
 find vendor/ -name "CHANGELOG.md" -exec rm {} \;
-#cp vendor/gregwar/captcha/src/Gregwar/Captcha/Font/captcha5.ttf vendor/gregwar/captcha/src/Gregwar/Captcha/Font/captcha4.ttf # the original 4 is too big
+rm ./vendor/s1syphos/php-simple-captcha/fonts/LinLibertine_Rah.ttf
+rm ./vendor/s1syphos/php-simple-captcha/fonts/Hack-Regular.ttf
+rm ./vendor/s1syphos/php-simple-captcha/fonts/Bitter-Bold.ttf
+rm ./vendor/s1syphos/php-simple-captcha/fonts/Vollkorn-Regular.ttf
 find vendor -type l -exec rm {} \;
 rm -R vendor/cebe/markdown/tests
 rm -R tests/
@@ -81,15 +83,24 @@ rm migrations/m15*
 rm migrations/m16*
 rm migrations/m17*
 rm migrations/m18*
+rm migrations/m19*
 find . -name ".DS_Store" -exec rm {} \;
 find . -name ".git" -exec rm -rf {} \;
 find . -name ".github" -exec rm -rf {} \;
 find . -name ".gitignore" -exec rm {} \;
 find . -name ".gitattributes" -exec rm {} \;
+find . -name ".php-cs-fixer.php" -exec rm {} \;
+find . -name ".editorconfig" -exec rm {} \;
+find . -name ".woodpecker.yml" -exec rm {} \;
 find . -name ".travis" -exec rm {} \;
 find . -name ".travis.yml" -exec rm {} \;
 find . -name ".scrutinizer.yml" -exec rm {} \;
 find . -name ".php_cs.dist" -exec rm {} \;
+find . -name ".phpstorm.meta.php" -exec rm {} \;
+find . -name "phpunit.xml" -exec rm {} \;
+rm runtime/logs/app.log
+rm ./vendor/bin/json5
+rm vendor/colinodell/json5/bin/json5
 rm config/config.json
 rm config/config_tests.json
 touch config/INSTALLING
