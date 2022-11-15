@@ -11,7 +11,7 @@ class DiffTest extends TestBase
 {
     use Specify;
 
-    public function testLineNumberBeforeActualChange()
+    public function testLineNumberBeforeActualChange(): void
     {
         $engine = new Engine();
         $engine->setIgnoreStr('###LINENUMBER###');
@@ -31,7 +31,7 @@ class DiffTest extends TestBase
         ], $returned);
     }
 
-    public function testEdgeCaseUnchangedPrefixPostfix()
+    public function testEdgeCaseUnchangedPrefixPostfix(): void
     {
         $lineOld = '<ul><li value="1">###LINENUMBER###Hier ein Anfang. Der Einzelhandel ###LINENUMBER###hat bereits weitere Marktanteile an den Onlinehandel verloren.</li></ul>';
         $lineNew = '<ul><li>Hier ein Anfang. Der Strukturwandel des Handels in Richtung online hat sich beschleunigt.</li></ul>';
@@ -49,7 +49,7 @@ class DiffTest extends TestBase
         ], $return);
     }
 
-    public function testShortLineWithManyChanges()
+    public function testShortLineWithManyChanges(): void
     {
         $orig     = '<p>Wir bieten einen Gegenpol zur Staatlichen Erziehung in dieser Gesellschaft.</p>';
         $new      = '<p>Der Bundesvorstand untersetzt, in Vorbereitung der Bundestagswahl, diese Forderungen mit konkreten Reformvorhaben.</p>';
@@ -59,7 +59,7 @@ class DiffTest extends TestBase
         $this->assertEquals($expected, $out);
     }
 
-    public function testNoDiffInLink()
+    public function testNoDiffInLink(): void
     {
         $orig     = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
         $new      = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
@@ -69,7 +69,7 @@ class DiffTest extends TestBase
         $this->assertEquals($expected, $out);
     }
 
-    public function testNoGroupingBeyondLists()
+    public function testNoGroupingBeyondLists(): void
     {
         $orig     = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, doch das Blindtextchen ließ sich nicht beirren.</p></li></ul></li></ul>';
         $new      = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, doch das Blindtextchen ließ sich nicht beirren.</p></li><li><p>Noch eine neuer Punkt an dritter Stelle</p></li></ul></li></ul>';
@@ -79,7 +79,7 @@ class DiffTest extends TestBase
         $this->assertEquals($expected, $out);
     }
 
-    public function testNoChangingParagraphTypes()
+    public function testNoChangingParagraphTypes(): void
     {
         $orig     = '<p>###LINENUMBER###3) Eine Bekämpfung von Fluchtursachen und nicht der Geflüchteten</p>';
         $new      = '<ul><li>in Gesprächen mit (Vertreter*innen) der SPD, der Linkspartei und der Grünen</li></ul>';
@@ -89,7 +89,7 @@ class DiffTest extends TestBase
         $this->assertEquals($expected, $out);
     }
 
-    public function testBreakListpintIntoTwo()
+    public function testBreakListpintIntoTwo(): void
     {
         $this->markTestIncomplete('Does not work yet');
 
@@ -108,7 +108,8 @@ class DiffTest extends TestBase
         $this->assertEquals($expect, $arr);
     }
 
-    private function assertDiffWordEquals($word, $diff, $amendmentId, $diffWord) {
+    private function assertDiffWordEquals($word, $diff, $amendmentId, $diffWord): void
+    {
         $expexted = new DiffWord();
         $expexted->word = $word;
         $expexted->diff = $diff;
@@ -116,7 +117,7 @@ class DiffTest extends TestBase
         $this->assertEqualsCanonicalizing($expexted, $diffWord);
     }
 
-    public function testInlineDiffToWordBased()
+    public function testInlineDiffToWordBased(): void
     {
         $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>'];
         $new  = ['<ul><li>Test1</li></ul>', '<ul><li>Test2</li></ul>', '<ul><li>Test3</li></ul>'];
@@ -251,7 +252,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     }
 
 
-    public function testGroupOperations()
+    public function testGroupOperations(): void
     {
         $src     = [
             [
@@ -291,7 +292,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     }
 
 
-    public function testWordDiff()
+    public function testWordDiff(): void
     {
         $diff     = new Diff();
         $renderer = new DiffRenderer();
@@ -338,7 +339,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             $out);
     }
 
-    public function testLinenumberForcelinebreak()
+    public function testLinenumberForcelinebreak(): void
     {
         // Unrealistic test case - $new would be two paragraphs
         $orig = '<p>###LINENUMBER###Wir wollen eine Wirtschaftsweise, in der alle Rohstoffe immer wieder neu verarbeitet und ###LINENUMBER###nicht auf einer Deponie landen oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts in Entwicklungs- und Schwellenländer ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäden. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von ###LINENUMBER###Produkten und Verpackungen eine Produktverantwortung zukommt, indem ambitionierte, aber ###LINENUMBER###machbare Recyclingziele eingeführt werden. Dadurch werden Rohstoffpreise befördert, die die ###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des ###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig. Wir setzen uns ###LINENUMBER###dafür ein, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen ###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
@@ -351,7 +352,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $out);
     }
 
-    public function testDeleteMultipleParagraphs()
+    public function testDeleteMultipleParagraphs(): void
     {
         $this->markTestIncomplete('kommt noch');
 
@@ -392,7 +393,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expectedDiff, $out);
     }
 
-    public function testInsertWithSameBeginningWord()
+    public function testInsertWithSameBeginningWord(): void
     {
         $orig     = ['<ul><li>Wir sind Nummer 1</li></ul>'];
         $new      = ['<ul><li>Wir bla bla</li></ul>', '<ul><li>Wir sind Nummer 1</li></ul>'];
@@ -402,7 +403,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expected, $out);
     }
 
-    public function testSwitchAndInsertListItems()
+    public function testSwitchAndInsertListItems(): void
     {
         $this->markTestIncomplete('kommt noch');
 
@@ -441,7 +442,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     }
 
 
-    public function testReplaceListByP()
+    public function testReplaceListByP(): void
     {
         $orig           = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li>' .
                           '<li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li>' .
@@ -464,7 +465,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     }
 
 
-    public function testReplaceParagraph()
+    public function testReplaceParagraph(): void
     {
         $diff = new Diff();
 
@@ -509,7 +510,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     }
 
 
-    public function testDeletedSentenceAtEnd()
+    public function testDeletedSentenceAtEnd(): void
     {
         $origParagraphs = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren. Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</p>'];
         $newParagraphs  = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.</p>'];
@@ -520,7 +521,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $diffParas);
     }
 
-    public function testParagraphs()
+    public function testParagraphs(): void
     {
         $diff = new Diff();
 
@@ -610,7 +611,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $diffParas);
     }
 
-    public function testTwoInserts()
+    public function testTwoInserts(): void
     {
         $str1   = '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
 <p>###LINENUMBER###I waar soweid Blosmusi es nomoi.</p>';
@@ -632,7 +633,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $diffParas);
     }
 
-    public function testTwoChangedLis()
+    public function testTwoChangedLis(): void
     {
         $str1   = '<ul><li>Test123</li></ul>
 <ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li></ul>
@@ -653,7 +654,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $diffParas);
     }
 
-    public function testShiftMisplacedTags()
+    public function testShiftMisplacedTags(): void
     {
         $orig      = [
             ['', Engine::UNMODIFIED],
@@ -725,7 +726,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         ], $corrected);
     }
 
-    public function testLineDiffWithTags()
+    public function testLineDiffWithTags(): void
     {
         $strPre    = ['<ul><li>Listenpunkt</li></ul>'];
         $strPost   = ['<p>Test</p>'];
@@ -736,7 +737,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     }
 
 
-    public function testParagraphManyChanges()
+    public function testParagraphManyChanges(): void
     {
         $strPre  = '<p>###LINENUMBER###Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten ###LINENUMBER###sozialen Absicherung. Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen ###LINENUMBER###Renten-, Kranken- und Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus ist ###LINENUMBER###es in der Anfangsphase der Selbständigkeit und insbesondere bei Start-ups oft schwierig, die ###LINENUMBER###vollen Beitragslasten zu tragen. Wir wollen an Lösungen arbeiten, die angelehnt an den ###LINENUMBER###Gedanken der Künstlersozialkasse, für eine temporäre Unterstützung an dieser Stelle sorgen. ###LINENUMBER###Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen ###LINENUMBER###Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich ###LINENUMBER###verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen ###LINENUMBER###abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>';
         $strPost = '<p>Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. <em>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus wollen wir eine Bürger*innenversicherung in Gesundheit und Pflege einführen. Auch die Rentenversicherung wollen wir schrittweise zu einer Bürger*innenversicherung weiterentwickeln. In einem ersten Schritt wollen wir die bisher nicht pflichtversicherten Selbständigen in die gesetzliche Rentenversicherung einbeziehen. Die Grüne Garantierente soll ein Signal speziell an Selbständige mit geringem Einkommen senden, dass sich die Beiträge zur Rentenversicherung auch lohnen. </em> Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>';
@@ -750,7 +751,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expected, $diffParas);
     }
 
-    public function testShortParagraph()
+    public function testShortParagraph(): void
     {
         $strPre  = '<p><strong>Balance von Freiheit und Sicherheit für Solo-Selbstständige und Existenzgründer*innen</strong></p>';
         $strPost = '<p><strong>Balance von Freiheit und Sicherheit für Selbstständige und Existenzgründer*innen</strong></p>';
@@ -764,7 +765,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expected, $diffParas);
     }
 
-    public function testDeleteBeyondList()
+    public function testDeleteBeyondList(): void
     {
         $strPre  = "<p>###LINENUMBER###Test.</p>
 <p>###LINENUMBER###<strong>To be deletedgi: </strong></p>
@@ -792,7 +793,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expected, $diffParas);
     }
 
-    public function testLiPSomething()
+    public function testLiPSomething(): void
     {
         // From https://bdk.antragsgruen.de/39/motion/133/amendment/323
         $strPre  = '<ul><li>###LINENUMBER###Die Mobilisierung der Mittel für den internationalen Klimaschutz ist eine ###LINENUMBER###öffentliche Aufgabe.</li></ul>';
@@ -811,7 +812,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     }
 
 
-    public function testNoMessingUpLineNumbers()
+    public function testNoMessingUpLineNumbers(): void
     {
         $strPre   = '<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>
 <p>###LINENUMBER###Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch ###LINENUMBER###weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft ###LINENUMBER###vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und ###LINENUMBER###biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkte ###LINENUMBER###und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die ###LINENUMBER###Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang ###LINENUMBER###hier bleiben werden, diesen Prozess verstärken.</p>
@@ -839,7 +840,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     /**
      * @throws Internal
      */
-    public function testDotAsSeparator()
+    public function testDotAsSeparator(): void
     {
         $origParagraphs = ['<p>wieder<sup>Test</sup>.</p>'];
         $newParagraphs  = ['<p>wieder.</p>'];
@@ -849,7 +850,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     }
 
 
-    public function testStripEmptyLinenumberDels()
+    public function testStripEmptyLinenumberDels(): void
     {
         $orig   = [
             '<p>###LINENUMBER###<em><strong>Test</strong></em> bla bla bla bla bla lkj bla',
@@ -866,7 +867,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $arr);
     }
 
-    public function testDeleteSentenceSecondSentanceBeginningAlike1()
+    public function testDeleteSentenceSecondSentanceBeginningAlike1(): void
     {
         $orig   = [
             '<p>###LINENUMBER###Lorem At vero eos et accusam et justo duo dolores. Lorem ipsum dolor sit amet, ###LINENUMBER###consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et ###LINENUMBER###dolore magna aliquyam erat, sed diam voluptua.</p>'
@@ -882,7 +883,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $arr);
     }
 
-    public function testDeleteSentenceSecondSentanceBeginningAlike2()
+    public function testDeleteSentenceSecondSentanceBeginningAlike2(): void
     {
         $orig   = [
             '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'
@@ -898,7 +899,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $arr);
     }
 
-    public function testInsertingIntoEmptySection()
+    public function testInsertingIntoEmptySection(): void
     {
         $str1   = '';
         $str2   = '<p>New paragraph</p>';
@@ -911,7 +912,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertEquals($expect, $diffParas);
     }
 
-    public function testNumberedSubLists()
+    public function testNumberedSubLists(): void
     {
         $this->markTestIncomplete('2b will not be added as of yet, because the diff ignores changes in tag values');
 

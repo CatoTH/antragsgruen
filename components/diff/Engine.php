@@ -23,36 +23,25 @@ http://creativecommons.org/publicdomain/zero/1.0/legalcode
 
 class Engine
 {
-
     // define the constants
     const UNMODIFIED = 0;
     const DELETED    = 1;
     const INSERTED   = 2;
 
-    private $IGNORE_STR = '';
+    private string $IGNORE_STR = '';
 
 
-    public function setIgnoreStr($str)
+    public function setIgnoreStr(string $str): void
     {
         $this->IGNORE_STR = $str;
     }
 
-    /**
-     * @return string
-     */
-    public function getIgnoreStr()
+    public function getIgnoreStr(): string
     {
         return $this->IGNORE_STR;
     }
 
-    /**
-     * @param string $str1
-     * @param string $str2
-     * @param bool $relaxedTags
-     *
-     * @return bool
-     */
-    private function strCmp($str1, $str2, $relaxedTags)
+    private function strCmp(string $str1, string $str2, bool $relaxedTags): bool
     {
         if ($this->IGNORE_STR !== '') {
             $str1 = str_replace($this->IGNORE_STR, '', $str1);
@@ -85,13 +74,9 @@ class Engine
      * This gives the offsets of the first string in the two arrays that is not equal.
      * As we might be ignoring a string (###LINENUMBER###), that might not be the same index for both array
      *
-     * @param array $strings1
-     * @param array $strings2
-     * @param bool $relaxedTags
-     *
      * @return int[]
      */
-    private function getArrayDiffStarts($strings1, $strings2, $relaxedTags)
+    private function getArrayDiffStarts(array $strings1, array $strings2, bool $relaxedTags): array
     {
         $start1 = 0;
         $start2 = 0;
@@ -114,6 +99,8 @@ class Engine
         $start1++;
         $start2++;
         goto loop; // This feels so wrong, yet so right...
+
+        return []; // Fake return for phpstan
     }
 
     /**
@@ -121,15 +108,9 @@ class Engine
      * taking into account that some string might be ignored (###LINENUMBER###)
      * and that the end indexes should not be before the start indexes
      *
-     * @param array $strings1
-     * @param array $strings2
-     * @param int $start1
-     * @param int $start2
-     * @param bool $relaxedTags
-     *
      * @return int[]
      */
-    private function getArrayDiffEnds($strings1, $strings2, $start1, $start2, $relaxedTags)
+    private function getArrayDiffEnds(array $strings1, array $strings2, int $start1, int $start2, bool $relaxedTags): array
     {
         $end1   = count($strings1) - 1;
         $end2   = count($strings2) - 1;
@@ -150,6 +131,8 @@ class Engine
         $end1--;
         $end2--;
         goto loop; // This feels so wrong, yet so right...
+
+        return []; // Fake return for phpstan
     }
 
     /**
@@ -158,7 +141,7 @@ class Engine
      * @param bool $relaxedTags (for matching LIs even when some attributes are different
      * @return array
      */
-    public function compareArrays($strings1, $strings2, $relaxedTags)
+    public function compareArrays(array $strings1, array $strings2, bool $relaxedTags): array
     {
         list($start1, $start2) = $this->getArrayDiffStarts($strings1, $strings2, $relaxedTags);
         list($end1, $end2) = $this->getArrayDiffEnds($strings1, $strings2, $start1, $start2, $relaxedTags);
@@ -193,13 +176,7 @@ class Engine
         return $diff;
     }
 
-    /**
-     * @param string $string1
-     * @param string $string2
-     *
-     * @return array
-     */
-    public function compareStrings($string1, $string2)
+    public function compareStrings(string $string1, string $string2): array
     {
         $sequence1 = preg_split('/\R/', $string1);
         $sequence2 = preg_split('/\R/', $string2);
@@ -207,10 +184,9 @@ class Engine
     }
 
     /**
-     * @param array $diff
      * @return InsDelGroup[]
      */
-    private static function findInsDelGroups($diff)
+    private static function findInsDelGroups(array $diff): array
     {
         /** @var InsDelGroup[] $groups */
         $groups       = [];
@@ -276,11 +252,8 @@ class Engine
      * <p><ins>Some text</p><p></ins> (tokenized)
      * =>
      * <ins><p>Some text</p></ins><p>
-     *
-     * @param array $diff
-     * @return array
      */
-    public static function shiftMisplacedHTMLTags($diff)
+    public static function shiftMisplacedHTMLTags(array $diff): array
     {
         $groups = self::findInsDelGroups($diff);
 
@@ -325,14 +298,7 @@ class Engine
         return $diff;
     }
 
-    /**
-     * @param array $words
-     * @param int $mode
-     * @param int $fromIdx
-     * @param int $toIdx
-     * @return array
-     */
-    private function moveWordOpsToMatchSentenceStructureWrapperBlock($words, $mode, $fromIdx, $toIdx)
+    private function moveWordOpsToMatchSentenceStructureWrapperBlock(array $words, int $mode, int $fromIdx, int $toIdx): array
     {
         $cnt = 0;
 
@@ -350,11 +316,7 @@ class Engine
         return $words;
     }
 
-    /**
-     * @param array $words
-     * @return array
-     */
-    public function moveWordOpsToMatchSentenceStructure($words)
+    public function moveWordOpsToMatchSentenceStructure(array $words): array
     {
         $lastMode   = null;
         $blockStart = null;
@@ -401,7 +363,7 @@ class Engine
      * @param bool $relaxedTags
      * @return array
      */
-    private function computeTable($sequence1, $sequence2, $start1, $start2, $end1, $end2, $relaxedTags)
+    private function computeTable(array $sequence1, array $sequence2, int $start1, int $start2, int $end1, int $end2, bool $relaxedTags): array
     {
         // determine the lengths to be compared
         $length1 = $end1 - $start1 + 1;
@@ -439,10 +401,8 @@ class Engine
      * @param array $sequence2 - the second sequence
      * @param int $start1      - the first starting index
      * @param int $start2      - the second starting index
-     * @param bool $relaxedTags
-     * @return array
      */
-    private function generatePartialDiff($table, $sequence1, $sequence2, $start1, $start2, $relaxedTags)
+    private function generatePartialDiff(array $table, array $sequence1, array $sequence2, int $start1, int $start2, bool $relaxedTags): array
     {
         //  initialise the diff
         $diff = [];

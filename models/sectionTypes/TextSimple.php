@@ -313,7 +313,7 @@ class TextSimple extends Text
             $diffGroupsAndSections = HashedStaticCache::getCache('getMaybeCachedDiffGroups', $cacheDeps);
         }
 
-        if ($diffGroupsAndSections === false) {
+        if (!$diffGroupsAndSections) {
             $formatter = new AmendmentSectionFormatter();
             $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
             $formatter->setTextNew($section->data);

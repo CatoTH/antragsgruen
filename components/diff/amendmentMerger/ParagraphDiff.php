@@ -6,14 +6,11 @@ use app\components\diff\DataTypes\DiffWord;
 
 class ParagraphDiff
 {
-    /** @var int */
-    public $firstDiff;
-
-    /** @var int */
-    public $amendment;
+    public int $firstDiff;
+    public int $amendment;
 
     /** @var DiffWord[] */
-    public $diff;
+    public array $diff;
 
     public function __construct(int $amendment, int $firstDiff, array $diff)
     {

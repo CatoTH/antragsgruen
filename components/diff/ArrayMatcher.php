@@ -7,10 +7,9 @@ use app\models\exceptions\Internal;
 class ArrayMatcher
 {
     /** @var string[] */
-    private $ignoredStrings = ['###EMPTYINSERTED###'];
+    private array $ignoredStrings = ['###EMPTYINSERTED###'];
 
-    /** @var Engine */
-    private $diffEngine;
+    private Engine $diffEngine;
 
     public function __construct()
     {
@@ -29,7 +28,7 @@ class ArrayMatcher
      * @param string[] $toMatchArr
      * @return string[][]
      */
-    public static function calcVariants($reference, $toMatchArr)
+    public static function calcVariants(array $reference, array $toMatchArr): array
     {
         $emptyArray  = function ($num) {
             $arr = [];
@@ -77,16 +76,15 @@ class ArrayMatcher
     }
 
 
-    private static $calcSimilarityCache = [];
+    private static array $calcSimilarityCache = [];
 
     /**
      * @internal
      * @param string[] $arr1
      * @param string[] $arr2
-     * @return int
      * @throws Internal
      */
-    public function calcSimilarity($arr1, $arr2)
+    public function calcSimilarity(array $arr1, array $arr2): int
     {
         if (count($arr1) !== count($arr2)) {
             throw new Internal('calcSimilarity: The number of elements does not match');
@@ -122,7 +120,7 @@ class ArrayMatcher
      * @return string[]
      * @throws Internal
      */
-    public function getBestFit($reference, $variants)
+    public function getBestFit(array $reference, array $variants): array
     {
         $bestVariant           = null;
         $bestVariantSimilarity = 0;
@@ -145,7 +143,7 @@ class ArrayMatcher
      * @return string[]
      * @throws Internal
      */
-    public function matchArrayWithPlaceholder($referenceArr, $toMatchArr)
+    public function matchArrayWithPlaceholder(array $referenceArr, array $toMatchArr): array
     {
         if (count($toMatchArr) == 0) {
             $bestFit = [];
@@ -165,7 +163,7 @@ class ArrayMatcher
      * @return string[]
      * @throws Internal
      */
-    public function matchArrayResolved($referenceArr, $toMatchArr)
+    public function matchArrayResolved(array $referenceArr, array $toMatchArr): array
     {
         if (count($referenceArr) == count($toMatchArr)) {
             return $toMatchArr;
@@ -208,7 +206,7 @@ class ArrayMatcher
      * @return array
      * @throws Internal
      */
-    public function matchArrayUnresolved($referenceArr, $toMatchArr)
+    public function matchArrayUnresolved(array $referenceArr, array $toMatchArr): array
     {
         if (count($referenceArr) == count($toMatchArr)) {
             return [$referenceArr, $toMatchArr];
@@ -226,7 +224,7 @@ class ArrayMatcher
      * @param int $idx
      * @return array
      */
-    private function getSubsequentInsertsDeletes($arr, $idx)
+    private function getSubsequentInsertsDeletes(array $arr, int $idx): array
     {
         $deleteStrs = [];
         $insertStrs = [];
@@ -252,7 +250,7 @@ class ArrayMatcher
      * @return array
      * @throws Internal
      */
-    public function matchForDiff($referenceArr, $toMatchArr)
+    public function matchForDiff(array $referenceArr, array $toMatchArr): array
     {
         $diff = $this->diffEngine->compareArrays($referenceArr, $toMatchArr, true);
 
@@ -283,7 +281,7 @@ class ArrayMatcher
      * @return string[]
      * @throws Internal
      */
-    public static function computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs)
+    public static function computeMatchingAffectedParagraphs(array $oldParagraphs, array $newParagraphs): array
     {
         $matcher = new ArrayMatcher();
         list($oldAdjusted, $newAdjusted) = $matcher->matchForDiff($oldParagraphs, $newParagraphs);

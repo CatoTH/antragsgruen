@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components\diff;
 
 use app\components\HTMLTools;
@@ -7,25 +9,22 @@ use app\models\db\Amendment;
 
 class DiffRenderer
 {
-    const FORMATTING_NONE = -1;
-    const FORMATTING_CLASSES = 0;
-    const FORMATTING_INLINE = 1;
-    const FORMATTING_ICE = 2; // For CKEditor LITE Change-Tracking
-    const FORMATTING_CLASSES_ARIA = 3;
+    public const FORMATTING_NONE = -1;
+    public const FORMATTING_CLASSES = 0;
+    public const FORMATTING_INLINE = 1;
+    public const FORMATTING_ICE = 2; // For CKEditor LITE Change-Tracking
+    public const FORMATTING_CLASSES_ARIA = 3;
 
-    const INS_START = '###INS_START###';
-    const INS_END   = '###INS_END###';
-    const DEL_START = '###DEL_START###';
-    const DEL_END   = '###DEL_END###';
+    public const INS_START = '###INS_START###';
+    public const INS_END   = '###INS_END###';
+    public const DEL_START = '###DEL_START###';
+    public const DEL_END   = '###DEL_END###';
 
-    const INS_START_MATCH = '/###INS_START([^#]{0,20})###/siu';
-    const DEL_START_MATCH = '/###DEL_START([^#]{0,20})###/siu';
+    private const INS_START_MATCH = '/###INS_START([^#]{0,20})###/siu';
+    private const DEL_START_MATCH = '/###DEL_START([^#]{0,20})###/siu';
 
-    /** @var \DOMDocument */
-    private $nodeCreator;
-
-    /** @var int */
-    private $formatting = 0;
+    private \DOMDocument $nodeCreator;
+    private int $formatting = 0;
 
     /** @var null|callable */
     private $insCallback = null;
@@ -53,8 +52,8 @@ class DiffRenderer
                 $node->setAttribute('data-userid', '');
                 $node->setAttribute('data-username', '');
                 $node->setAttribute('data-changedata', '');
-                $node->setAttribute('data-time', time());
-                $node->setAttribute('data-last-change-time', time());
+                $node->setAttribute('data-time', (string)time());
+                $node->setAttribute('data-last-change-time', (string)time());
             });
             $this->setDelCallback(function ($node, $params) {
                 /** @var \DOMElement $node */
@@ -67,8 +66,8 @@ class DiffRenderer
                 $node->setAttribute('data-userid', '');
                 $node->setAttribute('data-username', '');
                 $node->setAttribute('data-changedata', '');
-                $node->setAttribute('data-time', time());
-                $node->setAttribute('data-last-change-time', time());
+                $node->setAttribute('data-time', (string)time());
+                $node->setAttribute('data-last-change-time', (string)time());
             });
         }
     }
@@ -135,7 +134,7 @@ class DiffRenderer
         return trim(preg_replace('/\s{2,}/siu', ' ', $text));
     }
 
-    private function createIns($param, \DOMNode $childNode): \DOMElement
+    private function createIns(string $param, \DOMNode $childNode): \DOMElement
     {
         $ins = $this->nodeCreator->createElement('ins');
         if ($this->formatting === self::FORMATTING_INLINE) {
@@ -152,7 +151,7 @@ class DiffRenderer
         return $ins;
     }
 
-    private function createDel($param, \DOMNode $childNode): \DOMElement
+    private function createDel(string $param, \DOMNode $childNode): \DOMElement
     {
         $ins = $this->nodeCreator->createElement('del');
         if ($this->formatting === self::FORMATTING_INLINE) {
@@ -223,19 +222,15 @@ class DiffRenderer
 
     /**
      * @internal
-     * @param string $text
-     * @param bool $inIns
-     * @param bool $inDel
      * @param \DOMText|\DOMElement|null $lastEl
-     * @return array
      */
-    public function textToNodes($text, $inIns, $inDel, $lastEl)
+    public function textToNodes(string $text, ?string $inIns, ?string $inDel, $lastEl): array
     {
         $nodes     = [];
         $lastIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
         $lastIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
         while ($text !== '') {
-            if ($inIns !== false) {
+            if ($inIns !== null) {
                 $split = preg_split('/###INS_END###/siu', $text, 2);
                 if ($split[0] !== '') {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
@@ -249,11 +244,11 @@ class DiffRenderer
                 }
                 if (count($split) === 2) {
                     $text  = $split[1];
-                    $inIns = false;
+                    $inIns = null;
                 } else {
                     $text = '';
                 }
-            } elseif ($inDel !== false) {
+            } elseif ($inDel !== null) {
                 $split = preg_split('/###DEL_END###/siu', $text, 2);
                 if ($split[0] !== '') {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
@@ -267,7 +262,7 @@ class DiffRenderer
                 }
                 if (count($split) == 2) {
                     $text  = $split[1];
-                    $inDel = false;
+                    $inDel = null;
                 } else {
                     $text = '';
                 }
@@ -296,21 +291,15 @@ class DiffRenderer
         return [$nodes, $inIns, $inDel];
     }
 
-    /**
-     * @param \DOMElement $child
-     * @param array $newChildren
-     * @param bool $inIns
-     * @param bool $inDel
-     */
-    protected function renderHtmlWithPlaceholdersIntElement(\DOMElement $child, &$newChildren, &$inIns, &$inDel)
+    protected function renderHtmlWithPlaceholdersIntElement(\DOMElement $child, array &$newChildren, ?string &$inIns, ?string &$inDel): void
     {
-        if ($inIns !== false && self::nodeContainsText($child, self::INS_END)) {
+        if ($inIns !== null && self::nodeContainsText($child, self::INS_END)) {
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child, $inIns);
             $newChildren = array_merge($newChildren, $currNewChildren);
-        } elseif ($inDel !== false && self::nodeContainsText($child, self::DEL_END)) {
+        } elseif ($inDel !== null && self::nodeContainsText($child, self::DEL_END)) {
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child, $inDel);
             $newChildren = array_merge($newChildren, $currNewChildren);
-        } elseif ($inIns !== false) {
+        } elseif ($inIns !== null) {
             /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName === 'ins');
@@ -327,7 +316,7 @@ class DiffRenderer
                 $this->addInsStyles($clone, $inIns);
                 $newChildren[] = $clone;
             }
-        } elseif ($inDel !== false) {
+        } elseif ($inDel !== null) {
             /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
@@ -350,18 +339,13 @@ class DiffRenderer
         }
     }
 
-    /**
-     * @param \DOMNode $dom
-     * @param bool|string $inIns
-     * @return array
-     */
-    protected function renderHtmlWithPlaceholdersIntInIns($dom, $inIns)
+    protected function renderHtmlWithPlaceholdersIntInIns(\DOMNode $dom, ?string $inIns): array
     {
         if (!self::nodeContainsText($dom, self::INS_END)) {
-            return [[$this->cloneNode($dom)], $inIns, false];
+            return [[$this->cloneNode($dom)], $inIns, null];
         }
 
-        $inDel       = false;
+        $inDel       = null;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
             if (is_a($child, \DOMText::class)) {
@@ -386,18 +370,13 @@ class DiffRenderer
         return [[$newDom], $inIns, $inDel];
     }
 
-    /**
-     * @param \DOMNode $dom
-     * @param bool|string $inDel
-     * @return array
-     */
-    protected function renderHtmlWithPlaceholdersIntInDel($dom, $inDel)
+    protected function renderHtmlWithPlaceholdersIntInDel(\DOMNode $dom, ?string $inDel): array
     {
         if (!self::nodeContainsText($dom, self::DEL_END)) {
-            return [[$this->cloneNode($dom)], false, $inDel];
+            return [[$this->cloneNode($dom)], null, $inDel];
         }
 
-        $inIns       = false;
+        $inIns = null;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
             if (is_a($child, \DOMText::class)) {
@@ -421,9 +400,9 @@ class DiffRenderer
     protected function renderHtmlWithPlaceholdersIntNormal(\DOMElement $dom): array
     {
         if (!self::nodeStartInsDel($dom)) {
-            return [[$this->cloneNode($dom)], false, false];
+            return [[$this->cloneNode($dom)], null, null];
         }
-        $inIns       = $inDel = false;
+        $inIns = $inDel = null;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
             if (is_a($child, \DOMText::class)) {
@@ -498,7 +477,7 @@ class DiffRenderer
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
             foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
-                $node->setAttribute($key, $val);
+                $node->setAttribute($key, (string)$val);
             }
             $classes = explode(' ', $node->getAttribute('class'));
             $classes = array_merge($classes, ['ice-ins', 'ice-cts', 'appendHint']);
@@ -514,7 +493,7 @@ class DiffRenderer
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
             foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
-                $node->setAttribute($key, $val);
+                $node->setAttribute($key, (string)$val);
             }
             $classes = explode(' ', $node->getAttribute('class'));
             $classes = array_merge($classes, ['ice-del', 'ice-cts', 'appendHint']);
