@@ -6,13 +6,9 @@ use app\components\diff\DataTypes\DiffWord;
 
 class MovingParagraphDetector
 {
-    private static $MOVING_PARTNER_COUNT = 1;
+    private static int $MOVING_PARTNER_COUNT = 1;
 
-    /**
-     * @param string $old
-     * @param string $new
-     */
-    private static function compareMovedParagraphs($old, $new): bool
+    private static function compareMovedParagraphs(string $old, string $new): bool
     {
         $old = trim(strtolower($old));
         $new = trim(strtolower($new));
@@ -21,9 +17,8 @@ class MovingParagraphDetector
 
     /**
      * @param string[] $paras
-     * @param string $class
      */
-    private static function findBlocksWithClasses($paras, $class): array
+    private static function findBlocksWithClasses(array $paras, string $class): array
     {
         $found = [];
         foreach ($paras as $paraNo => $para) {
@@ -43,13 +38,7 @@ class MovingParagraphDetector
         return $found;
     }
 
-    /**
-     * @param string $paragraph
-     * @param string $matchFull
-     * @param int $otherPara
-     * @param string $pairId
-     */
-    private static function addMarkup($paragraph, $matchFull, $otherPara, $pairId): string
+    private static function addMarkup(string $paragraph, string $matchFull, int $otherPara, string $pairId): string
     {
         $new = preg_replace_callback('/(?<tag><\w+)(?<atts>[^>]*)>/siu', function ($matches) use ($otherPara, $pairId) {
             $atts = $matches['atts'];
@@ -73,7 +62,7 @@ class MovingParagraphDetector
      * @param string[] $paras
      * @return string[]
      */
-    public static function markupMovedParagraphs($paras)
+    public static function markupMovedParagraphs(array $paras): array
     {
         $deleted  = self::findBlocksWithClasses($paras, 'deleted');
         $inserted = self::findBlocksWithClasses($paras, 'inserted');
@@ -82,8 +71,8 @@ class MovingParagraphDetector
             foreach ($deleted as $del) {
                 if (self::compareMovedParagraphs($ins['inner'], $del['inner'])) {
                     $pairid              = self::$MOVING_PARTNER_COUNT++;
-                    $paras[$ins['para']] = self::addMarkup($paras[$ins['para']], $ins['full'], $del['para'], $pairid);
-                    $paras[$del['para']] = self::addMarkup($paras[$del['para']], $del['full'], $ins['para'], $pairid);
+                    $paras[$ins['para']] = self::addMarkup($paras[$ins['para']], $ins['full'], $del['para'], (string)$pairid);
+                    $paras[$del['para']] = self::addMarkup($paras[$del['para']], $del['full'], $ins['para'], (string)$pairid);
                 }
             }
         }
@@ -92,10 +81,9 @@ class MovingParagraphDetector
     }
 
     /**
-     * @param string $html
      * @return string[]
      */
-    private static function getBlocks($html)
+    private static function getBlocks(string $html): array
     {
         $found = [];
         preg_match_all('/<(?<tag>div|p|ul|li|blockquote|h1|h2|h3|h4|h5|h6)[^>]*>.*<\/\1>/siuU', $html, $matches);
@@ -107,9 +95,8 @@ class MovingParagraphDetector
 
     /**
      * @param DiffWord[][] $paras
-     * @return array
      */
-    private static function extractInsertsFromArrays($paras)
+    private static function extractInsertsFromArrays(array $paras): array
     {
         $inserts = [];
         foreach ($paras as $paraNo => $para) {
@@ -135,9 +122,8 @@ class MovingParagraphDetector
 
     /**
      * @param DiffWord[][] $paras
-     * @return array
      */
-    private static function extractDeletesFromArray($paras)
+    private static function extractDeletesFromArray(array $paras): array
     {
         $deletes = [];
         foreach ($paras as $paraNo => $para) {
@@ -180,9 +166,8 @@ class MovingParagraphDetector
 
     /**
      * @param DiffWord[][] $paras
-     * @return array
      */
-    public static function markupWordArrays($paras)
+    public static function markupWordArrays(array $paras): array
     {
         $inserts = self::extractInsertsFromArrays($paras);
         $deletes = self::extractDeletesFromArray($paras);
@@ -196,7 +181,7 @@ class MovingParagraphDetector
                             $paras[$insert['para']][$i]->diff,
                             $paras[$insert['para']][$i]->diff,
                             $delete['para'],
-                            $pairid
+                            (string)$pairid
                         );
                     }
                     for ($i = $delete['word_from']; $i <= $delete['word_to']; $i++) {
@@ -204,7 +189,7 @@ class MovingParagraphDetector
                             $paras[$delete['para']][$i]->diff,
                             $paras[$delete['para']][$i]->diff,
                             $insert['para'],
-                            $pairid
+                            (string)$pairid
                         );
                     }
                 }

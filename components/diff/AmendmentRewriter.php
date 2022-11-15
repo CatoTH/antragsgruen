@@ -12,11 +12,10 @@ class AmendmentRewriter
     /**
      * @param string[] $oldParagraphs
      * @param string[] $newParagraphs
-     * @param bool $asDiff
      * @return string[]
      * @throws Internal
      */
-    public static function computeAffectedParagraphs($oldParagraphs, $newParagraphs, $asDiff = false)
+    public static function computeAffectedParagraphs(array $oldParagraphs, array $newParagraphs, bool $asDiff = false): array
     {
         $matchingNewParagraphs = ArrayMatcher::computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs);
 
@@ -42,9 +41,8 @@ class AmendmentRewriter
      *
      * @param DiffWord[][] $toCheckArr
      * @param DiffWord[][] $refArr
-     * @return array
      */
-    private static function moveInsertsIntoTheirOwnWords($toCheckArr, $refArr)
+    private static function moveInsertsIntoTheirOwnWords(array $toCheckArr, array $refArr): array
     {
         $insertArr              = function ($arr, $pos, $insertedEl) {
             return array_merge(array_slice($arr, 0, $pos + 1), [$insertedEl], array_slice($arr, $pos + 1));
@@ -69,13 +67,9 @@ class AmendmentRewriter
     }
 
     /**
-     * @param string $motionOldPara
-     * @param string $motionNewPara
-     * @param string $amendmentPara
-     * @return string
      * @throws Internal
      */
-    public static function createMerge($motionOldPara, $motionNewPara, $amendmentPara)
+    public static function createMerge(string $motionOldPara, string $motionNewPara, string $amendmentPara): string
     {
         $diff           = new Diff();
         $wordsNewMotion = $diff->compareHtmlParagraphsToWordArray([$motionOldPara], [$motionNewPara]);
@@ -86,7 +80,7 @@ class AmendmentRewriter
         }
 
         $inDiffMotion = $inDiffAmendment = false;
-        $new          = [];
+        $new = [];
 
         list($wordsNewMotion, $wordsAmendment) = self::moveInsertsIntoTheirOwnWords($wordsNewMotion, $wordsAmendment);
         list($wordsAmendment, $wordsNewMotion) = self::moveInsertsIntoTheirOwnWords($wordsAmendment, $wordsNewMotion);
@@ -132,14 +126,10 @@ class AmendmentRewriter
     }
 
     /**
-     * @param string $motionOldHtml
-     * @param string $motionNewHtml
-     * @param string $amendmentHtml
      * @param string[] $overrides
-     * @return bool
      * @throws Internal
      */
-    public static function canRewrite($motionOldHtml, $motionNewHtml, $amendmentHtml, $overrides = [])
+    public static function canRewrite(string $motionOldHtml, string $motionNewHtml, string $amendmentHtml, array $overrides = []): bool
     {
         $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
         $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
@@ -166,12 +156,9 @@ class AmendmentRewriter
     }
 
     /**
-     * @param string $motionOldHtml
-     * @param string $amendmentHtml
      * @param string[] $overwrites
-     * @return string
      */
-    public static function calcNewSectionTextWithOverwrites($motionOldHtml, $amendmentHtml, $overwrites)
+    public static function calcNewSectionTextWithOverwrites(string $motionOldHtml, string $amendmentHtml, array $overwrites): string
     {
         $motionOldParas        = HTMLTools::sectionSimpleHTML($motionOldHtml);
         $amendmentParas        = HTMLTools::sectionSimpleHTML($amendmentHtml);
@@ -185,22 +172,17 @@ class AmendmentRewriter
     }
 
     /**
-     * @param string $motionOldHtml
-     * @param string $motionNewHtml
-     * @param string $amendmentHtml
-     * @param boolean $asDiff
      * @param null|int[] $lineNumbers
-     * @param bool $debug
      * @return string[]
      */
     public static function getCollidingParagraphs(
-        $motionOldHtml,
-        $motionNewHtml,
-        $amendmentHtml,
-        $asDiff = false,
-        $lineNumbers = null,
-        $debug = false
-    )
+        string $motionOldHtml,
+        string $motionNewHtml,
+        string $amendmentHtml,
+        bool $asDiff = false,
+        ?array $lineNumbers = null,
+        bool $debug = false
+    ): array
     {
         $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
         $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
@@ -263,14 +245,10 @@ class AmendmentRewriter
     }
 
     /**
-     * @param string $motionOldHtml
-     * @param string $motionNewHtml
-     * @param string $amendmentHtml
      * @param string[] $overrides
-     * @return string
      * @throws Internal
      */
-    public static function performRewrite($motionOldHtml, $motionNewHtml, $amendmentHtml, $overrides = [])
+    public static function performRewrite(string $motionOldHtml, string $motionNewHtml, string $amendmentHtml, array $overrides = []): string
     {
         $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
         $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);

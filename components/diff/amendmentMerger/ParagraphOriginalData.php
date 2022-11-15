@@ -6,27 +6,25 @@ use app\components\diff\DataTypes\ParagraphMergerWord;
 
 class ParagraphOriginalData
 {
-    /** @var string */
-    public $original;
+    public string $original;
 
     /** @var string[] */
-    public $origTokenized;
+    public array $origTokenized;
 
     /** @var ParagraphMergerWord[] */
-    public $words;
+    public array $words;
 
     /** @var CollidingParagraphDiff[] */
-    public $collidingParagraphs = [];
+    public array $collidingParagraphs = [];
 
     /**
-     * @param string $original
      * @param string[] $origTokenized
-     * @param array $words
+     * @param ParagraphMergerWord[] $words
      */
-    public function __construct($original, $origTokenized, $words)
+    public function __construct(string $original, array $origTokenized, array $words)
     {
-        $this->original      = $original;
+        $this->original = $original;
         $this->origTokenized = $origTokenized;
-        $this->words         = $words;
+        $this->words = $words;
     }
 }

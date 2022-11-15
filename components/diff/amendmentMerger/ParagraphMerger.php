@@ -9,20 +9,19 @@ use yii\helpers\Html;
 
 class ParagraphMerger
 {
-    /** @var ParagraphOriginalData */
-    private $paraData;
+    private ParagraphOriginalData $paraData;
 
     /** @var ParagraphDiff[] */
-    private $diffs;
+    private array $diffs;
 
-    private $merged = false;
+    private bool $merged = false;
 
     // If set to true, then collisions will be merged into the text, preferring ease of editing over consistency
     private $mergeCollisions;
 
     // Sets the limit, how long a collision may be in character for it to be merged.
     // If the collision (deletion + insertion) is longer than this limit, it will fall back into separating out the collisions
-    private $collisionMergingLimit = 100;
+    private int $collisionMergingLimit = 100;
 
     public function __construct(string $paragraphStr, $mergeCollisions)
     {

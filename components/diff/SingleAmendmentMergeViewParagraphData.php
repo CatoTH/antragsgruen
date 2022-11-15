@@ -8,28 +8,14 @@ use app\models\sectionTypes\ISectionType;
 
 class SingleAmendmentMergeViewParagraphData
 {
-    /** @var int */
-    public $lineFrom;
-    /** @var int */
-    public $lineTo;
-    /** @var string */
-    public $plain;
-    /** @var string */
-    public $diff;
-    /** @var string */
-    public $modDiff;
-    /** @var string */
-    public $modPlain;
+    public int $lineFrom;
+    public int $lineTo;
+    public string $plain;
+    public string $diff;
+    public ?string $modDiff;
+    public ?string $modPlain;
 
-    /**
-     * @param int $lineFrom
-     * @param int $lineTo
-     * @param string $plain
-     * @param string $diff
-     * @param string $modPlain
-     * @param string $modDiff
-     */
-    public function __construct($lineFrom, $lineTo, $plain, $diff, $modPlain, $modDiff)
+    public function __construct(int $lineFrom, int $lineTo, string $plain, string $diff, ?string $modPlain, ?string $modDiff)
     {
         $this->lineFrom = $lineFrom;
         $this->lineTo   = $lineTo;
@@ -40,10 +26,9 @@ class SingleAmendmentMergeViewParagraphData
     }
 
     /**
-     * @param Amendment $amendment
      * @return SingleAmendmentMergeViewParagraphData[][]
      */
-    public static function createFromAmendment(Amendment $amendment)
+    public static function createFromAmendment(Amendment $amendment): array
     {
         $paragraphSections = [];
         $diffRenderer      = new DiffRenderer();
@@ -78,8 +63,8 @@ class SingleAmendmentMergeViewParagraphData
             $paraLineNumbers = $section->getParagraphLineNumberHelper();
             $paragraphs      = [];
             foreach ($affectedParas as $paraNo) {
-                $paragraph    = (isset($paragraphsDiff[$paraNo]) ? $paragraphsDiff[$paraNo] : null);
-                $modifiedPara = (isset($modifiedParas[$paraNo]) ? $modifiedParas[$paraNo] : null);
+                $paragraph    = $paragraphsDiff[$paraNo] ?? null;
+                $modifiedPara = $modifiedParas[$paraNo] ?? null;
 
                 if ($paragraph) {
                     $paraDiff  = $diffRenderer->renderHtmlWithPlaceholders($paragraphsDiff[$paraNo]);

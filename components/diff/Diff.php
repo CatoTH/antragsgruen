@@ -17,29 +17,21 @@ class Diff
     const MAX_LINE_CHANGE_RATIO_PART    = 0.4;
 
     // # is necessary for placeholders like ###LINENUMBER###
-    public static $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
+    public static array $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
 
-    /** @var Engine */
-    private $engine;
+    private Engine $engine;
 
     public function __construct()
     {
         $this->engine = new Engine();
     }
 
-    /**
-     * @param string $str
-     */
-    public function setIgnoreStr($str)
+    public function setIgnoreStr(string $str): void
     {
         $this->engine->setIgnoreStr($str);
     }
 
-    /**
-     * @param string $str
-     * @return string
-     */
-    public static function wrapWithInsert($str)
+    public static function wrapWithInsert(string $str): string
     {
         if ($str === '') {
             return '';
@@ -48,11 +40,7 @@ class Diff
         }
     }
 
-    /**
-     * @param string $str
-     * @return string
-     */
-    public static function wrapWithDelete($str)
+    public static function wrapWithDelete(string $str): string
     {
         if ($str === '') {
             return '';
@@ -67,10 +55,9 @@ class Diff
     }
 
     /**
-     * @param string $line
      * @return string[]
      */
-    public static function tokenizeLine($line)
+    public static function tokenizeLine(string $line): array
     {
         $line    = static::normalizeForDiff($line);
         $htmlTag = '/(<br>\n+|<[^>]+>)/siu';
@@ -106,17 +93,12 @@ class Diff
      * @param string[] $lines
      * @return string
      */
-    public static function untokenizeLine($lines)
+    public static function untokenizeLine(array $lines): string
     {
         return implode('', $lines);
     }
 
-    /**
-     * @param array $operations
-     * @param string $groupBy
-     * @return array
-     */
-    public function groupOperations($operations, $groupBy)
+    public function groupOperations(array $operations, string $groupBy): array
     {
         $return = [];
 
@@ -160,12 +142,7 @@ class Diff
         return $return;
     }
 
-    /**
-     * @param string $word1
-     * @param string $word2
-     * @return string
-     */
-    private function getCommonPrefix($word1, $word2)
+    private function getCommonPrefix(string $word1, string $word2): string
     {
         $len1 = mb_strlen($word1);
         $len2 = mb_strlen($word2);
@@ -183,12 +160,7 @@ class Diff
         return $str;
     }
 
-    /**
-     * @param string $word1
-     * @param string $word2
-     * @return string
-     */
-    private function getCommonSuffix($word1, $word2)
+    private function getCommonSuffix(string $word1, string $word2): string
     {
         $len1 = mb_strlen($word1);
         $len2 = mb_strlen($word2);
@@ -207,12 +179,7 @@ class Diff
     }
 
 
-    /**
-     * @param string $word1
-     * @param string $word2
-     * @return string
-     */
-    private function getCommonWordPrefix($word1, $word2)
+    private function getCommonWordPrefix(string $word1, string $word2): string
     {
         $prefix      = $this->getCommonPrefix($word1, $word2);
         $len         = mb_strlen($prefix);
@@ -237,12 +204,7 @@ class Diff
         }
     }
 
-    /**
-     * @param string $word1
-     * @param string $word2
-     * @return string
-     */
-    private function getCommonWordSuffix($word1, $word2)
+    private function getCommonWordSuffix(string $word1, string $word2): string
     {
         $suffix       = $this->getCommonSuffix($word1, $word2);
         $w1len        = mb_strlen($word1);
@@ -269,12 +231,7 @@ class Diff
         }
     }
 
-    /**
-     * @param string $wordDel
-     * @param string $wordInsert
-     * @return string
-     */
-    public function computeWordDiff($wordDel, $wordInsert)
+    public function computeWordDiff(string $wordDel, string $wordInsert): string
     {
         if (mb_substr($wordDel, 0, 16) == '###LINENUMBER###' && mb_substr($wordInsert, 0, 16) != '###LINENUMBER###') {
             $linenumber = '###LINENUMBER###';
@@ -332,13 +289,7 @@ class Diff
         return ($nodeType1 !== $nodeType2);
     }
 
-    /**
-     * @param string $lineOld
-     * @param string $lineNew
-     *
-     * @return string
-     */
-    public function computeLineDiff($lineOld, $lineNew)
+    public function computeLineDiff(string $lineOld, string $lineNew): string
     {
         $computedStrs = [];
         $lineOld      = static::normalizeForDiff($lineOld);
@@ -420,12 +371,9 @@ class Diff
 
 
     /**
-     * @param array $arr
-     * @param int $idx
-     * @return array|null
      * @throws Internal
      */
-    public static function computeSubsequentInsertsDeletes($arr, $idx)
+    public static function computeSubsequentInsertsDeletes(array $arr, int $idx): ?array
     {
         $numDeletes = 0;
         $deleteStrs = [];
@@ -450,11 +398,9 @@ class Diff
     }
 
     /**
-     * @param string $haystack
-     * @param string $needle
      * @return int|false
      */
-    public static function findFirstOccurrenceIgnoringTags($haystack, $needle)
+    public static function findFirstOccurrenceIgnoringTags(string $haystack, string $needle)
     {
         $first = mb_strpos($haystack, $needle);
         if ($first === false) {
@@ -480,12 +426,9 @@ class Diff
 
     /**
      * @internal
-     * @param string $orig
-     * @param string $new
-     * @param string $diff
      * @return string[]
      */
-    public function getUnchangedPrefixPostfix($orig, $new, $diff)
+    public function getUnchangedPrefixPostfix(string $orig, string $new, string $diff): array
     {
         $firstTagOrig = (preg_match('/^<[^>]+>/siu', $orig, $matchesOrig) ? $matchesOrig[0] : '');
         $firstTagNew  = (preg_match('/^<[^>]+>/siu', $new, $matchesNew) ? $matchesNew[0] : '');
@@ -564,13 +507,13 @@ class Diff
      * @param string $diff
      * @return float
      */
-    public function computeLineDiffChangeRatio($orig, $diff)
+    public function computeLineDiffChangeRatio(string $orig, string $diff): float
     {
         $orig       = str_replace(['###LINENUMBER###'], [''], $orig);
         $diff       = str_replace(['###LINENUMBER###'], [''], $diff);
         $origLength = mb_strlen(strip_tags($orig));
-        if ($origLength == 0) {
-            return 0;
+        if ($origLength === 0) {
+            return 0.0;
         }
         $strippedDiff = preg_replace('/\#\#\#INS_START\#\#\#(.*)\#\#\#INS_END\#\#\#/siuU', '', $diff);
         $strippedDiff = preg_replace('/\#\#\#DEL_START\#\#\#(.*)\#\#\#DEL_END\#\#\#/siuU', '', $strippedDiff);
@@ -583,11 +526,10 @@ class Diff
     /**
      * @param string[] $referenceParas
      * @param string[] $newParas
-     * @param int $diffFormatting
      * @return string[]
      * @throws Internal
      */
-    public function compareHtmlParagraphs($referenceParas, $newParas, $diffFormatting)
+    public function compareHtmlParagraphs(array $referenceParas, array $newParas, int $diffFormatting): array
     {
         $cache_deps = [$referenceParas, $newParas, $diffFormatting];
         $cached     = HashedStaticCache::getCache('compareHtmlParagraphs', $cache_deps);
@@ -645,11 +587,9 @@ class Diff
     }
 
     /**
-     * @param string $diff
-     * @param int|null $amendmentId
      * @return DiffWord[]
      */
-    public function convertToWordArray($diff, $amendmentId = null)
+    public function convertToWordArray(string $diff, ?int $amendmentId = null): array
     {
         $splitChars        = [' ', '-', '>', '<', ':', '.'];
         $words             = [
@@ -730,11 +670,10 @@ class Diff
     }
 
     /**
-     * @param string $orig
      * @param DiffWord[] $wordArr
      * @throws Internal
      */
-    public function checkWordArrayConsistency($orig, $wordArr)
+    public function checkWordArrayConsistency(string $orig, array $wordArr): void
     {
         $origArr = self::tokenizeLine($orig);
         if (count($origArr) === 0 && count($wordArr) === 1) {
@@ -763,11 +702,10 @@ class Diff
     /**
      * @param string[] $referenceParas
      * @param string[] $newParas
-     * @param int|null $amendmentId
      * @throws Internal
      * @return DiffWord[][]
      */
-    public function compareHtmlParagraphsToWordArray($referenceParas, $newParas, $amendmentId = null)
+    public function compareHtmlParagraphsToWordArray(array $referenceParas, array $newParas, ?int $amendmentId = null): array
     {
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
@@ -813,13 +751,9 @@ class Diff
     }
 
     /**
-     * @param array $referenceParas
-     * @param array $newParas
-     * @param int $diffFormatting
-     * @return string[]
      * @throws Internal
      */
-    public static function computeAffectedParagraphs($referenceParas, $newParas, $diffFormatting)
+    public static function computeAffectedParagraphs(array $referenceParas, array $newParas, int $diffFormatting): array
     {
         $diff          = new Diff();
         $diffParas     = $diff->compareHtmlParagraphs($referenceParas, $newParas, $diffFormatting);

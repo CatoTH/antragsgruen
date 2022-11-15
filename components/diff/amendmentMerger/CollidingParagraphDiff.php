@@ -5,10 +5,10 @@ namespace app\components\diff\amendmentMerger;
 class CollidingParagraphDiff extends ParagraphDiff
 {
     /** @var int[] */
-    public $collidingAmendmentIds;
+    public array $collidingAmendmentIds;
 
     /** @var ParagraphDiffGroup[] */
-    public $collidingGroups;
+    public array $collidingGroups;
 
     public function __construct(int $amendment, int $firstDiff, array $diff, array $collidingAmendmentIds, array $collidingGroups) {
         parent::__construct($amendment, $firstDiff, $diff);

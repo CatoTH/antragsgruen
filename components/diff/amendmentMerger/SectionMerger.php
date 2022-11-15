@@ -12,13 +12,13 @@ use app\models\db\MotionSection;
 class SectionMerger
 {
     /** @var ParagraphMerger[] */
-    private $paragraphs;
+    private array $paragraphs;
 
     /** @var string[] */
-    private $paragraphStrings;
+    private array $paragraphStrings;
 
     // If set to true, then collisions will be merged into the text, preferring ease of editing over consistency
-    private $mergeCollisions;
+    private bool $mergeCollisions;
 
     public function __construct(bool $mergeCollisions = true)
     {
@@ -26,10 +26,9 @@ class SectionMerger
     }
 
     /**
-     * @param MotionSection $section
      * @throws \app\models\exceptions\Internal
      */
-    public function initByMotionSection(MotionSection $section)
+    public function initByMotionSection(MotionSection $section): void
     {
         $paras    = $section->getTextParagraphLines();
         $sections = [];
@@ -42,7 +41,7 @@ class SectionMerger
     /**
      * @param string[] $paras
      */
-    public function initByMotionParagraphs($paras)
+    public function initByMotionParagraphs(array $paras): void
     {
         $this->paragraphStrings = $paras;
 
@@ -57,10 +56,9 @@ class SectionMerger
     }
 
     /**
-     * @param int $amendmentId
      * @param string[] $amendingParas
      */
-    public function addAmendingParagraphs($amendmentId, $amendingParas)
+    public function addAmendingParagraphs(int $amendmentId, array $amendingParas): void
     {
         $diff     = new Diff();
         $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->paragraphStrings, $amendingParas, intval($amendmentId));

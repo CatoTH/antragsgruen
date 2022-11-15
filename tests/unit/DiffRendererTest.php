@@ -10,7 +10,7 @@ class DiffRendererTest extends TestBase
 {
     use Specify;
 
-    public function testNodeToText()
+    public function testNodeToText(): void
     {
         $html = '<div> 1 <em>2 <strike>###LINENUMBER### 2</strike></em> 3 <span>4</span>';
         $dom = HTMLTools::html2DOM($html);
@@ -18,7 +18,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('1 2 2 3 4', $text);
     }
 
-    public function testAria1()
+    public function testAria1(): void
     {
         $renderer = new DiffRenderer();
         $renderer->setFormatting(DiffRenderer::FORMATTING_CLASSES_ARIA);
@@ -28,7 +28,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<p>Test<ins aria-label="Einfügen: „Neuer Absatz”">Neuer Absatz</ins> <del aria-label="Streichen: „Neuer Absatz”">Neuer Absatz</del>.</p>', $rendered);
     }
 
-    public function testAria2()
+    public function testAria2(): void
     {
         $renderer = new DiffRenderer();
         $renderer->setFormatting(DiffRenderer::FORMATTING_CLASSES_ARIA);
@@ -38,7 +38,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<ul><li>Test<p class="inserted" aria-label="Einfügen: „Neuer Absatz”">Neuer Absatz</p>.</li></ul>', $rendered);
     }
 
-    public function testCallback()
+    public function testCallback(): void
     {
         $renderer = new DiffRenderer();
         $renderer->setInsCallback(function ($node, $params) use (&$cbParam) {
@@ -81,13 +81,13 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<ins test="1"> kjhkjh </ins><ul class="inserted" test="1"><li>List</li></ul> Ende', $rendered);
     }
 
-    public function testSplitText()
+    public function testSplitText(): void
     {
         $renderer = new DiffRenderer();
         list($nodes, $inIns, $inDel) = $renderer->textToNodes(
             'Test1###INS_START###Inserted###INS_END###Bla###INS_START###Inserted###INS_END###Bla###DEL_START###Deleted###DEL_END###Ende',
-            false,
-            false,
+            null,
+            null,
             null
         );
         $this->assertEquals(7, count($nodes));
@@ -97,14 +97,14 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('ins', $nodes[3]->nodeName);
         $this->assertEquals('del', $nodes[5]->nodeName);
         $this->assertEquals('Ende', $nodes[6]->nodeValue);
-        $this->assertEquals(false, $inIns);
-        $this->assertEquals(false, $inDel);
+        $this->assertEquals(null, $inIns);
+        $this->assertEquals(null, $inDel);
 
         $renderer = new DiffRenderer();
         list($nodes, $inIns, $inDel) = $renderer->textToNodes(
             'Test1###INS_START###Inserted###INS_END###Bla###INS_START###Inserted###INS_END###Bla###DEL_START###Deleted',
-            true,
-            false,
+            '',
+            null,
             null
         );
 
@@ -117,7 +117,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('', $inDel);
     }
 
-    public function testLevel1()
+    public function testLevel1(): void
     {
         $renderer = new DiffRenderer();
 
@@ -138,7 +138,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<p>Test 1 <del>Deleted Test 2</del></p>', $rendered);
     }
 
-    public function testLevel2()
+    public function testLevel2(): void
     {
         $renderer = new DiffRenderer();
 
@@ -171,7 +171,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<p>Test 123<strong> Alt</strong><ins> Neu normal</ins><strong><ins>Neu fett </ins>alt</strong> Ende</p>', $rendered);
     }
 
-    public function testLevel3()
+    public function testLevel3(): void
     {
         $renderer = new DiffRenderer();
 
@@ -180,7 +180,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<ul><li>Test<p class="inserted">Neuer Absatz</p>.</li></ul>', $rendered);
     }
 
-    public function testInsertedListElement()
+    public function testInsertedListElement(): void
     {
         return; // @TODO
 
@@ -191,7 +191,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<ul><li>###LINENUMBER###Nested 1</li><li class="inserted">Nested <strong>2</strong></li></ul>', $rendered);
     }
 
-    public function testChangedOlNumbering()
+    public function testChangedOlNumbering(): void
     {
         return; // @TODO
 
@@ -201,7 +201,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('', $rendered);
     }
 
-    public function testParagraphContainsDiff()
+    public function testParagraphContainsDiff(): void
     {
         $str = 'Test<ins class="irgendwas">Bla';
         $this->assertEquals(4, DiffRenderer::paragraphContainsDiff($str));
@@ -228,7 +228,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals(0, DiffRenderer::paragraphContainsDiff($str));
     }
 
-    public function testKeepMovedParagraphMarkup()
+    public function testKeepMovedParagraphMarkup(): void
     {
         $renderer = new DiffRenderer();
 
