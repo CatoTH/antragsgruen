@@ -245,11 +245,7 @@ class PagesController extends Base
         ]);
     }
 
-    /**
-     * @return Response
-     * @throws Access
-     */
-    public function actionDeletePage(string $pageSlug)
+    public function actionDeletePage(string $pageSlug): RedirectResponse
     {
         $page = $this->getPageForEdit($pageSlug);
 
@@ -259,7 +255,7 @@ class PagesController extends Base
 
         $textUrl = UrlHelper::createUrl('pages/list-pages');
 
-        return $this->getHttpResponse()->redirect($textUrl);
+        return new RedirectResponse($textUrl);
     }
 
 
