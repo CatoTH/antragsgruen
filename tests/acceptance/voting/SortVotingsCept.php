@@ -41,7 +41,7 @@ $I->see('Ä2 or Ä3', '.votingSorting .list-group-item');
 $I->see('Vote on question 1', '.votingSorting .list-group-item');
 $I->see('Vote on question 2', '.votingSorting .list-group-item');
 
-$I->assertEquals([$votingId1, $votingId2, $votingId3], $I->executeJS("return window.votingAdminWidget.\$refs['voting-sort-widget'].getSortedIds()"));
+$I->assertEquals([$votingId3, $votingId2, $votingId1], $I->executeJS("return window.votingAdminWidget.\$refs['voting-sort-widget'].getSortedIds()"));
 $I->executeJS("return window.votingAdminWidget.\$refs['voting-sort-widget'].setOrder([" . $votingId3 . ", " . $votingId1 . ", " . $votingId2 . "])");
 $I->assertEquals([$votingId3, $votingId1, $votingId2], $I->executeJS("return window.votingAdminWidget.\$refs['voting-sort-widget'].getSortedIds()"));
 $I->clickJS('.votingSorting .btnSave');

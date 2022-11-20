@@ -49,11 +49,11 @@ $I->see('Seiten-Admin', $votingBaseId . ' .votingSettingsSummary .votingPolicy')
 $I->clickJS($votingBaseId . ' .settingsToggleGroup button');
 $I->seeOptionIsSelected($votingBaseId . ' .v-policy-select .stdDropdown', \app\models\policies\UserGroups::getPolicyName());
 $I->seeElement($votingBaseId . ' .v-policy-select .selectize-control');
-$selected = $I->executeJS('return votingAdminWidget.$refs["voting-admin-widget"][1].$refs["policy-select"].userGroups');
+$selected = $I->executeJS('return votingAdminWidget.$refs["voting-admin-widget"][0].$refs["policy-select"].userGroups');
 $I->assertSame([1], $selected);
 $I->wait(0.1);
 $I->seeElement($votingBaseId . ' .v-policy-select .selectize-control');
-$I->executeJS('votingAdminWidget.$refs["voting-admin-widget"][1].$refs["policy-select"].setSelectedGroups([' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '])');
+$I->executeJS('votingAdminWidget.$refs["voting-admin-widget"][0].$refs["policy-select"].setSelectedGroups([' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '])');
 $I->clickJS($votingBaseId . ' .btnSave');
 $I->wait(0.3);
 $I->see('Voting group', $votingBaseId . ' .votingSettingsSummary .votingPolicy');
