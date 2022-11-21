@@ -153,6 +153,13 @@ $fullscreenHeaderHeight: 36px;
       font-size: 1.6vw;
     }
 
+    .motionTextFormattings ol, .motionTextFormattings ul {
+      padding-left: 3.5vw;
+      > li::before {
+        left: -3.5vw;
+      }
+    }
+
     // Section Types
     .Image {
       img {

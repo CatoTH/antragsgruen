@@ -14,6 +14,10 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 $layout = $controller->layoutParams;
 
+if (!User::getCurrentUser()) {
+    return;
+}
+
 $votingBlocksToRender = Factory::getOpenVotingBlocks($consultation, $assignedToMotion);
 if (count($votingBlocksToRender) === 0 && !Factory::hasOnlineVotingBlocks($consultation)) {
     // Hint: we poll once there is a online voting block created

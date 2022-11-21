@@ -80,7 +80,7 @@ $htmlHeader = ob_get_clean();
             },
             nonEmptySections: function () {
                 let sections = [];
-                if (this.imotion.proposed_procedure.sections) {
+                if (this.imotion.proposed_procedure && this.imotion.proposed_procedure.sections) {
                     this.imotion.proposed_procedure.sections.forEach(section => {
                         if (section.html !== '') sections.push(section);
                     });
