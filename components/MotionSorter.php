@@ -108,7 +108,7 @@ class MotionSorter
      * @param string[] $prefixes
      * @return string[]
      */
-    public static function getSortedMotionsSortTest($prefixes): array
+    public static function getSortedMotionsSortTest(array $prefixes): array
     {
         usort($prefixes, [static::class, 'getSortedMotionsSort']);
         return $prefixes;
@@ -119,7 +119,7 @@ class MotionSorter
      * @param IMotion[] $motions
      * @return IMotion[]
      */
-    public static function getSortedMotionsStd(Consultation $consultation, $motions): array
+    public static function getSortedMotionsStd(Consultation $consultation, array $motions): array
     {
         $motionsSorted   = [];
         $motionsNoPrefix = [];
@@ -160,7 +160,7 @@ class MotionSorter
      * @param IMotion[] $imotions
      * @return array|array[]
      */
-    public static function getSortedIMotionsAgenda(Consultation $consultation, $imotions): array
+    public static function getSortedIMotionsAgenda(Consultation $consultation, array $imotions): array
     {
         $motionsSorted       = [];
         $foundMotionIds      = [];
@@ -207,7 +207,7 @@ class MotionSorter
      * @param IMotion[] $imotions
      * @return array|array[]
      */
-    public static function getSortedIMotions(Consultation $consultation, $imotions): array
+    public static function getSortedIMotions(Consultation $consultation, array $imotions): array
     {
         switch ($consultation->getSettings()->startLayoutType) {
             case \app\models\settings\Consultation::START_LAYOUT_AGENDA:
@@ -223,7 +223,7 @@ class MotionSorter
      * @param IMotion[] $imotions
      * @return IMotion[]
      */
-    public static function getSortedIMotionsFlat(Consultation $consultation, $imotions): array
+    public static function getSortedIMotionsFlat(Consultation $consultation, array $imotions): array
     {
         $motions2   = static::getSortedIMotions($consultation, $imotions);
         $motionsOut = [];
@@ -240,7 +240,7 @@ class MotionSorter
      * @return Amendment[]
      * @throws \app\models\exceptions\Internal
      */
-    public static function getSortedAmendments(Consultation $consultation, $amendments): array
+    public static function getSortedAmendments(Consultation $consultation, array $amendments): array
     {
         if ($consultation->amendmentNumbering === ByLine::getID()) {
             return Amendment::sortByLineNumbers($consultation, $amendments);
@@ -256,7 +256,7 @@ class MotionSorter
      * @param Motion[] $allMotions
      * @return IMotion[][]
      */
-    public static function getIMotionsAndResolutions($allMotions): array
+    public static function getIMotionsAndResolutions(array $allMotions): array
     {
         $motions     = [];
         $resolutions = [];

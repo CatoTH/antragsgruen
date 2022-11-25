@@ -2,9 +2,10 @@
 
 namespace app\models\proposedProcedure;
 
+use app\components\MotionSorter;
 use app\models\policies\UserGroups;
 use app\models\quorumType\NoQuorum;
-use app\models\db\{ConsultationUserGroup, IVotingItem, User, Vote, VotingBlock};
+use app\models\db\{ConsultationUserGroup, IVotingItem, Motion, User, Vote, VotingBlock};
 use app\models\exceptions\Access;
 use app\models\IMotionList;
 use app\models\policies\IPolicy;
@@ -39,7 +40,10 @@ class AgendaVoting
             $this->items[]   = $question;
             $this->itemIds->addQuestion($question);
         }
-        foreach ($this->voting->motions as $motion) {
+
+        /** @var Motion[] $motions */
+        $motions = MotionSorter::getSortedIMotionsFlat($this->voting->consultation, $this->voting->motions);
+        foreach ($motions as $motion) {
             if (!$motion->isVisibleForAdmins()) {
                 continue;
             }
@@ -48,7 +52,9 @@ class AgendaVoting
                 $this->itemIds->addMotion($motion);
             }
         }
-        foreach ($this->voting->amendments as $vAmendment) {
+
+        $amendments = MotionSorter::getSortedAmendments($this->voting->consultation, $this->voting->amendments);
+        foreach ($amendments as $vAmendment) {
             if (!$vAmendment->getMyMotion()) {
                 continue;
             }
