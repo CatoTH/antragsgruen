@@ -602,7 +602,7 @@ class User extends ActiveRecord implements IdentityInterface
                 $username = $this->auth;
         }
 
-        return Layout::getFormattedUsername($username, $this);
+        return Layout::getFormattedUsername($username ?? \Yii::t('user', 'username_deleted'), $this);
     }
 
     public function getAuthType(): int
