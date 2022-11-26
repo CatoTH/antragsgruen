@@ -13,7 +13,7 @@ ob_start();
 <section aria-labelledby="sortVotingsHeader" class="votingSorting stdSortingWidget">
     <h2 class="green" id="sortVotingsHeader"><?= Yii::t('voting', 'settings_sort_title') ?></h2>
     <div class="content adminContent">
-        <draggable :list="votingCache" item-key="title" @change="onChange">
+        <draggable :list="votingCache" item-key="id" @change="onChange">
             <template #item="{ element }">
                 <div class="list-group-item">
                     <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
