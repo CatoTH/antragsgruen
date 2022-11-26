@@ -42,7 +42,7 @@ class AgendaVoting
         }
 
         /** @var Motion[] $motions */
-        $motions = MotionSorter::getSortedIMotionsFlat($this->voting->consultation, $this->voting->motions);
+        $motions = MotionSorter::getSortedIMotionsFlat($this->voting->getMyConsultation(), $this->voting->motions);
         foreach ($motions as $motion) {
             if (!$motion->isVisibleForAdmins()) {
                 continue;
@@ -53,7 +53,7 @@ class AgendaVoting
             }
         }
 
-        $amendments = MotionSorter::getSortedAmendments($this->voting->consultation, $this->voting->amendments);
+        $amendments = MotionSorter::getSortedAmendments($this->voting->getMyConsultation(), $this->voting->amendments);
         foreach ($amendments as $vAmendment) {
             if (!$vAmendment->getMyMotion()) {
                 continue;
