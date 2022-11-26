@@ -391,7 +391,7 @@ class ConsultationLog extends ActiveRecord
             }
 
         } elseif (in_array($this->actionType, self::VOTING_QUESTION_ACTION_TYPES)) {
-            if ($this->votingQuestion) {
+            if ($this->votingQuestion && $this->votingQuestion->votingBlock) {
                 return $this->votingQuestion->votingBlock->getUserLink();
             } else {
                 return null;
