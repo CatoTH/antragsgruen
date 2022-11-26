@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.11.0 [not released yet]
+## Version 4.11.0 (2022-11-28)
 
 - WARNING: if you are using a PHP 7.3 or older, then update to PHP 8.0 or newer first before installing this update!
 - A separate document page can be enabled, allowing to upload multiple files in folders. The documents are visible to all users and can be downloaded individually or all in one as a ZIP.
