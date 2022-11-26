@@ -53,6 +53,16 @@ class ConsultationText extends ActiveRecord
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
+    public function getMyConsultation(): ?Consultation
+    {
+        $current = Consultation::getCurrent();
+        if ($current && $current->id === $this->consultationId) {
+            return $current;
+        } else {
+            return $this->consultation;
+        }
+    }
+
     public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
@@ -78,7 +88,7 @@ class ConsultationText extends ActiveRecord
     {
         $params = ['/pages/show-page', 'pageSlug' => $this->textId];
         if ($this->consultationId) {
-            $params['consultationPath'] = $this->consultation->urlPath;
+            $params['consultationPath'] = $this->getMyConsultation()->urlPath;
         }
 
         if ($this->textId === self::DEFAULT_PAGE_FEEDS) {
@@ -91,7 +101,7 @@ class ConsultationText extends ActiveRecord
     public function getJsonUrl(): string {
         $params = ['/pages/get-rest', 'pageSlug' => $this->textId];
         if ($this->consultationId) {
-            $params['consultationPath'] = $this->consultation->urlPath;
+            $params['consultationPath'] = $this->getMyConsultation()->urlPath;
         }
         return UrlHelper::createUrl($params);
     }
@@ -99,8 +109,8 @@ class ConsultationText extends ActiveRecord
     public function getSaveUrl(): string
     {
         $saveParams = ['/pages/save-page', 'pageSlug' => $this->textId];
-        if ($this->consultation) {
-            $saveParams['consultationPath'] = $this->consultation->urlPath;
+        if ($this->consultationId) {
+            $saveParams['consultationPath'] = $this->getMyConsultation()->urlPath;
         }
         if ($this->id) {
             $saveParams['pageId'] = $this->id;
@@ -111,8 +121,8 @@ class ConsultationText extends ActiveRecord
 
     public function getUploadUrl(): ?string
     {
-        if ($this->consultation) {
-            $saveParams = ['/pages/upload', 'consultationPath' => $this->consultation->urlPath];
+        if ($this->consultationId) {
+            $saveParams = ['/pages/upload', 'consultationPath' => $this->getMyConsultation()->urlPath];
         } elseif ($this->site) {
             $saveParams = ['/pages/upload', 'consultationPath' => $this->site->currentConsultation->urlPath];
         } else {
@@ -124,8 +134,8 @@ class ConsultationText extends ActiveRecord
 
     public function getFileDeleteUrl(): ?string
     {
-        if ($this->consultation) {
-            $saveParams = ['/pages/delete-file', 'consultationPath' => $this->consultation->urlPath];
+        if ($this->consultationId) {
+            $saveParams = ['/pages/delete-file', 'consultationPath' => $this->getMyConsultation()->urlPath];
         } elseif ($this->site) {
             $saveParams = ['/pages/delete-file', 'consultationPath' => $this->site->currentConsultation->urlPath];
         } else {
