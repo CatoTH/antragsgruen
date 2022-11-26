@@ -1227,7 +1227,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /*
-     * Global alternatives are never selected.
+     * Global alternatives and withdrawn amendments are never selected.
      * For regular amendments, voting results always take precedence.
      * In absence of a voting, if no proposed procedure is set, the checkbox should always be preselected.
      * If there is one, it depends on if either the amendment, the proposed procedure or the vote was set as accepted,
@@ -1239,7 +1239,7 @@ class Amendment extends IMotion implements IRSSItem
             return false;
         }
 
-        if ($this->status === static::STATUS_REJECTED) {
+        if (in_array($this->status, [static::STATUS_REJECTED, static::STATUS_WITHDRAWN])) {
             return false;
         }
         if (in_array($this->status, [static::STATUS_ACCEPTED, static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION])) {
