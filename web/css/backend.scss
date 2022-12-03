@@ -286,7 +286,13 @@ label.legend {
     .quotas {
       padding-left: 20px;
       label {
-        margin-right: 20px;
+        display: block;
+      }
+    }
+    .quotaList {
+      .quotaName {
+        margin-left: 20px;
+        max-width: 250px;
       }
     }
     .quotaSelector {

@@ -1,10 +1,11 @@
 <?php
 
 return [
-    'subqueue_male'   => 'Offen / Männer',
-    'subqueue_female' => 'Frauen',
-    'speaking_list'   => 'Redeliste',
-    'speaking_bc'     => 'Redeliste',
+    'subqueue_male'     => 'Offen / Männer',
+    'subqueue_female'   => 'Frauen',
+    'subqueue_inactive' => 'nicht aktiv',
+    'speaking_list'     => 'Redeliste',
+    'speaking_bc'       => 'Redeliste',
 
     'title_plain'        => 'Allgemeine Redeliste',
     'title_to'           => 'Redeliste zu %TITLE%',
@@ -28,7 +29,7 @@ return [
     'apply'              => 'Bewerben',
     'apply_name'         => 'Name',
     'apply_do'           => 'Eintragen',
-    'apply_poo_do'       => 'Geschäftsordnungsantrag',
+    'apply_poo_do'       => 'GO-Antrag',
     'apply_closed'       => 'Die Redeliste ist nicht geöffnet',
     'applied'            => 'Beworben',
     'applied_aria'       => 'Du hast dich für einen Platz auf der Redeliste beworben',

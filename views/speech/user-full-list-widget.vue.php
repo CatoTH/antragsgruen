@@ -44,7 +44,8 @@ ob_start();
         </div>
     </div>
 
-    <h2 class="green"><?= Yii::t('speech', 'waiting_list') ?>: {{ queue.subqueues[0].num_applied }}</h2>
+    <h2 class="green" v-if="queue.subqueues.length === 1"><?= Yii::t('speech', 'waiting_list') ?>: {{ queue.subqueues[0].num_applied }}</h2>
+    <h2 class="green" v-if="queue.subqueues.length > 1"><?= Yii::t('speech', 'waiting_list_x') ?></h2>
 
     <div class="content">
     <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" aria-label="<?= Yii::t('speech', 'waiting_aria_1') ?>">
@@ -130,16 +131,24 @@ ob_start();
     </section>
 
     <section class="waiting waitingMultiple" v-if="queue.subqueues.length > 1" aria-label="<?= Yii::t('speech', 'waiting_aria_x') ?>">
-        <header>
-            <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
-            <?= Yii::t('speech', 'waiting_list_x') ?>
-        </header>
         <div class="waitingSubqueues">
             <div v-for="subqueue in queue.subqueues" class="subqueue">
-                <div class="name">
-                    {{ subqueue.name }}:
+                <div class="header">
+                    <span class="name">
+                        {{ subqueue.name }}
+                    </span>
+
+                    <span class="number" v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                        <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'persons_waiting') ?>"></span>
+                        {{ subqueue.num_applied }}
+                    </span>
                 </div>
                 <div class="applied">
+                    <ol class="nameList" v-if="subqueue.applied && subqueue.applied.length > 0 && showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                        <li v-for="applied in subqueue.applied" v-html="formatUsernameHtml(applied)"></li>
+                    </ol>
+                </div>
+                <div class="applyHolder">
                     <!-- Regular Waiting Lists -->
                     <button class="btn btn-default btn-xs" type="button"
                             v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id && !(!queue.allow_custom_names && registerName)"
@@ -157,14 +166,6 @@ ob_start();
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                         <?= Yii::t('speech', 'login_warning') ?>
                     </a>
-
-                    <span class="number" v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'" title="<?= Yii::t('speech', 'persons_waiting') ?>">
-                        <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'persons_waiting') ?>"></span>
-                        {{ subqueue.num_applied }}
-                    </span>
-                    <ol class="nameList" v-if="subqueue.applied && subqueue.applied.length > 0 && showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'" title="<?= Yii::t('speech', 'persons_waiting') ?>">
-                        <li v-for="applied in subqueue.applied" v-html="formatUsernameHtml(applied)"></li>
-                    </ol>
 
                     <div v-if="subqueue.have_applied" class="appliedMe">
                         <span class="label label-success"><?= Yii::t('speech', 'applied') ?></span>
