@@ -36,7 +36,6 @@ class SiteCreateForm extends Model
     public bool $singleMotion = false;
     public bool $hasAmendments = true;
     public bool $amendSinglePara = false;
-    public bool $amendMerging = false;
     public bool $motionScreening = true;
     public bool $amendScreening = true;
     public bool $speechLogin = false;
@@ -98,7 +97,6 @@ class SiteCreateForm extends Model
         $this->amendSinglePara       = ($values['amendSinglePara'] == 1);
         $this->motionScreening       = ($values['motionScreening'] == 1);
         $this->amendScreening        = ($values['amendScreening'] == 1);
-        $this->amendMerging          = ($values['amendMerging'] == 1);
         $this->applicationType       = intval($values['applicationType']);
         $this->motionsInitiatedBy    = intval($values['motionsInitiatedBy']);
         $this->amendmentsInitiatedBy = intval($values['amendInitiatedBy']);
@@ -323,6 +321,7 @@ class SiteCreateForm extends Model
         $type = Manifesto::doCreateManifestoType($consultation);
 
         $type->sidebarCreateButton = 1;
+        $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         if ($this->motionsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $type->policyMotions = (string)IPolicy::POLICY_ADMINS;
         } elseif ($this->motionsInitiatedBy === self::MOTION_INITIATED_LOGGED_IN) {
@@ -338,11 +337,6 @@ class SiteCreateForm extends Model
             $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyAmendments = (string)IPolicy::POLICY_ALL;
-        }
-        if ($this->amendMerging) {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
-        } else {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }
         if ($this->hasComments) {
             $policyAmend = $type->getAmendmentPolicy();
@@ -388,6 +382,7 @@ class SiteCreateForm extends Model
         $type = \app\models\motionTypeTemplates\Motion::doCreateMotionType($consultation);
 
         $type->sidebarCreateButton = 1;
+        $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         if ($this->motionsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
             $type->policyMotions = (string)IPolicy::POLICY_ADMINS;
         } elseif ($this->motionsInitiatedBy === self::MOTION_INITIATED_LOGGED_IN) {
@@ -403,11 +398,6 @@ class SiteCreateForm extends Model
             $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyAmendments = (string)IPolicy::POLICY_ALL;
-        }
-        if ($this->amendMerging) {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
-        } else {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }
         if ($this->hasComments) {
             $policyAmend = $type->getAmendmentPolicy();
@@ -469,9 +459,6 @@ class SiteCreateForm extends Model
             $type->policyAmendments = (string)IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyAmendments = (string)IPolicy::POLICY_ALL;
-        }
-        if ($this->amendMerging) {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
         }
         if ($this->hasComments) {
             $policyAmend = $type->getAmendmentPolicy();

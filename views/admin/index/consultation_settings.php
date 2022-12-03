@@ -127,7 +127,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 <fieldset>
                     <legend class="hidden"><?= Yii::t('admin', 'con_robots') ?></legend>
                     <?php
-                    foreach (\app\models\settings\Consultation::getRobotPolicies() as $policy => $policyName) {
+                    foreach (ConsultationSettings::getRobotPolicies() as $policy => $policyName) {
                         echo '<label>';
                         echo Html::radio('settings[robotsPolicy]', ($settings->robotsPolicy == $policy), [
                             'value' => $policy,
@@ -204,13 +204,6 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
                 </label>
             </div>
             <?php
-            if (AntragsgruenApp::getInstance()->isSamlActive()) {
-                $method = SiteSettings::LOGIN_GRUENES_NETZ;
-                echo '<div class="gruenesnetz"><label>' .
-                     Html::checkbox('login[]', in_array($method, $siteSettings->loginMethods), ['value' => $method]) .
-                     ' ' . Yii::t('admin', 'siteacc_ww') .
-                     '</label></div>';
-            }
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 $loginProvider = $plugin::getDedicatedLoginProvider();
                 if ($loginProvider) {

@@ -10,7 +10,6 @@ interface WizardState {
     minSupporters: number;
     hasAmendments: number;
     amendSinglePara: number;
-    amendMerging: number;
     amendmentInitiatedBy: number;
     amendmentDeadlineExists: number;
     amendmentDeadline: string;
@@ -87,7 +86,6 @@ class SiteCreateWizard {
             minSupporters: parseNullableNumber(this.$root.find("input.minSupporters").val() as string),
             hasAmendments: parseInt(this.getRadioValue('hasAmendments', 1), 10),
             amendSinglePara: parseInt(this.getRadioValue('amendSinglePara', 0), 10),
-            amendMerging: parseInt(this.getRadioValue('amendMerging', 0), 10),
             amendmentInitiatedBy: parseInt(this.getRadioValue('amendmentWho', 1), 10),
             amendmentDeadlineExists: parseInt(this.getRadioValue('amendmentDeadline', 0), 10),
             amendmentDeadline: this.$root.find("fieldset.amendmentDeadline .date input").val() as string,
@@ -156,7 +154,6 @@ class SiteCreateWizard {
         panelAmendSinglePara: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1,
         panelAmendWho: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1,
         panelAmendDeadline: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1, // MOTION_INITIATED_ADMINS,
-        panelAmendMerging: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1,
         panelAmendScreening: (data: WizardState) => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1,
         panelComments: (data: WizardState) => this.hasMotionlikeType(data),
         panelApplicationType: (data: WizardState) => data.functionality.indexOf(FUNCTIONALITY_APPLICATIONS) !== -1,

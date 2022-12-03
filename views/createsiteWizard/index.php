@@ -47,7 +47,6 @@ $t = function ($string) {
     <?= $this->render('amend_who', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amend_deadline', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amend_screening', ['model' => $model, 't' => $t]) ?>
-    <?= $this->render('amend_merging', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('comments', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('application_type', ['model' => $model, 't' => $t, 'mode' => $mode]) ?>
     <?= $this->render('speech_login', ['model' => $model, 't' => $t]) ?>
