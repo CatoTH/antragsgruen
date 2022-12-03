@@ -40,9 +40,9 @@ ob_start();
     </div>
 
     <div v-if="queue">
-        <h2 class="green"><?= Yii::t('speech', 'waiting_list') ?>: {{ queue.subqueues[0].num_applied }}</h2>
-
         <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" aria-label="<?= Yii::t('speech', 'waiting_aria_1') ?>">
+            <h2 class="green"><?= Yii::t('speech', 'waiting_list') ?>: {{ queue.subqueues[0].num_applied }}</h2>
+
             <ol class="nameList" v-if="queue.subqueues[0].applied && queue.subqueues[0].applied.length > 0" title="<?= Yii::t('speech', 'persons_waiting') ?>">
                 <li v-for="applied in queue.subqueues[0].applied">
                     <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
@@ -52,14 +52,24 @@ ob_start();
         </section>
 
         <section class="waiting waitingMultiple" v-if="queue.subqueues.length > 1" aria-label="<?= Yii::t('speech', 'waiting_aria_x') ?>">
-            <header>
-                <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
-                <?= Yii::t('speech', 'waiting_list_x') ?>
-            </header>
+            <h2 class="green"><?= Yii::t('speech', 'waiting_list_x') ?></h2>
+
             <div class="waitingSubqueues">
                 <div v-for="subqueue in queue.subqueues" class="subqueue">
-                    <div class="name">
-                        {{ subqueue.name }}:
+                    <div class="header">
+                    <span class="name">
+                        {{ subqueue.name }}
+                    </span>
+
+                        <span class="number" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                        <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'persons_waiting') ?>"></span>
+                        {{ subqueue.num_applied }}
+                    </span>
+                    </div>
+                    <div class="applied">
+                        <ol class="nameList" v-if="subqueue.applied && subqueue.applied.length > 0 && showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                            <li v-for="applied in subqueue.applied" v-html="formatUsernameHtml(applied)"></li>
+                        </ol>
                     </div>
                 </div>
             </div>

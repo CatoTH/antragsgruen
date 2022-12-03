@@ -138,7 +138,7 @@ ob_start();
                         {{ subqueue.name }}
                     </span>
 
-                    <span class="number" v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'" title="<?= Yii::t('speech', 'persons_waiting') ?>">
+                    <span class="number" title="<?= Yii::t('speech', 'persons_waiting') ?>">
                         <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'persons_waiting') ?>"></span>
                         {{ subqueue.num_applied }}
                     </span>

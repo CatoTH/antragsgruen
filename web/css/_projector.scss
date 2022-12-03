@@ -229,21 +229,68 @@ $fullscreenHeaderHeight: 36px;
       margin: 3vh 0;
       padding-left: 24vw;
     }
-    .nameList {
-      display: block;
-      margin-left: 25vw;
+    .waitingSingle {
+      .nameList {
+        display: block;
+        margin-left: 25vw;
 
-      > li {
-        margin-top: 20px;
-        margin-bottom: 20px;
+        > li {
+          margin-top: 20px;
+          margin-bottom: 20px;
 
-        .leftIcon {
-          float: left;
-          margin-left: -5vw;
+          .leftIcon {
+            float: left;
+            margin-left: -5vw;
+          }
+
+          font-size: 2vw;
+          line-height: 3vw;
         }
+      }
+    }
 
-        font-size: 2vw;
-        line-height: 3vw;
+    .waitingSubqueues {
+      margin-left: 3vw;
+      margin-right: 3vw;
+      width: auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+
+      > * {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .nameList {
+        margin-top: 1.5vw;
+        padding-left: 1.5vw;
+      }
+
+      .header {
+        .name {
+          vertical-align: middle;
+          font-size: 2vw;
+          font-weight: bold;
+          display: inline-block;
+          padding-right: 10px;
+        }
+        .number {
+          font-size: 1vw;
+          vertical-align: middle;
+        }
+      }
+
+      .applied {
+        line-height: 2.3vw;
+        font-size: 1.2vw;
+        vertical-align: middle;
+
+        .number {
+          display: inline-block;
+          margin-right: 7px;
+        }
       }
     }
   }
