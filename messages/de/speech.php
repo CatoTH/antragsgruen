@@ -29,7 +29,7 @@ return [
     'apply'              => 'Bewerben',
     'apply_name'         => 'Name',
     'apply_do'           => 'Eintragen',
-    'apply_poo_do'       => 'Geschäftsordnungsantrag',
+    'apply_poo_do'       => 'GO-Antrag',
     'apply_closed'       => 'Die Redeliste ist nicht geöffnet',
     'applied'            => 'Beworben',
     'applied_aria'       => 'Du hast dich für einen Platz auf der Redeliste beworben',

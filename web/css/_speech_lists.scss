@@ -392,7 +392,7 @@
   }
 }
 
-
+// Used on index page, separate speech page and full screen
 .currentSpeechPageWidth {
   .speechAdminLink {
     float: right;
@@ -470,6 +470,157 @@
       font-size: 75%; // Same as the .label next to it
     }
   }
+}
+
+// Used on the separate speech page
+.currentSpeechFullPage {
+  .speechAdminLink {
+    margin-top: 15px;
+    margin-right: 20px;
+  }
+  .activeSpeaker .name {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .remainingTime {
+    text-align: center;
+  }
+  .waitingMultiple {
+    .name {
+      vertical-align: top;
+    }
+    .applyOpenerPoo {
+      font-weight: normal;
+    }
+  }
+
+  .waitingSubqueues {
+    margin-left: 26px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+
+    > * {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+
+    .header {
+      .name {
+        vertical-align: middle;
+        font-size: 1.2em;
+        font-weight: bold;
+        display: inline-block;
+        padding-right: 10px;
+      }
+    }
+
+    .applied {
+      line-height: 35px;
+      vertical-align: middle;
+
+      .number {
+        display: inline-block;
+        margin-right: 7px;
+      }
+    }
+
+    .applyHolder {
+      align-self: flex-start;
+      margin-top: auto;
+
+      form {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      button {
+        margin-right: 15px;
+      }
+    }
+
+    .appliedMe {
+      display: inline-block;
+    }
+
+    .loginWarning {
+      display: inline-block;
+      margin-left: -15px;
+      font-size: 0.8em;
+      margin-right: 15px;
+      white-space: nowrap;
+    }
+  }
+
+  .nameList {
+    display: block;
+    margin-top: 30px;
+    margin-bottom: 50px;
+    padding-left: 1.4em;
+
+    > li {
+
+      .leftIcon {
+        float: left;
+        margin-left: -50px;
+      }
+
+      font-size: $font-size-base;
+      line-height: 1.5em;
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+      }
+    }
+  }
+  .waitingSingle {
+    .nameList {
+      padding-left: 50px;
+
+      > li {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+    }
+    .applyOpenerPoo {
+      font-weight: normal;
+      margin-top: 20px;
+    }
+  }
+  .apply {
+    max-width: 300px;
+  }
+}
+
+// Used on the home page
+.currentSpeechInline {
+  .remainingTime {
+    padding-left: 26px;
+    margin-top: 10px;
+  }
+
+  .waitingMultiple {
+    margin-top: 20px;
+
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+        line-height: 1.5em;
+      }
+    }
+
+    .notPossible {
+      line-height: 35px;
+      vertical-align: middle;
+      margin-left: 27px;
+      font-style: italic;
+      font-size: 0.8em;
+    }
+  }
 
   .waitingSubqueues {
     margin-left: 26px;
@@ -518,92 +669,6 @@
       white-space: nowrap;
     }
   }
-}
-
-.currentSpeechFullPage {
-  .speechAdminLink {
-    margin-top: 15px;
-    margin-right: 20px;
-  }
-  .activeSpeaker .name {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  .remainingTime {
-    text-align: center;
-  }
-  .waitingMultiple {
-    .name {
-      vertical-align: top;
-    }
-    .applyOpenerPoo {
-      font-weight: normal;
-    }
-  }
-  .nameList {
-    display: block;
-
-    > li {
-
-      .leftIcon {
-        float: left;
-        margin-left: -40px;
-      }
-
-      font-size: $font-size-base;
-      line-height: 1.5em;
-      font-weight: bold;
-      @if ($font-size-base < 16) {
-        font-size: 16px;
-      }
-    }
-  }
-  .waitingSingle {
-    .nameList {
-      margin-top: 30px;
-      margin-bottom: 50px;
-
-      > li {
-        margin-top: 20px;
-        margin-bottom: 20px;
-      }
-    }
-    .applyOpenerPoo {
-      font-weight: normal;
-      margin-top: 20px;
-    }
-  }
-  .apply {
-    max-width: 300px;
-  }
-}
-
-
-.currentSpeechInline {
-  .remainingTime {
-    padding-left: 26px;
-    margin-top: 10px;
-  }
-
-  .waitingMultiple {
-    margin-top: 20px;
-
-    header {
-      @if ($font-size-base < 16) {
-        font-size: 16px;
-        line-height: 1.5em;
-      }
-    }
-
-    .notPossible {
-      line-height: 35px;
-      vertical-align: middle;
-      margin-left: 27px;
-      font-style: italic;
-      font-size: 0.8em;
-    }
-  }
 
   .waitingSingle {
     margin-top: 30px;
@@ -624,7 +689,7 @@
       }
     }
 
-    .applyOpener {
+    .applyOpener, .applyOpenerPoo {
       margin-top: 10px;
     }
 
@@ -674,7 +739,6 @@
   .applyOpenerPoo {
     font-weight: normal;
     margin-left: 20px;
-    margin-top: 10px;
   }
 }
 
