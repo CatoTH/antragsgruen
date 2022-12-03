@@ -190,12 +190,20 @@ $handledSiteSettings = [];
             <div class="speechLists">
                 <?php
                 $boolSettingRow($settings, 'hasSpeechLists', $handledSettings, Yii::t('admin', 'con_speech_lists'));
-                $speechSubqueues = $settings->speechListSubqueues ?: [];
-                $name1 = (count($speechSubqueues) > 0 ? $speechSubqueues[0] : Yii::t('speech', 'subqueue_female'));
-                $name2 = (count($speechSubqueues) > 1 ? $speechSubqueues[1] : Yii::t('speech', 'subqueue_male'));
+                $hasMultipleSpeechLists = $settings->speechListSubqueues && count($settings->speechListSubqueues) > 1;
                 $handledSettings[] = 'speechRequiresLogin';
                 $speechAdminUrl = UrlHelper::createUrl(['/consultation/admin-speech']);
                 $offerSpeechListActivate = (count($consultation->speechQueues) === 0);
+
+                $speechListsPre = [
+                    Yii::t('speech', 'subqueue_female'),
+                    Yii::t('speech', 'subqueue_male'),
+                    '',
+                    ''
+                ];
+                foreach ($settings->speechListSubqueues ?: [] as $speechListNo => $speechListName) {
+                    $speechListsPre[$speechListNo] = $speechListName;
+                }
                 ?>
                 <fieldset class="quotas">
                     <?php
@@ -204,39 +212,39 @@ $handledSiteSettings = [];
                     if ($offerSpeechListActivate) {
                         ?>
                         <label class="activateFirstSpeechList">
-                        <?= Html::checkbox('speechActivateFirstList', true, ['id' => 'activateFirstSpeechList']) ?>
-                        <?= Yii::t('admin', 'con_speech_active_first') ?>
-                        <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_speech_active_hint')) ?>
-                        </label><br>
+                            <?= Html::checkbox('speechActivateFirstList', true, ['id' => 'activateFirstSpeechList']) ?>
+                            <?= Yii::t('admin', 'con_speech_active_first') ?>
+                            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_speech_active_hint')) ?>
+                        </label>
                         <?php
                     }
                     ?>
                     <label class="loginForApply">
                         <?= Html::checkbox('settings[speechRequiresLogin]', $settings->speechRequiresLogin, ['id' => 'speechRequiresLogin']) ?>
                         <?= Yii::t('admin', 'con_speech_login') ?>
-                    </label><br>
+                    </label>
                     <label class="quotaSelector">
-                        <?= Html::checkbox('hasMultipleSpeechLists', (count($speechSubqueues) > 1), ['id' => 'hasMultipleSpeechLists']) ?>
+                        <?= Html::checkbox('hasMultipleSpeechLists', $hasMultipleSpeechLists, ['id' => 'hasMultipleSpeechLists']) ?>
                         <?= Yii::t('admin', 'con_speech_quotas') ?>
                     </label>
-                    <label class="quotaName quotaName0">
-                        <span class="input-group">
-                            <span class="input-group-addon">1.</span>
-                            <input name="multipleSpeechListNames[]" value="<?= Html::encode($name1) ?>" class="form-control"
-                                   title="<?= str_replace('%no%', 1, Yii::t('admin', 'con_speech_quota_name')) ?>">
-                        </span>
-                        <span class="sr-only"><?= str_replace('%no%', 1, Yii::t('admin', 'con_speech_quota_name')) ?></span>
-                    </label>
-                    <label class="quotaName quotaName1">
-                        <span class="input-group">
-                            <span class="input-group-addon">2.</span>
-                            <input name="multipleSpeechListNames[]" value="<?= Html::encode($name2) ?>" class="form-control"
-                                   title="<?= str_replace('%no%', 2, Yii::t('admin', 'con_speech_quota_name')) ?>">
-                        </span>
-                        <span class="sr-only"><?= str_replace('%no%', 2, Yii::t('admin', 'con_speech_quota_name')) ?></span>
-                    </label>
+                    <div class="quotaList">
+                        <?php
+                        foreach ($speechListsPre as $speechListNo => $speechListName) {
+                            $inputTitle = str_replace('%no%', (string)($speechListNo + 1), Yii::t('admin', 'con_speech_quota_name'));
+                        ?>
+                        <label class="quotaName quotaName<?= $speechListNo ?>">
+                            <span class="input-group">
+                                <span class="input-group-addon"><?= ($speechListNo + 1) ?>.</span>
+                                <input name="multipleSpeechListNames[]" value="<?= Html::encode($speechListName) ?>" class="form-control"
+                                       title="<?= Html::encode($inputTitle) ?>" placeholder="- <?= Yii::t('speech', 'subqueue_inactive') ?> -">
+                            </span>
+                            <span class="sr-only"><?= str_replace('%no%', 1, Yii::t('admin', 'con_speech_quota_name')) ?></span>
+                        </label>
+                            <?php
+                        }
+                        ?>
+                    </div>
 
-                    <br>
                     <a href="<?= Html::encode($speechAdminUrl) ?>">
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                         <?= Yii::t('speech', 'goto_admin') ?>

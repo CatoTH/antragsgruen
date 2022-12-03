@@ -1,10 +1,11 @@
 <?php
 
 return [
-    'subqueue_male'   => 'Offen / Männer',
-    'subqueue_female' => 'Frauen',
-    'speaking_list'   => 'Redeliste',
-    'speaking_bc'     => 'Redeliste',
+    'subqueue_male'     => 'Offen / Männer',
+    'subqueue_female'   => 'Frauen',
+    'subqueue_inactive' => 'nicht aktiv',
+    'speaking_list'     => 'Redeliste',
+    'speaking_bc'       => 'Redeliste',
 
     'title_plain'        => 'Allgemeine Redeliste',
     'title_to'           => 'Redeliste zu %TITLE%',

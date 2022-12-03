@@ -1,10 +1,11 @@
 <?php
 
 return [
-    'subqueue_male'   => 'Men',
-    'subqueue_female' => 'Women',
-    'speaking_list'   => 'Speaking list',
-    'speaking_bc'     => 'Speaking list',
+    'subqueue_male'     => 'Men / Diverse',
+    'subqueue_female'   => 'Women',
+    'subqueue_inactive' => 'inactive',
+    'speaking_list'     => 'Speaking list',
+    'speaking_bc'       => 'Speaking list',
 
     'title_plain'        => 'Speaking list',
     'title_to'           => 'Speaking list of %TITLE%',

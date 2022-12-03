@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.12.0 [not released yet]
+
+- Speaking lists can now have more than only two sub-queues, e.g. for women, men and diverse speaking lists.
+
 ## Version 4.11.0 (2022-11-28)
 
 - WARNING: if you are using a PHP 7.3 or older, then update to PHP 8.0 or newer first before installing this update!
