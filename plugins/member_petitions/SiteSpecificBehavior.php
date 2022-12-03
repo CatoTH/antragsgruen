@@ -2,6 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
+use app\models\http\HtmlResponse;
 use app\models\policies\IPolicy;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 
@@ -18,7 +19,7 @@ class SiteSpecificBehavior extends DefaultBehavior
     /**
      * @return string[]|IPolicy[]
      */
-    public static function getCustomPolicies()
+    public static function getCustomPolicies(): array
     {
         return [
             MotionPolicy::class,
@@ -30,9 +31,9 @@ class SiteSpecificBehavior extends DefaultBehavior
         return true;
     }
 
-    public static function getSiteHomePage(): string
+    public static function getSiteHomePage(): HtmlResponse
     {
         $controller = \Yii::$app->controller;
-        return $controller->render('@app/plugins/member_petitions/views/index');
+        return new HtmlResponse($controller->render('@app/plugins/member_petitions/views/index'));
     }
 }

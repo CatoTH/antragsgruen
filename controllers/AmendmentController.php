@@ -3,7 +3,13 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
-use app\models\http\{RedirectResponse, RestApiExceptionResponse, RestApiResponse};
+use app\models\http\{BinaryFileResponse,
+    HtmlErrorResponse,
+    HtmlResponse,
+    RedirectResponse,
+    ResponseInterface,
+    RestApiExceptionResponse,
+    RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentAdminComment,
@@ -28,52 +34,44 @@ class AmendmentController extends Base
     use AmendmentActionsTrait;
     use AmendmentMergingTrait;
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionPdf(string $motionSlug, int $amendmentId)
+    public function actionPdf(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            return '';
+            return new HtmlErrorResponse('Amendment not found', 404);
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if (!($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) && !$amendment->getMyMotionType()->getPDFLayoutClass()) {
-            $this->showErrorpage(404, \Yii::t('motion', 'err_no_pdf'));
-            return '';
+            return new HtmlErrorResponse(\Yii::t('motion', 'err_no_pdf'), 404);
         }
 
         if (!$amendment->isReadable()) {
-            return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
-        }
-
-        $filename = $amendment->getFilenameBase(false) . '.pdf';
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
-        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            return new HtmlResponse($this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]));
         }
 
         if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
-            return LayoutHelper::createPdfLatex($amendment);
+            $pdf = LayoutHelper::createPdfLatex($amendment);
         } else {
-            return LayoutHelper::createPdfTcpdf($amendment);
+            $pdf = LayoutHelper::createPdfTcpdf($amendment);
         }
+
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_PDF,
+            $pdf,
+            false,
+            $amendment->getFilenameBase(false),
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
-    /**
-     * @return string
-     */
-    public function actionPdfcollection(int $withdrawn = 0)
+    public function actionPdfcollection(int $withdrawn = 0): ResponseInterface
     {
         $withdrawn = ($withdrawn === 1);
         $motions   = $this->consultation->getVisibleIMotionsSorted($withdrawn);
         if (count($motions) === 0) {
-            $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+            return new HtmlErrorResponse(\Yii::t('motion', 'none_yet'), 404);
         }
         $amendments  = [];
         $texTemplate = null;
@@ -88,24 +86,26 @@ class AmendmentController extends Base
             $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }
         if (count($amendments) == 0) {
-            $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
-        }
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            return new HtmlErrorResponse(\Yii::t('amend', 'none_yet'), 404);
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if ($hasLaTeX && $texTemplate) {
-            return $this->renderPartial('pdf_collection_tex', [
+            $pdf = $this->renderPartial('pdf_collection_tex', [
                 'amendments'  => $amendments,
                 'texTemplate' => $texTemplate,
             ]);
         } else {
-            return $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]);
+            $pdf = $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]);
         }
+
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_PDF,
+            $pdf,
+            false,
+            null,
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
     /**

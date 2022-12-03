@@ -16,6 +16,7 @@ class BinaryFileResponse implements ResponseInterface
     public const TYPE_PNG = 'png';
     public const TYPE_JPEG = 'jpeg';
     public const TYPE_GIF = 'gif';
+    public const TYPE_XML = 'xml';
 
     private string $type;
     private string $content;
@@ -72,7 +73,7 @@ class BinaryFileResponse implements ResponseInterface
                 $fileEnding = 'xslx';
                 break;
             case self::TYPE_PDF:
-                $response->headers->add('Content-Type', 'image/png');
+                $response->headers->add('Content-Type', 'application/pdf');
                 $fileEnding = 'pdf';
                 break;
             case self::TYPE_GIF:
@@ -87,16 +88,19 @@ class BinaryFileResponse implements ResponseInterface
                 $response->headers->add('Content-Type', 'application/pdf');
                 $fileEnding = 'png';
                 break;
+            case self::TYPE_XML:
+                $response->headers->add('Content-Type', 'application/xml');
+                $fileEnding = 'xml';
+                break;
             default:
                 $response->headers->add('Content-Type', 'text/html');
                 $fileEnding = 'html';
         }
-        if ($this->download) {
-            $filename = addslashes($this->filename) . '.' . $fileEnding;
-            $response->headers->add('Content-disposition', 'attachment;filename="' . $filename . '"');
-        } else {
-            $response->headers->add('Content-disposition', 'inline');
+        $disposition = $this->download ? 'attachment' : 'inline';
+        if ($this->filename) {
+            $disposition .= ';filename="' . addslashes($this->filename) . '.' . $fileEnding . '"';
         }
+        $response->headers->add('Content-disposition', $disposition);
         $response->format = Response::FORMAT_RAW;
         $response->data = $this->content;
 

@@ -2,7 +2,13 @@
 
 namespace app\controllers;
 
-use app\models\http\RestApiResponse;
+use app\models\http\{BinaryFileResponse,
+    HtmlErrorResponse,
+    HtmlResponse,
+    JsonResponse,
+    RedirectResponse,
+    ResponseInterface,
+    RestApiResponse};
 use app\components\{DateTools, RSSExporter, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentComment,
@@ -18,7 +24,6 @@ use app\models\db\{Amendment,
 use app\models\exceptions\Internal;
 use app\models\forms\ConsultationActivityFilterForm;
 use app\models\proposedProcedure\Factory;
-use yii\web\Response;
 
 class ConsultationController extends Base
 {
@@ -47,17 +52,13 @@ class ConsultationController extends Base
         return $return;
     }
 
-    /**
-     * @return string
-     * @throws Internal
-     */
-    public function actionSearch()
+    public function actionSearch(): ResponseInterface
     {
         $query = $this->getRequestValue('query');
         if (!$query || trim($query) == '') {
             $this->getHttpSession()->setFlash('error', \Yii::t('con', 'search_no_query'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         $results = $this->consultation->fulltextSearch($query, [
@@ -65,21 +66,16 @@ class ConsultationController extends Base
             'backUrl'   => UrlHelper::createUrl(['consultation/search', 'query' => $query]),
         ]);
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'search_results',
             [
                 'query'   => $query,
                 'results' => $results
             ]
-        );
+        ));
     }
 
-    /**
-     * @param int $page
-     *
-     * @return string
-     */
-    public function actionFeeds($page = 0)
+    public function actionFeeds(int $page = 0): HtmlResponse
     {
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
@@ -87,13 +83,13 @@ class ConsultationController extends Base
         $form = new ConsultationActivityFilterForm($this->consultation);
         $form->setPage(intval($page));
 
-        return $this->render('feeds', [
+        return new HtmlResponse($this->render('feeds', [
             'admin' => User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT),
-        ]);
+        ]));
     }
 
 
-    public function actionFeedmotions(): string
+    public function actionFeedmotions(): BinaryFileResponse
     {
         $newest = Motion::getNewestByConsultation($this->consultation, 20);
 
@@ -111,16 +107,16 @@ class ConsultationController extends Base
             $motion->addToFeed($feed);
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/xml');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-        }
-
-        return $feed->getFeed();
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_XML,
+            $feed->getFeed(),
+            false,
+            'feed.xml',
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
-    public function actionFeedamendments(): string
+    public function actionFeedamendments(): BinaryFileResponse
     {
         $newest = Amendment::getNewestByConsultation($this->consultation, 20);
 
@@ -138,16 +134,16 @@ class ConsultationController extends Base
             $amend->addToFeed($feed);
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/xml');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-        }
-
-        return $feed->getFeed();
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_XML,
+            $feed->getFeed(),
+            false,
+            'feed.xml',
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
-    public function actionFeedcomments(): string
+    public function actionFeedcomments(): BinaryFileResponse
     {
         $newest = IComment::getNewestByConsultation($this->consultation, 20);
 
@@ -165,16 +161,16 @@ class ConsultationController extends Base
             $comm->addToFeed($feed);
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/xml');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-        }
-
-        return $feed->getFeed();
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_XML,
+            $feed->getFeed(),
+            false,
+            'feed.xml',
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
-    public function actionFeedall(): string
+    public function actionFeedall(): BinaryFileResponse
     {
         $items = array_merge(
             Motion::getNewestByConsultation($this->consultation, 20),
@@ -203,16 +199,16 @@ class ConsultationController extends Base
             $item->addToFeed($feed);
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/xml');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-        }
-
-        return $feed->getFeed();
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_XML,
+            $feed->getFeed(),
+            false,
+            'feed.xml',
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
-    public function actionNotifications(): string
+    public function actionNotifications(): HtmlResponse
     {
         $this->forceLogin();
 
@@ -253,7 +249,7 @@ class ConsultationController extends Base
 
         $notifications = UserNotification::getUserConsultationNotis($user, $this->consultation);
 
-        return $this->render('user_notifications', ['user' => $user, 'notifications' => $notifications]);
+        return new HtmlResponse($this->render('user_notifications', ['user' => $user, 'notifications' => $notifications]));
     }
 
     private function consultationSidebar(Consultation $consultation): void
@@ -272,10 +268,7 @@ class ConsultationController extends Base
         );
     }
 
-    /**
-     * @return string
-     */
-    public function actionHome()
+    public function actionHome(): ResponseInterface
     {
         if ($this->site->getBehaviorClass()->hasSiteHomePage()) {
             return $this->site->getBehaviorClass()->getSiteHomePage();
@@ -284,10 +277,7 @@ class ConsultationController extends Base
         }
     }
 
-    /**
-     * @return string
-     */
-    public function actionIndex()
+    public function actionIndex(): ResponseInterface
     {
         $behaviorHome = $this->site->getBehaviorClass()->getConsultationHomePage($this->consultation);
         if ($behaviorHome !== null) {
@@ -295,7 +285,7 @@ class ConsultationController extends Base
         }
 
         if ($this->consultation->getForcedMotion()) {
-            $this->redirect(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
+            return new RedirectResponse(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
         }
 
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
@@ -312,7 +302,7 @@ class ConsultationController extends Base
             $myAmendments = null;
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'index',
             [
                 'consultation' => $this->consultation,
@@ -320,10 +310,10 @@ class ConsultationController extends Base
                 'myMotions'    => $myMotions,
                 'myAmendments' => $myAmendments,
             ]
-        );
+        ));
     }
 
-    public function actionActivitylog(string $page = "0", ?string $showAll = null): string
+    public function actionActivitylog(string $page = "0", ?string $showAll = null): ResponseInterface
     {
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
@@ -341,25 +331,25 @@ class ConsultationController extends Base
         if ($this->getHttpRequest()->get('amendmentId')) {
             $amendment = $this->consultation->getAmendment((int)$this->getHttpRequest()->get('amendmentId'));
             if (!$amendment) {
-                return $this->showErrorpage(404, 'Amendment not found');
+                return new HtmlErrorResponse('Amendment not found', 404);
             }
             $form->setFilterForAmendmentId($amendment->id);
         } elseif ($this->getHttpRequest()->get('motionId')) {
             $motion = $this->consultation->getMotion((string)$this->getHttpRequest()->get('motionId'));
             if (!$motion) {
-                return $this->showErrorpage(404, 'Motion not found');
+                return new HtmlErrorResponse('Motion not found', 404);
             }
             $form->setFilterForMotionId($motion->id);
         } elseif ($isUserAdmin && $this->getHttpRequest()->get('userId')) {
             $user = User::getCachedUser((int)$this->getHttpRequest()->get('userId'));
             if (!$user) {
-                return $this->showErrorpage(404, 'User not found');
+                return new HtmlErrorResponse('User not found', 404);
             }
             $form->setFilterForUserId($user->id);
         } elseif ($isUserAdmin && $this->getHttpRequest()->get('userGroupId')) {
             $userGroup = $this->consultation->getUserGroupById((int)$this->getHttpRequest()->get('userGroupId'), true);
             if (!$userGroup) {
-                return $this->showErrorpage(404, 'User group not found');
+                return new HtmlErrorResponse('User group not found', 404);
             }
             $form->setFilterForUserGroupId($userGroup->id);
         }
@@ -370,17 +360,17 @@ class ConsultationController extends Base
             $showInvisible = true;
         }
 
-        return $this->render('activity_log', [
+        return new HtmlResponse($this->render('activity_log', [
             'form' => $form,
             'motion' => $motion,
             'amendment' => $amendment,
             'user' => $user,
             'userGroup' => $userGroup,
             'showInvisible' => $showInvisible,
-        ]);
+        ]));
     }
 
-    public function actionProposedProcedure(): string
+    public function actionProposedProcedure(): HtmlResponse
     {
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
@@ -388,9 +378,9 @@ class ConsultationController extends Base
 
         $proposalFactory = new Factory($this->consultation, false);
 
-        return $this->render('proposed_procedure', [
+        return new HtmlResponse($this->render('proposed_procedure', [
             'proposedAgenda' => $proposalFactory->create(),
-        ]);
+        ]));
     }
 
     public function actionProposedProcedureRest(): RestApiResponse
@@ -405,34 +395,31 @@ class ConsultationController extends Base
         ]));
     }
 
-    public function actionProposedProcedureAjax(): string
+    public function actionProposedProcedureAjax(): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $proposalFactory = new Factory($this->consultation, false);
 
         $html = $this->renderPartial('_proposed_procedure_content', [
             'proposedAgenda' => $proposalFactory->create(),
         ]);
 
-        return json_encode([
+        return new JsonResponse([
             'success' => true,
             'html'    => $html,
             'date'    => date('H:i:s'),
         ]);
     }
 
-    public function actionCollecting(): string
+    public function actionCollecting(): ResponseInterface
     {
         if (!$this->consultation->getSettings()->collectingPage) {
-            return $this->showErrorpage(404, 'This site is not available');
+            return new HtmlErrorResponse('This site is not available', 404);
         }
 
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
-        return $this->render('collecting');
+        return new HtmlResponse($this->render('collecting'));
     }
 
     public function actionRest(): RestApiResponse
@@ -451,16 +438,13 @@ class ConsultationController extends Base
         return new RestApiResponse(200, null, $this->renderPartial('rest_site_get', ['site' => $this->site]));
     }
 
-    public function actionDebugbarAjax(): string
+    public function actionDebugbarAjax(): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         switch (\Yii::$app->request->post('action')) {
             case 'close':
                 DateTools::setDeadlineDebugMode($this->consultation, false);
 
-                return json_encode(['success' => true]);
+                return new JsonResponse(['success' => true]);
             case 'setTime':
                 try {
                     $time = Tools::dateBootstraptime2sql(\Yii::$app->request->post('time'));
@@ -469,9 +453,9 @@ class ConsultationController extends Base
                 }
                 DateTools::setDeadlineTime($this->consultation, $time);
 
-                return json_encode(['success' => true]);
+                return new JsonResponse(['success' => true]);
             default:
-                return json_encode(['success' => false, 'error' => 'No operation given']);
+                return new JsonResponse(['success' => false, 'error' => 'No operation given']);
         }
     }
 
@@ -488,7 +472,7 @@ class ConsultationController extends Base
         return $unassignedQueue;
     }
 
-    public function actionAdminSpeech(?string $queue = null): string
+    public function actionAdminSpeech(?string $queue = null): ResponseInterface
     {
         $this->layout = 'column2';
 
@@ -496,7 +480,7 @@ class ConsultationController extends Base
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::homeUrl());
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
         $foundQueue = null;
@@ -511,13 +495,13 @@ class ConsultationController extends Base
             $foundQueue = $this->getUnassignedQueueOrCreate();
         }
         if (!$foundQueue) {
-            return $this->showErrorpage(404, 'Speaking list not found');
+            return new HtmlErrorResponse('Speaking list not found', 404);
         }
 
-        return $this->render('@app/views/speech/admin-singlepage', ['queue' => $foundQueue]);
+        return new HtmlResponse($this->render('@app/views/speech/admin-singlepage', ['queue' => $foundQueue]));
     }
 
-    public function actionSpeech(): string
+    public function actionSpeech(): HtmlResponse
     {
         $this->layout = 'column2';
 
@@ -530,10 +514,10 @@ class ConsultationController extends Base
         if (!$queue) {
             $queue = $this->getUnassignedQueueOrCreate();
         }
-        return $this->render('@app/views/speech/index-singlepage', ['queue' => $queue]);
+        return new HtmlResponse($this->render('@app/views/speech/index-singlepage', ['queue' => $queue]));
     }
 
-    public function actionAdminVotings(): string
+    public function actionAdminVotings(): ResponseInterface
     {
         $this->layout = 'column2';
 
@@ -541,25 +525,26 @@ class ConsultationController extends Base
         if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::homeUrl());
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
-        return $this->render('@app/views/voting/admin-votings');
+
+        return new HtmlResponse($this->render('@app/views/voting/admin-votings'));
     }
 
-    public function actionVotings(): string
+    public function actionVotings(): ResponseInterface
     {
         $this->forceLogin();
         $this->layout = 'column2';
 
-        return $this->render('@app/views/voting/votings');
+        return new HtmlResponse($this->render('@app/views/voting/votings'));
     }
 
-    public function actionVotingResults(): string
+    public function actionVotingResults(): ResponseInterface
     {
         $this->forceLogin();
         $this->layout = 'column2';
 
-        return $this->render('@app/views/voting/voting-results');
+        return new HtmlResponse($this->render('@app/views/voting/voting-results'));
     }
 }
