@@ -40,7 +40,7 @@ trait MotionExportTraits
                     return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
                 }
                 if ($section->getSectionType()->isEmpty()) {
-                    return new HtmlErrorResponse('Image not found', 404);
+                    return new HtmlErrorResponse(404, 'Image not found');
                 }
                 $metadata                    = json_decode($section->metadata, true);
                 return new BinaryFileResponse(
@@ -52,7 +52,7 @@ trait MotionExportTraits
                 );
             }
         }
-        return new HtmlErrorResponse('Image not found', 404);
+        return new HtmlErrorResponse(404, 'Image not found');
     }
 
     /**

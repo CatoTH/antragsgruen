@@ -331,25 +331,25 @@ class ConsultationController extends Base
         if ($this->getHttpRequest()->get('amendmentId')) {
             $amendment = $this->consultation->getAmendment((int)$this->getHttpRequest()->get('amendmentId'));
             if (!$amendment) {
-                return new HtmlErrorResponse('Amendment not found', 404);
+                return new HtmlErrorResponse(404, 'Amendment not found');
             }
             $form->setFilterForAmendmentId($amendment->id);
         } elseif ($this->getHttpRequest()->get('motionId')) {
             $motion = $this->consultation->getMotion((string)$this->getHttpRequest()->get('motionId'));
             if (!$motion) {
-                return new HtmlErrorResponse('Motion not found', 404);
+                return new HtmlErrorResponse(404, 'Motion not found');
             }
             $form->setFilterForMotionId($motion->id);
         } elseif ($isUserAdmin && $this->getHttpRequest()->get('userId')) {
             $user = User::getCachedUser((int)$this->getHttpRequest()->get('userId'));
             if (!$user) {
-                return new HtmlErrorResponse('User not found', 404);
+                return new HtmlErrorResponse(404, 'User not found');
             }
             $form->setFilterForUserId($user->id);
         } elseif ($isUserAdmin && $this->getHttpRequest()->get('userGroupId')) {
             $userGroup = $this->consultation->getUserGroupById((int)$this->getHttpRequest()->get('userGroupId'), true);
             if (!$userGroup) {
-                return new HtmlErrorResponse('User group not found', 404);
+                return new HtmlErrorResponse(404, 'User group not found');
             }
             $form->setFilterForUserGroupId($userGroup->id);
         }
@@ -413,7 +413,7 @@ class ConsultationController extends Base
     public function actionCollecting(): ResponseInterface
     {
         if (!$this->consultation->getSettings()->collectingPage) {
-            return new HtmlErrorResponse('This site is not available', 404);
+            return new HtmlErrorResponse(404, 'This site is not available');
         }
 
         $this->layout = 'column2';
@@ -495,7 +495,7 @@ class ConsultationController extends Base
             $foundQueue = $this->getUnassignedQueueOrCreate();
         }
         if (!$foundQueue) {
-            return new HtmlErrorResponse('Speaking list not found', 404);
+            return new HtmlErrorResponse(404, 'Speaking list not found');
         }
 
         return new HtmlResponse($this->render('@app/views/speech/admin-singlepage', ['queue' => $foundQueue]));

@@ -40,16 +40,16 @@ class AmendmentController extends Base
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            return new HtmlErrorResponse('Amendment not found', 404);
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if (!($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) && !$amendment->getMyMotionType()->getPDFLayoutClass()) {
-            return new HtmlErrorResponse(\Yii::t('motion', 'err_no_pdf'), 404);
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
         if (!$amendment->isReadable()) {
-            return new HtmlErrorResponse(\Yii::t('amend', 'err_not_visible'), 404);
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
         if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
@@ -72,7 +72,7 @@ class AmendmentController extends Base
         $withdrawn = ($withdrawn === 1);
         $motions   = $this->consultation->getVisibleIMotionsSorted($withdrawn);
         if (count($motions) === 0) {
-            return new HtmlErrorResponse(\Yii::t('motion', 'none_yet'), 404);
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
         }
         $amendments  = [];
         $texTemplate = null;
@@ -87,7 +87,7 @@ class AmendmentController extends Base
             $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }
         if (count($amendments) == 0) {
-            return new HtmlErrorResponse(\Yii::t('amend', 'none_yet'), 404);
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
@@ -114,11 +114,11 @@ class AmendmentController extends Base
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            return new HtmlErrorResponse('Amendment not found', 404);
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
         if (!$amendment->isReadable()) {
-            return new HtmlErrorResponse(\Yii::t('amend', 'err_not_visible'), 404);
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
         return new BinaryFileResponse(
@@ -155,7 +155,7 @@ class AmendmentController extends Base
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, 'view');
         $this->amendment = $amendment;
         if (!$amendment) {
-            return new HtmlErrorResponse('Amendment not found', 404);
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
         if ($this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
@@ -165,7 +165,7 @@ class AmendmentController extends Base
         }
 
         if (!$amendment->isReadable()) {
-            return new HtmlErrorResponse(\Yii::t('amend', 'err_not_visible'), 404);
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
         $openedComments      = [];
@@ -202,7 +202,7 @@ class AmendmentController extends Base
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            return new HtmlErrorResponse('Amendment not found', 404);
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
         return new HtmlResponse($this->renderPartial('ajax_diff', ['amendment' => $amendment]));
@@ -340,7 +340,7 @@ class AmendmentController extends Base
                 $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
                 return new RedirectResponse($loginUrl);
             } else {
-                return new HtmlErrorResponse(\Yii::t('amend', 'err_create_permission'), 403);
+                return new HtmlErrorResponse(403, \Yii::t('amend', 'err_create_permission'));
             }
         }
 
@@ -609,10 +609,10 @@ class AmendmentController extends Base
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            return new HtmlErrorResponse('Amendment not found', 404);
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            return new HtmlErrorResponse('Not permitted to change the status', 403);
+            return new HtmlErrorResponse(403, 'Not permitted to change the status');
         }
 
 
@@ -732,6 +732,6 @@ class AmendmentController extends Base
             }
         } catch (\Exception $e) {}
 
-        return new HtmlErrorResponse('Amendment not found', 404);
+        return new HtmlErrorResponse(404, 'Amendment not found');
     }
 }

@@ -12,10 +12,10 @@ class HtmlErrorResponse implements ResponseInterface
     private string $message;
     private int $statusCode;
 
-    public function __construct(string $message, int $statusCode)
+    public function __construct(int $statusCode, string $message)
     {
-        $this->message = $message;
         $this->statusCode = $statusCode;
+        $this->message = $message;
     }
 
     public function renderYii(Layout $layoutParams, Response $response): ?string

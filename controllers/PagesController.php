@@ -14,7 +14,7 @@ class PagesController extends Base
     public function actionListPages(): ResponseInterface
     {
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
-            return new HtmlErrorResponse('No permissions to edit this page', 403);
+            return new HtmlErrorResponse(403, 'No permissions to edit this page');
         }
 
         if ($this->isPostSet('create')) {
