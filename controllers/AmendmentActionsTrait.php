@@ -47,7 +47,7 @@ trait AmendmentActionsTrait
         return $comment;
     }
 
-    private function writeComment(Amendment $amendment, array &$viewParameters)
+    private function writeComment(Amendment $amendment, array &$viewParameters): void
     {
         $postComment = \Yii::$app->request->post('comment');
 

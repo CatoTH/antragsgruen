@@ -12,6 +12,7 @@ class BinaryFileResponse implements ResponseInterface
     public const TYPE_PDF = 'pdf';
     public const TYPE_HTML = 'pdf';
     public const TYPE_ODS = 'ods';
+    public const TYPE_ODT = 'odt';
     public const TYPE_XSLX = 'xlsc';
     public const TYPE_PNG = 'png';
     public const TYPE_JPEG = 'jpeg';
@@ -64,8 +65,12 @@ class BinaryFileResponse implements ResponseInterface
             $response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
         switch ($this->type) {
-            case self::TYPE_ODS:
+            case self::TYPE_ODT:
                 $response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+                $fileEnding = 'odt';
+                break;
+            case self::TYPE_ODS:
+                $response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
                 $fileEnding = 'ods';
                 break;
             case self::TYPE_XSLX:
