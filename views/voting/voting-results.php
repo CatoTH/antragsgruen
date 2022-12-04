@@ -46,6 +46,8 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
     <?= $fullscreenButton ?>
 </div>
 
+<?= $layout->getMiniMenu('votingSidebarSmall') ?>
+
 <div class="content votingsNoneIndicator<?= (count($apiData) > 0 ? ' hidden' : '') ?>">
     <div class="alert alert-info">
         <?= Yii::t('voting', 'results_none') ?>

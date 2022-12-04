@@ -83,6 +83,8 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
 ?>
 <h1><?= Yii::t('voting', 'admin_title') ?></h1>
 
+<?= $layout->getMiniMenu('votingSidebarSmall') ?>
+
 <div class="manageVotings votingCommon"
      data-url-vote-settings="<?= Html::encode($voteSettingsUrl) ?>"
      data-url-vote-download="<?= Html::encode($voteDownloadUrl) ?>"

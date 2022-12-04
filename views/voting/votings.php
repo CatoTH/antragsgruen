@@ -37,6 +37,8 @@ $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTI
 ?>
 <h1><?= Yii::t('voting', 'page_title') ?></h1>
 
+<?= $layout->getMiniMenu('votingSidebarSmall') ?>
+
 <div class="content votingsNoneIndicator<?= (count($apiData) > 0 ? ' hidden' : '') ?>">
     <div class="alert alert-info">
         <?= Yii::t('voting', 'votings_none') ?>
