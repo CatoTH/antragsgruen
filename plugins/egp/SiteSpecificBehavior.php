@@ -4,6 +4,8 @@ namespace app\plugins\egp;
 
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\db\Consultation;
+use app\models\http\RedirectResponse;
+use app\models\http\ResponseInterface;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 
 class SiteSpecificBehavior extends DefaultBehavior
@@ -16,13 +18,12 @@ class SiteSpecificBehavior extends DefaultBehavior
         return Permissions::class;
     }
 
-    public static function getConsultationHomePage(Consultation $consultation): ?string
+    public static function getConsultationHomePage(Consultation $consultation): ?ResponseInterface
     {
         /** @var ConsultationSettings $settings */
         $settings = $consultation->getSettings();
         if ($settings->homeRedirectUrl) {
-            Header("Location: " . $settings->homeRedirectUrl);
-            die();
+            return new RedirectResponse($settings->homeRedirectUrl);
         } else {
             return null;
         }

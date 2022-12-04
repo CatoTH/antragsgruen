@@ -5,6 +5,7 @@ namespace app\models\siteSpecificBehavior;
 use app\components\MotionSorter;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\db\Consultation;
+use app\models\http\ResponseInterface;
 use app\models\policies\IPolicy;
 
 class DefaultBehavior
@@ -57,12 +58,12 @@ class DefaultBehavior
         return false;
     }
 
-    public static function getSiteHomePage(): ?string
+    public static function getSiteHomePage(): ?ResponseInterface
     {
         return null;
     }
 
-    public static function getConsultationHomePage(Consultation $consultation): ?string
+    public static function getConsultationHomePage(Consultation $consultation): ?ResponseInterface
     {
         return null;
     }

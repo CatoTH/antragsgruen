@@ -3,7 +3,14 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
-use app\models\http\{RedirectResponse, RestApiExceptionResponse, RestApiResponse};
+use app\models\http\{BinaryFileResponse,
+    HtmlErrorResponse,
+    HtmlResponse,
+    JsonResponse,
+    RedirectResponse,
+    ResponseInterface,
+    RestApiExceptionResponse,
+    RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentAdminComment,
@@ -28,52 +35,44 @@ class AmendmentController extends Base
     use AmendmentActionsTrait;
     use AmendmentMergingTrait;
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionPdf(string $motionSlug, int $amendmentId)
+    public function actionPdf(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            return '';
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if (!($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) && !$amendment->getMyMotionType()->getPDFLayoutClass()) {
-            $this->showErrorpage(404, \Yii::t('motion', 'err_no_pdf'));
-            return '';
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
         if (!$amendment->isReadable()) {
-            return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
-        }
-
-        $filename = $amendment->getFilenameBase(false) . '.pdf';
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
-        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
         if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
-            return LayoutHelper::createPdfLatex($amendment);
+            $pdf = LayoutHelper::createPdfLatex($amendment);
         } else {
-            return LayoutHelper::createPdfTcpdf($amendment);
+            $pdf = LayoutHelper::createPdfTcpdf($amendment);
         }
+
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_PDF,
+            $pdf,
+            false,
+            $amendment->getFilenameBase(false),
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
-    /**
-     * @return string
-     */
-    public function actionPdfcollection(int $withdrawn = 0)
+    public function actionPdfcollection(int $withdrawn = 0): ResponseInterface
     {
         $withdrawn = ($withdrawn === 1);
         $motions   = $this->consultation->getVisibleIMotionsSorted($withdrawn);
         if (count($motions) === 0) {
-            $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
         }
         $amendments  = [];
         $texTemplate = null;
@@ -88,51 +87,47 @@ class AmendmentController extends Base
             $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }
         if (count($amendments) == 0) {
-            $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
-        }
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if ($hasLaTeX && $texTemplate) {
-            return $this->renderPartial('pdf_collection_tex', [
+            $pdf = $this->renderPartial('pdf_collection_tex', [
                 'amendments'  => $amendments,
                 'texTemplate' => $texTemplate,
             ]);
         } else {
-            return $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]);
+            $pdf = $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]);
         }
+
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_PDF,
+            $pdf,
+            false,
+            null,
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionOdt(string $motionSlug, int $amendmentId)
+    public function actionOdt(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            return '';
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
         if (!$amendment->isReadable()) {
-            return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
-        $filename = $amendment->getFilenameBase(false) . '.odt';
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
-        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        if (!$this->layoutParams->isRobotsIndex($this->action)) {
-            $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-        }
-
-        return $this->renderPartial('view_odt', ['amendment' => $amendment]);
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_ODT,
+            $this->renderPartial('view_odt', ['amendment' => $amendment]),
+            false,
+            $amendment->getFilenameBase(false),
+            $this->layoutParams->isRobotsIndex($this->action)
+        );
     }
 
     public function actionRest(string $motionSlug, int $amendmentId): RestApiResponse
@@ -153,18 +148,14 @@ class AmendmentController extends Base
         return new RestApiResponse(200, null, $this->renderPartial('rest_get', ['amendment' => $amendment]));
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionView(string $motionSlug, int $amendmentId, int $commentId = 0, ?string $procedureToken = null)
+    public function actionView(string $motionSlug, int $amendmentId, int $commentId = 0, ?string $procedureToken = null): ResponseInterface
     {
         $this->layout = 'column2';
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, 'view');
         $this->amendment = $amendment;
         if (!$amendment) {
-            return '';
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
         if ($this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
@@ -174,7 +165,7 @@ class AmendmentController extends Base
         }
 
         if (!$amendment->isReadable()) {
-            return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => $adminEdit]);
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
         $openedComments      = [];
@@ -203,27 +194,21 @@ class AmendmentController extends Base
         $amendmentViewParams['supportStatus'] = $supportStatus;
 
 
-        return $this->render('view', $amendmentViewParams);
+        return new HtmlResponse($this->render('view', $amendmentViewParams));
     }
 
-    /**
-     * @return string
-     */
-    public function actionAjaxDiff(string $motionSlug, int $amendmentId)
+    public function actionAjaxDiff(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            return '';
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
-        return $this->renderPartial('ajax_diff', ['amendment' => $amendment]);
+        return new HtmlResponse($this->renderPartial('ajax_diff', ['amendment' => $amendment]));
     }
 
-    /**
-     * @return string
-     */
-    public function actionCreatedone(string $motionSlug, int $amendmentId, string $fromMode)
+    public function actionCreatedone(string $motionSlug, int $amendmentId, string $fromMode): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         /** @var Amendment $amendment */
@@ -233,14 +218,10 @@ class AmendmentController extends Base
                 'motionId' => $motion->id
             ]
         );
-        return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);
+        return new HtmlResponse($this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]));
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionCreateconfirm(string $motionSlug, int $amendmentId, string $fromMode)
+    public function actionCreateconfirm(string $motionSlug, int $amendmentId, string $fromMode): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         /** @var Amendment|null $amendment */
@@ -253,17 +234,17 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
         if (!$amendment->canEdit()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($this->isPostSet('modify')) {
             $nextUrl = ['amendment/edit', 'amendmentId' => $amendment->id, 'motionSlug' => $motionSlug];
-            return $this->redirect(UrlHelper::createUrl($nextUrl));
+            return new RedirectResponse(UrlHelper::createUrl($nextUrl));
         }
 
         if ($this->isPostSet('confirm')) {
@@ -273,20 +254,17 @@ class AmendmentController extends Base
                 $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
             }
 
-            return $this->redirect(UrlHelper::createAmendmentUrl($amendment, 'createdone', ['fromMode' => $fromMode]));
+            return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment, 'createdone', ['fromMode' => $fromMode]));
         } else {
-            return $this->render('create_confirm', [
+            return new HtmlResponse($this->render('create_confirm', [
                 'amendment'     => $amendment,
                 'mode'          => $fromMode,
                 'deleteDraftId' => $this->getHttpRequest()->get('draftId'),
-            ]);
+            ]));
         }
     }
 
-    /**
-     * @return string
-     */
-    public function actionEdit(string $motionSlug, int $amendmentId)
+    public function actionEdit(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         /** @var Amendment|null $amendment */
@@ -298,12 +276,12 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$amendment->canEdit()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_edit_forbidden'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
@@ -327,45 +305,42 @@ class AmendmentController extends Base
                         'fromMode'    => $fromMode,
                         'draftId'     => $this->getRequestValue('draftId'),
                     ];
-                    return $this->redirect(UrlHelper::createUrl($nextUrl));
+                    return new RedirectResponse(UrlHelper::createUrl($nextUrl));
                 } else {
-                    return $this->render('edit_done', ['amendment' => $amendment]);
+                    return new HtmlResponse($this->render('edit_done', ['amendment' => $amendment]));
                 }
             } catch (\Throwable $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'edit_form',
             [
                 'mode'         => $fromMode,
                 'form'         => $form,
                 'consultation' => $this->consultation,
             ]
-        );
+        ));
     }
 
     /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function actionCreate(string $motionSlug, int $agendaItemId = 0, int $cloneFrom = 0, int $createFromAmendment = 0)
+    public function actionCreate(string $motionSlug, int $agendaItemId = 0, int $cloneFrom = 0, int $createFromAmendment = 0): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->isCurrentlyAmendable()) {
             if ($motion->isCurrentlyAmendable(true, true)) {
                 $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
-                return $this->redirect($loginUrl);
+                return new RedirectResponse($loginUrl);
             } else {
-                $this->showErrorpage(403, \Yii::t('amend', 'err_create_permission'));
-                return '';
+                return new HtmlErrorResponse(403, \Yii::t('amend', 'err_create_permission'));
             }
         }
 
@@ -407,7 +382,7 @@ class AmendmentController extends Base
                     'fromMode'    => 'create',
                     'draftId'     => $this->getRequestValue('draftId'),
                 ];
-                return $this->redirect(UrlHelper::createUrl($nextUrl));
+                return new RedirectResponse(UrlHelper::createUrl($nextUrl));
             } catch (\Throwable $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
@@ -427,63 +402,51 @@ class AmendmentController extends Base
             $form->supporters[] = AmendmentSupporter::createInitiator($supportType, $iAmAdmin);
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'edit_form',
             [
                 'mode'         => 'create',
                 'consultation' => $this->consultation,
                 'form'         => $form,
             ]
-        );
+        ));
     }
 
-    /**
-     * @return string
-     */
-    public function actionWithdraw(int $amendmentId)
+    public function actionWithdraw(int $amendmentId): ResponseInterface
     {
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$amendment->canWithdraw()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_withdraw_forbidden'));
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($this->isPostSet('cancel')) {
-            return $this->redirect(UrlHelper::createAmendmentUrl($amendment));
+            return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment));
         }
 
         if ($this->isPostSet('withdraw')) {
             $amendment->withdraw();
             $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'widthdraw_done'));
-            return $this->redirect(UrlHelper::createAmendmentUrl($amendment));
+            return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment));
         }
 
-        return $this->render('withdraw', ['amendment' => $amendment]);
+        return new HtmlResponse($this->render('withdraw', ['amendment' => $amendment]));
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionSaveProposalStatus(string $motionSlug, int $amendmentId)
+    public function actionSaveProposalStatus(string $motionSlug, int $amendmentId): ResponseInterface
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            $this->getHttpResponse()->statusCode = 404;
-            return 'Amendment not found';
+            return new RestApiExceptionResponse(404, 'Amendment not found');
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            $this->getHttpResponse()->statusCode = 403;
-            return 'Not permitted to change the status';
+            return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
         $response = [];
@@ -556,7 +519,7 @@ class AmendmentController extends Base
             } catch (FormError $e) {
                 $response['success'] = false;
                 $response['error']   = $e->getMessage();
-                return json_encode($response);
+                return new JsonResponse($response);
             }
 
             if ($ppChanges->hasChanges()) {
@@ -624,7 +587,7 @@ class AmendmentController extends Base
             if (!$adminComment->save()) {
                 $this->getHttpResponse()->statusCode = 500;
                 $response['success']             = false;
-                return json_encode($response);
+                return new JsonResponse($response);
             }
             $amendment->flushCacheItems(['procedure']);
 
@@ -638,24 +601,18 @@ class AmendmentController extends Base
             ];
         }
 
-        return json_encode($response);
+        return new JsonResponse($response);
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionEditProposedChange(string $motionSlug, int $amendmentId)
+    public function actionEditProposedChange(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            $this->getHttpResponse()->statusCode = 404;
-            return 'Amendment not found';
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            $this->getHttpResponse()->statusCode = 403;
-            return 'Not permitted to change the status';
+            return new HtmlErrorResponse(403, 'Not permitted to change the status');
         }
 
 
@@ -691,43 +648,28 @@ class AmendmentController extends Base
             $amendment->flushCacheItems(['procedure']);
         }
 
-        return $this->render('edit_proposed_change', [
+        return new HtmlResponse($this->render('edit_proposed_change', [
             'msgSuccess' => $msgSuccess,
             'msgAlert'   => $msgAlert,
             'amendment'  => $amendment,
             'form'       => $form,
-        ]);
+        ]));
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionEditProposedChangeCheck(string $motionSlug, int $amendmentId)
+    public function actionEditProposedChangeCheck(string $motionSlug, int $amendmentId): ResponseInterface
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
-            $this->getHttpResponse()->statusCode = 404;
-            return json_encode([
-                'error' => 'Amendment not found',
-                'collisions' => [],
-            ]);
+            return new RestApiExceptionResponse(404, 'Amendment not found');
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            $this->getHttpResponse()->statusCode = 403;
-            return json_encode([
-                'error' => 'Not permitted to change the status',
-                'collisions' => [],
-            ]);
+            return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
         $checkAgainstAmendments = $amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment->id]);
         if (count($checkAgainstAmendments) > 100) {
-            return json_encode([
+            return new JsonResponse([
                 'error' => 'Too many amendments to check for collisions (max. 100)',
                 'collisions' => [],
             ]);
@@ -749,7 +691,7 @@ class AmendmentController extends Base
             }
         }
 
-        return json_encode([
+        return new JsonResponse([
             'error' => null,
             'collisions' => array_map(function (Amendment $amend) {
                 // Keep in sync with edit_proposed_change.php
@@ -775,7 +717,7 @@ class AmendmentController extends Base
      *
      * @throws NotFoundHttpException
      */
-    public function actionGotoPrefix(string $prefix1, string $prefix2): RedirectResponse
+    public function actionGotoPrefix(string $prefix1, string $prefix2): ResponseInterface
     {
         try {
             /** @var Amendment|null $amendment */
@@ -788,9 +730,8 @@ class AmendmentController extends Base
             if ($amendment && $amendment->isReadable()) {
                 return new RedirectResponse($amendment->getLink());
             }
-        } catch (\Exception $e) {
-            throw new NotFoundHttpException();
-        }
-        throw new NotFoundHttpException();
+        } catch (\Exception $e) {}
+
+        return new HtmlErrorResponse(404, 'Amendment not found');
     }
 }

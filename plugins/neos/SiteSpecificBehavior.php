@@ -3,6 +3,7 @@
 namespace app\plugins\neos;
 
 use app\controllers\Base;
+use app\models\http\HtmlResponse;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 
 class SiteSpecificBehavior extends DefaultBehavior
@@ -22,10 +23,10 @@ class SiteSpecificBehavior extends DefaultBehavior
         return true;
     }
 
-    public static function getSiteHomePage(): ?string
+    public static function getSiteHomePage(): ?HtmlResponse
     {
         /** @var Base $controller */
         $controller = \Yii::$app->controller;
-        return $controller->renderContentPage('MV-Seiten');
+        return new HtmlResponse($controller->renderContentPage('MV-Seiten'));
     }
 }
