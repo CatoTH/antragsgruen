@@ -2,7 +2,14 @@
 
 namespace app\controllers;
 
-use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface, RestApiResponse};
+use app\models\settings\Layout;
+use app\models\http\{BinaryFileResponse,
+    HtmlErrorResponse,
+    HtmlResponse,
+    JsonResponse,
+    RedirectResponse,
+    ResponseInterface,
+    RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
 use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError};
@@ -126,7 +133,7 @@ class PagesController extends Base
     /**
      * @throws Access
      */
-    public function actionSavePage(string $pageSlug): string
+    public function actionSavePage(string $pageSlug): JsonResponse
     {
         $page = $this->getPageForEdit($pageSlug);
 
@@ -200,10 +207,7 @@ class PagesController extends Base
 
         $page->save();
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
-        return json_encode($result);
+        return new JsonResponse($result);
     }
 
     private function handleDownloadableFiles(array $post): array
@@ -228,7 +232,7 @@ class PagesController extends Base
         return $result;
     }
 
-    public function actionDeleteFile(): string
+    public function actionDeleteFile(): JsonResponse
     {
         $fileId = intval($this->getHttpRequest()->post('id'));
         foreach ($this->consultation->files as $file) {
@@ -237,10 +241,7 @@ class PagesController extends Base
             }
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
-        return json_encode([
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -279,26 +280,23 @@ class PagesController extends Base
     /**
      * @throws Access
      */
-    public function actionUpload(): string
+    public function actionUpload(): JsonResponse
     {
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to upload files');
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         try {
             $user = User::getCurrentUser();
             $file = ConsultationFile::uploadImage($this->consultation, 'upload', $user);
 
-            return json_encode([
+            return new JsonResponse([
                 'uploaded' => 1,
                 'fileName' => $file->filename,
                 'url'      => $file->getUrl(),
             ]);
         } catch (FormError $e) {
-            return json_encode([
+            return new JsonResponse([
                 'uploaded' => 0,
                 'error'    => [
                     'message' => $e->getMessage()
@@ -310,7 +308,7 @@ class PagesController extends Base
     /**
      * @throws Access
      */
-    public function actionBrowseImages(): string
+    public function actionBrowseImages(): ResponseInterface
     {
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to upload files');
@@ -353,14 +351,14 @@ class PagesController extends Base
             return Tools::compareSqlTimes($file1->dateCreation, $file2->dateCreation);
         });
 
-        return $this->renderPartial('browse-images', [
+        return new HtmlResponse($this->renderPartial('browse-images', [
             'files'      => $files,
             'msgSuccess' => $msgSuccess,
             'msgError'   => $msgError,
-        ]);
+        ]));
     }
 
-    public function actionFile(string $filename): string
+    public function actionFile(string $filename): ResponseInterface
     {
         $file = ConsultationFile::findOne([
             'consultationId' => $this->consultation->id,
@@ -370,30 +368,36 @@ class PagesController extends Base
             throw new NotFoundHttpException('file not found', 404);
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', $file->mimetype);
-        $this->getHttpResponse()->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
-        $this->getHttpResponse()->headers->set('Pragma', 'cache');
-        $this->getHttpResponse()->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+        return new class($file) implements ResponseInterface {
+            private ConsultationFile $file;
 
-        return $file->data;
+            public function __construct(ConsultationFile $file)
+            {
+                $this->file = $file;
+            }
+
+            public function renderYii(Layout $layoutParams, Response $response): ?string
+            {
+                $response->format = Response::FORMAT_RAW;
+                $response->headers->add('Content-Type', $this->file->mimetype);
+                $response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+                $response->headers->set('Pragma', 'cache');
+                $response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+
+                return $this->file->data;
+            }
+        };
     }
 
-    public function actionCss(): string
+    public function actionCss(): ResponseInterface
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'text/css');
-        $this->getHttpResponse()->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
-        $this->getHttpResponse()->headers->set('Pragma', 'cache');
-        $this->getHttpResponse()->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
-
         $stylesheetSettings = $this->site->getSettings()->getStylesheet();
         $file               = ConsultationFile::findStylesheetCache($this->site, $stylesheetSettings);
         if ($file) {
             $lines     = explode("\n", $file->data);
             $firstLine = array_shift($lines);
             if ($firstLine === ANTRAGSGRUEN_VERSION) {
-                return implode("\n", $lines);
+                return new BinaryFileResponse(BinaryFileResponse::TYPE_CSS, implode("\n", $lines), false, null, false, 3600 * 24 * 7);
             } else {
                 $file->delete();
             }
@@ -406,10 +410,10 @@ class PagesController extends Base
         $toSaveData = ANTRAGSGRUEN_VERSION . "\n" . $data;
         ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $toSaveData);
 
-        return $data;
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_CSS, $toSaveData, false, null, false, 3600 * 24 * 7);
     }
 
-    public function actionDocuments(): string
+    public function actionDocuments(): ResponseInterface
     {
         $iAmAdmin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
         if ($iAmAdmin && $this->isPostSet('createGroup') && $this->getPostValue('name')) {
@@ -493,15 +497,19 @@ class PagesController extends Base
             }
         }
 
-        return $this->render('documents');
+        return new HtmlResponse($this->render('documents'));
     }
 
-    public function actionDocumentsZip(string $groupId): string
+    public function actionDocumentsZip(string $groupId): BinaryFileResponse
     {
         $zip = new ZipWriter();
 
+        $zipName = 'documents';
         foreach ($this->consultation->fileGroups as $fileGroup) {
             $directory = Tools::sanitizeFilename($fileGroup->title, true);
+            if ($fileGroup->id === intval($groupId)) {
+                $zipName = Tools::sanitizeFilename($fileGroup->title, false);
+            }
             if ($fileGroup->id === intval($groupId) || $groupId === 'all') {
                 foreach ($fileGroup->files as $file) {
                     $filename = $directory . '/' . $file->filename;
@@ -510,10 +518,12 @@ class PagesController extends Base
             }
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $zip->getContentAndFlush();
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_ZIP,
+            $zip->getContentAndFlush(),
+            true,
+            $zipName,
+            false
+        );
     }
 }
