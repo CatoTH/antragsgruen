@@ -6,7 +6,6 @@ return array (
   'amendwho_loggedin' => 'Registrierte Benutzer:innen',
   'supporters_title' => 'Unterstützer:innen abfragen?',
   'supporters_desc' => 'Muss die Antragsteller:in beim Eintragen von Anträgen Unterstützer:innen benennen?',
-  'amend_merging_desc' => 'Dürfen Antragsteller:innen von Anträgen zugehörige Änderungsanträge selbständig übernehmen?',
   'comments_desc' => 'Benutzer:innen können (Änderungs-)Anträge absatzweise kommentieren',
   'sandbox_dummy_welcome' => '<h2>Willkommen auf Antragsrot!</h2><br><br>
                                 Auf dieser Seite kannst du die Funktionen von Antragsrot frei ausprobieren.

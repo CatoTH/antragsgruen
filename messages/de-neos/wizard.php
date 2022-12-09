@@ -5,7 +5,6 @@ return [
 	'motwho_loggedin' => 'Registrierte Benutzer_innen',
 	'amendwho_loggedin' => 'Registrierte Benutzer_innen',
 	'supporters_desc' => 'Muss die Antragsteller_in beim Eintragen von Anträgen Unterstützer_innen benennen?',
-	'amend_merging_desc' => 'Dürfen Antragsteller_innen von Anträgen zugehörige Änderungsanträge selbständig übernehmen?',
 	'comments_desc' => 'Benutzer_innen können (Änderungs-)Anträge absatzweise kommentieren',
 	'sandbox_dummy_welcome' => '<h2>Willkommen auf der Antragsschmiede!</h2><br><br>
 Auf dieser Seite kannst du die Funktionen der Antragsschmiede frei ausprobieren.

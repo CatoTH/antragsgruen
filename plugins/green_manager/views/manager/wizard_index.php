@@ -43,7 +43,6 @@ $t = function (string $string): string {
     <?= $this->render('@app/views/createsiteWizard/amend_who', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/amend_deadline', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/amend_screening', ['model' => $model, 't' => $t]) ?>
-    <?= $this->render('@app/views/createsiteWizard/amend_merging', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/comments', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('@app/views/createsiteWizard/application_type', ['model' => $model, 't' => $t, 'mode' => 'site']) ?>
     <?= $this->render('@app/views/createsiteWizard/speech_login', ['model' => $model, 't' => $t]) ?>
