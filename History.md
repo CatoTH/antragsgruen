@@ -1,8 +1,9 @@
 # Version history
 
-## Version 4.12.0 [not released yet]
+### Version 4.11.1 [not released yet]
 
 - Speaking lists can now have more than only two sub-queues, e.g. for women, men and diverse speaking lists.
+- Bugfix: The fresh installation mode was broken with MariaDB.
 
 ## Version 4.11.0 (2022-11-28)
 
