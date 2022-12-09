@@ -440,25 +440,28 @@ class DiffRenderer
         return $str;
     }
 
+    private static function paragraphContainsDiff_getPos(string $line, array $matches): int
+    {
+        // Workaround: PREG_OFFSET_CAPTURE ignores utf-8
+        $strBefore = substr($line, 0, $matches[0][1]);
+        $strBefore = mb_convert_encoding($strBefore, 'ISO-8859-1', 'UTF-8');
+        return strlen($strBefore);
+    }
+
     public static function paragraphContainsDiff(string $line): ?int
     {
         $firstDiffs = [];
         if (preg_match('/(<ins( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
-            // Workaround: PREG_OFFSET_CAPTURE ignores utf-8
-            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
-            $firstDiffs[] = $pos;
+            $firstDiffs[] = static::paragraphContainsDiff_getPos($line, $matches);
         }
         if (preg_match('/(<del( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
-            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
-            $firstDiffs[] = $pos;
+            $firstDiffs[] = static::paragraphContainsDiff_getPos($line, $matches);
         }
         if (preg_match('/(<[^>]+[ "]inserted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
-            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
-            $firstDiffs[] = $pos;
+            $firstDiffs[] = static::paragraphContainsDiff_getPos($line, $matches);
         }
         if (preg_match('/(<[^>]+[ "]deleted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
-            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
-            $firstDiffs[] = $pos;
+            $firstDiffs[] = static::paragraphContainsDiff_getPos($line, $matches);
         }
         if (count($firstDiffs) === 0) {
             return null;
