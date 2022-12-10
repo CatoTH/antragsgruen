@@ -1,9 +1,12 @@
 # Version history
 
-### Version 4.11.1 [not released yet]
+### Version 4.11.1 (2022-12-10)
 
-- Speaking lists can now have more than only two sub-queues, e.g. for women, men and diverse speaking lists.
 - Bugfix: The fresh installation mode was broken with MariaDB.
+- Speaking lists can now have more than only two sub-queues, e.g. for women, men and diverse speaking lists.
+- Some layout issues regarding votings and speaking lists on small screens and full screen mode were resolved.
+- Initiator-based amendment merging is not in the wizard anymore, as this is hardly ever used, let alone useful.
+- Some minor compatibility issues with PHP 8.1 and 8.2 were resolved.
 
 ## Version 4.11.0 (2022-11-28)
 
