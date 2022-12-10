@@ -8,7 +8,7 @@ $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request-
 ob_start();
 ?>
 
-<article class="speechUser">
+<article class="speechUser" :class="{'multiple-queues': queue.subqueues.length > 1, 'single-queue': queue.subqueues.length === 1}">
     <header class="widgetTitle">
         {{ title }}
         <a v-if="adminUrl" :href="adminUrl" class="speechAdminLink">
@@ -120,14 +120,22 @@ ob_start();
         </header>
     </section>
 
-    <section class="waiting waitingMultiple" v-if="queue.subqueues.length > 1" aria-label="<?= Yii::t('speech', 'waiting_aria_x') ?>">
-        <div v-for="subqueue in queue.subqueues" class="subqueue">
-            <div class="name" v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'">
-                <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'waiting_list') ?>"></span>
-                {{ subqueue.name }}
-            </div>
+    <section class="waiting waitingMultiple" :class="{'isApplying': showApplicationForm }"
+             v-if="queue.subqueues.length > 1" aria-label="<?= Yii::t('speech', 'waiting_aria_x') ?>">
+        <div v-for="subqueue in queue.subqueues" class="subqueue" :class="{'notApplyingHere': showApplicationForm !== subqueue.id}">
+            <div class="nameNumber">
+                <span class="name"
+                     v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'">
+                    <span class="glyphicon glyphicon-time" aria-label="<?= Yii::t('speech', 'waiting_list') ?>"></span>
+                    {{ subqueue.name }}
+                </span>
 
-            <div class="number" v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'" :aria-label="numAppliedTitle(subqueue)" :title="numAppliedTitle(subqueue)">{{ subqueue.num_applied }}</div>
+                <span class="number"
+                     v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'"
+                     :aria-label="numAppliedTitle(subqueue)" :title="numAppliedTitle(subqueue)">{{ subqueue.num_applied
+                    }}
+                </span>
+            </div>
 
             <div v-if="subqueue.have_applied && showApplicationForm !== subqueue.id" class="appliedMe">
                 <span class="label label-success" aria-label="<?= Yii::t('speech', 'applied_aria') ?>"><?= Yii::t('speech', 'applied') ?></span>
@@ -156,7 +164,7 @@ ob_start();
             <form @submit="register($event, subqueue, false)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">
                 <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
-                    <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
+                    <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInputs">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                     </span>
@@ -184,7 +192,7 @@ ob_start();
             <form @submit="register($event, subqueue, true)" v-if="!subqueue.have_applied && showApplicationForm === (subqueue.id + '_poo')">
                 <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
-                    <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
+                    <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInputs">
                     <span class="input-group-btn">
                                 <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_poo_do') ?></button>
                             </span>

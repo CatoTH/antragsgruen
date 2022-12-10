@@ -486,6 +486,8 @@
   .remainingTime {
     text-align: center;
   }
+
+
   .waitingMultiple {
     .name {
       vertical-align: top;
@@ -493,8 +495,12 @@
     .applyOpenerPoo {
       font-weight: normal;
     }
+    .notPossible {
+      margin-top: 27px;
+      font-style: italic;
+      font-size: 0.8em;
+    }
   }
-
   .waitingSubqueues {
     margin-left: 26px;
     display: flex;
@@ -835,6 +841,39 @@
       }
       line-height: $speechLineHeight;
     }
+
+    .nameNumber {
+
+    }
+  }
+
+  .speechUser.multiple-queues {
+    @media (max-width: $screenMinWith - 1) {
+      .widgetTitle {
+        display: none;
+      }
+      .activeSpeaker {
+        flex-basis: 33%;
+      }
+      .waitingMultiple {
+        flex-basis: 66%;
+      }
+      .waitingMultiple.isApplying .notApplyingHere {
+        display: none;
+      }
+      .subqueue {
+        line-height: 25px;
+      }
+      .name .glyphicon {
+        display: none;
+      }
+      .applyOpenerPoo {
+        display: none; // Point of orders are not possible in the footer at small screens at the moment
+      }
+      .applyBtn {
+        margin-top: 0;
+      }
+    }
   }
 
   .waitingSingle {
@@ -854,17 +893,27 @@
       display: inline-block;
       vertical-align: middle;
     }
+
+    .subqueue {
+      display: flex;
+      flex-direction: row;
+    }
   }
 
   .subqueue {
-    display: flex;
-    flex-direction: row;
     margin: 0 10px;
     padding: 0 0 0 10px;
     background-color: #eee;
     border-radius: 3px;
     line-height: $speechLineHeight - 2px;
     vertical-align: middle;
+
+    .nameNumber {
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     .name {
       font-weight: bold;
