@@ -17,8 +17,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
 ?>
 <h1>Antragsgrün / Motion.Tools<br>
-    <small>The Online Motion Administration for Associations Conventions, General Assemblies and Party Conventions.
-    </small>
+    <small>The Online Motion Administration for Political Conventions and General Assemblies</small>
 </h1>
 
 <div class="content managerHelpPage">

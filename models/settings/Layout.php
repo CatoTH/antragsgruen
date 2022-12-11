@@ -25,6 +25,7 @@ class Layout
     public bool $robotsNoindex = false;
     public ?string $ogImage = null;
     public array $extraCss = [];
+    public array $inlineCss = [];
     public array $extraJs = [];
     public array $vueTemplates = [];
     public array $bodyCssClasses = [];
@@ -161,6 +162,12 @@ class Layout
         if (!in_array($file, $this->extraCss)) {
             $this->extraCss[] = $file;
         }
+        return $this;
+    }
+
+    public function addInlineCss(string $css): self
+    {
+        $this->inlineCss[] = $css;
         return $this;
     }
 

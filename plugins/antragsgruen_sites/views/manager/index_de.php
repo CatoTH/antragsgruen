@@ -15,9 +15,30 @@ $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/';
 $controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/'];
+$controller->layoutParams->addInlineCss('
+    .homeFigure { text-align: center; }
+    .homeFigure figcaption { margin-top: -20px; margin-bottom: 20px; font-size: 0.8em; font-style: italic; }
+    .homeFigureAmendment img { max-width: 100%; }
+    @media (min-width: 800px) {
+        .homeFigureAmendment img { max-width: 600px; }
+    }
+    .homeFigurePrint { max-width: 230px; box-shadow: 0 0 7px rgba(0,0,0,.4); border-radius: 2px; overflow: hidden; }
+    @media (min-width: 800px) {
+        .homeFigurePrint { float: right; margin-left: 50px; }
+    }
+    @media (max-width: 799px) {
+        .homeFigurePrint { margin: 20px auto; }
+    }
+    .homeFigurePrint img { max-width: 100%; }
+    .homeFigurePrint figcaption { margin-bottom: 5px; }
 
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = Yii::$app->params;
+    @media (min-width: 800px) {
+        .homeFigureTwoHolder { display: flex; flex-direction: row; margin-bottom: 30px; margin-top: -25px; }
+        .homeFigureTwoHolder > * { flex-basis: 50%; }
+    }
+    .homeFigureTwoHolder img { max-width: 100%; }
+    .homeFigureSpeech figcaption { margin-top: -10px; }
+');
 
 ?>
 <h1 id="antragsgruenTitle">Antragsgrün - das grüne Antragstool</h1>
@@ -45,52 +66,42 @@ $params = Yii::$app->params;
     </p>
 </section>
 
-<section aria-labelledby="funktionen">
-    <h2 id="funktionen" class="green">Welche Funktionen bietet Antragsgrün?</h2>
+<section aria-labelledby="antraege">
+    <h2 id="antraege" class="green">Anträge, Änderungsanträge, Bewerbungen</h2>
 
     <div class="content infoSite">
-        <strong>Das kann Antragsgrün:</strong>
-        <ul>
-            <li><strong>Anträge, Änderungsanträge, Kommentare</strong> dazu, Unterstützen von (Änderungs-)Anträgen.
-                Übersichtliche Darstellung von Änderungsanträgen.
-            </li>
-            <li>
-                Das <strong>Einreichen von Bewerbungen</strong> für Vorstandsposten, Listenaufstellungen etc.
-                Sowohl Bewerbungen als Formular als auch als PDF werden unterstützt.
-            </li>
-            <li><strong>Tagesordnungen</strong> werden unterstützt, mit unterschiedlichen Berechtigungen und
-                Antragsformularen pro Tagesordnungspunkt.
-            </li>
-            <li><strong>Abstimmungen</strong> über Anträge und Änderungsanträge, über die per einfacher Mehrheit abgestimmt wird.</li>
-            <li>Beliebige <strong>Textformatierungen</strong> in redaktionellen Texten (u.a. auch YouTube/Vimeo-Videos,
-                Grafiken etc.). Bei Anträgen und Änderungsanträgen sind einige Standard-Textformatierungen möglich.
-            </li>
-            <li><strong>Redelisten</strong> auf Veranstaltungen, auch Quotierte.</li>
-            <li>Automatisch erzeugte <strong>PDF</strong>-Versionen und <strong>Spreadsheet-Listen</strong>
-                der Anträge und Änderungsanträge.
-            </li>
-            <li><strong>Berechtigungen</strong>: Wer Anträge, Änderungsanträge und Kommentare verfassen darf, lässt sich
-                jeweils festlegen. Niemand / nur Admins, Alle, oder nur eingeloggte Nutzer*innen.
-            </li>
-            <li>Ein effizientes Backend für die Antragskommission zum <strong>Moderieren</strong> von (Änderungs-)Anträgen
-                oder Kommentaren.
-            </li>
-            <li>Hohe <strong>Anpassbarkeit</strong>: Die Antrags- und Unterstützer*innen-Formulare sowie das „Wording“ lässt
-                sich frei an die eigenen Bedürfnisse anpassen. Es stehen unterschiedliche Layout-Varianten zur
-                Auswahl, Farben und Logos können ausgetauscht werden.
-            </li>
-            <li><strong>E-Mail-Benachrichtigungen</strong> über neue Anträge, Änderungsanträge und/oder Kommentare für alle
-                Interessierte
-            </li>
-        </ul>
+        <p>Antragsgrün ermöglicht es, das Antragswesen inklusive Änderungsanträgen abzubilden.</p>
 
-        <strong>Das kann Antragsgrün nicht</strong>:
+        <p><strong>Anträge, Satzungen, Positionspapiere oder Wahlprogramme</strong> können eingereicht und veröffentlicht werden,
+            wahlweise von allen Mitgliedern oder eingeschränkten Kreisen wie dem Vorstand oder Delegierten.
+            Auch das Einreichen von <strong>Bewerbungen</strong>, inklusive Bild- und PDF-Upload wird unterstützt.</p>
+
+        <figure class="homeFigure homeFigureAmendment">
+            <img src="/img/Screenshot-Amendment-de.png" alt="Screenshot eines Änderungsantrags">
+            <figcaption>
+                Änderungsanträge können sowohl separat als auch (wie hier) im Kontext des Antrags angezeigt werden
+            </figcaption>
+        </figure>
+
+        <p>Neben einer <strong>Kommentarfunktion</strong> für so veröffentlichte Dokumente bietet Antragsgrün
+            vor allem die Möglichkeit, <strong>Änderungsanträge</strong> einfach einzureichen,
+            die von der Antragskommission oder der Mitgliederversammlung behandelt werden.</p>
+
+        <figure class="homeFigure homeFigurePrint">
+            <img src="/img/Screenshot-Print.png" alt="Druckvorlage">
+            <figcaption>
+                Vielfältige Exports, wie z.B. Druckvorlagen
+            </figcaption>
+        </figure>
+
+        <p><strong>Antragsgrün unterstützt die Veranstaltungsleitung</strong> dabei durch eine Vielzahl an Funktionen:</p>
+
         <ul>
-            <li><strong>Wahlen</strong>. Antragsgrün unterstützt Abstimmungen über Anträge, aber nicht die erhöhten
-                Sicherheitsbedürfnisse von Personenwahlen und geheimen Abstimmungen.</li>
-            <li><strong>Vor-Ort-Präsentationen</strong>. Antragsgrün kann zwar vor Ort auf Veranstaltungen genutzt werden,
-                ist aber keine vollständige Konferenzsoftware wie z.B. <a lang="en" href="https://openslides.com/">OpenSlides</a>.
-            </li>
+            <li>Druckvorlagen können automatisch erzeugt werden<br>(Export als PDF, Spreadsheet oder Textdokumente)</li>
+            <li>Angenommene Änderungsanträge können einfach in den ursprünglichen Text eingearbeitet werden</li>
+            <li>E-Mail-Benachrichtigungen sowohl für Administrierende als auch für Teilnehmende</li>
+            <li>Festlegen von Zuständigkeiten, interne Übersichten und Kommentare</li>
+            <li>... und viel mehr.</li>
         </ul>
 
         <p style="text-align: center; font-weight: bold;">
@@ -99,6 +110,84 @@ $params = Yii::$app->params;
                 Zur ausführlichen Funktionsbeschreibung und Hilfe
             </a>
         </p>
+
+        <br style="clear: both;">
+    </div>
+</section>
+
+<section aria-labelledby="vorort">
+    <h2 id="vorort" class="green">Vor Ort auf Versammlungen</h2>
+
+    <div class="content infoSite">
+        <p>Antragsgrün unterstützt die Antragsarbeit vor Ort auf Veranstaltungen:</p>
+
+        <ul>
+            <li>Eine einfache Verwaltung der <strong>Tagesordnung</strong></li>
+            <li><strong>Redelisten</strong>, sowohl Einfache als auch Quotierte</li>
+            <li><strong>Anwesenheitslisten und Abstimmungen</strong> über Anträge und Änderungsanträge</li>
+            <li><strong>Projektor</strong>-geeignete Vollbilddarstellung aller wichtigen Inhalte</li>
+        </ul>
+    </div>
+
+
+    <div class="homeFigureTwoHolder">
+        <figure class="homeFigure homeFigureSpeech">
+            <img src="/img/Screenshot-Redeliste.png" alt="Screenshot einer Redeliste">
+            <figcaption>
+                Flexible Redelisten mit einfacher Verwaltung
+            </figcaption>
+        </figure>
+
+        <figure class="homeFigure homeFigureVoting">
+            <img src="/img/Screenshot-Abstimmungen.png" alt="Screenshot einer Abstimmung">
+            <figcaption>
+                Konfigurierbare Abstimmungen über Anträge und Fragestellungen
+            </figcaption>
+        </figure>
+    </div>
+</section>
+
+<section aria-labelledby="flexibel">
+    <h2 id="flexibel" class="green">Flexibel und Anpassbar</h2>
+
+    <div class="content infoSite">
+        <p>Antragsgrün wird bereits von verschiedensten Organisationen für unterschiedliche Zwecke eingesetzt
+            und lässt sich daher bereits standardmäßig für viele Szenarien anpassen. Beispielsweise:</p>
+
+        <ul>
+            <li>Das <strong>Layout</strong> der Seite kann über eine einfache Web-Oberfläche angepasst werden: anpassbar sind sowohl Farben, Logo, Beschriftungen und die erzeugten Druckvorlagen.</li>
+            <li>Das <strong>Einreichen</strong> von Anträgen und Änderungsanträgen kann an verschiedene Voraussetzungen geknüpft werden: an einen Antragsschluss, an bestimmte Berechtigungen, genügend Unterstützer*innen, Vorab-Prüfung durch eine Antragskommission, …</li>
+            <li>Eine Integration in existierende <strong>Single-Sign-On-Mechanismen</strong> (wie z.B. SAML) ist vorgesehen und kann auf Auftragsbasis implementiert werden</li>
+        </ul>
+
+        <p>Für weiter gehende und Organisations-spezifische Anpassungen bieten wir <strong>professionelle Unterstützung auf Auftragsbasis.</strong></p>
+
+        <p><strong>Ansprechpartner für Anpassungen</strong>:<br>
+            Tobias Hößl<br>
+            <a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a><br>
+            <a href="tel:+4915156024223">+49 151 56024223</a>
+    </div>
+</section>
+
+<section aria-labelledby="ausgereift">
+    <h2 id="ausgereift" class="green">Ausgereift, Offen, Privatsphären-freundlich</h2>
+
+    <div class="content infoSite">
+        <p>Antragsgrün wird <strong>seit über zehn Jahren</strong> auf Parteitagen, Mitgliederversammlungen, Arbeitskreisen
+            und Fraktionen eingesetzt und hat sich sowohl bei kurzfristigen internen Abstimmungen als auch bei
+            Programmparteitagen mit über tausend Anträgen und hunderten Delegierten bewährt.</p>
+
+        <p>Antragsgrün wird als <strong>Open Source</strong> (AGPL) kontinuierlich in Kooperation mit den nutzenden
+            Organisationen weiterentwickelt. Antragsgrün kann damit einerseits als fertiges Paket einfach
+            installiert und kostenlos genutzt werden. Den Download und eine Anleitung
+            zur Installation gibt es auf <a href="https://github.com/CatoTH/antragsgruen">Github</a>.
+
+        <p>Andererseits bieten wir auch <strong>professionellen Support</strong>,
+            Hosting, die Umsetzung neuer Funktionen sowie mandantenspezifische Anpassungen auf Auftragsbasis an.</p>
+
+        <p>Bei allen Funktionen liegt uns der Datenschutz besonders am Herzen:
+            wir sammeln keine unnötigen Daten, setzen <strong>keine Tracker</strong> ein,
+            schalten keine Werbung und alle unsere Server befinden sich innerhalb der EU.</p>
     </div>
 </section>
 
@@ -139,23 +228,6 @@ $params = Yii::$app->params;
             Benötigt wird nur ein Zugang beim Grünen Netz.<br>
             Die oben genannte Hosting-Gebühr entfällt in diesem Fall.
         </p>
-
-        <h3>Fehlt eine Funktion? Professioneller Support und Anpassungen gewünscht?</h3>
-        <p id="support" style="margin-bottom: 40px;">
-            Sind speziellere programmiertechnische Anpassungen nötig, garantierte Verfügbarkeit während einem bestimmten
-            Zeitraum, oder sollen wir Antragsgrün auf einer <strong>eigenen Domain</strong> hosten,
-            können wir diese auf Stundensatzbasis umsetzen. Bei Fragen und Wünschen sind wir immer
-            <a href="#wer" onClick="$('#wer').scrollintoview({top_offset: -50}); return false;">erreichbar</a>.
-        </p>
-
-        <h3>Antragsgrün ist <span lang="en">OpenSource</span></h3>
-        <p style="margin-bottom: 40px;">
-            Antragsgrün ist
-            <a href="#opensource" onClick="$('#opensource').scrollintoview({top_offset: -50}); return false;">OpenSource-Software</a>
-            und kann von jeder und jedem kostenlos genutzt werden, sowohl um an Diskussionen
-            teilzunehmen, als auch um eigene Programm-/Antragsdiskussionen einzurichten. Den Download und eine Anleitung
-            zur Installation gibt es auf <a href="https://github.com/CatoTH/antragsgruen">Github</a>.
-        </p>
     </div>
 </section>
 
@@ -194,23 +266,6 @@ aber das Passwort.</div>';
     }
     echo '</div>';
     ?>
-</section>
-
-<section aria-labelledby="wer">
-    <h2 id="wer" class="green">Kontakt</h2>
-
-    <div class="content infoSite">
-        <p>Antragsgrün wird von <a href="https://www.hoessl.eu/">Tobias Hößl</a> (<a
-                href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>) programmiert, das ursprüngliche Design stammt von Karin Wehle.</p>
-
-        <p>Wir werden das Antragsgrün in Zukunft weiter ausbauen und um <strong>zusätzliche Funktionen</strong> ergänzen.
-            Funktionen, für die sich „Sponsoren“ finden, werden dabei besonders priorisiert.
-        </p>
-
-        <p>Ihr könnt uns bevorzugt per <strong>E-Mail</strong> unter
-            <a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a>
-            erreichen, in dringenden Fällen auch telefonisch unter 0151-56024223.</p>
-    </div>
 </section>
 
 <section aria-labelledby="opensource">

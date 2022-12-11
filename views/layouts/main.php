@@ -72,6 +72,9 @@ foreach ($layout->feeds as $title => $url) {
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
+foreach ($layout->inlineCss as $inlineCss) {
+    echo '<style>' . $inlineCss . '</style>' . "\n";
+}
 $forbidRobots = ($controller->consultation && $controller->consultation->getSettings()->robotsPolicy === \app\models\settings\Consultation::ROBOTS_NONE);
 if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
     echo '<meta property="og:image" content="' . Html::encode($layout->ogImage) . '">' . "\n";
