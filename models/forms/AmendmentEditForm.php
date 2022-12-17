@@ -83,10 +83,6 @@ class AmendmentEditForm extends Model
         }
     }
 
-
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [

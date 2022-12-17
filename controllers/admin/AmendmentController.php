@@ -3,6 +3,11 @@
 namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\http\BinaryFileResponse;
+use app\models\http\HtmlErrorResponse;
+use app\models\http\HtmlResponse;
+use app\models\http\RedirectResponse;
+use app\models\http\ResponseInterface;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site;
 use app\components\{Tools, UrlHelper, ZipWriter};
@@ -21,75 +26,37 @@ use yii\web\Response;
 
 class AmendmentController extends AdminBase
 {
-    /**
-     * @param bool $textCombined
-     * @param int $withdrawn
-     *
-     * @return string
-     */
-    public function actionOdslist($textCombined = false, $withdrawn = 0)
+    public function actionOdslist(bool $textCombined = false, int $withdrawn = 0): BinaryFileResponse
     {
-        $withdrawn = (intval($withdrawn) === 1);
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $this->renderPartial('ods_list', [
-            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn),
+        $ods = $this->renderPartial('ods_list', [
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn === 1),
             'textCombined' => $textCombined,
-            'withdrawn'    => $withdrawn,
+            'withdrawn'    => ($withdrawn === 1),
         ]);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true,'amendments');
     }
 
-    /**
-     * @param int $textCombined
-     * @param int $withdrawn
-     * @param int $maxLen
-     *
-     * @return string
-     */
-    public function actionOdslistShort($textCombined = 0, $withdrawn = 0, $maxLen = 2000)
+    public function actionOdslistShort(int $textCombined = 0, int $withdrawn = 0, int $maxLen = 2000): BinaryFileResponse
     {
-        $withdrawn    = (intval($withdrawn) === 1);
-        $maxLen       = intval($maxLen);
-        $textCombined = (intval($textCombined) === 1);
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $this->renderPartial('ods_list_short', [
-            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn),
-            'textCombined' => $textCombined,
+        $ods = $this->renderPartial('ods_list_short', [
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn === 1),
+            'textCombined' => ($textCombined === 1),
             'maxLen'       => $maxLen,
-            'withdrawn'    => $withdrawn,
+            'withdrawn'    => ($withdrawn === 1),
         ]);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'amendments');
     }
 
-    /**
-     * @param int $withdrawn
-     *
-     * @return string
-     */
-    public function actionPdflist($withdrawn = 0)
+    public function actionPdflist(int $withdrawn = 0): HtmlResponse
     {
-        $withdrawn = (intval($withdrawn) === 1);
-
-        return $this->render('pdf_list', ['consultation' => $this->consultation, 'withdrawn' => $withdrawn]);
+        return new HtmlResponse(
+            $this->render('pdf_list', ['consultation' => $this->consultation, 'withdrawn' => ($withdrawn === 1)])
+        );
     }
 
-    /**
-     * @param int $withdrawn
-     *
-     * @return string
-     * @throws \Exception
-     */
-    public function actionPdfziplist($withdrawn = 0)
+    public function actionPdfziplist(int $withdrawn = 0): BinaryFileResponse
     {
-        $withdrawn = (IntVal($withdrawn) === 1);
+        $withdrawn = ($withdrawn === 1);
         $zip       = new ZipWriter();
         $hasLaTeX  = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
@@ -106,23 +73,12 @@ class AmendmentController extends AdminBase
             }
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=amendments_pdf.zip');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $zip->getContentAndFlush();
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'amendments_pdf');
     }
 
-    /**
-     * @param int $withdrawn
-     *
-     * @return string
-     * @throws \Exception
-     */
-    public function actionOdtziplist($withdrawn = 0)
+    public function actionOdtziplist(int $withdrawn = 0): BinaryFileResponse
     {
-        $withdrawn = (intval($withdrawn) === 1);
+        $withdrawn = ($withdrawn === 1);
         $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             if ($motion->getMyMotionType()->amendmentsOnly) {
@@ -134,18 +90,13 @@ class AmendmentController extends AdminBase
             }
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=amendments_odt.zip');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $zip->getContentAndFlush();
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'amendments_odt');
     }
 
     /**
      * @throws \Exception
      */
-    private function saveAmendmentSupporters(Amendment $amendment)
+    private function saveAmendmentSupporters(Amendment $amendment): void
     {
         $names         = $this->getHttpRequest()->post('supporterName', []);
         $orgas         = $this->getHttpRequest()->post('supporterOrga', []);
@@ -212,21 +163,15 @@ class AmendmentController extends AdminBase
         $motion->refresh();
     }
 
-    /**
-     * @return string
-     * @throws \Throwable
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionUpdate(string $amendmentId)
+    public function actionUpdate(string $amendmentId): ResponseInterface
     {
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return '';
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
-            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+            return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($amendment->getMyMotion(), $amendment);
 
@@ -250,9 +195,7 @@ class AmendmentController extends AdminBase
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'amend_deleted'));
-            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
-
-            return '';
+            return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
 
         if ($this->isPostSet('save')) {
@@ -341,6 +284,10 @@ class AmendmentController extends AdminBase
             $this->saveAmendmentSupporters($amendment);
             $this->saveAmendmentInitiator($amendment);
 
+            // This forces recalculating the motion's view page. This is necessary at least when the text has changed
+            // or the names of the initiators.
+            $amendment->getMyMotion()->flushViewCache();
+
             $amendment->flushCache(true);
             $amendment->refresh();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
@@ -348,19 +295,12 @@ class AmendmentController extends AdminBase
 
         $form = new AmendmentEditForm($amendment->getMyMotion(),$amendment->getMyAgendaItem(), $amendment);
         $form->setAdminMode(true);
-        return $this->render('update', ['amendment' => $amendment, 'form' => $form]);
+
+        return new HtmlResponse($this->render('update', ['amendment' => $amendment, 'form' => $form]));
     }
 
-    /**
-     * @return string
-     */
-    public function actionOpenslides()
+    public function actionOpenslides(): BinaryFileResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'text/csv');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=Amendments.csv');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
         $amendments = [];
         foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
             if (!is_a($motion, Motion::class)) {
@@ -371,8 +311,9 @@ class AmendmentController extends AdminBase
             }
         }
 
-        return $this->renderPartial('openslides_list', [
+        $csv = $this->renderPartial('openslides_list', [
             'amendments' => $amendments,
         ]);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_CSV, $csv, true, 'Amendments');
     }
 }

@@ -19,6 +19,7 @@ class BinaryFileResponse implements ResponseInterface
     public const TYPE_GIF = 'gif';
     public const TYPE_XML = 'xml';
     public const TYPE_ZIP = 'zip';
+    public const TYPE_CSV = 'csv';
     public const TYPE_CSS = 'css';
 
     private string $type;
@@ -110,7 +111,11 @@ class BinaryFileResponse implements ResponseInterface
                 break;
             case self::TYPE_ZIP:
                 $response->headers->add('Content-Type', 'application/zip');
-                $fileEnding = 'xml';
+                $fileEnding = 'zip';
+                break;
+            case self::TYPE_CSV:
+                $response->headers->add('Content-Type', 'text/csv');
+                $fileEnding = 'csv';
                 break;
             case self::TYPE_CSS:
                 $response->headers->add('Content-Type', 'text/css');
