@@ -46,7 +46,7 @@ export class MoveMotion {
                 newMotionPrefix: prefix,
                 newConsultationId: consultation
             }).then(res => {
-                resolve(res);
+                resolve(res.success);
             });
         });
     }

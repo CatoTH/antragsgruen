@@ -4,6 +4,7 @@ namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\policies\{All, Nobody, UserGroups, IPolicy};
+use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface};
 use app\components\{DateTools, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation,
     ConsultationLog,
@@ -99,27 +100,25 @@ class MotionController extends AdminBase
         return $policy;
     }
 
-    public function actionType(string $motionTypeId): string
+    public function actionType(string $motionTypeId): ResponseInterface
     {
         $motionTypeId = intval($motionTypeId);
 
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return '';
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
-            $this->showErrorpage(404, $e->getMessage());
-            return '';
+            return new HtmlErrorResponse(404, $e->getMessage());
         }
         if ($this->isPostSet('delete')) {
             if ($motionType->isDeletable()) {
                 $motionType->status = ConsultationMotionType::STATUS_DELETED;
                 $motionType->save();
 
-                return $this->render('type_deleted');
+                return new HtmlResponse($this->render('type_deleted'));
             } else {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_type_not_deletable'));
             }
@@ -272,23 +271,16 @@ class MotionController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
         }
 
-        return $this->render('type', [
+        return new HtmlResponse($this->render('type', [
             'motionType'               => $motionType,
             'supportCollPolicyWarning' => $supportCollPolicyWarning
-        ]);
+        ]));
     }
 
-    /**
-     * @return string
-     * @throws \Yii\base\ExitException
-     * @throws \Exception
-     */
-    public function actionTypecreate()
+    public function actionTypecreate(): ResponseInterface
     {
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-
-            return false;
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
         if ($this->isPostSet('create')) {
@@ -376,11 +368,10 @@ class MotionController extends AdminBase
             }
 
             $url = UrlHelper::createUrl(['/admin/motion/type', 'motionTypeId' => $motionType->id, 'msg' => 'created']);
-
-            return $this->redirect($url);
+            return new RedirectResponse($url);
         }
 
-        return $this->render('type_create');
+        return new HtmlResponse($this->render('type_create'));
     }
 
     /**
@@ -453,13 +444,7 @@ class MotionController extends AdminBase
         $motion->refresh();
     }
 
-    /**
-     * @param int $motionId
-     *
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionGetAmendmentRewriteCollisions($motionId)
+    public function actionGetAmendmentRewriteCollisions(int $motionId): HtmlResponse
     {
         $newSections = $this->getHttpRequest()->post('newSections', []);
 
@@ -479,23 +464,18 @@ class MotionController extends AdminBase
             }
         }
 
-        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collisions', [
+        return new HtmlResponse($this->renderPartial('@app/views/amendment/ajax_rewrite_collisions', [
             'amendments' => $amendments,
             'collisions' => $collisions,
-        ]);
+        ]));
     }
 
-    /**
-     * @return string
-     * @throws \Throwable
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionUpdate(string $motionId)
+    public function actionUpdate(string $motionId): ResponseInterface
     {
         /** @var Motion $motion */
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+            return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($motion);
 
@@ -518,9 +498,7 @@ class MotionController extends AdminBase
             $motion->setDeleted();
             $motion->flushCacheStart(['lines']);
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'motion_deleted'));
-            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
-
-            return '';
+            return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
 
         if ($this->isPostSet('save')) {
@@ -671,15 +649,16 @@ class MotionController extends AdminBase
 
         $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
         $form->setAdminMode(true);
-        return $this->render('update', ['motion' => $motion, 'form' => $form]);
+
+        return new HtmlResponse($this->render('update', ['motion' => $motion, 'form' => $form]));
     }
 
-    public function actionMove($motionId)
+    public function actionMove(string $motionId): ResponseInterface
     {
         /** @var Motion $motion */
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+            return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($motion);
 
@@ -689,25 +668,25 @@ class MotionController extends AdminBase
             $newMotion = $form->move($this->getHttpRequest()->post());
             if ($newMotion) {
                 if ($newMotion->consultationId === $this->consultation->id) {
-                    return $this->redirect(UrlHelper::createMotionUrl($newMotion));
+                    return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
                 } else {
                     Consultation::getCurrent()->flushMotionCache();
                     Consultation::getCurrent()->refresh();
 
-                    return $this->render('moved_other_consultation', ['newMotion' => $newMotion]);
+                    return new HtmlResponse($this->render('moved_other_consultation', ['newMotion' => $newMotion]));
                 }
             }
         }
 
-        return $this->render('move', ['form' => $form]);
+        return new HtmlResponse($this->render('move', ['form' => $form]));
     }
 
-    public function actionMoveCheck($motionId, $checkType)
+    public function actionMoveCheck(string $motionId, string $checkType): ResponseInterface
     {
         /** @var Motion $motion */
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+            return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($motion);
 
@@ -734,9 +713,6 @@ class MotionController extends AdminBase
             $result = (count($existingMotion) === 0);
         }
 
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        return json_encode($result);
+        return new JsonResponse(['success' => $result]);
     }
 }
