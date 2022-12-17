@@ -429,7 +429,11 @@ class TextSimple extends Text
                 $pdf->ln(7);
             }
 
-            $pdf->writeHTMLCell(170, '', 24, '', $section->data, 0, 1, 0, true, '', true);
+            $html = str_replace('</li>', '<br></li>', $section->data);
+            $html = str_replace('<ol', '<br><ol', $html);
+            $html = str_replace('<ul', '<br><ul', $html);
+
+            $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         } else {
             $firstLine  = $section->getFirstLineNumber();
             $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;

@@ -120,6 +120,10 @@ class IPdfWriter extends Fpdi
             $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
                 $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $html = str_replace('</li>', '<br></li>', $html);
+                $html = str_replace('<ol', '<br><ol', $html);
+                $html = str_replace('<ul', '<br><ul', $html);
+
                 $y    = $this->getY();
                 $this->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
                 $this->writeHTMLCell(173, '', 24, '', $html, 0, 1, 0, true, '', true);

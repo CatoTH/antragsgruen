@@ -11,8 +11,7 @@ abstract class IPDFLayout
 {
     public static function getAvailableTcpdfClasses(): array
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
 
         $pdfClasses = [
             [
@@ -46,8 +45,7 @@ abstract class IPDFLayout
         return $pdfClasses;
     }
 
-    /** @var null|array */
-    private static $_availableClassesWithLatex = null;
+    private static ?array $_availableClassesWithLatex = null;
 
     public static function getAvailableClassesWithLatex(): array
     {
@@ -60,8 +58,7 @@ abstract class IPDFLayout
             $return['php' . $data['id']] = $data;
         }
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
         if ($params->xelatexPath || $params->lualatexPath) {
             /** @var TexTemplate[] $texLayouts */
             $texLayouts = TexTemplate::find()->all();
@@ -100,14 +97,11 @@ abstract class IPDFLayout
         throw new Internal('Unknown PDF Layout');
     }
 
-    /** @var ConsultationMotionType */
-    protected $motionType;
+    protected ConsultationMotionType $motionType;
+    protected ?array $headerlogo = null;
 
     /** @var TCPDF */
     protected $pdf;
-
-    /** @var null|array */
-    protected $headerlogo = null;
 
     public function __construct(ConsultationMotionType $motionType)
     {
