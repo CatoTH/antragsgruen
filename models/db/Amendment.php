@@ -57,7 +57,7 @@ class Amendment extends IMotion implements IRSSItem
     public const EVENT_PUBLISHED       = 'published';
     public const EVENT_PUBLISHED_FIRST = 'published_first';
 
-    public const PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE = ['status', 'titlePrefix'];
+    private const PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE = ['status', 'titlePrefix'];
 
     public const EXTRA_DATA_VIEW_MODE_FULL = 'view_mode_full'; // Boolean value
 
@@ -104,7 +104,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function save($runValidation = true, $attributeNames = null)
     {
-        $viewCacheNeedsRebuild = count(array_intersect(array_keys($this->getDirtyAttributes()), static::PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE)) > 0;
+        $viewCacheNeedsRebuild = count(array_intersect(array_keys($this->getDirtyAttributes()), self::PROPERTIES_RELEVANT_FOR_MOTION_VIEW_CACHE)) > 0;
 
         $result = parent::save($runValidation, $attributeNames);
 

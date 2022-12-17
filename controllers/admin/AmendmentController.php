@@ -3,6 +3,10 @@
 namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\http\HtmlErrorResponse;
+use app\models\http\HtmlResponse;
+use app\models\http\RedirectResponse;
+use app\models\http\ResponseInterface;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site;
 use app\components\{Tools, UrlHelper, ZipWriter};
@@ -212,21 +216,15 @@ class AmendmentController extends AdminBase
         $motion->refresh();
     }
 
-    /**
-     * @return string
-     * @throws \Throwable
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionUpdate(string $amendmentId)
+    public function actionUpdate(string $amendmentId): ResponseInterface
     {
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return '';
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
-            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+            return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($amendment->getMyMotion(), $amendment);
 
@@ -250,9 +248,7 @@ class AmendmentController extends AdminBase
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'amend_deleted'));
-            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
-
-            return '';
+            return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
 
         if ($this->isPostSet('save')) {
@@ -341,6 +337,10 @@ class AmendmentController extends AdminBase
             $this->saveAmendmentSupporters($amendment);
             $this->saveAmendmentInitiator($amendment);
 
+            // This forces recalculating the motion's view page. This is necessary at least when the text has changed
+            // or the names of the initiators.
+            $amendment->getMyMotion()->flushViewCache();
+
             $amendment->flushCache(true);
             $amendment->refresh();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
@@ -348,7 +348,8 @@ class AmendmentController extends AdminBase
 
         $form = new AmendmentEditForm($amendment->getMyMotion(),$amendment->getMyAgendaItem(), $amendment);
         $form->setAdminMode(true);
-        return $this->render('update', ['amendment' => $amendment, 'form' => $form]);
+
+        return new HtmlResponse($this->render('update', ['amendment' => $amendment, 'form' => $form]));
     }
 
     /**
