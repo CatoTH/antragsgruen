@@ -71,7 +71,7 @@ foreach ($items as $item) {
                 $body    = $prefix . ' ("' . $title . '")';
             } else {
                 $subject = $title;
-                $title   = mb_substr($title, mb_strlen($prefix) + 2);
+                $title   = grapheme_substr($title, grapheme_strlen($prefix) + 2);
                 $body    = Yii::t('export', 'mail_amendment_x_to_y');
                 $body    = str_replace(['%AMENDMENT%', '%MOTION%'], [$prefix, $item->getMyMotion()->title], $body);
             }
@@ -80,7 +80,7 @@ foreach ($items as $item) {
                 $email     = $initiator->contactEmail;
                 $phone     = $initiator->contactPhone;
                 $name      = $initiator->getNameWithOrga();
-                $firstName = StringSplitter::first([' '], mb_substr($name, 0, 4) == 'Dr. ' ? mb_substr($name, 4) : $name);
+                $firstName = StringSplitter::first([' '], grapheme_substr($name, 0, 4) == 'Dr. ' ? grapheme_substr($name, 4) : $name);
             } else {
                 $email     = '';
                 $phone     = '';

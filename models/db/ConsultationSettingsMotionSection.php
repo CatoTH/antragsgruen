@@ -105,8 +105,8 @@ class ConsultationSettingsMotionSection extends ActiveRecord
             $this->data = null;
         }
 
-        if (mb_strlen($this->title) > 100) {
-            $this->title = mb_substr($this->title, 0, 100);
+        if (grapheme_strlen($this->title) > 100) {
+            $this->title = (string)grapheme_substr($this->title, 0, 100);
         }
 
         $settings = $this->getSettingsObj();

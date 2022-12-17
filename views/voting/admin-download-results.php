@@ -188,7 +188,7 @@ foreach ($agendaVoting->items as $i => $voteItem) {
             break;
     }
     $sheetTitle = preg_replace('/[^a-z0-9_ -]/siu', '', $title);
-    $sheetTitle = (mb_strlen($sheetTitle) > 30 ? mb_substr($sheetTitle, 0, 28) . '...' : $sheetTitle);
+    $sheetTitle = (grapheme_strlen($sheetTitle) > 30 ? grapheme_substr($sheetTitle, 0, 28) . '...' : $sheetTitle);
     $sheet->setTitle($sheetTitle);
     $sheet->getColumnDimension('A')->setWidth($width, 'cm');
     $sheet->getColumnDimension('B')->setWidth($width, 'cm');

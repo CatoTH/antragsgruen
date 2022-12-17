@@ -100,8 +100,8 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
     public function setTitle(string $title): void
     {
-        if (mb_strlen($title) > 150) {
-            $this->title = mb_substr($title, 0, 147) . '...';
+        if (grapheme_strlen($title) > 150) {
+            $this->title = grapheme_substr($title, 0, 147) . '...';
         } else {
             $this->title = $title;
         }

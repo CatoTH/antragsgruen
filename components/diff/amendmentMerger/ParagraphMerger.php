@@ -17,13 +17,13 @@ class ParagraphMerger
     private bool $merged = false;
 
     // If set to true, then collisions will be merged into the text, preferring ease of editing over consistency
-    private $mergeCollisions;
+    private bool $mergeCollisions;
 
     // Sets the limit, how long a collision may be in character for it to be merged.
     // If the collision (deletion + insertion) is longer than this limit, it will fall back into separating out the collisions
     private int $collisionMergingLimit = 100;
 
-    public function __construct(string $paragraphStr, $mergeCollisions)
+    public function __construct(string $paragraphStr, bool $mergeCollisions)
     {
         $origTokenized = Diff::tokenizeLine($paragraphStr);
         $words         = [];
@@ -39,10 +39,9 @@ class ParagraphMerger
     }
 
     /**
-     * @param int $amendmentId
      * @param DiffWord[] $wordArr
      */
-    public function addAmendmentParagraph($amendmentId, $wordArr)
+    public function addAmendmentParagraph(int $amendmentId, array $wordArr): void
     {
         $hasChanges = false;
         $firstDiff  = null;
@@ -337,10 +336,10 @@ class ParagraphMerger
                 $combined .= $collidingGroup->tokens[$tokenKey]->diff;
             }
             $normalized = str_replace(['###DEL_START###', '###DEL_END###', '###INS_START###', '###INS_END###'], ['', '', '', ''], $combined);
-            if (mb_strpos($normalized, '<') !== false) {
+            if (grapheme_strpos($normalized, '<') !== false) {
                 return false;
             }
-            if (mb_strlen($normalized) > $this->collisionMergingLimit) {
+            if (grapheme_strlen($normalized) > $this->collisionMergingLimit) {
                 return false;
             }
         }
@@ -427,10 +426,10 @@ class ParagraphMerger
         foreach ($words as $wordNo => $word) {
             if ($word->modifiedBy !== null) {
                 if ($pendingCurrAmend === 0 && !in_array($word->orig, ['', '#', '##', '###'])) { // # would lead to conflicty with ###DEL_START### in the modification
-                    if (mb_strpos($word->modification, $word->orig) === 0) {
+                    if (grapheme_strpos($word->modification, $word->orig) === 0) {
                         // The current word has an unchanged beginning + an insertion or deletion
                         // => the unchanged part will be added to the $pending queue (which will be added to $groupedParaData in the next "if" statement
-                        $shortened            = mb_substr($word->modification, mb_strlen($word->orig));
+                        $shortened            = (string)grapheme_substr($word->modification, (int)grapheme_strlen($word->orig));
                         $pending              .= $word->orig;
                         $word->modification = $shortened;
 
@@ -441,8 +440,8 @@ class ParagraphMerger
                             //   - Regular diff:    "word ###INS_START###ins1###INS_END###"
                             //   - Collision:       "word ###INS_START###ins2###INS_END###"
                             //   - Desired outcome: "word ###INS_START###ins2###INS_END######INS_START###ins1###INS_END###"
-                            if (mb_strpos($group->tokens[$wordNo]->diff, $word->orig) === 0) {
-                                $group->tokens[$wordNo]->diff = mb_substr($group->tokens[$wordNo]->diff, mb_strlen($word->orig));
+                            if (grapheme_strpos($group->tokens[$wordNo]->diff, $word->orig) === 0) {
+                                $group->tokens[$wordNo]->diff = (string)grapheme_substr($group->tokens[$wordNo]->diff, (int)grapheme_strlen($word->orig));
                             }
                         }
                     }
@@ -466,9 +465,9 @@ class ParagraphMerger
                     //   - Collision:       "word ###INS_START###schena ###INS_END###"
                     //   - Desired outcome: "word ###INS_START###schena ###INS_END######DEL_START### "
                     $origPrepended = $matches['orig'];
-                    while (mb_strlen($origPrepended) > 0 && mb_strlen($word->modification) > 0 && mb_substr($origPrepended, 0, 1) === mb_substr($word->modification, 0, 1)) {
-                        $origPrepended = mb_substr($origPrepended, 1);
-                        $word->modification = mb_substr($word->modification, 1);
+                    while (grapheme_strlen($origPrepended) > 0 && grapheme_strlen($word->modification) > 0 && grapheme_substr($origPrepended, 0, 1) === grapheme_substr($word->modification, 0, 1)) {
+                        $origPrepended = (string)grapheme_substr($origPrepended, 1);
+                        $word->modification = (string)grapheme_substr($word->modification, 1);
                     }
                 }
                 $pending .= $word->modification;
@@ -548,7 +547,7 @@ class ParagraphMerger
      */
     private static function stripUnchangedLiFromColliding(string $str): string
     {
-        if (mb_substr($str, 0, 8) !== '<ul><li>' && mb_substr($str, 0, 8) !== '<ol><li>') {
+        if (grapheme_substr($str, 0, 8) !== '<ul><li>' && grapheme_substr($str, 0, 8) !== '<ol><li>') {
             return $str;
         }
         if (mb_substr_count($str, '<li>') !== 1 || mb_substr_count($str, '</li>') !== 1) {

@@ -18,8 +18,8 @@ class ByLine extends IAmendmentNumbering
 
     public function getAmendmentNumber(Amendment $amendment, Motion $motion, int $lineStrLen = 3): string
     {
-        $line = $amendment->getFirstDiffLine();
-        while (mb_strlen($line) < $lineStrLen) {
+        $line = (string)$amendment->getFirstDiffLine();
+        while (grapheme_strlen($line) < $lineStrLen) {
             $line = '0' . $line;
         }
         $revBase = $motion->titlePrefix . '-' . $line;

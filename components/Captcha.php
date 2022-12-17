@@ -33,7 +33,7 @@ class Captcha
     {
         $savedCaptcha = RequestContext::getSession()->get('captcha');
         RequestContext::getSession()->set('captcha', null);
-        if (!$captcha || !$savedCaptcha || mb_strlen($savedCaptcha) < 5) {
+        if (!$captcha || !$savedCaptcha || grapheme_strlen($savedCaptcha) < 5) {
             return false;
         }
         return mb_strtolower($savedCaptcha) === mb_strtolower($captcha);

@@ -8,11 +8,10 @@ class StringSplitter
      * Split string at any of the given delimiters
      *
      * @param string[] $delimiters
-     * @param string $string
      *
      * @return string[]
      */
-    public static function split($delimiters, $string)
+    public static function split(array $delimiters, string $string): array
     {
         $pieces = [$string];
         foreach ($delimiters as $delimiter) {
@@ -32,13 +31,13 @@ class StringSplitter
      * Return first piece before any of the given delimiters
      *
      * @param string[] $delimiters
-     * @param string $string
-     * @return string
      */
-    public static function first($delimiters, $string)
+    public static function first(array $delimiters, string $string): string
     {
         foreach ($delimiters as $delimiter) {
-            $string = explode($delimiter, $string) [0];
+            /** @var string[] $parts */
+            $parts = explode($delimiter, $string);
+            $string = $parts[0];
         }
 
         return trim($string);
