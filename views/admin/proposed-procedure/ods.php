@@ -184,7 +184,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
         $proposal = '';
     } else {
         $proposal = '<p>' . $motion->getFormattedProposalStatus() . '</p>';
-        if (mb_strlen($proposal) > 200) {
+        if (grapheme_strlen($proposal) > 200) {
             $minHeight += 2;
         }
         if ($motion->proposalExplanation) {

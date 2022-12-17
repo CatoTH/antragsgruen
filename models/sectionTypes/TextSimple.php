@@ -512,10 +512,10 @@ class TextSimple extends Text
             $text      = $diff->text;
             $text      = static::stripAfterInsertedNewlines($text);
             $hasInsert = $hasDelete = false;
-            if (mb_strpos($text, 'class="inserted"') !== false) {
+            if (grapheme_strpos($text, 'class="inserted"') !== false) {
                 $hasInsert = true;
             }
-            if (mb_strpos($text, 'class="deleted"') !== false) {
+            if (grapheme_strpos($text, 'class="deleted"') !== false) {
                 $hasDelete = true;
             }
             if (preg_match('/<ins( [^>]*)?>/siu', $text)) {
@@ -526,7 +526,7 @@ class TextSimple extends Text
             }
             $out            .= $wrapStart;
             $out            .= '<h4 class="lineSummary">';
-            $isInsertedLine = (mb_strpos($diff->text, '###LINENUMBER###') === false);
+            $isInsertedLine = (grapheme_strpos($diff->text, '###LINENUMBER###') === false);
             if ($isInsertedLine) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
                     $out .= \Yii::t('diff', 'after_line');
@@ -592,8 +592,8 @@ class TextSimple extends Text
         $out  = str_replace($strSpaceDel . '<ins></ins><br>', '<br>', $out);
         $out  = str_replace('###LINENUMBER###', '', $out);
         $repl = '<br></p></div>';
-        if (mb_substr($out, mb_strlen($out) - mb_strlen($repl), mb_strlen($repl)) == $repl) {
-            $out = mb_substr($out, 0, mb_strlen($out) - mb_strlen($repl)) . '</p></div>';
+        if (grapheme_substr($out, grapheme_strlen($out) - grapheme_strlen($repl), (int)grapheme_strlen($repl)) === $repl) {
+            $out = grapheme_substr($out, 0, grapheme_strlen($out) - grapheme_strlen($repl)) . '</p></div>';
         }
         return $out;
     }
@@ -790,7 +790,7 @@ class TextSimple extends Text
                 }
                 $html = implode('<br>', $lines);
                 $html = str_replace('###LINENUMBER###', '', $html);
-                if (mb_substr($html, 0, 1) != '<') {
+                if (grapheme_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';
                 }
 
@@ -848,7 +848,7 @@ class TextSimple extends Text
     public function matchesFulltextSearch(string $text): bool
     {
         $data = strip_tags($this->section->getData());
-        return (mb_stripos($data, $text) !== false);
+        return (grapheme_stripos($data, $text) !== false);
     }
 
     public static function formatAmendmentForOds(string $originalText, string $newText, int $firstLine, int $lineLength): string
@@ -862,8 +862,8 @@ class TextSimple extends Text
         $diff = static::formatDiffGroup($diffGroups, '', '', $firstLine);
         $diff = str_replace('<h4', '<br><h4', $diff);
         $diff = str_replace('</h4>', '</h4><br>', $diff);
-        if (mb_substr($diff, 0, 4) == '<br>') {
-            $diff = mb_substr($diff, 4);
+        if (grapheme_substr($diff, 0, 4) === '<br>') {
+            $diff = (string)grapheme_substr($diff, 4);
         }
         return $diff;
     }

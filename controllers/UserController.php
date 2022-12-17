@@ -239,7 +239,7 @@ class UserController extends Base
             } elseif (!$user) {
                 $msg = str_replace('%USER%', $email, \Yii::t('user', 'err_user_notfound'));
                 $this->getHttpSession()->setFlash('error', $msg);
-            } elseif (mb_strlen($this->getRequestValue('newPassword')) < $pwMinLen) {
+            } elseif (grapheme_strlen($this->getRequestValue('newPassword')) < $pwMinLen) {
                 $msg = str_replace('%MINLEN%', (string)$pwMinLen, \Yii::t('user', 'err_pwd_length'));
                 $this->getHttpSession()->setFlash('error', $msg);
             } else {
@@ -308,7 +308,7 @@ class UserController extends Base
             if ($post['pwd'] != '' || $post['pwd2'] != '') {
                 if ($post['pwd'] != $post['pwd2']) {
                     $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_pwd_different'));
-                } elseif (mb_strlen($post['pwd']) < $pwMinLen) {
+                } elseif (grapheme_strlen($post['pwd']) < $pwMinLen) {
                     $msg = \Yii::t('user', 'err_pwd_length');
                     $this->getHttpSession()->setFlash('error', str_replace('%MINLEN%', (string)$pwMinLen, $msg));
                 } else {

@@ -6,9 +6,8 @@ use yii\helpers\Html;
 
 class LineSplitter
 {
-
-    private $lineLength;
-    private $text;
+    private int $lineLength;
+    private string $text;
 
     public function __construct(string $text, int $lineLength)
     {
@@ -33,8 +32,8 @@ class LineSplitter
         $currLine           = '';
         $currLineCount      = 0;
 
-        for ($i = 0; $i < mb_strlen($this->text); $i++) {
-            $currChar = mb_substr($this->text, $i, 1);
+        for ($i = 0; $i < grapheme_strlen($this->text); $i++) {
+            $currChar = (string)grapheme_substr($this->text, $i, 1);
             $currLine .= $currChar;
             if ($inHtml) {
                 if ($currChar == '>') {
@@ -45,10 +44,10 @@ class LineSplitter
                     $inEscaped = false;
                 }
             } else {
-                if (mb_substr($this->text, $i, 4) == '<br>') {
-                    $lines[] = mb_substr($currLine, 0, mb_strlen($currLine) - 1) . '<br>';
+                if (grapheme_substr($this->text, $i, 4) === '<br>') {
+                    $lines[] = (string)grapheme_substr($currLine, 0, grapheme_strlen($currLine) - 1) . '<br>';
                     $i += 3;
-                    if (mb_substr($this->text, $i + 1, 1) == "\n") {
+                    if (grapheme_substr($this->text, $i + 1, 1) === "\n") {
                         $i++;
                         $lines[count($lines) - 1] .= "\n";
                     }
@@ -56,11 +55,11 @@ class LineSplitter
                     $currLineCount = 0;
                     continue;
                 }
-                if ($currChar == '<') {
+                if ($currChar === '<') {
                     $inHtml = true;
                     continue;
                 }
-                if ($currChar == '&') {
+                if ($currChar === '&') {
                     $inEscaped = true;
                 }
 
@@ -72,25 +71,25 @@ class LineSplitter
                     echo "Letztes Leerzeichen: \"" . $lastSeparator . "\"\n";
                     */
                     if ($lastSeparator == -1) {
-                        $lines[]       = mb_substr($currLine, 0, mb_strlen($currLine) - 1) . '-';
+                        $lines[]       = grapheme_substr($currLine, 0, grapheme_strlen($currLine) - 1) . '-';
                         $currLine      = $currChar;
                         $currLineCount = 1;
                     } else {
                         /*
-                        echo "Aktuelles Zeichen: \"" . mb_substr($this->text, $i, 1) . "\"\n";
+                        echo "Aktuelles Zeichen: \"" . grapheme_substr($this->text, $i, 1) . "\"\n";
                         */
-                        if (mb_substr($this->text, $i, 1) == ' ') {
+                        if (grapheme_substr($this->text, $i, 1) == ' ') {
                             $lines[] = $currLine;
 
                             $currLine      = '';
                             $currLineCount = 0;
                         } else {
-                            $remainder = mb_substr($currLine, $lastSeparator + 1);
+                            $remainder = (string)grapheme_substr($currLine, $lastSeparator + 1);
                             /*
                             echo "Überhang: \"" . $ueberhang . "\"\n";
                             echo "Letztes ist Leerzeichen: " . $lastIsSpace . "\n";
                             */
-                            $lines[] = mb_substr($currLine, 0, $lastSeparator + 1);
+                            $lines[] = (string)grapheme_substr($currLine, 0, $lastSeparator + 1);
 
                             $currLine      = $remainder;
                             $currLineCount = $this->lineLength - $lastSeparatorCount + 1;
@@ -104,13 +103,13 @@ class LineSplitter
                     echo "Count: \"" . $currLineCount . "\"\n\n";
                     */
                 } elseif (in_array($currChar, [' ', '-'])) {
-                    $lastSeparator      = mb_strlen($currLine) - 1;
+                    $lastSeparator      = grapheme_strlen($currLine) - 1;
                     $lastSeparatorCount = $currLineCount;
                 }
             }
         }
-        if (mb_strlen(trim($currLine)) > 0) {
-            $lines[] = $currLine;
+        if (grapheme_strlen(trim((string)$currLine)) > 0) {
+            $lines[] = (string)$currLine;
         }
         return $lines;
     }

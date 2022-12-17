@@ -148,7 +148,7 @@ class Title extends ISectionType
         } catch (\Exception $e) {
             $intro = '';
         }
-        if (mb_strlen($intro) > 0 && mb_substr($intro, mb_strlen($intro) - 1, 1) !== ' ') {
+        if (grapheme_strlen($intro) > 0 && grapheme_substr($intro, grapheme_strlen($intro) - 1, 1) !== ' ') {
             $intro .= ' ';
         }
 
@@ -223,6 +223,6 @@ class Title extends ISectionType
 
     public function matchesFulltextSearch(string $text): bool
     {
-        return (mb_stripos($this->section->getData(), $text) !== false);
+        return (grapheme_stripos($this->section->getData(), $text) !== false);
     }
 }

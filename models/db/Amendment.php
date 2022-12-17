@@ -1034,8 +1034,8 @@ class Amendment extends IMotion implements IRSSItem
             $title = $this->titlePrefix . ' ' . $motionTitle;
         }
         $filename = Tools::sanitizeFilename($title, $noUmlaut);
-        $filename = (mb_strlen($filename) > 59 ? mb_substr($filename, 0, 59) : $filename);
-        return $filename;
+
+        return (grapheme_strlen($filename) > 59 ? (string)grapheme_substr($filename, 0, 59) : $filename);
     }
 
     public function addToFeed(RSSExporter $feed): void

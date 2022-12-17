@@ -25,8 +25,8 @@ class ByLDK extends IPDFLayout
 
         if (!$settings->hideTitlePrefix) {
             $revName = $motion->titlePrefix;
-            if (mb_strlen($revName) > 25) {
-                $revName = mb_substr($revName, 0, 24) . '…';
+            if (grapheme_strlen($revName) > 25) {
+                $revName = grapheme_substr($revName, 0, 24) . '…';
             }
             if ($revName === '') {
                 $revName = \Yii::t('export', 'draft');

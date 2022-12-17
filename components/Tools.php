@@ -78,7 +78,7 @@ class Tools
                 if (intval($matches['hour']) === 12) {
                     $hours = (strtolower($matches['ampm']) === 'pm' ? 12 : 0);
                 } else {
-                    $hours = (strtolower($matches['ampm']) === 'pm' ? $matches['hour'] + 12 : $matches['hour']);
+                    $hours = (strtolower($matches['ampm']) === 'pm' ? intval($matches['hour']) + 12 : $matches['hour']);
                 }
 
                 return sprintf(
@@ -86,7 +86,7 @@ class Tools
                     $matches['year'],
                     $matches['month'],
                     $matches['day'],
-                    $hours,
+                    (string)$hours,
                     $matches['minute']
                 );
             }

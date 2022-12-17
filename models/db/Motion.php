@@ -360,7 +360,7 @@ class Motion extends IMotion implements IRSSItem
         } catch (\Exception $e) {
             $intro = '';
         }
-        if (mb_strlen($intro) > 0 && mb_substr($intro, mb_strlen($intro) - 1, 1) !== ' ') {
+        if (grapheme_strlen($intro) > 0 && grapheme_substr($intro, grapheme_strlen($intro) - 1, 1) !== ' ') {
             $intro .= ' ';
         }
 
@@ -374,7 +374,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         $name = $this->titlePrefix;
-        if (mb_strlen($name) > 1 && !in_array(mb_substr($name, mb_strlen($name) - 1, 1), [':', '.'])) {
+        if (grapheme_strlen($name) > 1 && !in_array(grapheme_substr($name, grapheme_strlen($name) - 1, 1), [':', '.'])) {
             $name .= ':';
         }
         $name .= ' ' . $this->getTitleWithIntro();
@@ -938,7 +938,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function getFilenameBase(bool $noUmlaut): string
     {
-        $motionTitle = (mb_strlen($this->title) > 100 ? mb_substr($this->title, 0, 100) : $this->title);
+        $motionTitle = (grapheme_strlen($this->title) > 100 ? grapheme_substr($this->title, 0, 100) : $this->title);
         $title       = $this->titlePrefix . ' ' . $motionTitle;
 
         return Tools::sanitizeFilename($title, $noUmlaut);
@@ -946,7 +946,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function createSlug(): string
     {
-        $motionTitle = (mb_strlen($this->title) > 70 ? mb_substr($this->title, 0, 70) : $this->title);
+        $motionTitle = (grapheme_strlen($this->title) > 70 ? (string)grapheme_substr($this->title, 0, 70) : $this->title);
         $title = (new AsciiSlugger())->slug($motionTitle);
 
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -1004,7 +1004,7 @@ class Motion extends IMotion implements IRSSItem
                 $return[\Yii::t('export', 'ResolutionDate')] = Tools::formatMysqlDate($resolutionDate, null, false);
 
                 // For applications, the title usually is the name of the person -> no need to repeat the name
-            } elseif (!$first->name || mb_stripos($this->title, $first->name) === false) {
+            } elseif (!$first->name || grapheme_stripos($this->title, $first->name) === false) {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->getNameWithResolutionDate(false);
             }
         } else {

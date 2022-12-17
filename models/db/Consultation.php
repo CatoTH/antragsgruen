@@ -563,18 +563,19 @@ class Consultation extends ActiveRecord
         if ($prefix === '' || $prefix === null) {
             $prefix = 'A';
         }
+        $prefixLen = (int)grapheme_strlen($prefix);
         foreach ($this->motions as $motion) {
             if ($motion->status !== Motion::STATUS_DELETED) {
-                if (mb_substr($motion->titlePrefix, 0, mb_strlen($prefix)) === $prefix) {
-                    $revs = mb_substr($motion->titlePrefix, mb_strlen($prefix));
+                if (grapheme_substr($motion->titlePrefix, 0, $prefixLen) === $prefix) {
+                    $revs = grapheme_substr($motion->titlePrefix, $prefixLen);
                     $revnr = intval($revs);
                     if ($revnr > $max_rev) {
                         $max_rev = $revnr;
                     }
                 }
                 foreach ($motion->amendments as $amendment) {
-                    if ($motion->status !== Amendment::STATUS_DELETED && mb_substr($amendment->titlePrefix ?: '', 0, mb_strlen($prefix)) === $prefix) {
-                        $revs = mb_substr($amendment->titlePrefix, mb_strlen($prefix));
+                    if ($motion->status !== Amendment::STATUS_DELETED && grapheme_substr($amendment->titlePrefix ?: '', 0, $prefixLen) === $prefix) {
+                        $revs = grapheme_substr($amendment->titlePrefix, $prefixLen);
                         $revnr = intval($revs);
                         if ($revnr > $max_rev) {
                             $max_rev = $revnr;

@@ -12,12 +12,12 @@ use app\models\exceptions\Internal;
 
 class Diff
 {
-    const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
-    const MAX_LINE_CHANGE_RATIO         = 0.6;
-    const MAX_LINE_CHANGE_RATIO_PART    = 0.4;
+    private const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
+    private const MAX_LINE_CHANGE_RATIO         = 0.6;
+    private const MAX_LINE_CHANGE_RATIO_PART    = 0.4;
 
     // # is necessary for placeholders like ###LINENUMBER###
-    public static array $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
+    private const WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
 
     private Engine $engine;
 
@@ -67,8 +67,8 @@ class Diff
             if (preg_match($htmlTag, $arr2)) {
                 $out[] = $arr2;
             } else {
-                foreach (preg_split('/([ \-\.\:])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
-                    if ($tok == ' ' || $tok == '-') {
+                foreach (preg_split('/([ \-.:])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
+                    if ($tok === ' ' || $tok === '-') {
                         if (count($out) == 0) {
                             $out[] = $tok;
                         } else {
@@ -82,7 +82,7 @@ class Diff
         }
         $out2 = [];
         foreach ($out as $word) {
-            if ($word != '') {
+            if ($word !== '') {
                 $out2[] = $word;
             }
         }
@@ -91,7 +91,6 @@ class Diff
 
     /**
      * @param string[] $lines
-     * @return string
      */
     public static function untokenizeLine(array $lines): string
     {
@@ -106,9 +105,9 @@ class Diff
         $preList      = false;
         $currentSpool = [];
         foreach ($operations as $operation) {
-            $firstfour = mb_substr($operation[0], 0, 4);
-            $isList    = $firstfour == '<ul>' || $firstfour == '<ol>';
-            if (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] != '</pre>') {
+            $firstfour = grapheme_substr($operation[0], 0, 4);
+            $isList    = $firstfour === '<ul>' || $firstfour === '<ol>';
+            if (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] !== '</pre>') {
                 if (count($currentSpool) > 0) {
                     $return[] = [implode($groupBy, $currentSpool), $preOp];
                 }
@@ -144,13 +143,13 @@ class Diff
 
     private function getCommonPrefix(string $word1, string $word2): string
     {
-        $len1 = mb_strlen($word1);
-        $len2 = mb_strlen($word2);
+        $len1 = grapheme_strlen($word1);
+        $len2 = grapheme_strlen($word2);
         $min  = min($len1, $len2);
         $str  = '';
         for ($i = 0; $i <= $min; $i++) {
-            $char1 = mb_substr($word1, $i, 1);
-            $char2 = mb_substr($word2, $i, 1);
+            $char1 = grapheme_substr($word1, $i, 1);
+            $char2 = grapheme_substr($word2, $i, 1);
             if ($char1 != $char2) {
                 return $str;
             } else {
@@ -162,13 +161,13 @@ class Diff
 
     private function getCommonSuffix(string $word1, string $word2): string
     {
-        $len1 = mb_strlen($word1);
-        $len2 = mb_strlen($word2);
+        $len1 = grapheme_strlen($word1);
+        $len2 = grapheme_strlen($word2);
         $min  = min($len1, $len2);
         $str  = '';
         for ($i = 0; $i <= $min; $i++) {
-            $char1 = mb_substr($word1, $len1 - $i, 1);
-            $char2 = mb_substr($word2, $len2 - $i, 1);
+            $char1 = grapheme_substr($word1, $len1 - $i, 1);
+            $char2 = grapheme_substr($word2, $len2 - $i, 1);
             if ($char1 != $char2) {
                 return $str;
             } else {
@@ -182,20 +181,20 @@ class Diff
     private function getCommonWordPrefix(string $word1, string $word2): string
     {
         $prefix      = $this->getCommonPrefix($word1, $word2);
-        $len         = mb_strlen($prefix);
-        $preLen      = mb_strlen($prefix);
+        $len         = (int)grapheme_strlen($prefix);
+        $preLen      = (int)grapheme_strlen($prefix);
         $endsInWords = false;
-        if (mb_strlen($word1) > $preLen && !in_array(mb_substr($word1, $preLen, 1), static::$WORD_BREAKING_CHARS)) {
+        if (grapheme_strlen($word1) > $preLen && !in_array(grapheme_substr($word1, $preLen, 1), self::WORD_BREAKING_CHARS)) {
             $endsInWords = true;
         }
-        if (mb_strlen($word2) > $preLen && !in_array(mb_substr($word2, $preLen, 1), static::$WORD_BREAKING_CHARS)) {
+        if (grapheme_strlen($word2) > $preLen && !in_array(grapheme_substr($word2, $preLen, 1), self::WORD_BREAKING_CHARS)) {
             $endsInWords = true;
         }
         if ($endsInWords) {
             for ($i = 0; $i <= $len; $i++) {
-                $char1 = mb_substr($prefix, $len - $i, 1);
-                if (in_array($char1, static::$WORD_BREAKING_CHARS)) {
-                    return mb_substr($prefix, 0, $len - $i + 1);
+                $char1 = grapheme_substr($prefix, $len - $i, 1);
+                if (in_array($char1, self::WORD_BREAKING_CHARS)) {
+                    return (string)grapheme_substr($prefix, 0, $len - $i + 1);
                 }
             }
             return '';
@@ -207,22 +206,22 @@ class Diff
     private function getCommonWordSuffix(string $word1, string $word2): string
     {
         $suffix       = $this->getCommonSuffix($word1, $word2);
-        $w1len        = mb_strlen($word1);
-        $w2len        = mb_strlen($word2);
-        $postLen      = mb_strlen($suffix);
+        $w1len        = grapheme_strlen($word1);
+        $w2len        = grapheme_strlen($word2);
+        $postLen      = grapheme_strlen($suffix);
         $startsInWord = false;
-        if ($w1len > $postLen && !in_array(mb_substr($word1, $w1len - $postLen - 1, 1), static::$WORD_BREAKING_CHARS)) {
+        if ($w1len > $postLen && !in_array(grapheme_substr($word1, $w1len - $postLen - 1, 1), self::WORD_BREAKING_CHARS)) {
             $startsInWord = true;
         }
-        if ($w2len > $postLen && !in_array(mb_substr($word2, $w2len - $postLen - 1, 1), static::$WORD_BREAKING_CHARS)) {
+        if ($w2len > $postLen && !in_array(grapheme_substr($word2, $w2len - $postLen - 1, 1), self::WORD_BREAKING_CHARS)) {
             $startsInWord = true;
         }
         if ($startsInWord) {
-            $len = mb_strlen($suffix);
+            $len = grapheme_strlen($suffix);
             for ($i = 0; $i < $len; $i++) {
-                $char1 = mb_substr($suffix, $i, 1);
-                if (in_array($char1, static::$WORD_BREAKING_CHARS)) {
-                    return mb_substr($suffix, $i);
+                $char1 = grapheme_substr($suffix, $i, 1);
+                if (in_array($char1, self::WORD_BREAKING_CHARS)) {
+                    return (string)grapheme_substr($suffix, $i);
                 }
             }
             return '';
@@ -233,36 +232,36 @@ class Diff
 
     public function computeWordDiff(string $wordDel, string $wordInsert): string
     {
-        if (mb_substr($wordDel, 0, 16) == '###LINENUMBER###' && mb_substr($wordInsert, 0, 16) != '###LINENUMBER###') {
+        if (grapheme_substr($wordDel, 0, 16) === '###LINENUMBER###' && grapheme_substr($wordInsert, 0, 16) !== '###LINENUMBER###') {
             $linenumber = '###LINENUMBER###';
-            $wordDel    = mb_substr($wordDel, 16);
+            $wordDel    = (string)grapheme_substr($wordDel, 16);
         } else {
             $linenumber = '';
         }
         $preWords = $this->getCommonWordPrefix($wordDel, $wordInsert);
-        $restDel  = mb_substr($wordDel, mb_strlen($preWords));
-        $restIns  = mb_substr($wordInsert, mb_strlen($preWords));
+        $restDel  = (string)grapheme_substr($wordDel, (int)grapheme_strlen($preWords));
+        $restIns  = (string)grapheme_substr($wordInsert, (int)grapheme_strlen($preWords));
 
         $postWords = $this->getCommonWordSuffix($restDel, $restIns);
-        $restDel   = mb_substr($restDel, 0, mb_strlen($restDel) - mb_strlen($postWords));
-        $restIns   = mb_substr($restIns, 0, mb_strlen($restIns) - mb_strlen($postWords));
+        $restDel   = (string)grapheme_substr($restDel, 0, (int)grapheme_strlen($restDel) - (int)grapheme_strlen($postWords));
+        $restIns   = (string)grapheme_substr($restIns, 0, (int)grapheme_strlen($restIns) - (int)grapheme_strlen($postWords));
 
 
         $preChars = $this->getCommonPrefix($restDel, $restIns);
-        if (mb_strlen($preChars) < 3) {
+        if ((int)grapheme_strlen($preChars) < 3) {
             $preChars = '';
         }
-        $restDelC = mb_substr($restDel, mb_strlen($preChars));
-        $restInsC = mb_substr($restIns, mb_strlen($preChars));
+        $restDelC = (string)grapheme_substr($restDel, (int)grapheme_strlen($preChars));
+        $restInsC = (string)grapheme_substr($restIns, (int)grapheme_strlen($preChars));
 
         $postChars = $this->getCommonSuffix($restDelC, $restInsC);
-        if (mb_strlen($postChars) < 3) {
+        if ((int)grapheme_strlen($postChars) < 3) {
             $postChars = '';
         }
-        $restDelC = mb_substr($restDelC, 0, mb_strlen($restDelC) - mb_strlen($postChars));
-        $restInsC = mb_substr($restInsC, 0, mb_strlen($restInsC) - mb_strlen($postChars));
+        $restDelC = (string)grapheme_substr($restDelC, 0, (int)grapheme_strlen($restDelC) - (int)grapheme_strlen($postChars));
+        $restInsC = (string)grapheme_substr($restInsC, 0, (int)grapheme_strlen($restInsC) - (int)grapheme_strlen($postChars));
 
-        if (mb_strlen($restDelC) <= 3 && mb_strlen($restInsC) <= 3) {
+        if ((int)grapheme_strlen($restDelC) <= 3 && (int)grapheme_strlen($restInsC) <= 3) {
             return $linenumber . $preWords . $preChars .
                 $this->wrapWithDelete($restDelC) . $this->wrapWithInsert($restInsC) .
                 $postChars . $postWords;
@@ -346,7 +345,7 @@ class Diff
             strpos($combined, DiffRenderer::INS_START) !== false
         ) {
             $changeRatio = $this->computeLineDiffChangeRatio($lineOld, $combined);
-            if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
+            if ($changeRatio > self::MAX_LINE_CHANGE_RATIO) {
                 return $this->wrapWithDelete($lineOld) . $this->wrapWithInsert($lineNew);
             }
         }
@@ -354,11 +353,11 @@ class Diff
         $split = $this->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
 
-        $middleLen  = mb_strlen(str_replace('###LINENUMBER###', '', $middleOrig));
-        $breaksList = (mb_stripos($middleDiff, '</li>') !== false);
-        if ($middleLen > static::MAX_LINE_CHANGE_RATIO_MIN_LEN && !$breaksList) {
+        $middleLen  = grapheme_strlen(str_replace('###LINENUMBER###', '', $middleOrig));
+        $breaksList = (grapheme_stripos($middleDiff, '</li>') !== false);
+        if ($middleLen > self::MAX_LINE_CHANGE_RATIO_MIN_LEN && !$breaksList) {
             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
-            if ($changeRatio > static::MAX_LINE_CHANGE_RATIO_PART) {
+            if ($changeRatio > self::MAX_LINE_CHANGE_RATIO_PART) {
                 $combined = $prefix;
                 $combined .= $this->wrapWithDelete($middleOrig);
                 $combined .= $this->wrapWithInsert($middleNew);
@@ -402,24 +401,24 @@ class Diff
      */
     public static function findFirstOccurrenceIgnoringTags(string $haystack, string $needle)
     {
-        $first = mb_strpos($haystack, $needle);
+        $first = grapheme_strpos($haystack, $needle);
         if ($first === false) {
             return false;
         }
-        $firstTag = mb_strpos($haystack, '<');
+        $firstTag = grapheme_strpos($haystack, '<');
         if ($firstTag === false || $firstTag > $first) {
             return $first;
         }
         $parts = preg_split('/(<[^>]*>)/', $haystack, -1, PREG_SPLIT_DELIM_CAPTURE);
         $pos   = 0;
         for ($i = 0; $i < count($parts); $i++) {
-            if (($i % 2) == 0) {
-                $occ = mb_strpos($parts[$i], $needle);
+            if (($i % 2) === 0) {
+                $occ = grapheme_strpos($parts[$i], $needle);
                 if ($occ !== false) {
                     return $pos + $occ;
                 }
             }
-            $pos += mb_strlen($parts[$i]);
+            $pos += grapheme_strlen($parts[$i]);
         }
         return false;
     }
@@ -436,28 +435,29 @@ class Diff
             return ['', $orig, $new, $diff, ''];
         }
 
-        $parts      = preg_split('/\#\#\#(INS|DEL)_(START|END)\#\#\#/siuU', $diff);
+        /** @var string[] $parts */
+        $parts      = preg_split('/###(INS|DEL)_(START|END)###/siuU', $diff);
         $prefix     = $parts[0];
-        $postfix    = $parts[count($parts) - 1];
-        $prefixLen  = mb_strlen($prefix);
-        $postfixLen = mb_strlen($postfix);
+        $postfix    = $parts[(int)count($parts) - 1];
+        $prefixLen  = (int)grapheme_strlen($prefix);
+        $postfixLen = (int)grapheme_strlen($postfix);
 
         $prefixPre = $prefix;
         if ($prefixLen < 40) {
             $prefix = '';
         } else {
             /** @noinspection PhpStatementHasEmptyBodyInspection */
-            if ($prefixLen > 0 && mb_substr($prefix, $prefixLen - 1, 1) === '.') {
+            if ($prefixLen > 0 && grapheme_substr($prefix, $prefixLen - 1, 1) === '.') {
                 // Leave it unchanged
-            } elseif ($prefixLen > 40 && mb_strrpos($prefix, '. ') > $prefixLen - 40) {
-                $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '. ') + 2);
-            } elseif ($prefixLen > 40 && mb_strrpos($prefix, '.') > $prefixLen - 40) {
-                $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '.') + 1);
+            } elseif ($prefixLen > 40 && grapheme_strrpos($prefix, '. ') > $prefixLen - 40) {
+                $prefix = (string)grapheme_substr($prefix, 0, grapheme_strrpos($prefix, '. ') + 2);
+            } elseif ($prefixLen > 40 && grapheme_strrpos($prefix, '.') > $prefixLen - 40) {
+                $prefix = (string)grapheme_substr($prefix, 0, grapheme_strrpos($prefix, '.') + 1);
             }
         }
         if ($prefix === '') {
             if (preg_match('/^(<(p|blockquote|ul|ol|li|pre)>)+/siu', $prefixPre, $matches)) {
-                $prefix = $matches[0];
+                $prefix = (string)$matches[0];
             }
         }
 
@@ -467,18 +467,18 @@ class Diff
         } else {
             $firstDot = static::findFirstOccurrenceIgnoringTags($postfix, '. ');
             if ($postfixLen > 40 && $firstDot !== false && $firstDot < 40) {
-                $postfix = mb_substr($postfix, $firstDot + 1);
+                $postfix = (string)grapheme_substr($postfix, $firstDot + 1);
             } else {
                 $firstDot = static::findFirstOccurrenceIgnoringTags($postfix, '.');
                 if ($postfixLen > 40 && $firstDot !== false && $firstDot < 40) {
-                    $postfix = mb_substr($postfix, $firstDot + 1);
+                    $postfix = (string)grapheme_substr($postfix, $firstDot + 1);
                 }
             }
         }
 
         if ($postfix === '') {
             if (preg_match('/(<\/(p|blockquote|ul|ol|li|pre)>)+$/siu', $postfixPre, $matches)) {
-                $postfix = $matches[0];
+                $postfix = (string)$matches[0];
             }
         }
 
@@ -488,15 +488,15 @@ class Diff
         $prefixNewNormalized     = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $prefixNew); // remove start/class-attributes from tags
         $postfixNewNormalized    = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $postfixNew); // remove start/class-attributes from tags
         $newNormalized           = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $new);
-        $prefixNewNormalizedLen  = mb_strlen($prefixNewNormalized);
-        $postfixNewNormalizedLen = mb_strlen($postfixNewNormalized);
+        $prefixNewNormalizedLen  = (int)grapheme_strlen($prefixNewNormalized);
+        $postfixNewNormalizedLen = (int)grapheme_strlen($postfixNewNormalized);
 
-        $prefixLen     = mb_strlen($prefix);
-        $postfixLen    = mb_strlen($postfix);
-        $middleDiff    = mb_substr($diff, $prefixLen, mb_strlen($diff) - $prefixLen - $postfixLen);
-        $middleOrig    = mb_substr($orig, $prefixLen, mb_strlen($orig) - $prefixLen - $postfixLen);
+        $prefixLen     = (int)grapheme_strlen($prefix);
+        $postfixLen    = (int)grapheme_strlen($postfix);
+        $middleDiff    = (string)grapheme_substr($diff, $prefixLen, (int)grapheme_strlen($diff) - $prefixLen - $postfixLen);
+        $middleOrig    = (string)grapheme_substr($orig, $prefixLen, (int)grapheme_strlen($orig) - $prefixLen - $postfixLen);
 
-        $middleNew     = mb_substr($newNormalized, $prefixNewNormalizedLen, mb_strlen($newNormalized) - $prefixNewNormalizedLen - $postfixNewNormalizedLen);
+        $middleNew     = (string)grapheme_substr($newNormalized, $prefixNewNormalizedLen, grapheme_strlen($newNormalized) - $prefixNewNormalizedLen - $postfixNewNormalizedLen);
 
         return [$prefix, $middleOrig, $middleNew, $middleDiff, $postfix];
     }
@@ -511,14 +511,14 @@ class Diff
     {
         $orig       = str_replace(['###LINENUMBER###'], [''], $orig);
         $diff       = str_replace(['###LINENUMBER###'], [''], $diff);
-        $origLength = mb_strlen(strip_tags($orig));
+        $origLength = grapheme_strlen(strip_tags($orig));
         if ($origLength === 0) {
             return 0.0;
         }
-        $strippedDiff = preg_replace('/\#\#\#INS_START\#\#\#(.*)\#\#\#INS_END\#\#\#/siuU', '', $diff);
-        $strippedDiff = preg_replace('/\#\#\#DEL_START\#\#\#(.*)\#\#\#DEL_END\#\#\#/siuU', '', $strippedDiff);
+        $strippedDiff = preg_replace('/###INS_START###(.*)###INS_END###/siuU', '', $diff);
+        $strippedDiff = preg_replace('/###DEL_START###(.*)###DEL_END###/siuU', '', $strippedDiff);
 
-        $strippedDiffLength = mb_strlen(strip_tags($strippedDiff));
+        $strippedDiffLength = grapheme_strlen(strip_tags($strippedDiff));
 
         return 1.0 - ($strippedDiffLength / $origLength);
     }
@@ -600,18 +600,18 @@ class Diff
         $originalWordPos   = 0;
         $pendingOpeningDel = false;
         foreach ($diffPartArr as $diffPart) {
-            if ($diffPart == '###INS_START###') {
+            if ($diffPart === '###INS_START###') {
                 $words[$originalWordPos]->diff .= $diffPart;
                 $words[$originalWordPos]->amendmentId = $amendmentId;
                 $inIns = true;
-            } elseif ($diffPart == '###INS_END###') {
+            } elseif ($diffPart === '###INS_END###') {
                 $words[$originalWordPos]->diff .= $diffPart;
                 $words[$originalWordPos]->amendmentId = $amendmentId;
                 $inIns = false;
-            } elseif ($diffPart == '###DEL_START###') {
+            } elseif ($diffPart === '###DEL_START###') {
                 $inDel             = true;
                 $pendingOpeningDel = true;
-            } elseif ($diffPart == '###DEL_END###') {
+            } elseif ($diffPart === '###DEL_END###') {
                 $words[$originalWordPos]->diff .= $diffPart;
                 $words[$originalWordPos]->amendmentId = $amendmentId;
                 $inDel = false;
@@ -622,13 +622,13 @@ class Diff
                     $words[$originalWordPos]->amendmentId = $amendmentId;
                 } elseif ($inDel) {
                     foreach ($diffPartWords as $diffPartWord) {
-                        $prevLastChar = mb_substr($words[$originalWordPos]->word, -1, 1);
+                        $prevLastChar = grapheme_substr($words[$originalWordPos]->word, -1, 1);
                         $isNewWord    = (
                             in_array($prevLastChar, $splitChars) ||
                             (in_array($diffPartWord, $splitChars) && $diffPartWord != ' ' && $diffPartWord != '-') ||
                             $diffPartWord[0] == '<'
                         );
-                        if ($isNewWord || $originalWordPos == 0) {
+                        if ($isNewWord || $originalWordPos === 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = new DiffWord();
                         }
@@ -642,14 +642,14 @@ class Diff
                     }
                 } else {
                     foreach ($diffPartWords as $diffPartWord) {
-                        $prevLastChar = mb_substr($words[$originalWordPos]->word, -1, 1);
+                        $prevLastChar = grapheme_substr($words[$originalWordPos]->word, -1, 1);
                         $isNewWord    = (
                             in_array($prevLastChar, $splitChars) ||
-                            (in_array($diffPartWord, $splitChars) && $diffPartWord != ' ' && $diffPartWord != '-') ||
-                            $diffPartWord[0] == '<'
+                            (in_array($diffPartWord, $splitChars) && $diffPartWord !== ' ' && $diffPartWord !== '-') ||
+                            $diffPartWord[0] === '<'
                         );
 
-                        if ($isNewWord || $originalWordPos == 0) {
+                        if ($isNewWord || $originalWordPos === 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = new DiffWord();
                         }
@@ -683,7 +683,7 @@ class Diff
             if (!isset($origArr[$i])) {
                 var_dump($wordArr);
                 var_dump($origArr);
-                throw new Internal('Only exists in Diff-wordArray: ' . print_r($wordArr[$i]) . ' (Pos: ' . $i . ')');
+                throw new Internal('Only exists in Diff-wordArray: ' . print_r($wordArr[$i], true) . ' (Pos: ' . $i . ')');
             }
             if ($origArr[$i] !== $wordArr[$i]->word) {
                 var_dump($wordArr);

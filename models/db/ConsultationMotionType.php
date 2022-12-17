@@ -75,17 +75,17 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     public function setAttributes($values, $safeOnly = true)
     {
         parent::setAttributes($values, $safeOnly);
-        if (mb_strlen($this->motionPrefix) > 0) {
-            $this->motionPrefix = mb_substr($this->motionPrefix, 0, 10);
+        if (grapheme_strlen($this->motionPrefix) > 0) {
+            $this->motionPrefix = (string)grapheme_substr($this->motionPrefix, 0, 10);
         }
-        if (mb_strlen($this->titleSingular) > 100) {
-            $this->titleSingular = mb_substr($this->titleSingular, 0, 100);
+        if (grapheme_strlen($this->titleSingular) > 100) {
+            $this->titleSingular = (string)grapheme_substr($this->titleSingular, 0, 100);
         }
-        if (mb_strlen($this->titlePlural) > 100) {
-            $this->titlePlural = mb_substr($this->titlePlural, 0, 100);
+        if (grapheme_strlen($this->titlePlural) > 100) {
+            $this->titlePlural = (string)grapheme_substr($this->titlePlural, 0, 100);
         }
-        if (mb_strlen($this->createTitle) > 200) {
-            $this->createTitle = mb_substr($this->createTitle, 0, 200);
+        if (grapheme_strlen($this->createTitle) > 200) {
+            $this->createTitle = (string)grapheme_substr($this->createTitle, 0, 200);
         }
     }
 

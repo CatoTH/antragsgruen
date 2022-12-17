@@ -20,7 +20,7 @@ class DiffTest extends TestBase
         $array2 = ['1', '2', '3', '4', '5', '6', '11', '12', '13', '14'];
         $returned = $engine->compareArrays($array1, $array2, false);
 
-        $this->assertEquals([
+        $this->assertSame([
             ['1', 0], ['2', 0],
             ['###LINENUMBER###', 0], // This should not be marked as deleted
             ['3', 0], ['4', 0], ['5', 0], ['6', 0],
@@ -40,7 +40,7 @@ class DiffTest extends TestBase
         $diff         = new Diff();
         $return = $diff->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
 
-        $this->assertEquals([
+        $this->assertSame([
             '<ul><li value="1">###LINENUMBER###Hier ein Anfang. ',
             'Der Einzelhandel ###LINENUMBER###hat bereits weitere Marktanteile an den Onlinehandel verloren.',
             'Der Strukturwandel des Handels in Richtung online hat sich beschleunigt.',
@@ -56,7 +56,7 @@ class DiffTest extends TestBase
         $expected = '###DEL_START###<p>Wir bieten einen Gegenpol zur Staatlichen Erziehung in dieser Gesellschaft.</p>###DEL_END######INS_START###<p>Der Bundesvorstand untersetzt, in Vorbereitung der Bundestagswahl, diese Forderungen mit konkreten Reformvorhaben.</p>###INS_END###';
         $diff     = new Diff();
         $out      = $diff->computeLineDiff($orig, $new);
-        $this->assertEquals($expected, $out);
+        $this->assertSame($expected, $out);
     }
 
     public function testNoDiffInLink(): void
@@ -66,7 +66,17 @@ class DiffTest extends TestBase
         $expected = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit.###DEL_START### Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt.###DEL_END### (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
         $diff     = new Diff();
         $out      = $diff->computeLineDiff($orig, $new);
-        $this->assertEquals($expected, $out);
+        $this->assertSame($expected, $out);
+    }
+
+    public function testOnlyGraphemeIsChanging(): void
+    {
+        $orig = '<p>🙂🙂🙂🙂🙂🙂🫶🏼🙂🙂🙂🙂🙂🙂</p>';
+        $new = '<p>🙂🙂🙂🙂🙂🙂🫶🏾🙂🙂🙂🙂🙂🙂</p>';
+        $expected = '<p>🙂🙂🙂🙂🙂🙂###DEL_START###🫶🏼###DEL_END######INS_START###🫶🏾###INS_END###🙂🙂🙂🙂🙂🙂</p>';
+        $diff = new Diff();
+        $out = $diff->computeLineDiff($orig, $new);
+        $this->assertSame($expected, $out);
     }
 
     public function testNoGroupingBeyondLists(): void
@@ -76,7 +86,7 @@ class DiffTest extends TestBase
         $expected = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, ###DEL_START###da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, ###DEL_END###doch das Blindtextchen ließ sich nicht beirren.###INS_START###</p></li><li><p>Noch eine neuer Punkt an dritter Stelle###INS_END###</p></li></ul></li></ul>';
         $diff     = new Diff();
         $out      = $diff->computeLineDiff($orig, $new);
-        $this->assertEquals($expected, $out);
+        $this->assertSame($expected, $out);
     }
 
     public function testNoChangingParagraphTypes(): void
@@ -86,7 +96,7 @@ class DiffTest extends TestBase
         $expected = '###DEL_START###<p>###LINENUMBER###3) Eine Bekämpfung von Fluchtursachen und nicht der Geflüchteten</p>###DEL_END######INS_START###<ul><li>in Gesprächen mit (Vertreter*innen) der SPD, der Linkspartei und der Grünen</li></ul>###INS_END###';
         $diff     = new Diff();
         $out      = $diff->computeLineDiff($orig, $new);
-        $this->assertEquals($expected, $out);
+        $this->assertSame($expected, $out);
     }
 
     public function testBreakListpintIntoTwo(): void
@@ -105,7 +115,7 @@ class DiffTest extends TestBase
         ];
         $diff   = new Diff();
         $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $arr);
+        $this->assertSame($expect, $arr);
     }
 
     private function assertDiffWordEquals($word, $diff, $amendmentId, $diffWord): void
@@ -124,7 +134,7 @@ class DiffTest extends TestBase
         $diff = new Diff();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
-            $this->assertEquals(2, count($arr));
+            $this->assertSame(2, count($arr));
             $elements = count($arr[0]);
 
             $this->assertDiffWordEquals('</ul>', '</ul>###INS_START###<ul><li>Test2</li></ul>###INS_END###', null, $arr[0][$elements - 1]);
@@ -183,8 +193,8 @@ class DiffTest extends TestBase
             echo "\n";
             die();
         }
-        $this->assertEquals(1, count($words));
-        $this->assertEquals('###INS_START###<ul><li>Wir bla bla</li></ul>###INS_END###<ul>', $words[0][0]->diff);
+        $this->assertSame(1, count($words));
+        $this->assertSame('###INS_START###<ul><li>Wir bla bla</li></ul>###INS_END###<ul>', $words[0][0]->diff);
 
 
         $orig = ['Test1 Test 2 der Test 3 Test4'];
@@ -197,7 +207,7 @@ class DiffTest extends TestBase
             echo "\n";
             die();
         }
-        $this->assertEquals('###DEL_START###der###DEL_END######INS_START###die###INS_END### ', $words[0][3]->diff);
+        $this->assertSame('###DEL_START###der###DEL_END######INS_START###die###INS_END### ', $words[0][3]->diff);
 
 
         $orig = ['Test1 test123456test Test4'];
@@ -228,7 +238,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             echo "\n";
             die();
         }
-        $this->assertEquals(16, count($words[0]));
+        $this->assertSame(16, count($words[0]));
 
 
         $orig = [
@@ -241,7 +251,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff = new Diff();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new, 1);
-            $this->assertEquals(1, count($arr));
+            $this->assertSame(1, count($arr));
             $this->assertDiffWordEquals('.', '.###DEL_END###', 1, $arr[0][21]);
             $this->assertDiffWordEquals('</p>', '</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###', 1, $arr[0][22]);
         } catch (Internal $e) {
@@ -270,7 +280,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         ];
         $diff    = new Diff();
         $grouped = $diff->groupOperations($src, '');
-        $this->assertEquals($src, $grouped); // Should not be changed
+        $this->assertSame($src, $grouped); // Should not be changed
 
 
         $operations = [
@@ -287,7 +297,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         ];
         $diff       = new Diff();
         $out        = $diff->groupOperations($operations, "\n");
-        $this->assertEquals($expected, $out);
+        $this->assertSame($expected, $out);
 
     }
 
@@ -300,42 +310,42 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $orig = 'Zeichen das sie überwunden';
         $new  = 'Zeichen, dass sie überwunden';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('Zeichen<del> das</del><ins>, dass</ins> sie überwunden', $out);
+        $this->assertSame('Zeichen<del> das</del><ins>, dass</ins> sie überwunden', $out);
 
         $orig = 'Hass';
         $new  = 'Hass, dem Schüren von Ressentiments';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('Hass<ins>, dem Schüren von Ressentiments</ins>', $out);
+        $this->assertSame('Hass<ins>, dem Schüren von Ressentiments</ins>', $out);
 
         $orig = 'Bürger*innen ';
         $new  = 'Menschen ';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('<del>Bürger*innen</del><ins>Menschen</ins> ', $out);
+        $this->assertSame('<del>Bürger*innen</del><ins>Menschen</ins> ', $out);
 
         $orig = 'dekonstruieren.';
         $new  = 'dekonstruieren. Andererseits sind gerade junge Menschen';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('dekonstruieren.<ins> Andererseits sind gerade junge Menschen</ins>', $out);
+        $this->assertSame('dekonstruieren.<ins> Andererseits sind gerade junge Menschen</ins>', $out);
 
         $orig = 'dekonstruieren. Andererseits sind gerade junge Menschen';
         $new  = 'dekonstruieren.';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('dekonstruieren.<del> Andererseits sind gerade junge Menschen</del>', $out);
+        $this->assertSame('dekonstruieren.<del> Andererseits sind gerade junge Menschen</del>', $out);
 
         $orig = 'So viele Menschen wie';
         $new  = 'Sie steht vor dieser Anstrengung gemeinsam usw. So viele Menschen wie';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('<ins>Sie steht vor dieser Anstrengung gemeinsam usw. </ins>So viele Menschen wie', $out);
+        $this->assertSame('<ins>Sie steht vor dieser Anstrengung gemeinsam usw. </ins>So viele Menschen wie', $out);
 
         $orig = 'Test1 Test 2 der Test 3 Test4';
         $new  = 'Test1 Test 2 die Test 3 Test4';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('Test1 Test 2 <del>der</del><ins>die</ins> Test 3 Test4', $out);
+        $this->assertSame('Test1 Test 2 <del>der</del><ins>die</ins> Test 3 Test4', $out);
 
         $orig = '###LINENUMBER###Bildungsbereich. Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.';
         $new  = 'Bildungsbereich.';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('###LINENUMBER###Bildungsbereich.<del> Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.</del>',
+        $this->assertSame('###LINENUMBER###Bildungsbereich.<del> Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.</del>',
             $out);
     }
 
@@ -349,7 +359,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $out  = $diff->compareHtmlParagraphs([$orig], [$new], DiffRenderer::FORMATTING_CLASSES);
 
         $expect = ['<p><ins>Der beste Abfall ist der, der nicht entsteht. </ins>###LINENUMBER###Wir wollen eine Wirtschaftsweise, <ins>in der Material- und Rohstoffeffizienz an erster Stelle stehen und </ins>in der alle Rohstoffe immer wieder neu verarbeitet <ins>werden </ins>und ###LINENUMBER###nicht auf einer Deponie landen<del> oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts</del><ins>,</ins> in Entwicklungs- und Schwellenländer <del>ist keine Lösung</del><ins>exportiert oder verbrannt werden</ins>. <del>Sie verursacht dort ###LINENUMBER###schwere Umweltschäden</del><ins>Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben</ins>. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<del> </del><ins><br></ins>###LINENUMBER###Produkten und Verpackungen eine <ins>ökologische </ins>Produktverantwortung zukommt, indem ambitionierte, <del>aber ###LINENUMBER###machbare</del><ins>abermachbare</ins> Recyclingziele <ins>sowie Ziele zur Material- und Rohstoffeffizienz </ins>eingeführt werden. <del>Dadurch werden Rohstoffpreise befördert,</del><ins>Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für</ins> die <ins>Verwendung von Recyclingmaterialien zu schaffen.</ins></p><p><ins>Wir setzen uns dafür ein, dass </ins>die <ins>Rohstoffpreise die<br></ins>###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<del> </del><ins><br></ins>###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird <del>der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig.</del><ins>Ökologie zum Wettbewerbsvorteil:</ins> <del>Wir</del><ins>Wer weniger Rohstoffe verbraucht oder Recyclingmaterial anstatt Primärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann,</ins> setzen <ins>wir </ins>uns <ins>außerdem </ins>###LINENUMBER###dafür ein<ins> </ins>, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<del> </del><ins><br></ins>###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>'];
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
     public function testDeleteMultipleParagraphs(): void
@@ -390,7 +400,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
 
         $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expectedDiff, $out);
+        $this->assertSame($expectedDiff, $out);
     }
 
     public function testInsertWithSameBeginningWord(): void
@@ -400,7 +410,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $expected = ['<ul class="inserted"><li>Wir bla bla</li></ul><ul><li>Wir sind Nummer 1</li></ul>'];
         $diff     = new Diff();
         $out      = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expected, $out);
+        $this->assertSame($expected, $out);
     }
 
     public function testSwitchAndInsertListItems(): void
@@ -429,15 +439,15 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals('<p class="deleted">Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
+        $this->assertSame('<p class="deleted">Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
             $out[0]);
-        $this->assertEquals('<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>',
+        $this->assertSame('<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>',
             $out[1]);
-        $this->assertEquals('<ul class="deleted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
+        $this->assertSame('<ul class="deleted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
             $out[2]);
-        $this->assertEquals('<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li></ul><ul class="inserted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
+        $this->assertSame('<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li></ul><ul class="inserted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
             $out[3]);
-        $this->assertEquals('<ul><li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li></ul>',
+        $this->assertSame('<ul><li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li></ul>',
             $out[4]);
     }
 
@@ -461,7 +471,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             '<ul class="deleted"><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li></ul><p class="inserted">Test 456</p>',
             '<ul class="deleted"><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
         ];
-        $this->assertEquals($expected, $diffParas);
+        $this->assertSame($expected, $diffParas);
     }
 
 
@@ -493,7 +503,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
 
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
 
 
         $str1           = '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird Und noch etwas am Ende. Und noch etwas am Ende</p>';
@@ -506,7 +516,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
 
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
     }
 
 
@@ -518,7 +528,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
 
         $diff      = new Diff();
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
     }
 
     public function testParagraphs(): void
@@ -557,7 +567,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
 
 
         $str1   = '###LINENUMBER###Str1 Str2 Str3###LINENUMBER### Str4 Str5';
@@ -568,7 +578,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
 
 
         $str1   = 'Abcdef abcdef Abcdef AAbcdef Abcdef';
@@ -578,7 +588,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
 
 
         $str1   = 'ym Bla gagen lerd mal';
@@ -588,7 +598,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
 
 
         $str1   = 'uns dann als Zeichen das sie uns überwunden hatten';
@@ -598,7 +608,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
 
 
         $str1   = 'Test <strong>Test1</strong> Test2';
@@ -608,7 +618,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
     }
 
     public function testTwoInserts(): void
@@ -630,7 +640,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
     }
 
     public function testTwoChangedLis(): void
@@ -651,7 +661,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
     }
 
     public function testShiftMisplacedTags(): void
@@ -665,7 +675,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             [' text', Engine::UNMODIFIED],
         ];
         $corrected = Engine::shiftMisplacedHTMLTags($orig);
-        $this->assertEquals($orig, $corrected);
+        $this->assertSame($orig, $corrected);
 
 
         $orig      = [
@@ -677,7 +687,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             [' text', Engine::UNMODIFIED],
         ];
         $corrected = Engine::shiftMisplacedHTMLTags($orig);
-        $this->assertEquals($orig, $corrected);
+        $this->assertSame($orig, $corrected);
 
 
         $orig      = [
@@ -691,7 +701,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             ['more', Engine::UNMODIFIED],
         ];
         $corrected = Engine::shiftMisplacedHTMLTags($orig);
-        $this->assertEquals([
+        $this->assertSame([
             ['', Engine::UNMODIFIED],
             ['<p>', Engine::INSERTED],
             ['New ', Engine::INSERTED],
@@ -714,7 +724,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             ['more', Engine::UNMODIFIED],
         ];
         $corrected = Engine::shiftMisplacedHTMLTags($orig);
-        $this->assertEquals([
+        $this->assertSame([
             ['', Engine::UNMODIFIED],
             ['<p>', Engine::DELETED],
             ['Deleted ', Engine::DELETED],
@@ -733,7 +743,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff      = new Diff();
         $diffParas = $diff->compareHtmlParagraphs($strPre, $strPost, DiffRenderer::FORMATTING_CLASSES);
         $expected  = ['<ul class="deleted"><li>Listenpunkt</li></ul><p class="inserted">Test</p>'];
-        $this->assertEquals($expected, $diffParas);
+        $this->assertSame($expected, $diffParas);
     }
 
 
@@ -748,7 +758,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<p>###LINENUMBER###Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten ###LINENUMBER###sozialen Absicherung. <del>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen ###LINENUMBER###Renten-, Kranken- und Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus ist ###LINENUMBER###es in der Anfangsphase der Selbständigkeit und insbesondere bei Start-ups oft schwierig, die ###LINENUMBER###vollen Beitragslasten zu tragen. Wir wollen an Lösungen arbeiten, die angelehnt an den ###LINENUMBER###Gedanken der Künstlersozialkasse, für eine temporäre Unterstützung an dieser Stelle sorgen.</del><ins><em>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus wollen wir eine Bürger*innenversicherung in Gesundheit und Pflege einführen. Auch die Rentenversicherung wollen wir schrittweise zu einer Bürger*innenversicherung weiterentwickeln. In einem ersten Schritt wollen wir die bisher nicht pflichtversicherten Selbständigen in die gesetzliche Rentenversicherung einbeziehen. Die Grüne Garantierente soll ein Signal speziell an Selbständige mit geringem Einkommen senden, dass sich die Beiträge zur Rentenversicherung auch lohnen. </em></ins> ###LINENUMBER###Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen ###LINENUMBER###Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich ###LINENUMBER###verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen ###LINENUMBER###abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>'];
-        $this->assertEquals($expected, $diffParas);
+        $this->assertSame($expected, $diffParas);
     }
 
     public function testShortParagraph(): void
@@ -762,7 +772,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<p><strong>Balance von Freiheit und Sicherheit für <del>Solo-</del>Selbstständige und Existenzgründer*innen</strong></p>'];
-        $this->assertEquals($expected, $diffParas);
+        $this->assertSame($expected, $diffParas);
     }
 
     public function testDeleteBeyondList(): void
@@ -790,7 +800,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             '<ul class="deleted"><li>###LINENUMBER###Test 1</li></ul>',
             '<p class="deleted">###LINENUMBER###Also to be deleted.</p>'
         ];
-        $this->assertEquals($expected, $diffParas);
+        $this->assertSame($expected, $diffParas);
     }
 
     public function testLiPSomething(): void
@@ -808,7 +818,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
     }
 
 
@@ -834,7 +844,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals($expected, $diffParas);
+        $this->assertSame($expected, $diffParas);
     }
 
     /**
@@ -846,7 +856,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $newParagraphs  = ['<p>wieder.</p>'];
         $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals('<p>wieder<del><sup>Test</sup></del>.</p>', $diffParas[0]);
+        $this->assertSame('<p>wieder<del><sup>Test</sup></del>.</p>', $diffParas[0]);
     }
 
 
@@ -864,7 +874,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff   = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
         $arr = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $arr);
+        $this->assertSame($expect, $arr);
     }
 
     public function testDeleteSentenceSecondSentanceBeginningAlike1(): void
@@ -880,7 +890,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         ];
         $diff   = new Diff();
         $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $arr);
+        $this->assertSame($expect, $arr);
     }
 
     public function testDeleteSentenceSecondSentanceBeginningAlike2(): void
@@ -896,7 +906,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         ];
         $diff   = new Diff();
         $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $arr);
+        $this->assertSame($expect, $arr);
     }
 
     public function testInsertingIntoEmptySection(): void
@@ -909,7 +919,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals($expect, $diffParas);
+        $this->assertSame($expect, $diffParas);
     }
 
     public function testNumberedSubLists(): void
@@ -924,6 +934,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
 
         $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals(['<ol start="1"><li><ol class="lowerAlpha"><li>Point 1</li><li value="2b"><ins>Point 2</ins></li><li value="3">Point 3</li></ol></li></ol>'], $out);
+        $this->assertSame(['<ol start="1"><li><ol class="lowerAlpha"><li>Point 1</li><li value="2b"><ins>Point 2</ins></li><li value="3">Point 3</li></ol></li></ol>'], $out);
     }
 }

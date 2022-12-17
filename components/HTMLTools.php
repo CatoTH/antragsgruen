@@ -1070,9 +1070,9 @@ class HTMLTools
     /*
      * Hint: It's not 100% guaranteed that $maxLength is not exceeded, as ending HTML tags might be added on the fly.
      */
-    public static function trimHtml(string $html, int $maxLength)
+    public static function trimHtml(string $html, int $maxLength): string
     {
-        if (mb_strlen($html) <= $maxLength) {
+        if (grapheme_strlen($html) <= $maxLength) {
             return $html;
         }
 
@@ -1082,8 +1082,6 @@ class HTMLTools
             $shortenedHtml .= '…';
         }
 
-        $shortenedHtml = self::correctHtmlErrors($shortenedHtml, false);
-
-        return $shortenedHtml;
+        return self::correctHtmlErrors($shortenedHtml, false);
     }
 }

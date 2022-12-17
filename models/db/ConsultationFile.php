@@ -240,8 +240,8 @@ class ConsultationFile extends ActiveRecord
             if (isset($_FILES[$formName]['type']) && $_FILES[$formName]['type'] === 'image/svg+xml') {
                 $mime = 'image/svg+xml';
                 if (preg_match('/viewBox="0 0 (?<width>[\d\.]+) (?<height>[\d\.]+)"/siu', $content, $matches)) {
-                    $width = intval(round($matches['width']));
-                    $height = intval(round($matches['height']));
+                    $width = intval(round((float)$matches['width']));
+                    $height = intval(round((float)$matches['height']));
                 } else {
                     $width = null;
                     $height = null;

@@ -118,7 +118,7 @@ foreach ($motions as $motion) {
             $change            .= $changeExplanation;
         }
         // If length exceeds $maxLen, don't show the text
-        $changeLength = mb_strlen(strip_tags($change));
+        $changeLength = grapheme_strlen(strip_tags($change));
         if ($changeLength > $maxLen) {
             $change = '';
         }

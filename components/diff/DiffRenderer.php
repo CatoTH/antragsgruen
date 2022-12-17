@@ -452,16 +452,16 @@ class DiffRenderer
     {
         $firstDiffs = [];
         if (preg_match('/(<ins( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
-            $firstDiffs[] = static::paragraphContainsDiff_getPos($line, $matches);
+            $firstDiffs[] = self::paragraphContainsDiff_getPos($line, $matches);
         }
         if (preg_match('/(<del( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
-            $firstDiffs[] = static::paragraphContainsDiff_getPos($line, $matches);
+            $firstDiffs[] = self::paragraphContainsDiff_getPos($line, $matches);
         }
         if (preg_match('/(<[^>]+[ "]inserted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
-            $firstDiffs[] = static::paragraphContainsDiff_getPos($line, $matches);
+            $firstDiffs[] = self::paragraphContainsDiff_getPos($line, $matches);
         }
         if (preg_match('/(<[^>]+[ "]deleted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
-            $firstDiffs[] = static::paragraphContainsDiff_getPos($line, $matches);
+            $firstDiffs[] = self::paragraphContainsDiff_getPos($line, $matches);
         }
         if (count($firstDiffs) === 0) {
             return null;

@@ -103,7 +103,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         $text = preg_replace($urlsearch, $urlreplace, $this->text);
         $text = preg_replace($wwwsearch, $wwwreplace, $text);
 
-        if (mb_strlen($this->text) > $maxLength) {
+        if (grapheme_strlen($this->text) > $maxLength) {
             $text = explode("\n", wordwrap(str_replace("\n", " ", $text), $maxLength))[0] . '…';
         }
 

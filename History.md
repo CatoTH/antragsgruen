@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.12.0 [not released yet]
+
+- Bugfix: The diff and line splitting did not work properly with grapheme consisting of multiple code points.
+
 ### Version 4.11.1 (2022-12-10)
 
 - Bugfix: The fresh installation mode was broken with MariaDB.

@@ -240,7 +240,7 @@ class ConsultationAgendaItem extends ActiveRecord
             $children      = static::sortItems(static::getItemsByParent($consultation, $item->id));
             foreach ($children as $child) {
                 $currShownCode = $calcNewShownCode($currShownCode, $child->code);
-                $lastChar      = mb_substr($fullCodePrefix, mb_strlen($fullCodePrefix) - 1);
+                $lastChar      = grapheme_substr($fullCodePrefix, grapheme_strlen($fullCodePrefix) - 1);
                 $prevCode      = $fullCodePrefix . ($lastChar === $separator ? '' : $separator);
                 $child->setShownCode($currShownCode, $prevCode . $currShownCode);
                 $items = array_merge(
