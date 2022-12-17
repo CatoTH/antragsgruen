@@ -4,8 +4,7 @@ namespace app\views\pdfLayouts;
 
 class ByLDKPDF extends IPdfWriter
 {
-    /** @var IPDFLayout */
-    private $layout;
+    private IPDFLayout $layout;
 
     public function __construct(IPDFLayout $layout)
     {
