@@ -12,12 +12,12 @@ use app\models\exceptions\Internal;
 
 class Diff
 {
-    const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
-    const MAX_LINE_CHANGE_RATIO         = 0.6;
-    const MAX_LINE_CHANGE_RATIO_PART    = 0.4;
+    private const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
+    private const MAX_LINE_CHANGE_RATIO         = 0.6;
+    private const MAX_LINE_CHANGE_RATIO_PART    = 0.4;
 
     // # is necessary for placeholders like ###LINENUMBER###
-    public static array $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
+    private const WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
 
     private Engine $engine;
 
@@ -67,8 +67,8 @@ class Diff
             if (preg_match($htmlTag, $arr2)) {
                 $out[] = $arr2;
             } else {
-                foreach (preg_split('/([ \-\.\:])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
-                    if ($tok == ' ' || $tok == '-') {
+                foreach (preg_split('/([ \-.:])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
+                    if ($tok === ' ' || $tok === '-') {
                         if (count($out) == 0) {
                             $out[] = $tok;
                         } else {
@@ -82,7 +82,7 @@ class Diff
         }
         $out2 = [];
         foreach ($out as $word) {
-            if ($word != '') {
+            if ($word !== '') {
                 $out2[] = $word;
             }
         }
@@ -91,7 +91,6 @@ class Diff
 
     /**
      * @param string[] $lines
-     * @return string
      */
     public static function untokenizeLine(array $lines): string
     {
@@ -107,8 +106,8 @@ class Diff
         $currentSpool = [];
         foreach ($operations as $operation) {
             $firstfour = mb_substr($operation[0], 0, 4);
-            $isList    = $firstfour == '<ul>' || $firstfour == '<ol>';
-            if (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] != '</pre>') {
+            $isList    = $firstfour === '<ul>' || $firstfour === '<ol>';
+            if (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] !== '</pre>') {
                 if (count($currentSpool) > 0) {
                     $return[] = [implode($groupBy, $currentSpool), $preOp];
                 }
@@ -185,16 +184,16 @@ class Diff
         $len         = mb_strlen($prefix);
         $preLen      = mb_strlen($prefix);
         $endsInWords = false;
-        if (mb_strlen($word1) > $preLen && !in_array(mb_substr($word1, $preLen, 1), static::$WORD_BREAKING_CHARS)) {
+        if (mb_strlen($word1) > $preLen && !in_array(mb_substr($word1, $preLen, 1), self::WORD_BREAKING_CHARS)) {
             $endsInWords = true;
         }
-        if (mb_strlen($word2) > $preLen && !in_array(mb_substr($word2, $preLen, 1), static::$WORD_BREAKING_CHARS)) {
+        if (mb_strlen($word2) > $preLen && !in_array(mb_substr($word2, $preLen, 1), self::WORD_BREAKING_CHARS)) {
             $endsInWords = true;
         }
         if ($endsInWords) {
             for ($i = 0; $i <= $len; $i++) {
                 $char1 = mb_substr($prefix, $len - $i, 1);
-                if (in_array($char1, static::$WORD_BREAKING_CHARS)) {
+                if (in_array($char1, self::WORD_BREAKING_CHARS)) {
                     return mb_substr($prefix, 0, $len - $i + 1);
                 }
             }
@@ -211,17 +210,17 @@ class Diff
         $w2len        = mb_strlen($word2);
         $postLen      = mb_strlen($suffix);
         $startsInWord = false;
-        if ($w1len > $postLen && !in_array(mb_substr($word1, $w1len - $postLen - 1, 1), static::$WORD_BREAKING_CHARS)) {
+        if ($w1len > $postLen && !in_array(mb_substr($word1, $w1len - $postLen - 1, 1), self::WORD_BREAKING_CHARS)) {
             $startsInWord = true;
         }
-        if ($w2len > $postLen && !in_array(mb_substr($word2, $w2len - $postLen - 1, 1), static::$WORD_BREAKING_CHARS)) {
+        if ($w2len > $postLen && !in_array(mb_substr($word2, $w2len - $postLen - 1, 1), self::WORD_BREAKING_CHARS)) {
             $startsInWord = true;
         }
         if ($startsInWord) {
             $len = mb_strlen($suffix);
             for ($i = 0; $i < $len; $i++) {
                 $char1 = mb_substr($suffix, $i, 1);
-                if (in_array($char1, static::$WORD_BREAKING_CHARS)) {
+                if (in_array($char1, self::WORD_BREAKING_CHARS)) {
                     return mb_substr($suffix, $i);
                 }
             }
@@ -346,7 +345,7 @@ class Diff
             strpos($combined, DiffRenderer::INS_START) !== false
         ) {
             $changeRatio = $this->computeLineDiffChangeRatio($lineOld, $combined);
-            if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
+            if ($changeRatio > self::MAX_LINE_CHANGE_RATIO) {
                 return $this->wrapWithDelete($lineOld) . $this->wrapWithInsert($lineNew);
             }
         }
@@ -356,9 +355,9 @@ class Diff
 
         $middleLen  = mb_strlen(str_replace('###LINENUMBER###', '', $middleOrig));
         $breaksList = (mb_stripos($middleDiff, '</li>') !== false);
-        if ($middleLen > static::MAX_LINE_CHANGE_RATIO_MIN_LEN && !$breaksList) {
+        if ($middleLen > self::MAX_LINE_CHANGE_RATIO_MIN_LEN && !$breaksList) {
             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
-            if ($changeRatio > static::MAX_LINE_CHANGE_RATIO_PART) {
+            if ($changeRatio > self::MAX_LINE_CHANGE_RATIO_PART) {
                 $combined = $prefix;
                 $combined .= $this->wrapWithDelete($middleOrig);
                 $combined .= $this->wrapWithInsert($middleNew);
@@ -413,7 +412,7 @@ class Diff
         $parts = preg_split('/(<[^>]*>)/', $haystack, -1, PREG_SPLIT_DELIM_CAPTURE);
         $pos   = 0;
         for ($i = 0; $i < count($parts); $i++) {
-            if (($i % 2) == 0) {
+            if (($i % 2) === 0) {
                 $occ = mb_strpos($parts[$i], $needle);
                 if ($occ !== false) {
                     return $pos + $occ;
@@ -436,7 +435,7 @@ class Diff
             return ['', $orig, $new, $diff, ''];
         }
 
-        $parts      = preg_split('/\#\#\#(INS|DEL)_(START|END)\#\#\#/siuU', $diff);
+        $parts      = preg_split('/###(INS|DEL)_(START|END)###/siuU', $diff);
         $prefix     = $parts[0];
         $postfix    = $parts[count($parts) - 1];
         $prefixLen  = mb_strlen($prefix);
@@ -515,8 +514,8 @@ class Diff
         if ($origLength === 0) {
             return 0.0;
         }
-        $strippedDiff = preg_replace('/\#\#\#INS_START\#\#\#(.*)\#\#\#INS_END\#\#\#/siuU', '', $diff);
-        $strippedDiff = preg_replace('/\#\#\#DEL_START\#\#\#(.*)\#\#\#DEL_END\#\#\#/siuU', '', $strippedDiff);
+        $strippedDiff = preg_replace('/###INS_START###(.*)###INS_END###/siuU', '', $diff);
+        $strippedDiff = preg_replace('/###DEL_START###(.*)###DEL_END###/siuU', '', $strippedDiff);
 
         $strippedDiffLength = mb_strlen(strip_tags($strippedDiff));
 
@@ -600,18 +599,18 @@ class Diff
         $originalWordPos   = 0;
         $pendingOpeningDel = false;
         foreach ($diffPartArr as $diffPart) {
-            if ($diffPart == '###INS_START###') {
+            if ($diffPart === '###INS_START###') {
                 $words[$originalWordPos]->diff .= $diffPart;
                 $words[$originalWordPos]->amendmentId = $amendmentId;
                 $inIns = true;
-            } elseif ($diffPart == '###INS_END###') {
+            } elseif ($diffPart === '###INS_END###') {
                 $words[$originalWordPos]->diff .= $diffPart;
                 $words[$originalWordPos]->amendmentId = $amendmentId;
                 $inIns = false;
-            } elseif ($diffPart == '###DEL_START###') {
+            } elseif ($diffPart === '###DEL_START###') {
                 $inDel             = true;
                 $pendingOpeningDel = true;
-            } elseif ($diffPart == '###DEL_END###') {
+            } elseif ($diffPart === '###DEL_END###') {
                 $words[$originalWordPos]->diff .= $diffPart;
                 $words[$originalWordPos]->amendmentId = $amendmentId;
                 $inDel = false;
@@ -628,7 +627,7 @@ class Diff
                             (in_array($diffPartWord, $splitChars) && $diffPartWord != ' ' && $diffPartWord != '-') ||
                             $diffPartWord[0] == '<'
                         );
-                        if ($isNewWord || $originalWordPos == 0) {
+                        if ($isNewWord || $originalWordPos === 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = new DiffWord();
                         }
@@ -645,11 +644,11 @@ class Diff
                         $prevLastChar = mb_substr($words[$originalWordPos]->word, -1, 1);
                         $isNewWord    = (
                             in_array($prevLastChar, $splitChars) ||
-                            (in_array($diffPartWord, $splitChars) && $diffPartWord != ' ' && $diffPartWord != '-') ||
-                            $diffPartWord[0] == '<'
+                            (in_array($diffPartWord, $splitChars) && $diffPartWord !== ' ' && $diffPartWord !== '-') ||
+                            $diffPartWord[0] === '<'
                         );
 
-                        if ($isNewWord || $originalWordPos == 0) {
+                        if ($isNewWord || $originalWordPos === 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = new DiffWord();
                         }
@@ -683,7 +682,7 @@ class Diff
             if (!isset($origArr[$i])) {
                 var_dump($wordArr);
                 var_dump($origArr);
-                throw new Internal('Only exists in Diff-wordArray: ' . print_r($wordArr[$i]) . ' (Pos: ' . $i . ')');
+                throw new Internal('Only exists in Diff-wordArray: ' . print_r($wordArr[$i], true) . ' (Pos: ' . $i . ')');
             }
             if ($origArr[$i] !== $wordArr[$i]->word) {
                 var_dump($wordArr);
