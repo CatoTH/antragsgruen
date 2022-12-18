@@ -398,7 +398,7 @@ class LayoutHelper
         if ($admin) {
             $date = '';
             echo '<form class="agendaDateEditForm">
-                <div class="input-group date datetimepicker" data-date="' . Html::encode($agendaItem->time ?: '') . '">
+                <div class="input-group dateSelector datetimepicker" data-date="' . Html::encode($agendaItem->time ?: '') . '">
                     <input type="text" name="date" value="' . Html::encode($date) . '" placeholder="' . \Yii::t('con', 'agenda_date') . '"
                     class="form-control">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>

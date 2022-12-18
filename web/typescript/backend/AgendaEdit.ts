@@ -99,7 +99,7 @@ export class AgendaEdit {
 
         if ($li.hasClass('agendaItemDate')) {
             saveData['type'] = 'date';
-            const date = ($form.find(".date") as any).datetimepicker("date");
+            const date = ($form.find(".dateSelector") as any).datetimepicker("date");
             if (date) {
                 saveData['date'] = date.format("YYYY-MM-DD");
             } else {
@@ -200,7 +200,7 @@ export class AgendaEdit {
             format: 'LT'
         });
 
-        $item.find("> div .input-group.date").each((i, el) => {
+        $item.find("> div .input-group.dateSelector").each((i, el) => {
             let preDate = null;
             if ($(el).data("date")) {
                 preDate = moment($(el).data("date"), "YYYY-MM-DD", this.locale);
