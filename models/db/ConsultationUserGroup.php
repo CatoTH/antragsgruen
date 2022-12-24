@@ -40,6 +40,7 @@ class ConsultationUserGroup extends ActiveRecord
     public const PRIVILEGE_CHANGE_PROPOSALS          = 7;
     public const PRIVILEGE_SPEECH_QUEUES             = 8;
     public const PRIVILEGE_VOTINGS                   = 9;
+    public const PRIVILEGE_GLOBAL_USER_ADMIN         = 10; // editing user data, not only groups
 
     public const TEMPLATE_SITE_ADMIN = 1;
     public const TEMPLATE_CONSULTATION_ADMIN = 2;
@@ -218,6 +219,7 @@ class ConsultationUserGroup extends ActiveRecord
             case static::PRIVILEGE_SPEECH_QUEUES:
                 return in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $permission, true) ||
                        in_array(static::PERMISSION_ADMIN_ALL, $permission, true);
+            case static::PRIVILEGE_GLOBAL_USER_ADMIN: // only superadmins are allowed to
             default:
                 return false;
         }
