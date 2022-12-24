@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface};
 use app\components\{Captcha, ConsultationAccessPassword, RequestContext, Tools, UrlHelper};
 use app\models\db\{AmendmentSupporter,
     EMailBlocklist,
@@ -24,16 +25,6 @@ class UserController extends Base
     // Login and Mainainance mode is always allowed
     public ?bool $allowNotLoggedIn = true;
 
-    public function actions(): array
-    {
-        return [
-            'auth' => [
-                'class'           => 'yii\authclient\AuthAction',
-                'successCallback' => [$this, 'successCallback'],
-            ],
-        ];
-    }
-
     protected function loginUser(User $user): void
     {
         RequestContext::getUser()->login($user, $this->getParams()->autoLoginDuration);
@@ -47,12 +38,7 @@ class UserController extends Base
         }
     }
 
-    /**
-     * @param string $backUrl
-     * @return string
-     * @throws \yii\base\ExitException
-     */
-    public function actionLogin($backUrl = '')
+    public function actionLogin(string $backUrl = ''): ResponseInterface
     {
         $this->layout = 'column2';
 
@@ -92,8 +78,7 @@ class UserController extends Base
                 $this->redirect($backUrl, 307);
                 Yii::$app->end(307);
                 */
-                $this->redirect($backUrl);
-                \Yii::$app->end(302);
+                return new RedirectResponse($backUrl);
             } catch (Login $e) {
                 $usernamePasswordForm->error = $e->getMessage();
             }
@@ -104,8 +89,7 @@ class UserController extends Base
             $conPwd = new ConsultationAccessPassword($conPwdConsultation);
             if ($conPwd->checkPassword($this->getHttpRequest()->post('password'))) {
                 $conPwd->setCorrectCookie();
-                $this->redirect($backUrl);
-                \Yii::$app->end(302);
+                return new RedirectResponse($backUrl);
             } else {
                 $conPwdErr = 'Invalid password';
             }
@@ -116,7 +100,7 @@ class UserController extends Base
             $this->getHttpSession()->removeFlash('error');
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'login',
             [
                 'backUrl'              => $backUrl,
@@ -124,15 +108,10 @@ class UserController extends Base
                 'conPwdConsultation'   => $conPwdConsultation,
                 'conPwdErr'            => $conPwdErr,
             ]
-        );
+        ));
     }
 
-    /**
-     * @param string $backUrl
-     * @param string $email
-     * @return string
-     */
-    public function actionConfirmregistration($backUrl = '', $email = '')
+    public function actionConfirmregistration(string $backUrl = '', string $email = ''): HtmlResponse
     {
         $msgError = '';
 
@@ -157,24 +136,24 @@ class UserController extends Base
                         $needsAdminScreening = false;
                     }
 
-                    return $this->render('registration_confirmed', ['needsAdminScreening' => $needsAdminScreening]);
+                    return new HtmlResponse($this->render('registration_confirmed', ['needsAdminScreening' => $needsAdminScreening]));
                 }
             } else {
                 $msgError = \Yii::t('user', 'err_code_wrong');
             }
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'confirm_registration',
             [
                 'email'   => $email,
                 'errors'  => $msgError,
                 'backUrl' => $backUrl
             ]
-        );
+        ));
     }
 
-    public function actionLogout(string $backUrl = ''): string
+    public function actionLogout(string $backUrl = ''): ResponseInterface
     {
         if ($backUrl === '') {
             $backUrl = $this->getHttpRequest()->post('backUrl', UrlHelper::homeUrl());
@@ -185,11 +164,10 @@ class UserController extends Base
                 try {
                     $backUrl = $loginProvider->logoutCurrentUserIfRelevant($backUrl);
                     if ($backUrl) {
-                        $this->redirect($backUrl, 307);
-                        return '';
+                        return new RedirectResponse($backUrl, RedirectResponse::REDIRECT_TEMPORARY);
                     }
                 } catch (\Exception $e) {
-                    $this->showErrorpage(
+                    return new HtmlErrorResponse(
                         500,
                         \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
                     );
@@ -198,11 +176,10 @@ class UserController extends Base
         }
 
         RequestContext::getUser()->logout();
-        $this->redirect($backUrl, 307);
-        return '';
+        return new RedirectResponse($backUrl, RedirectResponse::REDIRECT_TEMPORARY);
     }
 
-    public function actionRecovery(string $email = '', string $code = ''): string
+    public function actionRecovery(string $email = '', string $code = ''): HtmlResponse
     {
         if ($this->isPostSet('send')) {
             $email = $this->getRequestValue('email');
@@ -246,7 +223,7 @@ class UserController extends Base
                 try {
                     if ($user->checkRecoveryToken($this->getRequestValue('recoveryCode'))) {
                         $user->changePassword($this->getRequestValue('newPassword'));
-                        return $this->render('recovery_confirmed');
+                        return new HtmlResponse($this->render('recovery_confirmed'));
                     }
                 } catch (ExceptionBase $e) {
                     $this->getHttpSession()->setFlash('error', $e->getMessage());
@@ -254,15 +231,10 @@ class UserController extends Base
             }
         }
 
-        return $this->render('recovery', ['preEmail' => $email, 'preCode' => $code]);
+        return new HtmlResponse($this->render('recovery', ['preEmail' => $email, 'preCode' => $code]));
     }
 
-    /**
-     * @param string $email
-     * @param string $code
-     * @return \yii\web\Response
-     */
-    public function actionEmailchange($email, $code)
+    public function actionEmailchange(string $email, string $code): RedirectResponse
     {
         $this->forceLogin();
         $user = User::getCurrentUser();
@@ -272,10 +244,10 @@ class UserController extends Base
         } catch (FormError $e) {
             $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
-        return $this->redirect(UrlHelper::createUrl('user/myaccount'));
+        return new RedirectResponse(UrlHelper::createUrl('user/myaccount'));
     }
 
-    public function actionMyaccount(): string
+    public function actionMyaccount(): HtmlResponse
     {
         $this->forceLogin();
 
@@ -355,7 +327,7 @@ class UserController extends Base
         if ($this->isPostSet('accountDeleteConfirm') && $this->isPostSet('accountDelete')) {
             $user->deleteAccount();
             RequestContext::getUser()->logout(true);
-            return $this->render('account_deleted');
+            return new HtmlResponse($this->render('account_deleted'));
         }
 
         if ($user->email != '' && $user->emailConfirmed) {
@@ -364,19 +336,18 @@ class UserController extends Base
             $emailBlocked = false;
         }
 
-        return $this->render('my_account', [
+        return new HtmlResponse($this->render('my_account', [
             'user' => $user,
             'emailBlocked' => $emailBlocked,
             'pwMinLen' => $pwMinLen,
-        ]);
+        ]));
     }
 
-    public function actionEmailblocklist(string $code): string
+    public function actionEmailblocklist(string $code): ResponseInterface
     {
         $user = User::getUserByUnsubscribeCode($code);
         if (!$user) {
-            $this->showErrorpage(403, \Yii::t('user', 'err_user_acode_notfound'));
-            return '';
+            return new HtmlErrorResponse(403, \Yii::t('user', 'err_user_acode_notfound'));
         }
 
         if ($this->isPostSet('save')) {
@@ -404,12 +375,12 @@ class UserController extends Base
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        return $this->render('email_blocklist', [
+        return new HtmlResponse($this->render('email_blocklist', [
             'isBlocked' => EMailBlocklist::isBlocked($user->email),
-        ]);
+        ]));
     }
 
-    public function actionDataExport(): string
+    public function actionDataExport(): JsonResponse
     {
         $this->forceLogin();
         $user = User::getCurrentUser();
@@ -481,10 +452,10 @@ class UserController extends Base
             $data['comments'][] = $comment->getUserdataExportObject();
         }
 
-        return json_encode($data);
+        return new JsonResponse($data);
     }
 
-    public function actionConsultationaccesserror(): string
+    public function actionConsultationaccesserror(): HtmlResponse
     {
         $user = User::getCurrentUser();
 
@@ -507,9 +478,9 @@ class UserController extends Base
             $askedForPermission = false;
         }
 
-        return $this->render('@app/views/errors/consultation_access', [
+        return new HtmlResponse($this->render('@app/views/errors/consultation_access', [
             'askForPermission'   => $askForPermission,
             'askedForPermission' => $askedForPermission,
-        ]);
+        ]));
     }
 }

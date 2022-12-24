@@ -2,9 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\db\Motion;
+use app\models\http\{BinaryFileResponse,
+    HtmlErrorResponse,
+    HtmlResponse,
+    JsonResponse,
+    RedirectResponse,
+    ResponseInterface};
 use app\components\{MotionSorter, UrlHelper};
 use app\models\db\Consultation;
-use app\models\exceptions\{Inconsistency, Internal};
+use app\models\exceptions\Inconsistency;
 use app\models\mergeAmendments\{Draft, Merge, Init};
 use app\models\MotionSectionChanges;
 use yii\web\{Request, Response, Session};
@@ -17,49 +24,36 @@ use yii\web\{Request, Response, Session};
  */
 trait MotionMergingTrait
 {
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     */
-    public function actionMergeAmendmentsPublic($motionSlug)
+    public function actionMergeAmendmentsPublic(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         $draft = $motion->getMergingDraft(true);
         if (!$draft) {
-            return $this->showErrorpage(404, \Yii::t('motion', 'err_draft_not_found'));
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_draft_not_found'));
         }
 
-        return $this->render('@app/views/merging/public_version', ['motion' => $motion, 'draft' => $draft]);
+        return new HtmlResponse($this->render('@app/views/merging/public_version', ['motion' => $motion, 'draft' => $draft]));
     }
 
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     * @throws Internal
-     */
-    public function actionMergeAmendmentsPublicAjax($motionSlug)
+    public function actionMergeAmendmentsPublicAjax(string $motionSlug): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+            return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
 
         $draft = $motion->getMergingDraft(true);
         if (!$draft) {
-            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_draft_not_found')]);
+            return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_draft_not_found')]);
         }
 
-        return json_encode([
+        return new JsonResponse([
             'success' => true,
             'html'    => $this->renderPartial('@app/views/merging/_public_version_content', [
                 'motion' => $motion,
@@ -69,31 +63,22 @@ trait MotionMergingTrait
         ]);
     }
 
-    /**
-     * @param string $motionSlug
-     * @param int $sectionId
-     * @param int $paragraphNo
-     * @param string $amendments
-     */
-    public function actionMergeAmendmentsParagraphAjax($motionSlug, $sectionId, $paragraphNo, $amendments = ''): string
+    public function actionMergeAmendmentsParagraphAjax(string $motionSlug, int $sectionId, int $paragraphNo, string $amendments = ''): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+            return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
 
 
         $section = null;
         foreach ($motion->getActiveSections() as $sec) {
-            if ($sec->sectionId === intval($sectionId)) {
+            if ($sec->sectionId === $sectionId) {
                 $section = $sec;
             }
         }
         if (!$section) {
-            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+            return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
 
         $amendments   = json_decode($amendments, true);
@@ -121,20 +106,17 @@ trait MotionMergingTrait
             $collisions[] = $merger->getFormattedCollision($paraData, $amendment, $amendmentsById, true);
         }
 
-        return json_encode([
+        return new JsonResponse([
             'text'       => $paragraphText,
             'collisions' => $collisions,
         ]);
     }
 
-    public function actionMergeAmendmentsStatusAjax(string $motionSlug, string $knownAmendments): string
+    public function actionMergeAmendmentsStatusAjax(string $motionSlug, string $knownAmendments): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+            return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
 
         $amendmentsById          = [];
@@ -183,7 +165,7 @@ trait MotionMergingTrait
             }
         }
 
-        return json_encode([
+        return new JsonResponse([
             'success' => true,
             'new'     => [
                 'staticData' => $newAmendmentsStaticData,
@@ -194,58 +176,44 @@ trait MotionMergingTrait
         ]);
     }
 
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     */
-    public function actionMergeAmendmentsDraftPdf($motionSlug)
+    public function actionMergeAmendmentsDraftPdf(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
-
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_not_found'));
         }
 
         if (!$motion->canMergeAmendments()) {
-            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
-
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new HtmlErrorResponse(403, \Yii::t('motion', 'err_edit_permission'));
         }
 
         $draft = $motion->getMergingDraft(false);
         if (!$draft) {
-            return $this->showErrorpage(404, \Yii::t('motion', 'err_draft_not_found'));
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_draft_not_found'));
         }
 
-        $filename                    = $motion->getFilenameBase(false) . '-Merging-Draft.pdf';
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
-        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-
-        return $this->render('@app/views/merging/merging_draft_pdf', ['motion' => $motion, 'draft' => $draft]);
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_PDF,
+            $this->render('@app/views/merging/merging_draft_pdf', ['motion' => $motion, 'draft' => $draft]),
+            true,
+            $motion->getFilenameBase(false) . '-Merging-Draft',
+            false
+        );
     }
 
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     */
-    public function actionMergeAmendmentsInit($motionSlug)
+    public function actionMergeAmendmentsInit(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canMergeAmendments()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         $amendments = Init::getMotionAmendmentsForMerging($motion);
@@ -255,18 +223,18 @@ trait MotionMergingTrait
         $unconfirmed = $motion->getMergingUnconfirmed();
 
         if (count($amendments) === 0 && !$draft && !$unconfirmed) {
-            return $this->redirect(UrlHelper::createMotionUrl($motion, 'merge-amendments'));
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'merge-amendments'));
         }
 
-        return $this->render('@app/views/merging/init', [
+        return new HtmlResponse($this->render('@app/views/merging/init', [
             'motion'      => $motion,
             'amendments'  => $amendments,
             'draft'       => $draft,
             'unconfirmed' => $unconfirmed,
-        ]);
+        ]));
     }
 
-    private function getMotionForMerging($motionSlug)
+    private function getMotionForMerging(string $motionSlug): ?Motion
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -284,57 +252,44 @@ trait MotionMergingTrait
         return $motion;
     }
 
-    /**
-     * @param string $motionSlug
-     * @param string $activated
-     *
-     * @return string
-     */
-    public function actionMergeAmendmentsInitPdf($motionSlug, $activated = '')
+    public function actionMergeAmendmentsInitPdf(string $motionSlug, string $activated = ''): ResponseInterface
     {
         $motion = $this->getMotionForMerging($motionSlug);
         if (!$motion) {
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         $amendments   = $motion->getVisibleAmendmentsSorted();
         $activatedIds = [];
         foreach (explode(',', $activated) as $active) {
             if ($active > 0) {
-                $activatedIds[] = IntVal($active);
+                $activatedIds[] = intval($active);
             }
         }
 
-        $filename                    = $motion->getFilenameBase(false) . '-Merging-Selection.pdf';
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/pdf');
-        $this->getHttpResponse()->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
-        $this->getHttpResponse()->headers->set('X-Robots-Tag', 'noindex, nofollow');
-
-        return $this->render('@app/views/merging/init_pdf', [
-            'motion'     => $motion,
-            'amendments' => $amendments,
-            'activated'  => $activatedIds,
-        ]);
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_PDF,
+            $this->render('@app/views/merging/init_pdf', [
+                'motion'     => $motion,
+                'amendments' => $amendments,
+                'activated'  => $activatedIds,
+            ]),
+            true,
+            $motion->getFilenameBase(false) . '-Merging-Selection',
+            false
+        );
     }
 
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     */
-    public function actionMergeAmendmentsConfirm($motionSlug)
+    public function actionMergeAmendmentsConfirm(string $motionSlug): ResponseInterface
     {
         $newMotion = $this->consultation->getMotion($motionSlug);
         if (!$newMotion) {
-            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            return '';
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_not_found'));
         }
 
         $oldMotion = $newMotion->replacedMotion;
         if (!$oldMotion->canMergeAmendments()) {
-            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
-            return '';
+            return new HtmlErrorResponse(403, \Yii::t('motion', 'err_edit_permission'));
         }
 
         if ($this->isPostSet('modify')) {
@@ -344,7 +299,7 @@ trait MotionMergingTrait
                 $this->getHttpRequest()->post('amendVotes', [])
             );
 
-            return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'merge-amendments'));
+            return new RedirectResponse(UrlHelper::createMotionUrl($oldMotion, 'merge-amendments'));
         }
 
         if ($this->isPostSet('confirm')) {
@@ -358,9 +313,9 @@ trait MotionMergingTrait
                 $this->getHttpRequest()->post('amendVotes', '')
             );
 
-            return $this->render('@app/views/merging/done', [
+            return new HtmlResponse($this->render('@app/views/merging/done', [
                 'newMotion' => $newMotion,
-            ]);
+            ]));
         }
 
         try {
@@ -371,23 +326,18 @@ trait MotionMergingTrait
 
         $mergingDraft = $oldMotion->getMergingDraft(false);
 
-        return $this->render('@app/views/merging/confirm', [
+        return new HtmlResponse($this->render('@app/views/merging/confirm', [
             'newMotion'    => $newMotion,
             'mergingDraft' => $mergingDraft,
             'changes'      => $changes,
-        ]);
+        ]));
     }
 
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     */
-    public function actionMergeAmendments($motionSlug)
+    public function actionMergeAmendments(string $motionSlug): ResponseInterface
     {
         $motion = $this->getMotionForMerging($motionSlug);
         if (!$motion) {
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         $resumeDraft = $motion->getMergingDraft(false);
@@ -401,7 +351,7 @@ trait MotionMergingTrait
                 $form      = new Merge($motion);
                 $newMotion = $form->createNewMotion($draft);
 
-                return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm'));
+                return new RedirectResponse(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm'));
             }
         } catch (\Exception $e) {
             $this->getHttpSession()->setFlash('error', $e->getMessage());
@@ -418,32 +368,27 @@ trait MotionMergingTrait
 
         $twoCols = $motion->getMyMotionType()->getSettingsObj()->twoColMerging;
 
-        return $this->render('@app/views/merging/merging', ['form' => $form, 'twoCols' => $twoCols]);
+        return new HtmlResponse($this->render('@app/views/merging/merging', ['form' => $form, 'twoCols' => $twoCols]));
     }
 
-    /**
-     * @param string $motionSlug
-     *
-     * @throws \Exception
-     */
-    public function actionSaveMergingDraft($motionSlug): string
+    public function actionSaveMergingDraft(string $motionSlug): JsonResponse
     {
         $this->getHttpResponse()->format = Response::FORMAT_RAW;
         $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            return json_encode(['success' => false, 'error' => 'Motion not found']);
+            return new JsonResponse(['success' => false, 'error' => 'Motion not found']);
         }
         if (!$motion->canMergeAmendments()) {
-            return json_encode(['success' => false, 'error' => 'Motion not editable']);
+            return new JsonResponse(['success' => false, 'error' => 'Motion not editable']);
         }
 
         $public = (IntVal($this->getHttpRequest()->post('public', 0)) === 1);
         $draft  = Draft::initFromJson($motion, $public, new \DateTime('now'), $this->getHttpRequest()->post('data', null));
         $draft->save();
 
-        return json_encode([
+        return new JsonResponse([
             'success' => true,
             'date'    => ($draft->draftMotion->getDateTime() ? $draft->draftMotion->getDateTime()->format('c') : ''),
         ]);
