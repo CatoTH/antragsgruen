@@ -341,6 +341,8 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_usergroup_log'     => 'Change log',
     'siteacc_userdel_confirm'   => 'Do you really want to remove %USERNAME% from the list?',
     'siteacc_groupdel_confirm'  => 'Really delete %GROUPNAME%? The group with be unassigned from all accounts. Account without group will be assigned to "Participants".',
+    'siteacc_usermodal_title'   => 'Edit %USERNAME%',
+    'siteacc_usermodal_identity' => 'Identifizierung',
     'siteacc_email_text_pre'    => 'Hi,
 
 we have just created an Antragsgrün account for you. Now you can join the discussion on the motions / drafts.

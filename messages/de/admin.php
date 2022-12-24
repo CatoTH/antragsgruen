@@ -342,6 +342,8 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_usergroup_log'      => 'Änderungs-Protokoll',
     'siteacc_userdel_confirm'    => '%USERNAME% wirklich aus der Liste entfernen?',
     'siteacc_groupdel_confirm'   => '%GROUPNAME% wirklich löschen? Die Gruppe wird von allen Benutzer*innen entfernt. Accounts, die danach keiner Gruppe mehr angehören, werden "Teilnehmer*innen" zugeordnet.',
+    'siteacc_usermodal_title'    => '%USERNAME% bearbeiten',
+    'siteacc_usermodal_identity' => 'Identification',
     'siteacc_email_text_pre'     => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .

@@ -19,6 +19,7 @@ export class UserAdmin {
         const pollUrl = this.element.getAttribute('data-url-poll');
         const urlUserLog = this.element.getAttribute('data-url-user-log');
         const urlUserGroupLog = this.element.getAttribute('data-url-user-group-log');
+        const permissionGlobalEdit = (this.element.getAttribute('data-permission-global-edit') === '1');
 
         let userWidgetComponent;
 
@@ -26,6 +27,7 @@ export class UserAdmin {
             template: `<div class="adminUsers">
                 <user-edit-widget
                     :groups="groups"
+                    :permissionGlobalEdit="permissionGlobalEdit"
                     ref="user-edit-widget"
                 ></user-edit-widget>
                 <user-admin-widget :users="users"
@@ -50,6 +52,7 @@ export class UserAdmin {
                     pollingId: null,
                     urlUserLog,
                     urlUserGroupLog,
+                    permissionGlobalEdit,
                 };
             },
             computed: {
