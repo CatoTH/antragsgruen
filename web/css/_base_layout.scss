@@ -104,15 +104,9 @@ body > footer {
 .antragsgruen-content {
   // The children should behave similar to bootstrap's grids (hence the paddings&floats), but have a configurable width
 
-  // Amendment-Markers at the side of a motion should be above the sidebar in case of a collision
-  > main {
-    z-index: 1;
-  }
-
   > #sidebar {
     max-width: $sidebarWidth;
     float: left;
-    z-index: 0;
     padding-right: floor(($grid-gutter-width * 0.5));
     padding-left: ceil(($grid-gutter-width * 0.5));
   }
