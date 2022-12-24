@@ -10,11 +10,17 @@ use yii\web\Response;
 
 class RedirectResponse implements ResponseInterface
 {
-    private string $url;
+    public const REDIRECT_PERMANENT = 301;
+    public const REDIRECT_FOUND = 302;
+    public const REDIRECT_TEMPORARY = 307;
 
-    public function __construct(string $url)
+    private string $url;
+    private int $status;
+
+    public function __construct(string $url, int $status = 302)
     {
         $this->url = $url;
+        $this->status = $status;
     }
 
     public function getUrl(): string
@@ -24,7 +30,7 @@ class RedirectResponse implements ResponseInterface
 
     public function renderYii(Layout $layoutParams, Response $response): ?string
     {
-        $response->redirect(Url::to($this->url), 302);
+        $response->redirect(Url::to($this->url), $this->status);
 
         return null;
     }
