@@ -2,7 +2,7 @@
 
 namespace app\plugins\green_manager;
 
-use app\models\db\{Consultation, Site, User};
+use app\models\db\{Consultation, ConsultationUserGroup, Site, User};
 use app\models\events\UserEvent;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
@@ -73,12 +73,16 @@ class Module extends ModuleBase
 
     public static function onAccountConfirmed(UserEvent $event): void
     {
-        foreach ($event->user->adminSites as $site) {
-            /** @var SiteSettings $settings */
-            $settings              = $site->getSettings();
-            $settings->isConfirmed = true;
-            $site->setSettings($settings);
-            $site->save();
+        foreach ($event->user->userGroups as $userGroup) {
+            if ($userGroup->siteId && $userGroup->site &&
+                $userGroup->templateId === ConsultationUserGroup::TEMPLATE_SITE_ADMIN) {
+                $site = $userGroup->site;
+                /** @var SiteSettings $settings */
+                $settings = $site->getSettings();
+                $settings->isConfirmed = true;
+                $site->setSettings($settings);
+                $site->save();
+            }
         }
     }
 }
