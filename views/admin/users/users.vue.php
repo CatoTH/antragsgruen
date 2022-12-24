@@ -216,6 +216,7 @@ $html = ob_get_clean();
         },
         methods: {
             setGroupChanging: function (user) {
+                this.$emit('edit-user', user)
                 this.changingGroupUsers.push(user.id);
                 this.changedUserGroups[user.id] = Object.assign([], user.groups);
             },

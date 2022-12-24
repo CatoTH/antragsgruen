@@ -20,8 +20,14 @@ export class UserAdmin {
         const urlUserLog = this.element.getAttribute('data-url-user-log');
         const urlUserGroupLog = this.element.getAttribute('data-url-user-group-log');
 
+        let userWidgetComponent;
+
         this.widget = Vue.createApp({
             template: `<div class="adminUsers">
+                <user-edit-widget
+                    :groups="groups"
+                    ref="user-edit-widget"
+                ></user-edit-widget>
                 <user-admin-widget :users="users"
                                    :groups="groups"
                                    :urlUserLog="urlUserLog"
@@ -30,6 +36,7 @@ export class UserAdmin {
                                    @remove-user="removeUser"
                                    @create-user-group="createUserGroup"
                                    @remove-group="removeUserGroup"
+                                   @edit-user="editUser"
                                    ref="user-admin-widget"
                 ></user-admin-widget>
             </div>`,
@@ -79,6 +86,9 @@ export class UserAdmin {
                         op: 'remove-user',
                         userId: user.id
                     });
+                },
+                editUser(user) {
+                    userWidgetComponent.$refs["user-edit-widget"].open(user);
                 },
                 setUserGroups(users, groups) {
                     const usersJson = JSON.stringify(users),
@@ -130,7 +140,7 @@ export class UserAdmin {
         this.widget.config.compilerOptions.whitespace = 'condense';
         window['__initVueComponents'](this.widget, 'users');
 
-        const userWidgetComponent = this.widget.mount(vueEl);
+        userWidgetComponent = this.widget.mount(vueEl);
 
         // Used by tests to control vue-select
         window['userWidget'] = userWidgetComponent;
