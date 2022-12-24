@@ -40,7 +40,6 @@ use yii\web\IdentityInterface;
  * @property null|AmendmentSupporter[] $amendmentSupports
  * @property null|MotionComment[] $motionComments
  * @property null|MotionSupporter[] $motionSupports
- * @property Site[] $adminSites
  * @property ConsultationUserGroup[] $userGroups
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
@@ -188,11 +187,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function getLogEntries(): ActiveQuery
     {
         return $this->hasMany(ConsultationLog::class, ['userId' => 'id']);
-    }
-
-    public function getAdminSites(): ActiveQuery
-    {
-        return $this->hasMany(Site::class, ['id' => 'siteId'])->viaTable('siteAdmin', ['userId' => 'id']);
     }
 
     public function getUserGroups(): ActiveQuery
@@ -627,7 +621,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @throws FormError
      * @throws \app\models\exceptions\ServerConfiguration
      */
-    public function sendRecoveryMail()
+    public function sendRecoveryMail(): void
     {
         if ($this->recoveryAt) {
             $recTs = Tools::dateSql2timestamp($this->recoveryAt);
@@ -654,10 +648,9 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param string $token
      * @throws FormError
      */
-    public function checkRecoveryToken($token): bool
+    public function checkRecoveryToken(string $token): bool
     {
         if ($this->recoveryAt) {
             $recTs = Tools::dateSql2timestamp($this->recoveryAt);
@@ -673,12 +666,7 @@ class User extends ActiveRecord implements IdentityInterface
         return true;
     }
 
-    /**
-     * @param string $newEmail
-     * @param int $timestamp
-     * @return string
-     */
-    public function createEmailChangeToken($newEmail, $timestamp): string
+    public function createEmailChangeToken(string $newEmail, int $timestamp): string
     {
         if (YII_ENV == 'test' && mb_strpos($newEmail, '@example.org') !== false) {
             return 'testCode';
@@ -689,11 +677,9 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param string $newEmail
-     * @param string $code
      * @throws FormError
      */
-    public function checkEmailChangeToken($newEmail, $code)
+    public function checkEmailChangeToken(string $newEmail, string $code): void
     {
         if ($this->emailChange != $newEmail || $this->emailChange === null) {
             throw new FormError(\Yii::t('user', 'err_emailchange_notfound'));
@@ -711,7 +697,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @throws MailNotSent
      * @throws ServerConfiguration
      */
-    public function sendEmailChangeMail(string $newEmail)
+    public function sendEmailChangeMail(string $newEmail): void
     {
         $changeTs            = time();
         $this->emailChange   = $newEmail;
@@ -732,7 +718,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @throws FormError
      */
-    public function changeEmailAddress(string $newEmail, string $code)
+    public function changeEmailAddress(string $newEmail, string $code): void
     {
         if (AntragsgruenApp::getInstance()->confirmEmailAddresses) {
             $this->checkEmailChangeToken($newEmail, $code);

@@ -1571,26 +1571,6 @@ VALUES
       8, 1, 'Bündnis 90 / Die GRÜNEN', 'Bündnis 90 / Die Grünen', 0);
 
 --
--- Dumping data for table `siteAdmin`
---
-
-INSERT INTO `###TABLE_PREFIX###siteAdmin` (`siteId`, `userId`) VALUES
-  (1, 1),
-  (2, 1),
-  (3, 1),
-  (4, 1),
-  (5, 1),
-  (6, 1),
-  (7, 1),
-  (1, 6),
-  (2, 6),
-  (3, 6),
-  (4, 6),
-  (5, 6),
-  (6, 6),
-  (7, 6);
-
---
 -- Dumping data for table `user`
 --
 

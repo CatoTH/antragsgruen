@@ -620,19 +620,6 @@ CREATE TABLE `###TABLE_PREFIX###site` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `siteAdmin`
---
-
-CREATE TABLE `###TABLE_PREFIX###siteAdmin` (
-  `siteId` INT(11) NOT NULL,
-  `userId` INT(11) NOT NULL
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `speechQueue`
 --
 
@@ -1069,14 +1056,6 @@ ALTER TABLE `###TABLE_PREFIX###site`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `subdomain_UNIQUE` (`subdomain`),
   ADD KEY `fk_veranstaltungsreihe_veranstaltung1_idx` (`currentConsultationId`);
-
---
--- Indexes for table `siteAdmin`
---
-ALTER TABLE `###TABLE_PREFIX###siteAdmin`
-  ADD PRIMARY KEY (`siteId`, `userId`),
-  ADD KEY `site_admin_fk_userIdx` (`userId`),
-  ADD KEY `site_admin_fk_siteIdx` (`siteId`);
 
 --
 -- Indexes for table `speechQueue`
@@ -1567,17 +1546,6 @@ ALTER TABLE `###TABLE_PREFIX###motionTag`
 --
 ALTER TABLE `###TABLE_PREFIX###site`
   ADD CONSTRAINT `fk_site_consultation` FOREIGN KEY (`currentConsultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
---
--- Constraints for table `siteAdmin`
---
-ALTER TABLE `###TABLE_PREFIX###siteAdmin`
-  ADD CONSTRAINT `site_admin_fk_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-  ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
