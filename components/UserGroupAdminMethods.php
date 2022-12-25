@@ -122,6 +122,21 @@ class UserGroupAdminMethods
         $this->consultation->refresh();
     }
 
+    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization): void
+    {
+        $user = User::findOne(['id' => $userId]);
+        if (trim($nameGiven) === '' && trim($nameFamily) === '') {
+            return;
+        }
+
+        $user->nameFamily = trim($nameFamily);
+        $user->nameGiven = trim($nameGiven);
+        $user->organization = trim($organization);
+        $user->name = trim(trim($nameGiven) . ' ' . trim($nameFamily));
+
+        $user->save();
+    }
+
     private function getUserGroup(int $userGroupId): ?ConsultationUserGroup
     {
         foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {

@@ -227,11 +227,19 @@ class UsersController extends AdminBase
         ];
         try {
             switch ($this->getHttpRequest()->post('op')) {
-                case 'save-user-groups':
+                case 'save-user':
                     $this->userGroupAdminMethods->setUserGroupsToUser(
                         intval($this->getPostValue('userId')),
                         array_map('intval', $this->getPostValue('groups', []))
                     );
+                    if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_GLOBAL_USER_ADMIN)) {
+                        $this->userGroupAdminMethods->setUserData(
+                            intval($this->getPostValue('userId')),
+                            $this->getPostValue('nameGiven'),
+                            $this->getPostValue('nameFamily'),
+                            $this->getPostValue('organization'),
+                        );
+                    }
                     break;
                 case 'remove-user':
                     $this->userGroupAdminMethods->removeUser(intval($this->getPostValue('userId')));
