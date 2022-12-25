@@ -7,7 +7,7 @@ ob_start();
 ?>
 <div class="modal fade editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" ref="user-edit-modal">
     <form class="modal-dialog" method="POST" @submit="save($event)">
-        <div class="modal-content">
+        <article class="modal-content">
             <header class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="<?= Yii::t('base', 'abort') ?>"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="editUserModalLabel">{{ modalTitle }}</h4>
@@ -19,6 +19,23 @@ ob_start();
                     </div>
                     <div class="rightColumn">
                         {{ user.auth }}
+                    </div>
+                </div>
+                <div class="stdTwoCols" v-if="permissionGlobalEdit">
+                    <div class="leftColumn">
+                        <?= Yii::t('admin', 'siteacc_usermodal_pass' ) ?>
+                    </div>
+                    <div class="rightColumn">
+                        <button type="button" class="btn btn-sm btn-default btnSetPwdOpener"
+                                v-if="!settingPassword" @click="openSetPassword()">
+                            <?= Yii::t('admin', 'siteacc_usermodal_passset') ?>
+                        </button>
+                        <input type="password" v-model="newPassword" class="form-control"
+                                v-if="settingPassword"
+                               title="<?= Yii::t('admin', 'siteacc_usermodal_passnew') ?>"
+                               placeholder="<?= Yii::t('admin', 'siteacc_usermodal_passnew') ?>"
+                               ref="password-setter"
+                        >
                     </div>
                 </div>
                 <div class="stdTwoCols">
@@ -67,6 +84,11 @@ ob_start();
                 </div>
             </main>
             <footer class="modal-footer">
+                <a class="changeLogLink" :href="userLogUrl" v-if="user">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <?= Yii::t('admin','siteacc_usergroup_log') ?>
+                </a>
+
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     <?= Yii::t('base', 'abort') ?>
                 </button>
@@ -74,7 +96,7 @@ ob_start();
                     <?= Yii::t('base', 'save') ?>
                 </button>
             </footer>
-        </div>
+        </article>
     </form>
 </div>
 
@@ -87,7 +109,7 @@ $html = ob_get_clean();
 
     __setVueComponent('users', 'component', 'user-edit-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['groups', 'permissionGlobalEdit'],
+        props: ['groups', 'urlUserLog', 'permissionGlobalEdit'],
         data() {
             return {
                 user: null,
@@ -95,11 +117,16 @@ $html = ob_get_clean();
                 name_family: null,
                 organization: null,
                 userGroups: null,
+                settingPassword: false,
+                newPassword: ''
             }
         },
         computed: {
             modalTitle: function () {
                 return (this.user ? modalTitleTemplate.replace(/%USERNAME%/, this.user.email) : '--');
+            },
+            userLogUrl: function () {
+                return this.urlUserLog.replace(/%23/g, "#").replace(/###USER###/, this.user.id);
             }
         },
         methods: {
@@ -109,11 +136,14 @@ $html = ob_get_clean();
                 this.name_family = user.name_family;
                 this.organization = user.organization;
                 this.userGroups = user.groups;
+                this.settingPassword = false;
+                this.newPassword = '';
 
                 $(this.$refs['user-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
             },
             save: function ($event) {
-                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization);
+                const password = (this.settingPassword ? this.newPassword : null);
+                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, password);
                 $(this.$refs['user-edit-modal']).modal("hide");
 
                 if ($event) {
@@ -130,6 +160,12 @@ $html = ob_get_clean();
                 } else {
                     this.userGroups.push(group.id);
                 }
+            },
+            openSetPassword: function () {
+                this.settingPassword = true;
+                this.$nextTick(function () {
+                    this.$refs['password-setter'].focus();
+                });
             }
         }
 
