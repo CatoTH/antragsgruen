@@ -28,12 +28,12 @@ export class UserAdmin {
                 <user-edit-widget
                     :groups="groups"
                     :permissionGlobalEdit="permissionGlobalEdit"
+                    :urlUserLog="urlUserLog"
                     @save-user="saveUser"
                     ref="user-edit-widget"
                 ></user-edit-widget>
                 <user-admin-widget :users="users"
                                    :groups="groups"
-                                   :urlUserLog="urlUserLog"
                                    :urlUserGroupLog="urlUserGroupLog"
                                    @remove-user="removeUser"
                                    @create-user-group="createUserGroup"
@@ -77,14 +77,15 @@ export class UserAdmin {
                         alert(err.responseText);
                     });
                 },
-                saveUser(userId, groups, nameGiven, nameFamily, organization) {
+                saveUser(userId, groups, nameGiven, nameFamily, organization, newPassword) {
                     this._performOperation({
                         op: 'save-user',
                         userId,
                         nameGiven,
                         nameFamily,
                         organization,
-                        groups
+                        groups,
+                        newPassword
                     });
                 },
                 removeUser(user) {

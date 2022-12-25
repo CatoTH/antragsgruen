@@ -101,6 +101,8 @@ $html = ob_get_clean();
     const removeGroupConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_groupdel_confirm')) ?>;
     const showAllGroups = <?= json_encode(Yii::t('admin', 'siteacc_userfilter_allgr')) ?>;
 
+    const LOGIN_STD = 0;
+
     __setVueComponent('users', 'directive', 'focus', {
         mounted: function (el) {
             el.focus()
@@ -113,7 +115,7 @@ $html = ob_get_clean();
 
     __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['users', 'groups', 'urlUserLog', 'urlUserGroupLog'],
+        props: ['users', 'groups', 'urlUserGroupLog'],
         mixins: window.USER_ADMIN_MIXINS,
         data() {
             return {
@@ -208,9 +210,6 @@ $html = ob_get_clean();
                         widget.$emit('remove-user', user);
                     }
                 });
-            },
-            userLogUrl: function (user) {
-                return this.urlUserLog.replace(/%23/g, "#").replace(/###USER###/, user.id);
             },
             userGroupLogUrl: function (userGroup) {
                 return this.urlUserGroupLog.replace(/%23/g, "#").replace(/###GROUP###/, userGroup.id);
