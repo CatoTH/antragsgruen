@@ -6,7 +6,7 @@ $controller = $this->context;
 ob_start();
 ?>
 <div class="modal fade editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" ref="user-edit-modal">
-    <article class="modal-dialog" role="document">
+    <form class="modal-dialog" method="POST" @submit="save($event)">
         <div class="modal-content">
             <header class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="<?= Yii::t('base', 'abort') ?>"><span aria-hidden="true">&times;</span></button>
@@ -70,12 +70,12 @@ ob_start();
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     <?= Yii::t('base', 'abort') ?>
                 </button>
-                <button type="button" class="btn btn-primary" @click="save()">
+                <button type="submit" class="btn btn-primary" @click="save()">
                     <?= Yii::t('base', 'save') ?>
                 </button>
             </footer>
         </div>
-    </article>
+    </form>
 </div>
 
 <?php
@@ -112,8 +112,14 @@ $html = ob_get_clean();
 
                 $(this.$refs['user-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
             },
-            save: function () {
+            save: function ($event) {
+                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization);
                 $(this.$refs['user-edit-modal']).modal("hide");
+
+                if ($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                }
             },
             isInGroup: function (group) {
                 return this.userGroups.indexOf(group.id) !== -1;
