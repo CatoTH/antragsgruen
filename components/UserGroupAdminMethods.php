@@ -136,7 +136,7 @@ class UserGroupAdminMethods
         $user->save();
 
         if ($newPassword !== null && trim($newPassword) !== '') {
-            $user->changePassword($newPassword);
+            $user->changePassword(trim($newPassword));
         }
     }
 

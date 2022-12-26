@@ -347,6 +347,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_usermodal_pass'     => 'Passwort',
     'siteacc_usermodal_passset'  => 'Neues Passwort setzen',
     'siteacc_usermodal_passnew'  => 'Neues Passwort',
+    'siteacc_usermodal_superh'   => 'Hinweis: Super-Admins können die Angaben oben bearbeiten und neue Passwörter setzen. In der <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins" target="_blank">technischen Dokumentation</a> steht, wie Super-Admins verwaltet werden.',
     'siteacc_email_text_pre'     => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .

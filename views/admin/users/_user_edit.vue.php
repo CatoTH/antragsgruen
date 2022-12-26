@@ -76,12 +76,16 @@ ob_start();
                         <?= Yii::t('admin', 'siteacc_new_groups') ?>
                     </div>
                     <div class="rightColumn">
-                        <label v-for="group in groups">
+                        <label v-for="group in groups" :class="'userGroup' + group.id">
                             <input type="checkbox" :checked="isInGroup(group)" @click="toggleGroup(group)">
                             {{ group.title }}
                         </label>
                     </div>
                 </div>
+
+                <small v-if="!permissionGlobalEdit">
+                    <?= Yii::t('admin', 'siteacc_usermodal_superh') ?>
+                </small>
             </main>
             <footer class="modal-footer">
                 <a class="changeLogLink" :href="userLogUrl" v-if="user">
@@ -89,10 +93,10 @@ ob_start();
                     <?= Yii::t('admin','siteacc_usergroup_log') ?>
                 </a>
 
-                <button type="button" class="btn btn-default" data-dismiss="modal">
+                <button type="button" class="btn btn-default btnCancel" data-dismiss="modal">
                     <?= Yii::t('base', 'abort') ?>
                 </button>
-                <button type="submit" class="btn btn-primary" @click="save()">
+                <button type="submit" class="btn btn-primary btnSave" @click="save($event)">
                     <?= Yii::t('base', 'save') ?>
                 </button>
             </footer>

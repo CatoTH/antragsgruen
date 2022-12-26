@@ -117,6 +117,16 @@ If you encounter any problem using the web-based updater, please consult the [Up
 
 ## Deployment techniques
 
+### Setting Super-Admins
+
+Super-Admins are administrators with some additional set of privileges not available to regular site administrators:
+- They can modify the user data of registered users (setting the name, organization and a new password).
+- They can download and install new versions of Antragsgrün and set the whole site into maintenance mode.
+- On Multisite installations, they are automatically set as administrator for every site.
+
+The list of super-admins cannot (on purpose) be changed using the Web-UI,
+but has to be manually changed in the `config/config.json` by adding and removing the user IDs in the `adminUserIds` array.
+
 ### LaTeX/XeTeX-based PDF-rendering
 
 Necessary packets on Linux (Debian):
@@ -211,25 +221,6 @@ Add the following settings to your config.json (and adapt them to your needs):
         "database": 0
     }
 }
-```
-
-### Integrating OpenSlides
-
-Antragsgrün has an official plugin that allows using OpenSlides as a backend for the user administration. This allows two things:
-
-- Logging in on Antragsgrün with the user credentials of an OpenSlides instance.
-- Automatically synchronizing the user accounts and user groups from OpenSlides to Antragsgrün, e.g. for restricting motion creation or voting rights on Antragsgrün to a user group administrated on OpenSlides.
-
-To set it up:
-- Enable the `openslides` plugin on the Antragsgrün site
-- Set up the OpenSlides Base URI in the configuration of the consultation (e.g. `https://demo.openslides.org/`), and specify an API key
-- Set up the [OpenSlides-Proxy](https://github.com/CatoTH/OpenSlides-Proxy), specifying the OpenSlides Base URI, Antragsgrün's Callback URI and the API key.
-
-### Command Line Commands
-
-Force a new password for a user:
-```bash
-./yii admin/set-user-password user@example.org mynewpassword
 ```
 
 

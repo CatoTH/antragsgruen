@@ -51,11 +51,13 @@ $I->logout();
 
 $I->wantTo('Assign the site admin role to consultationadmin');
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->dontSeeElement('.user7 .selectize-control');
+
+$I->dontSeeElement('.editUserModal');
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.user7 .selectize-control');
-$I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([1], { id: 7 });');
-$I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
+$I->wait(0.5);
+$I->seeElement('.editUserModal');
+$I->checkOption('.editUserModal .userGroup1');
+$I->clickJS('.editUserModal .btnSave');
 $I->wait(0.3);
 $I->see('Seiten-Admin', '.user7');
 
@@ -89,11 +91,13 @@ $I->gotoConsultationHome();
 $I->logout();
 
 $I->loginAndGotoStdAdminPage()->gotoUserAdministration();
-$I->dontSeeElement('.user7 .selectize-control');
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.user7 .selectize-control');
-$I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([3], { id: 7 });');
-$I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
+$I->wait(0.5);
+$I->seeElement('.editUserModal');
+$I->clickJS('.editUserModal .userGroup3');
+$I->clickJS('.editUserModal .userGroup1');
+$I->clickJS('.editUserModal .userGroup2');
+$I->clickJS('.editUserModal .btnSave');
 $I->wait(0.3);
 $I->see('Antragskommission', '.user7');
 
@@ -147,9 +151,11 @@ $I->submitForm('.addUsersByLogin.multiuser', [], 'addUsers');
 
 $I->wait(0.5);
 $I->clickJS('.user7 .btnEdit');
-$I->seeElement('.user7 .selectize-control');
-$I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([2], { id: 7 });');
-$I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 7});');
+$I->wait(0.5);
+$I->seeElement('.editUserModal');
+$I->checkOption('.editUserModal .userGroup2');
+$I->clickJS('.editUserModal .btnSave');
+
 $I->wait(0.3);
 $I->see('Veranstaltungs-Admin', '.user7');
 
