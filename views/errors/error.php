@@ -50,9 +50,8 @@ switch ($httpStatus) {
 
 $this->title = $name;
 
-echo '<h1>' . Html::encode($this->title) . '</h1>
-<br><br>
-<div class="row">
-    <div class="alert alert-danger col-md-10 col-md-offset-1">' . $message . '</div>
+?>
+<h1><?= Html::encode($this->title) ?></h1>
+<div class="content">
+    <div class="alert alert-danger"><?= $message ?></div>
 </div>
-<br><br>';

@@ -23,8 +23,6 @@ $this->title = Yii::t('motion', 'err_not_visible_title') . ' (' . $motion->getMy
 
 ?>
 <h1><?= Html::encode(Yii::t('motion', 'err_not_visible_title')) ?></h1>
-<br><br>
-<div class="row">
-    <div class="alert alert-danger col-md-10 col-md-offset-1"><?= Yii::t('motion', 'err_not_visible') ?></div>
+<div class="content">
+    <div class="alert alert-danger"><?= Yii::t('motion', 'err_not_visible') ?></div>
 </div>
-<br><br>

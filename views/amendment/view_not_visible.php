@@ -31,8 +31,6 @@ $this->title = Yii::t('amend', 'err_not_visible_title') . ' (' . $amendment->get
 
 ?>
 <h1><?= Html::encode(Yii::t('amend', 'err_not_visible_title')) ?></h1>
-<br><br>
-<div class="row">
-    <div class="alert alert-danger col-md-10 col-md-offset-1"><?= Yii::t('amend', 'err_not_visible') ?></div>
+<div class="content">
+    <div class="alert alert-danger"><?= Yii::t('amend', 'err_not_visible') ?></div>
 </div>
-<br><br>
