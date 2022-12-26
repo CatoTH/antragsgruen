@@ -117,7 +117,6 @@ class AgendaVoting
 
         if ($context === static::API_CONTEXT_ADMIN) {
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
-            $votingBlockJson['admin_setup_hint_html'] = ($this->voting ? $this->voting->getAdminSetupHintHtml() : null);
         }
         if ($this->voting) {
             list($total, $users) = $this->voting->getVoteStatistics();

@@ -13,6 +13,7 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 
 $alternativeResultTemplate = Layout::getVotingAlternativeResults($consultation);
+$additionalActionTemplate = Layout::getVotingAdditionalActions($consultation);
 
 ob_start();
 ?>
@@ -77,18 +78,26 @@ ob_start();
         <div class="alert alert-info" v-if="voting.status === STATUS_CLOSED_UNPUBLISHED">
             <p><?= Yii::t('voting', 'admin_status_closed_unpublished') ?></p>
         </div>
-        <form method="POST" class="votingDataActions" v-if="isPreparing" @submit="openVoting($event)">
-            <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
+        <form method="POST" class="votingDataActions" v-if="isPreparing">
+            <?php
+            if ($additionalActionTemplate) {
+                echo $additionalActionTemplate;
+            }
+            ?>
             <div class="actions">
                 <button type="button" class="btn btn-primary btnOpen" @click="openVoting()"><?= Yii::t('voting', 'admin_btn_open') ?></button>
             </div>
         </form>
         <form method="POST" class="votingDataActions" v-if="isOpen || isClosed">
-            <div v-if="voting.admin_setup_hint_html" class="votingAdminHint" v-html="voting.admin_setup_hint_html"></div>
+            <?php
+            if ($additionalActionTemplate) {
+                echo $additionalActionTemplate;
+            }
+            ?>
 
             <div class="actions" v-if="isOpen">
                 <span class="remainingTime" v-if="isOpen && hasVotingTime && remainingVotingTime !== null">
-                    <?= Yii::t('speech', 'remaining_time') ?>:
+                    <?= Yii::t('voting', 'remaining_time') ?>:
                     <span v-if="remainingVotingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
                     <span v-if="remainingVotingTime < 0" class="over"><?= Yii::t('speech', 'remaining_time_over') ?></span>
                 </span>

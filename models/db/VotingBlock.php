@@ -670,17 +670,6 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return $position;
     }
 
-    public function getAdminSetupHintHtml(): ?string
-    {
-        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $hint = $plugin::getVotingAdminSetupHintHtml($this);
-            if ($hint) {
-                return $hint;
-            }
-        }
-        return null;
-    }
-
     public function isClosed(): bool
     {
         return $this->votingStatus === VotingBlock::STATUS_CLOSED_UNPUBLISHED ||

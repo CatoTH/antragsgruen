@@ -254,6 +254,11 @@ class Hooks
         return $before;
     }
 
+    public function getVotingAdditionalActions(?string $before, Consultation $consultation): ?string
+    {
+        return $before;
+    }
+
     public function getVotingAlternativeUserResults(?array $before, VotingData $votingData): ?array
     {
         return $before;

@@ -71,7 +71,7 @@ echo $controller->showErrors();
 
 
 ?>
-    <fieldset class="col-md-10 col-md-offset-1" data-antragsgruen-widget="frontend/UserNotificationsForm">
+    <fieldset class="content" data-antragsgruen-widget="frontend/UserNotificationsForm">
         <legend><?= Yii::t('con', 'noti_triggers') ?></legend>
 
         <div class="notificationRow">

@@ -267,6 +267,11 @@ class Layout
         return self::callHook('getVotingAlternativeAdminHeader', [$consultation], null);
     }
 
+    public static function getVotingAdditionalActions(Consultation $consultation): ?string
+    {
+        return self::callHook('getVotingAdditionalActions', [$consultation], null);
+    }
+
     public static function getVotingAlternativeResults(Consultation $consultation): ?string
     {
         return self::callHook('getVotingAlternativeResults', [$consultation], null);

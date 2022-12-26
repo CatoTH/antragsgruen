@@ -157,11 +157,6 @@ class ModuleBase extends Module
         return null;
     }
 
-    public static function getVotingAdminSetupHintHtml(VotingBlock $votingBlock): ?string
-    {
-        return null;
-    }
-
     /**
      * @param Vote[] $votes
      */

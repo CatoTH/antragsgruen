@@ -56,25 +56,6 @@ class Module extends ModuleBase
         return null;
     }
 
-    public static function getVotingAdminSetupHintHtml(VotingBlock $votingBlock): ?string
-    {
-        if (VotingHelper::isSetUpAsYfjVoting($votingBlock)) {
-            $html = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Voting IS set up as <strong>YFJ Voting</strong><br>';
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $html .= VotingHelper::getEligibleUserCountByGroup($votingBlock, [VotingHelper::class, 'conditionVotingIsNycGroup']) . ' NYC members<br>';
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $html .= VotingHelper::getEligibleUserCountByGroup($votingBlock, [VotingHelper::class, 'conditionVotingIsIngyoGroup']) . ' INGYO members';
-
-            return $html;
-        } elseif (VotingHelper::isSetUpAsYfjRollCall($votingBlock)) {
-            $html = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Voting IS set up as YFJ <strong>Roll Call</strong><br>';
-
-            return $html;
-        } else {
-            return 'Voting is NEITHER set up as YFJ Voting nor YFJ Roll Call';
-        }
-    }
-
     /**
      * @param Vote[] $votes
      */
