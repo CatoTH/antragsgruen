@@ -288,6 +288,22 @@ $html = ob_get_clean();
                     return group.title;
                 }).join(", ");
             },
+            addGroupToUser: function (user, groupId) {
+                if (user.groups.indexOf(groupId) !== -1) {
+                    console.warn('Group is already set for this user', groupId, JSON.parse(JSON.stringify(user)));
+                } else {
+                    user.groups.push(groupId);
+                }
+                this.$emit('save-user', user.id, user.groups);
+            },
+            removeGroupFromUser: function (user, groupId) {
+                if (user.groups.indexOf(groupId) === -1) {
+                    console.warn('User does not have this group', groupId, JSON.parse(JSON.stringify(user)));
+                } else {
+                    user.groups = user.groups.filter(grp => grp !== groupId);
+                }
+                this.$emit('save-user', user.id, user.groups);
+            },
             addGroupSubmit: function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();

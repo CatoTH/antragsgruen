@@ -284,12 +284,12 @@ class ConsultationUserGroup extends ActiveRecord
         return SiteSettings::LOGIN_STD;
     }
 
-    public function getVotingApiObject(): array
+    public function getVotingApiObject(?int $overwriteUserCount = null): array
     {
         return [
             'id' => $this->id,
             'title' => $this->getNormalizedTitle(),
-            'member_count' => count($this->getUserIds()),
+            'member_count' => $overwriteUserCount ?? count($this->getUserIds()),
         ];
     }
 

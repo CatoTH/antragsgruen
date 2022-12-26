@@ -32,14 +32,16 @@ export class UserAdmin {
                     @save-user="saveUser"
                     ref="user-edit-widget"
                 ></user-edit-widget>
-                <user-admin-widget :users="users"
-                                   :groups="groups"
-                                   :urlUserGroupLog="urlUserGroupLog"
-                                   @remove-user="removeUser"
-                                   @create-user-group="createUserGroup"
-                                   @remove-group="removeUserGroup"
-                                   @edit-user="editUser"
-                                   ref="user-admin-widget"
+                <user-admin-widget
+                    :users="users"
+                    :groups="groups"
+                    :urlUserGroupLog="urlUserGroupLog"
+                    @remove-user="removeUser"
+                    @create-user-group="createUserGroup"
+                    @remove-group="removeUserGroup"
+                    @edit-user="editUser"
+                    @save-user="saveUser"
+                    ref="user-admin-widget"
                 ></user-admin-widget>
             </div>`,
             data() {

@@ -84,6 +84,24 @@ class AgendaVoting
         }
     }
 
+    private function getOverriddenUserGroupCounts(): array
+    {
+        if (!$this->voting->isClosed()) {
+            return [];
+        }
+        if (count($this->items) === 0) {
+            return [];
+        }
+        if (!$this->items[0]->getVotingData()->eligibilityList) {
+            return [];
+        }
+        $counts = [];
+        foreach ($this->items[0]->getVotingData()->eligibilityList as $eligiblity) {
+            $counts[$eligiblity->groupId] = count($eligiblity->users);
+        }
+        return $counts;
+    }
+
     private function getApiObject(?string $title, ?User $user, string $context): array
     {
         $answers = ($this->voting ? $this->voting->getAnswers() : null);
@@ -107,9 +125,12 @@ class AgendaVoting
             $policy = $this->voting->getVotingPolicy();
             $additionalIds = (is_a($policy, UserGroups::class) ? array_map(function (ConsultationUserGroup $group): int { return $group->id; }, $policy->getAllowedUserGroups()) : []);
             $userGroups = $this->voting->getMyConsultation()->getAllAvailableUserGroups($additionalIds, true);
+
+            $userGroupOverrides = $this->getOverriddenUserGroupCounts();
             foreach ($userGroups as $userGroup) {
-                $votingBlockJson['user_groups'][] = $userGroup->getVotingApiObject();
+                $votingBlockJson['user_groups'][] = $userGroup->getVotingApiObject($userGroupOverrides[$userGroup->id] ?? null);
             }
+
             $votingBlockJson['current_time'] = (int)round(microtime(true) * 1000); // needs to include milliseconds for accuracy
             $votingBlockJson['voting_time'] = $settings->votingTime;
             $votingBlockJson['opened_ts'] = ($this->voting->votingStatus === VotingBlock::STATUS_OPEN ? $settings->openedTs * 1000 : null);

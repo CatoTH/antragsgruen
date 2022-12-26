@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
-use app\models\settings\{AntragsgruenApp, VotingData};
+use app\models\settings\{AntragsgruenApp, JsonConfigTrait, VotingData};
 use app\models\exceptions\FormError;
 
 /**
@@ -30,7 +30,7 @@ trait VotingItemTrait
 
         if (!is_object($this->votingDataObject)) {
             /** @var VotingData $object */
-            $object = new $className($this->votingData);
+            $object = new $className(VotingData::decodeJson5($this->votingData));
             $this->votingDataObject = $object;
         }
 

@@ -166,8 +166,7 @@ foreach ($agendaVoting->items as $i => $voteItem) {
     }
 
     if ($agendaVoting->voting->isClosed()) {
-        $voteResults = $voteItem->getVotingData();
-        $eligibilityList = EligibilityByGroup::listFromJsonArray($voteResults->eligibilityList);
+        $eligibilityList = $voteItem->getVotingData()->getEligibilityList();
     } else {
         $eligibilityList = $agendaVoting->voting->getVotingPolicy()->getEligibilityByGroup();
     }
