@@ -121,6 +121,8 @@ class AgendaVoting
         ];
 
         if ($this->voting) {
+            User::preloadConsultationUserGroups($this->voting->getMyConsultation());
+
             $settings = $this->voting->getSettings();
             $policy = $this->voting->getVotingPolicy();
             $additionalIds = (is_a($policy, UserGroups::class) ? array_map(function (ConsultationUserGroup $group): int { return $group->id; }, $policy->getAllowedUserGroups()) : []);

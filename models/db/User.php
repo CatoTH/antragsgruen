@@ -194,11 +194,34 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(ConsultationUserGroup::class, ['id' => 'groupId'])->viaTable('userGroup', ['userId' => 'id']);
     }
 
+
+    private static array $preloadedConsultationUserGroups = [];
+    public static function preloadConsultationUserGroups(Consultation $consultation): void
+    {
+        if (isset(self::$preloadedConsultationUserGroups[$consultation->id])) {
+            return;
+        }
+
+        self::$preloadedConsultationUserGroups[$consultation->id] = [];
+        foreach ($consultation->getAllAvailableUserGroups([], true) as $userGroup) {
+            foreach ($userGroup->getUserIds() as $userId) {
+                if (!isset(self::$preloadedConsultationUserGroups[$consultation->id][$userId])) {
+                    self::$preloadedConsultationUserGroups[$consultation->id][$userId] = [];
+                }
+                self::$preloadedConsultationUserGroups[$consultation->id][$userId][] = $userGroup;
+            }
+        }
+    }
+
     /**
      * @return ConsultationUserGroup[]
      */
     public function getConsultationUserGroups(Consultation $consultation): array
     {
+        if (isset(self::$preloadedConsultationUserGroups[$consultation->id][$this->id])) {
+            return self::$preloadedConsultationUserGroups[$consultation->id][$this->id];
+        }
+
         $groups = [];
         foreach ($consultation->getAllAvailableUserGroups([], true) as $userGroup) {
             foreach ($userGroup->getUserIds() as $userId) {
