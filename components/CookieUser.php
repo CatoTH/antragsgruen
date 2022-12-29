@@ -8,14 +8,9 @@ use app\models\settings\AntragsgruenApp;
 
 class CookieUser
 {
-    /** @var string */
-    public $userToken;
-
-    /** @var string */
-    public $name;
-
-    /** @var null|CookieUser */
-    private static $userCache = null;
+    public string $userToken;
+    public string $name;
+    private static ?CookieUser $userCache = null;
 
     public static function getFromCookieOrCache(): ?CookieUser
     {
@@ -36,7 +31,7 @@ class CookieUser
     {
         $existingUser = static::getFromCookieOrCache();
         if ($existingUser) {
-            if (trim($name) !== $existingUser) {
+            if (trim($name) !== $existingUser->name) {
                 $existingUser->name = trim($name);
                 $existingUser->sendCookie();
             }
@@ -56,9 +51,7 @@ class CookieUser
     public function sendCookie(): void
     {
         $content = $this->userToken . ',' . $this->name;
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
 
-        setcookie('tempUser', $content, time() + 365 * 24 * 3600, '/', ($params->cookieDomain ? $params->cookieDomain : ''));
+        setcookie('tempUser', $content, time() + 365 * 24 * 3600, '/', (AntragsgruenApp::getInstance()->cookieDomain ?: ''));
     }
 }

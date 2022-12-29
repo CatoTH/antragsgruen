@@ -7,43 +7,27 @@ use app\models\db\Site;
 use app\models\settings\AntragsgruenApp;
 
 /**
- * Class ConsultationAccessPassword
- * @package app\components
- *
  * Two hashes / codes are relevant:
  * - consultation.settings.accessPwd is the consultation password, hashed by password_hash(PASSWORD_DEFAULT)
  * - The cookie holds a hash of consultation.settings.accessPwd(hashed) + the App's secret key.
  */
 class ConsultationAccessPassword
 {
-    /** @var Consultation */
-    private $consultation;
+    private Consultation $consultation;
+    private Site $site;
 
-    /** @var Site */
-    private $site;
-
-    /**
-     * ConsultationAccessPassword constructor.
-     * @param Consultation $consultation
-     */
     public function __construct(Consultation $consultation)
     {
         $this->consultation = $consultation;
         $this->site         = $consultation->site;
     }
 
-    /**
-     * @return bool
-     */
-    public function isPasswordSet()
+    public function isPasswordSet(): bool
     {
         return ($this->consultation->getSettings()->accessPwd !== null);
     }
 
-    /**
-     * @return bool
-     */
-    public function allHaveSamePwd()
+    public function allHaveSamePwd(): bool
     {
         foreach ($this->site->consultations as $consultation) {
             if ($consultation->getSettings()->accessPwd !== $this->consultation->getSettings()->accessPwd) {
@@ -53,10 +37,7 @@ class ConsultationAccessPassword
         return true;
     }
 
-    /**
-     * @param string $pwdHash
-     */
-    public function setPwdForOtherConsultations($pwdHash)
+    public function setPwdForOtherConsultations(string $pwdHash): void
     {
         foreach ($this->site->consultations as $otherCon) {
             if ($otherCon->id !== $this->consultation->id) {
@@ -68,11 +49,7 @@ class ConsultationAccessPassword
         }
     }
 
-    /**
-     * @param string $pwd
-     * @return bool
-     */
-    public function checkPassword($pwd)
+    public function checkPassword(string $pwd): bool
     {
         $pwd = trim($pwd);
         if (!$pwd) {
@@ -81,19 +58,13 @@ class ConsultationAccessPassword
         return password_verify($pwd, $this->consultation->getSettings()->accessPwd);
     }
 
-    /**
-     * @param string $cookie
-     * @return bool
-     */
-    public function checkCookie($cookie)
+    public function checkCookie(?string $cookie): bool
     {
         if (!$cookie) {
             return false;
         }
         $passwordHashes = explode(",", $cookie);
-        /** @var AntragsgruenApp $app */
-        $app      = \Yii::$app->params;
-        $hashBase = $app->randomSeed . $this->consultation->getSettings()->accessPwd;
+        $hashBase = AntragsgruenApp::getInstance()->randomSeed . $this->consultation->getSettings()->accessPwd;
         try {
             $correctHash = base64_encode(sodium_crypto_generichash($hashBase));
         } catch (\SodiumException $e) {
@@ -102,14 +73,9 @@ class ConsultationAccessPassword
         return in_array($correctHash, $passwordHashes);
     }
 
-    /**
-     * @return string
-     */
-    public function createCookieHash()
+    public function createCookieHash(): string
     {
-        /** @var AntragsgruenApp $app */
-        $app      = \Yii::$app->params;
-        $hashBase = $app->randomSeed . $this->consultation->getSettings()->accessPwd;
+        $hashBase = AntragsgruenApp::getInstance()->randomSeed . $this->consultation->getSettings()->accessPwd;
         try {
             return base64_encode(sodium_crypto_generichash($hashBase));
         } catch (\SodiumException $e) {
@@ -117,18 +83,12 @@ class ConsultationAccessPassword
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isCookieLoggedIn()
+    public function isCookieLoggedIn(): bool
     {
-        $cookie = (isset($_COOKIE['consultationPwd']) ? $_COOKIE['consultationPwd'] : null);
-        return $this->checkCookie($cookie);
+        return $this->checkCookie($_COOKIE['consultationPwd'] ?? null);
     }
 
-    /**
-     */
-    public function setCorrectCookie()
+    public function setCorrectCookie(): void
     {
         $cookie    = (isset($_COOKIE['consultationPwd']) ? explode(",", $_COOKIE['consultationPwd']) : []);
         $cookie[]  = $this->createCookieHash();

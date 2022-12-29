@@ -4,10 +4,7 @@ namespace app\components;
 
 class SitePurger
 {
-    /**
-     * @param int $amendId
-     */
-    public static function purgeAmendment($amendId)
+    public static function purgeAmendment(int $amendId): void
     {
         $connection = \Yii::$app->getDb();
 
@@ -37,10 +34,7 @@ class SitePurger
         )->execute();
     }
 
-    /**
-     * @param int $motionId
-     */
-    public static function purgeMotion($motionId)
+    public static function purgeMotion(int $motionId): void
     {
         $connection = \Yii::$app->getDb();
 
@@ -49,7 +43,7 @@ class SitePurger
             [':motionId' => $motionId]
         )->queryColumn();
         foreach ($amendmentIds as $amendmentId) {
-            static::purgeAmendment($amendmentId);
+            static::purgeAmendment((int)$amendmentId);
         }
 
         $connection->createCommand(
@@ -83,10 +77,7 @@ class SitePurger
         )->execute();
     }
 
-    /**
-     * @param int $motionTypeId
-     */
-    public static function purgeMotionType($motionTypeId)
+    public static function purgeMotionType(int $motionTypeId): void
     {
         $connection = \Yii::$app->getDb();
 
@@ -101,10 +92,7 @@ class SitePurger
         )->execute();
     }
 
-    /**
-     * @param int $consultationId
-     */
-    public static function purgeConsultation($consultationId)
+    public static function purgeConsultation(int $consultationId): void
     {
         $connection = \Yii::$app->getDb();
         $connection->createCommand(
@@ -127,7 +115,7 @@ class SitePurger
             [':conId' => $consultationId]
         )->queryColumn();
         foreach ($motionIds as $motionId) {
-            static::purgeMotion($motionId);
+            static::purgeMotion((int)$motionId);
         }
 
         $motionTypeIds = $connection->createCommand(
@@ -135,7 +123,7 @@ class SitePurger
             [':conId' => $consultationId]
         )->queryColumn();
         foreach ($motionTypeIds as $motionTypeId) {
-            static::purgeMotionType($motionTypeId);
+            static::purgeMotionType((int)$motionTypeId);
         }
 
         $connection->createCommand(
@@ -159,10 +147,7 @@ class SitePurger
         )->execute();
     }
 
-    /**
-     * @param int $siteId
-     */
-    public static function purgeSite($siteId)
+    public static function purgeSite(int $siteId): void
     {
         $connection      = \Yii::$app->getDb();
         $consultationIds = $connection->createCommand(
@@ -171,7 +156,7 @@ class SitePurger
         )->queryColumn();
 
         foreach ($consultationIds as $consultationId) {
-            static::purgeConsultation($consultationId);
+            static::purgeConsultation((int)$consultationId);
         }
 
         $connection->createCommand(
