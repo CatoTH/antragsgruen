@@ -16,9 +16,8 @@ use Symfony\Component\Lock\{LockFactory,
 final class ResourceLock
 {
     /** @var LockInterface[] */
-    private static $acquiredLocks = [];
-    /** @var null|LockFactory */
-    private static $lockFactory = null;
+    private static array $acquiredLocks = [];
+    private static ?LockFactory $lockFactory = null;
 
     private static function createRedisStore(AntragsgruenApp $app): RedisStore
     {
