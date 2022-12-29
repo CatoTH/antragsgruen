@@ -6,6 +6,7 @@
 - Bugfix: Changing the amendment text as admin does not clear the motion's view cache in all cases.
 - Bugfix: PHP-based PDF rendering lead to overlapping lines when the text contained nested lines without line numbering.
 - Bugfix: Setting the time of agenda items was not possible in locales using AM/PM.
+- Bugfix: Uploaded logos and background images could not always be shown with enabled maintenance mode.
 
 ### Version 4.11.1 (2022-12-10)
 
