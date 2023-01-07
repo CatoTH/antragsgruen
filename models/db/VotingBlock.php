@@ -317,9 +317,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return $this->getVotingPolicy()->checkUser($user, false, false);
     }
 
-    public function userIsCurrentlyAllowedToVoteFor(User $user, IVotingItem $item): bool
+    public function userIsCurrentlyAllowedToVoteFor(User $user, IVotingItem $item, ?Vote $vote): bool
     {
-        if ($this->getUserSingleItemVote($user, $item)) {
+        if ($vote) {
             // The user has already voted
             return false;
         }

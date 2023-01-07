@@ -162,7 +162,7 @@ class AgendaVoting
             if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
                 $vote = $this->voting->getUserSingleItemVote($user, $item);
                 $data['voted'] = ($vote ? $vote->getVoteForApi($answers) : null);
-                $data['can_vote'] = $this->voting->userIsCurrentlyAllowedToVoteFor($user, $item);
+                $data['can_vote'] = $this->voting->userIsCurrentlyAllowedToVoteFor($user, $item, $vote);
             }
 
             if ($this->voting && $context === static::API_CONTEXT_ADMIN) {
