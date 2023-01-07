@@ -30,7 +30,7 @@ ob_start();
                                 v-if="!settingPassword" @click="openSetPassword()">
                             <?= Yii::t('admin', 'siteacc_usermodal_passset') ?>
                         </button>
-                        <input type="password" v-model="newPassword" class="form-control"
+                        <input type="password" v-model="newPassword" class="form-control inputPassword"
                                 v-if="settingPassword"
                                title="<?= Yii::t('admin', 'siteacc_usermodal_passnew') ?>"
                                placeholder="<?= Yii::t('admin', 'siteacc_usermodal_passnew') ?>"
@@ -46,7 +46,7 @@ ob_start();
                         {{ name_given }}
                     </div>
                     <div class="rightColumn" v-if="permissionGlobalEdit">
-                        <input type="text" class="form-control" v-model="name_given">
+                        <input type="text" class="form-control inputNameGiven" v-model="name_given">
                     </div>
                 </div>
                 <div class="stdTwoCols">
@@ -57,7 +57,7 @@ ob_start();
                         {{ name_family }}
                     </div>
                     <div class="rightColumn" v-if="permissionGlobalEdit">
-                        <input type="text" class="form-control" v-model="name_family">
+                        <input type="text" class="form-control inputNameFamily" v-model="name_family">
                     </div>
                 </div>
                 <div class="stdTwoCols">
@@ -68,7 +68,7 @@ ob_start();
                         {{ organization }}
                     </div>
                     <div class="rightColumn" v-if="permissionGlobalEdit">
-                        <input type="text" class="form-control" v-model="organization">
+                        <input type="text" class="form-control inputOrganization" v-model="organization">
                     </div>
                 </div>
                 <div class="stdTwoCols">
@@ -83,7 +83,7 @@ ob_start();
                     </div>
                 </div>
 
-                <small v-if="!permissionGlobalEdit">
+                <small v-if="!permissionGlobalEdit" class="onlyGlobalAdminsHint">
                     <?= Yii::t('admin', 'siteacc_usermodal_superh') ?>
                 </small>
             </main>

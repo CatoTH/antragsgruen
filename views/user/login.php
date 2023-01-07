@@ -119,7 +119,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     <div class="content row">';
 
     if ($usernamePasswordForm->error) {
-        echo '<div class="alert alert-danger" role="alert">
+        echo '<div class="alert alert-danger passwordError" role="alert">
   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
   <span class="sr-only">Error:</span>';
         echo Html::encode($usernamePasswordForm->error);
