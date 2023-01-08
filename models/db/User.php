@@ -411,6 +411,30 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
+    public function getGivenNameWithFallback(): string
+    {
+        if ($this->nameGiven !== null && trim($this->nameGiven) !== '') {
+            return $this->nameGiven;
+        }
+        $nameParts = explode(" ", trim($this->name));
+        if (count($nameParts) > 1) {
+            array_pop($nameParts); // We assume the last part to be the family name; not always correct but the best guess we have
+        }
+        return implode(" ", $nameParts);
+    }
+
+    public function getFamilyNameWithFallback(): string
+    {
+        if ($this->nameFamily !== null && trim($this->nameFamily) !== '') {
+            return $this->nameFamily;
+        }
+        $nameParts = explode(" ", trim($this->name));
+        if (count($nameParts) > 1) {
+            return array_pop($nameParts);
+        }
+        return '';
+    }
+
     public function getGruenesNetzName(): ?string
     {
         if (preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches)) {

@@ -9,15 +9,10 @@ class AntragsgruenInitSite extends SiteCreateForm
 {
     use AntragsgruenInitConfigwriteTrait;
 
-    public $siteEmail;
+    public string $siteEmail;
+    public bool $prettyUrls = true;
 
-    /** @var boolean */
-    public $prettyUrls = true;
-
-    /**
-     * @param string $configFile
-     */
-    public function __construct($configFile)
+    public function __construct(string $configFile)
     {
         parent::__construct();
         $config = $this->readConfigFromFile($configFile);
@@ -36,17 +31,6 @@ class AntragsgruenInitSite extends SiteCreateForm
         }
     }
 
-    public function getDefaultSite(): ?Site
-    {
-        /** @var Site[] $sites */
-        $sites = Site::find()->all();
-        if (count($sites) > 0) {
-            return $sites[0];
-        } else {
-            return null;
-        }
-    }
-
     /**
      * @param array $values
      * @param bool $safeOnly
@@ -58,10 +42,7 @@ class AntragsgruenInitSite extends SiteCreateForm
         $this->prettyUrls = isset($values['prettyUrls']);
     }
 
-    /**
-     * @param AntragsgruenApp $config
-     */
-    protected function setConfigValues(AntragsgruenApp $config)
+    protected function setConfigValues(AntragsgruenApp $config): void
     {
         $config->mailFromEmail = $this->siteEmail;
         $config->mailFromName  = $this->title;

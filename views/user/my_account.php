@@ -34,10 +34,17 @@ if ($externalAuthenticator === null) {
     ?>
 
     <div class="stdTwoCols">
-        <label class="leftColumn control-label" for="userName"><?= Yii::t('user', 'name') ?>:</label>
+        <label class="leftColumn control-label" for="nameGiven"><?= Yii::t('user', 'name_given') ?>:</label>
         <div class="rightColumn">
-            <input type="text" name="name" value="<?= Html::encode($user->name) ?>" class="form-control"
-                   id="userName" required>
+            <input type="text" name="name_given" value="<?= Html::encode($user->getGivenNameWithFallback()) ?>"
+                   class="form-control" id="nameGiven" required>
+        </div>
+    </div>
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="nameFamily"><?= Yii::t('user', 'name_family') ?>:</label>
+        <div class="rightColumn">
+            <input type="text" name="name_family" value="<?= Html::encode($user->getFamilyNameWithFallback()) ?>"
+                   class="form-control" id="nameFamily">
         </div>
     </div>
     <div class="stdTwoCols">

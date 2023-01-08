@@ -273,12 +273,12 @@ class UserController extends Base
         }
         if ($this->isPostSet('save')) {
             $post = $this->getHttpRequest()->post();
-            if (trim($post['name']) != '') {
-                $user->name = $post['name'];
-            }
+            $user->nameGiven = $post['name_given'] ?? '';
+            $user->nameFamily = $post['name_family'] ?? '';
+            $user->name = trim($user->nameGiven . ' ' . $user->nameFamily);
 
-            if ($post['pwd'] != '' || $post['pwd2'] != '') {
-                if ($post['pwd'] != $post['pwd2']) {
+            if ($post['pwd'] !== '' || $post['pwd2'] !== '') {
+                if ($post['pwd'] !== $post['pwd2']) {
                     $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_pwd_different'));
                 } elseif (grapheme_strlen($post['pwd']) < $pwMinLen) {
                     $msg = \Yii::t('user', 'err_pwd_length');

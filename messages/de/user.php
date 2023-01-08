@@ -10,6 +10,8 @@ return [
     'pwd_change'                => 'Passwort ändern',
     'pwd_change_hint'           => 'Leer lassen, falls unverändert',
     'name'                      => 'Name',
+    'name_given'                => 'Vorname',
+    'name_family'               => 'Nachname',
     'user_group'                => 'Gruppe',
     'user_groups'               => 'Gruppen',
     'user_groups_con'           => 'Diese Veranstaltung',
