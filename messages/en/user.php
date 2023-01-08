@@ -10,6 +10,8 @@ return [
     'pwd_change'                => 'Change password',
     'pwd_change_hint'           => 'Empty = leave unchanged',
     'name'                      => 'Name',
+    'name_given'                => 'Given name',
+    'name_family'               => 'Family name',
     'user_group'                => 'User group',
     'user_groups'               => 'User groups',
     'user_groups_con'           => 'This site',

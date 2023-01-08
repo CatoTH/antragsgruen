@@ -17,7 +17,8 @@ $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
 $I->click('#myAccountLink');
 
-$I->fillField('#userName', 'My new name');
+$I->fillField('#nameGiven', 'My new');
+$I->fillField('#nameFamily', 'name');
 $I->fillField('#userPwd', '123');
 $I->submitForm('.userAccountForm', [], 'save');
 $I->seeBootboxDialog('Das Passwort muss mindestens 4 Zeichen');
@@ -54,7 +55,8 @@ $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 $I->see('Willkommen!');
 $I->click('#myAccountLink');
 
-$I->seeInField('#userName', 'My new name');
+$I->seeInField('#nameGiven', 'My new');
+$I->seeInField('#nameFamily', 'name');
 $I->seeCheckboxIsChecked('input[name=emailBlocklist]');
 
 $I->uncheckOption('input[name=emailBlocklist]');
