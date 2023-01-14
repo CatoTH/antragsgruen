@@ -89,6 +89,7 @@ class TextSimple extends Text
             $str .= ' data-max-len="' . $type->maxLen . '" data-full-html="0"';
             $str .= ' data-original="' . Html::encode($moPara) . '"';
             $str .= ' data-paragraph-no="' . $paraNo . '"';
+            $str .= ' dir="' . ($this->section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '"';
             $str .= '><label for="' . $htmlId . '" class="hidden">' . Html::encode($type->title) . '</label>';
 
             $str .= '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
@@ -99,7 +100,8 @@ class TextSimple extends Text
             if ($fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
-            $str .= '" data-track-changed="1" data-enter-mode="br" data-no-strike="1" id="' . $htmlId . '_wysiwyg" ' .
+            $str .= '" dir="' . ($this->section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '" ' .
+                'data-track-changed="1" data-enter-mode="br" data-no-strike="1" id="' . $htmlId . '_wysiwyg" ' .
                 'title="' . Html::encode($type->title) . '">';
             $str .= $amParas[$paraNo];
             $str .= '</div>';
@@ -290,7 +292,7 @@ class TextSimple extends Text
             if ($this->section->getSettings()->fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
-            $str .= '">' . $htmlSection . '</div></div>';
+            $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection . '</div></div>';
         }
 
         $str .= '</div>';
@@ -373,7 +375,7 @@ class TextSimple extends Text
         if ($section->getSettings()->fixedWidth) {
             $wrapStart .= ' fixedWidthFont';
         }
-        $wrapStart .= '">';
+        $wrapStart .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
         $wrapEnd   = '</div></section>';
         if ($this->motionContext && $section->getAmendment() && $section->getAmendment()->motionId !== $this->motionContext->id) {
             $linkMotion = $section->getAmendment()->getMyMotion();

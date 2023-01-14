@@ -20,7 +20,7 @@ class Title extends ISectionType
 
         if ($type->maxLen != 0) {
             $len = abs($type->maxLen);
-            $str .= '<div class="maxLenHint"><span class="glyphicon glyphicon-info-sign icon"></span> ';
+            $str .= '<div class="maxLenHint"><span class="glyphicon glyphicon-info-sign icon" aria-hidden="true"></span> ';
             $str .= str_replace(
                 ['%LEN%', '%COUNT%'],
                 [$len, '<span class="counter"></span>'],
@@ -30,11 +30,12 @@ class Title extends ISectionType
         }
 
         $str .= '<input type="text" class="form-control" id="sections_' . $type->id . '"' .
+            ' dir="' . ($this->section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '"' .
             ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->getData()) . '">';
 
         if ($type->maxLen != 0) {
             $str .= '<div class="alert alert-danger maxLenTooLong hidden" role="alert">';
-            $str .= '<span class="glyphicon glyphicon-alert"></span> ' . \Yii::t('motion', 'max_len_alert');
+            $str .= '<span class="glyphicon glyphicon-alert" aria-hidden="true"></span> ' . \Yii::t('motion', 'max_len_alert');
             $str .= '</div>';
         }
 
@@ -90,7 +91,8 @@ class Title extends ISectionType
         }
         $str = '<section id="section_title" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($sectionTitlePrefix . $section->getSettings()->title) . '</h3>';
-        $str .= '<div id="section_title_0" class="paragraph"><div class="text fixedWidthFont motionTextFormattings">';
+        $str .= '<div id="section_title_0" class="paragraph"><div class="text fixedWidthFont motionTextFormattings" ' .
+            'dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
         $str .= '<h4 class="lineSummary">' . \Yii::t('amend', 'title_amend_to') . ':</h4>';
         $str .= '<p>' . Html::encode($section->data) . '</p>';
         $str .= '</div></div></section>';

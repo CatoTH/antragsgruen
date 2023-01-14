@@ -16,8 +16,6 @@ use yii\helpers\Html;
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-/** @var AntragsgruenApp $params */
-$params = Yii::$app->params;
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
@@ -456,7 +454,7 @@ if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
 
         <?php
         $handledSettings[] = 'emailFromName';
-        $placeholder       = str_replace('%NAME%', $params->mailFromName, Yii::t('admin', 'con_email_from_place'));
+        $placeholder       = str_replace('%NAME%', AntragsgruenApp::getInstance()->mailFromName, Yii::t('admin', 'con_email_from_place'));
         ?>
         <div class="stdTwoCols">
             <label class="leftColumn" for="emailFromName">

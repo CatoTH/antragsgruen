@@ -520,6 +520,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_section_add'          => 'Add section',
     'motion_section_add_line'     => 'Add line',
     'motion_section_fixed_width'  => 'Fixed character width',
+    'motion_section_rtl'          => 'Right-to-left text',
     'motion_section_tab_data'     => 'Data',
     'motion_section_required'     => 'Required',
     'motion_section_line_numbers' => 'Line numbers',

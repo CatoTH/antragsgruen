@@ -39,6 +39,7 @@ abstract class Text extends ISectionType
             $str .= ' fixedWidthFont';
         }
         $str .= '" id="' . $htmlId . '_wysiwyg" ';
+        $str .= 'dir="' . ($type->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '" ';
         if (in_array('strike', $type->getForbiddenMotionFormattings())) {
             $str .= 'data-no-strike="1" ';
         }
@@ -80,6 +81,7 @@ abstract class Text extends ISectionType
             $str .= ' fixedWidthFont';
         }
         $str .= '" data-track-changed="1" data-enter-mode="br" data-no-strike="1" ' .
+            'dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '" ' .
             'data-original-html="' . Html::encode($originalHtml) . '" ' .
             'id="' . $htmlId . '_wysiwyg" title="' . Html::encode($type->title) . '">';
         $str .= HTMLTools::prepareHTMLForCkeditor($data);

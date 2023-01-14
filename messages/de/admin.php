@@ -569,6 +569,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_section_add'          => 'Abschnitt hinzufügen',
     'motion_section_add_line'     => 'Zeile hinzufügen',
     'motion_section_fixed_width'  => 'Feste Zeichenbreite',
+    'motion_section_rtl'          => 'Rechts-nach-Links-Schrift',
     'motion_section_tab_data'     => 'Angaben',
     'motion_section_required'     => 'Notwendig',
     'motion_section_line_numbers' => 'Zeilennummern',

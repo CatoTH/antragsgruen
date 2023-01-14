@@ -257,7 +257,7 @@ class MotionTypeEdit {
             handle: '.drag-handle',
             animation: 150
         }));
-        $list.on('click', 'a.remover', function (ev) {
+        $list.on('click', 'button.remover', function (ev) {
             ev.preventDefault();
             let $sectionHolder = $(this).parents('li').first(),
                 delId = $sectionHolder.data('id');
