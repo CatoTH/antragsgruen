@@ -14,7 +14,7 @@
         "build": "gulp"
     },
     "engines": {
-        "node": ">=16"
+        "node": ">=18"
     },
     "devDependencies": {
         "@types/bootbox": "^5.2.3",
