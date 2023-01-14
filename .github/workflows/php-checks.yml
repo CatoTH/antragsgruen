@@ -1,0 +1,32 @@
+name: PHP checks
+
+on: [ push, pull_request ]
+
+jobs:
+  check-composer:
+    strategy:
+      matrix:
+        php: [ '7.4', '8.0', '8.1' ]
+        experimental: [ false ]
+        include:
+          - php: '8.2'
+            experimental: true
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - name: Validate composer.json and composer.lock
+        run: composer validate --no-cache --no-interaction
+      - name: Check required php extensions
+        if: "${{ matrix.experimental == false }}"
+        run: composer check --no-cache
+      - name: Install dependencies
+        if: "${{ matrix.experimental == false }}"
+        run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install experimental dependencies, ignore php requirements
+        if: "${{ matrix.experimental == true }}"
+        run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
