@@ -37,7 +37,8 @@ foreach ($amendingSections as $amendmentSection) {
 
 echo '</ul>';
 
-echo '<div class="text textOrig motionTextFormattings fixedWidthFont">';
+echo '<div class="text textOrig motionTextFormattings fixedWidthFont"
+    dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
 if ($hasLineNumbers) {
     /** @var int $lineNo */
     $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '" aria-hidden="true"></span>';
@@ -47,7 +48,8 @@ echo '</div>';
 
 foreach ($amendingSections as $amendmentSection) {
     $amendment = \app\models\db\Consultation::getCurrent()->getAmendment($amendmentSection->amendmentId);
-    echo '<div class="text textAmendment hidden motionTextFormattings fixedWidthFont amendment' . $amendment->id . '">';
+    echo '<div class="text textAmendment hidden motionTextFormattings fixedWidthFont amendment' . $amendment->id . '"
+         dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
 
     echo '<div class="preamble"><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '">';
     echo '<h3><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' . Html::encode($amendment->getShortTitle(false)) . '</h3>';

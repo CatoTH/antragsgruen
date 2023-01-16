@@ -121,6 +121,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
             $settings->imgMaxHeight = 0;
         }
         $settings->showInHtml = (isset($data['showInHtml']) || !in_array($this->type, [ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_TITLE]));
+        $settings->isRtl = isset($data['isRtl']);
         $this->setSettingsObj($settings);
     }
 

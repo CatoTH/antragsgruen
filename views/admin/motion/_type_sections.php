@@ -22,10 +22,10 @@ $sName = 'sections[' . $sectionId . ']';
     <div class="sectionContent">
         <div class="toprow">
 
-            <a href="#" class="remover" title="<?= Html::encode(Yii::t('admin', 'motion_section_del')) ?>">
+            <button type="button" class="btn-link remover" title="<?= Html::encode(Yii::t('admin', 'motion_section_del')) ?>">
                 <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
                 <span class="sr-only"><?= Yii::t('admin', 'motion_section_del') ?></span>
-            </a>
+            </button>
 
             <label for="sectionType<?= $sectionId ?>" class="sr-only"><?= Yii::t('admin', 'motion_section_type') ?></label>
             <?php
@@ -74,6 +74,11 @@ $sName = 'sections[' . $sectionId . ']';
                 <label class="fixedWidthLabel">
                     <?= Html::checkbox($sName . '[fixedWidth]', $section->fixedWidth, ['class' => 'fixedWidth']) ?>
                     <?= Yii::t('admin', 'motion_section_fixed_width') ?>
+                </label>
+
+                <label class="isRtlLabel">
+                    <?= Html::checkbox($sName . '[isRtl]', $section->getSettingsObj()->isRtl, ['class' => 'isRtl']) ?>
+                    <?= Yii::t('admin', 'motion_section_rtl') ?>
                 </label>
 
                 <label class="requiredLabel">

@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\updater\UpdateChecker;
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\AntragsgruenApp;
 use app\components\{ConsultationAccessPassword, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, ISupporter, Site, SpeechQueue, User};
@@ -10,7 +11,6 @@ use app\models\AdminTodoItem;
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
 use app\models\settings\Stylesheet;
-use yii\web\Response;
 
 class IndexController extends AdminBase
 {
@@ -19,7 +19,7 @@ class IndexController extends AdminBase
         ConsultationUserGroup::PRIVILEGE_SITE_ADMIN,
     ];
 
-    public function actionIndex(): string
+    public function actionIndex(): HtmlResponse
     {
         if ($this->isPostSet('flushCaches') && User::currentUserIsSuperuser()) {
             $this->consultation->flushCacheWithChildren(null);
@@ -28,19 +28,16 @@ class IndexController extends AdminBase
 
         if ($this->isPostSet('delSite')) {
             $this->site->setDeleted();
-            return $this->render('site_deleted');
+            return new HtmlResponse($this->render('site_deleted'));
         }
 
-        return $this->render(
-            'index',
-            [
-                'site'         => $this->site,
-                'consultation' => $this->consultation
-            ]
-        );
+        return new HtmlResponse($this->render('index', [
+            'site'         => $this->site,
+            'consultation' => $this->consultation
+        ]));
     }
 
-    public function actionConsultation(): string
+    public function actionConsultation(): HtmlResponse
     {
         $model = $this->consultation;
 
@@ -136,10 +133,10 @@ class IndexController extends AdminBase
             }
         }
 
-        return $this->render('consultation_settings', ['consultation' => $this->consultation, 'locale' => $locale]);
+        return new HtmlResponse($this->render('consultation_settings', ['consultation' => $this->consultation, 'locale' => $locale]));
     }
 
-    public function actionAppearance(): string
+    public function actionAppearance(): HtmlResponse
     {
         $consultation = $this->consultation;
 
@@ -218,14 +215,14 @@ class IndexController extends AdminBase
             }
         }
 
-        return $this->render('appearance', ['consultation' => $this->consultation]);
+        return new HtmlResponse($this->render('appearance', ['consultation' => $this->consultation]));
     }
 
-    public function actionTodo(): string
+    public function actionTodo(): HtmlResponse
     {
         $todo = AdminTodoItem::getConsultationTodos($this->consultation);
 
-        return $this->render('todo', ['todo' => $todo]);
+        return new HtmlResponse($this->render('todo', ['todo' => $todo]));
     }
 
     private function saveTags(Consultation $consultation): void
@@ -252,7 +249,7 @@ class IndexController extends AdminBase
         $consultation->refresh();
     }
 
-    public function actionTranslation(string $category = 'base'): string
+    public function actionTranslation(string $category = 'base'): HtmlResponse
     {
         $consultation = $this->consultation;
 
@@ -291,13 +288,13 @@ class IndexController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        return $this->render('translation', ['consultation' => $consultation, 'category' => $category]);
+        return new HtmlResponse($this->render('translation', ['consultation' => $consultation, 'category' => $category]));
     }
 
     /**
      * @throws \Throwable
      */
-    public function actionTranslationMotionType(string $motionTypeId): string
+    public function actionTranslationMotionType(string $motionTypeId): HtmlResponse
     {
         $consultation = $this->consultation;
         $motionType = $consultation->getMotionType(intval($motionTypeId));
@@ -333,22 +330,15 @@ class IndexController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        return $this->render('translation_motion_type', ['motionType' => $motionType]);
+        return new HtmlResponse($this->render('translation_motion_type', ['motionType' => $motionType]));
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     * @throws \Yii\base\ExitException
-     * @throws \Exception
-     */
-    public function actionSiteconsultations(): string
+    public function actionSiteconsultations(): ResponseInterface
     {
         $site = $this->site;
 
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return '';
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
         $form           = new ConsultationCreateForm($site);
@@ -406,8 +396,7 @@ class IndexController extends AdminBase
                     if ($this->consultation->id === $consultation->id) {
                         $fallback = $this->site->currentConsultation->urlPath;
 
-                        $url = UrlHelper::createUrl(['admin/index/siteconsultations', 'consultationPath' => $fallback]);
-                        return $this->redirect($url);
+                        return new RedirectResponse(UrlHelper::createUrl(['admin/index/siteconsultations', 'consultationPath' => $fallback]));
                     }
                 }
             }
@@ -418,21 +407,16 @@ class IndexController extends AdminBase
             return -1 * Tools::compareSqlTimes($con1->dateCreation, $con2->dateCreation);
         });
 
-        return $this->render('site_consultations', [
+        return new HtmlResponse($this->render('site_consultations', [
             'site'          => $site,
             'consultations' => $consultations,
             'createForm'    => $form,
             'wizardModel'   => $form->siteCreateWizard,
-        ]);
+        ]));
     }
 
-    public function actionOpenslidesusers(): string
+    public function actionOpenslidesusers(): BinaryFileResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'text/csv');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=Participants.csv');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
         /** @var ISupporter[] $users */
         $users = [];
 
@@ -446,12 +430,13 @@ class IndexController extends AdminBase
             }
         }
 
-        return $this->renderPartial('openslides2_user_list', [
+        $csv = $this->renderPartial('openslides2_user_list', [
             'users' => $users,
         ]);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_CSV, $csv, true, 'Participants', false);
     }
 
-    public function actionTheming(string $default = 'layout-classic'): string
+    public function actionTheming(string $default = 'layout-classic'): HtmlResponse
     {
         $siteSettings = $this->site->getSettings();
         $stylesheet   = $siteSettings->getStylesheet();
@@ -517,10 +502,10 @@ class IndexController extends AdminBase
             $this->layoutParams->setLayout($siteSettings->siteLayout);
         }
 
-        return $this->render('theming', ['stylesheet' => $stylesheet, 'default' => $default]);
+        return new HtmlResponse($this->render('theming', ['stylesheet' => $stylesheet, 'default' => $default]));
     }
 
-    public function actionFiles(): string
+    public function actionFiles(): HtmlResponse
     {
         $msgSuccess = '';
         $msgError   = '';
@@ -559,36 +544,33 @@ class IndexController extends AdminBase
             return Tools::compareSqlTimes($file1->dateCreation, $file2->dateCreation);
         });
 
-        return $this->render('uploaded_files', [
+        return new HtmlResponse($this->render('uploaded_files', [
             'files'      => $files,
             'msgSuccess' => $msgSuccess,
             'msgError'   => $msgError,
-        ]);
+        ]));
     }
 
-    public function actionCheckUpdates(): string
+    public function actionCheckUpdates(): ResponseInterface
     {
         if (!User::currentUserIsSuperuser()) {
-            $this->showErrorpage(403, 'Only admins are allowed to access this page.');
-            return '';
+            return new HtmlErrorResponse(403, 'Only admins are allowed to access this page.');
         }
-        return $this->renderPartial('index_updates');
+        return new HtmlResponse($this->renderPartial('index_updates'));
     }
 
-    public function actionGotoUpdate(): string
+    public function actionGotoUpdate(): ResponseInterface
     {
         if (!UpdateChecker::isUpdaterAvailable()) {
-            $this->showErrorpage(403, 'The updater can only be used with downloaded packages.');
-            return '';
+            return new HtmlErrorResponse(403, 'The updater can only be used with downloaded packages.');
         }
         if (!User::currentUserIsSuperuser()) {
-            $this->showErrorpage(403, 'Only admins are allowed to access this page.');
-            return '';
+            return new HtmlErrorResponse(403, 'Only admins are allowed to access this page.');
         }
 
         $form      = new AntragsgruenUpdateModeForm();
         $updateKey = $form->activateUpdate();
 
-        return $this->redirect($this->getParams()->resourceBase . 'update.php?set_key=' . $updateKey);
+        return new RedirectResponse($this->getParams()->resourceBase . 'update.php?set_key=' . $updateKey);
     }
 }

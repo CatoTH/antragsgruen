@@ -75,7 +75,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     if ($section->getSettings()->fixedWidth) {
         echo ' fixedWidthFont';
     }
-    echo '">';
+    echo '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
     if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
         foreach ($paragraph->lines as $i => $line) {
             if ($section->getSettings()->lineNumbers) {
@@ -107,7 +107,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         if ($section->getSettings()->fixedWidth) {
             echo ' fixedWidthFont';
         }
-        echo '">';
+        echo '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
         echo '<div class="preamble"><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '">';
         echo '<h3><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' . Html::encode($amendment->getShortTitle(false)) . '</h3>';
         echo ', ' . Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());

@@ -2,7 +2,7 @@
   "name": "catoth/antragsgruen",
   "description": "Antragsgrün",
   "type": "project",
-  "license": "AGPL-3.0",
+  "license": "AGPL-3.0-only",
   "support": {
     "issues": "https://github.com/CatoTH/antragsgruen/issues",
     "source": "https://github.com/CatoTH/antragsgruen"

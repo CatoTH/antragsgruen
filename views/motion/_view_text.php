@@ -14,7 +14,7 @@ use yii\helpers\Html;
  */
 
 $sections  = $motion->getSortedSections(false, true);
-$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections());
+$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections()) && false;
 
 foreach ($sections as $section) {
     // Paragraph-based comments have inlined forms, which break the caching mechanism

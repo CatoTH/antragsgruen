@@ -2,6 +2,7 @@
 
 ### Version 4.12.0 [not released yet]
 
+- Motion sections can now be set up to hold Right-to-Left text, like Farsi, Hebrew or Arabic.
 - Bugfix: The diff and line splitting did not work properly with grapheme consisting of multiple code points.
 - Bugfix: Changing the amendment text as admin does not clear the motion's view cache in all cases.
 - Bugfix: PHP-based PDF rendering lead to overlapping lines when the text contained nested lines without line numbering.
