@@ -66,7 +66,7 @@ try {
         The error message is: %ERROR%<br><br>
         You can try to fix it using one of these methods:<ul>
         <li>Find and fix the file by hand.</li>
-        <li>Activeate the installation mode (by creating the file config/INSTALLING) and open any page to enter the installation mode.</li>
+        <li>Activate the installation mode (by creating the file config/INSTALLING) and open any page to enter the installation mode.</li>
         </ul>';
     }
 
