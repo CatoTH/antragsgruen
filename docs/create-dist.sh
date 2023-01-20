@@ -40,6 +40,7 @@ rm config/DEBUG config/config.template.json
 rm composer.phar composer.lock codeception.yml phpci.yml .gitignore .travis.yml .editorconfig
 rm package-lock.json composer.json
 rm config/TEST_DOMAIN
+rm assets/phpstan-helper.php
 mv web/index-production.php web/index.php
 rm docs/create-dist.sh docs/create-update.php
 

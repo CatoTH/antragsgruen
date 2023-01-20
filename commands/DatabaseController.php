@@ -6,21 +6,9 @@ use yii\console\Controller;
 
 /**
  * Functions to create and destroy the database, and to fill it with initial data
- * @package app\commands
  */
 class DatabaseController extends Controller
 {
-    /**
-     * @return string
-     */
-    private function getDbPrefix()
-    {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
-        return $params->tablePrefix;
-    }
-
     /**
      * Deletes the whole database. CAUTION!
      *
@@ -33,11 +21,11 @@ class DatabaseController extends Controller
             return;
         }
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
-            $deleteString = file_get_contents(
+            $deleteString = (string)file_get_contents(
                 \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
                 'db' . DIRECTORY_SEPARATOR . 'delete.sql'
             );
-            $deleteString = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $deleteString);
+            $deleteString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $deleteString);
             $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
         }
@@ -54,19 +42,19 @@ class DatabaseController extends Controller
             $this->stderr('This action is only available in Debug-Mode' . "\n");
             return;
         }
-        $createString = file_get_contents(
+        $createString = (string)file_get_contents(
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'create.sql'
         );
-        $createString = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $createString);
+        $createString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $createString);
         $command      = \Yii::$app->db->createCommand($createString);
         $command->execute();
 
-        $createString = file_get_contents(
+        $createString = (string)file_get_contents(
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'data.sql'
         );
-        $createString = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $createString);
+        $createString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $createString);
         $command      = \Yii::$app->db->createCommand($createString);
         $command->execute();
     }
@@ -82,11 +70,11 @@ class DatabaseController extends Controller
             $this->stderr('This action is only available in Debug-Mode' . "\n");
             return;
         }
-        $testdata = file_get_contents(
+        $testdata = (string)file_get_contents(
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'tests' .
             DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata1.sql'
         );
-        $testdata = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $testdata);
+        $testdata = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $testdata);
         $command  = \Yii::$app->db->createCommand($testdata);
         $command->execute();
     }
@@ -103,11 +91,11 @@ class DatabaseController extends Controller
             return;
         }
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
-            $deleteString = file_get_contents(
+            $deleteString = (string)file_get_contents(
                 \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
                 'db' . DIRECTORY_SEPARATOR . 'delete.sql'
             );
-            $deleteString = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $deleteString);
+            $deleteString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $deleteString);
             $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
             unset($command);

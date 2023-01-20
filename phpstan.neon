@@ -15,6 +15,7 @@ parameters:
       - views/speech/LayoutHelper.php
       - views/consultation/LayoutHelper.php
       - config/defines.php
+      - assets/phpstan-helper.php
     paths:
       - models
       - controllers

@@ -17,9 +17,8 @@ class BugfixController extends Controller
 {
     /**
      * Runs cleanSimpleHtml for a given motion
-     * @param int $motionId
      */
-    public function actionFixMotionText($motionId)
+    public function actionFixMotionText(int $motionId): void
     {
         /** @var Motion|null $motion */
         $motion = Motion::findOne($motionId);
@@ -51,9 +50,8 @@ class BugfixController extends Controller
 
     /**
      * Runs cleanSimpleHtml for a given amendment
-     * @param int $amendmentId
      */
-    public function actionFixAmendmentText($amendmentId)
+    public function actionFixAmendmentText(int $amendmentId): void
     {
         /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne($amendmentId);
@@ -88,11 +86,8 @@ class BugfixController extends Controller
 
     /**
      * Fixes all texts of a given consultation
-     *
-     * @param string $subdomain
-     * @param string $consultation
      */
-    public function actionFixAllConsultationTexts($subdomain, $consultation)
+    public function actionFixAllConsultationTexts(string $subdomain, string $consultation): void
     {
         if ($subdomain === '' || $consultation === '') {
             $this->stdout('yii bugfix/fix-all-consultation-texts [subdomain] [consultationPath]' . "\n");
@@ -133,7 +128,7 @@ class BugfixController extends Controller
     /**
      * Runs cleanSimpleHtml on all texts
      */
-    public function actionFixAllTexts()
+    public function actionFixAllTexts(): void
     {
         /** @var Amendment[] $amendments */
         $amendments = Amendment::find()->where('status != ' . Amendment::STATUS_DELETED)->all();
@@ -156,10 +151,8 @@ class BugfixController extends Controller
 
     /**
      * Find translation strings that exist in german, but not in the given language (english by default)
-     * @param string $language
-     * @throws \app\models\exceptions\Internal
      */
-    public function actionFindMissingTranslations($language = 'en')
+    public function actionFindMissingTranslations(string $language = 'en'): void
     {
         $messageSource = new MessageSource();
         foreach (MessageSource::getTranslatableCategories() as $category => $categoryName) {
@@ -177,7 +170,7 @@ class BugfixController extends Controller
     /**
      * Removes all slugs from deleted motions
      */
-    public function actionSetDeletedSlugsToNull()
+    public function actionSetDeletedSlugsToNull(): void
     {
         $app = AntragsgruenApp::getInstance();
         $sql = 'UPDATE `' . $app->tablePrefix . 'motion` SET `slug` = NULL WHERE `status` = ' . Motion::STATUS_DELETED;
@@ -188,10 +181,8 @@ class BugfixController extends Controller
 
     /**
      * Sends a test e-mail to the given e-mail-address in order to test the e-mail-delivery-configuration
-     *
-     * @param string $email_to
      */
-    public function actionTestEmail($email_to)
+    public function actionTestEmail(string $email_to): void
     {
         try {
             $consultation = Consultation::findOne(['urlPath' => 'std-parteitag']);
