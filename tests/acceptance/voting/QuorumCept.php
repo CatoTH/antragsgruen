@@ -26,8 +26,10 @@ $I->wait(0.3);
 foreach (['1', '2', '7'] as $userId) {
     $I->seeElement('.user' . $userId);
     $I->clickJS('.user' . $userId . ' .btnEdit');
-    $I->executeJS('userWidget.$refs["user-admin-widget"].addSelectedGroup(' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ', { id: ' . $userId .' });');
-    $I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: ' . $userId .'});');
+    $I->wait(0.5);
+    $I->seeElement('.editUserModal');
+    $I->clickJS('.editUserModal .userGroup' . AcceptanceTester::FIRST_FREE_USERGROUP_ID);
+    $I->clickJS('.editUserModal .btnSave');
     $I->wait(0.5);
     $I->see('Voting rights', '.user' . $userId);
 }

@@ -31,6 +31,17 @@ trait JsonConfigTrait
         return $typeName === 'int';
     }
 
+    public static function decodeJson5(?string $json): ?array
+    {
+        if ($json === null) {
+            return null;
+        }
+        $json    = str_replace("\r", "", $json);
+        $json    = str_replace(chr(194) . chr(160), " ", $json);
+
+        return \ColinODell\Json5\Json5Decoder::decode($json, true);
+    }
+
     /**
      * @param null|string|array $data
      * @throws ConfigurationError
@@ -43,9 +54,7 @@ trait JsonConfigTrait
         if (is_array($data)) {
             $dataArr = $data;
         } else {
-            $data    = str_replace("\r", "", $data);
-            $data    = str_replace(chr(194) . chr(160), " ", $data);
-            $dataArr = \ColinODell\Json5\Json5Decoder::decode($data, true);
+            $dataArr = self::decodeJson5($data);
         }
         if ($dataArr === null) {
             /** @var string|null $data */

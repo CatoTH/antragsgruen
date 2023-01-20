@@ -31,6 +31,18 @@ class VotingData implements \JsonSerializable
 
     public ?string $comment = null;
 
+    public function __construct(?array $data)
+    {
+        $this->setPropertiesFromJSONOverride($data);
+    }
+
+    protected function setPropertiesFromJSONOverride(?array $data): void
+    {
+        $this->setPropertiesFromJSON($data);
+
+        $this->eligibilityList = EligibilityByGroup::listFromJsonArray($this->eligibilityList);
+    }
+
     public function hasAnyData(): bool
     {
         return $this->votesYes || $this->votesNo || $this->votesInvalid ||

@@ -41,6 +41,13 @@ class LayoutHooks extends Hooks
         return $before . ob_get_clean();
     }
 
+    public function getVotingAdditionalActions(?string $before, Consultation $consultation): ?string
+    {
+        ob_start();
+        require(__DIR__ . '/views/voting-admin-add-actions.vue.php');
+        return (string)ob_get_clean();
+    }
+
     public function getVotingAlternativeResults(?string $before, Consultation $consultation): ?string
     {
         ob_start();

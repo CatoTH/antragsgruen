@@ -84,6 +84,24 @@ class AgendaVoting
         }
     }
 
+    private function getOverriddenUserGroupCounts(): array
+    {
+        if (!$this->voting->isClosed()) {
+            return [];
+        }
+        if (count($this->items) === 0) {
+            return [];
+        }
+        if (!$this->items[0]->getVotingData()->eligibilityList) {
+            return [];
+        }
+        $counts = [];
+        foreach ($this->items[0]->getVotingData()->eligibilityList as $eligiblity) {
+            $counts[$eligiblity->groupId] = count($eligiblity->users);
+        }
+        return $counts;
+    }
+
     private function getApiObject(?string $title, ?User $user, string $context): array
     {
         $answers = ($this->voting ? $this->voting->getAnswers() : null);
@@ -103,13 +121,18 @@ class AgendaVoting
         ];
 
         if ($this->voting) {
+            User::preloadConsultationUserGroups($this->voting->getMyConsultation());
+
             $settings = $this->voting->getSettings();
             $policy = $this->voting->getVotingPolicy();
             $additionalIds = (is_a($policy, UserGroups::class) ? array_map(function (ConsultationUserGroup $group): int { return $group->id; }, $policy->getAllowedUserGroups()) : []);
             $userGroups = $this->voting->getMyConsultation()->getAllAvailableUserGroups($additionalIds, true);
+
+            $userGroupOverrides = $this->getOverriddenUserGroupCounts();
             foreach ($userGroups as $userGroup) {
-                $votingBlockJson['user_groups'][] = $userGroup->getVotingApiObject();
+                $votingBlockJson['user_groups'][] = $userGroup->getVotingApiObject($userGroupOverrides[$userGroup->id] ?? null);
             }
+
             $votingBlockJson['current_time'] = (int)round(microtime(true) * 1000); // needs to include milliseconds for accuracy
             $votingBlockJson['voting_time'] = $settings->votingTime;
             $votingBlockJson['opened_ts'] = ($this->voting->votingStatus === VotingBlock::STATUS_OPEN ? $settings->openedTs * 1000 : null);
@@ -117,7 +140,6 @@ class AgendaVoting
 
         if ($context === static::API_CONTEXT_ADMIN) {
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
-            $votingBlockJson['admin_setup_hint_html'] = ($this->voting ? $this->voting->getAdminSetupHintHtml() : null);
         }
         if ($this->voting) {
             list($total, $users) = $this->voting->getVoteStatistics();
@@ -140,7 +162,7 @@ class AgendaVoting
             if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
                 $vote = $this->voting->getUserSingleItemVote($user, $item);
                 $data['voted'] = ($vote ? $vote->getVoteForApi($answers) : null);
-                $data['can_vote'] = $this->voting->userIsCurrentlyAllowedToVoteFor($user, $item);
+                $data['can_vote'] = $this->voting->userIsCurrentlyAllowedToVoteFor($user, $item, $vote);
             }
 
             if ($this->voting && $context === static::API_CONTEXT_ADMIN) {

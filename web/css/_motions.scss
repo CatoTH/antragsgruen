@@ -532,6 +532,7 @@
     height: 38px;
     position: relative;
     margin-bottom: 7px;
+    z-index: 1; // Amendment-Markers at the side of a motion should be above the sidebar in case of a collision
 
     > a {
       display: block;

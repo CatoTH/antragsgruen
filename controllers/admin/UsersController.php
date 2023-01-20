@@ -2,7 +2,7 @@
 
 namespace app\controllers\admin;
 
-use app\models\http\RestApiResponse;
+use app\models\http\{HtmlResponse, JsonResponse, RedirectResponse, RestApiResponse};
 use app\components\{mail\Tools as MailTools, UrlHelper, UserGroupAdminMethods};
 use app\models\db\{Consultation, ConsultationUserGroup, EMailLog, User};
 use app\models\exceptions\UserEditFailed;
@@ -68,7 +68,7 @@ class UsersController extends AdminBase
         return new RestApiResponse(200, $response);
     }
 
-    public function actionAddSingle(): string
+    public function actionAddSingle(): RedirectResponse
     {
         $this->getConsultationAndCheckAdminPermission();
 
@@ -89,7 +89,7 @@ class UsersController extends AdminBase
         }
         if (count($toAssignGroups) === 0) {
             $this->getHttpSession()->setFlash('error', 'You need to provide at least one user group');
-            return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
+            return new RedirectResponse(UrlHelper::createUrl('/admin/users/index'));
         }
 
         if ($this->isPostSet('sendEmail')) {
@@ -126,10 +126,10 @@ class UsersController extends AdminBase
             }
         }
 
-        return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
+        return new RedirectResponse(UrlHelper::createUrl('/admin/users/index'));
     }
 
-    public function actionAddMultipleWw(): string
+    public function actionAddMultipleWw(): RedirectResponse
     {
         $this->getConsultationAndCheckAdminPermission();
 
@@ -137,10 +137,10 @@ class UsersController extends AdminBase
             $this->userGroupAdminMethods->addUsersBySamlWw();
         }
 
-        return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
+        return new RedirectResponse(UrlHelper::createUrl('/admin/users/index'));
     }
 
-    public function actionAddMultipleEmail(): string
+    public function actionAddMultipleEmail(): RedirectResponse
     {
         $this->getConsultationAndCheckAdminPermission();
 
@@ -148,25 +148,22 @@ class UsersController extends AdminBase
             $this->userGroupAdminMethods->addUsersByEmail();
         }
 
-        return $this->redirect(UrlHelper::createUrl('/admin/users/index'));
+        return new RedirectResponse(UrlHelper::createUrl('/admin/users/index'));
     }
 
-    public function actionSearchGroups(string $query): string
+    public function actionSearchGroups(string $query): JsonResponse
     {
         $this->handleRestHeaders(['GET'], true);
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
-        return json_encode(array_map(function (ConsultationUserGroup $group): array {
+        return new JsonResponse(array_map(function (ConsultationUserGroup $group): array {
             return [
                 'id' => $group->id,
                 'label' => $group->title,
             ];
-        }, ConsultationUserGroup::findBySearchQuery($this->consultation, $query)), JSON_THROW_ON_ERROR);
+        }, ConsultationUserGroup::findBySearchQuery($this->consultation, $query)));
     }
 
-    public function actionIndex(): string
+    public function actionIndex(): HtmlResponse
     {
         $consultation = $this->getConsultationAndCheckAdminPermission();
 
@@ -208,10 +205,11 @@ class UsersController extends AdminBase
             $this->consultation->refresh();
         }
 
-        return $this->render('index', [
+        return new HtmlResponse($this->render('index', [
             'widgetData' => $this->getUsersWidgetData($consultation),
             'screening' => $consultation->screeningUsers,
-        ]);
+            'globalUserAdmin' => User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_GLOBAL_USER_ADMIN),
+        ]));
     }
 
     public function actionSave(): RestApiResponse
@@ -229,11 +227,20 @@ class UsersController extends AdminBase
         ];
         try {
             switch ($this->getHttpRequest()->post('op')) {
-                case 'save-user-groups':
+                case 'save-user':
                     $this->userGroupAdminMethods->setUserGroupsToUser(
                         intval($this->getPostValue('userId')),
                         array_map('intval', $this->getPostValue('groups', []))
                     );
+                    if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_GLOBAL_USER_ADMIN)) {
+                        $this->userGroupAdminMethods->setUserData(
+                            intval($this->getPostValue('userId')),
+                            $this->getPostValue('nameGiven'),
+                            $this->getPostValue('nameFamily'),
+                            $this->getPostValue('organization'),
+                            $this->getPostValue('newPassword')
+                        );
+                    }
                     break;
                 case 'remove-user':
                     $this->userGroupAdminMethods->removeUser(intval($this->getPostValue('userId')));

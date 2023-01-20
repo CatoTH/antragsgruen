@@ -32,33 +32,17 @@ ob_start();
                     </div>
                     <div class="additional" v-html="formatUserAdditionalData(user)"></div>
                 </div>
-                <div class="groupsDisplay" v-if="!isGroupChanging(user)">
+                <div class="groupsDisplay">
                     {{ userGroupsDisplay(user) }}
-                    <button class="btn btn-link btnEdit" @click="setGroupChanging(user)"
-                            :title="'<?= Yii::t('admin', 'siteacc_usergroups_edit') ?>'.replace(/%USERNAME%/, user.name)"
-                            :aria-label="'<?= Yii::t('admin', 'siteacc_usergroups_edit') ?>'.replace(/%USERNAME%/, user.name)">
+                    <button class="btn btn-link btnEdit" @click="editUser(user)"
+                            :title="'<?= Yii::t('admin', 'siteacc_user_edit') ?>'.replace(/%USERNAME%/, user.name)"
+                            :aria-label="'<?= Yii::t('admin', 'siteacc_user_edit') ?>'.replace(/%USERNAME%/, user.name)">
                         <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                     </button>
                     <button class="btn btn-link btnRemove" @click="removeUser(user)"
-                            :title="'<?= Yii::t('admin', 'siteacc_usergroups_del') ?>'.replace(/%USERNAME%/, user.name)"
-                            :aria-label="'<?= Yii::t('admin', 'siteacc_usergroups_del') ?>'.replace(/%USERNAME%/, user.name)">
+                            :title="'<?= Yii::t('admin', 'siteacc_user_del') ?>'.replace(/%USERNAME%/, user.name)"
+                            :aria-label="'<?= Yii::t('admin', 'siteacc_user_del') ?>'.replace(/%USERNAME%/, user.name)">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div class="groupsChange" v-if="isGroupChanging(user)">
-                    <v-selectize multiple
-                                 @change="setSelectedGroups($event, user)"
-                                 :options="userGroupOptions"
-                                 :values="selectedGroups(user)"></v-selectize>
-
-                    <small><a :href="userLogUrl(user)"><span class="glyphicon glyphicon-chevron-right"></span> <?= Yii::t('admin','siteacc_usergroup_log') ?></a></small>
-                </div>
-                <div class="groupsChangeOps" v-if="isGroupChanging(user)">
-                    <button class="btn btn-link btnLinkAbort" @click="unsetGroupChanging(user)" title="<?= Yii::t('base', 'abort') ?>">
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </button>
-                    <button class="btn btn-link" @click="saveUser(user)" title="<?= Yii::t('base', 'save') ?>">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                     </button>
                 </div>
             </li>
@@ -117,6 +101,8 @@ $html = ob_get_clean();
     const removeGroupConfirmation = <?= json_encode(Yii::t('admin', 'siteacc_groupdel_confirm')) ?>;
     const showAllGroups = <?= json_encode(Yii::t('admin', 'siteacc_userfilter_allgr')) ?>;
 
+    const LOGIN_STD = 0;
+
     __setVueComponent('users', 'directive', 'focus', {
         mounted: function (el) {
             el.focus()
@@ -129,12 +115,10 @@ $html = ob_get_clean();
 
     __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['users', 'groups', 'urlUserLog', 'urlUserGroupLog'],
+        props: ['users', 'groups', 'urlUserGroupLog'],
         mixins: window.USER_ADMIN_MIXINS,
         data() {
             return {
-                changingGroupUsers: [],
-                changedUserGroups: [],
                 creatingGroups: false,
                 addGroupName: '',
                 filterUser: '',
@@ -215,15 +199,8 @@ $html = ob_get_clean();
             }
         },
         methods: {
-            setGroupChanging: function (user) {
-                this.changingGroupUsers.push(user.id);
-                this.changedUserGroups[user.id] = Object.assign([], user.groups);
-            },
-            isGroupChanging: function (user) {
-                return this.changingGroupUsers.indexOf(user.id) !== -1;
-            },
-            unsetGroupChanging: function (user) {
-                this.changingGroupUsers = this.changingGroupUsers.filter(userId => userId !== user.id);
+            editUser: function (user) {
+                this.$emit('edit-user', user)
             },
             removeUser: function (user) {
                 const widget = this,
@@ -233,9 +210,6 @@ $html = ob_get_clean();
                         widget.$emit('remove-user', user);
                     }
                 });
-            },
-            userLogUrl: function (user) {
-                return this.urlUserLog.replace(/%23/g, "#").replace(/###USER###/, user.id);
             },
             userGroupLogUrl: function (userGroup) {
                 return this.urlUserGroupLog.replace(/%23/g, "#").replace(/###GROUP###/, userGroup.id);
@@ -314,30 +288,13 @@ $html = ob_get_clean();
                     return group.title;
                 }).join(", ");
             },
-            selectedGroups: function (user) {
-                return this.changedUserGroups[user.id];
-            },
-            setSelectedGroups: function($event, user) {
-                this.changedUserGroups[user.id] = $event;
-            },
-            addSelectedGroup: function(groupId, user) {
-                // Hint: this does not update the UI, is only used by test cases
-                let groups = this.selectedGroups(user);
-                groups.push(groupId);
-                this.setSelectedGroups(groups, user);
-            },
-            saveUser: function(user) {
-                this.unsetGroupChanging(user);
-                this.$emit('save-user-groups', user, this.changedUserGroups[user.id]);
-            },
             addGroupToUser: function (user, groupId) {
                 if (user.groups.indexOf(groupId) !== -1) {
                     console.warn('Group is already set for this user', groupId, JSON.parse(JSON.stringify(user)));
                 } else {
                     user.groups.push(groupId);
                 }
-                this.unsetGroupChanging(user);
-                this.$emit('save-user-groups', user, user.groups);
+                this.$emit('save-user', user.id, user.groups);
             },
             removeGroupFromUser: function (user, groupId) {
                 if (user.groups.indexOf(groupId) === -1) {
@@ -345,8 +302,7 @@ $html = ob_get_clean();
                 } else {
                     user.groups = user.groups.filter(grp => grp !== groupId);
                 }
-                this.unsetGroupChanging(user);
-                this.$emit('save-user-groups', user, user.groups);
+                this.$emit('save-user', user.id, user.groups);
             },
             addGroupSubmit: function ($event) {
                 $event.preventDefault();

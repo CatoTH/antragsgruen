@@ -5,16 +5,50 @@
 
     window.VOTING_COMMON_MIXINS.push({
         computed: {
-
+            nycGroup: function () {
+                let foundGroup = null;
+                this.voting.vote_policy.user_groups.forEach(groupId => {
+                    const groupName = this.getYfjUserGroupNameById(groupId).toLowerCase();
+                    if (groupName.indexOf('nyc') !== -1 && groupName.indexOf('voting') !== -1) {
+                        foundGroup = groupId;
+                    }
+                });
+                return foundGroup;
+            },
+            ingyoGroup: function () {
+                let foundGroup = null;
+                this.voting.vote_policy.user_groups.forEach(groupId => {
+                    const groupName = this.getYfjUserGroupNameById(groupId).toLowerCase();
+                    if (groupName.indexOf('ingyo') !== -1 && groupName.indexOf('voting') !== -1) {
+                        foundGroup = groupId;
+                    }
+                });
+                return foundGroup;
+            },
             isYfjVoting: function() {
                 if (this.voting.vote_policy.id !== this.VOTE_POLICY_USERGROUPS) {
                     return false;
                 }
 
                 // Keep this consistent with VotingHelper.php
-                let hasNycGroup = false,
-                    hasIngyoGroup = false;
-
+                return this.nycGroup !== null && this.ingyoGroup !== null;
+            },
+            yfjNycUsersInSelectedVotingRound: function () {
+                for (let i = 0; i < this.voting.user_groups.length; i++) {
+                    if (this.voting.user_groups[i].id === this.nycGroup) {
+                        return this.voting.user_groups[i].member_count;
+                    }
+                }
+                return null;
+            },
+            yfjIngyoUsersInSelectedVotingRound: function () {
+                for (let i = 0; i < this.voting.user_groups.length; i++) {
+                    if (this.voting.user_groups[i].id === this.ingyoGroup) {
+                        return this.voting.user_groups[i].member_count;
+                    }
+                }
+            },
+            yfjVotingNycNumber: function () {
                 this.voting.vote_policy.user_groups.forEach(groupId => {
                     const groupName = this.getYfjUserGroupNameById(groupId).toLowerCase();
                     if (groupName.indexOf('nyc') !== -1 && groupName.indexOf('voting') !== -1) {
@@ -24,8 +58,9 @@
                         hasIngyoGroup = true;
                     }
                 });
+            },
+            yfjVotingIngyoNumber: function () {
 
-                return hasNycGroup && hasIngyoGroup;
             },
             isYfjRollCall: function () {
                 if (this.voting.vote_policy.id !== this.VOTE_POLICY_USERGROUPS) {

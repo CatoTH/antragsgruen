@@ -36,10 +36,8 @@ class AdminController extends Controller
 
     /**
      * Flush all caches for a given consultation
-     * @param string $subdomain
-     * @param string $consultation
      */
-    public function actionFlushConsultationCaches($subdomain, $consultation)
+    public function actionFlushConsultationCaches(string $subdomain, string $consultation): void
     {
         if ($subdomain == '' || $consultation == '') {
             $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
@@ -56,7 +54,7 @@ class AdminController extends Controller
     /**
      * Flush all consultation caches in the whole system
      */
-    public function actionFlushAllConsultationCaches()
+    public function actionFlushAllConsultationCaches(): void
     {
         AntragsgruenApp::flushAllCaches();
         $this->stdout('All caches of all consultations have been flushed' . "\n");
@@ -66,7 +64,7 @@ class AdminController extends Controller
      * Pre-caches some important data.
      * HINT: Probably needs to be called several time, if the memory fills up or the execution time exceeds the limit
      */
-    public function actionBuildConsultationCaches($subdomain, $consultation)
+    public function actionBuildConsultationCaches(string $subdomain, string $consultation): void
     {
         $params = AntragsgruenApp::getInstance();
 
@@ -105,7 +103,7 @@ class AdminController extends Controller
      * Pre-caches some important data.
      * HINT: Probably needs to be called several time, if the memory fills up or the execution time exceeds the limit
      */
-    public function actionBuildMotionCache($motionSlug)
+    public function actionBuildMotionCache(string $motionSlug): void
     {
         $params = AntragsgruenApp::getInstance();
 
@@ -188,12 +186,8 @@ class AdminController extends Controller
 
     /**
      * Exports the language strings of a consultation into a language variant in the messages/-directory
-     *
-     * @param string $subdomain
-     * @param string $consultation
-     * @param string $languageKey
      */
-    public function actionCreateLanguageFromConsultation($subdomain, $consultation, $languageKey)
+    public function actionCreateLanguageFromConsultation(string $subdomain, string $consultation, string $languageKey): void
     {
         if ($subdomain == '' || $consultation == '') {
             $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");

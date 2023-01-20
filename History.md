@@ -2,6 +2,7 @@
 
 ### Version 4.12.0 [not released yet]
 
+- Super admins (registered in the config.json) can now perform more user administration using the UI, like setting the name, organization and new passwords for registered users.
 - Motion sections can now be set up to hold Right-to-Left text, like Farsi, Hebrew or Arabic.
 - Bugfix: The diff and line splitting did not work properly with grapheme consisting of multiple code points.
 - Bugfix: Changing the amendment text as admin does not clear the motion's view cache in all cases.

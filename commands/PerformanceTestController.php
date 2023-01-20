@@ -16,7 +16,7 @@ class PerformanceTestController extends Controller
         return intval($x[1]) * 1000 + intval($x[0]) * 1000;
     }
 
-    public function actionDiff()
+    public function actionDiff(): void
     {
         $str1 = file_get_contents(__DIR__ . '/../assets/diff-motion.txt');
         $str2 = file_get_contents(__DIR__ . '/../assets/diff-amend.txt');

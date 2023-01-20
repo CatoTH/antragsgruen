@@ -19,18 +19,29 @@ export class UserAdmin {
         const pollUrl = this.element.getAttribute('data-url-poll');
         const urlUserLog = this.element.getAttribute('data-url-user-log');
         const urlUserGroupLog = this.element.getAttribute('data-url-user-group-log');
+        const permissionGlobalEdit = (this.element.getAttribute('data-permission-global-edit') === '1');
+
+        let userWidgetComponent;
 
         this.widget = Vue.createApp({
             template: `<div class="adminUsers">
-                <user-admin-widget :users="users"
-                                   :groups="groups"
-                                   :urlUserLog="urlUserLog"
-                                   :urlUserGroupLog="urlUserGroupLog"
-                                   @save-user-groups="saveUserGroups"
-                                   @remove-user="removeUser"
-                                   @create-user-group="createUserGroup"
-                                   @remove-group="removeUserGroup"
-                                   ref="user-admin-widget"
+                <user-edit-widget
+                    :groups="groups"
+                    :permissionGlobalEdit="permissionGlobalEdit"
+                    :urlUserLog="urlUserLog"
+                    @save-user="saveUser"
+                    ref="user-edit-widget"
+                ></user-edit-widget>
+                <user-admin-widget
+                    :users="users"
+                    :groups="groups"
+                    :urlUserGroupLog="urlUserGroupLog"
+                    @remove-user="removeUser"
+                    @create-user-group="createUserGroup"
+                    @remove-group="removeUserGroup"
+                    @edit-user="editUser"
+                    @save-user="saveUser"
+                    ref="user-admin-widget"
                 ></user-admin-widget>
             </div>`,
             data() {
@@ -43,6 +54,7 @@ export class UserAdmin {
                     pollingId: null,
                     urlUserLog,
                     urlUserGroupLog,
+                    permissionGlobalEdit,
                 };
             },
             computed: {
@@ -67,11 +79,15 @@ export class UserAdmin {
                         alert(err.responseText);
                     });
                 },
-                saveUserGroups(user, groups) {
+                saveUser(userId, groups, nameGiven, nameFamily, organization, newPassword) {
                     this._performOperation({
-                        op: 'save-user-groups',
-                        userId: user.id,
-                        groups
+                        op: 'save-user',
+                        userId,
+                        nameGiven,
+                        nameFamily,
+                        organization,
+                        groups,
+                        newPassword
                     });
                 },
                 removeUser(user) {
@@ -79,6 +95,9 @@ export class UserAdmin {
                         op: 'remove-user',
                         userId: user.id
                     });
+                },
+                editUser(user) {
+                    userWidgetComponent.$refs["user-edit-widget"].open(user);
                 },
                 setUserGroups(users, groups) {
                     const usersJson = JSON.stringify(users),
@@ -130,7 +149,7 @@ export class UserAdmin {
         this.widget.config.compilerOptions.whitespace = 'condense';
         window['__initVueComponents'](this.widget, 'users');
 
-        const userWidgetComponent = this.widget.mount(vueEl);
+        userWidgetComponent = this.widget.mount(vueEl);
 
         // Used by tests to control vue-select
         window['userWidget'] = userWidgetComponent;

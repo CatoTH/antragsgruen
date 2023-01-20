@@ -220,7 +220,8 @@ class VotingMethods
      * @throws FormError
      */
     private function voteForSingleItem(User $user, VotingBlock $votingBlock, IVotingItem $item, int $public, string $voteChoice): Vote {
-        if (!$votingBlock->userIsCurrentlyAllowedToVoteFor($user, $item)) {
+        $vote = $votingBlock->getUserSingleItemVote($user, $item);
+        if (!$votingBlock->userIsCurrentlyAllowedToVoteFor($user, $item, $vote)) {
             throw new FormError('Not possible to vote for this item');
         }
 

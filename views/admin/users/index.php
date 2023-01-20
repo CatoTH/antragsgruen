@@ -8,7 +8,8 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var array $widgetData
- * @var UserConsultationScreening $screening
+ * @var UserConsultationScreening[] $screening
+ * @var bool $globalUserAdmin
  */
 
 /** @var \app\controllers\Base $controller */
@@ -24,6 +25,7 @@ $layout->loadVue();
 $layout->loadSelectize();
 $layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/users.vue.php');
+$layout->addVueTemplate('@app/views/admin/users/_user_edit.vue.php');
 Layout::registerAdditionalVueUserAdministrationTemplates($controller->consultation, $layout);
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);
@@ -35,7 +37,7 @@ echo '<h1>' . Yii::t('admin', 'siteacc_accounts_title') . '</h1>';
 
 echo $controller->showErrors();
 
-$success = Yii::$app->session->getFlash('success_login', null, true);
+$success = \app\components\RequestContext::getSession()->getFlash('success_login', null, true);
 if ($success) {
     echo '<div class="content">';
     echo '<div class="alert alert-success" role="alert">
@@ -56,6 +58,7 @@ if ($success) {
      data-url-user-group-log="<?= Html::encode($userGroupLogUrl) ?>"
      data-users="<?= Html::encode(json_encode($widgetData['users'])) ?>"
      data-groups="<?= Html::encode(json_encode($widgetData['groups'])) ?>"
+     data-permission-global-edit="<?= $globalUserAdmin ? '1' : '0' ?>"
 >
     <div class="userAdmin"></div>
 </div>

@@ -12,11 +12,10 @@ use app\models\settings\VotingData;
 
 class Merge
 {
-    /** @var Motion */
-    public $origMotion;
+    public Motion $origMotion;
 
     /** @var MotionSection[] */
-    public $motionSections;
+    public array $motionSections = [];
 
     public function __construct(Motion $origMotion)
     {
@@ -115,16 +114,9 @@ class Merge
     }
 
     /**
-     * @param Motion $newMotion
      * @param int[] $amendmentStatuses
-     * @param string $resolutionMode
-     * @param string $resolutionBody
-     * @param array $votes
-     * @param array $amendmentVotes
-     *
-     * @return Motion
      */
-    public function confirm(Motion $newMotion, $amendmentStatuses, $resolutionMode, $resolutionBody, $votes, $amendmentVotes)
+    public function confirm(Motion $newMotion, array $amendmentStatuses, ?string $resolutionMode, string $resolutionBody, array $votes, ?array $amendmentVotes): Motion
     {
         $oldMotion    = $this->origMotion;
         $consultation = $oldMotion->getMyConsultation();
@@ -232,9 +224,8 @@ class Merge
 
     /**
      * @param int[] $amendmentStatuses
-     * @param array $amendmentVotes
      */
-    public function updateDraftOnBackToModify($amendmentStatuses, $amendmentVotes)
+    public function updateDraftOnBackToModify(array $amendmentStatuses, array $amendmentVotes): void
     {
         $draft = $this->origMotion->getMergingDraft(false);
 

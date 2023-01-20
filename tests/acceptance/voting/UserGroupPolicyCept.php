@@ -82,9 +82,11 @@ $I->wait(1);
 $I->seeElement('.user2');
 $I->dontSeeElement('.user2 .selectize-control');
 $I->clickJS('.user2 .btnEdit');
-$I->seeElement('.user2 .selectize-control');
-$I->executeJS('userWidget.$refs["user-admin-widget"].setSelectedGroups([' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '], { id: 2 });');
-$I->executeJS('userWidget.$refs["user-admin-widget"].saveUser({id: 2});');
+$I->wait(0.5);
+$I->seeElement('.editUserModal');
+$I->clickJS('.editUserModal .userGroup4'); // Unselect participant
+$I->clickJS('.editUserModal .userGroup' . AcceptanceTester::FIRST_FREE_USERGROUP_ID);
+$I->clickJS('.editUserModal .btnSave');
 $I->wait(0.5);
 $I->dontSee('Veranstaltungs-Admin', '.user2');
 $I->dontSee('Teilnehmer*in', '.user2');

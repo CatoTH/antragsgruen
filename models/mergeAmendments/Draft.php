@@ -2,6 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
+use app\models\settings\JsonConfigTrait;
 use app\models\db\{IMotion, Motion, MotionSection};
 use app\models\settings\VotingData;
 
@@ -95,7 +96,7 @@ class Draft implements \JsonSerializable
                 $draft->amendmentStatuses[$amendment->id] = $json['amendmentStatuses'][$amendment->id];
             }
             if (isset($json['amendmentVotingData'][$amendment->id])) {
-                $draft->amendmentVotingData[$amendment->id] = new VotingData($json['amendmentVotingData'][$amendment->id]);
+                $draft->amendmentVotingData[$amendment->id] = new VotingData(VotingData::decodeJson5($json['amendmentVotingData'][$amendment->id]));
             }
         }
 
