@@ -2,14 +2,13 @@
 
 namespace app\plugins\antragsgruen_sites\controllers;
 
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Consultation;
+use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, ResponseInterface};
+use app\models\settings\{AntragsgruenApp, Consultation};
 use app\components\{Tools, yii\MessageSource, UrlHelper};
 use app\controllers\Base;
 use app\models\db\{IComment, Site, User};
 use app\models\exceptions\FormError;
 use app\models\forms\SiteCreateForm;
-use yii\web\Response;
 
 class ManagerController extends Base
 {
@@ -93,24 +92,21 @@ class ManagerController extends Base
         }
     }
 
-    public function actionIndex(): string
+    public function actionIndex(): HtmlResponse
     {
         $this->layout = '@app/views/layouts/column2';
         $this->addSidebar($this->canSeeAllSites());
         if (\Yii::$app->language == 'de') {
-            return $this->render('index_de');
+            return new HtmlResponse($this->render('index_de'));
         } else {
-            return $this->render('index_en');
+            return new HtmlResponse($this->render('index_en'));
         }
     }
 
-    public function actionCheckSubdomain(string $test): string
+    public function actionCheckSubdomain(string $test): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $available = Site::isSubdomainAvailable($test);
-        return json_encode([
+        return new JsonResponse([
             'available' => $available,
             'subdomain' => $test,
         ]);
@@ -144,10 +140,7 @@ class ManagerController extends Base
         }
     }
 
-    /**
-     * @return string
-     */
-    public function actionCreatesite()
+    public function actionCreatesite(): HtmlResponse
     {
         $this->requireEligibleToCreateUser();
 
@@ -170,7 +163,7 @@ class ManagerController extends Base
                         $user = User::getCurrentUser();
                     }
                     $model->create($user);
-                    return $this->render('created', ['form' => $model]);
+                    return new HtmlResponse($this->render('created', ['form' => $model]));
                 } else {
                     throw new FormError($model->getErrors());
                 }
@@ -182,28 +175,28 @@ class ManagerController extends Base
             $model->setSandboxParams();
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'createsite',
             [
                 'model'  => $model,
                 'errors' => $errors
             ]
-        );
+        ));
     }
 
-    public function actionHelp(): string
+    public function actionHelp(): HtmlResponse
     {
         if (\Yii::$app->language === 'de') {
-            return $this->render('help_de');
+            return new HtmlResponse($this->render('help_de'));
         } else {
-            return $this->render('help_en');
+            return new HtmlResponse($this->render('help_en'));
         }
     }
 
     /**
      * @return Site[]
      */
-    public static function getSidebarSites()
+    public static function getSidebarSites(): array
     {
         if (AntragsgruenApp::getInstance()->mode == 'sandbox') {
             return [];
@@ -246,11 +239,10 @@ class ManagerController extends Base
         return $user->isGruenesNetzUser();
     }
 
-    public function actionAllsites(): string
+    public function actionAllsites(): ResponseInterface
     {
         if (!$this->canSeeAllSites()) {
-            $this->showErrorpage(403, 'No access');
-            return '';
+            return new HtmlErrorResponse(403, 'No access');
         }
         $this->layout = '@app/views/layouts/column2';
         $this->addSidebar(false);
@@ -273,16 +265,16 @@ class ManagerController extends Base
             }
         }
 
-        return $this->render('allsites', ['sites' => $sitesCurrent]);
+        return new HtmlResponse($this->render('allsites', ['sites' => $sitesCurrent]));
     }
 
-    public function actionLegal(): string
+    public function actionLegal(): HtmlResponse
     {
-        return $this->renderContentPage('legal');
+        return new HtmlResponse($this->renderContentPage('legal'));
     }
 
-    public function actionPrivacy(): string
+    public function actionPrivacy(): HtmlResponse
     {
-        return $this->renderContentPage('privacy');
+        return new HtmlResponse($this->renderContentPage('privacy'));
     }
 }
