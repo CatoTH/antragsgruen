@@ -26,7 +26,6 @@ use yii\db\ActiveRecord;
  * @property Consultation[] $consultations
  * @property ConsultationText[] $texts
  * @property ConsultationFile[] $files
- * @property User[] $admins
  * @property ConsultationUserGroup[] $userGroups
  * @property TexTemplate $texTemplates
  */
@@ -77,12 +76,6 @@ class Site extends ActiveRecord
             return (in_array($file->mimetype, ['image/png', 'image/jpeg', 'image/gif']));
         });
         return array_values($images);
-    }
-
-    public function getAdmins(): ActiveQuery
-    {
-        return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('siteAdmin', ['siteId' => 'id'])
-            ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
     public function getTexts(): ActiveQuery

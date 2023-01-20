@@ -138,8 +138,6 @@ class SiteCreateForm extends Model
         }
         $this->site = $site;
 
-        $site->link('admins', $user);
-
         $adminGroup = $site->createDefaultSiteAdminGroup();
         $adminGroup->addUser($user);
 
