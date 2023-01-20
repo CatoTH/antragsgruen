@@ -165,11 +165,6 @@ class SitePurger
         )->execute();
 
         $connection->createCommand(
-            'DELETE FROM siteAdmin WHERE siteId = :siteId',
-            [':siteId' => $siteId]
-        )->execute();
-
-        $connection->createCommand(
             'DELETE FROM site WHERE id = :siteId',
             [':siteId' => $siteId]
         )->execute();
