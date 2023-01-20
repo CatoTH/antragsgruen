@@ -59,4 +59,5 @@ $I->seeElement('.passwordError');
 $I->fillField('#passwordInput', 'GreatSecretPassword');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 $I->click('#myAccountLink');
-$I->seeInField('#userName', 'Sincon Anö');
+$I->seeInField('#nameGiven', 'Sincon');
+$I->seeInField('#nameFamily', 'Anö');

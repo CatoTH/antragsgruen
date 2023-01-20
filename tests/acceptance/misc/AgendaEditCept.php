@@ -68,8 +68,8 @@ $I->wait(0.3);
 
 $I->wantTo('add a date');
 $I->executeJS('$(".motionListWithinAgenda .agendaItemAdder .addDate").click()');
-$I->executeJS('$("#agendaitem_-1 .agendaDateEditForm .date").data("DateTimePicker").date(moment("2020-02-02", "YYYY-MM-DD"));');
-$I->seeInField('#agendaitem_-1 .agendaDateEditForm .date input', 'Sonntag, 2. Februar 2020');
+$I->executeJS('$("#agendaitem_-1 .agendaDateEditForm .dateSelector").data("DateTimePicker").date(moment("2020-02-02", "YYYY-MM-DD"));');
+$I->seeInField('#agendaitem_-1 .agendaDateEditForm .dateSelector input', 'Sonntag, 2. Februar 2020');
 $I->executeJS('$("#agendaitem_-1 .agendaDateEditForm .ok button").click();');
 $I->wait(0.3);
 
