@@ -77,6 +77,7 @@ if (count($initiators) > 0 && !$motion->isResolution()) {
     ];
 }
 
+/*
 if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL || $motion->status !== Motion::STATUS_SUBMITTED_SCREENED) {
     $motionData[] = [
         'rowClass' => 'statusRow',
@@ -84,6 +85,14 @@ if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL || $mo
         'content'  => $motion->getFormattedStatus(),
     ];
 }
+*/
+
+$btn = '<small><a href="#"><span class="glyphicon glyphicon-chevron-down" aria-hidden=""></span> Frühere Versionen anzeigen</a></small>';
+$motionData[] = [
+    'rowClass' => 'statusRow',
+    'title' => 'Verfahrensstand',
+    'content' => 'V6: Ergebnis Antragsberatung KoordA<br>' . $btn,
+];
 
 MotionLayoutHelper::addVotingResultsRow($motion->getVotingData(), $motionData);
 

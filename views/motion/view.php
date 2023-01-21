@@ -197,6 +197,8 @@ if ($hasPp) {
     }
 }
 
+echo $this->render('_dbwv_mocks');
+
 if ($motion->status === Motion::STATUS_DRAFT) {
     ?>
     <div class="content">
