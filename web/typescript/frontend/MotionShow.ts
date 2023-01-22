@@ -1,5 +1,3 @@
-/// <reference path="../typings/jquery-typings.d.ts" />
-
 import '../shared/MotionInitiatorShow';
 import { LineNumberHighlighting } from "./LineNumberHighlighting";
 

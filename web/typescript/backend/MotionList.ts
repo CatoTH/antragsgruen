@@ -1,5 +1,3 @@
-/// <reference path="../typings/colresizable/index.d.ts" />
-
 import { ResponsibilitySetter } from './ResponsibilitySetter';
 
 export class MotionList {
