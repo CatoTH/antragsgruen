@@ -1,4 +1,4 @@
-declare var Vue: any;
+declare let Vue: any;
 
 export class VotingBlock {
     private widget: any;
