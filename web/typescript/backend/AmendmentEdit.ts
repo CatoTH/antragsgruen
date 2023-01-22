@@ -85,7 +85,7 @@ export class AmendmentEdit {
             new AmendmentEditSinglePara();
         }
         $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
-    };
+    }
 
     private initVotingFunctions() {
         const $classHolders = $(".contentVotingResultCaller, .votingDataHolder"),
