@@ -2,7 +2,7 @@ import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 import ClickEvent = JQuery.ClickEvent;
 
-declare var Vue: any;
+declare let Vue: any;
 
 const STATUS_ACCEPTED = 4;
 const STATUS_MODIFIED_ACCEPTED = 6;

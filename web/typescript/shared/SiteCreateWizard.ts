@@ -100,7 +100,7 @@ class SiteCreateWizard {
             subdomain: $("#siteSubdomain").val() as string,
             contact: $("#siteContact").val() as string
         };
-    };
+    }
 
     showPanel($panel: JQuery) {
         this.data = this.getWizardState();
@@ -135,7 +135,7 @@ class SiteCreateWizard {
         } catch (e) {
             console.log(e);
         }
-    };
+    }
 
     private hasMotionlikeType (data: WizardState) {
         return data.functionality.indexOf(FUNCTIONALITY_MOTIONS) !== -1 || data.functionality.indexOf(FUNCTIONALITY_MANIFESTO) !== -1

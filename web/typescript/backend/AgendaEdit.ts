@@ -1,5 +1,3 @@
-/// <reference path="../typings/nestedSortable/index.d.ts" />
-
 declare let moment: any;
 
 export class AgendaEdit {

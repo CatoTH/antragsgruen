@@ -121,7 +121,7 @@ export class DraftSavingEngine {
         if (this.$draftHint.find("ul").children().length == 0) {
             this.$draftHint.addClass("hidden");
         }
-    };
+    }
 
     private doRestore($li: JQuery) {
         let inst,

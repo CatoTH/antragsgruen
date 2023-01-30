@@ -1,5 +1,3 @@
-/// <reference path="../typings/scrollintoview/index.d.ts" />
-
 import {MotionSupporterEdit} from "./MotionSupporterEdit";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 
