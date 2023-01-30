@@ -16,7 +16,10 @@ use app\models\db\{Amendment,
     SpeechQueue,
     User,
     UserNotification};
+use app\models\http\HtmlErrorResponse;
+use app\models\http\HtmlResponse;
 use app\models\http\RedirectResponse;
+use app\models\http\ResponseInterface;
 use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal};
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
@@ -30,13 +33,7 @@ class MotionController extends Base
     use MotionMergingTrait;
     use MotionExportTraits;
 
-    /**
-     * @param string $motionSlug
-     * @param int $commentId
-     *
-     * @return string
-     */
-    public function actionView($motionSlug, $commentId = 0, ?string $procedureToken = null)
+    public function actionView(string $motionSlug, int $commentId = 0, ?string $procedureToken = null): HtmlResponse
     {
         $this->layout = 'column2';
 
@@ -49,7 +46,7 @@ class MotionController extends Base
         }
 
         if (!$motion->isReadable()) {
-            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => $adminEdit]);
+            return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => $adminEdit]));
         }
 
         $openedComments = [];
@@ -106,13 +103,10 @@ class MotionController extends Base
         $motionViewParams['supportStatus'] = $supportStatus;
 
 
-        return $this->render('view', $motionViewParams);
+        return new HtmlResponse($this->render('view', $motionViewParams));
     }
 
-    /**
-     * @return string
-     */
-    public function actionViewChanges(string $motionSlug)
+    public function actionViewChanges(string $motionSlug): ResponseInterface
     {
         $this->layout = 'column2';
 
@@ -120,12 +114,12 @@ class MotionController extends Base
         $parentMotion = $motion->replacedMotion;
 
         if (!$motion->isReadable()) {
-            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+            return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
         }
         if (!$parentMotion || !$parentMotion->isReadable()) {
             $this->getHttpSession()->setFlash('error', 'The diff-view is not available');
 
-            return $this->redirect(UrlHelper::createMotionUrl($motion));
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion));
         }
 
         try {
@@ -135,14 +129,14 @@ class MotionController extends Base
             $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
 
-        return $this->render('view_changes', [
+        return new HtmlResponse($this->render('view_changes', [
             'newMotion' => $motion,
             'oldMotion' => $parentMotion,
             'changes'   => $changes,
-        ]);
+        ]));
     }
 
-    public function actionCreateSelectStatutes(?string $motionTypeId = null, ?string $agendaItemId = null): string
+    public function actionCreateSelectStatutes(?string $motionTypeId = null, ?string $agendaItemId = null): ResponseInterface
     {
         $agendaItem = null;
         $motionType = null;
@@ -156,9 +150,9 @@ class MotionController extends Base
             }
         }
         if (!$motionType) {
-            return $this->showErrorpage(400, 'No motion type found');
+            return new HtmlErrorResponse(400, 'No motion type found');
         }
-        return $this->render('create_select_statutes', ['motionType' => $motionType, 'agendaItem' => $agendaItem]);
+        return new HtmlResponse($this->render('create_select_statutes', ['motionType' => $motionType, 'agendaItem' => $agendaItem]));
     }
 
     public function actionCreatedone(string $motionSlug, string $fromMode): string
@@ -177,26 +171,22 @@ class MotionController extends Base
         }
     }
 
-    /**
-     * @return string
-     * @throws Internal
-     */
-    public function actionCreateconfirm(string $motionSlug, string $fromMode)
+    public function actionCreateconfirm(string $motionSlug, string $fromMode): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion || $motion->status !== Motion::STATUS_DRAFT) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
         if (!$motion->canEdit()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($this->isPostSet('modify')) {
-            return $this->redirect(UrlHelper::createMotionUrl($motion, 'edit'));
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'edit'));
         }
 
         if ($this->isPostSet('confirm')) {
@@ -214,36 +204,32 @@ class MotionController extends Base
                 );
             }
 
-            return $this->redirect(UrlHelper::createMotionUrl($motion, 'createdone', ['fromMode' => $fromMode]));
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'createdone', ['fromMode' => $fromMode]));
         } else {
             $params                  = ['motion' => $motion, 'mode' => $fromMode];
             $params['deleteDraftId'] = $this->getRequestValue('draftId');
 
-            return $this->render('create_confirm', $params);
+            return new HtmlResponse($this->render('create_confirm', $params));
         }
     }
 
-    /**
-     * @return string
-     * @throws FormError
-     */
-    public function actionEdit(string $motionSlug)
+    public function actionEdit(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canEdit()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         $form     = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
-        $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
+        $fromMode = ($motion->status === Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if ($this->isPostSet('save')) {
             $post = $this->getHttpRequest()->post();
@@ -262,9 +248,9 @@ class MotionController extends Base
                 if ($motion->status == Motion::STATUS_DRAFT) {
                     $nextUrl = UrlHelper::createMotionUrl($motion, 'createconfirm', ['fromMode' => $fromMode]);
 
-                    return $this->redirect($nextUrl);
+                    return new RedirectResponse($nextUrl);
                 } else {
-                    return $this->render('edit_done', ['motion' => $motion]);
+                    return new HtmlResponse($this->render('edit_done', ['motion' => $motion]));
                 }
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
@@ -272,22 +258,21 @@ class MotionController extends Base
             }
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'edit_form',
             [
                 'mode'         => $fromMode,
                 'form'         => $form,
                 'consultation' => $this->consultation,
             ]
-        );
+        ));
     }
 
     /**
-     * @return array
      * @throws Internal
      * @throws \app\models\exceptions\NotFound
      */
-    private function getMotionTypeForCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0)
+    private function getMotionTypeForCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): array
     {
         if ($agendaItemId > 0) {
             $agendaItem = $this->consultation->getAgendaItem($agendaItemId);
@@ -316,16 +301,7 @@ class MotionController extends Base
     }
 
 
-    /**
-     * @param int $motionTypeId
-     * @param int $agendaItemId
-     * @param int $cloneFrom
-     *
-     * @return string
-     * @throws Internal
-     * @throws \yii\base\Exception
-     */
-    public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
+    public function actionCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): ResponseInterface
     {
         try {
             $ret = $this->getMotionTypeForCreate(intval($motionTypeId), intval($agendaItemId), intval($cloneFrom));
@@ -333,7 +309,7 @@ class MotionController extends Base
         } catch (ExceptionBase $e) {
             $this->getHttpSession()->setFlash('error', $e->getMessage());
 
-            return $this->redirect(UrlHelper::homeUrl());
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
         /**
@@ -350,9 +326,9 @@ class MotionController extends Base
                     'agendaItemId' => $agendaItemId
                 ]);
 
-                return $this->redirect($loginUrl);
+                return new RedirectResponse($loginUrl);
             } else {
-                return $this->showErrorpage(403, \Yii::t('motion', 'err_create_permission'));
+                return new HtmlErrorResponse(403, \Yii::t('motion', 'err_create_permission'));
             }
         }
 
@@ -381,7 +357,7 @@ class MotionController extends Base
                     }
                 }
 
-                return $this->redirect(UrlHelper::createMotionUrl($motion, 'createconfirm', [
+                return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'createconfirm', [
                     'fromMode' => 'create',
                     'draftId'  => $this->getRequestValue('draftId'),
                 ]));
@@ -399,49 +375,44 @@ class MotionController extends Base
             $form->supporters[] = MotionSupporter::createInitiator($supportType, $iAmAdmin);
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             'edit_form',
             [
                 'mode'         => 'create',
                 'form'         => $form,
                 'consultation' => $this->consultation,
             ]
-        );
+        ));
     }
 
 
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     */
-    public function actionWithdraw($motionSlug)
+    public function actionWithdraw(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canWithdraw()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_withdraw_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($this->isPostSet('cancel')) {
-            return $this->redirect(UrlHelper::createMotionUrl($motion));
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion));
         }
 
         if ($this->isPostSet('withdraw')) {
             $motion->withdraw();
             $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'withdraw_done'));
 
-            return $this->redirect(UrlHelper::createMotionUrl($motion));
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion));
         }
 
-        return $this->render('withdraw', ['motion' => $motion]);
+        return new HtmlResponse($this->render('withdraw', ['motion' => $motion]));
     }
 
     public function actionAdminSpeech($motionSlug)
