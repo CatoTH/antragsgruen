@@ -885,7 +885,7 @@ export class MotionMergeAmendments {
     private setDraftDate(date: Date) {
         this.$draftSavingPanel.find(".lastSaved .none").hide();
 
-        let options = {
+        let options: Intl.DateTimeFormatOptions = {
                 year: 'numeric', month: 'numeric', day: 'numeric',
                 hour: 'numeric', minute: 'numeric',
                 hour12: false
