@@ -110,7 +110,7 @@ class MotionController extends Base
     {
         $this->layout = 'column2';
 
-        $motion       = $this->getMotionWithCheck($motionSlug);
+        $motion = $this->getMotionWithCheck($motionSlug);
         $parentMotion = $motion->replacedMotion;
 
         if (!$motion->isReadable()) {
@@ -415,7 +415,7 @@ class MotionController extends Base
         return new HtmlResponse($this->render('withdraw', ['motion' => $motion]));
     }
 
-    public function actionAdminSpeech($motionSlug)
+    public function actionAdminSpeech(string $motionSlug): ResponseInterface
     {
         $this->layout = 'column2';
 
@@ -423,13 +423,13 @@ class MotionController extends Base
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createMotionUrl($motion));
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion));
         }
 
         if (count($motion->speechQueues) === 0) {
@@ -440,7 +440,7 @@ class MotionController extends Base
             $speechQueue = $motion->speechQueues[0];
         }
 
-        return $this->render('@app/views/speech/admin-singlepage', ['queue' => $speechQueue]);
+        return new HtmlResponse($this->render('@app/views/speech/admin-singlepage', ['queue' => $speechQueue]));
     }
 
     protected function guessRedirectByPrefix(string $prefix): ?string
