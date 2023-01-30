@@ -102,7 +102,7 @@ class BinaryFileResponse implements ResponseInterface
                 $fileEnding = 'jpeg';
                 break;
             case self::TYPE_PNG:
-                $response->headers->add('Content-Type', 'application/pdf');
+                $response->headers->add('Content-Type', 'application/png');
                 $fileEnding = 'png';
                 break;
             case self::TYPE_XML:
