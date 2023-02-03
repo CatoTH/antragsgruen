@@ -128,7 +128,7 @@ class Base extends Controller
             if ($logo && isset($params[1]) && isset($params[1]['filename']) && $params[1]['filename'] === $logo) {
                 return true;
             }
-            if ($this->site->getSettings()->getStylesheet()->backgroundImage) {
+            if (isset($this->site->getSettings()->getStylesheet()->backgroundImage)) {
                 $bg = urldecode(basename($this->site->getSettings()->getStylesheet()->backgroundImage));
                 if (isset($params[1]) && isset($params[1]['filename']) && $params[1]['filename'] === $bg) {
                     return true;
