@@ -2,8 +2,8 @@
 
 namespace app\components;
 
+use app\models\db\ConsultationUserGroup;
 use app\models\db\User;
-use app\models\exceptions\{Login, LoginInvalidPassword, LoginInvalidUser};
 
 interface LoginProviderInterface
 {
@@ -13,6 +13,11 @@ interface LoginProviderInterface
     public function performLoginAndReturnUser(): User;
     public function userWasLoggedInWithProvider(?User $user): bool;
     public function usernameToAuth(string $username): string;
+
+    /**
+     * @return ConsultationUserGroup[]|null
+     */
+    public function getSelectableUserOrganizations(User $user): ?array;
 
     /**
      * @throws \Exception

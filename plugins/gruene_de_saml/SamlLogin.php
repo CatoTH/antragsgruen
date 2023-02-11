@@ -82,7 +82,7 @@ class SamlLogin implements LoginProviderInterface
         $user->fixedData = 1;
         $user->auth = $auth;
         $user->status = User::STATUS_CONFIRMED;
-        $user->organization = '';
+        $user->organization = $user->organization ?? '';
         if (!$user->save()) {
             throw new \Exception('Could not create user');
         }
@@ -100,6 +100,20 @@ class SamlLogin implements LoginProviderInterface
         $authParts = explode(':', $user->auth);
 
         return $authParts[0] === Module::AUTH_KEY_USERS;
+    }
+
+    /**
+     * @return ConsultationUserGroup[]|null
+     */
+    public function getSelectableUserOrganizations(User $user): ?array
+    {
+        $orgas = [];
+        foreach ($user->userGroups as $userGroup) {
+            if ($userGroup->externalId && strpos($userGroup->externalId, Module::AUTH_KEY_GROUPS . ':') === 0) {
+                $orgas[] = $userGroup;
+            }
+        }
+        return $orgas;
     }
 
     public function usernameToAuth(string $username): string
@@ -169,6 +183,8 @@ class SamlLogin implements LoginProviderInterface
     {
         $newOrgaIds = [];
 
+        sort($orgaIds); // 1xx are regular pary, 2xx are GJ/BV - prioritize the first, as per #706
+
         foreach ($orgaIds as $orgaId) {
             if (strlen($orgaId) !== 8) {
                 continue;
@@ -190,13 +206,26 @@ class SamlLogin implements LoginProviderInterface
             return Module::AUTH_KEY_GROUPS . ':' . $orgaId;
         }, $newOrgaIds);
 
+        // If an organisation is already manually set, and this is a valid organisation, this should not change.
+        // In all other cases, the first organisation of the list should be set as organisation name of the user.
+        $previousOrga = $user->organization;
+        $previousOrgaFound = false;
+
         $user->organizationIds = json_encode($newOrgaIds, JSON_THROW_ON_ERROR);
         $user->organization = '';
-        for ($i = 0; $i < count($newUserGroupIds) && $user->organization === ''; $i++) {
+        for ($i = 0; $i < count($newUserGroupIds); $i++) {
             $userGroup = ConsultationUserGroup::findByExternalId($newUserGroupIds[$i]);
             if ($userGroup) {
-                $user->organization = $userGroup->title;
+                if ($user->organization === '') {
+                    $user->organization = $userGroup->title;
+                }
+                if ($userGroup->title === $previousOrga) {
+                    $previousOrgaFound = true;
+                }
             }
+        }
+        if ($previousOrgaFound) {
+            $user->organization = $previousOrga;
         }
 
         $oldUserGroupIds = [];

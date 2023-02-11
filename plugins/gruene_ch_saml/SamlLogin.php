@@ -2,6 +2,7 @@
 
 namespace app\plugins\gruene_ch_saml;
 
+use app\models\db\ConsultationUserGroup;
 use app\components\{LoginProviderInterface, RequestContext};
 use app\models\db\User;
 use app\models\settings\AntragsgruenApp;
@@ -99,6 +100,11 @@ class SamlLogin implements LoginProviderInterface
     public function usernameToAuth(string $username): string
     {
         return Module::AUTH_KEY_USERS . ':' . $username;
+    }
+
+    public function getSelectableUserOrganizations(User $user): ?array
+    {
+        return null;
     }
 
 
