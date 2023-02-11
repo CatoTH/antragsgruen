@@ -480,6 +480,19 @@ class User extends ActiveRecord implements IdentityInterface
         return ($authParts[0] === 'email');
     }
 
+    /**
+     * @return ConsultationUserGroup[]|null
+     */
+    public function getSelectableUserOrganizations(): ?array
+    {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if (($loginProvider = $plugin::getDedicatedLoginProvider()) && $loginProvider->userWasLoggedInWithProvider($this)) {
+                return $loginProvider->getSelectableUserOrganizations($this);
+            }
+        }
+        return null;
+    }
+
     public function validatePassword(string $password): bool
     {
         return password_verify($password, $this->pwdEnc);

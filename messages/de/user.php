@@ -9,6 +9,7 @@ return [
     'pwd_confirm'               => 'Passwort bestätigen',
     'pwd_change'                => 'Passwort ändern',
     'pwd_change_hint'           => 'Leer lassen, falls unverändert',
+    'organisation_primary'      => 'Primäre Gliederung',
     'name'                      => 'Name',
     'name_given'                => 'Vorname',
     'name_family'               => 'Nachname',

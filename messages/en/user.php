@@ -9,6 +9,7 @@ return [
     'pwd_confirm'               => 'Confirm password',
     'pwd_change'                => 'Change password',
     'pwd_change_hint'           => 'Empty = leave unchanged',
+    'organisation_primary'      => 'Primary organisation',
     'name'                      => 'Name',
     'name_given'                => 'Given name',
     'name_family'               => 'Family name',

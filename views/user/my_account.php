@@ -60,8 +60,29 @@ if ($externalAuthenticator === null) {
             <input type="password" name="pwd2" value="" class="form-control" id="userPwd2">
         </div>
     </div>
-
     <?php
+
+    $selectableUserOrgas = $user->getSelectableUserOrganizations();
+    if ($selectableUserOrgas) {
+        ?>
+        <div class="stdTwoCols">
+            <label class="leftColumn control-label" for="userPwd2"><?= Yii::t('user', 'organisation_primary') ?>:</label>
+            <div class="rightColumn">
+                <select name="orgaPrimary" size="1" class="stdDropdown">
+                    <?php
+                    foreach ($selectableUserOrgas as $userGroup) {
+                        echo '<option value="' . $userGroup->id . '"';
+                        if ($userGroup->title === $user->organization) {
+                            echo ' selected';
+                        }
+                        echo '>' . Html::encode($userGroup->title) . '</option>' . "\n";
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <?php
+    }
 
     if ($consultation) {
         $toShowGroups = [];

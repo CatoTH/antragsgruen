@@ -102,6 +102,20 @@ class SamlLogin implements LoginProviderInterface
         return $authParts[0] === Module::AUTH_KEY_USERS;
     }
 
+    /**
+     * @return ConsultationUserGroup[]|null
+     */
+    public function getSelectableUserOrganizations(User $user): ?array
+    {
+        $orgas = [];
+        foreach ($user->userGroups as $userGroup) {
+            if ($userGroup->externalId && strpos($userGroup->externalId, Module::AUTH_KEY_GROUPS . ':') === 0) {
+                $orgas[] = $userGroup;
+            }
+        }
+        return $orgas;
+    }
+
     public function usernameToAuth(string $username): string
     {
         return 'openid:https://service.gruene.de/openid/' . $username;
