@@ -242,6 +242,7 @@ return [
     'con_appearance'          => 'Aussehen',
     'con_home_page_style'     => 'Startseite / Tagesordnung',
     'con_motion_data'         => 'Antragsdaten über dem Antragstext',
+    'con_date_format'         => 'Datumsformat',
     'con_line_len'            => 'Maximale Zeilenlänge',
     'con_robots'              => 'Sichtbar in Suchmaschinen',
     'con_robots_hint'         => 'Änderungen an dieser Einstellung wirken sich erst aus, wenn Suchmaschinen das nächste Mal diese Seite abrufen. Das kann einige Tage dauern.',

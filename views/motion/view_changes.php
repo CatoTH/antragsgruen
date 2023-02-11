@@ -43,7 +43,7 @@ $this->title = str_replace(
             </tr>
             <tr>
                 <th><?= Yii::t('motion', ($oldMotion->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
-                <td><?= Tools::formatMysqlDateTime($oldMotion->dateCreation, null, false) ?></td>
+                <td><?= Tools::formatMysqlDateTime($oldMotion->dateCreation, false) ?></td>
             </tr>
         </table>
 
@@ -58,7 +58,7 @@ $this->title = str_replace(
             </tr>
             <tr>
                 <th><?= Yii::t('motion', ($newMotion->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
-                <td><?= Tools::formatMysqlDateTime($newMotion->dateCreation, null, false) ?></td>
+                <td><?= Tools::formatMysqlDateTime($newMotion->dateCreation, false) ?></td>
             </tr>
         </table>
     </div>

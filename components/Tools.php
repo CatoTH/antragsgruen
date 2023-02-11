@@ -2,7 +2,8 @@
 
 namespace app\components;
 
-use app\controllers\Base;
+use app\models\db\Consultation;
+use app\models\settings\Consultation as ConsultationSettings;
 use app\models\exceptions\Internal;
 
 class Tools
@@ -28,15 +29,29 @@ class Tools
 
     public static function getCurrentDateLocale(): string
     {
-        /** @var Base $controller */
-        $controller = \Yii::$app->controller;
-        if (is_a($controller, Base::class) && $controller->consultation) {
-            $locale = explode('-', $controller->consultation->wordingBase);
+        $consultation = Consultation::getCurrent();
+        if ($consultation && $consultation->wordingBase) {
+            return explode('-', $consultation->wordingBase)[0];
+        }
+        return explode('-', RequestContext::getWebApplication()->language)[0];
+    }
 
-            return $locale[0];
+    public static function getCurrentDateFormat(): string
+    {
+        $consultation = Consultation::getCurrent();
+        if ($consultation && $consultation->getSettings()->dateFormat && $consultation->getSettings()->dateFormat !== ConsultationSettings::DATE_FORMAT_DEFAULT) {
+            return $consultation->getSettings()->dateFormat;
         }
 
-        return \Yii::$app->language;
+        switch (self::getCurrentDateLocale()) {
+            case 'de':
+                return ConsultationSettings::DATE_FORMAT_DMY_DOT;
+            case 'fr':
+                return ConsultationSettings::DATE_FORMAT_DMY_SLASH;
+            case 'en':
+            default:
+                return ConsultationSettings::DATE_FORMAT_MDY_SLASH;
+        }
     }
 
     public static function dateBootstraptime2sql(string $time, ?string $locale = null): string
@@ -119,7 +134,7 @@ class Tools
             $locale = Tools::getCurrentDateLocale();
         }
 
-        if (!preg_match('/^(?<year>\\d{4})\-(?<month>\\d{1,2})\-(?<day>\\d{1,2})$/', $date, $matches)) {
+        if (!preg_match('/^(?<year>\\d{4})-(?<month>\\d{1,2})-(?<day>\\d{1,2})$/', $date, $matches)) {
             return '';
         }
 
@@ -220,7 +235,7 @@ class Tools
         }
     }
 
-    private static $last_time = 0;
+    private static int $last_time = 0;
 
     public static function debugTime(string $name): void
     {
@@ -229,10 +244,10 @@ class Tools
         if (self::$last_time) {
             echo 'Time (' . $name . '): ' . ($time - self::$last_time) . ' (' . date('Y-m-d H:i:s') . ')<br>';
         }
-        self::$last_time = $time;
+        self::$last_time = (int)$time;
     }
 
-    public static function formatMysqlDateWithAria(?string $mysqldate, ?string $locale = null, bool $allowRelativeDates = true): string
+    public static function formatMysqlDateWithAria(?string $mysqldate, bool $allowRelativeDates = true): string
     {
         $currentTs = DateTools::getCurrentTimestamp();
 
@@ -256,10 +271,27 @@ class Tools
             '%MONTHNAME%' => \Yii::t('structure', 'months_' . intval($date[1])),
         ];
 
-        return str_replace(array_keys($replaces), array_values($replaces), \Yii::t('structure', 'date_with_aria'));
+        switch (self::getCurrentDateFormat()) {
+            case ConsultationSettings::DATE_FORMAT_DMY_DOT:
+                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%.%MONTH%.%YEAR%</span>';
+                break;
+            case ConsultationSettings::DATE_FORMAT_DMY_SLASH:
+                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%/%MONTH%/%YEAR%</span>';
+                break;
+            case ConsultationSettings::DATE_FORMAT_MDY_SLASH:
+                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%MONTH%/%DAY%/%YEAR%</span>';
+                break;
+            case ConsultationSettings::DATE_FORMAT_YMD_DASH:
+                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%YEAR%-%MONTH%-%DAY%</span>';
+                break;
+            default:
+                throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat());
+        }
+
+        return str_replace(array_keys($replaces), array_values($replaces), $pattern);
     }
 
-    public static function formatMysqlDate(?string $mysqldate, ?string $locale = null, bool $allowRelativeDates = true): string
+    public static function formatMysqlDate(?string $mysqldate, bool $allowRelativeDates = true): string
     {
         $currentTs = DateTools::getCurrentTimestamp();
 
@@ -271,39 +303,31 @@ class Tools
             return \Yii::t('base', 'Yesterday');
         }
 
-        if ($locale === null) {
-            $locale = Tools::getCurrentDateLocale();
-        }
-
         $date = explode('-', substr($mysqldate, 0, 10));
         if (count($date) !== 3) {
             return '-';
         }
-        if ($locale === 'de') {
-            return sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]);
-        } elseif ($locale === 'fr') {
-            return sprintf('%02d/%02d/%04d', $date[2], $date[1], $date[0]);
-        } elseif ($locale === 'en') {
-            return sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]);
-        } else {
-            throw new Internal('Unsupported Locale: ' . $locale);
+        switch (self::getCurrentDateFormat()) {
+            case ConsultationSettings::DATE_FORMAT_DMY_DOT:
+                return sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]);
+            case ConsultationSettings::DATE_FORMAT_DMY_SLASH:
+                return sprintf('%02d/%02d/%04d', $date[2], $date[1], $date[0]);
+            case ConsultationSettings::DATE_FORMAT_MDY_SLASH:
+                return sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]);
+            case ConsultationSettings::DATE_FORMAT_YMD_DASH:
+                return sprintf('%04d-%02d-%02d', $date[0], $date[1], $date[2]);
+            default:
+                throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat());
         }
     }
 
-    public static function formatMysqlDateTime(string $mysqlDate, ?string $locale = null, bool $allowRelativeDates = true): string
+    public static function formatMysqlDateTime(string $mysqlDate, bool $allowRelativeDates = true): string
     {
-        if (strlen($mysqlDate) == 0) {
+        if (strlen($mysqlDate) === 0) {
             return '-';
         }
 
-        if ($locale === null) {
-            $locale = Tools::getCurrentDateLocale();
-        }
-        if ($locale !== 'de' && $locale !== 'en' && $locale !== 'fr') {
-            throw new Internal('Unsupported Locale: ' . $locale);
-        }
-
-        return self::formatMysqlDate($mysqlDate, $locale, $allowRelativeDates) . ", " . substr($mysqlDate, 11, 5);
+        return self::formatMysqlDate($mysqlDate, $allowRelativeDates) . ", " . substr($mysqlDate, 11, 5);
     }
 
     public static function formatRemainingTime(?\DateTime $deadline): string

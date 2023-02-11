@@ -180,6 +180,21 @@ $handledSiteSettings = [];
                     );
                     ?></div>
             </fieldset>
+
+            <fieldset class="form-group selectRow">
+                <?php $handledSettings[] = 'dateFormat'; ?>
+                <legend>
+                    <?= Yii::t('admin', 'con_date_format') ?>:
+                </legend>
+                <div class="selectHolder"><?php
+                    echo Html::dropDownList(
+                        'settings[dateFormat]',
+                        $consultation->getSettings()->dateFormat,
+                        $consultation->getSettings()->getDateFormats(),
+                        ['id' => 'dateFormat', 'class' => 'stdDropdown fullsize']
+                    );
+                    ?></div>
+            </fieldset>
             <br>
 
             <?php

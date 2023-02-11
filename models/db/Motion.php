@@ -1001,7 +1001,7 @@ class Motion extends IMotion implements IRSSItem
             $resolutionDate = $first->resolutionDate;
             if ($first->personType === MotionSupporter::PERSON_ORGANIZATION && $resolutionDate > 0) {
                 $return[\Yii::t('export', 'InitiatorOrga')]  = $first->organization;
-                $return[\Yii::t('export', 'ResolutionDate')] = Tools::formatMysqlDate($resolutionDate, null, false);
+                $return[\Yii::t('export', 'ResolutionDate')] = Tools::formatMysqlDate($resolutionDate, false);
 
                 // For applications, the title usually is the name of the person -> no need to repeat the name
             } elseif (!$first->name || grapheme_stripos($this->title, $first->name) === false) {

@@ -8,22 +8,28 @@ class Consultation implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    const START_LAYOUT_STD = 0;
-    const START_LAYOUT_TAGS = 2;
-    const START_LAYOUT_AGENDA = 3;
-    const START_LAYOUT_AGENDA_LONG = 4;
-    const START_LAYOUT_AGENDA_HIDE_AMEND = 5;
-    const START_LAYOUT_DISCUSSION_TAGS = 6;
+    public const START_LAYOUT_STD = 0;
+    public const START_LAYOUT_TAGS = 2;
+    public const START_LAYOUT_AGENDA = 3;
+    public const START_LAYOUT_AGENDA_LONG = 4;
+    public const START_LAYOUT_AGENDA_HIDE_AMEND = 5;
+    public const START_LAYOUT_DISCUSSION_TAGS = 6;
 
-    const ROBOTS_NONE = 0;
-    const ROBOTS_ONLY_HOME = 1;
-    const ROBOTS_ALL = 2;
+    public const ROBOTS_NONE = 0;
+    public const ROBOTS_ONLY_HOME = 1;
+    public const ROBOTS_ALL = 2;
 
-    const MOTIONDATA_ALL = 0;
-    const MOTIONDATA_MINI = 1;
-    const MOTIONDATA_NONE = 2;
+    public const MOTIONDATA_ALL = 0;
+    public const MOTIONDATA_MINI = 1;
+    public const MOTIONDATA_NONE = 2;
 
-    // SETTINGS WITH TEST CASES
+    public const DATE_FORMAT_DEFAULT = 'default';
+    public const DATE_FORMAT_DMY_DOT = 'dmy-dot'; // 13.01.2022
+    public const DATE_FORMAT_DMY_SLASH = 'dmy-slash'; // 13/01/2022
+    public const DATE_FORMAT_MDY_SLASH = 'mdy-slash'; // 01/13/2022
+    public const DATE_FORMAT_YMD_DASH = 'ymd-dash'; // 2022-01-13
+
+        // SETTINGS WITH TEST CASES
 
     public bool $maintenanceMode = false;
     public bool $screeningMotions = false;
@@ -77,6 +83,7 @@ class Consultation implements \JsonSerializable
     public array $adminListAdditionalFields = [];
 
     public ?string $logoUrl = null;
+    public ?string $dateFormat = null;
 
     public ?string $emailReplyTo = null;
     public ?string $emailFromName = null;
@@ -91,12 +98,12 @@ class Consultation implements \JsonSerializable
     public static function getStartLayouts(): array
     {
         return [
-            static::START_LAYOUT_STD               => \Yii::t('structure', 'home_layout_std'),
-            static::START_LAYOUT_TAGS              => \Yii::t('structure', 'home_layout_tags'),
-            static::START_LAYOUT_AGENDA            => \Yii::t('structure', 'home_layout_agenda'),
-            static::START_LAYOUT_AGENDA_LONG       => \Yii::t('structure', 'home_layout_agenda_long'),
-            static::START_LAYOUT_AGENDA_HIDE_AMEND => \Yii::t('structure', 'home_layout_agenda_hide_amend'),
-            static::START_LAYOUT_DISCUSSION_TAGS   => \Yii::t('structure', 'home_layout_discussion_tags'),
+            self::START_LAYOUT_STD               => \Yii::t('structure', 'home_layout_std'),
+            self::START_LAYOUT_TAGS              => \Yii::t('structure', 'home_layout_tags'),
+            self::START_LAYOUT_AGENDA            => \Yii::t('structure', 'home_layout_agenda'),
+            self::START_LAYOUT_AGENDA_LONG       => \Yii::t('structure', 'home_layout_agenda_long'),
+            self::START_LAYOUT_AGENDA_HIDE_AMEND => \Yii::t('structure', 'home_layout_agenda_hide_amend'),
+            self::START_LAYOUT_DISCUSSION_TAGS   => \Yii::t('structure', 'home_layout_discussion_tags'),
         ];
     }
 
@@ -106,9 +113,20 @@ class Consultation implements \JsonSerializable
     public static function getMotiondataModes(): array
     {
         return [
-            static::MOTIONDATA_ALL  => \Yii::t('structure', 'motiondata_all'),
-            static::MOTIONDATA_MINI => \Yii::t('structure', 'motiondata_mini'),
-            static::MOTIONDATA_NONE => \Yii::t('structure', 'motiondata_none'),
+            self::MOTIONDATA_ALL  => \Yii::t('structure', 'motiondata_all'),
+            self::MOTIONDATA_MINI => \Yii::t('structure', 'motiondata_mini'),
+            self::MOTIONDATA_NONE => \Yii::t('structure', 'motiondata_none'),
+        ];
+    }
+
+    public static function getDateFormats(): array
+    {
+        return [
+            self::DATE_FORMAT_DEFAULT => \Yii::t('structure', 'dateformat_default'),
+            self::DATE_FORMAT_DMY_DOT => \Yii::t('structure', 'dateformat_dmy_dot'),
+            self::DATE_FORMAT_DMY_SLASH => \Yii::t('structure', 'dateformat_dmy_slash'),
+            self::DATE_FORMAT_MDY_SLASH => \Yii::t('structure', 'dateformat_mdy_slash'),
+            self::DATE_FORMAT_YMD_DASH => \Yii::t('structure', 'dateformat_ymd_dash'),
         ];
     }
 
@@ -118,9 +136,9 @@ class Consultation implements \JsonSerializable
     public static function getRobotPolicies(): array
     {
         return [
-            static::ROBOTS_NONE      => \Yii::t('structure', 'robots_policy_none'),
-            static::ROBOTS_ONLY_HOME => \Yii::t('structure', 'robots_policy_only_home'),
-            static::ROBOTS_ALL       => \Yii::t('structure', 'robots_policy_all'),
+            self::ROBOTS_NONE      => \Yii::t('structure', 'robots_policy_none'),
+            self::ROBOTS_ONLY_HOME => \Yii::t('structure', 'robots_policy_only_home'),
+            self::ROBOTS_ALL       => \Yii::t('structure', 'robots_policy_all'),
         ];
     }
 

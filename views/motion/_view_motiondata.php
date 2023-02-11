@@ -110,14 +110,14 @@ if (count($initiators) > 0 && $motion->isResolution()) {
 if ($motion->dateResolution) {
     $motionData[] = [
         'title'   => Yii::t('motion', 'resoluted_on'),
-        'content' => Tools::formatMysqlDate($motion->dateResolution, null, false),
+        'content' => Tools::formatMysqlDate($motion->dateResolution, false),
     ];
 }
 
 if (!$motion->isResolution() && $motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
     $motionData[] = [
         'title'   => Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')),
-        'content' => Tools::formatMysqlDateTime($motion->dateCreation, null, false),
+        'content' => Tools::formatMysqlDateTime($motion->dateCreation, false),
     ];
 }
 
