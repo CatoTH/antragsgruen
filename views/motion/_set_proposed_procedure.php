@@ -174,7 +174,7 @@ $voting = $motion->getVotingData();
                     }
                 } elseif ($motion->proposalFeedbackHasBeenRequested()) {
                     $msg  = Yii::t('amend', 'proposal_notified');
-                    $date = Tools::formatMysqlDate($motion->proposalNotification, null, false);
+                    $date = Tools::formatMysqlDate($motion->proposalNotification, false);
                     echo str_replace('%DATE%', $date, $msg);
                     echo ' ' . Yii::t('amend', 'proposal_no_feedback');
 

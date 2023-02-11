@@ -292,7 +292,7 @@ class LayoutHooks extends Hooks
             if ($supporter->resolutionDate > 0) {
                 $orga .= ' <small style="font-weight: normal;">(';
                 $orga .= \Yii::t('motion', 'resolution_on') . ': ';
-                $orga .= Tools::formatMysqlDate($supporter->resolutionDate, null, false);
+                $orga .= Tools::formatMysqlDate($supporter->resolutionDate, false);
                 $orga .= ')</small>';
             }
 
@@ -301,7 +301,7 @@ class LayoutHooks extends Hooks
             $orga = trim($supporter->organization, " \t\n\r\0\x0B");
             if ($supporter->resolutionDate > 0) {
                 $orga .= ' (' . \Yii::t('motion', 'resolution_on') . ': ';
-                $orga .= Tools::formatMysqlDate($supporter->resolutionDate, null, false) . ')';
+                $orga .= Tools::formatMysqlDate($supporter->resolutionDate, false) . ')';
             }
 
             return $orga;

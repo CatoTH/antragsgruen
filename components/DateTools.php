@@ -40,14 +40,14 @@ class DateTools
     public static function formatDeadlineRange(array $deadline, bool $allowRelativeDates = true): string
     {
         if ($deadline['start'] && $deadline['end']) {
-            $start = Tools::formatMysqlDateTime($deadline['start'], null, $allowRelativeDates);
-            $end   = Tools::formatMysqlDateTime($deadline['end'], null, $allowRelativeDates);
+            $start = Tools::formatMysqlDateTime($deadline['start'], $allowRelativeDates);
+            $end   = Tools::formatMysqlDateTime($deadline['end'], $allowRelativeDates);
             return str_replace(['%from%', '%to%'], [$start, $end], \Yii::t('structure', 'policy_deadline_from_to'));
         } elseif ($deadline['start']) {
-            $start = Tools::formatMysqlDateTime($deadline['start'], null, $allowRelativeDates);
+            $start = Tools::formatMysqlDateTime($deadline['start'], $allowRelativeDates);
             return str_replace('%from%', $start, \Yii::t('structure', 'policy_deadline_from'));
         } elseif ($deadline['end']) {
-            $end   = Tools::formatMysqlDateTime($deadline['end'], null, $allowRelativeDates);
+            $end   = Tools::formatMysqlDateTime($deadline['end'], $allowRelativeDates);
             return str_replace('%to%', $end, \Yii::t('structure', 'policy_deadline_to'));
         } else {
             return \Yii::t('structure', 'policy_deadline_na');

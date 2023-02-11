@@ -245,6 +245,7 @@ return [
     'con_appearance'          => 'Appearance',
     'con_home_page_style'     => 'Homepage / Agenda',
     'con_motion_data'         => 'Motion data above the motion text',
+    'con_date_format'         => 'Date format',
     'con_line_len'            => 'Line length',
     'con_robots'              => 'Appears in search engines',
     'con_robots_hint'         => 'Changes to this settings take several days to become active, as it depends on search engines actively re-crawling this site.',

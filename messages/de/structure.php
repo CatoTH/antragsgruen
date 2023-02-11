@@ -124,6 +124,12 @@ return [
     'user_status_0'  => 'Bestätigt',
     'user_status_-1' => 'Gelöscht',
 
+    'dateformat_default' => 'Standard (sprachabhängig)',
+    'dateformat_dmy_dot' => 'dd.mm.yyyy (z.B. Deutschland)',
+    'dateformat_dmy_slash' => 'dd/mm/yyyy (z.B. Frankreich)',
+    'dateformat_mdy_slash' => 'mm/dd/yyyy (z.B. USA)',
+    'dateformat_ymd_dash' => 'yyyy-mm-dd (int. Standard)',
+
     'STATUS_DELETED'                      => 'Gelöscht',
     'STATUSV_DELETED'                     => 'Löschen',
     'STATUS_WITHDRAWN'                    => 'Zurückgezogen',
@@ -278,6 +284,4 @@ return [
     'months_10' => 'Oktober',
     'months_11' => 'November',
     'months_12' => 'Dezember',
-
-    'date_with_aria' => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%.%MONTH%.%YEAR%</span>',
 ];
