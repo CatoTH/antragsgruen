@@ -51,8 +51,6 @@ class StdHooks extends Hooks
 <link rel="icon" type="image/png" sizes="16x16" href="' . $faviconBase . '/favicon-16x16.png">
 <link rel="manifest" href="' . $faviconBase . '/site.webmanifest">
 <link rel="mask-icon" href="' . $faviconBase . '/safari-pinned-tab.svg" color="#3bb030">
-<meta name="msapplication-TileColor" content="#00a300">
-<meta name="msapplication-TileImage" content="' . $faviconBase . '/mstile-150x150.png">
 <meta name="theme-color" content="#ffffff">';
     }
 
