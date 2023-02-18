@@ -102,21 +102,21 @@ class Application
                 'rows'     => [
                     '1' => new TabularDataType(
                         [
-                            'rowId' => 1,
+                            'rowId' => '1',
                             'title' => \Yii::t('structure', 'preset_app_age'),
                             'type'  => TabularDataType::TYPE_INTEGER,
                         ]
                     ),
                     '2' => new TabularDataType(
                         [
-                            'rowId' => 2,
+                            'rowId' => '2',
                             'title' => \Yii::t('structure', 'preset_app_gender'),
                             'type'  => TabularDataType::TYPE_STRING,
                         ]
                     ),
                     '3' => new TabularDataType(
                         [
-                            'rowId' => 3,
+                            'rowId' => '3',
                             'title' => \Yii::t('structure', 'preset_app_birthcity'),
                             'type'  => TabularDataType::TYPE_STRING,
                         ]

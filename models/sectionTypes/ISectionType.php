@@ -32,13 +32,9 @@ abstract class ISectionType
     const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
     const TYPE_API_VIDEO_EMBED = 'VideoEmbed';
 
-    /** @var IMotionSection */
-    protected $section;
-
-    protected $absolutizeLinks = false;
-
-    /** @var null|Motion */
-    protected $motionContext = null;
+    protected IMotionSection $section;
+    protected bool $absolutizeLinks = false;
+    protected ?Motion $motionContext = null;
 
     public function __construct(IMotionSection $section)
     {
@@ -118,6 +114,8 @@ abstract class ISectionType
     }
 
     abstract public function isEmpty(): bool;
+
+    abstract public function isFileUploadType(): bool;
 
     abstract public function getMotionFormField(): string;
 

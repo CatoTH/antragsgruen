@@ -105,6 +105,11 @@ class Title extends ISectionType
         return ($this->section->getData() === '');
     }
 
+    public function isFileUploadType(): bool
+    {
+        return false;
+    }
+
     public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
     }

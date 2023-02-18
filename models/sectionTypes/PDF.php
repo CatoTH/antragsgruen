@@ -157,6 +157,11 @@ class PDF extends ISectionType
         return ($this->section->getData() === '');
     }
 
+    public function isFileUploadType(): bool
+    {
+        return true;
+    }
+
     public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         if ($this->isEmpty()) {

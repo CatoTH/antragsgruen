@@ -64,7 +64,9 @@ class ProposedChangeForm
                     /** @var \app\models\sectionTypes\TextSimple $type */
                     $type->forceMultipleParagraphMode(true);
                 }
-                $type->setAmendmentData($postParams['sections'][$section->getSettings()->id]);
+                if (!$type->isFileUploadType()) {
+                    $type->setAmendmentData($postParams['sections'][$section->getSettings()->id]);
+                }
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->getSettings()->id])) {

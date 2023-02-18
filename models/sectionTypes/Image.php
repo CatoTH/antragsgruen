@@ -266,6 +266,11 @@ class Image extends ISectionType
         return ($this->section->getData() === '' || $invalidAmendmentImageWorkaround);
     }
 
+    public function isFileUploadType(): bool
+    {
+        return true;
+    }
+
     /**
      * @return float[]
      */
