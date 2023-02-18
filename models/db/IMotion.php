@@ -466,6 +466,19 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
     }
 
+    abstract public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool;
+
+    abstract public function canSeeProposedProcedure(?string $procedureToken): bool;
+
+    public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
+    {
+        return ($this->hasAlternativeProposaltext(true) && (
+                $this->isProposalPublic() ||
+                User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS) ||
+                ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
+            ));
+    }
+
     public function proposalAllowsUserFeedback(): bool
     {
         if ($this->proposalStatus === null) {

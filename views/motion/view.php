@@ -212,6 +212,7 @@ $viewText = $this->render('_view_text', [
     'motion'         => $motion,
     'commentForm'    => $commentForm,
     'openedComments' => $openedComments,
+    'procedureToken' => $procedureToken
 ]);
 
 $viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragraphNo>\d+)-->/siu', function ($matches) use ($motion) {

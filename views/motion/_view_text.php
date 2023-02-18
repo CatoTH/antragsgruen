@@ -1,7 +1,7 @@
 <?php
 
 use app\components\HashedStaticFileCache;
-use app\models\db\{ConsultationSettingsMotionSection, ConsultationUserGroup, Motion};
+use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsMotionSection, ConsultationUserGroup, Motion};
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
 use app\views\motion\LayoutHelper;
@@ -9,12 +9,13 @@ use yii\helpers\Html;
 
 /**
  * @var Motion $motion
+ * @var string $procedureToken
  * @var CommentForm $commentForm
  * @var int[] $openedComments
  */
 
 $sections  = $motion->getSortedSections(false, true);
-$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections()) && false;
+$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections() && $procedureToken === null) && false;
 
 foreach ($sections as $section) {
     // Paragraph-based comments have inlined forms, which break the caching mechanism
@@ -38,6 +39,36 @@ $titleSection = $motion->getTitleSection();
 // Hence, once that happens, everything goes into the "bottom" variable
 $main = $right = '';
 $bottom = '';
+
+if ($motion->hasVisibleAlternativeProposaltext($procedureToken)) {
+    $hasProposedChange = true;
+    $reference         = $motion->getAlternativeProposaltextReference();
+    if ($reference) {
+        /** @var Motion $referenceMotion */
+        $referenceMotion = $reference['motion'];
+        /** @var Amendment $reference */
+        $reference = $reference['modification'];
+
+        /** @var AmendmentSection[] $sections */
+        $ppSections = $reference->getSortedSections(false);
+        foreach ($ppSections as $section) {
+            if ($referenceMotion->id === $motion->id) {
+                $prefix = Yii::t('amend', 'pprocedure_title_own');
+            } else {
+                $prefix = Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceMotion->titlePrefix;
+            }
+            if (!$motion->isProposalPublic()) {
+                $prefix = '[ADMIN] ' . $prefix;
+            }
+            $sectionType = $section->getSectionType();
+            $sectionType->setMotionContext($motion);
+            $main .= $sectionType->getAmendmentFormatted($prefix);
+        }
+    }
+} else {
+    $hasProposedChange = false;
+}
+
 
 foreach ($sections as $i => $section) {
     $renderedText = \app\models\layoutHooks\Layout::renderMotionSection($section, $motion);

@@ -28,7 +28,6 @@ class ProposedChangeForm
         }
         $this->proposalSections = [];
         foreach ($this->imotion->sections as $section) {
-            // @TODO Check if this actually works
             if (is_a($section, MotionSection::class)) {
                 $originalSection = $section;
             } else {

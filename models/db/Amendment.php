@@ -61,7 +61,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public const EXTRA_DATA_VIEW_MODE_FULL = 'view_mode_full'; // Boolean value
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -1172,18 +1172,11 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
-    {
-        return ($this->hasAlternativeProposaltext(true) && (
-            $this->isProposalPublic() ||
-            User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS) ||
-            ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
-        ));
-    }
-
-    /*
+    /**
      * Returns the modification proposed and the amendment to which the modification was directly proposed
      * (which has not to be this very amendment, in case this amendment is obsoleted by another amendment)
+     *
+     * @return array{amendment: Amendment, modification: Amendment}|null
      */
     public function getAlternativeProposaltextReference(int $internalNestingLevel = 0): ?array
     {
