@@ -33,6 +33,10 @@ $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, Yii::t
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 $amendments = Init::getMotionAmendmentsForMerging($form->motion);
+$pp = $form->motion->getAlternativeProposaltextReference();
+if ($pp && $pp['motion']->id === $form->motion->id) {
+    $amendments[] = $pp['modification'];
+}
 
 $amendmentStaticData = array_map(function (Amendment $amendment) {
     return Init::getJsAmendmentStaticData($amendment);

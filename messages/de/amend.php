@@ -113,6 +113,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_status_unchanged'            => 'unverändert',
     'merge_amend_statuses'              => 'Status der Änderungsanträge',
     'merge_amend_show'                  => 'Anzeigen',
+    'merge_amend_modu'                  => 'ModÜ',
     'merge_bread'                       => 'Überarbeiten',
     'merge_title'                       => '%TITLE% überarbeiten',
     'merge_merge'                       => 'Einpflegen',

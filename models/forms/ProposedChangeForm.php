@@ -20,11 +20,12 @@ class ProposedChangeForm
 
     protected function initProposal(): void
     {
-        if ($this->imotion->getMyProposalReference()) {
-            if ($this->imotion->getMyProposalReference()->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-                $this->proposalSections = $this->imotion->getMyProposalReference()->getActiveSections();
-                return;
-            }
+        if ($this->imotion->getMyProposalReference() && in_array($this->imotion->getMyProposalReference()->status, [
+            Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+            Motion::STATUS_PROPOSED_MODIFIED_MOTION,
+        ])) {
+            $this->proposalSections = $this->imotion->getMyProposalReference()->getActiveSections();
+            return;
         }
         $this->proposalSections = [];
         foreach ($this->imotion->sections as $section) {
@@ -84,22 +85,24 @@ class ProposedChangeForm
     private function getProposalAmendmentObject(): Amendment
     {
         $reference = $this->imotion->getMyProposalReference();
-        if ($reference) {
-            if ($reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-                return $reference;
-            }
+        if ($reference && in_array($reference->status, [
+            Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+            Motion::STATUS_PROPOSED_MODIFIED_MOTION,
+        ])) {
+            return $reference;
         }
 
+        $reference = new Amendment();
         if (is_a($this->imotion, Motion::class)) {
+            $reference->status = Amendment::STATUS_PROPOSED_MODIFIED_MOTION;
             $motionId = $this->imotion->id;
         } else {
+            $reference->status = Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT;
             /** @var Amendment $amendment */
             $amendment = $this->imotion;
             $motionId = $amendment->motionId;
         }
 
-        $reference = new Amendment();
-        $reference->status = Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT;
         $reference->motionId = $motionId;
         $reference->dateCreation = date('Y-m-d H:i:s');
         $reference->changeEditorial = '';
@@ -128,7 +131,7 @@ class ProposedChangeForm
             }
         }
         $this->imotion->proposalReferenceId = $propAmend->id;
-        $this->imotion->proposalStatus      = Amendment::STATUS_MODIFIED_ACCEPTED;
+        $this->imotion->proposalStatus = Amendment::STATUS_MODIFIED_ACCEPTED;
         $this->imotion->save();
     }
 }

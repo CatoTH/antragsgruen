@@ -100,6 +100,10 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     // This amendment is being referenced by proposalReference of the modified amendment.
     public const STATUS_PROPOSED_MODIFIED_AMENDMENT = 21;
 
+    // The modified version of amotion, as proposed by the admins.
+    // This amendment is being referenced by proposalReference of the modified motion.
+    public const STATUS_PROPOSED_MODIFIED_MOTION = 31;
+
     // Used as a status for amendment, which is the proposed move of an amendment to another motion.
     // The original amendment gets this status as `proposalStatus`, the internal new amendment (for the other motion) gets this status as `status`.
     // The internal new amendment should not be used-visible in the context of its motion (only when merging),

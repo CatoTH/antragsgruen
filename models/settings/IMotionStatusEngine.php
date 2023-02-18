@@ -164,6 +164,13 @@ class IMotionStatusEngine
             true
         );
         $statuses[] = new IMotionStatus(
+            IMotion::STATUS_PROPOSED_MODIFIED_MOTION,
+            \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_MOTION'),
+            null,
+            true,
+            true
+        );
+        $statuses[] = new IMotionStatus(
             IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION,
             \Yii::t('structure', 'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION'),
             null,
@@ -266,6 +273,7 @@ class IMotionStatusEngine
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
             IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+            IMotion::STATUS_PROPOSED_MODIFIED_MOTION,
         ];
     }
 

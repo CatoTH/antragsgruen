@@ -7,19 +7,16 @@ use app\models\db\Motion;
 class DraftParagraph
 {
     /** @var int[] */
-    public $amendmentToggles;
+    public array $amendmentToggles;
 
     /** @var string[] */
-    public $textVersions;
 
-    /** @var string */
-    public $text;
-
-    /** @var string|null */
-    public $unchanged;
+    public array $textVersions;
+    public string $text;
+    public ?string $unchanged;
 
     /** @var int[] */
-    public $handledCollisions;
+    public array $handledCollisions;
 
     public static function fromJson(array $json): DraftParagraph
     {

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
@@ -119,13 +120,18 @@ trait MotionMergingTrait
             return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
 
-        $amendmentsById          = [];
-        $newAmendmentsById       = [];
+        $amendmentsById = [];
+        $newAmendmentsById = [];
         $newAmendmentsStaticData = [];
-        $newAmendmentsStatus     = [];
+        $newAmendmentsStatus = [];
 
         $knownAmendments = array_map('intval', explode(',', $knownAmendments));
         $amendments = Init::getMotionAmendmentsForMerging($motion);
+        $proposedAlternative = $motion->getAlternativeProposaltextReference();
+        if ($proposedAlternative && $proposedAlternative['motion']->id === $motion->id) {
+            $amendments[] = $proposedAlternative['modification'];
+        }
+
         foreach ($amendments as $amendment) {
             $amendmentsById[$amendment->id] = $amendment;
             if (!in_array($amendment->id, $knownAmendments)) {

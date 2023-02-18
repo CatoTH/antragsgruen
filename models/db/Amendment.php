@@ -46,7 +46,8 @@ use yii\helpers\Html;
  * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
- * @property Amendment|null $proposalReferencedBy
+ * @property Amendment|null $proposalReferencedByAmendment
+ * @property Motion|null $proposalReferencedByMotion
  * @property VotingBlock|null $votingBlock
  * @property User|null $responsibilityUser
  * @property Vote[] $votes
@@ -237,9 +238,14 @@ class Amendment extends IMotion implements IRSSItem
         return $sections;
     }
 
-    public function getProposalReferencedBy(): ActiveQuery
+    public function getProposalReferencedByAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
+    }
+
+    public function getProposalReferencedByMotion(): ActiveQuery
+    {
+        return $this->hasOne(Motion::class, ['proposalReferenceId' => 'id']);
     }
 
     public function getVotingBlock(): ActiveQuery
@@ -412,7 +418,22 @@ class Amendment extends IMotion implements IRSSItem
     public function getInlineChangeData(string $changeId): array
     {
         if ($this->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-            return $this->proposalReferencedBy->getInlineChangeData($changeId);
+            return $this->proposalReferencedByAmendment->getInlineChangeData($changeId);
+        }
+        if ($this->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
+            $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
+            $motion = $this->proposalReferencedByMotion;
+            return [
+                'data-cid'              => $changeId,
+                'data-userid'           => '',
+                'data-username'         => $motion->getInitiatorsStr(),
+                'data-changedata'       => '',
+                'data-time'             => $time,
+                'data-last-change-time' => $time,
+                'data-append-hint'      => '[' . $motion->titlePrefix . ']',
+                'data-link'             => UrlHelper::createMotionUrl($motion),
+                'data-amendment-id'     => $motion->id, // ??
+            ];
         }
         $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
         return [
@@ -1244,7 +1265,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->proposalStatus === static::STATUS_ACCEPTED) {
             return true;
         }
-        if ($this->status === static::STATUS_PROPOSED_MODIFIED_AMENDMENT ||
+        if (in_array($this->status, [static::STATUS_PROPOSED_MODIFIED_AMENDMENT, static::STATUS_PROPOSED_MODIFIED_MOTION]) ||
             $this->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
             return true;
         }

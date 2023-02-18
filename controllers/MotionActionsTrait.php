@@ -611,7 +611,7 @@ trait MotionActionsTrait
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
             $reference = $motion->getMyProposalReference();
-            if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+            if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
                 foreach ($reference->sections as $section) {
                     $section->delete();
                 }
