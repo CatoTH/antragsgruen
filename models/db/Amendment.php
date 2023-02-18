@@ -237,15 +237,6 @@ class Amendment extends IMotion implements IRSSItem
         return $sections;
     }
 
-    public function getMyProposalReference(): ?Amendment
-    {
-        if ($this->proposalReferenceId) {
-            return $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
-        } else {
-            return null;
-        }
-    }
-
     public function getProposalReferencedBy(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);

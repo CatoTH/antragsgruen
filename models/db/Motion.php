@@ -80,6 +80,7 @@ class Motion extends IMotion implements IRSSItem
         $statuses = [
             IMotion::STATUS_ACCEPTED,
             IMotion::STATUS_REJECTED,
+            IMotion::STATUS_MODIFIED_ACCEPTED,
             IMotion::STATUS_REFERRED,
             IMotion::STATUS_VOTE,
             IMotion::STATUS_OBSOLETED_BY,
@@ -88,7 +89,6 @@ class Motion extends IMotion implements IRSSItem
         if (Consultation::getCurrent()) {
             $statuses = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStatuses($statuses);
         }
-
         return $statuses;
     }
 

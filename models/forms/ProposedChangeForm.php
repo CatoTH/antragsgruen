@@ -2,37 +2,43 @@
 
 namespace app\models\forms;
 
-use app\models\db\Amendment;
-use app\models\db\AmendmentSection;
+use app\models\db\{Amendment, AmendmentSection, IMotion, Motion, MotionSection};
 use app\models\sectionTypes\ISectionType;
 
-class AmendmentProposedChangeForm
+class ProposedChangeForm
 {
-    protected Amendment $amendment;
+    protected IMotion $imotion;
 
     /** @var AmendmentSection[] */
     protected array $proposalSections;
 
-
-    public function __construct(Amendment $amendment)
+    public function __construct(IMotion $imotion)
     {
-        $this->amendment = $amendment;
+        $this->imotion = $imotion;
         $this->initProposal();
     }
 
     protected function initProposal(): void
     {
-        if ($this->amendment->getMyProposalReference()) {
-            if ($this->amendment->getMyProposalReference()->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-                $this->proposalSections = $this->amendment->getMyProposalReference()->getActiveSections();
+        if ($this->imotion->getMyProposalReference()) {
+            if ($this->imotion->getMyProposalReference()->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+                $this->proposalSections = $this->imotion->getMyProposalReference()->getActiveSections();
                 return;
             }
         }
         $this->proposalSections = [];
-        foreach ($this->amendment->sections as $section) {
+        foreach ($this->imotion->sections as $section) {
+            // @TODO Check if this actually works
+            if (is_a($section, MotionSection::class)) {
+                $originalSection = $section;
+            } else {
+                /** @var AmendmentSection $section */
+                $originalSection = $section->getOriginalMotionSection();
+            }
+
             $newSection = new AmendmentSection();
             $newSection->setAttributes($section->getAttributes(), false);
-            $newSection->setOriginalMotionSection($section->getOriginalMotionSection());
+            $newSection->setOriginalMotionSection($originalSection);
             $newSection->amendmentId  = null;
             $this->proposalSections[] = $newSection;
         }
@@ -76,15 +82,24 @@ class AmendmentProposedChangeForm
 
     private function getProposalAmendmentObject(): Amendment
     {
-        $reference = $this->amendment->getMyProposalReference();
+        $reference = $this->imotion->getMyProposalReference();
         if ($reference) {
             if ($reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                 return $reference;
             }
         }
+
+        if (is_a($this->imotion, Motion::class)) {
+            $motionId = $this->imotion->id;
+        } else {
+            /** @var Amendment $amendment */
+            $amendment = $this->imotion;
+            $motionId = $amendment->motionId;
+        }
+
         $reference = new Amendment();
         $reference->status = Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT;
-        $reference->motionId = $this->amendment->motionId;
+        $reference->motionId = $motionId;
         $reference->dateCreation = date('Y-m-d H:i:s');
         $reference->changeEditorial = '';
         $reference->changeText = '';
@@ -111,8 +126,8 @@ class AmendmentProposedChangeForm
                 die();
             }
         }
-        $this->amendment->proposalReferenceId = $propAmend->id;
-        $this->amendment->proposalStatus      = Amendment::STATUS_MODIFIED_ACCEPTED;
-        $this->amendment->save();
+        $this->imotion->proposalReferenceId = $propAmend->id;
+        $this->imotion->proposalStatus      = Amendment::STATUS_MODIFIED_ACCEPTED;
+        $this->imotion->save();
     }
 }

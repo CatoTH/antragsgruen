@@ -183,7 +183,11 @@ if ($hasPpAdminbox || $hasSpeechLists) {
 }
 if ($hasPp) {
     if ($hasPpAdminbox) {
-        echo $this->render('_set_proposed_procedure', ['motion' => $motion, 'msgAlert' => null]);
+        echo $this->render('_set_proposed_procedure', [
+            'motion' => $motion,
+            'context'   => 'view',
+            'msgAlert' => null,
+        ]);
     }
     if ($motion->proposalFeedbackHasBeenRequested() && $motion->canSeeProposedProcedure($procedureToken)) {
         echo $this->render('_view_agree_to_proposal', ['motion' => $motion, 'procedureToken' => $procedureToken]);

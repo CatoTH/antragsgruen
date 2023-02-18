@@ -237,6 +237,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'diff_old_version' => 'Ursprüngliche Version',
     'diff_new_version' => 'Neue Version',
 
+    'proposal_edit_title_orig' => 'Original-Antrag',
     'proposal_email_title'    => 'Antrag %PREFIX%: Verfahrensvorschlag',
     'proposal_email_modified' => "Hallo %NAME_GIVEN%,\n\n" .
                                  "die Programmkommission hat über deinen Antrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .

@@ -103,7 +103,7 @@ class AmendmentSection extends IMotionSection
             $motion = $this->getMotion();
             if ($motion) {
                 foreach ($this->getMotion()->getActiveSections() as $section) {
-                    if ($section->sectionId == $this->sectionId) {
+                    if ($section->sectionId === $this->sectionId) {
                         $this->originalMotionSection = $section;
                     }
                 }

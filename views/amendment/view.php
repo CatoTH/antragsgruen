@@ -3,7 +3,6 @@
 use app\components\UrlHelper;
 use app\models\db\{Amendment, ConsultationUserGroup, User};
 use app\models\forms\CommentForm;
-use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 

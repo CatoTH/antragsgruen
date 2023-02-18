@@ -3,9 +3,12 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\forms\ProposedChangeForm;
+use app\models\http\{HtmlResponse, JsonResponse, ResponseInterface, RestApiExceptionResponse};
 use app\models\notifications\MotionProposedProcedure;
 use app\components\{Tools, UrlHelper};
-use app\models\db\{ConsultationLog,
+use app\models\db\{Amendment,
+    ConsultationLog,
     ConsultationSettingsTag,
     ConsultationUserGroup,
     IComment,
@@ -20,9 +23,7 @@ use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
-use yii\web\Request;
-use yii\web\Response;
-use yii\web\Session;
+use yii\web\{Request, Response, Session};
 
 /**
  * @property Consultation $consultation
@@ -425,50 +426,31 @@ trait MotionActionsTrait
         }
     }
 
-    /**
-     * @param string $motionSlug
-     * @return string
-     * @throws \Throwable
-     * @throws \Yii\db\StaleObjectException
-     */
-    public function actionDelProposalComment($motionSlug)
+    public function actionDelProposalComment(string $motionSlug): ResponseInterface
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $motion = $this->getMotionWithCheck($motionSlug);
         if (!$motion) {
-            return json_encode(['success' => false, 'error' => 'Motion not found']);
+            return new RestApiExceptionResponse(404, 'Motion not found');
         }
 
         $commentId = $this->getHttpRequest()->post('id');
         $comment   = MotionAdminComment::findOne(['id' => $commentId, 'motionId' => $motion->id]);
         if ($comment && User::isCurrentUser($comment->getMyUser())) {
             $comment->delete();
-            return json_encode(['success' => true]);
+            return new JsonResponse(['success' => true]);
         } else {
-            return json_encode(['success' => false, 'error' => 'No permission to delete this comment']);
+            return new RestApiExceptionResponse(403, 'No permission to delete this comment');
         }
     }
 
-    /**
-     * @param string $motionSlug
-     * @return string
-     * @throws Internal
-     */
-    public function actionSaveProposalStatus($motionSlug)
+    public function actionSaveProposalStatus(string $motionSlug): ResponseInterface
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            $this->getHttpResponse()->statusCode = 404;
-            return 'Motion not found';
+            return new RestApiExceptionResponse(404, 'Motion not found');
         }
         if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            $this->getHttpResponse()->statusCode = 403;
-            return 'Not permitted to change the status';
+            return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
         $response = [];
@@ -476,7 +458,7 @@ trait MotionActionsTrait
         $ppChanges = new ProposedProcedureChange(null);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
-            $setStatus = IntVal($this->getHttpRequest()->post('setStatus'));
+            $setStatus = intval($this->getHttpRequest()->post('setStatus'));
             if ($motion->proposalStatus !== $setStatus) {
                 $ppChanges->setProposalStatusChanges($motion->proposalStatus, $setStatus);
                 if ($motion->proposalUserStatus !== null) {
@@ -539,9 +521,7 @@ trait MotionActionsTrait
                     $ppChanges
                 );
             } catch (FormError $e) {
-                $response['success'] = false;
-                $response['error']   = $e->getMessage();
-                return json_encode($response);
+                return new RestApiExceptionResponse(400, $e->getMessage());
             }
 
             if ($ppChanges->hasChanges()) {
@@ -557,6 +537,7 @@ trait MotionActionsTrait
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'motion'   => $motion,
                 'msgAlert' => $msgAlert,
+                'context'   => $this->getHttpRequest()->post('context', 'view'),
             ]);
             $response['proposalStr'] = $motion->getFormattedProposalStatus(true);
         }
@@ -602,9 +583,7 @@ trait MotionActionsTrait
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->motionId     = $motion->id;
             if (!$adminComment->save()) {
-                $this->getHttpResponse()->statusCode = 500;
-                $response['success']             = false;
-                return json_encode($response);
+                return new RestApiExceptionResponse(500, 'could not save the comment');
             }
 
             $response['success'] = true;
@@ -617,6 +596,56 @@ trait MotionActionsTrait
             ];
         }
 
-        return json_encode($response);
+        return new JsonResponse($response);
+    }
+
+    public function actionEditProposedChange(string $motionSlug): ResponseInterface
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return new RestApiExceptionResponse(404, 'Motion not found');
+        }
+        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
+            return new RestApiExceptionResponse(403, 'Not permitted to change the status');
+        }
+
+        if ($this->getHttpRequest()->post('reset', null) !== null) {
+            $reference = $motion->getMyProposalReference();
+            if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+                foreach ($reference->sections as $section) {
+                    $section->delete();
+                }
+
+                $motion->proposalReferenceId = null;
+                $motion->save();
+
+                $reference->delete();
+            }
+            $motion->flushCacheItems(['procedure']);
+        }
+
+        $form = new ProposedChangeForm($motion);
+
+        $msgSuccess = null;
+        $msgAlert   = null;
+
+        if ($this->getHttpRequest()->post('save', null) !== null) {
+            $form->save($this->getHttpRequest()->post(), $_FILES);
+            $msgSuccess = \Yii::t('base', 'saved');
+
+            if ($motion->proposalUserStatus !== null) {
+                $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+            }
+            $motion->proposalUserStatus = null;
+            $motion->save();
+            $motion->flushCacheItems(['procedure']);
+        }
+
+        return new HtmlResponse($this->render('edit_proposed_change', [
+            'msgSuccess' => $msgSuccess,
+            'msgAlert'   => $msgAlert,
+            'motion'     => $motion,
+            'form'       => $form,
+        ]));
     }
 }

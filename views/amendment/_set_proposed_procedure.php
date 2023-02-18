@@ -226,7 +226,7 @@ $voting = $amendment->getVotingData();
                         <div class="header">
                             <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
                             <?php
-                            if (\app\models\db\User::isCurrentUser($user)) {
+                            if (User::isCurrentUser($user)) {
                                 $url = UrlHelper::createAmendmentUrl($amendment, 'del-proposal-comment');
                                 echo '<button type="button" data-url="' . Html::encode($url) . '" ';
                                 echo 'class="btn-link delComment">';
