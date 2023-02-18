@@ -152,7 +152,7 @@ abstract class ISectionType
         return $this->getSimple(false);
     }
 
-    abstract public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string;
+    abstract public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string;
 
     abstract public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void;
 

@@ -56,7 +56,7 @@ class TextHTML extends Text
         return $this->section->getData();
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
+    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }

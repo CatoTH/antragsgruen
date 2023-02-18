@@ -97,7 +97,7 @@ class TabularData extends ISectionType
         return $str;
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
+    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }

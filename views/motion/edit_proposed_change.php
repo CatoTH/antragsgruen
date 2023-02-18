@@ -50,7 +50,7 @@ echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
         echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'edit-proposed-change'), 'post', [
             'id'                        => 'proposedChangeTextForm',
-            'data-antragsgruen-widget'  => 'backend/AmendmentEditProposedChange',
+            'data-antragsgruen-widget'  => 'backend/ProposedChangeEdit',
             //'data-collision-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
         ]);
         ?>

@@ -335,7 +335,7 @@ class TextSimple extends Text
         return $diffGroupsAndSections;
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
+    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -358,7 +358,7 @@ class TextSimple extends Text
             $sectionTitlePrefix .= ': ';
         }
         $title     = $sectionTitlePrefix . $section->getSettings()->title;
-        $str = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
+        $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($title);
         $str .= '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
           <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
@@ -370,7 +370,7 @@ class TextSimple extends Text
           <li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' . \Yii::t('amend', 'textmode_full_text') . '</a></li>
           </ul>';
         $str .= '</h3>';
-        $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+        $str       .= '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
         if ($section->getSettings()->fixedWidth) {
             $wrapStart .= ' fixedWidthFont';

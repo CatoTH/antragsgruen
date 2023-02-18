@@ -62,7 +62,7 @@ if ($motion->hasVisibleAlternativeProposaltext($procedureToken)) {
             }
             $sectionType = $section->getSectionType();
             $sectionType->setMotionContext($motion);
-            $main .= $sectionType->getAmendmentFormatted($prefix);
+            $main .= $sectionType->getAmendmentFormatted($prefix, 'pp_');
         }
     }
 } else {

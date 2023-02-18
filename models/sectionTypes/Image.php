@@ -239,7 +239,7 @@ class Image extends ISectionType
         $this->setMotionData($data);
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
+    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }

@@ -55,7 +55,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
         echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
             'id'                        => 'proposedChangeTextForm',
-            'data-antragsgruen-widget'  => 'backend/AmendmentEditProposedChange',
+            'data-antragsgruen-widget'  => 'backend/ProposedChangeEdit',
             'data-collision-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
         ]);
         ?>
