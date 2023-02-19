@@ -93,9 +93,9 @@ echo '<div class="content form-horizontal">';
 
 ?>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="motionType"><?= Yii::t('admin', 'motion_type') ?></label>
-        <div class="col-md-9">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionType"><?= Yii::t('admin', 'motion_type') ?></label>
+        <div class="rightColumn">
             <?php
             $options = [];
             foreach ($motion->motionType->getCompatibleMotionTypes() as $motionType) {
@@ -107,9 +107,9 @@ echo '<div class="content form-horizontal">';
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="parentMotion"><?= Yii::t('admin', 'motion_replaces') ?></label>
-        <div class="col-md-9">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="parentMotion"><?= Yii::t('admin', 'motion_replaces') ?></label>
+        <div class="rightColumn">
             <?php
             $options = ['-'];
             foreach ($consultation->motions as $otherMotion) {
@@ -121,14 +121,14 @@ echo '<div class="content form-horizontal">';
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="motionStatus"><?= Yii::t('admin', 'motion_status') ?>:</label>
-        <div class="col-md-5">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionStatus"><?= Yii::t('admin', 'motion_status') ?>:</label>
+        <div class="middleColumn">
             <?php
             $stats = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
             $options = ['id' => 'motionStatus', 'class' => 'stdDropdown fullsize'];
             echo Html::dropDownList('motion[status]', $motion->status, $stats, $options);
-            echo '</div><div class="col-md-4">';
+            echo '</div><div class="rightColumn">';
             $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
             echo Html::textInput('motion[statusString]', $motion->statusString, $options);
             ?>
@@ -137,10 +137,10 @@ echo '<div class="content form-horizontal">';
 
 <?php
 if (count($consultation->agendaItems) > 0) {
-    echo '<div class="form-group">';
-    echo '<label class="col-md-3 control-label" for="agendaItemId">';
+    echo '<div class="stdTwoCols">';
+    echo '<label class="leftColumn control-label" for="agendaItemId">';
     echo Yii::t('admin', 'motion_agenda_item');
-    echo ':</label><div class="col-md-9">';
+    echo ':</label><div class="rightColumn">';
     $options    = ['id' => 'agendaItemId', 'class' => 'stdDropdown fullsize'];
     $selections = [];
     foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
@@ -152,9 +152,9 @@ if (count($consultation->agendaItems) > 0) {
 }
 ?>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="motionTitle"><?= Yii::t('admin', 'motion_title') ?>:</label>
-        <div class="col-md-9">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionTitle"><?= Yii::t('admin', 'motion_title') ?>:</label>
+        <div class="rightColumn">
             <?php
             $placeholder = Yii::t('admin', 'motion_title');
             $options     = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => $placeholder];
@@ -163,9 +163,9 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-md-3 control-label"><?= Yii::t('admin', 'motion_url_slug') ?>:</div>
-        <div class="col-md-9 urlSlugHolder">
+    <div class="stdTwoCols">
+        <div class="leftColumn control-label"><?= Yii::t('admin', 'motion_url_slug') ?>:</div>
+        <div class="rightColumn urlSlugHolder">
             <div class="shower">
                 <?= Html::encode($motion->slug ?: '') ?>
                 [<a href="#"><?= Yii::t('admin', 'motion_url_change') ?></a>]
@@ -180,13 +180,24 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="motionTitlePrefix"><?= Yii::t('admin', 'motion_prefix') ?>:</label>
-        <div class="col-md-4"><?php
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionTitlePrefix"><?= Yii::t('admin', 'motion_prefix') ?>:</label>
+        <div class="middleColumn"><?php
             echo Html::textInput('motion[titlePrefix]', $motion->titlePrefix, [
                 'class'       => 'form-control',
                 'id'          => 'motionTitlePrefix',
                 'placeholder' => Yii::t('admin', 'motion_prefix_hint')
+            ]);
+            ?>
+        </div>
+    </div>
+
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionVersion"><?= Yii::t('motion', 'version') ?>:</label>
+        <div class="middleColumn"><?php
+            echo Html::textInput('motion[version]', $motion->version, [
+                'class'       => 'form-control',
+                'id'          => 'motionVersion',
             ]);
             ?>
             <small><?= Yii::t('admin', 'motion_prefix_unique') ?></small>
@@ -197,11 +208,11 @@ if (count($consultation->agendaItems) > 0) {
 $locale = Tools::getCurrentDateLocale();
 $date   = Tools::dateSql2bootstraptime($motion->dateCreation);
 ?>
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="motionDateCreation">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionDateCreation">
             <?= Yii::t('admin', 'motion_date_created') ?>:
         </label>
-        <div class="col-md-4">
+        <div class="rightColumn">
             <div class="input-group date" id="motionDateCreationHolder">
                 <input type="text" class="form-control" name="motion[dateCreation]" id="motionDateCreation"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
@@ -213,11 +224,11 @@ $date   = Tools::dateSql2bootstraptime($motion->dateCreation);
 <?php
 $date = Tools::dateSql2bootstraptime($motion->datePublication);
 ?>
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="motionDatePublication">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionDatePublication">
             <?= Yii::t('admin', 'motion_date_publication') ?>:
         </label>
-        <div class="col-md-4">
+        <div class="rightColumn">
             <div class="input-group date" id="motionDatePublicationHolder">
                 <input type="text" class="form-control" name="motion[datePublication]" id="motionDatePublication"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
@@ -229,11 +240,11 @@ $date = Tools::dateSql2bootstraptime($motion->datePublication);
 <?php
 $date = Tools::dateSql2bootstraptime($motion->dateResolution);
 ?>
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="motionDateResolution">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionDateResolution">
             <?= Yii::t('admin', 'motion_date_resolution') ?>:
         </label>
-        <div class="col-md-4">
+        <div class="rightColumn">
             <div class="input-group date" id="motionDateResolutionHolder">
                 <input type="text" class="form-control" name="motion[dateResolution]" id="motionDateResolution"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
@@ -243,11 +254,11 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
     </div>
 
 <?php if (count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) { ?>
-    <div class="form-group">
-        <label class="col-md-3 control-label">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label">
             <?= Yii::t('admin', 'motion_topics') ?>:
         </label>
-        <div class="col-md-9 tagList">
+        <div class="rightColumn tagList">
             <?php
             foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
                 echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
@@ -263,11 +274,11 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
     </div>
 <?php } ?>
 
-    <div class="form-group preventFunctionality">
-        <div class="col-md-3 control-label">
+    <div class="stdTwoCols preventFunctionality">
+        <div class="leftColumn control-label">
             <?= Yii::t('admin', 'motion_prevent_functions') ?>:
         </div>
-        <div class="col-md-9">
+        <div class="rightColumn">
             <label class="nonAmendable">
                 <input type="checkbox" name="motion[nonAmendable]" value="1" id="nonAmendable"
                     <?= ($motion->nonAmendable ? 'checked' : '') ?>>
@@ -288,11 +299,11 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
 }
 ?>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="motionNoteInternal">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionNoteInternal">
             <?= Yii::t('admin', 'motion_note_internal') ?>:
         </label>
-        <div class="col-md-9">
+        <div class="rightColumn">
             <?php
             $options = ['class' => 'form-control', 'id' => 'motionNoteInternal'];
             echo Html::textarea('motion[noteInternal]', $motion->noteInternal ?: '', $options);

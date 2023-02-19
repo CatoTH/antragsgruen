@@ -653,13 +653,15 @@ class Consultation extends ActiveRecord
         return false;
     }
 
-    public function findMotionWithPrefix(string $prefix, ?Motion $ignore = null): ?Motion
+    public function findMotionWithPrefixAndVersion(string $prefix, string $version, ?Motion $ignore = null): ?Motion
     {
         $prefixNorm = trim(mb_strtoupper($prefix));
+        $versionNorm = trim(mb_strtoupper($version));
         foreach ($this->motions as $mot) {
             $motPrefixNorm = trim(mb_strtoupper($mot->titlePrefix));
-            if ($motPrefixNorm != '' && $motPrefixNorm === $prefixNorm && $mot->status != Motion::STATUS_DELETED) {
-                if ($ignore === null || $ignore->id != $mot->id) {
+            $motVersionNorm = trim(mb_strtoupper($mot->version));
+            if ($motPrefixNorm !== '' && $motPrefixNorm === $prefixNorm && $motVersionNorm === $versionNorm && $mot->status !== Motion::STATUS_DELETED) {
+                if ($ignore === null || $ignore->id !== $mot->id) {
                     return $mot;
                 }
             }

@@ -38,7 +38,11 @@ if ($entry->getMyMotionType()->motionPrefix) {
     echo Yii::t('admin', 'list_motion_short');
 }
 echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
-echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-') . '</a></td>';
+echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-');
+if ($entry->version > Motion::VERSION_DEFAULT || count($entry->replacedByMotions) > 0) {
+    echo ' <small>(' . Yii::t('motion', 'version') . ' ' . $entry->version . ')</small>';
+}
+echo '</a></td>';
 echo '<td class="titleCol"><span>';
 if ($editUrl) {
     echo Html::a(Html::encode(trim($entry->title) != '' ? $entry->title : '-'), $editUrl);

@@ -88,9 +88,9 @@ echo Html::beginForm('', 'post', [
 echo '<div class="content form-horizontal">';
 
 ?>
-    <div class="form-group">
-        <div class="col-md-3 control-label"><?= Html::encode($amendment->getMyMotionType()->titleSingular) ?>:</div>
-        <div class="col-md-9 motionEditLinkHolder">
+    <div class="stdTwoCols">
+        <div class="leftColumn control-label"><?= Html::encode($amendment->getMyMotionType()->titleSingular) ?>:</div>
+        <div class="rightColumn motionEditLinkHolder">
             <a href="<?= Html::encode(UrlHelper::createUrl(['admin/motion/update', 'motionId' => $amendment->motionId])) ?>">
                 <?= $amendment->getMyMotion()->getTitleWithPrefix() ?>
             </a>
@@ -99,10 +99,10 @@ echo '<div class="content form-horizontal">';
 
 <?php
 if (count($consultation->agendaItems) > 0) {
-    echo '<div class="form-group">';
-    echo '<label class="col-md-3 control-label" for="agendaItemId">';
+    echo '<div class="stdTwoCols">';
+    echo '<label class="leftColumn control-label" for="agendaItemId">';
     echo Yii::t('admin', 'motion_agenda_item');
-    echo ':</label><div class="col-md-9">';
+    echo ':</label><div class="rightColumn">';
     $options    = ['id' => 'agendaItemId'];
     if ($amendment->getMyMotion()->agendaItemId && $amendment->getMyMotion()->agendaItem) {
         $motionAgendaItem = $amendment->getMyMotion()->agendaItem->title;
@@ -122,18 +122,18 @@ if (count($consultation->agendaItems) > 0) {
 }
 ?>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="amendmentStatus">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="amendmentStatus">
             <?= Yii::t('admin', 'motion_status') ?>:
         </label>
-        <div class="col-md-4">
+        <div class="middleColumn">
             <?php
             $options  = ['id' => 'amendmentStatus', 'class' => 'stdDropdown fullsize'];
             $statuses = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
             echo Html::dropDownList('amendment[status]', $amendment->status, $statuses, $options);
             ?>
         </div>
-        <div class="col-md-5">
+        <div class="rightColumn">
             <?php
             $options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
             echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);
@@ -141,11 +141,11 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="amendmentTitlePrefix">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="amendmentTitlePrefix">
             <?= Yii::t('amend', 'prefix') ?>:
         </label>
-        <div class="col-md-4">
+        <div class="middleColumn">
             <?php
             $options = [
                 'class'       => 'form-control',
@@ -158,11 +158,11 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="amendmentDateCreation">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="amendmentDateCreation">
             <?= Yii::t('admin', 'amend_created_at') ?>:
         </label>
-        <div class="col-md-4">
+        <div class="middleColumn">
             <div class="input-group date" id="amendmentDateCreationHolder">
                 <?php
                 $locale = Tools::getCurrentDateLocale();
@@ -175,11 +175,11 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="amendmentDateResolution">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="amendmentDateResolution">
             <?= Yii::t('admin', 'amend_resoluted_on') ?>:
         </label>
-        <div class="col-md-4">
+        <div class="middleColumn">
             <div class="input-group date" id="amendmentDateResolutionHolder">
                 <?php
                 $date = Tools::dateSql2bootstraptime($amendment->dateResolution);
@@ -191,11 +191,11 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="globalAlternative">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="globalAlternative">
             <?= Yii::t('admin', 'amend_globalalt') ?>:
         </label>
-        <div class="col-md-4">
+        <div class="middleColumn">
             <?= Html::checkbox(
                 'amendment[globalAlternative]',
                 $amendment->globalAlternative,
@@ -205,11 +205,11 @@ if (count($consultation->agendaItems) > 0) {
     </div>
 
 <?php if (count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) { ?>
-    <div class="form-group">
-        <label class="col-md-3 control-label">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label">
             <?= Yii::t('admin', 'motion_topics') ?>:
         </label>
-        <div class="col-md-9 tagList">
+        <div class="rightColumn tagList">
             <?php
             foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
                 echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
@@ -225,11 +225,11 @@ if (count($consultation->agendaItems) > 0) {
     </div>
 <?php } ?>
 
-    <div class="form-group preventFunctionality">
-        <div class="col-md-3 control-label">
+    <div class="stdTwoCols preventFunctionality">
+        <div class="leftColumn control-label">
             <?= Yii::t('admin', 'motion_prevent_functions') ?>:
         </div>
-        <div class="col-md-9">
+        <div class="rightColumn">
             <label class="notCommentable">
                 <input type="checkbox" name="amendment[notCommentable]" value="1" id="notCommentable"
                     <?= ($amendment->notCommentable ? 'checked' : '') ?>>
@@ -238,11 +238,11 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
-    <div class="form-group defaultViewMode">
-        <div class="col-md-3 control-label">
+    <div class="stdTwoCols defaultViewMode">
+        <div class="leftColumn control-label">
             <?= Yii::t('admin', 'amend_default_view_mode') ?>:
         </div>
-        <div class="col-md-9">
+        <div class="rightColumn">
             <label class="onlyChanges">
                 <input type="radio" name="amendment[viewMode]" value="0" id="defaultViewModeChanges"
                     <?= ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) ? '' : 'checked') ?>>
@@ -262,11 +262,11 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
 }
 ?>
 
-    <div class="form-group">
-        <label class="col-md-3 control-label" for="amendmentNoteInternal">
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="amendmentNoteInternal">
             <?= Yii::t('admin', 'internal_note') ?>:
         </label>
-        <div class="col-md-9">
+        <div class="rightColumn">
             <?php
             $options = ['class' => 'form-control', 'id' => 'amendmentNoteInternal'];
             echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal ?: '', $options);

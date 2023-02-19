@@ -12,10 +12,7 @@ class ConsultationFindMotionTest extends DBTestBase
 {
     use Specify;
 
-    /**
-     *
-     */
-    public function testFindAmendment()
+    public function testFindAmendment(): void
     {
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(1);
@@ -56,13 +53,10 @@ class ConsultationFindMotionTest extends DBTestBase
 
         $consultation->refresh();
 
-        $this->assertEquals(null, $motion->findAmendmentWithPrefix('6.10'));
+        $this->assertNull($motion->findAmendmentWithPrefix('6.10'));
     }
 
-    /**
-     *
-     */
-    public function testFindMotion()
+    public function testFindMotion(): void
     {
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(1);
@@ -72,16 +66,17 @@ class ConsultationFindMotionTest extends DBTestBase
         /** @var Motion $motionA3 */
         $motionA3 = Motion::findOne(3);
 
-        $this->assertEquals($motionA2, $consultation->findMotionWithPrefix('A2'));
-        $this->assertEquals($motionA2, $consultation->findMotionWithPrefix('a2'));
-        $this->assertEquals(null, $consultation->findMotionWithPrefix('A2', $motionA2));
-        $this->assertEquals($motionA2, $consultation->findMotionWithPrefix('A2', $motionA3));
+        $this->assertEquals($motionA2, $consultation->findMotionWithPrefixAndVersion('A2', Motion::VERSION_DEFAULT));
+        $this->assertNull($consultation->findMotionWithPrefixAndVersion('A2', '2'));
+        $this->assertEquals($motionA2, $consultation->findMotionWithPrefixAndVersion('a2', Motion::VERSION_DEFAULT));
+        $this->assertEquals(null, $consultation->findMotionWithPrefixAndVersion('A2', Motion::VERSION_DEFAULT, $motionA2));
+        $this->assertEquals($motionA2, $consultation->findMotionWithPrefixAndVersion('A2', Motion::VERSION_DEFAULT, $motionA3));
 
         $motionA2->titlePrefix = '6.1';
         $motionA2->save();
 
         $consultation->refresh();
 
-        $this->assertEquals(null, $consultation->findMotionWithPrefix('6.10'));
+        $this->assertNull($consultation->findMotionWithPrefixAndVersion('6.10', Motion::VERSION_DEFAULT));
     }
 }

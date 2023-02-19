@@ -157,19 +157,26 @@ button.link {
     display: flex;
     flex-direction: row;
     width: 100%;
-    .leftColumn, .rightColumn {
+    .leftColumn, .rightColumn, .middleColumn {
       flex-grow: 0;
       min-height: 40px;
-      padding-top: 7px;
+      padding-top: 12px;
     }
     .leftColumn {
       flex-basis: 30%;
       text-align: right;
       padding-right: 15px;
     }
+    .middleColumn {
+      flex-basis: 40%;
+      padding-left: 15px;
+    }
     .rightColumn {
       flex-basis: 70%;
       padding-left: 15px;
+    }
+    .middleColumn + .rightColumn {
+      flex-basis: 30%;
     }
   }
 }
