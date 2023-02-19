@@ -42,7 +42,7 @@ $I->click('#proposedChanges .editModification');
 $I->wait(1);
 $I->dontSeeElement('.alert-success');
 $I->see('Lorem ipsum dolor sit amet', '#section_holder_2');
-$I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData().replace(/Lorem ipsum dolor sit amet/, "Zombie ipsum dolor sit amet"))');
+$I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData().replace(/Lorem ipsum dolor sit amet/, "Vegetable ipsum dolor sit amet"))');
 $I->submitForm('#proposedChangeTextForm', [], 'save');
 $I->seeElement('.alert-success');
 $I->wait(1);
@@ -85,7 +85,7 @@ $I->seeElement('.votingTable' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . '
 $I->wantTo('agree to the proposal');
 $I->loginAsStdUser();
 $I->gotoMotion(true, 'Testing_proposed_changes-630');
-$I->see('Zombie', '#pp_section_2_0 ins');
+$I->see('Vegetable', '#pp_section_2_0 ins');
 $I->seeElement('.agreeToProposal');
 $I->submitForm('.agreeToProposal', [], 'setProposalAgree');
 $I->seeElement('.alert-success');
@@ -96,34 +96,23 @@ $I->logout();
 $I->loginAsProposalAdmin();
 $I->seeElement('.notificationSettings .accepted');
 
-$I->markTestIncomplete('not developed from here on yet');
-
-$I->wantTo('merge the amendment into the motion');
-$I->gotoMotion(true, 'Testing_proposed_changes-630');
-$I->see('Umwelt', '.motionDataTable');
-$I->dontSeeElement('#sidebar .mergeamendments');
 
 $I->logout();
 $I->loginAsConsultationAdmin();
 $I->click('#sidebar .mergeamendments a');
-$I->seeCheckboxIsChecked('.amendment279 .textProposal input');
-$I->dontSeeElement('.amendment280 .textProposal');
-$I->uncheckOption('.amendment280 .colCheck input');
 $I->submitForm('.mergeAllRow', []);
 $I->wait(1);
 
-$I->see('A really small replacement', '#sections_2_1_wysiwyg ins');
+$I->see('Vegetable', '#sections_2_0_wysiwyg ins');
 $I->executeJS('$(".none").remove();'); // for some reason necessary...
 $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
 $I->submitForm('.motionMergeForm', [], 'save');
-$I->see('A really small replacement');
-$I->dontSee('A big replacement');
+$I->see('Vegetable');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
 $I->submitForm('#motionConfirmedForm', []);
-$I->see('A really small replacement');
+$I->see('Vegetable');
 
 $I->see('A8neu', 'h1');
-$I->see('Umwelt', '.motionDataTable');
 $I->gotoConsultationHome();
 $I->see('A8neu');
 $I->dontSeeElement('.motionRow118');

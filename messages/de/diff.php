@@ -17,4 +17,5 @@ return [
     'plain_text_ins' => 'EINFÜGUNG',
     'aria_ins'       => 'Einfügen: „%INS%”',
     'aria_del'       => 'Streichen: „%DEL%”',
+    'modu_prefix'    => 'modÜ',
 ];

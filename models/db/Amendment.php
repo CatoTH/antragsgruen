@@ -415,49 +415,12 @@ class Amendment extends IMotion implements IRSSItem
         return $amendments;
     }
 
-    public function getInlineChangeData(string $changeId): array
-    {
-        if ($this->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-            return $this->proposalReferencedByAmendment->getInlineChangeData($changeId);
-        }
-        if ($this->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
-            $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
-            $motion = $this->proposalReferencedByMotion;
-            return [
-                'data-cid'              => $changeId,
-                'data-userid'           => '',
-                'data-username'         => $motion->getInitiatorsStr(),
-                'data-changedata'       => '',
-                'data-time'             => $time,
-                'data-last-change-time' => $time,
-                'data-append-hint'      => '[' . $motion->titlePrefix . ']',
-                'data-link'             => UrlHelper::createMotionUrl($motion),
-                'data-amendment-id'     => $motion->id, // ??
-            ];
-        }
-        $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
-        return [
-            'data-cid'              => $changeId,
-            'data-userid'           => '',
-            'data-username'         => $this->getInitiatorsStr(),
-            'data-changedata'       => '',
-            'data-time'             => $time,
-            'data-last-change-time' => $time,
-            'data-append-hint'      => '[' . $this->titlePrefix . ']',
-            'data-link'             => UrlHelper::createAmendmentUrl($this),
-            'data-amendment-id'     => $this->id,
-        ];
-    }
-
     /**
-     * @param int $firstLine
-     * @param int $lineLength
      * @param string[] $original
      * @param string[] $new
-     * @return int
      * @throws Internal
      */
-    public static function calcFirstDiffLineCached($firstLine, $lineLength, $original, $new)
+    public static function calcFirstDiffLineCached(int $firstLine, int $lineLength, array $original, array $new): int
     {
         $cacheFunc = 'calcFirstDiffLineCached';
         $cacheDeps = [$firstLine, $lineLength, $original, $new];
