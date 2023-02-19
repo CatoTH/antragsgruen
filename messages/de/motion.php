@@ -102,6 +102,8 @@ return [
     'created_on'                         => 'Angelegt',
     'created_on_str'                     => 'Angelegt am',
     'edited_on'                          => 'Zuletzt bearbeitet am',
+    'version'                            => 'Version',
+    'version_history'                    => 'Antragshistorie',
     'tag_tags'                           => 'Themenbereich',
     'tag'                                => 'Themenbereich',
     'tags'                               => 'Themenbereiche',

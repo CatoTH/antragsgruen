@@ -25,12 +25,14 @@ class Merge
 
     public function getMergedMotionDraft(): ?Motion
     {
-        $newTitlePrefix = MotionNumbering::getNewTitlePrefixInternal($this->origMotion->titlePrefix);
+        $newVersion = MotionNumbering::getNewVersion($this->origMotion->version);
         /** @var Motion|null $newMotion */
-        $newMotion      = Motion::find()
-                                ->where(['parentMotionId' => $this->origMotion->id])
-                                ->andWhere(['status' => Motion::STATUS_DRAFT])
-                                ->andWhere(['titlePrefix' => $newTitlePrefix])->one();
+        $newMotion = Motion::find()
+            ->where(['parentMotionId' => $this->origMotion->id])
+            ->andWhere(['status' => Motion::STATUS_DRAFT])
+            ->andWhere(['titlePrefix' => $this->origMotion->titlePrefix])
+            ->andWhere(['version' => $newVersion])
+            ->one();
 
         return $newMotion;
     }
@@ -43,7 +45,7 @@ class Merge
             $newMotion->consultationId = $this->origMotion->consultationId;
             $newMotion->parentMotionId = $this->origMotion->id;
             $newMotion->motionTypeId = $this->origMotion->motionTypeId;
-            $newMotion->titlePrefix = MotionNumbering::getNewTitlePrefixInternal($this->origMotion->titlePrefix);
+            $newMotion->titlePrefix = $this->origMotion->titlePrefix;
             $newMotion->version = MotionNumbering::getNewVersion($this->origMotion->version);
         }
         $newMotion->agendaItemId = $this->origMotion->agendaItemId;

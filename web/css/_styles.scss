@@ -131,7 +131,15 @@
   > .content > .alert {
     margin-top: 20px;
   }
-  .replacesMotion {
+  .motionHistory {
+    .currVersion {
+      font-weight: bold;
+    }
+    .date {
+      font-size: 0.8em;
+      display: inline-block;
+      padding-left: 5px;
+    }
     .changesLink {
       font-size: 0.8em;
     }

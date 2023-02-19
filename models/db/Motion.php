@@ -9,13 +9,7 @@ use app\models\notifications\{MotionProposedProcedure,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
 use app\models\settings\AntragsgruenApp;
-use app\components\{HashedStaticFileCache,
-    MotionNumbering,
-    MotionSorter,
-    RequestContext,
-    RSSExporter,
-    Tools,
-    UrlHelper};
+use app\components\{HashedStaticFileCache, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
