@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{HTMLTools, MotionHistory, Tools, UrlHelper};
+use app\components\{HTMLTools, MotionNumbering, Tools, UrlHelper};
 use app\models\db\{ConsultationUserGroup, Motion, MotionSupporter, User, Consultation};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
@@ -27,7 +27,7 @@ echo '<div class="content">';
 echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::createMotionUrl($motion)]);
 
 $iAmAdmin = User::havePrivilege(Consultation::getCurrent(), ConsultationUserGroup::PRIVILEGE_ANY);
-$motionHistory = MotionHistory::getSortedHistoryForMotion($motion, !$iAmAdmin);
+$motionHistory = MotionNumbering::getSortedHistoryForMotion($motion, !$iAmAdmin);
 
 $replacedByMotions = $motion->getVisibleReplacedByMotions();
 if (count($replacedByMotions) > 0) {

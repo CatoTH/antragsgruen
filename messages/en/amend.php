@@ -213,7 +213,7 @@ return [
     'merge_explanation'                 => 'The text, including all amendments within the text, is shown here. ' .
                                            'For each change, you can specify whether you <strong>accept or reject</strong> it - simply by moving the mouse over it and then choosing either "Accept" or “Reject".<br><br>' .
                                            'In addition, you can <strong>freely edit</strong> the text to make editorial changes.<br>###COLLIDINGHINT###<br><br>' .
-                                           'Then you can select the new amendment status and click “Continue”. A <strong>new motion "###NEWPREFIX###"</strong> is generated. The original motion, including the amendments, remain as a reference, but are marked as “obsolete”.',
+                                           'Then you can select the new amendment status and click “Continue”. A <strong>new motion ###NEWPREFIX###, version ###NEWVERSION###</strong> is generated. The original motion, including the amendments, remain as a reference, but are marked as “obsolete”.',
     'merge_init_explanation'            => '<p>You can create a new version of this motion that includes the proposed amendments.</p>
             <p>You can either merge a single amendment, or all amendments at once. For the latter, you can also exclude some amendments that have been rejected or are causing too many conflicts with other amendments.</p>
             <p>The original motion and the amendments will still be available, but marked as obsolete.</p>',
@@ -262,6 +262,7 @@ return [
     'merge1_goon'               => 'Next',
     'merge1_loading'            => 'Checking...',
     'merge1_motion_prefix'      => 'New signature of the motion',
+    'merge1_motion_version'     => 'New version number of the motion',
     'merge1_amend_status'       => 'New status of this amendment',
     'merge1_done_title'         => 'The motion has been changed.',
     'merge1_done_str'           => 'The amendment has been adopted',

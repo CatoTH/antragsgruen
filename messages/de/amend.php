@@ -64,7 +64,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'create_select_statutes'            => 'Es gibt mehrere Abschnitte, zu denen ein Änderungsantrag gestellt werden kann. Wähle hier den aus, den du ändern möchtest.',
     'create_explanation'                => 'Bitte ändere unten den ursprünglichen Antragstext so ab, wie du ihn gerne beschlossen haben möchtest.<br>' . "\n" .
                                            'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
-                                           'Falls Du der Antragskommission über einen inhaltlichen  Änderungsantrag hinaus oder ausschließlich redaktionelle Hinweise zum Antrag geben möchtest, kannst du diese als "<strong>Redaktionelle Änderung</strong>" beifügen und entsprechend kennzeichnen.',
+                                           'Falls Du der Antragskommission über einen inhaltlichen  Änderungsantrag hinaus oder ausschließlich redaktionelle Hinweise zum Antrag geben möchtest, kannst du diese als „<strong>Redaktionelle Änderung</strong>” beifügen und entsprechend kennzeichnen.',
     'create_explanation_statutes'       => 'Bitte ändere unten die Satzung so ab, wie sie deinem Änderungsantrag nach lauten sollte.<br>Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.',
     'create_explanation_amendtoamend'   => 'Bitte ändere unten den Änderungsantrag so ab, wie er lauten sollte.<br>Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen. Die Änderungen werden als neuer Änderungsantrag veröffentlicht.',
     'support_collect_explanation_title' => 'Einen Änderungsantrag gemeinschaftlich stellen',
@@ -155,9 +155,9 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
             <p>Man kann dabei entweder einen einzelnen Änderungsantrag einpflegen (unten), oder aber alle Änderungsanträge auf einmal (oben). Bei letzterem gibt es die Möglichkeit, einzelne Änderungsanträge auszunehmen, die abgelehnt wurden oder zu viele Konflikte mit anderen Änderungsanträgen verursachen.</p>
             <p>Der ursprüngliche Antrag sowie die Änderungsanträge bleiben dabei erhalten, wird aber als überholt gekennzeichnet.</p>',
     'merge_explanation'                 => 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. ' .
-                                           'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - fahre dafür einfach mit der Maus über die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>' .
+                                           'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - fahre dafür einfach mit der Maus über die Änderung und wähle „Annehmen” oder „Ablehnen” aus.<br><br>' .
                                            'Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>' .
-                                           'Anschließend kannst du den neuen Status der Änderungsanträge auswählen und dann auf "Weiter" klicken. Dadurch wird ein <strong>neuer Antrag "###NEWPREFIX###"</strong> erzeugt. Der ursprüngliche Antrag sowie die Änderungsanträge bleiben zur Referenz erhalten, werden aber als "veraltet" markiert.',
+                                           'Anschließend kannst du den neuen Status der Änderungsanträge auswählen und dann auf „Weiter” klicken. Dadurch wird ein <strong>neuer Antrag ###NEWPREFIX### Version ###NEWVERSION###</strong> erzeugt. Der ursprüngliche Antrag sowie die Änderungsanträge bleiben zur Referenz erhalten, werden aber als „veraltet” markiert.',
     'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> Da es zu diesem Antrag mehrere Änderungsanträge gibt, die sich auf die selbe Textstelle beziehen - <strong>kollidierende Änderungsanträge</strong> - ist es notwendig, diese Änderungsanträge händisch einzupflegen. Lösche bitte anschließend den kollidierenden Änderungsantrag, indem du den Abschnitt zuerst markierst und mit der Del/Backspace-Taste anschließend löschst.',
     'merge_amend_by'                    => '%TITLE%, von %INITIATOR%',
     'merge_amend_editorials'            => 'Redaktionelle Änderungsanträge',
@@ -289,6 +289,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge1_goon'               => 'Weiter',
     'merge1_loading'            => 'Überprüfe...',
     'merge1_motion_prefix'      => 'Neues Kürzel des Antrags',
+    'merge1_motion_version'     => 'Neue Versionsnummer des Antrags',
     'merge1_amend_status'       => 'Neuer Status dieses Änderungsantrags',
     'merge1_done_title'         => 'Antrag geändert',
     'merge1_done_str'           => 'Der Änderungsantrag wurde eingepflegt.',
