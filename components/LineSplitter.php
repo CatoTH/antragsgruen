@@ -131,7 +131,7 @@ class LineSplitter
                 $inlineTextSpool .= Html::encode($child->data);
             } else {
                 /** @var \DOMElement $child */
-                if (in_array($child->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
+                if (in_array($child->nodeName, HTMLTools::KNOWN_BLOCK_ELEMENTS)) {
                     if ($inlineTextSpool != '') {
                         $spl = new LineSplitter($inlineTextSpool, $lineLength);
                         $arr = $spl->splitLines();
@@ -233,7 +233,7 @@ class LineSplitter
             return $str;
         }, $html);
 
-        $blocks = implode("|", HTMLTools::$KNOWN_BLOCK_ELEMENTS);
+        $blocks = implode("|", HTMLTools::KNOWN_BLOCK_ELEMENTS);
         $replacedHtml = preg_replace('/(<(' . $blocks . ')( [^>]*)?>)###LINEBREAK###/siu', '$1', $replacedHtml);
         return str_replace('###LINEBREAK###', '<br>', $replacedHtml);
     }

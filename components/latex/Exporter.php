@@ -159,7 +159,7 @@ class Exporter
             }
 
             $childStyles = $extraStyles;
-            if (in_array($node->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
+            if (in_array($node->nodeName, HTMLTools::KNOWN_BLOCK_ELEMENTS)) {
                 if (in_array('ins', $classes) || in_array('inserted', $classes)) {
                     $childStyles[] = 'ins';
                     $childStyles[] = 'underlined';

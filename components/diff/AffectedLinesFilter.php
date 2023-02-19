@@ -181,7 +181,7 @@ class AffectedLinesFilter
                 $inlineTextSpool .= $child->data;
             } else {
                 /** @var \DOMElement $child */
-                if (in_array($child->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
+                if (in_array($child->nodeName, HTMLTools::KNOWN_BLOCK_ELEMENTS)) {
                     if ($inlineTextSpool !== '') {
                         $addToOut($inlineTextSpool, $currLine);
                         $inlineTextSpool = '';

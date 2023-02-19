@@ -8,14 +8,14 @@ use yii\helpers\Html;
 
 class HTMLTools
 {
-    public static $KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section',
+    public const KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section',
         'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
-    public static $KNOWN_OL_CLASSES = ['decimalDot', 'decimalCircle', 'lowerAlpha', 'upperAlpha'];
-    const OL_DECIMAL_DOT = 'decimalDot';
-    const OL_DECIMAL_CIRCLE = 'decimalCircle';
-    const OL_LOWER_ALPHA = 'lowerAlpha';
-    const OL_UPPER_ALPHA = 'upperAlpha';
+    public const KNOWN_OL_CLASSES = ['decimalDot', 'decimalCircle', 'lowerAlpha', 'upperAlpha'];
+    public const OL_DECIMAL_DOT = 'decimalDot';
+    public const OL_DECIMAL_CIRCLE = 'decimalCircle';
+    public const OL_LOWER_ALPHA = 'lowerAlpha';
+    public const OL_UPPER_ALPHA = 'upperAlpha';
 
     public static function isStringCachable(string $str): bool
     {
@@ -46,7 +46,7 @@ class HTMLTools
         $def->addAttribute('ins', 'aria-label', 'Text');
         $def->addAttribute('del', 'aria-label', 'Text');
         $def->addAttribute('span', 'aria-label', 'Text');
-        foreach (self::$KNOWN_BLOCK_ELEMENTS as $element) {
+        foreach (self::KNOWN_BLOCK_ELEMENTS as $element) {
             $def->addAttribute($element, 'aria-label', 'Text');
         }
 
@@ -161,7 +161,7 @@ class HTMLTools
             $childNode = $dom->childNodes->item($i);
             /** @var \DOMNode $childNode */
             $isText   = is_a($childNode, \DOMText::class);
-            $isInline = !in_array($childNode->nodeName, self::$KNOWN_BLOCK_ELEMENTS);
+            $isInline = !in_array($childNode->nodeName, self::KNOWN_BLOCK_ELEMENTS);
             if ($isText || $isInline) {
                 $hasChanged = true;
                 if ($wrapP === null) {
@@ -236,7 +236,7 @@ class HTMLTools
             'sub', 'sup', 'pre', 'h1', 'h2', 'h3', 'h4'
         ];
 
-        $allowedClasses = array_merge(['underline', 'subscript', 'superscript'], self::$KNOWN_OL_CLASSES);
+        $allowedClasses = array_merge(['underline', 'subscript', 'superscript'], self::KNOWN_OL_CLASSES);
 
         if (!in_array('strike', $forbiddenFormattings)) {
             $allowedClasses[] = 'strike';
@@ -401,7 +401,7 @@ class HTMLTools
             if ($element->hasAttribute('class')) {
                 $classes = explode(' ', $element->getAttribute('class'));
                 foreach ($classes as $class) {
-                    if ($element->nodeName === 'ol' && in_array($class, self::$KNOWN_OL_CLASSES)) {
+                    if ($element->nodeName === 'ol' && in_array($class, self::KNOWN_OL_CLASSES)) {
                         $formatting = $class;
                     }
                 }

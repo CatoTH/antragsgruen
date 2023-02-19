@@ -9,9 +9,9 @@ use yii\console\Controller;
 
 class AdminController extends Controller
 {
-    private function getConsultationFromParams($subdomain, $consultation): ?Consultation
+    private function getConsultationFromParams(string $subdomain, string $consultation): ?Consultation
     {
-        if ($subdomain == '' || $consultation == '') {
+        if ($subdomain === '' || $consultation === '') {
             $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
             return null;
         }
@@ -23,7 +23,7 @@ class AdminController extends Controller
         }
         $con = null;
         foreach ($site->consultations as $cons) {
-            if ($cons->urlPath == $consultation) {
+            if ($cons->urlPath === $consultation) {
                 $con = $cons;
             }
         }
@@ -39,7 +39,7 @@ class AdminController extends Controller
      */
     public function actionFlushConsultationCaches(string $subdomain, string $consultation): void
     {
-        if ($subdomain == '' || $consultation == '') {
+        if ($subdomain === '' || $consultation === '') {
             $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
             return;
         }
@@ -81,7 +81,7 @@ class AdminController extends Controller
                 \app\views\motion\LayoutHelper::createPdfLatex($motion);
             }
             foreach ($motion->amendments as $amendment) {
-                if ($amendment->status == Amendment::STATUS_DELETED) {
+                if ($amendment->status === Amendment::STATUS_DELETED) {
                     continue;
                 }
                 echo '  - Amendment ' . $amendment->id . "\n";
@@ -117,7 +117,7 @@ class AdminController extends Controller
                 \app\views\motion\LayoutHelper::createPdfLatex($motion);
             }
             foreach ($motion->amendments as $amendment) {
-                if ($amendment->status == Amendment::STATUS_DELETED) {
+                if ($amendment->status === Amendment::STATUS_DELETED) {
                     continue;
                 }
                 echo '  - Amendment ' . $amendment->id . "\n";
@@ -165,7 +165,7 @@ class AdminController extends Controller
     public function actionDeleteOldSandboxInstances(): void
     {
         $app = AntragsgruenApp::getInstance();
-        if ($app->mode != 'sandbox') {
+        if ($app->mode !== 'sandbox') {
             $this->stderr('This can only be used in sandbox mode');
             return;
         }
@@ -189,7 +189,7 @@ class AdminController extends Controller
      */
     public function actionCreateLanguageFromConsultation(string $subdomain, string $consultation, string $languageKey): void
     {
-        if ($subdomain == '' || $consultation == '') {
+        if ($subdomain === '' || $consultation === '') {
             $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
             return;
         }
@@ -201,7 +201,7 @@ class AdminController extends Controller
         }
         $con = null;
         foreach ($site->consultations as $cons) {
-            if ($cons->urlPath == $consultation) {
+            if ($cons->urlPath === $consultation) {
                 $con = $cons;
             }
         }

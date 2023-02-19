@@ -88,7 +88,7 @@ class DiffRenderer
             return true;
         }
         /** @var \DOMElement $node */
-        return !in_array($node->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS);
+        return !in_array($node->nodeName, HTMLTools::KNOWN_BLOCK_ELEMENTS);
     }
 
     public static function nodeAddClass(\DOMElement $node, string $cssClass): void
