@@ -90,6 +90,7 @@ export class ChangeProposedProcedure {
 
     private performCallWithReload(data: object) {
         data['_csrf'] = this.csrf;
+        data['context'] = this.context;
 
         $.post(this.saveUrl, data, (ret) => {
             if (ret['success']) {

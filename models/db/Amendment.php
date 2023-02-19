@@ -46,7 +46,8 @@ use yii\helpers\Html;
  * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
- * @property Amendment|null $proposalReferencedBy
+ * @property Amendment|null $proposalReferencedByAmendment
+ * @property Motion|null $proposalReferencedByMotion
  * @property VotingBlock|null $votingBlock
  * @property User|null $responsibilityUser
  * @property Vote[] $votes
@@ -61,7 +62,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public const EXTRA_DATA_VIEW_MODE_FULL = 'view_mode_full'; // Boolean value
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -237,18 +238,14 @@ class Amendment extends IMotion implements IRSSItem
         return $sections;
     }
 
-    public function getMyProposalReference(): ?Amendment
-    {
-        if ($this->proposalReferenceId) {
-            return $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
-        } else {
-            return null;
-        }
-    }
-
-    public function getProposalReferencedBy(): ActiveQuery
+    public function getProposalReferencedByAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
+    }
+
+    public function getProposalReferencedByMotion(): ActiveQuery
+    {
+        return $this->hasOne(Motion::class, ['proposalReferenceId' => 'id']);
     }
 
     public function getVotingBlock(): ActiveQuery
@@ -418,34 +415,12 @@ class Amendment extends IMotion implements IRSSItem
         return $amendments;
     }
 
-    public function getInlineChangeData(string $changeId): array
-    {
-        if ($this->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-            return $this->proposalReferencedBy->getInlineChangeData($changeId);
-        }
-        $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
-        return [
-            'data-cid'              => $changeId,
-            'data-userid'           => '',
-            'data-username'         => $this->getInitiatorsStr(),
-            'data-changedata'       => '',
-            'data-time'             => $time,
-            'data-last-change-time' => $time,
-            'data-append-hint'      => '[' . $this->titlePrefix . ']',
-            'data-link'             => UrlHelper::createAmendmentUrl($this),
-            'data-amendment-id'     => $this->id,
-        ];
-    }
-
     /**
-     * @param int $firstLine
-     * @param int $lineLength
      * @param string[] $original
      * @param string[] $new
-     * @return int
      * @throws Internal
      */
-    public static function calcFirstDiffLineCached($firstLine, $lineLength, $original, $new)
+    public static function calcFirstDiffLineCached(int $firstLine, int $lineLength, array $original, array $new): int
     {
         $cacheFunc = 'calcFirstDiffLineCached';
         $cacheDeps = [$firstLine, $lineLength, $original, $new];
@@ -1181,18 +1156,11 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
-    {
-        return ($this->hasAlternativeProposaltext(true) && (
-            $this->isProposalPublic() ||
-            User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS) ||
-            ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
-        ));
-    }
-
-    /*
+    /**
      * Returns the modification proposed and the amendment to which the modification was directly proposed
      * (which has not to be this very amendment, in case this amendment is obsoleted by another amendment)
+     *
+     * @return array{amendment: Amendment, modification: Amendment}|null
      */
     public function getAlternativeProposaltextReference(int $internalNestingLevel = 0): ?array
     {
@@ -1260,7 +1228,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->proposalStatus === static::STATUS_ACCEPTED) {
             return true;
         }
-        if ($this->status === static::STATUS_PROPOSED_MODIFIED_AMENDMENT ||
+        if (in_array($this->status, [static::STATUS_PROPOSED_MODIFIED_AMENDMENT, static::STATUS_PROPOSED_MODIFIED_MOTION]) ||
             $this->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
             return true;
         }

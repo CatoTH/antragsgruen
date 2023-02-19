@@ -1,7 +1,7 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import {MotionMergeChangeActions} from "../frontend/MotionMergeAmendments";
 
-export class AmendmentEditProposedChange {
+export class ProposedChangeEdit {
     private hasChanged: boolean = false;
     private $collisionIndicator: JQuery;
 
@@ -10,7 +10,7 @@ export class AmendmentEditProposedChange {
         this.initCollisionDetection();
 
         $form.on("submit", () => {
-            $(window).off("beforeunload", AmendmentEditProposedChange.onLeavePage);
+            $(window).off("beforeunload", ProposedChangeEdit.onLeavePage);
         });
     }
 
@@ -43,6 +43,11 @@ export class AmendmentEditProposedChange {
     }
 
     private initCollisionDetection() {
+        if (!this.$form.data('collision-check-url')) {
+            // Motions do not support collision detection yet
+            return;
+        }
+
         this.$collisionIndicator = this.$form.find('#collisionIndicator');
         let lastCheckedContent = null;
 
@@ -104,7 +109,7 @@ export class AmendmentEditProposedChange {
         if (!this.hasChanged) {
             this.hasChanged = true;
             if (!$("body").hasClass('testing')) {
-                $(window).on("beforeunload", AmendmentEditProposedChange.onLeavePage);
+                $(window).on("beforeunload", ProposedChangeEdit.onLeavePage);
             }
         }
     }

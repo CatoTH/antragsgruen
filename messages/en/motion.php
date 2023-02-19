@@ -225,6 +225,7 @@ return [
     'diff_old_version' => 'Original version',
     'diff_new_version' => 'New version',
 
+    'proposal_edit_title_orig' => 'Original motion',
     'proposal_email_title'    => 'Motion %PREFIX%: Proposed procedure',
     'proposal_email_modified' => "Hi %NAME_GIVEN%,\n\n" .
                                  "the administrators have discussed about your motion and propose to accept it in a modified version.\n\n" .

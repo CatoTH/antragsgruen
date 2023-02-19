@@ -23,7 +23,7 @@ use app\models\db\{Amendment,
     User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent};
-use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
+use app\models\forms\{AmendmentEditForm, ProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
@@ -631,7 +631,7 @@ class AmendmentController extends Base
             $amendment->flushCacheItems(['procedure']);
         }
 
-        $form = new AmendmentProposedChangeForm($amendment);
+        $form = new ProposedChangeForm($amendment);
 
         $msgSuccess = null;
         $msgAlert   = null;

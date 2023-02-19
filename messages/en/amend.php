@@ -91,6 +91,7 @@ return [
     'merge_status_set'             => 'Set status',
     'merge_amend_statuses'         => 'Status of the amendments',
     'merge_amend_show'             => 'Show',
+    'merge_amend_modu'             => 'Mod.',
     'merge_bread'                  => 'Revise',
     'merge_title'                  => 'Revise %TITLE%',
     'merge_merge'                  => 'Merge',

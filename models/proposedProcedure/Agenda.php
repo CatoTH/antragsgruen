@@ -22,12 +22,12 @@ class Agenda
 
     public function __construct(int $blockId, string $title, ?ConsultationAgendaItem $agendaItem = null)
     {
-        $this->blockId    = $blockId;
-        $this->title      = $title;
+        $this->blockId = $blockId;
+        $this->title = $title;
         $this->agendaItem = $agendaItem;
     }
 
-    public function addVotingBlock(VotingBlock $votingBlock, bool $includeInvisible, IMotionList $handledMotions)
+    public function addVotingBlock(VotingBlock $votingBlock, bool $includeInvisible, IMotionList $handledMotions): void
     {
         $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $votingBlock->title;
         $block = new AgendaVoting($title, $votingBlock);
@@ -38,12 +38,12 @@ class Agenda
         }
     }
 
-    public static function formatProposedAmendmentProcedure(Amendment $amendment, int $format): string
+    public static function formatProposedAmendmentProcedure(IMotion $imotion, int $format): string
     {
-        if ($format === Agenda::FORMAT_HTML && $amendment->proposalStatus !== Amendment::STATUS_OBSOLETED_BY) {
-            // Flushing this amendment's cache does not work when a modified version of an amendment is edited
+        if ($format === Agenda::FORMAT_HTML && $imotion->proposalStatus !== IMotion::STATUS_OBSOLETED_BY) {
+            // Flushing an amendment's cache does not work when a modified version of an amendment is edited
             // that is replacing this one -> we disable the cache in this case
-            $cached = $amendment->getCacheItem('procedure.formatted');
+            $cached = $imotion->getCacheItem('procedure.formatted');
             if ($cached !== null) {
                 return $cached;
             }
@@ -51,11 +51,11 @@ class Agenda
 
         /** @var Amendment|null $toShowAmendment */
         $toShowAmendment = null;
-        if ($amendment->hasAlternativeProposaltext()) {
-            $toShowAmendment = $amendment->getMyProposalReference();
+        if ($imotion->hasAlternativeProposaltext()) {
+            $toShowAmendment = $imotion->getMyProposalReference();
         }
-        if ($amendment->status === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
-            $toShowAmendment = $amendment;
+        if ($imotion->status === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION && is_a($imotion, Amendment::class)) {
+            $toShowAmendment = $imotion;
         }
 
         $proposal  = '';
@@ -82,8 +82,8 @@ class Agenda
             }
         }
 
-        if ($format === Agenda::FORMAT_HTML && $amendment->proposalStatus !== Amendment::STATUS_OBSOLETED_BY) {
-            $amendment->setCacheItem('procedure.formatted', $proposal);
+        if ($format === Agenda::FORMAT_HTML && $imotion->proposalStatus !== Amendment::STATUS_OBSOLETED_BY) {
+            $imotion->setCacheItem('procedure.formatted', $proposal);
         }
 
         return $proposal;
@@ -96,8 +96,7 @@ class Agenda
             $proposal .= '<p class="explanation">' . Html::encode($item->proposalExplanation) . '</p>';
         }
 
-        if (is_a($item, Amendment::class) && $item->status !== IMotion::STATUS_WITHDRAWN) {
-            /** @var Amendment $item */
+        if ($item->status !== IMotion::STATUS_WITHDRAWN) {
             $proposal .= static::formatProposedAmendmentProcedure($item, $format);
         }
 

@@ -97,4 +97,9 @@ abstract class Text extends ISectionType
 
         return $str;
     }
+
+    public function isFileUploadType(): bool
+    {
+        return false;
+    }
 }

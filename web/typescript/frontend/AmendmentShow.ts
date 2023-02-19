@@ -1,12 +1,7 @@
-import '../shared/MotionInitiatorShow';
+import '../shared/IMotionShow';
 
 class AmendmentShow {
     constructor() {
-        new MotionInitiatorShow();
-
-        $("form.delLink").on("submit", this.delSubmit.bind(this));
-        $(".share_buttons a").on("click", this.shareLinkClicked.bind(this));
-
         $('.tagAdderHolder').on("click", function (ev) {
             ev.preventDefault();
             $(this).addClass("hidden");
@@ -19,35 +14,12 @@ class AmendmentShow {
         }
 
         this.initPrivateComments();
-        this.initCmdEnterSubmit();
-        this.initAmendmentTextMode();
-    }
 
-    private delSubmit(ev) {
-        ev.preventDefault();
-        let form: JQuery = ev.target;
-        bootbox.confirm(__t("std", "del_confirm"), function (result) {
-            if (result) {
-                // noinspection JSDeprecatedSymbols
-                form.submit(); // Native submit() function, not the jQuery one
-            }
-        });
-    }
-
-    private shareLinkClicked(ev) {
-        let target: string = $(ev.currentTarget).attr("href");
-        if (window.open(target, '_blank', 'width=600,height=460')) {
-            ev.preventDefault();
-        }
-    }
-
-    private initCmdEnterSubmit() {
-        $(document).on('keypress', 'form textarea', (ev) => {
-            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
-                let $textarea = $(ev.currentTarget);
-                $textarea.parents("form").first().find("button[type=submit]").trigger("click");
-            }
-        });
+        const common = new IMotionShow();
+        common.initContactShow();
+        common.initAmendmentTextMode();
+        common.initCmdEnterSubmit();
+        common.initDelSubmit();
     }
 
     private initPrivateComments()
@@ -62,26 +34,6 @@ class AmendmentShow {
             $('.privateNotes blockquote').addClass('hidden');
             $('.privateNotes form').removeClass('hidden');
             $('.privateNotes textarea').trigger("focus");
-        });
-    }
-
-    private initAmendmentTextMode()
-    {
-        $('.amendmentTextModeSelector a.showOnlyChanges').on('click', (ev) => {
-            const $section = $(ev.target).parents(".motionTextHolder");
-            $section.find(".amendmentTextModeSelector .showOnlyChanges").parent().addClass('selected');
-            $section.find(".amendmentTextModeSelector .showFullText").parent().removeClass('selected');
-            $section.find(".fullMotionText").addClass('hidden');
-            $section.find(".onlyChangedText").removeClass('hidden');
-            ev.preventDefault();
-        });
-        $('.amendmentTextModeSelector a.showFullText').on('click', (ev) => {
-            const $section = $(ev.target).parents(".motionTextHolder");
-            $section.find(".amendmentTextModeSelector .showOnlyChanges").parent().removeClass('selected');
-            $section.find(".amendmentTextModeSelector .showFullText").parent().addClass('selected');
-            $section.find(".fullMotionText").removeClass('hidden');
-            $section.find(".onlyChangedText").addClass('hidden');
-            ev.preventDefault();
         });
     }
 }

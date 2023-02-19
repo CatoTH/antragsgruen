@@ -8,9 +8,9 @@ use yii\helpers\Html;
 
 class TabularDataType implements \JsonSerializable
 {
-    const TYPE_STRING  = 1;
-    const TYPE_INTEGER = 2;
-    const TYPE_DATE    = 3;
+    public const TYPE_STRING  = 1;
+    public const TYPE_INTEGER = 2;
+    public const TYPE_DATE    = 3;
 
     public $rowId;
     public $title;
@@ -29,9 +29,9 @@ class TabularDataType implements \JsonSerializable
     }
 
     /**
-     * @param array $arr
+     * @param array{rowId: string, title: string, type: int} $arr
      */
-    public function __construct($arr)
+    public function __construct(array $arr)
     {
         $this->rowId = $arr['rowId'];
         $this->title = $arr['title'];
@@ -47,12 +47,7 @@ class TabularDataType implements \JsonSerializable
         ];
     }
 
-    /**
-     * @param string $nameId
-     * @param string $value
-     * @param bool $required
-     */
-    public function getFormField($nameId, $value, $required): string
+    public function getFormField(string $nameId, string $value, bool $required): string
     {
         $str = '';
         switch ($this->type) {
@@ -87,33 +82,26 @@ class TabularDataType implements \JsonSerializable
     }
 
     /**
-     * @param string $value
      * @return int|string
      * @throws Internal
      */
-    public function parseFormInput($value)
+    public function parseFormInput(string $value)
     {
         switch ($this->type) {
             case TabularDataType::TYPE_STRING:
                 return $value;
             case TabularDataType::TYPE_INTEGER:
-                return IntVal($value);
+                return intval($value);
             case TabularDataType::TYPE_DATE:
                 return Tools::dateBootstrapdate2sql($value);
         }
         throw new Internal('Unsupported data type');
     }
 
-    /**
-     * @param string $value
-     * @return string
-     * @throws Internal
-     */
-    public function formatRow($value)
+    public function formatRow(string $value): string
     {
         switch ($this->type) {
             case TabularDataType::TYPE_STRING:
-                return $value;
             case TabularDataType::TYPE_INTEGER:
                 return $value;
             case TabularDataType::TYPE_DATE:

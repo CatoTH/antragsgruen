@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\components\diff;
 
-use app\components\HTMLTools;
+use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\Amendment;
 
 class DiffRenderer
@@ -142,7 +142,7 @@ class DiffRenderer
         }
         if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
             $childText = self::nodeToPlainText($childNode);
-            $text      = str_replace('%INS%', $childText, \Yii::t('diff', 'aria_ins'));
+            $text = str_replace('%INS%', $childText, \Yii::t('diff', 'aria_ins'));
             $ins->setAttribute('aria-label', $text);
         }
         if ($this->insCallback) {
@@ -159,7 +159,7 @@ class DiffRenderer
         }
         if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
             $childText = self::nodeToPlainText($childNode);
-            $text      = str_replace('%DEL%', $childText, \Yii::t('diff', 'aria_del'));
+            $text = str_replace('%DEL%', $childText, \Yii::t('diff', 'aria_del'));
             $ins->setAttribute('aria-label', $text);
         }
         if ($this->delCallback) {
@@ -345,7 +345,7 @@ class DiffRenderer
             return [[$this->cloneNode($dom)], $inIns, null];
         }
 
-        $inDel       = null;
+        $inDel = null;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
             if (is_a($child, \DOMText::class)) {
@@ -469,6 +469,41 @@ class DiffRenderer
         return min($firstDiffs);
     }
 
+    public static function getAmendmentInlineChangeData(Amendment $amendment, string $changeId): array
+    {
+        if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+            return static::getAmendmentInlineChangeData($amendment->proposalReferencedByAmendment, $changeId);
+        }
+        if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
+            $time = Tools::dateSql2timestamp($amendment->dateCreation) * 1000;
+            $motion = $amendment->proposalReferencedByMotion;
+            return [
+                'data-cid'              => $changeId,
+                'data-userid'           => '',
+                'data-username'         => '',
+                'data-changedata'       => '',
+                'data-time'             => $time,
+                'data-last-change-time' => $time,
+                'data-append-hint'      => '[' . \Yii::t('diff', 'modu_prefix') . ']',
+                'data-link'             => UrlHelper::createMotionUrl($motion),
+                'data-amendment-id'     => null,
+                'data-is-modu'          => 1,
+            ];
+        }
+        $time = Tools::dateSql2timestamp($amendment->dateCreation) * 1000;
+        return [
+            'data-cid'              => $changeId,
+            'data-userid'           => '',
+            'data-username'         => $amendment->getInitiatorsStr(),
+            'data-changedata'       => '',
+            'data-time'             => $time,
+            'data-last-change-time' => $time,
+            'data-append-hint'      => '[' . $amendment->titlePrefix . ']',
+            'data-link'             => UrlHelper::createAmendmentUrl($amendment),
+            'data-amendment-id'     => $amendment->id,
+        ];
+    }
+
     /**
      * @param Amendment[] $amendmentsById
      */
@@ -479,7 +514,7 @@ class DiffRenderer
             /** @var \DOMElement $node */
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
-            foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
+            foreach (static::getAmendmentInlineChangeData($amendment, $params[0]) as $key => $val) {
                 $node->setAttribute($key, (string)$val);
             }
             $classes = explode(' ', $node->getAttribute('class'));
@@ -495,7 +530,7 @@ class DiffRenderer
             /** @var \DOMElement $node */
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
-            foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
+            foreach (static::getAmendmentInlineChangeData($amendment, $params[0]) as $key => $val) {
                 $node->setAttribute($key, (string)$val);
             }
             $classes = explode(' ', $node->getAttribute('class'));

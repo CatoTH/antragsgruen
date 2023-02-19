@@ -266,7 +266,8 @@ class MotionMergeChangeTooltip {
         let $myEl: JQuery = this.$element,
             html,
             cid = $myEl.data("cid"),
-            isAppendedCollision = ($myEl.data("appended-collision") == 1 || $myEl.parent().data("appended-collision") == 1);
+            isAppendedCollision = ($myEl.data("appended-collision") === 1 || $myEl.parent().data("appended-collision") === 1),
+            isModU = $myEl.data("is-modu") === 1;
         if (cid == undefined) {
             cid = $myEl.parent().data("cid");
         }
@@ -284,7 +285,11 @@ class MotionMergeChangeTooltip {
         html += '</div>';
         let $el: JQuery = $(html);
         $el.find(".opener").attr("href", $myEl.data("link")).attr("title", __t("merge", "title_open_in_blank"));
-        $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $myEl.data("username"));
+        if (isModU) {
+            $el.find(".initiator").text(__t("merge", "modU"));
+        } else {
+            $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $myEl.data("username"));
+        }
         if ($myEl.hasClass("ice-ins")) {
             $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
             $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
@@ -426,7 +431,7 @@ class MotionMergeAmendmentsTextarea {
         this.changedListeners.push(cb);
     }
 
-    private markupMovedParagraph(i, el) {
+    private markupMovedParagraph(_, el) {
         let $node = $(el),
             paragraphNew = $node.data('moving-partner-paragraph'),
             msg: string;

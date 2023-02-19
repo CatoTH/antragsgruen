@@ -1,4 +1,4 @@
-import '../shared/MotionInitiatorShow';
+import '../shared/IMotionShow';
 import { LineNumberHighlighting } from "./LineNumberHighlighting";
 
 class MotionParagraph {
@@ -82,7 +82,6 @@ class MotionParagraph {
 
 class MotionShow {
     constructor() {
-        new MotionInitiatorShow();
         new LineNumberHighlighting();
 
         let $paragraphs = $('.motionTextHolder .paragraph');
@@ -108,12 +107,14 @@ class MotionShow {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
         }
 
-        $("form.delLink").on("submit", this.delSubmit.bind(this));
-        $(".share_buttons a").on("click", this.shareLinkClicked.bind(this));
-
         this.markMovedParagraphs();
         this.initPrivateComments();
-        this.initCmdEnterSubmit();
+
+        const common = new IMotionShow();
+        common.initContactShow();
+        common.initAmendmentTextMode();
+        common.initCmdEnterSubmit();
+        common.initDelSubmit();
     }
 
     private markMovedParagraphs() {
@@ -173,24 +174,6 @@ class MotionShow {
         });
     }
 
-    private delSubmit(ev) {
-        ev.preventDefault();
-        let form = ev.target;
-        bootbox.confirm(__t("std", "del_confirm"), (result) => {
-            if (result) {
-                // noinspection JSDeprecatedSymbols
-                form.submit(); // Native submit() function, not the jQuery one
-            }
-        });
-    }
-
-    private shareLinkClicked(ev) {
-        let target = $(ev.currentTarget).attr("href");
-        if (window.open(target, '_blank', 'width=600,height=460')) {
-            ev.preventDefault();
-        }
-    }
-
     private showComment(ev) {
         ev.preventDefault();
         const $node = $(ev.currentTarget),
@@ -212,15 +195,6 @@ class MotionShow {
 
         $node.parents('.paragraph').first().find('.commentHolder').addClass('hidden');
         ev.preventDefault();
-    }
-
-    private initCmdEnterSubmit() {
-        $(document).on('keypress', 'form textarea', (ev) => {
-            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
-                let $textarea = $(ev.currentTarget);
-                $textarea.parents("form").first().find("button[type=submit]").trigger("click");
-            }
-        });
     }
 }
 

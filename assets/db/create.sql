@@ -1462,7 +1462,7 @@ ALTER TABLE `###TABLE_PREFIX###emailLog`
 --
 ALTER TABLE `###TABLE_PREFIX###motion`
   ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_motion_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `###TABLE_PREFIX###motion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_motion_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_motion_responsibility` FOREIGN KEY (`responsibilityId`) REFERENCES `###TABLE_PREFIX###user` (`id`),
   ADD CONSTRAINT `fk_motion_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `###TABLE_PREFIX###votingBlock` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,

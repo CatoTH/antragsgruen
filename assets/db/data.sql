@@ -95,7 +95,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m220806_131705_motion_modification_date', '1659792341'),
   ('m220902_181010_motion_not_commentable', '1662143333'),
   ('m220904_083241_amendment_to_other_amendments', '1662280591'),
-  ('m221224_151157_remove_site_admins', '1671894884')
+  ('m221224_151157_remove_site_admins', '1671894884'),
+  ('m230218_110905_motion_proposal_reference', '1676720198')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

@@ -3,7 +3,7 @@
 namespace app\models\mergeAmendments;
 
 use app\models\settings\JsonConfigTrait;
-use app\models\db\{IMotion, Motion, MotionSection};
+use app\models\db\{Amendment, IMotion, Motion, MotionSection};
 use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable
@@ -111,11 +111,19 @@ class Draft implements \JsonSerializable
         $draft = new Draft();
         $draft->init($form->motion);
 
-        $draft->sections            = []; // Empty = default values
-        $draft->removedSections     = [];
-        $draft->amendmentStatuses   = [];
-        $draft->amendmentVersions   = [];
+        $draft->sections = []; // Empty = default values
+        $draft->removedSections = [];
+        $draft->amendmentStatuses = [];
+        $draft->amendmentVersions = [];
         $draft->amendmentVotingData = [];
+
+        $proposedAlternative = $form->motion->getAlternativeProposaltextReference();
+        if ($proposedAlternative && $proposedAlternative['motion']->id === $form->motion->id) {
+            $proposedAlternativeAmendment = $proposedAlternative['modification'];
+            $draft->amendmentStatuses[$proposedAlternativeAmendment->id] = Amendment::STATUS_MERGING_DRAFT_PRIVATE;
+            $draft->amendmentVersions[$proposedAlternativeAmendment->id] = Init::TEXT_VERSION_ORIGINAL;
+            $draft->amendmentVotingData[$proposedAlternativeAmendment->id] = null;
+        }
 
         $amendments = Init::getMotionAmendmentsForMerging($form->motion);
         foreach ($amendments as $amendment) {
@@ -140,7 +148,6 @@ class Draft implements \JsonSerializable
             foreach ($section->getMergingAmendingSections(false, true) as $sect) {
                 $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
             }
-
 
             $paragraphs = $section->getTextParagraphObjects(false, false, false, true);
             foreach (array_keys($paragraphs) as $paragraphNo) {

@@ -239,7 +239,7 @@ class Image extends ISectionType
         $this->setMotionData($data);
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
+    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -264,6 +264,11 @@ class Image extends ISectionType
         // but no metadata is set. Don't show the image in this case, as nothing was to be changed anyway.
         $invalidAmendmentImageWorkaround = (is_a($this->section, AmendmentSection::class) && $this->section->metadata === null);
         return ($this->section->getData() === '' || $invalidAmendmentImageWorkaround);
+    }
+
+    public function isFileUploadType(): bool
+    {
+        return true;
     }
 
     /**

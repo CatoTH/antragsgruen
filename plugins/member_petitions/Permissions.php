@@ -19,6 +19,7 @@ class Permissions extends \app\models\siteSpecificBehavior\Permissions
                 Motion::STATUS_MERGING_DRAFT_PRIVATE,
                 Motion::STATUS_WITHDRAWN_INVISIBLE,
                 Motion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+                Motion::STATUS_PROPOSED_MODIFIED_MOTION,
                 Motion::STATUS_INLINE_REPLY,
                 Motion::STATUS_DRAFT_ADMIN,
             ];

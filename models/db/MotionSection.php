@@ -168,13 +168,14 @@ class MotionSection extends IMotionSection
     {
         $sections = [];
         $motion   = $this->getConsultation()->getMotion($this->motionId);
+
         if ($allStatuses) {
             $excludedStatuses = $this->getConsultation()->getStatuses()->getUnreadableStatuses();
         } else {
             $excludedStatuses = $this->getConsultation()->getStatuses()->getAmendmentStatusesUnselectableForMerging();
         }
         foreach ($motion->amendments as $amend) {
-            $allowedProposedChange = ($amend->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
+            $allowedProposedChange = in_array($amend->status, [Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT, Amendment::STATUS_PROPOSED_MODIFIED_MOTION]);
             if (in_array($amend->status, $excludedStatuses) && !$allowedProposedChange) {
                 continue;
             }

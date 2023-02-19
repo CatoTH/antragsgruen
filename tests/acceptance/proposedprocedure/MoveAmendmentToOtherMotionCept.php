@@ -54,8 +54,8 @@ $I->wantTo('see the effects in the amendment view');
 $I->gotoConsultationHome()->gotoAmendmentView(279);
 
 $I->see('Verfahrensvorschlag: Antragstext', 'h3');
-$I->see('Oamoi a Maß', '#section_2_0 .inserted');
-$I->see('A2: O’zapft is!', '#section_2_0 a'); // The link to the original motion
+$I->see('Oamoi a Maß', '#pp_section_2_0 .inserted');
+$I->see('A2: O’zapft is!', '#pp_section_2_0 a'); // The link to the original motion
 
 $I->see('A small replacement', 'ins'); // The original amendment
 

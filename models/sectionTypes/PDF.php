@@ -120,7 +120,7 @@ class PDF extends ISectionType
         $this->setMotionData($data);
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
+    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -155,6 +155,11 @@ class PDF extends ISectionType
     public function isEmpty(): bool
     {
         return ($this->section->getData() === '');
+    }
+
+    public function isFileUploadType(): bool
+    {
+        return true;
     }
 
     public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void

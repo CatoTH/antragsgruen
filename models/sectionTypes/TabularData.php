@@ -74,7 +74,7 @@ class TabularData extends ISectionType
         $this->setMotionData($data);
     }
 
-    public function getSimple(bool $isRight, bool $showToken = false): string
+    public function getSimple(bool $isRight, bool $showAlways = false): string
     {
         if ($this->isEmpty()) {
             return '';
@@ -97,7 +97,7 @@ class TabularData extends ISectionType
         return $str;
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
+    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -109,6 +109,11 @@ class TabularData extends ISectionType
         }
         $data = json_decode($this->section->getData(), true);
         return !(isset($data['rows']) && count($data['rows']) > 0);
+    }
+
+    public function isFileUploadType(): bool
+    {
+        return false;
     }
 
     public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void

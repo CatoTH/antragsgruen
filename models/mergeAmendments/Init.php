@@ -9,8 +9,8 @@ use app\models\sectionTypes\ISectionType;
 
 class Init
 {
-    const TEXT_VERSION_ORIGINAL = 'orig';
-    const TEXT_VERSION_PROPOSAL = 'prop';
+    public const TEXT_VERSION_ORIGINAL = 'orig';
+    public const TEXT_VERSION_PROPOSAL = 'prop';
 
     public Motion $motion;
     public ?Draft $draftData = null;
@@ -22,10 +22,16 @@ class Init
 
     public static function fromInitForm(Motion $motion, array $postAmendIds, array $textVersions): Init
     {
-        $form                     = new Init();
-        $form->motion             = $motion;
-        $form->toMergeMainIds     = [];
+        $form = new Init();
+        $form->motion = $motion;
+        $form->toMergeMainIds = [];
         $form->toMergeResolvedIds = [];
+
+        $proposedAlternative = $motion->getAlternativeProposaltextReference();
+        if ($proposedAlternative && $proposedAlternative['motion']->id === $motion->id) {
+            $form->toMergeMainIds[] = $proposedAlternative['modification']->id;
+            $form->toMergeResolvedIds[] = $proposedAlternative['modification']->id;
+        }
 
         $amendments = Init::getMotionAmendmentsForMerging($motion);
         foreach ($amendments as $amendment) {
@@ -182,9 +188,9 @@ class Init
             // ModUs that modify a paragraph unaffected by the original amendment.
             // We need to check that the original amendment is not deleted though.
             // Also be defensive about data inconsistencies when the motion assignment does not match - see https://github.com/CatoTH/antragsgruen/issues/576
-            if ($amendment->proposalReferencedBy && $amendment->motionId === $amendment->proposalReferencedBy->motionId &&
-                !in_array($amendment->proposalReferencedBy->status, $hiddenStatuses)) {
-                $normalAmendments[$amendment->proposalReferencedBy->id] = $amendment->proposalReferencedBy;
+            if ($amendment->proposalReferencedByAmendment && $amendment->motionId === $amendment->proposalReferencedByAmendment->motionId &&
+                !in_array($amendment->proposalReferencedByAmendment->status, $hiddenStatuses)) {
+                $normalAmendments[$amendment->proposalReferencedByAmendment->id] = $amendment->proposalReferencedByAmendment;
             }
         }
         if (count($normalAmendments) > 0) {
@@ -235,8 +241,9 @@ class Init
             'bookmarkName'  => \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment),
             'url'           => UrlHelper::createAmendmentUrl($amendment),
             'oldStatusId'   => $amendment->status,
-            'oldStatusName' => $statusesAllNames[$amendment->status],
+            'oldStatusName' => $statusesAllNames[$amendment->status] ?? null,
             'hasProposal'   => ($amendment->getMyProposalReference() !== null),
+            'isMotionModU'  => ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION),
         ];
     }
 

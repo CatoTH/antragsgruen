@@ -62,7 +62,7 @@ class Motion extends IMotion implements IRSSItem
     const EVENT_PUBLISHED_FIRST = 'published_first';
     const EVENT_MERGED = 'merged'; // Called on the newly created motion
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -80,6 +80,7 @@ class Motion extends IMotion implements IRSSItem
         $statuses = [
             IMotion::STATUS_ACCEPTED,
             IMotion::STATUS_REJECTED,
+            IMotion::STATUS_MODIFIED_ACCEPTED,
             IMotion::STATUS_REFERRED,
             IMotion::STATUS_VOTE,
             IMotion::STATUS_OBSOLETED_BY,
@@ -88,7 +89,6 @@ class Motion extends IMotion implements IRSSItem
         if (Consultation::getCurrent()) {
             $statuses = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStatuses($statuses);
         }
-
         return $statuses;
     }
 
@@ -1115,6 +1115,28 @@ class Motion extends IMotion implements IRSSItem
     public function isDeadlineOver(): bool
     {
         return !$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
+    }
+
+    public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool
+    {
+        return in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
+            $this->proposalReferenceId && $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
+    }
+
+    /**
+     * @return array{motion: Motion, modification: Amendment}|null
+     */
+    public function getAlternativeProposaltextReference(): ?array
+    {
+        // This amendment has a direct modification proposal
+        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getMyProposalReference()) {
+            return [
+                'motion'    => $this,
+                'modification' => $this->getMyProposalReference(),
+            ];
+        }
+
+        return null;
     }
 
     public function getLink(bool $absolute = false): string

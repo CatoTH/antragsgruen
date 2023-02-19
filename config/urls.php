@@ -6,7 +6,7 @@
 
 
 if ($params->multisiteMode) {
-    $dom = ($params->domainSubdomain ? $params->domainSubdomain : '/<subdomain:[\\w_-]+>/');
+    $dom = $params->domainSubdomain ?: '/<subdomain:[\\w_-]+>/';
 } else {
     $dom = '/';
 }
@@ -24,7 +24,8 @@ $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting
 $consultationPaths    .= '|votings|voting-results|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|speech|admin-speech|admin-votings|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf|embedded-amendments-pdf';
-$motionPaths          .= '|admin-speech|withdraw|view-changes|view-changes-odt|save-proposal-status|del-proposal-comment';
+$motionPaths          .= '|admin-speech|withdraw|view-changes|view-changes-odt';
+$motionPaths          .= '|save-proposal-status|edit-proposed-change|del-proposal-comment';
 $motionPaths          .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm|merge-amendments-paragraph-ajax|merge-amendments-status-ajax';
 $motionPaths          .= '|merge-amendments-init-pdf|merge-amendments-draft-pdf';
 $motionPaths          .= '|merge-amendments-public|merge-amendments-public-ajax|save-merging-draft';

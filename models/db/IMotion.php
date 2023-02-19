@@ -100,6 +100,10 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     // This amendment is being referenced by proposalReference of the modified amendment.
     public const STATUS_PROPOSED_MODIFIED_AMENDMENT = 21;
 
+    // The modified version of amotion, as proposed by the admins.
+    // This amendment is being referenced by proposalReference of the modified motion.
+    public const STATUS_PROPOSED_MODIFIED_MOTION = 31;
+
     // Used as a status for amendment, which is the proposed move of an amendment to another motion.
     // The original amendment gets this status as `proposalStatus`, the internal new amendment (for the other motion) gets this status as `status`.
     // The internal new amendment should not be used-visible in the context of its motion (only when merging),
@@ -457,6 +461,28 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function isSupportingPossibleAtThisStatus(): bool;
 
+    public function getMyProposalReference(): ?Amendment
+    {
+        if ($this->proposalReferenceId) {
+            return $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
+        } else {
+            return null;
+        }
+    }
+
+    abstract public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool;
+
+    abstract public function canSeeProposedProcedure(?string $procedureToken): bool;
+
+    public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
+    {
+        return ($this->hasAlternativeProposaltext(true) && (
+                $this->isProposalPublic() ||
+                User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS) ||
+                ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
+            ));
+    }
+
     public function proposalAllowsUserFeedback(): bool
     {
         if ($this->proposalStatus === null) {
@@ -512,11 +538,8 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
                 return Html::encode($this->proposalComment) . $explStr;
             case static::STATUS_VOTE:
                 $str = static::getProposedStatusNames()[$this->proposalStatus];
-                if (is_a($this, Amendment::class)) {
-                    /** @var Amendment $this */
-                    if ($this->getMyProposalReference()) {
-                        $str .= ' (' . \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED') . ')';
-                    }
+                if ($this->getMyProposalReference()) {
+                    $str .= ' (' . \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED') . ')';
                 }
                 if ($this->votingStatus === static::STATUS_ACCEPTED) {
                     $str .= ' (' . \Yii::t('structure', 'STATUS_ACCEPTED') . ')';
@@ -614,12 +637,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         $ppChanges->setVotingBlockChanges($votingBlockPre, $this->votingBlockId);
     }
 
-    /**
-     * @param string $titlePrefix
-     *
-     * @return string
-     */
-    public static function getNewTitlePrefixInternal($titlePrefix)
+    public static function getNewTitlePrefixInternal(string $titlePrefix): string
     {
         $new      = \Yii::t('motion', 'prefix_new_code');
         $newMatch = preg_quote($new, '/');
@@ -627,7 +645,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
             $parts = preg_split('/(' . $newMatch . '\s*)/i', $titlePrefix, -1, PREG_SPLIT_DELIM_CAPTURE);
             $last  = array_pop($parts);
             $last  = ($last > 0 ? $last + 1 : 2); // NEW BLA -> NEW 2
-            array_push($parts, $last);
+            $parts[] = $last;
 
             return implode("", $parts);
         } else {

@@ -3,6 +3,7 @@
 /**
  * @var Yii\web\View $this
  * @var Motion $motion
+ * @var string $context
  */
 
 use app\components\{HTMLTools, Tools, UrlHelper};
@@ -13,6 +14,7 @@ $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
+    'data-context'             => $context,
 ]);
 if ($motion->proposalStatus === Motion::STATUS_REFERRED) {
     $preReferredTo = $motion->proposalComment;
@@ -379,4 +381,23 @@ $voting = $motion->getVotingData();
 <section class="saved">
     <?= Yii::t('base', 'saved') ?>
 </section>
+<?php
+if ($context !== 'edit') {
+    $classes   = ['statusDetails'];
+    $classes[] = 'status_' . Motion::STATUS_MODIFIED_ACCEPTED;
+    $classes[] = 'status_' . Motion::STATUS_VOTE;
+    ?>
+    <section class="<?= implode(' ', $classes) ?>">
+        <h3><?= Yii::t('amend', 'proposal_modified_accepted') ?></h3>
+        <?php
+        echo Html::a(
+            Yii::t('base', 'edit'),
+            UrlHelper::createMotionUrl($motion, 'edit-proposed-change'),
+            ['class' => 'editModification']
+        );
+        ?>
+    </section>
+    <?php
+}
+?>
 <?= Html::endForm() ?>

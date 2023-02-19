@@ -17,4 +17,5 @@ return [
     'plain_text_ins' => 'INSERT',
     'aria_ins'       => 'Insert: "%INS%"',
     'aria_del'       => 'Delete: "%DEL%"',
+    'modu_prefix'    => 'Mod.',
 ];

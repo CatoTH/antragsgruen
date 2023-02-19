@@ -14,6 +14,7 @@ ob_start();
 ?>
 <div class="btn-group amendmentStatus" v-bind:class="['amendmentStatus' + amendment.id]" v-bind:data-amendment-id="amendment.id">
     <button class="btn btn-sm dropdown-toggle dropdownAmendment"
+            v-if="!amendment.isMotionModU"
             v-bind:class="[active ? 'toggleActive' : 'btn-default']"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="caret" aria-hidden="true"></span>
@@ -27,8 +28,11 @@ ob_start();
                type="hidden" class="amendmentActive" v-bind:data-amendment-id="amendment.id">
         {{ amendment.titlePrefix }}
         <span v-html="amendment.bookmarkName"></span>
+        <span v-if="amendment.isMotionModU">
+            <?= Yii::t('amend', 'merge_amend_modu') ?>
+        </span>
     </button>
-    <ul class="dropdown-menu dropdown-menu-right">
+    <ul class="dropdown-menu dropdown-menu-right" v-if="!amendment.isMotionModU">
         <li>
             <a v-bind:href="amendment.url" class="amendmentLink" target="_blank">
                 <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
