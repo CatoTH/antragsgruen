@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{HTMLTools, MotionNumbering, UrlHelper};
 use app\models\db\Amendment;
 use yii\helpers\Html;
 
@@ -26,7 +26,7 @@ use yii\helpers\Html;
         <div class="form-group">
             <label for="motionTitlePrefix"><?= Yii::t('amend', 'merge1_motion_prefix') ?></label>
             <input type="text" class="form-control" id="motionTitlePrefix" name="motionTitlePrefix"
-                   value="<?= Html::encode($amendment->getMyMotion()->getNewTitlePrefix()) ?>">
+                   value="<?= Html::encode(MotionNumbering::getNewTitlePrefixInternal($amendment->getMyMotion()->titlePrefix)) ?>">
         </div>
 
         <div class="form-group">

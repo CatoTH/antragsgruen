@@ -2,6 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
+use app\components\MotionNumbering;
 use app\components\Tools;
 use app\models\sectionTypes\TextSimple;
 use app\models\db\{IMotion, Motion, MotionSection, MotionSupporter};
@@ -24,7 +25,7 @@ class Merge
 
     public function getMergedMotionDraft(): ?Motion
     {
-        $newTitlePrefix = $this->origMotion->getNewTitlePrefix();
+        $newTitlePrefix = MotionNumbering::getNewTitlePrefixInternal($this->origMotion->titlePrefix);
         /** @var Motion|null $newMotion */
         $newMotion      = Motion::find()
                                 ->where(['parentMotionId' => $this->origMotion->id])
@@ -38,11 +39,12 @@ class Merge
     {
         $newMotion = $this->getMergedMotionDraft();
         if (!$newMotion) {
-            $newMotion                 = new Motion();
+            $newMotion = new Motion();
             $newMotion->consultationId = $this->origMotion->consultationId;
             $newMotion->parentMotionId = $this->origMotion->id;
-            $newMotion->motionTypeId   = $this->origMotion->motionTypeId;
-            $newMotion->titlePrefix    = $this->origMotion->getNewTitlePrefix();
+            $newMotion->motionTypeId = $this->origMotion->motionTypeId;
+            $newMotion->titlePrefix = MotionNumbering::getNewTitlePrefixInternal($this->origMotion->titlePrefix);
+            $newMotion->version = MotionNumbering::getNewVersion($this->origMotion->version);
         }
         $newMotion->agendaItemId = $this->origMotion->agendaItemId;
         $newMotion->cache = '';

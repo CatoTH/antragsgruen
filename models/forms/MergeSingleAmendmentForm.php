@@ -85,7 +85,7 @@ class MergeSingleAmendmentForm extends Model
      */
     private function createNewMotion(?string $previousSlug): void
     {
-        $this->newMotion                  = new Motion();
+        $this->newMotion = new Motion();
         $this->newMotion->consultationId  = $this->oldMotion->consultationId;
         $this->newMotion->motionTypeId    = $this->oldMotion->motionTypeId;
         $this->newMotion->parentMotionId  = $this->oldMotion->id;

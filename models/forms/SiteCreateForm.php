@@ -281,6 +281,7 @@ class SiteCreateForm extends Model
             $motion = new Motion();
             $motion->title = '';
             $motion->titlePrefix = '';
+            $motion->version = Motion::VERSION_DEFAULT;
             $motion->cache = '';
             $motion->consultationId = $con->id;
             $motion->motionTypeId = $type->id;
