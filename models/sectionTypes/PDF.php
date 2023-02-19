@@ -2,12 +2,13 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\{latex\Content, Tools, UrlHelper, VarStream};
+use app\components\{latex\Content, Tools, UrlHelper};
 use app\models\db\{Consultation, MotionSection};
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
+use setasign\Fpdi\PdfParser\StreamReader;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
 
@@ -184,8 +185,8 @@ class PDF extends ISectionType
         $data = $this->section->getData();
 
         try {
-            $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (CrossReferenceException $e) {
+            $pageCount = $pdf->setSourceFile(StreamReader::createByString($data));
+        } catch (CrossReferenceException $e) {
             $pdf->AddPage();
             $pdf->writeHTML('<p style="font-size: 12px; color: red;"><br>The embedded PDF can not be rendered:</p>');
             /** @noinspection CssNoGenericFontName */
