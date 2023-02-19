@@ -164,7 +164,7 @@ class IPdfWriter extends Fpdi
                 }
                 if (isset($parent['attribute']['class']) AND !TCPDF_STATIC::empty_string($parent['attribute']['class'])) {
                     $classes = explode(" ", $parent['attribute']['class']);
-                    foreach (HTMLTools::$KNOWN_OL_CLASSES as $olClass) {
+                    foreach (HTMLTools::KNOWN_OL_CLASSES as $olClass) {
                         if (in_array($olClass, $classes)) {
                             $this->lispacer = $olClass;
                         }
@@ -206,7 +206,7 @@ class IPdfWriter extends Fpdi
             'upper-latin',
             'lower-greek'
         ];
-        $valid_symbols = array_merge($valid_symbols, HTMLTools::$KNOWN_OL_CLASSES);
+        $valid_symbols = array_merge($valid_symbols, HTMLTools::KNOWN_OL_CLASSES);
         if (in_array($symbol, $valid_symbols)) {
             $this->lisymbol = $symbol;
         } else {

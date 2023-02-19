@@ -14,7 +14,7 @@ class DatabaseController extends Controller
      *
      * @throws \yii\db\Exception
      */
-    public function actionDestroy()
+    public function actionDestroy(): void
     {
         if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");
@@ -36,7 +36,7 @@ class DatabaseController extends Controller
      *
      * @throws \yii\db\Exception
      */
-    public function actionCreate()
+    public function actionCreate(): void
     {
         if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");
@@ -64,7 +64,7 @@ class DatabaseController extends Controller
      *
      * @throws \yii\db\Exception
      */
-    public function actionInsertTestData()
+    public function actionInsertTestData(): void
     {
         if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");
@@ -84,7 +84,7 @@ class DatabaseController extends Controller
      *
      * @throws \yii\db\Exception
      */
-    public function actionCreateTest()
+    public function actionCreateTest(): void
     {
         if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");

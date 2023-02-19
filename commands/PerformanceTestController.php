@@ -18,8 +18,8 @@ class PerformanceTestController extends Controller
 
     public function actionDiff(): void
     {
-        $str1 = file_get_contents(__DIR__ . '/../assets/diff-motion.txt');
-        $str2 = file_get_contents(__DIR__ . '/../assets/diff-amend.txt');
+        $str1 = (string)file_get_contents(__DIR__ . '/../assets/diff-motion.txt');
+        $str2 = (string)file_get_contents(__DIR__ . '/../assets/diff-amend.txt');
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs = HTMLTools::sectionSimpleHTML($str2);
 
