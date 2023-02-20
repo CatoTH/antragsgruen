@@ -56,8 +56,8 @@ $I->see('Biawambn gscheid:', 'p');
 $I->see('Griasd eich midnand', 'p');
 
 $I->wantTo('see the old motion');
-$I->see('A2', '.replacesMotion');
-$I->click('.replacesMotion a');
+$I->see('Version 2', '.motionHistory');
+$I->click('.motionHistory a.motion2');
 $I->see('A2:', 'h1');
 $I->dontSee('Ä2', '.bookmarks');
 $I->see('Ä7', '.bookmarks');

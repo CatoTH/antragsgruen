@@ -71,6 +71,7 @@ if ($motion->isInScreeningProcess()) {
     }
 
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';
+    echo '<input type="hidden" name="version" value="' . Html::encode(Motion::VERSION_DEFAULT) . '">';
 
     echo '<div style="text-align: center;"><button type="submit" class="btn btn-primary" name="screen">';
     echo Html::encode(str_replace('%PREFIX%', $newRev, Yii::t('admin', 'motion_screen_as_x')));

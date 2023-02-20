@@ -112,7 +112,8 @@ $I->submitForm('#motionConfirmForm', [], 'confirm');
 $I->submitForm('#motionConfirmedForm', []);
 $I->see('Vegetable');
 
-$I->see('A8neu', 'h1');
+$I->see('A8', 'h1');
+$I->see('Version 2', '.motionHistory');
 $I->gotoConsultationHome();
-$I->see('A8neu');
+$I->see('A8', '.motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
 $I->dontSeeElement('.motionRow118');

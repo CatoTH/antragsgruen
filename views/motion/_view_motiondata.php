@@ -133,7 +133,8 @@ if (count($motionHistory) > 1) {
         if ($motionHis->id === $motion->id) {
             $historyLine .= '<span class="currVersion">' . Html::encode($versionName) . '</span>';
         } else {
-            $historyLine .= Html::a(Html::encode($versionName), UrlHelper::createMotionUrl($motionHis));
+            $className = 'motion' . $motionHis->id;
+            $historyLine .= Html::a(Html::encode($versionName), UrlHelper::createMotionUrl($motionHis), ['class' => $className]);
         }
 
         $historyLine .= '<span class="date">(' . Tools::formatMysqlDate($motionHis->dateCreation, false) . ')</span>';

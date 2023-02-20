@@ -27,8 +27,8 @@ $I->see('Der Änderungsantrag wurde eingepflegt.', '.alert-success');
 
 $I->wantTo('check the changes were made');
 $I->click('.alert-success .btn-primary');
-$I->see('A2neu', 'h1');
-$I->see('A2: ', '.replacesMotion');
+$I->see('A2', 'h1');
+$I->see('Version 2', '.motionHistory');
 $I->see('Alternatives Ende');
 $I->dontSee('Xaver Prosd eana an a bravs');
 $I->see('Ä2');
@@ -59,8 +59,9 @@ $I->see('Der Änderungsantrag wurde eingepflegt.', '.alert-success');
 
 $I->wantTo('check the changes were made');
 $I->click('.alert-success .btn-primary');
-$I->see('A2neu2', 'h1');
-$I->see('A2neu: ', '.replacesMotion');
+$I->see('A2', 'h1');
+$I->see('Version 2', '.motionHistory a');
+$I->see('Version 3', '.motionHistory');
 $I->see('A modified adaption', 'p');
 $I->see('Something dahoam');
 $I->dontSee('Ä4');
