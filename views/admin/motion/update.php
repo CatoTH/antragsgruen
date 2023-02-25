@@ -114,7 +114,9 @@ echo '<div class="content form-horizontal">';
             <?php
             $options = ['-'];
             foreach ($consultation->motions as $otherMotion) {
-                $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
+                $title = $otherMotion->getTitleWithPrefix() .
+                    ' (' . Yii::t('motion', 'version') . ' ' . $otherMotion->version . ')';
+                $options[$otherMotion->id] = $title;
             }
             $attrs = ['id' => 'parentMotion', 'class' => 'stdDropdown fullsize'];
             echo Html::dropDownList('motion[parentMotionId]', $motion->parentMotionId, $options, $attrs);
