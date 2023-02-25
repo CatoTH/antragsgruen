@@ -162,15 +162,13 @@ class UserController extends Base
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             if ($loginProvider = $plugin::getDedicatedLoginProvider()) {
                 try {
-                    $backUrl = $loginProvider->logoutCurrentUserIfRelevant($backUrl);
-                    if ($backUrl) {
-                        return new RedirectResponse($backUrl, RedirectResponse::REDIRECT_TEMPORARY);
+                    $pluginBackUrl = $loginProvider->logoutCurrentUserIfRelevant($backUrl);
+                    if ($pluginBackUrl) {
+                        return new RedirectResponse($pluginBackUrl, RedirectResponse::REDIRECT_TEMPORARY);
                     }
                 } catch (\Exception $e) {
-                    return new HtmlErrorResponse(
-                        500,
-                        \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
-                    );
+                    $msg = \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"';
+                    return new HtmlErrorResponse(500, $msg);
                 }
             }
         }
