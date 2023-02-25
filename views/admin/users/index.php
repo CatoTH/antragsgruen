@@ -26,6 +26,7 @@ $layout->loadSelectize();
 $layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/users.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/_user_edit.vue.php');
+$layout->addVueTemplate('@app/views/admin/users/_group_edit.vue.php');
 Layout::registerAdditionalVueUserAdministrationTemplates($controller->consultation, $layout);
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);

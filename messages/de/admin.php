@@ -338,6 +338,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_groups_add_open'    => 'Gruppe anlegen',
     'siteacc_groups_add_name'    => 'Name der Gruppe',
     'siteacc_group_del'          => '%GROUPNAME% entfernen',
+    'siteacc_group_edit'         => '%GROUPNAME% bearbeiten',
     'siteacc_user_edit'          => '%USERNAME% bearbeiten',
     'siteacc_user_del'           => '%USERNAME% entfernen',
     'siteacc_usergroup_log'      => 'Änderungs-Protokoll',
@@ -349,6 +350,8 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_usermodal_passset'  => 'Neues Passwort setzen',
     'siteacc_usermodal_passnew'  => 'Neues Passwort',
     'siteacc_usermodal_superh'   => 'Hinweis: Super-Admins können die Angaben oben bearbeiten und neue Passwörter setzen. In der <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins" target="_blank">technischen Dokumentation</a> steht, wie Super-Admins verwaltet werden.',
+    'siteacc_groupmodal_title'   => '%GROUPNAME% bearbeiten',
+    'siteacc_groupmodal_system'  => 'Dies ist eine nicht veränderbare Standard-Gruppe.',
     'siteacc_email_text_pre'     => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .

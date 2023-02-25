@@ -109,7 +109,7 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    const modalTitleTemplate = <?= json_encode(Yii::t('admin', 'siteacc_usermodal_title')) ?>;
+    const userModalTitleTemplate = <?= json_encode(Yii::t('admin', 'siteacc_usermodal_title')) ?>;
 
     __setVueComponent('users', 'component', 'user-edit-widget', {
         template: <?= json_encode($html) ?>,
@@ -127,7 +127,7 @@ $html = ob_get_clean();
         },
         computed: {
             modalTitle: function () {
-                return (this.user ? modalTitleTemplate.replace(/%USERNAME%/, this.user.email) : '--');
+                return (this.user ? userModalTitleTemplate.replace(/%USERNAME%/, this.user.email) : '--');
             },
             userLogUrl: function () {
                 return this.urlUserLog.replace(/%23/g, "#").replace(/###USER###/, this.user.id);

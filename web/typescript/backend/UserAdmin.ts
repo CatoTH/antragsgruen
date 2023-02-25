@@ -18,7 +18,7 @@ export class UserAdmin {
         const initGroupsJson = this.element.getAttribute('data-groups');
         const pollUrl = this.element.getAttribute('data-url-poll');
         const urlUserLog = this.element.getAttribute('data-url-user-log');
-        const urlUserGroupLog = this.element.getAttribute('data-url-user-group-log');
+        const urlGroupLog = this.element.getAttribute('data-url-user-group-log');
         const permissionGlobalEdit = (this.element.getAttribute('data-permission-global-edit') === '1');
 
         let userWidgetComponent;
@@ -32,15 +32,20 @@ export class UserAdmin {
                     @save-user="saveUser"
                     ref="user-edit-widget"
                 ></user-edit-widget>
+                <group-edit-widget
+                    :urlGroupLog="urlGroupLog"
+                    @save-user="saveGroup"
+                    ref="group-edit-widget"
+                ></group-edit-widget>
                 <user-admin-widget
                     :users="users"
                     :groups="groups"
-                    :urlUserGroupLog="urlUserGroupLog"
                     @remove-user="removeUser"
-                    @create-user-group="createUserGroup"
-                    @remove-group="removeUserGroup"
                     @edit-user="editUser"
                     @save-user="saveUser"
+                    @create-group="createGroup"
+                    @edit-group="editGroup"
+                    @remove-group="removeUserGroup"
                     ref="user-admin-widget"
                 ></user-admin-widget>
             </div>`,
@@ -53,7 +58,7 @@ export class UserAdmin {
                     csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                     pollingId: null,
                     urlUserLog,
-                    urlUserGroupLog,
+                    urlGroupLog,
                     permissionGlobalEdit,
                 };
             },
@@ -110,11 +115,17 @@ export class UserAdmin {
                     this.groups = groups;
                     this.groupsJson = groupsJson;
                 },
-                createUserGroup(groupName) {
+                createGroup(groupName) {
                     this._performOperation({
                         op: 'create-user-group',
                         groupName
                     });
+                },
+                editGroup(group) {
+                    userWidgetComponent.$refs["group-edit-widget"].open(group);
+                },
+                saveGroup() {
+                    alert("save");
                 },
                 removeUserGroup(group) {
                     this._performOperation({

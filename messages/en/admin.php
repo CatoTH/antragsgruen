@@ -337,6 +337,7 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_groups_add_open'   => 'Add group',
     'siteacc_groups_add_name'   => 'Name of the group',
     'siteacc_group_del'         => 'Remove %GROUPNAME%',
+    'siteacc_group_edit'        => 'Edit %GROUPNAME%',
     'siteacc_user_edit'         => 'Edit %USERNAME%',
     'siteacc_user_del'          => 'Remove %USERNAME%',
     'siteacc_usergroup_log'     => 'Change log',
@@ -348,7 +349,9 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_usermodal_passset'  => 'Set new password',
     'siteacc_usermodal_passnew'  => 'New password',
     'siteacc_usermodal_superh'   => 'Hint: Super-admins can change the user data mentioned above and set a new password. Please refer to the <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins" target="_blank">technical documentation</a> on how to set up the list of super-admins.',
-    'siteacc_email_text_pre'    => 'Hi,
+    'siteacc_groupmodal_title'   => 'Edit %GROUPNAME%',
+    'siteacc_groupmodal_system'  => 'This is a default group that cannot be changed.',
+    'siteacc_email_text_pre'     => 'Hi,
 
 we have just created an Antragsgrün account for you. Now you can join the discussion on the motions / drafts.
 Here is your login data:

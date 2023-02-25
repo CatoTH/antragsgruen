@@ -60,7 +60,11 @@ ob_start();
                         <div class="additional" v-if="group.description">{{ group.description }}</div>
                     </div>
                     <div class="groupActions">
-                        <small><a :href="userGroupLogUrl(group)"><span class="glyphicon glyphicon-chevron-right"></span> <?= Yii::t('admin','siteacc_usergroup_log') ?></a></small>
+                        <button class="btn btn-link btnEdit" @click="editGroup(group)"
+                                :title="'<?= Yii::t('admin', 'siteacc_group_edit') ?>'.replace(/%GROUPNAME%/, group.title)"
+                                :aria-label="'<?= Yii::t('admin', 'siteacc_group_edit') ?>'.replace(/%USERNAME%/, group.title)">
+                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                        </button>
 
                         <button v-if="group.deletable" class="btn btn-link btnRemove" @click="removeGroup(group)"
                                 :title="'<?= Yii::t('admin', 'siteacc_group_del') ?>'.replace(/%GROUPNAME%/, group.title)"
@@ -115,7 +119,7 @@ $html = ob_get_clean();
 
     __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['users', 'groups', 'urlUserGroupLog'],
+        props: ['users', 'groups'],
         mixins: window.USER_ADMIN_MIXINS,
         data() {
             return {
@@ -211,9 +215,6 @@ $html = ob_get_clean();
                     }
                 });
             },
-            userGroupLogUrl: function (userGroup) {
-                return this.urlUserGroupLog.replace(/%23/g, "#").replace(/###GROUP###/, userGroup.id);
-            },
             escapeHtml: function (text) {
                 return text.replace(/&/g, "&amp;")
                     .replace(/</g, "&lt;")
@@ -307,8 +308,11 @@ $html = ob_get_clean();
             addGroupSubmit: function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
-                this.$emit('create-user-group', this.addGroupName);
+                this.$emit('create-group', this.addGroupName);
                 this.creatingGroups = false;
+            },
+            editGroup: function (group) {
+                this.$emit('edit-group', group)
             },
             removeGroup: function (group) {
                 const widget = this,
