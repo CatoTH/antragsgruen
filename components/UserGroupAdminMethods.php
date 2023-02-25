@@ -228,13 +228,33 @@ class UserGroupAdminMethods
     /**
      * @throws UserEditFailed
      */
+    public function saveUserGroup(int $groupId, string $groupName): void
+    {
+        $group = $this->consultation->getUserGroupById($groupId);
+        if (!$group) {
+            throw new UserEditFailed('Group does not exist');
+        }
+        if (!$group->isUserEditable()) {
+            throw new UserEditFailed('Group cannot be deleted');
+        }
+
+        if (trim($groupName) !== '') {
+            $group->title = trim($groupName);
+        }
+
+        $group->save();
+    }
+
+    /**
+     * @throws UserEditFailed
+     */
     public function removeUserGroup(int $groupId): void
     {
         $group = ConsultationUserGroup::findOne(['id' => $groupId]);
         if (!$group) {
             throw new UserEditFailed('Group does not exist');
         }
-        if (!$group->isUserDeletable()) {
+        if (!$group->isUserEditable()) {
             throw new UserEditFailed('Group cannot be deleted');
         }
 

@@ -34,7 +34,7 @@ export class UserAdmin {
                 ></user-edit-widget>
                 <group-edit-widget
                     :urlGroupLog="urlGroupLog"
-                    @save-user="saveGroup"
+                    @save-group="saveGroup"
                     ref="group-edit-widget"
                 ></group-edit-widget>
                 <user-admin-widget
@@ -124,8 +124,12 @@ export class UserAdmin {
                 editGroup(group) {
                     userWidgetComponent.$refs["group-edit-widget"].open(group);
                 },
-                saveGroup() {
-                    alert("save");
+                saveGroup(groupId, groupTitle) {
+                    this._performOperation({
+                        op: 'save-group',
+                        groupId,
+                        groupTitle
+                    });
                 },
                 removeUserGroup(group) {
                     this._performOperation({

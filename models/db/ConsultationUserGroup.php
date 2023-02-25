@@ -299,7 +299,7 @@ class ConsultationUserGroup extends ActiveRecord
             'id' => $this->id,
             'title' => $this->getNormalizedTitle(),
             'description' => $this->getNormalizedDescription(),
-            'deletable' => $this->isUserDeletable(),
+            'deletable' => $this->isUserEditable(),
             'permissions' => $this->getPermissions(),
             'auth_type' => $this->getAuthType(),
         ];
@@ -314,7 +314,7 @@ class ConsultationUserGroup extends ActiveRecord
         }
     }
 
-    public function isUserDeletable(): bool
+    public function isUserEditable(): bool
     {
         // Automatic template-based user groups and system-wide groups may not be deleted by users
         return $this->templateId === null && ($this->siteId !== null || $this->consultationId !== null);
