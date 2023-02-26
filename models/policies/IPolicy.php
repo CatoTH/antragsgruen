@@ -18,7 +18,7 @@ abstract class IPolicy
     public const POLICY_ORGANIZATION = 5;
 
     /**
-     * @return IPolicy[]
+     * @return IPolicy[]|string[]
      */
     public static function getPolicies(): array
     {
@@ -162,7 +162,10 @@ abstract class IPolicy
 
         foreach (self::getPolicies() as $polId => $polClass) {
             if ($polId === $policyId) {
-                return new $polClass($consultation, $baseObject, $policyDataObj);
+                /** @var IPolicy $policy */
+                $policy = new $polClass($consultation, $baseObject, $policyDataObj);
+
+                return $policy;
             }
         }
         throw new Internal('Unknown Policy: ' . $policyId);

@@ -9,14 +9,6 @@ use app\models\siteSpecificBehavior\DefaultBehavior;
 class SiteSpecificBehavior extends DefaultBehavior
 {
     /**
-     * @return string|Permissions
-     */
-    public static function getPermissionsClass()
-    {
-        return Permissions::class;
-    }
-
-    /**
      * @return string[]|IPolicy[]
      */
     public static function getCustomPolicies(): array

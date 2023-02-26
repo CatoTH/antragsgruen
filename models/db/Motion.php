@@ -76,11 +76,11 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return string[]
+     * @return int[]
      */
     public static function getProposedChangeStatuses(): array
     {
-        $statuses = [
+        return [
             IMotion::STATUS_ACCEPTED,
             IMotion::STATUS_REJECTED,
             IMotion::STATUS_MODIFIED_ACCEPTED,
@@ -89,10 +89,6 @@ class Motion extends IMotion implements IRSSItem
             IMotion::STATUS_OBSOLETED_BY,
             IMotion::STATUS_CUSTOM_STRING,
         ];
-        if (Consultation::getCurrent()) {
-            $statuses = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStatuses($statuses);
-        }
-        return $statuses;
     }
 
     public static function tableName(): string
@@ -497,12 +493,12 @@ class Motion extends IMotion implements IRSSItem
 
     public function canEdit(): bool
     {
-        return $this->getPermissionsObject()->motionCanEdit($this);
+        return $this->getPermissionsObject()->motionCanEditText($this);
     }
 
     public function canWithdraw(): bool
     {
-        return $this->getPermissionsObject()->motionCanWithdraw($this);
+        return $this->getPermissionsObject()->iMotionCanWithdraw($this);
     }
 
     public function canMergeAmendments(): bool
@@ -512,7 +508,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function canCreateResolution(): bool
     {
-        return User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT);
+        return User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_STATUS_EDIT);
     }
 
     public function canFinishSupportCollection(): bool

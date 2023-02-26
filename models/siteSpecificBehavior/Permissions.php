@@ -2,7 +2,7 @@
 
 namespace app\models\siteSpecificBehavior;
 
-use app\models\db\{ConsultationMotionType, ConsultationUserGroup, IMotion, MotionSupporter, User, Motion};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationUserGroup, IMotion, ISupporter, User, Motion};
 use app\models\exceptions\{Internal, NotAmendable};
 use app\models\policies\{All, IPolicy};
 use app\models\supportTypes\SupportBase;
@@ -10,39 +10,19 @@ use app\models\supportTypes\SupportBase;
 class Permissions
 {
     /**
-     * @throws Internal
+     * Default rules for editing text:
+     * - In the draft state (before the document is submitted), rather permissive policies apply. See below.
+     * - If "fixed text" is set (from the consultation policy), editing the text is never allowed after submission, disregarding the following statements.
+     * - If there are published amendments, the text cannot be changed anymore @TODO handle merging logic here?
+     * - Initiators may edit the text within the deadline to submit amendments.
+     * - Admins can change the text @TODO implement this logic in this method.
      */
-    public function motionCanEdit(Motion $motion): bool
+    public function motionCanEditText(Motion $motion): bool
     {
         $consultation = $motion->getMyConsultation();
 
         if ($motion->status === Motion::STATUS_DRAFT) {
-            // As long as motions are not confirmed, the following can edit and confirm them:
-            // - The account that was used to create the motion, if an account was used
-            // - Everyone, if no account was used and "All" is selected
-            // - Admins
-            $hadLoggedInUser = false;
-            $currUser = User::getCurrentUser();
-            if ($currUser && $currUser->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
-                return true;
-            }
-            foreach ($motion->motionSupporters as $supp) {
-                if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
-                    $hadLoggedInUser = true;
-                    if ($currUser && $currUser->id === $supp->userId) {
-                        return true;
-                    }
-                }
-            }
-            if ($hadLoggedInUser) {
-                return false;
-            } else {
-                if ($motion->getMyMotionType()->getMotionPolicy()->getPolicyID() === All::getPolicyID()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+            return $this->canEditDraftText($motion->getMyConsultation(), $motion->getMyMotionType(), $motion->motionSupporters);
         }
 
         if ($motion->textFixed) {
@@ -64,7 +44,65 @@ class Permissions
         return false;
     }
 
-    public function motionCanWithdraw(Motion $motion): bool
+    /**
+     * Default rules for editing text:
+     * - In the draft state (before the document is submitted), rather permissive policies apply. See below.
+     * - If "fixed text" is set (from the consultation policy), editing the text is never allowed after submission, disregarding the following statements.
+     * - Initiators may edit the text within the deadline to submit amendments.
+     * - Admins can change the text @TODO implement this logic in this method.
+     */
+    public function amendmentCanEditText(Amendment $amendment): bool
+    {
+        if ($amendment->status === Amendment::STATUS_DRAFT) {
+            return $this->canEditDraftText($amendment->getMyConsultation(), $amendment->getMyMotionType(), $amendment->amendmentSupporters);
+        }
+
+        if ($amendment->textFixed) {
+            return false;
+        }
+
+        if ($amendment->getMyConsultation()->getSettings()->iniatorsMayEdit && $amendment->iAmInitiator()) {
+            return $amendment->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
+        }
+
+        return false;
+    }
+
+    /**
+     * As long as amendments are not confirmed / submitted, the following can edit and confirm them:
+     * - The account that was used to create it, if an account was used
+     * - Everyone, if no account was used and "All" is selected
+     * - Admins
+     *
+     * @param ISupporter[] $supporters
+     */
+    private function canEditDraftText(Consultation $consultation, ConsultationMotionType $motionType, array $supporters): bool
+    {
+        $hadLoggedInUser = false;
+        $currUser = User::getCurrentUser();
+        if ($currUser && $currUser->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_MOTION_TEXT_EDIT)) {
+            return true;
+        }
+        foreach ($supporters as $supp) {
+            if ($supp->role === ISupporter::ROLE_INITIATOR && $supp->userId > 0) {
+                $hadLoggedInUser = true;
+                if ($currUser && $currUser->id === $supp->userId) {
+                    return true;
+                }
+            }
+        }
+        if ($hadLoggedInUser) {
+            return false;
+        } else {
+            if ($motionType->getAmendmentPolicy()->getPolicyID() === All::getPolicyID()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function iMotionCanWithdraw(IMotion $motion): bool
     {
         if (!in_array($motion->status, [
             Motion::STATUS_SUBMITTED_SCREENED,
@@ -99,7 +137,7 @@ class Permissions
         if (!$motion->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_MERGING)) {
             return false;
         }
-        if (User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+        if (User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_STATUS_EDIT)) {
             return true;
         } elseif ($motion->iAmInitiator()) {
             $policy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;

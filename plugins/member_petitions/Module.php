@@ -37,6 +37,11 @@ class Module extends ModuleBase
         ];
     }
 
+    public static function getPermissionsClass(): ?string
+    {
+        return Permissions::class;
+    }
+
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */

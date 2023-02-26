@@ -306,7 +306,7 @@ class AmendmentEditForm extends Model
             ->getAmendmentSupportTypeClass()->getAmendmentSupporters($amendment);
 
         if (!$this->adminMode) {
-            if (!$amendment->canEdit()) {
+            if (!$amendment->canEditText()) {
                 throw new FormError(\Yii::t('amend', 'err_create_permission'));
             }
 

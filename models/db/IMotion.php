@@ -168,10 +168,14 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     public function getPermissionsObject(): Permissions
     {
-        $behavior  = $this->getMyConsultation()->site->getBehaviorClass();
-        $className = $behavior->getPermissionsClass();
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $permissions = $plugin::getPermissionsClass();
+            if ($permissions) {
+                return new $permissions();
+            }
+        }
 
-        return new $className();
+        return new Permissions();
     }
 
     /**

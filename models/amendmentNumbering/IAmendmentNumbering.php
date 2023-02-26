@@ -8,7 +8,7 @@ use app\models\db\{Motion, Amendment};
 abstract class IAmendmentNumbering
 {
     /**
-     * @return IAmendmentNumbering[]
+     * @return IAmendmentNumbering[]|string[]
      */
     public static function getNumberings(): array
     {

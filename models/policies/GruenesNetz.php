@@ -66,7 +66,7 @@ class GruenesNetz extends IPolicy
                 return false;
             }
         }
-        if ($allowAdmins && $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+        if ($allowAdmins && $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_STATUS_EDIT)) {
             return true;
         }
         return $user->isGruenesNetzUser();

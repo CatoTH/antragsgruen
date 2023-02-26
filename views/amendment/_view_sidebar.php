@@ -22,7 +22,7 @@ if ($motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
 }
 
 
-if ($amendment->canEdit()) {
+if ($amendment->canEditText()) {
     $html .= '<li class="edit">';
     $title = '<span class="icon glyphicon glyphicon-edit" aria-hidden="true"></span>' .
         Yii::t('amend', 'amendment_edit');

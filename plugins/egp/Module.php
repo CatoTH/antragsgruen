@@ -20,13 +20,17 @@ class Module extends ModuleBase
         Event::on(MotionSupporter::class, MotionSupporter::EVENT_SUPPORTED, [Notifications::class, 'onMotionSupport'], null, false);
     }
 
+    public static function getPermissionsClass(): ?string
+    {
+        return Permissions::class;
+    }
+
     /**
-     * @param Site $site
-     *
+     * @phpstan-ignore-next-line
      * @return SiteSpecificBehavior|string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSpecificBehavior(Site $site)
+    public static function getSiteSpecificBehavior(Site $site): string
     {
         return SiteSpecificBehavior::class;
     }

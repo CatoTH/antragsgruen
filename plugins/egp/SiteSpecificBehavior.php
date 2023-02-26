@@ -10,14 +10,6 @@ use app\models\siteSpecificBehavior\DefaultBehavior;
 
 class SiteSpecificBehavior extends DefaultBehavior
 {
-    /**
-     * @return string|Permissions
-     */
-    public static function getPermissionsClass()
-    {
-        return Permissions::class;
-    }
-
     public static function getConsultationHomePage(Consultation $consultation): ?ResponseInterface
     {
         /** @var ConsultationSettings $settings */

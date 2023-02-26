@@ -58,6 +58,6 @@ class Admins extends IPolicy
         if (!$user) {
             return false;
         }
-        return $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT);
+        return $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_STATUS_EDIT);
     }
 }

@@ -236,7 +236,7 @@ class AmendmentController extends Base
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
-        if (!$amendment->canEdit()) {
+        if (!$amendment->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
@@ -279,12 +279,12 @@ class AmendmentController extends Base
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (!$amendment->canEdit()) {
+        if (!$amendment->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_edit_forbidden'));
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
-        $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
+        $fromMode = ($amendment->status === Amendment::STATUS_DRAFT ? 'create' : 'edit');
         $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
 
         if ($this->isPostSet('save')) {

@@ -147,10 +147,7 @@ class Site extends ActiveRecord
         return $group;
     }
 
-    /**
-     * @return DefaultBehavior
-     */
-    public function getBehaviorClass()
+    public function getBehaviorClass(): DefaultBehavior
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             $behavior = $pluginClass::getSiteSpecificBehavior($this);

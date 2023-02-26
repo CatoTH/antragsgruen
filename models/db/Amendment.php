@@ -5,7 +5,13 @@ namespace app\models\db;
 use app\models\exceptions\Internal;
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\AntragsgruenApp;
-use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, RSSExporter, Tools, UrlHelper};
+use app\components\{diff\AmendmentSectionFormatter,
+    diff\DiffRenderer,
+    HashedStaticCache,
+    RequestContext,
+    RSSExporter,
+    Tools,
+    UrlHelper};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\layoutHooks\Layout;
@@ -13,7 +19,7 @@ use app\models\notifications\{AmendmentProposedProcedure,
     AmendmentPublished as AmendmentPublishedNotification,
     AmendmentSubmitted as AmendmentSubmittedNotification,
     AmendmentWithdrawn as AmendmentWithdrawnNotification};
-use app\models\policies\{All, IPolicy};
+use app\models\policies\IPolicy;
 use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
 use app\models\supportTypes\SupportBase;
 use app\models\settings\MotionSection as MotionSectionSettings;
@@ -76,7 +82,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public static function getProposedChangeStatuses(): array
     {
-        $statuses = [
+        return [
             IMotion::STATUS_ACCEPTED,
             IMotion::STATUS_REJECTED,
             IMotion::STATUS_MODIFIED_ACCEPTED,
@@ -86,10 +92,6 @@ class Amendment extends IMotion implements IRSSItem
             IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION,
             IMotion::STATUS_CUSTOM_STRING,
         ];
-        if (Consultation::getCurrent()) {
-            $statuses = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStatuses($statuses);
-        }
-        return $statuses;
     }
 
     public static function tableName(): string
@@ -648,7 +650,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function iAmInitiator(): bool
     {
-        $user = \Yii::$app->user;
+        $user = RequestContext::getUser();
         if ($user->isGuest) {
             return false;
         }
@@ -669,59 +671,14 @@ class Amendment extends IMotion implements IRSSItem
         return $this->iAmInitiator();
     }
 
-    public function canEdit(): bool
+    public function canEditText(): bool
     {
-        if ($this->status === static::STATUS_DRAFT) {
-            // As long as amendments are not confirmed, the following can edit and confirm them:
-            // - The account that was used to create it, if an account was used
-            // - Everyone, if no account was used and "All" is selected
-            // - Admins
-            $hadLoggedInUser = false;
-            $currUser = User::getCurrentUser();
-            if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
-                return true;
-            }
-            foreach ($this->amendmentSupporters as $supp) {
-                if ($supp->role === AmendmentSupporter::ROLE_INITIATOR && $supp->userId > 0) {
-                    $hadLoggedInUser = true;
-                    if ($currUser && $currUser->id === $supp->userId) {
-                        return true;
-                    }
-                }
-            }
-            if ($hadLoggedInUser) {
-                return false;
-            } else {
-                if ($this->getMyMotionType()->getAmendmentPolicy()->getPolicyID() === All::getPolicyID()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-
-        if ($this->textFixed) {
-            return false;
-        }
-
-        if ($this->getMyConsultation()->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
-            return $this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
-        }
-
-        return false;
+        return $this->getPermissionsObject()->amendmentCanEditText($this);
     }
 
     public function canWithdraw(): bool
     {
-        if (!in_array($this->status, [
-            Amendment::STATUS_SUBMITTED_SCREENED,
-            Amendment::STATUS_SUBMITTED_UNSCREENED,
-            Amendment::STATUS_COLLECTING_SUPPORTERS
-        ])
-        ) {
-            return false;
-        }
-        return $this->iAmInitiator();
+        return $this->getPermissionsObject()->iMotionCanWithdraw($this);
     }
 
     public function isSupportingPossibleAtThisStatus(): bool

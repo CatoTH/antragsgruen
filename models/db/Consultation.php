@@ -435,7 +435,10 @@ class Consultation extends ActiveRecord
     public function getAmendmentNumbering(): IAmendmentNumbering
     {
         $numberings = IAmendmentNumbering::getNumberings();
-        return new $numberings[$this->amendmentNumbering]();
+        /** @var IAmendmentNumbering $numbering */
+        $numbering = new $numberings[$this->amendmentNumbering]();
+
+        return $numbering;
     }
 
     private ?IMotionStatusEngine $statusEngine = null;

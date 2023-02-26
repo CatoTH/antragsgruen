@@ -35,7 +35,7 @@ class Permissions extends \app\models\siteSpecificBehavior\Permissions
             }
         }
 
-        if ($motion->iAmInitiator() || User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+        if ($motion->iAmInitiator() || User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_STATUS_EDIT)) {
             return true;
         }
 
