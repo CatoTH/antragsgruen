@@ -7,20 +7,12 @@ use yii\helpers\Html;
 
 class AntiSpam
 {
-    /**
-     * @param string $seed
-     * @return string
-     */
-    public static function createToken($seed)
+    public static function createToken(string $seed): string
     {
         return md5('createToken' . AntragsgruenApp::getInstance()->randomSeed . $seed);
     }
 
-    /**
-     * @param string $seed
-     * @return string
-     */
-    public static function getJsProtectionHint($seed)
+    public static function getJsProtectionHint(string $seed): string
     {
         $token = static::createToken($seed);
         $str   = '<div class="alert alert-warning jsProtectionHint" role="alert" ';

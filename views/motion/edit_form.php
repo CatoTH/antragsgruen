@@ -72,7 +72,7 @@ if (!in_array($motionPolicy::getPolicyID(), $publicPolicies) && !$isAmendmentsOn
 }
 
 if (Yii::$app->user->isGuest) {
-    echo \app\components\AntiSpam::getJsProtectionHint($form->motionId);
+    echo \app\components\AntiSpam::getJsProtectionHint((string)$form->motionId);
 }
 
 echo '<div id="draftHint" class="hidden alert alert-info"

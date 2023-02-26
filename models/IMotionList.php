@@ -9,13 +9,13 @@ use app\models\db\{Amendment, IVotingItem, Motion, VotingQuestion};
 class IMotionList
 {
     /** @var int[] */
-    public $motionIds = [];
+    public array $motionIds = [];
 
     /** @var int[] */
-    public $amendmentIds = [];
+    public array $amendmentIds = [];
 
     /** @var int[] */
-    public $questionIds = [];
+    public array $questionIds = [];
 
     public function addMotion(Motion $motion): void {
         $this->motionIds[] = $motion->id;
