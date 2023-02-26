@@ -39,11 +39,11 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             </a>
         </div>
-        <div class="form-group votingBlockRow">
-            <label class="col-md-3 control-label" for="votingBlockId">
+        <div class="stdTwoCols votingBlockRow">
+            <label class="leftColumn control-label" for="votingBlockId">
                 <?= Yii::t('amend', 'proposal_voteblock') ?>
             </label>
-            <div class="col-md-9">
+            <div class="rightColumn">
                 <select name="votingBlockId" id="votingBlockId" class="stdDropdown"<?= ($currBlockIsLocked ? ' disabled' : '') ?>>
                     <option>-</option>
                     <?php
@@ -78,12 +78,12 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
                 continue;
             }
             ?>
-            <div class="form-group votingItemBlockRow votingItemBlockRow<?= $votingBlock->id ?>">
-                <label class="col-md-3 control-label" for="votingItemBlockId<?= $votingBlock->id ?>">
+            <div class="stdTwoCols votingItemBlockRow votingItemBlockRow<?= $votingBlock->id ?>">
+                <label class="leftColumn control-label" for="votingItemBlockId<?= $votingBlock->id ?>">
                     <?= Yii::t('amend', 'proposal_voteitemblock') ?>:
                     <?= HTMLTools::getTooltipIcon(Yii::t('amend', 'proposal_voteitemblock_h')) ?>
                 </label>
-                <div class="col-md-9">
+                <div class="rightColumn">
                     <select name="votingItemBlockId[<?= $votingBlock->id ?>]" id="votingItemBlockId<?= $votingBlock->id ?>"
                             <?= ($currBlockIsLocked ? ' disabled' : '') ?> class="stdDropdown">
                         <option value=""><?= Yii::t('amend', 'proposal_voteitemblock_none') ?></option>
@@ -103,21 +103,21 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
             <?php
         }
         ?>
-        <div class="form-group votingItemBlockNameRow votingItemBlockNameRow">
-            <label class="col-md-3 control-label" for="votingItemBlockName">
+        <div class="stdTwoCols votingItemBlockNameRow votingItemBlockNameRow">
+            <label class="leftColumn control-label" for="votingItemBlockName">
                 <?= Yii::t('amend', 'proposal_voteitemblock_name') ?>:
             </label>
-            <div class="col-md-9">
+            <div class="rightColumn">
                 <input name="votingItemBlockName" id="votingItemBlockName"
                        class="form-control" value="<?= Html::encode($voting->itemGroupName ?: '') ?>"
                        <?= ($currBlockIsLocked ? ' disabled' : '') ?>>
             </div>
         </div>
-        <div class="form-group votingResult">
-            <div class="col-md-3 control-label">
+        <div class="stdTwoCols votingResult">
+            <div class="leftColumn control-label">
                 <?= Yii::t('amend', 'proposal_voting_status') ?>
             </div>
-            <div class="col-md-9">
+            <div class="rightColumn">
                 <?php
                 foreach ($motion->getMyConsultation()->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
                     ?>
@@ -133,11 +133,11 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
                 ?>
             </div>
         </div>
-        <div class="form-group contentVotingResultComment">
-            <label class="col-md-3 control-label" for="votesComment">
+        <div class="stdTwoCols contentVotingResultComment">
+            <label class="leftColumn control-label" for="votesComment">
                 <?= Yii::t('amend', 'merge_new_votes_comment') ?>
             </label>
-            <div class="col-md-9">
+            <div class="rightColumn">
                 <input class="form-control" name="votes[comment]" type="text" id="votesComment"
                        value="<?= Html::encode($voting->comment ?: '') ?>">
             </div>

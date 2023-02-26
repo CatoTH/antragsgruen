@@ -265,6 +265,7 @@ class MotionEditForm extends Model
         $motion->textFixed = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
         $motion->title = '';
         $motion->titlePrefix = '';
+        $motion->version = Motion::VERSION_DEFAULT;
         $motion->dateCreation = date('Y-m-d H:i:s');
         $motion->dateContentModification = date('Y-m-d H:i:s');
         $motion->motionTypeId = $this->motionType->id;

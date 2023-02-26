@@ -65,6 +65,7 @@ class Draft implements \JsonSerializable
             $this->draftMotion->dateContentModification = date('Y-m-d H:i:s');
             $this->draftMotion->status = Motion::STATUS_MERGING_DRAFT_PRIVATE;
             $this->draftMotion->titlePrefix = '';
+            $this->draftMotion->version = Motion::VERSION_DEFAULT;
             $this->draftMotion->parentMotionId = $this->origMotion->id;
             $this->draftMotion->slug = null;
         }

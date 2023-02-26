@@ -439,6 +439,7 @@ CREATE TABLE `###TABLE_PREFIX###motion` (
   `agendaItemId`          INT(11)              DEFAULT NULL,
   `title`                 TEXT        NOT NULL,
   `titlePrefix`           VARCHAR(50) NOT NULL,
+  `version`               VARCHAR(50) NOT NULL DEFAULT '1',
   `dateCreation`          TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datePublication`       TIMESTAMP   NULL     DEFAULT NULL,
   `dateResolution`        TIMESTAMP   NULL     DEFAULT NULL,

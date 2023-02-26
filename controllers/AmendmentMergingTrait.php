@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\components\{diff\AmendmentRewriter, diff\SingleAmendmentMergeViewParagraphData, HTMLTools, UrlHelper};
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationUserGroup, User};
-use app\models\exceptions\{Internal, NotFound};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationUserGroup};
 use app\models\forms\MergeSingleAmendmentForm;
 use app\models\sectionTypes\ISectionType;
 use yii\web\Session;
@@ -16,28 +16,21 @@ use yii\web\Session;
  */
 trait AmendmentMergingTrait
 {
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @return string
-     * @throws NotFound
-     * @throws Internal
-     */
-    public function actionGetMergeCollisions($motionSlug, $amendmentId)
+    public function actionGetMergeCollisions(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
-            throw new NotFound('Amendment not found');
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
         if (!$amendment->canMergeIntoMotion()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to use this function');
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::createUrl('/consultation/index'));
         }
 
         $otherAmendments = $amendment->getMyMotion()->getAmendmentsRelevantForCollisionDetection([$amendment]);
 
         if ($amendment->getMyConsultation()->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
-            $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
+            $otherAmendmentsStatus = $this->getPostValue('otherAmendmentsStatus', []);
         } else {
             $otherAmendmentsStatus = [];
             foreach ($otherAmendments as $newAmendment) {
@@ -45,7 +38,7 @@ trait AmendmentMergingTrait
             }
         }
 
-        $newSectionParas = \Yii::$app->request->post('newSections', []);
+        $newSectionParas = $this->getPostValue('newSections', []);
         $newSections     = [];
         foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
             $newSections[$section->sectionId] = AmendmentRewriter::calcNewSectionTextWithOverwrites(
@@ -73,55 +66,40 @@ trait AmendmentMergingTrait
                 }
             }
         }
-        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collisions', [
+        return new HtmlResponse($this->renderPartial('@app/views/amendment/ajax_rewrite_collisions', [
             'amendments' => $amendments,
             'collisions' => $collisions,
-        ]);
+        ]));
     }
 
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @param string $newMotionId
-     * @return string
-     * @throws NotFound
-     */
-    public function actionMergeDone($motionSlug, $amendmentId, $newMotionId)
+    public function actionMergeDone(string $motionSlug, int $amendmentId, string $newMotionId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
-            throw new NotFound('Amendment not found');
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
         $motion = $this->consultation->getMotion($newMotionId);
         if (!$motion) {
-            throw new NotFound('Motion not found');
+            return new HtmlErrorResponse(404, 'Motion not found');
         }
-        return $this->render('merge_done', ['amendment' => $amendment, 'newMotion' => $motion]);
+        return new HtmlResponse($this->render('merge_done', ['amendment' => $amendment, 'newMotion' => $motion]));
     }
 
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @return string
-     * @throws Internal
-     * @throws NotFound
-     * @throws \app\models\exceptions\DB
-     */
-    public function actionMerge($motionSlug, $amendmentId)
+    public function actionMerge(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
-            throw new NotFound('Amendment not found');
+            return new HtmlErrorResponse(404, 'Amendment not found');
         }
         if (!$amendment->canMergeIntoMotion()) {
             if ($amendment->canMergeIntoMotion(true)) {
-                return $this->render('merge_err_collision', [
+                return new HtmlResponse($this->render('merge_err_collision', [
                     'amendment'           => $amendment,
                     'collidingAmendments' => $amendment->getCollidingAmendments()
-                ]);
+                ]));
             } else {
                 $this->getHttpSession()->setFlash('error', 'Not allowed to use this function');
-                return $this->redirect(UrlHelper::createUrl('consultation/index'));
+                return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
             }
         }
 
@@ -141,7 +119,7 @@ trait AmendmentMergingTrait
 
         if ($this->isPostSet('save')) {
             if ($allowStatusChanging) {
-                $newAmendmentStatuses = \Yii::$app->request->post('otherAmendmentsStatus', []);
+                $newAmendmentStatuses = $this->getPostValue('otherAmendmentsStatus', []);
             } else {
                 $newAmendmentStatuses = [];
                 foreach ($motion->getAmendmentsRelevantForCollisionDetection([$amendment]) as $newAmendment) {
@@ -152,10 +130,11 @@ trait AmendmentMergingTrait
             if ($collisionHandling) {
                 $form = new MergeSingleAmendmentForm(
                     $amendment,
-                    \Yii::$app->request->post('motionTitlePrefix'),
-                    \Yii::$app->request->post('amendmentStatus'),
-                    \Yii::$app->request->post('newParas', []),
-                    \Yii::$app->request->post('amendmentOverride', []),
+                    $this->getPostValue('motionTitlePrefix'),
+                    $this->getPostValue('motionVersion'),
+                    $this->getPostValue('amendmentStatus'),
+                    $this->getPostValue('newParas'),
+                    $this->getPostValue('amendmentOverride', []),
                     $newAmendmentStatuses
                 );
             } else {
@@ -169,7 +148,8 @@ trait AmendmentMergingTrait
                 }
                 $form = new MergeSingleAmendmentForm(
                     $amendment,
-                    \Yii::$app->request->post('motionTitlePrefix'),
+                    $this->getPostValue('motionTitlePrefix'),
+                    $this->getPostValue('motionVersion'),
                     Amendment::STATUS_ACCEPTED,
                     $newParas,
                     [],
@@ -179,33 +159,32 @@ trait AmendmentMergingTrait
             if ($form->checkConsistency()) {
                 $newMotion = $form->performRewrite();
 
-                return $this->redirect(UrlHelper::createAmendmentUrl(
+                return new RedirectResponse(UrlHelper::createAmendmentUrl(
                     $amendment,
                     'merge-done',
                     ['newMotionId' => $newMotion->id]
                 ));
             } else {
-                $this->showErrorpage(500, 'An internal consistance error occurred. ' .
+                return new HtmlErrorResponse(500, 'An internal consistance error occurred. ' .
                     'This should never happen and smells like an error in the system.');
-                return '';
             }
         }
 
         $paragraphSections = SingleAmendmentMergeViewParagraphData::createFromAmendment($amendment);
 
         if ($collisionHandling) {
-            return $this->render('merge_with_collisions', [
+            return new HtmlResponse($this->render('merge_with_collisions', [
                 'motion'              => $motion,
                 'amendment'           => $amendment,
                 'paragraphSections'   => $paragraphSections,
                 'allowStatusChanging' => $allowStatusChanging
-            ]);
+            ]));
         } else {
-            return $this->render('merge_without_collisions', [
+            return new HtmlResponse($this->render('merge_without_collisions', [
                 'motion'            => $motion,
                 'amendment'         => $amendment,
                 'paragraphSections' => $paragraphSections,
-            ]);
+            ]));
         }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use app\components\MotionNumbering;
 use app\components\UrlHelper;
 use app\models\db\{Amendment, MotionSection};
 use app\models\mergeAmendments\Init;
@@ -58,7 +59,8 @@ include(__DIR__ . '/../motion/_view_motiondata.php');
 if (count($amendments) > 0) {
     $explanation = Yii::t('amend', 'merge_explanation');
     $explanation = str_replace('###COLLIDINGHINT###', '', $explanation);
-    $explanation = str_replace('###NEWPREFIX###', $motion->getNewTitlePrefix(), $explanation);
+    $explanation = str_replace('###NEWPREFIX###', $motion->titlePrefix, $explanation);
+    $explanation = str_replace('###NEWVERSION###', MotionNumbering::getNewVersion($motion->version), $explanation);
     echo '<div class="alert alert-info alert-dismissible">' . $explanation . '</div>';
 }
 

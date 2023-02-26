@@ -102,6 +102,8 @@ return [
     'created_on'                    => 'Created',
     'created_on_str'                => 'Created on',
     'edited_on'                     => 'Last edited on',
+    'version'                       => 'Version',
+    'version_history'               => 'History',
     'tag_tags'                      => 'Tags',
     'tag'                           => 'Tag',
     'tags'                          => 'Tags',

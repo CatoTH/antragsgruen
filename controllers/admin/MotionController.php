@@ -483,11 +483,12 @@ class MotionController extends AdminBase
         $post         = $this->getHttpRequest()->post();
 
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
-            if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
+            if ($this->consultation->findMotionWithPrefixAndVersion($post['titlePrefix'], $post['version'], $motion)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
-                $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
+                $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $post['titlePrefix'];
+                $motion->version = $post['version'];
                 $motion->save();
                 $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
                 $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'motion_screened'));
@@ -617,10 +618,11 @@ class MotionController extends AdminBase
                 $motion->parentMotionId = null;
             }
 
-            if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
+            if ($this->consultation->findMotionWithPrefixAndVersion($modat['titlePrefix'], $modat['version'], $motion)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
-                $motion->titlePrefix = $post['motion']['titlePrefix'];
+                $motion->titlePrefix = $modat['titlePrefix'];
+                $motion->version = $modat['version'];
             }
 
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {

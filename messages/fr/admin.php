@@ -72,7 +72,6 @@ return [
     'motion_date_created'         => 'Déposé le',
     'motion_prefix'               => 'Préfixe',
     'motion_prefix_hint'          => 'comme "A1", "A1nv", "S1"',
-    'motion_prefix_unique'        => 'doit être unique.',
     'motion_title'                => 'Titre',
     'motion_prevent_functions'    => 'Empêcher',
     'motion_non_amendable'        => 'Empêcher les amendements à cette motion en particulier',

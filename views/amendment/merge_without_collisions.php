@@ -1,6 +1,6 @@
 <?php
-use app\components\Diff\SingleAmendmentMergeViewParagraphData;
-use app\components\UrlHelper;
+
+use app\components\{Diff\SingleAmendmentMergeViewParagraphData, MotionNumbering, UrlHelper};
 use app\models\db\Amendment;
 use Yii\helpers\Html;
 
@@ -45,10 +45,17 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm']);
 ?>
     <div class="content">
         <div class="alert alert-info"><?= Yii::t('amend', 'merge1_intro_user') ?></div>
+
         <div class="form-group">
             <label for="motionTitlePrefix"><?= Yii::t('amend', 'merge1_motion_prefix') ?></label>
             <input type="text" class="form-control" id="motionTitlePrefix" name="motionTitlePrefix"
-                   value="<?= Html::encode($amendment->getMyMotion()->getNewTitlePrefix()) ?>">
+                   value="<?= Html::encode($amendment->getMyMotion()->titlePrefix) ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="motionVersion"><?= Yii::t('amend', 'merge1_motion_version') ?></label>
+            <input type="text" class="form-control" id="motionVersion" name="motionVersion"
+                   value="<?= Html::encode(MotionNumbering::getNewVersion($amendment->getMyMotion()->version)) ?>">
         </div>
 
         <fieldset class="affectedParagraphs">

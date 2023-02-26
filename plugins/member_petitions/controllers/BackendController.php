@@ -38,6 +38,7 @@ class BackendController extends Base
             $newMotion->motionTypeId = $motion->motionTypeId;
             $newMotion->title = $motion->title;
             $newMotion->titlePrefix = $motion->titlePrefix . "-Reply";
+            $newMotion->version = Motion::VERSION_DEFAULT;
             $newMotion->cache = '';
             $newMotion->dateCreation = date('Y-m-d H:i:s');
             $newMotion->dateContentModification = date('Y-m-d H:i:s');

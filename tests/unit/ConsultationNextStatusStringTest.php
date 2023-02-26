@@ -26,6 +26,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->title          = 'Testmotion';
         $dummyMotion->status         = Motion::STATUS_SUBMITTED_UNSCREENED;
         $dummyMotion->titlePrefix    = 'A1';
+        $dummyMotion->version        = Motion::VERSION_DEFAULT;
         $dummyMotion->motionTypeId   = 3;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';
@@ -42,6 +43,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->title          = 'Testmotion';
         $dummyMotion->status         = Motion::STATUS_SUBMITTED_UNSCREENED;
         $dummyMotion->titlePrefix    = 'B1';
+        $dummyMotion->version        = Motion::VERSION_DEFAULT;
         $dummyMotion->motionTypeId   = 4;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';
@@ -58,6 +60,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->title          = 'Testmotion';
         $dummyMotion->status         = Motion::STATUS_SUBMITTED_UNSCREENED;
         $dummyMotion->titlePrefix    = 'A4';
+        $dummyMotion->version        = Motion::VERSION_DEFAULT;
         $dummyMotion->motionTypeId   = 3;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';

@@ -13,6 +13,7 @@ class MergeSingleAmendmentForm extends Model
     public Motion $oldMotion;
     public ?Motion $newMotion = null;
     public string $newTitlePrefix;
+    public string $newVersion;
     public Amendment $mergeAmendment;
     public int $mergeAmendStatus;
     public array $otherAmendStatuses;
@@ -22,6 +23,7 @@ class MergeSingleAmendmentForm extends Model
     public function __construct(
         Amendment $amendment,
         string $newTitlePrefix,
+        string $newVersion,
         int $newStatus,
         array $paragraphs,
         array $otherAmendOverrides,
@@ -29,12 +31,13 @@ class MergeSingleAmendmentForm extends Model
     )
     {
         parent::__construct();
-        $this->newTitlePrefix      = $newTitlePrefix;
-        $this->oldMotion           = $amendment->getMyMotion();
-        $this->mergeAmendment      = $amendment;
-        $this->mergeAmendStatus    = $newStatus;
-        $this->paragraphs          = $paragraphs;
-        $this->otherAmendStatuses  = $otherAmendStatuses;
+        $this->newTitlePrefix = $newTitlePrefix;
+        $this->newVersion = $newVersion;
+        $this->oldMotion = $amendment->getMyMotion();
+        $this->mergeAmendment = $amendment;
+        $this->mergeAmendStatus = $newStatus;
+        $this->paragraphs = $paragraphs;
+        $this->otherAmendStatuses = $otherAmendStatuses;
         $this->otherAmendOverrides = $otherAmendOverrides;
     }
 
@@ -85,23 +88,24 @@ class MergeSingleAmendmentForm extends Model
      */
     private function createNewMotion(?string $previousSlug): void
     {
-        $this->newMotion                  = new Motion();
-        $this->newMotion->consultationId  = $this->oldMotion->consultationId;
-        $this->newMotion->motionTypeId    = $this->oldMotion->motionTypeId;
-        $this->newMotion->parentMotionId  = $this->oldMotion->id;
-        $this->newMotion->agendaItemId    = $this->oldMotion->agendaItemId;
-        $this->newMotion->title           = $this->oldMotion->title;
-        $this->newMotion->titlePrefix     = $this->newTitlePrefix;
-        $this->newMotion->dateCreation    = date('Y-m-d H:i:s');
+        $this->newMotion = new Motion();
+        $this->newMotion->consultationId = $this->oldMotion->consultationId;
+        $this->newMotion->motionTypeId = $this->oldMotion->motionTypeId;
+        $this->newMotion->parentMotionId = $this->oldMotion->id;
+        $this->newMotion->agendaItemId = $this->oldMotion->agendaItemId;
+        $this->newMotion->title = $this->oldMotion->title;
+        $this->newMotion->titlePrefix = $this->newTitlePrefix;
+        $this->newMotion->version = $this->newVersion;
+        $this->newMotion->dateCreation = date('Y-m-d H:i:s');
         $this->newMotion->datePublication = date('Y-m-d H:i:s');
         $this->newMotion->dateContentModification = date('Y-m-d H:i:s');
-        $this->newMotion->dateResolution  = $this->oldMotion->dateResolution;
-        $this->newMotion->statusString    = $this->oldMotion->statusString;
-        $this->newMotion->status          = $this->oldMotion->status;
-        $this->newMotion->noteInternal    = $this->oldMotion->noteInternal;
-        $this->newMotion->textFixed       = $this->oldMotion->textFixed;
-        $this->newMotion->slug            = $previousSlug;
-        $this->newMotion->cache           = '';
+        $this->newMotion->dateResolution = $this->oldMotion->dateResolution;
+        $this->newMotion->statusString = $this->oldMotion->statusString;
+        $this->newMotion->status = $this->oldMotion->status;
+        $this->newMotion->noteInternal = $this->oldMotion->noteInternal;
+        $this->newMotion->textFixed = $this->oldMotion->textFixed;
+        $this->newMotion->slug = $previousSlug;
+        $this->newMotion->cache = '';
         if (!$this->newMotion->save()) {
             throw new DB($this->newMotion->getErrors());
         }
@@ -110,8 +114,8 @@ class MergeSingleAmendmentForm extends Model
             $newSupporter = new MotionSupporter();
             $newSupporter->setAttributes($supporter->getAttributes(), false);
             $newSupporter->dateCreation = date('Y-m-d H:i:s');
-            $newSupporter->id           = null;
-            $newSupporter->motionId     = $this->newMotion->id;
+            $newSupporter->id = null;
+            $newSupporter->motionId = $this->newMotion->id;
             if ($supporter->isNonPublic()) {
                 $newSupporter->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, true);
             }

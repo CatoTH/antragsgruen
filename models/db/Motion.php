@@ -29,6 +29,7 @@ use yii\helpers\Html;
  * @property int $parentMotionId
  * @property string $title
  * @property string $titlePrefix
+ * @property string $version
  * @property int $status
  * @property string $statusString
  * @property int $nonAmendable
@@ -57,10 +58,12 @@ use yii\helpers\Html;
  */
 class Motion extends IMotion implements IRSSItem
 {
-    const EVENT_SUBMITTED = 'submitted';
-    const EVENT_PUBLISHED = 'published';
-    const EVENT_PUBLISHED_FIRST = 'published_first';
-    const EVENT_MERGED = 'merged'; // Called on the newly created motion
+    public const EVENT_SUBMITTED = 'submitted';
+    public const EVENT_PUBLISHED = 'published';
+    public const EVENT_PUBLISHED_FIRST = 'published_first';
+    public const EVENT_MERGED = 'merged'; // Called on the newly created motion
+
+    public const VERSION_DEFAULT = '1';
 
     public function init(): void
     {
@@ -390,14 +393,6 @@ class Motion extends IMotion implements IRSSItem
         $title = str_replace("\n", "<br>", $title);
 
         return $title; // encoded string, e.g. "A1: Application: John &lt;Doe&gt;"
-    }
-
-    /**
-     * @return string ("A1new")
-     */
-    public function getNewTitlePrefix(): string
-    {
-        return static::getNewTitlePrefixInternal($this->titlePrefix);
     }
 
     /**

@@ -48,6 +48,7 @@ $I->see('Der Änderungsantrag wurde eingepflegt.', '.alert-success');
 
 $I->wantTo('check the changes were made');
 $I->click('.alert-success .btn-primary');
-$I->see('A8neu', 'h1');
+$I->see('A8', 'h1');
+$I->see('Version 1', '.motionHistory a');
 $I->see('A modified adaption');
 $I->see('Zombie ipsum');

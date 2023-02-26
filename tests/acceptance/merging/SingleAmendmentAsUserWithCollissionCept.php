@@ -50,7 +50,8 @@ $I->see('Der Änderungsantrag wurde eingepflegt.', '.alert-success');
 
 $I->wantTo('check the changes were made');
 $I->click('.alert-success .btn-primary');
-$I->see('A2neu', 'h1');
+$I->see('A2', 'h1');
+$I->see('Version 2', '.motionHistory');
 $I->dontSee('Wui helfgod Wiesn');
 $I->see('Alternatives Ende');
 

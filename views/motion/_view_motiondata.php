@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, MotionNumbering, Tools, UrlHelper};
 use app\models\db\{ConsultationUserGroup, Motion, MotionSupporter, User, Consultation};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
@@ -26,6 +26,8 @@ echo '<div class="content">';
 
 echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::createMotionUrl($motion)]);
 
+$iAmAdmin = User::havePrivilege(Consultation::getCurrent(), ConsultationUserGroup::PRIVILEGE_ANY);
+$motionHistory = MotionNumbering::getSortedHistoryForMotion($motion, !$iAmAdmin);
 
 $replacedByMotions = $motion->getVisibleReplacedByMotions();
 if (count($replacedByMotions) > 0) {
@@ -114,7 +116,7 @@ if ($motion->dateResolution) {
     ];
 }
 
-if (!$motion->isResolution() && $motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
+if ($motion->version === Motion::VERSION_DEFAULT && $motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
     $motionData[] = [
         'title'   => Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')),
         'content' => Tools::formatMysqlDateTime($motion->dateCreation, false),
@@ -123,26 +125,38 @@ if (!$motion->isResolution() && $motionDataMode === \app\models\settings\Consult
 
 MotionLayoutHelper::addTagsRow($consultation, $motion->getPublicTopicTags(), $motionData);
 
-if ($motion->replacedMotion) {
-    $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);
-    $content = Html::a(Html::encode($motion->replacedMotion->getTitleWithPrefix()), $oldLink);
+if (count($motionHistory) > 1) {
+    $historyContent = '';
+    foreach ($motionHistory as $motionHis) {
+        $historyLine = '<div>';
+        $versionName = Yii::t('motion', 'version') . ' ' . $motionHis->version;
+        if ($motionHis->id === $motion->id) {
+            $historyLine .= '<span class="currVersion">' . Html::encode($versionName) . '</span>';
+        } else {
+            $className = 'motion' . $motionHis->id;
+            $historyLine .= Html::a(Html::encode($versionName), UrlHelper::createMotionUrl($motionHis), ['class' => $className]);
+        }
 
-    $changesLink = UrlHelper::createMotionUrl($motion, 'view-changes');
-    $content     .= '<div class="changesLink">';
-    $content     .= '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
-    $content     .= Html::a(Yii::t('motion', 'replaces_motion_diff'), $changesLink);
-    $content     .= '</div>';
+        $historyLine .= '<span class="date">(' . Tools::formatMysqlDate($motionHis->dateCreation, false) . ')</span>';
 
-    if ($motion->isResolution() && !$motion->replacedMotion->isResolution()) {
-        $title = Yii::t('motion', 'resolution_of');
-    } else {
-        $title = Yii::t('motion', 'replaces_motion');
+        if ($motionHis->version > Motion::VERSION_DEFAULT) {
+            $changesUrl = UrlHelper::createMotionUrl($motion, 'view-changes');
+            $changesLink = '<span class="changesLink">';
+            $changesLink .= '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
+            $changesLink .= Html::a(Yii::t('motion', 'replaces_motion_diff'), $changesUrl);
+            $changesLink .= '</span>';
+            $historyLine .= $changesLink;
+        }
+
+        $historyLine .= '</div>';
+
+        $historyContent .= $historyLine;
     }
 
     $motionData[] = [
-        'rowClass' => 'replacesMotion',
-        'title'    => $title,
-        'content'  => $content,
+        'rowClass' => 'motionHistory',
+        'title' => Yii::t('motion', 'version_history'),
+        'content' => $historyContent,
     ];
 }
 
