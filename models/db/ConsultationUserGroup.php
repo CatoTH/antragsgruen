@@ -256,8 +256,8 @@ class ConsultationUserGroup extends ActiveRecord
             'id' => $this->id,
             'title' => $this->getNormalizedTitle(),
             'description' => $this->getNormalizedDescription(),
-            'deletable' => $this->isUserEditable(),
-            'permissions' => $this->getGroupPermissions()->toApi(),
+            'editable' => $this->isUserEditable(),
+            'permissions' => $this->getGroupPermissions()->toApi($this->consultation),
             'auth_type' => $this->getAuthType(),
         ];
     }

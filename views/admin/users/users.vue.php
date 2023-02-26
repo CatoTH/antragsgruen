@@ -66,7 +66,7 @@ ob_start();
                             <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                         </button>
 
-                        <button v-if="group.deletable" class="btn btn-link btnRemove" @click="removeGroup(group)"
+                        <button v-if="group.editable" class="btn btn-link btnRemove" @click="removeGroup(group)"
                                 :title="'<?= Yii::t('admin', 'siteacc_group_del') ?>'.replace(/%GROUPNAME%/, group.title)"
                                 :aria-label="'<?= Yii::t('admin', 'siteacc_group_del') ?>'.replace(/%GROUPNAME%/, group.title)">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>

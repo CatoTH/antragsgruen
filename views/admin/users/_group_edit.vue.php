@@ -12,12 +12,12 @@ ob_start();
                 <button type="button" class="close" data-dismiss="modal" aria-label="<?= Yii::t('base', 'abort') ?>"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="editGroupModalLabel">{{ modalTitle }}</h4>
             </header>
-            <main class="modal-body" v-if="group && !group.deletable">
+            <main class="modal-body" v-if="group && !group.editable">
                 <div class="alert alert-info">
                     <p><?= Yii::t('admin', 'siteacc_groupmodal_system') ?></p>
                 </div>
             </main>
-            <main class="modal-body" v-if="group && group.deletable">
+            <main class="modal-body" v-if="group && group.editable">
 
                 <div class="stdTwoCols">
                     <div class="leftColumn">
@@ -38,7 +38,7 @@ ob_start();
                 <button type="button" class="btn btn-default btnCancel" data-dismiss="modal">
                     <?= Yii::t('base', 'abort') ?>
                 </button>
-                <button type="submit" class="btn btn-primary btnSave" @click="save($event)" v-if="group && group.deletable">
+                <button type="submit" class="btn btn-primary btnSave" @click="save($event)" v-if="group && group.editable">
                     <?= Yii::t('base', 'save') ?>
                 </button>
             </footer>

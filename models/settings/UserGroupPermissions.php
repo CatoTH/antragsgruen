@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\settings;
 
+use app\models\db\Consultation;
 use app\models\db\ConsultationUserGroup;
 
 class UserGroupPermissions
@@ -14,6 +17,13 @@ class UserGroupPermissions
 
     /** @var string[]|null */
     private ?array $defaultPermissions = null;
+
+    /**
+     * Hint: detailed privileges can only be granted on consultation level, not site-wide
+     *
+     * @var UserGroupPermissionEntry[]|null
+     */
+    private ?array $privileges = null;
 
     public function __construct(bool $isSiteWide)
     {
@@ -42,13 +52,20 @@ class UserGroupPermissions
             $permissions->defaultPermissions = $data['default_permissions'];
         }
 
+        if (isset($data['privileges'])) {
+            $permissions->privileges = array_map(function (array $arr): UserGroupPermissionEntry {
+                return UserGroupPermissionEntry::fromArray($arr);
+            }, $data['privileges']);
+        }
+
         return $permissions;
     }
 
     public static function fromLegacyDatabaseString(?string $str, bool $isSiteWide): self
     {
         $permissions = new self($isSiteWide);
-        $permissions->defaultPermissions = explode(',', $str);
+        $permissions->defaultPermissions = $str ? explode(',', $str) : null;
+
         return $permissions;
     }
 
@@ -56,16 +73,34 @@ class UserGroupPermissions
     {
         if ($this->defaultPermissions) {
             return json_encode([
-                'default_permissions' => $this->defaultPermissions
+                'default_permissions' => $this->defaultPermissions,
+            ], JSON_THROW_ON_ERROR);
+        }
+
+        if ($this->privileges) {
+            return json_encode([
+                'privileges' => array_map(function (UserGroupPermissionEntry $entry): array {
+                    return $entry->toArray();
+                }, $this->privileges),
             ], JSON_THROW_ON_ERROR);
         }
 
         return null;
     }
 
-    public function toApi(): array
+    public function toApi(?Consultation $consultation): array
     {
-        return $this->defaultPermissions;
+        $apiPrivileges = null;
+        if ($this->privileges && $consultation) {
+            $apiPrivileges = array_map(function (UserGroupPermissionEntry $arr) use ($consultation): array {
+                return $arr->toApi($consultation);
+            }, $this->privileges);
+        }
+
+        return [
+            'default_permissions' => $this->defaultPermissions,
+            'privileges' => $apiPrivileges,
+        ];
     }
 
     public function containsPrivilege(int $privilege): bool
