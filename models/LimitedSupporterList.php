@@ -7,13 +7,10 @@ use app\models\db\{IMotion, ISupporter};
 class LimitedSupporterList
 {
     /** @var ISupporter[] */
-    public $supporters = [];
+    public array $supporters = [];
 
-    /** @var int */
-    public $truncatedNum = 0;
-
-    /** @var int */
-    public $nonPublicNum = 0;
+    public int $truncatedNum = 0;
+    public int $nonPublicNum = 0;
 
     public static function createFromIMotion(IMotion $iMotion): self
     {

@@ -9,8 +9,8 @@ use app\models\sectionTypes\ISectionType;
 
 class MotionSectionChanges
 {
-    public $oldSection;
-    public $newSection;
+    public ?MotionSection $oldSection;
+    public ?MotionSection $newSection;
 
     public function __construct(?MotionSection $oldSection, ?MotionSection $newSection)
     {
@@ -19,12 +19,10 @@ class MotionSectionChanges
     }
 
     /**
-     * @param Motion $oldMotion
-     * @param Motion $newMotion
      * @return MotionSectionChanges[]
      * @throws Inconsistency
      */
-    public static function motionToSectionChanges(Motion $oldMotion, Motion $newMotion)
+    public static function motionToSectionChanges(Motion $oldMotion, Motion $newMotion): array
     {
         if (!$oldMotion->getMyMotionType()->isCompatibleTo($newMotion->getMyMotionType())) {
             throw new Inconsistency('The two motions have incompatible types');

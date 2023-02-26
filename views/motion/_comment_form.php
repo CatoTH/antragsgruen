@@ -47,7 +47,7 @@ if ($user && $user->name) {
 echo '<h3 class="commentHeader commentWriteHeader" id="commentWrite' . $formIdPre . '">' . $title . '</h3>';
 
 if (Yii::$app->user->isGuest) {
-    echo AntiSpam::getJsProtectionHint($consultation->id);
+    echo AntiSpam::getJsProtectionHint((string)$consultation->id);
 }
 
 ?>

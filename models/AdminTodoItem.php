@@ -8,22 +8,14 @@ use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComm
 class AdminTodoItem
 {
     /** @var string */
-    public $todoId;
-    public $title;
-    public $action;
-    public $link;
-    public $description;
-    public $timestamp;
+    public string $todoId;
+    public string $title;
+    public string $action;
+    public string $link;
+    public string $description;
+    public int $timestamp;
 
-    /**
-     * @param string $todoId
-     * @param string $title
-     * @param string $action
-     * @param string $link
-     * @param int $timestamp
-     * @param string $description
-     */
-    public function __construct($todoId, $title, $action, $link, $timestamp, $description = null)
+    public function __construct(string $todoId, string $title, string $action, string $link, int $timestamp, ?string $description = null)
     {
         $this->todoId      = $todoId;
         $this->link        = $link;
@@ -33,7 +25,7 @@ class AdminTodoItem
         $this->description = $description;
     }
 
-    private static $todoCache = [];
+    private static array $todoCache = [];
 
     /**
      * @param AdminTodoItem[] $todo
