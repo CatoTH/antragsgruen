@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
-use app\models\settings\{AntragsgruenApp, Site as SiteSettings};
+use app\models\settings\{AntragsgruenApp, Site as SiteSettings, UserGroupPermissions};
 use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
@@ -24,25 +24,21 @@ use yii\db\{ActiveQuery, ActiveRecord};
  */
 class ConsultationUserGroup extends ActiveRecord
 {
-    public const PERMISSION_PROPOSED_PROCEDURE = 'proposed-procedure';
-    public const PERMISSION_ADMIN_ALL = 'admin-all';
-    public const PERMISSION_ADMIN_SPEECH_LIST = 'admin-speech-list';
-
     // Hint: privileges are mostly grouped into the permissions above;
-    public const PRIVILEGE_ANY                       = 0;  // SPECIAL CASE: refers to "any" other privilege mentioned below
-    public const PRIVILEGE_CONSULTATION_SETTINGS     = 1;
-    public const PRIVILEGE_CONTENT_EDIT              = 2;  // Editing pages, uploaded documents (not motions), agenda
-    public const PRIVILEGE_SPEECH_QUEUES             = 8;
-    public const PRIVILEGE_VOTINGS                   = 9;
-    public const PRIVILEGE_SITE_ADMIN                = 6;  // SPECIAL CASE: gives all permissions to all consultations of the site
-    public const PRIVILEGE_GLOBAL_USER_ADMIN         = 10; // Editing user data, not only groups
+    public const PRIVILEGE_ANY = 0;  // SPECIAL CASE: refers to "any" other privilege mentioned below
+    public const PRIVILEGE_CONSULTATION_SETTINGS = 1;
+    public const PRIVILEGE_CONTENT_EDIT = 2;  // Editing pages, uploaded documents (not motions), agenda
+    public const PRIVILEGE_SPEECH_QUEUES = 8;
+    public const PRIVILEGE_VOTINGS = 9;
+    public const PRIVILEGE_SITE_ADMIN = 6;  // SPECIAL CASE: gives all permissions to all consultations of the site
+    public const PRIVILEGE_GLOBAL_USER_ADMIN = 10; // Editing user data, not only groups
 
     // Motion/Amendment-related permissions. These permissions can be restricted to only a part of the motions / amendments.
-    public const PRIVILEGE_SCREENING                 = 3;
-    public const PRIVILEGE_MOTION_STATUS_EDIT        = 4;  // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting
-    public const PRIVILEGE_MOTION_TEXT_EDIT          = 11; // Editing the text and the initiators. Deleting motions / amendments
+    public const PRIVILEGE_SCREENING = 3;
+    public const PRIVILEGE_MOTION_STATUS_EDIT = 4;  // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting
+    public const PRIVILEGE_MOTION_TEXT_EDIT = 11; // Editing the text and the initiators. Deleting motions / amendments
     public const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
-    public const PRIVILEGE_CHANGE_PROPOSALS          = 7;  // Editing the proposed procedure
+    public const PRIVILEGE_CHANGE_PROPOSALS = 7;  // Editing the proposed procedure
 
     public const TEMPLATE_SITE_ADMIN = 1;
     public const TEMPLATE_CONSULTATION_ADMIN = 2;
@@ -67,7 +63,7 @@ class ConsultationUserGroup extends ActiveRecord
     public function getUsers(): ActiveQuery
     {
         return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('userGroup', ['groupId' => 'id'])
-                    ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
+            ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
     public static function consultationHasLoadableUserGroups(Consultation $consultation): bool
@@ -146,6 +142,7 @@ class ConsultationUserGroup extends ActiveRecord
     // Note that this method should only be used for read-only operations, as the cache is not flushed yet.
     /** @var null|int[][] */
     private static ?array $userIdCache = [];
+
     public function getUserIds(): array
     {
         if (!isset(self::$userIdCache[$this->id])) {
@@ -175,57 +172,14 @@ class ConsultationUserGroup extends ActiveRecord
         return $users;
     }
 
-    /**
-     * @param string[] $permission
-     */
-    public function setPermissions(array $permission): void
+    public function getGroupPermissions(): UserGroupPermissions
     {
-        $this->permissions = implode(',', $permission);
+        return UserGroupPermissions::fromDatabaseString($this->permissions, $this->consultationId === null);
     }
 
-    public function getPermissions(): array
+    public function setGroupPermissions(UserGroupPermissions $permissions): void
     {
-        if ($this->permissions) {
-            return explode(',', $this->permissions);
-        } else {
-            return [];
-        }
-    }
-
-    public function containsPrivilege(int $privilege): bool
-    {
-        $permission = $this->getPermissions();
-        switch ($privilege) {
-            // Special case "any": everyone having any kind of special privilege
-            case static::PRIVILEGE_ANY:
-                return in_array(static::PERMISSION_PROPOSED_PROCEDURE, $permission, true) ||
-                       in_array(static::PERMISSION_ADMIN_ALL, $permission, true) ||
-                       in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $permission, true);
-
-            // Special case "site admin": has all permissions - for all consultations
-            case static::PRIVILEGE_SITE_ADMIN:
-                return in_array(static::PERMISSION_ADMIN_ALL, $permission, true) &&
-                       $this->consultationId === null;
-
-            // Regular cases
-            case static::PRIVILEGE_CONSULTATION_SETTINGS:
-            case static::PRIVILEGE_CONTENT_EDIT:
-            case static::PRIVILEGE_SCREENING:
-            case static::PRIVILEGE_MOTION_STATUS_EDIT:
-            case static::PRIVILEGE_MOTION_TEXT_EDIT:
-            case static::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
-            case static::PRIVILEGE_VOTINGS:
-                return in_array(static::PERMISSION_ADMIN_ALL, $permission, true);
-            case static::PRIVILEGE_CHANGE_PROPOSALS:
-                return in_array(static::PERMISSION_PROPOSED_PROCEDURE, $permission, true) ||
-                       in_array(static::PERMISSION_ADMIN_ALL, $permission, true);
-            case static::PRIVILEGE_SPEECH_QUEUES:
-                return in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $permission, true) ||
-                       in_array(static::PERMISSION_ADMIN_ALL, $permission, true);
-            case static::PRIVILEGE_GLOBAL_USER_ADMIN: // only superadmins are allowed to
-            default:
-                return false;
-        }
+        $this->permissions = $permissions->toDatabaseString();
     }
 
     public function getNormalizedTitle(): string
@@ -303,7 +257,7 @@ class ConsultationUserGroup extends ActiveRecord
             'title' => $this->getNormalizedTitle(),
             'description' => $this->getNormalizedDescription(),
             'deletable' => $this->isUserEditable(),
-            'permissions' => $this->getPermissions(),
+            'permissions' => $this->getGroupPermissions()->toApi(),
             'auth_type' => $this->getAuthType(),
         ];
     }
@@ -351,7 +305,7 @@ class ConsultationUserGroup extends ActiveRecord
         $group->externalId = null;
         $group->templateId = static::TEMPLATE_SITE_ADMIN;
         $group->title = \Yii::t('user', 'group_template_siteadmin');
-        $group->setPermissions([static::PERMISSION_ADMIN_ALL]);
+        $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString(UserGroupPermissions::PERMISSION_ADMIN_ALL, true));
         $group->selectable = 1;
         $group->save();
 
@@ -366,7 +320,7 @@ class ConsultationUserGroup extends ActiveRecord
         $group->externalId = null;
         $group->templateId = static::TEMPLATE_CONSULTATION_ADMIN;
         $group->title = \Yii::t('user', 'group_template_consultationadmin');
-        $group->setPermissions([static::PERMISSION_ADMIN_ALL]);
+        $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString(UserGroupPermissions::PERMISSION_ADMIN_ALL, false));
         $group->selectable = 1;
         $group->save();
 
@@ -380,7 +334,7 @@ class ConsultationUserGroup extends ActiveRecord
         $group->externalId = null;
         $group->templateId = static::TEMPLATE_PROPOSED_PROCEDURE;
         $group->title = \Yii::t('user', 'group_template_proposed');
-        $group->setPermissions([static::PERMISSION_PROPOSED_PROCEDURE]);
+        $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString(UserGroupPermissions::PERMISSION_PROPOSED_PROCEDURE, false));
         $group->selectable = 1;
         $group->save();
 
@@ -394,7 +348,7 @@ class ConsultationUserGroup extends ActiveRecord
         $group->externalId = null;
         $group->templateId = static::TEMPLATE_PARTICIPANT;
         $group->title = \Yii::t('user', 'group_template_participant');
-        $group->setPermissions([]);
+        $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString(null, false));
         $group->selectable = 1;
         $group->save();
 

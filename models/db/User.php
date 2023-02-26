@@ -603,7 +603,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         foreach ($this->getUserGroupsForConsultation($consultation) as $userGroup) {
-            if ($userGroup->containsPrivilege($privilege)) {
+            if ($userGroup->getGroupPermissions()->containsPrivilege($privilege)) {
                 return true;
             }
         }

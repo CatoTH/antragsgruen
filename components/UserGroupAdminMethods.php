@@ -61,7 +61,7 @@ class UserGroupAdminMethods
         if ($myself->havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
             // You cannot unassign yourself from a siteAdmin-role if you are site-admin.
             // But everyone else and yourself from any other role
-            if ($group->containsPrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN) && $user->id === $myself->id) {
+            if ($group->getGroupPermissions()->containsPrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN) && $user->id === $myself->id) {
                 throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_lockout'));
             } else {
                 return;
@@ -70,7 +70,7 @@ class UserGroupAdminMethods
 
         // Now we assume, the user is a regular consultation-level admin.
         // They can remove other users from admin roles, or themselves from non-admin roles
-        if ($group->containsPrivilege(ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS) && $user->id === $myself->id) {
+        if ($group->getGroupPermissions()->containsPrivilege(ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS) && $user->id === $myself->id) {
             throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_lockout'));
         }
     }
