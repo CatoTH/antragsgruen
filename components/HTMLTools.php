@@ -131,11 +131,8 @@ class HTMLTools
     /**
      * Used for cleaning up the HTML entered in the translation tool.
      * Fixes HTML problems, removes JavaScript, but allows some placeholders in the HREF of links.
-     *
-     * @param string $html
-     * @return string
      */
-    public static function cleanHtmlTranslationString($html)
+    public static function cleanHtmlTranslationString(string $html): string
     {
         $html = self::correctHtmlErrors($html);
 
@@ -206,11 +203,9 @@ class HTMLTools
     }
 
     /**
-     * @param string $htmlIn
      * @param string[] $forbiddenFormattings
-     * @return string
      */
-    public static function cleanSimpleHtml($htmlIn, $forbiddenFormattings = [])
+    public static function cleanSimpleHtml(string $htmlIn, array $forbiddenFormattings = []): string
     {
         $cacheKey = 'cleanSimpleHtml_' . implode(',', $forbiddenFormattings) . '_' . md5($htmlIn);
         if (self::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey) && false) {
@@ -281,7 +276,6 @@ class HTMLTools
         $html = preg_replace("/\\n+/siu", "\n", $html);
         $html = str_replace(chr(194) . chr(160), ' ', $html); // Long space
         $html = str_replace('&nbsp;', ' ', $html);
-        $html = str_replace("<p><br>\n", "<p>", $html);
         $html = preg_replace('/(?<tag><(p|ul|ol|li|div|blockquote)( [^>]*)>)<br>\\n/siu', '$1', $html);
         $html = preg_replace('/<br>\\n *(?<tag><\/(p|ul|ol|li|div|blockquote)>)/siu', '$1', $html);
         $html = str_replace("<br>\n ", "<br>\n", $html);
@@ -291,6 +285,7 @@ class HTMLTools
         $html = preg_replace('/ +<\/p>/siu', '</p>', $html);
         $html = preg_replace('/ +<\/li>/siu', '</li>', $html);
         $html = preg_replace('/ +<br>/siu', '<br>', $html);
+        $html = str_replace("<p><br>\n", "<p>", $html);
 
         $html = trim($html);
 

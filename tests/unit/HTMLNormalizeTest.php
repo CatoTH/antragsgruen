@@ -287,6 +287,14 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
+    public function testStripBRsWithNbspsAtBeginningAndEnd3(): void
+    {
+        $orig = "<p>&nbsp;<br />\nTest</p>";
+        $expect = "<p>Test</p>";
+        $out = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
     public function testStripWhitespacesAtEnd(): void
     {
         $orig   = '<p>Test 123 </p>';
