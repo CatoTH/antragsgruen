@@ -9,7 +9,7 @@
                 let foundGroup = null;
                 this.voting.vote_policy.user_groups.forEach(groupId => {
                     const groupName = this.getYfjUserGroupNameById(groupId).toLowerCase();
-                    if (groupName.indexOf('nyc') !== -1 && groupName.indexOf('voting') !== -1) {
+                    if (groupName.indexOf('nyc') !== -1 && groupName.indexOf('voting') === 0) {
                         foundGroup = groupId;
                     }
                 });
@@ -19,7 +19,7 @@
                 let foundGroup = null;
                 this.voting.vote_policy.user_groups.forEach(groupId => {
                     const groupName = this.getYfjUserGroupNameById(groupId).toLowerCase();
-                    if (groupName.indexOf('ingyo') !== -1 && groupName.indexOf('voting') !== -1) {
+                    if (groupName.indexOf('ingyo') !== -1 && groupName.indexOf('voting') === 0) {
                         foundGroup = groupId;
                     }
                 });
