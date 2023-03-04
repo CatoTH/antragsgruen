@@ -70,6 +70,10 @@ $config = yii\helpers\ArrayHelper::merge(
                     '172.16.0.0/12',
                     '192.168.0.0/16',
                 ],
+
+                'parsers' => [
+                    'application/json' => 'yii\web\JsonParser',
+                ]
             ],
             'assetManager'         => [
                 'appendTimestamp' => false,

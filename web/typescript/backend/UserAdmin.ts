@@ -65,24 +65,29 @@ export class UserAdmin {
             computed: {
             },
             methods: {
-                _performOperation: function (additionalProps) {
-                    let postData = {
-                        _csrf: this.csrf,
-                    };
-                    postData = Object.assign(postData, additionalProps);
+                _performOperation: function (postData) {
                     const widget = this;
-                    $.post(userSaveUrl, postData, function (data) {
-                        if (data.msg_success) {
-                            bootbox.alert(data.msg_success);
-                        }
-                        if (data.msg_error) {
-                            bootbox.alert(data.msg_error);
-                        } else {
-                            widget.setUserGroups(data.users, data.groups);
+                    $.ajax({
+                        url: userSaveUrl,
+                        type: "POST",
+                        data: JSON.stringify(postData),
+                        processData: false,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        headers: {"X-CSRF-Token": this.csrf},
+                        success: data => {
+                            if (data.msg_success) {
+                                bootbox.alert(data.msg_success);
+                            }
+                            if (data.msg_error) {
+                                bootbox.alert(data.msg_error);
+                            } else {
+                                widget.setUserGroups(data.users, data.groups);
+                            }
                         }
                     }).catch(function (err) {
                         alert(err.responseText);
-                    });
+                    })
                 },
                 saveUser(userId, groups, nameGiven, nameFamily, organization, newPassword) {
                     this._performOperation({

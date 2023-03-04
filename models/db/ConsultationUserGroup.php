@@ -310,6 +310,7 @@ class ConsultationUserGroup extends ActiveRecord
 
         return $group;
     }
+
     public static function createDefaultGroupProposedProcedure(Consultation $consultation): self
     {
         $group = new ConsultationUserGroup();
@@ -324,7 +325,7 @@ class ConsultationUserGroup extends ActiveRecord
 
         return $group;
     }
-    
+
     public static function createDefaultGroupParticipant(Consultation $consultation): self
     {
         $group = new ConsultationUserGroup();
