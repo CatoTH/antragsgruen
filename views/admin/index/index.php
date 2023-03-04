@@ -2,8 +2,8 @@
 
 use app\components\updater\UpdateChecker;
 use app\components\UrlHelper;
-use app\models\db\ConsultationUserGroup;
 use app\models\db\User;
+use app\models\settings\Privileges;
 use yii\helpers\Html;
 
 /**
@@ -72,7 +72,7 @@ echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(
 echo '</li>';
 echo '</ul></li>';
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_VOTINGS)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_voting'),
@@ -82,7 +82,7 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)
     echo '</li>';
 }
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_speaking'),
@@ -92,7 +92,7 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_Q
     echo '</li>';
 }
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_user_list'),
@@ -102,7 +102,7 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTA
     echo '</li>';
 }
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SITE_ADMIN)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_consultations'),
@@ -154,7 +154,7 @@ if (User::currentUserIsSuperuser()) {
 
 echo '</aside></div>';
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
     if (count($site->consultations) === 1) {
         echo Html::beginForm('', 'post', ['class' => 'delSiteCaller']);
         echo '<button class="btn-link" type="submit" name="delSite">' .

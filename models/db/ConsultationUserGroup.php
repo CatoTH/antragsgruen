@@ -24,21 +24,6 @@ use yii\db\{ActiveQuery, ActiveRecord};
  */
 class ConsultationUserGroup extends ActiveRecord
 {
-    public const PRIVILEGE_ANY = 0;  // SPECIAL CASE: refers to "any" other privilege mentioned below
-    public const PRIVILEGE_CONSULTATION_SETTINGS = 1;
-    public const PRIVILEGE_CONTENT_EDIT = 2;  // Editing pages, uploaded documents (not motions), agenda
-    public const PRIVILEGE_SPEECH_QUEUES = 8;
-    public const PRIVILEGE_VOTINGS = 9;
-    public const PRIVILEGE_SITE_ADMIN = 6;  // SPECIAL CASE: gives all permissions to all consultations of the site
-    public const PRIVILEGE_GLOBAL_USER_ADMIN = 10; // Editing user data, not only groups
-
-    // Motion/Amendment-related permissions. These permissions can be restricted to only a part of the motions / amendments.
-    public const PRIVILEGE_SCREENING = 3;
-    public const PRIVILEGE_MOTION_STATUS_EDIT = 4;  // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting
-    public const PRIVILEGE_MOTION_TEXT_EDIT = 11; // Editing the text and the initiators. Deleting motions / amendments
-    public const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
-    public const PRIVILEGE_CHANGE_PROPOSALS = 7;  // Editing the proposed procedure
-
     public const TEMPLATE_SITE_ADMIN = 1;
     public const TEMPLATE_CONSULTATION_ADMIN = 2;
     public const TEMPLATE_PROPOSED_PROCEDURE = 3;
@@ -339,6 +324,7 @@ class ConsultationUserGroup extends ActiveRecord
 
         return $group;
     }
+    
     public static function createDefaultGroupParticipant(Consultation $consultation): self
     {
         $group = new ConsultationUserGroup();

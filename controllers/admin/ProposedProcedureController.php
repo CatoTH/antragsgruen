@@ -2,15 +2,16 @@
 
 namespace app\controllers\admin;
 
+use app\models\settings\Privileges;
 use app\components\{HTMLTools, Tools};
-use app\models\db\{AmendmentAdminComment, Consultation, ConsultationUserGroup, IMotion, MotionAdminComment, User};
+use app\models\db\{AmendmentAdminComment, Consultation, IMotion, MotionAdminComment, User};
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
 
 class ProposedProcedureController extends AdminBase
 {
-    public static $REQUIRED_PRIVILEGES = [
-        ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS
+    public const REQUIRED_PRIVILEGES = [
+        Privileges::PRIVILEGE_CHANGE_PROPOSALS
     ];
 
     /**

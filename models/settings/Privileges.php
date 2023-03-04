@@ -59,10 +59,6 @@ class Privileges
                     'Redelisten bearbeiten'
                 ),
                 new Privilege(
-                    self::PRIVILEGE_CONSULTATION_SETTINGS,
-                    'Veranstaltungseinstellungen bearbeiten'
-                ),
-                new Privilege(
                     self::PRIVILEGE_VOTINGS,
                     'Abstimmungen bearbeiten'
                 ),

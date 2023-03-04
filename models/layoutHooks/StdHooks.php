@@ -2,10 +2,11 @@
 
 namespace app\models\layoutHooks;
 
+use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
 use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ConsultationUserGroup, ISupporter, Motion, User};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
@@ -270,11 +271,11 @@ class StdHooks extends Hooks
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $consultation       = $controller->consultation;
-            $privilegeScreening = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SCREENING);
-            $privilegeProposal = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+            $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING);
+            $privilegeProposal = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
 
             if ($consultation) {
-                if (User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+                if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
                     $icon = '<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>';
                     $icon .= '<span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>';
                     $url  = UrlHelper::createUrl('/pages/list-pages');
@@ -326,7 +327,7 @@ class StdHooks extends Hooks
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'votingsLink', 'aria-label' => $adminTitle]) . '</li>';
             }
 
-            if (User::haveOneOfPrivileges($consultation, IndexController::$REQUIRED_PRIVILEGES)) {
+            if (User::haveOneOfPrivileges($consultation, IndexController::REQUIRED_PRIVILEGES)) {
                 $adminUrl   = UrlHelper::createUrl('/admin/index');
                 $adminTitle = \Yii::t('base', 'menu_admin');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink', 'aria-label' => $adminTitle]) . '</li>';
@@ -443,7 +444,7 @@ class StdHooks extends Hooks
     public function getConsultationwidePublicWarnings(array $before, Consultation $consultation): array
     {
         if ($consultation->getSettings()->maintenanceMode && User::getCurrentUser() &&
-            User::getCurrentUser()->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+            User::getCurrentUser()->hasPrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
             $url = UrlHelper::createUrl('/admin/index/consultation');
             $before[] = str_replace('%URL%', $url, \Yii::t('base', 'head_maintenance_adm'));
         }

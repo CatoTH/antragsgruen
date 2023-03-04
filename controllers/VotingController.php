@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\models\http\BinaryFileResponse;
-use app\models\http\ResponseInterface;
-use app\models\http\RestApiResponse;
+use app\models\http\{BinaryFileResponse, ResponseInterface, RestApiResponse};
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\quorumType\IQuorumType;
-use app\models\db\{ConsultationUserGroup, User, VotingBlock, VotingQuestion};
+use app\models\settings\Privileges;
+use app\models\db\{User, VotingBlock, VotingQuestion};
 use app\components\{ResourceLock, Tools, UserGroupAdminMethods, VotingMethods};
 use app\models\proposedProcedure\Factory;
 
@@ -41,7 +40,7 @@ class VotingController extends Base
     private function ensureAdminPermissions(): void
     {
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS)) {
             throw new \Exception('Missing privileges');
         }
     }

@@ -3,26 +3,19 @@
 namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
-use app\models\http\BinaryFileResponse;
-use app\models\http\HtmlErrorResponse;
-use app\models\http\HtmlResponse;
-use app\models\http\RedirectResponse;
-use app\models\http\ResponseInterface;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Site;
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
+use app\models\settings\{AntragsgruenApp, Privileges};
 use app\components\{Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment,
     AmendmentSupporter,
     ConsultationLog,
     ConsultationSettingsTag,
-    ConsultationUserGroup,
     Motion,
     User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
 use app\views\amendment\LayoutHelper;
-use yii\web\Response;
 
 class AmendmentController extends AdminBase
 {
@@ -165,7 +158,7 @@ class AmendmentController extends AdminBase
 
     public function actionUpdate(string $amendmentId): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 

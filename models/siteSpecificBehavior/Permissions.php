@@ -2,7 +2,8 @@
 
 namespace app\models\siteSpecificBehavior;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationUserGroup, IMotion, ISupporter, User, Motion};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, IMotion, ISupporter, User, Motion};
+use app\models\settings\Privileges;
 use app\models\exceptions\{Internal, NotAmendable};
 use app\models\policies\{All, IPolicy};
 use app\models\supportTypes\SupportBase;
@@ -80,7 +81,7 @@ class Permissions
     {
         $hadLoggedInUser = false;
         $currUser = User::getCurrentUser();
-        if ($currUser && $currUser->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_MOTION_TEXT_EDIT)) {
+        if ($currUser && $currUser->hasPrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT)) {
             return true;
         }
         foreach ($supporters as $supp) {
@@ -137,7 +138,7 @@ class Permissions
         if (!$motion->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_MERGING)) {
             return false;
         }
-        if (User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_STATUS_EDIT)) {
+        if (User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_MOTION_STATUS_EDIT)) {
             return true;
         } elseif ($motion->iAmInitiator()) {
             $policy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
@@ -159,7 +160,7 @@ class Permissions
      */
     public function isCurrentlyAmendable(Motion $motion, bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $exceptions = false): bool
     {
-        $iAmAdmin = User::havePrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_ANY);
+        $iAmAdmin = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_ANY);
 
         if (!($allowAdmins && $iAmAdmin)) {
             if ($motion->nonAmendable) {

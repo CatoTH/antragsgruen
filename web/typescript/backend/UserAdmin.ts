@@ -124,11 +124,12 @@ export class UserAdmin {
                 editGroup(group) {
                     userWidgetComponent.$refs["group-edit-widget"].open(group);
                 },
-                saveGroup(groupId, groupTitle) {
+                saveGroup(groupId, groupTitle, privilegeList) {
                     this._performOperation({
                         op: 'save-group',
                         groupId,
-                        groupTitle
+                        groupTitle,
+                        privilegeList
                     });
                 },
                 removeUserGroup(group) {

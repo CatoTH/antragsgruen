@@ -2,15 +2,16 @@
 
 namespace app\controllers\admin;
 
-use app\components\RequestContext;
-use app\components\UrlHelper;
+use app\components\{RequestContext, UrlHelper};
 use app\controllers\Base;
-use app\models\db\{ConsultationUserGroup, User};
+use app\models\settings\Privileges;
+use app\models\db\User;
 
 class AdminBase extends Base
 {
-    public static $REQUIRED_PRIVILEGES = [
-        ConsultationUserGroup::PRIVILEGE_ANY,
+    // Hint: this constant may be overwritten by subclasses
+    public const REQUIRED_PRIVILEGES = [
+        Privileges::PRIVILEGE_ANY,
     ];
 
     /**
@@ -38,7 +39,8 @@ class AdminBase extends Base
             return false;
         }
 
-        if (!User::haveOneOfPrivileges($this->consultation, static::$REQUIRED_PRIVILEGES)) {
+        // Hint: static:: to allow constant being overwritten
+        if (!User::haveOneOfPrivileges($this->consultation, static::REQUIRED_PRIVILEGES)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return false;
         }
@@ -47,7 +49,7 @@ class AdminBase extends Base
 
     protected function activateFunctions(): void
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return;
         }
 

@@ -9,17 +9,16 @@ use app\models\db\{Amendment,
     AmendmentSupporter,
     ConsultationLog,
     ConsultationSettingsTag,
-    ConsultationUserGroup,
     IComment,
     Consultation,
     User};
 use app\models\events\AmendmentEvent;
+use app\models\settings\Privileges;
 use app\models\exceptions\{DB, FormError, Internal};
 use app\models\forms\CommentForm;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
-use yii\web\Response;
-use yii\web\Session;
+use yii\web\{Response, Session};
 
 /**
  * @property Consultation $consultation
@@ -40,7 +39,7 @@ trait AmendmentActionsTrait
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
-            if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+            if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
                 throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
@@ -94,7 +93,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentAddTag(Amendment $amendment): void
     {
-        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -109,7 +108,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentDelTag(Amendment $amendment): void
     {
-        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -151,7 +150,7 @@ trait AmendmentActionsTrait
         if (!$comment || $comment->amendmentId !== $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -173,7 +172,7 @@ trait AmendmentActionsTrait
         if (!$comment || $comment->amendmentId != $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 

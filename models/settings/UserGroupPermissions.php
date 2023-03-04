@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace app\models\settings;
 
 use app\models\db\Consultation;
-use app\models\db\ConsultationUserGroup;
 
 class UserGroupPermissions
 {
@@ -111,31 +110,31 @@ class UserGroupPermissions
 
         switch ($privilege) {
             // Special case "any": everyone having any kind of special privilege
-            case ConsultationUserGroup::PRIVILEGE_ANY:
+            case Privileges::PRIVILEGE_ANY:
                 return in_array(static::PERMISSION_PROPOSED_PROCEDURE, $this->defaultPermissions, true) ||
                     in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true) ||
                     in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $this->defaultPermissions, true);
 
             // Special case "site admin": has all permissions - for all consultations
-            case ConsultationUserGroup::PRIVILEGE_SITE_ADMIN:
+            case Privileges::PRIVILEGE_SITE_ADMIN:
                 return in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true) && $this->isSiteWide;
 
             // Regular cases
-            case ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS:
-            case ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT:
-            case ConsultationUserGroup::PRIVILEGE_SCREENING:
-            case ConsultationUserGroup::PRIVILEGE_MOTION_STATUS_EDIT:
-            case ConsultationUserGroup::PRIVILEGE_MOTION_TEXT_EDIT:
-            case ConsultationUserGroup::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
-            case ConsultationUserGroup::PRIVILEGE_VOTINGS:
+            case Privileges::PRIVILEGE_CONSULTATION_SETTINGS:
+            case Privileges::PRIVILEGE_CONTENT_EDIT:
+            case Privileges::PRIVILEGE_SCREENING:
+            case Privileges::PRIVILEGE_MOTION_STATUS_EDIT:
+            case Privileges::PRIVILEGE_MOTION_TEXT_EDIT:
+            case Privileges::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
+            case Privileges::PRIVILEGE_VOTINGS:
                 return in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
-            case ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS:
+            case Privileges::PRIVILEGE_CHANGE_PROPOSALS:
                 return in_array(static::PERMISSION_PROPOSED_PROCEDURE, $this->defaultPermissions, true) ||
                     in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
-            case ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES:
+            case Privileges::PRIVILEGE_SPEECH_QUEUES:
                 return in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $this->defaultPermissions, true) ||
                     in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
-            case ConsultationUserGroup::PRIVILEGE_GLOBAL_USER_ADMIN: // only superadmins are allowed to
+            case Privileges::PRIVILEGE_GLOBAL_USER_ADMIN: // only superadmins are allowed to
             default:
                 return false;
         }

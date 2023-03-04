@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\proposedProcedure\Agenda;
+use app\models\settings\Privileges;
 use app\models\notifications\{MotionProposedProcedure,
     MotionPublished,
     MotionSubmitted as MotionSubmittedNotification,
@@ -206,7 +207,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() &&
-            !User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+            !User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT)) {
             // @TODO Find a solution to edit motions before submitting when not logged in
             throw new Internal('Can only set showAdminSections for admins');
         }
@@ -508,7 +509,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function canCreateResolution(): bool
     {
-        return User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_STATUS_EDIT);
+        return User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_MOTION_STATUS_EDIT);
     }
 
     public function canFinishSupportCollection(): bool

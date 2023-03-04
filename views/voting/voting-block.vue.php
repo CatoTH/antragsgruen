@@ -2,13 +2,14 @@
 
 use app\components\UrlHelper;
 use app\models\layoutHooks\Layout;
+use app\models\settings\Privileges;
 use app\models\votings\AnswerTemplates;
-use app\models\db\{Consultation, ConsultationUserGroup, IMotion, User, VotingBlock};
+use app\models\db\{Consultation, IMotion, User, VotingBlock};
 use yii\helpers\Html;
 
 $user = User::getCurrentUser();
 $consultation = Consultation::getCurrent();
-$iAmAdmin = ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS));
+$iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS));
 
 $alternativeResultTemplate = Layout::getVotingAlternativeResults($consultation);
 

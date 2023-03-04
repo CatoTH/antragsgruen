@@ -5,10 +5,11 @@ namespace app\plugins\frauenrat\controllers;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\mergeAmendments\Init;
+use app\models\settings\Privileges;
 use app\plugins\frauenrat\pdf\Frauenrat;
 use app\plugins\frauenrat\pdf\FrauenratPdf;
 use app\views\pdfLayouts\IPdfWriter;
-use app\models\db\{ConsultationSettingsTag, ConsultationUserGroup, Motion, User};
+use app\models\db\{ConsultationSettingsTag, Motion, User};
 
 class MotionController extends Base
 {
@@ -25,7 +26,7 @@ class MotionController extends Base
             $this->getHttpResponse()->statusCode = 404;
             return 'Motion not found';
         }
-        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
             $this->getHttpResponse()->statusCode = 403;
             return 'Not permitted to change the tag';
         }
@@ -55,7 +56,7 @@ class MotionController extends Base
             $this->getHttpResponse()->statusCode = 404;
             return 'Motion not found';
         }
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS)) {
             $this->getHttpResponse()->statusCode = 403;
             return 'Not permitted to change the status';
         }

@@ -4,10 +4,10 @@ namespace app\controllers;
 
 use app\components\CookieUser;
 use app\models\api\SpeechUser;
-use app\models\http\RestApiExceptionResponse;
-use app\models\http\RestApiResponse;
+use app\models\http\{RestApiExceptionResponse, RestApiResponse};
+use app\models\settings\Privileges;
 use app\views\speech\LayoutHelper;
-use app\models\db\{ConsultationUserGroup, SpeechQueue, User};
+use app\models\db\{SpeechQueue, User};
 use yii\web\Response;
 
 class SpeechController extends Base
@@ -138,7 +138,7 @@ class SpeechController extends Base
         $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SPEECH_QUEUES)) {
             throw new \Exception('Missing privileges');
         }
 

@@ -3,8 +3,8 @@
 namespace app\plugins\egp\controllers;
 
 use app\controllers\Base;
-use app\models\db\ConsultationUserGroup;
 use app\models\db\User;
+use app\models\settings\Privileges;
 use yii\web\Response;
 
 class MotionController extends Base
@@ -23,7 +23,7 @@ class MotionController extends Base
 
             return 'Motion not found';
         }
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SCREENING)) {
             $this->getHttpResponse()->statusCode = 403;
 
             return 'Not permitted to change the tag';

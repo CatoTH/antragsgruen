@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\updater\UpdateChecker;
+use app\models\settings\Privileges;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\AntragsgruenApp;
 use app\components\{ConsultationAccessPassword, HTMLTools, Tools, UrlHelper};
@@ -14,9 +15,9 @@ use app\models\settings\Stylesheet;
 
 class IndexController extends AdminBase
 {
-    public static $REQUIRED_PRIVILEGES = [
-        ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS,
-        ConsultationUserGroup::PRIVILEGE_SITE_ADMIN,
+    public const REQUIRED_PRIVILEGES = [
+        Privileges::PRIVILEGE_CONSULTATION_SETTINGS,
+        Privileges::PRIVILEGE_SITE_ADMIN,
     ];
 
     public function actionIndex(): HtmlResponse
@@ -55,7 +56,7 @@ class IndexController extends AdminBase
             $settings->saveConsultationForm($settingsInput, $post['settingsFields']);
             $settings->setOrganisationsFromInput($post['organisations'] ?? []);
 
-            if ($model->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+            if ($model->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN)) {
                 if ($this->isPostSet('pwdProtected') && $this->isPostSet('consultationPassword')) {
                     if (trim($post['consultationPassword'])) {
                         $pwdTools = new ConsultationAccessPassword($model);
@@ -83,7 +84,7 @@ class IndexController extends AdminBase
                     $model->site->status = ($settings->maintenanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
                 }
 
-                if ($model->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+                if ($model->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN)) {
                     $settings = $model->site->getSettings();
 
                     $settings->loginMethods = [];
@@ -337,7 +338,7 @@ class IndexController extends AdminBase
     {
         $site = $this->site;
 
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 

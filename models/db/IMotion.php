@@ -7,6 +7,7 @@ use app\models\settings\AntragsgruenApp;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use app\models\settings\Privileges;
 use app\models\siteSpecificBehavior\Permissions;
 use app\models\votings\VotingItemGroup;
 use app\components\{Tools, UrlHelper};
@@ -243,7 +244,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     public function isReadable(): bool
     {
-        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
+        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT);
         if ($iAmAdmin && in_array($this->status, [static::STATUS_DRAFT, static::STATUS_DRAFT_ADMIN])) {
             return true;
         }
@@ -376,7 +377,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public function getSortedSections(bool $withoutTitle = false, bool $includeNonPublicIfPossible = false): array
     {
         if ($includeNonPublicIfPossible &&
-            ($this->iAmInitiator() ||User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT))) {
+            ($this->iAmInitiator() ||User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT))) {
             $includeNonPublic = true;
         } else {
             $includeNonPublic = false;
@@ -482,7 +483,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     {
         return ($this->hasAlternativeProposaltext(true) && (
                 $this->isProposalPublic() ||
-                User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS) ||
+                User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS) ||
                 ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
             ));
     }

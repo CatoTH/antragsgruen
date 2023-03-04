@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\models\settings\Privileges;
 use app\models\http\{HtmlResponse, JsonResponse, RedirectResponse, RestApiResponse};
 use app\components\{mail\Tools as MailTools, UrlHelper, UserGroupAdminMethods};
 use app\models\db\{Consultation, ConsultationUserGroup, EMailLog, User};
@@ -30,7 +31,7 @@ class UsersController extends AdminBase
     {
         $consultation = $this->consultation;
 
-        if (!User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             throw new ExitException();
         }
@@ -208,7 +209,7 @@ class UsersController extends AdminBase
         return new HtmlResponse($this->render('index', [
             'widgetData' => $this->getUsersWidgetData($consultation),
             'screening' => $consultation->screeningUsers,
-            'globalUserAdmin' => User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_GLOBAL_USER_ADMIN),
+            'globalUserAdmin' => User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN),
         ]));
     }
 
@@ -232,7 +233,7 @@ class UsersController extends AdminBase
                         intval($this->getPostValue('userId')),
                         array_map('intval', $this->getPostValue('groups', []))
                     );
-                    if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_GLOBAL_USER_ADMIN)) {
+                    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN)) {
                         $this->userGroupAdminMethods->setUserData(
                             intval($this->getPostValue('userId')),
                             $this->getPostValue('nameGiven'),

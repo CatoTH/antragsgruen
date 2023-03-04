@@ -2,9 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\settings\Privileges;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\components\{diff\AmendmentRewriter, diff\SingleAmendmentMergeViewParagraphData, HTMLTools, UrlHelper};
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationUserGroup};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType};
 use app\models\forms\MergeSingleAmendmentForm;
 use app\models\sectionTypes\ISectionType;
 use yii\web\Session;
@@ -29,7 +30,7 @@ trait AmendmentMergingTrait
 
         $otherAmendments = $amendment->getMyMotion()->getAmendmentsRelevantForCollisionDetection([$amendment]);
 
-        if ($amendment->getMyConsultation()->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if ($amendment->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT)) {
             $otherAmendmentsStatus = $this->getPostValue('otherAmendmentsStatus', []);
         } else {
             $otherAmendmentsStatus = [];
@@ -106,7 +107,7 @@ trait AmendmentMergingTrait
         $motion        = $amendment->getMyMotion();
         $mergingPolicy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
 
-        if ($amendment->getMyConsultation()->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if ($amendment->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT)) {
             $collisionHandling   = true;
             $allowStatusChanging = true;
         } elseif ($mergingPolicy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION) {

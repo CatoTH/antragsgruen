@@ -6,6 +6,7 @@ use app\components\mail\Tools as MailTools;
 use app\models\exceptions\{AlreadyExists, FormError, MailNotSent, UserEditFailed};
 use app\models\consultationLog\UserGroupChange;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Privileges;
 use app\models\db\{Consultation, ConsultationLog, ConsultationUserGroup, EMailLog, User};
 use yii\web\{Request, Session};
 
@@ -42,7 +43,7 @@ class UserGroupAdminMethods
      */
     private function preventInvalidSiteAdminEdit(Consultation $consultation, ConsultationUserGroup $group): void
     {
-        if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+        if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN)) {
             // This check is not relevant if the user is Site Admin
             return;
         }
@@ -58,10 +59,10 @@ class UserGroupAdminMethods
     private function preventRemovingMyself(Consultation $consultation, ConsultationUserGroup $group, User $user): void
     {
         $myself = User::getCurrentUser();
-        if ($myself->havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+        if ($myself->havePrivilege($consultation, Privileges::PRIVILEGE_SITE_ADMIN)) {
             // You cannot unassign yourself from a siteAdmin-role if you are site-admin.
             // But everyone else and yourself from any other role
-            if ($group->getGroupPermissions()->containsPrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN) && $user->id === $myself->id) {
+            if ($group->getGroupPermissions()->containsPrivilege(Privileges::PRIVILEGE_SITE_ADMIN) && $user->id === $myself->id) {
                 throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_lockout'));
             } else {
                 return;
@@ -70,7 +71,7 @@ class UserGroupAdminMethods
 
         // Now we assume, the user is a regular consultation-level admin.
         // They can remove other users from admin roles, or themselves from non-admin roles
-        if ($group->getGroupPermissions()->containsPrivilege(ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS) && $user->id === $myself->id) {
+        if ($group->getGroupPermissions()->containsPrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS) && $user->id === $myself->id) {
             throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_lockout'));
         }
     }
@@ -198,8 +199,8 @@ class UserGroupAdminMethods
         }
 
         $user = User::findOne(['id' => $userId]);
-        if ($user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN) &&
-            !$myself->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+        if ($user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN) &&
+            !$myself->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN)) {
             throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_siteprivesc'));
         }
 

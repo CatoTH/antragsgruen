@@ -3,7 +3,8 @@
 namespace app\models\policies;
 
 use app\components\UrlHelper;
-use app\models\db\{Consultation, ConsultationMotionType, ConsultationUserGroup, IHasPolicies, User};
+use app\models\settings\Privileges;
+use app\models\db\{Consultation, ConsultationMotionType, IHasPolicies, User};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 
@@ -98,7 +99,7 @@ abstract class IPolicy
     protected function checkCurrUserWithDeadline(string $deadlineType, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if (!$this->baseObject->isInDeadline($deadlineType)) {
-            if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_ANY) || !$allowAdmins) {
+            if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;
             }
         }

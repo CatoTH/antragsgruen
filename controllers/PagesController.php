@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\settings\Layout;
+use app\models\settings\Privileges;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
     HtmlResponse,
@@ -11,7 +12,7 @@ use app\models\http\{BinaryFileResponse,
     ResponseInterface,
     RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
-use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
+use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, User};
 use app\models\exceptions\{Access, FormError};
 use app\models\settings\AntragsgruenApp;
 use yii\web\{NotFoundHttpException, Response};
@@ -20,7 +21,7 @@ class PagesController extends Base
 {
     public function actionListPages(): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
             return new HtmlErrorResponse(403, 'No permissions to edit this page');
         }
 
@@ -118,7 +119,7 @@ class PagesController extends Base
         }
 
         if ($page->siteId) {
-            if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+            if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
                 throw new Access('No permissions to edit this page');
             }
         } else {
@@ -268,7 +269,7 @@ class PagesController extends Base
     public function actionLegal(): string
     {
         if (AntragsgruenApp::getInstance()->multisiteMode) {
-            $admin      = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
+            $admin      = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT);
             $viewParams = ['pageKey' => 'legal', 'admin' => $admin];
 
             return $this->render('imprint_multisite', $viewParams);
@@ -282,7 +283,7 @@ class PagesController extends Base
      */
     public function actionUpload(): JsonResponse
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to upload files');
         }
 
@@ -310,7 +311,7 @@ class PagesController extends Base
      */
     public function actionBrowseImages(): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to upload files');
         }
 
@@ -415,7 +416,7 @@ class PagesController extends Base
 
     public function actionDocuments(): ResponseInterface
     {
-        $iAmAdmin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
+        $iAmAdmin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT);
         if ($iAmAdmin && $this->isPostSet('createGroup') && $this->getPostValue('name')) {
             $group = new ConsultationFileGroup();
             $group->title = trim($this->getPostValue('name'));

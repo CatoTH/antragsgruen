@@ -2,7 +2,8 @@
 
 namespace app\models\supportTypes;
 
-use app\models\db\{ConsultationUserGroup, User};
+use app\models\settings\Privileges;
+use app\models\db\User;
 
 class GivenByInitiator extends SupportBase
 {
@@ -23,6 +24,6 @@ class GivenByInitiator extends SupportBase
 
     public function hasFullTextSupporterField(): bool
     {
-        return User::havePrivilege($this->motionType->getConsultation(), ConsultationUserGroup::PRIVILEGE_ANY);
+        return User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_ANY);
     }
 }

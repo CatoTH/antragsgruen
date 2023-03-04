@@ -6,7 +6,8 @@
  */
 
 use app\components\UrlHelper;
-use app\models\db\{ConsultationSettingsMotionSection, ConsultationUserGroup, MotionComment, User};
+use app\models\settings\Privileges;
+use app\models\db\{ConsultationSettingsMotionSection, MotionComment, User};
 use app\models\forms\CommentForm;
 use yii\helpers\Html;
 
@@ -14,7 +15,7 @@ $consultation   = $section->getConsultation();
 $motion         = $section->getMotion();
 $hasLineNumbers = $section->getSettings()->lineNumbers;
 $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
-$screenAdmin    = User::havePrivilege($section->getConsultation(), ConsultationUserGroup::PRIVILEGE_SCREENING);
+$screenAdmin    = User::havePrivilege($section->getConsultation(), Privileges::PRIVILEGE_SCREENING);
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
     $classes[] = 'lineNumbers';

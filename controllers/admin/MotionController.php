@@ -26,14 +26,13 @@ use app\models\motionTypeTemplates\{
     Statutes as StatutesTemplate
 };
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionSection, MotionType, Site};
+use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionSection, MotionType, Privileges};
 use app\models\supportTypes\SupportBase;
-use yii\web\Response;
 
 class MotionController extends AdminBase
 {
-    public static $REQUIRED_PRIVILEGES = [
-        ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT,
+    public const REQUIRED_PRIVILEGES = [
+        Privileges::PRIVILEGE_CONTENT_EDIT,
     ];
 
     /**
@@ -104,7 +103,7 @@ class MotionController extends AdminBase
     {
         $motionTypeId = intval($motionTypeId);
 
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
@@ -279,7 +278,7 @@ class MotionController extends AdminBase
 
     public function actionTypecreate(): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 

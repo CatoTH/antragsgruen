@@ -1,5 +1,6 @@
 <?php
 
+use app\models\settings\Privileges;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, ConsultationUserGroup, User};
 use yii\helpers\Html;
@@ -51,7 +52,7 @@ $amendmentData[] = [
 
 MotionLayoutHelper::addVotingResultsRow($amendment->getVotingData(), $amendmentData);
 
-$proposalAdmin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+$proposalAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
 if (($amendment->isProposalPublic() && $amendment->proposalStatus) || $proposalAdmin) {
     $amendmentData[] = [
         'title'   => Yii::t('amend', 'proposed_status'),

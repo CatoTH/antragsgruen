@@ -7,10 +7,11 @@
  */
 
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Privileges;
 use app\models\settings\Site as SiteSettings;
 use app\models\settings\Consultation as ConsultationSettings;
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Consultation, ConsultationUserGroup, Motion, User};
+use app\models\db\{Consultation, Motion, User};
 use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */
@@ -139,7 +140,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
     </div>
 
     <?php
-if ($consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN)) {
     $conPwd = new \app\components\ConsultationAccessPassword($consultation);
     ?>
     <h2 class="green"><?= Yii::t('admin', 'siteacc_title') ?></h2>

@@ -1,7 +1,8 @@
 <?php
 
 use app\models\api\SpeechUser;
-use app\models\db\{ConsultationUserGroup, User};
+use app\models\settings\Privileges;
+use app\models\db\User;
 use yii\helpers\Html;
 
 /**
@@ -45,7 +46,7 @@ if ($queue->motionId || $queue->agendaItemId) {
         echo Html::encode($title);
 
         $user = User::getCurrentUser();
-        if ($user && $user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
+        if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES)) {
             echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink greenHeaderExtraLink">';
             echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
             echo Yii::t('speech', 'goto_admin');

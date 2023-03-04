@@ -3,6 +3,7 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
+use app\models\settings\Privileges;
 use app\models\db\{Consultation, ConsultationMotionType, ConsultationUserGroup, IHasPolicies, User};
 
 class UserGroups extends IPolicy
@@ -79,7 +80,7 @@ class UserGroups extends IPolicy
             return $assumeLoggedIn;
         }
 
-        if ($allowAdmins && $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if ($allowAdmins && $user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return true;
         }
 

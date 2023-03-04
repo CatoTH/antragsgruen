@@ -4,7 +4,7 @@ namespace app\models\db;
 
 use app\models\exceptions\Internal;
 use app\models\proposedProcedure\Agenda;
-use app\models\settings\AntragsgruenApp;
+use app\models\settings\{AntragsgruenApp, Privileges, MotionSection as MotionSectionSettings};
 use app\components\{diff\AmendmentSectionFormatter,
     diff\DiffRenderer,
     HashedStaticCache,
@@ -22,7 +22,6 @@ use app\models\notifications\{AmendmentProposedProcedure,
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
 use app\models\supportTypes\SupportBase;
-use app\models\settings\MotionSection as MotionSectionSettings;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -232,7 +231,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() &&
-            !User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+            !User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT)) {
             // @TODO Find a solution to edit motions before submitting when not logged in
             throw new Internal('Can only set showAdminSections for admins');
         }
@@ -719,7 +718,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyMotionType()->amendmentsOnly) {
             return false;
         }
-        if ($this->getMyConsultation()->havePrivilege(ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if ($this->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT)) {
             return true;
         } elseif ($this->getMyMotion()->iAmInitiator()) {
             $policy = $this->getMyMotionType()->initiatorsCanMergeAmendments;

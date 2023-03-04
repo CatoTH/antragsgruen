@@ -1,7 +1,8 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{ConsultationUserGroup, IMotion, User};
+use app\models\settings\Privileges;
+use app\models\db\{IMotion, User};
 use yii\helpers\Html;
 
 /**
@@ -18,7 +19,7 @@ $idBase = $type . $imotion->id;
 $users = [];
 $foundUsers = [];
 foreach ($controller->consultation->getUsersInAnyGroup() as $user) {
-    if ($user->hasPrivilege($controller->consultation, ConsultationUserGroup::PRIVILEGE_ANY)) {
+    if ($user->hasPrivilege($controller->consultation, Privileges::PRIVILEGE_ANY)) {
         $users[]      = $user;
         $foundUsers[] = $user->id;
     }

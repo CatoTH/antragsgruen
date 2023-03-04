@@ -2,8 +2,9 @@
 
 namespace app\plugins\member_petitions;
 
+use app\models\settings\Privileges;
 use app\plugins\gruene_de_saml\Module;
-use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
+use app\models\db\{ConsultationMotionType, User};
 use app\models\policies\IPolicy;
 
 class MotionPolicy extends IPolicy
@@ -60,7 +61,7 @@ class MotionPolicy extends IPolicy
         }
 
         if ($allowAdmins) {
-            if ($user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+            if ($user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN)) {
                 return true;
             }
         }

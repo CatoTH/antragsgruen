@@ -4,10 +4,11 @@ namespace app\controllers\admin;
 
 use app\components\Tools;
 use app\components\ZipWriter;
-use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, Motion, User};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\forms\AdminMotionFilterForm;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Privileges;
 use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\web\Response;
@@ -159,8 +160,8 @@ class MotionListController extends AdminBase
     public function actionIndex(?string $motionId = null): string
     {
         $consultation       = $this->consultation;
-        $privilegeScreening = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SCREENING);
-        $privilegeProposals = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING);
+        $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
         if (!($privilegeScreening || $privilegeProposals)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_acccess'));
 
