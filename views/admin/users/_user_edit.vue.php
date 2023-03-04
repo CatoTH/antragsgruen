@@ -1,8 +1,4 @@
 <?php
-
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-
 ob_start();
 ?>
 <div class="modal fade editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" ref="user-edit-modal">

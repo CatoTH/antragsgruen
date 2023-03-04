@@ -24,7 +24,6 @@ use yii\db\{ActiveQuery, ActiveRecord};
  */
 class ConsultationUserGroup extends ActiveRecord
 {
-    // Hint: privileges are mostly grouped into the permissions above;
     public const PRIVILEGE_ANY = 0;  // SPECIAL CASE: refers to "any" other privilege mentioned below
     public const PRIVILEGE_CONSULTATION_SETTINGS = 1;
     public const PRIVILEGE_CONTENT_EDIT = 2;  // Editing pages, uploaded documents (not motions), agenda

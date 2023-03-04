@@ -1655,8 +1655,15 @@ label.legend {
     font-weight: normal;
     display: block;
   }
+  .verticalLabels label {
+    display: inline-block;
+    margin-right: 10px;
+  }
   .changeLogLink {
     float: left;
+  }
+  .btnAddRestrictedPermission {
+    font-weight: normal;
   }
 }
 

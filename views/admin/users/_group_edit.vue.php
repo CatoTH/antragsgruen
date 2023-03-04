@@ -1,7 +1,74 @@
 <?php
 
+use yii\helpers\Html;
+
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
+
+$privileges = \app\models\settings\Privileges::getPrivileges($controller->consultation);
+
+// =============== EDIT RESTRICTED PERMISSION COMPONENT ===============
+
+ob_start();
+?>
+<section class="restrictedAddingForm">
+    <div class="restrictedTo">
+        <div class="verticalLabels">
+            Eingeschränkt auf:<br>
+            <label>
+                <input type="radio" name="restrictionType" value="motionType">
+                Antragstyp
+            </label>
+            <label>
+                <input type="radio" name="restrictionType" value="agendaItem">
+                Tagesordnungspunkt
+            </label>
+            <label>
+                <input type="radio" name="restrictionType" value="tag">
+                Thema
+            </label>
+        </div>
+
+        <div>
+            <select class="stdDropdown" size="1">
+                <option>...</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="restrictedPermissions"><br>
+        <strong>Berechtigungen:</strong>
+        <?php
+        foreach ($privileges->getMotionPrivileges() as $privilege) {
+            ?>
+            <label>
+                <input type="checkbox" value="<?= $privilege->id ?>">
+                <?= Html::encode($privilege->name) ?>
+            </label>
+            <?php
+        }
+        ?>
+    </div>
+
+    <button type="button" class="btn btn-default" @click="add()">Hinzufügen</button>
+</section>
+<?php
+$htmlCreatingRestricted = ob_get_clean();
+
+?>
+<script>
+    __setVueComponent('users', 'component', 'group-edit-add-restricted-widget', {
+        template: <?= json_encode($htmlCreatingRestricted) ?>,
+        methods: {
+            add: function () {
+                this.$emit('add-restricted');
+            }
+        }
+    });
+</script>
+<?php
+
+// =============== MAIN COMPONENT ===============
 
 ob_start();
 ?>
@@ -25,6 +92,64 @@ ob_start();
                     </div>
                     <div class="rightColumn">
                         <input type="text" class="form-control inputGroupTitle" v-model="group_title">
+                    </div>
+                </div>
+
+                <div class="stdTwoCols">
+                    <div class="leftColumn">
+                        Allgemeine Rechte
+                    </div>
+                    <div class="rightColumn">
+                        <?php
+                        foreach ($privileges->getNonMotionPrivileges() as $privilege) {
+                            ?>
+                            <label>
+                                <input type="checkbox" value="<?= $privilege->id ?>">
+                                <?= Html::encode($privilege->name) ?>
+                            </label>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+
+                <div class="stdTwoCols">
+                    <div class="leftColumn">
+                        Rechte für<br>
+                        <u>Alle</u> Anträge/ÄAs
+                    </div>
+                    <div class="rightColumn">
+                        <?php
+                        foreach ($privileges->getMotionPrivileges() as $privilege) {
+                            ?>
+                            <label>
+                                <input type="checkbox" value="<?= $privilege->id ?>">
+                                <?= Html::encode($privilege->name) ?>
+                            </label>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+
+                <div class="stdTwoCols">
+                    <div class="leftColumn">
+                        Rechte für<br>
+                        <u>manche</u> Anträge/ÄAs
+                    </div>
+                    <div class="rightColumn">
+                        <div v-if="!adding_restricted">
+                            <em>keine</em><br>
+                            <button class="btn btn-link btnAddRestrictedPermission" @click="startAddingRestricted()">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                Eingeschränktes Recht hinzufügen
+                            </button>
+                        </div>
+
+                        <group-edit-add-restricted-widget
+                            v-if="adding_restricted"
+                            @add-restricted="addRestricted()"
+                        ></group-edit-add-restricted-widget>
                     </div>
                 </div>
 
@@ -59,7 +184,8 @@ $html = ob_get_clean();
         data() {
             return {
                 group: null,
-                group_title: null
+                group_title: null,
+                adding_restricted: false
             }
         },
         computed: {
@@ -85,6 +211,12 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
+            },
+            startAddingRestricted: function () {
+                this.adding_restricted = true;
+            },
+            addRestricted: function () {
+                this.adding_restricted = false;
             }
         }
 
