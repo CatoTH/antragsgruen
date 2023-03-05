@@ -126,12 +126,30 @@ class UserGroupPermissionEntry
 
     public function containsPrivilege(int $privilege, ?PrivilegeQueryContext $context): bool
     {
-        // @TODO
-        die("not fully implemented yet");
-
-        if ($this->tagId !== null || $this->agendaItemId !== null || $this->motionTypeId !== null) {
-            return false;
+        if ($this->tagId !== null) {
+            if ($context && $context->matchesTagId($this->tagId)) {
+                return in_array($privilege, $this->privileges, true);
+            } else {
+                return false;
+            }
         }
+
+        if ($this->agendaItemId !== null) {
+            if ($context && $context->matchesAgendaItemId($this->agendaItemId)) {
+                return in_array($privilege, $this->privileges, true);
+            } else {
+                return false;
+            }
+        }
+
+        if ($this->motionTypeId !== null) {
+            if ($context && $context->matchesMotionTypeId($this->motionTypeId)) {
+                return in_array($privilege, $this->privileges, true);
+            } else {
+                return false;
+            }
+        }
+
         return in_array($privilege, $this->privileges, true);
     }
 }

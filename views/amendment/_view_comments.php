@@ -38,7 +38,7 @@ if ($screeningQueue > 0) {
     echo '</div>';
 }
 
-$screenAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($amendment));
+$screenAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment));
 foreach ($amendment->getVisibleComments($screenAdmin, -1, null) as $comment) {
     /** @var AmendmentComment $comment */
     echo $this->render('@app/views/shared/comment', ['comment' => $comment]);

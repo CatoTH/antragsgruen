@@ -8,11 +8,11 @@ use app\models\db\{Amendment, IMotion, Motion};
 
 class PrivilegeQueryContext
 {
-    public ?Motion $motion = null;
-    public ?Amendment $amendment= null;
-    public ?int $agendaItemId = null;
-    public ?int $tagId = null;
-    public ?int $motionTypeId = null;
+    private ?Motion $motion = null;
+    private ?Amendment $amendment= null;
+    private ?int $agendaItemId = null;
+    private ?int $tagId = null;
+    private ?int $motionTypeId = null;
 
     public static function motion(Motion $motion): self
     {
@@ -59,5 +59,57 @@ class PrivilegeQueryContext
         $obj = new self();
         $obj->agendaItemId = $agendaItemId;
         return $obj;
+    }
+
+    public function matchesAgendaItemId(int $agendaItemId): bool
+    {
+        if ($this->agendaItemId) {
+            return $this->agendaItemId === $agendaItemId;
+        }
+        if ($this->motion) {
+            return $this->motion->agendaItemId === $agendaItemId;
+        }
+        if ($this->amendment) {
+            return $this->amendment->getMyMotion()->agendaItemId === $agendaItemId;
+        }
+        return false;
+    }
+
+    public function matchesMotionTypeId(int $motionTypeId): bool
+    {
+        if ($this->motionTypeId) {
+            return $this->motionTypeId === $motionTypeId;
+        }
+        if ($this->motion) {
+            return $this->motion->motionTypeId === $motionTypeId;
+        }
+        if ($this->amendment) {
+            return $this->amendment->getMyMotion()->motionTypeId === $motionTypeId;
+        }
+        return false;
+    }
+
+    public function matchesTagId(int $tagId): bool
+    {
+        if ($this->tagId) {
+            return $this->tagId === $tagId;
+        }
+        if ($this->motion) {
+            foreach ($this->motion->tags as $tag) {
+                if ($tag->id === $tagId) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if ($this->amendment) {
+            foreach ($this->amendment->getMyMotion()->tags as $tag) {
+                if ($tag->id === $tagId) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
     }
 }

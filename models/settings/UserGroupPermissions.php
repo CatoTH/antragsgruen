@@ -119,6 +119,9 @@ class UserGroupPermissions
                 return true;
             }
         }
+        if (!$this->defaultPermissions) {
+            return false;
+        }
 
         switch ($privilege) {
             // Special case "any": everyone having any kind of special privilege
