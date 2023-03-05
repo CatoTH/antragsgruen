@@ -252,7 +252,8 @@ class UsersController extends AdminBase
                 case 'save-group':
                     $this->userGroupAdminMethods->saveUserGroup(
                         intval($this->getPostValue('groupId')),
-                        $this->getPostValue('groupTitle')
+                        $this->getPostValue('groupTitle'),
+                        $this->getPostValue('privilegeList', [])
                     );
                     break;
                 case 'remove-group':

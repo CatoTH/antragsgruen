@@ -7,6 +7,7 @@ use app\models\exceptions\{AlreadyExists, FormError, MailNotSent, UserEditFailed
 use app\models\consultationLog\UserGroupChange;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Privileges;
+use app\models\settings\UserGroupPermissions;
 use app\models\db\{Consultation, ConsultationLog, ConsultationUserGroup, EMailLog, User};
 use yii\web\{Request, Session};
 
@@ -229,7 +230,7 @@ class UserGroupAdminMethods
     /**
      * @throws UserEditFailed
      */
-    public function saveUserGroup(int $groupId, string $groupName): void
+    public function saveUserGroup(int $groupId, string $groupName, array $privilegeList): void
     {
         $group = $this->consultation->getUserGroupById($groupId);
         if (!$group) {
@@ -242,6 +243,9 @@ class UserGroupAdminMethods
         if (trim($groupName) !== '') {
             $group->title = trim($groupName);
         }
+
+        $permissions = UserGroupPermissions::fromApi($this->consultation, $privilegeList);
+        $group->setGroupPermissions($permissions);
 
         $group->save();
     }

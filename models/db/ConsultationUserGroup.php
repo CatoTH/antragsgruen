@@ -236,14 +236,13 @@ class ConsultationUserGroup extends ActiveRecord
 
     public function getUserAdminApiObject(): array
     {
-        return [
+        return array_merge([
             'id' => $this->id,
             'title' => $this->getNormalizedTitle(),
             'description' => $this->getNormalizedDescription(),
             'editable' => $this->isUserEditable(),
-            'permissions' => $this->getGroupPermissions()->toApi($this->consultation),
             'auth_type' => $this->getAuthType(),
-        ];
+        ], $this->getGroupPermissions()->toApi($this->consultation));
     }
 
     public function isSpecificallyRelevantForConsultationOrSite(Consultation $consultation): bool

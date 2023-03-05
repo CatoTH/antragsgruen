@@ -1650,7 +1650,7 @@ label.legend {
   }
 }
 
-.editUserModal {
+.editUserGroupModal {
   label {
     font-weight: normal;
     display: block;
@@ -1662,8 +1662,25 @@ label.legend {
   .changeLogLink {
     float: left;
   }
+}
+
+.editGroupModal {
+  .none {
+    font-style: italic;
+  }
+  .restrictedPrivilegeList {
+    li {
+      border-bottom: solid 1px #e5e5e5;
+    }
+    .btnRemove {
+      float: right;
+      font-weight: normal;
+      color: $colorDelLink;
+    }
+  }
   .btnAddRestrictedPermission {
     font-weight: normal;
+    font-size: 0.8em;
   }
 }
 

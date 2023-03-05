@@ -68,6 +68,16 @@ class UserGroupPermissions
         return $permissions;
     }
 
+    public static function fromApi(Consultation $consultation, array $list): self
+    {
+        $obj = new self(false);
+        $obj->privileges = array_map(function (array $api) use ($consultation): UserGroupPermissionEntry {
+            return UserGroupPermissionEntry::fromApi($consultation, $api);
+        }, $list);
+
+        return $obj;
+    }
+
     public function toDatabaseString(): ?string
     {
         if ($this->defaultPermissions) {

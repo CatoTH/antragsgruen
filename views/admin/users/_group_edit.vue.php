@@ -140,7 +140,7 @@ $htmlCreatingRestricted = ob_get_clean();
 
 ob_start();
 ?>
-<div class="modal fade editUserModal" tabindex="-1" role="dialog" aria-labelledby="editGroupModalLabel" ref="group-edit-modal">
+<div class="modal fade editUserGroupModal editGroupModal" tabindex="-1" role="dialog" aria-labelledby="editGroupModalLabel" ref="group-edit-modal">
     <form class="modal-dialog" method="POST" @submit="save($event)">
         <article class="modal-content">
             <header class="modal-header">
@@ -165,7 +165,7 @@ ob_start();
 
                 <div class="stdTwoCols">
                     <div class="leftColumn">
-                        Allgemeine Rechte
+                        Allgemeine Admin-Rechte
                     </div>
                     <div class="rightColumn">
                         <label v-for="priv in allPrivilegesGeneral">
@@ -177,7 +177,7 @@ ob_start();
 
                 <div class="stdTwoCols">
                     <div class="leftColumn">
-                        Rechte für<br>
+                        Admin-Rechte für<br>
                         <u>Alle</u> Anträge/ÄAs
                     </div>
                     <div class="rightColumn">
@@ -190,18 +190,24 @@ ob_start();
 
                 <div class="stdTwoCols">
                     <div class="leftColumn">
-                        Rechte für<br>
+                        Admin-Rechte für<br>
                         <u>manche</u> Anträge/ÄAs
                     </div>
                     <div class="rightColumn">
                         <div v-if="!addingRestricted">
-                            <ul v-if="setRestrictedPrivileges && setRestrictedPrivileges.length > 0">
+                            <ul v-if="setRestrictedPrivileges && setRestrictedPrivileges.length > 0" class="stdNonFormattedList restrictedPrivilegeList">
                                 <li v-for="priv in setRestrictedPrivileges">
-                                    <strong>Berechtigungen:</strong> {{ formatPrivilegeIdList(priv.privileges) }}<br>
-                                    <strong>Für:</strong>
-                                    <span v-if="priv.motionType">{{ priv.motionType.title }}</span>
-                                    <span v-if="priv.tag">{{ priv.tag.title }}</span>
-                                    <span v-if="priv.agendaItem">{{ priv.agendaItem.title }}</span>
+                                    <button class="btn btn-link btnRemove" type="button" @click="removeRestricted(priv)" title="Entfernen">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                        <span class="sr-only">Entfernen</span>
+                                    </button>
+                                    <div><strong>Berechtigungen:</strong> <span>{{ formatPrivilegeIdList(priv.privileges) }}</span></div>
+                                    <div>
+                                        <strong>Für:</strong>
+                                        <span v-if="priv.motionType">{{ priv.motionType.title }}</span>
+                                        <span v-if="priv.tag">{{ priv.tag.title }}</span>
+                                        <span v-if="priv.agendaItem">{{ priv.agendaItem.title }}</span>
+                                    </div>
                                 </li>
                             </ul>
                             <div v-if="!setRestrictedPrivileges || setRestrictedPrivileges.length === 0">keine</div>
@@ -247,18 +253,18 @@ $html = ob_get_clean();
 
 <script>
     const groupModalTitleTemplate = <?= json_encode(Yii::t('admin', 'siteacc_groupmodal_title')) ?>;
-    const nonMotionPrivileges = <?= json_encode(array_map(function (Privilege $priv): array {
+    const nonMotionPrivileges = <?= json_encode(array_values(array_map(function (Privilege $priv): array {
         return [
             'id' => $priv->id,
             'title' => $priv->name,
         ];
-    }, $privileges->getNonMotionPrivileges())) ?>;
-    const motionPrivileges = <?= json_encode(array_map(function (Privilege $priv): array {
+    }, $privileges->getNonMotionPrivileges()))) ?>;
+    const motionPrivileges = <?= json_encode(array_values(array_map(function (Privilege $priv): array {
         return [
             'id' => $priv->id,
             'title' => $priv->name,
         ];
-    }, $privileges->getMotionPrivileges())) ?>;
+    }, $privileges->getMotionPrivileges()))) ?>;
     const agendaItems = <?= json_encode(array_map(function (\app\models\db\ConsultationAgendaItem $item): array {
         return [
             'id' => $item->id,
@@ -318,6 +324,9 @@ $html = ob_get_clean();
                     }
                 });
 
+                console.log(JSON.parse(JSON.stringify(this.setNonrestrictedPrivileges)));
+                console.log(JSON.parse(JSON.stringify(this.setRestrictedPrivileges)));
+
                 $(this.$refs['group-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
             },
             save: function ($event) {
@@ -348,6 +357,11 @@ $html = ob_get_clean();
                 } else {
                     this.setNonrestrictedPrivileges.push(privToFind);
                 }
+            },
+            removeRestricted: function(priv) {
+                this.setRestrictedPrivileges = this.setRestrictedPrivileges.filter(val => {
+                    return JSON.stringify(val) !== JSON.stringify(priv);
+                });
             },
             startAddingRestricted: function () {
                 this.addingRestricted = true;

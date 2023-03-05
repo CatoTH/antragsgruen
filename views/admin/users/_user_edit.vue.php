@@ -1,7 +1,7 @@
 <?php
 ob_start();
 ?>
-<div class="modal fade editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" ref="user-edit-modal">
+<div class="modal fade editUserGroupModal editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" ref="user-edit-modal">
     <form class="modal-dialog" method="POST" @submit="save($event)">
         <article class="modal-content">
             <header class="modal-header">

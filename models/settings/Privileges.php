@@ -46,19 +46,19 @@ class Privileges
     {
         if ($this->cachedNonMotionPrivileges === null) {
             $this->cachedNonMotionPrivileges = [
-                new Privilege(
+                self::PRIVILEGE_CONSULTATION_SETTINGS => new Privilege(
                     self::PRIVILEGE_CONSULTATION_SETTINGS,
                     'Veranstaltungseinstellungen bearbeiten'
                 ),
-                new Privilege(
+                self::PRIVILEGE_CONTENT_EDIT => new Privilege(
                     self::PRIVILEGE_CONTENT_EDIT,
                     'Redaktionelle Texte bearbeiten'
                 ),
-                new Privilege(
+                self::PRIVILEGE_SPEECH_QUEUES => new Privilege(
                     self::PRIVILEGE_SPEECH_QUEUES,
                     'Redelisten bearbeiten'
                 ),
-                new Privilege(
+                self::PRIVILEGE_VOTINGS => new Privilege(
                     self::PRIVILEGE_VOTINGS,
                     'Abstimmungen bearbeiten'
                 ),
@@ -74,23 +74,23 @@ class Privileges
     {
         if ($this->cachedMotionPrivileges === null) {
             $this->cachedMotionPrivileges = [
-                new Privilege(
+                self::PRIVILEGE_SCREENING => new Privilege(
                     self::PRIVILEGE_SCREENING,
                     'Freischalten'
                 ),
-                new Privilege(
+                self::PRIVILEGE_MOTION_STATUS_EDIT => new Privilege(
                     self::PRIVILEGE_MOTION_STATUS_EDIT,
                     'Rahmendaten bearbeiten'
                 ),
-                new Privilege(
+                self::PRIVILEGE_MOTION_TEXT_EDIT => new Privilege(
                     self::PRIVILEGE_MOTION_TEXT_EDIT,
                     'Inhalte/Texte bearbeiten'
                 ),
-                new Privilege(
+                self::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS => new Privilege(
                     self::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS,
                     'Im Namen Anderer stellen'
                 ),
-                new Privilege(
+                self::PRIVILEGE_CHANGE_PROPOSALS => new Privilege(
                     self::PRIVILEGE_CHANGE_PROPOSALS,
                     'Verfahrensvorschläge bearbeiten'
                 ),
