@@ -48,19 +48,19 @@ class Privileges
             $this->cachedNonMotionPrivileges = [
                 self::PRIVILEGE_CONSULTATION_SETTINGS => new Privilege(
                     self::PRIVILEGE_CONSULTATION_SETTINGS,
-                    'Veranstaltungseinstellungen bearbeiten'
+                    \Yii::t('structure', 'privilege_consettings')
                 ),
                 self::PRIVILEGE_CONTENT_EDIT => new Privilege(
                     self::PRIVILEGE_CONTENT_EDIT,
-                    'Redaktionelle Texte bearbeiten'
+                    \Yii::t('structure', 'privilege_content')
                 ),
                 self::PRIVILEGE_SPEECH_QUEUES => new Privilege(
                     self::PRIVILEGE_SPEECH_QUEUES,
-                    'Redelisten bearbeiten'
+                    \Yii::t('structure', 'privilege_speech')
                 ),
                 self::PRIVILEGE_VOTINGS => new Privilege(
                     self::PRIVILEGE_VOTINGS,
-                    'Abstimmungen bearbeiten'
+                    \Yii::t('structure', 'privilege_voting')
                 ),
             ];
         }
@@ -76,23 +76,23 @@ class Privileges
             $this->cachedMotionPrivileges = [
                 self::PRIVILEGE_SCREENING => new Privilege(
                     self::PRIVILEGE_SCREENING,
-                    'Freischalten'
+                    \Yii::t('structure', 'privilege_screening')
                 ),
                 self::PRIVILEGE_MOTION_STATUS_EDIT => new Privilege(
                     self::PRIVILEGE_MOTION_STATUS_EDIT,
-                    'Rahmendaten bearbeiten'
+                    \Yii::t('structure', 'privilege_motionstruct')
                 ),
                 self::PRIVILEGE_MOTION_TEXT_EDIT => new Privilege(
                     self::PRIVILEGE_MOTION_TEXT_EDIT,
-                    'Inhalte/Texte bearbeiten'
+                    \Yii::t('structure', 'privilege_motioncontent')
                 ),
                 self::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS => new Privilege(
                     self::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS,
-                    'Im Namen Anderer stellen'
+                    \Yii::t('structure', 'privilege_motionusers')
                 ),
                 self::PRIVILEGE_CHANGE_PROPOSALS => new Privilege(
                     self::PRIVILEGE_CHANGE_PROPOSALS,
-                    'Verfahrensvorschläge bearbeiten'
+                    \Yii::t('structure', 'privilege_proposals')
                 ),
             ];
         }

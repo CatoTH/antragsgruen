@@ -14,7 +14,7 @@ ob_start();
 ?>
 <section class="restrictedAddingForm">
     <div class="restrictedPermissions"><br>
-        <strong>Berechtigungen:</strong>
+        <strong><?= Yii::t('admin', 'siteacc_priv_rest_privs') ?>:</strong>
         <label v-for="priv in allPrivilegesMotion">
             <input type="checkbox" :checked="isPrivilegeSet(priv.id)" @click="togglePrivilege(priv.id)">
             {{ priv.title }}
@@ -23,18 +23,18 @@ ob_start();
 
     <div class="restrictedTo">
         <div class="verticalLabels">
-            <strong>Eingeschränkt auf:</strong><br>
+            <strong><?= Yii::t('admin', 'siteacc_priv_rest_type') ?>:</strong><br>
             <label>
                 <input type="radio" v-model="restrictToType" value="motionType">
-                Antragstyp
+                <?= Yii::t('admin', 'siteacc_priv_rest_mtype') ?>
             </label>
             <label>
                 <input type="radio" v-model="restrictToType" value="agendaItem">
-                Tagesordnungspunkt
+                <?= Yii::t('admin', 'siteacc_priv_rest_agenda') ?>
             </label>
             <label>
                 <input type="radio" v-model="restrictToType" value="tag">
-                Thema
+                <?= Yii::t('admin', 'siteacc_priv_rest_tag') ?>
             </label>
         </div>
 
@@ -62,7 +62,7 @@ ob_start();
         </div>
     </div>
 
-    <button type="button" class="btn btn-default" @click="add()" :disabled="!canSubmit">Hinzufügen</button>
+    <button type="button" class="btn btn-default" @click="add()" :disabled="!canSubmit"><?= Yii::t('admin', 'siteacc_priv_rest_add_btn') ?></button>
 </section>
 <?php
 $htmlCreatingRestricted = ob_get_clean();
@@ -165,7 +165,7 @@ ob_start();
 
                 <div class="stdTwoCols">
                     <div class="leftColumn">
-                        Allgemeine Admin-Rechte
+                        <?= Yii::t('admin', 'siteacc_priv_nonmotion') ?>
                     </div>
                     <div class="rightColumn">
                         <label v-for="priv in allPrivilegesGeneral">
@@ -177,8 +177,7 @@ ob_start();
 
                 <div class="stdTwoCols">
                     <div class="leftColumn">
-                        Admin-Rechte für<br>
-                        <u>Alle</u> Anträge/ÄAs
+                        <?= Yii::t('admin', 'siteacc_priv_motion_all') ?>
                     </div>
                     <div class="rightColumn">
                         <label v-for="priv in allPrivilegesMotion">
@@ -190,31 +189,30 @@ ob_start();
 
                 <div class="stdTwoCols">
                     <div class="leftColumn">
-                        Admin-Rechte für<br>
-                        <u>manche</u> Anträge/ÄAs
+                        <?= Yii::t('admin', 'siteacc_priv_motion_rest') ?>
                     </div>
                     <div class="rightColumn">
                         <div v-if="!addingRestricted">
                             <ul v-if="setRestrictedPrivileges && setRestrictedPrivileges.length > 0" class="stdNonFormattedList restrictedPrivilegeList">
                                 <li v-for="priv in setRestrictedPrivileges">
-                                    <button class="btn btn-link btnRemove" type="button" @click="removeRestricted(priv)" title="Entfernen">
+                                    <button class="btn btn-link btnRemove" type="button" @click="removeRestricted(priv)" title="<?= Yii::t('base', 'aria_remove') ?>">
                                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                        <span class="sr-only">Entfernen</span>
+                                        <span class="sr-only"><?= Yii::t('base', 'aria_remove') ?></span>
                                     </button>
-                                    <div><strong>Berechtigungen:</strong> <span>{{ formatPrivilegeIdList(priv.privileges) }}</span></div>
+                                    <div><strong><?= Yii::t('admin', 'siteacc_priv_rest_privs') ?>:</strong> <span>{{ formatPrivilegeIdList(priv.privileges) }}</span></div>
                                     <div>
-                                        <strong>Für:</strong>
+                                        <strong><?= Yii::t('admin', 'siteacc_priv_rest_for') ?>:</strong>
                                         <span v-if="priv.motionType">{{ priv.motionType.title }}</span>
                                         <span v-if="priv.tag">{{ priv.tag.title }}</span>
                                         <span v-if="priv.agendaItem">{{ priv.agendaItem.title }}</span>
                                     </div>
                                 </li>
                             </ul>
-                            <div v-if="!setRestrictedPrivileges || setRestrictedPrivileges.length === 0">keine</div>
+                            <div v-if="!setRestrictedPrivileges || setRestrictedPrivileges.length === 0"><?= Yii::t('admin', 'siteacc_priv_rest_none') ?></div>
 
                             <button class="btn btn-link btnAddRestrictedPermission" @click="startAddingRestricted()">
                                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                Eingeschränktes Recht hinzufügen
+                                <?= Yii::t('admin', 'siteacc_priv_rest_add') ?>
                             </button>
                         </div>
 

@@ -351,6 +351,18 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_usermodal_superh'   => 'Hint: Super-admins can change the user data mentioned above and set a new password. Please refer to the <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins" target="_blank">technical documentation</a> on how to set up the list of super-admins.',
     'siteacc_groupmodal_title'   => 'Edit %GROUPNAME%',
     'siteacc_groupmodal_system'  => 'This is a default group that cannot be changed.',
+    'siteacc_priv_nonmotion'     => 'Regular privileges',
+    'siteacc_priv_motion_all'    => 'Privileges for <u>all</u><br> motions/amendments',
+    'siteacc_priv_motion_rest'   => 'Privileges for <u>some</u><br> motions/amendments',
+    'siteacc_priv_rest_privs'    => 'Permissions',
+    'siteacc_priv_rest_for'      => 'For',
+    'siteacc_priv_rest_none'     => 'none',
+    'siteacc_priv_rest_add'      => 'Add restricted permission',
+    'siteacc_priv_rest_add_btn'  => 'Add',
+    'siteacc_priv_rest_type'     => 'Restricted to',
+    'siteacc_priv_rest_tag'      => 'Tag',
+    'siteacc_priv_rest_mtype'    => 'Motion type',
+    'siteacc_priv_rest_agenda'   => 'Agenda item',
     'siteacc_email_text_pre'     => 'Hi,
 
 we have just created an Antragsgrün account for you. Now you can join the discussion on the motions / drafts.

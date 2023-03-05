@@ -352,6 +352,18 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_usermodal_superh'   => 'Hinweis: Super-Admins können die Angaben oben bearbeiten und neue Passwörter setzen. In der <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins" target="_blank">technischen Dokumentation</a> steht, wie Super-Admins verwaltet werden.',
     'siteacc_groupmodal_title'   => '%GROUPNAME% bearbeiten',
     'siteacc_groupmodal_system'  => 'Dies ist eine nicht veränderbare Standard-Gruppe.',
+    'siteacc_priv_nonmotion'     => 'Allgemeine Admin-Rechte',
+    'siteacc_priv_motion_all'    => 'Admin-Rechte für<br><u>alle</u> Anträge/ÄAs',
+    'siteacc_priv_motion_rest'   => 'Admin-Rechte für<br><u>manche</u> Anträge/ÄAs',
+    'siteacc_priv_rest_privs'    => 'Berechtigungen',
+    'siteacc_priv_rest_for'      => 'Für',
+    'siteacc_priv_rest_none'     => 'keine',
+    'siteacc_priv_rest_add'      => 'Eingeschränktes Recht hinzufügen',
+    'siteacc_priv_rest_add_btn'  => 'Hinzufügen',
+    'siteacc_priv_rest_type'     => 'Eingeschränkt auf',
+    'siteacc_priv_rest_tag'      => 'Thema',
+    'siteacc_priv_rest_mtype'    => 'Antragstyp',
+    'siteacc_priv_rest_agenda'   => 'Tagesordnungspunkt',
     'siteacc_email_text_pre'     => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .
