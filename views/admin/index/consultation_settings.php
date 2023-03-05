@@ -140,7 +140,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
     </div>
 
     <?php
-if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN)) {
+if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
     $conPwd = new \app\components\ConsultationAccessPassword($consultation);
     ?>
     <h2 class="green"><?= Yii::t('admin', 'siteacc_title') ?></h2>

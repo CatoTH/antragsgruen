@@ -24,6 +24,6 @@ class CollectBeforePublish extends SupportBase
 
     public function hasFullTextSupporterField(): bool
     {
-        return User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_ANY);
+        return User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_ANY, null);
     }
 }

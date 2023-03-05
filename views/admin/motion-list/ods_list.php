@@ -174,7 +174,7 @@ foreach ($imotions as $imotion) {
     } else {
         foreach ($motionType->motionSections as $section) {
             $text = '';
-            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
                 $sections = $imotion->getActiveSections(null, true);
             } else {
                 $sections = $imotion->getActiveSections();

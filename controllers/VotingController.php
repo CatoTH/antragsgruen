@@ -40,7 +40,7 @@ class VotingController extends Base
     private function ensureAdminPermissions(): void
     {
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
             throw new \Exception('Missing privileges');
         }
     }

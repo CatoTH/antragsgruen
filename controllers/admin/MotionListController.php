@@ -2,20 +2,19 @@
 
 namespace app\controllers\admin;
 
-use app\components\Tools;
-use app\components\ZipWriter;
+use app\components\{Tools, ZipWriter};
 use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\forms\AdminMotionFilterForm;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Privileges;
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, ResponseInterface};
+use app\models\settings\{AntragsgruenApp, Privileges};
 use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\web\Response;
 
 class MotionListController extends AdminBase
 {
-    protected function actionListallScreeningMotions()
+    protected function actionListallScreeningMotions(): void
     {
         if ($this->isRequestSet('motionScreen')) {
             $motion = $this->consultation->getMotion($this->getRequestValue('motionScreen'));
@@ -79,7 +78,7 @@ class MotionListController extends AdminBase
         }
     }
 
-    protected function actionListallScreeningAmendments()
+    protected function actionListallScreeningAmendments(): void
     {
         if ($this->isRequestSet('amendmentScreen')) {
             $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentScreen'));
@@ -142,7 +141,7 @@ class MotionListController extends AdminBase
         }
     }
 
-    protected function actionListallProposalAmendments()
+    protected function actionListallProposalAmendments(): void
     {
         if ($this->isRequestSet('proposalVisible')) {
             foreach ($this->getRequestValue('amendments', []) as $amendmentId) {
@@ -157,15 +156,13 @@ class MotionListController extends AdminBase
     }
 
 
-    public function actionIndex(?string $motionId = null): string
+    public function actionIndex(?string $motionId = null): ResponseInterface
     {
         $consultation       = $this->consultation;
-        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING);
-        $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
+        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null);
+        $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
         if (!($privilegeScreening || $privilegeProposals)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_acccess'));
-
-            return '';
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_acccess'));
         }
 
         $this->activateFunctions();
@@ -187,7 +184,7 @@ class MotionListController extends AdminBase
         }
         if ($motionId === null && $consultation->getSettings()->adminListFilerByMotion) {
             $search = new AdminMotionFilterForm($consultation, $consultation->motions, true, $privilegeScreening);
-            return $this->render('motion_list', ['motions' => $consultation->motions, 'search' => $search]);
+            return new HtmlResponse($this->render('motion_list', ['motions' => $consultation->motions, 'search' => $search]));
         }
 
         if ($motionId !== null && $motionId !== 'all') {
@@ -201,41 +198,26 @@ class MotionListController extends AdminBase
             $search->setAttributes($this->getRequestValue('Search'));
         }
 
-        return $this->render('list_all', [
+        return new HtmlResponse($this->render('list_all', [
             'motionId'           => $motionId,
             'entries'            => $search->getSorted(),
             'search'             => $search,
             'privilegeScreening' => $privilegeScreening,
             'privilegeProposals' => $privilegeProposals,
-        ]);
+        ]));
     }
 
-    /**
-     * @return string
-     */
-    public function actionMotionOdslistall()
+    public function actionMotionOdslistall(): BinaryFileResponse
     {
         // @TODO: support filtering for motion types and withdrawn motions
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $this->renderPartial('ods_list_all', [
+        $ods = $this->renderPartial('ods_list_all', [
             'items' => $this->consultation->getAgendaWithIMotions(),
         ]);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'motions');
     }
 
-    /**
-     * @param int $motionTypeId
-     * @param bool $textCombined
-     * @param int $withdrawn
-     *
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionMotionOdslist($motionTypeId, $textCombined = false, $withdrawn = 0)
+    public function actionMotionOdslist(int $motionTypeId, bool $textCombined = false, int $withdrawn = 0): ResponseInterface
     {
         $withdrawn    = ($withdrawn == 1);
         $motionTypeId = intval($motionTypeId);
@@ -243,15 +225,8 @@ class MotionListController extends AdminBase
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
-            $this->showErrorpage(404, $e->getMessage());
-            return '';
+            return new HtmlErrorResponse(404, $e->getMessage());
         }
-
-        $filename = Tools::sanitizeFilename($motionType->titlePlural, false) . '.ods';
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=' . $filename);
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
 
         $imotions = [];
         foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $imotion) {
@@ -260,11 +235,13 @@ class MotionListController extends AdminBase
             }
         }
 
-        return $this->renderPartial('ods_list', [
+        $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
+        $ods = $this->renderPartial('ods_list', [
             'imotions'     => $imotions,
             'textCombined' => $textCombined,
             'motionType'   => $motionType,
         ]);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, $filename);
     }
 
     /**
@@ -318,57 +295,39 @@ class MotionListController extends AdminBase
         ]);
     }
 
-    /**
-     * @param int $motionTypeId
-     * @param int $version
-     *
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionMotionOpenslides($motionTypeId, $version = 1)
+    public function actionMotionOpenslides(int $motionTypeId, int $version = 1): ResponseInterface
     {
         $motionTypeId = intval($motionTypeId);
 
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
-            $this->showErrorpage(404, $e->getMessage());
-            return '';
+            return new HtmlErrorResponse(404, $e->getMessage());
         }
 
-        $filename                    = rawurlencode($motionType->titlePlural);
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'text/csv');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=' . $filename . '.csv');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
+
+        $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
 
         $motions = [];
         foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-            if ($motion->motionTypeId == $motionTypeId) {
+            if ($motion->getMyMotionType()->id == $motionTypeId) {
                 $motions[] = $motion;
             }
         }
 
         if ($version == 1) {
-            return $this->renderPartial('openslides1_list', [
+            $csv = $this->renderPartial('openslides1_list', [
                 'motions' => $motions,
             ]);
         } else {
-            return $this->renderPartial('openslides2_list', [
+            $csv = $this->renderPartial('openslides2_list', [
                 'motions' => $motions,
             ]);
         }
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_CSV, $csv, true, $filename);
     }
 
-    /**
-     * @param int $motionTypeId
-     * @param int $withdrawn
-     *
-     * @return string
-     * @throws \Yii\base\ExitException
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionMotionPdfziplist($motionTypeId = 0, $withdrawn = 0)
+    public function actionMotionPdfziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
     {
         $withdrawn    = ($withdrawn == 1);
         $motionTypeId = intval($motionTypeId);
@@ -380,8 +339,7 @@ class MotionListController extends AdminBase
                 $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
             if (count($motions) === 0) {
-                $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
-                return '';
+                return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
             }
             /** @var IMotion[] $imotions */
             $imotions = [];
@@ -393,8 +351,7 @@ class MotionListController extends AdminBase
                 }
             }
         } catch (ExceptionBase $e) {
-            $this->showErrorpage(404, $e->getMessage());
-            return '';
+            return new HtmlErrorResponse(404, $e->getMessage());
         }
 
         $zip      = new ZipWriter();
@@ -419,22 +376,10 @@ class MotionListController extends AdminBase
             }
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions_pdf.zip');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $zip->getContentAndFlush();
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'motions_pdf');
     }
 
-    /**
-     * @param int $motionTypeId
-     * @param int $withdrawn
-     *
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionMotionOdtziplist($motionTypeId = 0, $withdrawn = 0)
+    public function actionMotionOdtziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
     {
         $withdrawn    = ($withdrawn == 1);
         $motionTypeId = intval($motionTypeId);
@@ -446,8 +391,7 @@ class MotionListController extends AdminBase
                 $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
             if (count($motions) === 0) {
-                $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
-                return '';
+                return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
             }
             /** @var IMotion[] $imotions */
             $imotions = [];
@@ -459,8 +403,7 @@ class MotionListController extends AdminBase
                 }
             }
         } catch (ExceptionBase $e) {
-            $this->showErrorpage(404, $e->getMessage());
-            return '';
+            return new HtmlErrorResponse(404, $e->getMessage());
         }
 
         $zip = new ZipWriter();
@@ -475,11 +418,6 @@ class MotionListController extends AdminBase
             }
         }
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/zip');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions_odt.zip');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $zip->getContentAndFlush();
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'motions_odt');
     }
 }

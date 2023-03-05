@@ -48,7 +48,7 @@ foreach ($consultation->motionTypes as $motionType) {
 }
 
 $btnNew       = count($creatableMotions) > 0;
-$btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS) && $hasInactiveFunctionality;
+$btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null) && $hasInactiveFunctionality;
 
 ?>
 <section class="motionListExportRow toolbarBelowTitle">

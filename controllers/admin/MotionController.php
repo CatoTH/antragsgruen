@@ -103,7 +103,7 @@ class MotionController extends AdminBase
     {
         $motionTypeId = intval($motionTypeId);
 
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
@@ -278,7 +278,7 @@ class MotionController extends AdminBase
 
     public function actionTypecreate(): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 

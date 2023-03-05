@@ -40,7 +40,7 @@ class AdminBase extends Base
         }
 
         // Hint: static:: to allow constant being overwritten
-        if (!User::haveOneOfPrivileges($this->consultation, static::REQUIRED_PRIVILEGES)) {
+        if (!User::haveOneOfPrivileges($this->consultation, static::REQUIRED_PRIVILEGES, null)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return false;
         }
@@ -49,7 +49,7 @@ class AdminBase extends Base
 
     protected function activateFunctions(): void
     {
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             return;
         }
 

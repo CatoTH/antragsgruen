@@ -9,7 +9,7 @@ use yii\helpers\Html;
 
 $user = User::getCurrentUser();
 $consultation = Consultation::getCurrent();
-$iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS));
+$iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null));
 
 $alternativeResultTemplate = Layout::getVotingAlternativeResults($consultation);
 

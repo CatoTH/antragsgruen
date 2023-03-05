@@ -30,7 +30,7 @@ trait AmendmentMergingTrait
 
         $otherAmendments = $amendment->getMyMotion()->getAmendmentsRelevantForCollisionDetection([$amendment]);
 
-        if ($amendment->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if ($amendment->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             $otherAmendmentsStatus = $this->getPostValue('otherAmendmentsStatus', []);
         } else {
             $otherAmendmentsStatus = [];
@@ -107,7 +107,7 @@ trait AmendmentMergingTrait
         $motion        = $amendment->getMyMotion();
         $mergingPolicy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
 
-        if ($amendment->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if ($amendment->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             $collisionHandling   = true;
             $allowStatusChanging = true;
         } elseif ($mergingPolicy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION) {

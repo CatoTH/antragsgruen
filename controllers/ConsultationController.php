@@ -84,7 +84,7 @@ class ConsultationController extends Base
         $form->setPage(intval($page));
 
         return new HtmlResponse($this->render('feeds', [
-            'admin' => User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT),
+            'admin' => User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null),
         ]));
     }
 
@@ -318,7 +318,7 @@ class ConsultationController extends Base
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
-        $isUserAdmin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS);
+        $isUserAdmin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
 
         $motion = null;
         $amendment = null;
@@ -355,7 +355,7 @@ class ConsultationController extends Base
         }
 
         $showInvisible = false;
-        if ($showAll && User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if ($showAll && User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             $form->setShowUserInvisibleEvents(true);
             $showInvisible = true;
         }
@@ -477,7 +477,7 @@ class ConsultationController extends Base
         $this->layout = 'column2';
 
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SPEECH_QUEUES)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return new RedirectResponse(UrlHelper::homeUrl());
@@ -522,7 +522,7 @@ class ConsultationController extends Base
         $this->layout = 'column2';
 
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return new RedirectResponse(UrlHelper::homeUrl());

@@ -9,7 +9,7 @@ class DateTools
 {
     public static function isDeadlineDebugModeActive(?Consultation $consultation = null): bool
     {
-        if (!$consultation || !User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!$consultation || !User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             return false;
         }
         return (RequestContext::getSession()->get('deadline_debug_mode', null) === '1');
@@ -17,7 +17,7 @@ class DateTools
 
     public static function setDeadlineDebugMode(?Consultation $consultation, bool $active): void
     {
-        if ($consultation && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if ($consultation && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             if ($active) {
                 RequestContext::getSession()->set('deadline_debug_mode', '1');
             } else {
@@ -29,7 +29,7 @@ class DateTools
 
     public static function setDeadlineTime(?Consultation $consultation, ?string $time): void
     {
-        if ($consultation && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if ($consultation && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             if ($time) {
                 RequestContext::getSession()->set('deadline_simulate_time', $time);
             } else {
@@ -66,7 +66,7 @@ class DateTools
 
     public static function getSimulatedTime(?Consultation $consultation): ?string
     {
-        if (!$consultation || !User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!$consultation || !User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             return null;
         }
         $time = RequestContext::getSession()->get('deadline_simulate_time');
@@ -76,7 +76,7 @@ class DateTools
     public static function getCurrentTimestamp(): int
     {
         $consultation = UrlHelper::getCurrentConsultation();
-        if (!$consultation || !User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!$consultation || !User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             return time();
         }
         if (RequestContext::getSession()->get('deadline_debug_mode', null) !== '1') {

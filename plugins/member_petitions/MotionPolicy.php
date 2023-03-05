@@ -61,7 +61,7 @@ class MotionPolicy extends IPolicy
         }
 
         if ($allowAdmins) {
-            if ($user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN)) {
+            if ($user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                 return true;
             }
         }

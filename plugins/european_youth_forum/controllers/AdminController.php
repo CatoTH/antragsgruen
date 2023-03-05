@@ -17,7 +17,7 @@ class AdminController extends Base
     private function ensureVotingAdminPermissions(): void
     {
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to access this page');
             $this->redirect(UrlHelper::createUrl('/consultation/admin-votings'));
             die();

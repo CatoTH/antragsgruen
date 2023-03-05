@@ -123,4 +123,15 @@ class UserGroupPermissionEntry
             'privileges' => $this->privileges,
         ];
     }
+
+    public function containsPrivilege(int $privilege, ?PrivilegeQueryContext $context): bool
+    {
+        // @TODO
+        die("not fully implemented yet");
+
+        if ($this->tagId !== null || $this->agendaItemId !== null || $this->motionTypeId !== null) {
+            return false;
+        }
+        return in_array($privilege, $this->privileges, true);
+    }
 }

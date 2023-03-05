@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\forms\ProposedChangeForm;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\http\{HtmlResponse, JsonResponse, ResponseInterface, RestApiExceptionResponse};
 use app\models\notifications\MotionProposedProcedure;
 use app\components\{Tools, UrlHelper};
@@ -21,7 +21,6 @@ use app\models\db\{Amendment,
 use app\models\exceptions\{DB, FormError, Internal, MailNotSent};
 use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;
-use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
 use yii\web\{Request, Response, Session};
 
@@ -45,7 +44,7 @@ trait MotionActionsTrait
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
-            if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+            if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
                 throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
@@ -126,7 +125,7 @@ trait MotionActionsTrait
         if (!$comment || $comment->motionId !== $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -154,7 +153,7 @@ trait MotionActionsTrait
         if (!$comment || $comment->motionId !== $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -306,7 +305,7 @@ trait MotionActionsTrait
      */
     private function motionAddTag(Motion $motion): void
     {
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::motion($motion))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -321,7 +320,7 @@ trait MotionActionsTrait
      */
     private function motionDelTag(Motion $motion): void
     {
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::motion($motion))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -449,7 +448,7 @@ trait MotionActionsTrait
         if (!$motion) {
             return new RestApiExceptionResponse(404, 'Motion not found');
         }
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null)) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
@@ -605,7 +604,7 @@ trait MotionActionsTrait
         if (!$motion) {
             return new RestApiExceptionResponse(404, 'Motion not found');
         }
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null)) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 

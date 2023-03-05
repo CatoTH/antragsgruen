@@ -20,7 +20,7 @@ $layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'consultationIndex';
 $this->title              = $consultation->title;
 
-$contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT);
+$contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
 
 if ($contentAdmin) {
     $layout->loadCKEditor();

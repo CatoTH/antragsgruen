@@ -47,7 +47,7 @@ trait ConsultationAgendaTrait
 
     public function actionSaveAgendaItemAjax(int $itemId): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return new RestApiExceptionResponse(403, 'No access');
         }
 
@@ -138,7 +138,7 @@ trait ConsultationAgendaTrait
 
     public function actionDelAgendaItemAjax(int $itemId): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return new RestApiExceptionResponse(403, 'No access');
         }
 
@@ -157,7 +157,7 @@ trait ConsultationAgendaTrait
 
     public function actionSaveAgendaOrderAjax(): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return new RestApiExceptionResponse(403, 'No access');
         }
 

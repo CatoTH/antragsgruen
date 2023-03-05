@@ -138,7 +138,7 @@ class SpeechController extends Base
         $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
-        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SPEECH_QUEUES)) {
+        if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
             throw new \Exception('Missing privileges');
         }
 

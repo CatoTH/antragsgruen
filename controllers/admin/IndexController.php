@@ -56,7 +56,7 @@ class IndexController extends AdminBase
             $settings->saveConsultationForm($settingsInput, $post['settingsFields']);
             $settings->setOrganisationsFromInput($post['organisations'] ?? []);
 
-            if ($model->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN)) {
+            if ($model->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                 if ($this->isPostSet('pwdProtected') && $this->isPostSet('consultationPassword')) {
                     if (trim($post['consultationPassword'])) {
                         $pwdTools = new ConsultationAccessPassword($model);
@@ -84,7 +84,7 @@ class IndexController extends AdminBase
                     $model->site->status = ($settings->maintenanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
                 }
 
-                if ($model->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN)) {
+                if ($model->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                     $settings = $model->site->getSettings();
 
                     $settings->loginMethods = [];
@@ -338,7 +338,7 @@ class IndexController extends AdminBase
     {
         $site = $this->site;
 
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 

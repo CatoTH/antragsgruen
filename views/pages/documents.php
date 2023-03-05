@@ -14,7 +14,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout = $controller->layoutParams;
 $consultation = $controller->consultation;
-$contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT);
+$contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
 
 $this->title = Yii::t('pages', 'documents_title');
 $layout->addBreadcrumb(Yii::t('pages', 'documents_title'));

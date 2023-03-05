@@ -271,11 +271,11 @@ class StdHooks extends Hooks
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $consultation       = $controller->consultation;
-            $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING);
-            $privilegeProposal = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
+            $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null);
+            $privilegeProposal = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
 
             if ($consultation) {
-                if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+                if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
                     $icon = '<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>';
                     $icon .= '<span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>';
                     $url  = UrlHelper::createUrl('/pages/list-pages');
@@ -327,7 +327,7 @@ class StdHooks extends Hooks
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'votingsLink', 'aria-label' => $adminTitle]) . '</li>';
             }
 
-            if (User::haveOneOfPrivileges($consultation, IndexController::REQUIRED_PRIVILEGES)) {
+            if (User::haveOneOfPrivileges($consultation, IndexController::REQUIRED_PRIVILEGES, null)) {
                 $adminUrl   = UrlHelper::createUrl('/admin/index');
                 $adminTitle = \Yii::t('base', 'menu_admin');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink', 'aria-label' => $adminTitle]) . '</li>';
@@ -444,7 +444,7 @@ class StdHooks extends Hooks
     public function getConsultationwidePublicWarnings(array $before, Consultation $consultation): array
     {
         if ($consultation->getSettings()->maintenanceMode && User::getCurrentUser() &&
-            User::getCurrentUser()->hasPrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+            User::getCurrentUser()->hasPrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             $url = UrlHelper::createUrl('/admin/index/consultation');
             $before[] = str_replace('%URL%', $url, \Yii::t('base', 'head_maintenance_adm'));
         }

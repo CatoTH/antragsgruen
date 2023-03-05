@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\layoutHooks\Layout;
+use app\models\settings\PrivilegeQueryContext;
 use app\components\{ExternalPasswordAuthenticatorInterface,
     RequestContext,
     Tools,
@@ -121,23 +122,23 @@ class User extends ActiveRecord implements IdentityInterface
         return null;
     }
 
-    public static function havePrivilege(?Consultation $consultation, int $privilege): bool
+    public static function havePrivilege(?Consultation $consultation, int $privilege, ?PrivilegeQueryContext $context): bool
     {
         $user = static::getCurrentUser();
         if (!$user) {
             return false;
         }
-        return $user->hasPrivilege($consultation, $privilege);
+        return $user->hasPrivilege($consultation, $privilege, $context);
     }
 
-    public static function haveOneOfPrivileges(?Consultation $consultation, array $privileges): bool
+    public static function haveOneOfPrivileges(?Consultation $consultation, array $privileges, ?PrivilegeQueryContext $context): bool
     {
         $user = static::getCurrentUser();
         if (!$user) {
             return false;
         }
         foreach ($privileges as $privilege) {
-            if ($user->hasPrivilege($consultation, $privilege)) {
+            if ($user->hasPrivilege($consultation, $privilege, $context)) {
                 return true;
             }
         }
@@ -592,7 +593,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Checks if this user has the given privilege for the given consultation
      */
-    public function hasPrivilege(?Consultation $consultation, int $privilege): bool
+    public function hasPrivilege(?Consultation $consultation, int $privilege, ?PrivilegeQueryContext $context): bool
     {
         if (!$consultation) {
             return false;
@@ -603,7 +604,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         foreach ($this->getUserGroupsForConsultation($consultation) as $userGroup) {
-            if ($userGroup->getGroupPermissions()->containsPrivilege($privilege)) {
+            if ($userGroup->getGroupPermissions()->containsPrivilege($privilege, $context)) {
                 return true;
             }
         }

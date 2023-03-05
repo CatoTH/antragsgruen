@@ -13,6 +13,7 @@ use app\models\db\{Amendment,
     Consultation,
     User};
 use app\models\events\AmendmentEvent;
+use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\models\exceptions\{DB, FormError, Internal};
 use app\models\forms\CommentForm;
@@ -35,11 +36,11 @@ trait AmendmentActionsTrait
     {
         /** @var AmendmentComment|null $comment */
         $comment = AmendmentComment::findOne($commentId);
-        if (!$comment || $comment->amendmentId != $amendment->id || $comment->status != IComment::STATUS_VISIBLE) {
+        if (!$comment || $comment->amendmentId !== $amendment->id || $comment->status !== IComment::STATUS_VISIBLE) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
-            if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+            if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
                 throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
@@ -48,7 +49,7 @@ trait AmendmentActionsTrait
 
     private function writeComment(Amendment $amendment, array &$viewParameters): void
     {
-        $postComment = \Yii::$app->request->post('comment');
+        $postComment = $this->getPostValue('comment');
 
         $replyTo = null;
         if (isset($postComment['parentCommentId']) && $postComment['parentCommentId']) {
@@ -63,7 +64,7 @@ trait AmendmentActionsTrait
         }
 
         $commentForm = new CommentForm($amendment, $replyTo);
-        $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
+        $commentForm->setAttributes($this->getPostValue('comment'));
 
         try {
             $commentForm->saveNotificationSettings();
@@ -93,7 +94,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentAddTag(Amendment $amendment): void
     {
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -108,7 +109,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentDelTag(Amendment $amendment): void
     {
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -150,7 +151,7 @@ trait AmendmentActionsTrait
         if (!$comment || $comment->amendmentId !== $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -169,10 +170,10 @@ trait AmendmentActionsTrait
     {
         /** @var AmendmentComment|null $comment */
         $comment = AmendmentComment::findOne($commentId);
-        if (!$comment || $comment->amendmentId != $amendment->id) {
+        if (!$comment || $comment->amendmentId !== $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 

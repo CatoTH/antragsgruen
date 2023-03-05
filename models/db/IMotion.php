@@ -244,7 +244,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     public function isReadable(): bool
     {
-        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT);
+        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null);
         if ($iAmAdmin && in_array($this->status, [static::STATUS_DRAFT, static::STATUS_DRAFT_ADMIN])) {
             return true;
         }
@@ -377,7 +377,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public function getSortedSections(bool $withoutTitle = false, bool $includeNonPublicIfPossible = false): array
     {
         if ($includeNonPublicIfPossible &&
-            ($this->iAmInitiator() ||User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT))) {
+            ($this->iAmInitiator() ||User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null))) {
             $includeNonPublic = true;
         } else {
             $includeNonPublic = false;
@@ -483,7 +483,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     {
         return ($this->hasAlternativeProposaltext(true) && (
                 $this->isProposalPublic() ||
-                User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS) ||
+                User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, null) ||
                 ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
             ));
     }

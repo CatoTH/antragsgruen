@@ -28,7 +28,7 @@ $layout->addVueTemplate('@app/views/speech/user-footer-widget.vue.php');
 $initData = $queue->getUserApiObject($user, $cookieUser);
 $userData = new SpeechUser($user, $cookieUser);
 
-if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES)) {
+if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
     $adminUrl = $queue->getAdminLink();
 } else {
     $adminUrl = '';

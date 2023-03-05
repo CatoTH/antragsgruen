@@ -12,7 +12,7 @@ use yii\helpers\Html;
 
 $imotion       = $comment->getIMotion();
 $screening     = ($comment->status === IComment::STATUS_SCREENING);
-$screenAdmin   = User::havePrivilege($imotion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING);
+$screenAdmin   = User::havePrivilege($imotion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, null);
 $commentPolicy = $imotion->getMyMotionType()->getCommentPolicy();
 $canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserComment(false, false));
 

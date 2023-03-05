@@ -1,7 +1,7 @@
 <?php
 
 use app\models\db\{Amendment, AmendmentComment, User};
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 /**
  * @var \yii\web\View $this
@@ -38,7 +38,7 @@ if ($screeningQueue > 0) {
     echo '</div>';
 }
 
-$screenAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING);
+$screenAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($amendment));
 foreach ($amendment->getVisibleComments($screenAdmin, -1, null) as $comment) {
     /** @var AmendmentComment $comment */
     echo $this->render('@app/views/shared/comment', ['comment' => $comment]);

@@ -45,7 +45,7 @@ class Nobody extends IPolicy
     public function checkUser(?User $user, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if ($allowAdmins && $user) {
-            if ($user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT)) {
+            if ($user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, null)) {
                 return true;
             }
         }

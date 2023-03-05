@@ -231,7 +231,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() &&
-            !User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT)) {
+            !User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             // @TODO Find a solution to edit motions before submitting when not logged in
             throw new Internal('Can only set showAdminSections for admins');
         }
@@ -718,7 +718,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyMotionType()->amendmentsOnly) {
             return false;
         }
-        if ($this->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if ($this->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return true;
         } elseif ($this->getMyMotion()->iAmInitiator()) {
             $policy = $this->getMyMotionType()->initiatorsCanMergeAmendments;

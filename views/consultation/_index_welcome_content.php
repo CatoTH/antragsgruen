@@ -9,7 +9,7 @@ use yii\helpers\Html;
  * @var \app\models\db\Consultation $consultation
  */
 
-$contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT);
+$contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, nul);
 
 $preWelcome = \app\models\layoutHooks\Layout::getConsultationPreWelcome();
 

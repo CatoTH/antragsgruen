@@ -256,7 +256,7 @@ class Base extends Controller
     public function renderContentPage(string $pageKey): string
     {
         if ($this->consultation) {
-            $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT);
+            $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
         } else {
             $user  = User::getCurrentUser();
             $admin = ($user && in_array($user->id, $this->getParams()->adminUserIds));
@@ -301,7 +301,7 @@ class Base extends Controller
             throw new ApiResponseException('Consultation not found', 404);
         }
         if ($this->consultation && $this->consultation->getSettings()->maintenanceMode && !$alwaysEnabled) {
-            if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+            if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
                 throw new ApiResponseException('Consultation in maintenance mode', 404);
             }
         }
@@ -344,7 +344,7 @@ class Base extends Controller
             return false;
         }
         $settings = $this->consultation->getSettings();
-        $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS);
+        $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
         if ($settings->maintenanceMode && !$admin) {
             $this->redirect(UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'maintenance']));
             return true;

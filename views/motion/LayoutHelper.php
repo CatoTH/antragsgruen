@@ -28,8 +28,8 @@ class LayoutHelper
             $name = $supp->getNameWithResolutionDate(true);
             $name = LayoutHooks::getMotionDetailsInitiatorName($name, $supp);
 
-            $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING) ||
-                     User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
+            $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null) ||
+                     User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
             if ($admin && ($supp->contactEmail || $supp->contactPhone)) {
                 if (!$expanded) {
                     $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
@@ -113,7 +113,7 @@ class LayoutHelper
      */
     public static function addTagsRow(Consultation $consultation, array $selectedTags, array &$rows): void
     {
-        $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING);
+        $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null);
         if ($admin && count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) {
             $tags = [];
             $used_tag_ids = [];

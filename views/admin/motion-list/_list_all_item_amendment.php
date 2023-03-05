@@ -1,6 +1,6 @@
 <?php
 
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion, User};
 use yii\helpers\Html;
@@ -23,7 +23,7 @@ $consultation = $controller->consultation;
 
 $hasTags           = (count($consultation->tags) > 0);
 $amendmentStatuses = $consultation->getStatuses()->getStatusNames();
-if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($entry))) {
     $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
 } else {
     $editUrl = null;

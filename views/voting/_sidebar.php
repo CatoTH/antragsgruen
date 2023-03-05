@@ -37,7 +37,7 @@ $html .= $pdfLi;
 $layout->menusHtmlSmall[] = $pdfLi;
 
 
-if (\app\models\db\User::havePrivilege($consultation, Privileges::PRIVILEGE_VOTINGS)) {
+if (\app\models\db\User::havePrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
     $pdfLi = '<li class="admin">';
     $title = Yii::t('voting', 'sidebar_admin');
     if ($sidebarMode === 'admin') {

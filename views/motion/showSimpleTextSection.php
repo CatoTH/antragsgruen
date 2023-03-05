@@ -6,6 +6,7 @@
  */
 
 use app\components\UrlHelper;
+use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\models\db\{ConsultationSettingsMotionSection, MotionComment, User};
 use app\models\forms\CommentForm;
@@ -15,7 +16,7 @@ $consultation   = $section->getConsultation();
 $motion         = $section->getMotion();
 $hasLineNumbers = $section->getSettings()->lineNumbers;
 $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
-$screenAdmin    = User::havePrivilege($section->getConsultation(), Privileges::PRIVILEGE_SCREENING);
+$screenAdmin    = User::havePrivilege($section->getConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion));
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
     $classes[] = 'lineNumbers';

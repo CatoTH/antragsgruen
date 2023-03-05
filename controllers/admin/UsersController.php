@@ -31,7 +31,7 @@ class UsersController extends AdminBase
     {
         $consultation = $this->consultation;
 
-        if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             throw new ExitException();
         }
@@ -209,7 +209,7 @@ class UsersController extends AdminBase
         return new HtmlResponse($this->render('index', [
             'widgetData' => $this->getUsersWidgetData($consultation),
             'screening' => $consultation->screeningUsers,
-            'globalUserAdmin' => User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN),
+            'globalUserAdmin' => User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN, null),
         ]));
     }
 
@@ -233,7 +233,7 @@ class UsersController extends AdminBase
                         intval($this->getPostValue('userId')),
                         array_map('intval', $this->getPostValue('groups', []))
                     );
-                    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN)) {
+                    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN, null)) {
                         $this->userGroupAdminMethods->setUserData(
                             intval($this->getPostValue('userId')),
                             $this->getPostValue('nameGiven'),

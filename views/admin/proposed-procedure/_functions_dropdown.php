@@ -18,7 +18,7 @@ foreach ($consultation->motionTypes as $motionType) {
         $hasProposedProcedures = true;
     }
 }
-$btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS) && (!$hasResponsibilities || !$hasProposedProcedures);
+$btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null) && (!$hasResponsibilities || !$hasProposedProcedures);
 
 if ($btnFunctions) {
     ?>

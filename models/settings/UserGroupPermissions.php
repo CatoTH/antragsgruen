@@ -112,10 +112,12 @@ class UserGroupPermissions
         ];
     }
 
-    public function containsPrivilege(int $privilege): bool
+    public function containsPrivilege(int $privilege, ?PrivilegeQueryContext $context): bool
     {
-        if (!$this->defaultPermissions) {
-            return false;
+        foreach ($this->privileges ?? [] as $priv) {
+            if ($priv->containsPrivilege($privilege, $context)) {
+                return true;
+            }
         }
 
         switch ($privilege) {

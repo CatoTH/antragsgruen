@@ -36,7 +36,7 @@ class MotionController extends Base
 
         $motion = $this->getMotionWithCheck($motionSlug);
         $this->motion = $motion;
-        if ($this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING)) {
+        if ($this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
             $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
         } else {
             $adminEdit = null;
@@ -331,7 +331,7 @@ class MotionController extends Base
 
         $form = new MotionEditForm($motionType, $agendaItem, null);
         $supportType = $motionType->getMotionSupportTypeClass();
-        $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING);
+        $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null);
 
         if ($this->isPostSet('save')) {
             try {
@@ -423,7 +423,7 @@ class MotionController extends Base
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
         $user = User::getCurrentUser();
-        if (!$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SPEECH_QUEUES)) {
+        if (!$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return new RedirectResponse(UrlHelper::createMotionUrl($motion));

@@ -19,7 +19,7 @@ $layout->loadBootstrapToggle();
 $this->title = Yii::t('con', 'proposal_title');
 $layout->addBreadcrumb(Yii::t('con', 'proposal_bc'));
 
-$iAmAdmin  = User::havePrivilege($controller->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
+$iAmAdmin  = User::havePrivilege($controller->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
 $reloadUrl = \app\components\UrlHelper::createUrl('consultation/proposed-procedure-ajax');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';

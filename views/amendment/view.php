@@ -3,7 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\{Amendment, User};
 use app\models\forms\CommentForm;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 
@@ -21,7 +21,7 @@ $consultation = $amendment->getMyConsultation();
 $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
+$hasPpAdminbox = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment));
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;

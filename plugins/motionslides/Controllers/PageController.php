@@ -28,7 +28,7 @@ class PageController extends Base
     public function actionFromImotions(string $pageSlug): void
     {
         $page = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             throw new Access('No permissions to edit this page');
         }
 

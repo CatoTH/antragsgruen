@@ -80,7 +80,7 @@ class UserGroups extends IPolicy
             return $assumeLoggedIn;
         }
 
-        if ($allowAdmins && $user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS)) {
+        if ($allowAdmins && $user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             return true;
         }
 

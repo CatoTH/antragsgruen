@@ -40,7 +40,7 @@ class Tools
             /** @var ConsultationSettings $settings */
             $settings = $consultation->getSettings();
 
-            if ($settings->maintenanceMode && !$user->hasPrivilege($consultation, Privileges::PRIVILEGE_ANY)) {
+            if ($settings->maintenanceMode && !$user->hasPrivilege($consultation, Privileges::PRIVILEGE_ANY, null)) {
                 continue;
             }
 
@@ -282,7 +282,7 @@ class Tools
         }
 
         $user = User::getCurrentUser();
-        return ($user && $user->hasPrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT));
+        return ($user && $user->hasPrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null));
     }
 
     public static function getMotionResponse(Motion $motion): ?Motion

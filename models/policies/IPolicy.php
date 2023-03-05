@@ -99,7 +99,7 @@ abstract class IPolicy
     protected function checkCurrUserWithDeadline(string $deadlineType, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if (!$this->baseObject->isInDeadline($deadlineType)) {
-            if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_ANY) || !$allowAdmins) {
+            if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_ANY, null) || !$allowAdmins) {
                 return false;
             }
         }

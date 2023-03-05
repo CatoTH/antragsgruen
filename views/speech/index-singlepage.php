@@ -65,7 +65,7 @@ if (User::getCurrentUser()) {
 >
     <?php
     $user = User::getCurrentUser();
-    if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES)) {
+    if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
         echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink">';
         echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
         echo Yii::t('speech', 'goto_admin');

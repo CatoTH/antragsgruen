@@ -158,7 +158,7 @@ class AmendmentController extends AdminBase
 
     public function actionUpdate(string $amendmentId): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 

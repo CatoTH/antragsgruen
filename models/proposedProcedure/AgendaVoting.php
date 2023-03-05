@@ -251,7 +251,7 @@ class AgendaVoting
 
     public function getAdminApiObject(): array
     {
-        if (!$this->voting->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_VOTINGS)) {
+        if (!$this->voting->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_VOTINGS, null)) {
             throw new Access('No voting admin permissions');
         }
         return $this->getApiObject($this->title, null, AgendaVoting::API_CONTEXT_ADMIN);
