@@ -613,7 +613,7 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
         if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
-            return new HtmlErrorResponse(403, 'Not permitted to change the status');
+            return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 
 

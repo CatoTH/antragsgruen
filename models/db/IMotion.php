@@ -7,6 +7,7 @@ use app\models\settings\AntragsgruenApp;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\models\siteSpecificBehavior\Permissions;
 use app\models\votings\VotingItemGroup;
@@ -483,7 +484,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     {
         return ($this->hasAlternativeProposaltext(true) && (
                 $this->isProposalPublic() ||
-                User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, null) ||
+                User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::imotion($this)) ||
                 ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
             ));
     }

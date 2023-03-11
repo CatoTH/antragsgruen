@@ -125,7 +125,7 @@ if ($motion->version === Motion::VERSION_DEFAULT && $motionDataMode === \app\mod
     ];
 }
 
-MotionLayoutHelper::addTagsRow($consultation, $motion->getPublicTopicTags(), $motionData);
+MotionLayoutHelper::addTagsRow($motion, $motion->getPublicTopicTags(), $motionData);
 
 if (count($motionHistory) > 1) {
     $historyContent = '';

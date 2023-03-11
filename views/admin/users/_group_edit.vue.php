@@ -321,6 +321,7 @@ $html = ob_get_clean();
                         this.setNonrestrictedPrivileges.push(...priv.privileges);
                     }
                 });
+                this.addingRestricted = false;
 
                 $(this.$refs['group-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
             },

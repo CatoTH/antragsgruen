@@ -82,7 +82,13 @@ class PrivilegeQueryContext
             return $this->motion->agendaItemId === $agendaItemId;
         }
         if ($this->amendment) {
-            return $this->amendment->getMyMotion()->agendaItemId === $agendaItemId;
+            if ($this->amendment->agendaItemId) {
+                // If the amendment is explicitly assigned to an agenda item, then we compare that
+                return $this->amendment->agendaItemId === $agendaItemId;
+            } else {
+                // otherwise, we compare it against the agenda item set to the parent motion
+                return $this->amendment->getMyMotion()->agendaItemId === $agendaItemId;
+            }
         }
         return false;
     }
@@ -121,7 +127,7 @@ class PrivilegeQueryContext
             return false;
         }
         if ($this->amendment) {
-            foreach ($this->amendment->getMyMotion()->tags as $tag) {
+            foreach ($this->amendment->tags as $tag) {
                 if ($tag->id === $tagId) {
                     return true;
                 }
