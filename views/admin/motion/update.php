@@ -1,8 +1,8 @@
 <?php
 
-use app\models\settings\AntragsgruenApp;
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{Tools, UrlHelper};
-use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter};
+use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
 /**
@@ -48,11 +48,13 @@ $html     .= '<li><a href="' . Html::encode($moveUrl) . '" class="move">';
 $html     .= '<span class="icon glyphicon glyphicon-arrow-right" aria-hidden="true"></span>' .
              Yii::t('admin', 'motion_move') . '</a></li>';
 
-$html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
-$html .= '<input type="hidden" name="delete" value="1">';
-$html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash" aria-hidden="true"></span>'
-         . Yii::t('admin', 'motion_del') . '</button>';
-$html .= Html::endForm() . '</li>';
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::motion($motion))) {
+    $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
+    $html .= '<input type="hidden" name="delete" value="1">';
+    $html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash" aria-hidden="true"></span>'
+        . Yii::t('admin', 'motion_del') . '</button>';
+    $html .= Html::endForm() . '</li>';
+}
 
 $html                .= '</ul>';
 $layout->menusHtml[] = $html;
@@ -63,7 +65,7 @@ echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 echo $controller->showErrors();
 
 
-if ($motion->isInScreeningProcess()) {
+if ($motion->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion))) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
     if ($newRev === '' && !$motion->getMyMotionType()->amendmentsOnly) {
@@ -318,51 +320,57 @@ echo '</div>';
 
 echo $this->render('_update_voting', ['motion' => $motion]);
 
-$needsCollisionCheck = (!$motion->textFixed && count($motion->getAmendmentsRelevantForCollisionDetection()) > 0);
-if (!$motion->textFixed) {
-    echo '<h2 class="green">' . Yii::t('admin', 'motion_edit_text') . '</h2>
+
+$needsCollisionCheck = false;
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {
+    $needsCollisionCheck = (!$motion->textFixed && count($motion->getAmendmentsRelevantForCollisionDetection()) > 0);
+    if (!$motion->textFixed) {
+        echo '<h2 class="green">' . Yii::t('admin', 'motion_edit_text') . '</h2>
 <div class="content" id="motionTextEditCaller">' .
-         Yii::t('admin', 'motion_edit_text_warn') . '
+            Yii::t('admin', 'motion_edit_text_warn') . '
     <br><br>
     <button type="button" class="btn btn-default">' . Yii::t('admin', 'motion_edit_btn') . '</button>
 </div>
 <div class="content hidden" id="motionTextEditHolder">';
 
-    if ($needsCollisionCheck) {
-        echo '<div class="alert alert-danger" role="alert">
+        if ($needsCollisionCheck) {
+            echo '<div class="alert alert-danger" role="alert">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
             <span class="sr-only">' . Yii::t('admin', 'motion_amrew_warning') . ':</span> ' .
-             Yii::t('admin', 'motion_amrew_intro') .
-             '</div>';
-    }
-
-    foreach ($form->sections as $section) {
-        if ($motion->getTitleSection() && $section->sectionId === $motion->getTitleSection()->sectionId) {
-            continue;
+                Yii::t('admin', 'motion_amrew_intro') .
+                '</div>';
         }
-        echo $section->getSectionType()->getMotionFormField();
-    }
 
-    $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collisions', 'motionId' => $motion->id]);
-    echo '<section class="amendmentCollisionsHolder"></section>';
-    if ($needsCollisionCheck) {
-        echo '<div class="checkButtonRow">';
-        echo '<button class="checkAmendmentCollisions btn btn-default" data-url="' . Html::encode($url) . '">' .
-             Yii::t('admin', 'motion_amrew_btn1') . '</button>';
+        foreach ($form->sections as $section) {
+            if ($motion->getTitleSection() && $section->sectionId === $motion->getTitleSection()->sectionId) {
+                continue;
+            }
+            echo $section->getSectionType()->getMotionFormField();
+        }
+
+        $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collisions', 'motionId' => $motion->id]);
+        echo '<section class="amendmentCollisionsHolder"></section>';
+        if ($needsCollisionCheck) {
+            echo '<div class="checkButtonRow">';
+            echo '<button class="checkAmendmentCollisions btn btn-default" data-url="' . Html::encode($url) . '">' .
+                Yii::t('admin', 'motion_amrew_btn1') . '</button>';
+            echo '</div>';
+        }
         echo '</div>';
     }
-    echo '</div>';
 }
 
-$initiatorClass = $form->motionType->getMotionSupportTypeClass();
-$initiatorClass->setAdminMode(true);
-echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion))) {
+    $initiatorClass = $form->motionType->getMotionSupportTypeClass();
+    $initiatorClass->setAdminMode(true);
+    echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
-echo $this->render('_update_supporter', [
-    'supporters'  => $motion->getSupporters(true),
-    'newTemplate' => new MotionSupporter(),
-    'settings'    => $initiatorClass->getSettingsObj(),
-]);
+    echo $this->render('_update_supporter', [
+        'supporters' => $motion->getSupporters(true),
+        'newTemplate' => new MotionSupporter(),
+        'settings' => $initiatorClass->getSettingsObj(),
+    ]);
+}
 
 echo '<div class="saveholder">';
 if ($needsCollisionCheck) {

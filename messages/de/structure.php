@@ -69,7 +69,8 @@ return [
     'privilege_screening'     => 'Freischalten',
     'privilege_motionstruct'  => 'Rahmendaten bearbeiten',
     'privilege_motioncontent' => 'Inhalte/Texte bearbeiten',
-    'privilege_motionusers'   => 'Im Namen Anderer stellen',
+    'privilege_motionusers'   => 'Antragstellende ändern',
+    'privilege_motiondelete'  => 'Löschen',
     'privilege_proposals'     => 'Verfahrensvorschläge bearbeiten',
 
     'preset_bdk_name'           => 'BDK-ähnlich',

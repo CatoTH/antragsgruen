@@ -61,7 +61,7 @@ class MotionListController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_unscreened'));
         }
         if ($this->isRequestSet('motionDelete')) {
-            $motion = $this->getMotionWithPrivilege((int)$this->getRequestValue('motionDelete'), Privileges::PRIVILEGE_MOTION_TEXT_EDIT);
+            $motion = $this->getMotionWithPrivilege((int)$this->getRequestValue('motionDelete'), Privileges::PRIVILEGE_MOTION_DELETE);
             $motion->setDeleted();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_deleted'));
         }
@@ -92,7 +92,7 @@ class MotionListController extends AdminBase
         if ($this->isRequestSet('delete')) {
             foreach ($this->getRequestValue('motions') as $motionId) {
                 try {
-                    $motion = $this->getMotionWithPrivilege((int)$motionId, Privileges::PRIVILEGE_MOTION_TEXT_EDIT);
+                    $motion = $this->getMotionWithPrivilege((int)$motionId, Privileges::PRIVILEGE_MOTION_DELETE);
                     $motion->setDeleted();
                 } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid motion, so let's just continue
             }
@@ -117,7 +117,7 @@ class MotionListController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
         }
         if ($this->isRequestSet('amendmentDelete')) {
-            $amendment = $this->getAmendmentWithPrivilege((int)$this->getRequestValue('amendmentDelete'), Privileges::PRIVILEGE_CONTENT_EDIT);
+            $amendment = $this->getAmendmentWithPrivilege((int)$this->getRequestValue('amendmentDelete'), Privileges::PRIVILEGE_MOTION_DELETE);
             $amendment->setDeleted();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_deleted'));
         }
@@ -147,7 +147,7 @@ class MotionListController extends AdminBase
         if ($this->isRequestSet('delete')) {
             foreach ($this->getRequestValue('amendments') as $amendmentId) {
                 try {
-                    $amendment = $this->getAmendmentWithPrivilege($amendmentId, Privileges::PRIVILEGE_CONTENT_EDIT);
+                    $amendment = $this->getAmendmentWithPrivilege($amendmentId, Privileges::PRIVILEGE_MOTION_DELETE);
                     $amendment->setDeleted();
                 } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid amendment, so let's just continue
             }

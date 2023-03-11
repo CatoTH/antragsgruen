@@ -2,7 +2,16 @@
 
 namespace app\models\forms;
 
-use app\models\db\{ConsultationAgendaItem, ConsultationMotionType, ConsultationSettingsTag, Motion, MotionSection, MotionSupporter};
+use app\components\RequestContext;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
+use app\models\db\{ConsultationAgendaItem,
+    ConsultationMotionType,
+    ConsultationSettingsTag,
+    Motion,
+    MotionSection,
+    MotionSupporter,
+    User};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
 use yii\base\Model;
@@ -255,7 +264,7 @@ class MotionEditForm extends Model
 
         $motion = new Motion();
 
-        $this->setAttributes([\Yii::$app->request->post(), $_FILES]);
+        $this->setAttributes([RequestContext::getWebApplication()->request->post(), $_FILES]);
         $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
 
         $this->createMotionVerify();
@@ -307,7 +316,7 @@ class MotionEditForm extends Model
 
         foreach ($this->sections as $section) {
             $type = $section->getSettings();
-            if ($this->motionId && $type->type == ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($this->motionId && $type->type === ISectionType::TYPE_TEXT_SIMPLE) {
                 // Updating the text is done separately, including amendment rewriting
                 continue;
             }
@@ -358,10 +367,14 @@ class MotionEditForm extends Model
             }
         }
 
-        $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
+        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion))) {
+            $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
+        }
 
         if ($motion->save()) {
-            $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
+            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion))) {
+                $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
+            }
 
             // Tags
             foreach ($motion->getPublicTopicTags() as $tag) {
@@ -375,7 +388,9 @@ class MotionEditForm extends Model
                 }
             }
 
-            $this->overwriteSections($motion);
+            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {
+                $this->overwriteSections($motion);
+            }
 
             $motion->refreshTitle();
             $motion->dateContentModification = date('Y-m-d H:i:s');

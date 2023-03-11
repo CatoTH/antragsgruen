@@ -69,7 +69,8 @@ return [
     'privilege_screening'     => 'Screening',
     'privilege_motionstruct'  => 'Manage metadata',
     'privilege_motioncontent' => 'Manage content',
-    'privilege_motionusers'   => 'Create in other\'s name',
+    'privilege_motionusers'   => 'Manage initiators',
+    'privilege_motiondelete'  => 'Delete',
     'privilege_proposals'     => 'Manage proposed procedure',
 
     'preset_bdk_name'           => 'German federal convention',

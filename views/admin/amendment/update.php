@@ -1,8 +1,10 @@
 <?php
 
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, ConsultationSettingsTag};
+use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, ConsultationSettingsTag, User};
 use yii\helpers\Html;
 
 /**
@@ -44,11 +46,13 @@ $html     .= '<li><a href="' . $cloneUrl . '" class="clone">';
 $html     .= '<span class="icon glyphicon glyphicon-duplicate" aria-hidden="true"></span>' .
              Yii::t('admin', 'list_template_amendment') . '</a></li>';
 
-$html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
-$html .= '<input type="hidden" name="delete" value="1">';
-$html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash" aria-hidden="true"></span>'
-         . Yii::t('admin', 'amend_del') . '</button>';
-$html .= Html::endForm() . '</li>';
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::amendment($amendment))) {
+    $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
+    $html .= '<input type="hidden" name="delete" value="1">';
+    $html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash" aria-hidden="true"></span>'
+        . Yii::t('admin', 'amend_del') . '</button>';
+    $html .= Html::endForm() . '</li>';
+}
 
 $html                .= '</ul>';
 $layout->menusHtml[] = $html;
@@ -59,7 +63,7 @@ echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 echo $controller->showErrors();
 
 
-if ($amendment->isInScreeningProcess()) {
+if ($amendment->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'amendmentScreenForm']);
     $newRev = $amendment->titlePrefix;
     if ($newRev === '') {
@@ -310,7 +314,7 @@ if ($amendment->changeExplanation !== '') {
     <?php
 }
 
-if (!$amendment->textFixed) {
+if (!$amendment->textFixed && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment))) {
     echo '<h2 class="green">' . Yii::t('admin', 'amend_edit_text_title') . '</h2>
 <div class="content" id="amendmentTextEditCaller">
     <button type="button" class="btn btn-default">' . Yii::t('admin', 'amend_edit_text') . '</button>
@@ -351,16 +355,17 @@ if (!$amendment->textFixed) {
 }
 
 
-$initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
-$initiatorClass->setAdminMode(true);
-echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment))) {
+    $initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
+    $initiatorClass->setAdminMode(true);
+    echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 
-echo $this->render('../motion/_update_supporter', [
-    'supporters'  => $amendment->getSupporters(true),
-    'newTemplate' => new \app\models\db\AmendmentSupporter(),
-    'settings'    => $initiatorClass->getSettingsObj(),
-]);
-
+    echo $this->render('../motion/_update_supporter', [
+        'supporters' => $amendment->getSupporters(true),
+        'newTemplate' => new \app\models\db\AmendmentSupporter(),
+        'settings' => $initiatorClass->getSettingsObj(),
+    ]);
+}
 
 echo '<div class="saveholder">
 <button type="submit" name="save" class="btn btn-primary">' . Yii::t('base', 'save') . '</button>

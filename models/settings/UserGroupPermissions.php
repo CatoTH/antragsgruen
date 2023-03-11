@@ -126,13 +126,13 @@ class UserGroupPermissions
         switch ($privilege) {
             // Special case "any": everyone having any kind of special privilege
             case Privileges::PRIVILEGE_ANY:
-                return in_array(static::PERMISSION_PROPOSED_PROCEDURE, $this->defaultPermissions, true) ||
-                    in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true) ||
-                    in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $this->defaultPermissions, true);
+                return in_array(self::PERMISSION_PROPOSED_PROCEDURE, $this->defaultPermissions, true) ||
+                    in_array(self::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true) ||
+                    in_array(self::PERMISSION_ADMIN_SPEECH_LIST, $this->defaultPermissions, true);
 
             // Special case "site admin": has all permissions - for all consultations
             case Privileges::PRIVILEGE_SITE_ADMIN:
-                return in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true) && $this->isSiteWide;
+                return in_array(self::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true) && $this->isSiteWide;
 
             // Regular cases
             case Privileges::PRIVILEGE_CONSULTATION_SETTINGS:
@@ -140,15 +140,16 @@ class UserGroupPermissions
             case Privileges::PRIVILEGE_SCREENING:
             case Privileges::PRIVILEGE_MOTION_STATUS_EDIT:
             case Privileges::PRIVILEGE_MOTION_TEXT_EDIT:
-            case Privileges::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
+            case Privileges::PRIVILEGE_MOTION_DELETE:
+            case Privileges::PRIVILEGE_MOTION_INITIATORS:
             case Privileges::PRIVILEGE_VOTINGS:
-                return in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
+                return in_array(self::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
             case Privileges::PRIVILEGE_CHANGE_PROPOSALS:
-                return in_array(static::PERMISSION_PROPOSED_PROCEDURE, $this->defaultPermissions, true) ||
-                    in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
+                return in_array(self::PERMISSION_PROPOSED_PROCEDURE, $this->defaultPermissions, true) ||
+                    in_array(self::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
             case Privileges::PRIVILEGE_SPEECH_QUEUES:
-                return in_array(static::PERMISSION_ADMIN_SPEECH_LIST, $this->defaultPermissions, true) ||
-                    in_array(static::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
+                return in_array(self::PERMISSION_ADMIN_SPEECH_LIST, $this->defaultPermissions, true) ||
+                    in_array(self::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
             case Privileges::PRIVILEGE_GLOBAL_USER_ADMIN: // only superadmins are allowed to
             default:
                 return false;

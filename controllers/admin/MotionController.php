@@ -17,6 +17,7 @@ class MotionController extends AdminBase
     public const REQUIRED_PRIVILEGES = [
         Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
         Privileges::PRIVILEGE_MOTION_TEXT_EDIT,
+        Privileges::PRIVILEGE_MOTION_INITIATORS,
     ];
 
     /**
@@ -117,21 +118,25 @@ class MotionController extends AdminBase
 
     public function actionUpdate(string $motionId): ResponseInterface
     {
+        $consultation = $this->consultation;
+
         /** @var Motion $motion */
-        $motion = $this->consultation->getMotion($motionId);
+        $motion = $consultation->getMotion($motionId);
         if (!$motion) {
             return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($motion);
-        if (!User::haveOneOfPrivileges($this->consultation, self::REQUIRED_PRIVILEGES, PrivilegeQueryContext::motion($motion))) {
+
+        $privCtx = PrivilegeQueryContext::motion($motion);
+        if (!User::haveOneOfPrivileges($consultation, self::REQUIRED_PRIVILEGES, $privCtx)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
         $this->layout = 'column2';
         $post         = $this->getHttpRequest()->post();
 
-        if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
-            if ($this->consultation->findMotionWithPrefixAndVersion($post['titlePrefix'], $post['version'], $motion)) {
+        if ($this->isPostSet('screen') && $motion->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
+            if ($consultation->findMotionWithPrefixAndVersion($post['titlePrefix'], $post['version'], $motion)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
@@ -143,14 +148,14 @@ class MotionController extends AdminBase
             }
         }
 
-        if ($this->isPostSet('delete')) {
+        if ($this->isPostSet('delete') && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, $privCtx)) {
             $motion->setDeleted();
             $motion->flushCacheStart(['lines']);
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'motion_deleted'));
             return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
 
-        if ($this->isPostSet('save')) {
+        if ($this->isPostSet('save') && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $privCtx)) {
             $modat = $post['motion'];
 
             $sectionTypes = [];
@@ -186,7 +191,7 @@ class MotionController extends AdminBase
                 }
 
                 $form->saveMotion($motion);
-                if (isset($post['sections'])) {
+                if (isset($post['sections']) && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $privCtx)) {
                     $overrides = $post['amendmentOverride'] ?? [];
                     $newHtmls  = [];
                     foreach ($post['sections'] as $sectionId => $html) {
@@ -260,13 +265,13 @@ class MotionController extends AdminBase
             }
 
             if ($modat['parentMotionId'] && intval($modat['parentMotionId']) !== $motion->id &&
-                $this->consultation->getMotion($modat['parentMotionId'])) {
+                $consultation->getMotion($modat['parentMotionId'])) {
                 $motion->parentMotionId = intval($modat['parentMotionId']);
             } else {
                 $motion->parentMotionId = null;
             }
 
-            if ($this->consultation->findMotionWithPrefixAndVersion($modat['titlePrefix'], $modat['version'], $motion)) {
+            if ($consultation->findMotionWithPrefixAndVersion($modat['titlePrefix'], $modat['version'], $motion)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->titlePrefix = $modat['titlePrefix'];
@@ -279,7 +284,7 @@ class MotionController extends AdminBase
 
             $motion->save();
 
-            foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
                 if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
                     $motion->unlink('tags', $tag, true);
                 } else {
@@ -290,8 +295,10 @@ class MotionController extends AdminBase
                 }
             }
 
-            $this->saveMotionSupporters($motion);
-            $this->saveMotionInitiator($motion);
+            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
+                $this->saveMotionSupporters($motion);
+                $this->saveMotionInitiator($motion);
+            }
 
             $motion->flushCache(true);
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));

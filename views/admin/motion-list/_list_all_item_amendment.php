@@ -23,7 +23,7 @@ $consultation = $controller->consultation;
 
 $hasTags           = (count($consultation->tags) > 0);
 $amendmentStatuses = $consultation->getStatuses()->getStatusNames();
-if (User::haveOneOfPrivileges($consultation, [Privileges::PRIVILEGE_MOTION_TEXT_EDIT, Privileges::PRIVILEGE_MOTION_STATUS_EDIT], PrivilegeQueryContext::amendment($entry))) {
+if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\AmendmentController::REQUIRED_PRIVILEGES, PrivilegeQueryContext::amendment($entry))) {
     $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
 } else {
     $editUrl = null;
@@ -111,7 +111,7 @@ echo '</td>';
 
 if ($colAction) {
     $canScreen = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($entry));
-    $canDelete = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($entry));
+    $canDelete = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::amendment($entry));
 
     echo '<td class="actionCol">';
     if ($canDelete || $canScreen) {

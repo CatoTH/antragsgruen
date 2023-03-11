@@ -17,8 +17,9 @@ class Privileges
     // Motion/Amendment-related permissions. These permissions can be restricted to only a part of the motions / amendments.
     public const PRIVILEGE_SCREENING = 3;
     public const PRIVILEGE_MOTION_STATUS_EDIT = 4;  // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting
-    public const PRIVILEGE_MOTION_TEXT_EDIT = 11; // Editing the text and the initiators. Deleting motions / amendments
-    public const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
+    public const PRIVILEGE_MOTION_TEXT_EDIT = 11; // Editing the text. Deleting motions / amendments
+    public const PRIVILEGE_MOTION_DELETE = 12;  // Deleting motions / amendments
+    public const PRIVILEGE_MOTION_INITIATORS = 5; // Editing the initiators
     public const PRIVILEGE_CHANGE_PROPOSALS = 7;  // Editing the proposed procedure
 
     private static ?int $cachedConsultationId = null;
@@ -86,9 +87,13 @@ class Privileges
                     self::PRIVILEGE_MOTION_TEXT_EDIT,
                     \Yii::t('structure', 'privilege_motioncontent')
                 ),
-                self::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS => new Privilege(
-                    self::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS,
+                self::PRIVILEGE_MOTION_INITIATORS => new Privilege(
+                    self::PRIVILEGE_MOTION_INITIATORS,
                     \Yii::t('structure', 'privilege_motionusers')
+                ),
+                self::PRIVILEGE_MOTION_DELETE => new Privilege(
+                    self::PRIVILEGE_MOTION_DELETE,
+                    \Yii::t('structure', 'privilege_motiondelete')
                 ),
                 self::PRIVILEGE_CHANGE_PROPOSALS => new Privilege(
                     self::PRIVILEGE_CHANGE_PROPOSALS,
