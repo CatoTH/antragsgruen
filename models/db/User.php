@@ -41,6 +41,7 @@ use yii\web\IdentityInterface;
  * @property null|MotionComment[] $motionComments
  * @property null|MotionSupporter[] $motionSupports
  * @property ConsultationUserGroup[] $userGroups
+ * @property UserConsultationScreening[] $consultationScreenings
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
  * @property Vote[] $votes
@@ -194,6 +195,10 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(ConsultationUserGroup::class, ['id' => 'groupId'])->viaTable('userGroup', ['userId' => 'id']);
     }
 
+    public function getConsultationScreenings(): ActiveQuery
+    {
+        return $this->hasMany(UserConsultationScreening::class, ['userId' => 'id']);
+    }
 
     private static array $preloadedConsultationUserGroups = [];
     public static function preloadConsultationUserGroups(Consultation $consultation): void
@@ -870,6 +875,9 @@ class User extends ActiveRecord implements IdentityInterface
 
         foreach ($this->userGroups as $userGroup) {
             $this->unlink('userGroups', $userGroup, true);
+        }
+        foreach ($this->consultationScreenings as $consultationScreening) {
+            $this->unlink('consultationScreenings', $consultationScreening, true);
         }
 
         $this->trigger(User::EVENT_DELETED, new UserEvent($this));
