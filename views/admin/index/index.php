@@ -63,12 +63,12 @@ echo '</li>';
 echo '<li>' . Yii::t('admin', 'index_motion_types') . '<ul>';
 foreach ($consultation->motionTypes as $motionType) {
     echo '<li>';
-    $sectionsUrl = UrlHelper::createUrl(['/admin/motion/type', 'motionTypeId' => $motionType->id]);
+    $sectionsUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $motionType->id]);
     echo Html::a(Html::encode($motionType->titlePlural), $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
     echo '</li>';
 }
 echo '<li class="secondary motionTypeCreate">';
-echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(['admin/motion/typecreate']));
+echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(['/admin/motion-type/typecreate']));
 echo '</li>';
 echo '</ul></li>';
 

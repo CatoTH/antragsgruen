@@ -58,7 +58,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 <div class="hidden deadlineRowTemplate">
     <?php
     $data = ['start' => null, 'end' => null, 'title' => null];
-    echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => 'TEMPLATE', 'data' => $data]);
+    echo $this->render('_deadline_row', ['locale' => $locale, 'type' => 'TEMPLATE', 'data' => $data]);
     ?>
 </div>
 
@@ -70,7 +70,7 @@ $type = ConsultationMotionType::DEADLINE_MOTIONS;
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlinesByType($type) as $deadline) {
-            echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
+            echo $this->render('_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
         }
         ?>
     </div>
@@ -88,7 +88,7 @@ $type = ConsultationMotionType::DEADLINE_AMENDMENTS;
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlinesByType($type) as $deadline) {
-            echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
+            echo $this->render('_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
         }
         ?>
     </div>
@@ -106,7 +106,7 @@ $type = ConsultationMotionType::DEADLINE_MERGING;
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlinesByType($type) as $deadline) {
-            echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
+            echo $this->render('_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
         }
         ?>
     </div>
@@ -124,7 +124,7 @@ $type = ConsultationMotionType::DEADLINE_COMMENTS;
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlinesByType($type) as $deadline) {
-            echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
+            echo $this->render('_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
         }
         ?>
     </div>

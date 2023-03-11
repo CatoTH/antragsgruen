@@ -4,7 +4,7 @@ namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
-use app\models\settings\{AntragsgruenApp, Privileges};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment,
     AmendmentSupporter,
@@ -19,6 +19,11 @@ use app\views\amendment\LayoutHelper;
 
 class AmendmentController extends AdminBase
 {
+    public const REQUIRED_PRIVILEGES = [
+        Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
+        Privileges::PRIVILEGE_MOTION_TEXT_EDIT,
+    ];
+
     public function actionOdslist(bool $textCombined = false, int $withdrawn = 0): BinaryFileResponse
     {
         $ods = $this->renderPartial('ods_list', [
@@ -158,15 +163,14 @@ class AmendmentController extends AdminBase
 
     public function actionUpdate(string $amendmentId): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
-            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
-        }
-
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
             return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($amendment->getMyMotion(), $amendment);
+        if (!User::haveOneOfPrivileges($this->consultation, self::REQUIRED_PRIVILEGES, PrivilegeQueryContext::amendment($amendment))) {
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
+        }
 
         $this->layout = 'column2';
 

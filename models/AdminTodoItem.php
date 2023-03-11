@@ -44,7 +44,7 @@ class AdminTodoItem
                     'statutesCreate' . $motionType->id,
                     $motionType->titlePlural,
                     '',
-                    UrlHelper::createUrl(['/admin/motion/type', 'motionTypeId' => $motionType->id]),
+                    UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $motionType->id]),
                     0,
                     $description
                 );

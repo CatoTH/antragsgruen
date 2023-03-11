@@ -125,7 +125,7 @@ $initiatorClass = $form->motionType->getMotionSupportTypeClass();
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
 if ($isAmendmentsOnly) {
-    $backUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $form->motionType->id]);
+    $backUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $form->motionType->id]);
 } else {
     $backUrl = UrlHelper::homeUrl();
 }

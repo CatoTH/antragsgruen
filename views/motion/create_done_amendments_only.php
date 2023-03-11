@@ -24,7 +24,7 @@ $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUr
 echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'created_statutes')) . '</h1>';
 $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_statutes'));
 
-$backUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motion->getMyMotionType()->id])
+$backUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $motion->getMyMotionType()->id])
 ?>
 
 <div class="content" id="motionConfirmedForm">
