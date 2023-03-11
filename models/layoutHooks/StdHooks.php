@@ -2,6 +2,7 @@
 
 namespace app\models\layoutHooks;
 
+use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
 use app\controllers\{admin\IndexController, Base, UserController};
@@ -264,15 +265,12 @@ class StdHooks extends Hooks
 
     public function getStdNavbarHeader(string $before): string
     {
-        /** @var Base $controller */
-        $controller = \Yii::$app->controller;
-
         $out = '<ul class="nav navbar-nav">';
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
-            $consultation       = $controller->consultation;
-            $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null);
-            $privilegeProposal = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
+            $consultation       = Consultation::getCurrent();
+            $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
+            $privilegeProposal = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
 
             if ($consultation) {
                 if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
@@ -288,7 +286,7 @@ class StdHooks extends Hooks
                             Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink', 'aria-label' => \Yii::t('base', 'home_back')]) .
                             '</li>';
 
-                $pages = ConsultationText::getMenuEntries($controller->site, $consultation);
+                $pages = ConsultationText::getMenuEntries(Consultation::getCurrent()->site, $consultation);
                 foreach ($pages as $page) {
                     $options = ['class' => 'page' . $page->id, 'aria-label' => $page->title];
                     $out     .= '<li>' . Html::a($page->title, $page->getUrl(), $options) . '</li>';
@@ -333,7 +331,7 @@ class StdHooks extends Hooks
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink', 'aria-label' => $adminTitle]) . '</li>';
             }
 
-            if (get_class($controller) === UserController::class) {
+            if (get_class(\Yii::$app->controller) === UserController::class) {
                 $backUrl = UrlHelper::createUrl('/consultation/index');
             } else {
                 $backUrl = \Yii::$app->request->url;

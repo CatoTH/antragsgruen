@@ -2,6 +2,9 @@
 
 namespace app\controllers\admin;
 
+use app\models\exceptions\ResponseException;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\http\{HtmlErrorResponse, RedirectResponse};
 use app\components\{RequestContext, UrlHelper};
 use app\controllers\Base;
 use app\models\settings\Privileges;
@@ -17,7 +20,7 @@ class AdminBase extends Base
     /**
      * @param \yii\base\Action $action
      *
-     * @throws \yii\web\BadRequestHttpException
+     * @throws \yii\web\BadRequestHttpException|ResponseException
      */
     public function beforeAction($action): bool
     {
@@ -35,15 +38,15 @@ class AdminBase extends Base
         }
 
         if (RequestContext::getUser()->isGuest) {
-            $this->redirect(UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
-            return false;
+            $url = UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]);
+            throw new ResponseException(new RedirectResponse($url));
         }
 
         // Hint: static:: to allow constant being overwritten
-        if (!User::haveOneOfPrivileges($this->consultation, static::REQUIRED_PRIVILEGES, null)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            return false;
+        if (!User::haveOneOfPrivileges($this->consultation, static::REQUIRED_PRIVILEGES, PrivilegeQueryContext::anyRestriction())) {
+            throw new ResponseException(new HtmlErrorResponse(403, \Yii::t('admin', 'no_access')));
         }
+
         return true;
     }
 

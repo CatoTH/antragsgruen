@@ -22,7 +22,7 @@ $consultation = $controller->consultation;
 $hasTags        = (count($consultation->tags) > 0);
 $motionStatuses = $consultation->getStatuses()->getStatusNames();
 $viewUrl        = UrlHelper::createMotionUrl($entry);
-if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($entry))) {
+if (User::haveOneOfPrivileges($consultation, [Privileges::PRIVILEGE_MOTION_TEXT_EDIT, Privileges::PRIVILEGE_MOTION_STATUS_EDIT], PrivilegeQueryContext::motion($entry))) {
     $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
 } else {
     $editUrl = null;
@@ -99,7 +99,7 @@ if ($hasTags) {
 }
 echo '<td class="exportCol"><div class="btn-group">
   <button class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    <span class="caret"></span>
+    <span class="caret" aria-hidden="true"></span>
     PDF
   </button>
   <ul class="dropdown-menu">';
@@ -134,35 +134,45 @@ foreach ($controller->getParams()->getPluginClasses() as $pluginClass) {
 echo '</td>';
 
 if ($colAction) {
-    echo '<td class="actionCol"><div class="btn-group">
+    $canScreen = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($entry));
+    $canDelete = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($entry));
+
+    echo '<td class="actionCol">';
+    if ($canDelete || $canScreen) {
+        echo '<div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     ' . Yii::t('admin', 'list_action') . '
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
-    $screenable = [
-        Motion::STATUS_DRAFT,
-        Motion::STATUS_DRAFT_ADMIN,
-        Motion::STATUS_SUBMITTED_UNSCREENED,
-        Motion::STATUS_SUBMITTED_UNSCREENED_CHECKED,
-    ];
-    if (in_array($entry->status, $screenable)) {
-        $link = Html::encode($search->getCurrentUrl(['motionScreen' => $entry->id]));
-        $name = Html::encode(Yii::t('admin', 'list_screen'));
-        echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
-    } else {
-        $link = Html::encode($search->getCurrentUrl(['motionUnscreen' => $entry->id]));
-        $name = Html::encode(Yii::t('admin', 'list_unscreen'));
-        echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
+        if ($canScreen) {
+            $screenable = [
+                Motion::STATUS_DRAFT,
+                Motion::STATUS_DRAFT_ADMIN,
+                Motion::STATUS_SUBMITTED_UNSCREENED,
+                Motion::STATUS_SUBMITTED_UNSCREENED_CHECKED,
+            ];
+            if (in_array($entry->status, $screenable)) {
+                $link = Html::encode($search->getCurrentUrl(['motionScreen' => $entry->id]));
+                $name = Html::encode(Yii::t('admin', 'list_screen'));
+                echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
+            } else {
+                $link = Html::encode($search->getCurrentUrl(['motionUnscreen' => $entry->id]));
+                $name = Html::encode(Yii::t('admin', 'list_unscreen'));
+                echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
+            }
+            $link = Html::encode(UrlHelper::createUrl(['motion/create', 'cloneFrom' => $entry->id]));
+            $name = Html::encode(Yii::t('admin', 'list_template_motion'));
+            echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
+        }
+        if ($canDelete) {
+            $delLink = Html::encode($search->getCurrentUrl(['motionDelete' => $entry->id]));
+            echo '<li><a tabindex="-1" href="' . $delLink . '" class="delete" ' .
+                'onClick="return confirm(\'' . addslashes(Yii::t('admin', 'list_confirm_del_motion')) . '\');">' .
+                Yii::t('admin', 'list_delete') . '</a></li>';
+        }
+        echo '</ul></div>';
     }
-    $link = Html::encode(UrlHelper::createUrl(['motion/create', 'cloneFrom' => $entry->id]));
-    $name = Html::encode(Yii::t('admin', 'list_template_motion'));
-    echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
-
-    $delLink = Html::encode($search->getCurrentUrl(['motionDelete' => $entry->id]));
-    echo '<li><a tabindex="-1" href="' . $delLink . '" class="delete" ' .
-        'onClick="return confirm(\'' . addslashes(Yii::t('admin', 'list_confirm_del_motion')) . '\');">' .
-        Yii::t('admin', 'list_delete') . '</a></li>';
-    echo '</ul></div></td>';
+    echo '</td>';
 }
 echo '</tr>';

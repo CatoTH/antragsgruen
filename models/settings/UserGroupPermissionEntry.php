@@ -126,6 +126,10 @@ class UserGroupPermissionEntry
 
     public function containsPrivilege(int $privilege, ?PrivilegeQueryContext $context): bool
     {
+        if ($privilege === Privileges::PRIVILEGE_ANY) {
+            return count($this->privileges) > 0;
+        }
+
         if ($this->tagId !== null) {
             if ($context && $context->matchesTagId($this->tagId)) {
                 return in_array($privilege, $this->privileges, true);

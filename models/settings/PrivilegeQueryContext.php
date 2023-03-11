@@ -13,6 +13,7 @@ class PrivilegeQueryContext
     private ?int $agendaItemId = null;
     private ?int $tagId = null;
     private ?int $motionTypeId = null;
+    private bool $anyRestriction = false;
 
     public static function motion(Motion $motion): self
     {
@@ -61,8 +62,19 @@ class PrivilegeQueryContext
         return $obj;
     }
 
+    public static function anyRestriction(): self
+    {
+        $obj = new self();
+        $obj->anyRestriction = true;
+
+        return $obj;
+    }
+
     public function matchesAgendaItemId(int $agendaItemId): bool
     {
+        if ($this->anyRestriction) {
+            return true;
+        }
         if ($this->agendaItemId) {
             return $this->agendaItemId === $agendaItemId;
         }
@@ -77,6 +89,9 @@ class PrivilegeQueryContext
 
     public function matchesMotionTypeId(int $motionTypeId): bool
     {
+        if ($this->anyRestriction) {
+            return true;
+        }
         if ($this->motionTypeId) {
             return $this->motionTypeId === $motionTypeId;
         }
@@ -91,6 +106,9 @@ class PrivilegeQueryContext
 
     public function matchesTagId(int $tagId): bool
     {
+        if ($this->anyRestriction) {
+            return true;
+        }
         if ($this->tagId) {
             return $this->tagId === $tagId;
         }

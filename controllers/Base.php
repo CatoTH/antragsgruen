@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\exceptions\{ApiResponseException, NotFound, Internal};
+use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\http\{ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
@@ -150,6 +150,9 @@ class Base extends Controller
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ApiResponseException $e) {
             $response = new RestApiExceptionResponse($e->getCode(), $e->getMessage());
             return $response->renderYii($this->layoutParams, $this->getHttpResponse());
+        /** @phpstan-ignore-next-line */
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ResponseException $e) {
+            return $e->response->renderYii($this->layoutParams, $this->getHttpResponse());
         }
 
         if (is_string($response)) {

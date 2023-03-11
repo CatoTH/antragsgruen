@@ -2,8 +2,11 @@
 
 ### Version 4.12.0 [not released yet]
 
+- User groups are now more powerful administrational tools:
+  - User groups can now receive admin rights for specific administrational tasks.
+  - These tasks can be restricted to a subset of motions, like motions of a specific type, agenda item or tag.
+  - User groups can now be renamed.
 - Super admins (registered in the config.json) can now perform more user administration using the UI, like setting the name, organization and new passwords for registered users.
-- User groups can be renamed.
 - Motion sections can now be set up to hold Right-to-Left text, like Farsi, Hebrew or Arabic.
 - The date format can be set independently from the language. Also the date format yyyy-mm-dd is supported (besides dd/mm/yyyy, mm/dd/yyyy, dd.mm.yyyy).
 - For the proposed procedure, it is now possible to set the status "Accepted (Modified)" for motions too and to specify a modified version of it to accept. Previously, this was only possible for amendments.

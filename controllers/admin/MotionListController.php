@@ -2,41 +2,66 @@
 
 namespace app\controllers\admin;
 
+use app\models\exceptions\{Access, NotFound, ExceptionBase, ResponseException};
 use app\components\{Tools, ZipWriter};
 use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
-use app\models\exceptions\ExceptionBase;
 use app\models\forms\AdminMotionFilterForm;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, ResponseInterface};
-use app\models\settings\{AntragsgruenApp, Privileges};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\web\Response;
 
 class MotionListController extends AdminBase
 {
+    /**
+     * @throws Access|NotFound
+     */
+    private function getMotionWithPrivilege(int $motionId, int $privilege): Motion
+    {
+        $motion = $this->consultation->getMotion((string)$motionId);
+        if (!$motion) {
+            throw new NotFound('Motion not found');
+        }
+        if (!User::getCurrentUser()->hasPrivilege($this->consultation, $privilege, PrivilegeQueryContext::motion($motion))) {
+            throw new Access('No screening permissions');
+        }
+        return $motion;
+    }
+
+    /**
+     * @throws Access|NotFound
+     */
+    private function getAmendmentWithPrivilege(int $amendmentId, int $privilege): Amendment
+    {
+        $amendment = $this->consultation->getAmendment($amendmentId);
+        if (!$amendment) {
+            throw new NotFound('Amendment not found');
+        }
+        if (!User::getCurrentUser()->hasPrivilege($this->consultation, $privilege, PrivilegeQueryContext::amendment($amendment))) {
+            throw new Access('No screening permissions');
+        }
+        return $amendment;
+    }
+
+
+    /**
+     * @throws Access|NotFound
+     */
     protected function actionListallScreeningMotions(): void
     {
         if ($this->isRequestSet('motionScreen')) {
-            $motion = $this->consultation->getMotion($this->getRequestValue('motionScreen'));
-            if (!$motion) {
-                return;
-            }
+            $motion = $this->getMotionWithPrivilege((int)$this->getRequestValue('motionScreen'), Privileges::PRIVILEGE_SCREENING);
             $motion->setScreened();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_screened'));
         }
         if ($this->isRequestSet('motionUnscreen')) {
-            $motion = $this->consultation->getMotion($this->getRequestValue('motionUnscreen'));
-            if (!$motion) {
-                return;
-            }
+            $motion = $this->getMotionWithPrivilege((int)$this->getRequestValue('motionUnscreen'), Privileges::PRIVILEGE_SCREENING);
             $motion->setUnscreened();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_unscreened'));
         }
         if ($this->isRequestSet('motionDelete')) {
-            $motion = $this->consultation->getMotion($this->getRequestValue('motionDelete'));
-            if (!$motion) {
-                return;
-            }
+            $motion = $this->getMotionWithPrivilege((int)$this->getRequestValue('motionDelete'), Privileges::PRIVILEGE_MOTION_TEXT_EDIT);
             $motion->setDeleted();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_deleted'));
         }
@@ -46,61 +71,53 @@ class MotionListController extends AdminBase
         }
         if ($this->isRequestSet('screen')) {
             foreach ($this->getRequestValue('motions') as $motionId) {
-                $motion = $this->consultation->getMotion($motionId);
-                if (!$motion) {
-                    continue;
-                }
-                $motion->setScreened();
+                try {
+                    $motion = $this->getMotionWithPrivilege((int)$motionId, Privileges::PRIVILEGE_SCREENING);
+                    $motion->setScreened();
+                } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid motion, so let's just continue
             }
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_screened_pl'));
         }
 
         if ($this->isRequestSet('unscreen')) {
             foreach ($this->getRequestValue('motions') as $motionId) {
-                $motion = $this->consultation->getMotion($motionId);
-                if (!$motion) {
-                    continue;
-                }
-                $motion->setUnscreened();
+                try {
+                    $motion = $this->getMotionWithPrivilege((int)$motionId, Privileges::PRIVILEGE_SCREENING);
+                    $motion->setUnscreened();
+                } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid motion, so let's just continue
             }
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_unscreened_pl'));
         }
 
         if ($this->isRequestSet('delete')) {
             foreach ($this->getRequestValue('motions') as $motionId) {
-                $motion = $this->consultation->getMotion($motionId);
-                if (!$motion) {
-                    continue;
-                }
-                $motion->setDeleted();
+                try {
+                    $motion = $this->getMotionWithPrivilege((int)$motionId, Privileges::PRIVILEGE_MOTION_TEXT_EDIT);
+                    $motion->setDeleted();
+                } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid motion, so let's just continue
             }
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_deleted_pl'));
         }
     }
 
+    /**
+     * @throws Access
+     * @throws NotFound
+     */
     protected function actionListallScreeningAmendments(): void
     {
         if ($this->isRequestSet('amendmentScreen')) {
-            $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentScreen'));
-            if (!$amendment) {
-                return;
-            }
+            $amendment = $this->getAmendmentWithPrivilege((int)$this->getRequestValue('amendmentScreen'), Privileges::PRIVILEGE_SCREENING);
             $amendment->setScreened();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_screened'));
         }
         if ($this->isRequestSet('amendmentUnscreen')) {
-            $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentUnscreen'));
-            if (!$amendment) {
-                return;
-            }
+            $amendment = $this->getAmendmentWithPrivilege((int)$this->getRequestValue('amendmentUnscreen'), Privileges::PRIVILEGE_SCREENING);
             $amendment->setUnscreened();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
         }
         if ($this->isRequestSet('amendmentDelete')) {
-            $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentDelete'));
-            if (!$amendment) {
-                return;
-            }
+            $amendment = $this->getAmendmentWithPrivilege((int)$this->getRequestValue('amendmentDelete'), Privileges::PRIVILEGE_CONTENT_EDIT);
             $amendment->setDeleted();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_deleted'));
         }
@@ -109,33 +126,30 @@ class MotionListController extends AdminBase
         }
         if ($this->isRequestSet('screen')) {
             foreach ($this->getRequestValue('amendments') as $amendmentId) {
-                $amendment = $this->consultation->getAmendment($amendmentId);
-                if (!$amendment) {
-                    continue;
-                }
-                $amendment->setScreened();
+                try {
+                    $amendment = $this->getAmendmentWithPrivilege($amendmentId, Privileges::PRIVILEGE_SCREENING);
+                    $amendment->setScreened();
+                } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid amendment, so let's just continue
             }
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_screened_pl'));
         }
 
         if ($this->isRequestSet('unscreen')) {
             foreach ($this->getRequestValue('amendments') as $amendmentId) {
-                $amendment = $this->consultation->getAmendment($amendmentId);
-                if (!$amendment) {
-                    continue;
-                }
-                $amendment->setUnscreened();
+                try {
+                    $amendment = $this->getAmendmentWithPrivilege($amendmentId, Privileges::PRIVILEGE_SCREENING);
+                    $amendment->setUnscreened();
+                } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid amendment, so let's just continue
             }
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_unscreened_pl'));
         }
 
         if ($this->isRequestSet('delete')) {
             foreach ($this->getRequestValue('amendments') as $amendmentId) {
-                $amendment = $this->consultation->getAmendment($amendmentId);
-                if (!$amendment) {
-                    continue;
-                }
-                $amendment->setDeleted();
+                try {
+                    $amendment = $this->getAmendmentWithPrivilege($amendmentId, Privileges::PRIVILEGE_CONTENT_EDIT);
+                    $amendment->setDeleted();
+                } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid amendment, so let's just continue
             }
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_am_deleted_pl'));
         }
@@ -145,11 +159,10 @@ class MotionListController extends AdminBase
     {
         if ($this->isRequestSet('proposalVisible')) {
             foreach ($this->getRequestValue('amendments', []) as $amendmentId) {
-                $amendment = $this->consultation->getAmendment($amendmentId);
-                if (!$amendment) {
-                    continue;
-                }
-                $amendment->setProposalPublished();
+                try {
+                    $amendment = $this->getAmendmentWithPrivilege($amendmentId, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
+                    $amendment->setProposalPublished();
+                } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid amendment, so let's just continue
             }
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_proposal_published_pl'));
         }
@@ -159,10 +172,10 @@ class MotionListController extends AdminBase
     public function actionIndex(?string $motionId = null): ResponseInterface
     {
         $consultation       = $this->consultation;
-        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null);
-        $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
+        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
+        $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
         if (!($privilegeScreening || $privilegeProposals)) {
-            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_acccess'));
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
         $this->activateFunctions();
@@ -171,12 +184,18 @@ class MotionListController extends AdminBase
             $consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         }
 
-        if ($privilegeScreening) {
-            $this->actionListallScreeningMotions();
-            $this->actionListallScreeningAmendments();
-        }
-        if ($privilegeProposals) {
-            $this->actionListallProposalAmendments();
+        try {
+            if ($privilegeScreening) {
+                $this->actionListallScreeningMotions();
+                $this->actionListallScreeningAmendments();
+            }
+            if ($privilegeProposals) {
+                $this->actionListallProposalAmendments();
+            }
+        } catch (Access $e) {
+            throw new ResponseException(new HtmlErrorResponse(403, $e->getMessage()));
+        } catch (NotFound $e) {
+            throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
         }
 
         if ($motionId !== null && $motionId !== 'all' && $consultation->getMotion($motionId) === null) {

@@ -322,9 +322,6 @@ $html = ob_get_clean();
                     }
                 });
 
-                console.log(JSON.parse(JSON.stringify(this.setNonrestrictedPrivileges)));
-                console.log(JSON.parse(JSON.stringify(this.setRestrictedPrivileges)));
-
                 $(this.$refs['group-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
             },
             save: function ($event) {
