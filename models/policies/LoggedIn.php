@@ -3,7 +3,8 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
+use app\models\settings\Privileges;
+use app\models\db\{ConsultationMotionType, User};
 
 class LoggedIn extends IPolicy
 {
@@ -92,7 +93,7 @@ class LoggedIn extends IPolicy
             return $assumeLoggedIn;
         }
 
-        if ($allowAdmins && $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+        if ($allowAdmins && $user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, null)) {
             return true;
         }
 

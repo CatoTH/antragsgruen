@@ -1,7 +1,8 @@
 <?php
 
+use app\models\settings\Privileges;
 use app\components\{Tools, HTMLTools};
-use app\models\db\{ConsultationUserGroup, IComment, MotionComment, User};
+use app\models\db\{IComment, MotionComment, User};
 use app\models\forms\CommentForm;
 use yii\helpers\Html;
 
@@ -11,7 +12,7 @@ use yii\helpers\Html;
 
 $imotion       = $comment->getIMotion();
 $screening     = ($comment->status === IComment::STATUS_SCREENING);
-$screenAdmin   = User::havePrivilege($imotion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_SCREENING);
+$screenAdmin   = User::havePrivilege($imotion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, null);
 $commentPolicy = $imotion->getMyMotionType()->getCommentPolicy();
 $canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserComment(false, false));
 

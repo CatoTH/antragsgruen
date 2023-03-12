@@ -6,7 +6,8 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
-use app\models\db\{Amendment, ConsultationText, ConsultationUserGroup, ISupporter, Motion, User};
+use app\models\db\{Amendment, ConsultationText, ISupporter, Motion, User};
+use app\models\settings\Privileges;
 use app\models\layoutHooks\{Hooks, Layout};
 use yii\helpers\Html;
 
@@ -136,12 +137,12 @@ class LayoutHooks extends Hooks
         $out = '<ul class="nav navbar-nav">';
 
         $consultation       = $controller->consultation;
-        $privilegeScreening = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SCREENING);
-        //$privilegeAny       = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_ANY);
-        $privilegeProposal = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null);
+        //$privilegeAny       = User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY, null);
+        $privilegeProposal = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
 
         if ($controller->consultation) {
-            if (User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+            if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
                 $icon = '<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>';
                 $icon .= '<span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>';
                 $url  = UrlHelper::createUrl('/pages/list-pages');
@@ -195,7 +196,7 @@ class LayoutHooks extends Hooks
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo', 'aria-label' => $adminTitle]) . '</li>';
             }
         }
-        if (User::haveOneOfPrivileges($consultation, IndexController::$REQUIRED_PRIVILEGES)) {
+        if (User::haveOneOfPrivileges($consultation, IndexController::REQUIRED_PRIVILEGES, null)) {
             $adminUrl   = UrlHelper::createUrl('/admin/index');
             $adminTitle = \Yii::t('base', 'menu_admin');
             $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink', 'aria-label' => $adminTitle]) . '</li>';

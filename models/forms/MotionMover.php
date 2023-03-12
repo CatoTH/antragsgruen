@@ -2,19 +2,15 @@
 
 namespace app\models\forms;
 
-use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationUserGroup, IMotion, Motion, User};
+use app\models\settings\Privileges;
+use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, IMotion, Motion, User};
 use app\models\exceptions\Inconsistency;
 
 class MotionMover
 {
-    /** @var Consultation */
-    private $consultation;
-
-    /** @var Motion */
-    private $motion;
-
-    /** @var User */
-    private $mover;
+    private Consultation $consultation;
+    private Motion $motion;
+    private User $mover;
 
     public function __construct(Consultation $consultation, Motion $motion, User $user)
     {
@@ -38,7 +34,7 @@ class MotionMover
             if ($consultation->id === $this->consultation->id) {
                 continue;
             }
-            if (!$this->mover->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_ANY)) {
+            if (!$this->mover->hasPrivilege($consultation, Privileges::PRIVILEGE_ANY, null)) {
                 continue;
             }
             if (count($this->getCompatibleMotionTypes($consultation)) > 0) {
@@ -50,8 +46,6 @@ class MotionMover
     }
 
     /**
-     * @param Consultation $consultation
-     *
      * @return ConsultationMotionType[]
      */
     public function getCompatibleMotionTypes(Consultation $consultation): array
@@ -67,9 +61,6 @@ class MotionMover
     }
 
     /**
-     * @param array $post
-     *
-     * @return Motion|null
      * @throws Inconsistency
      */
     public function move(array $post): ?Motion

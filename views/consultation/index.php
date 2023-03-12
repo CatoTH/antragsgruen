@@ -1,7 +1,8 @@
 <?php
 
-use app\models\db\{Amendment, AmendmentSupporter, ConsultationUserGroup, Motion, MotionSupporter, User};
+use app\models\db\{Amendment, AmendmentSupporter, Motion, MotionSupporter, User};
 use app\components\UrlHelper;
+use app\models\settings\Privileges;
 use yii\helpers\Html;
 
 /**
@@ -19,7 +20,7 @@ $layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'consultationIndex';
 $this->title              = $consultation->title;
 
-$contentAdmin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
+$contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
 
 if ($contentAdmin) {
     $layout->loadCKEditor();

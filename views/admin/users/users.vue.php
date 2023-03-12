@@ -58,11 +58,18 @@ ob_start();
                             {{ group.title }}
                         </div>
                         <div class="additional" v-if="group.description">{{ group.description }}</div>
+                        <div class="additional" v-for="formatted in formattedGroupPrivileges(group)">
+                            {{ formatted }}
+                        </div>
                     </div>
                     <div class="groupActions">
-                        <small><a :href="userGroupLogUrl(group)"><span class="glyphicon glyphicon-chevron-right"></span> <?= Yii::t('admin','siteacc_usergroup_log') ?></a></small>
+                        <button class="btn btn-link btnEdit" @click="editGroup(group)"
+                                :title="'<?= Yii::t('admin', 'siteacc_group_edit') ?>'.replace(/%GROUPNAME%/, group.title)"
+                                :aria-label="'<?= Yii::t('admin', 'siteacc_group_edit') ?>'.replace(/%USERNAME%/, group.title)">
+                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                        </button>
 
-                        <button v-if="group.deletable" class="btn btn-link btnRemove" @click="removeGroup(group)"
+                        <button v-if="group.editable" class="btn btn-link btnRemove" @click="removeGroup(group)"
                                 :title="'<?= Yii::t('admin', 'siteacc_group_del') ?>'.replace(/%GROUPNAME%/, group.title)"
                                 :aria-label="'<?= Yii::t('admin', 'siteacc_group_del') ?>'.replace(/%GROUPNAME%/, group.title)">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
@@ -115,7 +122,7 @@ $html = ob_get_clean();
 
     __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['users', 'groups', 'urlUserGroupLog'],
+        props: ['users', 'groups', 'allPrivilegesGeneral', 'allPrivilegesMotion'],
         mixins: window.USER_ADMIN_MIXINS,
         data() {
             return {
@@ -211,9 +218,6 @@ $html = ob_get_clean();
                     }
                 });
             },
-            userGroupLogUrl: function (userGroup) {
-                return this.urlUserGroupLog.replace(/%23/g, "#").replace(/###GROUP###/, userGroup.id);
-            },
             escapeHtml: function (text) {
                 return text.replace(/&/g, "&amp;")
                     .replace(/</g, "&lt;")
@@ -304,11 +308,37 @@ $html = ob_get_clean();
                 }
                 this.$emit('save-user', user.id, user.groups);
             },
+            formattedGroupPrivileges: function (group) {
+                if (!group.privileges) {
+                    return [];
+                }
+                const allPrivs = [...this.allPrivilegesGeneral, ...this.allPrivilegesMotion];
+                return group.privileges.map(priv => {
+                    let name = priv.privileges.map(privId => {
+                        return allPrivs.find(_priv => _priv.id === privId).title;
+                    }).join(", ");
+
+                    if (priv.motionType) {
+                        name = priv.motionType.title + ": " + name;
+                    }
+                    if (priv.agendaItem) {
+                        name = priv.agendaItem.title + ": " + name;
+                    }
+                    if (priv.tag) {
+                        name = priv.tag.title + ": " + name;
+                    }
+
+                    return name;
+                });
+            },
             addGroupSubmit: function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
-                this.$emit('create-user-group', this.addGroupName);
+                this.$emit('create-group', this.addGroupName);
                 this.creatingGroups = false;
+            },
+            editGroup: function (group) {
+                this.$emit('edit-group', group)
             },
             removeGroup: function (group) {
                 const widget = this,

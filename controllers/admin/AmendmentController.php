@@ -3,29 +3,28 @@
 namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
-use app\models\http\BinaryFileResponse;
-use app\models\http\HtmlErrorResponse;
-use app\models\http\HtmlResponse;
-use app\models\http\RedirectResponse;
-use app\models\http\ResponseInterface;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Site;
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment,
     AmendmentSupporter,
     ConsultationLog,
     ConsultationSettingsTag,
-    ConsultationUserGroup,
     Motion,
     User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
 use app\views\amendment\LayoutHelper;
-use yii\web\Response;
 
 class AmendmentController extends AdminBase
 {
+    public const REQUIRED_PRIVILEGES = [
+        Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
+        Privileges::PRIVILEGE_MOTION_TEXT_EDIT,
+        Privileges::PRIVILEGE_MOTION_INITIATORS,
+    ];
+
     public function actionOdslist(bool $textCombined = false, int $withdrawn = 0): BinaryFileResponse
     {
         $ods = $this->renderPartial('ods_list', [
@@ -124,7 +123,7 @@ class AmendmentController extends AdminBase
             $supporter->name         = $names[$i];
             $supporter->organization = $orgas[$i];
             $supporter->position     = $i;
-            $supporter->setExtraDataEntry('gender', (isset($genders[$i]) ? $genders[$i] : null));
+            $supporter->setExtraDataEntry('gender', $genders[$i] ?? null);
             if (!$supporter->save()) {
                 var_dump($supporter->getErrors());
                 die();
@@ -165,21 +164,24 @@ class AmendmentController extends AdminBase
 
     public function actionUpdate(string $amendmentId): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
-            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
-        }
+        $consultation = $this->consultation;
 
-        $amendment = $this->consultation->getAmendment($amendmentId);
+        $amendment = $consultation->getAmendment($amendmentId);
         if (!$amendment) {
             return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($amendment->getMyMotion(), $amendment);
 
+        $privCtx = PrivilegeQueryContext::amendment($amendment);
+        if (!User::haveOneOfPrivileges($consultation, self::REQUIRED_PRIVILEGES, $privCtx)) {
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
+        }
+
         $this->layout = 'column2';
 
         $post = $this->getHttpRequest()->post();
 
-        if ($this->isPostSet('screen') && $amendment->isInScreeningProcess()) {
+        if ($this->isPostSet('screen') && $amendment->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
@@ -191,14 +193,14 @@ class AmendmentController extends AdminBase
             }
         }
 
-        if ($this->isPostSet('delete')) {
+        if ($this->isPostSet('delete') && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, $privCtx)) {
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'amend_deleted'));
             return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
         }
 
-        if ($this->isPostSet('save')) {
+        if ($this->isPostSet('save') &&  User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $privCtx)) {
             if (!isset($post['edittext'])) {
                 unset($post['sections']);
             }
@@ -233,7 +235,7 @@ class AmendmentController extends AdminBase
             }
             $amendment->agendaItemId = null;
             if (isset($amdat['agendaItemId'])) {
-                foreach ($this->consultation->agendaItems as $agendaItem) {
+                foreach ($consultation->agendaItems as $agendaItem) {
                     if ($agendaItem->id === intval($amdat['agendaItemId'])) {
                         $amendment->agendaItemId = intval($amdat['agendaItemId']);
                     }
@@ -270,7 +272,7 @@ class AmendmentController extends AdminBase
 
             $amendment->save();
 
-            foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
                 if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
                     $amendment->unlink('tags', $tag, true);
                 } else {
@@ -281,8 +283,10 @@ class AmendmentController extends AdminBase
                 }
             }
 
-            $this->saveAmendmentSupporters($amendment);
-            $this->saveAmendmentInitiator($amendment);
+            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
+                $this->saveAmendmentSupporters($amendment);
+                $this->saveAmendmentInitiator($amendment);
+            }
 
             // This forces recalculating the motion's view page. This is necessary at least when the text has changed
             // or the names of the initiators.

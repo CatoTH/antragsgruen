@@ -1,14 +1,15 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{ConsultationUserGroup, User};
+use app\models\settings\Privileges;
+use app\models\db\User;
 use yii\helpers\Html;
 
 /**
  * @var \app\models\db\Consultation $consultation
  */
 
-$contentAdmin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
+$contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
 
 $preWelcome = \app\models\layoutHooks\Layout::getConsultationPreWelcome();
 

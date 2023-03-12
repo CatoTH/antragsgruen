@@ -62,6 +62,17 @@ return [
     'policy_groups_supp_denied'     => 'Only specified user groups can support motions.',
     'policy_groups_comm_denied'     => 'Only specified user groups can write comments.',
 
+    'privilege_consettings'   => 'Manage consultation settings',
+    'privilege_content'       => 'Manage content pages / texts',
+    'privilege_speech'        => 'Manage speech queues',
+    'privilege_voting'        => 'Manage votings',
+    'privilege_screening'     => 'Screening',
+    'privilege_motionstruct'  => 'Manage metadata',
+    'privilege_motioncontent' => 'Manage content',
+    'privilege_motionusers'   => 'Manage initiators',
+    'privilege_motiondelete'  => 'Delete',
+    'privilege_proposals'     => 'Manage proposed procedure',
+
     'preset_bdk_name'           => 'German federal convention',
     'preset_bdk_desc'           => 'Presets similar to the federal convention of the German Green Party. This setting does not make sense outside of Germany.',
     'preset_election_name'      => 'Application / elections',

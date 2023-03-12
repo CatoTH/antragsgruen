@@ -3,7 +3,8 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\models\db\{ConsultationMotionType, ConsultationUserGroup, User};
+use app\models\settings\Privileges;
+use app\models\db\{ConsultationMotionType, User};
 
 class GruenesNetz extends IPolicy
 {
@@ -66,7 +67,7 @@ class GruenesNetz extends IPolicy
                 return false;
             }
         }
-        if ($allowAdmins && $user->hasPrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_MOTION_EDIT)) {
+        if ($allowAdmins && $user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, null)) {
             return true;
         }
         return $user->isGruenesNetzUser();

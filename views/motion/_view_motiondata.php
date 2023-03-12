@@ -1,7 +1,9 @@
 <?php
 
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\components\{HTMLTools, MotionNumbering, Tools, UrlHelper};
-use app\models\db\{ConsultationUserGroup, Motion, MotionSupporter, User, Consultation};
+use app\models\db\{Motion, MotionSupporter, User, Consultation};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
@@ -26,7 +28,7 @@ echo '<div class="content">';
 
 echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::createMotionUrl($motion)]);
 
-$iAmAdmin = User::havePrivilege(Consultation::getCurrent(), ConsultationUserGroup::PRIVILEGE_ANY);
+$iAmAdmin = User::havePrivilege(Consultation::getCurrent(), Privileges::PRIVILEGE_ANY, null);
 $motionHistory = MotionNumbering::getSortedHistoryForMotion($motion, !$iAmAdmin);
 
 $replacedByMotions = $motion->getVisibleReplacedByMotions();
@@ -86,7 +88,7 @@ if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL || $mo
 MotionLayoutHelper::addVotingResultsRow($motion->getVotingData(), $motionData);
 
 if (!$motion->isResolution()) {
-    $proposalAdmin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+    $proposalAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion));
     if (($motion->isProposalPublic() && $motion->proposalStatus) || $proposalAdmin) {
         $motionData[] = [
             'rowClass' => 'proposedStatusRow',
@@ -123,7 +125,7 @@ if ($motion->version === Motion::VERSION_DEFAULT && $motionDataMode === \app\mod
     ];
 }
 
-MotionLayoutHelper::addTagsRow($consultation, $motion->getPublicTopicTags(), $motionData);
+MotionLayoutHelper::addTagsRow($motion, $motion->getPublicTopicTags(), $motionData);
 
 if (count($motionHistory) > 1) {
     $historyContent = '';

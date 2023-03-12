@@ -3,6 +3,8 @@
 namespace app\models\db;
 
 use app\components\Tools;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use yii\base\InvalidConfigException;
 use yii\db\{ActiveQueryInterface, ActiveRecord};
 
@@ -116,7 +118,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
             return false;
         }
         if ($this->status !== static::STATUS_PRIVATE &&
-            $user->hasPrivilege($this->getConsultation(), ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+            $user->hasPrivilege($this->getConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::imotion($this->getIMotion()))) {
             return true;
         }
         return ($this->userId && $this->userId === $user->id);
@@ -133,7 +135,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
             case static::STATUS_PRIVATE:
                 return ($user && $user->id === $this->userId);
             case static::STATUS_SCREENING:
-                if ($user && $user->hasPrivilege($this->getConsultation(), ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+                if ($user && $user->hasPrivilege($this->getConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::imotion($this->getIMotion()))) {
                     return true;
                 } else {
                     return ($user && $user->id === $this->userId);

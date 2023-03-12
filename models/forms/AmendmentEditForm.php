@@ -3,8 +3,17 @@
 namespace app\models\forms;
 
 use app\components\HTMLTools;
-use app\models\db\{Amendment, ConsultationAgendaItem, ConsultationSettingsTag, Motion, AmendmentSection, AmendmentSupporter};
+use app\models\db\{Amendment,
+    ConsultationAgendaItem,
+    ConsultationSettingsTag,
+    Motion,
+    AmendmentSection,
+    AmendmentSupporter,
+    User};
+use app\components\RequestContext;
 use app\models\exceptions\FormError;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\models\sectionTypes\{ISectionType, TextSimple};
 use yii\base\Model;
 
@@ -137,41 +146,43 @@ class AmendmentEditForm extends Model
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
 
-        foreach ($this->sections as $section) {
-            if (isset($values['sections'][$section->getSettings()->id])) {
-                $sectionType = $section->getSectionType();
-                if ($this->adminMode && $section->getSettings() && $section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
-                    /** @var TextSimple $sectionType */
-                    $sectionType->forceMultipleParagraphMode(true);
-                }
-                $sectionType->setAmendmentData($values['sections'][$section->getSettings()->id]);
-            }
-            if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
-                if (!empty($files['sections']['tmp_name'][$section->getSettings()->id])) {
-                    $data = [];
-                    foreach ($files['sections'] as $key => $vals) {
-                        if (isset($vals[$section->getSettings()->id])) {
-                            $data[$key] = $vals[$section->getSettings()->id];
-                        }
+        $consultation = $this->motion->getMyConsultation();
+        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($this->motion))) {
+            foreach ($this->sections as $section) {
+                if (isset($values['sections'][$section->getSettings()->id])) {
+                    $sectionType = $section->getSectionType();
+                    if ($this->adminMode && $section->getSettings() && $section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                        /** @var TextSimple $sectionType */
+                        $sectionType->forceMultipleParagraphMode(true);
                     }
-                    $section->getSectionType()->setAmendmentData($data);
+                    $sectionType->setAmendmentData($values['sections'][$section->getSettings()->id]);
+                }
+                if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
+                    if (!empty($files['sections']['tmp_name'][$section->getSettings()->id])) {
+                        $data = [];
+                        foreach ($files['sections'] as $key => $vals) {
+                            if (isset($vals[$section->getSettings()->id])) {
+                                $data[$key] = $vals[$section->getSettings()->id];
+                            }
+                        }
+                        $section->getSectionType()->setAmendmentData($data);
+                    }
                 }
             }
-        }
-        if (isset($values['amendmentReason'])) {
-            $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
-        }
-        if (isset($values['amendmentEditorial'])) {
-            $this->editorial = HTMLTools::cleanSimpleHtml($values['amendmentEditorial']);
-        } else {
-            $this->editorial = '';
-        }
+            if (isset($values['amendmentReason'])) {
+                $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
+            }
+            if (isset($values['amendmentEditorial'])) {
+                $this->editorial = HTMLTools::cleanSimpleHtml($values['amendmentEditorial']);
+            } else {
+                $this->editorial = '';
+            }
 
-        $globalAlternativesAllowed = $this->motion->getMyConsultation()->getSettings()->globalAlternatives;
-        $this->globalAlternative   = (isset($values['globalAlternative']) && $globalAlternativesAllowed);
+            $this->globalAlternative = (isset($values['globalAlternative']) && $consultation->getSettings()->globalAlternatives);
+        }
 
         if (isset($values['createFromAmendment']) && $this->motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
-            $baseAmendment = $this->motion->getMyConsultation()->getAmendment((int)$values['createFromAmendment']);
+            $baseAmendment = $consultation->getAmendment((int)$values['createFromAmendment']);
             if ($baseAmendment && $baseAmendment->motionId === $this->motion->id) {
                 $this->toAnotherAmendment = $baseAmendment->id;
             }
@@ -222,7 +233,7 @@ class AmendmentEditForm extends Model
 
         $amendment = new Amendment();
 
-        $this->setAttributes([\Yii::$app->request->post(), $_FILES]);
+        $this->setAttributes([RequestContext::getWebApplication()->request->post(), $_FILES]);
         $this->supporters = $this->motion->motionType->getAmendmentSupportTypeClass()
             ->getAmendmentSupporters($amendment);
 
@@ -302,23 +313,31 @@ class AmendmentEditForm extends Model
      */
     public function saveAmendment(Amendment $amendment): void
     {
-        $this->supporters = $this->motion->getMyMotionType()
-            ->getAmendmentSupportTypeClass()->getAmendmentSupporters($amendment);
+        $consultation = $this->motion->getMyConsultation();
+        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment))) {
+            $this->supporters = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->getAmendmentSupporters($amendment);
+        }
 
         if (!$this->adminMode) {
-            if (!$amendment->canEdit()) {
+            if (!$amendment->canEditText()) {
                 throw new FormError(\Yii::t('amend', 'err_create_permission'));
             }
 
             $this->saveAmendmentVerify();
         }
-        $amendment->changeExplanation = $this->reason;
-        $amendment->changeEditorial   = $this->editorial;
-        $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
+
+        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment))) {
+            $amendment->changeExplanation = $this->reason;
+            $amendment->changeEditorial = $this->editorial;
+            $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
+        }
 
         if ($amendment->save()) {
             $motionType = $this->motion->getMyMotionType();
-            $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
+
+            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment))) {
+                $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
+            }
 
             // Tags
             foreach ($amendment->getPublicTopicTags() as $tag) {
@@ -332,16 +351,18 @@ class AmendmentEditForm extends Model
                 }
             }
 
-            // Sections
-            foreach ($amendment->getActiveSections() as $section) {
-                $section->delete();
-            }
-            foreach ($this->sections as $section) {
-                // Just saving the old section might fail as it might have been deleted by a different object instance above.
-                $clonedSection = new AmendmentSection();
-                $clonedSection->setAttributes($section->getAttributes(), false);
-                $clonedSection->amendmentId = $amendment->id;
-                $clonedSection->save();
+            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment))) {
+                // Sections
+                foreach ($amendment->getActiveSections() as $section) {
+                    $section->delete();
+                }
+                foreach ($this->sections as $section) {
+                    // Just saving the old section might fail as it might have been deleted by a different object instance above.
+                    $clonedSection = new AmendmentSection();
+                    $clonedSection->setAttributes($section->getAttributes(), false);
+                    $clonedSection->amendmentId = $amendment->id;
+                    $clonedSection->save();
+                }
             }
 
             $amendment->dateContentModification = date('Y-m-d H:i:s');

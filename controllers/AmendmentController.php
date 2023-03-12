@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
     HtmlResponse,
@@ -17,7 +19,6 @@ use app\models\db\{Amendment,
     AmendmentSupporter,
     ConsultationLog,
     ConsultationSettingsTag,
-    ConsultationUserGroup,
     ISupporter,
     Motion,
     User};
@@ -158,7 +159,7 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
-        if ($this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+        if ($this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
             $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);
         } else {
             $adminEdit = null;
@@ -236,7 +237,7 @@ class AmendmentController extends Base
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
-        if (!$amendment->canEdit()) {
+        if (!$amendment->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
@@ -279,12 +280,12 @@ class AmendmentController extends Base
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (!$amendment->canEdit()) {
+        if (!$amendment->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_edit_forbidden'));
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
-        $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
+        $fromMode = ($amendment->status === Amendment::STATUS_DRAFT ? 'create' : 'edit');
         $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
 
         if ($this->isPostSet('save')) {
@@ -352,7 +353,7 @@ class AmendmentController extends Base
 
         $form = new AmendmentEditForm($motion, $agendaItem, null);
         $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
-        $iAmAdmin = $this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING);
+        $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null);
 
         if ($this->isPostSet('save')) {
             try {
@@ -445,7 +446,7 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new RestApiExceptionResponse(404, 'Amendment not found');
         }
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
@@ -611,8 +612,8 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            return new HtmlErrorResponse(403, 'Not permitted to change the status');
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
+            return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 
 
@@ -663,7 +664,7 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new RestApiExceptionResponse(404, 'Amendment not found');
         }
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 

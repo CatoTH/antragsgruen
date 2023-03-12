@@ -3127,58 +3127,6 @@ class Net_IDNA2
     }
 
     /**
-     * Echo hex representation of UCS4 sequence.
-     *
-     * @param array   $input       UCS4 sequence
-     * @param boolean $include_bit Include bitmask in output
-     *
-     * @return void
-     * @static
-     * @access private
-     */
-    private static function _showHex(array $input, bool $include_bit = false): void
-    {
-        foreach ($input as $k => $v) {
-            echo '[', $k, '] => ', sprintf('%X', $v);
-
-            if ($include_bit) {
-                echo ' (', Net_IDNA2::_showBitmask($v), ')';
-            }
-
-            echo "\n";
-        }
-    }
-
-    /**
-     * Gives you a bit representation of given Byte (8 bits), Word (16 bits) or DWord (32 bits)
-     * Output width is automagically determined
-     *
-     * @param int $octet ...
-     *
-     * @return string    Bitmask-representation
-     * @static
-     * @access private
-     */
-    private static function _showBitmask(int $octet): string
-    {
-        if ($octet >= (1 << 16)) {
-            $w = 31;
-        } else if ($octet >= (1 << 8)) {
-            $w = 15;
-        } else {
-            $w = 7;
-        }
-
-        $return = '';
-
-        for ($i = $w; $i > -1; $i--) {
-            $return .= ($octet & (1 << $i))? '1' : '0';
-        }
-
-        return $return;
-    }
-
-    /**
      * Gets the length of a string in bytes even if mbstring function
      * overloading is turned on
      *

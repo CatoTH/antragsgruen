@@ -1650,13 +1650,60 @@ label.legend {
   }
 }
 
-.editUserModal {
+.editUserGroupModal {
+
   label {
     font-weight: normal;
     display: block;
   }
+  dl {
+    margin-bottom: 5px;
+  }
+  dt {
+    display: inline;
+    margin-right: 5px;
+  }
+  dd {
+    display: inline;
+    &:after {
+      content: "\a";
+      display: block
+    }
+  }
+  .verticalLabels label {
+    display: inline-block;
+    margin-right: 10px;
+  }
   .changeLogLink {
     float: left;
+  }
+  .addRestrictedPermissionDialog {
+    .restrictedPermissions {
+      margin-bottom: 20px;
+    }
+    .restrictedTo {
+      min-height: 100px;
+    }
+  }
+}
+
+.editGroupModal {
+  .none {
+    font-style: italic;
+  }
+  .restrictedPrivilegeList {
+    li {
+      border-bottom: solid 1px #e5e5e5;
+    }
+    .btnRemove {
+      float: right;
+      font-weight: normal;
+      color: $colorDelLink;
+    }
+  }
+  .btnAddRestrictedPermission {
+    font-weight: normal;
+    font-size: 0.8em;
   }
 }
 

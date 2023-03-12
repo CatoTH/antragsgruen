@@ -2,8 +2,9 @@
 
 namespace app\plugins\member_petitions;
 
+use app\models\settings\Privileges;
 use app\plugins\gruene_de_saml\Module;
-use app\models\db\{Consultation, ConsultationMotionType, ConsultationUserGroup, IMotion, Motion, MotionSupporter, Site, User};
+use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, MotionSupporter, Site, User};
 use app\models\events\MotionEvent;
 use app\models\supportTypes\SupportBase;
 use app\plugins\member_petitions\notifications\{DiscussionSubmitted, PetitionSubmitted};
@@ -39,7 +40,7 @@ class Tools
             /** @var ConsultationSettings $settings */
             $settings = $consultation->getSettings();
 
-            if ($settings->maintenanceMode && !$user->hasPrivilege($consultation, ConsultationUserGroup::PRIVILEGE_ANY)) {
+            if ($settings->maintenanceMode && !$user->hasPrivilege($consultation, Privileges::PRIVILEGE_ANY, null)) {
                 continue;
             }
 
@@ -281,7 +282,7 @@ class Tools
         }
 
         $user = User::getCurrentUser();
-        return ($user && $user->hasPrivilege($motion->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT));
+        return ($user && $user->hasPrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null));
     }
 
     public static function getMotionResponse(Motion $motion): ?Motion

@@ -3,6 +3,8 @@
 namespace app\models\db;
 
 use app\models\proposedProcedure\Agenda;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\models\notifications\{MotionProposedProcedure,
     MotionPublished,
     MotionSubmitted as MotionSubmittedNotification,
@@ -76,11 +78,11 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return string[]
+     * @return int[]
      */
     public static function getProposedChangeStatuses(): array
     {
-        $statuses = [
+        return [
             IMotion::STATUS_ACCEPTED,
             IMotion::STATUS_REJECTED,
             IMotion::STATUS_MODIFIED_ACCEPTED,
@@ -89,10 +91,6 @@ class Motion extends IMotion implements IRSSItem
             IMotion::STATUS_OBSOLETED_BY,
             IMotion::STATUS_CUSTOM_STRING,
         ];
-        if (Consultation::getCurrent()) {
-            $statuses = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStatuses($statuses);
-        }
-        return $statuses;
     }
 
     public static function tableName(): string
@@ -210,7 +208,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() &&
-            !User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+            !User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             // @TODO Find a solution to edit motions before submitting when not logged in
             throw new Internal('Can only set showAdminSections for admins');
         }
@@ -497,12 +495,12 @@ class Motion extends IMotion implements IRSSItem
 
     public function canEdit(): bool
     {
-        return $this->getPermissionsObject()->motionCanEdit($this);
+        return $this->getPermissionsObject()->motionCanEditText($this);
     }
 
     public function canWithdraw(): bool
     {
-        return $this->getPermissionsObject()->motionCanWithdraw($this);
+        return $this->getPermissionsObject()->iMotionCanWithdraw($this);
     }
 
     public function canMergeAmendments(): bool
@@ -512,7 +510,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function canCreateResolution(): bool
     {
-        return User::havePrivilege($this->getMyConsultation(), ConsultationUserGroup::PRIVILEGE_MOTION_EDIT);
+        return User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::motion($this));
     }
 
     public function canFinishSupportCollection(): bool

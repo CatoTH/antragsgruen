@@ -9,10 +9,10 @@ use Helper\BasePage;
  */
 class AdminMotionTypePage extends BasePage
 {
-    public $route = 'admin/motion/type';
+    public $route = 'admin/motion-type/type';
 
-    public static $tabularLabel = 'Angaben';
-    public static $commentsLabel = 'Kommentare';
+    public static string $tabularLabel = 'Angaben';
+    public static string $commentsLabel = 'Kommentare';
 
     /**
      * @return int[]

@@ -2,14 +2,14 @@
 
 namespace app\controllers;
 
+use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
 use app\components\{Tools, UrlHelper};
 use app\models\exceptions\NotFound;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, ResponseInterface, RestApiResponse};
 use app\models\mergeAmendments\Init;
-use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, Motion, TexTemplate};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, TexTemplate};
 use app\models\exceptions\ExceptionBase;
 use app\models\MotionSectionChanges;
-use app\models\settings\AntragsgruenApp;
 use app\views\motion\LayoutHelper;
 use yii\web\{NotFoundHttpException, Response, Session};
 
@@ -35,7 +35,7 @@ trait MotionExportTraits
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId === $sectionId) {
                 if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
-                    !$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)
+                    !$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion))
                 ) {
                     return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
                 }
@@ -66,7 +66,7 @@ trait MotionExportTraits
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId === $sectionId) {
                 if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
-                    !$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)
+                    !$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion))
                 ) {
                     return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
                 }

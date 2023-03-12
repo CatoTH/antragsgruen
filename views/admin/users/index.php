@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\UserConsultationScreening;
 use app\models\layoutHooks\Layout;
+use app\models\settings\Privilege;
 use yii\helpers\Html;
 
 /**
@@ -14,7 +15,8 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$layout     = $controller->layoutParams;
+$consultation = $controller->consultation;
+$layout = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'users_head');
 $layout->addCSS('css/backend.css');
@@ -26,7 +28,8 @@ $layout->loadSelectize();
 $layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/users.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/_user_edit.vue.php');
-Layout::registerAdditionalVueUserAdministrationTemplates($controller->consultation, $layout);
+$layout->addVueTemplate('@app/views/admin/users/_group_edit.vue.php');
+Layout::registerAdditionalVueUserAdministrationTemplates($consultation, $layout);
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);
 $userPollUrl = UrlHelper::createUrl(['/admin/users/poll']);
@@ -49,6 +52,38 @@ if ($success) {
 }
 
 
+$privileges = \app\models\settings\Privileges::getPrivileges($consultation);
+$nonMotionPrivileges = array_values(array_map(function (Privilege $priv): array {
+    return [
+        'id' => $priv->id,
+        'title' => $priv->name,
+    ];
+}, $privileges->getNonMotionPrivileges()));
+$motionPrivileges = array_values(array_map(function (Privilege $priv): array {
+    return [
+        'id' => $priv->id,
+        'title' => $priv->name,
+    ];
+}, $privileges->getMotionPrivileges()));
+$agendaItems = array_map(function (\app\models\db\ConsultationAgendaItem $item): array {
+    return [
+        'id' => $item->id,
+        'title' => $item->title,
+    ];
+}, $consultation->agendaItems);
+$tags = array_map(function (\app\models\db\ConsultationSettingsTag $tag): array {
+    return [
+        'id' => $tag->id,
+        'title' => $tag->title,
+    ];
+}, $consultation->tags);
+$motionTypes = array_map(function (\app\models\db\ConsultationMotionType $type): array {
+    return [
+        'id' => $type->id,
+        'title' => $type->titlePlural,
+    ];
+}, $consultation->motionTypes);
+$privilegeDependencies = $privileges->getPrivilegeDependencies();
 ?>
 
 <div data-antragsgruen-widget="backend/UserAdmin"
@@ -59,6 +94,12 @@ if ($success) {
      data-users="<?= Html::encode(json_encode($widgetData['users'])) ?>"
      data-groups="<?= Html::encode(json_encode($widgetData['groups'])) ?>"
      data-permission-global-edit="<?= $globalUserAdmin ? '1' : '0' ?>"
+     data-non-motion-privileges="<?= Html::encode(json_encode($nonMotionPrivileges)) ?>"
+     data-motion-privileges="<?= Html::encode(json_encode($motionPrivileges)) ?>"
+     data-agenda-items="<?= Html::encode(json_encode($agendaItems)) ?>"
+     data-tags="<?= Html::encode(json_encode($tags)) ?>"
+     data-motion-types="<?= Html::encode(json_encode($motionTypes)) ?>"
+     data-privilege-dependencies="<?= Html::encode(json_encode($privilegeDependencies)) ?>"
 >
     <div class="userAdmin"></div>
 </div>

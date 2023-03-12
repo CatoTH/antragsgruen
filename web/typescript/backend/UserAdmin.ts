@@ -18,8 +18,14 @@ export class UserAdmin {
         const initGroupsJson = this.element.getAttribute('data-groups');
         const pollUrl = this.element.getAttribute('data-url-poll');
         const urlUserLog = this.element.getAttribute('data-url-user-log');
-        const urlUserGroupLog = this.element.getAttribute('data-url-user-group-log');
+        const urlGroupLog = this.element.getAttribute('data-url-user-group-log');
         const permissionGlobalEdit = (this.element.getAttribute('data-permission-global-edit') === '1');
+        const nonMotionPrivileges = JSON.parse(this.element.getAttribute('data-non-motion-privileges'));
+        const motionPrivileges = JSON.parse(this.element.getAttribute('data-motion-privileges'));
+        const agendaItems = JSON.parse(this.element.getAttribute('data-agenda-items'));
+        const tags = JSON.parse(this.element.getAttribute('data-tags'));
+        const motionTypes = JSON.parse(this.element.getAttribute('data-motion-types'));
+        const privilegeDependencies = JSON.parse(this.element.getAttribute('data-privilege-dependencies'));
 
         let userWidgetComponent;
 
@@ -32,15 +38,28 @@ export class UserAdmin {
                     @save-user="saveUser"
                     ref="user-edit-widget"
                 ></user-edit-widget>
+                <group-edit-widget
+                    :urlGroupLog="urlGroupLog"
+                    :allPrivilegesGeneral="nonMotionPrivileges"
+                    :allPrivilegesMotion="motionPrivileges"
+                    :allPrivilegeDependencies="privilegeDependencies"
+                    :allMotionTypes="motionTypes"
+                    :allTags="tags"
+                    :allAgendaItems="agendaItems"
+                    @save-group="saveGroup"
+                    ref="group-edit-widget"
+                ></group-edit-widget>
                 <user-admin-widget
                     :users="users"
                     :groups="groups"
-                    :urlUserGroupLog="urlUserGroupLog"
+                    :allPrivilegesGeneral="nonMotionPrivileges"
+                    :allPrivilegesMotion="motionPrivileges"
                     @remove-user="removeUser"
-                    @create-user-group="createUserGroup"
-                    @remove-group="removeUserGroup"
                     @edit-user="editUser"
                     @save-user="saveUser"
+                    @create-group="createGroup"
+                    @edit-group="editGroup"
+                    @remove-group="removeUserGroup"
                     ref="user-admin-widget"
                 ></user-admin-widget>
             </div>`,
@@ -53,31 +72,42 @@ export class UserAdmin {
                     csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                     pollingId: null,
                     urlUserLog,
-                    urlUserGroupLog,
+                    urlGroupLog,
+                    nonMotionPrivileges,
+                    motionPrivileges,
+                    privilegeDependencies,
+                    motionTypes,
+                    tags,
+                    agendaItems,
                     permissionGlobalEdit,
                 };
             },
             computed: {
             },
             methods: {
-                _performOperation: function (additionalProps) {
-                    let postData = {
-                        _csrf: this.csrf,
-                    };
-                    postData = Object.assign(postData, additionalProps);
+                _performOperation: function (postData) {
                     const widget = this;
-                    $.post(userSaveUrl, postData, function (data) {
-                        if (data.msg_success) {
-                            bootbox.alert(data.msg_success);
-                        }
-                        if (data.msg_error) {
-                            bootbox.alert(data.msg_error);
-                        } else {
-                            widget.setUserGroups(data.users, data.groups);
+                    $.ajax({
+                        url: userSaveUrl,
+                        type: "POST",
+                        data: JSON.stringify(postData),
+                        processData: false,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        headers: {"X-CSRF-Token": this.csrf},
+                        success: data => {
+                            if (data.msg_success) {
+                                bootbox.alert(data.msg_success);
+                            }
+                            if (data.msg_error) {
+                                bootbox.alert(data.msg_error);
+                            } else {
+                                widget.setUserGroups(data.users, data.groups);
+                            }
                         }
                     }).catch(function (err) {
                         alert(err.responseText);
-                    });
+                    })
                 },
                 saveUser(userId, groups, nameGiven, nameFamily, organization, newPassword) {
                     this._performOperation({
@@ -110,10 +140,21 @@ export class UserAdmin {
                     this.groups = groups;
                     this.groupsJson = groupsJson;
                 },
-                createUserGroup(groupName) {
+                createGroup(groupName) {
                     this._performOperation({
                         op: 'create-user-group',
                         groupName
+                    });
+                },
+                editGroup(group) {
+                    userWidgetComponent.$refs["group-edit-widget"].open(group);
+                },
+                saveGroup(groupId, groupTitle, privilegeList) {
+                    this._performOperation({
+                        op: 'save-group',
+                        groupId,
+                        groupTitle,
+                        privilegeList
                     });
                 },
                 removeUserGroup(group) {

@@ -1,7 +1,8 @@
 <?php
 
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Amendment, ConsultationUserGroup, Motion, User};
+use app\models\db\{Amendment, Motion, User};
 use yii\helpers\Html;
 
 /**
@@ -22,7 +23,7 @@ $consultation = $controller->consultation;
 
 $hasTags           = (count($consultation->tags) > 0);
 $amendmentStatuses = $consultation->getStatuses()->getStatusNames();
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\AmendmentController::REQUIRED_PRIVILEGES, PrivilegeQueryContext::amendment($entry))) {
     $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
 } else {
     $editUrl = null;
@@ -109,39 +110,50 @@ echo Html::a('ODT', UrlHelper::createAmendmentUrl($entry, 'odt'), ['class' => 'o
 echo '</td>';
 
 if ($colAction) {
-    echo '<td class="actionCol"><div class="btn-group">
+    $canScreen = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($entry));
+    $canDelete = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::amendment($entry));
+
+    echo '<td class="actionCol">';
+    if ($canDelete || $canScreen) {
+        echo '<div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     Aktion
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
-    $screenable = [
-        Amendment::STATUS_DRAFT,
-        Amendment::STATUS_DRAFT_ADMIN,
-        Amendment::STATUS_SUBMITTED_UNSCREENED,
-        Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED,
-    ];
-    if (in_array($entry->status, $screenable)) {
-        $name = Html::encode(Yii::t('admin', 'list_screen'));
-        $link = Html::encode($search->getCurrentUrl(['amendmentScreen' => $entry->id]));
-        echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
-    } else {
-        $name = Html::encode(Yii::t('admin', 'list_unscreen'));
-        $link = Html::encode($search->getCurrentUrl(['amendmentUnscreen' => $entry->id]));
-        echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
-    }
-    $name = Html::encode(Yii::t('admin', 'list_template_amendment'));
-    $link = Html::encode(UrlHelper::createUrl([
-        'amendment/create',
-        'motionSlug' => $entry->getMyMotion()->getMotionSlug(),
-        'cloneFrom'  => $entry->id
-    ]));
-    echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
+        if ($canScreen) {
+            $screenable = [
+                Amendment::STATUS_DRAFT,
+                Amendment::STATUS_DRAFT_ADMIN,
+                Amendment::STATUS_SUBMITTED_UNSCREENED,
+                Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED,
+            ];
+            if (in_array($entry->status, $screenable)) {
+                $name = Html::encode(Yii::t('admin', 'list_screen'));
+                $link = Html::encode($search->getCurrentUrl(['amendmentScreen' => $entry->id]));
+                echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
+            } else {
+                $name = Html::encode(Yii::t('admin', 'list_unscreen'));
+                $link = Html::encode($search->getCurrentUrl(['amendmentUnscreen' => $entry->id]));
+                echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
+            }
+            $name = Html::encode(Yii::t('admin', 'list_template_amendment'));
+            $link = Html::encode(UrlHelper::createUrl([
+                'amendment/create',
+                'motionSlug' => $entry->getMyMotion()->getMotionSlug(),
+                'cloneFrom' => $entry->id
+            ]));
+            echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
+        }
 
-    $delLink = Html::encode($search->getCurrentUrl(['amendmentDelete' => $entry->id]));
-    echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
-        'onClick="return confirm(\'' . addslashes(Yii::t('admin', 'list_confirm_del_amend')) . '\');">' .
-        Yii::t('admin', 'list_delete') . '</a></li>';
-    echo '</ul></div></td>';
+        if ($canDelete) {
+            $delLink = Html::encode($search->getCurrentUrl(['amendmentDelete' => $entry->id]));
+            echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
+                'onClick="return confirm(\'' . addslashes(Yii::t('admin', 'list_confirm_del_amend')) . '\');">' .
+                Yii::t('admin', 'list_delete') . '</a></li>';
+        }
+        echo '</ul></div>';
+    }
+    echo '</td>';
 }
 echo '</tr>';

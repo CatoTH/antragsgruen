@@ -4,7 +4,8 @@ namespace app\plugins\motionslides\controllers;
 
 use app\controllers\Base;
 use app\models\exceptions\Access;
-use app\models\db\{ConsultationText, ConsultationUserGroup, IMotion, User};
+use app\models\settings\Privileges;
+use app\models\db\{ConsultationText, IMotion, User};
 
 class PageController extends Base
 {
@@ -27,7 +28,7 @@ class PageController extends Base
     public function actionFromImotions(string $pageSlug): void
     {
         $page = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             throw new Access('No permissions to edit this page');
         }
 

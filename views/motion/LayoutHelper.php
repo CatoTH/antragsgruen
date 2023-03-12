@@ -5,14 +5,13 @@ namespace app\views\motion;
 use app\components\HashedStaticFileCache;
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\mergeAmendments\Init;
-use app\models\settings\VotingData;
+use app\models\settings\{PrivilegeQueryContext, Privileges, VotingData, AntragsgruenApp};
 use app\components\latex\{Content, Exporter, Layout as LatexLayout};
 use app\components\Tools;
-use app\models\db\{Consultation, ConsultationSettingsTag, ConsultationUserGroup, IMotion, ISupporter, Motion, User};
+use app\models\db\{Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
 use app\models\LimitedSupporterList;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
@@ -29,8 +28,8 @@ class LayoutHelper
             $name = $supp->getNameWithResolutionDate(true);
             $name = LayoutHooks::getMotionDetailsInitiatorName($name, $supp);
 
-            $admin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SCREENING) ||
-                     User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+            $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null) ||
+                     User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
             if ($admin && ($supp->contactEmail || $supp->contactPhone)) {
                 if (!$expanded) {
                     $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
@@ -112,9 +111,10 @@ class LayoutHelper
     /**
      * @param ConsultationSettingsTag[] $selectedTags
      */
-    public static function addTagsRow(Consultation $consultation, array $selectedTags, array &$rows): void
+    public static function addTagsRow(IMotion $imotion, array $selectedTags, array &$rows): void
     {
-        $admin = User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SCREENING);
+        $consultation = $imotion->getMyConsultation();
+        $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::imotion($imotion));
         if ($admin && count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) {
             $tags = [];
             $used_tag_ids = [];
@@ -136,7 +136,7 @@ class LayoutHelper
 
             foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
                 if (!in_array($tag->id, $used_tag_ids)) {
-                    $content .= '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->title) . '</option>';
+                    $content .= '<option value="' . intval($tag->id) . '">' . Html::encode($tag->title) . '</option>';
                 }
             }
             $content .= '</select>

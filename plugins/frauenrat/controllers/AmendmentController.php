@@ -4,32 +4,24 @@ namespace app\plugins\frauenrat\controllers;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
-use app\models\db\{ConsultationUserGroup, Motion, User};
+use app\models\http\{HtmlErrorResponse, RedirectResponse, ResponseInterface};
+use app\models\settings\{PrivilegeQueryContext, Privileges};
+use app\models\db\{Motion, User};
 
 class AmendmentController extends Base
 {
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     *
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionSaveProposal($motionSlug, $amendmentId)
+    public function actionSaveProposal(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$motion || !$amendment) {
-            $this->getHttpResponse()->statusCode = 404;
-            return 'Motion/Amendment not found';
+            return new HtmlErrorResponse(404, 'Motion/Amendment not found');
         }
         if ($amendment->motionId !== $motion->id) {
-            $this->getHttpResponse()->statusCode = 500;
-            return 'Inconsistent IDs';
+            return new HtmlErrorResponse(500, 'Inconsistent IDs');
         }
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            $this->getHttpResponse()->statusCode = 403;
-            return 'Not permitted to change the status';
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
+            return new HtmlErrorResponse(403, 'Not permitted to change the status');
         }
 
         $newStatus = $this->getHttpRequest()->post('newProposal');
@@ -60,6 +52,6 @@ class AmendmentController extends Base
         }
         $amendment->save();
 
-        return $this->redirect(UrlHelper::createAmendmentUrl($amendment));
+        return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment));
     }
 }

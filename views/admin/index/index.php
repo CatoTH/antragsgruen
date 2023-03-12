@@ -2,8 +2,8 @@
 
 use app\components\updater\UpdateChecker;
 use app\components\UrlHelper;
-use app\models\db\ConsultationUserGroup;
 use app\models\db\User;
+use app\models\settings\Privileges;
 use yii\helpers\Html;
 
 /**
@@ -63,16 +63,16 @@ echo '</li>';
 echo '<li>' . Yii::t('admin', 'index_motion_types') . '<ul>';
 foreach ($consultation->motionTypes as $motionType) {
     echo '<li>';
-    $sectionsUrl = UrlHelper::createUrl(['/admin/motion/type', 'motionTypeId' => $motionType->id]);
+    $sectionsUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $motionType->id]);
     echo Html::a(Html::encode($motionType->titlePlural), $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
     echo '</li>';
 }
 echo '<li class="secondary motionTypeCreate">';
-echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(['admin/motion/typecreate']));
+echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(['/admin/motion-type/typecreate']));
 echo '</li>';
 echo '</ul></li>';
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_voting'),
@@ -82,7 +82,7 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_VOTINGS)
     echo '</li>';
 }
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_QUEUES)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_speaking'),
@@ -92,7 +92,7 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SPEECH_Q
     echo '</li>';
 }
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_user_list'),
@@ -102,7 +102,7 @@ if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTA
     echo '</li>';
 }
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_SITE_ADMIN)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_consultations'),
@@ -154,7 +154,7 @@ if (User::currentUserIsSuperuser()) {
 
 echo '</aside></div>';
 
-if (User::havePrivilege($consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
     if (count($site->consultations) === 1) {
         echo Html::beginForm('', 'post', ['class' => 'delSiteCaller']);
         echo '<button class="btn-link" type="submit" name="delSite">' .

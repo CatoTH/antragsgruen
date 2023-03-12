@@ -3,11 +3,11 @@
 namespace app\controllers;
 
 use app\models\exceptions\NotFound;
+use app\models\settings\Privileges;
 use app\models\http\{JsonResponse, ResponseInterface, RestApiExceptionResponse};
 use app\views\consultation\LayoutHelper;
-use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationUserGroup, User};
+use app\models\db\{Consultation, ConsultationAgendaItem, User};
 use app\models\exceptions\FormError;
-use yii\web\Response;
 
 /**
  * @property Consultation $consultation
@@ -47,7 +47,7 @@ trait ConsultationAgendaTrait
 
     public function actionSaveAgendaItemAjax(int $itemId): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return new RestApiExceptionResponse(403, 'No access');
         }
 
@@ -138,7 +138,7 @@ trait ConsultationAgendaTrait
 
     public function actionDelAgendaItemAjax(int $itemId): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return new RestApiExceptionResponse(403, 'No access');
         }
 
@@ -157,7 +157,7 @@ trait ConsultationAgendaTrait
 
     public function actionSaveAgendaOrderAjax(): ResponseInterface
     {
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return new RestApiExceptionResponse(403, 'No access');
         }
 

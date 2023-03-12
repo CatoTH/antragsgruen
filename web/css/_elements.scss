@@ -178,6 +178,19 @@ button.link {
     .middleColumn + .rightColumn {
       flex-basis: 30%;
     }
+
+    .modal-body & {
+      .leftColumn {
+        flex-basis: 35%;
+      }
+      .middleColumn {
+        flex-basis: 35%;
+      }
+      .rightColumn {
+        flex-basis: 65%;
+        padding-left: 15px;
+      }
+    }
   }
 }
 
@@ -200,5 +213,15 @@ button.link {
   .saveRow {
     margin-top: 20px;
     text-align: center;
+  }
+}
+
+.stdNonFormattedList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  > li {
+    margin: 0;
+    padding: 0;
   }
 }

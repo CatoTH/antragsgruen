@@ -4,30 +4,23 @@ namespace app\plugins\frauenrat\controllers;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
+use app\models\http\{HtmlErrorResponse, RedirectResponse, ResponseInterface};
 use app\models\mergeAmendments\Init;
-use app\plugins\frauenrat\pdf\Frauenrat;
-use app\plugins\frauenrat\pdf\FrauenratPdf;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
+use app\plugins\frauenrat\pdf\{Frauenrat, FrauenratPdf};
 use app\views\pdfLayouts\IPdfWriter;
-use app\models\db\{ConsultationSettingsTag, ConsultationUserGroup, Motion, User};
+use app\models\db\{ConsultationSettingsTag, Motion, User};
 
 class MotionController extends Base
 {
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionSaveTag($motionSlug)
+    public function actionSaveTag(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            $this->getHttpResponse()->statusCode = 404;
-            return 'Motion not found';
+            return new HtmlErrorResponse(404,  'Motion not found');
         }
-        if (!$this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
-            $this->getHttpResponse()->statusCode = 403;
-            return 'Not permitted to change the tag';
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
+            return new HtmlErrorResponse(403,  'Not permitted to change the tag');
         }
 
         foreach ($motion->getPublicTopicTags() as $tag) {
@@ -39,25 +32,17 @@ class MotionController extends Base
             }
         }
 
-        return $this->redirect(UrlHelper::createMotionUrl($motion));
+        return new RedirectResponse(UrlHelper::createMotionUrl($motion));
     }
 
-    /**
-     * @param string $motionSlug
-     *
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionSaveProposal($motionSlug)
+    public function actionSaveProposal(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            $this->getHttpResponse()->statusCode = 404;
-            return 'Motion not found';
+            return new HtmlErrorResponse(404, 'Motion not found');
         }
-        if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS)) {
-            $this->getHttpResponse()->statusCode = 403;
-            return 'Not permitted to change the status';
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion))) {
+            return new HtmlErrorResponse(403, 'Not permitted to change the status');
         }
 
         $newStatus = $this->getHttpRequest()->post('newProposal');
@@ -88,7 +73,7 @@ class MotionController extends Base
         }
         $motion->save();
 
-        return $this->redirect(UrlHelper::createMotionUrl($motion));
+        return new RedirectResponse(UrlHelper::createMotionUrl($motion));
     }
 
     /**

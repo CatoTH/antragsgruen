@@ -145,9 +145,8 @@ class MotionSorter
             }
         }
 
-        $siteBehavior = $consultation->site->getBehaviorClass();
         foreach (array_keys($motionsSorted) as $key) {
-            uksort($motionsSorted[$key], [get_class($siteBehavior), 'getSortedMotionsSort']);
+            uksort($motionsSorted[$key], [self::class, 'getSortedMotionsSort']);
         }
         foreach ($motionsNoPrefix as $key => $noPreMot) {
             $motionsSorted[$key] = array_merge($motionsSorted[$key], $noPreMot);
@@ -195,9 +194,8 @@ class MotionSorter
             }
         }
 
-        $siteBehavior = $consultation->site->getBehaviorClass();
         foreach (array_keys($motionsSorted) as $key) {
-            uksort($motionsSorted[$key], [get_class($siteBehavior), 'getSortedMotionsSort']);
+            uksort($motionsSorted[$key], [self::class, 'getSortedMotionsSort']);
         }
 
         return $motionsSorted;

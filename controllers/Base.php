@@ -2,11 +2,11 @@
 
 namespace app\controllers;
 
-use app\models\exceptions\{ApiResponseException, NotFound, Internal};
+use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\http\{ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
-use app\models\settings\{AntragsgruenApp, Layout};
-use app\models\db\{Amendment, Consultation, ConsultationUserGroup, Motion, Site, User};
+use app\models\settings\{AntragsgruenApp, Layout, Privileges};
+use app\models\db\{Amendment, Consultation, Motion, Site, User};
 use Yii;
 use yii\base\Module;
 use yii\helpers\Html;
@@ -150,6 +150,9 @@ class Base extends Controller
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ApiResponseException $e) {
             $response = new RestApiExceptionResponse($e->getCode(), $e->getMessage());
             return $response->renderYii($this->layoutParams, $this->getHttpResponse());
+        /** @phpstan-ignore-next-line */
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ResponseException $e) {
+            return $e->response->renderYii($this->layoutParams, $this->getHttpResponse());
         }
 
         if (is_string($response)) {
@@ -256,7 +259,7 @@ class Base extends Controller
     public function renderContentPage(string $pageKey): string
     {
         if ($this->consultation) {
-            $admin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONTENT_EDIT);
+            $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
         } else {
             $user  = User::getCurrentUser();
             $admin = ($user && in_array($user->id, $this->getParams()->adminUserIds));
@@ -301,7 +304,7 @@ class Base extends Controller
             throw new ApiResponseException('Consultation not found', 404);
         }
         if ($this->consultation && $this->consultation->getSettings()->maintenanceMode && !$alwaysEnabled) {
-            if (!User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS)) {
+            if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
                 throw new ApiResponseException('Consultation in maintenance mode', 404);
             }
         }
@@ -344,7 +347,7 @@ class Base extends Controller
             return false;
         }
         $settings = $this->consultation->getSettings();
-        $admin    = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CONSULTATION_SETTINGS);
+        $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
         if ($settings->maintenanceMode && !$admin) {
             $this->redirect(UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'maintenance']));
             return true;

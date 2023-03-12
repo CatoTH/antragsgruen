@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\IMotionStatusEngine;
+use app\models\settings\PrivilegeQueryContext;
 use app\components\{MotionSorter, UrlHelper};
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\{Internal, NotFound};
@@ -435,7 +436,10 @@ class Consultation extends ActiveRecord
     public function getAmendmentNumbering(): IAmendmentNumbering
     {
         $numberings = IAmendmentNumbering::getNumberings();
-        return new $numberings[$this->amendmentNumbering]();
+        /** @var IAmendmentNumbering $numbering */
+        $numbering = new $numberings[$this->amendmentNumbering]();
+
+        return $numbering;
     }
 
     private ?IMotionStatusEngine $statusEngine = null;
@@ -496,13 +500,13 @@ class Consultation extends ActiveRecord
         return array_merge($motions, $noAgendaMotions);
     }
 
-    public function havePrivilege(int $privilege): bool
+    public function havePrivilege(int $privilege, ?PrivilegeQueryContext $context): bool
     {
         $user = User::getCurrentUser();
         if (!$user) {
             return false;
         }
-        return $user->hasPrivilege($this, $privilege);
+        return $user->hasPrivilege($this, $privilege, $context);
     }
 
     public function createDefaultUserGroups(): void

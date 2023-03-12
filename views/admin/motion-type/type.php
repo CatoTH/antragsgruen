@@ -24,7 +24,7 @@ $layout->loadDatepicker();
 $layout->loadSelectize();
 $layout->addAMDModule('backend/MotionTypeEdit');
 
-$myUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
+$myUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $motionType->id]);
 
 $locale = Tools::getCurrentDateLocale();
 
@@ -57,12 +57,12 @@ echo '<div class="content">';
 echo $controller->showErrors();
 
 if ($motionType->amendmentsOnly) {
-    echo $this->render('_type_amendments_only_motions', ['motionType' => $motionType]);
+    echo $this->render('_amendments_only_motions', ['motionType' => $motionType]);
 }
-echo $this->render('_type_names', ['motionType' => $motionType]);
-echo $this->render('_type_policy', ['motionType' => $motionType]);
-echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => $locale]);
-echo $this->render('_type_initiator', ['motionType' => $motionType]);
+echo $this->render('_names', ['motionType' => $motionType]);
+echo $this->render('_policy', ['motionType' => $motionType]);
+echo $this->render('_deadlines', ['motionType' => $motionType, 'locale' => $locale]);
+echo $this->render('_initiator', ['motionType' => $motionType]);
 
 $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 ?>
@@ -129,7 +129,7 @@ echo '</div>';
         <ul id="sectionsList">
             <?php
             foreach ($motionType->motionSections as $section) {
-                echo $this->render('_type_sections', ['section' => $section]);
+                echo $this->render('_sections', ['section' => $section]);
             }
             ?>
         </ul>
@@ -150,7 +150,7 @@ echo '</div>';
         <?php
         $template = new ConsultationSettingsMotionSection();
         $template->hasComments = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        echo $this->render('_type_sections', ['section' => $template])
+        echo $this->render('_sections', ['section' => $template])
         ?>
     </ul>
 

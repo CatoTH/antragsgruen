@@ -2,8 +2,10 @@
 
 namespace app\plugins\frauenrat;
 
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Amendment, ConsultationSettingsTag, ConsultationUserGroup, IMotion, ISupporter, Motion, MotionSection, User};
+use app\models\db\{Amendment, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSection, User};
 use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
 
@@ -27,8 +29,8 @@ class LayoutHooks extends Hooks
     {
         $line = '';
 
-        $admin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_SCREENING) ||
-                 User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+        $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SCREENING, null) ||
+                 User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
 
         if ($admin && ($supporter->contactEmail || $supporter->contactPhone || $supporter->contactName)) {
             $line .= '<table>';
@@ -169,7 +171,7 @@ class LayoutHooks extends Hooks
                 } else {
                     $motionData[$i]['title'] = 'Votum Antragskommission';
                 }
-                $proposalAdmin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+                $proposalAdmin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion));
                 $motionData[$i]['content'] = '';
                 if ($motion->proposalComment) {
                     // This property is set manually in the database
@@ -184,7 +186,7 @@ class LayoutHooks extends Hooks
                     }
                 }
             }
-            if ($motionData[$i]['title'] === \Yii::t('motion', 'tag_tags') && $this->consultation->havePrivilege(ConsultationUserGroup::PRIVILEGE_SCREENING)) {
+            if ($motionData[$i]['title'] === \Yii::t('motion', 'tag_tags') && $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING,null)) {
                 $motionData[$i]['content'] = $this->getTagsSavingForm($motion);
             }
         }
@@ -244,7 +246,7 @@ class LayoutHooks extends Hooks
                 }
             }
             if ($amendmentData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
-                $proposalAdmin = User::havePrivilege($this->consultation, ConsultationUserGroup::PRIVILEGE_CHANGE_PROPOSALS);
+                $proposalAdmin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment));
                 if ($proposalAdmin) {
                     $amendmentData[$i]['content'] = $this->getAmendmentProposalSavingForm($amendment);
                 } elseif ($amendment->isProposalPublic() && $amendment->proposalStatus) {

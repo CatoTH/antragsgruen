@@ -108,8 +108,8 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
                         numbering</a></li>
                 <li><a href="#editorial" onClick="$('#editorial').scrollintoview({top_offset: -30}); return false;">Editorial
                         changes</a></li>
-                <li><a href="#signatures" onClick="$('#signatures').scrollintoview({top_offset: -30}); return false;">Signatures
-                        / Motion codes</a></li>
+                <li><a href="#signatures" onClick="$('#signatures').scrollintoview({top_offset: -30}); return false;">Signatures / Motion codes</a></li>
+                <li><a href="#versions" onClick="$('#versions').scrollintoview({top_offset: -30}); return false;">Motion versions</a></li>
                 <li><a href="#tags" onClick="$('#tags').scrollintoview({top_offset: -30}); return false;">Tags</a></li>
                 <li><a href="#comments" onClick="$('#comments').scrollintoview({top_offset: -30}); return false;">Comments</a>
                 </li>
@@ -262,42 +262,12 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     <p>The basic principle for both methods is: by adopting the changes of one or many amendments, a new version of the
         motion is created, making the original one obsolete. However, the original version and the adopted amendments
         still do exist for the sake of transparency, unless explicitly deleted.</p>
+    <p>
+        One thing to consider when choosing between the two options is: when merging all amendments at once,
+        it <em>is</em> possible to <strong>undo</strong> this operation. When merging only one amendment,
+        this is <em>not</em> possible.
+    </p>
 
-    <h3 id="merging_single">Merging a single amendment</h3>
-
-    <p>To merge the changes of only one amendment, you can use the function &ldquo;Adopt changes into motion&rdquo; in the sidebar
-        of the regular amendment page. It is done in three steps:</p>
-    <p>In the first step, you can specify the signature of the new motion version and whether other amendments are made
-        obsolete by this adoption. The latter is highly important, as amendments made obsolete will not lead to
-        conflicts later on.</p>
-    <p>In the second step, you can choose if the changes of the amendment are adopted as proposed, or in a slightly
-        modified version (a modified adoption). In the latter case, you are given the chance to edit the modified
-        paragraphs by hand.</p>
-    <p>The last step, which can be easiest or most difficult one, deals with conflicts, that is, if the changes that
-        have been specified before, are affecting text passages that are modified by other amendments that are being
-        upheld. For example, if an amendment inserting a word into a sentence is adopted, but another amendment
-        proposing to remove the whole sentence is being upheld, this leads to a conflict. You will be presented the
-        affected paragraph of the new motion and will have to re-create the amendment based on this new version,
-        maintaining the substantial intention of the original amendment. As this is a little bit tricky, it’s advisable
-        to avoid this situation as much as possible, for example by not upholding amendments, marking them as global
-        alternatives beforehand, or by adopting consensual amendments as early as possible, before new, potentially
-        conflicting amendments can be created.</p>
-    <p>By default, this function is availably only to administrators of the consultation. However, it is possible to
-        make it available to the initiators of the motions in two different ways:</p>
-    <ul>
-        <li>In the easier case, initiators of a motion can adopt amendments to their motion, as long as those amendments
-            are not in conflict with others. They can only adopt the amendments as they are, without modifying or
-            rejecting them.
-        </li>
-        <li>In the more difficult case, the complete merging functionality as provided to administrators of the
-            consultation is available to users as well. This gives users much more flexibility, but also responsibility,
-            as it allows them to edit amendments of other users in case of conflicts or reject them. It also requires
-            all users to understand the idea of handling merge conflicts. Therefore, this setting is only advisable in
-            small, cooperative settings.
-        </li>
-    </ul>
-    <p>If you want to activate this functionality, you can do so at &ldquo;Settings&rdquo; → &ldquo;Edit motion types&rdquo; → &ldquo;Permissions&rdquo; →
-        &ldquo;May proposers of motions merge amendments themselves?&rdquo;.</p>
 
     <h3 id="merging_all">Merging all amendments at once</h3>
 
@@ -337,6 +307,53 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         &ldquo;Merge all amendments&rdquo;-page. Once this checkbox is set, a link to a public read-only-version appears in this
         panel and at the header of the regular motion page. This public draft page can be optionally set to
         automatically update every couple of seconds to the most recent version.</p>
+
+    <h4>Undo merging amendments</h4>
+    <p>
+        If a new version was created using the Merge All Amendments / Create new Version function,
+        it is possible to remove the new version and make the old one including its amendments visible again
+        by performing the following steps: First, either delete the new motion version or set it to an invisible status
+        like "Draft (Admin)". In the latter case, it is also necessary to clear the "Replaces" field in the new version.
+        Then, the original version of the motion (with the amendments) should be changed from the status "Modified" to
+        "Submitted". After this, it will be visible again as the default version of this motion.
+    </p>
+
+    <h3 id="merging_single">Merging a single amendment</h3>
+
+    <p>To merge the changes of only one amendment, you can use the function &ldquo;Adopt changes into motion&rdquo; in the sidebar
+        of the regular amendment page. It is done in three steps:</p>
+    <p>In the first step, you can specify the signature of the new motion version and whether other amendments are made
+        obsolete by this adoption. The latter is highly important, as amendments made obsolete will not lead to
+        conflicts later on.</p>
+    <p>In the second step, you can choose if the changes of the amendment are adopted as proposed, or in a slightly
+        modified version (a modified adoption). In the latter case, you are given the chance to edit the modified
+        paragraphs by hand.</p>
+    <p>The last step, which can be easiest or most difficult one, deals with conflicts, that is, if the changes that
+        have been specified before, are affecting text passages that are modified by other amendments that are being
+        upheld. For example, if an amendment inserting a word into a sentence is adopted, but another amendment
+        proposing to remove the whole sentence is being upheld, this leads to a conflict. You will be presented the
+        affected paragraph of the new motion and will have to re-create the amendment based on this new version,
+        maintaining the substantial intention of the original amendment. As this is a little bit tricky, it’s advisable
+        to avoid this situation as much as possible, for example by not upholding amendments, marking them as global
+        alternatives beforehand, or by adopting consensual amendments as early as possible, before new, potentially
+        conflicting amendments can be created.</p>
+    <p>By default, this function is availably only to administrators of the consultation. However, it is possible to
+        make it available to the initiators of the motions in two different ways:</p>
+    <ul>
+        <li>In the easier case, initiators of a motion can adopt amendments to their motion, as long as those amendments
+            are not in conflict with others. They can only adopt the amendments as they are, without modifying or
+            rejecting them.
+        </li>
+        <li>In the more difficult case, the complete merging functionality as provided to administrators of the
+            consultation is available to users as well. This gives users much more flexibility, but also responsibility,
+            as it allows them to edit amendments of other users in case of conflicts or reject them. It also requires
+            all users to understand the idea of handling merge conflicts. Therefore, this setting is only advisable in
+            small, cooperative settings.
+        </li>
+    </ul>
+    <p>If you want to activate this functionality, you can do so at &ldquo;Settings&rdquo; → &ldquo;Edit motion types&rdquo; → &ldquo;Permissions&rdquo; →
+        &ldquo;May proposers of motions merge amendments themselves?&rdquo;.</p>
+
 
     <h2 id="export_functions">Exports</h2>
 
@@ -552,6 +569,23 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         </li>
     </ul>
 
+    <h3 id="versions">Motion versions</h3>
+    <p>
+        There may be several versions of a motion if its exact textual context is modified during the amendment process.
+        Motions therefore always have an internal version number, defaulting to version 1.
+        Different versions of the same motion usually have the same signature, though this may be overridden by an admin.
+        However, within a consultation, the combination of motion signature and version needs to be unique.
+    </p>
+    <p>
+        If there are multiple versions of the same motion, an overview of the different versions is shown on top of
+        the motion, giving the user the ability to browse through its history and view the changes made over time.
+    </p>
+    <p>
+        Internally, the versioning of a motion is bound to the field "Replaces" in the motion administration.
+        This field is being set automatically when creating new versions of a motion, starting with version 2.
+        It always references the previous version of a motion. It should only be modified if it is the explicit
+        wish to modify the motion history.
+    </p>
 
     <h3 id="tags">Tags</h3>
     <p>If you don’t want to show the motions on the home page according to the strict hierarchy of an agenda, it is

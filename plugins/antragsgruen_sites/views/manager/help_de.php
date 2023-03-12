@@ -116,11 +116,9 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
                 <li><a href="#redaktionelle_aes"
                        onClick="$('#redaktionelle_aes').scrollintoview({top_offset: -30}); return false;">Redaktionelle
                         Änderungsanträge</a></li>
-                <li><a href="#antragskuerzel"
-                       onClick="$('#antragskuerzel').scrollintoview({top_offset: -30}); return false;">Antragskürzel</a>
-                </li>
-                <li><a href="#themen" onClick="$('#themen').scrollintoview({top_offset: -30}); return false;">Themen /
-                        Tags</a></li>
+                <li><a href="#antragskuerzel" onClick="$('#antragskuerzel').scrollintoview({top_offset: -30}); return false;">Antragskürzel</a></li>
+                <li><a href="#antragsversionen" onClick="$('#antragsversionen').scrollintoview({top_offset: -30}); return false;">Antragsversionen</a></li>
+                <li><a href="#themen" onClick="$('#themen').scrollintoview({top_offset: -30}); return false;">Themen / Tags</a></li>
                 <li><a href="#kommentare" onClick="$('#kommentare').scrollintoview({top_offset: -30}); return false;">Kommentare</a>
                 </li>
                 <li><a href="#zustimmung" onClick="$('#zustimmung').scrollintoview({top_offset: -30}); return false;">Zustimmung
@@ -279,7 +277,12 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         übernommen werden können. Es kann entweder ein einzelner Änderungsantrag übernommen werden, während andere
         Änderungsanträge zum Antrag aufrecht erhalten bleiben, oder es kann aus allen Änderungsanträgen eine gemeinsame
         neue Fassung des Antrags erstellt werden.</p>
-    <p>Wichtig als Vorbemerkung hierzu ist nur zu wissen: wenn es zwei oder mehr Änderungsanträge gibt, die Änderungen
+    <p>
+        Bei der Entscheidung zwischen den beiden Möglichkeiten ist ein Punkt besonders wichtig zu beachten:
+        werden alle Änderungsanträge auf einmal eingepflegt, <em>kann</em> dieser Vorgang im Nachhinein <strong>rückgängig gemacht</strong> werden.
+        Wird nur ein einzelner Änderungsantrag eingepflegt, kann dies <em>nicht</em> rückgängig gemacht werden.
+    </p>
+    <p>Wichtig als Vorbemerkung hierzu ist außerdem zu wissen: wenn es zwei oder mehr Änderungsanträge gibt, die Änderungen
         an der selben Textstelle vornehmen wollen, kommt es hier zu Konflikten zwischen diesen Änderungsanträgen, die
         händisch aufgelöst werden müssen – was oft nicht ganz trivial ist.</p>
     <p>Das grundsätzliche Prinzip bei beiden Varianten ist dabei: durch die Übernahme des Änderungsantrags bzw. der
@@ -288,46 +291,10 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         einzelner Änderungsantrag übernommen wird, verbleiben diejenigen anderen Änderungsanträge bei der alten Version,
         die in diesem Zuge als abgelehnt oder (Modifiziert) Angenommen markiert wurden, während diejenigen, die auf
         „Unverändert: Eingereicht“ verbleiben mit in die neue Version des Antrags übernommen werden.</p>
-
-    <h3 id="einzelne_uebernehmen">Einzelne Änderungsanträge einpflegen</h3>
-    <p>Die Möglichkeit, einen einzelnen Änderungsantrag zu übernehmen, befindet sich in der normalen Ansicht des
-        Änderungsantrags in der rechten Sidebar unter „In den Antrag übernehmen“.</p>
-    <p>Der Vorgang besteht aus mehreren Schritten. Im ersten Schritt kann das Kürzel der neuen Antragsversion vergeben
-        werden, die durch diese Übernahme entsteht. Außerdem kann auch angegeben werden, ob sich durch diese Übernahme
-        eventuell andere Änderungsanträge erübrigen. Das ist insbesondere deshalb relevant, da mit Änderungsanträgen,
-        die sich dadurch erübrigen, im weiteren Verlauf keine Konflikte mehr entstehen können.</p>
-    <p>Im nächsten Schritt kann angegeben werden, ob der Änderungsantrag eins zu eins so wie gestellt übernommen wird,
-        oder ob es eine modifizierte Übernahme sein soll. In letzterem Fall kann man die betroffenen Absätze noch einmal
-        nachbearbeiten.</p>
-    <p>Im letzten Schritt wird nun überprüft, ob sich die Änderungen möglicherweise mit Änderungsanträgen, die sich auf
-        die selbe Textstellen beziehen und aufrecht erhalten bleiben, in die Quere kommen. Das kann beispielsweise
-        passieren, wenn ein Satz umformuliert wird, in dem ein anderer Änderungsantrag ein Wort ersetzen will, oder ein
-        Absatz gestrichen werden soll, in dem ein anderer Änderungsantrag etwas ergänzen will (und trotzdem aufrecht
-        erhalten wird). In diesem Fall muss händisch nachkorrigiert werden: bei jedem kollidierende Absatz muss auf
-        Basis des neuen Antragstextes der Änderungsantrag noch einmal so neu formuliert werden, wie es dem Sinn des
-        ursprünglichen Änderungsantrags entspricht. Da dies nicht ganz simpel ist, empfiehlt es sich, diese Situation
-        möglichst zu vermeiden – z.B. indem von vorn herein darauf geachtet wird, nur wenige sonst kollidierende
-        Änderungsanträge aufrecht zu erhalten, Änderungsanträge die große Teile des Antrags ändern als Globalalternative
-        markiert werden,, oder aber unstrittige Änderungsanträge so früh wie möglich zu übernehmen,
-        bevor weitere Änderungsanträge eingereicht werden, die möglicherweise kollidieren.</p>
-
-    <p>Die Möglichkeit, Änderungsanträge zu übernehmen, steht standardmäßig erst einmal nur der Veranstaltungsleitung /
-        den Admins offen, kann jedoch auch in zwei Schritten den Initiator*innen des betroffenen Antrags eingeräumt
-        werden:</p>
-    <ul>
-        <li>Im einfachen Fall können Antragsteller*innen Änderungsanträge dann selbständig übernehmen, wenn die Änderung
-            unmodifiziert übernommen werden und solange es keine Kollisionen mit anderen Änderungsanträgen gibt. Alle
-            anderen Änderungsanträge bleiben in diesem Fall erhalten. Hier gibt es also keine Möglichkeit für die
-            Antragsteller*in, einen Änderungsantrag selbständig abzulehnen oder zu ändern.
-        </li>
-        <li>Im schwierigeren Fall kann die komplette Funktionalität genutzt werden, die auch Admins zur Verfügung steht.
-            Da dies auch heißt, dass im Kollisionsfall die kollidierenden Änderungsanträge verändert werden können, ist
-            dies nur in klar kooperativen Fällen empfehlenswert, in denen auch alle Beteiligte das oben beschriebene
-            Prinzip verstehen.
-        </li>
-    </ul>
-    <p>Die zugehörige Einstellung kann unter „Einstellungen“ → „Antragstypen bearbeiten“ → „Dürfen Antragsteller*innen
-        Änderungsanträge selbständig übernehmen?“</p>
+    <p>
+        Als Ergebnis des Einpflegens entsteht eine neue <a href="#antragsversionen">Antragsversion</a>.
+        Die bisherige Version bleibt bestehen, wird aber standardmäßig nicht mehr angezeigt.
+    </p>
 
     <h3 id="alle_uebernehmen">Alle Änderungsanträge einpflegen</h3>
     <p>Sollen alle Änderungsanträge auf einmal bearbeitet und daraus die Beschlussfassung des Antrags erzeugt werden,
@@ -371,6 +338,56 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         dann auch auf der regulären Antragsseite über dem Antragstext ein „Zwischenstand anzeigen“-Link eingeblendet.
         Der öffentliche Zwischenstand kann vom Betrachtenden optional so eingestellt werden, dass er sich einmal alle
         zehn Sekunden automatisch aktualisiert.</p>
+
+    <h4>Einpflegen rückgängig machen</h4>
+    <p>
+        Soll der Ursprungszustand wiederhergestellt werden - also der Antrag mit allen Änderungsantägen - und die
+        erarbeitete und veröffentlichte neue Version / Beschlussfassung verworfen werden, ist das vorgehen wie folgt:
+        zunächst wird die neu erzeugte Version des Antrags entweder gelöscht, oder auf einen unsichtbaren Status
+        wie „Entwurf (Admin)” gesetzt. In letzterem Fall muss außerdem noch das Feld „Überarbeitete Fassung von”
+        geleert werden. Schließlich muss der ursprüngliche Antrag über die Administration vom Status „Modifiziert”
+        in „Eingereicht” zurückgesetzt werden.
+    </p>
+
+    <h3 id="einzelne_uebernehmen">Einzelne Änderungsanträge einpflegen</h3>
+    <p>Die Möglichkeit, einen einzelnen Änderungsantrag zu übernehmen, befindet sich in der normalen Ansicht des
+        Änderungsantrags in der rechten Sidebar unter „In den Antrag übernehmen“.</p>
+    <p>Der Vorgang besteht aus mehreren Schritten. Im ersten Schritt kann das Kürzel der neuen Antragsversion vergeben
+        werden, die durch diese Übernahme entsteht. Außerdem kann auch angegeben werden, ob sich durch diese Übernahme
+        eventuell andere Änderungsanträge erübrigen. Das ist insbesondere deshalb relevant, da mit Änderungsanträgen,
+        die sich dadurch erübrigen, im weiteren Verlauf keine Konflikte mehr entstehen können.</p>
+    <p>Im nächsten Schritt kann angegeben werden, ob der Änderungsantrag eins zu eins so wie gestellt übernommen wird,
+        oder ob es eine modifizierte Übernahme sein soll. In letzterem Fall kann man die betroffenen Absätze noch einmal
+        nachbearbeiten.</p>
+    <p>Im letzten Schritt wird nun überprüft, ob sich die Änderungen möglicherweise mit Änderungsanträgen, die sich auf
+        die selbe Textstellen beziehen und aufrecht erhalten bleiben, in die Quere kommen. Das kann beispielsweise
+        passieren, wenn ein Satz umformuliert wird, in dem ein anderer Änderungsantrag ein Wort ersetzen will, oder ein
+        Absatz gestrichen werden soll, in dem ein anderer Änderungsantrag etwas ergänzen will (und trotzdem aufrecht
+        erhalten wird). In diesem Fall muss händisch nachkorrigiert werden: bei jedem kollidierende Absatz muss auf
+        Basis des neuen Antragstextes der Änderungsantrag noch einmal so neu formuliert werden, wie es dem Sinn des
+        ursprünglichen Änderungsantrags entspricht. Da dies nicht ganz simpel ist, empfiehlt es sich, diese Situation
+        möglichst zu vermeiden – z.B. indem von vorn herein darauf geachtet wird, nur wenige sonst kollidierende
+        Änderungsanträge aufrecht zu erhalten, Änderungsanträge die große Teile des Antrags ändern als Globalalternative
+        markiert werden,, oder aber unstrittige Änderungsanträge so früh wie möglich zu übernehmen,
+        bevor weitere Änderungsanträge eingereicht werden, die möglicherweise kollidieren.</p>
+
+    <p>Die Möglichkeit, Änderungsanträge zu übernehmen, steht standardmäßig erst einmal nur der Veranstaltungsleitung /
+        den Admins offen, kann jedoch auch in zwei Schritten den Initiator*innen des betroffenen Antrags eingeräumt
+        werden:</p>
+    <ul>
+        <li>Im einfachen Fall können Antragsteller*innen Änderungsanträge dann selbständig übernehmen, wenn die Änderung
+            unmodifiziert übernommen werden und solange es keine Kollisionen mit anderen Änderungsanträgen gibt. Alle
+            anderen Änderungsanträge bleiben in diesem Fall erhalten. Hier gibt es also keine Möglichkeit für die
+            Antragsteller*in, einen Änderungsantrag selbständig abzulehnen oder zu ändern.
+        </li>
+        <li>Im schwierigeren Fall kann die komplette Funktionalität genutzt werden, die auch Admins zur Verfügung steht.
+            Da dies auch heißt, dass im Kollisionsfall die kollidierenden Änderungsanträge verändert werden können, ist
+            dies nur in klar kooperativen Fällen empfehlenswert, in denen auch alle Beteiligte das oben beschriebene
+            Prinzip verstehen.
+        </li>
+    </ul>
+    <p>Die zugehörige Einstellung kann unter „Einstellungen“ → „Antragstypen bearbeiten“ → „Dürfen Antragsteller*innen
+        Änderungsanträge selbständig übernehmen?“</p>
 
     <h2 id="export">Export-Funktionen</h2>
     <h3 id="export_pdf">PDF</h3>
@@ -593,6 +610,29 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
             wenn Zeile 23 die erste ist, die geändert werden soll)
         </li>
     </ul>
+
+    <h3 id="antragsversionen">Antragsversionen</h3>
+    <p>
+        Ein Antrag kann in unterschiedlichen Versionen vorliegen, wenn der genaue Wortlaut im Laufe der Beratung angepasst wird.
+        Dies kann beispielsweise passieren, indem <a href="#aes_uebernehmen">Änderungsanträge eingepflegt</a> werden
+        oder eine Beschlussfassung erzeugt wird.
+    </p>
+    <p>
+        Anträge haben daher immer eine interne Versionsnummer - beginnend mit Nummer 1.
+        Verschiedene Versionen eines Antrags haben üblicherweise, aber nicht zwangsläufig, das selbe Antragskürzel.
+        Innerhalb einer Veranstaltung muss nur die Kombination aus Antragskürzel und Versionsnummer eindeutig sein.
+    </p>
+    <p>
+        Gibt es mehrere Versionen eines Antrags, wird bei jedem Antrag eine Übersicht der verschiedenen Versionen angezeigt.
+        Benutzer*innen haben dabei die Möglichkeit, sich die inhaltlichen Änderungen zwischen den verschiedenen Versionen
+        anzeigen zu lassen.
+    </p>
+    <p>
+        Intern ist die Versionierung eines Antrags an das Feld „Überarbeitete Fassung von” in der Antrags-Administration gekoppelt.
+        Dieses Feld wird automatisch befüllt, bei jeder Version ab Version 2 wird dabei der jeweilige
+        Vorgänger-Antrag referenziert. Dieses Feld sollte nur händisch geändert werden, falls man explizit die
+        Versionsgeschichte löschen will.
+    </p>
 
     <h3 id="themen">Themen / Schlagworte</h3>
     <p>Anträge lassen sich auf der Startseite nicht nur streng hierarchisch in einer Tagesordnung darstellen, sondern
