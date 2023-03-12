@@ -103,4 +103,12 @@ class Privileges
         }
         return $this->cachedMotionPrivileges;
     }
+
+    public function getPrivilegeDependencies(): array
+    {
+        return [
+            self::PRIVILEGE_MOTION_TEXT_EDIT => self::PRIVILEGE_MOTION_STATUS_EDIT,
+            self::PRIVILEGE_MOTION_INITIATORS => self::PRIVILEGE_MOTION_STATUS_EDIT,
+        ];
+    }
 }

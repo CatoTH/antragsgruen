@@ -1651,9 +1651,24 @@ label.legend {
 }
 
 .editUserGroupModal {
+
   label {
     font-weight: normal;
     display: block;
+  }
+  dl {
+    margin-bottom: 5px;
+  }
+  dt {
+    display: inline;
+    margin-right: 5px;
+  }
+  dd {
+    display: inline;
+    &:after {
+      content: "\a";
+      display: block
+    }
   }
   .verticalLabels label {
     display: inline-block;
@@ -1661,6 +1676,14 @@ label.legend {
   }
   .changeLogLink {
     float: left;
+  }
+  .addRestrictedPermissionDialog {
+    .restrictedPermissions {
+      margin-bottom: 20px;
+    }
+    .restrictedTo {
+      min-height: 100px;
+    }
   }
 }
 

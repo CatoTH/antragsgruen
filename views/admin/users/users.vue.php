@@ -58,6 +58,9 @@ ob_start();
                             {{ group.title }}
                         </div>
                         <div class="additional" v-if="group.description">{{ group.description }}</div>
+                        <div class="additional" v-for="formatted in formattedGroupPrivileges(group)">
+                            {{ formatted }}
+                        </div>
                     </div>
                     <div class="groupActions">
                         <button class="btn btn-link btnEdit" @click="editGroup(group)"
@@ -119,7 +122,7 @@ $html = ob_get_clean();
 
     __setVueComponent('users', 'component', 'user-admin-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['users', 'groups'],
+        props: ['users', 'groups', 'allPrivilegesGeneral', 'allPrivilegesMotion'],
         mixins: window.USER_ADMIN_MIXINS,
         data() {
             return {
@@ -304,6 +307,29 @@ $html = ob_get_clean();
                     user.groups = user.groups.filter(grp => grp !== groupId);
                 }
                 this.$emit('save-user', user.id, user.groups);
+            },
+            formattedGroupPrivileges: function (group) {
+                if (!group.privileges) {
+                    return [];
+                }
+                const allPrivs = [...this.allPrivilegesGeneral, ...this.allPrivilegesMotion];
+                return group.privileges.map(priv => {
+                    let name = priv.privileges.map(privId => {
+                        return allPrivs.find(_priv => _priv.id === privId).title;
+                    }).join(", ");
+
+                    if (priv.motionType) {
+                        name = priv.motionType.title + ": " + name;
+                    }
+                    if (priv.agendaItem) {
+                        name = priv.agendaItem.title + ": " + name;
+                    }
+                    if (priv.tag) {
+                        name = priv.tag.title + ": " + name;
+                    }
+                    
+                    return name;
+                });
             },
             addGroupSubmit: function ($event) {
                 $event.preventDefault();
