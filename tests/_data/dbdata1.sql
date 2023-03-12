@@ -1543,6 +1543,13 @@ INSERT INTO `###TABLE_PREFIX###motionTag` (`motionId`, `tagId`) VALUES
   (36, 9);
 
 --
+-- Dumping data for table `amendmentTag`
+--
+
+INSERT INTO `###TABLE_PREFIX###amendmentTag` (`amendmentId`, `tagId`) VALUES
+    (2, 1);
+
+--
 -- Dumping data for table `site`
 --
 

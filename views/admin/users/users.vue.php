@@ -327,7 +327,7 @@ $html = ob_get_clean();
                     if (priv.tag) {
                         name = priv.tag.title + ": " + name;
                     }
-                    
+
                     return name;
                 });
             },

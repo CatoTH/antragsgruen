@@ -7,10 +7,9 @@ use app\components\{Tools, ZipWriter};
 use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
 use app\models\forms\AdminMotionFilterForm;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, ResponseInterface};
-use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
-use yii\web\Response;
 
 class MotionListController extends AdminBase
 {
@@ -174,7 +173,8 @@ class MotionListController extends AdminBase
         $consultation       = $this->consultation;
         $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
         $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
-        if (!($privilegeScreening || $privilegeProposals)) {
+        $privilegeStatus    = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::anyRestriction());
+        if (!$privilegeScreening && !$privilegeProposals && !$privilegeStatus) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
@@ -238,8 +238,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdslist(int $motionTypeId, bool $textCombined = false, int $withdrawn = 0): ResponseInterface
     {
-        $withdrawn    = ($withdrawn == 1);
-        $motionTypeId = intval($motionTypeId);
+        $withdrawn = ($withdrawn === 1);
 
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
@@ -263,61 +262,8 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, $filename);
     }
 
-    /**
-     * @param int $motionTypeId
-     * @param bool $textCombined
-     * @param int $withdrawn
-     *
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionMotionExcellist($motionTypeId, $textCombined = false, $withdrawn = 0)
-    {
-        $motionTypeId = intval($motionTypeId);
-
-        if (!AntragsgruenApp::hasPhpExcel()) {
-            $this->showErrorpage(500, 'The Excel package has not been installed. ' .
-                                             'To install it, execute "./composer.phar require phpoffice/phpexcel".');
-            return '';
-        }
-
-        $withdrawn = ($withdrawn == 1);
-
-        try {
-            $motionType = $this->consultation->getMotionType($motionTypeId);
-        } catch (ExceptionBase $e) {
-            $this->showErrorpage(404, $e->getMessage());
-            return '';
-        }
-
-        defined('PCLZIP_TEMPORARY_DIR') or define('PCLZIP_TEMPORARY_DIR', $this->getParams()->getTmpDir());
-
-        $excelMime                   = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', $excelMime);
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        error_reporting(E_ALL & ~E_DEPRECATED); // PHPExcel ./. PHP 7
-
-        $motions = [];
-        foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $motion) {
-            if (is_a($motion, Motion::class) && $motion->motionTypeId == $motionTypeId) {
-                $motions[] = $motion;
-            }
-        }
-
-        return $this->renderPartial('excel_list', [
-            'motions'      => $motions,
-            'textCombined' => $textCombined,
-            'motionType'   => $motionType,
-        ]);
-    }
-
     public function actionMotionOpenslides(int $motionTypeId, int $version = 1): ResponseInterface
     {
-        $motionTypeId = intval($motionTypeId);
-
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
@@ -348,8 +294,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionPdfziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
     {
-        $withdrawn    = ($withdrawn == 1);
-        $motionTypeId = intval($motionTypeId);
+        $withdrawn = ($withdrawn === 1);
 
         try {
             if ($motionTypeId > 0) {
@@ -400,8 +345,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdtziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
     {
-        $withdrawn    = ($withdrawn == 1);
-        $motionTypeId = intval($motionTypeId);
+        $withdrawn = ($withdrawn === 1);
 
         try {
             if ($motionTypeId > 0) {

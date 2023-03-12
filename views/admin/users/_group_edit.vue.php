@@ -17,8 +17,9 @@ ob_start();
         <main class="modal-body restrictedAddingForm">
             <div class="restrictedPermissions"><br>
                 <strong><?= Yii::t('admin', 'siteacc_priv_rest_privs') ?>:</strong>
-                <label v-for="priv in allPrivilegesMotion">
+                <label v-for="priv in allPrivilegesMotion" :class="'privilege' + priv.id">
                     <input type="checkbox" :checked="isPrivilegeSet(priv.id)" @click="togglePrivilege(priv.id)">
+                    <span v-if="isDependentPrivilege(priv.id)">↳ </span>
                     {{ priv.title }}
                 </label>
             </div>
@@ -26,36 +27,36 @@ ob_start();
             <div class="restrictedTo">
                 <div class="verticalLabels">
                     <strong><?= Yii::t('admin', 'siteacc_priv_rest_type') ?>:</strong><br>
-                    <label>
+                    <label class="motionType">
                         <input type="radio" v-model="restrictToType" value="motionType">
                         <?= Yii::t('admin', 'siteacc_priv_rest_mtype') ?>
                     </label>
-                    <label>
+                    <label class="agendaItem">
                         <input type="radio" v-model="restrictToType" value="agendaItem">
                         <?= Yii::t('admin', 'siteacc_priv_rest_agenda') ?>
                     </label>
-                    <label>
+                    <label class="tag">
                         <input type="radio" v-model="restrictToType" value="tag">
                         <?= Yii::t('admin', 'siteacc_priv_rest_tag') ?>
                     </label>
                 </div>
 
                 <div>
-                    <select class="stdDropdown" size="1" v-if="restrictToType === 'motionType'" v-model="restrictToMotionType">
+                    <select class="stdDropdown motionTypes" size="1" v-if="restrictToType === 'motionType'" v-model="restrictToMotionType">
                         <option value="">-</option>
                         <option v-for="motionType in allMotionTypes" :value="motionType.id">
                             {{ motionType.title }}
                         </option>
                     </select>
 
-                    <select class="stdDropdown" size="1" v-if="restrictToType === 'tag'" v-model="restrictToTag">
+                    <select class="stdDropdown tags" size="1" v-if="restrictToType === 'tag'" v-model="restrictToTag">
                         <option value="">-</option>
                         <option v-for="tag in allTags" :value="tag.id">
                             {{ tag.title }}
                         </option>
                     </select>
 
-                    <select class="stdDropdown" size="1" v-if="restrictToType === 'agendaItem'" v-model="restrictToAgendaItem">
+                    <select class="stdDropdown agendaItems" size="1" v-if="restrictToType === 'agendaItem'" v-model="restrictToAgendaItem">
                         <option value="">-</option>
                         <option v-for="agendaItem in allAgendaItems" :value="agendaItem.id">
                             {{ agendaItem.title }}
@@ -68,7 +69,7 @@ ob_start();
             <button type="button" class="btn btn-default btnCancel" @click="cancel()">
                 <?= Yii::t('base', 'abort') ?>
             </button>
-            <button type="button" class="btn btn-primary" @click="add()" :disabled="!canSubmit">
+            <button type="button" class="btn btn-primary btnAdd" @click="add()" :disabled="!canSubmit">
                 <?= Yii::t('admin', 'siteacc_priv_rest_add_btn') ?>
             </button>
         </footer>
@@ -81,7 +82,7 @@ $htmlCreatingRestricted = ob_get_clean();
 <script>
     __setVueComponent('users', 'component', 'group-edit-add-restricted-widget', {
         template: <?= json_encode($htmlCreatingRestricted) ?>,
-        props: ['allPrivilegesMotion', 'allMotionTypes', 'allAgendaItems', 'allTags'],
+        props: ['allPrivilegesMotion', 'allMotionTypes', 'allAgendaItems', 'allTags', 'allPrivilegeDependencies'],
         data() {
             return {
                 privileges: [],
@@ -134,14 +135,32 @@ $htmlCreatingRestricted = ob_get_clean();
             cancel: function () {
                 this.$emit('cancel-restricted');
             },
+            isDependentPrivilege: function (privId) {
+                return this.allPrivilegeDependencies[privId.toString()] !== undefined;
+            },
             isPrivilegeSet: function (privToFind) {
                 return this.privileges.indexOf(privToFind) !== -1;
             },
+            addPrivilege: function (privToAdd) {
+                this.privileges.push(privToAdd);
+                if (this.allPrivilegeDependencies[privToAdd.toString()] !== undefined) {
+                    this.addPrivilege(this.allPrivilegeDependencies[privToAdd.toString()]);
+                }
+            },
+            removePrivilege: function (privToRemove) {
+                this.privileges = this.privileges.filter(priv => priv !== privToRemove);
+                Object.keys(this.allPrivilegeDependencies).forEach(parentPriv => {
+                    if (this.allPrivilegeDependencies[parentPriv] === privToRemove) {
+                        this.removePrivilege(parseInt(parentPriv, 10));
+                    }
+                });
+            },
+
             togglePrivilege: function (privToFind) {
                 if (this.isPrivilegeSet(privToFind)) {
-                    this.privileges = this.privileges.filter(priv => priv !== privToFind);
+                    this.removePrivilege(privToFind);
                 } else {
-                    this.privileges.push(privToFind);
+                    this.addPrivilege(privToFind);
                 }
             }
         }
@@ -160,6 +179,7 @@ ob_start();
         :allMotionTypes="allMotionTypes"
         :allTags="allTags"
         :allAgendaItems="allAgendaItems"
+        :allPrivilegeDependencies="allPrivilegeDependencies"
         @add-restricted="addRestricted"
         @cancel-restricted="cancelAddingRestricted"
     ></group-edit-add-restricted-widget>
@@ -193,7 +213,7 @@ ob_start();
                     <div class="rightColumn">
                         <label v-for="priv in allPrivilegesGeneral" :class="'privilege' + priv.id">
                             <input type="checkbox" :checked="hasUnrestrictedPrivilege(priv.id)" @click="toggleUnrestrictedPrivilege(priv.id)">
-                            <span v-if="isDependentRestriction(priv.id)">↳ </span>
+                            <span v-if="isDependentPrivilege(priv.id)">↳ </span>
                             {{ priv.title }}
                         </label>
                     </div>
@@ -204,9 +224,9 @@ ob_start();
                         <?= Yii::t('admin', 'siteacc_priv_motion_all') ?>
                     </div>
                     <div class="rightColumn">
-                        <label v-for="priv in allPrivilegesMotion">
+                        <label v-for="priv in allPrivilegesMotion" :class="'privilege' + priv.id">
                             <input type="checkbox" :checked="hasUnrestrictedPrivilege(priv.id)" @click="toggleUnrestrictedPrivilege(priv.id)">
-                            <span v-if="isDependentRestriction(priv.id)">↳ </span>
+                            <span v-if="isDependentPrivilege(priv.id)">↳ </span>
                             {{ priv.title }}
                         </label>
                     </div>
@@ -329,7 +349,7 @@ $html = ob_get_clean();
                 this.$emit('save-group', this.group.id, this.groupTitle, consolidatedPrivileges);
                 $(this.$refs['group-edit-modal']).modal("hide");
             },
-            isDependentRestriction: function (privId) {
+            isDependentPrivilege: function (privId) {
                 return this.allPrivilegeDependencies[privId.toString()] !== undefined;
             },
             hasUnrestrictedPrivilege: function (privToFind) {

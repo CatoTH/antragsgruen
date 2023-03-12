@@ -270,8 +270,9 @@ class StdHooks extends Hooks
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $consultation       = Consultation::getCurrent();
             $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
-            $privilegeProposal = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
-            $privilegeDeleting = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::anyRestriction());
+            $privilegeProposal  = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
+            $privilegeDeleting  = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::anyRestriction());
+            $privilegeStatus    = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::anyRestriction());
 
             if ($consultation) {
                 if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
@@ -294,7 +295,7 @@ class StdHooks extends Hooks
                 }
             }
 
-            if ($privilegeScreening || $privilegeProposal || $privilegeDeleting) {
+            if ($privilegeScreening || $privilegeProposal || $privilegeDeleting || $privilegeStatus) {
                 $adminUrl   = UrlHelper::createUrl('/admin/motion-list/index');
                 $adminTitle = \Yii::t('base', 'menu_motion_list');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
