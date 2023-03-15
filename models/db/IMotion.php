@@ -518,9 +518,8 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
         $explStr = '';
         if ($includeExplanation && $this->proposalExplanation) {
-            $explStr .= ' <span class="explanation">(' . \Yii::t('con', 'proposal_explanation') . ': ';
-            $explStr .= Html::encode($this->proposalExplanation);
-            $explStr .= ')</span>';
+            $explStr .= '<br>' . \Yii::t('con', 'proposal_explanation') . ': ';
+            $explStr .= '<blockquote>' . Html::encode($this->proposalExplanation) . '</blockquote>';
         }
         if ($includeExplanation && !$this->isProposalPublic()) {
             $explStr .= ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') . '</span>';

@@ -31,23 +31,10 @@ if ($amendment->amendingAmendmentId && $amendment->amendedAmendment) {
         'content' => Html::a(Html::encode($amendment->amendedAmendment->getTitleWithPrefix()), UrlHelper::createAmendmentUrl($amendment->amendedAmendment)),
     ];
 }
-if (!$motionType->amendmentsOnly) {
-    $amendmentData[] = [
-        'rowClass' => 'motionRow',
-        'title' => $motionType->titleSingular,
-        'content' => Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion)),
-    ];
-}
 
 $amendmentData[] = [
     'title'   => Yii::t('amend', 'initiator'),
     'content' => MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $consultation),
-];
-
-$amendmentData[] = [
-    'rowClass' => 'statusRow',
-    'title'    => Yii::t('amend', 'status'),
-    'content'  => $amendment->getFormattedStatus(),
 ];
 
 MotionLayoutHelper::addVotingResultsRow($amendment->getVotingData(), $amendmentData);
@@ -66,12 +53,6 @@ if ($amendment->dateResolution) {
         'content' => Tools::formatMysqlDate($amendment->dateResolution),
     ];
 }
-$amendmentData[] = [
-    'title'   => Yii::t('amend', ($amendment->isSubmitted() ? 'submitted_on' : 'created_on')),
-    'content' => Tools::formatMysqlDateTime($amendment->dateCreation),
-];
-
-MotionLayoutHelper::addTagsRow($amendment, $amendment->getPublicTopicTags(), $amendmentData);
 
 $amendmentData = \app\models\layoutHooks\Layout::getAmendmentViewData($amendmentData, $amendment);
 

@@ -32,6 +32,7 @@ $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/MotionShow');
 $layout->loadVue();
 $layout->addFullscreenTemplates();
+$layout->loadSelectize();
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }

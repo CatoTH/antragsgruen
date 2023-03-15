@@ -87,11 +87,23 @@ if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL || $mo
 }
 */
 
-$btn = '<small><a href="#"><span class="glyphicon glyphicon-chevron-down" aria-hidden=""></span> Frühere Versionen anzeigen</a></small>';
+$content  = '
+    V6: Ergebnis Antragsberatung KoordA<br>
+    <small><a href="#" onClick="$(\'#dbwv_history\').toggle(); return false;">
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden=""></span> Frühere Versionen anzeigen
+    </a></small>
+<div id="dbwv_history" style="display: none;">
+    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> V5: Redaktionell aufbereitet durch BGSt</a><br>
+    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> V4: Beschluss der LV</a><br>
+    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> V3: Ergebnis Antragsberatung der AG</a><br>
+    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> V2: Redaktionell aufbereitet durch BGSt</a><br>
+    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> V1: Originalantrag Kameradschaft</a>
+</div>
+';
 $motionData[] = [
     'rowClass' => 'statusRow',
     'title' => 'Verfahrensstand',
-    'content' => 'V6: Ergebnis Antragsberatung KoordA<br>' . $btn,
+    'content' => $content,
 ];
 
 MotionLayoutHelper::addVotingResultsRow($motion->getVotingData(), $motionData);

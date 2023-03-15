@@ -1,22 +1,76 @@
+<!--
 <div id="proposedChanges">
     <h2>V1 - Administration <small>(AL Recht)</small></h2>
     <div class="holder">
-        <div style="text-align: right; padding: 10px;">
-            <label><input type="checkbox"> Sofort veröffentlichen</label><br>
-            <button type="submit" class="btn btn-default">
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                V2 erstellen mit Änderung
-            </button>
-            <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                V2 erstellen ohne Änderung
-            </button>
+        <div>
+            <div style="padding: 10px; clear:both;">
+                <div style="display: inline-block; width: 200px;">
+                    Sachgebiet:
+                </div>
+                <div style="display: inline-block; width: 400px;">
+                    <select size="1" class="dbwv_select">
+                        <option>S: Satzung</option>
+                    </select>
+                </div><br>
+
+                <div style="display: inline-block; width: 200px; padding-top: 7px;">
+                    Antragsnummer:
+                </div>
+                <div style="display: inline-block; width: 400px; padding-top: 7px;">
+                    <input type="text" value="S1" class="form-control">
+                </div><br>
+
+                <div style="display: inline-block; width: 200px; height: 40px; vertical-align: middle; padding-top: 7px;">
+                    Sofort veröffentlichen:
+                </div>
+                <div style="display: inline-block; width: 400px; height: 40px; vertical-align: middle; padding-top: 7px;">
+                    <input type="checkbox">
+                </div><br>
+            </div>
+            <div style="text-align: right;">
+                <button type="submit" class="btn btn-default">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    V2 erstellen mit Änderung
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    V2 erstellen ohne Änderung
+                </button>
+            </div>
         </div>
     </div>
 </div>
+-->
+
 
 <div id="proposedChanges">
-    <h2>V1 - Administration <small>(AL Recht)</small></h2>
+    <h2>V2 - Administration <small>(AL Recht)</small></h2>
+    <div>
+        <div style="padding: 10px; clear:both;">
+            <div style="display: inline-block; width: 200px;">
+                Sachgebiet:
+            </div>
+            <div style="display: inline-block; width: 400px;">
+                <select size="1" class="dbwv_select">
+                    <option>S: Satzung</option>
+                </select>
+            </div><br>
+
+            <div style="display: inline-block; width: 200px; padding-top: 7px;">
+                Antragsnummer:
+            </div>
+            <div style="display: inline-block; width: 400px; padding-top: 7px;">
+                <input type="text" value="S1" class="form-control">
+            </div><br>
+
+            <div style="display: inline-block; width: 200px; height: 40px; vertical-align: middle; padding-top: 7px;">
+                Sofort veröffentlichen:
+            </div>
+            <div style="display: inline-block; width: 400px; height: 40px; vertical-align: middle; padding-top: 7px;">
+                <input type="checkbox">
+            </div><br>
+        </div>
+    </div>
     <div class="holder">
         <div class="statusForm">
             <button type="button" class="btn btn-default">
@@ -33,6 +87,8 @@
     </div>
 </div>
 
+
+<!--
 <div id="proposedChanges">
     <h2>V2 - Administration <small>(Arbeitsgruppe)</small></h2>
     <div class="holder">
@@ -70,7 +126,9 @@
         </div>
     </div>
 </div>
+-->
 
+<!--
 <div id="proposedChanges">
     <h2>V3 - Administration <small>(Redaktionsausschuss)</small></h2>
     <div class="holder">
@@ -79,11 +137,13 @@
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 V4 Beschluss erstellen
             </button><br><br>
-            (Dieser Button kann auch auf der Antragsliste für einen schnelleren Zugriff und führt zur Beschlusserstellungs-Seite)
+            (Dieser Button kann auch auf die Antragsliste für einen schnelleren Zugriff und führt zur Beschlusserstellungs-Seite)
         </div>
     </div>
 </div>
+-->
 
+<!--
 <div id="proposedChanges">
     <h2>V4 - Administration <small>(Koordinierungsausschuss)</small></h2>
     <div class="holder">
@@ -99,3 +159,9 @@
         </div>
     </div>
 </div>
+-->
+
+<script>$(function() {
+    $(".dbwv_select").selectize()
+})</script>
+

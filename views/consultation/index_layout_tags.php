@@ -48,7 +48,7 @@ if ($hasNoTagMotions) {
 
 echo '<section class="motionListTags">';
 
-if (count($sortedTags) > 0 && mb_stripos($sortedTags[0]->title, Yii::t('motion', 'agenda_filter')) === false) {
+if (count($sortedTags) > 0 && mb_stripos($sortedTags[0]->title, Yii::t('motion', 'agenda_filter')) === false && false) {
     echo '<h3 class="green">' . Yii::t('motion', 'tags_head') . '</h3>';
     echo '<ul id="tagList" class="content">';
 
@@ -113,7 +113,7 @@ foreach ($tagIds as $tagId) {
             );
         }
         echo '</div><div class="pdflink">';
-        if ($motion->getMyMotionType()->getPDFLayoutClass() !== null && $motion->isVisible()) {
+        if ($motion->getMyMotionType()->getPDFLayoutClass() !== null && $motion->isVisible() && false) {
             if (is_a($motion, Amendment::class)) {
                 echo Html::a(
                     Yii::t('motion', 'as_pdf'),

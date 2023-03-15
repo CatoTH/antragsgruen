@@ -147,6 +147,69 @@ $resumedDate     = ($form->draftData->time ? $form->draftData->time->format('c')
         }
         ?>
     </section>
+
+
+    <section class="votingResult">
+        <h2 class="green">Abstimmungsergebnis</h2>
+        <div class="content form-horizontal">
+            <div class="form-group votingResult">
+                <div class="col-md-3 control-label" style="font-weight: bold;">
+                    Abstimmungsstatus
+                </div>
+                <div class="col-md-9">
+                    <label style="font-weight: normal;">
+                        <input type="radio" name="votingStatus" value="11"> Abstimmung </label><br>
+                    <label style="font-weight: normal;">
+                        <input type="radio" name="votingStatus" value="4"> Angenommen </label><br>
+                    <label style="font-weight: normal;">
+                        <input type="radio" name="votingStatus" value="5"> Abgelehnt </label><br>
+                    <label style="font-weight: normal;">
+                        <input type="radio" name="votingStatus" value="29"> Quorum verfehlt </label><br>
+                    <label style="font-weight: normal;">
+                        <input type="radio" name="votingStatus" value="30"> Quorum erreicht </label>
+                </div>
+            </div>
+            <div class="form-group contentVotingResultComment">
+                <label class="col-md-3 control-label" for="votesComment">
+                    Kommentar zur Abstimmung </label>
+                <div class="col-md-9">
+                    <input class="form-control" name="votes[comment]" type="text" id="votesComment" value="">
+                </div>
+            </div>
+            <div class="contentVotingResult row">
+                <div class="col-md-3">
+                    <label for="votesYes">„Ja”-Stimmen</label>
+                    <input class="form-control" name="votes[yes]" type="number" id="votesYes" value="">
+                </div>
+                <div class="col-md-3">
+                    <label for="votesNo">„Nein”-Stimmen</label>
+                    <input class="form-control" name="votes[no]" type="number" id="votesNo" value="">
+                </div>
+                <div class="col-md-3">
+                    <label for="votesAbstention">Enthaltungen</label>
+                    <input class="form-control" name="votes[abstention]" type="number" id="votesAbstention" value="">
+                </div>
+                <div class="col-md-3">
+                    <label for="votesInvalid">Ungültige</label>
+                    <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid" value="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="green">Wortprotokoll, Anmerkungen</h2>
+        <div class="content">
+            <div class="form-group wysiwyg-textarea" data-max-len="0" data-full-html="0">
+                <div class="texteditor motionTextFormattings boxed fixedWidthFont cke_editable cke_editable_inline cke_contents_ltr cke_show_borders" dir="ltr" data-no-strike="1" title="Antragstext" contenteditable="true" aria-readonly="false" tabindex="0" spellcheck="false" role="textbox" aria-multiline="true" aria-label="Antragstext" aria-describedby="cke_43">
+                    <p>Person 1: „....”</p>
+                    <p>Person 2: „....”</p>
+                    <p>Person 3: „....”</p>
+                </div>
+        </div>
+    </section>
+
+<br>
 <?php
 
 

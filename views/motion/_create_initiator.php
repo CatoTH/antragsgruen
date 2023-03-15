@@ -156,7 +156,7 @@ if ($adminMode) {
             <span class="only-person"><?= Yii::t('initiator', 'name') ?></span>
             <span class="only-organization"><?= Yii::t('initiator', 'nameOrga') ?></span>
         </label>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
                    value="<?= Html::encode($prePrimaryName ?: '') ?>" autocomplete="name" required>
             <?php
@@ -179,7 +179,7 @@ if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
         <label class="col-sm-3 control-label" for="initiatorOrga">
             <?= Yii::t('initiator', 'orgaName') ?>
         </label>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <?php
             if (count($selectOrganisations) > 0) {
                 echo Html::dropDownList('Initiator[organization]', $preOrga, $selectOrganisations, [
@@ -206,7 +206,7 @@ if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->i
         <label class="col-sm-3 control-label" for="resolutionDate">
             <?= Yii::t('initiator', 'orgaResolution') ?>
         </label>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <div class="input-group date" id="resolutionDateHolder">
                 <input type="text" class="form-control" id="resolutionDate" name="Initiator[resolutionDate]"
                        value="<?= Html::encode($preResolution) ?>" data-locale="<?= Html::encode($locale) ?>">
@@ -222,7 +222,7 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initi
     ?>
     <div class="form-group genderRow">
         <label class="col-sm-3 control-label" for="initiatorGender"><?= Yii::t('initiator', 'gender') ?></label>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <?php
             echo Html::dropDownList('Initiator[gender]', $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER), $genderChoices, [
                 'id' => 'initiatorGender',
@@ -246,7 +246,7 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initi
         <label class="col-sm-3 control-label" for="initiatorContactName">
             <?= Yii::t('initiator', 'orgaContactName') ?>
         </label>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]"
                    value="<?= Html::encode($preContactName ?: '') ?>" autocomplete="name">
         </div>
@@ -258,7 +258,7 @@ if ($settings->contactEmail !== InitiatorForm::CONTACT_NONE) {
     ?>
     <div class="form-group emailRow">
         <label class="col-sm-3 control-label" for="initiatorEmail"><?= Yii::t('initiator', 'email') ?></label>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <input type="text" class="form-control" id="initiatorEmail" name="Initiator[contactEmail]"
                 <?php
                 if ($settings->contactEmail === InitiatorForm::CONTACT_REQUIRED && !$adminMode) {
@@ -276,7 +276,7 @@ if ($settings->contactPhone !== InitiatorForm::CONTACT_NONE) {
     ?>
     <div class="form-group phoneRow">
         <label class="col-sm-3 control-label" for="initiatorPhone"><?= Yii::t('initiator', 'phone') ?></label>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <input type="text" class="form-control" id="initiatorPhone" name="Initiator[contactPhone]"
                 <?php
                 if ($settings->contactPhone === InitiatorForm::CONTACT_REQUIRED && !$adminMode) {

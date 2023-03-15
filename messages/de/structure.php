@@ -189,7 +189,7 @@ return [
     'PROPOSED_ACCEPTED_MOTION'    => 'Angenommen',
     'PROPOSED_ACCEPTED_AMEND'     => 'Übernahme',
     'PROPOSED_REJECTED'           => 'Ablehnung',
-    'PROPOSED_MODIFIED_ACCEPTED'  => 'Modifizierte Übernahme',
+    'PROPOSED_MODIFIED_ACCEPTED'  => 'Annahme mit Änderung',
     'PROPOSED_REFERRED'           => 'Überweisung',
     'PROPOSED_VOTE'               => 'Abstimmung',
     'PROPOSED_OBSOLETED_BY_AMEND' => 'Erledigt durch anderen ÄA',
