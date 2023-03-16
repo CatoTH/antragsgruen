@@ -253,27 +253,6 @@ After updating the source code from git, do:
 gulp
 ```
 
-### Creating custom language variants
-
-Every single message in the user interface can be modified using the web-based translation tool. Just log in as admin and go to Settings / Einstellungen -> Edit the language / Sprache anpassen.
-
-In multi-site-instances, there might be a need to share language variante between different sites. In that case, file-based modifications are necessary:
-
-- Create a directory ```messages/en-variant```
-- Copy the contents of the base language (messages/en, in this case) to this directory and edit the translated strings. If a string is missing, the messages of the directory named by the first part before the dash will be used as fallback ("en", in this case).
-- Add a ```localMessages```-configuration to your config/config.json as shown below.
-- Now this language variant is selectable in the "Edit the language"-settings-page.
-
-```json
-{
-    "localMessages": {
-        "en": {
-            "en-variant": "My new language variant"
-        }
-    }
-}
-```
-
 ### Updating PDF.JS
 
 * Download the [latest release](https://github.com/mozilla/pdf.js/releases)
@@ -298,9 +277,6 @@ Known limitations:
 
 ## Plugins
 
-**The plugin system is still under heavy development.**
-
-* The plugin system is based on Yii2's [module system](https://www.yiiframework.com/doc/guide/2.0/en/structure-modules) and [asset bundles](https://www.yiiframework.com/doc/guide/2.0/en/structure-assets). 
 * Each plugin has a directory under [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
 * Custom URLs can be defined in the Modules.php, the corresponding controllers are in the ``controller``-subdirectory, the views in ``views``, custom commands need to be in a ``commands``-directory. A rather complex example containing a bit of everything can be seen in [member_petitions](plugins/member_petitions/).
 * Each plugin has a unique ID that is equivalent to the name of the directory. To activate a plugin, the ID has to be added to the ``plugins``-list in the ``config.json``:
@@ -328,6 +304,17 @@ The most frequent use case for plugins are custom themes / layouts. You can deve
 
 A hint regarding the AGPL license and themes: custom stylesheets and images and changes to the standard stylesheets of
 Antragsgrün do not have to be redistributed under an AGPL license like other changes to the Antragsgrün codebase.
+
+### Custom language variants as plugin
+
+Every single message in the user interface can be modified using the web-based translation tool, without having to use plugins. Just log in as admin and go to Settings -> Edit the language.
+
+On larger setups, there might be a need to share language variants between different consultations or installations. In that case, it is possible to define language variants as plugin:
+
+- Create a directory for the plugin with a ``Module.php`` and ``Assets.php``. If your directory / plugin ID is ``mylayout``, the namespace of these classes needs to be ``app\plugins\mylayout``.
+- The ``Module.php`` needs the static method ``getProvidedMessagesForLanguage`` that returns the languages that the plugin returns translations / adaptions for.
+- The plugin needs the directory `messages/[language]` with the appropriate overrides, e.g. `messages/en/motion.php`.
+- Now this language variant is selectable in the "Edit the language"-settings-page.
 
 ## REST-API
 

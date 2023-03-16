@@ -11,6 +11,7 @@
 - The date format can be set independently from the language. Also the date format yyyy-mm-dd is supported (besides dd/mm/yyyy, mm/dd/yyyy, dd.mm.yyyy).
 - For the proposed procedure, it is now possible to set the status "Accepted (Modified)" for motions too and to specify a modified version of it to accept. Previously, this was only possible for amendments.
 - A new motion versioning system is implemented, replacing just using the signatures for versioning. Instead of "M1new2", the signature will now remain the same but the version is saved separately.
+- Internal / Plugins: Additional language variants are now handled as part of the plugin system, not by placing files into messages/ anymore. The latter will stop working with version 4.13.
 - Bugfix: The diff and line splitting did not work properly with grapheme consisting of multiple code points.
 - Bugfix: Changing the amendment text as admin does not clear the motion's view cache in all cases.
 - Bugfix: PHP-based PDF rendering lead to overlapping lines when the text contained nested lines without line numbering.

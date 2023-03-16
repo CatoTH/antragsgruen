@@ -123,6 +123,11 @@ class ModuleBase extends Module
         return $default;
     }
 
+    public static function getProvidedTranslations(): array
+    {
+        return [];
+    }
+
     public static function getCustomMotionExports(Motion $motion): array
     {
         return [];
