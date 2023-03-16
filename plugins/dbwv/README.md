@@ -4,6 +4,7 @@ Setup Notes
 - Antrag stellen: Gruppe „Antragsberechtigte”. Nur Organisationen, Beschlussdatum nötig.
 - Änderungsanträge: Niemand
 - Freischaltung
+- Verfahrensvorschläge deaktiviert
 
 Demo Accounts:
 - antragsberechtigt-0@example.org - antragsberechtigt-9@example.org

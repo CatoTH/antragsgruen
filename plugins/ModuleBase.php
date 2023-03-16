@@ -223,4 +223,9 @@ class ModuleBase extends Module
     {
         return [];
     }
+
+    public static function getMotionVersions(Consultation $consultation): ?array
+    {
+        return null;
+    }
 }
