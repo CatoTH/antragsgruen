@@ -15,12 +15,23 @@ class Privileges
     public const PRIVILEGE_GLOBAL_USER_ADMIN = 10; // Editing user data, not only groups
 
     // Motion/Amendment-related permissions. These permissions can be restricted to only a part of the motions / amendments.
+
     public const PRIVILEGE_SCREENING = 3;
-    public const PRIVILEGE_MOTION_STATUS_EDIT = 4;  // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting
-    public const PRIVILEGE_MOTION_TEXT_EDIT = 11; // Editing the text. Deleting motions / amendments
-    public const PRIVILEGE_MOTION_DELETE = 12;  // Deleting motions / amendments
-    public const PRIVILEGE_MOTION_INITIATORS = 5; // Editing the initiators
-    public const PRIVILEGE_CHANGE_PROPOSALS = 7;  // Editing the proposed procedure
+
+    // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting. BUT: allows everything SCREENING does.
+    public const PRIVILEGE_MOTION_STATUS_EDIT = 4;
+
+    // Editing the text. Merging amendments into motions.
+    public const PRIVILEGE_MOTION_TEXT_EDIT = 11;
+
+    // Deleting motions / amendments. Moving motions away FROM this consultation.
+    public const PRIVILEGE_MOTION_DELETE = 12;
+
+    // Editing the initiators. Creating motions in the name of someone else. Moving motions TO this consultation.
+    public const PRIVILEGE_MOTION_INITIATORS = 5;
+
+    // Editing the proposed procedure
+    public const PRIVILEGE_CHANGE_PROPOSALS = 7;
 
     private static ?int $cachedConsultationId = null;
     private static ?self $cachedPrivileges = null;

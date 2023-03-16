@@ -319,6 +319,10 @@ class MotionController extends AdminBase
         }
         $this->checkConsistency($motion);
 
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::motion($motion))) {
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
+        }
+
         $form = new MotionMover($this->consultation, $motion, User::getCurrentUser());
 
         if ($this->isPostSet('move')) {

@@ -34,7 +34,7 @@ class MotionMover
             if ($consultation->id === $this->consultation->id) {
                 continue;
             }
-            if (!$this->mover->hasPrivilege($consultation, Privileges::PRIVILEGE_ANY, null)) {
+            if (!$this->mover->hasPrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, null)) {
                 continue;
             }
             if (count($this->getCompatibleMotionTypes($consultation)) > 0) {
