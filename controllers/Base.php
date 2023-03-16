@@ -256,6 +256,11 @@ class Base extends Controller
         return $this->getHttpRequest()->post($name, $default);
     }
 
+    public function getPostValues(): array
+    {
+        return $this->getHttpRequest()->post();
+    }
+
     public function renderContentPage(string $pageKey): string
     {
         if ($this->consultation) {
