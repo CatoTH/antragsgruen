@@ -4,11 +4,31 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\commands;
 
-use app\models\db\{Consultation, ConsultationUserGroup, User};
+use app\models\settings\AgendaItem;
+use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationUserGroup, User};
 use yii\console\Controller;
 
 class SetupController extends Controller
 {
+    /** @var array{array{title: string, motionPrefix: string|null, position: int}}  */
+    private const AGENDA_ITEMS_SACHGEBIETE = [
+        [
+            'title' => 'Satzung',
+            'motionPrefix' => 'S',
+            'position' => 1,
+        ],
+        [
+            'title' => 'Umwelt',
+            'motionPrefix' => 'U',
+            'position' => 2,
+        ],
+        [
+            'title' => 'Sonstiges',
+            'motionPrefix' => null,
+            'position' => 3,
+        ],
+    ];
+
     private function createUserGroupIfNotExists(Consultation $consultation, string $title): void
     {
         $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $title]);
@@ -38,6 +58,49 @@ class SetupController extends Controller
         $this->createUserGroupIfNotExists($consultation, 'Delegierte');
 
         echo "Created the necessary user groups.\n";
+    }
+
+    private function createOrGetAgendaItem(Consultation $consultation, int $position, string $title, ?string $motionPrefix): ConsultationAgendaItem
+    {
+        $agendaItem = ConsultationAgendaItem::findOne(['title' => $title]);
+        if ($agendaItem) {
+            if ($agendaItem->position !== $position) {
+                $agendaItem->position = $position;
+                $agendaItem->save();
+            }
+            return $agendaItem;
+        }
+
+        $settings = new AgendaItem(null);
+        $settings->motionPrefix = $motionPrefix;
+
+        $agendaItem = new ConsultationAgendaItem();
+        $agendaItem->consultationId = $consultation->id;
+        $agendaItem->title = $title;
+        $agendaItem->position = $position;
+        $agendaItem->code = ConsultationAgendaItem::CODE_AUTO;
+        $agendaItem->setSettingsObj($settings);
+        $agendaItem->save();
+
+        return $agendaItem;
+    }
+
+    /**
+     * Create necessary agenda items / "Sachgebiete" for a consultation
+     */
+    public function actionAgendaItems(string $urlPath): void
+    {
+        $consultation = Consultation::findOne(['urlPath' => $urlPath]);
+        if (!$consultation) {
+            echo "Consultation not found\n";
+            return;
+        }
+
+        foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            $this->createOrGetAgendaItem($consultation, $item['position'], $item['title'], $item['motionPrefix']);
+        }
+
+        echo "Created the necessary agenda items.\n";
     }
 
     private function createOrGetUserAccount(string $email, string $password, string $givenName, string $familyName, string $organization): User

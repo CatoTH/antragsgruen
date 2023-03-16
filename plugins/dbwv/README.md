@@ -5,6 +5,7 @@ Setup Notes
 - Änderungsanträge: Niemand
 - Freischaltung
 - Verfahrensvorschläge deaktiviert
+- Sachgebiete: Tagesordnungspunkte
 
 Demo Accounts:
 - antragsberechtigt-0@example.org - antragsberechtigt-9@example.org

@@ -8,4 +8,5 @@ class AgendaItem implements \JsonSerializable
 
     public bool $inProposedProcedures = true;
     public string $description = '';
+    public ?string $motionPrefix; // If set, it takes precedence over ConsultationMotionType::motionPrefix
 }

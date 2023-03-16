@@ -34,14 +34,25 @@ class Module extends ModuleBase
     public static function getMotionVersions(Consultation $consultation): ?array
     {
         return [
-            (string)Workflow::STEP_V1 => Workflow::STEP_NAME_V1,
-            (string)Workflow::STEP_V2 => Workflow::STEP_NAME_V2,
-            (string)Workflow::STEP_V3 => Workflow::STEP_NAME_V3,
-            (string)Workflow::STEP_V4 => Workflow::STEP_NAME_V4,
-            (string)Workflow::STEP_V5 => Workflow::STEP_NAME_V5,
-            (string)Workflow::STEP_V6 => Workflow::STEP_NAME_V6,
-            (string)Workflow::STEP_V7 => Workflow::STEP_NAME_V7,
-            (string)Workflow::STEP_V8 => Workflow::STEP_NAME_V8,
+            Workflow::STEP_V1 => Workflow::STEP_NAME_V1,
+            Workflow::STEP_V2 => Workflow::STEP_NAME_V2,
+            Workflow::STEP_V3 => Workflow::STEP_NAME_V3,
+            Workflow::STEP_V4 => Workflow::STEP_NAME_V4,
+            Workflow::STEP_V5 => Workflow::STEP_NAME_V5,
+            Workflow::STEP_V6 => Workflow::STEP_NAME_V6,
+            Workflow::STEP_V7 => Workflow::STEP_NAME_V7,
+            Workflow::STEP_V8 => Workflow::STEP_NAME_V8,
+        ];
+    }
+
+    protected static function getMotionUrlRoutes(): array
+    {
+        return [
+            'workflow-step1-next' => 'dbwv/admin-workflow/step1next',
+            'workflow-step2-edit' => 'dbwv/admin-workflow/step2edit',
+            'workflow-step2-next' => 'dbwv/admin-workflow/step2next',
+            'workflow-step3-next' => 'dbwv/admin-workflow/step3next',
+            'workflow-step4-next' => 'dbwv/admin-workflow/step4next',
         ];
     }
 }
