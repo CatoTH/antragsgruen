@@ -56,6 +56,10 @@ class User extends ActiveRecord implements IdentityInterface
     public const STATUS_CONFIRMED   = 0;
     public const STATUS_DELETED     = -1;
 
+    // Hint: compared binary, i.e. values are 1, 2, 4, ...
+    public const FIXED_NAME = 1; // When submitting as a natural person, this fixes name + orga of the person
+    public const FIXED_ORGA = 2; // Only affects when submitting as the organization
+
     /**
      * @return string[]
      */

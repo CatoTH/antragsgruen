@@ -333,7 +333,7 @@ abstract class SupportBase
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
-            '@app/views/motion/_create_initiator',
+            '@app/views/shared/create_initiator',
             [
                 'initiator'         => $initiator,
                 'moreInitiators'    => $moreInitiators,
@@ -376,7 +376,7 @@ abstract class SupportBase
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
-            '@app/views/motion/_create_initiator',
+            '@app/views/shared/create_initiator',
             [
                 'initiator'         => $initiator,
                 'moreInitiators'    => $moreInitiators,
@@ -553,8 +553,8 @@ abstract class SupportBase
         $init->amendmentId = $amendment->id;
         $init->role        = AmendmentSupporter::ROLE_INITIATOR;
         $init->position    = $posCount++;
-        if ($init->personType == ISupporter::PERSON_NATURAL) {
-            if ($user && $user->fixedData && !$otherInitiator) {
+        if ($init->personType === ISupporter::PERSON_NATURAL) {
+            if ($user && ($user->fixedData | User::FIXED_NAME) && !$otherInitiator) {
                 $init->name         = trim($user->name);
                 $init->organization = $user->organization;
             } else {
@@ -567,7 +567,11 @@ abstract class SupportBase
             }
             $init->contactName = $post['Initiator']['contactName'] ?? '';
         } else {
-            $init->organization = $post['Initiator']['primaryName'];
+            if ($user && ($user->fixedData | User::FIXED_ORGA) && !$otherInitiator) {
+                $init->organization = $user->organization;
+            } else {
+                $init->organization = $post['Initiator']['primaryName'];
+            }
             $init->contactName  = $post['Initiator']['contactName'];
         }
 

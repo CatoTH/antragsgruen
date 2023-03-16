@@ -34,6 +34,7 @@ class SetupController extends Controller
             return;
         }
 
+        $this->createUserGroupIfNotExists($consultation, 'Antragsberechtigte');
         $this->createUserGroupIfNotExists($consultation, 'Delegierte');
 
         echo "Created the necessary user groups.\n";
@@ -55,7 +56,7 @@ class SetupController extends Controller
         $user->emailConfirmed = 1;
         $user->auth = 'email:' . $email;
         $user->dateCreation = date('Y-m-d H:i:s');
-        $user->fixedData = 1;
+        $user->fixedData = User::FIXED_NAME | User::FIXED_ORGA;
         $user->status = User::STATUS_CONFIRMED;
         $user->pwdEnc = (string)password_hash($password, PASSWORD_DEFAULT);
         $user->save();
@@ -94,7 +95,8 @@ class SetupController extends Controller
             return;
         }
 
-        $this->createTestAccountsForGroup($consultation, 'Delegierte', 'delegiert', 'Organisation', 500);
+        $this->createTestAccountsForGroup($consultation, 'Antragsberechtigte', 'antragsberechtigt', 'Organisation', 10);
+        $this->createTestAccountsForGroup($consultation, 'Delegierte', 'delegiert', 'Organisation', 50);
 
         echo "Created the dummy accounts.\n";
     }

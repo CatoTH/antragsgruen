@@ -8,11 +8,8 @@ use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUs
 
 class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
 {
-    /** @var PasswordAuthenticatorConfiguration */
-    private $config;
-
-    /** @var null|\PDO */
-    private $pdo = null;
+    private PasswordAuthenticatorConfiguration $config;
+    private ?\PDO $pdo = null;
 
     public function __construct(PasswordAuthenticatorConfiguration $config)
     {
@@ -132,7 +129,7 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
         $userObj->nameGiven    = $user['first_name'];
         $userObj->organization = $user['delegate_of'];
         $userObj->email        = $user['email'];
-        $userObj->fixedData    = 1;
+        $userObj->fixedData    = User::FIXED_NAME | User::FIXED_ORGA;
         if (!$userObj->save()) {
             var_dump($userObj->getErrors());
             die();

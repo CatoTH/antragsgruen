@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides;
 
-use app\models\db\{ConsultationUserGroup, Site, User as InternalUser};
+use app\models\db\{ConsultationUserGroup, Site, User as InternalUser, User};
 use app\models\exceptions\Internal;
 use app\plugins\openslides\DTO\{AutoupdateUpdate, User as OSUser, Usergroup};
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -18,11 +18,8 @@ use Symfony\Component\Serializer\{Serializer, SerializerInterface};
 
 class AutoupdateSyncService
 {
-    /** @var Site */
-    private $site;
-
-    /** @var SiteSettings */
-    private $siteSettings;
+    private Site $site;
+    private SiteSettings $siteSettings;
 
     public function setRequestData(Site $site): void
     {
@@ -114,7 +111,7 @@ class AutoupdateSyncService
         $userObj->nameGiven    = $osUser->getFirstName();
         $userObj->organization = $osUser->getStructureLevel();
         $userObj->email        = $osUser->getEmail();
-        $userObj->fixedData    = 1;
+        $userObj->fixedData    = User::FIXED_NAME | User::FIXED_ORGA;
         if (!$userObj->save()) {
             var_dump($userObj->getErrors());
             throw new Internal('Could not create the user');

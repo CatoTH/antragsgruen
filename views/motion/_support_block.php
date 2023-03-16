@@ -1,15 +1,16 @@
 <?php
 
+use app\models\db\User;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
- * @var \app\models\db\User|null $user
+ * @var User|null $user
  * @var SupportBase $supportType
  */
 
-$fixedReadOnly = ($user && $user->fixedData ? 'readonly' : '');
+$fixedReadOnly = ($user && ($user->fixedData | User::FIXED_NAME) ? 'readonly' : '');
 $name          = ($user ? $user->name : '');
 $disableSubmit = '';
 $settings      = $supportType->getSettingsObj();

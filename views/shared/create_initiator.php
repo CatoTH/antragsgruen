@@ -48,7 +48,8 @@ echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget=
                 data-settings="' . Html::encode(json_encode($settings)) . '"
                 data-organisation-list="' . (count($selectOrganisations) > 0 ? "1" : "0") . '"
                 data-user-data="' . Html::encode(json_encode([
-        'fixed'               => ($currentUser && $currentUser->fixedData),
+        'fixed_name'          => ($currentUser && ($currentUser->fixedData & \app\models\db\User::FIXED_NAME)),
+        'fixed_orga'          => ($currentUser && ($currentUser->fixedData & \app\models\db\User::FIXED_ORGA)),
         'person_name'         => ($currentUser ? $currentUser->name : ''),
         'person_organization' => ($currentUser ? $currentUser->organization : ''),
     ])) . '">';
@@ -78,7 +79,7 @@ if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
                 <?php
                 echo Html::radio(
                     'Initiator[personType]',
-                    $initiator->personType == ISupporter::PERSON_NATURAL,
+                    $initiator->personType === ISupporter::PERSON_NATURAL,
                     ['value' => ISupporter::PERSON_NATURAL, 'id' => 'personTypeNatural']
                 );
                 ?>

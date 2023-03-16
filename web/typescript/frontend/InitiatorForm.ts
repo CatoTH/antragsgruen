@@ -4,7 +4,8 @@ const CONTACT_OPTIONAL = 1;
 const CONTACT_REQUIRED = 2;
 
 interface UserData {
-    fixed: boolean;
+    fixed_name: boolean;
+    fixed_orga: boolean;
     person_name: string;
     person_organization: string;
 }
@@ -133,7 +134,11 @@ export class InitiatorForm {
     }
 
     private setFieldsReadonlyOrganization() {
-        this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', false);
+        if (!this.userData.fixed_orga || this.otherInitiator) {
+            this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', false);
+        } else {
+            this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', true).val(this.userData.person_organization);
+        }
         this.$initiatorData.find('#initiatorOrga').prop('readonly', false);
     }
 
@@ -157,12 +162,10 @@ export class InitiatorForm {
     }
 
     private setFieldsReadonlyPerson() {
-        if (!this.userData.fixed || this.otherInitiator) {
+        if (!this.userData.fixed_name || this.otherInitiator) {
             this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', false);
-            this.$initiatorData.find('#initiatorOrga').prop('readonly', false);
         } else {
             this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', true).val(this.userData.person_name);
-            this.$initiatorData.find('#initiatorOrga').prop('readonly', true).val(this.userData.person_organization);
         }
     }
 
