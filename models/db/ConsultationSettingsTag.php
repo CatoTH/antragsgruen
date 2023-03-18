@@ -1,6 +1,7 @@
 <?php
 namespace app\models\db;
 
+use app\components\yii\DBConnection;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Tag;
 use yii\db\ActiveQuery;
@@ -66,6 +67,13 @@ class ConsultationSettingsTag extends ActiveRecord
         return array_values(array_filter($consultation->tags, function (ConsultationSettingsTag $tag) use ($parentTagId): bool {
             return $tag->parentTagId === $parentTagId;
         }));
+    }
+
+    public function deleteIncludeRelations(): void
+    {
+        DBConnection::executePlainQuery('DELETE FROM `###TABLE_PREFIX###motionTag` WHERE `tagId` = ' . intval($this->id));
+        DBConnection::executePlainQuery('DELETE FROM `###TABLE_PREFIX###amendmentTag` WHERE `tagId` = ' . intval($this->id));
+        $this->delete();
     }
 
     private ?Tag $settingsObject = null;

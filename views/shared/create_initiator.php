@@ -79,7 +79,7 @@ if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
                 <?php
                 echo Html::radio(
                     'Initiator[personType]',
-                    $initiator->personType === ISupporter::PERSON_NATURAL,
+                    $initiator->personType === ISupporter::PERSON_NATURAL || $initiator->personType === null,
                     ['value' => ISupporter::PERSON_NATURAL, 'id' => 'personTypeNatural']
                 );
                 ?>
@@ -89,7 +89,7 @@ if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
                 <?php
                 echo Html::radio(
                     'Initiator[personType]',
-                    $initiator->personType == ISupporter::PERSON_ORGANIZATION,
+                    $initiator->personType === ISupporter::PERSON_ORGANIZATION,
                     ['value' => ISupporter::PERSON_ORGANIZATION, 'id' => 'personTypeOrga']
                 );
                 ?>

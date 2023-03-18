@@ -51,7 +51,7 @@ class MotionController extends AdminBase
             $supporter->name         = $names[$i];
             $supporter->organization = $orgas[$i];
             $supporter->position     = $i;
-            $supporter->setExtraDataEntry('gender', (isset($genders[$i]) ? $genders[$i] : null));
+            $supporter->setExtraDataEntry('gender', $genders[$i] ?? null);
             if (!$supporter->save()) {
                 var_dump($supporter->getErrors());
                 die();

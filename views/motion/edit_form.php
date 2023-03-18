@@ -71,7 +71,7 @@ if (!in_array($motionPolicy::getPolicyID(), $publicPolicies) && !$isAmendmentsOn
     echo $motionPolicy->getOnCreateDescription();
 }
 
-if (Yii::$app->user->isGuest) {
+if (!\app\models\db\User::getCurrentUser()) {
     echo \app\components\AntiSpam::getJsProtectionHint((string)$form->motionId);
 }
 

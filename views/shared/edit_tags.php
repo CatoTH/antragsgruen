@@ -8,6 +8,10 @@ use yii\helpers\Html;
  * @var Consultation $consultation
  */
 
+if (!$consultation->getSettings()->allowUsersToSetTags) {
+    return;
+}
+
 /** @var ConsultationSettingsTag[] $tags */
 $tags = [];
 foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -26,12 +30,12 @@ if ($consultation->getSettings()->allowMultipleTags) {
         if (in_array($id, $tagIds)) {
             echo ' checked';
         }
-        echo ' title="Tags"> ' . Html::encode($tag->title) . '</label>';
+        echo ' title="' . Yii::t('motion', 'tag_tags') . '"> ' . Html::encode($tag->title) . '</label>';
     }
     echo '</fieldset>';
 } elseif (count($tags) === 1) {
     $keys = array_keys($tags);
-    echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
+    echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '">';
 } else {
     $selected = (count($tagIds) > 0 ? $tagIds[0] : 0);
     $tagOptions = [];

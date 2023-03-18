@@ -1,6 +1,7 @@
 Setup Notes
 
 - Veranstaltungszugang: Nur eingeloggte Benutzer*innen, nur ausgewählten Benutzer*innen das Login erlauben.
+- Antragstellende dürfen Themen selbst angeben: deaktivieren
 - Antrag stellen: Gruppe „Antragsberechtigte”. Nur Organisationen, Beschlussdatum nötig.
 - Änderungsanträge: Niemand
 - Freischaltung

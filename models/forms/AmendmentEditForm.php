@@ -58,8 +58,10 @@ class AmendmentEditForm extends Model
                     $amendmentSections[$section->sectionId]->dataRaw = $data;
                 }
             }
-            foreach ($amendment->getPublicTopicTags() as $tag) {
-                $this->tags[] = $tag->id;
+            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
+                foreach ($amendment->getPublicTopicTags() as $tag) {
+                    $this->tags[] = $tag->id;
+                }
             }
         }
         $this->sections = [];
@@ -260,11 +262,13 @@ class AmendmentEditForm extends Model
         if ($amendment->save()) {
             $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
-            foreach ($this->tags as $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                if ($tag) {
-                    $amendment->link('tags', $tag);
+            if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
+                foreach ($this->tags as $tagId) {
+                    /** @var ConsultationSettingsTag $tag */
+                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
+                    if ($tag) {
+                        $amendment->link('tags', $tag);
+                    }
                 }
             }
 
@@ -339,15 +343,17 @@ class AmendmentEditForm extends Model
                 $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
             }
 
-            // Tags
-            foreach ($amendment->getPublicTopicTags() as $tag) {
-                $amendment->unlink('tags', $tag, true);
-            }
-            foreach ($this->tags as $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $amendment->getMyConsultation()->id]);
-                if ($tag) {
-                    $amendment->link('tags', $tag);
+            if ($amendment->getMyConsultation()->getSettings()->allowUsersToSetTags) {
+                // Tags
+                foreach ($amendment->getPublicTopicTags() as $tag) {
+                    $amendment->unlink('tags', $tag, true);
+                }
+                foreach ($this->tags as $tagId) {
+                    /** @var ConsultationSettingsTag $tag */
+                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $amendment->getMyConsultation()->id]);
+                    if ($tag) {
+                        $amendment->link('tags', $tag);
+                    }
                 }
             }
 

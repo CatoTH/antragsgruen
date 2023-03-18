@@ -50,8 +50,10 @@ class MotionEditForm extends Model
         if ($motion) {
             $this->motionId   = $motion->id;
             $this->supporters = $motion->motionSupporters;
-            foreach ($motion->getPublicTopicTags() as $tag) {
-                $this->tags[] = $tag->id;
+            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
+                foreach ($motion->getPublicTopicTags() as $tag) {
+                    $this->tags[] = $tag->id;
+                }
             }
             foreach ($motion->getActiveSections(null, true) as $section) {
                 $motionSections[$section->sectionId] = $section;
@@ -284,11 +286,13 @@ class MotionEditForm extends Model
         if ($motion->save()) {
             $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
 
-            foreach ($this->tags as $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                if ($tag) {
-                    $motion->link('tags', $tag);
+            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
+                foreach ($this->tags as $tagId) {
+                    /** @var ConsultationSettingsTag $tag */
+                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
+                    if ($tag) {
+                        $motion->link('tags', $tag);
+                    }
                 }
             }
 
@@ -376,15 +380,17 @@ class MotionEditForm extends Model
                 $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
             }
 
-            // Tags
-            foreach ($motion->getPublicTopicTags() as $tag) {
-                $motion->unlink('tags', $tag, true);
-            }
-            foreach ($this->tags as $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                if ($tag) {
-                    $motion->link('tags', $tag);
+            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
+                // Tags
+                foreach ($motion->getPublicTopicTags() as $tag) {
+                    $motion->unlink('tags', $tag, true);
+                }
+                foreach ($this->tags as $tagId) {
+                    /** @var ConsultationSettingsTag $tag */
+                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
+                    if ($tag) {
+                        $motion->link('tags', $tag);
+                    }
                 }
             }
 

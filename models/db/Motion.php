@@ -28,7 +28,7 @@ use yii\helpers\Html;
  * @property int|null $id
  * @property int $consultationId
  * @property int $motionTypeId
- * @property int $parentMotionId
+ * @property int|null $parentMotionId
  * @property string $title
  * @property string $titlePrefix
  * @property string $version
