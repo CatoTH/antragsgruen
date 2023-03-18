@@ -73,6 +73,7 @@ trait MotionActionsTrait
 
         $commentForm = new CommentForm($motion, $replyTo);
         $commentForm->setAttributes($postComment, $motion->getActiveSections());
+        $redirectUrl = null;
 
         try {
             $commentForm->saveNotificationSettings();
@@ -84,7 +85,7 @@ trait MotionActionsTrait
                 $this->getHttpSession()->setFlash('screening', \Yii::t('comment', 'created'));
             }
 
-            throw new ResponseException(new RedirectResponse(UrlHelper::createMotionCommentUrl($comment)));
+            $redirectUrl = UrlHelper::createMotionCommentUrl($comment);
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
             if (!isset($viewParameters['openedComments'][$commentForm->sectionId])) {
@@ -92,6 +93,10 @@ trait MotionActionsTrait
             }
             $viewParameters['openedComments'][$commentForm->sectionId][] = $commentForm->paragraphNo;
             $this->getHttpSession()->setFlash('error', $e->getMessage());
+        }
+
+        if ($redirectUrl) {
+            throw new ResponseException(new RedirectResponse($redirectUrl));
         }
     }
 

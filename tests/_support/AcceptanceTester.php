@@ -85,7 +85,7 @@ class AcceptanceTester extends \Codeception\Actor
         if ($check) {
             $this->seeElement('.motionData');
         }
-        $this->wait(0.2);
+        $this->wait(0.3);
         return $page;
     }
 

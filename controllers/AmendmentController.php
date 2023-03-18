@@ -23,7 +23,7 @@ use app\models\db\{Amendment,
     Motion,
     User};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\{FormError, MailNotSent};
+use app\models\exceptions\{FormError, MailNotSent, ResponseException};
 use app\models\forms\{AmendmentEditForm, ProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
@@ -180,6 +180,8 @@ class AmendmentController extends Base
 
         try {
             $this->performShowActions($amendment, intval($commentId), $amendmentViewParams);
+        } catch (ResponseException $e) {
+            throw $e;
         } catch (\Throwable $e) {
             $this->getHttpSession()->setFlash('error', $e->getMessage());
         }

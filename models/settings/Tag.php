@@ -8,5 +8,5 @@ class Tag implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    public ?string $motionPrefix; // If set, it takes precedence over ConsultationMotionType::motionPrefix
+    public ?string $motionPrefix = null; // If set, it takes precedence over ConsultationMotionType::motionPrefix
 }

@@ -2,13 +2,11 @@
 namespace app\models\db;
 
 use app\components\yii\DBConnection;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Tag;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use app\models\settings\{AntragsgruenApp, Tag};
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
- * @property int $id
+ * @property int|null $id
  * @property int $consultationId
  * @property int|null $parentTagId
  * @property int $type
@@ -113,7 +111,7 @@ class ConsultationSettingsTag extends ActiveRecord
             foreach ($motion->getPublicTopicTags() as $tag) {
                 if (!isset($tags[$tag->id])) {
                     $tags[$tag->id] = [
-                        'id'    => $tag->id,
+                        'id'    => intval($tag->id),
                         'title' => $tag->title,
                         'num'   => 0,
                     ];

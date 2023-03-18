@@ -79,8 +79,7 @@ class AdminMotionFilterForm extends Model
     public function rules(): array
     {
         return [
-            [['status', 'tag', 'sort', 'agendaItem', 'responsibility'], 'number'],
-            [['status', 'proposalStatus', 'tag', 'title', 'initiator', 'agendaItem', 'responsibility', 'prefix'], 'safe'],
+            [['title', 'initiator', 'prefix'], 'safe'],
         ];
     }
 

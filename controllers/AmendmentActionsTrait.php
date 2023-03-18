@@ -65,6 +65,7 @@ trait AmendmentActionsTrait
 
         $commentForm = new CommentForm($amendment, $replyTo);
         $commentForm->setAttributes($this->getPostValue('comment'));
+        $redirectUrl = null;
 
         try {
             $commentForm->saveNotificationSettings();
@@ -76,7 +77,7 @@ trait AmendmentActionsTrait
                 $this->getHttpSession()->setFlash('screening', \Yii::t('comment', 'created'));
             }
 
-            throw new ResponseException(new RedirectResponse(UrlHelper::createAmendmentCommentUrl($comment)));
+            $redirectUrl = UrlHelper::createAmendmentCommentUrl($comment);
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
             if (!isset($viewParameters['openedComments'][$commentForm->sectionId])) {
@@ -84,6 +85,10 @@ trait AmendmentActionsTrait
             }
             $viewParameters['openedComments'][$commentForm->sectionId][] = $commentForm->paragraphNo;
             $this->getHttpSession()->setFlash('error', $e->getMessage());
+        }
+
+        if ($redirectUrl) {
+            throw new ResponseException(new RedirectResponse($redirectUrl));
         }
     }
 

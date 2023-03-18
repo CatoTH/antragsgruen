@@ -18,9 +18,9 @@ class ConsultationCreateForm extends Model
     private Site $site;
 
     public string $settingsType;
-    public string $urlPath;
-    public string $title;
-    public string $titleShort;
+    public string $urlPath = '';
+    public string $title = '';
+    public string $titleShort = '';
 
     public ?Consultation $template = null;
     public bool $setAsDefault = true;
@@ -37,7 +37,7 @@ class ConsultationCreateForm extends Model
     public function rules(): array
     {
         return [
-            [['urlPath', 'title', 'titleShort', 'template'], 'required'],
+            [['urlPath', 'title', 'titleShort'], 'required'],
             [['setAsDefault'], 'boolean'],
             [['urlPath', 'title', 'titleShort', 'setAsDefault', 'settingsType'], 'safe'],
         ];
@@ -106,6 +106,7 @@ class ConsultationCreateForm extends Model
         foreach ($this->template->tags as $tag) {
             $newTag = new ConsultationSettingsTag();
             $newTag->setAttributes($tag->getAttributes(), false);
+            $newTag->id = null;
             $newTag->consultationId = $consultation->id;
             if (!$newTag->save()) {
                 throw new FormError(implode(', ', $newTag->getErrors()));
