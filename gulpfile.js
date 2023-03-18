@@ -96,7 +96,7 @@ const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsFr,
 function taskBuildCss() {
     return gulp.src("web/css/*.scss")
         .pipe(sourcemaps.init())
-        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/css/'));
@@ -105,7 +105,7 @@ function taskBuildCss() {
 function taskBuildPluginCss() {
     return gulp.src("plugins/**/*.scss")
         .pipe(sourcemaps.init())
-        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('plugins/'));
