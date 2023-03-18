@@ -18,7 +18,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property string|null $settings
  *
  * @property Consultation $consultation
- * @property ConsultationAgendaItem $parentItem
+ * @property ConsultationAgendaItem|null $parentItem
  * @property ConsultationAgendaItem[] $childItems
  * @property ConsultationMotionType $motionType
  * @property Motion[] $motions

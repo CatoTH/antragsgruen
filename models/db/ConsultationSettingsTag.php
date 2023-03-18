@@ -2,65 +2,86 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Tag;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * @property int|null $id
+ * @property int $id
  * @property int $consultationId
+ * @property int|null $parentTagId
  * @property int $type
  * @property int $position
  * @property string $title
- * @property int $cssicon
+ * @property string|null $settings
  *
  * @property Consultation $consultation
  * @property Motion[] $motions
  * @property Amendment[] $amendments
+ * @property ConsultationSettingsTag|null $parentTag
+ * @property ConsultationSettingsTag[] $childTags
  */
 class ConsultationSettingsTag extends ActiveRecord
 {
-    const TYPE_PUBLIC_TOPIC = 0;
-    const TYPE_PROPOSED_PROCEDURE = 1;
+    public const TYPE_PUBLIC_TOPIC = 0;
+    public const TYPE_PROPOSED_PROCEDURE = 1;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationSettingsTag';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getConsultation()
+    public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotions()
+    public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['id' => 'motionId'])->viaTable('motionTag', ['tagId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAmendments()
+    public function getAmendments(): ActiveQuery
     {
         return $this->hasMany(Amendment::class, ['id' => 'amendmentId'])->viaTable('amendmentTag', ['tagId' => 'id'])
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
-    public function getCSSIconClass(): string
+    public function getParentTag(): ActiveQuery
     {
-        switch ($this->cssicon) {
-            default:
-                return 'glyphicon glyphicon-file';
+        return $this->hasOne(ConsultationSettingsTag::class, ['id' => 'parentTagId']);
+    }
+
+    public function getChildTags(): ActiveQuery
+    {
+        return $this->hasMany(ConsultationSettingsTag::class, ['parentTagId' => 'id']);
+    }
+
+    /**
+     * @return ConsultationSettingsTag[]
+     */
+    public static function getTagsByParent(Consultation $consultation, ?int $parentTagId): array
+    {
+        return array_values(array_filter($consultation->tags, function (ConsultationSettingsTag $tag) use ($parentTagId): bool {
+            return $tag->parentTagId === $parentTagId;
+        }));
+    }
+
+    private ?Tag $settingsObject = null;
+
+    public function getSettingsObj(): Tag
+    {
+        if (!is_object($this->settingsObject)) {
+            $this->settingsObject = new Tag($this->settings);
         }
+        return $this->settingsObject;
+    }
+
+    public function setSettingsObj(Tag $settings): void
+    {
+        $this->settingsObject = $settings;
+        $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 
     public static function normalizeName(string $name): string
@@ -75,6 +96,7 @@ class ConsultationSettingsTag extends ActiveRecord
 
     /**
      * @param IMotion[] $motions
+     * @return array<int, array{id: int, title: string, num: int}>
      */
     public static function getMostPopularTags(array $motions): array
     {
@@ -92,15 +114,7 @@ class ConsultationSettingsTag extends ActiveRecord
             }
         }
         $tags = array_values($tags);
-        usort($tags, function ($tag1, $tag2) {
-            if ($tag1['num'] > $tag2['num']) {
-                return -1;
-            }
-            if ($tag1['num'] < $tag2['num']) {
-                return 1;
-            }
-            return 0;
-        });
+        usort($tags, fn (array $tag1, array $tag2) => $tag2['num'] <=> $tag1['num']);
         return $tags;
     }
 }

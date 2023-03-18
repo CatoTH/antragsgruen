@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Motion;
+use app\models\db\{ConsultationSettingsTag, Motion};
 use yii\helpers\Html;
 
 /**
@@ -15,10 +15,11 @@ echo Html::beginForm($submitUrl, 'POST', [
     'class' => 'dbwv_step dbwv_step1_next',
 ]);
 
-$agendaItemsSelect = ['' => ''];
-foreach ($motion->getMyConsultation()->agendaItems as $agendaItem) {
-    $agendaItemsSelect[$agendaItem->id] = $agendaItem->title;
+$tagSelect = ['' => ''];
+foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+    $tagSelect[$tag->id] = $tag->title;
 }
+$selectedTagId = (count($motion->getPublicTopicTags()) > 0 ? (string)$motion->getPublicTopicTags()[0]->id : '');
 
 ?>
     <h2>V1 - Administration <small>(AL Recht)</small></h2>
@@ -30,8 +31,8 @@ foreach ($motion->getMyConsultation()->agendaItems as $agendaItem) {
                 </label>
                 <div style="display: inline-block; width: 400px;">
                     <?php
-                    $options = ['id' => 'dbwv_step1_agendaSelect', 'class' => 'stdDropdown', 'required' => 'required'];
-                    echo Html::dropDownList('agendaItem', (string)$motion->agendaItemId, $agendaItemsSelect, $options);
+                    $options = ['id' => 'dbwv_step1_tagSelect', 'class' => 'stdDropdown', 'required' => 'required'];
+                    echo Html::dropDownList('tag', $selectedTagId, $tagSelect, $options);
                     ?>
                 </div>
                 <br>
@@ -67,3 +68,17 @@ foreach ($motion->getMyConsultation()->agendaItems as $agendaItem) {
     </div>
 <?php
 echo Html::endForm();
+
+$proposeUrl = UrlHelper::createUrl(['/dbwv/ajax-helper/propose-title-prefix', 'motionTypeId' => $motion->motionTypeId, 'tagId' => 'TAGID']);
+?>
+<script>
+    const proposePrefixUrlTmpl = <?= json_encode($proposeUrl) ?>;
+    $(function() {
+        $("#dbwv_step1_tagSelect").on("change", function() {
+            const proposePrefixUrl = proposePrefixUrlTmpl.replace(/TAGID/, $(this).val());
+            $.get(proposePrefixUrl, function(data) {
+                $("#dbwv_step1_prefix").val(data['prefix']);
+            });
+        }).trigger("change");
+    });
+</script>

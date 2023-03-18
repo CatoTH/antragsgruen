@@ -4,28 +4,40 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\commands;
 
-use app\models\settings\AgendaItem;
-use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationUserGroup, User};
+use app\models\settings\Tag;
+use app\models\db\{Consultation, ConsultationSettingsTag, ConsultationUserGroup, User};
 use yii\console\Controller;
 
 class SetupController extends Controller
 {
-    /** @var array{array{title: string, motionPrefix: string|null, position: int}}  */
+    /** @var array{array{title: string, motionPrefix: string|null, position: int, themengebiete: array{array{title: string, position: int}}}}  */
     private const AGENDA_ITEMS_SACHGEBIETE = [
         [
             'title' => 'Satzung',
             'motionPrefix' => 'S',
             'position' => 1,
+            'themengebiete' => [
+                [
+                    'title' => '§1 Zweck',
+                    'position' => 1,
+                ],
+                [
+                    'title' => '§2 Vorstand',
+                    'position' => 2,
+                ],
+            ]
         ],
         [
             'title' => 'Umwelt',
             'motionPrefix' => 'U',
             'position' => 2,
+            'themengebiete' => [],
         ],
         [
             'title' => 'Sonstiges',
             'motionPrefix' => null,
             'position' => 3,
+            'themengebiete' => [],
         ],
     ];
 
@@ -60,35 +72,57 @@ class SetupController extends Controller
         echo "Created the necessary user groups.\n";
     }
 
-    private function createOrGetAgendaItem(Consultation $consultation, int $position, string $title, ?string $motionPrefix): ConsultationAgendaItem
+    private function createOrGetMainTag(Consultation $consultation, int $position, string $title, ?string $motionPrefix): ConsultationSettingsTag
     {
-        $agendaItem = ConsultationAgendaItem::findOne(['title' => $title]);
-        if ($agendaItem) {
-            if ($agendaItem->position !== $position) {
-                $agendaItem->position = $position;
-                $agendaItem->save();
+        $tag = ConsultationSettingsTag::findOne(['title' => $title, 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
+        if ($tag) {
+            if ($tag->position !== $position) {
+                $tag->position = $position;
+                $tag->save();
             }
-            return $agendaItem;
+            return $tag;
         }
 
-        $settings = new AgendaItem(null);
+        $settings = new Tag(null);
         $settings->motionPrefix = $motionPrefix;
 
-        $agendaItem = new ConsultationAgendaItem();
-        $agendaItem->consultationId = $consultation->id;
-        $agendaItem->title = $title;
-        $agendaItem->position = $position;
-        $agendaItem->code = ConsultationAgendaItem::CODE_AUTO;
-        $agendaItem->setSettingsObj($settings);
-        $agendaItem->save();
+        $tag = new ConsultationSettingsTag();
+        $tag->consultationId = $consultation->id;
+        $tag->type = ConsultationSettingsTag::TYPE_PUBLIC_TOPIC;
+        $tag->title = $title;
+        $tag->position = $position;
+        $tag->setSettingsObj($settings);
+        $tag->save();
 
-        return $agendaItem;
+        return $tag;
+    }
+
+    private function createOrGetSecondaryTag(Consultation $consultation, ConsultationSettingsTag $parentTag, int $position, string $title): ConsultationSettingsTag
+    {
+        $tag = ConsultationSettingsTag::findOne(['title' => $title, 'type' => ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, 'parentTagId' => $parentTag->id]);
+        if ($tag) {
+            if ($tag->position !== $position) {
+                $tag->position = $position;
+                $tag->save();
+            }
+            return $tag;
+        }
+
+        $tag = new ConsultationSettingsTag();
+        $tag->consultationId = $consultation->id;
+        $tag->parentTagId = $parentTag->id;
+        $tag->type = ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE;
+        $tag->title = $title;
+        $tag->position = $position;
+        $tag->save();
+
+        return $tag;
     }
 
     /**
-     * Create necessary agenda items / "Sachgebiete" for a consultation
+     * Create necessary tags / "Sachgebiete" and "Themenbereiche" for a consultation
      */
-    public function actionAgendaItems(string $urlPath): void
+    public function actionTags(string $urlPath): void
     {
         $consultation = Consultation::findOne(['urlPath' => $urlPath]);
         if (!$consultation) {
@@ -97,10 +131,14 @@ class SetupController extends Controller
         }
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
-            $this->createOrGetAgendaItem($consultation, $item['position'], $item['title'], $item['motionPrefix']);
+            $mainTag = $this->createOrGetMainTag($consultation, $item['position'], $item['title'], $item['motionPrefix']);
+
+            foreach ($item['themengebiete'] as $secondaryTag) {
+                $this->createOrGetSecondaryTag($consultation, $mainTag, $secondaryTag['position'], $secondaryTag['title']);
+            }
         }
 
-        echo "Created the necessary agenda items.\n";
+        echo "Created the necessary tags.\n";
     }
 
     private function createOrGetUserAccount(string $email, string $password, string $givenName, string $familyName, string $organization): User

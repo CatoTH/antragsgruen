@@ -1035,20 +1035,20 @@ INSERT INTO `###TABLE_PREFIX###consultationSettingsMotionSection` (`id`, `motion
 -- Dumping data for table `consultationSettingsTag`
 --
 
-INSERT INTO `###TABLE_PREFIX###consultationSettingsTag` (`id`, `consultationId`, `type`, `position`, `title`, `cssicon`) VALUES
-  (1, 1, 0, 0, 'Umwelt', 0),
-  (2, 1, 0, 1, 'Verkehr', 0),
-  (3, 5, 0, 0, 'Tagesordnung - Formalia', 0),
-  (4, 5, 0, 1, 'Zeitpolitik', 0),
-  (5, 5, 0, 3, 'Wirtschaftspolitik', 0),
-  (6, 5, 0, 4, 'Urabstimmungsordnung', 0),
-  (7, 5, 0, 5, 'Verschiedenes', 0),
-  (8, 5, 0, 6, 'Sterbehilfe', 0),
-  (9, 5, 0, 2, 'Votum Vorstandswahlen EGP und Nachwahl EGP-Delegierte', 0),
-  (10, 1, 0, 2, 'Soziales', 0),
-  (11, 11, 0, 0, 'Umwelt', 0),
-  (12, 11, 0, 1, 'Verkehr', 0),
-  (13, 11, 0, 2, 'Soziales', 0);
+INSERT INTO `###TABLE_PREFIX###consultationSettingsTag` (`id`, `consultationId`, `type`, `position`, `title`) VALUES
+  (1, 1, 0, 0, 'Umwelt'),
+  (2, 1, 0, 1, 'Verkehr'),
+  (3, 5, 0, 0, 'Tagesordnung - Formalia'),
+  (4, 5, 0, 1, 'Zeitpolitik'),
+  (5, 5, 0, 3, 'Wirtschaftspolitik'),
+  (6, 5, 0, 4, 'Urabstimmungsordnung'),
+  (7, 5, 0, 5, 'Verschiedenes'),
+  (8, 5, 0, 6, 'Sterbehilfe'),
+  (9, 5, 0, 2, 'Votum Vorstandswahlen'),
+  (10, 1, 0, 2, 'Soziales'),
+  (11, 11, 0, 0, 'Umwelt'),
+  (12, 11, 0, 1, 'Verkehr'),
+  (13, 11, 0, 2, 'Soziales');
 
 --
 -- Dumping data for table `consultationText`

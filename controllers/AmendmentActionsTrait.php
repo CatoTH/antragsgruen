@@ -94,7 +94,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentAddTag(Amendment $amendment): void
     {
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -109,7 +109,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentDelTag(Amendment $amendment): void
     {
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {

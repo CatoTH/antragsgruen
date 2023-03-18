@@ -15,26 +15,17 @@ use yii\base\Model;
 
 class ConsultationCreateForm extends Model
 {
-    /** @var Site */
-    private $site;
+    private Site $site;
 
-    /** @var string */
-    public $settingsType;
-    /** @var string */
-    public $urlPath;
-    /** @var string */
-    public $title;
-    /** @var string */
-    public $titleShort;
+    public string $settingsType;
+    public string $urlPath;
+    public string $title;
+    public string $titleShort;
 
-    /** @var Consultation */
-    public $template = null;
+    public ?Consultation $template = null;
+    public bool $setAsDefault = true;
 
-    /** @var boolean */
-    public $setAsDefault = true;
-
-    /** @var SiteCreateForm */
-    public $siteCreateWizard;
+    public SiteCreateForm $siteCreateWizard;
 
     public function __construct(Site $site, $config = [])
     {
@@ -43,10 +34,7 @@ class ConsultationCreateForm extends Model
         $this->siteCreateWizard = new SiteCreateForm();
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['urlPath', 'title', 'titleShort', 'template'], 'required'],
@@ -69,7 +57,7 @@ class ConsultationCreateForm extends Model
     /**
      * @throws FormError
      */
-    private function createConsultationFromTemplate()
+    private function createConsultationFromTemplate(): void
     {
         $consultation                     = new Consultation();
         $consultation->siteId             = $this->site->id;
@@ -119,7 +107,6 @@ class ConsultationCreateForm extends Model
             $newTag = new ConsultationSettingsTag();
             $newTag->setAttributes($tag->getAttributes(), false);
             $newTag->consultationId = $consultation->id;
-            $newTag->id             = null;
             if (!$newTag->save()) {
                 throw new FormError(implode(', ', $newTag->getErrors()));
             }
@@ -149,7 +136,7 @@ class ConsultationCreateForm extends Model
      * @throws FormError
      * @throws \Exception
      */
-    private function createConsultationFromWizard()
+    private function createConsultationFromWizard(): void
     {
         $this->siteCreateWizard->subdomain = $this->site->subdomain;
         $this->siteCreateWizard->contact   = $this->site->contact;
@@ -172,21 +159,21 @@ class ConsultationCreateForm extends Model
      * @throws FormError
      * @throws \Exception
      */
-    public function createConsultation()
+    public function createConsultation(): void
     {
-        if ($this->title == '' || $this->titleShort == '' || $this->urlPath == '') {
+        if (!$this->title || !$this->titleShort || !$this->urlPath ) {
             throw new FormError(\Yii::t('wizard', 'cons_err_fields_missing'));
         }
         foreach ($this->template->site->consultations as $cons) {
-            if (mb_strtolower($cons->urlPath) == mb_strtolower($this->urlPath)) {
+            if (mb_strtolower($cons->urlPath) === mb_strtolower($this->urlPath)) {
                 throw new FormError(\Yii::t('wizard', 'cons_err_path_taken'));
             }
         }
 
-        if ($this->settingsType == 'wizard') {
+        if ($this->settingsType === 'wizard') {
             $this->createConsultationFromWizard();
         }
-        if ($this->settingsType == 'template') {
+        if ($this->settingsType === 'template') {
             $this->createConsultationFromTemplate();
         }
     }

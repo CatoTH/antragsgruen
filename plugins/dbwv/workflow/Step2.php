@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace app\plugins\dbwv\workflow;
 
 use app\components\RequestContext;
-use app\models\db\Motion;
-use app\models\exceptions\Access;
-use app\models\exceptions\NotFound;
+use app\models\db\{ConsultationSettingsTag, IMotion, Motion};
+use app\models\exceptions\{Access, NotFound};
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 class Step2
@@ -60,13 +59,15 @@ class Step2
             throw new Access('Not allowed to perform this action (in this state)');
         }
 
-        $agendaItem = $motion->getMyConsultation()->getAgendaItem(intval($postparams['agendaItem']));
-        if (!$agendaItem) {
-            throw new NotFound('Agenda item not found');
+        $tag = $motion->getMyConsultation()->getTagById(intval($postparams['tag']));
+        if (!$tag || $tag->type !== ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) {
+            throw new NotFound('Tag not found');
         }
 
-        $motion->agendaItemId = $agendaItem->id;
         $motion->titlePrefix = $postparams['motionPrefix'];
+        $motion->status = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
         $motion->save();
+
+        $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
     }
 }

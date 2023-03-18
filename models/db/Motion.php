@@ -602,15 +602,6 @@ class Motion extends IMotion implements IRSSItem
         return in_array($this->status, [static::STATUS_RESOLUTION_FINAL, static::STATUS_RESOLUTION_PRELIMINARY]);
     }
 
-    public function getIconCSSClass(): string
-    {
-        foreach ($this->getPublicTopicTags() as $tag) {
-            return $tag->getCSSIconClass();
-        }
-
-        return 'glyphicon glyphicon-file';
-    }
-
     public function getNumberOfCountableLines(): int
     {
         $cached = $this->getCacheItem('lines.getNumberOfCountableLines');
@@ -790,7 +781,7 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $this->status = Motion::STATUS_SUBMITTED_SCREENED;
             if ($this->titlePrefix === '' && !$this->getMyMotionType()->amendmentsOnly) {
-                $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
+                $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId, $this->getPublicTopicTags());
             }
         }
         $this->dateCreation = date('Y-m-d H:i:s');
@@ -803,7 +794,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = Motion::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix === '' && !$this->getMyMotionType()->amendmentsOnly) {
-            $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
+            $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId, $this->getPublicTopicTags());
         }
         $this->save(true);
         $this->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($this));

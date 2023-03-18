@@ -71,7 +71,7 @@ if ($motion->isInScreeningProcess() && User::havePrivilege($consultation, Privil
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
     if ($newRev === '' && !$motion->getMyMotionType()->amendmentsOnly) {
-        $newRev = $motion->getMyConsultation()->getNextMotionPrefix($motion->motionTypeId);
+        $newRev = $motion->getMyConsultation()->getNextMotionPrefix($motion->motionTypeId, $motion->getPublicTopicTags());
     }
 
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';

@@ -829,7 +829,7 @@ class Amendment extends IMotion implements IRSSItem
     public static function getNewNumberForAmendment(Amendment $amendment): string
     {
         if ($amendment->getMyMotionType()->amendmentsOnly) {
-            return $amendment->getMyConsultation()->getNextMotionPrefix($amendment->getMyMotionType()->id);
+            return $amendment->getMyConsultation()->getNextMotionPrefix($amendment->getMyMotionType()->id, $amendment->getPublicTopicTags());
         } else {
             $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
             return $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());

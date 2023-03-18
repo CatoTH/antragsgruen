@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\settings;
 
 class AgendaItem implements \JsonSerializable
@@ -8,5 +10,4 @@ class AgendaItem implements \JsonSerializable
 
     public bool $inProposedProcedures = true;
     public string $description = '';
-    public ?string $motionPrefix; // If set, it takes precedence over ConsultationMotionType::motionPrefix
 }

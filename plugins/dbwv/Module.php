@@ -55,4 +55,13 @@ class Module extends ModuleBase
             'workflow-step4-next' => 'dbwv/admin-workflow/step4next',
         ];
     }
+
+    public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
+    {
+        $urls = parent::getAllUrlRoutes($urls, $dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
+
+        $urls[$dom . '<consultationPath:[\w_-]+>/dbwv/propose-title-prefix'] = '/dbwv/ajax-helper/propose-title-prefix';
+
+        return $urls;
+    }
 }

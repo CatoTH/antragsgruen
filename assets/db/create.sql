@@ -214,7 +214,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationFile` (
 -- Table structure for table `consultationFileGroup`
 --
 
-CREATE TABLE `consultationFileGroup` (
+CREATE TABLE `###TABLE_PREFIX###consultationFileGroup` (
     `id` int(11) NOT NULL,
     `consultationId` int(11) NOT NULL,
     `parentGroupId` int(11) DEFAULT NULL,
@@ -313,12 +313,13 @@ CREATE TABLE `###TABLE_PREFIX###consultationSettingsMotionSection` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###consultationSettingsTag` (
-  `id`             INT(11)      NOT NULL,
-  `consultationId` INT(11)     DEFAULT NULL,
+  `id`             INT(11) NOT NULL,
+  `consultationId` INT(11) DEFAULT NULL,
+  `parentTagId`    INT(11) DEFAULT NULL,
   `type`           TINYINT(4) NOT NULL DEFAULT 0,
   `position`       SMALLINT(6) DEFAULT NULL,
   `title`          VARCHAR(100) NOT NULL,
-  `cssicon`        SMALLINT(6) DEFAULT '0'
+  `settings`       TEXT NULL DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -930,6 +931,7 @@ ALTER TABLE `###TABLE_PREFIX###consultationSettingsMotionSection`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationSettingsTag`
   ADD PRIMARY KEY (`id`),
+  ADD KEY `parentTagId` (`parentTagId`),
   ADD KEY `consultationId` (`consultationId`);
 
 --
@@ -1432,6 +1434,9 @@ ALTER TABLE `###TABLE_PREFIX###consultationSettingsMotionSection`
 ALTER TABLE `###TABLE_PREFIX###consultationSettingsTag`
   ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
   ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+  ADD CONSTRAINT `tag_fk_tags` FOREIGN KEY (`parentTagId`) REFERENCES `###TABLE_PREFIX###consultationSettingsTag` (`id`)
+  ON DELETE SET NULL
   ON UPDATE NO ACTION;
 
 --

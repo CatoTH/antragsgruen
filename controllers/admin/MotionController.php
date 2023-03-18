@@ -284,16 +284,7 @@ class MotionController extends AdminBase
 
             $motion->save();
 
-            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-                if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
-                    $motion->unlink('tags', $tag, true);
-                } else {
-                    try {
-                        $motion->link('tags', $tag);
-                    } catch (\Exception $e) {
-                    }
-                }
-            }
+            $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, array_map('intval', $post['tags'] ?? []));
 
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
                 $this->saveMotionSupporters($motion);

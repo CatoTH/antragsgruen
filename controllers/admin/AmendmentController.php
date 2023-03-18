@@ -272,16 +272,7 @@ class AmendmentController extends AdminBase
 
             $amendment->save();
 
-            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-                if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
-                    $amendment->unlink('tags', $tag, true);
-                } else {
-                    try {
-                        $amendment->link('tags', $tag);
-                    } catch (\Exception $e) {
-                    }
-                }
-            }
+            $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, array_map('intval', $post['tags'] ?? []));
 
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
                 $this->saveAmendmentSupporters($amendment);

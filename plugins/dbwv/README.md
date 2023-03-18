@@ -5,7 +5,8 @@ Setup Notes
 - Änderungsanträge: Niemand
 - Freischaltung
 - Verfahrensvorschläge deaktiviert
-- Sachgebiete: Tagesordnungspunkte
+- Sachgebiete: Tags, type "Public Topic" (0)
+- Themenbereiche: Tags, type "Proposed Procedure" (1), Sachgebiete als parent tags
 
 Demo Accounts:
 - antragsberechtigt-0@example.org - antragsberechtigt-9@example.org
