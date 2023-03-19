@@ -9,6 +9,7 @@ use app\models\settings\Layout;
 use app\models\settings\Privilege;
 use app\plugins\dbwv\workflow\Workflow;
 use app\plugins\ModuleBase;
+use yii\web\View;
 
 class Module extends ModuleBase
 {
@@ -90,5 +91,21 @@ class Module extends ModuleBase
         $urls[$dom . '<consultationPath:[\w_-]+>/dbwv/propose-title-prefix'] = '/dbwv/ajax-helper/propose-title-prefix';
 
         return $urls;
+    }
+
+    public static function getProvidedLayouts(?View $view = null): array
+    {
+        return [
+            'std' => [
+                'title'   => 'DBwV',
+                'preview' => null,
+                'bundle'  => Assets::class,
+            ]
+        ];
+    }
+
+    public static function overridesDefaultLayout(): string
+    {
+        return 'layout-plugin-neos-std';
     }
 }

@@ -1,18 +1,20 @@
 <?php
 
-namespace app\plugins\neos;
+declare(strict_types=1);
+
+namespace app\plugins\dbwv;
 
 use yii\web\AssetBundle;
 
 class Assets extends AssetBundle
 {
-    public $sourcePath = '@app/plugins/neos/assets/';
+    public $sourcePath = '@app/plugins/dbwv/assets/';
 
     public $css = [
-        'layout-neos.css',
+        'layout-dbwv.css',
     ];
     public $js = [
-        'neos.js',
+        //'dbwv.js',
     ];
     public $depends = [
     ];
