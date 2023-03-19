@@ -7,6 +7,7 @@ namespace app\plugins\dbwv;
 use app\models\db\Motion;
 use app\models\layoutHooks\Hooks;
 use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Workflow};
+use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
@@ -29,5 +30,12 @@ class LayoutHooks extends Hooks
     public function endOfHead(string $before): string
     {
         return $before . '<style>' . file_get_contents(__DIR__ . '/assets/dbwv.css') . '</style>';
+    }
+
+    public function favicons(string $before): string
+    {
+        $baseUrl = Html::encode(Assets::$myBaseUrl);
+
+        return '<link rel="icon" type="image/x-icon" href="' . $baseUrl . '/favicon.ico">';
     }
 }
