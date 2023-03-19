@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\plugins\dbwv\workflow;
 
 use app\components\RequestContext;
+use app\plugins\dbwv\Module;
 use app\models\db\{ConsultationSettingsTag, IMotion, Motion};
 use app\models\exceptions\{Access, NotFound};
 use app\models\settings\{PrivilegeQueryContext, Privileges};
@@ -13,9 +14,8 @@ class Step1
 {
     public static function canAssignTopic(Motion $motion): bool
     {
-        // @TODO Restrict to LV Recht
         $ctx = PrivilegeQueryContext::motion($motion);
-        return $motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $ctx);
+        return $motion->getMyConsultation()->havePrivilege(Module::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC, $ctx);
     }
 
     public static function renderMotionAdministration(Motion $motion): string

@@ -13,7 +13,6 @@ class Step3
 {
     public static function canSetResolution(Motion $motion): bool
     {
-        // @TODO Restrict to admins
         $ctx = PrivilegeQueryContext::motion($motion);
         return $motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $ctx);
     }
