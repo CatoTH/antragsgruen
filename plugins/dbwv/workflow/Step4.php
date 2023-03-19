@@ -7,15 +7,15 @@ namespace app\plugins\dbwv\workflow;
 use app\components\RequestContext;
 use app\models\db\Motion;
 use app\models\exceptions\Access;
+use app\plugins\dbwv\Module;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 class Step4
 {
     public static function canMoveToMain(Motion $motion): bool
     {
-        // @TODO Restrict to admins
         $ctx = PrivilegeQueryContext::motion($motion);
-        return $motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $ctx);
+        return $motion->getMyConsultation()->havePrivilege(Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN, $ctx);
     }
 
     public static function renderMotionAdministration(Motion $motion): string

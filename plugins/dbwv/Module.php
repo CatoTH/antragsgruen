@@ -6,11 +6,15 @@ namespace app\plugins\dbwv;
 
 use app\models\db\Consultation;
 use app\models\settings\Layout;
+use app\models\settings\Privilege;
 use app\plugins\dbwv\workflow\Workflow;
 use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
 {
+    public const PRIVILEGE_DBWV_V1_ASSIGN_TOPIC = -100;
+    public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -101;
+
     public static function getProvidedTranslations(): array
     {
         return ['de'];
@@ -43,6 +47,29 @@ class Module extends ModuleBase
             Workflow::STEP_V7 => Workflow::STEP_NAME_V7,
             Workflow::STEP_V8 => Workflow::STEP_NAME_V8,
         ];
+    }
+
+    /**
+     * @param Privilege[] $origPrivileges
+     * @return Privilege[]
+     */
+    public static function addCustomPrivileges(Consultation $consultation, array $origPrivileges): array
+    {
+        $origPrivileges[] = new Privilege(
+            self::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC,
+            'V1: Sachgebiete zuordnen',
+            true,
+            null
+        );
+
+        $origPrivileges[] = new Privilege(
+            self::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
+            'V4: Zur Hauptversammlung übertragen',
+            true,
+            null
+        );
+
+        return $origPrivileges;
     }
 
     protected static function getMotionUrlRoutes(): array

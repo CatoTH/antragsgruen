@@ -13,9 +13,8 @@ class Step2
 {
     public static function canSetRecommendation(Motion $motion): bool
     {
-        // @TODO Restrict to Working groups
         $ctx = PrivilegeQueryContext::motion($motion);
-        return $motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $ctx);
+        return $motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CHANGE_PROPOSALS, $ctx);
     }
 
     public static function renderMotionAdministration(Motion $motion): string
