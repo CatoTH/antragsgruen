@@ -554,7 +554,7 @@ abstract class SupportBase
         $init->role        = AmendmentSupporter::ROLE_INITIATOR;
         $init->position    = $posCount++;
         if ($init->personType === ISupporter::PERSON_NATURAL) {
-            if ($user && ($user->fixedData | User::FIXED_NAME) && !$otherInitiator) {
+            if ($user && ($user->fixedData & User::FIXED_NAME) && !$otherInitiator) {
                 $init->name         = trim($user->name);
                 $init->organization = $user->organization;
             } else {
@@ -567,7 +567,7 @@ abstract class SupportBase
             }
             $init->contactName = $post['Initiator']['contactName'] ?? '';
         } else {
-            if ($user && ($user->fixedData | User::FIXED_ORGA) && !$otherInitiator) {
+            if ($user && ($user->fixedData & User::FIXED_ORGA) && !$otherInitiator) {
                 $init->organization = $user->organization;
             } else {
                 $init->organization = $post['Initiator']['primaryName'];

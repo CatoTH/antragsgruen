@@ -62,4 +62,5 @@ $I->submitForm('.motionMergeForm', [], 'save');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
 
 $I->click('.homeLinkLogo');
-$I->see('A3neu: Textformatierungen', 'h1');
+$I->see('A3: Textformatierungen', 'h1');
+$I->see('Version 2', '.motionHistory .currVersion');

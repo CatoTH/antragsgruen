@@ -25,7 +25,9 @@ class MotionEditForm
     /** @var MotionSection[] */
     public array $sections = [];
 
+    /** @var int[] */
     public array $tags = [];
+
     public ?int $motionId = null;
 
     /** @var string[] */
@@ -47,11 +49,6 @@ class MotionEditForm
         if ($motion) {
             $this->motionId   = $motion->id;
             $this->supporters = $motion->motionSupporters;
-            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
-                foreach ($motion->getPublicTopicTags() as $tag) {
-                    $this->tags[] = $tag->id;
-                }
-            }
             foreach ($motion->getActiveSections(null, true) as $section) {
                 $motionSections[$section->sectionId] = $section;
             }
@@ -149,6 +146,10 @@ class MotionEditForm
                     }
                 }
             }
+        }
+
+        if ($this->motionType->getConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+            $this->tags = array_map(fn (string $id): int => intval($id), $values['tags'] ?? []);
         }
     }
 
@@ -267,9 +268,8 @@ class MotionEditForm
         if ($motion->save()) {
             $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
 
-            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
-                $tagIds = array_map(fn(ConsultationSettingsTag $tag): int => $tag->id, $this->tags);
-                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $tagIds);
+            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
             foreach ($this->sections as $section) {
@@ -356,9 +356,8 @@ class MotionEditForm
                 $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
             }
 
-            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
-                $tagIds = array_map(fn(ConsultationSettingsTag $tag): int => $tag->id, $this->tags);
-                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $tagIds);
+            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
             if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {

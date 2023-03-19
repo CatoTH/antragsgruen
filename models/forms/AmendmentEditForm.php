@@ -22,7 +22,10 @@ class AmendmentEditForm
 
     /** @var AmendmentSupporter[] */
     public array $supporters = [];
+
+    /** @var int[] */
     public array $tags = [];
+
     public array $sections = [];
     public ?int $amendmentId = null;
     public string $reason = '';
@@ -53,11 +56,6 @@ class AmendmentEditForm
                     $data                                            = $motionSections[$section->sectionId]->data;
                     $amendmentSections[$section->sectionId]->data    = $data;
                     $amendmentSections[$section->sectionId]->dataRaw = $data;
-                }
-            }
-            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
-                foreach ($amendment->getPublicTopicTags() as $tag) {
-                    $this->tags[] = $tag->id;
                 }
             }
         }
@@ -169,6 +167,10 @@ class AmendmentEditForm
                 $this->toAnotherAmendment = $baseAmendment->id;
             }
         }
+
+        if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+            $this->tags = array_map(fn (string $id): int => intval($id), $values['tags'] ?? []);
+        }
     }
 
 
@@ -242,14 +244,8 @@ class AmendmentEditForm
         if ($amendment->save()) {
             $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
-            if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
-                foreach ($this->tags as $tagId) {
-                    /** @var ConsultationSettingsTag $tag */
-                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                    if ($tag) {
-                        $amendment->link('tags', $tag);
-                    }
-                }
+            if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
             foreach ($this->sections as $section) {
@@ -323,18 +319,8 @@ class AmendmentEditForm
                 $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
             }
 
-            if ($amendment->getMyConsultation()->getSettings()->allowUsersToSetTags) {
-                // Tags
-                foreach ($amendment->getPublicTopicTags() as $tag) {
-                    $amendment->unlink('tags', $tag, true);
-                }
-                foreach ($this->tags as $tagId) {
-                    /** @var ConsultationSettingsTag $tag */
-                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $amendment->getMyConsultation()->id]);
-                    if ($tag) {
-                        $amendment->link('tags', $tag);
-                    }
-                }
+            if ($amendment->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
             if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment))) {

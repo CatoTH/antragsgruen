@@ -10,7 +10,7 @@ use yii\helpers\Html;
  * @var SupportBase $supportType
  */
 
-$fixedReadOnly = ($user && ($user->fixedData | User::FIXED_NAME) ? 'readonly' : '');
+$fixedReadOnly = ($user && ($user->fixedData & User::FIXED_NAME) ? 'readonly' : '');
 $name          = ($user ? $user->name : '');
 $disableSubmit = '';
 $settings      = $supportType->getSettingsObj();

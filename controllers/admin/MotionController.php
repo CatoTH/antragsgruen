@@ -284,8 +284,6 @@ class MotionController extends AdminBase
 
             $motion->save();
 
-            $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, array_map('intval', $post['tags'] ?? []));
-
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
                 $this->saveMotionSupporters($motion);
                 $this->saveMotionInitiator($motion);

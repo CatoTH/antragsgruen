@@ -272,8 +272,6 @@ class AmendmentController extends AdminBase
 
             $amendment->save();
 
-            $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, array_map('intval', $post['tags'] ?? []));
-
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
                 $this->saveAmendmentSupporters($amendment);
                 $this->saveAmendmentInitiator($amendment);

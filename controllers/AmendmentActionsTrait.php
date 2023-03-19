@@ -210,12 +210,12 @@ trait AmendmentActionsTrait
         $user = User::getCurrentUser();
         $gender = $this->getHttpRequest()->post('motionSupportGender', '');
         $nonPublic = ($supportClass->getSettingsObj()->offerNonPublicSupports && \Yii::$app->request->post('motionSupportPublic') === null);
-        if ($user && ($user->fixedData | User::FIXED_NAME)) {
+        if ($user && ($user->fixedData & User::FIXED_NAME)) {
             $name = $user->name;
         } else {
             $name = $this->getHttpRequest()->post('motionSupportName', '');
         }
-        if ($user && ($user->fixedData | User::FIXED_ORGA)) {
+        if ($user && ($user->fixedData & User::FIXED_ORGA)) {
             $orga = $user->organization;
         } else {
             $orga = $this->getHttpRequest()->post('motionSupportOrga', '');

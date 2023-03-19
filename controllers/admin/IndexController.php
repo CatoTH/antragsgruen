@@ -348,7 +348,7 @@ class IndexController extends AdminBase
 
         if ($this->isPostSet('createConsultation')) {
             $newcon = $post['newConsultation'];
-            $form->setAttributes($newcon, true);
+            $form->setAttributes($newcon);
             if (preg_match('/^[\w_-]+$/i', $newcon['urlPath'])) {
                 $form->urlPath = $newcon['urlPath'];
             }
