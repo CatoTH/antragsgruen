@@ -150,7 +150,7 @@ if ($hasMotions && $consultation->getSettings()->sidebarNewMotions) {
     } else {
         foreach ($newestMotions as $motion) {
             $motionLink = UrlHelper::createMotionUrl($motion);
-            $name       = '<span class="' . Html::encode($motion->getIconCSSClass()) . '"></span>' .
+            $name       = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' .
                 HTMLTools::encodeAddShy($motion->title ?: '-');
             $html       .= '<li class="motionTitle">' . Html::a($name, $motionLink) . "</li>\n";
         }

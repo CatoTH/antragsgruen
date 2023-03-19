@@ -51,7 +51,7 @@ class MotionController extends AdminBase
             $supporter->name         = $names[$i];
             $supporter->organization = $orgas[$i];
             $supporter->position     = $i;
-            $supporter->setExtraDataEntry('gender', (isset($genders[$i]) ? $genders[$i] : null));
+            $supporter->setExtraDataEntry('gender', $genders[$i] ?? null);
             if (!$supporter->save()) {
                 var_dump($supporter->getErrors());
                 die();
@@ -166,7 +166,7 @@ class MotionController extends AdminBase
             try {
                 $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
                 $form->setAdminMode(true);
-                $form->setAttributes([$post, $_FILES]);
+                $form->setAttributes($post, $_FILES);
 
                 $votingData = $motion->getVotingData();
                 $votingData->setFromPostData($post['votes']);
@@ -283,17 +283,6 @@ class MotionController extends AdminBase
             }
 
             $motion->save();
-
-            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-                if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
-                    $motion->unlink('tags', $tag, true);
-                } else {
-                    try {
-                        $motion->link('tags', $tag);
-                    } catch (\Exception $e) {
-                    }
-                }
-            }
 
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
                 $this->saveMotionSupporters($motion);

@@ -108,7 +108,7 @@ class MotionMover
                 }
                 foreach ($consultation->motions as $oMotion) {
                     if (mb_strtolower($oMotion->titlePrefix) === mb_strtolower($titlePrefix)) {
-                        $oMotion->titlePrefix = $consultation->getNextMotionPrefix($motionType->id);
+                        $oMotion->titlePrefix = $consultation->getNextMotionPrefix($motionType->id, []); // Tags are not copied
                         $oMotion->save();
                     }
                     if (mb_strtolower($oMotion->slug ?: '') === mb_strtolower($this->motion->slug ?: '')) {

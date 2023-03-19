@@ -79,7 +79,7 @@ class SamlLogin implements LoginProviderInterface
         $user->nameFamily = $familyname;
         $user->email = $email;
         $user->emailConfirmed = 1;
-        $user->fixedData = 1;
+        $user->fixedData = User::FIXED_NAME;
         $user->auth = $auth;
         $user->status = User::STATUS_CONFIRMED;
         $user->organization = $user->organization ?? '';

@@ -66,11 +66,6 @@ abstract class ISupporter extends ActiveRecord
         }
     }
 
-    public function isDataFixed(): bool
-    {
-        return ($this->getMyUser() && $this->getMyUser()->fixedData == 1);
-    }
-
     public function getNameWithOrga(): string
     {
         return \app\models\layoutHooks\Layout::getSupporterNameWithOrga($this);

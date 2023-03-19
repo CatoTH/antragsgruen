@@ -18,7 +18,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property string|null $settings
  *
  * @property Consultation $consultation
- * @property ConsultationAgendaItem $parentItem
+ * @property ConsultationAgendaItem|null $parentItem
  * @property ConsultationAgendaItem[] $childItems
  * @property ConsultationMotionType $motionType
  * @property Motion[] $motions
@@ -26,6 +26,8 @@ use yii\db\{ActiveQuery, ActiveRecord};
  */
 class ConsultationAgendaItem extends ActiveRecord
 {
+    public const CODE_AUTO = '#';
+
     public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationAgendaItem';
@@ -173,8 +175,7 @@ class ConsultationAgendaItem extends ActiveRecord
         ];
     }
 
-    /** @var null|AgendaItem */
-    private $settingsObject = null;
+    private ?AgendaItem $settingsObject = null;
 
     public function getSettingsObj(): AgendaItem
     {
@@ -214,7 +215,7 @@ class ConsultationAgendaItem extends ActiveRecord
 
         // Needs to be synchronized with antragsgruen.js:recalcAgendaCodes
         $calcNewShownCode = function ($currShownCode, $newInternalCode) use ($separator) {
-            if ($newInternalCode === '#') {
+            if ($newInternalCode === self::CODE_AUTO) {
                 $currParts = explode($separator, $currShownCode);
                 if (preg_match('/^[a-z]$/siu', $currParts[0])) { // Single alphabetical characters
                     $currParts[0] = chr(ord($currParts[0]) + 1);
@@ -289,9 +290,8 @@ class ConsultationAgendaItem extends ActiveRecord
         return $items;
     }
 
-    /** @var string|null */
-    private $shownCode = null;
-    private $shownCodeFull = null;
+    private ?string $shownCode = null;
+    private ?string $shownCodeFull = null;
 
     protected function setShownCode(string $code, string $codeFull): void
     {

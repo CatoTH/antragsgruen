@@ -2,7 +2,7 @@
 
 namespace app\components;
 
-use yii\web\{Application, Session, User};
+use yii\web\{Application, Controller, Session, User};
 
 final class RequestContext
 {
@@ -22,5 +22,10 @@ final class RequestContext
     public static function getUser(): User
     {
         return self::getWebApplication()->user;
+    }
+
+    public static function getController(): Controller
+    {
+        return self::getWebApplication()->controller;
     }
 }

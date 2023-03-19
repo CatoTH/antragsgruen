@@ -13,22 +13,22 @@ use app\models\db\{Amendment,
     Consultation,
     User};
 use app\models\events\AmendmentEvent;
+use app\models\http\RedirectResponse;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
-use app\models\exceptions\{DB, FormError, Internal};
+use app\models\exceptions\{DB, FormError, Internal, ResponseException};
 use app\models\forms\CommentForm;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
-use yii\web\{Response, Session};
+use yii\web\{Request, Response, Session};
 
 /**
  * @property Consultation $consultation
- * @method redirect($uri)
  * @method Session getHttpSession()
+ * @method Request getHttpRequest()
  */
 trait AmendmentActionsTrait
 {
-
     /**
      * @throws Internal
      */
@@ -65,6 +65,7 @@ trait AmendmentActionsTrait
 
         $commentForm = new CommentForm($amendment, $replyTo);
         $commentForm->setAttributes($this->getPostValue('comment'));
+        $redirectUrl = null;
 
         try {
             $commentForm->saveNotificationSettings();
@@ -76,7 +77,7 @@ trait AmendmentActionsTrait
                 $this->getHttpSession()->setFlash('screening', \Yii::t('comment', 'created'));
             }
 
-            $this->redirect(UrlHelper::createAmendmentCommentUrl($comment));
+            $redirectUrl = UrlHelper::createAmendmentCommentUrl($comment);
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
             if (!isset($viewParameters['openedComments'][$commentForm->sectionId])) {
@@ -84,6 +85,10 @@ trait AmendmentActionsTrait
             }
             $viewParameters['openedComments'][$commentForm->sectionId][] = $commentForm->paragraphNo;
             $this->getHttpSession()->setFlash('error', $e->getMessage());
+        }
+
+        if ($redirectUrl) {
+            throw new ResponseException(new RedirectResponse($redirectUrl));
         }
     }
 
@@ -94,11 +99,11 @@ trait AmendmentActionsTrait
      */
     private function amendmentAddTag(Amendment $amendment): void
     {
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            if ($tag->id == \Yii::$app->request->post('tagId')) {
+            if ($tag->id === intval($this->getHttpRequest()->post('tagId'))) {
                 $amendment->link('tags', $tag);
             }
         }
@@ -109,11 +114,11 @@ trait AmendmentActionsTrait
      */
     private function amendmentDelTag(Amendment $amendment): void
     {
-        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
+        if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            if ($tag->id === intval(\Yii::$app->request->post('tagId'))) {
+            if ($tag->id === intval($this->getHttpRequest()->post('tagId'))) {
                 $amendment->unlink('tags', $tag, true);
             }
         }
@@ -203,20 +208,23 @@ trait AmendmentActionsTrait
         $supportClass = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
         $role = AmendmentSupporter::ROLE_SUPPORTER;
         $user = User::getCurrentUser();
-        $gender = \Yii::$app->request->post('motionSupportGender', '');
+        $gender = $this->getHttpRequest()->post('motionSupportGender', '');
         $nonPublic = ($supportClass->getSettingsObj()->offerNonPublicSupports && \Yii::$app->request->post('motionSupportPublic') === null);
-        if ($user && $user->fixedData) {
+        if ($user && ($user->fixedData & User::FIXED_NAME)) {
             $name = $user->name;
+        } else {
+            $name = $this->getHttpRequest()->post('motionSupportName', '');
+        }
+        if ($user && ($user->fixedData & User::FIXED_ORGA)) {
             $orga = $user->organization;
         } else {
-            $name = \Yii::$app->request->post('motionSupportName', '');
-            $orga = \Yii::$app->request->post('motionSupportOrga', '');
+            $orga = $this->getHttpRequest()->post('motionSupportOrga', '');
         }
         if ($supportClass->getSettingsObj()->hasOrganizations && trim($orga) === '') {
             $this->getHttpSession()->setFlash('error', 'No organization entered');
             return;
         }
-        if (trim($name) == '') {
+        if (trim($name) === '') {
             $this->getHttpSession()->setFlash('error', 'You need to enter a name');
             return;
         }

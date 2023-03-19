@@ -3,8 +3,7 @@
 namespace app\models\forms;
 
 use app\components\RequestContext;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{ConsultationAgendaItem,
     ConsultationMotionType,
     ConsultationSettingsTag,
@@ -14,9 +13,8 @@ use app\models\db\{ConsultationAgendaItem,
     User};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
-use yii\base\Model;
 
-class MotionEditForm extends Model
+class MotionEditForm
 {
     public ConsultationMotionType $motionType;
     public ?ConsultationAgendaItem $agendaItem;
@@ -27,7 +25,9 @@ class MotionEditForm extends Model
     /** @var MotionSection[] */
     public array $sections = [];
 
+    /** @var int[] */
     public array $tags = [];
+
     public ?int $motionId = null;
 
     /** @var string[] */
@@ -37,7 +37,6 @@ class MotionEditForm extends Model
 
     public function __construct(ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, ?Motion $motion)
     {
-        parent::__construct();
         $this->motionType = $motionType;
         $this->agendaItem = $agendaItem;
         $this->setSection($motion);
@@ -50,9 +49,6 @@ class MotionEditForm extends Model
         if ($motion) {
             $this->motionId   = $motion->id;
             $this->supporters = $motion->motionSupporters;
-            foreach ($motion->getPublicTopicTags() as $tag) {
-                $this->tags[] = $tag->id;
-            }
             foreach ($motion->getActiveSections(null, true) as $section) {
                 $motionSections[$section->sectionId] = $section;
             }
@@ -72,14 +68,6 @@ class MotionEditForm extends Model
                 $this->sections[] = $section;
             }
         }
-    }
-
-    public function rules(): array
-    {
-        return [
-            [['id', 'type'], 'number'],
-            [['supporters', 'tags'], 'safe'],
-        ];
     }
 
     public function setAdminMode(bool $set): void
@@ -113,17 +101,9 @@ class MotionEditForm extends Model
         }
     }
 
-    /**
-     * @param array $data
-     * @param bool $safeOnly
-     * @throws FormError
-     */
-    public function setAttributes($data, $safeOnly = true)
+    public function setAttributes(array $values, array $files): void
     {
         $this->fileUploadErrors = [];
-
-        list($values, $files) = $data;
-        parent::setAttributes($values, $safeOnly);
 
         if (isset($values['agendaItem']) && $values['agendaItem']) {
             foreach ($this->motionType->agendaItems as $agendaItem) {
@@ -166,6 +146,10 @@ class MotionEditForm extends Model
                     }
                 }
             }
+        }
+
+        if ($this->motionType->getConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+            $this->tags = array_map(fn (string $id): int => intval($id), $values['tags'] ?? []);
         }
     }
 
@@ -264,7 +248,7 @@ class MotionEditForm extends Model
 
         $motion = new Motion();
 
-        $this->setAttributes([RequestContext::getWebApplication()->request->post(), $_FILES]);
+        $this->setAttributes(RequestContext::getWebApplication()->request->post(), $_FILES);
         $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
 
         $this->createMotionVerify();
@@ -284,12 +268,8 @@ class MotionEditForm extends Model
         if ($motion->save()) {
             $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
 
-            foreach ($this->tags as $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                if ($tag) {
-                    $motion->link('tags', $tag);
-                }
+            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
             foreach ($this->sections as $section) {
@@ -376,16 +356,8 @@ class MotionEditForm extends Model
                 $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
             }
 
-            // Tags
-            foreach ($motion->getPublicTopicTags() as $tag) {
-                $motion->unlink('tags', $tag, true);
-            }
-            foreach ($this->tags as $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                if ($tag) {
-                    $motion->link('tags', $tag);
-                }
+            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
             if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {

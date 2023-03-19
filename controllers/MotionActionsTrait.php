@@ -5,7 +5,12 @@ namespace app\controllers;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\forms\ProposedChangeForm;
 use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
-use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, ResponseInterface, RestApiExceptionResponse};
+use app\models\http\{HtmlErrorResponse,
+    HtmlResponse,
+    JsonResponse,
+    RedirectResponse,
+    ResponseInterface,
+    RestApiExceptionResponse};
 use app\models\notifications\MotionProposedProcedure;
 use app\components\{Tools, UrlHelper};
 use app\models\db\{Amendment,
@@ -18,7 +23,7 @@ use app\models\db\{Amendment,
     MotionSupporter,
     User,
     Consultation};
-use app\models\exceptions\{DB, FormError, Internal, MailNotSent};
+use app\models\exceptions\{DB, FormError, Internal, MailNotSent, ResponseException};
 use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;
 use app\models\supportTypes\SupportBase;
@@ -26,7 +31,6 @@ use yii\web\{Request, Response, Session};
 
 /**
  * @property Consultation $consultation
- * @method redirect($uri)
  * @method Session getHttpSession()
  * @method Request getHttpRequest()
  * @method Response getHttpResponse()
@@ -69,6 +73,7 @@ trait MotionActionsTrait
 
         $commentForm = new CommentForm($motion, $replyTo);
         $commentForm->setAttributes($postComment, $motion->getActiveSections());
+        $redirectUrl = null;
 
         try {
             $commentForm->saveNotificationSettings();
@@ -79,8 +84,8 @@ trait MotionActionsTrait
             } else {
                 $this->getHttpSession()->setFlash('screening', \Yii::t('comment', 'created'));
             }
-            $this->redirect(UrlHelper::createMotionCommentUrl($comment));
-            \Yii::$app->end();
+
+            $redirectUrl = UrlHelper::createMotionCommentUrl($comment);
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
             if (!isset($viewParameters['openedComments'][$commentForm->sectionId])) {
@@ -88,6 +93,10 @@ trait MotionActionsTrait
             }
             $viewParameters['openedComments'][$commentForm->sectionId][] = $commentForm->paragraphNo;
             $this->getHttpSession()->setFlash('error', $e->getMessage());
+        }
+
+        if ($redirectUrl) {
+            throw new ResponseException(new RedirectResponse($redirectUrl));
         }
     }
 
@@ -218,11 +227,14 @@ trait MotionActionsTrait
         $user = User::getCurrentUser();
         $gender = $this->getHttpRequest()->post('motionSupportGender', '');
         $nonPublic = ($supportType->getSettingsObj()->offerNonPublicSupports && $this->getHttpRequest()->post('motionSupportPublic') === null);
-        if ($user && $user->fixedData) {
+        if ($user && ($user->fixedData & User::FIXED_NAME)) {
             $name = $user->name;
-            $orga = $user->organization;
         } else {
             $name = $this->getHttpRequest()->post('motionSupportName', '');
+        }
+        if ($user && ($user->fixedData & User::FIXED_ORGA)) {
+            $orga = $user->organization;
+        } else {
             $orga = $this->getHttpRequest()->post('motionSupportOrga', '');
         }
         if ($supportType->getSettingsObj()->hasOrganizations && $orga === '') {
@@ -383,8 +395,7 @@ trait MotionActionsTrait
 
         $motion->refresh();
 
-        $this->redirect(UrlHelper::createMotionCommentUrl($comment));
-        \Yii::$app->end();
+        throw new ResponseException(new RedirectResponse(UrlHelper::createMotionCommentUrl($comment)));
     }
 
     /**

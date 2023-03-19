@@ -60,6 +60,11 @@ class Module extends ModuleBase
         ];
     }
 
+    public static function getProvidedTranslations(): array
+    {
+        return ['de'];
+    }
+
     public static function getDefaultLogo(): array
     {
         return [

@@ -11,11 +11,7 @@ class MotionCreatePage extends BasePage
 {
     public $route = 'motion/create';
 
-    /**
-     * @param string $title
-     * @param bool $screeningNeeded
-     */
-    public function createMotion($title = 'Testantrag 1', $screeningNeeded = false)
+    public function createMotion(string $title = 'Testantrag 1', bool $screeningNeeded = false): void
     {
         $this->fillInValidSampleData($title);
         $this->saveForm();
@@ -28,10 +24,7 @@ class MotionCreatePage extends BasePage
         }
     }
 
-    /**
-     * @param string $title
-     */
-    public function fillInValidSampleData($title = 'Testantrag 1')
+    public function fillInValidSampleData(string $title = 'Testantrag 1'): void
     {
         $this->actor->fillField(['name' => 'sections[1]'], $title);
         $this->actor->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
@@ -40,10 +33,7 @@ class MotionCreatePage extends BasePage
         $this->actor->fillField('#initiatorEmail', 'test@example.org');
     }
 
-    /**
-     *
-     */
-    public function saveForm()
+    public function saveForm(): void
     {
         $this->actor->submitForm('#motionEditForm', [], 'save');
     }

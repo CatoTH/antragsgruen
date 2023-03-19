@@ -11,65 +11,40 @@ use app\models\db\ConsultationUserGroup;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
-use yii\base\Model;
 
-class ConsultationCreateForm extends Model
+class ConsultationCreateForm
 {
-    /** @var Site */
-    private $site;
+    private Site $site;
 
-    /** @var string */
-    public $settingsType;
-    /** @var string */
-    public $urlPath;
-    /** @var string */
-    public $title;
-    /** @var string */
-    public $titleShort;
+    public string $settingsType;
+    public string $urlPath = '';
+    public string $title = '';
+    public string $titleShort = '';
 
-    /** @var Consultation */
-    public $template = null;
+    public ?Consultation $template = null;
+    public bool $setAsDefault = true;
 
-    /** @var boolean */
-    public $setAsDefault = true;
+    public SiteCreateForm $siteCreateWizard;
 
-    /** @var SiteCreateForm */
-    public $siteCreateWizard;
-
-    public function __construct(Site $site, $config = [])
+    public function __construct(Site $site)
     {
-        parent::__construct($config);
         $this->site             = $site;
         $this->siteCreateWizard = new SiteCreateForm();
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function setAttributes(array $values): void
     {
-        return [
-            [['urlPath', 'title', 'titleShort', 'template'], 'required'],
-            [['setAsDefault'], 'boolean'],
-            [['urlPath', 'title', 'titleShort', 'setAsDefault', 'settingsType'], 'safe'],
-        ];
-    }
-
-    /**
-     * @param array $values
-     * @param bool $safeOnly
-     */
-    public function setAttributes($values, $safeOnly = true)
-    {
-        parent::setAttributes($values, $safeOnly);
-
+        $this->urlPath = $values['urlPath'];
+        $this->title = $values['title'];
+        $this->titleShort = $values['titleShort'];
+        $this->settingsType = $values['settingsType'];
         $this->setAsDefault = isset($values['setStandard']);
     }
 
     /**
      * @throws FormError
      */
-    private function createConsultationFromTemplate()
+    private function createConsultationFromTemplate(): void
     {
         $consultation                     = new Consultation();
         $consultation->siteId             = $this->site->id;
@@ -118,8 +93,8 @@ class ConsultationCreateForm extends Model
         foreach ($this->template->tags as $tag) {
             $newTag = new ConsultationSettingsTag();
             $newTag->setAttributes($tag->getAttributes(), false);
+            $newTag->id = null;
             $newTag->consultationId = $consultation->id;
-            $newTag->id             = null;
             if (!$newTag->save()) {
                 throw new FormError(implode(', ', $newTag->getErrors()));
             }
@@ -149,7 +124,7 @@ class ConsultationCreateForm extends Model
      * @throws FormError
      * @throws \Exception
      */
-    private function createConsultationFromWizard()
+    private function createConsultationFromWizard(): void
     {
         $this->siteCreateWizard->subdomain = $this->site->subdomain;
         $this->siteCreateWizard->contact   = $this->site->contact;
@@ -172,21 +147,21 @@ class ConsultationCreateForm extends Model
      * @throws FormError
      * @throws \Exception
      */
-    public function createConsultation()
+    public function createConsultation(): void
     {
-        if ($this->title == '' || $this->titleShort == '' || $this->urlPath == '') {
+        if (!$this->title || !$this->titleShort || !$this->urlPath ) {
             throw new FormError(\Yii::t('wizard', 'cons_err_fields_missing'));
         }
         foreach ($this->template->site->consultations as $cons) {
-            if (mb_strtolower($cons->urlPath) == mb_strtolower($this->urlPath)) {
+            if (mb_strtolower($cons->urlPath) === mb_strtolower($this->urlPath)) {
                 throw new FormError(\Yii::t('wizard', 'cons_err_path_taken'));
             }
         }
 
-        if ($this->settingsType == 'wizard') {
+        if ($this->settingsType === 'wizard') {
             $this->createConsultationFromWizard();
         }
-        if ($this->settingsType == 'template') {
+        if ($this->settingsType === 'template') {
             $this->createConsultationFromTemplate();
         }
     }

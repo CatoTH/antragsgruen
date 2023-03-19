@@ -123,6 +123,11 @@ class ModuleBase extends Module
         return $default;
     }
 
+    public static function getProvidedTranslations(): array
+    {
+        return [];
+    }
+
     public static function getCustomMotionExports(Motion $motion): array
     {
         return [];
@@ -217,5 +222,10 @@ class ModuleBase extends Module
     public static function getAdditionalIMotionStatuses(): array
     {
         return [];
+    }
+
+    public static function getMotionVersions(Consultation $consultation): ?array
+    {
+        return null;
     }
 }

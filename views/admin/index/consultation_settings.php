@@ -309,6 +309,17 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                 </div>
                 <label>
                     <?php
+                    $handledSettings[] = 'allowUsersToSetTags';
+                    echo Html::checkbox(
+                        'settings[allowUsersToSetTags]',
+                        $settings->allowUsersToSetTags,
+                        ['id' => 'allowUsersToSetTags']
+                    );
+                    echo ' ' . Yii::t('admin', 'con_allow_set_tags');
+                    ?>
+                </label>
+                <label>
+                    <?php
                     $handledSettings[] = 'allowMultipleTags';
                     echo Html::checkbox(
                         'settings[allowMultipleTags]',

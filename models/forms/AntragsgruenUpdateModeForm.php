@@ -8,10 +8,8 @@ class AntragsgruenUpdateModeForm extends SiteCreateForm
 {
     use AntragsgruenInitConfigwriteTrait;
 
-    public $updateKey = null;
+    public ?string $updateKey = null;
 
-    /**
-     */
     public function __construct()
     {
         parent::__construct();
@@ -22,19 +20,15 @@ class AntragsgruenUpdateModeForm extends SiteCreateForm
 
     /**
      * @throws \Yii\base\Exception
-     * @return string
      */
-    public function activateUpdate()
+    public function activateUpdate(): string
     {
         $this->updateKey = \Yii::$app->getSecurity()->generateRandomString(10);
         $this->saveConfig();
         return $this->updateKey;
     }
 
-    /**
-     * @param AntragsgruenApp $config
-     */
-    protected function setConfigValues(AntragsgruenApp $config)
+    protected function setConfigValues(AntragsgruenApp $config): void
     {
         $config->updateKey = $this->updateKey;
     }

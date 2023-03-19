@@ -55,6 +55,11 @@ class Module extends ModuleBase
         ];
     }
 
+    public static function getProvidedTranslations(): array
+    {
+        return ['en'];
+    }
+
     public static function getCustomMotionExports(Motion $motion): array
     {
         return [

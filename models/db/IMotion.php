@@ -208,6 +208,26 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         return $tags;
     }
 
+    /**
+     * @param int[] $newList
+     */
+    public function setTags(int $type, array $newList): void
+    {
+        foreach ($this->getMyConsultation()->tags as $tag) {
+            if ($tag->type !== $type) {
+                continue;
+            }
+            if (in_array($tag->id, $newList)) {
+                try {
+                    $this->link('tags', $tag);
+                } catch (\Exception $e) {
+                }
+            } else {
+                $this->unlink('tags', $tag, true);
+            }
+        }
+    }
+
     public function isVisible(): bool
     {
         if (!$this->getMyConsultation()) {

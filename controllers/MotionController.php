@@ -17,7 +17,7 @@ use app\models\db\{Amendment,
     UserNotification};
 use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\Privileges;
-use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal};
+use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal, ResponseException};
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
@@ -85,6 +85,8 @@ class MotionController extends Base
 
         try {
             $this->performShowActions($motion, intval($commentId), $motionViewParams);
+        } catch (ResponseException $e) {
+            throw $e;
         } catch (\Throwable $e) {
             $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
@@ -231,7 +233,7 @@ class MotionController extends Base
         if ($this->isPostSet('save')) {
             $post = $this->getHttpRequest()->post();
             $motion->flushCache(true);
-            $form->setAttributes([$post, $_FILES]);
+            $form->setAttributes($post, $_FILES);
             try {
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {

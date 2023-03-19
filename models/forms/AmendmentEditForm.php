@@ -12,19 +12,20 @@ use app\models\db\{Amendment,
     User};
 use app\components\RequestContext;
 use app\models\exceptions\FormError;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\sectionTypes\{ISectionType, TextSimple};
-use yii\base\Model;
 
-class AmendmentEditForm extends Model
+class AmendmentEditForm
 {
     public Motion $motion;
     public ?ConsultationAgendaItem $agendaItem;
 
     /** @var AmendmentSupporter[] */
     public array $supporters = [];
+
+    /** @var int[] */
     public array $tags = [];
+
     public array $sections = [];
     public ?int $amendmentId = null;
     public string $reason = '';
@@ -35,7 +36,6 @@ class AmendmentEditForm extends Model
 
     public function __construct(Motion $motion, ?ConsultationAgendaItem $agendaItem, ?Amendment $amendment)
     {
-        parent::__construct();
         $this->motion = $motion;
         $this->agendaItem = $agendaItem;
         /** @var AmendmentSection[] $amendmentSections */
@@ -57,9 +57,6 @@ class AmendmentEditForm extends Model
                     $amendmentSections[$section->sectionId]->data    = $data;
                     $amendmentSections[$section->sectionId]->dataRaw = $data;
                 }
-            }
-            foreach ($amendment->getPublicTopicTags() as $tag) {
-                $this->tags[] = $tag->id;
             }
         }
         $this->sections = [];
@@ -90,16 +87,6 @@ class AmendmentEditForm extends Model
                 $this->sections[] = $section;
             }
         }
-    }
-
-    public function rules(): array
-    {
-        return [
-            [['type'], 'required'],
-            [['id', 'type'], 'number'],
-            ['type', 'required', 'message' => \Yii::t('amend', 'err_type_missing')],
-            [['supporters', 'tags', 'type'], 'safe'],
-        ];
     }
 
     public function setAdminMode(bool $set): void
@@ -137,15 +124,8 @@ class AmendmentEditForm extends Model
         }
     }
 
-    /**
-     * @param array $data
-     * @param bool $safeOnly
-     */
-    public function setAttributes($data, $safeOnly = true)
+    public function setAttributes(array $values, array $files)
     {
-        list($values, $files) = $data;
-        parent::setAttributes($values, $safeOnly);
-
         $consultation = $this->motion->getMyConsultation();
         if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($this->motion))) {
             foreach ($this->sections as $section) {
@@ -186,6 +166,10 @@ class AmendmentEditForm extends Model
             if ($baseAmendment && $baseAmendment->motionId === $this->motion->id) {
                 $this->toAnotherAmendment = $baseAmendment->id;
             }
+        }
+
+        if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+            $this->tags = array_map(fn (string $id): int => intval($id), $values['tags'] ?? []);
         }
     }
 
@@ -233,7 +217,7 @@ class AmendmentEditForm extends Model
 
         $amendment = new Amendment();
 
-        $this->setAttributes([RequestContext::getWebApplication()->request->post(), $_FILES]);
+        $this->setAttributes(RequestContext::getWebApplication()->request->post(), $_FILES);
         $this->supporters = $this->motion->motionType->getAmendmentSupportTypeClass()
             ->getAmendmentSupporters($amendment);
 
@@ -260,12 +244,8 @@ class AmendmentEditForm extends Model
         if ($amendment->save()) {
             $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
-            foreach ($this->tags as $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                if ($tag) {
-                    $amendment->link('tags', $tag);
-                }
+            if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
             foreach ($this->sections as $section) {
@@ -339,16 +319,8 @@ class AmendmentEditForm extends Model
                 $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
             }
 
-            // Tags
-            foreach ($amendment->getPublicTopicTags() as $tag) {
-                $amendment->unlink('tags', $tag, true);
-            }
-            foreach ($this->tags as $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $amendment->getMyConsultation()->id]);
-                if ($tag) {
-                    $amendment->link('tags', $tag);
-                }
+            if ($amendment->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
             if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment))) {

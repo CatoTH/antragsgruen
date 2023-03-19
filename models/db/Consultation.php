@@ -559,11 +559,24 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    public function getNextMotionPrefix(int $motionTypeId): string
+    /**
+     * @param ConsultationSettingsTag[] $tags
+     * @throws NotFound
+     */
+    public function getNextMotionPrefix(int $motionTypeId, array $tags): string
     {
         $max_rev = 0;
         $motionType = $this->getMotionType($motionTypeId);
         $prefix = $motionType->motionPrefix;
+
+        // Tag-specific prefixes have higher priorities. However, if two tags with prefixes are assigned, any is taken.
+        // So tag-specific prefixes this should only be used when only one tag per motion is allowed.
+        foreach ($tags as $tag) {
+            if ($tag->getSettingsObj()->motionPrefix) {
+                $prefix = $tag->getSettingsObj()->motionPrefix;
+            }
+        }
+
         if ($prefix === '' || $prefix === null) {
             $prefix = 'A';
         }

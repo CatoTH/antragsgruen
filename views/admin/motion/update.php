@@ -71,7 +71,7 @@ if ($motion->isInScreeningProcess() && User::havePrivilege($consultation, Privil
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
     if ($newRev === '' && !$motion->getMyMotionType()->amendmentsOnly) {
-        $newRev = $motion->getMyConsultation()->getNextMotionPrefix($motion->motionTypeId);
+        $newRev = $motion->getMyConsultation()->getNextMotionPrefix($motion->motionTypeId, $motion->getPublicTopicTags());
     }
 
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';
@@ -202,10 +202,21 @@ if (count($consultation->agendaItems) > 0) {
     <div class="stdTwoCols">
         <label class="leftColumn control-label" for="motionVersion"><?= Yii::t('motion', 'version') ?>:</label>
         <div class="middleColumn"><?php
-            echo Html::textInput('motion[version]', $motion->version, [
-                'class'       => 'form-control',
-                'id'          => 'motionVersion',
-            ]);
+            $versions = null;
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                if ($plugin::getMotionVersions($consultation) !== null) {
+                    $versions = $plugin::getMotionVersions($consultation);
+                }
+            }
+            if ($versions !== null) {
+                $options    = ['id' => 'motionVersion', 'class' => 'stdDropdown fullsize'];
+                echo Html::dropDownList('motion[version]', $motion->version, $versions, $options);
+            } else {
+                echo Html::textInput('motion[version]', $motion->version, [
+                    'class' => 'form-control',
+                    'id' => 'motionVersion',
+                ]);
+            }
             ?>
             <small><?= Yii::t('admin', 'motion_prefix_unique') ?></small>
         </div>

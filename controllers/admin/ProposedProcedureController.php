@@ -2,11 +2,11 @@
 
 namespace app\controllers\admin;
 
+use app\models\http\{BinaryFileResponse, HtmlResponse, JsonResponse};
 use app\models\settings\Privileges;
 use app\components\{HTMLTools, Tools};
 use app\models\db\{AmendmentAdminComment, Consultation, IMotion, MotionAdminComment, User};
 use app\models\proposedProcedure\Factory;
-use yii\web\Response;
 
 class ProposedProcedureController extends AdminBase
 {
@@ -14,13 +14,7 @@ class ProposedProcedureController extends AdminBase
         Privileges::PRIVILEGE_CHANGE_PROPOSALS
     ];
 
-    /**
-     * @param int $agendaItemId
-     * @param null|string $expandId
-     * @param null|string $tagId
-     * @return string
-     */
-    public function actionIndex($agendaItemId = 0, $expandId = null, $tagId = null)
+    public function actionIndex(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null): HtmlResponse
     {
         $this->activateFunctions();
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
@@ -32,24 +26,16 @@ class ProposedProcedureController extends AdminBase
             $proposalFactory = new Factory($this->consultation, true);
         }
 
-        return $this->render('index', [
+        return new HtmlResponse($this->render('index', [
             'proposedAgenda' => $proposalFactory->create(),
             'expandAll' => $this->consultation->getSettings()->pProcedureExpandAll,
-            'expandId' => ($expandId ? intval($expandId) : null),
-            'tagId' => ($tagId ? intval($tagId) : null),
-        ]);
+            'expandId' => $expandId,
+            'tagId' => $tagId,
+        ]));
     }
 
-    /**
-     * @param int $agendaItemId
-     * @param null|int $expandId
-     * @return string
-     */
-    public function actionIndexAjax($agendaItemId = 0, $expandId = null, $tagId = null)
+    public function actionIndexAjax(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
         if ($agendaItemId) {
@@ -66,25 +52,19 @@ class ProposedProcedureController extends AdminBase
             'tagId'          => ($tagId ? intval($tagId) : null),
         ]);
 
-        return json_encode([
+        return new JsonResponse([
             'success' => true,
             'html'    => $html,
             'date'    => date('H:i:s'),
         ]);
     }
 
-    /**
-     * @param int $agendaItemId
-     * @param int $comments
-     * @param int $onlypublic
-     * @return string
-     */
-    public function actionOds($agendaItemId = 0, $comments = 0, $onlypublic = 0)
+    public function actionOds(int $agendaItemId = 0, int $comments = 0, int $onlypublic = 0): BinaryFileResponse
     {
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
-        $comments   = (IntVal($comments) === 1);
-        $onlypublic = (IntVal($onlypublic) === 1);
+        $comments = ($comments === 1);
+        $onlypublic = ($onlypublic === 1);
 
         $filename = 'proposed-procedure';
         if ($agendaItemId) {
@@ -97,35 +77,26 @@ class ProposedProcedureController extends AdminBase
         if ($onlypublic) {
             $filename .= '-public';
         }
-        $filename .= '.ods';
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        $this->getHttpResponse()->headers->add('Content-Disposition', 'attachment;filename=' . rawurlencode($filename));
-        $this->getHttpResponse()->headers->add('Cache-Control', 'max-age=0');
-
-        return $this->renderPartial('ods', [
+        $ods = $this->renderPartial('ods', [
             'proposedAgenda' => $proposalFactory->create(),
             'comments'       => $comments,
             'onlyPublic'     => $onlypublic,
         ]);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, $filename);
     }
 
     /**
-     * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionSaveMotionComment()
+    public function actionSaveMotionComment(): JsonResponse
     {
-        $motionId = \Yii::$app->request->post('id');
-        $text     = \Yii::$app->request->post('comment');
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
+        $motionId = $this->getPostValue('id');
+        $text = $this->getPostValue('text');
 
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            return json_encode([
+            return new JsonResponse([
                 'success' => false,
                 'error'   => 'Could not open motion',
             ]);
@@ -137,14 +108,14 @@ class ProposedProcedureController extends AdminBase
         $comment->status       = MotionAdminComment::PROPOSED_PROCEDURE;
         $comment->dateCreation = date('Y-m-d H:i:s');
         if (!$comment->save()) {
-            return json_encode([
+            return new JsonResponse([
                 'success' => false,
                 'error'   => 'Could not save the comment',
             ]);
         }
 
         $user = $comment->getMyUser();
-        return json_encode([
+        return new JsonResponse([
             'success'  => true,
             'date_str' => Tools::formatMysqlDateTime($comment->dateCreation),
             'text'     => HTMLTools::textToHtmlWithLink($comment->text),
@@ -152,21 +123,14 @@ class ProposedProcedureController extends AdminBase
         ]);
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionSaveAmendmentComment()
+    public function actionSaveAmendmentComment(): JsonResponse
     {
-        $amendmentId = intval(\Yii::$app->request->post('id'));
-        $text        = \Yii::$app->request->post('comment');
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
+        $amendmentId = intval($this->getPostValue('id'));
+        $text = $this->getPostValue('comment');
 
         $motion = $this->consultation->getAmendment($amendmentId);
         if (!$motion) {
-            return json_encode([
+            return new JsonResponse([
                 'success' => false,
                 'error'   => 'Could not open amendment',
             ]);
@@ -178,14 +142,14 @@ class ProposedProcedureController extends AdminBase
         $comment->status       = MotionAdminComment::PROPOSED_PROCEDURE;
         $comment->dateCreation = date('Y-m-d H:i:s');
         if (!$comment->save()) {
-            return json_encode([
+            return new JsonResponse([
                 'success' => false,
                 'error'   => 'Could not save the comment',
             ]);
         }
 
         $user = $comment->getMyUser();
-        return json_encode([
+        return new JsonResponse([
             'success'  => true,
             'date_str' => Tools::formatMysqlDateTime($comment->dateCreation),
             'text'     => HTMLTools::textToHtmlWithLink($comment->text),
@@ -193,77 +157,56 @@ class ProposedProcedureController extends AdminBase
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionSaveMotionVisible()
+    public function actionSaveMotionVisible(): JsonResponse
     {
-        $motionId = \Yii::$app->request->post('id');
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
+        $motionId = $this->getPostValue('id');
 
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            return json_encode([
+            return new JsonResponse([
                 'success' => false,
                 'error'   => 'Could not open motion',
             ]);
         }
 
-        if (\Yii::$app->request->post('visible', 0)) {
+        if ($this->getPostValue('visible', 0)) {
             $motion->setProposalPublished();
         } else {
             $motion->proposalVisibleFrom = null;
             $motion->save();
         }
 
-        return json_encode([
+        return new JsonResponse([
             'success' => true
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionSaveAmendmentVisible()
+    public function actionSaveAmendmentVisible(): JsonResponse
     {
-        $amendmentId = \Yii::$app->request->post('id');
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
+        $amendmentId = intval($this->getPostValue('id'));
 
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
-            return json_encode([
+            return new JsonResponse([
                 'success' => false,
                 'error'   => 'Could not open amendment',
             ]);
         }
 
-        if (\Yii::$app->request->post('visible', 0)) {
+        if ($this->getPostValue('visible', 0)) {
             $amendment->setProposalPublished();
         } else {
             $amendment->proposalVisibleFrom = null;
             $amendment->save();
         }
 
-        return json_encode([
+        return new JsonResponse([
             'success' => true
         ]);
     }
 
-    /**
-     * @param string $type
-     * @param string $id
-     *
-     * @return string
-     */
-    public function actionSaveResponsibility(string $type, string $id)
+    public function actionSaveResponsibility(string $type, string $id): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         /** @var null|IMotion $imotion */
         $imotion = null;
         switch ($type) {
@@ -271,30 +214,30 @@ class ProposedProcedureController extends AdminBase
                 $imotion = $this->consultation->getMotion($id);
                 break;
             case 'amendment':
-                $imotion = $this->consultation->getAmendment($id);
+                $imotion = $this->consultation->getAmendment(intval($id));
                 break;
         }
         if (!$imotion) {
-            return json_encode([
+            return new JsonResponse([
                 'success' => false,
                 'error'   => 'Could not open amendment',
             ]);
         }
 
-        if (\Yii::$app->request->post('comment') !== null) {
-            $imotion->responsibilityComment = \Yii::$app->request->post('comment');
+        if ($this->getPostValue('comment') !== null) {
+            $imotion->responsibilityComment = $this->getPostValue('comment');
             $imotion->save();
         }
-        if (\Yii::$app->request->post('user') !== null) {
-            if (\Yii::$app->request->post('user') === '0') {
+        if ($this->getPostValue('user') !== null) {
+            if ($this->getPostValue('user') === '0') {
                 $imotion->responsibilityId = null;
             } else {
-                $imotion->responsibilityId = intval(\Yii::$app->request->post('user'));
+                $imotion->responsibilityId = intval($this->getPostValue('user'));
             }
             $imotion->save();
         }
 
-        return json_encode([
+        return new JsonResponse([
             'success' => true
         ]);
     }

@@ -65,7 +65,7 @@ id=270&status=3
         if (!$user) {
             return json_encode(['success' => false, 'message' => 'user not found'], JSON_THROW_ON_ERROR);
         }
-        $user->fixedData = ($this->getHttpRequest()->post('fixed') ? 1 : 0);
+        $user->fixedData = ($this->getHttpRequest()->post('fixed') ? User::FIXED_NAME : 0);
         $user->nameFamily = $this->getHttpRequest()->post('nameFamily');
         $user->nameGiven = $this->getHttpRequest()->post('nameGiven');
         $user->name = $this->getHttpRequest()->post('nameGiven') . ' ' . $this->getHttpRequest()->post('nameFamily');

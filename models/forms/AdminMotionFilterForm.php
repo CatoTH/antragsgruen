@@ -1,66 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\forms;
 
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter};
-use yii\base\Model;
 use yii\helpers\Html;
 
-class AdminMotionFilterForm extends Model
+class AdminMotionFilterForm
 {
-    const SORT_STATUS = 1;
-    const SORT_TITLE = 2;
-    const SORT_TITLE_PREFIX = 3;
-    const SORT_INITIATOR = 4;
-    const SORT_TAG = 5;
-    const SORT_PUBLICATION = 6;
-    const SORT_PROPOSAL = 7;
-    const SORT_PROPOSAL_STATUS = 8;
-    const SORT_RESPONSIBILITY = 9;
-    const SORT_DATE = 10;
+    public const SORT_STATUS = 1;
+    public const SORT_TITLE = 2;
+    public const SORT_TITLE_PREFIX = 3;
+    public const SORT_INITIATOR = 4;
+    public const SORT_TAG = 5;
+    public const SORT_PUBLICATION = 6;
+    public const SORT_PROPOSAL = 7;
+    public const SORT_PROPOSAL_STATUS = 8;
+    public const SORT_RESPONSIBILITY = 9;
+    public const SORT_DATE = 10;
 
-    /** @var int|null */
-    public $status = null;
-    /** @var int|null */
-    public $tag = null;
-    /** @var int|null */
-    public $agendaItem = null;
-    public $proposalStatus = null;
-    /** @var int|null */
-    public $responsibility = null;
+    public ?int $status = null;
+    public ?int $tag = null;
+    public ?int $agendaItem = null;
+    public ?string $proposalStatus = null;
+    public ?int $responsibility = null;
 
-    /** @var string */
-    public $initiator = null;
-    /** @var string */
-    public $title = null;
-    /** @var string */
-    public $prefix = null;
+    public ?string $initiator = null;
+    public ?string $title = null;
+    public ?string $prefix = null;
 
     /** @var Motion [] */
-    public $allMotions;
+    public array $allMotions;
 
     /** @var Amendment[] */
-    public $allAmendments;
+    public array $allAmendments;
+    public Consultation $consultation;
 
-    /** @var Consultation */
-    public $consultation;
-
-    /** @var int */
-    public $sort = 3;
-
-    /** @var boolean */
-    private $showScreening;
+    public int $sort = 3;
+    private bool $showScreening;
 
     /** @var string[] */
-    private $route;
+    private array $route;
 
     /**
      * @param Motion[] $allMotions
      */
     public function __construct(Consultation $consultation, array $allMotions, bool $amendments, bool $showScreening)
     {
-        parent::__construct();
         $this->showScreening = $showScreening;
         $this->consultation  = $consultation;
         $this->allMotions    = [];
@@ -88,21 +76,11 @@ class AdminMotionFilterForm extends Model
         }
     }
 
-    public function rules(): array
+    public function setAttributes(array $values): void
     {
-        return [
-            [['status', 'tag', 'sort', 'agendaItem', 'responsibility'], 'number'],
-            [['status', 'proposalStatus', 'tag', 'title', 'initiator', 'agendaItem', 'responsibility', 'prefix'], 'safe'],
-        ];
-    }
-
-    /**
-     * @param array $values
-     * @param bool $safeOnly
-     */
-    public function setAttributes($values, $safeOnly = true)
-    {
-        parent::setAttributes($values, $safeOnly);
+        $this->title = $values['title'] ?? null;
+        $this->initiator = $values['initiator'] ?? null;
+        $this->prefix = $values['prefix'] ?? null;
         if (isset($values['sort'])) {
             $this->sort = intval($values['sort']);
         }
@@ -290,7 +268,7 @@ class AdminMotionFilterForm extends Model
      *
      * @return IMotion[]
      */
-    public function moveAmendmentsToMotions($entries): array
+    public function moveAmendmentsToMotions(array $entries): array
     {
         $foundMotions = [];
         foreach ($entries as $entry) {
@@ -430,7 +408,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @return Motion[]
      */
-    public function getFilteredMotions()
+    public function getFilteredMotions(): array
     {
         $out = [];
         foreach ($this->allMotions as $motion) {
@@ -537,7 +515,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @return Amendment[]
      */
-    public function getFilteredAmendments()
+    public function getFilteredAmendments(): array
     {
         $out = [];
         foreach ($this->allAmendments as $amend) {
@@ -632,7 +610,7 @@ class AdminMotionFilterForm extends Model
             $statusNames             = $this->consultation->getStatuses()->getStatusNames();
             $statuses[$this->status] = Html::encode($statusNames[$this->status] . ' (0)');
         }
-        $str .= Html::dropDownList('Search[status]', $this->status, $statuses, ['class' => 'stdDropdown']);
+        $str .= Html::dropDownList('Search[status]', (string)$this->status, $statuses, ['class' => 'stdDropdown']);
         $str .= '</label>';
 
 
@@ -665,7 +643,7 @@ class AdminMotionFilterForm extends Model
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
             }
-            $str .= Html::dropDownList('Search[tag]', $this->tag, $tags, ['id' => 'filterSelectTags', 'class' => 'stdDropdown']);
+            $str .= Html::dropDownList('Search[tag]', (string)$this->tag, $tags, ['id' => 'filterSelectTags', 'class' => 'stdDropdown']);
             $str .= '</label>';
         }
 
@@ -680,7 +658,7 @@ class AdminMotionFilterForm extends Model
             foreach ($agendaItemList as $itemId => $itemName) {
                 $items[$itemId] = $itemName;
             }
-            $str .= Html::dropDownList('Search[agendaItem]', $this->agendaItem, $items, ['class' => 'stdDropdown']);
+            $str .= Html::dropDownList('Search[agendaItem]', (string)$this->agendaItem, $items, ['class' => 'stdDropdown']);
             $str .= '</label>';
         }
 
@@ -696,7 +674,7 @@ class AdminMotionFilterForm extends Model
                 foreach ($allResponsibilities as $itemId => $itemName) {
                     $items[$itemId] = $itemName;
                 }
-                $str .= Html::dropDownList('Search[responsibility]', $this->responsibility, $items, ['class' => 'stdDropdown']);
+                $str .= Html::dropDownList('Search[responsibility]', (string)$this->responsibility, $items, ['class' => 'stdDropdown']);
                 $str .= '</label>';
             }
         }

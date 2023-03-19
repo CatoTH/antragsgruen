@@ -6,9 +6,8 @@ use app\models\db\{Amendment, ISupporter, Motion, MotionSection, MotionSupporter
 use app\models\events\MotionEvent;
 use app\models\exceptions\DB;
 use app\models\sectionTypes\ISectionType;
-use yii\base\Model;
 
-class MergeSingleAmendmentForm extends Model
+class MergeSingleAmendmentForm
 {
     public Motion $oldMotion;
     public ?Motion $newMotion = null;
@@ -30,7 +29,6 @@ class MergeSingleAmendmentForm extends Model
         array $otherAmendStatuses
     )
     {
-        parent::__construct();
         $this->newTitlePrefix = $newTitlePrefix;
         $this->newVersion = $newVersion;
         $this->oldMotion = $amendment->getMyMotion();

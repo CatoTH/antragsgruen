@@ -60,10 +60,12 @@ class IndexController extends AdminBase
                 if ($this->isPostSet('pwdProtected') && $this->isPostSet('consultationPassword')) {
                     if (trim($post['consultationPassword'])) {
                         $pwdTools = new ConsultationAccessPassword($model);
-                        $pwd = trim($post['consultationPassword']);
-                        $settings->accessPwd = password_hash($pwd, PASSWORD_DEFAULT);
-                        if ($post['otherConsultations'] === '1') {
-                            $pwdTools->setPwdForOtherConsultations($settings->accessPwd);
+                        $pwd = password_hash(trim($post['consultationPassword']), PASSWORD_DEFAULT);
+                        if ($pwd) {
+                            $settings->accessPwd = $pwd;
+                            if ($post['otherConsultations'] === '1') {
+                                $pwdTools->setPwdForOtherConsultations($settings->accessPwd);
+                            }
                         }
                     }
                 } else {
@@ -241,9 +243,7 @@ class IndexController extends AdminBase
 
         foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
             if (!in_array($tag->id, $foundTags)) {
-                \Yii::$app->db->createCommand('DELETE FROM `motionTag` WHERE `tagId` = ' . intval($tag->id))->execute();
-                \Yii::$app->db->createCommand('DELETE FROM `amendmentTag` WHERE `tagId` = ' . intval($tag->id))->execute();
-                $tag->delete();
+                $tag->deleteIncludeRelations();
             }
         }
 
@@ -348,7 +348,7 @@ class IndexController extends AdminBase
 
         if ($this->isPostSet('createConsultation')) {
             $newcon = $post['newConsultation'];
-            $form->setAttributes($newcon, true);
+            $form->setAttributes($newcon);
             if (preg_match('/^[\w_-]+$/i', $newcon['urlPath'])) {
                 $form->urlPath = $newcon['urlPath'];
             }

@@ -8,8 +8,7 @@ use app\models\settings\AntragsgruenApp;
 
 class MessageSource extends \yii\i18n\MessageSource
 {
-    public $basePath = '@app/messages';
-    public $fileMap;
+    public string $basePath = '@app/messages';
 
     public function init()
     {
@@ -77,22 +76,26 @@ class MessageSource extends \yii\i18n\MessageSource
 
     public static function getLanguageVariants(string $language): array
     {
-        $params        = AntragsgruenApp::getInstance();
-        $localMessages = $params->localMessages[$language] ?? [];
+        $localMessages = AntragsgruenApp::getInstance()->localMessages[$language] ?? [];
+
+        foreach (AntragsgruenApp::getInstance()->getPluginClasses() as $pluginId => $pluginClass) {
+            if (in_array($language, $pluginClass::getProvidedTranslations())) {
+                $localMessages[$language . '-' . $pluginId] = 'Plugin: ' . $pluginId;
+            }
+        }
+
         if ($language === 'de') {
             return array_merge([
                 'de-parteitag'       => 'Konferenz / Parteitag',
                 'de-bewerbung'       => 'Bewerbungsverfahren',
                 'de-programm'        => 'Programmdiskussion',
                 'de-bdk'             => 'BDK',
-                'de-neos'            => 'NEOS',
             ], $localMessages);
         }
         if ($language === 'en') {
             return array_merge([
                 'en-uk'       => 'English (UK)',
                 'en-congress' => 'Convention',
-                'en-egp' => 'EGP',
             ], $localMessages);
         }
         if ($language === 'fr') {
@@ -156,27 +159,25 @@ class MessageSource extends \yii\i18n\MessageSource
 
     /**
      * Returns message file path for the specified language and category.
-     *
-     * @param string $category the message category
-     * @param string $language the target language
-     * @return string path to message file
      */
     protected function getMessageFilePath(string $category, string $language): string
     {
         $messageFile = \Yii::getAlias($this->basePath) . "/$language/";
 
-        foreach (AntragsgruenApp::getActivePluginIds() as $pluginId) {
+        foreach (AntragsgruenApp::getInstance()->getPluginClasses() as $pluginId => $pluginClass) {
+            foreach ($pluginClass::getProvidedTranslations() as $pluginLang) {
+                if ($language === $pluginLang .'-' . $pluginId) {
+                    $messageFile = '@app/plugins/' . $pluginId . '/messages/' . $pluginLang . '/';
+                    $messageFile = \Yii::getAlias($messageFile);
+                }
+            }
             if ($category === $pluginId) {
                 $messageFile = '@app/plugins/' . $pluginId . '/messages/' . $language . '/';
                 $messageFile = \Yii::getAlias($messageFile);
             }
         }
 
-        if (isset($this->fileMap[$category])) {
-            $messageFile .= $this->fileMap[$category];
-        } else {
-            $messageFile .= str_replace('\\', '/', $category) . '.php';
-        }
+        $messageFile .= str_replace('\\', '/', $category) . '.php';
 
         return $messageFile;
     }

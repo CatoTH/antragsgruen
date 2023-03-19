@@ -17,9 +17,10 @@ $I->click('#contentPages');
 $I->dontSee('.editPage.help');
 $I->click('.createPage.help');
 $I->click('.editCaller');
-$I->wait(1);
+$I->wait(0.5);
 $I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<p>New text</p>");');
-$I->click('.submitBtn');
+$I->clickJS('.submitBtn');
+$I->wait(0.1);
 
 $I->wantTo('see the help page');
 $I->gotoConsultationHome();
@@ -30,7 +31,7 @@ $I->see('Hallo auf Antragsgrün');
 
 $I->wantTo('Edit the home page content');
 $I->executeJS('$(".contentPageWelcome").find(".editCaller").click();');
-$I->wait(2);
+$I->wait(1);
 $I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<b>Bold test</b>");');
 $I->executeJS('$(".contentPageWelcome").find(".textSaver button").click();');
 $I->wait(1);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\settings;
 
 class AgendaItem implements \JsonSerializable

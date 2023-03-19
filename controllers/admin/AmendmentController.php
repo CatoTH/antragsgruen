@@ -206,7 +206,7 @@ class AmendmentController extends AdminBase
             }
             $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
             $form->setAdminMode(true);
-            $form->setAttributes([$post, $_FILES]);
+            $form->setAttributes($post, $_FILES);
 
             $votingData = $amendment->getVotingData();
             $votingData->setFromPostData($post['votes']);
@@ -271,17 +271,6 @@ class AmendmentController extends AdminBase
             }
 
             $amendment->save();
-
-            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-                if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
-                    $amendment->unlink('tags', $tag, true);
-                } else {
-                    try {
-                        $amendment->link('tags', $tag);
-                    } catch (\Exception $e) {
-                    }
-                }
-            }
 
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
                 $this->saveAmendmentSupporters($amendment);
