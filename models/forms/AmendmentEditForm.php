@@ -12,12 +12,10 @@ use app\models\db\{Amendment,
     User};
 use app\components\RequestContext;
 use app\models\exceptions\FormError;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\sectionTypes\{ISectionType, TextSimple};
-use yii\base\Model;
 
-class AmendmentEditForm extends Model
+class AmendmentEditForm
 {
     public Motion $motion;
     public ?ConsultationAgendaItem $agendaItem;
@@ -35,7 +33,6 @@ class AmendmentEditForm extends Model
 
     public function __construct(Motion $motion, ?ConsultationAgendaItem $agendaItem, ?Amendment $amendment)
     {
-        parent::__construct();
         $this->motion = $motion;
         $this->agendaItem = $agendaItem;
         /** @var AmendmentSection[] $amendmentSections */
@@ -94,16 +91,6 @@ class AmendmentEditForm extends Model
         }
     }
 
-    public function rules(): array
-    {
-        return [
-            [['type'], 'required'],
-            [['id', 'type'], 'number'],
-            ['type', 'required', 'message' => \Yii::t('amend', 'err_type_missing')],
-            [['supporters', 'tags', 'type'], 'safe'],
-        ];
-    }
-
     public function setAdminMode(bool $set): void
     {
         $this->adminMode = $set;
@@ -139,15 +126,8 @@ class AmendmentEditForm extends Model
         }
     }
 
-    /**
-     * @param array $data
-     * @param bool $safeOnly
-     */
-    public function setAttributes($data, $safeOnly = true)
+    public function setAttributes(array $values, array $files)
     {
-        list($values, $files) = $data;
-        parent::setAttributes($values, $safeOnly);
-
         $consultation = $this->motion->getMyConsultation();
         if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($this->motion))) {
             foreach ($this->sections as $section) {
@@ -235,7 +215,7 @@ class AmendmentEditForm extends Model
 
         $amendment = new Amendment();
 
-        $this->setAttributes([RequestContext::getWebApplication()->request->post(), $_FILES]);
+        $this->setAttributes(RequestContext::getWebApplication()->request->post(), $_FILES);
         $this->supporters = $this->motion->motionType->getAmendmentSupportTypeClass()
             ->getAmendmentSupporters($amendment);
 

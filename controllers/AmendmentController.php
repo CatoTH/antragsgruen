@@ -292,7 +292,7 @@ class AmendmentController extends Base
 
         if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren(null);
-            $form->setAttributes([$this->getHttpRequest()->post(), $_FILES]);
+            $form->setAttributes($this->getHttpRequest()->post(), $_FILES);
             try {
                 $form->saveAmendment($amendment);
 

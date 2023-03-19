@@ -233,7 +233,7 @@ class MotionController extends Base
         if ($this->isPostSet('save')) {
             $post = $this->getHttpRequest()->post();
             $motion->flushCache(true);
-            $form->setAttributes([$post, $_FILES]);
+            $form->setAttributes($post, $_FILES);
             try {
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {

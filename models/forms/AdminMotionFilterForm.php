@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\forms;
 
 use app\components\{Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter};
-use yii\base\Model;
 use yii\helpers\Html;
 
-class AdminMotionFilterForm extends Model
+class AdminMotionFilterForm
 {
     public const SORT_STATUS = 1;
     public const SORT_TITLE = 2;
@@ -48,7 +49,6 @@ class AdminMotionFilterForm extends Model
      */
     public function __construct(Consultation $consultation, array $allMotions, bool $amendments, bool $showScreening)
     {
-        parent::__construct();
         $this->showScreening = $showScreening;
         $this->consultation  = $consultation;
         $this->allMotions    = [];
@@ -76,20 +76,11 @@ class AdminMotionFilterForm extends Model
         }
     }
 
-    public function rules(): array
+    public function setAttributes(array $values): void
     {
-        return [
-            [['title', 'initiator', 'prefix'], 'safe'],
-        ];
-    }
-
-    /**
-     * @param array $values
-     * @param bool $safeOnly
-     */
-    public function setAttributes($values, $safeOnly = true)
-    {
-        parent::setAttributes($values, $safeOnly);
+        $this->title = $values['title'] ?? null;
+        $this->initiator = $values['initiator'] ?? null;
+        $this->prefix = $values['prefix'] ?? null;
         if (isset($values['sort'])) {
             $this->sort = intval($values['sort']);
         }

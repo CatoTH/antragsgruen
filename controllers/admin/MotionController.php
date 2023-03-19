@@ -166,7 +166,7 @@ class MotionController extends AdminBase
             try {
                 $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
                 $form->setAdminMode(true);
-                $form->setAttributes([$post, $_FILES]);
+                $form->setAttributes($post, $_FILES);
 
                 $votingData = $motion->getVotingData();
                 $votingData->setFromPostData($post['votes']);

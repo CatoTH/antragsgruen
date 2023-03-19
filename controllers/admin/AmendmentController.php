@@ -206,7 +206,7 @@ class AmendmentController extends AdminBase
             }
             $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
             $form->setAdminMode(true);
-            $form->setAttributes([$post, $_FILES]);
+            $form->setAttributes($post, $_FILES);
 
             $votingData = $amendment->getVotingData();
             $votingData->setFromPostData($post['votes']);

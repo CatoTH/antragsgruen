@@ -1,22 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\forms;
 
 use app\components\{AntiSpam, RequestContext};
-use app\models\db\{Amendment,
-    AmendmentComment,
-    ConsultationMotionType,
-    IComment,
-    IMotion,
-    Motion,
-    MotionComment,
-    MotionSection,
-    User,
-    UserNotification};
+use app\models\db\{Amendment, AmendmentComment, ConsultationMotionType, IComment, IMotion, Motion, MotionComment, User, UserNotification};
 use app\models\exceptions\{Access, DB, FormError, Internal};
-use yii\base\Model;
 
-class CommentForm extends Model
+class CommentForm
 {
     public IMotion $imotion;
     public ConsultationMotionType $motionType;
@@ -33,12 +25,11 @@ class CommentForm extends Model
     public bool $notifications = false;
     public ?int $notificationsettings = null;
 
-    public function __construct(IMotion $imotion, ?IComment $replyTo, array $config = [])
+    public function __construct(IMotion $imotion, ?IComment $replyTo)
     {
         $this->imotion = $imotion;
         $this->motionType = $imotion->getMyMotionType();
         $this->replyTo    = $replyTo;
-        parent::__construct($config);
 
         if (User::getCurrentUser()) {
             $user         = User::getCurrentUser();
@@ -48,20 +39,7 @@ class CommentForm extends Model
         }
     }
 
-    public function rules(): array
-    {
-        return [
-            [['text', 'paragraphNo'], 'required'],
-            [['paragraphNo', 'sectionId'], 'number'],
-            [['text', 'name', 'email', 'paragraphNo'], 'safe'],
-        ];
-    }
-
-    /**
-     * @param array $values
-     * @param MotionSection[] $validSections
-     */
-    public function setAttributes($values, $validSections = [])
+    public function setAttributes(array $values, array $validSections = []): void
     {
         $this->sectionId = null;
         if (isset($values['sectionId']) && $values['sectionId'] > 0) {
@@ -74,9 +52,13 @@ class CommentForm extends Model
         if (isset($values['sectionId']) && intval($values['sectionId']) === -1) {
             $this->sectionId = -1;
         }
-        unset($values['sectionId']);
 
-        parent::setAttributes($values, true);
+        $this->text = $values['text'] ?? null;
+        $this->name = $values['name'] ?? null;
+        $this->email = $values['email'] ?? null;
+        $this->paragraphNo = isset($values['paragraphNo']) ? intval($values['paragraphNo']) : null;
+
+        unset($values['sectionId']);
 
         if (User::getCurrentUser()) {
             $user         = User::getCurrentUser();
@@ -119,7 +101,7 @@ class CommentForm extends Model
     private function checkWritePermissions(): void
     {
         if (RequestContext::getUser()->isGuest) {
-            $jsToken = AntiSpam::createToken($this->motionType->consultationId);
+            $jsToken = AntiSpam::createToken((string)$this->motionType->consultationId);
             if ($jsToken !== \Yii::$app->request->post('jsprotection')) {
                 throw new Access(\Yii::t('base', 'err_js_or_login'));
             }

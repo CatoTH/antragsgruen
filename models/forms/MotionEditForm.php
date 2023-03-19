@@ -3,8 +3,7 @@
 namespace app\models\forms;
 
 use app\components\RequestContext;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{ConsultationAgendaItem,
     ConsultationMotionType,
     ConsultationSettingsTag,
@@ -14,9 +13,8 @@ use app\models\db\{ConsultationAgendaItem,
     User};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
-use yii\base\Model;
 
-class MotionEditForm extends Model
+class MotionEditForm
 {
     public ConsultationMotionType $motionType;
     public ?ConsultationAgendaItem $agendaItem;
@@ -37,7 +35,6 @@ class MotionEditForm extends Model
 
     public function __construct(ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, ?Motion $motion)
     {
-        parent::__construct();
         $this->motionType = $motionType;
         $this->agendaItem = $agendaItem;
         $this->setSection($motion);
@@ -76,14 +73,6 @@ class MotionEditForm extends Model
         }
     }
 
-    public function rules(): array
-    {
-        return [
-            [['id', 'type'], 'number'],
-            [['supporters', 'tags'], 'safe'],
-        ];
-    }
-
     public function setAdminMode(bool $set): void
     {
         $this->adminMode = $set;
@@ -115,17 +104,9 @@ class MotionEditForm extends Model
         }
     }
 
-    /**
-     * @param array $data
-     * @param bool $safeOnly
-     * @throws FormError
-     */
-    public function setAttributes($data, $safeOnly = true)
+    public function setAttributes(array $values, array $files): void
     {
         $this->fileUploadErrors = [];
-
-        list($values, $files) = $data;
-        parent::setAttributes($values, $safeOnly);
 
         if (isset($values['agendaItem']) && $values['agendaItem']) {
             foreach ($this->motionType->agendaItems as $agendaItem) {
@@ -266,7 +247,7 @@ class MotionEditForm extends Model
 
         $motion = new Motion();
 
-        $this->setAttributes([RequestContext::getWebApplication()->request->post(), $_FILES]);
+        $this->setAttributes(RequestContext::getWebApplication()->request->post(), $_FILES);
         $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
 
         $this->createMotionVerify();
@@ -287,13 +268,8 @@ class MotionEditForm extends Model
             $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
 
             if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
-                foreach ($this->tags as $tagId) {
-                    /** @var ConsultationSettingsTag $tag */
-                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                    if ($tag) {
-                        $motion->link('tags', $tag);
-                    }
-                }
+                $tagIds = array_map(fn(ConsultationSettingsTag $tag): int => $tag->id, $this->tags);
+                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $tagIds);
             }
 
             foreach ($this->sections as $section) {
@@ -381,17 +357,8 @@ class MotionEditForm extends Model
             }
 
             if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags) {
-                // Tags
-                foreach ($motion->getPublicTopicTags() as $tag) {
-                    $motion->unlink('tags', $tag, true);
-                }
-                foreach ($this->tags as $tagId) {
-                    /** @var ConsultationSettingsTag $tag */
-                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
-                    if ($tag) {
-                        $motion->link('tags', $tag);
-                    }
-                }
+                $tagIds = array_map(fn(ConsultationSettingsTag $tag): int => $tag->id, $this->tags);
+                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $tagIds);
             }
 
             if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {

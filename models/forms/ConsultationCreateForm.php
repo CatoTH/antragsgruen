@@ -11,9 +11,8 @@ use app\models\db\ConsultationUserGroup;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
-use yii\base\Model;
 
-class ConsultationCreateForm extends Model
+class ConsultationCreateForm
 {
     private Site $site;
 
@@ -27,30 +26,18 @@ class ConsultationCreateForm extends Model
 
     public SiteCreateForm $siteCreateWizard;
 
-    public function __construct(Site $site, $config = [])
+    public function __construct(Site $site)
     {
-        parent::__construct($config);
         $this->site             = $site;
         $this->siteCreateWizard = new SiteCreateForm();
     }
 
-    public function rules(): array
+    public function setAttributes(array $values): void
     {
-        return [
-            [['urlPath', 'title', 'titleShort'], 'required'],
-            [['setAsDefault'], 'boolean'],
-            [['urlPath', 'title', 'titleShort', 'setAsDefault', 'settingsType'], 'safe'],
-        ];
-    }
-
-    /**
-     * @param array $values
-     * @param bool $safeOnly
-     */
-    public function setAttributes($values, $safeOnly = true)
-    {
-        parent::setAttributes($values, $safeOnly);
-
+        $this->urlPath = $values['urlPath'];
+        $this->title = $values['title'];
+        $this->titleShort = $values['titleShort'];
+        $this->settingsType = $values['settingsType'];
         $this->setAsDefault = isset($values['setStandard']);
     }
 

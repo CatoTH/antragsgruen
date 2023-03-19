@@ -4,10 +4,9 @@ namespace app\models\forms;
 
 use app\components\UrlHelper;
 use app\models\db\{Consultation, ConsultationLog};
-use yii\base\Model;
 use yii\helpers\Html;
 
-class ConsultationActivityFilterForm extends Model
+class ConsultationActivityFilterForm
 {
     private Consultation $consultation;
 
@@ -25,7 +24,6 @@ class ConsultationActivityFilterForm extends Model
 
     public function __construct(Consultation $consultation)
     {
-        parent::__construct();
         $this->consultation = $consultation;
     }
 
