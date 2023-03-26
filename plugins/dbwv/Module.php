@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace app\plugins\dbwv;
 
 use app\models\db\Consultation;
+use app\models\db\User;
 use app\models\settings\Layout;
 use app\models\settings\Privilege;
+use app\models\settings\PrivilegeQueryContext;
 use app\plugins\dbwv\workflow\Workflow;
 use app\plugins\ModuleBase;
 use yii\web\View;
@@ -14,7 +16,8 @@ use yii\web\View;
 class Module extends ModuleBase
 {
     public const PRIVILEGE_DBWV_V1_ASSIGN_TOPIC = -100;
-    public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -101;
+    public const PRIVILEGE_DBWV_V1_EDITORIAL = -101;
+    public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -102;
 
     public static function getProvidedTranslations(): array
     {
@@ -64,6 +67,13 @@ class Module extends ModuleBase
         );
 
         $origPrivileges[] = new Privilege(
+            self::PRIVILEGE_DBWV_V1_EDITORIAL,
+            'V1: Nummerierung und redaktionelle Änderungen',
+            true,
+            null
+        );
+
+        $origPrivileges[] = new Privilege(
             self::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
             'V4: Zur Hauptversammlung übertragen',
             true,
@@ -76,6 +86,7 @@ class Module extends ModuleBase
     protected static function getMotionUrlRoutes(): array
     {
         return [
+            'assign-main-tag'     => 'dbwv/admin-workflow/assign-main-tag',
             'workflow-step1-next' => 'dbwv/admin-workflow/step1next',
             'workflow-step2-edit' => 'dbwv/admin-workflow/step2edit',
             'workflow-step2-next' => 'dbwv/admin-workflow/step2next',
@@ -107,5 +118,18 @@ class Module extends ModuleBase
     public static function overridesDefaultLayout(): string
     {
         return 'layout-plugin-neos-std';
+    }
+
+    public static function canSeeFullMotionList(Consultation $consultation, User $user): ?bool
+    {
+        if (
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC, PrivilegeQueryContext::anyRestriction()) ||
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V1_EDITORIAL, PrivilegeQueryContext::anyRestriction()) ||
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN, PrivilegeQueryContext::anyRestriction())
+        ) {
+            return true;
+        }
+
+        return null;
     }
 }

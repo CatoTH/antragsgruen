@@ -7,12 +7,36 @@ use app\components\{Tools, ZipWriter};
 use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
 use app\models\forms\AdminMotionFilterForm;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, ResponseInterface};
-use app\models\settings\{PrivilegeQueryContext, Privileges};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 class MotionListController extends AdminBase
 {
+    public static function haveAccessToList(Consultation $consultation): bool
+    {
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+
+        $ctx = PrivilegeQueryContext::anyRestriction();
+        $privilegeScreening = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $ctx);
+        $privilegeProposal  = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, $ctx);
+        $privilegeDeleting  = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, $ctx);
+        $privilegeStatus    = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $ctx);
+        $privilege = ($privilegeScreening || $privilegeProposal || $privilegeDeleting || $privilegeStatus);
+
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $override = $plugin::canSeeFullMotionList($consultation, $user);
+            if ($override !== null) {
+                $privilege = $override;
+            }
+        }
+
+        return $privilege;
+    }
+
     /**
      * @throws Access|NotFound
      */
@@ -171,12 +195,12 @@ class MotionListController extends AdminBase
     public function actionIndex(?string $motionId = null): ResponseInterface
     {
         $consultation       = $this->consultation;
-        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
-        $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
-        $privilegeStatus    = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::anyRestriction());
-        if (!$privilegeScreening && !$privilegeProposals && !$privilegeStatus) {
+        if (!self::haveAccessToList($consultation)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
+
+        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
+        $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
 
         $this->activateFunctions();
 

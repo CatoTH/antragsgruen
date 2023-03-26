@@ -13,6 +13,7 @@ use yii\console\Controller;
 class SetupController extends Controller
 {
     private const GROUP_NAME_AL_RECHT = 'AL Recht';
+    private const GROUP_NAME_V1_REFERAT = 'Referat %NAME% (V1)';
 
     /** @var array{array{title: string, motionPrefix: string|null, position: int, themengebiete: array{array{title: string, position: int}}}}  */
     private const AGENDA_ITEMS_SACHGEBIETE = [
@@ -62,7 +63,7 @@ class SetupController extends Controller
     }
 
     /**
-     * Create necessary groups for a consultation
+     * Create necessary groups for a consultation. To be called after Tag creation.
      */
     public function actionUserGroups(string $urlPath): void
     {
@@ -77,9 +78,17 @@ class SetupController extends Controller
 
         $alRecht = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_AL_RECHT);
         $alRechtPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Module::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC . ']}]}';
-        $alRechtPermissions = UserGroupPermissions::fromDatabaseString($alRechtPrivileges, false);
-        $alRecht->setGroupPermissions($alRechtPermissions);
+        $alRecht->setGroupPermissions(UserGroupPermissions::fromDatabaseString($alRechtPrivileges, false));
         $alRecht->save();
+
+        foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V1_REFERAT);
+            $tag = ConsultationSettingsTag::findOne(['title' => $item['title'], 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
+            $group = $this->createUserGroupIfNotExists($consultation, $groupName);
+            $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Module::PRIVILEGE_DBWV_V1_EDITORIAL . ']}]}';
+            $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
+            $group->save();
+        }
 
         echo "Created the necessary user groups.\n";
     }
@@ -132,7 +141,7 @@ class SetupController extends Controller
     }
 
     /**
-     * Create necessary tags / "Sachgebiete" and "Themenbereiche" for a consultation
+     * Create necessary tags / "Sachgebiete" and "Themenbereiche" for a consultation. Call before user groups.
      */
     public function actionTags(string $urlPath): void
     {
@@ -219,6 +228,22 @@ class SetupController extends Controller
         $user = $this->createOrGetUserAccount('al-recht@example.org', 'Test', 'AL', 'Recht', 'DBwV');
         if (count($user->userGroups) === 0) {
             $alRechtGroup->addUser($user);
+        }
+
+        foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            if (!$item['motionPrefix']) {
+                continue;
+            }
+            $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V1_REFERAT);
+            $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
+            if (!$group) {
+                echo "Group $groupName not found\n";
+                return;
+            }
+            $user = $this->createOrGetUserAccount('referat-' . $item['motionPrefix'] . '@example.org', 'Test', 'Referat', $item['title'], 'DBwV');
+            if (count($user->userGroups) === 0) {
+                $group->addUser($user);
+            }
         }
 
         echo "Created the dummy accounts.\n";

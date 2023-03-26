@@ -24,7 +24,7 @@ echo Html::beginForm($submitUrl, 'POST', [
             <label class="proposalStatus4">
                 <input type="radio" name="proposalStatus" value="4"> Übernahme </label><br>
             <label class="proposalStatus10">
-                <input type="radio" name="proposalStatus" value="10"> Modifizierte Übernahme<br>
+                <input type="radio" name="proposalStatus" value="10"> <?= Html::encode(Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED')) ?><br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Vorgeschlagene Änderungen werden im nächsten Bildschirm angezeigt)
             </label><br>
 

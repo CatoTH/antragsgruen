@@ -85,6 +85,17 @@ class ModuleBase extends Module
     }
 
     /**
+     * Return values:
+     * - null does not change default behavior
+     * - true grants access, even if no access by default. (It does NOT however grant permissions to perform any actions)
+     * - false denies access, even if the user has access by default. (It does NOT remove the permissions to perform any actions in the motion administration)
+     */
+    public static function canSeeFullMotionList(Consultation $consultation, User $user): ?bool
+    {
+        return null;
+    }
+
+    /**
      * @phpstan-ignore-next-line
      * @return null|DefaultBehavior|string
      */

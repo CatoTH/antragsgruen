@@ -12,26 +12,20 @@ use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 class Step1
 {
-    public static function canAssignTopic(Motion $motion): bool
-    {
-        $ctx = PrivilegeQueryContext::motion($motion);
-        return $motion->getMyConsultation()->havePrivilege(Module::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC, $ctx);
-    }
-
     public static function renderMotionAdministration(Motion $motion): string
     {
-        if (!self::canAssignTopic($motion)) {
+        if (!Workflow::canMakeEditorialChangesV1($motion)) {
             return '';
         }
 
         return RequestContext::getController()->renderPartial(
-            '@app/plugins/dbwv/views/admin_step_1_next', ['motion' => $motion]
+            '@app/plugins/dbwv/views/admin_step_1_assign_number', ['motion' => $motion]
         );
     }
 
     public static function gotoNext(Motion $motion, array $postparams): void
     {
-        if (!self::canAssignTopic($motion)) {
+        if (!Workflow::canMakeEditorialChangesV1($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
         }
         if ($motion->version !== Workflow::STEP_V1) {
@@ -39,7 +33,7 @@ class Step1
         }
 
         $tag = $motion->getMyConsultation()->getTagById(intval($postparams['tag']));
-        if (!$tag || $tag->type !== ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) {
+        if (!$tag || $tag->type !== ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) {
             throw new NotFound('Tag not found');
         }
 
@@ -48,7 +42,7 @@ class Step1
         $motion->status = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
         $motion->save();
 
-        $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
+        $motion->setTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, [$tag->id]);
 
         if (isset($postparams['withChanges'])) {
             die("@TODO");

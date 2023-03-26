@@ -114,7 +114,7 @@ class LayoutHelper
     public static function addTagsRow(IMotion $imotion, array $selectedTags, array &$rows): void
     {
         $consultation = $imotion->getMyConsultation();
-        $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::imotion($imotion));
+        $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::imotion($imotion));
         if ($admin && count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) {
             $tags = [];
             $used_tag_ids = [];

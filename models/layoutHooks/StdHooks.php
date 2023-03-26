@@ -5,7 +5,7 @@ namespace app\models\layoutHooks;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
-use app\controllers\{admin\IndexController, Base, UserController};
+use app\controllers\{admin\IndexController, admin\MotionListController, Base, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
 use app\models\settings\AntragsgruenApp;
@@ -269,10 +269,6 @@ class StdHooks extends Hooks
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $consultation       = Consultation::getCurrent();
-            $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
-            $privilegeProposal  = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
-            $privilegeDeleting  = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::anyRestriction());
-            $privilegeStatus    = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::anyRestriction());
 
             if ($consultation) {
                 if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
@@ -295,12 +291,12 @@ class StdHooks extends Hooks
                 }
             }
 
-            if ($privilegeScreening || $privilegeProposal || $privilegeDeleting || $privilegeStatus) {
+            if (MotionListController::haveAccessToList($consultation)) {
                 $adminUrl   = UrlHelper::createUrl('/admin/motion-list/index');
                 $adminTitle = \Yii::t('base', 'menu_motion_list');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
             }
-            if ($privilegeScreening) {
+            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction())) {
                 $todo = AdminTodoItem::getConsultationTodos($consultation);
                 if (count($todo) > 0) {
                     $adminUrl   = UrlHelper::createUrl('/admin/index/todo');

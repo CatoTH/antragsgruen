@@ -11,23 +11,17 @@ use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 class Step2
 {
-    public static function canSetRecommendation(Motion $motion): bool
-    {
-        $ctx = PrivilegeQueryContext::motion($motion);
-        return $motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CHANGE_PROPOSALS, $ctx);
-    }
-
     public static function renderMotionAdministration(Motion $motion): string
     {
         $html = '';
 
-        if (Step1::canAssignTopic($motion)) {
+        if (Workflow::canMakeEditorialChangesV1($motion)) {
             $html .= RequestContext::getController()->renderPartial(
-                '@app/plugins/dbwv/views/admin_step_2_edit', ['motion' => $motion]
+                '@app/plugins/dbwv/views/admin_step_1_assign_number', ['motion' => $motion]
             );
         }
 
-        if (self::canSetRecommendation($motion)) {
+        if (Workflow::canSetRecommendationV2($motion)) {
             $html .= RequestContext::getController()->renderPartial(
                 '@app/plugins/dbwv/views/admin_step_2_next', ['motion' => $motion]
             );
@@ -38,7 +32,7 @@ class Step2
 
     public static function gotoNext(Motion $motion, array $postparams): void
     {
-        if (!self::canSetRecommendation($motion)) {
+        if (!Workflow::canSetRecommendationV2($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
         }
         if ($motion->version !== Workflow::STEP_V2) {
@@ -51,7 +45,7 @@ class Step2
 
     public static function edit(Motion $motion, array $postparams): void
     {
-        if (!Step1::canAssignTopic($motion)) {
+        if (!Workflow::canMakeEditorialChangesV1($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
         }
         if ($motion->version !== Workflow::STEP_V2) {

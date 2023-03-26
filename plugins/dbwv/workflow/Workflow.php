@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
+use app\models\db\Motion;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
+use app\plugins\dbwv\Module;
+
 class Workflow
 {
     public const STEP_V1 = '1';
@@ -45,5 +50,45 @@ class Workflow
             default:
                 return 'Unknown';
         }
+    }
+
+    public static function canAssignTopicV1(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->havePrivilege(
+            Module::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC,
+            PrivilegeQueryContext::motion($motion)
+        );
+    }
+
+    public static function canMakeEditorialChangesV1(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->havePrivilege(
+            Module::PRIVILEGE_DBWV_V1_EDITORIAL,
+            PrivilegeQueryContext::motion($motion)
+        );
+    }
+
+    public static function canSetRecommendationV2(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->havePrivilege(
+            Privileges::PRIVILEGE_CHANGE_PROPOSALS,
+            PrivilegeQueryContext::motion($motion)
+        );
+    }
+
+    public static function canSetResolutionV3(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->havePrivilege(
+            Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
+            PrivilegeQueryContext::motion($motion)
+        );
+    }
+
+    public static function canMoveToMainV4(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->havePrivilege(
+            Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
+            PrivilegeQueryContext::motion($motion)
+        );
     }
 }

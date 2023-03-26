@@ -12,4 +12,6 @@ Setup Notes
 Demo Accounts:
 - antragsberechtigt-0@example.org - antragsberechtigt-9@example.org
 - delegiert-0@example.org - delegiert-49@example.org
+- al-recht@example.org
+- referat-S@example.org (Satzung), referat-U@example.org (Umwelt)
 - Passwort: Test
