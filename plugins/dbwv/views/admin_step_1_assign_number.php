@@ -36,7 +36,7 @@ if (!$motion->titlePrefix) {
     <div class="holder">
         <div>
             <div style="padding: 10px; clear:both;">
-                <label for="dbwv_step1_tagSelect" style="display: inline-block; width: 200px;">
+                <label for="dbwv_step1_subtagSelect" style="display: inline-block; width: 200px;">
                     Themenbereich:
                 </label>
                 <div style="display: inline-block; width: 400px;">
@@ -84,20 +84,3 @@ if (!$motion->titlePrefix) {
     </div>
 <?php
 echo Html::endForm();
-
-$proposeUrl = UrlHelper::createUrl([
-    '/dbwv/ajax-helper/propose-title-prefix',
-    'motionTypeId' => $motion->motionTypeId,
-]);
-?>
-<script>
-    const proposePrefixUrlTmpl = <?= json_encode($proposeUrl) ?>;
-    $(function() {
-        $("#dbwv_step1_tagSelect").on("change", function() {
-            const proposePrefixUrl = proposePrefixUrlTmpl.replace(/TAGID/, $(this).val());
-            $.get(proposePrefixUrl, function(data) {
-                $("#dbwv_step1_prefix").val(data['prefix']);
-            });
-        }).trigger("change");
-    });
-</script>

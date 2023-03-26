@@ -5,9 +5,11 @@ namespace app\plugins;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\models\db\{Amendment, Consultation, Motion, Site, User, Vote, VotingBlock};
 use app\components\LoginProviderInterface;
+use app\models\amendmentNumbering\IAmendmentNumbering;
+use app\models\http\ResponseInterface;
 use app\models\layoutHooks\Hooks;
+use app\models\policies\IPolicy;
 use app\models\settings\{IMotionStatus, Layout, Privilege, VotingData};
-use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\base\{Action, Module};
 use yii\web\{AssetBundle, Controller, View};
 
@@ -70,6 +72,9 @@ class ModuleBase extends Module
         return $urls;
     }
 
+    /**
+     * Return value needs to be a class name extending from \app\models\settings\Permissions
+     */
     public static function getPermissionsClass(): ?string
     {
         return null;
@@ -85,6 +90,14 @@ class ModuleBase extends Module
     }
 
     /**
+     * @return string[]|IPolicy[]
+     */
+    public static function getCustomPolicies(): array
+    {
+        return [];
+    }
+
+    /**
      * Return values:
      * - null does not change default behavior
      * - true grants access, even if no access by default. (It does NOT however grant permissions to perform any actions)
@@ -95,11 +108,22 @@ class ModuleBase extends Module
         return null;
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     * @return null|DefaultBehavior|string
-     */
-    public static function getSiteSpecificBehavior(Site $site): ?string
+    public static function preferConsultationSpecificHomeLink(): bool
+    {
+        return false;
+    }
+
+    public static function siteHomeIsAlwaysPublic(): bool
+    {
+        return false;
+    }
+
+    public static function hasSiteHomePage(): bool
+    {
+        return false;
+    }
+
+    public static function getSiteHomePage(): ?ResponseInterface
     {
         return null;
     }
@@ -244,6 +268,19 @@ class ModuleBase extends Module
     }
 
     public static function getMotionVersions(Consultation $consultation): ?array
+    {
+        return null;
+    }
+
+    /**
+     * @return string[]|IAmendmentNumbering[]
+     */
+    public static function getCustomAmendmentNumberings(): array
+    {
+        return [];
+    }
+
+    public static function getConsultationHomePage(Consultation $consultation): ?ResponseInterface
     {
         return null;
     }

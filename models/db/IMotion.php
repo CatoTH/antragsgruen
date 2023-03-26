@@ -2,19 +2,19 @@
 
 namespace app\models\db;
 
-use app\models\quorumType\IQuorumType;
-use app\models\settings\AntragsgruenApp;
+use app\components\{Tools, UrlHelper};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
-use app\models\siteSpecificBehavior\Permissions;
-use app\models\votings\VotingItemGroup;
-use app\components\{Tools, UrlHelper};
+use app\models\quorumType\IQuorumType;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\MotionSection as MotionSectionSettings;
+use app\models\settings\AntragsgruenApp;
+use app\models\settings\Permissions;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\models\supportTypes\SupportBase;
+use app\models\votings\VotingItemGroup;
 use app\views\consultation\LayoutHelper;
 use yii\base\InvalidConfigException;
 use yii\db\{ActiveQueryInterface, ActiveRecord};
@@ -173,7 +173,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $permissions = $plugin::getPermissionsClass();
             if ($permissions) {
-                return new $permissions();
+                /** @var Permissions $permissionObj */
+                $permissionObj = new $permissions();
+                return $permissionObj;
             }
         }
 

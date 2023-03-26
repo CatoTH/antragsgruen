@@ -2,6 +2,9 @@
 
 namespace app\plugins\neos;
 
+use app\components\RequestContext;
+use app\controllers\Base;
+use app\models\http\HtmlResponse;
 use app\models\db\{Consultation, Site};
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
@@ -45,14 +48,6 @@ class Module extends ModuleBase
         return ConsultationSettings::class;
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getSiteSpecificBehavior(Site $site): string
-    {
-        return SiteSpecificBehavior::class;
-    }
-
     public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array
     {
         return [
@@ -71,5 +66,25 @@ class Module extends ModuleBase
             'image/png',
             \Yii::$app->basePath . '/plugins/neos/assets/neos-antragsschmiede.png'
         ];
+    }
+
+    public static function hasSiteHomePage(): bool
+    {
+        return true;
+    }
+
+    public static function getSiteHomePage(): ?HtmlResponse
+    {
+        return new HtmlResponse(RequestContext::getController()->renderContentPage('MV-Seiten'));
+    }
+
+    public static function preferConsultationSpecificHomeLink(): bool
+    {
+        return true;
+    }
+
+    public static function siteHomeIsAlwaysPublic(): bool
+    {
+        return true;
     }
 }

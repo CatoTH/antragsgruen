@@ -153,9 +153,17 @@ class UrlHelper
     public static function homeUrl(): ?string
     {
         if (self::$currentConsultation) {
-            $consultation       = self::$currentConsultation;
-            $homeOverride       = $consultation->site->getBehaviorClass()->hasSiteHomePage();
-            $preferConsultation = $consultation->site->getBehaviorClass()->preferConsultationSpecificHomeLink();
+            $consultation = self::$currentConsultation;
+            $homeOverride = false;
+            $preferConsultation = false;
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                if ($plugin::hasSiteHomePage()) {
+                    $homeOverride = true;
+                }
+                if ($plugin::preferConsultationSpecificHomeLink()) {
+                    $preferConsultation = true;
+                }
+            }
             if ($preferConsultation) {
                 $homeUrl = self::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
             } elseif ($consultation->site->currentConsultationId === $consultation->id || $homeOverride) {

@@ -4,6 +4,9 @@ namespace app\plugins\egp;
 
 use app\components\UrlHelper;
 use app\models\db\{AmendmentSupporter, Consultation, Motion, MotionSupporter, Site};
+use app\models\amendmentNumbering\IAmendmentNumbering;
+use app\models\http\RedirectResponse;
+use app\models\http\ResponseInterface;
 use app\models\settings\IMotionStatus;
 use app\plugins\egp\pdf\Egp;
 use app\plugins\ModuleBase;
@@ -25,14 +28,25 @@ class Module extends ModuleBase
         return Permissions::class;
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     * @return SiteSpecificBehavior|string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getSiteSpecificBehavior(Site $site): string
+    public static function getConsultationHomePage(Consultation $consultation): ?ResponseInterface
     {
-        return SiteSpecificBehavior::class;
+        /** @var ConsultationSettings $settings */
+        $settings = $consultation->getSettings();
+        if ($settings->homeRedirectUrl) {
+            return new RedirectResponse($settings->homeRedirectUrl);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return string[]|IAmendmentNumbering[]
+     */
+    public static function getCustomAmendmentNumberings(): array
+    {
+        return [
+            EgpAmendmentNumbering::class,
+        ];
     }
 
     public static function getProvidedLayouts(?View $view = null): array
