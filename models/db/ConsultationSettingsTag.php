@@ -35,6 +35,16 @@ class ConsultationSettingsTag extends ActiveRecord
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
+    public function getMyConsultation(): ?Consultation
+    {
+        $current = Consultation::getCurrent();
+        if ($current && $current->id === $this->consultationId) {
+            return $current;
+        } else {
+            return Consultation::findOne($this->consultationId);
+        }
+    }
+
     public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['id' => 'motionId'])->viaTable('motionTag', ['tagId' => 'id'])
@@ -60,10 +70,13 @@ class ConsultationSettingsTag extends ActiveRecord
     /**
      * @return ConsultationSettingsTag[]
      */
-    public static function getTagsByParent(Consultation $consultation, ?int $parentTagId): array
+    public function getSubtagsOfType(int $type): array
     {
-        return array_values(array_filter($consultation->tags, function (ConsultationSettingsTag $tag) use ($parentTagId): bool {
-            return $tag->parentTagId === $parentTagId;
+        return array_values(array_filter($this->getMyConsultation()->tags, function (ConsultationSettingsTag $tag) use ($type): bool {
+            if ($tag->type !== $type) {
+                return false;
+            }
+            return $tag->parentTagId === $this->id;
         }));
     }
 

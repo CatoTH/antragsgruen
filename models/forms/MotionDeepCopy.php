@@ -17,7 +17,14 @@ use app\models\db\{Amendment,
 
 class MotionDeepCopy
 {
-    public static function copyMotion(Motion $motion, ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, string $newPrefix): Motion
+    public static function copyMotion(
+        Motion $motion,
+        ConsultationMotionType $motionType,
+        ?ConsultationAgendaItem $agendaItem,
+        string $newPrefix,
+        string $newVersion,
+        bool $linkMotions
+    ): Motion
     {
         $newConsultation = $motionType->getConsultation();
         $slug = $motion->slug;
@@ -35,6 +42,12 @@ class MotionDeepCopy
         $newMotion->consultationId = $newConsultation->id;
         $newMotion->cache          = '';
         $newMotion->slug           = $slug;
+        $newMotion->version        = $newVersion;
+
+        if ($linkMotions) {
+            $newMotion->parentMotionId = $motion->id;
+        }
+
         $newMotion->save();
 
         self::copyTags($motion, $newMotion);

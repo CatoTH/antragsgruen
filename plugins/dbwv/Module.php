@@ -87,11 +87,10 @@ class Module extends ModuleBase
     {
         return [
             'assign-main-tag'     => 'dbwv/admin-workflow/assign-main-tag',
-            'workflow-step1-next' => 'dbwv/admin-workflow/step1next',
-            'workflow-step2-edit' => 'dbwv/admin-workflow/step2edit',
-            'workflow-step2-next' => 'dbwv/admin-workflow/step2next',
-            'workflow-step3-next' => 'dbwv/admin-workflow/step3next',
-            'workflow-step4-next' => 'dbwv/admin-workflow/step4next',
+            'workflow-step1-assign-number' => 'dbwv/admin-workflow/step1-assign-number',
+            'workflow-step2' => 'dbwv/admin-workflow/step2',
+            'workflow-step3' => 'dbwv/admin-workflow/step3',
+            'workflow-step4' => 'dbwv/admin-workflow/step4',
         ];
     }
 

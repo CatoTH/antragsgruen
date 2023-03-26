@@ -36,35 +36,21 @@ class AdminWorkflowController extends Base
         return new RedirectResponse(UrlHelper::createMotionUrl($motion));
     }
 
-    public function actionStep1next(string $motionSlug): ResponseInterface
+    public function actionStep1AssignNumber(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             return new HtmlErrorResponse(404,  'Motion not found');
         }
 
-        Step1::gotoNext($motion, $this->getPostValues());
+        $newMotion = Step1::saveEditorial($motion, $this->getPostValues());
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
-        return new RedirectResponse(UrlHelper::createMotionUrl($motion));
+        return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
     }
 
-    public function actionStep2edit(string $motionSlug): ResponseInterface
-    {
-        $motion = $this->consultation->getMotion($motionSlug);
-        if (!$motion) {
-            return new HtmlErrorResponse(404,  'Motion not found');
-        }
-
-        Step2::edit($motion, $this->getPostValues());
-
-        $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
-
-        return new RedirectResponse(UrlHelper::createMotionUrl($motion));
-    }
-
-    public function actionStep2next(string $motionSlug): ResponseInterface
+    public function actionStep2(string $motionSlug): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
