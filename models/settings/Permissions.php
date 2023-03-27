@@ -1,10 +1,8 @@
 <?php
 
-namespace app\models\siteSpecificBehavior;
+namespace app\models\settings;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, IMotion, ISupporter, User, Motion};
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, User};
 use app\models\exceptions\{Internal, NotAmendable};
 use app\models\policies\{All, IPolicy};
 use app\models\supportTypes\SupportBase;
@@ -50,6 +48,11 @@ class Permissions
         return false;
     }
 
+    public function motionCanEditInitiators(Motion $motion): bool
+    {
+        return $this->motionCanEditText($motion);
+    }
+
     /**
      * Default rules for editing text:
      * - In the draft state (before the document is submitted), rather permissive policies apply. See below.
@@ -76,6 +79,11 @@ class Permissions
         }
 
         return false;
+    }
+
+    public function amendmentCanEditInitiators(Amendment $amendment): bool
+    {
+        return $this->amendmentCanEditText($amendment);
     }
 
     /**

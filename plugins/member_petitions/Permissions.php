@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\plugins\member_petitions;
 
-use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, User};
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 
-class Permissions extends \app\models\siteSpecificBehavior\Permissions
+class Permissions extends \app\models\settings\Permissions
 {
     /**
      * @throws \Exception

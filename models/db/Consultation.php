@@ -517,11 +517,15 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * Hint: $parentTagId === null => all tags are returned (not only root-level)
      * @return ConsultationSettingsTag[]
      */
-    public function getSortedTags(int $type): array
+    public function getSortedTags(int $type, ?int $parentTagId = null): array
     {
-        $tags = array_filter($this->tags, function(ConsultationSettingsTag $tag) use ($type): bool {
+        $tags = array_filter($this->tags, function(ConsultationSettingsTag $tag) use ($type, $parentTagId): bool {
+            if ($parentTagId && $tag->parentTagId !== $parentTagId) {
+                return false;
+            }
             return $tag->type === $type;
         });
         usort($tags, function (ConsultationSettingsTag $tag1, ConsultationSettingsTag $tag2): int {

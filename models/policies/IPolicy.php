@@ -35,9 +35,8 @@ abstract class IPolicy
             $policies[self::POLICY_GRUENES_NETZ] = GruenesNetz::class;
         }
 
-        $site = UrlHelper::getCurrentSite();
-        if ($site) {
-            foreach ($site->getBehaviorClass()->getCustomPolicies() as $policy) {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            foreach ($plugin::getCustomPolicies() as $policy) {
                 $policies[$policy::getPolicyID()] = $policy;
             }
         }

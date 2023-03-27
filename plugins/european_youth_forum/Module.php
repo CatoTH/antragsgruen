@@ -16,14 +16,6 @@ class Module extends ModuleBase
         ];
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getSiteSpecificBehavior(Site $site): string
-    {
-        return SiteSpecificBehavior::class;
-    }
-
     public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
         $urls = parent::getAllUrlRoutes($urls, $dom, $dommotion, $dommotionOld, $domamend, $domamendOld);

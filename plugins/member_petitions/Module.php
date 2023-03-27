@@ -2,9 +2,11 @@
 
 namespace app\plugins\member_petitions;
 
-use app\models\db\{Consultation, Motion, Site};
+use app\components\RequestContext;
+use app\models\http\HtmlResponse;
+use app\models\policies\IPolicy;
+use app\models\db\{Consultation, Motion};
 use app\models\settings\Layout;
-use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
 use yii\base\Event;
 use yii\web\Controller;
@@ -43,11 +45,13 @@ class Module extends ModuleBase
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return string[]|IPolicy[]
      */
-    public static function getSiteSpecificBehavior(Site $site): string
+    public static function getCustomPolicies(): array
     {
-        return SiteSpecificBehavior::class;
+        return [
+            MotionPolicy::class,
+        ];
     }
 
     /**
@@ -70,5 +74,15 @@ class Module extends ModuleBase
         return [
             new LayoutHooks($layoutSettings, $consultation)
         ];
+    }
+
+    public static function hasSiteHomePage(): bool
+    {
+        return true;
+    }
+
+    public static function getSiteHomePage(): HtmlResponse
+    {
+        return new HtmlResponse(RequestContext::getController()->render('@app/plugins/member_petitions/views/index'));
     }
 }

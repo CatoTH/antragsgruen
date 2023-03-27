@@ -133,12 +133,16 @@ class MotionMover
 
     private function copyToAgendaItem(ConsultationAgendaItem $agendaItem, string $titlePrefix, bool $markAsMoved): Motion
     {
-        $newMotion = MotionDeepCopy::copyMotion($this->motion, $this->motion->getMyMotionType(), $agendaItem, $titlePrefix);
+        $newMotion = MotionDeepCopy::copyMotion(
+            $this->motion,
+            $this->motion->getMyMotionType(),
+            $agendaItem,
+            $titlePrefix,
+            Motion::VERSION_DEFAULT,
+            $markAsMoved
+        );
 
         if ($markAsMoved) {
-            $newMotion->parentMotionId = $this->motion->id;
-            $newMotion->save();
-
             $this->motion->status = IMotion::STATUS_MOVED;
             $this->motion->save();
         }
@@ -158,12 +162,9 @@ class MotionMover
 
     private function copyToConsultation(ConsultationMotionType $motionType, string $titlePrefix, bool $markAsMoved): Motion
     {
-        $newMotion = MotionDeepCopy::copyMotion($this->motion, $motionType, null, $titlePrefix);
+        $newMotion = MotionDeepCopy::copyMotion($this->motion, $motionType, null, $titlePrefix, Motion::VERSION_DEFAULT, $markAsMoved);
 
         if ($markAsMoved) {
-            $newMotion->parentMotionId = $this->motion->id;
-            $newMotion->save();
-
             $this->motion->status = IMotion::STATUS_MOVED;
             $this->motion->save();
         }

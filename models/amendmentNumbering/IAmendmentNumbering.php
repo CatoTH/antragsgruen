@@ -3,6 +3,7 @@
 namespace app\models\amendmentNumbering;
 
 use app\components\UrlHelper;
+use app\models\settings\AntragsgruenApp;
 use app\models\db\{Motion, Amendment};
 
 abstract class IAmendmentNumbering
@@ -19,9 +20,8 @@ abstract class IAmendmentNumbering
             3 => PerMotionEnglish::class,
         ];
 
-        $site = UrlHelper::getCurrentSite();
-        if ($site) {
-            foreach ($site->getBehaviorClass()->getCustomAmendmentNumberings() as $numbering) {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            foreach ($plugin::getCustomAmendmentNumberings() as $numbering) {
                 $numberings[$numbering::getID()] = $numbering;
             }
         }

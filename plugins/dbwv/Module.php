@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
-use app\models\db\Consultation;
-use app\models\settings\Layout;
+use app\models\db\{Consultation, User};
+use app\models\settings\{Layout, Privilege, PrivilegeQueryContext};
 use app\plugins\dbwv\workflow\Workflow;
 use app\plugins\ModuleBase;
+use yii\web\View;
 
 class Module extends ModuleBase
 {
+    public const PRIVILEGE_DBWV_V1_ASSIGN_TOPIC = -100;
+    public const PRIVILEGE_DBWV_V1_EDITORIAL = -101;
+    public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -102;
+
     public static function getProvidedTranslations(): array
     {
         return ['de'];
@@ -45,14 +50,49 @@ class Module extends ModuleBase
         ];
     }
 
+    /**
+     * @param Privilege[] $origPrivileges
+     * @return Privilege[]
+     */
+    public static function addCustomPrivileges(Consultation $consultation, array $origPrivileges): array
+    {
+        $origPrivileges[] = new Privilege(
+            self::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC,
+            'V1: Sachgebiete zuordnen',
+            true,
+            null
+        );
+
+        $origPrivileges[] = new Privilege(
+            self::PRIVILEGE_DBWV_V1_EDITORIAL,
+            'V1: Nummerierung und redaktionelle Änderungen',
+            true,
+            null
+        );
+
+        $origPrivileges[] = new Privilege(
+            self::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
+            'V4: Zur Hauptversammlung übertragen',
+            true,
+            null
+        );
+
+        return $origPrivileges;
+    }
+
+    public static function getPermissionsClass(): ?string
+    {
+        return Permissions::class;
+    }
+
     protected static function getMotionUrlRoutes(): array
     {
         return [
-            'workflow-step1-next' => 'dbwv/admin-workflow/step1next',
-            'workflow-step2-edit' => 'dbwv/admin-workflow/step2edit',
-            'workflow-step2-next' => 'dbwv/admin-workflow/step2next',
-            'workflow-step3-next' => 'dbwv/admin-workflow/step3next',
-            'workflow-step4-next' => 'dbwv/admin-workflow/step4next',
+            'assign-main-tag'     => 'dbwv/admin-workflow/assign-main-tag',
+            'workflow-step1-assign-number' => 'dbwv/admin-workflow/step1-assign-number',
+            'workflow-step2' => 'dbwv/admin-workflow/step2',
+            'workflow-step3' => 'dbwv/admin-workflow/step3',
+            'workflow-step4' => 'dbwv/admin-workflow/step4',
         ];
     }
 
@@ -63,5 +103,34 @@ class Module extends ModuleBase
         $urls[$dom . '<consultationPath:[\w_-]+>/dbwv/propose-title-prefix'] = '/dbwv/ajax-helper/propose-title-prefix';
 
         return $urls;
+    }
+
+    public static function getProvidedLayouts(?View $view = null): array
+    {
+        return [
+            'std' => [
+                'title'   => 'DBwV',
+                'preview' => null,
+                'bundle'  => Assets::class,
+            ]
+        ];
+    }
+
+    public static function overridesDefaultLayout(): string
+    {
+        return 'layout-plugin-neos-std';
+    }
+
+    public static function canSeeFullMotionList(Consultation $consultation, User $user): ?bool
+    {
+        if (
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC, PrivilegeQueryContext::anyRestriction()) ||
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V1_EDITORIAL, PrivilegeQueryContext::anyRestriction()) ||
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN, PrivilegeQueryContext::anyRestriction())
+        ) {
+            return true;
+        }
+
+        return null;
     }
 }

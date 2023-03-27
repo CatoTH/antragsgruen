@@ -7,17 +7,11 @@ namespace app\plugins\dbwv\workflow;
 use app\components\RequestContext;
 use app\models\db\Motion;
 use app\models\exceptions\Access;
+use app\plugins\dbwv\Module;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 class Step4
 {
-    public static function canMoveToMain(Motion $motion): bool
-    {
-        // @TODO Restrict to admins
-        $ctx = PrivilegeQueryContext::motion($motion);
-        return $motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $ctx);
-    }
-
     public static function renderMotionAdministration(Motion $motion): string
     {
         $html = '';
@@ -30,7 +24,7 @@ class Step4
         }
         */
 
-        if (self::canMoveToMain($motion)) {
+        if (Workflow::canMoveToMainV4($motion)) {
             $html .= RequestContext::getController()->renderPartial(
                 '@app/plugins/dbwv/views/admin_step_4_next', ['motion' => $motion]
             );
@@ -41,7 +35,7 @@ class Step4
 
     public static function gotoNext(Motion $motion, array $postparams): void
     {
-        if (!self::canMoveToMain($motion)) {
+        if (!Workflow::canMoveToMainV4($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
         }
         if ($motion->version !== Workflow::STEP_V4) {

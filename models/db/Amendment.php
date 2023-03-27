@@ -675,6 +675,11 @@ class Amendment extends IMotion implements IRSSItem
         return $this->getPermissionsObject()->amendmentCanEditText($this);
     }
 
+    public function canEditInitiators(): bool
+    {
+        return $this->getPermissionsObject()->amendmentCanEditInitiators($this);
+    }
+
     public function canWithdraw(): bool
     {
         return $this->getPermissionsObject()->iMotionCanWithdraw($this);

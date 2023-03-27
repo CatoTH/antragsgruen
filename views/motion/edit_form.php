@@ -121,8 +121,10 @@ foreach ($form->sections as $section) {
 echo '</div>';
 
 
-$initiatorClass = $form->motionType->getMotionSupportTypeClass();
-echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
+if ($form->getAllowEditinginitiators()) {
+    $initiatorClass = $form->motionType->getMotionSupportTypeClass();
+    echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
+}
 
 if ($isAmendmentsOnly) {
     $backUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $form->motionType->id]);

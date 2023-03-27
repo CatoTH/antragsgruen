@@ -178,7 +178,7 @@ class MotionController extends Base
 
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
-        if (!$motion->canEdit()) {
+        if (!$motion->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
@@ -221,13 +221,16 @@ class MotionController extends Base
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (!$motion->canEdit()) {
+        if (!$motion->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
-        $form     = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
+        $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
+        if (!$motion->canEditInitiators()) {
+            $form->setAllowEditingInitiators(false);
+        }
         $fromMode = ($motion->status === Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if ($this->isPostSet('save')) {

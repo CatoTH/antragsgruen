@@ -4,9 +4,7 @@ namespace app\models\db;
 
 use app\components\Tools;
 use app\models\settings\AntragsgruenApp;
-use app\models\siteSpecificBehavior\DefaultBehavior;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -147,27 +145,10 @@ class Site extends ActiveRecord
         return $group;
     }
 
-    public function getBehaviorClass(): DefaultBehavior
-    {
-        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
-            $behavior = $pluginClass::getSiteSpecificBehavior($this);
-            if ($behavior) {
-                return new $behavior();
-            }
-        }
-
-        $params = AntragsgruenApp::getInstance();
-        if (isset($params->siteBehaviorClasses[$this->id])) {
-            return new $params->siteBehaviorClasses[$this->id]();
-        }
-
-        return new DefaultBehavior();
-    }
-
     public function setDeleted(): void
     {
-        $this->status       = static::STATUS_DELETED;
-        $this->subdomain    = null;
+        $this->status = self::STATUS_DELETED;
+        $this->subdomain = null;
         $this->dateDeletion = date('Y-m-d H:i:s');
         $this->save(false);
 

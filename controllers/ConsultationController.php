@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\settings\AntragsgruenApp;
 use app\models\settings\Privileges;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
@@ -37,8 +38,10 @@ class ConsultationController extends Base
     public function beforeAction($action): bool
     {
         if ($action->id === 'home') {
-            if ($this->site && $this->site->getBehaviorClass()->siteHomeIsAlwaysPublic()) {
-                $this->allowNotLoggedIn = true;
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                if ($plugin::siteHomeIsAlwaysPublic()) {
+                    $this->allowNotLoggedIn = true;
+                }
             }
         }
 
@@ -270,18 +273,22 @@ class ConsultationController extends Base
 
     public function actionHome(): ResponseInterface
     {
-        if ($this->site->getBehaviorClass()->hasSiteHomePage()) {
-            return $this->site->getBehaviorClass()->getSiteHomePage();
-        } else {
-            return $this->actionIndex();
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($plugin::hasSiteHomePage()) {
+                return $plugin::getSiteHomePage();
+            }
         }
+
+        return $this->actionIndex();
     }
 
     public function actionIndex(): ResponseInterface
     {
-        $behaviorHome = $this->site->getBehaviorClass()->getConsultationHomePage($this->consultation);
-        if ($behaviorHome !== null) {
-            return $behaviorHome;
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $pluginHome = $plugin::getConsultationHomePage($this->consultation);
+            if ($pluginHome !== null) {
+                return $pluginHome;
+            }
         }
 
         if ($this->consultation->getForcedMotion()) {

@@ -29,7 +29,7 @@ class AntragsgruenApp implements \JsonSerializable
     /** @var int[] */
     public array $adminUserIds = [];
     /** @var string[] */
-    public array $siteBehaviorClasses = [];
+    public array $siteBehaviorClasses = []; // @TODO OBSOLETE
     /** @var string[] */
     public array $authClientCollection = [];
     /** @var string[] */

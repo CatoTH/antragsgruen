@@ -34,6 +34,7 @@ class MotionEditForm
     public array $fileUploadErrors = [];
 
     private bool $adminMode = false;
+    private bool $allowEditingInitiators = true; // Only affects updating
 
     public function __construct(ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, ?Motion $motion)
     {
@@ -73,6 +74,16 @@ class MotionEditForm
     public function setAdminMode(bool $set): void
     {
         $this->adminMode = $set;
+    }
+
+    public function setAllowEditingInitiators(bool $set): void
+    {
+        $this->allowEditingInitiators = $set;
+    }
+
+    public function getAllowEditinginitiators(): bool
+    {
+        return $this->allowEditingInitiators;
     }
 
     public function cloneSupporters(Motion $motion): void
@@ -309,7 +320,9 @@ class MotionEditForm
         }
         $errors = array_merge($errors, $this->fileUploadErrors);
 
-        $this->motionType->getMotionSupportTypeClass()->validateMotion();
+        if ($this->allowEditingInitiators) {
+            $this->motionType->getMotionSupportTypeClass()->validateMotion();
+        }
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
@@ -339,20 +352,22 @@ class MotionEditForm
     public function saveMotion(Motion $motion): void
     {
         $consultation = $this->motionType->getConsultation();
+        $ctx = PrivilegeQueryContext::motion($motion);
+
         if (!$this->adminMode) {
             $this->saveMotionVerify();
 
-            if (!$motion->canEdit()) {
+            if (!$motion->canEditText()) {
                 throw new FormError(\Yii::t('motion', 'err_create_permission'));
             }
         }
 
-        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion))) {
+        if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
             $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
         }
 
         if ($motion->save()) {
-            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion))) {
+            if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion)))) {
                 $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
             }
 
