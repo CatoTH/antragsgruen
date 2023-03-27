@@ -288,7 +288,10 @@ class AmendmentController extends Base
         }
 
         $fromMode = ($amendment->status === Amendment::STATUS_DRAFT ? 'create' : 'edit');
-        $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
+        $form  = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
+        if (!$amendment->canEditInitiators()) {
+            $form->setAllowEditingInitiators(false);
+        }
 
         if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren(null);

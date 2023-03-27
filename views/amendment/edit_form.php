@@ -147,9 +147,10 @@ echo '</div>';
 
 <?php
 
-$initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
-echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
-
+if ($form->getAllowEditinginitiators()) {
+    $initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
+    echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
+}
 
 if (!$multipleParagraphs) {
     echo '<input type="hidden" name="modifiedSectionId" value="">';

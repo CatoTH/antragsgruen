@@ -58,10 +58,11 @@ if (!$motion->titlePrefix) {
                 <div style="display: inline-block; width: 200px; height: 40px; vertical-align: middle; padding-top: 14px;"></div>
                 <?php
                 if ($motion->version === Workflow::STEP_V2) {
+                    $editUrl = UrlHelper::createMotionUrl($motion, 'edit');
                     ?>
                 <div
                     style="display: inline-block; width: 400px; height: 40px; vertical-align: middle; padding-top: 14px;">
-                    <a href=""><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Text bearbeiten</a>
+                    <a href="<?= Html::encode($editUrl) ?>"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Text bearbeiten</a>
                 </div>
                     <?php
                 } else {

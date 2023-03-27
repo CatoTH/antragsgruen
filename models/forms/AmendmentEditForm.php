@@ -33,6 +33,7 @@ class AmendmentEditForm
     public ?int $toAnotherAmendment = null;
     public bool $globalAlternative = false;
     private bool $adminMode = false;
+    private bool $allowEditingInitiators = true; // Only affects updating
 
     public function __construct(Motion $motion, ?ConsultationAgendaItem $agendaItem, ?Amendment $amendment)
     {
@@ -92,6 +93,16 @@ class AmendmentEditForm
     public function setAdminMode(bool $set): void
     {
         $this->adminMode = $set;
+    }
+
+    public function setAllowEditingInitiators(bool $set): void
+    {
+        $this->allowEditingInitiators = $set;
+    }
+
+    public function getAllowEditinginitiators(): bool
+    {
+        return $this->allowEditingInitiators;
     }
 
     public function cloneSupporters(Amendment $amendment): void
@@ -279,7 +290,9 @@ class AmendmentEditForm
             }
         }
 
-        $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->validateAmendment();
+        if ($this->allowEditingInitiators) {
+            $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->validateAmendment();
+        }
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
@@ -294,7 +307,9 @@ class AmendmentEditForm
     public function saveAmendment(Amendment $amendment): void
     {
         $consultation = $this->motion->getMyConsultation();
-        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment))) {
+        $ctx = PrivilegeQueryContext::amendment($amendment);
+
+        if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
             $this->supporters = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->getAmendmentSupporters($amendment);
         }
 
@@ -306,7 +321,7 @@ class AmendmentEditForm
             $this->saveAmendmentVerify();
         }
 
-        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment))) {
+        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $ctx)) {
             $amendment->changeExplanation = $this->reason;
             $amendment->changeEditorial = $this->editorial;
             $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
@@ -315,7 +330,7 @@ class AmendmentEditForm
         if ($amendment->save()) {
             $motionType = $this->motion->getMyMotionType();
 
-            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment))) {
+            if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
                 $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
             }
 
@@ -323,7 +338,7 @@ class AmendmentEditForm
                 $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
             }
 
-            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment))) {
+            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $ctx)) {
                 // Sections
                 foreach ($amendment->getActiveSections() as $section) {
                     $section->delete();

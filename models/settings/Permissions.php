@@ -48,6 +48,11 @@ class Permissions
         return false;
     }
 
+    public function motionCanEditInitiators(Motion $motion): bool
+    {
+        return $this->motionCanEditText($motion);
+    }
+
     /**
      * Default rules for editing text:
      * - In the draft state (before the document is submitted), rather permissive policies apply. See below.
@@ -74,6 +79,11 @@ class Permissions
         }
 
         return false;
+    }
+
+    public function amendmentCanEditInitiators(Amendment $amendment): bool
+    {
+        return $this->amendmentCanEditText($amendment);
     }
 
     /**

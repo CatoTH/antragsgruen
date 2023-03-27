@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\plugins\member_petitions;
 
 use app\models\db\{Motion, User};

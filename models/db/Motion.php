@@ -493,9 +493,14 @@ class Motion extends IMotion implements IRSSItem
         return $this->iAmInitiator();
     }
 
-    public function canEdit(): bool
+    public function canEditText(): bool
     {
         return $this->getPermissionsObject()->motionCanEditText($this);
+    }
+
+    public function canEditInitiators(): bool
+    {
+        return $this->getPermissionsObject()->motionCanEditInitiators($this);
     }
 
     public function canWithdraw(): bool

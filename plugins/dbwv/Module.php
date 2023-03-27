@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
-use app\models\db\Consultation;
-use app\models\db\User;
-use app\models\settings\Layout;
-use app\models\settings\Privilege;
-use app\models\settings\PrivilegeQueryContext;
+use app\models\db\{Consultation, User};
+use app\models\settings\{Layout, Privilege, PrivilegeQueryContext};
 use app\plugins\dbwv\workflow\Workflow;
 use app\plugins\ModuleBase;
 use yii\web\View;
@@ -81,6 +78,11 @@ class Module extends ModuleBase
         );
 
         return $origPrivileges;
+    }
+
+    public static function getPermissionsClass(): ?string
+    {
+        return Permissions::class;
     }
 
     protected static function getMotionUrlRoutes(): array

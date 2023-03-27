@@ -60,10 +60,6 @@ class Step1
         $v2Motion->status = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
         $v2Motion->save();
 
-        if (isset($postparams['textchanges'])) {
-            RequestContext::getWebApplication()->session->setFlash('error', "@TODO Text changes");
-        }
-
         return $v2Motion;
     }
 }

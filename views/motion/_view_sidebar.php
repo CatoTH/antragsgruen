@@ -73,7 +73,7 @@ if ($motion->canMergeAmendments()) {
     $sidebarRows++;
 }
 
-if ($motion->canEdit()) {
+if ($motion->canEditText()) {
     $editLi = '<li class="edit">';
     $title  = '<span class="icon glyphicon glyphicon-edit" aria-hidden="true"></span>' .
         str_replace('%TYPE%', Html::encode($motion->motionType->titleSingular), Yii::t('motion', 'motion_edit'));

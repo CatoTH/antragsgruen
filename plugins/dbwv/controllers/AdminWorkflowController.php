@@ -46,8 +46,11 @@ class AdminWorkflowController extends Base
         $newMotion = Step1::saveEditorial($motion, $this->getPostValues());
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
-
-        return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
+        if ($this->isPostSet('textchanges')) {
+            return new RedirectResponse(UrlHelper::createMotionUrl($newMotion, 'edit'));
+        } else {
+            return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
+        }
     }
 
     public function actionStep2(string $motionSlug): ResponseInterface
