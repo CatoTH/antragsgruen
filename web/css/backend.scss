@@ -1031,6 +1031,9 @@ label.legend {
   .inputPrefix {
     width: 60px;
   }
+  .filterVersion, .filterStatus, .filterProposal, .filterTags {
+    max-width: 200px;
+  }
 
   > * {
     float: left;

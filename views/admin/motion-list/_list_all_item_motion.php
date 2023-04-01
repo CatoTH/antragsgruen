@@ -51,7 +51,15 @@ if ($editUrl) {
     echo Html::encode(trim($entry->title) !== '' ? $entry->title : '-');
 }
 echo '</span></td>';
-echo '<td>' . Html::encode($motionStatuses[$entry->status]);
+echo '<td>';
+
+$versionNames = $search->getVersionNames();
+if (count($versionNames) > 0 && isset($versionNames[$entry->version])) {
+    $nameParts = explode(": ", $versionNames[$entry->version]);
+    echo Html::encode($nameParts[0]) . ", ";
+}
+
+echo Html::encode($motionStatuses[$entry->status]);
 if ($entry->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters(true)) . ')';
 }

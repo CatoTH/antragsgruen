@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\forms;
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter};
 use yii\helpers\Html;
@@ -22,6 +23,7 @@ class AdminMotionFilterForm
     public const SORT_DATE = 10;
 
     public ?int $status = null;
+    public ?string $version = null;
     public ?int $tag = null;
     public ?int $agendaItem = null;
     public ?string $proposalStatus = null;
@@ -87,6 +89,9 @@ class AdminMotionFilterForm
         if (isset($values['status'])) {
             $this->status = ($values['status'] === '' ? null : intval($values['status']));
         }
+        if (isset($values['version'])) {
+            $this->version = ($values['version'] === '' ? null : $values['version']);
+        }
         if (isset($values['tag'])) {
             $this->tag = ($values['tag'] === '' ? null : intval($values['tag']));
         }
@@ -102,6 +107,20 @@ class AdminMotionFilterForm
         } else {
             $this->proposalStatus = null;
         }
+    }
+
+    private ?array $versionNames = null;
+    public function getVersionNames(): array
+    {
+        if ($this->versionNames === null) {
+            $this->versionNames = [];
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                foreach ($plugin::getMotionVersions($this->consultation) as $key => $val) {
+                    $this->versionNames[$key] = $val;
+                }
+            }
+        }
+        return $this->versionNames;
     }
 
     public function sortDefault(IMotion $motion1, IMotion $motion2): int
@@ -396,6 +415,15 @@ class AdminMotionFilterForm
         return ($motion->agendaItemId === $this->agendaItem);
     }
 
+    private function motionMatchesVersion(Motion $motion): bool
+    {
+        if ($this->version === null || $this->version === '') {
+            return true;
+        }
+
+        return ($motion->version === $this->version);
+    }
+
     private function motionMatchesResponsibility(Motion $motion): bool
     {
         if ($this->responsibility === null || $this->responsibility === 0) {
@@ -431,6 +459,10 @@ class AdminMotionFilterForm
             }
 
             if (!$this->motionMatchesAgendaItem($motion)) {
+                $matches = false;
+            }
+
+            if (!$this->motionMatchesVersion($motion)) {
                 $matches = false;
             }
 
@@ -503,6 +535,15 @@ class AdminMotionFilterForm
         return ($amendment->getMyMotion()->agendaItemId === $this->agendaItem);
     }
 
+    private function amendmentMatchesVersion(Amendment $amendment): bool
+    {
+        if ($this->version === null || $this->version === '') {
+            return true;
+        }
+
+        return ($amendment->getMyMotion()->version === $this->version);
+    }
+
     private function amendmentMatchesResponsibility(Amendment $amendment): bool
     {
         if ($this->responsibility === null || $this->responsibility === 0) {
@@ -555,6 +596,10 @@ class AdminMotionFilterForm
                 $matches = false;
             }
 
+            if (!$this->amendmentMatchesVersion($amend)) {
+                $matches = false;
+            }
+
             if (!$this->amendmentMatchesResponsibility($amend)) {
                 $matches = false;
             }
@@ -582,9 +627,7 @@ class AdminMotionFilterForm
         // The list getting too long and is getting too heavy on the database if we have a full list
         $skipNumbers = (count($this->allMotions) + count($this->allAmendments)) > 250;
 
-        $str = '';
-
-        $str    .= '<label class="filterPrefix">' . \Yii::t('admin', 'filter_prefix') . ':<br>';
+        $str    = '<label class="filterPrefix">' . \Yii::t('admin', 'filter_prefix') . ':<br>';
         $prefix = Html::encode($this->prefix ?: '');
         $str    .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
         $str    .= '</label>';
@@ -594,6 +637,19 @@ class AdminMotionFilterForm
         $str   .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
         $str   .= '</label>';
 
+
+        // Motion version
+
+        $versionList = $this->getVersionList();
+        if (count($versionList) > 0) {
+            $str .= '<label class="filterVersion">' . \Yii::t('admin', 'filter_version') . ':<br>';
+            $versions = ['' => \Yii::t('admin', 'filter_na')];
+            foreach ($versionList as $versionId => $versionName) {
+                $versions[$versionId] = $versionName;
+            }
+            $str .= Html::dropDownList('Search[version]', (string)$this->version, $versions, ['class' => 'stdDropdown']);
+            $str .= '</label>';
+        }
 
         // Motion status
 
@@ -871,6 +927,28 @@ class AdminMotionFilterForm
         }
         asort($out);
 
+        return $out;
+    }
+
+    public function getVersionList(): array
+    {
+        $versions = [];
+        $allVersions = $this->getVersionNames();
+        foreach ($this->allMotions as $motion) {
+            if (!isset($allVersions[$motion->version])) {
+                continue;
+            }
+            if (!isset($versions[$motion->version])) {
+                $versions[$motion->version] = 0;
+            }
+            $versions[$motion->version]++;
+        }
+        $out = [];
+        foreach ($allVersions as $versionId => $versionName) {
+            if (isset($versions[$versionId])) {
+                $out[$versionId] = $versionName . ' (' . $versions[$versionId] . ')';
+            }
+        }
         return $out;
     }
 

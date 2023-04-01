@@ -195,6 +195,7 @@ return [
     'filter_na'                   => '- all -',
     'filter_title'                => 'Title',
     'filter_status'               => 'Status',
+    'filter_version'              => 'Version',
     'filter_tag_pp'               => 'Internal',
     'filter_proposal_status'      => 'Proposed procedure',
     'filter_proposal_accepted'    => 'Accepted proposals',
