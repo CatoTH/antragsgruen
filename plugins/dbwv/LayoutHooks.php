@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace app\plugins\dbwv;
 
 use app\components\RequestContext;
+use app\components\UrlHelper;
+use app\controllers\admin\MotionListController;
+use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\layoutHooks\Hooks;
+use app\models\layoutHooks\StdHooks;
 use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Workflow};
 use yii\helpers\Html;
 
-class LayoutHooks extends Hooks
+class LayoutHooks extends StdHooks
 {
     public function getMotionViewData(array $motionData, Motion $motion): array
     {
@@ -65,5 +69,19 @@ class LayoutHooks extends Hooks
         $baseUrl = Html::encode(Assets::$myBaseUrl);
 
         return '<link rel="icon" type="image/x-icon" href="' . $baseUrl . '/favicon.ico">';
+    }
+
+    protected function addMotionListNavbarEntry(Consultation $consultation): string
+    {
+        if (!MotionListController::haveAccessToList($consultation)) {
+            return '';
+        }
+
+        /** @var ConsultationSettings $settings */
+        $settings = $consultation->getSettings();
+
+        $adminUrl   = UrlHelper::createUrl(['/admin/motion-list/index', 'Search[version]' => $settings->defaultVersionFilter]);
+        $adminTitle = \Yii::t('base', 'menu_motion_list');
+        return '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
     }
 }

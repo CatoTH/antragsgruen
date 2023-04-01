@@ -85,6 +85,21 @@ class Module extends ModuleBase
         return Permissions::class;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getConsultationSettingsClass(Consultation $consultation): string
+    {
+        return ConsultationSettings::class;
+    }
+
+    public static function getConsultationExtraSettingsForm(Consultation $consultation): string
+    {
+        return \Yii::$app->controller->renderPartial(
+            '@app/plugins/dbwv/views/admin/consultation_settings', ['consultation' => $consultation]
+        );
+    }
+
     protected static function getMotionUrlRoutes(): array
     {
         return [

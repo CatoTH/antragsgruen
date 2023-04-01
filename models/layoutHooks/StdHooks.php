@@ -263,6 +263,17 @@ class StdHooks extends Hooks
         }
     }
 
+    protected function addMotionListNavbarEntry(Consultation $consultation): string
+    {
+        if (!MotionListController::haveAccessToList($consultation)) {
+            return '';
+        }
+
+        $adminUrl   = UrlHelper::createUrl('/admin/motion-list/index');
+        $adminTitle = \Yii::t('base', 'menu_motion_list');
+        return '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
+    }
+
     public function getStdNavbarHeader(string $before): string
     {
         $out = '<ul class="nav navbar-nav">';
@@ -291,11 +302,8 @@ class StdHooks extends Hooks
                 }
             }
 
-            if (MotionListController::haveAccessToList($consultation)) {
-                $adminUrl   = UrlHelper::createUrl('/admin/motion-list/index');
-                $adminTitle = \Yii::t('base', 'menu_motion_list');
-                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
-            }
+            $out .= $this->addMotionListNavbarEntry($consultation);
+
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction())) {
                 $todo = AdminTodoItem::getConsultationTodos($consultation);
                 if (count($todo) > 0) {
