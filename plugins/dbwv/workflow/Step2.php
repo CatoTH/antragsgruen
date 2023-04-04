@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
-use app\components\RequestContext;
-use app\models\db\{ConsultationSettingsTag, IMotion, Motion};
-use app\models\exceptions\{Access, NotFound};
-use app\models\settings\{PrivilegeQueryContext, Privileges};
+use app\components\{MotionNumbering, RequestContext};
+use app\models\forms\MotionDeepCopy;
+use app\models\db\Motion;
+use app\models\exceptions\Access;
 
 class Step2
 {
@@ -21,46 +21,38 @@ class Step2
             );
         }
 
-        if (Workflow::canSetRecommendationV2($motion)) {
-            $html .= RequestContext::getController()->renderPartial(
-                '@app/plugins/dbwv/views/admin_step_2_next', ['motion' => $motion]
-            );
-        }
-
         return $html;
     }
 
-    public static function gotoNext(Motion $motion, array $postparams): void
+    public static function gotoNext(Motion $motion): Motion
     {
         if (!Workflow::canSetRecommendationV2($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
         }
-        if ($motion->version !== Workflow::STEP_V2) {
+        if (!in_array($motion->version, [Workflow::STEP_V2, Workflow::STEP_V3, true])) {
             throw new Access('Not allowed to perform this action (in this state)');
         }
 
-        $motion->version = Workflow::STEP_V3;
-        $motion->save();
-    }
-
-    public static function edit(Motion $motion, array $postparams): void
-    {
-        if (!Workflow::canMakeEditorialChangesV1($motion)) {
-            throw new Access('Not allowed to perform this action (generally)');
+        if ($motion->version === Workflow::STEP_V2) {
+            if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V3)) {
+                throw new Access('A new version of this motion was already created');
+            }
+            $v3Motion = MotionDeepCopy::copyMotion(
+                $motion,
+                $motion->getMyMotionType(),
+                $motion->agendaItem,
+                $motion->titlePrefix,
+                Workflow::STEP_V3,
+                true
+            );
+        } else {
+            if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V4)) {
+                throw new Access('A new version of this motion was already created');
+            }
+            $v3Motion = $motion;
         }
-        if ($motion->version !== Workflow::STEP_V2) {
-            throw new Access('Not allowed to perform this action (in this state)');
-        }
+        unset($motion);
 
-        $tag = $motion->getMyConsultation()->getTagById(intval($postparams['tag']));
-        if (!$tag || $tag->type !== ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) {
-            throw new NotFound('Tag not found');
-        }
-
-        $motion->titlePrefix = $postparams['motionPrefix'];
-        $motion->status = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
-        $motion->save();
-
-        $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
+        return $v3Motion;
     }
 }

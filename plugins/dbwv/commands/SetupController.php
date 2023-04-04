@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\commands;
 
+use app\models\settings\Privileges;
 use app\models\settings\Tag;
 use app\models\settings\UserGroupPermissions;
 use app\plugins\dbwv\Module;
@@ -14,6 +15,7 @@ class SetupController extends Controller
 {
     private const GROUP_NAME_AL_RECHT = 'AL Recht';
     private const GROUP_NAME_V1_REFERAT = 'Referat %NAME% (V1)';
+    private const GROUP_NAME_V2_ARBEITSGRUPPE = 'Arbeitsgruppe %NAME% (V2)';
 
     /** @var array{array{title: string, motionPrefix: string|null, position: int, themengebiete: array{array{title: string, position: int}}}}  */
     private const AGENDA_ITEMS_SACHGEBIETE = [
@@ -86,6 +88,15 @@ class SetupController extends Controller
             $tag = ConsultationSettingsTag::findOne(['title' => $item['title'], 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
             $group = $this->createUserGroupIfNotExists($consultation, $groupName);
             $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Module::PRIVILEGE_DBWV_V1_EDITORIAL . ']}]}';
+            $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
+            $group->save();
+        }
+
+        foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
+            $tag = ConsultationSettingsTag::findOne(['title' => $item['title'], 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
+            $group = $this->createUserGroupIfNotExists($consultation, $groupName);
+            $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Privileges::PRIVILEGE_CHANGE_PROPOSALS . ']}]}';
             $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
             $group->save();
         }
@@ -241,6 +252,22 @@ class SetupController extends Controller
                 return;
             }
             $user = $this->createOrGetUserAccount('referat-' . $item['motionPrefix'] . '@example.org', 'Test', 'Referat', $item['title'], 'DBwV');
+            if (count($user->userGroups) === 0) {
+                $group->addUser($user);
+            }
+        }
+
+        foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            if (!$item['motionPrefix']) {
+                continue;
+            }
+            $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
+            $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
+            if (!$group) {
+                echo "Group $groupName not found\n";
+                return;
+            }
+            $user = $this->createOrGetUserAccount('arbeitsgruppe-' . $item['motionPrefix'] . '@example.org', 'Test', 'Arbeitsgruppe', $item['title'], 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
             }

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
-use app\models\db\{Consultation, User};
+use app\plugins\dbwv\workflow\Step2;
+use app\models\db\{Consultation, IMotion, Motion, User};
 use app\models\settings\{Layout, Privilege, PrivilegeQueryContext};
 use app\plugins\dbwv\workflow\Workflow;
 use app\plugins\ModuleBase;
@@ -147,5 +148,14 @@ class Module extends ModuleBase
         }
 
         return null;
+    }
+
+    public static function onBeforeProposedProcedureStatusSave(IMotion $imotion): IMotion
+    {
+        if (is_a($imotion, Motion::class)) {
+            // This always switches to V3 and also enforces the proposed procedure to be only available on V2
+            return Step2::gotoNext($imotion);
+        }
+        return $imotion;
     }
 }

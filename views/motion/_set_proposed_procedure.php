@@ -4,9 +4,9 @@
  * @var Yii\web\View $this
  * @var Motion $motion
  * @var string $context
+ * @var string $saveUrl
  */
 
-use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{IAdminComment, Motion, User};
@@ -107,8 +107,7 @@ $voting = $motion->getVotingData();
                 <option value="NEW">- <?= Yii::t('amend', 'proposal_voteblock_newopt') ?> -</option>
             </select>
             <?php
-            $pctx = PrivilegeQueryContext::motion($motion);
-            if (User::getCurrentUser() && User::getCurrentUser()->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, $pctx)) {
+            if (User::getCurrentUser() && User::getCurrentUser()->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
                 $url = UrlHelper::createUrl(['consultation/admin-votings']);
                 $title = Html::encode(Yii::t('amend', 'proposal_voteblock_edit'));
                 ?>

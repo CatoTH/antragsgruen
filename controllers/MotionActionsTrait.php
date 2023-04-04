@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\forms\ProposedChangeForm;
-use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\http\{HtmlErrorResponse,
     HtmlResponse,
     JsonResponse,
@@ -468,6 +468,12 @@ trait MotionActionsTrait
         $ppChanges = new ProposedProcedureChange(null);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
+            $originalMotionId = $motion->id;
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                /** @var Motion $motion */
+                $motion = $plugin::onBeforeProposedProcedureStatusSave($motion);
+            }
+
             $setStatus = intval($this->getHttpRequest()->post('setStatus'));
             if ($motion->proposalStatus !== $setStatus) {
                 $ppChanges->setProposalStatusChanges($motion->proposalStatus, $setStatus);
@@ -520,18 +526,20 @@ trait MotionActionsTrait
                 $motion->proposalVisibleFrom = null;
             }
 
-            try {
-                $motion->setProposalVotingPropertiesFromRequest(
-                    $this->getHttpRequest()->post('votingStatus', null),
-                    $this->getHttpRequest()->post('votingBlockId', null),
-                    $this->getHttpRequest()->post('votingItemBlockId', []),
-                    $this->getHttpRequest()->post('votingItemBlockName', ''),
-                    $this->getHttpRequest()->post('votingBlockTitle', ''),
-                    true,
-                    $ppChanges
-                );
-            } catch (FormError $e) {
-                return new RestApiExceptionResponse(400, $e->getMessage());
+            if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
+                try {
+                    $motion->setProposalVotingPropertiesFromRequest(
+                        $this->getHttpRequest()->post('votingStatus', null),
+                        $this->getHttpRequest()->post('votingBlockId', null),
+                        $this->getHttpRequest()->post('votingItemBlockId', []),
+                        $this->getHttpRequest()->post('votingItemBlockName', ''),
+                        $this->getHttpRequest()->post('votingBlockTitle', ''),
+                        true,
+                        $ppChanges
+                    );
+                } catch (FormError $e) {
+                    return new RestApiExceptionResponse(400, $e->getMessage());
+                }
             }
 
             if ($ppChanges->hasChanges()) {
@@ -550,6 +558,11 @@ trait MotionActionsTrait
                 'context'   => $this->getHttpRequest()->post('context', 'view'),
             ]);
             $response['proposalStr'] = $motion->getFormattedProposalStatus(true);
+
+            if ($motion->id !== $originalMotionId) {
+                // This can happen if a plugin enforces the creation of a new motion when saving
+                $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
+            }
         }
 
         if ($this->getHttpRequest()->post('notifyProposer') || $this->getHttpRequest()->post('sendAgain')) {

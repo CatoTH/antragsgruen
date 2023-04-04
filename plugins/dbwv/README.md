@@ -5,7 +5,7 @@ Setup Notes
 - Antrag stellen: Gruppe „Antragsberechtigte”. Nur Organisationen, Beschlussdatum nötig.
 - Änderungsanträge: Niemand
 - Freischaltung
-- Verfahrensvorschläge deaktiviert
+- Verfahrensvorschläge aktiviert (kann zeitlich aktiviert / deaktiviert werden)
 - Sachgebiete: Tags, type "Public Topic" (0)
 - Themenbereiche: Tags, type "Proposed Procedure" (1), Sachgebiete als parent tags
 
@@ -14,4 +14,5 @@ Demo Accounts:
 - delegiert-0@example.org - delegiert-49@example.org
 - al-recht@example.org
 - referat-S@example.org (Satzung), referat-U@example.org (Umwelt)
+- arbeitsgruppe-S@example.org (Satzung), arbeitsgruppe-U@example.org (Umwelt)
 - Passwort: Test

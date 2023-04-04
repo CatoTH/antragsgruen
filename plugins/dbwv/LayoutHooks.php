@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
-use app\components\RequestContext;
-use app\components\UrlHelper;
+use app\components\{RequestContext, UrlHelper};
 use app\controllers\admin\MotionListController;
-use app\models\db\Consultation;
-use app\models\db\Motion;
-use app\models\layoutHooks\Hooks;
 use app\models\layoutHooks\StdHooks;
+use app\models\db\{Consultation, Motion};
 use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Workflow};
 use yii\helpers\Html;
 

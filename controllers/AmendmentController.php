@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\settings\AntragsgruenApp;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\models\http\{BinaryFileResponse,
@@ -460,6 +461,11 @@ class AmendmentController extends Base
         $ppChanges = new ProposedProcedureChange(null);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                /** @var Amendment $amendment */
+                $amendment = $plugin::onBeforeProposedProcedureStatusSave($amendment);
+            }
+
             $setStatus = intval($this->getHttpRequest()->post('setStatus'));
             if ($amendment->proposalStatus !== $setStatus) {
                 $ppChanges->setProposalStatusChanges($amendment->proposalStatus, $setStatus);
@@ -512,20 +518,22 @@ class AmendmentController extends Base
                 $amendment->proposalVisibleFrom = null;
             }
 
-            try {
-                $amendment->setProposalVotingPropertiesFromRequest(
-                    $this->getHttpRequest()->post('votingStatus', null),
-                    $this->getHttpRequest()->post('votingBlockId', null),
-                    $this->getHttpRequest()->post('votingItemBlockId', []),
-                    $this->getHttpRequest()->post('votingItemBlockName', ''),
-                    $this->getHttpRequest()->post('votingBlockTitle', ''),
-                    true,
-                    $ppChanges
-                );
-            } catch (FormError $e) {
-                $response['success'] = false;
-                $response['error']   = $e->getMessage();
-                return new JsonResponse($response);
+            if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
+                try {
+                    $amendment->setProposalVotingPropertiesFromRequest(
+                        $this->getHttpRequest()->post('votingStatus', null),
+                        $this->getHttpRequest()->post('votingBlockId', null),
+                        $this->getHttpRequest()->post('votingItemBlockId', []),
+                        $this->getHttpRequest()->post('votingItemBlockName', ''),
+                        $this->getHttpRequest()->post('votingBlockTitle', ''),
+                        true,
+                        $ppChanges
+                    );
+                } catch (FormError $e) {
+                    $response['success'] = false;
+                    $response['error'] = $e->getMessage();
+                    return new JsonResponse($response);
+                }
             }
 
             if ($ppChanges->hasChanges()) {

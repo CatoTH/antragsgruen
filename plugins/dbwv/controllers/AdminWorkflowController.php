@@ -60,7 +60,7 @@ class AdminWorkflowController extends Base
             return new HtmlErrorResponse(404,  'Motion not found');
         }
 
-        Step2::gotoNext($motion, $this->getPostValues());
+        Step2::gotoNext($motion);
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 

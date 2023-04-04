@@ -5,7 +5,7 @@ namespace app\models\layoutHooks;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
-use app\controllers\{admin\IndexController, admin\MotionListController, Base, UserController};
+use app\controllers\{admin\IndexController, admin\MotionListController, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
 use app\models\settings\AntragsgruenApp;
@@ -103,7 +103,7 @@ class StdHooks extends Hooks
 
     public function endPage(string $before): string
     {
-        return $before . Layout::footerLine();
+        return Layout::footerLine();
     }
 
     public function getSearchForm(string $before): string
@@ -133,7 +133,7 @@ class StdHooks extends Hooks
 
     public function renderSidebar(string $before): string
     {
-        $str = $before . $this->layout->preSidebarHtml;
+        $str = $this->layout->preSidebarHtml;
         if (count($this->layout->menusHtml) > 0) {
             $str .= '<div class="well hidden-xs">';
             $str .= implode('', $this->layout->menusHtml);
