@@ -69,6 +69,7 @@ return [
     'replaces_motion'                    => 'Ersetzt',
     'resolution_of'                      => 'Basierend auf',
     'replaces_motion_diff'               => 'Änderungen anzeigen',
+    'replaces_show_history'              => 'Historie anzeigen',
     'private_notes'                      => 'Private Notiz',
     'private_notes_open'                 => 'Private Notiz <span class="sr-only">öffnen</span>',
     'private_notes_write'                => 'Notiz eingeben',

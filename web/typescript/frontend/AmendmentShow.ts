@@ -2,12 +2,6 @@ import '../shared/IMotionShow';
 
 class AmendmentShow {
     constructor() {
-        $('.tagAdderHolder').on("click", function (ev) {
-            ev.preventDefault();
-            $(this).addClass("hidden");
-            $('#tagAdderForm').removeClass("hidden");
-        });
-
         let s: string[] = location.hash.split('#comm');
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
@@ -20,6 +14,7 @@ class AmendmentShow {
         common.initAmendmentTextMode();
         common.initCmdEnterSubmit();
         common.initDelSubmit();
+        common.initDataTableActions();
     }
 
     private initPrivateComments()

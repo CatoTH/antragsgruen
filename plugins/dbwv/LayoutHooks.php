@@ -4,15 +4,46 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
+use app\models\layoutHooks\Layout;
 use app\components\{RequestContext, UrlHelper};
 use app\controllers\admin\MotionListController;
 use app\models\layoutHooks\StdHooks;
-use app\models\db\{Consultation, Motion};
+use app\models\db\{Consultation, ConsultationUserGroup, Motion, User};
 use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Workflow};
 use yii\helpers\Html;
 
 class LayoutHooks extends StdHooks
 {
+    public function beginPage(string $before): string
+    {
+        $out = '';
+        $user = User::getCurrentUser();
+        if ($user) {
+            $out .= '<div id="userLoginPanel">';
+            $out .= '<div class="username"><strong>Eingeloggt als:</strong> ';
+            $out .= Html::encode($user->name);
+            $out .= '</div>';
+
+            $out .= '<div class="groups">';
+            $out .= Html::encode(implode(", ", array_map(function (ConsultationUserGroup $group): string {
+                return $group->title;
+            }, $user->getConsultationUserGroups($this->consultation))));
+            $out .= '</div>';
+
+            $out .= '</div>';
+        }
+        $out .= '<header id="mainmenu">';
+        $out .= '<nav class="navbar" aria-label="' . \Yii::t('base', 'aria_mainmenu') . '">
+        <div class="navbar-inner">';
+        $out .= Layout::getStdNavbarHeader();
+        $out .= '</div>
+        </nav>';
+
+        $out .= '</header>';
+
+        return $out;
+    }
+
     public function getMotionViewData(array $motionData, Motion $motion): array
     {
         if (!Workflow::canAssignTopicV1($motion)) {
