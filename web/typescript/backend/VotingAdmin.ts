@@ -123,7 +123,7 @@ export class VotingAdmin {
                         status: newStatus,
                     });
                 },
-                saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, votePolicy, resultsPublic, votesPublic, votingTime, assignedMotion) {
+                saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion) {
                     this._performOperation(votingBlockId, {
                         op: 'save-settings',
                         title,
@@ -131,6 +131,7 @@ export class VotingAdmin {
                         majorityType,
                         quorumType,
                         votePolicy,
+                        maxVotesByGroup,
                         resultsPublic,
                         votesPublic,
                         votingTime,

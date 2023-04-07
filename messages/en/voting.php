@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'votings_bc' => 'Votings',
     'results_bc' => 'Results',
@@ -94,6 +97,12 @@ return [
     'settings_votespublic_nobody' => 'Nobody',
     'settings_votespublic_admins' => 'Admins',
     'settings_votespublic_all' => 'Everyone',
+    'settings_maxvotes' => 'Number of votes per user',
+    'settings_maxvotes_h' => 'This can be used, for example, to present 7 candidates, and only allow up to 3 votes for each user',
+    'settings_maxvotes_none' => 'Unlimited',
+    'settings_maxvotes_limit' => 'Limited votes',
+    'settings_maxvotes_pergroup' => 'Depending on user group',
+    'settings_maxvotes_votes' => 'Votes',
     'settings_motionassign' => 'Assigned to motion',
     'settings_motionassign_h' => 'If this voting is assigned to a motion, it will be shown on the motion page, not on the home page',
     'settings_motionassign_none' => 'None',
@@ -117,11 +126,14 @@ return [
     'voting_visibility_all' => '<strong>All logged in users</strong> can see who voted how.',
     'voting_show_all' => 'Show all votings',
     'voting_votes_status' => 'Status',
-    'voting_votes_0' => 'No vote has been cast yet',
-    'voting_votes_1_1' => '1 vote has been cast',
-    'voting_votes_1_x' => '%VOTES% votes have been cast by 1 user',
-    'voting_votes_x' => '%VOTES% votes have been cast by %USERS% users',
-    'voting_votes_x_same' => '%VOTES% votes have been cast',
+    'voting_votes_0' => 'No vote has been cast yet.',
+    'voting_votes_1_1' => '1 vote has been cast.',
+    'voting_votes_1_x' => '%VOTES% votes have been cast by 1 user.',
+    'voting_votes_x' => '%VOTES% votes have been cast by %USERS% users.',
+    'voting_votes_x_same' => '%VOTES% votes have been cast.',
+    'voting_remainig_0' => 'All votes cast.',
+    'voting_remainig_1' => '1 vote to cast.',
+    'voting_remainig_x' => '%VOTES% votes to cast.',
     'voting_notvoted' => 'Not voted',
     'voting_notvoted_yet' => 'Not voted yet',
     'voting_notvoted_0' => 'None',

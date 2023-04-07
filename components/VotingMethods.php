@@ -85,6 +85,14 @@ class VotingMethods
             $votingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
         }
         if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
+            if ($this->request->post('maxVotesByGroup') !== null) {
+                $settings->maxVotesByGroup = array_map(fn(array $setting): array => [
+                    'maxVotes' => intval($setting['maxVotes']),
+                    'groupId' => isset($setting['groupId']) && $setting['groupId'] !== '' ? intval($setting['groupId']) : null,
+                ], $this->request->post('maxVotesByGroup'));
+            } else {
+                $settings->maxVotesByGroup = null;
+            }
             if ($this->request->post('answerTemplate') !== null) {
                 $votingBlock->setAnswerTemplate(intval($this->request->post('answerTemplate')));
             } else {
@@ -251,6 +259,9 @@ class VotingMethods
         $exitingVote->delete();
     }
 
+    /**
+     * @throws FormError
+     */
     private function voteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup, int $public, string $voteChoice): void {
         $votes = [];
         foreach ($votingBlock->getItemGroupItems($itemGroup) as $imotion) {
@@ -281,12 +292,17 @@ class VotingMethods
             $public = isset($voteData['public']) ? intval($voteData['public']) : VotingBlock::VOTES_PUBLIC_NO;
             if (isset($voteData['itemGroupSameVote']) && trim($voteData['itemGroupSameVote']) !== '') {
                 ResourceLock::lockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
-                if ($voteData['vote'] === 'undo') {
-                    $this->undoVoteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote']);
-                } else {
-                    $this->voteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote'], $public, $voteData['vote']);
+                try {
+                    if ($voteData['vote'] === 'undo') {
+                        $this->undoVoteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote']);
+                    } else {
+                        $this->voteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote'], $public, $voteData['vote']);
+                    }
+                    ResourceLock::unlockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
+                } catch (FormError $e) {
+                    ResourceLock::unlockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
+                    throw $e;
                 }
-                ResourceLock::unlockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
             } else {
                 // Vote for a single item that is not assigned to a item group
                 if (!in_array($voteData['itemType'], ['motion', 'amendment', 'question'])) {
@@ -294,13 +310,18 @@ class VotingMethods
                 }
                 $item = $this->getVotingItemByTypeAndId($voteData['itemType'], intval($voteData['itemId']), $votingBlock);
                 ResourceLock::lockVotingItemForVoting($item);
-                if ($voteData['vote'] === 'undo') {
-                    $this->undoVoteForSingleItem($user, $votingBlock, $item);
-                } else {
-                    $vote = $this->voteForSingleItem($user, $votingBlock, $item, $public, $voteData['vote']);
-                    $vote->save();
+                try {
+                    if ($voteData['vote'] === 'undo') {
+                        $this->undoVoteForSingleItem($user, $votingBlock, $item);
+                    } else {
+                        $vote = $this->voteForSingleItem($user, $votingBlock, $item, $public, $voteData['vote']);
+                        $vote->save();
+                    }
+                    ResourceLock::unlockVotingItemForVoting($item);
+                } catch (FormError $e) {
+                    ResourceLock::unlockVotingItemForVoting($item);
+                    throw $e;
                 }
-                ResourceLock::unlockVotingItemForVoting($item);
             }
         }
     }
