@@ -329,6 +329,12 @@ ob_start();
                 <?= Yii::t('voting', 'settings_answers_yesno') ?>
             </label>
             <label>
+                <input type="radio" :value="ANSWER_TEMPLATE_YES" v-model="answerTemplate" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_answers_yes') ?>
+                <span class="glyphicon glyphicon-info-sign"
+                      :aria-label="'<?= Yii::t('voting', 'settings_answers_yesh') ?>'" v-tooltip="'<?= Yii::t('voting', 'settings_answers_yesh') ?>'"></span>
+            </label>
+            <label>
                 <input type="radio" :value="ANSWER_TEMPLATE_PRESENT" v-model="answerTemplate" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_answers_present') ?>
                 <span class="glyphicon glyphicon-info-sign"

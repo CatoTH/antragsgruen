@@ -208,6 +208,7 @@ $html = ob_get_clean();
 
     const ANSWER_TEMPLATE_YES_NO_ABSTENTION = <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>;
     const ANSWER_TEMPLATE_YES_NO = <?= AnswerTemplates::TEMPLATE_YES_NO ?>;
+    const ANSWER_TEMPLATE_YES = <?= AnswerTemplates::TEMPLATE_YES ?>;
     const ANSWER_TEMPLATE_PRESENT = <?= AnswerTemplates::TEMPLATE_PRESENT ?>;
 
     __setVueComponent('voting', 'component', 'voting-block-widget', {
