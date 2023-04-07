@@ -8,14 +8,15 @@ use app\models\db\IMotion;
 
 final class AnswerTemplates
 {
-    const TEMPLATE_YES_NO_ABSTENTION = 0;
-    const TEMPLATE_YES_NO = 1;
-    const TEMPLATE_PRESENT = 2;
+    public const TEMPLATE_YES_NO_ABSTENTION = 0;
+    public const TEMPLATE_YES_NO = 1;
+    public const TEMPLATE_PRESENT = 2;
+    public const TEMPLATE_YES = 3;
 
-    const VOTE_ABSTENTION = 0;
-    const VOTE_YES = 1;
-    const VOTE_NO = -1;
-    const VOTE_PRESENT = 2;
+    public const VOTE_ABSTENTION = 0;
+    public const VOTE_YES = 1;
+    public const VOTE_NO = -1;
+    public const VOTE_PRESENT = 2;
 
     /**
      * @return Answer[]
@@ -27,6 +28,8 @@ final class AnswerTemplates
                 return static::getCollectionPresent();
             case static::TEMPLATE_YES_NO:
                 return static::getCollectionYesNo();
+            case static::TEMPLATE_YES:
+                return static::getCollectionYes();
             case static::TEMPLATE_YES_NO_ABSTENTION:
             default:
                 return static::getCollectionYesNoAbstention();
@@ -53,6 +56,16 @@ final class AnswerTemplates
         return [
             static::getYes(),
             static::getNo(),
+        ];
+    }
+
+    /**
+     * @return Answer[]
+     */
+    private static function getCollectionYes(): array
+    {
+        return [
+            static::getYes(),
         ];
     }
 

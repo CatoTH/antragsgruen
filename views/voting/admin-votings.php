@@ -174,6 +174,11 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
                     <?= Yii::t('voting', 'settings_answers_yesno') ?>
                 </label>
                 <label>
+                    <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_YES ?>" required>
+                    <?= Yii::t('voting', 'settings_answers_yes') ?>
+                    <?= HTMLTools::getTooltipIcon(Yii::t('voting', 'settings_answers_yesh')) ?>
+                </label>
+                <label>
                     <input type="radio" name="answersNew" value="<?= AnswerTemplates::TEMPLATE_PRESENT ?>" required>
                     <?= Yii::t('voting', 'settings_answers_present') ?>
                     <?= HTMLTools::getTooltipIcon(Yii::t('voting', 'settings_answers_presenth')) ?>

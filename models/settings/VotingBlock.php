@@ -11,15 +11,6 @@ class VotingBlock implements \JsonSerializable
     /** @var null|int - in seconds */
     public ?int $votingTime = null;
 
-    /** @var array{array{groupId: int|null, maxVotes: int|null}}|null */
+    /** @var array<array{groupId: int|null, maxVotes: int}>|null */
     public ?array $maxVotesByGroup = null;
-
-    public function getAdminApiObject(): array
-    {
-        return [
-            'opened_ts' => $this->openedTs,
-            'voting_time' => $this->votingTime,
-            'max_votes' => $this->maxVotesByGroup,
-        ];
-    }
 }
