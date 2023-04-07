@@ -322,9 +322,12 @@
         margin-bottom: 0;
       }
 
-      &.votesTimer label {
+      &.inputWithLabelHolder label {
         display: table;
         max-width: 200px;
+        input {
+          min-width: 80px;
+        }
       }
     }
   }

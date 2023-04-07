@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'votings_bc' => 'Abstimmungen',
     'results_bc' => 'Ergebnisse',
@@ -94,6 +97,12 @@ return [
     'settings_votespublic_nobody' => 'Niemand',
     'settings_votespublic_admins' => 'Admins',
     'settings_votespublic_all' => 'Alle',
+    'settings_maxvotes' => 'Anzahl Stimmen pro Benutzer*in',
+    'settings_maxvotes_h' => 'Kann beispielsweise genutzt werden, um max. 3 Stimmen auf 7 Kandidierende verteilen zu können',
+    'settings_maxvotes_none' => 'Unbegrenzt',
+    'settings_maxvotes_limit' => 'Begrenze Stimmen',
+    'settings_maxvotes_pergroup' => 'Unterschiedlich nach Gruppe',
+    'settings_maxvotes_votes' => 'Stimmen',
     'settings_motionassign' => 'Im Antrag anzeigen',
     'settings_motionassign_h' => 'Wenn hier ein Antrag ausgewählt wird, wird die Abstimmung auf der Antragsseite statt auf der Startseite angezeigt.',
     'settings_motionassign_none' => 'Keiner',
@@ -117,11 +126,14 @@ return [
     'voting_visibility_all' => '<strong>Alle Eingeloggte</strong> können die abgegebenen Stimmen einsehen.',
     'voting_show_all' => 'Alle Abstimmungen anzeigen',
     'voting_votes_status' => 'Status',
-    'voting_votes_0' => 'Noch keine Stimme abgegeben',
-    'voting_votes_1_1' => '1 Stimme abgegeben',
-    'voting_votes_1_x' => '%VOTES% Stimmen von 1 Mitglied abgegeben',
-    'voting_votes_x' => '%VOTES% Stimmen von %USERS% Mitgliedern abgegeben',
-    'voting_votes_x_same' => '%VOTES% Stimmen abgegeben',
+    'voting_votes_0' => 'Noch keine Stimme abgegeben.',
+    'voting_votes_1_1' => '1 Stimme abgegeben.',
+    'voting_votes_1_x' => '%VOTES% Stimmen von 1 Mitglied abgegeben.',
+    'voting_votes_x' => '%VOTES% Stimmen von %USERS% Mitgliedern abgegeben.',
+    'voting_votes_x_same' => '%VOTES% Stimmen abgegeben.',
+    'voting_remainig_0' => 'Alle Stimmen abgegeben.',
+    'voting_remainig_1' => 'Noch 1 Stimme zu vergeben.',
+    'voting_remainig_x' => 'Noch %VOTES% Stimmen zu vergeben.',
     'voting_notvoted' => 'Nicht abgestimmt',
     'voting_notvoted_yet' => 'Noch nicht abgestimmt',
     'voting_notvoted_0' => 'Niemand',
