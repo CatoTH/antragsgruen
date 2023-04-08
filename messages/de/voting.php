@@ -80,7 +80,7 @@ return [
     'settings_votingtype_motion' => '(Änderungs-)Anträge',
     'settings_votingtype_question' => 'Ein einzelner Abstimmungspunkt',
     'settings_title' => 'Titel',
-    'settings_question' => 'Genaue Frage',
+    'settings_question' => 'Erster Abstimmungspunkt',
     'settings_answers' => 'Antwortmöglichkeiten',
     'settings_answers_yesnoabst' => 'Ja, Nein, Enthaltung',
     'settings_answers_yesno' => 'Ja, Nein',

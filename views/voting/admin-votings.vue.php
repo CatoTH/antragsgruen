@@ -352,15 +352,15 @@ ob_start();
                       aria-label="<?= Html::encode(Yii::t('voting', 'settings_maxvotes_h')) ?>"
                       v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_maxvotes_h')) ?>'"></span>
             </legend>
-            <label>
+            <label class="maxVotesNone">
                 <input type="radio" value="0" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_maxvotes_none') ?>
             </label>
-            <label>
+            <label class="maxVotesAll">
                 <input type="radio" value="1" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_maxvotes_limit') ?>
             </label>
-            <label v-if="votePolicy && votePolicy.id === VOTE_POLICY_USERGROUPS">
+            <label class="maxVotesPerGroup" v-if="votePolicy && votePolicy.id === VOTE_POLICY_USERGROUPS">
                 <input type="radio" value="2" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_maxvotes_pergroup') ?>
             </label>
@@ -368,7 +368,7 @@ ob_start();
 
         <fieldset class="votesMaxVotesAll inputWithLabelHolder" v-if="maxVotesRestriction == 1">
             <label class="input-group input-group-sm">
-                <input type="number" class="form-control" v-model="maxVotesRestrictionAll"  :disabled="isOpen || isClosed" autocomplete="off">
+                <input type="number" class="form-control" v-model="maxVotesRestrictionAll" :disabled="isOpen || isClosed" autocomplete="off">
                 <span class="input-group-addon"><?= Yii::t('voting', 'settings_maxvotes_votes') ?></span>
             </label>
         </fieldset>
@@ -799,6 +799,9 @@ $html = ob_get_clean();
             },
             setVotersToUserGroup: function (userIds, newUserGroup) {
                 this.$emit('set-voters-to-user-group', this.voting.id, userIds, newUserGroup);
+            },
+            setMaxVotesRestrictionAll: function (val) { // Called from the tests
+                this.maxVotesRestrictionAll = val;
             },
             initMaxVotesRestrictionPerGroup: function () {
                 if (this.changedSettings.maxVotesRestrictionPerGroup !== null) {

@@ -1,6 +1,11 @@
 declare let Vue: any;
 
-const POLICY_USER_GROUPS  = 6;
+const POLICY_USER_GROUPS: number = 6;
+
+const ANSWER_TEMPLATE_YES_NO_ABSTENTION: number = 0;
+const ANSWER_TEMPLATE_YES_NO: number = 1;
+const ANSWER_TEMPLATE_YES: number = 3;
+const ANSWER_TEMPLATE_PRESENT: number = 2;
 
 export class VotingAdmin {
     private widget: any;
@@ -341,7 +346,8 @@ export class VotingAdmin {
         recalcQuestionListener();
 
         const recalcAnswerTypeListener = () => {
-            if (getRadioListValue('.answerTemplate input', '0') === '2') {
+            const selectedAnswerType = parseInt(getRadioListValue('.answerTemplate input', '0'), 10);
+            if (selectedAnswerType === ANSWER_TEMPLATE_PRESENT || selectedAnswerType === ANSWER_TEMPLATE_YES) {
                 majorityType.classList.add('hidden');
             } else {
                 majorityType.classList.remove('hidden');

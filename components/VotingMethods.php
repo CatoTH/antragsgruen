@@ -85,7 +85,7 @@ class VotingMethods
             $votingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
         }
         if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
-            if ($this->request->post('maxVotesByGroup') !== null) {
+            if ($this->request->post('maxVotesByGroup') !== null && $this->request->post('maxVotesByGroup') !== '') {
                 $settings->maxVotesByGroup = array_map(fn(array $setting): array => [
                     'maxVotes' => intval($setting['maxVotes']),
                     'groupId' => isset($setting['groupId']) && $setting['groupId'] !== '' ? intval($setting['groupId']) : null,

@@ -80,7 +80,7 @@ return [
     'settings_votingtype_motion' => 'Motions and/or amendments',
     'settings_votingtype_question' => 'A specific voting item',
     'settings_title' => 'Title',
-    'settings_question' => 'Question to vote on',
+    'settings_question' => 'First voting item',
     'settings_answers' => 'Answer options',
     'settings_answers_yesnoabst' => 'Yes, No, Abstention',
     'settings_answers_yesno' => 'Yes, No',
