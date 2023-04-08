@@ -13,23 +13,20 @@ class VotingItemGroup
     const ADHOC_PREFIX_MOTION = 'motion-';
     const ADHOC_PREFIX_AMENDMENT = 'amendment-';
 
-    /** @var string */
-    public $groupId;
-
-    /** @var string|null */
-    public $groupName;
+    public string $groupId;
+    public ?string $groupName;
 
     /** @var int[] */
-    public $motionIds = [];
+    public array $motionIds = [];
 
     /** @var int[] */
-    public $amendmentIds = [];
+    public array $amendmentIds = [];
 
     /** @var Motion[] */
-    public $motions = [];
+    public array $motions = [];
 
     /** @var Amendment[] */
-    public $amendments = [];
+    public array $amendments = [];
 
 
     /**

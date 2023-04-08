@@ -24,15 +24,15 @@ final class AnswerTemplates
     public static function fromVotingBlockData(int $templateId): array
     {
         switch ($templateId) {
-            case static::TEMPLATE_PRESENT:
-                return static::getCollectionPresent();
-            case static::TEMPLATE_YES_NO:
-                return static::getCollectionYesNo();
-            case static::TEMPLATE_YES:
-                return static::getCollectionYes();
-            case static::TEMPLATE_YES_NO_ABSTENTION:
+            case self::TEMPLATE_PRESENT:
+                return self::getCollectionPresent();
+            case self::TEMPLATE_YES_NO:
+                return self::getCollectionYesNo();
+            case self::TEMPLATE_YES:
+                return self::getCollectionYes();
+            case self::TEMPLATE_YES_NO_ABSTENTION:
             default:
-                return static::getCollectionYesNoAbstention();
+                return self::getCollectionYesNoAbstention();
         }
     }
 
@@ -42,9 +42,9 @@ final class AnswerTemplates
     private static function getCollectionYesNoAbstention(): array
     {
         return [
-            static::getYes(),
-            static::getNo(),
-            static::getAbstention(),
+            self::getYes(),
+            self::getNo(),
+            self::getAbstention(),
         ];
     }
 
@@ -54,8 +54,8 @@ final class AnswerTemplates
     private static function getCollectionYesNo(): array
     {
         return [
-            static::getYes(),
-            static::getNo(),
+            self::getYes(),
+            self::getNo(),
         ];
     }
 
@@ -65,7 +65,7 @@ final class AnswerTemplates
     private static function getCollectionYes(): array
     {
         return [
-            static::getYes(),
+            self::getYes(),
         ];
     }
 
@@ -75,14 +75,14 @@ final class AnswerTemplates
     private static function getCollectionPresent(): array
     {
         return [
-            static::getPresent()
+            self::getPresent()
         ];
     }
 
     public static function getYes(): Answer
     {
         $answer = new Answer();
-        $answer->dbId = static::VOTE_YES;
+        $answer->dbId = self::VOTE_YES;
         $answer->apiId = 'yes';
         $answer->title = \Yii::t('voting', 'vote_yes');
         $answer->statusId = IMotion::STATUS_ACCEPTED;
@@ -92,7 +92,7 @@ final class AnswerTemplates
     public static function getNo(): Answer
     {
         $answer = new Answer();
-        $answer->dbId = static::VOTE_NO;
+        $answer->dbId = self::VOTE_NO;
         $answer->apiId = 'no';
         $answer->title = \Yii::t('voting', 'vote_no');
         $answer->statusId = IMotion::STATUS_REJECTED;
@@ -102,7 +102,7 @@ final class AnswerTemplates
     public static function getAbstention(): Answer
     {
         $answer = new Answer();
-        $answer->dbId = static::VOTE_ABSTENTION;
+        $answer->dbId = self::VOTE_ABSTENTION;
         $answer->apiId = 'abstention';
         $answer->title = \Yii::t('voting', 'vote_abstention');
         $answer->statusId = null;
@@ -111,7 +111,7 @@ final class AnswerTemplates
 
     public static function getPresent(): Answer {
         $answer = new Answer();
-        $answer->dbId = static::VOTE_PRESENT;
+        $answer->dbId = self::VOTE_PRESENT;
         $answer->apiId = 'present';
         $answer->title = \Yii::t('voting', 'vote_present');
         $answer->statusId = null;
