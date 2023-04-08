@@ -43,6 +43,7 @@ export class VotingAdmin {
                 <voting-admin-widget
                     v-if="!isSorting"
                     v-for="voting in votings"
+                    :key="voting.id"
                     :voting="voting"
                     :addableMotions="addableMotions"
                     :alreadyAddedItems="alreadyAddedItems"
