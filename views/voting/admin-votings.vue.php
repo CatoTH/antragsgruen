@@ -841,7 +841,6 @@ $html = ob_get_clean();
                 }
 
                 let maxVotesSettings = null;
-                console.log(this.maxVotesRestriction);
                 if (this.maxVotesRestriction == 1) {
                     maxVotesSettings = [{
                         "groupId": null,
