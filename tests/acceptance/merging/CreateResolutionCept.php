@@ -62,6 +62,7 @@ $I->see('Beschlusstext', 'h3');
 
 
 $I->wantTo('see the diff view');
+$I->clickJS('.motionDataTable .btnHistoryOpener');
 $I->click('.changesLink a');
 $I->see('Oamoi a Maß', '.motionChangeView.section2 .inserted');
 $I->dontSeeElement('.motionChangeView .section3');

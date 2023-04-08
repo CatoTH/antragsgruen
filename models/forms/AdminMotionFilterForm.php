@@ -115,7 +115,7 @@ class AdminMotionFilterForm
         if ($this->versionNames === null) {
             $this->versionNames = [];
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-                foreach ($plugin::getMotionVersions($this->consultation) as $key => $val) {
+                foreach ($plugin::getMotionVersions($this->consultation) ?? [] as $key => $val) {
                     $this->versionNames[$key] = $val;
                 }
             }

@@ -526,20 +526,18 @@ trait MotionActionsTrait
                 $motion->proposalVisibleFrom = null;
             }
 
-            if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
-                try {
-                    $motion->setProposalVotingPropertiesFromRequest(
-                        $this->getHttpRequest()->post('votingStatus', null),
-                        $this->getHttpRequest()->post('votingBlockId', null),
-                        $this->getHttpRequest()->post('votingItemBlockId', []),
-                        $this->getHttpRequest()->post('votingItemBlockName', ''),
-                        $this->getHttpRequest()->post('votingBlockTitle', ''),
-                        true,
-                        $ppChanges
-                    );
-                } catch (FormError $e) {
-                    return new RestApiExceptionResponse(400, $e->getMessage());
-                }
+            try {
+                $motion->setProposalVotingPropertiesFromRequest(
+                    $this->getHttpRequest()->post('votingStatus', null),
+                    $this->getHttpRequest()->post('votingBlockId', null),
+                    $this->getHttpRequest()->post('votingItemBlockId', []),
+                    $this->getHttpRequest()->post('votingItemBlockName', ''),
+                    $this->getHttpRequest()->post('votingBlockTitle', ''),
+                    true,
+                    $ppChanges
+                );
+            } catch (FormError $e) {
+                return new RestApiExceptionResponse(400, $e->getMessage());
             }
 
             if ($ppChanges->hasChanges()) {

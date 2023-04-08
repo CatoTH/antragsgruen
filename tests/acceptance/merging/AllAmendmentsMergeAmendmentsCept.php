@@ -188,19 +188,21 @@ $I->submitForm('#motionConfirmedForm', [], '');
 
 $I->wantTo('check if the modifications were made');
 $I->see('A2', 'h1');
-$I->see('Version 2', '.motionHistory');
+$I->see('Version 2', '.motionDataTable .historyOpener .currVersion');
 $I->see('Oamoi a Maß');
 $I->see('Schooe');
 $I->see('With an hand-written appendix.');
 $I->dontSee('Neuer Punkt');
 $I->see('Alternatives Ende');
-$I->see('Version 1', '.motionHistory a.motion2');
+$I->clickJS('.motionDataTable .btnHistoryOpener');
+$I->see('Version 1', '.motionDataTable .motionHistory a.motion2');
 $I->dontSee('Leonhardifahrt ma da middn');
 
 $I->see('Accepted by mayority', '.votingResultRow');
 $I->see('Ja: 15, Nein: 5, Enthaltungen: 2', '.votingResultRow');
 
-$I->click('.motionHistory a.motion2');
+$I->clickJS('.motionDataTable .btnHistoryOpener');
+$I->click('.motionDataTable .motionHistory a.motion2');
 $I->see('Achtung: dies ist eine alte Fassung', '.motionReplacedBy.alert-danger');
 $I->seeElement('.bookmarks .amendment276');
 $I->seeElement('.bookmarks .amendment3');
@@ -211,6 +213,7 @@ $I->see('Ja: 15, Nein: 4, Ungültig: 1', '.votingResultRow');
 
 $I->gotoConsultationHome();
 $I->click('.motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
-$I->click('.motionHistory a.motion2');
+$I->clickJS('.motionDataTable .btnHistoryOpener');
+$I->click('.motionDataTable .motionHistory a.motion2');
 $I->click('.amendment274 a');
 $I->see('Angenommen', '.statusRow');

@@ -70,7 +70,7 @@ $I->see('1', '.currentSpeechInline .number');
 $I->see('Testadmin', '.currentSpeechInline .nameList');
 $I->executeJS('var btn = document.querySelectorAll(".waitingSubqueues .btnWithdraw").item(0), evt = document.createEvent("HTMLEvents"); evt.initEvent("click", false, true); btn.dispatchEvent(evt);');
 $I->see('0', '.currentSpeechInline .number');
-$I->dontSee('Testadmin', '.currentSpeechInline .nameList');
+$I->dontSee('Testadmin', '.currentSpeechInline');
 
 // Testing administration functions
 $I->click('.currentSpeechInline .speechAdminLink');
