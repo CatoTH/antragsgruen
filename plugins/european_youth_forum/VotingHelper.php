@@ -95,7 +95,7 @@ class VotingHelper
     /**
      * A YFJ Voting gets special treatment if:
      * - Policy is set to UserGroups, and both a NYC and INGYO user group is set
-     * - Answers are set to Yes/No/Abstention
+     * - Answers are set to Yes/No/Abstention or Yes
      *
      * Keep this in consistent with votings.mixins.vue.php
      */
@@ -128,7 +128,10 @@ class VotingHelper
             }
         }
 
-        return $hasYes && $hasNo && $hasAbstention;
+        return (
+            (count($votingBlock->getAnswers()) === 3 && $hasYes && $hasNo && $hasAbstention) ||
+            (count($votingBlock->getAnswers()) === 1 && $hasYes)
+        );
     }
 
     /**

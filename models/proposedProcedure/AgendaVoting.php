@@ -141,6 +141,7 @@ class AgendaVoting
 
         if ($context === static::API_CONTEXT_ADMIN) {
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
+            $votingBlockJson['max_votes_by_group'] = ($this->voting ? $this->voting->getSettings()->maxVotesByGroup : null);
         }
         if ($this->voting) {
             list($total, $users) = $this->voting->getVoteStatistics();
@@ -155,6 +156,10 @@ class AgendaVoting
             }
         } else {
             $votingBlockJson['vote_policy'] = ['id' => IPolicy::POLICY_NOBODY];
+        }
+
+        if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
+            $votingBlockJson['votes_remaining'] = $this->voting->getUserRemainingVotes($user);
         }
 
         foreach ($this->items as $item) {

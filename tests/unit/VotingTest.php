@@ -6,6 +6,7 @@ namespace unit;
 
 use app\components\VotingMethods;
 use app\models\db\{Amendment, Consultation, User, VotingBlock};
+use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
 use yii\web\Request;
 
@@ -15,7 +16,7 @@ class VotingTest extends DBTestBase
     {
         $consultation = Consultation::findOne(['urlPath' => 'std-parteitag']);
         $request = new class($postdata) extends Request {
-            private $postdata;
+            private ?array $postdata;
 
             public function __construct(?array $postdata, $config = [])
             {
@@ -23,7 +24,7 @@ class VotingTest extends DBTestBase
                 $this->postdata = $postdata;
             }
 
-            public function getBodyParams()
+            public function getBodyParams(): ?array
             {
                 return $this->postdata;
             }
@@ -67,13 +68,16 @@ class VotingTest extends DBTestBase
         $votingBlock->refresh();
     }
 
-    private function voteForFirstAmendment(VotingBlock $votingBlock, string $userEmail, string $vote): void
+    /**
+     * @throws FormError
+     */
+    private function voteForAmendment(VotingBlock $votingBlock, string $userEmail, string $vote, string $itemId): void
     {
         $votingMethods = $this->getVotingMethods([
             'votes' => [
                 [
                     'itemType' => 'amendment',
-                    'itemId' => '3',
+                    'itemId' => $itemId,
                     'vote' => $vote,
                     'public' => $votingBlock->votesPublic,
                 ]
@@ -81,6 +85,55 @@ class VotingTest extends DBTestBase
         ]);
         $user = User::findOne(['email' => $userEmail]);
         $votingMethods->userVote($votingBlock, $user);
+        $votingBlock->refresh();
+    }
+
+    private function voteForFirstAmendment(VotingBlock $votingBlock, string $userEmail, string $vote): void
+    {
+        $this->voteForAmendment($votingBlock, $userEmail, $vote, '3');
+    }
+
+    private function cannotVoteForFirstAmendment(VotingBlock $votingBlock, string $userEmail, string $vote): void
+    {
+        $found = false;
+        try {
+            $this->voteForAmendment($votingBlock, $userEmail, $vote, '3');
+        } catch (FormError $e) {
+            $found = true;
+        }
+        $this->assertTrue($found, 'No exception thrown when voting for the first amendment');
+    }
+
+    private function voteForSecondAmendment(VotingBlock $votingBlock, string $userEmail, string $vote): void
+    {
+        $this->voteForAmendment($votingBlock, $userEmail, $vote, '270');
+    }
+
+    private function cannotVoteForSecondAmendment(VotingBlock $votingBlock, string $userEmail, string $vote): void
+    {
+        $found = false;
+        try {
+            $this->voteForAmendment($votingBlock, $userEmail, $vote, '270');
+        } catch (FormError $e) {
+            $found = true;
+        }
+        $this->assertTrue($found, 'No exception thrown when voting for the second amendment');
+    }
+
+    private function voteForThirdAmendment(VotingBlock $votingBlock, string $userEmail, string $vote): void
+    {
+        $this->voteForAmendment($votingBlock, $userEmail, $vote, '274');
+    }
+
+    private function cannotVoteForThirdAmendment(VotingBlock $votingBlock, string $userEmail, string $vote): void
+    {
+        $found = false;
+        try {
+            $this->voteForAmendment($votingBlock, $userEmail, $vote, '274');
+        } catch (FormError $e) {
+            $found = true;
+        }
+        $this->assertTrue($found, 'No exception thrown when voting for the third amendment');
     }
 
     private function assertAmendmentVotingHasStatus(int $status): void
@@ -267,5 +320,35 @@ class VotingTest extends DBTestBase
         $this->assertCount(1, $publishedVotings);
 
         $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
+    }
+
+    public function testVotingLimitsVotesForGroups(): void
+    {
+        $votingBlock = $this->openVotingWithSettings(['maxVotesByGroup' => [
+            [
+                'groupId' => null,
+                'maxVotes' => 0,
+            ],
+            [
+                'groupId' => 2, // Veranstaltungs-Admin -> consultationadmin@example.org
+                'maxVotes' => 1,
+            ],
+            [
+                'groupId' => 3, // Antragskommission -> proposaladmin@example.org
+                'maxVotes' => 2,
+            ],
+        ]]);
+
+        $this->cannotVoteForFirstAmendment($votingBlock, 'testadmin@example.org', 'yes');
+        $this->voteForFirstAmendment($votingBlock, 'consultationadmin@example.org', 'yes');
+        $this->voteForFirstAmendment($votingBlock, 'proposaladmin@example.org', 'no');
+
+        $this->cannotVoteForSecondAmendment($votingBlock, 'testadmin@example.org', 'yes');
+        $this->cannotVoteForSecondAmendment($votingBlock, 'consultationadmin@example.org', 'yes');
+        $this->voteForSecondAmendment($votingBlock, 'proposaladmin@example.org', 'no');
+
+        $this->cannotVoteForThirdAmendment($votingBlock, 'testadmin@example.org', 'yes');
+        $this->cannotVoteForThirdAmendment($votingBlock, 'consultationadmin@example.org', 'yes');
+        $this->cannotVoteForThirdAmendment($votingBlock, 'proposaladmin@example.org', 'no');
     }
 }

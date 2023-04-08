@@ -40,7 +40,7 @@ ob_start();
             <?= Yii::t('voting', 'admin_voting_use') ?>
             <span class="glyphicon glyphicon-info-sign"
                   aria-label="<?= Html::encode(Yii::t('voting', 'admin_voting_use_h')) ?>"
-                  v-tooltip="'<?= addslashes(Yii::t('voting', 'admin_voting_use_h')) ?>'"></span>
+                  v-tooltip="'<?= Html::encode(Yii::t('voting', 'admin_voting_use_h')) ?>'"></span>
         </label>
     </h2>
     <div class="content votingShow" v-if="!settingsOpened">
@@ -329,16 +329,61 @@ ob_start();
                 <?= Yii::t('voting', 'settings_answers_yesno') ?>
             </label>
             <label>
+                <input type="radio" :value="ANSWER_TEMPLATE_YES" v-model="answerTemplate" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_answers_yes') ?>
+                <span class="glyphicon glyphicon-info-sign"
+                      :aria-label="'<?= Html::encode(Yii::t('voting', 'settings_answers_yesh')) ?>'" v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_answers_yesh')) ?>'"></span>
+            </label>
+            <label>
                 <input type="radio" :value="ANSWER_TEMPLATE_PRESENT" v-model="answerTemplate" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_answers_present') ?>
                 <span class="glyphicon glyphicon-info-sign"
-                  :aria-label="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'" v-tooltip="'<?= Yii::t('voting', 'settings_answers_presenth') ?>'"></span>
+                  :aria-label="'<?= Html::encode(Yii::t('voting', 'settings_answers_presenth')) ?>'" v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_answers_presenth')) ?>'"></span>
             </label>
         </fieldset>
         <fieldset class="votePolicy">
             <legend><?= Yii::t('voting', 'settings_votepolicy') ?>:</legend>
             <policy-select allow-anonymous="false" :disabled="!isPreparing && !isOffline" :policy="votePolicy" :all-groups="voting.user_groups" @change="setPolicy($event)" ref="policy-select"></policy-select>
         </fieldset>
+
+        <fieldset class="votesMaxVotes">
+            <legend><?= Yii::t('voting', 'settings_maxvotes') ?>:
+                <span class="glyphicon glyphicon-info-sign"
+                      aria-label="<?= Html::encode(Yii::t('voting', 'settings_maxvotes_h')) ?>"
+                      v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_maxvotes_h')) ?>'"></span>
+            </legend>
+            <label class="maxVotesNone">
+                <input type="radio" value="0" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_maxvotes_none') ?>
+            </label>
+            <label class="maxVotesAll">
+                <input type="radio" value="1" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_maxvotes_limit') ?>
+            </label>
+            <label class="maxVotesPerGroup" v-if="votePolicy && votePolicy.id === VOTE_POLICY_USERGROUPS">
+                <input type="radio" value="2" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
+                <?= Yii::t('voting', 'settings_maxvotes_pergroup') ?>
+            </label>
+        </fieldset>
+
+        <fieldset class="votesMaxVotesAll inputWithLabelHolder" v-if="maxVotesRestriction == 1">
+            <label class="input-group input-group-sm">
+                <input type="number" class="form-control" v-model="maxVotesRestrictionAll" :disabled="isOpen || isClosed" autocomplete="off">
+                <span class="input-group-addon"><?= Yii::t('voting', 'settings_maxvotes_votes') ?></span>
+            </label>
+        </fieldset>
+
+        <fieldset class="votesMaxVotesPerGroup inputWithLabelHolder" v-if="maxVotesRestriction == 2">
+            <label class="input-group input-group-sm" v-for="groupId in votePolicy.user_groups">
+                <input type="number" class="form-control" :value="getMaxVotesRestrictionPerGroup(groupId)"
+                       @change="setMaxVotesRestrictionPerGroup(groupId, $event)"
+                       @keyup="setMaxVotesRestrictionPerGroup(groupId, $event)"
+                       :disabled="isOpen || isClosed"
+                       autocomplete="off">
+                <span class="input-group-addon">{{ getGroupName(groupId) }}</span>
+            </label>
+        </fieldset>
+
         <fieldset class="majorityTypeSettings" v-if="selectedAnswersHaveMajority">
             <legend><?= Yii::t('voting', 'settings_majoritytype') ?></legend>
             <label v-for="majorityTypeDef in MAJORITY_TYPES">
@@ -384,11 +429,11 @@ ob_start();
             </label>
             <div class="hint"><?= Yii::t('voting', 'settings_votespublic_hint') ?></div>
         </fieldset>
-        <fieldset class="votesTimer">
+        <fieldset class="inputWithLabelHolder votesTimer">
             <legend><?= Yii::t('voting', 'settings_timer') ?>:
                 <span class="glyphicon glyphicon-info-sign"
                       aria-label="<?= Html::encode(Yii::t('voting', 'settings_timer_h')) ?>"
-                      v-tooltip="'<?= addslashes(Yii::t('voting', 'settings_timer_h')) ?>'"></span>
+                      v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_timer_h')) ?>'"></span>
             </legend>
             <label class="input-group input-group-sm">
                 <input type="number" class="form-control" v-model="votingTime" autocomplete="off">
@@ -399,7 +444,7 @@ ob_start();
             <?= Yii::t('voting', 'settings_motionassign') ?>:
             <span class="glyphicon glyphicon-info-sign"
                   aria-label="<?= Html::encode(Yii::t('voting', 'settings_motionassign_h')) ?>"
-                  v-tooltip="'<?= addslashes(Yii::t('voting', 'settings_motionassign_h')) ?>'"></span>
+                  v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_motionassign_h')) ?>'"></span>
             <br>
             <select class="stdDropdown" v-model="settingsAssignedMotion">
                 <option :value="''"> - <?= Yii::t('voting', 'settings_motionassign_none') ?> - </option>
@@ -458,6 +503,9 @@ $html = ob_get_clean();
                     answerTemplate: null,
                     assignedMotion: null,
                     majorityType: null,
+                    maxVotesRestriction: null,
+                    maxVotesRestrictionAll: null,
+                    maxVotesRestrictionPerGroup: null,
                     quorumType: null,
                     votesPublic: null,
                     resultsPublic: null,
@@ -501,6 +549,40 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.changedSettings.majorityType = value;
+                }
+            },
+            maxVotesRestriction: {
+                get: function () {
+                    if (this.changedSettings.maxVotesRestriction === null) {
+                        if (this.voting.max_votes_by_group) {
+                            if (this.voting.max_votes_by_group.length === 1 && this.voting.max_votes_by_group[0].groupId === null) {
+                                this.changedSettings.maxVotesRestriction = 1;
+                            } else {
+                                this.changedSettings.maxVotesRestriction = 2;
+                            }
+                        } else {
+                            this.changedSettings.maxVotesRestriction = 0;
+                        }
+                    }
+                    return this.changedSettings.maxVotesRestriction;
+                },
+                set: function (value) {
+                    this.changedSettings.maxVotesRestriction = value;
+                }
+            },
+            maxVotesRestrictionAll: {
+                get: function () {
+                    if (this.changedSettings.maxVotesRestrictionAll === null) {
+                        if (this.voting.max_votes_by_group && this.voting.max_votes_by_group.length === 1 && this.voting.max_votes_by_group[0].groupId === null) {
+                            this.changedSettings.maxVotesRestrictionAll = this.voting.max_votes_by_group[0].maxVotes;
+                        } else {
+                            this.changedSettings.maxVotesRestrictionAll = '';
+                        }
+                    }
+                    return this.changedSettings.maxVotesRestrictionAll;
+                },
+                set: function (value) {
+                    this.changedSettings.maxVotesRestrictionAll = value;
                 }
             },
             quorumType: {
@@ -605,6 +687,9 @@ $html = ob_get_clean();
                 return Object.values(this.QUORUM_TYPES).find(quorumType => {
                    return quorumType.id === voting.quorum_type;
                 });
+            },
+            getGroupName: function (groupId) {
+                return this.userGroups.find(group => group.id == groupId).title;
             },
             removeItem: function (groupedVoting) {
                 this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);
@@ -715,6 +800,37 @@ $html = ob_get_clean();
             setVotersToUserGroup: function (userIds, newUserGroup) {
                 this.$emit('set-voters-to-user-group', this.voting.id, userIds, newUserGroup);
             },
+            setMaxVotesRestrictionAll: function (val) { // Called from the tests
+                this.maxVotesRestrictionAll = val;
+            },
+            initMaxVotesRestrictionPerGroup: function () {
+                if (this.changedSettings.maxVotesRestrictionPerGroup !== null) {
+                    return;
+                }
+
+                const setValues = {};
+                if (this.voting.max_votes_by_group) {
+                    this.voting.max_votes_by_group.forEach(group => {
+                        if (group.groupId) {
+                            setValues[group.groupId.toString()] = group.maxVotes;
+                        }
+                    });
+                }
+
+                this.changedSettings.maxVotesRestrictionPerGroup = []
+                this.votePolicy.user_groups.forEach(groupId => {
+                    const setValue = setValues[groupId.toString()];
+                    this.changedSettings.maxVotesRestrictionPerGroup[groupId] = (setValue !== undefined ? setValue : '');
+                });
+            },
+            getMaxVotesRestrictionPerGroup: function(groupId) {
+                this.initMaxVotesRestrictionPerGroup();
+                return this.changedSettings.maxVotesRestrictionPerGroup[groupId];
+            },
+            setMaxVotesRestrictionPerGroup: function(groupId, $event) {
+                $event.stopPropagation();
+                this.changedSettings.maxVotesRestrictionPerGroup[groupId] = $event.target.value;
+            },
             openSettings: function () {
                 this.settingsOpened = true;
             },
@@ -726,17 +842,41 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.votePolicy, this.resultsPublic, this.votesPublic, this.votingTime, this.settingsAssignedMotion);
+
+                let maxVotesSettings = null;
+                if (this.maxVotesRestriction == 1) {
+                    maxVotesSettings = [{
+                        "groupId": null,
+                        "maxVotes": this.maxVotesRestrictionAll
+                    }];
+                }
+                if (this.maxVotesRestriction == 2) {
+                    maxVotesSettings = [];
+                    Object.keys(this.changedSettings.maxVotesRestrictionPerGroup).forEach(groupId => {
+                        maxVotesSettings.push({
+                            "groupId": parseInt(groupId, 10),
+                            "maxVotes": parseInt(this.changedSettings.maxVotesRestrictionPerGroup[groupId], 10)
+                        })
+                    });
+                }
+
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.votePolicy, maxVotesSettings, this.resultsPublic, this.votesPublic, this.votingTime, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;
                 this.changedSettings.quorumType = null;
                 this.changedSettings.answerTemplate = null;
                 this.changedSettings.votePolicy = null;
                 this.changedSettings.votingTime = null;
+                this.changedSettings.maxVotesRestriction = null;
+                this.changedSettings.maxVotesRestrictionAll = null;
+                this.changedSettings.maxVotesRestrictionPerGroup = null;
                 this.settingsOpened = false;
             },
             setPolicy: function (data) {
                 this.votePolicy = data;
+                if (this.votePolicy.id != this.POLICY_USER_GROUPS && this.maxVotesRestriction == 2) {
+                    this.maxVotesRestriction = 0;
+                }
             },
             deleteVoting: function () {
                 const widget = this;

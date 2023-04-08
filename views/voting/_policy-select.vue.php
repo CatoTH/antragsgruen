@@ -4,7 +4,6 @@ use app\models\policies\IPolicy;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-/** @var \app\models\db\Consultation */
 $consultation = $controller->consultation;
 
 $allPolicies = [];
@@ -97,6 +96,7 @@ $html = ob_get_clean();
                 this.$emit('change', data);
             },
             setPolicy($event) {
+                $event.stopPropagation();
                 this.policyId = parseInt($event.target.value, 10);
                 this.onChange();
             },

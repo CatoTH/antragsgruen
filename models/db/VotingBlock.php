@@ -241,6 +241,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         }
     }
 
+    /**
+     * @return Vote[]
+     */
     public function getVotesForQuestion(VotingQuestion $question): array
     {
         $this->initVotesSortedCache();
@@ -249,6 +252,20 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         } else {
             return [];
         }
+    }
+
+    /**
+     * @return Vote[]
+     */
+    public function getVotesForUser(User $user): array
+    {
+        $votes = [];
+        foreach ($this->votes as $vote) {
+            if ($vote->userId === $user->id) {
+                $votes[] = $vote;
+            }
+        }
+        return $votes;
     }
 
     public function getVotesForVotingItem(IVotingItem $votingItem): array
@@ -317,6 +334,43 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return $this->getVotingPolicy()->checkUser($user, false, false);
     }
 
+    /**
+     * If there are vote limits set for this voting block, this returns the maximum number of votes applicable
+     * for the given user based on their user group memberships.
+     * If the user has multiple user groups eligible to vote here, then the one with the most votes is taken.
+     * The user group with ID==null (default) applies to all user.
+     * If there are vote limits set, but the user is not member of any eligible group and no default group is set, 0 votes are allows.
+     *
+     * @return int|null - null means no restriction
+     */
+    private function getMaxVotesForUser(User $user): ?int
+    {
+        $maxVotesSettings = $this->getSettings()->maxVotesByGroup;
+        if ($maxVotesSettings === null) {
+            return null;
+        }
+        $userGroupIds = array_map(fn(ConsultationUserGroup $group) => $group->id, $user->getConsultationUserGroups($this->getMyConsultation()));
+        $maxVotes = 0;
+        foreach ($maxVotesSettings as $setting) {
+            if ($setting['groupId'] === null || in_array($setting['groupId'], $userGroupIds)) {
+                if ($setting['maxVotes'] > $maxVotes) {
+                    $maxVotes = $setting['maxVotes'];
+                }
+            }
+        }
+
+        return $maxVotes;
+    }
+
+    public function getUserRemainingVotes(User $user): ?int
+    {
+        $maxVotes = $this->getMaxVotesForUser($user);
+        if ($maxVotes === null) {
+            return null;
+        }
+        return $maxVotes - count($this->getVotesForUser($user));
+    }
+
     public function userIsCurrentlyAllowedToVoteFor(User $user, IVotingItem $item, ?Vote $vote): bool
     {
         if ($vote) {
@@ -324,6 +378,11 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             return false;
         }
         if ($this->votingStatus !== static::STATUS_OPEN) {
+            return false;
+        }
+
+        $remainingVotes = $this->getUserRemainingVotes($user);
+        if ($remainingVotes !== null && $remainingVotes <= 0) {
             return false;
         }
 

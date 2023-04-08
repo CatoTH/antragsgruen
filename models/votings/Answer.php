@@ -6,17 +6,10 @@ namespace app\models\votings;
 
 class Answer implements \JsonSerializable
 {
-    /** @var int */
-    public $dbId;
-
-    /** @var string */
-    public $apiId;
-
-    /** @var string */
-    public $title;
-
-    /** @var null|int */
-    public $statusId = null;
+    public int $dbId;
+    public string $apiId;
+    public string $title;
+    public ?int $statusId = null;
 
     public function jsonSerialize(): array
     {

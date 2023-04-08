@@ -52,6 +52,7 @@ use app\models\policies\UserGroups;
 
                 ANSWER_TEMPLATE_YES_NO_ABSTENTION: <?= AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION ?>,
                 ANSWER_TEMPLATE_YES_NO: <?= AnswerTemplates::TEMPLATE_YES_NO ?>,
+                ANSWER_TEMPLATE_YES: <?= AnswerTemplates::TEMPLATE_YES ?>,
                 ANSWER_TEMPLATE_PRESENT: <?= AnswerTemplates::TEMPLATE_PRESENT ?>,
 
                 ACTIVITY_TYPE_OPENED: <?= VotingBlock::ACTIVITY_TYPE_OPENED ?>,
