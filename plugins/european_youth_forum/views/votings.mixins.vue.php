@@ -33,6 +33,12 @@
                 // Keep this consistent with VotingHelper.php
                 return this.nycGroup !== null && this.ingyoGroup !== null;
             },
+            isListWithOnlyYesVoting: function() {
+                if (!this.isYfjVoting) {
+                    return false;
+                }
+                return this.voting.answers.length === 1 && this.voting.answers[0].api_id === 'yes';
+            },
             yfjNycUsersInSelectedVotingRound: function () {
                 for (let i = 0; i < this.voting.user_groups.length; i++) {
                     if (this.voting.user_groups[i].id === this.nycGroup) {

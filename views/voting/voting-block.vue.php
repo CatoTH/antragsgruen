@@ -164,10 +164,10 @@ ob_start();
                         Yii::t('voting', 'voting_votes_x')) ?></span>
                 <span v-if="voting.votes_users > 1 && voting.votes_users === voting.votes_total"><?= str_replace(['%VOTES%'], ['{{ voting.votes_total }}'],
                         Yii::t('voting', 'voting_votes_x_same')) ?></span>
-
-                <span v-if="voting.votes_remaining === 0"> <?= Yii::t('voting', 'voting_remainig_0') ?></span>
-                <span v-if="voting.votes_remaining === 1"> <?= Yii::t('voting', 'voting_remainig_1') ?></span>
-                <span v-if="voting.votes_remaining > 1"> <?= str_replace('%VOTES%', '{{ voting.votes_remaining }}', Yii::t('voting', 'voting_remainig_x')) ?></span>
+                <span>&nbsp;</span>
+                <span v-if="voting.votes_remaining === 0"><?= Yii::t('voting', 'voting_remainig_0') ?></span>
+                <span v-if="voting.votes_remaining === 1"><?= Yii::t('voting', 'voting_remainig_1') ?></span>
+                <span v-if="voting.votes_remaining > 1"><?= str_replace('%VOTES%', '{{ voting.votes_remaining }}', Yii::t('voting', 'voting_remainig_x')) ?></span>
             </div>
             <div class="votedCounter" v-if="votingIsPresenceCall">
                 <strong><?= Yii::t('voting', 'voting_votes_status') ?>:&nbsp;</strong>
