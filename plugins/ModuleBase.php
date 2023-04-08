@@ -3,7 +3,7 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Amendment, Consultation, Motion, Site, User, Vote, VotingBlock};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, Site, User, Vote, VotingBlock};
 use app\components\LoginProviderInterface;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\http\ResponseInterface;
@@ -283,5 +283,10 @@ class ModuleBase extends Module
     public static function getConsultationHomePage(Consultation $consultation): ?ResponseInterface
     {
         return null;
+    }
+
+    public static function onBeforeProposedProcedureStatusSave(IMotion $imotion): IMotion
+    {
+        return $imotion;
     }
 }

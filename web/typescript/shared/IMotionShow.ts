@@ -42,11 +42,27 @@ class IMotionShow {
 
     public initCmdEnterSubmit() {
         $(document).on('keypress', 'form textarea', (ev) => {
-            console.log(ev.originalEvent);
             if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
                 let $textarea = $(ev.currentTarget);
                 $textarea.parents("form").first().find("button[type=submit]").trigger("click");
             }
+        });
+    }
+
+    public initDataTableActions() {
+        document.querySelectorAll('.tagAdderHolder').forEach(el => {
+            el.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                el.classList.add('hidden');
+                document.getElementById('tagAdderForm').classList.remove('hidden');
+            });
+        });
+
+        document.querySelectorAll('.motionData .btnHistoryOpener').forEach(el => {
+           el.addEventListener('click', () => {
+               document.querySelector('.motionData .historyOpener').classList.add('hidden');
+               document.querySelector('.motionData .fullHistory').classList.remove('hidden');
+           });
         });
     }
 }

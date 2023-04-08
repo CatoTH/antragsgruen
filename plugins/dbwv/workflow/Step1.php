@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
+use app\components\MotionNumbering;
 use app\components\RequestContext;
 use app\models\forms\MotionDeepCopy;
-use app\plugins\dbwv\Module;
 use app\models\db\{ConsultationSettingsTag, IMotion, Motion};
 use app\models\exceptions\{Access, NotFound};
-use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 class Step1
 {
@@ -34,6 +33,9 @@ class Step1
         }
 
         if ($motion->version === Workflow::STEP_V1) {
+            if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V2)) {
+                throw new Access('A new version of this motion was already created');
+            }
             $v2Motion = MotionDeepCopy::copyMotion(
                 $motion,
                 $motion->getMyMotionType(),
@@ -43,6 +45,9 @@ class Step1
                 true
             );
         } else {
+            if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V3)) {
+                throw new Access('A new version of this motion was already created');
+            }
             $v2Motion = $motion;
         }
         unset($motion);

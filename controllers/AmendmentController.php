@@ -3,8 +3,7 @@
 namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
     HtmlResponse,
@@ -29,7 +28,7 @@ use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
-use yii\web\{NotFoundHttpException, Response};
+use yii\web\NotFoundHttpException;
 
 class AmendmentController extends Base
 {
@@ -460,6 +459,11 @@ class AmendmentController extends Base
         $ppChanges = new ProposedProcedureChange(null);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                /** @var Amendment $amendment */
+                $amendment = $plugin::onBeforeProposedProcedureStatusSave($amendment);
+            }
+
             $setStatus = intval($this->getHttpRequest()->post('setStatus'));
             if ($amendment->proposalStatus !== $setStatus) {
                 $ppChanges->setProposalStatusChanges($amendment->proposalStatus, $setStatus);
@@ -524,7 +528,7 @@ class AmendmentController extends Base
                 );
             } catch (FormError $e) {
                 $response['success'] = false;
-                $response['error']   = $e->getMessage();
+                $response['error'] = $e->getMessage();
                 return new JsonResponse($response);
             }
 

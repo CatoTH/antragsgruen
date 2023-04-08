@@ -1,23 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\plugins\member_petitions;
 
 use app\models\settings\Consultation;
 
 class ConsultationSettings extends Consultation
 {
-    /** @var string */
-    public $organizationId = '';
-    /** @var int */
-    public $replyDeadline = 14;
-    /** @var int */
-    public $minDiscussionTime = 21;
-    /** @var int */
-    public $maxOverallTime = 0;
-    /** @var bool */
-    public $petitionPage = true;
-    /** @var bool */
-    public $canAlwaysRespond = false;
+    public string $organizationId = '';
+    public int $replyDeadline = 14;
+    public int $minDiscussionTime = 21;
+    public int $maxOverallTime = 0;
+    public bool $petitionPage = true;
+    public bool $canAlwaysRespond = false;
 
     public function getStartLayoutView(): string
     {

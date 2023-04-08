@@ -128,13 +128,16 @@ if ($motion->version === Motion::VERSION_DEFAULT && $motionDataMode === \app\mod
 MotionLayoutHelper::addTagsRow($motion, $motion->getPublicTopicTags(), $motionData);
 
 if (count($motionHistory) > 1) {
-    $historyContent = '';
+    $historyIsOpen = ($motionHistory[count($motionHistory) - 1]->id !== $motion->id);
+    $historyContent = '<div class="fullHistory' . ($historyIsOpen ? '' : ' hidden') . '">';
     foreach ($motionHistory as $motionHis) {
-        $historyLine = '<div>';
+        $historyLine = '';
         $versionName = Yii::t('motion', 'version') . ' ' . $motionHis->version;
         if ($motionHis->id === $motion->id) {
+            $historyLine .= '<div class="historyLine currentVersion">';
             $historyLine .= '<span class="currVersion">' . Html::encode($versionName) . '</span>';
         } else {
+            $historyLine .= '<div class="historyLine otherVersion">';
             $className = 'motion' . $motionHis->id;
             $historyLine .= Html::a(Html::encode($versionName), UrlHelper::createMotionUrl($motionHis), ['class' => $className]);
         }
@@ -154,6 +157,14 @@ if (count($motionHistory) > 1) {
 
         $historyContent .= $historyLine;
     }
+    $historyContent .= '</div><div class="historyOpener' . ($historyIsOpen ? ' hidden' : '') . '">';
+    $historyContent .= '<div class="historyLine currentVersion">';
+    $versionName = Yii::t('motion', 'version') . ' ' . $motion->version;
+    $historyContent .= '<span class="currVersion">' . Html::encode($versionName) . '</span>';
+    $historyContent .= ' <button class="btn btn-link btnHistoryOpener" type="button">';
+    $historyContent .= '<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>';
+    $historyContent .= Yii::t('motion', 'replaces_show_history') . '</button>';
+    $historyContent .= '</div>';
 
     $motionData[] = [
         'rowClass' => 'motionHistory',

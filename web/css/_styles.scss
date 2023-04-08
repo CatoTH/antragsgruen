@@ -132,7 +132,7 @@
     margin-top: 20px;
   }
   .motionHistory {
-    .currVersion {
+    .fullHistory .currVersion {
       font-weight: bold;
     }
     .date {
@@ -142,6 +142,11 @@
     }
     .changesLink {
       font-size: 0.8em;
+    }
+    .btnHistoryOpener {
+      font-weight: normal;
+      font-size: 0.8em;
+      padding: 0 0 0 15px;
     }
   }
   .motionReplayedBy {

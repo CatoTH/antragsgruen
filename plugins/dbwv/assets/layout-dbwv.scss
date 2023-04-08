@@ -74,11 +74,11 @@ $createMotionBtnColor: #1C557E;
 @import "../../../web/css/user_pages";
 
 html {
-  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
+  background: url("/img/wallpaper.jpg") repeat scroll 0 0 transparent;
 }
 
 body {
-  background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
+  background: url("/img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
 }
 
 .logoImg {
@@ -88,4 +88,31 @@ body {
   background-image: url("./dbwv-logo.png");
   background-repeat: no-repeat;
   background-size: 380px 65px;
+}
+
+#userLoginPanel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 30px;
+  background-color: lightgrey;
+
+  display: flex;
+  flex-direction: row;
+
+  .username {
+    flex-basis: 50%;
+    text-align: left;
+    padding: 3px 5px;
+  }
+
+  .groups {
+    flex-basis: 50%;
+    text-align: right;
+    padding: 3px 5px;
+  }
+}
+#userLoginPanel + #mainmenu {
+  margin-top: 30px;
 }

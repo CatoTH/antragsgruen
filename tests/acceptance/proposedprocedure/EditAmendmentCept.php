@@ -41,6 +41,7 @@ $I->seeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->seeElement('#proposedChanges .saving');
 $I->executeJS('$("#proposedChanges .saving button").click();');
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
+$I->wait(0.1);
 $I->seeCheckboxIsChecked('#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input');
 $I->dontSeeElement('#proposedChanges .saving');
 
@@ -164,9 +165,9 @@ $I->submitForm('#motionConfirmedForm', []);
 $I->see('A really small replacement');
 
 $I->see('A8', 'h1');
-$I->see('Version 2', '.motionHistory');
-$I->dontSee('Version 2', '.motionHistory a');
-$I->see('Version 1', '.motionHistory a');
+$I->see('Version 2', '.motionDataTable .historyOpener .currVersion');
+$I->clickJS('.motionDataTable .btnHistoryOpener');
+$I->see('Version 1', '.motionDataTable .motionHistory a');
 $I->see('Umwelt', '.motionDataTable');
 $I->gotoConsultationHome();
 $I->see('A8', '.motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));

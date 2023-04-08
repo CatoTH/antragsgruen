@@ -56,6 +56,7 @@ $I->see('Biawambn gscheid:', 'p');
 $I->see('Griasd eich midnand', 'p');
 
 $I->wantTo('see the old motion');
+$I->clickJS('.motionDataTable .btnHistoryOpener');
 $I->see('Version 2', '.motionHistory');
 $I->click('.motionHistory a.motion2');
 $I->see('A2:', 'h1');

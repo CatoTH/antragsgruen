@@ -69,6 +69,7 @@ return [
     'replaces_motion'               => 'Replaces',
     'resolution_of'                 => 'Based on',
     'replaces_motion_diff'          => 'Show changes',
+    'replaces_show_history'         => 'Show history',
     'private_notes'                 => 'Private note',
     'private_notes_open'            => '<span class="sr-only">Open</span> Private note',
     'private_notes_write'           => 'Write private note',

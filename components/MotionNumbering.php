@@ -10,13 +10,13 @@ class MotionNumbering
 {
     public static function getNewTitlePrefixInternal(string $titlePrefix): string
     {
-        $new      = \Yii::t('motion', 'prefix_new_code');
+        $new = \Yii::t('motion', 'prefix_new_code');
         $newMatch = preg_quote($new, '/');
         if (preg_match('/' . $newMatch . '/i', $titlePrefix)) {
             /** @var string[] $parts */
             $parts = preg_split('/(' . $newMatch . '\s*)/i', $titlePrefix, -1, PREG_SPLIT_DELIM_CAPTURE);
-            $last  = (int)array_pop($parts);
-            $last  = ($last > 0 ? $last + 1 : 2); // NEW BLA -> NEW 2
+            $last = (int)array_pop($parts);
+            $last = ($last > 0 ? $last + 1 : 2); // NEW BLA -> NEW 2
             $parts[] = $last;
 
             return implode("", $parts);
@@ -91,5 +91,15 @@ class MotionNumbering
         });
 
         return $history;
+    }
+
+    public static function findMotionInHistoryOfVersion(Motion $motion, string $version): ?Motion
+    {
+        foreach (self::getSortedHistoryForMotion($motion, false) as $motion) {
+            if ($motion->version === $version) {
+                return $motion;
+            }
+        }
+        return null;
     }
 }

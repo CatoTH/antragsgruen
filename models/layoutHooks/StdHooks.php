@@ -5,7 +5,7 @@ namespace app\models\layoutHooks;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
-use app\controllers\{admin\IndexController, admin\MotionListController, Base, UserController};
+use app\controllers\{admin\IndexController, admin\MotionListController, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
 use app\models\settings\AntragsgruenApp;
@@ -103,7 +103,7 @@ class StdHooks extends Hooks
 
     public function endPage(string $before): string
     {
-        return $before . Layout::footerLine();
+        return Layout::footerLine();
     }
 
     public function getSearchForm(string $before): string
@@ -133,7 +133,7 @@ class StdHooks extends Hooks
 
     public function renderSidebar(string $before): string
     {
-        $str = $before . $this->layout->preSidebarHtml;
+        $str = $this->layout->preSidebarHtml;
         if (count($this->layout->menusHtml) > 0) {
             $str .= '<div class="well hidden-xs">';
             $str .= implode('', $this->layout->menusHtml);
@@ -263,6 +263,17 @@ class StdHooks extends Hooks
         }
     }
 
+    protected function addMotionListNavbarEntry(Consultation $consultation): string
+    {
+        if (!MotionListController::haveAccessToList($consultation)) {
+            return '';
+        }
+
+        $adminUrl   = UrlHelper::createUrl('/admin/motion-list/index');
+        $adminTitle = \Yii::t('base', 'menu_motion_list');
+        return '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
+    }
+
     public function getStdNavbarHeader(string $before): string
     {
         $out = '<ul class="nav navbar-nav">';
@@ -291,11 +302,8 @@ class StdHooks extends Hooks
                 }
             }
 
-            if (MotionListController::haveAccessToList($consultation)) {
-                $adminUrl   = UrlHelper::createUrl('/admin/motion-list/index');
-                $adminTitle = \Yii::t('base', 'menu_motion_list');
-                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
-            }
+            $out .= $this->addMotionListNavbarEntry($consultation);
+
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction())) {
                 $todo = AdminTodoItem::getConsultationTodos($consultation);
                 if (count($todo) > 0) {
