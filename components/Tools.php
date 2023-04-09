@@ -11,20 +11,22 @@ class Tools
     public static function dateSql2timestamp(string $input): int
     {
         $parts = explode(' ', $input);
-        $date  = array_map('IntVal', explode('-', $parts[0]));
+        $date  = array_map('intval', explode('-', $parts[0]));
 
-        if (count($parts) == 2) {
-            $time = array_map('IntVal', explode(':', $parts[1]));
+        if (count($parts) === 2) {
+            $time = array_map('intval', explode(':', $parts[1]));
         } else {
-            $time = array(0, 0, 0);
+            $time = [0, 0, 0];
         }
 
-        return mktime($time[0], $time[1], $time[2], $date[1], $date[2], $date[0]);
+        $ts = mktime($time[0], $time[1], $time[2], $date[1], $date[2], $date[0]);
+        return ($ts === false ? 0 : $ts);
     }
 
     public static function dateSql2Datetime(string $input): ?\DateTime
     {
-        return \DateTime::createFromFormat('Y-m-d H:i:s', $input . ' 00:00:00');
+        $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $input . ' 00:00:00');
+        return ($datetime === false ? null : $datetime);
     }
 
     public static function getCurrentDateLocale(): string
@@ -401,7 +403,7 @@ class Tools
     private static function parsePhpSize(string $size): int
     {
         if (is_numeric($size)) {
-            return $size;
+            return intval($size);
         } else {
             $value_length = strlen($size);
             $qty          = floatval(substr($size, 0, $value_length - 1));
@@ -418,7 +420,7 @@ class Tools
                     break;
             }
 
-            return $qty;
+            return intval($qty);
         }
     }
 
