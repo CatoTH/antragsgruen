@@ -89,11 +89,11 @@ trait MotionExportTraits
         return new HtmlResponse($this->renderPartial('pdf_embed', ['file' => $file]));
     }
 
-    public function actionPdf(string $motionSlug): ResponseInterface
+    public function actionPdf(string $motionSlug, ?string $showAlways = null): ResponseInterface
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable()) {
+        if (!($motion->isReadable() || $showAlways === $motion->getShowAlwaysToken())) {
             return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
         }
 
