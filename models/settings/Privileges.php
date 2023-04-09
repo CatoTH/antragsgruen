@@ -18,6 +18,9 @@ class Privileges
 
     public const PRIVILEGE_SCREENING = 3;
 
+    // View the admin motion list (incl. reading). No extra editing permissions yet.
+    public const PRIVILEGE_MOTION_SEE_UNPUBLISHED = 13;
+
     // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting. BUT: allows everything SCREENING does.
     public const PRIVILEGE_MOTION_STATUS_EDIT = 4;
 
@@ -80,6 +83,12 @@ class Privileges
             ),
 
             // Motion related privileges
+            self::PRIVILEGE_MOTION_SEE_UNPUBLISHED => new Privilege(
+                self::PRIVILEGE_MOTION_SEE_UNPUBLISHED,
+                \Yii::t('structure', 'privilege_motionsee'),
+                true,
+                null
+            ),
             self::PRIVILEGE_MOTION_STATUS_EDIT => new Privilege(
                 self::PRIVILEGE_MOTION_STATUS_EDIT,
                 \Yii::t('structure', 'privilege_motionstruct'),

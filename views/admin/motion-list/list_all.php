@@ -198,6 +198,7 @@ foreach ($entries as $entry) {
 
 echo '</table>';
 
+if ($privilegeProposals || $privilegeScreening) {
 ?>
     <section style="overflow: auto;">
         <div style="float: left; line-height: 40px; vertical-align: middle;">
@@ -229,6 +230,7 @@ echo '</table>';
         </div>
     </section>
 <?php
+}
 
 echo Html::endForm();
 

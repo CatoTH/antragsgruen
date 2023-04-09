@@ -68,6 +68,7 @@ return [
     'privilege_voting'        => 'Abstimmungen bearbeiten',
     'privilege_screening'     => 'Freischalten',
     'privilege_motionstruct'  => 'Rahmendaten bearbeiten',
+    'privilege_motionsee'     => 'Alle einsehen (auch unveröffentlichte)',
     'privilege_motioncontent' => 'Inhalte/Texte bearbeiten',
     'privilege_motionusers'   => 'Antragstellende ändern',
     'privilege_motiondelete'  => 'Löschen',

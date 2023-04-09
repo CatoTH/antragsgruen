@@ -10,9 +10,10 @@ Setup Notes
 - Themenbereiche: Tags, type "Proposed Procedure" (1), Sachgebiete als parent tags
 
 Demo Accounts:
-- antragsberechtigt-0@example.org - antragsberechtigt-9@example.org
-- delegiert-0@example.org - delegiert-49@example.org
+- lv-sued-antragsberechtigt-0@example.org - lv-sued-antragsberechtigt-9@example.org
+- lv-sued-delegiert-0@example.org - lv-sued-delegiert-49@example.org
+- lv-sued-vorstand@example.org
 - al-recht@example.org
-- referat-S@example.org (Satzung), referat-U@example.org (Umwelt)
-- arbeitsgruppe-S@example.org (Satzung), arbeitsgruppe-U@example.org (Umwelt)
+- lv-sued-referat-S@example.org (Satzung), lv-sued-referat-U@example.org (Umwelt)
+- lv-sued-arbeitsgruppe-S@example.org (Satzung), lv-sued-arbeitsgruppe-U@example.org (Umwelt)
 - Passwort: Test

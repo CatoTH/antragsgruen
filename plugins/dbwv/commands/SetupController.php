@@ -13,6 +13,7 @@ use yii\console\Controller;
 
 class SetupController extends Controller
 {
+    private const GROUP_NAME_LV_VORSTAND = 'LV Vorstand';
     private const GROUP_NAME_AL_RECHT = 'AL Recht';
     private const GROUP_NAME_V1_REFERAT = 'Referat %NAME% (V1)';
     private const GROUP_NAME_V2_ARBEITSGRUPPE = 'Arbeitsgruppe %NAME% (V2)';
@@ -82,6 +83,11 @@ class SetupController extends Controller
         $alRechtPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Module::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC . ']}]}';
         $alRecht->setGroupPermissions(UserGroupPermissions::fromDatabaseString($alRechtPrivileges, false));
         $alRecht->save();
+
+        $lvVorstand = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_LV_VORSTAND);
+        $lvVorstandPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED . ']}]}';
+        $lvVorstand->setGroupPermissions(UserGroupPermissions::fromDatabaseString($lvVorstandPrivileges, false));
+        $lvVorstand->save();
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V1_REFERAT);
@@ -228,8 +234,8 @@ class SetupController extends Controller
             return;
         }
 
-        $this->createTestAccountsForGroup($consultation, 'Antragsberechtigte', 'antragsberechtigt', 'Organisation', 10);
-        $this->createTestAccountsForGroup($consultation, 'Delegierte', 'delegiert', 'Organisation', 50);
+        $this->createTestAccountsForGroup($consultation, 'Antragsberechtigte', 'lv-sued-antragsberechtigt', 'Organisation', 10);
+        $this->createTestAccountsForGroup($consultation, 'Delegierte', 'lv-sued-delegiert', 'Organisation', 50);
 
         $alRechtGroup = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_AL_RECHT]);
         if (!$alRechtGroup) {
@@ -239,6 +245,16 @@ class SetupController extends Controller
         $user = $this->createOrGetUserAccount('al-recht@example.org', 'Test', 'AL', 'Recht', 'DBwV');
         if (count($user->userGroups) === 0) {
             $alRechtGroup->addUser($user);
+        }
+
+        $lvVorstandGroup = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_LV_VORSTAND]);
+        if (!$lvVorstandGroup) {
+            echo "AL Recht Group not found\n";
+            return;
+        }
+        $user = $this->createOrGetUserAccount('lv-sued-vorstand@example.org', 'Test', 'LV', 'Vorstand', 'LV Süd');
+        if (count($user->userGroups) === 0) {
+            $lvVorstandGroup->addUser($user);
         }
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {

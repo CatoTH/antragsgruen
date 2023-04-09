@@ -67,6 +67,7 @@ return [
     'privilege_speech'        => 'Manage speech queues',
     'privilege_voting'        => 'Manage votings',
     'privilege_screening'     => 'Screening',
+    'privilege_motionsee'     => 'See all (including unpublished)',
     'privilege_motionstruct'  => 'Manage metadata',
     'privilege_motioncontent' => 'Manage content',
     'privilege_motionusers'   => 'Manage initiators',
