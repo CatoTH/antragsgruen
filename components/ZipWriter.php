@@ -27,7 +27,7 @@ class ZipWriter
     {
         $this->archive->close();
 
-        $content = file_get_contents($this->zipFile);
+        $content = (string)file_get_contents($this->zipFile);
         unlink($this->zipFile);
         return $content;
     }

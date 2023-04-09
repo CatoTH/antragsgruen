@@ -143,7 +143,7 @@ class UrlHelper
     public static function createLoginUrl($route): string
     {
         $target_url = self::createUrl($route);
-        if (Yii::$app->user->isGuest) {
+        if (RequestContext::getWebApplication()->user->isGuest) {
             return self::createUrl(['/user/login', 'backUrl' => $target_url]);
         } else {
             return $target_url;
@@ -275,6 +275,9 @@ class UrlHelper
         $params = AntragsgruenApp::getInstance();
 
         $urlParts = parse_url($url);
+        if (!$urlParts) {
+            throw new FormError('Unable to parse the url');
+        }
         $scheme   = $urlParts['scheme'] ?? ($_SERVER['REQUEST_SCHEME'] ?? 'http');
         $host     = $urlParts['host'] ?? $_SERVER['HTTP_HOST'];
         $fullhost = $scheme . '://' . $host . '/';

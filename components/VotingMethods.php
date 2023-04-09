@@ -45,7 +45,7 @@ class VotingMethods
         }
     }
 
-    public function deleteVoting(VotingBlock $votingBlock)
+    public function deleteVoting(VotingBlock $votingBlock): void
     {
         $votingBlock->deleteVoting();
     }
@@ -161,7 +161,7 @@ class VotingMethods
         }
 
         $question = new VotingQuestion();
-        $question->title = \Yii::$app->request->post('question', '-');
+        $question->title = $this->request->post('question', '-');
         $question->consultationId = $votingBlock->consultationId;
         $question->votingBlockId = $votingBlock->id;
         $question->save();

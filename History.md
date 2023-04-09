@@ -5,6 +5,7 @@
 - User groups are now more powerful administrational tools:
   - User groups can now receive admin rights for specific administrational tasks.
   - These tasks can be restricted to a subset of motions, like motions of a specific type, agenda item or tag.
+  - User groups can be allowed to only see and read incoming unpublished motions, without any editing rights.
   - User groups can now be renamed.
 - Super admins (registered in the config.json) can now perform more user administration using the UI, like setting the name, organization and new passwords for registered users.
 - The number of votes users can cast on a voting session can be limited. It is thus possible to present a list of motions or candidates and have the users choose up to that specified number of them.

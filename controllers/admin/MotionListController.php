@@ -21,11 +21,12 @@ class MotionListController extends AdminBase
         }
 
         $ctx = PrivilegeQueryContext::anyRestriction();
+        $privilegeSee       = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED, $ctx);
         $privilegeScreening = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $ctx);
-        $privilegeProposal  = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, $ctx);
-        $privilegeDeleting  = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, $ctx);
-        $privilegeStatus    = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $ctx);
-        $privilege = ($privilegeScreening || $privilegeProposal || $privilegeDeleting || $privilegeStatus);
+        $privilegeProposal  = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, $ctx);
+        $privilegeDeleting  = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, $ctx);
+        $privilegeStatus    = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $ctx);
+        $privilege = ($privilegeSee || $privilegeScreening || $privilegeProposal || $privilegeDeleting || $privilegeStatus);
 
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $override = $plugin::canSeeFullMotionList($consultation, $user);
