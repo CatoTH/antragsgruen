@@ -44,7 +44,7 @@ $I->seeElement('.supporterData');
 $I->seeElement('.fullTextAdder');
 $I->dontSeeElement('#fullTextHolder');
 
-$I->click('.fullTextAdder a');
+$I->click('.fullTextAdder button');
 $I->seeElement('#fullTextHolder');
 
 $supporters = [];

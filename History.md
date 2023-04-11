@@ -14,6 +14,7 @@
 - Motion sections can now be set up to hold Right-to-Left text, like Farsi, Hebrew or Arabic.
 - The date format can be set independently from the language. Also the date format yyyy-mm-dd is supported (besides dd/mm/yyyy, mm/dd/yyyy, dd.mm.yyyy).
 - It is possible for admins to create tags for a consultation but disallow proposers of motions to specify these tags themselves.
+- Admins can add additional proposers of a motion or amendment
 - Internal / Plugins: Additional language variants are now handled as part of the plugin system, not by placing files into messages/ anymore. The latter will stop working with version 4.13.
 - Bugfix: The diff and line splitting did not work properly with grapheme consisting of multiple code points.
 - Bugfix: Changing the amendment text as admin does not clear the motion's view cache in all cases.

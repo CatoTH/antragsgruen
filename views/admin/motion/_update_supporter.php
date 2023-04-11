@@ -70,12 +70,16 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
         ?>
     </ul>
 
-    <div class="fullTextAdder"><a href="#"><?= Yii::t('initiator', 'fullTextField') ?></a></div>
+    <div class="fullTextAdder">
+        <button type="button" class="btn btn-link">
+            <?= Yii::t('initiator', 'fullTextField') ?>
+        </button>
+    </div>
 
-    <a href="#" class="supporterRowAdder" data-content="<?= Html::encode($getSupporterRow($newTemplate)) ?>">
-        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+    <button type="button" class="btn btn-link supporterRowAdder" data-content="<?= Html::encode($getSupporterRow($newTemplate)) ?>">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         <?= Yii::t('admin', 'motion_edit_supporters_add') ?>
-    </a>
+    </button>
 
     <div class="form-group hidden" id="fullTextHolder">
         <div class="col-md-9">
@@ -89,7 +93,7 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
                 <?= Yii::t('initiator', 'fullTextAdd') ?>
             </button>
 
-            <button class="btn btn-default fullTextCopy" type="button">
+            <button type="button" class="btn btn-default fullTextCopy">
                 <span class="glyphicon glyphicon-copy normal"></span>
                 <span class="glyphicon glyphicon-ok ok"></span>
                 <?= Yii::t('initiator', 'copy_to_clipboard') ?>

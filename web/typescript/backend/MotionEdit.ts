@@ -51,7 +51,7 @@ export class MotionEdit {
     }
 
     private initSlug() {
-        $('.urlSlugHolder .shower a').on("click", (ev) => {
+        $('.urlSlugHolder .shower button').on("click", (ev) => {
             ev.preventDefault();
             $('.urlSlugHolder .shower').addClass('hidden');
             $('.urlSlugHolder .holder').removeClass('hidden');
