@@ -117,11 +117,13 @@ class MotionSorter
 
     /**
      * @param IMotion[] $motions
-     * @return IMotion[]
+     * @return array{string: array<IMotion>}
      */
     public static function getSortedMotionsStd(Consultation $consultation, array $motions): array
     {
+        /** @var array{string: array<IMotion>} $motionsSorted */
         $motionsSorted   = [];
+        /** @var array{string: array<IMotion>} $motionsNoPrefix */
         $motionsNoPrefix = [];
 
         $inivisible   = $consultation->getStatuses()->getInvisibleMotionStatuses();
