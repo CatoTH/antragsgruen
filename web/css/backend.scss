@@ -876,6 +876,10 @@ label.legend {
 #motionUpdateForm {
   .urlSlugHolder .shower {
     margin-top: 7px;
+    button {
+      padding: 0;
+      font-weight: normal;
+    }
   }
   #motionTextEditCaller {
     text-align: center;
@@ -1356,11 +1360,17 @@ label.legend {
   }
 
   .supporterRowAdder {
-    margin-left: 42px;
+    margin-left: 55px;
+    font-weight: normal;
+    padding: 0;
   }
 
   .fullTextAdder {
     float: right;
+    button {
+      font-weight: normal;
+      padding: 0;
+    }
   }
 
   #fullTextHolder {

@@ -42,7 +42,6 @@ export class InitiatorForm {
         this.$editforms = $widget.parents('form').first();
         this.$supporterData = $widget.find('.supporterData');
         this.$initiatorData = $widget.find('.initiatorData');
-        this.$initiatorAdderRow = this.$initiatorData.find('.adderRow');
         this.$fullTextHolder = $('#fullTextHolder');
         this.$supporterAdderRow = this.$supporterData.find('.adderRow');
 
@@ -56,13 +55,13 @@ export class InitiatorForm {
         $widget.find('#personTypeNatural, #personTypeOrga').on('click change', this.onChangePersonType.bind(this));
         this.onChangePersonType();
 
-        this.$initiatorAdderRow.find('a').on("click", this.initiatorAddRow.bind(this));
-        this.$initiatorData.on('click', '.initiatorRow .rowDeleter', this.initiatorDelRow.bind(this));
-        this.$supporterAdderRow.find('a').on("click", this.supporterAddRow.bind(this));
+        this.$supporterAdderRow.find('button').on("click", this.supporterAddRow.bind(this));
         this.$supporterData.on('click', '.supporterRow .rowDeleter', this.supporterDelRow.bind(this));
         this.$supporterData.on('keydown', ' .supporterRow input[type=text]', this.onKeyOnTextfield.bind(this));
 
-        $('.fullTextAdder a').on("click", this.fullTextAdderOpen.bind(this));
+        this.initInitiatorAdder();
+
+        $('.fullTextAdder button').on("click", this.fullTextAdderOpen.bind(this));
         $('.fullTextAdd').on("click", this.fullTextAdd.bind(this));
 
         if (this.hasOrganisationList) {
@@ -167,6 +166,13 @@ export class InitiatorForm {
         } else {
             this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', true).val(this.userData.person_name);
         }
+    }
+
+    private initInitiatorAdder() {
+        this.$initiatorAdderRow = this.$initiatorData.find('.moreInitiatorsAdder');
+        this.$initiatorAdderRow.find('.adderBtn').on("click", this.initiatorAddRow.bind(this));
+        this.$initiatorData.on('click', '.initiatorRow .rowDeleter', this.initiatorDelRow.bind(this));
+
     }
 
     private initiatorAddRow(ev) {

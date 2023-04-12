@@ -95,26 +95,12 @@ $I->wantTo('remove and add some supporter rows');
 $lineNumbers = $I->executeJS('
     $(".supporterData .supporterRow").eq(1).remove();
     $(".supporterData .supporterRow").eq(1).remove();
-    $(".supporterData .adderRow a").click();
+    $(".supporterData .adderRow button").click();
     return $(".supporterData .supporterRow").length;
 ');
 if ($lineNumbers != 2) {
     $I->fail('an invalid number of supporter rows: ' . $lineNumbers . ' (should be: 2)');
 }
-
-
-/*
-$I->wantTo('remove and add some initiator rows');
-$lineNumbers = $I->executeJS('
-    $(".initiatorData .adderRow a").click();
-    $(".initiatorData .adderRow a").click();
-    $(".initiatorData .initiatorRow").eq(1).remove();
-    return $(".initiatorData .initiatorRow").length;
-');
-if ($lineNumbers != 1) {
-    $I->fail('an invalid number of initiator rows: ' . $lineNumbers . ' (should be: 1)');
-}
-*/
 
 
 $I->wantTo('fill in correct data');

@@ -317,11 +317,19 @@
   .supporterData {
     .fullTextAdder {
       float: right;
+      button {
+        font-weight: normal;
+      }
     }
 
     #fullTextHolder {
       margin-top: 30px;
     }
+  }
+
+  .adderLink {
+    font-weight: normal;
+    padding: 0;
   }
 
   .initiatorData {
@@ -368,6 +376,9 @@
   }
 
   .supporterRow, .initiatorRow {
+    .adderRow button {
+      font-weight: normal;
+    }
     .rowDeleter, .rowDeleter:link, .rowDeleter:visited {
       color: $colorDelLink;
       display: inline-block;
@@ -378,6 +389,14 @@
     }
     html.no-touchevents &:hover .rowDeleter {
       visibility: visible;
+    }
+  }
+  .moreInitiatorsAdder {
+    text-align: right;
+    .adderBtn {
+      padding: 0;
+      font-size: 0.8em;
+      font-weight: normal;
     }
   }
 }

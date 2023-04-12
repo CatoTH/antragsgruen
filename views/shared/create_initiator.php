@@ -309,9 +309,10 @@ $getInitiatorRow = function (ISupporter $initiator, InitiatorForm $settings) {
         );
         $str .= '</div>';
     }
-    $str .= '<div class="col-md-1"><a href="#" class="rowDeleter" tabindex="-1">';
-    $str .= '<span class="glyphicon glyphicon-minus-sign"></span>';
-    $str .= '</a></div>';
+    $str .= '<div class="col-md-1"><button type="button" class="btn btn-link rowDeleter" title="' . Html::encode(Yii::t('initiator', 'removeInitiator')) . '">';
+    $str .= '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>';
+    $str .= '<span class="sr-only">' . Yii::t('initiator', 'removeInitiator') . '</span>';
+    $str .= '</button></div>';
 
     $str .= '</div>';
 
@@ -323,10 +324,20 @@ foreach ($moreInitiators as $init) {
     echo $getInitiatorRow($init, $settings);
 }
 
+if ($adminMode) {
+    ?>
+    <div class="moreInitiatorsAdder">
+        <button type="button" class="btn btn-link adderBtn">
+            <span class="glyphicon glyphicon-plus btnAdd" aria-hidden="true"></span>
+            <?= Yii::t('initiator', 'addInitiator') ?>
+        </button>
+    </div>
+    <?php
 
-$new    = new \app\models\db\MotionSupporter();
-$newStr = $getInitiatorRow($new, $settings);
-echo '<div id="newInitiatorTemplate" style="display: none;" data-html="' . Html::encode($newStr) . '"></div>';
+    $new    = new \app\models\db\MotionSupporter();
+    $newStr = $getInitiatorRow($new, $settings);
+    echo '<div id="newInitiatorTemplate" style="display: none;" data-html="' . Html::encode($newStr) . '"></div>';
+}
 
 
 echo '</div>';
@@ -352,9 +363,10 @@ if ($hasSupporters && !$adminMode) {
             $str .= '</div>';
         }
         if ($settings->allowMoreSupporters) {
-            $str .= '<div class="col-md-1"><a href="#" class="rowDeleter" tabindex="-1">';
-            $str .= '<span class="glyphicon glyphicon-minus-sign"></span>';
-            $str .= '</a></div>';
+            $str .= '<div class="col-md-1"><button type="button" class="btn btn-link rowDeleter" title="' . Html::encode(Yii::t('initiator', 'removeSupporter')) . '">';
+            $str .= '<span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>';
+            $str .= '<span class="sr-only">' . Yii::t('initiator', 'removeSupporter') . '</span>';
+            $str .= '</button></div>';
         }
 
         $str .= '</div>';
@@ -390,15 +402,16 @@ if ($hasSupporters && !$adminMode) {
     }
 
     if ($settings->allowMoreSupporters) {
-        echo '<div class="adderRow"><a href="#"><span class="glyphicon glyphicon-plus"></span> ';
+        echo '<div class="adderRow"><button type="button" class="btn btn-link adderLink">';
+        echo '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ';
         echo Yii::t('initiator', 'addSupporter');
-        echo '</a></div>';
+        echo '</button></div>';
     }
 
     if ($supporterFulltext) {
         $fullTextSyntax = Yii::t('initiator', 'fullTextSyntax');
         ?>
-        <div class="fullTextAdder"><a href="#"><?= Yii::t('initiator', 'fullTextField') ?></a></div>
+        <div class="fullTextAdder"><button type="button" class="btn btn-link"><?= Yii::t('initiator', 'fullTextField') ?></button></div>
         <div class="form-group hidden" id="fullTextHolder">
             <div class="col-md-9">
                 <textarea class="form-control" placeholder="<?= Html::encode($fullTextSyntax) ?>" rows="10"

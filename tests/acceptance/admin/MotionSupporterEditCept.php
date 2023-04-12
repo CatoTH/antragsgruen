@@ -52,6 +52,21 @@ $I->seeInField('#motionSupporterHolder > ul > li .supporterName', 'My login-name
 $I->see('testuser@example.org', '#motionSupporterHolder > ul > li');
 $I->executeJS('$("#motionSupporterHolder > ul > li:nth(2)").prependTo("#motionSupporterHolder > ul")');
 $I->executeJS('$("#motionSupporterHolder > ul > li:nth(0) .supporterName").val("My login-name 2");');
+
+
+$I->clickJS('.initiatorData .moreInitiatorsAdder .adderBtn');
+$I->clickJS('.initiatorData .moreInitiatorsAdder .adderBtn');
+$lineNumbers = $I->executeJS('
+    $(".initiatorData .initiatorRow").eq(1).remove();
+    $(".initiatorData .initiatorRow:nth(0) .name").val("Initiator 2");
+    $(".initiatorData .initiatorRow:nth(0) .organization").val("Organization 2");
+    return $(".initiatorData .initiatorRow").length;
+');
+
+if ($lineNumbers != 1) {
+    $I->fail('an invalid number of initiator rows: ' . $lineNumbers . ' (should be: 1)');
+}
+
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 
@@ -63,6 +78,7 @@ $I->openPage(MotionPage::class, [
 ]);
 $firstName = $I->executeJS('return $("section.supporters ul li:nth(0)").text()');
 $I->assertStringContainsString('My login-name 2', $firstName);
+$I->see('Initiator 2 (Organization 2)', '.motionDataTable');
 
 
 
@@ -73,7 +89,7 @@ $I->wantTo('add some suporters using full-text');
 $I->gotoMotionList()->gotoMotionEdit(116);
 
 $I->dontSeeElement('#fullTextHolder');
-$I->click('.fullTextAdder a');
+$I->click('.fullTextAdder button');
 $I->seeElement('#fullTextHolder');
 
 $I->fillField('#fullTextHolder textarea', 'Yet another name, KV München; Another Name 3');

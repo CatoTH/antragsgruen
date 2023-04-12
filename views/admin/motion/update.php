@@ -175,7 +175,7 @@ if (count($consultation->agendaItems) > 0) {
         <div class="rightColumn urlSlugHolder">
             <div class="shower">
                 <?= Html::encode($motion->slug ?: '') ?>
-                [<a href="#"><?= Yii::t('admin', 'motion_url_change') ?></a>]
+                [<button type="button" class="btn btn-link"><?= Yii::t('admin', 'motion_url_change') ?></button>]
             </div>
             <div class="holder hidden">
                 <label for="motionSlug" class="sr-only"><?= Yii::t('admin', 'motion_url_path') ?></label>

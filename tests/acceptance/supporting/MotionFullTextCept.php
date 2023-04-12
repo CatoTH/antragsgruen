@@ -20,7 +20,7 @@ $I->click('.createMotion');
 $I->seeElement('.supporterData');
 $I->seeElement('.fullTextAdder');
 $I->dontSeeElement('#fullTextHolder');
-$I->click('.fullTextAdder a');
+$I->click('.fullTextAdder button');
 $I->seeElement('#fullTextHolder');
 
 $I->wantTo('check that the function actually works');

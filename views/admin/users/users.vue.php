@@ -34,12 +34,12 @@ ob_start();
                 </div>
                 <div class="groupsDisplay">
                     {{ userGroupsDisplay(user) }}
-                    <button class="btn btn-link btnEdit" @click="editUser(user)"
+                    <button type="button" class="btn btn-link btnEdit" @click="editUser(user)"
                             :title="'<?= Yii::t('admin', 'siteacc_user_edit') ?>'.replace(/%USERNAME%/, user.name)"
                             :aria-label="'<?= Yii::t('admin', 'siteacc_user_edit') ?>'.replace(/%USERNAME%/, user.name)">
                         <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                     </button>
-                    <button class="btn btn-link btnRemove" @click="removeUser(user)"
+                    <button type="button" class="btn btn-link btnRemove" @click="removeUser(user)"
                             :title="'<?= Yii::t('admin', 'siteacc_user_del') ?>'.replace(/%USERNAME%/, user.name)"
                             :aria-label="'<?= Yii::t('admin', 'siteacc_user_del') ?>'.replace(/%USERNAME%/, user.name)">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
