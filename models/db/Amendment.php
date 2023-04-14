@@ -551,8 +551,10 @@ class Amendment extends IMotion implements IRSSItem
         );
         $query->orderBy("amendment.dateCreation DESC");
         $query->offset(0)->limit($limit);
+        /** @var Amendment[] $amendments */
+        $amendments = $query->all();
 
-        return $query->all();
+        return $amendments;
     }
 
 
@@ -575,8 +577,10 @@ class Amendment extends IMotion implements IRSSItem
             ]
         );
         $query->orderBy("dateCreation DESC");
+        /** @var Amendment[] $amendments */
+        $amendments = $query->all();
 
-        return $query->all();
+        return $amendments;
     }
 
     /**

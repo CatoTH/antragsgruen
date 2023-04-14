@@ -180,8 +180,9 @@ class MotionComment extends IComment
             ]
         );
         $query->orderBy('dateCreation DESC');
-
-        return $query->all();
+        /** @var MotionComment[] $comments */
+        $comments = $query->all();
+        return $comments;
     }
 
     public function logToConsultationLog(): void

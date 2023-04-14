@@ -519,7 +519,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return MotionSupporter[]
      */
-    public function getMySupportedMotionsByConsultation(Consultation $consultation)
+    public function getMySupportedMotionsByConsultation(Consultation $consultation): array
     {
         $query     = MotionSupporter::find();
         $query->innerJoin(
@@ -531,13 +531,15 @@ class User extends ActiveRecord implements IdentityInterface
         $query->andWhere('motionSupporter.userId = ' . IntVal($this->id));
         $query->orderBy('(motionSupporter.role = "initiates") DESC, motion.dateCreation DESC');
 
-        return $query->all();
+        /** @var MotionSupporter[] $supporters */
+        $supporters = $query->all();
+        return $supporters;
     }
 
     /**
      * @return AmendmentSupporter[]
      */
-    public function getMySupportedAmendmentsByConsultation(Consultation $consultation)
+    public function getMySupportedAmendmentsByConsultation(Consultation $consultation): array
     {
         $query     = AmendmentSupporter::find();
         $query->innerJoin(
@@ -550,8 +552,9 @@ class User extends ActiveRecord implements IdentityInterface
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->andWhere('amendmentSupporter.userId = ' . IntVal($this->id));
         $query->orderBy('(amendmentSupporter.role = "initiates") DESC, amendment.dateCreation DESC');
-
-        return $query->all();
+        /** @var AmendmentSupporter[] $supporters */
+        $supporters = $query->all();
+        return $supporters;
     }
 
 

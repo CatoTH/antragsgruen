@@ -11,6 +11,7 @@ use yii\helpers\Html;
  */
 $tags            = $tagIds = [];
 $hasNoTagMotions = false;
+$invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
 
 list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
@@ -18,7 +19,7 @@ if (count($resolutions) > 0) {
 }
 
 foreach ($imotions as $motion) {
-    if (in_array($motion->status, $consultation->getStatuses()->getInvisibleMotionStatuses())) {
+    if (!MotionSorter::imotionIsVisibleOnHomePage($motion, $invisibleStatuses)) {
         continue;
     }
     if (count($motion->getPublicTopicTags()) === 0) {

@@ -174,7 +174,9 @@ class LoginUsernamePasswordForm extends Model
         $sqlWhere1 = "`auth` = 'email:" . addslashes($this->username) . "'";
 
         /** @noinspection SqlResolve */
-        return User::findBySql("SELECT * FROM `" . $tableName . "` WHERE $sqlWhere1")->all();
+        /** @var User[] $users */
+        $users = User::findBySql("SELECT * FROM `" . $tableName . "` WHERE $sqlWhere1")->all();
+        return $users;
     }
 
     /**
