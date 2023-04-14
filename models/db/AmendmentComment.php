@@ -180,8 +180,9 @@ class AmendmentComment extends IComment
             ]
         );
         $query->orderBy('dateCreation DESC');
-
-        return $query->all();
+        /** @var AmendmentComment[] $comments */
+        $comments = $query->all();
+        return $comments;
     }
 
     public function logToConsultationLog(): void

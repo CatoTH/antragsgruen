@@ -148,10 +148,12 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getAdminComments(array $types, string $sort = 'desc', ?int $limit = null): array
     {
-        return MotionAdminComment::find()
+        /** @var MotionAdminComment[] $comments */
+        $comments = MotionAdminComment::find()
                                  ->where(['motionId' => $this->id, 'status' => $types])
                                  ->orderBy(['dateCreation' => $sort])
                                  ->limit($limit)->all();
+        return $comments;
     }
 
     /**
@@ -159,7 +161,9 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getAllAdminComments(): array
     {
-        return MotionAdminComment::find()->where(['motionId' => $this->id])->all();
+        /** @var MotionAdminComment[] $adminComments */
+        $adminComments = MotionAdminComment::find()->where(['motionId' => $this->id])->all();
+        return $adminComments;
     }
 
     public function getMotionSupporters(): ActiveQuery
@@ -333,8 +337,9 @@ class Motion extends IMotion implements IRSSItem
         }
         $query->orderBy("dateCreation DESC");
         $query->offset(0)->limit($limit);
-
-        return $query->all();
+        /** @var Motion[] $motions */
+        $motions = $query->all();
+        return $motions;
     }
 
     /**
@@ -347,8 +352,9 @@ class Motion extends IMotion implements IRSSItem
         $query->where('motion.status IN (' . implode(', ', $statuses) . ')');
         $query->andWhere('motion.consultationId = ' . intval($consultation->id));
         $query->orderBy("dateCreation DESC");
-
-        return $query->all();
+        /** @var Motion[] $motions */
+        $motions = $query->all();
+        return $motions;
     }
 
     /**
