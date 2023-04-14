@@ -114,6 +114,22 @@ class MotionSorter
         return $prefixes;
     }
 
+    public static function imotionIsVisibleOnHomePage(IMotion $imotion, array $invisibleStatuses): bool
+    {
+        if (in_array($imotion->status, $invisibleStatuses)) {
+            return false;
+        }
+        if (is_a($imotion, Motion::class)) {
+            foreach ($imotion->replacedByMotions as $replacedByMotion) {
+                if (!in_array($replacedByMotion->status, $invisibleStatuses)) {
+                    // The motion to be checked is replaced by another motion that is visible
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 
     /**
      * @param IMotion[] $motions
@@ -130,20 +146,22 @@ class MotionSorter
         $inivisible[] = IMotion::STATUS_MODIFIED;
 
         foreach ($motions as $motion) {
-            if (!in_array($motion->status, $inivisible)) {
-                $typeName = '';
+            if (!self::imotionIsVisibleOnHomePage($motion, $inivisible)) {
+                continue;
+            }
 
-                if (!isset($motionsSorted[$typeName])) {
-                    $motionsSorted[$typeName]   = [];
-                    $motionsNoPrefix[$typeName] = [];
-                }
-                $key = $motion->titlePrefix;
+            $typeName = '';
 
-                if ($key === '') {
-                    $motionsNoPrefix[$typeName][] = $motion;
-                } else {
-                    $motionsSorted[$typeName][$key] = $motion;
-                }
+            if (!isset($motionsSorted[$typeName])) {
+                $motionsSorted[$typeName]   = [];
+                $motionsNoPrefix[$typeName] = [];
+            }
+            $key = $motion->titlePrefix;
+
+            if ($key === '') {
+                $motionsNoPrefix[$typeName][] = $motion;
+            } else {
+                $motionsSorted[$typeName][$key] = $motion;
             }
         }
 
@@ -172,11 +190,15 @@ class MotionSorter
             // @TODO A differenciation between motions and amendments will be necessary
         }
 
+        $statuses = $consultation->getStatuses()->getInvisibleMotionStatuses(false);
         $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
         foreach ($items as $agendaItem) {
             $agendaMotions = $agendaItem->getVisibleIMotions();
             foreach ($agendaMotions as $agendaMotion) {
                 if (!in_array($agendaMotion->id, $motionIdsToBeSorted)) {
+                    continue;
+                }
+                if (!self::imotionIsVisibleOnHomePage($agendaMotion, $statuses)) {
                     continue;
                 }
                 if (!isset($motionsSorted['agenda' . $agendaItem->id])) {
