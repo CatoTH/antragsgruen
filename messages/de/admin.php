@@ -610,6 +610,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_section_amendable'    => 'In Änderungsanträgen',
     'motion_section_name'         => 'Name des Abschnitts',
     'motion_section_maxsize'      => 'Maximum print width',
+    'motion_section_tab_p'        => 'Angabe',
+    'motion_section_rowdel'       => 'Angabe entfernen',
     'motion_section_options'      => 'Auswahlmöglichkeiten',
 
     'todo_title'            => 'To Do',

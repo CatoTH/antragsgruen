@@ -24,15 +24,15 @@ class TabularDataType implements \JsonSerializable
     public static function getDataTypes(): array
     {
         return [
-            static::TYPE_STRING  => \Yii::t('admin', 'tabulardatatype_string'),
-            static::TYPE_INTEGER => \Yii::t('admin', 'tabulardatatype_integer'),
-            static::TYPE_DATE    => \Yii::t('admin', 'tabulardatatype_date'),
+            self::TYPE_STRING  => \Yii::t('admin', 'tabulardatatype_string'),
+            self::TYPE_INTEGER => \Yii::t('admin', 'tabulardatatype_integer'),
+            self::TYPE_DATE    => \Yii::t('admin', 'tabulardatatype_date'),
             self::TYPE_SELECT    => \Yii::t('admin', 'tabulardatatype_select'),
         ];
     }
 
     /**
-     * @param array{rowId: string, title: string, type: int, options: string[]} $arr
+     * @param array{rowId: string, title: string, type: int, options?: string[]} $arr
      */
     public function __construct(array $arr)
     {

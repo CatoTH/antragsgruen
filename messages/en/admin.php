@@ -561,6 +561,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_section_amendable'    => 'Amendable',
     'motion_section_name'         => 'Section name',
     'motion_section_maxsize'      => 'Max width',
+    'motion_section_tab_p'        => 'Title',
+    'motion_section_rowdel'       => 'Remove row',
     'motion_section_options'      => 'Options',
 
     'todo_title'            => 'To Do',
