@@ -706,6 +706,23 @@ label.legend {
         padding-left: 40px;
         margin-top: 6px;
         display: inline-block;
+        font-weight: normal;
+      }
+      .delRow {
+        font-weight: normal;
+      }
+
+      .selectOptions {
+        display: flex;
+        flex-direction: row;
+        .description {
+          flex-basis: 235px;
+          flex-grow: 0;
+          padding-left: 40px;
+        }
+        .selectize-wrapper {
+          flex-grow: 1;
+        }
       }
     }
 

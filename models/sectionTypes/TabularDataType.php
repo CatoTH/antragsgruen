@@ -11,10 +11,12 @@ class TabularDataType implements \JsonSerializable
     public const TYPE_STRING  = 1;
     public const TYPE_INTEGER = 2;
     public const TYPE_DATE    = 3;
+    public const TYPE_SELECT  = 4;
 
     public $rowId;
     public $title;
     public $type;
+    public array $options = [];
 
     /**
      * @return string[]
@@ -22,20 +24,22 @@ class TabularDataType implements \JsonSerializable
     public static function getDataTypes(): array
     {
         return [
-            static::TYPE_STRING  => \Yii::t('admin', 'tabulardatatype_string'),
-            static::TYPE_INTEGER => \Yii::t('admin', 'tabulardatatype_integer'),
-            static::TYPE_DATE    => \Yii::t('admin', 'tabulardatatype_date'),
+            self::TYPE_STRING  => \Yii::t('admin', 'tabulardatatype_string'),
+            self::TYPE_INTEGER => \Yii::t('admin', 'tabulardatatype_integer'),
+            self::TYPE_DATE    => \Yii::t('admin', 'tabulardatatype_date'),
+            self::TYPE_SELECT    => \Yii::t('admin', 'tabulardatatype_select'),
         ];
     }
 
     /**
-     * @param array{rowId: string, title: string, type: int} $arr
+     * @param array{rowId: string, title: string, type: int, options?: string[]} $arr
      */
     public function __construct(array $arr)
     {
         $this->rowId = $arr['rowId'];
         $this->title = $arr['title'];
         $this->type  = $arr['type'];
+        $this->options = $arr['options'] ?? [];
     }
 
     public function jsonSerialize(): array
@@ -43,7 +47,8 @@ class TabularDataType implements \JsonSerializable
         return [
             'rowId' => $this->rowId,
             'title' => $this->title,
-            'type'  => $this->type
+            'type'  => $this->type,
+            'options' => $this->options,
         ];
     }
 
@@ -64,6 +69,21 @@ class TabularDataType implements \JsonSerializable
                     $str .= ' required';
                 }
                 $str .= ' class="form-control">';
+                break;
+            case TabularDataType::TYPE_SELECT:
+                $str .= '<select ' . $nameId . ' ';
+                if ($required) {
+                    $str .= ' required';
+                }
+                $str .= ' class="stdDropdown"><option></option>';
+                foreach ($this->options as $option) {
+                    $str .= '<option value="' . Html::encode($option) . '"';
+                    if ($value === $option) {
+                        $str .= ' selected';
+                    }
+                    $str .= '>' . Html::encode($option) . '</option>';
+                }
+                $str .= '</select>';
                 break;
             case TabularDataType::TYPE_DATE:
                 $locale = Tools::getCurrentDateLocale();
@@ -89,6 +109,7 @@ class TabularDataType implements \JsonSerializable
     {
         switch ($this->type) {
             case TabularDataType::TYPE_STRING:
+            case TabularDataType::TYPE_SELECT:
                 return $value;
             case TabularDataType::TYPE_INTEGER:
                 return intval($value);
@@ -103,6 +124,7 @@ class TabularDataType implements \JsonSerializable
         switch ($this->type) {
             case TabularDataType::TYPE_STRING:
             case TabularDataType::TYPE_INTEGER:
+            case TabularDataType::TYPE_SELECT:
                 return $value;
             case TabularDataType::TYPE_DATE:
                 return Tools::formatMysqlDate($value);
