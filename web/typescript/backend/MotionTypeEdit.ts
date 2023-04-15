@@ -21,6 +21,8 @@ const TYPE_PDF_ATTACHMENT = 5;
 const TYPE_PDF_ALTERNATIVE = 6;
 const TYPE_VIDEO_EMBED = 7;
 
+const TYPE_TABULAR_SELECT = 4;
+
 const POLICY_USER_GROUPS = 6;
 
 class MotionTypeEdit {
@@ -343,6 +345,9 @@ class MotionTypeEdit {
             $row.removeClass('no0').addClass('no' + $ul.children().length);
             $ul.append($row);
             $row.find('input').trigger('focus');
+
+            const $selecionList: any = $row.find('.selectOptions select');
+            $selecionList.selectize({create: true, plugins: ["remove_button"]});
         });
 
         $list.on('click', '.tabularDataRow .delRow', function (ev) {
@@ -361,6 +366,21 @@ class MotionTypeEdit {
                 handle: '.drag-data-handle',
                 animation: 150
             }));
+
+        });
+
+        $list.on('change', '.tabularTypeSelect', function () {
+            if ($(this).val() == TYPE_TABULAR_SELECT) {
+                console.log("show", $(this).parents("li").first().find(".selectOptions"));
+                $(this).parents("li").first().find(".selectOptions").removeClass('hidden');
+            } else {
+                $(this).parents("li").first().find(".selectOptions").addClass('hidden');
+            }
+        });
+        $list.find(".tabularTypeSelect").trigger("change");
+        $list.find('.selectOptions select').each(function () {
+            let $selecionList: any = $(this);
+            $selecionList.selectize({create: true, plugins: ["remove_button"]});
         });
     }
 }

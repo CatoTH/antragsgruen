@@ -187,7 +187,7 @@ $sName = 'sections[' . $sectionId . ']';
             $str .= '<span class="drag-data-handle">&#9776;</span>';
             $str .= '<input type="text" name="' . $sectionName . '[tabular][' . $row->rowId . '][title]"';
             $str .= ' placeholder="Angabe" value="' . Html::encode($row->title) . '" class="form-control">';
-            $str .= '<select name="' . $sectionName . '[tabular][' . $row->rowId . '][type]" class="form-control">';
+            $str .= '<select name="' . $sectionName . '[tabular][' . $row->rowId . '][type]" class="form-control tabularTypeSelect">';
             foreach (TabularDataType::getDataTypes() as $dataId => $dataName) {
                 $str .= '<option value="' . $dataId . '"';
                 if ($row->type == $dataId) {
@@ -197,6 +197,15 @@ $sName = 'sections[' . $sectionId . ']';
             }
             $str .= '</select>';
             $str .= '<a href="#" class="delRow glyphicon glyphicon-remove-circle"></a>';
+            $str .= '<div class="selectOptions hidden">';
+            $str .= '<div class="description">' . Yii::t('admin', 'motion_section_options') . ':</div>';
+            $str .= '<div class="selectize-wrapper">';
+            $str .= '<select class="tags" name="' . $sectionName . '[tabular][' . $row->rowId . '][options][]" multiple="multiple">';
+            foreach ($row->options as $option) {
+                $str .= '<option value="' . Html::encode($option) . '" selected>' . Html::encode($option) . '</option>';
+            }
+            $str .= '</select></div>';
+            $str .= '</div>';
             $str .= '</li>';
             return $str;
         };
