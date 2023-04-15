@@ -449,6 +449,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'tabulardatatype_string'     => 'Text',
     'tabulardatatype_integer'    => 'Zahl',
     'tabulardatatype_date'       => 'Datum',
+    'tabulardatatype_select'     => 'Dropdown-Auswahlfeld',
     'internal_note'              => 'Interne Notiz',
     'show_activity'              => 'Aktivitäts-Protokoll',
     'amend_edit_title'           => 'Änderungsantrag bearbeiten',
@@ -609,6 +610,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_section_amendable'    => 'In Änderungsanträgen',
     'motion_section_name'         => 'Name des Abschnitts',
     'motion_section_maxsize'      => 'Maximum print width',
+    'motion_section_options'      => 'Auswahlmöglichkeiten',
 
     'todo_title'            => 'To Do',
     'todo_from'             => 'Von',

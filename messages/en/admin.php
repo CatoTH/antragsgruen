@@ -448,6 +448,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'tabulardatatype_string'      => 'Text',
     'tabulardatatype_integer'     => 'Number',
     'tabulardatatype_date'        => 'Date',
+    'tabulardatatype_select'      => 'Dropdown selection',
     'internal_note'               => 'Internal note',
     'show_activity'               => 'Activity log',
     'amend_edit_title'            => 'Edit amendment',
@@ -559,7 +560,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_section_nonpublic_h'  => 'Only visible for the proposer and admins. Cannot be changed afterwards.',
     'motion_section_amendable'    => 'Amendable',
     'motion_section_name'         => 'Section name',
-    'motion_section_maxsize'      => 'Maximale Druckgröße',
+    'motion_section_maxsize'      => 'Max width',
+    'motion_section_options'      => 'Options',
 
     'todo_title'            => 'To Do',
     'todo_from'             => 'By',
