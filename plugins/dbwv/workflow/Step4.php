@@ -8,6 +8,7 @@ use app\components\MotionNumbering;
 use app\components\RequestContext;
 use app\models\db\IMotion;
 use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use app\models\exceptions\Access;
 use app\models\forms\MotionDeepCopy;
 use app\plugins\dbwv\Module;
@@ -71,6 +72,20 @@ class Step4
         $v5Motion->votingStatus = null;
         $v5Motion->responsibilityId = null;
         $v5Motion->save();
+
+        foreach ($v5Motion->motionSupporters as $motionSupporter) {
+            $v5Motion->unlink('motionSupporters', $motionSupporter, true);
+        }
+        $newProposer = new MotionSupporter();
+        $newProposer->motionId = $v5Motion->id;
+        $newProposer->position = 0;
+        $newProposer->userId = null;
+        $newProposer->role = MotionSupporter::ROLE_INITIATOR;
+        $newProposer->personType = MotionSupporter::PERSON_ORGANIZATION;
+        $newProposer->name = '';
+        $newProposer->organization = $motion->getMyConsultation()->title;
+        $newProposer->dateCreation = date('Y-m-d H:i:s');
+        $newProposer->save();
 
         if ($newTagId) {
             $newTag = Module::getBundConsultation()->getTagById($newTagId);
