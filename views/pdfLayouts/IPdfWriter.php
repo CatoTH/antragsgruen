@@ -95,7 +95,7 @@ class IPdfWriter extends Fpdi
                 $this->SetFont($fontName, '', $textSize * 2 / 3);
                 $this->SetTextColor(100, 100, 100);
                 $this->setCellHeightRatio(2.23);
-                $this->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
+                $this->writeHTMLCell(12, 0, 12, $y, $text2, 0, 0, false, true, '', true);
 
                 $this->SetFont($fontName, '', $textSize);
                 $this->SetTextColor(0, 0, 0);
@@ -112,7 +112,7 @@ class IPdfWriter extends Fpdi
                 // for underlined text
                 $text1 = preg_replace('/<span class="underline">(.*)<\/span>/iUs', '<u>${1}</u>', $text1);
 
-                $this->writeHTMLCell(173, '', 24, $y, $text1, 0, 1, 0, true, '', true);
+                $this->writeHTMLCell(173, 0, 24, $y, $text1, 0, 1, false, true, '', true);
 
                 $this->Ln(7);
             }
@@ -125,8 +125,8 @@ class IPdfWriter extends Fpdi
                 $html = str_replace('<ul', '<br><ul', $html);
 
                 $y    = $this->getY();
-                $this->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
-                $this->writeHTMLCell(173, '', 24, '', $html, 0, 1, 0, true, '', true);
+                $this->writeHTMLCell(12, 0, 12, $y, '', 0, 0, false, true, '', true);
+                $this->writeHTMLCell(173, 0, 24, null, $html, 0, 1, false, true, '', true);
 
                 $this->Ln(7);
             }
@@ -156,7 +156,7 @@ class IPdfWriter extends Fpdi
                         } elseif (preg_match('/^[a-z]$/siu', $tag['attribute']['value'])) {
                             $this->listcount[$this->listnum] = ord($tag['attribute']['value']) - ord("a") + 1;
                         } elseif (preg_match('/^[A-Z]$/siu', $tag['attribute']['value'])) {
-                            $this->listcount[$this->listnum] = ord(intval($tag['attribute']['value'])) - ord("A") + 1;
+                            $this->listcount[$this->listnum] = ord((string)intval($tag['attribute']['value'])) - ord("A") + 1;
                         } else {
                             $this->listcount[$this->listnum] = $tag['attribute']['value'];
                         }
@@ -176,7 +176,7 @@ class IPdfWriter extends Fpdi
         return $return;
     }
 
-    public function setLIsymbol($symbol = '!')
+    public function setLIsymbol($symbol = '!'): void
     {
         // check for custom image symbol
         if (substr($symbol, 0, 4) == 'img|') {
@@ -214,7 +214,7 @@ class IPdfWriter extends Fpdi
         }
     }
 
-    protected function putHtmlListBullet($listdepth, $listtype = '', $size = 10)
+    protected function putHtmlListBullet($listdepth, $listtype = '', $size = 10): void
     {
         if ($this->state != 2) {
             return;
@@ -226,6 +226,7 @@ class IPdfWriter extends Fpdi
         $strokecolor = $this->strokecolor;
         $textitem    = '';
         $tmpx        = $this->x;
+        /** @var float $lspace */
         $lspace      = $this->GetStringWidth('  ');
         if ($listtype == '^') {
             // special symbol used for avoid justification of rect bullet
@@ -360,7 +361,9 @@ class IPdfWriter extends Fpdi
                     $textitem = $textitem . '.';
                 }
             }
-            $lspace += $this->GetStringWidth($textitem);
+            /** @var float $strWidth */
+            $strWidth = $this->GetStringWidth($textitem);
+            $lspace += $strWidth;
             if ($this->rtl) {
                 $this->x += $lspace;
             } else {

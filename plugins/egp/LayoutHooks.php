@@ -2,6 +2,7 @@
 
 namespace app\plugins\egp;
 
+use app\components\RequestContext;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\{admin\IndexController, Base, UserController};
@@ -49,7 +50,7 @@ class LayoutHooks extends Hooks
     public function breadcrumbs(string $before): string
     {
         /** @var Base $controller */
-        $controller = \Yii::$app->controller;
+        $controller = RequestContext::getWebApplication()->controller;
 
         // Back link to candidature page
         if ($controller->route === 'motion/view' && $controller->motion && in_array($controller->motion->motionTypeId, static::CANDIDATURE_TYPES)) {
@@ -166,7 +167,7 @@ class LayoutHooks extends Hooks
             if (get_class($controller) === UserController::class) {
                 $backUrl = UrlHelper::createUrl('/consultation/index');
             } else {
-                $backUrl = \Yii::$app->request->url;
+                $backUrl = RequestContext::getWebApplication()->request->url;
             }
             $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => $backUrl]);
             $loginTitle = \Yii::t('base', 'menu_login');
@@ -177,7 +178,7 @@ class LayoutHooks extends Hooks
             if (get_class($controller) === UserController::class) {
                 $backUrl = UrlHelper::createUrl('/consultation/index');
             } else {
-                $backUrl = \Yii::$app->request->url;
+                $backUrl = RequestContext::getWebApplication()->request->url;
             }
             $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => $backUrl]);
             $logoutTitle = \Yii::t('base', 'menu_logout');
@@ -263,7 +264,7 @@ class LayoutHooks extends Hooks
                 }
                 $aename = $amend->titlePrefix;
                 if ($aename === '') {
-                    $aename = $amend->id;
+                    $aename = (string)$amend->id;
                 }
                 $amendLink     = UrlHelper::createAmendmentUrl($amend);
                 $before        .= Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);

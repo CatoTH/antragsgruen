@@ -47,7 +47,7 @@ class DrupalPasswordHashing
         return './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     }
 
-    private static function _password_get_count_log2($setting): int
+    private static function _password_get_count_log2(string $setting): int
     {
         $itoa64 = self::_password_itoa64();
 

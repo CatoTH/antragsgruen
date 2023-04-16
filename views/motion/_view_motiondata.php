@@ -132,7 +132,7 @@ if (count($motionHistory) > 1) {
     $historyContent = '<div class="fullHistory' . ($historyIsOpen ? '' : ' hidden') . '">';
     foreach ($motionHistory as $motionHis) {
         $historyLine = '';
-        $versionName = Yii::t('motion', 'version') . ' ' . $motionHis->version;
+        $versionName = $motionHis->getFormattedVersion();
         if ($motionHis->id === $motion->id) {
             $historyLine .= '<div class="historyLine currentVersion">';
             $historyLine .= '<span class="currVersion">' . Html::encode($versionName) . '</span>';
@@ -145,7 +145,7 @@ if (count($motionHistory) > 1) {
         $historyLine .= '<span class="date">(' . Tools::formatMysqlDate($motionHis->dateCreation, false) . ')</span>';
 
         if ($motionHis->version > Motion::VERSION_DEFAULT) {
-            $changesUrl = UrlHelper::createMotionUrl($motion, 'view-changes');
+            $changesUrl = UrlHelper::createMotionUrl($motionHis, 'view-changes');
             $changesLink = '<span class="changesLink">';
             $changesLink .= '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
             $changesLink .= Html::a(Yii::t('motion', 'replaces_motion_diff'), $changesUrl);
@@ -159,8 +159,7 @@ if (count($motionHistory) > 1) {
     }
     $historyContent .= '</div><div class="historyOpener' . ($historyIsOpen ? ' hidden' : '') . '">';
     $historyContent .= '<div class="historyLine currentVersion">';
-    $versionName = Yii::t('motion', 'version') . ' ' . $motion->version;
-    $historyContent .= '<span class="currVersion">' . Html::encode($versionName) . '</span>';
+    $historyContent .= '<span class="currVersion">' . Html::encode($motion->getFormattedVersion()) . '</span>';
     $historyContent .= ' <button class="btn btn-link btnHistoryOpener" type="button">';
     $historyContent .= '<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>';
     $historyContent .= Yii::t('motion', 'replaces_show_history') . '</button>';

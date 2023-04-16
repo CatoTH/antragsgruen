@@ -8,7 +8,7 @@ use app\models\db\{Amendment, EMailLog, Motion};
 
 class Notifications
 {
-    public static function onAmendmentSupport(AmendmentSupporterEvent $event)
+    public static function onAmendmentSupport(AmendmentSupporterEvent $event): void
     {
         $event->handled = true;
 
@@ -33,7 +33,7 @@ class Notifications
         }
     }
 
-    public static function onMotionSupport(MotionSupporterEvent $event)
+    public static function onMotionSupport(MotionSupporterEvent $event): void
     {
         $event->handled = true; // Prevent the standard "number reached" email
 

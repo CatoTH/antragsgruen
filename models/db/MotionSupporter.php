@@ -15,7 +15,7 @@ use yii\db\ActiveQuery;
  * @property int $position
  * @property int|null $userId
  * @property string $role
- * @property string $comment
+ * @property string|null $comment
  * @property int $personType
  * @property string $name
  * @property string $organization

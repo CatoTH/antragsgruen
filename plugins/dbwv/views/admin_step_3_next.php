@@ -15,12 +15,12 @@ echo Html::beginForm($submitUrl, 'POST', [
     'class' => 'dbwv_step dbwv_step3_next',
 ]);
 ?>
-    <h2>V3 - Administration <small>(Redaktionsausschuss)</small></h2>
+    <h2>V3 - Administration <small>(Redaktionsausschuss) - DUMMY</small></h2>
     <div class="holder">
         <div style="text-align: right; padding: 10px;">
             <button type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                V4 Beschluss erstellen
+                V4 Beschluss erstellen (DUMMY)
             </button><br><br>
             (Dieser Button kann auch auf die Antragsliste für einen schnelleren Zugriff und führt zur Beschlusserstellungs-Seite)
         </div>

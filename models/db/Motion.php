@@ -399,6 +399,11 @@ class Motion extends IMotion implements IRSSItem
         return $title; // encoded string, e.g. "A1: Application: John &lt;Doe&gt;"
     }
 
+    public function getFormattedVersion(): string
+    {
+        return \Yii::t('motion', 'version') . ' ' . $this->version;
+    }
+
     /**
      * @return Amendment[]
      */
@@ -1091,7 +1096,8 @@ class Motion extends IMotion implements IRSSItem
         } elseif ($this->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
             $status .= Html::encode($statusNames[$this->status]);
             $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
-            $status .= IPolicy::getPolicyNames()[$this->getMyMotionType()->policySupportMotions] . ')</small>';
+            $policy = $this->getMyMotionType()->getMotionSupportPolicy();
+            $status .= $policy::getPolicyName() . ')</small>';
         } else {
             $status .= Html::encode($statusNames[$this->status]);
         }

@@ -6,8 +6,7 @@ use Yii;
 
 class DBJRPDF extends IPdfWriter
 {
-    /** @var IPDFLayout */
-    private $layout;
+    private IPDFLayout $layout;
 
     public function __construct(IPDFLayout $layout)
     {
@@ -28,13 +27,13 @@ class DBJRPDF extends IPdfWriter
         $format = PDF_PAGE_FORMAT,
         $keepmargins = false,
         $tocpage = false,
-        $footer = true
-    ) {
+        bool $footer = true
+    ): void {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }
 
-    public function Header()
+    public function Header(): void
     {
         if (count($this->pagegroups) === 0) {
             // This is most likely a PDF-only application => we don't need page numbers
@@ -45,7 +44,7 @@ class DBJRPDF extends IPdfWriter
     }
 
     // @codingStandardsIgnoreStart
-    public function Footer()
+    public function Footer(): void
     {
         if (count($this->pagegroups) === 0) {
             // This is most likely a PDF-only application => we don't need page numbers

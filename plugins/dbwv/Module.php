@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
+use app\models\exceptions\Internal;
 use app\plugins\dbwv\workflow\Step2;
-use app\models\db\{Consultation, IMotion, Motion, User};
+use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, User};
 use app\models\settings\{Layout, Privilege, PrivilegeQueryContext};
 use app\plugins\dbwv\workflow\Workflow;
 use app\plugins\ModuleBase;
@@ -16,6 +17,8 @@ class Module extends ModuleBase
     public const PRIVILEGE_DBWV_V1_ASSIGN_TOPIC = -100;
     public const PRIVILEGE_DBWV_V1_EDITORIAL = -101;
     public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -102;
+
+    public const CONSULTATION_URL_BUND = 'bund';
 
     public static function getProvidedTranslations(): array
     {
@@ -107,8 +110,9 @@ class Module extends ModuleBase
             'assign-main-tag'     => 'dbwv/admin-workflow/assign-main-tag',
             'workflow-step1-assign-number' => 'dbwv/admin-workflow/step1-assign-number',
             'workflow-step2' => 'dbwv/admin-workflow/step2',
-            'workflow-step3' => 'dbwv/admin-workflow/step3',
-            'workflow-step4' => 'dbwv/admin-workflow/step4',
+            'workflow-step3' => 'dbwv/admin-workflow/step3next', // dummy
+            'workflow-step4' => 'dbwv/admin-workflow/step4next',
+            'workflow-step5-assign-number' => 'dbwv/admin-workflow/step5-assign-number',
         ];
     }
 
@@ -157,5 +161,29 @@ class Module extends ModuleBase
             return Step2::gotoNext($imotion);
         }
         return $imotion;
+    }
+
+    public static function getBundConsultation(): Consultation
+    {
+        $consultation = Consultation::getCurrent();
+        if ($consultation->urlPath === self::CONSULTATION_URL_BUND) {
+            return $consultation;
+        }
+        foreach ($consultation->site->consultations as $consultation) {
+            if ($consultation->urlPath === self::CONSULTATION_URL_BUND) {
+                return $consultation;
+            }
+        }
+        throw new Internal('No main consultation found');
+    }
+
+    public static function getCorrespondingBundMotionType(ConsultationMotionType $lvType): ConsultationMotionType
+    {
+        foreach (self::getBundConsultation()->motionTypes as $motionType) {
+            if ($motionType->isCompatibleTo($lvType) && $motionType->titleSingular === $lvType->titleSingular) {
+                return $motionType;
+            }
+        }
+        throw new Internal('No compatible motion type found');
     }
 }

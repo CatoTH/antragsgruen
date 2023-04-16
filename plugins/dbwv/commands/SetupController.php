@@ -17,6 +17,8 @@ class SetupController extends Controller
     private const GROUP_NAME_AL_RECHT = 'AL Recht';
     private const GROUP_NAME_V1_REFERAT = 'Referat %NAME% (V1)';
     private const GROUP_NAME_V2_ARBEITSGRUPPE = 'Arbeitsgruppe %NAME% (V2)';
+    private const GROUP_NAME_V3_REDAKTION = 'Redaktionsausschuss';
+    private const GROUP_NAME_V4_KOORDINIERUNG = 'Koordinierungsausschuss';
 
     /** @var array{array{title: string, motionPrefix: string|null, position: int, themengebiete: array{array{title: string, position: int}}}}  */
     private const AGENDA_ITEMS_SACHGEBIETE = [
@@ -76,13 +78,34 @@ class SetupController extends Controller
             return;
         }
 
-        $this->createUserGroupIfNotExists($consultation, 'Antragsberechtigte');
-        $this->createUserGroupIfNotExists($consultation, 'Delegierte');
+        $this->createGlobalUserGroups($consultation);
 
+        if ($consultation->urlPath === Module::CONSULTATION_URL_BUND) {
+            $this->createBundUserGroups($consultation);
+        } else {
+            $this->createLvUserGroups($consultation);
+        }
+
+        echo "Created the necessary user groups.\n";
+    }
+
+    private function createGlobalUserGroups(Consultation $consultation): void
+    {
         $alRecht = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_AL_RECHT);
         $alRechtPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Module::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC . ']}]}';
         $alRecht->setGroupPermissions(UserGroupPermissions::fromDatabaseString($alRechtPrivileges, false));
         $alRecht->save();
+
+        $koordinierung = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_V4_KOORDINIERUNG);
+        $koordinierungPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN . ']}]}';
+        $koordinierung->setGroupPermissions(UserGroupPermissions::fromDatabaseString($koordinierungPrivileges, false));
+        $koordinierung->save();
+    }
+
+    private function createLvUserGroups(Consultation $consultation): void
+    {
+        $this->createUserGroupIfNotExists($consultation, 'Antragsberechtigte');
+        $this->createUserGroupIfNotExists($consultation, 'Delegierte');
 
         $lvVorstand = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_LV_VORSTAND);
         $lvVorstandPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED . ']}]}';
@@ -107,12 +130,25 @@ class SetupController extends Controller
             $group->save();
         }
 
-        echo "Created the necessary user groups.\n";
+        $redaktion = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_V3_REDAKTION);
+        $redaktionPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_MOTION_STATUS_EDIT . ']}]}';
+        $redaktion->setGroupPermissions(UserGroupPermissions::fromDatabaseString($redaktionPrivileges, false));
+        $redaktion->save();
+    }
+
+    private function createBundUserGroups(Consultation $consultation): void
+    {
+        $this->createUserGroupIfNotExists($consultation, 'Delegierte');
     }
 
     private function createOrGetMainTag(Consultation $consultation, int $position, string $title, ?string $motionPrefix): ConsultationSettingsTag
     {
-        $tag = ConsultationSettingsTag::findOne(['title' => $title, 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
+        $tag = ConsultationSettingsTag::findOne([
+            'consultationId' => $consultation->id,
+            'title' => $title,
+            'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC,
+            'parentTagId' => null,
+        ]);
         if ($tag) {
             if ($tag->position !== $position) {
                 $tag->position = $position;
@@ -137,7 +173,12 @@ class SetupController extends Controller
 
     private function createOrGetSecondaryTag(Consultation $consultation, ConsultationSettingsTag $parentTag, int $position, string $title): ConsultationSettingsTag
     {
-        $tag = ConsultationSettingsTag::findOne(['title' => $title, 'type' => ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, 'parentTagId' => $parentTag->id]);
+        $tag = ConsultationSettingsTag::findOne([
+            'consultationId' => $consultation->id,
+            'title' => $title,
+            'type' => ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE,
+            'parentTagId' => $parentTag->id,
+        ]);
         if ($tag) {
             if ($tag->position !== $position) {
                 $tag->position = $position;
@@ -234,25 +275,63 @@ class SetupController extends Controller
             return;
         }
 
-        $this->createTestAccountsForGroup($consultation, 'Antragsberechtigte', 'lv-sued-antragsberechtigt', 'Organisation', 10);
-        $this->createTestAccountsForGroup($consultation, 'Delegierte', 'lv-sued-delegiert', 'Organisation', 50);
+        $this->createGlobalUserAccounts($consultation);
 
+        if ($consultation->urlPath === Module::CONSULTATION_URL_BUND) {
+            $this->createBundUserAccounts($consultation);
+        } else {
+            $this->createLvUserAccounts($consultation);
+        }
+
+
+        echo "Created the dummy accounts.\n";
+    }
+
+    private function addUserGroup(User $user, ConsultationUserGroup $group): void
+    {
+        foreach ($group->users as $u) {
+            if ($u->id === $user->id) {
+                return;
+            }
+        }
+        $group->addUser($user);
+    }
+
+    private function createGlobalUserAccounts(Consultation $consultation): void
+    {
         $alRechtGroup = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_AL_RECHT]);
         if (!$alRechtGroup) {
             echo "AL Recht Group not found\n";
             return;
         }
         $user = $this->createOrGetUserAccount('al-recht@example.org', 'Test', 'AL', 'Recht', 'DBwV');
-        if (count($user->userGroups) === 0) {
-            $alRechtGroup->addUser($user);
+        $this->addUserGroup($user, $alRechtGroup);
+
+
+        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V4_KOORDINIERUNG]);
+        if (!$group) {
+            echo "Group " . self::GROUP_NAME_V4_KOORDINIERUNG . " not found\n";
+            return;
         }
+        $user = $this->createOrGetUserAccount('koordinierungsausschuss@example.org', 'Test', 'Koordinierungs', 'Ausschuss', 'DBwV');
+        if (count($user->userGroups) === 0) {
+            $group->addUser($user);
+        }
+        $this->addUserGroup($user, $group);
+    }
+
+    private function createLvUserAccounts(Consultation $consultation): void
+    {
+        $urlPath = $consultation->urlPath;
+        $this->createTestAccountsForGroup($consultation, 'Antragsberechtigte', $urlPath.'-antragsberechtigt', 'Organisation', 10);
+        $this->createTestAccountsForGroup($consultation, 'Delegierte', $urlPath.'-delegiert', 'Organisation', 50);
 
         $lvVorstandGroup = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_LV_VORSTAND]);
         if (!$lvVorstandGroup) {
             echo "AL Recht Group not found\n";
             return;
         }
-        $user = $this->createOrGetUserAccount('lv-sued-vorstand@example.org', 'Test', 'LV', 'Vorstand', 'LV Süd');
+        $user = $this->createOrGetUserAccount($urlPath.'-vorstand@example.org', 'Test', 'LV', 'Vorstand', 'LV Süd');
         if (count($user->userGroups) === 0) {
             $lvVorstandGroup->addUser($user);
         }
@@ -267,7 +346,7 @@ class SetupController extends Controller
                 echo "Group $groupName not found\n";
                 return;
             }
-            $user = $this->createOrGetUserAccount('referat-' . $item['motionPrefix'] . '@example.org', 'Test', 'Referat', $item['title'], 'DBwV');
+            $user = $this->createOrGetUserAccount($urlPath.'-referat-' . $item['motionPrefix'] . '@example.org', 'Test', 'Referat', $item['title'], 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
             }
@@ -283,12 +362,27 @@ class SetupController extends Controller
                 echo "Group $groupName not found\n";
                 return;
             }
-            $user = $this->createOrGetUserAccount('arbeitsgruppe-' . $item['motionPrefix'] . '@example.org', 'Test', 'Arbeitsgruppe', $item['title'], 'DBwV');
+            $user = $this->createOrGetUserAccount($urlPath.'-arbeitsgruppe-' . $item['motionPrefix'] . '@example.org', 'Test', 'Arbeitsgruppe', $item['title'], 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
             }
         }
 
-        echo "Created the dummy accounts.\n";
+        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V3_REDAKTION]);
+        if (!$group) {
+            echo "Group " . self::GROUP_NAME_V3_REDAKTION . " not found\n";
+            return;
+        }
+        $user = $this->createOrGetUserAccount($urlPath.'-redaktion@example.org', 'Test', 'Redaktions', 'Ausschuss', 'DBwV');
+        if (count($user->userGroups) === 0) {
+            $group->addUser($user);
+        }
+    }
+
+    private function createBundUserAccounts(Consultation $consultation): void
+    {
+        $urlPath = $consultation->urlPath;
+        $this->createTestAccountsForGroup($consultation, 'Delegierte', $urlPath.'-delegiert', 'Organisation', 50);
+
     }
 }

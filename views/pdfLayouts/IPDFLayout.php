@@ -100,15 +100,14 @@ abstract class IPDFLayout
     protected ConsultationMotionType $motionType;
     protected ?array $headerlogo = null;
 
-    /** @var TCPDF */
-    protected $pdf;
+    protected TCPDF $pdf;
 
     public function __construct(ConsultationMotionType $motionType)
     {
         $this->motionType = $motionType;
     }
 
-    public function getFonts()
+    public function getFonts(): void
     {
     }
 
@@ -116,7 +115,7 @@ abstract class IPDFLayout
     {
         $this->pdf->SetFont('helvetica', '', 12);
         $this->pdf->ln(2);
-        $this->pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, '', '', true, 0, true);
+        $this->pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, null, null, true, 0, true);
     }
 
     protected function setHeaderLogo(Consultation $consultation, int $abs, ?float $maxWidth, ?float $maxHeight): void

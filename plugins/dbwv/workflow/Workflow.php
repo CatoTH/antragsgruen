@@ -91,4 +91,12 @@ class Workflow
             PrivilegeQueryContext::motion($motion)
         );
     }
+
+    public static function canMakeEditorialChangesV5(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->havePrivilege(
+            Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
+            PrivilegeQueryContext::motion($motion)
+        );
+    }
 }
