@@ -399,6 +399,11 @@ class Motion extends IMotion implements IRSSItem
         return $title; // encoded string, e.g. "A1: Application: John &lt;Doe&gt;"
     }
 
+    public function getFormattedVersion(): string
+    {
+        return \Yii::t('motion', 'version') . ' ' . $this->version;
+    }
+
     /**
      * @return Amendment[]
      */

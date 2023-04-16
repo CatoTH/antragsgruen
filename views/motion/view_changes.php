@@ -31,11 +31,17 @@ $this->title = str_replace(
         echo $controller->showErrors();
         $oldLink = UrlHelper::createMotionUrl($oldMotion);
         $newLink = UrlHelper::createMotionUrl($newMotion);
+        $oldTitle = $oldMotion->titlePrefix;
+        $newTitle = $newMotion->titlePrefix;
+        if ($oldMotion->version !== Motion::VERSION_DEFAULT || $newMotion->version !== Motion::VERSION_DEFAULT) {
+            $oldTitle .= ' (' . $oldMotion->getFormattedVersion() . ')';
+            $newTitle .= ' (' . $newMotion->getFormattedVersion() . ')';
+        }
         ?>
         <table class="motionDataTable">
             <tr>
                 <th><?= Yii::t('motion', 'diff_old_version') ?>:</th>
-                <td><?= Html::a(Html::encode($oldMotion->titlePrefix), $oldLink) ?></td>
+                <td><?= Html::a(Html::encode($oldTitle), $oldLink) ?></td>
             </tr>
             <tr>
                 <th><?= Yii::t('motion', 'status') ?>:</th>
@@ -50,7 +56,7 @@ $this->title = str_replace(
         <table class="motionDataTable">
             <tr>
                 <th><?= Yii::t('motion', 'diff_new_version') ?>:</th>
-                <td><?= Html::a(Html::encode($newMotion->titlePrefix), $newLink) ?></td>
+                <td><?= Html::a(Html::encode($newTitle), $newLink) ?></td>
             </tr>
             <tr>
                 <th><?= Yii::t('motion', 'status') ?>:</th>

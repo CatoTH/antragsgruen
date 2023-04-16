@@ -14,6 +14,9 @@ class Permissions extends \app\models\settings\Permissions
         if (in_array($motion->version, [Workflow::STEP_V1, Workflow::STEP_V2]) && Workflow::canMakeEditorialChangesV1($motion)) {
             return true;
         }
+        if ($motion->version === Workflow::STEP_V5 && Workflow::canMakeEditorialChangesV5($motion)) {
+            return true;
+        }
 
         return parent::motionCanEditText($motion);
     }
