@@ -90,14 +90,26 @@ class ConsultationCreateForm
             }
         }
 
+        $newTagsByOldId = [];
         foreach ($this->template->tags as $tag) {
             $newTag = new ConsultationSettingsTag();
             $newTag->setAttributes($tag->getAttributes(), false);
             $newTag->id = null;
             $newTag->consultationId = $consultation->id;
+            $newTag->parentTagId = null;
             if (!$newTag->save()) {
                 throw new FormError(implode(', ', $newTag->getErrors()));
             }
+
+            $newTagsByOldId[$tag->id] = $newTag;
+        }
+        foreach ($this->template->tags as $tag) {
+            if ($tag->parentTagId === null) {
+                continue;
+            }
+            $newTag = $newTagsByOldId[$tag->id];
+            $newTag->parentTagId = $newTagsByOldId[$tag->parentTagId]->id;
+            $newTag->save();
         }
 
         foreach ($this->template->userGroups as $userGroup) {

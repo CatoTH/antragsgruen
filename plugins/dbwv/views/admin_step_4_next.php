@@ -20,7 +20,7 @@ $selectedTagId = '';
 foreach ($mainConsultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
     $tagSelect[$tag->id] = $tag->title;
     if ($tag->title === $selectedTagTitle) {
-        $selectedTagId = $tag->id;
+        $selectedTagId = (string)$tag->id;
     }
 }
 
