@@ -1216,7 +1216,8 @@ class Amendment extends IMotion implements IRSSItem
             case Amendment::STATUS_COLLECTING_SUPPORTERS:
                 $status = Html::encode($statusNames[$this->status]);
                 $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
-                $status .= IPolicy::getPolicyNames()[$this->getMyMotionType()->policySupportAmendments] . ')</small>';
+                $policy = $this->getMyMotionType()->getAmendmentSupportPolicy();
+                $status .= $policy::getPolicyName() . ')</small>';
                 break;
             default:
                 $status .= Html::encode($statusNames[$this->status]);
