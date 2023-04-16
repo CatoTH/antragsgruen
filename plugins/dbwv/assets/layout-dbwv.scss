@@ -116,3 +116,13 @@ body {
 #userLoginPanel + #mainmenu {
   margin-top: 30px;
 }
+
+
+.motionListTags {
+  > h3:first-child {
+    display: none;
+  }
+  #tagList {
+    display: none;
+  }
+}

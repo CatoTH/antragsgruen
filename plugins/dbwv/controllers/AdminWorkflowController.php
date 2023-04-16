@@ -9,7 +9,7 @@ use app\controllers\Base;
 use app\models\db\ConsultationSettingsTag;
 use app\models\exceptions\Access;
 use app\models\exceptions\NotFound;
-use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Workflow};
+use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Workflow};
 use app\models\http\{HtmlErrorResponse, RedirectResponse, ResponseInterface};
 
 class AdminWorkflowController extends Base
@@ -74,11 +74,11 @@ class AdminWorkflowController extends Base
             return new HtmlErrorResponse(404,  'Motion not found');
         }
 
-        Step3::gotoNext($motion, $this->getPostValues());
+        $newMotion = Step3::gotoNext($motion);
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
-        return new RedirectResponse(UrlHelper::createMotionUrl($motion));
+        return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
     }
 
     public function actionStep4next(string $motionSlug): ResponseInterface
@@ -88,10 +88,24 @@ class AdminWorkflowController extends Base
             return new HtmlErrorResponse(404,  'Motion not found');
         }
 
-        Step4::gotoNext($motion, $this->getPostValues());
+        $tagId = $this->getPostValue('tag');
+        $newMotion = Step4::moveToMain($motion, $tagId > 0 ? intval($tagId) : null);
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
-        return new RedirectResponse(UrlHelper::createMotionUrl($motion));
+        return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
+    }
+
+    public function actionStep5AssignNumber(string $motionSlug): ResponseInterface
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return new HtmlErrorResponse(404,  'Motion not found');
+        }
+
+        $newMotion = Step5::saveNumber($motion, $this->getPostValues());
+
+        $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
+        return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
     }
 }

@@ -16,4 +16,6 @@ Demo Accounts:
 - al-recht@example.org
 - lv-sued-referat-S@example.org (Satzung), lv-sued-referat-U@example.org (Umwelt)
 - lv-sued-arbeitsgruppe-S@example.org (Satzung), lv-sued-arbeitsgruppe-U@example.org (Umwelt)
+- lv-sued-redaktion@example.org
+- koordinierungsausschuss@example.org
 - Passwort: Test

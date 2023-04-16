@@ -66,6 +66,11 @@ class MotionDeepCopy
 
     private static function copyTags(Motion $oldMotion, Motion $newMotion): void
     {
+        if ($newMotion->consultationId !== $oldMotion->consultationId) {
+            // Alternatively, we could link similar sounding tags,
+            // but as there is no guarantee there would be matching tags, we skip it completely.
+            return;
+        }
         foreach ($oldMotion->getPublicTopicTags() as $tag) {
             $newMotion->link('tags', $tag);
         }
