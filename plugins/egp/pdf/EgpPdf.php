@@ -7,23 +7,22 @@ use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 
 class EgpPdf extends IPdfWriter
 {
-    /** @var IPDFLayout */
-    private $layout;
+    private IPDFLayout $layout;
 
-    public $roboto;
-    public $robotoBold;
-    public $robotoItalic;
-    public $robotoItalicBold;
+    public string $roboto;
+    public string $robotoBold;
+    public string $robotoItalic;
+    public string $robotoItalicBold;
 
     public function __construct(IPDFLayout $layout)
     {
         $this->layout  = $layout;
         parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $this->roboto           = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-Regular.ttf', 'TrueTypeUnicode', '', 96);
-        $this->robotoBold       = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-Bold.ttf', 'TrueTypeUnicode', '', 96);
-        $this->robotoItalic     = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-Italic.ttf', 'TrueTypeUnicode', '', 96);
-        $this->robotoItalicBold = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-BoldItalic.ttf', 'TrueTypeUnicode', '', 96);
+        $this->roboto           = (string)\TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-Regular.ttf', 'TrueTypeUnicode', '', 96);
+        $this->robotoBold       = (string)\TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-Bold.ttf', 'TrueTypeUnicode', '', 96);
+        $this->robotoItalic     = (string)\TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-Italic.ttf', 'TrueTypeUnicode', '', 96);
+        $this->robotoItalicBold = (string)\TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Roboto-BoldItalic.ttf', 'TrueTypeUnicode', '', 96);
     }
 
     public function getMotionFont(?MotionSection $section): string
@@ -42,15 +41,14 @@ class EgpPdf extends IPdfWriter
      * @param string $format
      * @param bool $keepmargins
      * @param bool $tocpage
-     * @param bool $footer
      */
     public function AddPage(
         $orientation = PDF_PAGE_ORIENTATION,
         $format = PDF_PAGE_FORMAT,
         $keepmargins = false,
         $tocpage = false,
-        $footer = true
-    ) {
+        bool $footer = true
+    ): void {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }
@@ -58,7 +56,7 @@ class EgpPdf extends IPdfWriter
     // @codingStandardsIgnoreStart
     /**
      */
-    public function Footer()
+    public function Footer(): void
     {
         // Position at 15 mm from bottom
         $this->SetY(-15);
@@ -72,7 +70,7 @@ class EgpPdf extends IPdfWriter
             0,
             false,
             'C',
-            0,
+            false,
             '',
             0,
             false,

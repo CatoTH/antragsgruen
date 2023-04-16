@@ -2,6 +2,7 @@
 
 namespace app\plugins\antragsgruen_sites;
 
+use app\components\RequestContext;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\{Consultation, User};
@@ -13,7 +14,7 @@ class LayoutHooks extends Hooks
     public function getStdNavbarHeader(string $before): string
     {
         /** @var Base $controller */
-        $controller = \Yii::$app->controller;
+        $controller = RequestContext::getWebApplication()->controller;
         if ($controller->consultation) {
             return $before;
         }
@@ -28,7 +29,7 @@ class LayoutHooks extends Hooks
         $out      .= '<li>' . Html::a($helpTitle, $helpLink, ['id' => 'helpLink', 'aria-label' => $helpTitle]) . '</li>';
 
         if (!User::getCurrentUser()) {
-            $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => \Yii::$app->request->url]);
+            $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => RequestContext::getWebApplication()->request->url]);
             $loginTitle = \Yii::t('base', 'menu_login');
             $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow', 'aria-label' => $loginTitle]) .
                 '</li>';
@@ -41,7 +42,7 @@ class LayoutHooks extends Hooks
             );
             $out  .= '<li>' . $link . '</li>';
 
-            $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => \Yii::$app->request->url]);
+            $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => RequestContext::getWebApplication()->request->url]);
             $logoutTitle = \Yii::t('base', 'menu_logout');
             $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink', 'aria-label' => $logoutTitle]) . '</li>';
         }
@@ -60,7 +61,7 @@ class LayoutHooks extends Hooks
     public function footerLine(string $before): string
     {
         /** @var Base $controller */
-        $controller = \Yii::$app->controller;
+        $controller = RequestContext::getWebApplication()->controller;
         if ($controller->consultation) {
             return $before;
         }
@@ -76,7 +77,7 @@ class LayoutHooks extends Hooks
             \Yii::t('base', 'privacy_statement') . '</a>';
 
         $out .= '<span class="version">';
-        if (\Yii::$app->language === 'de') {
+        if (RequestContext::getWebApplication()->language === 'de') {
             $ariaVersion = str_replace('%VERSION%', ANTRAGSGRUEN_VERSION, \Yii::t('base', 'aria_version_hint'));
             $out         .= '<a href="https://antragsgruen.de/" aria-label="' . \Yii::t('base', 'aria_antragsgruen') . '">Antragsgrün</a>, Version ' .
                             Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL, ['aria-label' => $ariaVersion]);

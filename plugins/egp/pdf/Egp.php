@@ -7,9 +7,6 @@ use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 
 class Egp extends IPDFLayout
 {
-    /** @var EgpPdf $pdf */
-    protected $pdf;
-
     protected function setHeaderLogo(Consultation $consultation, int $abs, ?float $maxWidth, ?float $maxHeight): void
     {
         if ($consultation->urlPath === '36thEGPcouncil') {
@@ -88,7 +85,7 @@ class Egp extends IPDFLayout
         }
 
         $pdf->SetXY(192 - $width, 37, true);
-        $this->pdf->MultiCell($width, 21, $revName, 0, 'C', false, 1, '', '', true, 0, false, true, 21, 'M');
+        $this->pdf->MultiCell($width, 21, $revName, 0, 'C', false, 1, null, null, true, 0, false, true, 21, 'M');
 
         $pdf->SetY(85);
         $intro = $this->motionType->getSettingsObj()->pdfIntroduction;

@@ -30,11 +30,11 @@ class ByLDK extends IPDFLayout
             }
             if ($revName === '') {
                 $revName = \Yii::t('export', 'draft');
-                $pdf->SetFont('helvetica', 'I', '25');
-                $width = $pdf->GetStringWidth($revName, 'helvetica', 'I', '25') + 3.1;
+                $pdf->SetFont('helvetica', 'I', 25);
+                $width = $pdf->GetStringWidth($revName, 'helvetica', 'I', 25) + 3.1;
             } else {
-                $pdf->SetFont('helvetica', 'B', '25');
-                $width = $pdf->GetStringWidth($revName, 'helvetica', 'B', '25') + 3.1;
+                $pdf->SetFont('helvetica', 'B', 25);
+                $width = $pdf->GetStringWidth($revName, 'helvetica', 'B', 25) + 3.1;
             }
             if ($width < 35) {
                 $width = 35;
@@ -50,8 +50,8 @@ class ByLDK extends IPDFLayout
                 'C',
                 false,
                 1,
-                '',
-                '',
+                null,
+                null,
                 true,
                 0,
                 false,
@@ -62,7 +62,7 @@ class ByLDK extends IPDFLayout
         }
 
         $str = $motion->motionType->titleSingular;
-        $pdf->SetFont('helvetica', 'B', '25');
+        $pdf->SetFont('helvetica', 'B', 25);
         $width = $pdf->GetStringWidth($str);
 
         $pdf->SetXY((210 - $width) / 2, 60);
@@ -135,11 +135,11 @@ class ByLDK extends IPDFLayout
             $revName = $amendment->titlePrefix;
             if ($revName === '') {
                 $revName = \Yii::t('export', 'draft');
-                $pdf->SetFont('helvetica', 'I', '25');
-                $width = $pdf->GetStringWidth($revName, 'helvetica', 'I', '25') + 3.1;
+                $pdf->SetFont('helvetica', 'I', 25);
+                $width = $pdf->GetStringWidth($revName, 'helvetica', 'I', 25) + 3.1;
             } else {
-                $pdf->SetFont('helvetica', 'B', '25');
-                $width = $pdf->GetStringWidth($revName, 'helvetica', 'B', '25') + 3.1;
+                $pdf->SetFont('helvetica', 'B', 25);
+                $width = $pdf->GetStringWidth($revName, 'helvetica', 'B', 25) + 3.1;
             }
             if ($width < 35) {
                 $width = 35;
@@ -155,8 +155,8 @@ class ByLDK extends IPDFLayout
                 'C',
                 false,
                 1,
-                '',
-                '',
+                null,
+                null,
                 true,
                 0,
                 false,
@@ -167,7 +167,7 @@ class ByLDK extends IPDFLayout
         }
 
         $str = $amendment->getMyMotion()->motionType->titleSingular;
-        $pdf->SetFont('helvetica', 'B', '25');
+        $pdf->SetFont('helvetica', 'B', 25);
         $width = $pdf->GetStringWidth($str);
 
         $pdf->SetXY((210 - $width) / 2, 60);

@@ -8,9 +8,6 @@ use yii\helpers\Html;
 
 class BDK extends IPDFLayout
 {
-    /** @var BDKPDF $pdf */
-    protected $pdf;
-
     public function createPDFClass(): IPdfWriter
     {
         $pdf = new BDKPDF();
@@ -39,19 +36,19 @@ class BDK extends IPDFLayout
         return $pdf;
     }
 
-    public static function printHeaderTable(Fpdi $pdf, ?string $pdfIntroduction, string $tableContent): void
+    public static function printHeaderTable(\TCPDF $pdf, ?string $pdfIntroduction, string $tableContent): void
     {
         $title = str_replace("\n", '<br>', $pdfIntroduction);
         $pdf->SetY(35);
         if ($title) {
             $pdf->SetFont("helvetica", "", 13);
-            $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
+            $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, false, true, 'R');
         }
 
         $pdf->SetFont("helvetica", "", 12);
 
         $pdf->setCellPaddings(2, 4, 2, 4);
-        $pdf->writeHTMLCell(170, 0, 25, 35, $tableContent, 1, 1, 0, true, 'L');
+        $pdf->writeHTMLCell(170, 0, 25, 35, $tableContent, 1, 1, false, true, 'L');
 
         $pdf->Ln(7);
         $pdf->setCellPaddings(0, 0, 0, 0);
@@ -59,6 +56,7 @@ class BDK extends IPDFLayout
 
     public function printMotionHeader(Motion $motion): void
     {
+        /** @var BDKPDF $pdf */
         $pdf = $this->pdf;
 
         $pdf->setPrintHeader(false);
@@ -94,6 +92,7 @@ class BDK extends IPDFLayout
 
     public function printAmendmentHeader(Amendment $amendment): void
     {
+        /** @var BDKPDF $pdf */
         $pdf = $this->pdf;
 
         $pdf->setPrintHeader(false);

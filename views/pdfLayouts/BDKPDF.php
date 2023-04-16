@@ -6,8 +6,8 @@ use yii\helpers\Html;
 
 class BDKPDF extends IPdfWriter
 {
-    private $headerTitle;
-    private $headerPrefix;
+    private string $headerTitle;
+    private string $headerPrefix;
 
     public function __construct()
     {
@@ -20,24 +20,19 @@ class BDKPDF extends IPdfWriter
      * @param string $format
      * @param bool $keepmargins
      * @param bool $tocpage
-     * @param bool $footer
      */
     public function AddPage(
         $orientation = PDF_PAGE_ORIENTATION,
         $format = PDF_PAGE_FORMAT,
         $keepmargins = false,
         $tocpage = false,
-        $footer = true
+        bool $footer = true
     ): void {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }
 
-    /**
-     * @param string $prefix
-     * @param string $title
-     */
-    public function setMotionTitle($prefix, $title): void
+    public function setMotionTitle(string $prefix, string $title): void
     {
         $this->headerPrefix = $prefix;
         $this->headerTitle  = $title;
