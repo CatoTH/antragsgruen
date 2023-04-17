@@ -15,3 +15,4 @@ return [
                                 <br><br>
                                 Bitte beachte aber, dass dies nur eine Test-Seite ist und <strong>nach drei Tagen wieder gelöscht</strong> wird.<br><br>
                                 <em>Diesen Text kannst du übrigens bearbeiten, indem du rechts oben auf "Bearbeiten" klickst.</em>',
+];
