@@ -23,11 +23,10 @@ use yii\db\{ActiveQueryInterface, ActiveRecord};
  */
 abstract class IComment extends ActiveRecord implements IRSSItem
 {
-
     public const STATUS_SCREENING = 1;
-    public const STATUS_VISIBLE   = 0;
-    public const STATUS_DELETED   = -1;
-    public const STATUS_PRIVATE   = -2;
+    public const STATUS_VISIBLE = 0;
+    public const STATUS_DELETED = -1;
+    public const STATUS_PRIVATE = -2;
 
     public const EVENT_PUBLISHED = 'published';
 
@@ -51,27 +50,11 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         ];
     }
 
-    /**
-     * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
-     * @throws InvalidConfigException if there is no primary key defined
-     * @internal
-     */
-    protected static function findByCondition($condition)
-    {
-        $query = parent::findByCondition($condition);
-        $query->andWhere('status != ' . static::STATUS_DELETED);
-        return $query;
-    }
-
     abstract public function getConsultation(): ?Consultation;
 
     abstract public function getMotionTitle(): string;
 
-    /**
-     * @return IMotion
-     */
-    abstract public function getIMotion();
+    abstract public function getIMotion(): ?IMotion;
 
     abstract public function getLink(): string;
 

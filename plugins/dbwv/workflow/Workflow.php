@@ -29,7 +29,7 @@ class Workflow
     public const STEP_NAME_V7 = 'V7: Beschluss der HV';
     public const STEP_NAME_V8 = 'V8: Beschluss im Beschlussumdruck';
 
-    public static function getStepName(string $step): string {
+    public static function getStepName(string $step): ?string {
         switch ($step) {
             case self::STEP_V1:
                 return self::STEP_NAME_V1;
@@ -48,7 +48,7 @@ class Workflow
             case self::STEP_V8:
                 return self::STEP_NAME_V8;
             default:
-                return 'Unknown';
+                return null;
         }
     }
 

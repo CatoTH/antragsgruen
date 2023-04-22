@@ -36,7 +36,7 @@ $formatComments = function (array $currentComments): string {
     $commentsStr = '';
     $first = true;
     foreach ($currentComments as $currentComment) {
-        $user        = $currentComment->user;
+        $user        = $currentComment->getMyUser();
         if ($first) {
             $first = false;
         } else {
@@ -157,7 +157,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
 
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
 
-    $allComments = $amendment->getAdminComments([IAdminComment::PROPOSED_PROCEDURE], IAdminComment::SORT_ASC);
+    $allComments = $amendment->getAdminComments([IAdminComment::TYPE_PROPOSED_PROCEDURE], IAdminComment::SORT_ASC);
     if ($comments) {
         $commentsStr = $formatComments($allComments);
         $doc->setCell($row, $COL_COMMENTS, Spreadsheet::TYPE_HTML, $commentsStr);
@@ -196,7 +196,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
 
     if ($comments) {
-        $allComments = $motion->getAdminComments([IAdminComment::PROPOSED_PROCEDURE], IAdminComment::SORT_ASC);
+        $allComments = $motion->getAdminComments([IAdminComment::TYPE_PROPOSED_PROCEDURE], IAdminComment::SORT_ASC);
         $commentsStr = $formatComments($allComments);
         $doc->setCell($row, $COL_COMMENTS, Spreadsheet::TYPE_HTML, $commentsStr);
         $minHeight = max($minHeight, count($allComments) * 2);

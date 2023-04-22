@@ -221,7 +221,7 @@ $voting = $amendment->getVotingData();
             <h3><?= Yii::t('amend', 'proposal_comment_title') ?></h3>
             <ol class="commentList">
                 <?php
-                $commentTypes = [IAdminComment::PROPOSED_PROCEDURE];
+                $commentTypes = [IAdminComment::TYPE_PROPOSED_PROCEDURE];
                 foreach ($amendment->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
                     $user = $adminComment->getMyUser();
                     ?>
@@ -240,7 +240,7 @@ $voting = $amendment->getVotingData();
                         </div>
                         <div class="comment">
                             <?php
-                            if ($adminComment->status == IAdminComment::PROPOSED_PROCEDURE) {
+                            if ($adminComment->status == IAdminComment::TYPE_PROPOSED_PROCEDURE) {
                                 echo '<div class="overv">' . Yii::t('amend', 'proposal_comment_overview') . '</div>';
                             }
                             ?>

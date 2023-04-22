@@ -11,7 +11,6 @@ use yii\di\Instance;
 class MigrateHelper extends MigrateController
 {
     /**
-     * MigrateHelper constructor.
      * @param string $moduleId
      * @param Application $module
      * @param array $config
@@ -27,10 +26,9 @@ class MigrateHelper extends MigrateController
     }
 
     /**
-     * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getAvailableMigrations()
+    public static function getAvailableMigrations(): array
     {
         $controller = \Yii::createObject(static::class, ['migration', \Yii::$app]);
         return $controller->getNewMigrations();
@@ -40,7 +38,7 @@ class MigrateHelper extends MigrateController
      * @throws \yii\base\InvalidConfigException
      * @throws \Exception
      */
-    public static function performMigrations()
+    public static function performMigrations(): void
     {
         $controller = \Yii::createObject(static::class, ['migration', \Yii::$app]);
         $migrations = $controller->getNewMigrations();
@@ -55,7 +53,7 @@ class MigrateHelper extends MigrateController
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\base\NotSupportedException
      */
-    public static function flushCache()
+    public static function flushCache(): void
     {
         $conn = \Yii::$app->get('db', false);
         if ($conn && ($conn instanceof Connection || $conn instanceof \app\components\yii\DBConnection)) {

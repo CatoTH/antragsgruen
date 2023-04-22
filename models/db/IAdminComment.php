@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\db;
 
 use yii\db\{ActiveQuery, ActiveRecord};
@@ -15,11 +17,13 @@ use yii\db\{ActiveQuery, ActiveRecord};
  */
 abstract class IAdminComment extends ActiveRecord
 {
-    const PROPOSED_PROCEDURE   = 1;
-    const PROCEDURE_OVERVIEW   = 2;
+    public const TYPE_PROPOSED_PROCEDURE = 1;
+    public const TYPE_PROCEDURE_OVERVIEW = 2;
+    public const TYPE_PROTOCOL_PRIVATE = 3;
+    public const TYPE_PROTOCOL_PUBLIC = 4;
 
-    const SORT_DESC = 'desc';
-    const SORT_ASC = 'asc';
+    public const SORT_DESC = 'desc';
+    public const SORT_ASC = 'asc';
 
     public function getUser(): ActiveQuery
     {

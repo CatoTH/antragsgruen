@@ -17,7 +17,7 @@ if (is_a($item, Amendment::class)) {
 ?>
 <td class="comments" data-post-url="<?= Html::encode($postUrl) ?>">
     <?php
-    $types           = [IAdminComment::PROPOSED_PROCEDURE];
+    $types           = [IAdminComment::TYPE_PROPOSED_PROCEDURE];
     $currentComments = $item->getAdminComments($types, IAdminComment::SORT_ASC);
     ?>
     <div class="notWriting">
