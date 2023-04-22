@@ -401,7 +401,8 @@ class Motion extends IMotion implements IRSSItem
 
     public function getFormattedVersion(): string
     {
-        return \Yii::t('motion', 'version') . ' ' . $this->version;
+        $default = \Yii::t('motion', 'version') . ' ' . $this->version;
+        return Layout::getFormattedMotionVersion($default, $this);
     }
 
     /**
@@ -1110,12 +1111,12 @@ class Motion extends IMotion implements IRSSItem
 
     public function getLikeDislikeSettings(): int
     {
-        return $this->motionType->motionLikesDislikes;
+        return $this->getMyMotionType()->motionLikesDislikes;
     }
 
     public function isDeadlineOver(): bool
     {
-        return !$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
+        return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
     }
 
     public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool

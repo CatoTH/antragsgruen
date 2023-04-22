@@ -160,6 +160,11 @@ class Hooks
         return $before;
     }
 
+    public function getFormattedMotionVersion(string $before, Motion $motion): string
+    {
+        return $before;
+    }
+
     public function getFormattedUsername(string $before, User $user): string
     {
         return $before;

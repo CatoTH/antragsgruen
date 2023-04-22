@@ -181,6 +181,11 @@ class Layout
         return self::callHook('getFormattedAmendmentStatus', [$amendment], $origStatus);
     }
 
+    public static function getFormattedMotionVersion(string $origVersion, Motion $motion): string
+    {
+        return self::callHook('getFormattedMotionVersion', [$motion], $origVersion);
+    }
+
     public static function getFormattedUsername(string $origName, User $user): string
     {
         return self::callHook('getFormattedUsername', [$user], $origName);

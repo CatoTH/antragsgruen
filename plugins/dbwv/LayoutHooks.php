@@ -114,4 +114,10 @@ class LayoutHooks extends StdHooks
         $adminTitle = \Yii::t('base', 'menu_motion_list');
         return '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
     }
+
+    public function getFormattedMotionVersion(string $before, Motion $motion): string
+    {
+        $translated = Workflow::getStepName($motion->version);
+        return $translated ?? $before;
+    }
 }
