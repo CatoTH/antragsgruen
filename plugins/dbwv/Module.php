@@ -110,7 +110,7 @@ class Module extends ModuleBase
             'assign-main-tag'     => 'dbwv/admin-workflow/assign-main-tag',
             'workflow-step1-assign-number' => 'dbwv/admin-workflow/step1-assign-number',
             'workflow-step2' => 'dbwv/admin-workflow/step2',
-            'workflow-step3' => 'dbwv/admin-workflow/step3next', // dummy
+            'workflow-step3-decide' => 'dbwv/admin-workflow/step3decide',
             'workflow-step4' => 'dbwv/admin-workflow/step4next',
             'workflow-step5-assign-number' => 'dbwv/admin-workflow/step5-assign-number',
         ];
