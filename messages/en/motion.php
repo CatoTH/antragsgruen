@@ -218,8 +218,12 @@ return [
     'support_finish_done'                => 'The motion is now officially submitted',
     'prefix_new_code'                    => 'new',
     'comment_for'                        => 'Comment for',
-    'share_facebook'                     => 'Share on Facebook',
-    'share_twitter'                      => 'Share on Twitter',
+
+    'protocol_open'    => 'Write protocol',
+    'protocol_close'   => 'Close',
+    'protocol'         => 'Protocol',
+    'protocol_public'  => 'Public protocol',
+    'protocol_private' => 'Non-public protocol',
 
     'diff_bc'          => 'Changes',
     'diff_title'       => 'Changes from %FROM% to %TO%',

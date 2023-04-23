@@ -175,6 +175,20 @@ if (count($editorials) > 0) {
     <?php
 }
 
+?>
+
+    <section class="mergingProtocol" aria-labelledby="mergingProtocolTitle">
+        <h2 class="green" id="mergingProtocolTitle"><?= Yii::t('motion', 'protocol') ?></h2>
+
+        <div class="content">
+            @TODO
+        </div>
+
+    </section>
+
+
+<?php
+
 echo Html::input('hidden', 'mergeDraft', json_encode($form->draftData), ['id' => 'mergeDraft']);
 ?>
     <div class="submitHolder content">

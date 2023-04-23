@@ -14,7 +14,8 @@
 - Motion sections can now be set up to hold Right-to-Left text, like Farsi, Hebrew or Arabic.
 - The date format can be set independently from the language. Also the date format yyyy-mm-dd is supported (besides dd/mm/yyyy, mm/dd/yyyy, dd.mm.yyyy).
 - It is possible for admins to create tags for a consultation but disallow proposers of motions to specify these tags themselves.
-- Admins can add additional proposers of a motion or amendment
+- Admins can add additional proposers of a motion or amendment.
+- When merging amendments into motions or in the motion admin view, admins can write a protocol that can be public or not.
 - In tabular data sections of motions / applications, as an admin it is now possible to present a SELECT box with pre-defined options for the proposer to choose from.
 - Internal / Plugins: Additional language variants are now handled as part of the plugin system, not by placing files into messages/ anymore. The latter will stop working with version 4.13.
 - Bugfix: The diff and line splitting did not work properly with grapheme consisting of multiple code points.

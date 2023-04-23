@@ -46,6 +46,41 @@
   }
 }
 
+// Motion protocols
+.contentProtocolCaller {
+  text-align: right;
+
+  &.explicitlyOpened, &.hasData, &.hasVotingStatus {
+    display: none;
+  }
+}
+.protocolHolder {
+  display: none;
+
+  &.explicitlyOpened {
+    display: block;
+  }
+
+  &.hasData {
+    display: block;
+
+    .protocolCloser {
+      display: none;
+    }
+  }
+  .protocolCloser.btn-link {
+    color: #555;
+    float: right;
+    padding: 0;
+    margin-top: -2px;
+  }
+
+  label {
+    font-weight: normal;
+    margin-right: 20px;
+  }
+}
+
 // Motion / Amendment Votings
 .contentVotingResultCaller {
   text-align: right;
