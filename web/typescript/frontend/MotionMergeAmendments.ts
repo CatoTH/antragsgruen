@@ -881,6 +881,7 @@ export class MotionMergeAmendments {
         this.initNewAmendmentAlert();
         this.initCheckBackendStatus();
         this.initRemovingSectionTexts();
+        this.initProtocol();
     }
 
     public static onLeavePage(): string {
@@ -913,6 +914,17 @@ export class MotionMergeAmendments {
         }).trigger("change");
     }
 
+    private initProtocol() {
+        const $textarea = $("#protocol_text_wysiwyg");
+        $textarea.attr("contenteditable", "true");
+        const ckeditor = new AntragsgruenEditor($textarea.attr("id"));
+        const editor = ckeditor.getEditor();
+
+        $textarea.parents("form").on("submit", () => {
+            $textarea.parent().find("textarea").val(editor.getData());
+        });
+    }
+
     private saveDraft(onlyInput = false) {
         if (Object.keys(this.paragraphsByTypeAndNo).map(id => this.paragraphsByTypeAndNo[id])
             .filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
@@ -921,6 +933,7 @@ export class MotionMergeAmendments {
 
         console.log("Has unsaved changes");
 
+        const protocolPublic = $("input[name=protocol_public]:checked").val() as string;
         const data = {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
             "amendmentVersions": AmendmentStatuses.getAllVersions(),
@@ -928,6 +941,8 @@ export class MotionMergeAmendments {
             "paragraphs": {},
             "sections": {},
             "removedSections": [],
+            "protocol": CKEDITOR.instances['protocol_text_wysiwyg'].getData(),
+            "protocolPublic": parseInt(protocolPublic) === 1,
         };
         $(".sectionType0").each((i, el) => {
             const $section = $(el),

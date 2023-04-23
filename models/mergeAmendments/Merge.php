@@ -114,6 +114,8 @@ class Merge
         $newMotion->refreshTitle();
         $newMotion->save();
 
+        $newMotion->setProtocol($draft->protocol, $draft->protocolPublic);
+
         return $newMotion;
     }
 

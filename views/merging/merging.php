@@ -181,7 +181,21 @@ if (count($editorials) > 0) {
         <h2 class="green" id="mergingProtocolTitle"><?= Yii::t('motion', 'protocol') ?></h2>
 
         <div class="content">
-            @TODO
+            <label>
+                <input type="radio" name="protocol_public" value="1"<?= ($form->draftData->protocolPublic ? ' checked' : '') ?>>
+                <?= Yii::t('motion', 'protocol_public') ?>
+            </label>
+            <label>
+                <input type="radio" name="protocol_public" value="0"<?= ($form->draftData->protocolPublic ? '' : ' checked') ?>>
+                <?= Yii::t('motion', 'protocol_private') ?>
+            </label><br>
+            <div class="form-group wysiwyg-textarea single-paragraph">
+                <label for="protocol_text" class="hidden"><?= Yii::t('motion', 'protocol') ?>:</label>
+                <textarea id="protocol_text" name="protocol"></textarea>
+                <div class="texteditor boxed motionTextFormattings" id="protocol_text_wysiwyg"><?php
+                    echo $form->draftData->protocol;
+                    ?></div>
+            </div>
         </div>
 
     </section>
