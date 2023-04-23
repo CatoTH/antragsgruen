@@ -76,7 +76,9 @@ class AdminWorkflowController extends Base
 
         $decision = intval($this->getPostValue('decision'));
         $customString = $this->getPostValue('custom_string');
-        $response = Step3::setDecision($motion, $decision, $customString);
+        $protocolPublic = intval($this->getPostValue('protocol_public')) === 1;
+        $protocol = trim($this->getPostValue('protocol'));
+        $response = Step3::setDecision($motion, $decision, $customString, $protocolPublic, $protocol);
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 

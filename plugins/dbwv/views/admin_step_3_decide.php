@@ -10,7 +10,7 @@ use yii\helpers\Html;
 
 $submitUrl = UrlHelper::createUrl(['/dbwv/admin-workflow/step3decide', 'motionSlug' => $motion->getMotionSlug()]);
 
-if ($motion->version === \app\plugins\dbwv\workflow\Workflow::STEP_NAME_V4) {
+if ($motion->version === \app\plugins\dbwv\workflow\Workflow::STEP_V4) {
     $decision = $motion->status;
 } else {
     $decision = null;
@@ -21,7 +21,7 @@ echo Html::beginForm($submitUrl, 'POST', [
     'class' => 'dbwv_step dbwv_step3_decide',
 ]);
 ?>
-    <h2>V3 - Administration <small>(Redaktionsausschuss)</small></h2>
+    <h2>Beschluss <small>(Redaktionsausschuss)</small></h2>
     <div class="holder">
         <div style="padding: 10px;">
             <label>
@@ -51,6 +51,28 @@ echo Html::beginForm($submitUrl, 'POST', [
             </button>
         </div>
     </div>
+
+<?php
+$protocol = $motion->getProtocol();
+$protocolPublic = ($protocol && $protocol->status === \app\models\db\IAdminComment::TYPE_PROTOCOL_PUBLIC);
+?>
+    <div style="padding: 10px;">
+        <label>
+            <input type="radio" name="protocol_public" value="1"<?= ($protocolPublic ? ' checked' : '') ?>>
+            Öffentliches Protokoll
+        </label>
+        <label>
+            <input type="radio" name="protocol_public" value="0"<?= ($protocolPublic ? '' : ' checked') ?>>
+            Nicht-Öffentliches Protokoll
+        </label><br>
+        <div class="form-group wysiwyg-textarea single-paragraph">
+            <label for="dbwv_step3_protocol" class="hidden">Protokoll:</label>
+            <textarea id="dbwv_step3_protocol" name="protocol"></textarea>
+            <div class="texteditor boxed motionTextFormattings" id="dbwv_step3_protocol_wysiwyg"><?php
+                echo ($protocol ? $protocol->text : '');
+            ?></div>
+        </div>
+    </div>
     <script>
         $(function() {
             $("#dbwv_step3_decide input[name=decision]").on("change", function() {
@@ -60,6 +82,60 @@ echo Html::beginForm($submitUrl, 'POST', [
                     $("#dbwv_step3_custom_str").addClass('hidden');
                 }
             }).trigger("change");
+
+            let allowedContent = 'strong s em u sub sup;' +
+                'ul;' +
+                'ol[start](decimalDot,decimalCircle,lowerAlpha,upperAlpha);' +
+                'li[value];' +
+                'h2 h3 h4;' +
+                //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                'p blockquote {border,margin,padding};' +
+                'span(underline,strike,subscript,superscript);' +
+                'a[href];';
+            let ckeditorConfig = {
+                coreStyles_strike: {
+                    element: 'span',
+                    attributes: {'class': 'strike'},
+                    overrides: 'strike'
+                },
+                coreStyles_underline: {
+                    element: 'span',
+                    attributes: {'class': 'underline'}
+                },
+                toolbarGroups: [
+                    {name: 'tools'},
+                    {name: 'document', groups: ['mode', 'document', 'doctools']},
+                    //{name: 'clipboard', groups: ['clipboard', 'undo']},
+                    //{name: 'editing', groups: ['find', 'selection', 'spellchecker']},
+                    //{name: 'forms'},
+                    {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+                    {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
+                    {name: 'links'},
+                    {name: 'insert'},
+                    {name: 'styles'},
+                    {name: 'colors'},
+                    {name: 'autocolorize'},
+                    {name: 'others'}
+                ],
+                removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext,magicline,liststyle,lite',
+                extraPlugins: 'tabletools,listitemstyle',
+                scayt_sLang: 'de_DE',
+                title: 'Protokoll',
+                enterMode: CKEDITOR.ENTER_P,
+                shiftEnterMode: CKEDITOR.ENTER_BR,
+                allowedContent: allowedContent
+            }
+
+            let $el = $("#dbwv_step3_protocol_wysiwyg");
+            $el.data("ckeditor_initialized", "1");
+            $el.attr("contenteditable", "true");
+
+            CKEDITOR.inline('dbwv_step3_protocol_wysiwyg', ckeditorConfig);
+
+            $("#dbwv_step3_decide").on("submit", function() {
+                let data = CKEDITOR.instances['dbwv_step3_protocol_wysiwyg'].getData();
+                $("#dbwv_step3_protocol").val(CKEDITOR.instances['dbwv_step3_protocol_wysiwyg'].getData());
+            });
         });
     </script>
 <?php

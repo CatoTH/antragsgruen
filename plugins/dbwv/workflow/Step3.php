@@ -9,7 +9,7 @@ use app\components\{MotionNumbering, RequestContext, UrlHelper};
 use app\models\db\Motion;
 use app\models\exceptions\Access;
 use app\models\forms\MotionDeepCopy;
-use app\models\http\{RedirectResponse, ResponseInterface};
+use app\models\http\RedirectResponse;
 
 class Step3
 {
@@ -19,6 +19,8 @@ class Step3
         $html = '';
 
         if (Workflow::canSetResolutionV3($motion)) {
+            RequestContext::getController()->layoutParams->loadCKEditor();
+
             $html .= RequestContext::getController()->renderPartial(
                 '@app/plugins/dbwv/views/admin_step_3_decide', ['motion' => $motion]
             );
@@ -27,7 +29,7 @@ class Step3
         return $html;
     }
 
-    public static function setDecision(Motion $motion, int $status, ?string $comment): RedirectResponse
+    public static function setDecision(Motion $motion, int $status, ?string $comment, bool $protocolPublic, ?string $protocol): RedirectResponse
     {
         if (!Workflow::canSetResolutionV3($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
@@ -49,16 +51,16 @@ class Step3
                 Workflow::STEP_V4,
                 true
             );
-            $v4Motion->status = $status;
-            $v4Motion->proposalComment = $comment;
-            $v4Motion->save();
         } else {
-            if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V4)) {
-                throw new Access('A new version of this motion was already created');
-            }
             $v4Motion = $motion;
         }
         unset($motion);
+
+        $v4Motion->status = $status;
+        $v4Motion->proposalComment = $comment;
+        $v4Motion->save();
+
+        $v4Motion->setProtocol($protocol, $protocolPublic);
 
         return new RedirectResponse(UrlHelper::createMotionUrl($v4Motion));
     }

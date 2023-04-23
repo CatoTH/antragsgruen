@@ -20,13 +20,13 @@ class Step4
     {
         $html = '';
 
-        /*
-        if (Step3::canSetResolution($motion)) {
+        if (Workflow::canSetResolutionV3($motion)) {
+            RequestContext::getController()->layoutParams->loadCKEditor();
+
             $html .= RequestContext::getController()->renderPartial(
-                '@app/plugins/dbwv/views/admin_step_3_edit', ['motion' => $motion]
+                '@app/plugins/dbwv/views/admin_step_3_decide', ['motion' => $motion]
             );
         }
-        */
 
         if (Workflow::canMoveToMainV4($motion)) {
             $html .= RequestContext::getController()->renderPartial(
