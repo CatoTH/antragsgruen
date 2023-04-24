@@ -102,6 +102,7 @@ class MotionShow {
 
         this.markMovedParagraphs();
         this.initPrivateComments();
+        this.initProtocolShower();
 
         const common = new IMotionShow();
         common.initContactShow();
@@ -135,6 +136,13 @@ class MotionShow {
             let $msg = $('<div class="movedParagraphHint"></div>');
             $msg.text(msg);
             $msg.insertBefore($node);
+        });
+    }
+
+    private initProtocolShower() {
+        $(".motionProtocol .protocolOpener").on("click", function () {
+            $(".protocolHolder").removeClass('hidden');
+            $(".protocolHolder").scrollintoview({top_offset: -50});
         });
     }
 

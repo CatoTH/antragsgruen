@@ -224,6 +224,7 @@ return [
     'protocol'         => 'Protocol',
     'protocol_public'  => 'Public protocol',
     'protocol_private' => 'Non-public protocol',
+    'protocol_show'    => 'Show protocol',
 
     'diff_bc'          => 'Changes',
     'diff_title'       => 'Changes from %FROM% to %TO%',

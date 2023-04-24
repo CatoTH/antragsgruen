@@ -236,6 +236,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'protocol'         => 'Protokoll',
     'protocol_public'  => 'Öffentliches Protokoll',
     'protocol_private' => 'Nicht-Öffentliches Protokoll',
+    'protocol_show'    => 'Protokoll anzeigen',
 
     'diff_bc'          => 'Änderungen',
     'diff_title'       => 'Änderungen von %FROM% zu %TO%',
