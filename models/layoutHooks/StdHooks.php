@@ -302,7 +302,9 @@ class StdHooks extends Hooks
                 }
             }
 
-            $out .= $this->addMotionListNavbarEntry($consultation);
+            if ($consultation) {
+                $out .= $this->addMotionListNavbarEntry($consultation);
+            }
 
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction())) {
                 $todo = AdminTodoItem::getConsultationTodos($consultation);

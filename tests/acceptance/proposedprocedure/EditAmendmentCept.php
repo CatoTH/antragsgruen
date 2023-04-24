@@ -28,7 +28,7 @@ $I->seeElement('#proposedChanges');
 $I->wantTo('write internal comments');
 $I->fillField('#proposedChanges .proposalCommentForm textarea', 'Internal comment!');
 $I->executeJS('$("#proposedChanges .proposalCommentForm button").click();');
-$I->wait(1);
+$I->wait(0.5);
 $I->see('Internal comment!', '#proposedChanges .proposalCommentForm .commentList');
 
 
@@ -37,6 +37,7 @@ $I->dontSeeCheckboxIsChecked('#proposedChanges .proposalStatus' . IMotion::STATU
 $I->dontSeeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->dontSeeElement('#proposedChanges .saving');
 $I->executeJS('$("#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input").prop("checked", true).change();');
+$I->wait(0.1);
 $I->seeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->seeElement('#proposedChanges .saving');
 $I->executeJS('$("#proposedChanges .saving button").click();');

@@ -127,7 +127,7 @@ class MotionSorter
 
         if (is_a($imotion, Motion::class)) {
             foreach ($imotion->replacedByMotions as $replacedByMotion) {
-                if (!in_array($replacedByMotion->status, $replacedInvisible)) {
+                if (!in_array($replacedByMotion->status, $replacedInvisible) && $replacedByMotion->consultationId === $imotion->consultationId) {
                     // The motion to be checked is replaced by another motion that is visible
                     return false;
                 }

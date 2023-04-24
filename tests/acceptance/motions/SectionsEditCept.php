@@ -59,14 +59,14 @@ $I->selectOption('.sectionnew0 .positionRow input', "1");
 $I->wantTo('rearrange the tabular data section');
 
 $ret = $I->executeJS('return $(".sectionnew0 .tabularDataRow ul").data("sortable").toArray()');
-if (json_encode($ret) != '["acl","acm","acn"]') {
+if (json_encode($ret) != '["ewb","ewc","ewd"]') {
     $I->fail('Got invalid return from JavaScript (4): ' .  json_encode($ret));
 }
-$order = json_encode(['acl', 'acn', 'acm']);
+$order = json_encode(['ewb', 'ewd', 'ewc']);
 $I->executeJS('$(".sectionnew0 .tabularDataRow ul").data("sortable").sort(' . $order . ')');
 
 $ret = $I->executeJS('return $(".sectionnew0 .tabularDataRow ul").data("sortable").toArray()');
-if (json_encode($ret) != '["acl","acn","acm"]') {
+if (json_encode($ret) != '["ewb","ewd","ewc"]') {
     $I->fail('Got invalid return from JavaScript (5): ' .  json_encode($ret));
 }
 $motionTypePage->saveForm();

@@ -101,7 +101,7 @@ return [
     'motion_screen_as_x'          => 'Freischalten als %PREFIX%',
     'motion_del'                  => 'Antrag löschen',
     'motion_new_base_on_this'     => 'Neuer Antrag auf dieser Basis',
-    'motion_move'                 => 'Verschieben',
+    'motion_move'                 => 'Verschieben / Kopieren',
     'motion_show'                 => 'Antrag anzeigen',
     'motion_topics'               => 'Themen',
     'motion_note_internal'        => 'Interne Notiz',
