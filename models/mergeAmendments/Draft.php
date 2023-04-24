@@ -108,8 +108,8 @@ class Draft implements \JsonSerializable
         $draft->public = $public;
         $draft->time = $time;
 
-        $draft->protocol = $json['protocol'];
-        $draft->protocolPublic = $json['protocolPublic'];
+        $draft->protocol = $json['protocol'] ?? '';
+        $draft->protocolPublic = $json['protocolPublic'] ?? false;
 
         return $draft;
     }

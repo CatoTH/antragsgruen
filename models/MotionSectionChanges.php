@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models;
 
 use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
-use app\models\db\{Motion, MotionSection};
+use app\models\db\{IMotionSection, Motion, MotionSection};
 use app\models\exceptions\{Inconsistency, Internal};
 use app\models\sectionTypes\ISectionType;
 
@@ -73,6 +75,11 @@ class MotionSectionChanges
     public function getSectionTitle(): string
     {
         return $this->getAnySection()->getSettings()->title;
+    }
+
+    public function getSectionType(): MotionSection
+    {
+        return $this->getAnySection();
     }
 
     public function getSectionTypeId(): int

@@ -22,34 +22,33 @@ echo Html::beginForm($submitUrl, 'POST', [
 ]);
 ?>
     <h2>Beschluss <small>(Redaktionsausschuss)</small></h2>
-    <div class="holder">
-        <div style="padding: 10px;">
-            <label>
-                <?= Html::radio('decision', $decision === IMotion::STATUS_ACCEPTED, ['value' => IMotion::STATUS_ACCEPTED, 'required' => 'required']) ?>
-                <?= Yii::t('structure', 'STATUS_ACCEPTED') ?>
-            </label><br>
-            <label>
-                <?= Html::radio('decision', $decision === IMotion::STATUS_MODIFIED_ACCEPTED, ['value' => IMotion::STATUS_MODIFIED_ACCEPTED, 'required' => 'required']) ?>
-                <?= Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED') ?>
-            </label><br>
-            <label>
-                <?= Html::radio('decision', $decision === IMotion::STATUS_REJECTED, ['value' => IMotion::STATUS_REJECTED, 'required' => 'required']) ?>
-                <?= Yii::t('structure', 'STATUS_REJECTED') ?>
-            </label><br>
-            <label>
-                <?= Html::radio('decision', $decision === IMotion::STATUS_CUSTOM_STRING, ['value' => IMotion::STATUS_CUSTOM_STRING, 'required' => 'required']) ?>
-                <?= Yii::t('structure', 'STATUS_CUSTOM_STRING') ?>
-            </label><br>
-            <label id="dbwv_step3_custom_str" class="hidden">
-                <input type="text" class="form-control" name="custom_string" value="<?= Html::encode($motion->proposalComment) ?>">
-            </label>
-        </div>
-        <div style="text-align: right;">
-            <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                V4 Beschluss festlegen
-            </button>
-        </div>
+    <div style="padding: 10px;">
+        <label>
+            <?= Html::radio('decision', $decision === IMotion::STATUS_ACCEPTED, ['value' => IMotion::STATUS_ACCEPTED, 'required' => 'required']) ?>
+            <?= Yii::t('structure', 'STATUS_ACCEPTED') ?>
+        </label><br>
+        <label>
+            <?= Html::radio('decision', $decision === IMotion::STATUS_MODIFIED_ACCEPTED, ['value' => IMotion::STATUS_MODIFIED_ACCEPTED, 'required' => 'required']) ?>
+            <?= Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED') ?>
+        </label>
+        <?php
+        if ($decision === IMotion::STATUS_MODIFIED_ACCEPTED && $motion->version === \app\plugins\dbwv\workflow\Workflow::STEP_V4) {
+            $editLink = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Bearbeiten';
+            echo Html::a('<small>' . $editLink . '</small>', UrlHelper::createMotionUrl($motion, 'edit'));
+        }
+        ?>
+        <br>
+        <label>
+            <?= Html::radio('decision', $decision === IMotion::STATUS_REJECTED, ['value' => IMotion::STATUS_REJECTED, 'required' => 'required']) ?>
+            <?= Yii::t('structure', 'STATUS_REJECTED') ?>
+        </label><br>
+        <label>
+            <?= Html::radio('decision', $decision === IMotion::STATUS_CUSTOM_STRING, ['value' => IMotion::STATUS_CUSTOM_STRING, 'required' => 'required']) ?>
+            <?= Yii::t('structure', 'STATUS_CUSTOM_STRING') ?>
+        </label><br>
+        <label id="dbwv_step3_custom_str" class="hidden">
+            <input type="text" class="form-control" name="custom_string" value="<?= Html::encode($motion->proposalComment) ?>">
+        </label>
     </div>
 
 <?php
@@ -59,20 +58,28 @@ $protocolPublic = ($protocol && $protocol->status === \app\models\db\IAdminComme
     <div style="padding: 10px;">
         <label>
             <input type="radio" name="protocol_public" value="1"<?= ($protocolPublic ? ' checked' : '') ?>>
-            Öffentliches Protokoll
+            <?= Yii::t('motion', 'protocol_public') ?>
         </label>
         <label>
             <input type="radio" name="protocol_public" value="0"<?= ($protocolPublic ? '' : ' checked') ?>>
-            Nicht-Öffentliches Protokoll
+            <?= Yii::t('motion', 'protocol_private') ?>
         </label><br>
         <div class="form-group wysiwyg-textarea single-paragraph">
-            <label for="dbwv_step3_protocol" class="hidden">Protokoll:</label>
+            <label for="dbwv_step3_protocol" class="hidden"><?= Yii::t('motion', 'protocol') ?>:</label>
             <textarea id="dbwv_step3_protocol" name="protocol"></textarea>
             <div class="texteditor boxed motionTextFormattings" id="dbwv_step3_protocol_wysiwyg"><?php
                 echo ($protocol ? $protocol->text : '');
             ?></div>
         </div>
     </div>
+
+    <div style="text-align: right; padding: 10px;">
+        <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            V4 Beschluss festlegen
+        </button>
+    </div>
+
     <script>
         $(function() {
             $("#dbwv_step3_decide input[name=decision]").on("change", function() {

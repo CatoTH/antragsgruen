@@ -1,10 +1,21 @@
 <?php
 
 use app\models\sectionTypes\{ISectionType, TextSimple};
+use yii\helpers\Html;
 
 /**
  * @var \app\models\MotionSectionChanges $change
  */
+
+$diffGroups = ($change->getSectionTypeId() === ISectionType::TYPE_TEXT_SIMPLE ? $change->getSimpleTextDiffGroups() : null);
+
+// This is mostly for non-changing re
+if (is_array($diffGroups) && count($diffGroups) === 0 && !$change->getSectionType()->getSettings()->hasAmendments) {
+    return;
+}
+
+echo '<section class="motionChangeView section' . $change->getSectionId() . '">';
+echo '<h2 class="green">' . Html::encode($change->getSectionTitle()) . '</h2>';
 
 if (!$change->hasChanges()) {
     echo '<div class="content noChanges">';
@@ -16,7 +27,7 @@ if (!$change->hasChanges()) {
 switch ($change->getSectionTypeId()) {
     case ISectionType::TYPE_TEXT_SIMPLE:
         $firstLine  = $change->getFirstLineNumber();
-        $diffGroups = $change->getSimpleTextDiffGroups();
+
         echo '<div class="motionTextHolder"><div class="paragraph lineNumbers">';
 
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
@@ -34,3 +45,5 @@ switch ($change->getSectionTypeId()) {
         echo Yii::t('motion', 'diff_err_display');
         echo '</div>';
 }
+
+echo '</section>';

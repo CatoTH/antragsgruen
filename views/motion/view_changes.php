@@ -1,5 +1,6 @@
 <?php
 
+use app\models\sectionTypes\ISectionType;
 use app\components\{Tools, UrlHelper};
 use app\models\db\Motion;
 use yii\helpers\Html;
@@ -71,8 +72,18 @@ $this->title = str_replace(
 <?php
 
 foreach ($changes as $change) {
-    echo '<section class="motionChangeView section' . $change->getSectionId() . '">';
-    echo '<h2 class="green">' . Html::encode($change->getSectionTitle()) . '</h2>';
     echo $this->render('_view_change_section', ['change' => $change]);
-    echo '</section>';
+}
+
+
+$protocol = $newMotion->getProtocol();
+if ($protocol && $protocol->status === \app\models\db\IAdminComment::TYPE_PROTOCOL_PUBLIC) {
+    ?>
+    <section class="protocolHolder section">
+        <h2 class="green"><?= Yii::t('motion', 'protocol') ?></h2>
+        <div class="content">
+            <?= $protocol->text ?>
+        </div>
+    </section>
+<?php
 }
