@@ -19,6 +19,9 @@ $I->click('.mergeAllRow .btn-primary');
 $I->wait(0.5);
 $I->see('Oamoi a Maß', '.ice-ins');
 
+$I->executeJS('CKEDITOR.instances.protocol_text_wysiwyg.setData("<p>Famous quote</p><blockquote>So Long, and Thanks for All the Fish</blockquote>")');
+$I->checkOption("//input[@name='protocol_public'][@value='1']");
+
 $I->executeJS('$(".none").remove();'); // for some reason necessary...
 $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
 $I->wait(1);
@@ -60,13 +63,18 @@ $I->see('Beschluss (vorläufig)', '.motionDataTable');
 
 $I->see('Beschlusstext', 'h3');
 
+$I->dontSeeElement('.protocolHolder');
+$I->dontSee('So Long, and Thanks for All the Fish');
+$I->clickJS('.motionProtocol .protocolOpener');
+$I->see('So Long, and Thanks for All the Fish', '.protocolHolder');
+
 
 $I->wantTo('see the diff view');
 $I->clickJS('.motionDataTable .btnHistoryOpener');
 $I->click('.changesLink a');
 $I->see('Oamoi a Maß', '.motionChangeView.section2 .inserted');
 $I->dontSeeElement('.motionChangeView .section3');
-
+$I->see('So Long, and Thanks for All the Fish', '.protocolHolder');
 
 $I->gotoConsultationHome();
 $I->seeElement('.resolutionList');
