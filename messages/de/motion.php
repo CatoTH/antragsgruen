@@ -230,8 +230,13 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',
     'prefix_new_code'                    => 'NEU',
     'comment_for'                        => 'Kommentar zu',
-    'share_facebook'                     => 'Bei Facebook teilen',
-    'share_twitter'                      => 'Bei Twitter teilen',
+
+    'protocol_open'    => 'Protokoll schreiben',
+    'protocol_close'   => 'Schließen',
+    'protocol'         => 'Protokoll',
+    'protocol_public'  => 'Öffentliches Protokoll',
+    'protocol_private' => 'Nicht-Öffentliches Protokoll',
+    'protocol_show'    => 'Protokoll anzeigen',
 
     'diff_bc'          => 'Änderungen',
     'diff_title'       => 'Änderungen von %FROM% zu %TO%',

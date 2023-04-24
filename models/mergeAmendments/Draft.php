@@ -3,7 +3,7 @@
 namespace app\models\mergeAmendments;
 
 use app\models\settings\JsonConfigTrait;
-use app\models\db\{Amendment, IMotion, Motion, MotionSection};
+use app\models\db\{Amendment, IAdminComment, IMotion, Motion, MotionSection};
 use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable
@@ -32,6 +32,9 @@ class Draft implements \JsonSerializable
     /** @var int[] */
     public array $removedSections;
 
+    public bool $protocolPublic;
+    public string $protocol;
+
     public function jsonSerialize(): array
     {
         return [
@@ -41,9 +44,10 @@ class Draft implements \JsonSerializable
             'paragraphs'          => $this->paragraphs,
             'sections'            => $this->sections,
             'removedSections'     => $this->removedSections,
+            'protocolPublic'      => $this->protocolPublic,
+            'protocol'            => $this->protocol,
         ];
     }
-
 
     private function init(Motion $origMotion): void
     {
@@ -103,6 +107,9 @@ class Draft implements \JsonSerializable
 
         $draft->public = $public;
         $draft->time = $time;
+
+        $draft->protocol = $json['protocol'] ?? '';
+        $draft->protocolPublic = $json['protocolPublic'] ?? false;
 
         return $draft;
     }
@@ -172,6 +179,15 @@ class Draft implements \JsonSerializable
 
                 $draft->paragraphs[$section->sectionId . '_' . $paragraphNo] = $draftPara;
             }
+        }
+
+        $origProtocol = $form->motion->getProtocol();
+        if ($origProtocol) {
+            $draft->protocol = $origProtocol->text;
+            $draft->protocolPublic = ($origProtocol->status === IAdminComment::TYPE_PROTOCOL_PUBLIC);
+        } else {
+            $draft->protocol = '';
+            $draft->protocolPublic = false;
         }
 
         return $draft;

@@ -172,6 +172,18 @@ if (count($motionHistory) > 1) {
     ];
 }
 
+$protocol = $motion->getProtocol();
+if ($protocol && $protocol->status === \app\models\db\IAdminComment::TYPE_PROTOCOL_PUBLIC) {
+    $motionData[] = [
+        'rowClass' => 'motionProtocol',
+        'title' => Yii::t('motion', 'protocol_show'),
+        'content' => '<button type="button" class="btn btn-link protocolOpener">' .
+            '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>' .
+            Yii::t('motion', 'protocol_show') . '</button>'
+        ,
+    ];
+}
+
 if ((!isset($skip_drafts) || !$skip_drafts) && $motion->getMergingDraft(true)) {
     $url          = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
     $motionData[] = [

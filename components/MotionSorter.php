@@ -119,9 +119,15 @@ class MotionSorter
         if (in_array($imotion->status, $invisibleStatuses)) {
             return false;
         }
+
+        // For resolutions, both the resolution and the original motion should be shown
+        $replacedInvisible = $invisibleStatuses;
+        $replacedInvisible[] = IMotion::STATUS_RESOLUTION_FINAL;
+        $replacedInvisible[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
+
         if (is_a($imotion, Motion::class)) {
             foreach ($imotion->replacedByMotions as $replacedByMotion) {
-                if (!in_array($replacedByMotion->status, $invisibleStatuses)) {
+                if (!in_array($replacedByMotion->status, $replacedInvisible)) {
                     // The motion to be checked is replaced by another motion that is visible
                     return false;
                 }
@@ -157,6 +163,9 @@ class MotionSorter
                 $motionsNoPrefix[$typeName] = [];
             }
             $key = $motion->titlePrefix;
+            if (is_a($motion, Motion::class) && $motion->isResolution()) {
+                $key .= '-resolution'; // For resolutions, both the resolution and the original motion should be shown
+            }
 
             if ($key === '') {
                 $motionsNoPrefix[$typeName][] = $motion;

@@ -600,7 +600,7 @@ trait MotionActionsTrait
             $adminComment               = new MotionAdminComment();
             $adminComment->userId       = User::getCurrentUser()->id;
             $adminComment->text         = $this->getHttpRequest()->post('writeComment');
-            $adminComment->status       = MotionAdminComment::PROPOSED_PROCEDURE;
+            $adminComment->status       = MotionAdminComment::TYPE_PROPOSED_PROCEDURE;
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->motionId     = $motion->id;
             if (!$adminComment->save()) {

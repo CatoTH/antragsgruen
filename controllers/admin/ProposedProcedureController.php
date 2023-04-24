@@ -105,7 +105,7 @@ class ProposedProcedureController extends AdminBase
         $comment->motionId     = $motion->id;
         $comment->text         = $text;
         $comment->userId       = User::getCurrentUser()->getId();
-        $comment->status       = MotionAdminComment::PROPOSED_PROCEDURE;
+        $comment->status       = MotionAdminComment::TYPE_PROPOSED_PROCEDURE;
         $comment->dateCreation = date('Y-m-d H:i:s');
         if (!$comment->save()) {
             return new JsonResponse([
@@ -139,7 +139,7 @@ class ProposedProcedureController extends AdminBase
         $comment->amendmentId  = $motion->id;
         $comment->text         = $text;
         $comment->userId       = User::getCurrentUser()->getId();
-        $comment->status       = MotionAdminComment::PROPOSED_PROCEDURE;
+        $comment->status       = MotionAdminComment::TYPE_PROPOSED_PROCEDURE;
         $comment->dateCreation = date('Y-m-d H:i:s');
         if (!$comment->save()) {
             return new JsonResponse([

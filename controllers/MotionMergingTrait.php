@@ -379,9 +379,6 @@ trait MotionMergingTrait
 
     public function actionSaveMergingDraft(string $motionSlug): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             return new JsonResponse(['success' => false, 'error' => 'Motion not found']);

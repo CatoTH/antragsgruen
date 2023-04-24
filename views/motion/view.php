@@ -228,6 +228,18 @@ $viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragr
 
 echo $viewText;
 
+$protocol = $motion->getProtocol();
+if ($protocol && $protocol->status === \app\models\db\IAdminComment::TYPE_PROTOCOL_PUBLIC) {
+    ?>
+    <section class="protocolHolder section hidden">
+        <h2 class="green"><?= Yii::t('motion', 'protocol') ?></h2>
+        <div class="content">
+            <?= $protocol->text ?>
+        </div>
+    </section>
+    <?php
+}
+
 ?>
     <form class="gotoLineNumerPanel form-inline">
         <div class="form-group">

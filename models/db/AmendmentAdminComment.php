@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use yii\db\ActiveQuery;
 
 /**
  * @property int $amendmentId
@@ -10,26 +13,17 @@ use app\models\settings\AntragsgruenApp;
  */
 class AmendmentAdminComment extends IAdminComment
 {
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentAdminComment';
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAmendment()
+    public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['amendmentId', 'status', 'dateCreation'], 'required'],

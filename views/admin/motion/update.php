@@ -373,6 +373,9 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, P
     }
 }
 
+echo $this->render('_update_protocol', ['motion' => $motion]);
+
+
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion))) {
     $initiatorClass = $form->motionType->getMotionSupportTypeClass();
     $initiatorClass->setAdminMode(true);

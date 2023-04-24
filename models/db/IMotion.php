@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\{Tools, UrlHelper};
+use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
@@ -759,6 +759,39 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
      * @return IAdminComment[]
      */
     abstract public function getAdminComments(array $types, string $sort = 'desc', ?int $limit = null): array;
+
+    public function getProtocol(): ?IAdminComment
+    {
+        $protocolTypes = [IAdminComment::TYPE_PROTOCOL_PUBLIC, IAdminComment::TYPE_PROTOCOL_PRIVATE];
+        $comments = $this->getAdminComments($protocolTypes);
+        return (count($comments) > 0 ? $comments[0] : null);
+    }
+
+    public function setProtocol(?string $protocol, bool $public): void
+    {
+        $existingProtocol = $this->getProtocol();
+        if ($protocol) {
+            if (!$existingProtocol) {
+                if (is_a($this, Motion::class)) {
+                    $existingProtocol = new MotionAdminComment();
+                    $existingProtocol->motionId = $this->id;
+                } else {
+                    $existingProtocol = new AmendmentAdminComment();
+                    $existingProtocol->amendmentId = $this->id;
+                }
+                $existingProtocol->userId = User::getCurrentUser()->id;
+                $existingProtocol->dateCreation = date('Y-m-d H:i:s');
+            }
+
+            $existingProtocol->status = ($public ? IAdminComment::TYPE_PROTOCOL_PUBLIC : IAdminComment::TYPE_PROTOCOL_PRIVATE);
+            $existingProtocol->text = HTMLTools::correctHtmlErrors($protocol);
+            $existingProtocol->save();
+        } else {
+            if ($existingProtocol) {
+                $existingProtocol->delete();
+            }
+        }
+    }
 
     abstract public function getUserdataExportObject(): array;
 

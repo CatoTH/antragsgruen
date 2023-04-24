@@ -21,6 +21,9 @@ export class MergeInit {
 
     private initExportBtn() {
         this.exportLinkTpl = this.$widget.find('.exportHolder a').attr('href');
+        if (!this.exportLinkTpl) {
+            return;
+        }
 
         this.$widget.on('change', '.toMergeAmendments input[type=checkbox]', () => {
             this.recalcExportBtn();

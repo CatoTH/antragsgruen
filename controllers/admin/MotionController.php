@@ -202,6 +202,11 @@ class MotionController extends AdminBase
                     }
                     $form->updateTextRewritingAmendments($motion, $newHtmls, $overrides);
                 }
+
+                $motion->setProtocol(
+                    $this->getPostValue('protocol'),
+                    intval($this->getPostValue('protocol_public')) === 1
+                );
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }

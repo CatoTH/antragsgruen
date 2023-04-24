@@ -44,6 +44,7 @@ export class MotionEdit {
             this.onSubmitDeleteForm(ev, data);
         });
 
+        this.initProtocolFunctions();
         this.initVotingFunctions();
         this.initSlug();
 
@@ -55,6 +56,27 @@ export class MotionEdit {
             ev.preventDefault();
             $('.urlSlugHolder .shower').addClass('hidden');
             $('.urlSlugHolder .holder').removeClass('hidden');
+        });
+    }
+    private initProtocolFunctions() {
+        const $classHolders = $(".contentProtocolCaller, .protocolHolder"),
+            $closer = $(".protocolCloser"),
+            $opener = $(".protocolOpener");
+
+        $opener.on("click", () => {
+            $classHolders.addClass('explicitlyOpened');
+        });
+        $closer.on("click", () => {
+            $classHolders.removeClass('explicitlyOpened');
+        });
+
+        const $textarea = $("#protocol_text_wysiwyg");
+        $textarea.attr("contenteditable", "true");
+        const ckeditor = new AntragsgruenEditor($textarea.attr("id"));
+        const editor = ckeditor.getEditor();
+
+        $textarea.parents("form").on("submit", () => {
+            $textarea.parent().find("textarea").val(editor.getData());
         });
     }
 
