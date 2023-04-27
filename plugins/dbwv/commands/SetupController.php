@@ -131,7 +131,7 @@ class SetupController extends Controller
         $lvVorstand->save();
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
-            $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V1_REFERAT);
+            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V1_REFERAT);
             $tag = ConsultationSettingsTag::findOne(['title' => $item['title'], 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
             $group = $this->createUserGroupIfNotExists($consultation, $groupName);
             $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Module::PRIVILEGE_DBWV_V1_EDITORIAL . ']}]}';
@@ -140,7 +140,7 @@ class SetupController extends Controller
         }
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
-            $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
+            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
             $tag = ConsultationSettingsTag::findOne(['title' => $item['title'], 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
             $group = $this->createUserGroupIfNotExists($consultation, $groupName);
             $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Privileges::PRIVILEGE_CHANGE_PROPOSALS . ']}]}';
@@ -358,7 +358,7 @@ class SetupController extends Controller
             if (!$item['motionPrefix']) {
                 continue;
             }
-            $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V1_REFERAT);
+            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V1_REFERAT);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
                 echo "Group $groupName not found\n";
@@ -374,7 +374,7 @@ class SetupController extends Controller
             if (!$item['motionPrefix']) {
                 continue;
             }
-            $groupName = str_replace('%NAME%', $item['title'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
+            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
                 echo "Group $groupName not found\n";
