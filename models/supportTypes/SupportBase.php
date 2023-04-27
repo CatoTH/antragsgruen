@@ -469,14 +469,20 @@ abstract class SupportBase
         $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
         $return[]             = $init;
 
-        if (isset($post['moreInitiators']) && isset($post['moreInitiators']['name'])) {
+        if (isset($post['moreInitiators']['name'])) {
             foreach ($post['moreInitiators']['name'] as $i => $name) {
+                $isOrganization = (
+                    isset($post['moreInitiators']['organization'][$i]) &&
+                    trim($post['moreInitiators']['organization'][$i]) !== '' &&
+                    trim($name) === ''
+                );
+
                 $init               = new MotionSupporter();
                 $init->dateCreation = date('Y-m-d H:i:s');
                 $init->motionId     = $motion->id;
                 $init->role         = MotionSupporter::ROLE_INITIATOR;
                 $init->position     = $posCount++;
-                $init->personType   = MotionSupporter::PERSON_NATURAL;
+                $init->personType   = ($isOrganization ? MotionSupporter::PERSON_ORGANIZATION : MotionSupporter::PERSON_NATURAL);
                 $init->name         = $name;
                 if (isset($post['moreInitiators']['organization'])) {
                     $init->organization = $post['moreInitiators']['organization'][$i];

@@ -22,11 +22,7 @@ class Permissions
         $consultation = $motion->getMyConsultation();
 
         if ($motion->status === Motion::STATUS_DRAFT) {
-            return $this->canEditDraftText(
-                $motion->getMyConsultation(),
-                $motion->getMyMotionType()->getMotionPolicy(),
-                $motion->motionSupporters
-            );
+            return $this->canEditDraftText($consultation, $motion->getMyMotionType()->getMotionPolicy(), $motion->motionSupporters);
         }
 
         if ($motion->textFixed) {
@@ -62,12 +58,10 @@ class Permissions
      */
     public function amendmentCanEditText(Amendment $amendment): bool
     {
+        $consultation = $amendment->getMyConsultation();
+
         if ($amendment->status === Amendment::STATUS_DRAFT) {
-            return $this->canEditDraftText(
-                $amendment->getMyConsultation(),
-                $amendment->getMyMotionType()->getAmendmentPolicy(),
-                $amendment->amendmentSupporters
-            );
+            return $this->canEditDraftText($consultation, $amendment->getMyMotionType()->getAmendmentPolicy(), $amendment->amendmentSupporters);
         }
 
         if ($amendment->textFixed) {
@@ -94,7 +88,7 @@ class Permissions
      *
      * @param ISupporter[] $supporters
      */
-    private function canEditDraftText(Consultation $consultation, IPolicy $policy, array $supporters): bool
+    protected function canEditDraftText(Consultation $consultation, IPolicy $policy, array $supporters): bool
     {
         $hadLoggedInUser = false;
         $currUser = User::getCurrentUser();

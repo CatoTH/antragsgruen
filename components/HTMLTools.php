@@ -63,8 +63,9 @@ class HTMLTools
             $html = normalizer_normalize($html);
         }
 
-        $html = str_replace(chr(194) . chr(160), ' ', $html); // Long space
-        $html = str_replace(chr(0xef) . chr(0xbb) . chr(0xbf), '', $html); // Byte order Mark
+        $html = str_replace(chr(194) . chr(160), ' ', $html); // U+00A0 / No-break space, long space
+        $html = str_replace(chr(239) . chr(187) . chr(191), '', $html); // U+FEFF / Byte order Mark
+        $html = str_replace(chr(226) . chr(128) . chr(139	), '', $html); // U+200B / Zero Width Space
 
         // Replace multiple spaces by one, except within <pre>
         $html = preg_replace_callback('/<pre>.*<\/pre>/siuU', function ($matches) {

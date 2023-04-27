@@ -18,7 +18,7 @@ class Module extends ModuleBase
     public const PRIVILEGE_DBWV_V1_EDITORIAL = -101;
     public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -102;
 
-    public const CONSULTATION_URL_BUND = 'bund';
+    public const CONSULTATION_URL_BUND = 'hv';
 
     public static function getProvidedTranslations(): array
     {

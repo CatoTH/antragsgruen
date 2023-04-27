@@ -23,30 +23,48 @@ class SetupController extends Controller
     /** @var array{array{title: string, motionPrefix: string|null, position: int, themengebiete: array{array{title: string, position: int}}}}  */
     private const AGENDA_ITEMS_SACHGEBIETE = [
         [
-            'title' => 'Satzung',
-            'motionPrefix' => 'S',
+            'title' => 'Sachgebiet I - Sicherheits- und Verteidigungspolitik; Einsätze und Missionen; Europa',
+            'motionPrefix' => 'I',
             'position' => 1,
             'themengebiete' => [
                 [
-                    'title' => '§1 Zweck',
+                    'title' => 'Thema 1',
                     'position' => 1,
                 ],
                 [
-                    'title' => '§2 Vorstand',
+                    'title' => 'Thema 2',
                     'position' => 2,
                 ],
             ]
         ],
         [
-            'title' => 'Umwelt',
-            'motionPrefix' => 'U',
+            'title' => 'Sachgebiet II',
+            'motionPrefix' => 'II',
             'position' => 2,
             'themengebiete' => [],
         ],
         [
-            'title' => 'Sonstiges',
+            'title' => 'Sachgebiet III - Dienst- und Laufbahnrecht',
             'motionPrefix' => null,
             'position' => 3,
+            'themengebiete' => [],
+        ],
+        [
+            'title' => 'Sachgebiet IV',
+            'motionPrefix' => 'IV',
+            'position' => 4,
+            'themengebiete' => [],
+        ],
+        [
+            'title' => 'Sachgebiet V',
+            'motionPrefix' => 'V',
+            'position' => 5,
+            'themengebiete' => [],
+        ],
+        [
+            'title' => 'Sachgebiet VI',
+            'motionPrefix' => 'VI',
+            'position' => 6,
             'themengebiete' => [],
         ],
     ];
