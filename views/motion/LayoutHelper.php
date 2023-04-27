@@ -66,7 +66,7 @@ class LayoutHelper
             }
             $inits[] = $name;
         }
-        return implode(', ', $inits);
+        return implode('<br>', $inits);
     }
 
     public static function addVotingResultsRow(VotingData $votingData, array &$rows): void
