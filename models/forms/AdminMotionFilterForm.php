@@ -962,6 +962,7 @@ class AdminMotionFilterForm
         return UrlHelper::createUrl(array_merge($this->route, [
             'Search[status]'         => $this->status,
             'Search[tag]'            => $this->tag,
+            'Search[version]'        => $this->version,
             'Search[initiator]'      => $this->initiator,
             'Search[title]'          => $this->title,
             'Search[sort]'           => $this->sort,

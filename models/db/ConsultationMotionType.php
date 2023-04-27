@@ -217,7 +217,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     {
         $layout    = $this->getConsultation()->site->getSettings()->siteLayout;
         $layoutDef = Layout::getLayoutPluginDef($layout);
-        if ($layoutDef && $layoutDef['odtTemplate']) {
+        if ($layoutDef && isset($layoutDef['odtTemplate']) && $layoutDef['odtTemplate']) {
             return $layoutDef['odtTemplate'];
         } else {
             $dir = \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;

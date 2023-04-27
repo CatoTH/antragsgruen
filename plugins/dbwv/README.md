@@ -1,6 +1,6 @@
 Setup Notes
 
-- Bundesversammlung: URL Path „bund”.
+- Bundesversammlung: URL Path „hv”.
 - Veranstaltungszugang: Nur eingeloggte Benutzer*innen, nur ausgewählten Benutzer*innen das Login erlauben.
 - Antragstellende dürfen Themen selbst angeben: deaktivieren
 - Antragsteller*innen dürfen Anträge nachträglich ändern
@@ -29,5 +29,5 @@ Demo Accounts:
 - lv-sued-referat-S@example.org (Satzung), lv-sued-referat-U@example.org (Umwelt)
 - lv-sued-arbeitsgruppe-S@example.org (Satzung), lv-sued-arbeitsgruppe-U@example.org (Umwelt)
 - lv-sued-redaktion@example.org
-- bund-delegiert-0@example.org - lv-sued-delegiert-49@example.org
+- hv-delegiert-0@example.org - hv-delegiert-49@example.org
 - Passwort: Test

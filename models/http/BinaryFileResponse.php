@@ -10,7 +10,7 @@ use yii\web\Response;
 class BinaryFileResponse implements ResponseInterface
 {
     public const TYPE_PDF = 'pdf';
-    public const TYPE_HTML = 'pdf';
+    public const TYPE_HTML = 'html';
     public const TYPE_ODS = 'ods';
     public const TYPE_ODT = 'odt';
     public const TYPE_XSLX = 'xlsx';
