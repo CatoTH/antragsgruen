@@ -3,6 +3,7 @@ Setup Notes
 - Bundesversammlung: URL Path „bund”.
 - Veranstaltungszugang: Nur eingeloggte Benutzer*innen, nur ausgewählten Benutzer*innen das Login erlauben.
 - Antragstellende dürfen Themen selbst angeben: deaktivieren
+- Antragsteller*innen dürfen Anträge nachträglich ändern
 - Freischaltung
 - Startseiten-Layout: Tags
 - Sachgebiete: Tags, type „Public Topic” (0)
