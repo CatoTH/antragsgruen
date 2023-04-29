@@ -39,7 +39,11 @@ class Step3
                 throw new Access('A new version of this motion was already created');
             }
 
+            $motion->status = $status;
+            $motion->save();
+
             if ($status === IMotion::STATUS_MODIFIED_ACCEPTED) {
+                $motion->setProtocol($protocol, $protocolPublic);
                 return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'merge-amendments-init'));
             }
 

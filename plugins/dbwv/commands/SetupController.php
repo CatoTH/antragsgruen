@@ -16,6 +16,7 @@ class SetupController extends Controller
     private const GROUP_NAME_LV_VORSTAND = 'LV Vorstand';
     private const GROUP_NAME_AL_RECHT = 'AL Recht';
     private const GROUP_NAME_V1_REFERAT = 'Referat %NAME% (V1)';
+    private const GROUP_NAME_V2_BUEROLEITUNG = 'Büroleitung';
     private const GROUP_NAME_V2_ARBEITSGRUPPE = 'Arbeitsgruppe %NAME% (V2)';
     private const GROUP_NAME_V3_REDAKTION = 'Redaktionsausschuss';
     private const GROUP_NAME_V4_KOORDINIERUNG = 'Koordinierungsausschuss';
@@ -45,7 +46,7 @@ class SetupController extends Controller
         ],
         [
             'title' => 'Sachgebiet III - Dienst- und Laufbahnrecht',
-            'motionPrefix' => null,
+            'motionPrefix' => 'III',
             'position' => 3,
             'themengebiete' => [],
         ],
@@ -129,6 +130,11 @@ class SetupController extends Controller
         $lvVorstandPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED . ']}]}';
         $lvVorstand->setGroupPermissions(UserGroupPermissions::fromDatabaseString($lvVorstandPrivileges, false));
         $lvVorstand->save();
+
+        $lvBueroleitung = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_V2_BUEROLEITUNG);
+        $lvBueroleitungPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_SCREENING . ']}]}';
+        $lvBueroleitung->setGroupPermissions(UserGroupPermissions::fromDatabaseString($lvBueroleitungPrivileges, false));
+        $lvBueroleitung->save();
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V1_REFERAT);
@@ -354,10 +360,22 @@ class SetupController extends Controller
             $lvVorstandGroup->addUser($user);
         }
 
+        $lvBueroleitungGroup = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V2_BUEROLEITUNG]);
+        if (!$lvBueroleitungGroup) {
+            echo "Büroleitung Group not found\n";
+            return;
+        }
+        $user = $this->createOrGetUserAccount($urlPath.'-bueroleitung@example.org', 'Test', 'LV', 'Büroleitung', 'LV Süd');
+        if (count($user->userGroups) === 0) {
+            $lvBueroleitungGroup->addUser($user);
+        }
+
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            /*
             if (!$item['motionPrefix']) {
                 continue;
             }
+            */
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V1_REFERAT);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
@@ -371,9 +389,11 @@ class SetupController extends Controller
         }
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            /*
             if (!$item['motionPrefix']) {
                 continue;
             }
+            */
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {

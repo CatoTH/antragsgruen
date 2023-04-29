@@ -37,7 +37,7 @@ if ($colMark) {
 echo '<td>' . Yii::t('admin', 'list_amend_short') . '</td>';
 echo '<td class="prefixCol">';
 echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
-echo '<a href="' . Html::encode($viewUrl) . '">';
+echo '<a href="' . Html::encode($viewUrl) . '"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> ';
 if ($lastMotion && $entry->motionId === $lastMotion->id) {
     echo "&#8627;";
 }
@@ -48,7 +48,7 @@ if ($lastMotion && $entry->motionId === $lastMotion->id) {
 }
 $title = (trim($entry->getMyMotion()->title) !== '' ? $entry->getMyMotion()->title : '-');
 if ($editUrl) {
-    echo Html::a(Html::encode($title), $editUrl);
+    echo Html::a('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ' . Html::encode($title), $editUrl);
 } else {
     echo Html::encode($title);
 }

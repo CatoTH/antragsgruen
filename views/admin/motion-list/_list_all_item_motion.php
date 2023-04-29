@@ -38,7 +38,7 @@ if ($entry->getMyMotionType()->motionPrefix) {
 } else {
     echo Yii::t('admin', 'list_motion_short');
 }
-echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
+echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> ';
 echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-');
 if ($entry->version > Motion::VERSION_DEFAULT || count($entry->replacedByMotions) > 0) {
     echo ' <small>(' . Yii::t('motion', 'version') . ' ' . $entry->version . ')</small>';
@@ -46,7 +46,8 @@ if ($entry->version > Motion::VERSION_DEFAULT || count($entry->replacedByMotions
 echo '</a></td>';
 echo '<td class="titleCol"><span>';
 if ($editUrl) {
-    echo Html::a(Html::encode(trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
+    $title = Html::encode(trim($entry->title) != '' ? $entry->title : '-');
+    echo Html::a('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ' . $title, $editUrl);
 } else {
     echo Html::encode(trim($entry->title) !== '' ? $entry->title : '-');
 }

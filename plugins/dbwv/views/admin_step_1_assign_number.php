@@ -41,7 +41,7 @@ if (!$motion->titlePrefix) {
                 </label>
                 <div style="display: inline-block; width: 400px;">
                     <?php
-                    $options = ['id' => 'dbwv_step1_subtagSelect', 'class' => 'stdDropdown', 'required' => 'required'];
+                    $options = ['id' => 'dbwv_step1_subtagSelect', 'class' => 'stdDropdown'];
                     echo Html::dropDownList('subtag', $selectedTagId, $tagSelect, $options);
                     ?>
                 </div>

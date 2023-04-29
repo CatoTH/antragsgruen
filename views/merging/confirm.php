@@ -65,15 +65,15 @@ foreach ($newMotion->getSortedSections(true) as $section) {
         continue;
     }
     echo '<section class="motionTextHolder">';
-    echo '<h2 class="green">' . Html::encode($section->getSettings()->title) . '</h2>';
 
     echo '<div class="fullText">';
+    echo '<h2 class="green">' . Html::encode($section->getSettings()->title) . '</h2>';
     echo $section->getSectionType()->getSimple(false);
     echo '</div>';
 
     foreach ($changes as $change) {
         echo '<div class="diffText">';
-        if ($change->getSectionId() == $section->sectionId) {
+        if ($change->getSectionId() === $section->sectionId) {
             echo $this->render('@app/views/motion/_view_change_section', ['change' => $change]);
         }
         echo '</div>';
