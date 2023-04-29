@@ -24,8 +24,8 @@ echo Html::beginForm($submitUrl, 'POST', [
     <h2>Beschluss <small>(Redaktionsausschuss)</small></h2>
     <div style="padding: 10px;">
         <label>
-            <?= Html::radio('decision', $decision === IMotion::STATUS_ACCEPTED, ['value' => IMotion::STATUS_ACCEPTED, 'required' => 'required']) ?>
-            <?= Yii::t('structure', 'STATUS_ACCEPTED') ?>
+            <?= Html::radio('decision', $decision === IMotion::STATUS_RESOLUTION_FINAL, ['value' => IMotion::STATUS_RESOLUTION_FINAL, 'required' => 'required']) ?>
+            <?= Yii::t('structure', 'STATUS_RESOLUTION_FINAL') ?>
         </label><br>
         <label>
             <?= Html::radio('decision', $decision === IMotion::STATUS_MODIFIED_ACCEPTED, ['value' => IMotion::STATUS_MODIFIED_ACCEPTED, 'required' => 'required']) ?>

@@ -53,12 +53,16 @@ class Step1
         unset($motion);
 
         if (count($v2Motion->getPublicTopicTags()) > 0) {
-            $tag = $v2Motion->getPublicTopicTags()[0];
-            $subtag = $v2Motion->getMyConsultation()->getTagById(intval($postparams['subtag']));
-            if (!$subtag || $subtag->type !== ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE || $subtag->parentTagId !== $tag->id) {
-                throw new NotFound('Tag not found');
+            if ($postparams['subtag']) {
+                $tag = $v2Motion->getPublicTopicTags()[0];
+                $subtag = $v2Motion->getMyConsultation()->getTagById(intval($postparams['subtag']));
+                if (!$subtag || $subtag->type !== ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE || $subtag->parentTagId !== $tag->id) {
+                    throw new NotFound('Tag not found');
+                }
+                $v2Motion->setTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, [$subtag->id]);
+            } else {
+                $v2Motion->setTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, []);
             }
-            $v2Motion->setTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, [$subtag->id]);
         }
 
         $v2Motion->titlePrefix = $postparams['motionPrefix'];

@@ -352,7 +352,7 @@ trait MotionExportTraits
         $motion       = $this->getMotionWithCheck($motionSlug);
         $parentMotion = $motion->replacedMotion;
 
-        if (!$motion->isReadable()) {
+        if (!$motion->isReadable() && !$motion->canMergeAmendments()) {
             return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
         }
         if (!$parentMotion || !$parentMotion->isReadable()) {

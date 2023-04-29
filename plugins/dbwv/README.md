@@ -29,5 +29,6 @@ Demo Accounts:
 - lv-sued-referat-S@example.org (Satzung), lv-sued-referat-U@example.org (Umwelt)
 - lv-sued-arbeitsgruppe-S@example.org (Satzung), lv-sued-arbeitsgruppe-U@example.org (Umwelt)
 - lv-sued-redaktion@example.org
+- lv-sued-bueroleitung@example.org
 - hv-delegiert-0@example.org - hv-delegiert-49@example.org
 - Passwort: Test
