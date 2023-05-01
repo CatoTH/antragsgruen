@@ -12,7 +12,7 @@ class AdminMotionFilterForm extends \app\models\forms\AdminMotionFilterForm
     public function getAfterFormHtml(): string
     {
         $versionList = $this->getVersionList();
-        $str = '<div style="text-align: center;">';
+        $str = '<div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">';
 
         $links = [];
         foreach ($versionList as $versionId => $versionName) {

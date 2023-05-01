@@ -20,6 +20,7 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 
 $hasTags        = (count($consultation->tags) > 0);
+$isReplaced     = (count($entry->replacedByMotions) > 0);
 $motionStatuses = $consultation->getStatuses()->getStatusNames();
 $viewUrl        = UrlHelper::createMotionUrl($entry);
 if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\MotionController::REQUIRED_PRIVILEGES, PrivilegeQueryContext::motion($entry))) {
@@ -28,7 +29,7 @@ if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\MotionContro
     $editUrl = null;
 }
 
-echo '<tr class="motion motion' . $entry->id . '">';
+echo '<tr class="motion motion' . $entry->id . ($isReplaced ? ' replaced' : '') . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
@@ -40,10 +41,14 @@ if ($entry->getMyMotionType()->motionPrefix) {
 }
 echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> ';
 echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-');
-if ($entry->version > Motion::VERSION_DEFAULT || count($entry->replacedByMotions) > 0) {
+if ($entry->version > Motion::VERSION_DEFAULT || $isReplaced) {
     echo ' <small>(' . Yii::t('motion', 'version') . ' ' . $entry->version . ')</small>';
 }
-echo '</a></td>';
+echo '</a>';
+if ($isReplaced) {
+    echo ' <span class="old">(' . Yii::t('admin', 'list_prefix_old') . ')</span>';
+}
+echo '</td>';
 echo '<td class="titleCol"><span>';
 if ($editUrl) {
     $title = Html::encode(trim($entry->title) != '' ? $entry->title : '-');

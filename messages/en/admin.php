@@ -162,6 +162,7 @@ return [
     'list_all'                    => 'All',
     'list_none'                   => 'None',
     'list_marked'                 => 'Marked',
+    'list_prefix_old'             => 'old',
     'list_template_amendment'     => 'New amendment on this basis',
     'list_template_motion'        => 'New motion on this basis',
     'list_confirm_del_motion'     => 'Do you really want to delete this motion?',
