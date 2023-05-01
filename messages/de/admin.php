@@ -158,6 +158,7 @@ return [
     'list_all'                    => 'Alle',
     'list_none'                   => 'Keines',
     'list_marked'                 => 'Markierte',
+    'list_prefix_old'             => 'alt',
     'list_template_amendment'     => 'Neuer Änderungsantrag auf dieser Basis',
     'list_template_motion'        => 'Neuer Antrag auf dieser Basis',
     'list_confirm_del_motion'     => 'Diesen Antrag wirklich löschen?',

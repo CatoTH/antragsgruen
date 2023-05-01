@@ -48,4 +48,11 @@ class DBConnection extends \yii\db\Connection
         $sql = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $sql);
         \Yii::$app->db->createCommand($sql)->execute();
     }
+
+    public static function executePlainFetchArray(string $sql): array
+    {
+        $sql = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $sql);
+        $command = \Yii::$app->db->createCommand($sql);
+        return $command->queryAll(\PDO::FETCH_NUM);
+    }
 }

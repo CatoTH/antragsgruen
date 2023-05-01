@@ -41,15 +41,15 @@ class AdminMotionFilterForm
     public Consultation $consultation;
 
     public int $sort = 3;
-    private bool $showScreening;
+    protected bool $showScreening;
 
     /** @var string[] */
-    private array $route;
+    protected array $route;
 
     /**
      * @param Motion[] $allMotions
      */
-    public function __construct(Consultation $consultation, array $allMotions, bool $amendments, bool $showScreening)
+    public function __construct(Consultation $consultation, array $allMotions, bool $showScreening)
     {
         $this->showScreening = $showScreening;
         $this->consultation  = $consultation;
@@ -58,11 +58,9 @@ class AdminMotionFilterForm
         foreach ($allMotions as $motion) {
             if ($this->isVisible($motion)) {
                 $this->allMotions[] = $motion;
-                if ($amendments) {
-                    foreach ($motion->amendments as $amend) {
-                        if ($this->isVisible($amend)) {
-                            $this->allAmendments[] = $amend;
-                        }
+                foreach ($motion->amendments as $amend) {
+                    if ($this->isVisible($amend)) {
+                        $this->allAmendments[] = $amend;
                     }
                 }
             }
@@ -335,31 +333,31 @@ class AdminMotionFilterForm
         $merge = array_merge($this->getFilteredMotions(), $this->getFilteredAmendments());
         switch ($this->sort) {
             case static::SORT_TITLE:
-                usort($merge, [static::class, 'sortTitle']);
+                usort($merge, [$this, 'sortTitle']);
                 break;
             case static::SORT_STATUS:
-                usort($merge, [static::class, 'sortStatus']);
+                usort($merge, [$this, 'sortStatus']);
                 break;
             case static::SORT_TITLE_PREFIX:
-                usort($merge, [static::class, 'sortTitlePrefix']);
+                usort($merge, [$this, 'sortTitlePrefix']);
                 break;
             case static::SORT_INITIATOR:
-                usort($merge, [static::class, 'sortInitiator']);
+                usort($merge, [$this, 'sortInitiator']);
                 break;
             case static::SORT_TAG:
-                usort($merge, [static::class, 'sortTag']);
+                usort($merge, [$this, 'sortTag']);
                 break;
             case static::SORT_PROPOSAL_STATUS:
-                usort($merge, [static::class, 'sortProposalStatus']);
+                usort($merge, [$this, 'sortProposalStatus']);
                 break;
             case static::SORT_RESPONSIBILITY:
-                usort($merge, [static::class, 'sortResponsibility']);
+                usort($merge, [$this, 'sortResponsibility']);
                 break;
             case static::SORT_DATE:
-                usort($merge, [static::class, 'sortDate']);
+                usort($merge, [$this, 'sortDate']);
                 break;
             default:
-                usort($merge, [static::class, 'sortTitlePrefix']);
+                usort($merge, [$this, 'sortTitlePrefix']);
         }
         if (!in_array($this->sort, [static::SORT_STATUS, static::SORT_INITIATOR, static::SORT_TAG])) {
             $merge = $this->moveAmendmentsToMotions($merge);
@@ -762,6 +760,11 @@ class AdminMotionFilterForm
         return $str;
     }
 
+    public function getAfterFormHtml(): string
+    {
+        return ''; // can be overridden by plugins
+    }
+
     public function getStatusList(): array
     {
         $out = $num = [];
@@ -823,18 +826,30 @@ class AdminMotionFilterForm
 
     public function getTagList(): array
     {
+        $tagsProposed = $this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+        $tagsPublic = $this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
+        $tagIds = [];
+        foreach ($tagsProposed as $tag) {
+            $tagIds[] = $tag->id;
+        }
+        foreach ($tagsPublic as $tag) {
+            $tagIds[] = $tag->id;
+        }
+
+        $motionIds = array_map(fn(Motion $motion): int => $motion->id, $this->allMotions);
+        $amendmentIds = array_map(fn(Amendment $amendment): int => $amendment->id, $this->allAmendments);
+        $stats = ConsultationSettingsTag::getMotionStats($tagIds, $motionIds, $amendmentIds);
+
         $outInternal = [];
         $outPublic = [];
         foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) as $tag) {
-            $num = count($tag->motions) + count($tag->amendments);
-            if ($num > 0) {
-                $outInternal[$tag->id] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $tag->title . ' (' . $num . ')';
+            if ($stats[$tag->id] > 0) {
+                $outInternal[$tag->id] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $tag->title . ' (' . $stats[$tag->id] . ')';
             }
         }
         foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            $num = count($tag->motions) + count($tag->amendments);
-            if ($num > 0) {
-                $outPublic[$tag->id] = $tag->title . ' (' . $num . ')';
+            if ($stats[$tag->id] > 0) {
+                $outPublic[$tag->id] = $tag->title . ' (' . $stats[$tag->id] . ')';
             }
         }
 

@@ -293,7 +293,7 @@ class Consultation extends ActiveRecord
     public function getUsersInAnyGroup(): array
     {
         $users = [];
-        foreach ($this->getAllAvailableUserGroups() as $userGroup) {
+        foreach ($this->getAllAvailableUserGroups([], true) as $userGroup) {
             foreach ($userGroup->users as $user) {
                 if (!isset($users[$user->id])) {
                     $users[$user->id] = $user;

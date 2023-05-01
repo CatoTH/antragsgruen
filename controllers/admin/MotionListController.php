@@ -223,11 +223,18 @@ class MotionListController extends AdminBase
             throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
         }
 
+        $motionListClass = AdminMotionFilterForm::class;
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($plugin::getFullMotionListClassOverride()) {
+                $motionListClass = $plugin::getFullMotionListClassOverride();
+            }
+        }
+
         if ($motionId !== null && $motionId !== 'all' && $consultation->getMotion($motionId) === null) {
             $motionId = null;
         }
         if ($motionId === null && $consultation->getSettings()->adminListFilerByMotion) {
-            $search = new AdminMotionFilterForm($consultation, $consultation->motions, true, $privilegeScreening);
+            $search = new $motionListClass($consultation, $consultation->motions, $privilegeScreening);
             return new HtmlResponse($this->render('motion_list', ['motions' => $consultation->motions, 'search' => $search]));
         }
 
@@ -237,7 +244,8 @@ class MotionListController extends AdminBase
             $motions = $consultation->motions;
         }
 
-        $search = new AdminMotionFilterForm($consultation, $motions, true, $privilegeScreening);
+        /** @var AdminMotionFilterForm $search */
+        $search = new $motionListClass($consultation, $motions, $privilegeScreening);
         if ($this->isRequestSet('Search')) {
             $search->setAttributes($this->getRequestValue('Search'));
         }

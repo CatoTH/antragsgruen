@@ -31,24 +31,13 @@ echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper
 $iAmAdmin = User::havePrivilege(Consultation::getCurrent(), Privileges::PRIVILEGE_ANY, null);
 $motionHistory = MotionNumbering::getSortedHistoryForMotion($motion, !$iAmAdmin);
 
-$replacedByMotions = $motion->getVisibleReplacedByMotions();
-if (count($replacedByMotions) > 0) {
+$replacedByMotion = MotionNumbering::findMostRecentVersionOfMotion($motion, true);
+if ($replacedByMotion) {
     echo '<div class="alert alert-danger motionReplacedBy" role="alert">';
     echo Yii::t('motion', 'replaced_by_hint');
-    if (count($replacedByMotions) > 1) {
-        echo '<ul>';
-        foreach ($replacedByMotions as $newMotion) {
-            echo '<li>';
-            $newLink = UrlHelper::createMotionUrl($newMotion);
-            echo Html::a(Html::encode($newMotion->getTitleWithPrefix()), $newLink);
-            echo '</li>';
-        }
-        echo '</ul>';
-    } else {
-        echo '<br>';
-        $newLink = UrlHelper::createMotionUrl($replacedByMotions[0]);
-        echo Html::a(Html::encode($replacedByMotions[0]->getTitleWithPrefix()), $newLink);
-    }
+    echo '<br>';
+    $newLink = UrlHelper::createMotionUrl($replacedByMotion);
+    echo Html::a(Html::encode($replacedByMotion->getTitleWithPrefix()), $newLink);
     echo '</div>';
 }
 

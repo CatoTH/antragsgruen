@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use app\models\db\IMotion;
 use app\models\db\Motion;
 
 class MotionNumbering
@@ -101,5 +102,31 @@ class MotionNumbering
             }
         }
         return null;
+    }
+
+    public static function findMostRecentVersionOfMotion(Motion $motion, bool $userVisibleOnly): ?Motion
+    {
+        $invisibleStatuses = $motion->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses();
+        if ($userVisibleOnly) {
+            $invisibleStatuses = array_merge($invisibleStatuses, $motion->getMyConsultation()->getStatuses()->getUnreadableStatuses());
+        }
+
+        // Note: this searches for the motion deepest down in the tree.
+        // It assumes that only one motion is set to replace the current one; if multiple motions are replacing it,
+        // the behavior is somewhat undefined for now
+        $directDescendant = null;
+        $subDescendant = null;
+        foreach ($motion->replacedByMotions as $replacedByMotion) {
+            if (!in_array($replacedByMotion->status, $invisibleStatuses)) {
+                $directDescendant = $replacedByMotion;
+            }
+            $subDescendant = static::findMostRecentVersionOfMotion($replacedByMotion, $userVisibleOnly) ?? $subDescendant;
+        }
+
+        if ($subDescendant) {
+            return $subDescendant;
+        } else {
+            return $directDescendant;
+        }
     }
 }

@@ -11,7 +11,6 @@ use app\models\sectionTypes\ISectionType;
 use yii\web\Session;
 
 /**
- * @method redirect($uri)
  * @method Session getHttpSession()
  * @property Consultation $consultation
  */
