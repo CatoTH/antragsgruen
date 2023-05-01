@@ -97,6 +97,11 @@ class ModuleBase extends Module
         return [];
     }
 
+    public static function getFullMotionListClassOverride(): ?string
+    {
+        return null;
+    }
+
     /**
      * Return values:
      * - null does not change default behavior

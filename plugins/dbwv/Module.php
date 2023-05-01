@@ -138,7 +138,12 @@ class Module extends ModuleBase
 
     public static function overridesDefaultLayout(): string
     {
-        return 'layout-plugin-neos-std';
+        return 'layout-plugin-dbwv-std';
+    }
+
+    public static function getFullMotionListClassOverride(): ?string
+    {
+        return AdminMotionFilterForm::class;
     }
 
     public static function canSeeFullMotionList(Consultation $consultation, User $user): ?bool
