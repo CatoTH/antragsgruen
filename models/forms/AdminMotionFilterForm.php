@@ -826,18 +826,30 @@ class AdminMotionFilterForm
 
     public function getTagList(): array
     {
+        $tagsProposed = $this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+        $tagsPublic = $this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
+        $tagIds = [];
+        foreach ($tagsProposed as $tag) {
+            $tagIds[] = $tag->id;
+        }
+        foreach ($tagsPublic as $tag) {
+            $tagIds[] = $tag->id;
+        }
+
+        $motionIds = array_map(fn(Motion $motion): int => $motion->id, $this->allMotions);
+        $amendmentIds = array_map(fn(Amendment $amendment): int => $amendment->id, $this->allAmendments);
+        $stats = ConsultationSettingsTag::getMotionStats($tagIds, $motionIds, $amendmentIds);
+
         $outInternal = [];
         $outPublic = [];
         foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) as $tag) {
-            $num = count($tag->motions) + count($tag->amendments);
-            if ($num > 0) {
-                $outInternal[$tag->id] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $tag->title . ' (' . $num . ')';
+            if ($stats[$tag->id] > 0) {
+                $outInternal[$tag->id] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $tag->title . ' (' . $stats[$tag->id] . ')';
             }
         }
         foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            $num = count($tag->motions) + count($tag->amendments);
-            if ($num > 0) {
-                $outPublic[$tag->id] = $tag->title . ' (' . $num . ')';
+            if ($stats[$tag->id] > 0) {
+                $outPublic[$tag->id] = $tag->title . ' (' . $stats[$tag->id] . ')';
             }
         }
 

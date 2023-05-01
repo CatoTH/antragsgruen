@@ -66,7 +66,7 @@ class AdminTodoItem
             $todo[]      = new AdminTodoItem(
                 'motionScreen' . $motion->id,
                 $motion->getTitleWithPrefix(),
-                str_replace('%TYPE%', $motion->motionType->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
+                str_replace('%TYPE%', $motion->getMyMotionType()->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
                 UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description

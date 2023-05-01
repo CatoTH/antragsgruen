@@ -136,4 +136,38 @@ class ConsultationSettingsTag extends ActiveRecord
         usort($tags, fn (array $tag1, array $tag2) => $tag2['num'] <=> $tag1['num']);
         return $tags;
     }
+
+    public static function getMotionStats(array $tagIds, array $motionIds, array $amendmentIds): array
+    {
+        if (count($tagIds) === 0) {
+            return [];
+        }
+        $tagIds = array_map('intval', $tagIds);
+        $stats = [];
+        foreach ($tagIds as $tagId) {
+            $stats[$tagId] = 0;
+        }
+
+        if (count($motionIds) > 0) {
+            $motionIds = array_map('intval', $motionIds);
+            $entries = DBConnection::executePlainFetchArray('SELECT `tagId`, `motionId` FROM `###TABLE_PREFIX###motionTag` WHERE `tagId` IN (' . implode(',', $tagIds) . ')');
+            foreach ($entries as $entry) {
+                if (in_array(intval($entry[1]), $motionIds)) {
+                    $stats[intval($entry[0])]++;
+                }
+            }
+        }
+
+        if (count($amendmentIds) > 0) {
+            $amendmentIds = array_map('intval', $amendmentIds);
+            $entries = DBConnection::executePlainFetchArray('SELECT `tagId`, `amendmentId` FROM `###TABLE_PREFIX###amendmentTag` WHERE `tagId` IN (' . implode(',', $tagIds) . ')');
+            foreach ($entries as $entry) {
+                if (in_array(intval($entry[1]), $amendmentIds)) {
+                    $stats[intval($entry[0])]++;
+                }
+            }
+        }
+
+        return $stats;
+    }
 }
