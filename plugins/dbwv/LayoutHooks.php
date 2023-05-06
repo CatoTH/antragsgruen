@@ -110,7 +110,11 @@ class LayoutHooks extends StdHooks
         /** @var ConsultationSettings $settings */
         $settings = $consultation->getSettings();
 
-        $adminUrl   = UrlHelper::createUrl(['/admin/motion-list/index', 'Search[version]' => $settings->defaultVersionFilter]);
+        if ($settings->defaultVersionFilter !== '') {
+            $adminUrl = UrlHelper::createUrl(['/admin/motion-list/index', 'Search[version]' => $settings->defaultVersionFilter]);
+        } else {
+            $adminUrl = UrlHelper::createUrl(['/admin/motion-list/index']);
+        }
         $adminTitle = \Yii::t('base', 'menu_motion_list');
         return '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
     }

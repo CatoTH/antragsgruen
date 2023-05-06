@@ -18,7 +18,7 @@ $settings = $consultation->getSettings();
     <div class="form-group">
         <label class="col-sm-3 control-label" for="defaultVersionFilter">Standard-Version in Antragsliste:</label>
         <div class="col-sm-9">
-            <input type="text" required name="settings[defaultVersionFilter]"
+            <input type="text" name="settings[defaultVersionFilter]"
                    value="<?= Html::encode($settings->defaultVersionFilter) ?>"
                    class="form-control" id="defaultVersionFilter">
             <input type="hidden" name="settingsFields[]" value="defaultVersionFilter">

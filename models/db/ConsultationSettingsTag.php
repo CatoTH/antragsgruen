@@ -137,7 +137,7 @@ class ConsultationSettingsTag extends ActiveRecord
         return $tags;
     }
 
-    public static function getMotionStats(array $tagIds, array $motionIds, array $amendmentIds): array
+    public static function getIMotionStats(array $tagIds, array $motionIds, array $amendmentIds): array
     {
         if (count($tagIds) === 0) {
             return [];
@@ -169,5 +169,33 @@ class ConsultationSettingsTag extends ActiveRecord
         }
 
         return $stats;
+    }
+
+    public static function getTagStructure(Consultation $consultation, array $types, ?int $parentTagId = null, ?array $tagStats = null): array
+    {
+        $tags = array_filter($consultation->tags, function(ConsultationSettingsTag $tag) use ($types, $parentTagId): bool {
+            if ($tag->parentTagId !== $parentTagId) {
+                return false;
+            }
+            return in_array($tag->type, $types);
+        });
+        usort($tags, function (ConsultationSettingsTag $tag1, ConsultationSettingsTag $tag2): int {
+            return $tag1->position <=> $tag2->position;
+        });
+        $structure = [];
+        foreach ($tags as $tag) {
+            $struct = [
+                'id' => $tag->id,
+                'title' => $tag->title,
+                'type' => $tag->type,
+            ];
+            if ($tagStats) {
+                $struct['imotions'] = $tagStats[$tag->id] ?? 0;
+            }
+            $struct['subtags'] = self::getTagStructure($consultation, $types, $tag->id, $tagStats);
+            $structure[] = $struct;
+        }
+
+        return $structure;
     }
 }

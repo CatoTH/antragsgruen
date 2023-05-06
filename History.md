@@ -11,6 +11,7 @@
 - The number of votes users can cast on a voting session can be limited. It is thus possible to present a list of motions or candidates and have the users choose up to that specified number of them.
 - For the proposed procedure, it is now possible to set the status "Accepted (Modified)" for motions too and to specify a modified version of it to accept. Previously, this was only possible for amendments.
 - A new motion versioning system is implemented, replacing just using the signatures for versioning. Instead of "M1new2", the signature will now remain the same but the version is saved separately.
+- In the admin motion list, replaced motions are now hidden by default if the newer version is also shown. Tn additional filter gives the option to show all versions of a motion in the list.
 - Motion sections can now be set up to hold Right-to-Left text, like Farsi, Hebrew or Arabic.
 - The date format can be set independently from the language. Also the date format yyyy-mm-dd is supported (besides dd/mm/yyyy, mm/dd/yyyy, dd.mm.yyyy).
 - It is possible for admins to create tags for a consultation but disallow proposers of motions to specify these tags themselves.
