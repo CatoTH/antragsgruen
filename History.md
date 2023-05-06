@@ -23,6 +23,7 @@
 - Bugfix: PHP-based PDF rendering lead to overlapping lines when the text contained nested lines without line numbering.
 - Bugfix: Setting the time of agenda items was not possible in locales using AM/PM.
 - Bugfix: Uploaded logos and background images could not always be shown with enabled maintenance mode.
+- Bugfix: When using "Tags / categories" as the home page layout, the motions were not sorted by prefix.
 
 ### Version 4.11.1 (2022-12-10)
 

@@ -79,7 +79,8 @@ foreach ($tagIds as $tagId) {
             <th class="titleCol">' . Yii::t('motion', 'Title') . '</th>
             <th class="initiatorCol">' . Yii::t('motion', 'Initiator') . '</th>
         </tr></thead>';
-    foreach ($tag['motions'] as $motion) {
+    $sortedIMotions = MotionSorter::getSortedIMotionsFlat($consultation, $tag['motions']);
+    foreach ($sortedIMotions as $motion) {
         /** @var IMotion $motion */
         $classes = ['motion'];
         if ($motion->getMyMotionType()->getSettingsObj()->cssIcon) {
