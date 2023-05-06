@@ -80,6 +80,29 @@ class ConsultationSettingsTag extends ActiveRecord
         }));
     }
 
+    public function createSubtagOfType(int $type, string $title): ConsultationSettingsTag
+    {
+        $newTag = null;
+        $maxPos = 0;
+        foreach ($this->getSubtagsOfType($type) as $subtag) {
+            if ($subtag->title === $title) {
+                $newTag = $subtag;
+            }
+            $maxPos = max($maxPos, $subtag->position);
+        }
+        if (!$newTag) {
+            $newTag = new ConsultationSettingsTag();
+            $newTag->consultationId = $this->consultationId;
+            $newTag->parentTagId = $this->id;
+            $newTag->title = $title;
+            $newTag->type = $type;
+            $newTag->position = $maxPos + 1;
+            $newTag->save();
+            $this->getMyConsultation()->refresh();
+        }
+        return $newTag;
+    }
+
     public function deleteIncludeRelations(): void
     {
         DBConnection::executePlainQuery('DELETE FROM `###TABLE_PREFIX###motionTag` WHERE `tagId` = ' . intval($this->id));

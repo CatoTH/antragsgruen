@@ -879,11 +879,12 @@ class AdminMotionFilterForm
         $out = [];
         foreach ($tagStruct as $struct) {
             if ($struct['imotions'] > 0) {
-                $title = $prefix . ($prefix ? ' ' : '') . $struct['title'] . ' (' . $struct['imotions'] . ')';
+                $title = $struct['title'] . ' (' . $struct['imotions'] . ')';
                 if ($struct['type'] === ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) {
-                    $title .= \Yii::t('admin', 'filter_tag_pp') . ': ' . $title;
+                    $title = \Yii::t('admin', 'filter_tag_pp') . ': ' . $title;
                 }
-                $out['tag'.$struct['id']] = $title;
+                $title = $prefix . ($prefix ? ' ' : '') . $title;
+                    $out['tag'.$struct['id']] = $title;
             }
             $out = array_merge($out, self::resolveTagList($struct['subtags'], $prefix . '-'));
         }

@@ -50,7 +50,12 @@ class Step1
         unset($motion);
 
         if (count($v2Motion->getPublicTopicTags()) > 0) {
-            if ($postparams['subtag']) {
+            if ($postparams['subtag'] === 'new') {
+                $tag = $v2Motion->getPublicTopicTags()[0];
+                $createTitle = trim($postparams['subtagNew']);
+                $newTag = $tag->createSubtagOfType(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $createTitle);
+                $setTagIds = [$newTag->id];
+            } elseif ($postparams['subtag']) {
                 $tag = $v2Motion->getPublicTopicTags()[0];
                 $subtag = $v2Motion->getMyConsultation()->getTagById(intval($postparams['subtag']));
                 if (!$subtag || $subtag->type !== ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE || $subtag->parentTagId !== $tag->id) {
