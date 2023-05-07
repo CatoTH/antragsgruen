@@ -13,6 +13,8 @@ use yii\helpers\Html;
  * @var bool $admin
  */
 
+$layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
+
 list($_motions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
     echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);

@@ -367,10 +367,6 @@ class LayoutHelper
                 case ISupporter::ROLE_INITIATOR:
                     break;
                 case ISupporter::ROLE_LIKE:
-                    $str .= '<button type="submit" name="motionSupportRevoke" class="btn">';
-                    $str .= '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
-                    $str .= '</button>';
-                    break;
                 case ISupporter::ROLE_DISLIKE:
                     $str .= '<button type="submit" name="motionSupportRevoke" class="btn">';
                     $str .= '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');

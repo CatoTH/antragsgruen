@@ -1,7 +1,8 @@
 <?php
 
+use app\views\consultation\LayoutHelper;
 use app\components\{MotionSorter, UrlHelper};
-use app\models\db\{Amendment, Consultation, IMotion, Motion};
+use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionComment, User};
 use yii\helpers\Html;
 
 /**
@@ -9,35 +10,39 @@ use yii\helpers\Html;
  * @var Consultation $consultation
  * @var \app\models\settings\Layout $layout
  */
-$tags            = $tagIds = [];
+$tags = $tagIds = [];
 $hasNoTagMotions = false;
 $invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
+$privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), MotionComment::STATUS_PRIVATE);
+$privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
+
+$layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
 
 list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
     echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }
 
-foreach ($imotions as $motion) {
-    if (!MotionSorter::imotionIsVisibleOnHomePage($motion, $invisibleStatuses)) {
+foreach ($imotions as $imotion) {
+    if (!MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses)) {
         continue;
     }
-    if (count($motion->getPublicTopicTags()) === 0) {
+    if (count($imotion->getPublicTopicTags()) === 0) {
         $hasNoTagMotions = true;
         if (!isset($tags[0])) {
             $tags[0] = ['name' => Yii::t('motion', 'tag_none'), 'motions' => []];
         }
-        $tags[0]['motions'][] = $motion;
+        $tags[0]['motions'][] = $imotion;
     } else {
-        foreach ($motion->getPublicTopicTags() as $tag) {
+        foreach ($imotion->getPublicTopicTags() as $tag) {
             if (!isset($tags[$tag->id])) {
                 $tags[$tag->id] = ['name' => $tag->title, 'motions' => []];
             }
-            $tags[$tag->id]['motions'][] = $motion;
+            $tags[$tag->id]['motions'][] = $imotion;
         }
     }
 }
-$sortedTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
+$sortedTags = $consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
 foreach ($sortedTags as $tag) {
     if (isset($tags[$tag->id])) {
         $tagIds[] = $tag->id;
@@ -66,7 +71,7 @@ if (count($sortedTags) > 0 && mb_stripos($sortedTags[0]->title, Yii::t('motion',
 }
 
 foreach ($tagIds as $tagId) {
-    /** @var \app\models\db\ConsultationSettingsTag $tag */
+    /** @var ConsultationSettingsTag $tag */
     $tag = $tags[$tagId];
     echo '<h3 class="green" id="tag_' . $tagId . '">' . Html::encode($tag['name']) . '</h3>
     <div class="content">
@@ -80,73 +85,74 @@ foreach ($tagIds as $tagId) {
             <th class="initiatorCol">' . Yii::t('motion', 'Initiator') . '</th>
         </tr></thead>';
     $sortedIMotions = MotionSorter::getSortedIMotionsFlat($consultation, $tag['motions']);
-    foreach ($sortedIMotions as $motion) {
-        /** @var IMotion $motion */
+    foreach ($sortedIMotions as $imotion) {
+        /** @var IMotion $imotion */
         $classes = ['motion'];
-        if ($motion->getMyMotionType()->getSettingsObj()->cssIcon) {
-            $classes[] = $motion->getMyMotionType()->getSettingsObj()->cssIcon;
+        if ($imotion->getMyMotionType()->getSettingsObj()->cssIcon) {
+            $classes[] = $imotion->getMyMotionType()->getSettingsObj()->cssIcon;
         }
-        if ($motion->status === IMotion::STATUS_WITHDRAWN) {
+        if ($imotion->status === IMotion::STATUS_WITHDRAWN) {
             $classes[] = 'withdrawn';
         }
-        if ($motion->status === IMotion::STATUS_MOVED) {
+        if ($imotion->status === IMotion::STATUS_MOVED) {
             $classes[] = 'moved';
         }
-        if ($motion->isInScreeningProcess()) {
+        if ($imotion->isInScreeningProcess()) {
             $classes[] = 'unscreened';
         }
+        $privateComment = LayoutHelper::getPrivateCommentIndicator($imotion, $privateMotionComments, $privateAmendmentComments);
         echo '<tr class="' . implode(' ', $classes) . '">';
         if (!$consultation->getSettings()->hideTitlePrefix) {
-            echo '<td class="prefixCol">' . Html::encode($motion->titlePrefix) . '</td>';
+            echo '<td class="prefixCol">' . $privateComment . Html::encode($imotion->titlePrefix) . '</td>';
         }
         echo '<td class="titleCol">';
+        if ($consultation->getSettings()->hideTitlePrefix) {
+            echo $privateComment;
+        }
         echo '<div class="titleLink">';
-        if (is_a($motion, Amendment::class)) {
+        if (is_a($imotion, Amendment::class)) {
             echo Html::a(
-                Html::encode($motion->getTitle()),
-                UrlHelper::createAmendmentUrl($motion),
-                ['class' => 'amendmentLink' . $motion->id]
+                Html::encode($imotion->getTitle()),
+                UrlHelper::createAmendmentUrl($imotion),
+                ['class' => 'amendmentLink' . $imotion->id]
             );
-        } elseif (is_a($motion, Motion::class)) {
+        } elseif (is_a($imotion, Motion::class)) {
             echo Html::a(
-                Html::encode($motion->title),
-                UrlHelper::createMotionUrl($motion),
-                ['class' => 'motionLink' . $motion->id]
+                Html::encode($imotion->title),
+                UrlHelper::createMotionUrl($imotion),
+                ['class' => 'motionLink' . $imotion->id]
             );
         }
         echo '</div><div class="pdflink">';
-        if ($motion->getMyMotionType()->getPDFLayoutClass() !== null && $motion->isVisible()) {
-            if (is_a($motion, Amendment::class)) {
+        if ($imotion->getMyMotionType()->getPDFLayoutClass() !== null && $imotion->isVisible()) {
+            if (is_a($imotion, Amendment::class)) {
                 echo Html::a(
                     Yii::t('motion', 'as_pdf'),
-                    UrlHelper::createAmendmentUrl($motion, 'pdf'),
+                    UrlHelper::createAmendmentUrl($imotion, 'pdf'),
                     ['class' => 'pdfLink']
                 );
-            } elseif (is_a($motion, Motion::class)) {
+            } elseif (is_a($imotion, Motion::class)) {
                 echo Html::a(
                     Yii::t('motion', 'as_pdf'),
-                    UrlHelper::createMotionUrl($motion, 'pdf'),
+                    UrlHelper::createMotionUrl($imotion, 'pdf'),
                     ['class' => 'pdfLink']
                 );
             }
         }
         echo '</div></td><td class="initiatorRow">';
         $initiators = [];
-        foreach ($motion->getInitiators() as $init) {
-            if ($init->personType === \app\models\db\MotionSupporter::PERSON_NATURAL) {
+        foreach ($imotion->getInitiators() as $init) {
+            if ($init->personType === ISupporter::PERSON_NATURAL) {
                 $initiators[] = $init->name;
             } else {
                 $initiators[] = $init->organization;
             }
         }
         echo Html::encode(implode(', ', $initiators));
-        if ($motion->status != Motion::STATUS_SUBMITTED_SCREENED) {
-            echo ', ' . Html::encode($consultation->getStatuses()->getStatusName($motion->status));
-        }
         echo '</td></tr>';
 
-        if (is_a($motion, Motion::class)) {
-            $amends = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
+        if (is_a($imotion, Motion::class)) {
+            $amends = MotionSorter::getSortedAmendments($consultation, $imotion->getVisibleAmendments());
             foreach ($amends as $amend) {
                 $classes = ['amendment'];
                 if ($amend->status === Amendment::STATUS_WITHDRAWN) {
@@ -157,7 +163,7 @@ foreach ($tagIds as $tagId) {
                     echo '<td class="prefixCol">' . Html::encode($amend->titlePrefix) . '</td>';
                 }
                 echo '<td class="titleCol"><div class="titleLink">';
-                $title = Yii::t('amend', 'amendment_for') . ' ' . Html::encode($motion->titlePrefix);
+                $title = Yii::t('amend', 'amendment_for') . ' ' . Html::encode($imotion->titlePrefix);
                 echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
                 if ($amend->status === Amendment::STATUS_WITHDRAWN) {
                     echo ' <span class="status">(' . Html::encode($consultation->getStatuses()->getStatusName($amend->status)) . ')</span>';
@@ -166,7 +172,7 @@ foreach ($tagIds as $tagId) {
                 echo '<td class="initiatorRow">';
                 $initiators = [];
                 foreach ($amend->getInitiators() as $init) {
-                    if ($init->personType === \app\models\db\MotionSupporter::PERSON_NATURAL) {
+                    if ($init->personType === ISupporter::PERSON_NATURAL) {
                         $initiators[] = $init->name;
                     } else {
                         $initiators[] = $init->organization;
