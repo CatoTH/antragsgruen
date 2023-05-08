@@ -7,36 +7,14 @@
  */
 
 use app\models\db\{Amendment, AmendmentSection};
+use app\views\amendment\LayoutHelper;
 
 $consultation = $amendment->getMyConsultation();
 
-if ($amendment->hasVisibleAlternativeProposaltext($procedureToken)) {
-    $hasProposedChange = true;
-    $reference         = $amendment->getAlternativeProposaltextReference();
-    if ($reference) {
-        /** @var Amendment $referenceAmendment */
-        $referenceAmendment = $reference['amendment'];
-        /** @var Amendment $reference */
-        $reference = $reference['modification'];
-
-        /** @var AmendmentSection[] $sections */
-        $sections = $reference->getSortedSections(false);
-        foreach ($sections as $section) {
-            if ($referenceAmendment->id === $amendment->id) {
-                $prefix = Yii::t('amend', 'pprocedure_title_own');
-            } else {
-                $prefix = Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->titlePrefix;
-            }
-            if (!$amendment->isProposalPublic()) {
-                $prefix = '[ADMIN] ' . $prefix;
-            }
-            $sectionType = $section->getSectionType();
-            $sectionType->setMotionContext($amendment->getMyMotion());
-            echo $sectionType->getAmendmentFormatted($prefix, 'pp_');
-        }
-    }
-} else {
-    $hasProposedChange = false;
+$ppSections = LayoutHelper::getVisibleProposedProcedureSections($amendment, $procedureToken);
+$hasProposedChange = (count($ppSections) > 0);
+foreach ($ppSections as $ppSection) {
+    echo $ppSection['section']->getAmendmentFormatted($ppSection['title'], 'pp_');
 }
 
 

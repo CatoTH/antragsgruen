@@ -1,11 +1,10 @@
 <?php
 
 use app\components\HashedStaticFileCache;
-use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsMotionSection, Motion};
+use app\models\db\{ConsultationSettingsMotionSection, Motion};
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
@@ -42,33 +41,8 @@ $titleSection = $motion->getTitleSection();
 $main = $right = '';
 $bottom = '';
 
-if ($motion->hasVisibleAlternativeProposaltext($procedureToken)) {
-    $hasProposedChange = true;
-    $reference         = $motion->getAlternativeProposaltextReference();
-    if ($reference) {
-        /** @var Motion $referenceMotion */
-        $referenceMotion = $reference['motion'];
-        /** @var Amendment $reference */
-        $reference = $reference['modification'];
-
-        /** @var AmendmentSection[] $sections */
-        $ppSections = $reference->getSortedSections(false);
-        foreach ($ppSections as $section) {
-            if ($referenceMotion->id === $motion->id) {
-                $prefix = Yii::t('amend', 'pprocedure_title_own');
-            } else {
-                $prefix = Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceMotion->titlePrefix;
-            }
-            if (!$motion->isProposalPublic()) {
-                $prefix = '[ADMIN] ' . $prefix;
-            }
-            $sectionType = $section->getSectionType();
-            $sectionType->setMotionContext($motion);
-            $main .= $sectionType->getAmendmentFormatted($prefix, 'pp_');
-        }
-    }
-} else {
-    $hasProposedChange = false;
+foreach (LayoutHelper::getVisibleProposedProcedureSections($motion, $procedureToken) as $ppSection) {
+    $main .= $ppSection['section']->getAmendmentFormatted($ppSection['title'], 'pp_');
 }
 
 

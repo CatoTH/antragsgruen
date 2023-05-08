@@ -8,7 +8,14 @@ use app\models\mergeAmendments\Init;
 use app\models\settings\{PrivilegeQueryContext, Privileges, VotingData, AntragsgruenApp};
 use app\components\latex\{Content, Exporter, Layout as LatexLayout};
 use app\components\Tools;
-use app\models\db\{Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
+use app\models\db\{Amendment,
+    AmendmentSection,
+    Consultation,
+    ConsultationSettingsTag,
+    IMotion,
+    ISupporter,
+    Motion,
+    User};
 use app\models\LimitedSupporterList;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
@@ -67,6 +74,46 @@ class LayoutHelper
             $inits[] = $name;
         }
         return implode('<br>', $inits);
+    }
+
+    /**
+     * @return array<array{title: string, section: AmendmentSection}>
+     */
+    public static function getVisibleProposedProcedureSections(Motion $motion, ?string $procedureToken): array
+    {
+        if (!$motion->hasVisibleAlternativeProposaltext($procedureToken)) {
+            return [];
+        }
+        $reference = $motion->getAlternativeProposaltextReference();
+        if (!$reference) {
+            return [];
+        }
+        /** @var Motion $referenceMotion */
+        $referenceMotion = $reference['motion'];
+        /** @var Amendment $reference */
+        $reference = $reference['modification'];
+
+        $out = [];
+        /** @var AmendmentSection[] $sections */
+        $ppSections = $reference->getSortedSections(false);
+        foreach ($ppSections as $section) {
+            if ($referenceMotion->id === $motion->id) {
+                $prefix = \Yii::t('amend', 'pprocedure_title_own');
+            } else {
+                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceMotion->titlePrefix;
+            }
+            if (!$motion->isProposalPublic()) {
+                $prefix = '[ADMIN] ' . $prefix;
+            }
+            $sectionType = $section->getSectionType();
+            $sectionType->setMotionContext($motion);
+
+            $out[] = [
+                'title' => $prefix,
+                'section' => $sectionType,
+            ];
+        }
+        return $out;
     }
 
     public static function addVotingResultsRow(VotingData $votingData, array &$rows): void

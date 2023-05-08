@@ -153,6 +153,7 @@ class MotionTypeController extends AdminBase
             $settings->hasResponsibilities  = isset($input['responsibilities']);
             $settings->commentsRestrictViewToWritables = isset($input['commentsRestrictViewToWritables']);
             $settings->allowAmendmentsToAmendments = isset($input['allowAmendmentsToAmendments']);
+            $settings->showProposalsInExports = isset($input['showProposalsInExports']);
             $motionType->setSettingsObj($settings);
 
             // Motion Initiators / Supporters

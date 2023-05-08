@@ -5,13 +5,54 @@ namespace app\views\amendment;
 use app\views\pdfLayouts\{IPdfWriter, IPDFLayout};
 use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
-use app\models\db\{Amendment, TexTemplate};
+use app\models\db\{Amendment, AmendmentSection, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
 class LayoutHelper
 {
+    /**
+     * @return array<array{title: string, section: AmendmentSection}>
+     */
+    public static function getVisibleProposedProcedureSections(Amendment $amendment, ?string $procedureToken): array
+    {
+        if (!$amendment->hasVisibleAlternativeProposaltext($procedureToken)) {
+            return [];
+        }
+        $reference = $amendment->getAlternativeProposaltextReference();
+        if (!$reference) {
+            return [];
+        }
+
+        /** @var Amendment $referenceAmendment */
+        $referenceAmendment = $reference['amendment'];
+        /** @var Amendment $reference */
+        $reference = $reference['modification'];
+
+        $out = [];
+        /** @var AmendmentSection[] $sections */
+        $sections = $reference->getSortedSections(false);
+        foreach ($sections as $section) {
+            if ($referenceAmendment->id === $amendment->id) {
+                $prefix = \Yii::t('amend', 'pprocedure_title_own');
+            } else {
+                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->titlePrefix;
+            }
+            if (!$amendment->isProposalPublic()) {
+                $prefix = '[ADMIN] ' . $prefix;
+            }
+            $sectionType = $section->getSectionType();
+            $sectionType->setMotionContext($amendment->getMyMotion());
+            $out[] = [
+                'title' => $prefix,
+                'section' => $sectionType,
+            ];
+        }
+
+        return $out;
+    }
+
     public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate): Content
     {
         $content             = new Content();
