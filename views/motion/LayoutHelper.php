@@ -257,7 +257,7 @@ class LayoutHelper
             $ppSections = self::getVisibleProposedProcedureSections($motion, null);
             foreach ($ppSections as $ppSection) {
                 $ppSection['section']->setTitlePrefix($ppSection['title']);
-                $ppSection['section']->printMotionTeX(false, $content, $motion->getMyConsultation());
+                $ppSection['section']->printAmendmentTeX(false, $content, $motion->getMyConsultation());
             }
         }
 
