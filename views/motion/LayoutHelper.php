@@ -8,14 +8,7 @@ use app\models\mergeAmendments\Init;
 use app\models\settings\{PrivilegeQueryContext, Privileges, VotingData, AntragsgruenApp};
 use app\components\latex\{Content, Exporter, Layout as LatexLayout};
 use app\components\Tools;
-use app\models\db\{Amendment,
-    AmendmentSection,
-    Consultation,
-    ConsultationSettingsTag,
-    IMotion,
-    ISupporter,
-    Motion,
-    User};
+use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
 use app\models\LimitedSupporterList;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
@@ -77,7 +70,7 @@ class LayoutHelper
     }
 
     /**
-     * @return array<array{title: string, section: AmendmentSection}>
+     * @return array<array{title: string, section: ISectionType}>
      */
     public static function getVisibleProposedProcedureSections(Motion $motion, ?string $procedureToken): array
     {
@@ -260,6 +253,14 @@ class LayoutHelper
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->printMotionTeX(false, $content, $motion->getMyConsultation());
+            }
+        }
+
         foreach ($motion->getSortedSections(true) as $section) {
             $isRight = $section->isLayoutRight();
             $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
@@ -296,6 +297,14 @@ class LayoutHelper
         }
 
         $pdfLayout->printMotionHeader($motion);
+
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->printAmendmentToPDF($pdfLayout, $pdf);
+            }
+        }
 
         // PDFs should be attached at the end, to prevent collision with other parts of the motion text; see #242
         $pdfAttachments = [];

@@ -92,7 +92,7 @@ class VideoEmbed extends ISectionType
         $this->setMotionData($data);
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
+    public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -139,7 +139,7 @@ class VideoEmbed extends ISectionType
         }
 
         if ($this->section->getSettings()->printTitle) {
-            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+            $pdfLayout->printSectionHeading($this->getTitle());
         }
         $html = '<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>';
 
@@ -171,7 +171,7 @@ class VideoEmbed extends ISectionType
         if ($this->isEmpty()) {
             return;
         }
-        $title = Exporter::encodePlainString($this->section->getSettings()->title);
+        $title = Exporter::encodePlainString($this->getTitle());
         $text = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
         $text .= Exporter::encodeHTMLString('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>');
 
@@ -187,7 +187,7 @@ class VideoEmbed extends ISectionType
         if ($this->isEmpty()) {
             return;
         }
-        $title = Exporter::encodePlainString($this->section->getSettings()->title);
+        $title = Exporter::encodePlainString($this->getTitle());
         $text = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
         $text .= Exporter::encodeHTMLString('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>');
 
@@ -210,13 +210,13 @@ class VideoEmbed extends ISectionType
 
     public function printMotionToODT(ODTText $odt): void
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         $odt->addHtmlTextBlock('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>', false);
     }
 
     public function printAmendmentToODT(ODTText $odt): void
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         $odt->addHtmlTextBlock('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>', false);
     }
 

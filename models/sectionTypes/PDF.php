@@ -121,7 +121,7 @@ class PDF extends ISectionType
         $this->setMotionData($data);
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
+    public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -175,7 +175,7 @@ class PDF extends ISectionType
         $pdf->setY($pdf->getY() + $abs);
 
         if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
-            $title = $this->section->getSettings()->title;
+            $title = $this->getTitle();
             if (str_replace('pdf', '', strtolower($title)) === strtolower($title)) {
                 $title .= ' [PDF]';
             }
@@ -343,13 +343,13 @@ class PDF extends ISectionType
 
     public function printMotionToODT(Text $odt): void
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         $odt->addHtmlTextBlock('[PDF]', false);
     }
 
     public function printAmendmentToODT(Text $odt): void
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         $odt->addHtmlTextBlock('[PDF]', false);
     }
 

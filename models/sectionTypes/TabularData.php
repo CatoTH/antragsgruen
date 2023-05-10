@@ -97,7 +97,7 @@ class TabularData extends ISectionType
         return $str;
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
+    public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -123,7 +123,7 @@ class TabularData extends ISectionType
         }
 
         if ($this->section->getSettings()->printTitle) {
-            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+            $pdfLayout->printSectionHeading($this->getTitle());
         }
 
         $pdf->SetFont('Courier', '', 11);
@@ -307,13 +307,13 @@ class TabularData extends ISectionType
 
     public function printMotionToODT(Text $odt): void
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
     }
 
     public function printAmendmentToODT(Text $odt): void
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
     }
 

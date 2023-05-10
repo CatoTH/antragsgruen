@@ -57,6 +57,14 @@ if ($amendment->changeEditorial !== '') {
     $doc->addHtmlTextBlock($editorial, false);
 }
 
+if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+    $ppSections = \app\views\amendment\LayoutHelper::getVisibleProposedProcedureSections($amendment, null);
+    foreach ($ppSections as $ppSection) {
+        $ppSection['section']->setTitlePrefix($ppSection['title']);
+        $ppSection['section']->printAmendmentToODT($doc);
+    }
+}
+
 foreach ($amendment->getSortedSections(false) as $section) {
     $section->getSectionType()->printAmendmentToODT($doc);
 }

@@ -34,6 +34,7 @@ abstract class ISectionType
 
     protected IMotionSection $section;
     protected bool $absolutizeLinks = false;
+    protected ?string $titlePrefix = null;
     protected ?Motion $motionContext = null;
 
     public function __construct(IMotionSection $section)
@@ -85,6 +86,20 @@ abstract class ISectionType
     public function setAbsolutizeLinks(bool $absolutize): void
     {
         $this->absolutizeLinks = $absolutize;
+    }
+
+    public function setTitlePrefix(?string $titlePrefix): void
+    {
+        $this->titlePrefix = $titlePrefix;
+    }
+
+    public function getTitle(): string
+    {
+        $title = $this->section->getSettings()->title;
+        if ($this->titlePrefix !== null) {
+            $title = $this->titlePrefix . ': ' . $title;
+        }
+        return $title;
     }
 
     // This sets the motion in whose Context an amendment will be shown. This is relevant if the proposed procedure of an amendment
@@ -152,7 +167,7 @@ abstract class ISectionType
         return $this->getSimple(false);
     }
 
-    abstract public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string;
+    abstract public function getAmendmentFormatted(string $htmlIdPrefix = ''): string;
 
     abstract public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void;
 

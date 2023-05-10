@@ -42,7 +42,8 @@ $main = $right = '';
 $bottom = '';
 
 foreach (LayoutHelper::getVisibleProposedProcedureSections($motion, $procedureToken) as $ppSection) {
-    $main .= $ppSection['section']->getAmendmentFormatted($ppSection['title'], 'pp_');
+    $ppSection['section']->setTitlePrefix($ppSection['title']);
+    $main .= $ppSection['section']->getAmendmentFormatted('pp_');
 }
 
 

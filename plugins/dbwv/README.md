@@ -8,6 +8,7 @@ Setup Notes
 - Startseiten-Layout: Tags
 - Sachgebiete: Tags, type „Public Topic” (0)
 - Themenbereiche: Tags, type „Proposed Procedure” (1), Sachgebiete als parent tags
+- PDFs: Verfahrensvorschläge anzeigen
 
 Antragstypen:
 - Anträge

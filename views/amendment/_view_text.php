@@ -14,7 +14,8 @@ $consultation = $amendment->getMyConsultation();
 $ppSections = LayoutHelper::getVisibleProposedProcedureSections($amendment, $procedureToken);
 $hasProposedChange = (count($ppSections) > 0);
 foreach ($ppSections as $ppSection) {
-    echo $ppSection['section']->getAmendmentFormatted($ppSection['title'], 'pp_');
+    $ppSection['section']->setTitlePrefix($ppSection['title']);
+    echo $ppSection['section']->getAmendmentFormatted('pp_');
 }
 
 
@@ -28,9 +29,10 @@ if ($amendment->changeEditorial !== '') {
 
 /** @var AmendmentSection[] $sections */
 $sections = $amendment->getSortedSections(false);
-$prefix   = ($hasProposedChange ? Yii::t('amend', 'original_title') : '');
+$prefix   = ($hasProposedChange ? Yii::t('amend', 'original_title') : null);
 foreach ($sections as $section) {
-    echo $section->getSectionType()->getAmendmentFormatted($prefix);
+    $section->getSectionType()->setTitlePrefix($prefix);
+    echo $section->getSectionType()->getAmendmentFormatted();
 }
 
 

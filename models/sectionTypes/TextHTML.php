@@ -56,7 +56,7 @@ class TextHTML extends Text
         return $this->section->getData();
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
+    public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -73,7 +73,7 @@ class TextHTML extends Text
         }
 
         if ($this->section->getSettings()->printTitle) {
-            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+            $pdfLayout->printSectionHeading($this->getTitle());
         }
 
         $html = $this->section->getData();
@@ -135,13 +135,13 @@ class TextHTML extends Text
 
     public function printMotionToODT(ODTText $odt): void
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         $odt->addHtmlTextBlock('[Full HTML is not convertible to ODT]', false); // @TODO
     }
 
     public function printAmendmentToODT(ODTText $odt): void
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         $odt->addHtmlTextBlock('[Full HTML is not convertible to ODT]', false); // @TODO
     }
 

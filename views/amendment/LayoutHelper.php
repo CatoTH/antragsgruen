@@ -2,6 +2,7 @@
 
 namespace app\views\amendment;
 
+use app\models\sectionTypes\ISectionType;
 use app\views\pdfLayouts\{IPdfWriter, IPDFLayout};
 use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
@@ -13,7 +14,7 @@ use yii\helpers\Html;
 class LayoutHelper
 {
     /**
-     * @return array<array{title: string, section: AmendmentSection}>
+     * @return array<array{title: string, section: ISectionType}>
      */
     public static function getVisibleProposedProcedureSections(Amendment $amendment, ?string $procedureToken): array
     {
@@ -96,6 +97,14 @@ class LayoutHelper
             $title             = Exporter::encodePlainString(\Yii::t('amend', 'editorial_hint'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $content->textMain .= Exporter::getMotionLinesToTeX([$amendment->changeEditorial]) . "\n";
+        }
+
+        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($amendment, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->printAmendmentTeX(false, $content, $amendment->getMyConsultation());
+            }
         }
 
         foreach ($amendment->getSortedSections(false) as $section) {
