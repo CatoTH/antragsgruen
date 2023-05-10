@@ -8,6 +8,7 @@ Setup Notes
 - Startseiten-Layout: Tags
 - Sachgebiete: Tags, type „Public Topic” (0)
 - Themenbereiche: Tags, type „Proposed Procedure” (1), Sachgebiete als parent tags
+- PDFs: Verfahrensvorschläge anzeigen
 
 Antragstypen:
 - Anträge
@@ -26,8 +27,8 @@ Demo Accounts:
 - lv-sued-antragsberechtigt-0@example.org - lv-sued-antragsberechtigt-9@example.org
 - lv-sued-delegiert-0@example.org - lv-sued-delegiert-49@example.org
 - lv-sued-vorstand@example.org
-- lv-sued-referat-S@example.org (Satzung), lv-sued-referat-U@example.org (Umwelt)
-- lv-sued-arbeitsgruppe-S@example.org (Satzung), lv-sued-arbeitsgruppe-U@example.org (Umwelt)
+- lv-sued-referat-I@example.org (Satzung), lv-sued-referat-VI@example.org (Umwelt)
+- lv-sued-arbeitsgruppe-I@example.org (Satzung), lv-sued-arbeitsgruppe-VI@example.org (Umwelt)
 - lv-sued-redaktion@example.org
 - lv-sued-bueroleitung@example.org
 - hv-delegiert-0@example.org - hv-delegiert-49@example.org

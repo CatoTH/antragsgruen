@@ -239,7 +239,7 @@ class Image extends ISectionType
         $this->setMotionData($data);
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
+    public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -252,10 +252,9 @@ class Image extends ISectionType
 
         /** @var MotionSection $section */
         $section = $this->section;
-        $type    = $section->getSettings();
         $url     = $this->getImageUrl($this->absolutizeLinks, $showAlways);
 
-        return '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
+        return '<img src="' . Html::encode($url) . '" alt="' . Html::encode($this->getTitle()) . '">';
     }
 
     public function isEmpty(): bool
@@ -289,7 +288,7 @@ class Image extends ISectionType
         }
 
         if ($this->section->getSettings()->printTitle) {
-            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+            $pdfLayout->printSectionHeading($this->getTitle());
         }
 
         $pdf->SetFont('Courier', '', 11);
@@ -411,7 +410,7 @@ class Image extends ISectionType
     public function printMotionToODT(Text $odt): void
     {
         if (!$this->isEmpty()) {
-            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
             $odt->addHtmlTextBlock('[IMAGE]', false);
         }
     }
@@ -419,7 +418,7 @@ class Image extends ISectionType
     public function printAmendmentToODT(Text $odt): void
     {
         if (!$this->isEmpty()) {
-            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
             $odt->addHtmlTextBlock('[IMAGE]', false);
         }
     }

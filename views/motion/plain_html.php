@@ -28,6 +28,16 @@ foreach ($motion->getDataTable() as $key => $val) {
 }
 echo '</tbody></table>';
 
+if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+    $ppSections = \app\views\motion\LayoutHelper::getVisibleProposedProcedureSections($motion, null);
+    foreach ($ppSections as $ppSection) {
+        $ppSection['section']->setTitlePrefix($ppSection['title']);
+        echo '<section>';
+        echo $ppSection['section']->getAmendmentPlainHtml();
+        echo '</section>';
+    }
+}
+
 $sections = $motion->getSortedSections(true);
 foreach ($sections as $section) {
     echo '<section>';

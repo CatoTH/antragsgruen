@@ -8,7 +8,7 @@ use app\models\mergeAmendments\Init;
 use app\models\settings\{PrivilegeQueryContext, Privileges, VotingData, AntragsgruenApp};
 use app\components\latex\{Content, Exporter, Layout as LatexLayout};
 use app\components\Tools;
-use app\models\db\{Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
+use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
 use app\models\LimitedSupporterList;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
@@ -67,6 +67,46 @@ class LayoutHelper
             $inits[] = $name;
         }
         return implode('<br>', $inits);
+    }
+
+    /**
+     * @return array<array{title: string, section: ISectionType}>
+     */
+    public static function getVisibleProposedProcedureSections(Motion $motion, ?string $procedureToken): array
+    {
+        if (!$motion->hasVisibleAlternativeProposaltext($procedureToken)) {
+            return [];
+        }
+        $reference = $motion->getAlternativeProposaltextReference();
+        if (!$reference) {
+            return [];
+        }
+        /** @var Motion $referenceMotion */
+        $referenceMotion = $reference['motion'];
+        /** @var Amendment $reference */
+        $reference = $reference['modification'];
+
+        $out = [];
+        /** @var AmendmentSection[] $sections */
+        $ppSections = $reference->getSortedSections(false);
+        foreach ($ppSections as $section) {
+            if ($referenceMotion->id === $motion->id) {
+                $prefix = \Yii::t('amend', 'pprocedure_title_own');
+            } else {
+                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceMotion->titlePrefix;
+            }
+            if (!$motion->isProposalPublic()) {
+                $prefix = '[ADMIN] ' . $prefix;
+            }
+            $sectionType = $section->getSectionType();
+            $sectionType->setMotionContext($motion);
+
+            $out[] = [
+                'title' => $prefix,
+                'section' => $sectionType,
+            ];
+        }
+        return $out;
     }
 
     public static function addVotingResultsRow(VotingData $votingData, array &$rows): void
@@ -213,6 +253,14 @@ class LayoutHelper
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->printMotionTeX(false, $content, $motion->getMyConsultation());
+            }
+        }
+
         foreach ($motion->getSortedSections(true) as $section) {
             $isRight = $section->isLayoutRight();
             $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
@@ -249,6 +297,14 @@ class LayoutHelper
         }
 
         $pdfLayout->printMotionHeader($motion);
+
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->printAmendmentToPDF($pdfLayout, $pdf);
+            }
+        }
 
         // PDFs should be attached at the end, to prevent collision with other parts of the motion text; see #242
         $pdfAttachments = [];
@@ -367,10 +423,6 @@ class LayoutHelper
                 case ISupporter::ROLE_INITIATOR:
                     break;
                 case ISupporter::ROLE_LIKE:
-                    $str .= '<button type="submit" name="motionSupportRevoke" class="btn">';
-                    $str .= '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
-                    $str .= '</button>';
-                    break;
                 case ISupporter::ROLE_DISLIKE:
                     $str .= '<button type="submit" name="motionSupportRevoke" class="btn">';
                     $str .= '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');

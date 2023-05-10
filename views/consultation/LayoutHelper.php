@@ -4,7 +4,15 @@ namespace app\views\consultation;
 
 use app\models\IMotionList;
 use app\components\{MotionSorter, Tools, UrlHelper};
-use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, Motion};
+use app\models\db\{Amendment,
+    AmendmentComment,
+    Consultation,
+    ConsultationAgendaItem,
+    IComment,
+    IMotion,
+    Motion,
+    MotionComment,
+    User};
 use app\models\settings\Consultation as ConsultationSettings;
 use yii\helpers\Html;
 
@@ -13,6 +21,9 @@ class LayoutHelper
     private static function getMotionLineContent(Motion $motion, Consultation $consultation): string
     {
         $return = '<p class="title">' . "\n";
+
+        $privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), MotionComment::STATUS_PRIVATE);
+        $return .= LayoutHelper::getPrivateCommentIndicator($motion, $privateMotionComments, []);
 
         $motionUrl = UrlHelper::createMotionUrl($motion);
         $return    .= '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
@@ -62,21 +73,23 @@ class LayoutHelper
         }
         $return .= '</p>';
 
-        $return = \app\models\layoutHooks\Layout::getConsultationMotionLineContent($return, $motion);
-
-        return $return;
+        return \app\models\layoutHooks\Layout::getConsultationMotionLineContent($return, $motion);
     }
 
     private static function getAmendmentLineContent(Amendment $amendment): string
     {
         $return = '';
 
+        $consultation = $amendment->getMyConsultation();
+        $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
+        $return .= LayoutHelper::getPrivateCommentIndicator($amendment, [], $privateAmendmentComments);
+
         $title  = (trim($amendment->titlePrefix) === '' ? \Yii::t('amend', 'amendment') : $amendment->titlePrefix);
         $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
                    'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
 
         $return .= '<p class="date">';
-        if ($amendment->getMyConsultation()->getSettings()->showIMotionEditDate && $amendment->wasContentEdited()) {
+        if ($consultation->getSettings()->showIMotionEditDate && $amendment->wasContentEdited()) {
             $return .= '<span class="edited"><span class="glyphicon glyphicon-edit"
                 aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
             $return .= Tools::formatMysqlDateTime($amendment->dateContentModification);
@@ -94,9 +107,7 @@ class LayoutHelper
         }
         $return .= '</span>' . "\n";
 
-        $return = \app\models\layoutHooks\Layout::getConsultationAmendmentLineContent($return, $amendment);
-
-        return $return;
+        return \app\models\layoutHooks\Layout::getConsultationAmendmentLineContent($return, $amendment);
     }
 
     private static function getStatuteAmendmentLineContent(Amendment $amendment, Consultation $consultation): string
@@ -452,5 +463,44 @@ class LayoutHelper
         echo '</ol>';
 
         return $shownIMotions;
+    }
+
+    /**
+     * @param MotionComment[] $motionComments
+     * @param AmendmentComment[] $amendmentComments
+     */
+    public static function getPrivateCommentIndicator(IMotion $imotion, array $motionComments, array $amendmentComments): string
+    {
+        if (is_a($imotion, Amendment::class)) {
+            /** @var Amendment $imotion */
+            $comments = $amendmentComments[$imotion->id] ?? [];
+            $link = UrlHelper::createAmendmentUrl($imotion);
+        } else {
+            /** @var Motion $imotion */
+            $comments = $motionComments[$imotion->id] ?? [];
+            $link = UrlHelper::createMotionUrl($imotion);
+        }
+        if (count($comments) === 0) {
+            return '';
+        }
+
+        /** @var IComment[] $comments */
+        $texts = [];
+        foreach ($comments as $comment) {
+            if ($comment->paragraph === -1) {
+                $texts[] = $comment->text;
+            } else {
+                $texts[] = str_replace('%NO%', $comment->paragraph, \Yii::t('motion', 'private_notes_para')) .
+                    ': ' . $comment->text;
+            }
+        }
+        $tooltip = Html::encode(implode(" - ", $texts));
+
+        $str = '<a href="' . Html::encode($link) . '" class="privateCommentsIndicator">';
+        $str .= '<span class="glyphicon glyphicon-pushpin" data-toggle="tooltip" data-placement="right" ' .
+            'aria-label="' . Html::encode(\Yii::t('base', 'aria_tooltip')) . ': ' . $tooltip . '" ' .
+            'data-original-title="' . $tooltip . '"></span>';
+        $str .= '</a>';
+        return $str;
     }
 }

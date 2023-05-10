@@ -42,10 +42,22 @@ if (!$motion->titlePrefix) {
                 <div style="display: inline-block; width: 400px;">
                     <?php
                     $options = ['id' => 'dbwv_step1_subtagSelect', 'class' => 'stdDropdown'];
+                    $tagSelect['new'] = '... neu';
                     echo Html::dropDownList('subtag', $selectedTagId, $tagSelect, $options);
                     ?>
                 </div>
                 <br>
+
+                <div id="dbwv_step1_subtagNewHolder" class="hidden" style="padding-top: 7px;">
+                    <label for="dbwv_step1_subtagNew" style="display: inline-block; width: 200px;">
+                        Neuer Themenbereich:
+                    </label>
+                    <div style="display: inline-block; width: 400px;">
+                        <input type="text" name="subtagNew" value="" autocomplete="off"
+                               class="form-control" id="dbwv_step1_subtagNew">
+                    </div>
+                    <br>
+                </div>
 
                 <label for="dbwv_step1_prefix" style="display: inline-block; width: 200px; padding-top: 7px;">
                     Antragsnummer:
@@ -83,5 +95,19 @@ if (!$motion->titlePrefix) {
             </div>
         </div>
     </div>
+
+    <script>
+        (() => {
+            const tagSelect = document.getElementById('dbwv_step1_subtagSelect');
+            tagSelect.addEventListener('change', () => {
+                if (tagSelect.value === 'new') {
+                    document.getElementById('dbwv_step1_subtagNewHolder').classList.remove('hidden');
+                    document.getElementById('dbwv_step1_subtagNew').focus();
+                } else {
+                    document.getElementById('dbwv_step1_subtagNewHolder').classList.add('hidden');
+                }
+            });
+        })();
+    </script>
 <?php
 echo Html::endForm();

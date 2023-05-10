@@ -129,4 +129,15 @@ class MotionNumbering
             return $directDescendant;
         }
     }
+
+    public static function updateAllVersionsOfMotion(Motion $motion, bool $onlyConsultation, callable $updater): void
+    {
+        $consultationId = $motion->consultationId;
+        foreach (self::getSortedHistoryForMotion($motion, false) as $motion) {
+            if ($onlyConsultation && $motion->consultationId !== $consultationId) {
+                continue;
+            }
+            $updater($motion);
+        }
+    }
 }

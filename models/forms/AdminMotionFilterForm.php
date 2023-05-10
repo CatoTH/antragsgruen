@@ -40,8 +40,11 @@ class AdminMotionFilterForm
     public array $allAmendments;
     public Consultation $consultation;
 
-    public int $sort = 3;
+    public int $sort = self::SORT_TITLE_PREFIX;
     protected bool $showScreening;
+
+    public bool $showReplaced = false;
+    public int $numReplaced;
 
     /** @var string[] */
     protected array $route;
@@ -105,6 +108,8 @@ class AdminMotionFilterForm
         } else {
             $this->proposalStatus = null;
         }
+
+        $this->showReplaced = isset($values['showReplaced']) && $values['showReplaced'] === '1';
     }
 
     private ?array $versionNames = null;
@@ -432,10 +437,41 @@ class AdminMotionFilterForm
     }
 
     /**
+     * @param Motion[] $motions
+     * @return Motion[]
+     */
+    private function calcAndFilterReplacedMotions(array $motions): array
+    {
+        $this->numReplaced = 0;
+        $replacedMotionIds = [];
+        foreach ($motions as $motion) {
+            if ($motion->parentMotionId) {
+                $replacedMotionIds[] = $motion->parentMotionId;
+            }
+        }
+
+        /** @var Motion[] $out */
+        $out = [];
+        foreach ($motions as $motion) {
+            if (in_array($motion->id, $replacedMotionIds)) {
+                $this->numReplaced++;
+                if ($this->showReplaced) {
+                    $out[] = $motion;
+                }
+            } else {
+                $out[] = $motion;
+            }
+        }
+
+        return $out;
+    }
+
+    /**
      * @return Motion[]
      */
     public function getFilteredMotions(): array
     {
+        /** @var Motion[] $out */
         $out = [];
         foreach ($this->allMotions as $motion) {
             $matches = true;
@@ -482,7 +518,7 @@ class AdminMotionFilterForm
             }
         }
 
-        return $out;
+        return $this->calcAndFilterReplacedMotions($out);
     }
 
 
@@ -608,7 +644,7 @@ class AdminMotionFilterForm
             }
 
             $prefix = $this->prefix;
-            if ($prefix !== null && $prefix !== '' && !mb_stripos($amend->titlePrefix, $prefix)) {
+            if ($prefix !== null && $prefix !== '' && mb_stripos($amend->titlePrefix, $prefix) === false) {
                 $matches = false;
             }
 
@@ -625,7 +661,9 @@ class AdminMotionFilterForm
         // The list getting too long and is getting too heavy on the database if we have a full list
         $skipNumbers = (count($this->allMotions) + count($this->allAmendments)) > 250;
 
-        $str    = '<label class="filterPrefix">' . \Yii::t('admin', 'filter_prefix') . ':<br>';
+        $str = '<div class="filtersTop">';
+
+        $str    .= '<label class="filterPrefix">' . \Yii::t('admin', 'filter_prefix') . ':<br>';
         $prefix = Html::encode($this->prefix ?: '');
         $str    .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
         $str    .= '</label>';
@@ -695,7 +733,7 @@ class AdminMotionFilterForm
             $str  .= '<label class="filterTags">' . $name . '<br>';
             $tags = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($tagsList as $tagId => $tagName) {
-                $tags[$tagId] = $tagName;
+                $tags[str_replace('tag', '', $tagId)] = $tagName;
             }
             $str .= Html::dropDownList('Search[tag]', (string)$this->tag, $tags, ['id' => 'filterSelectTags', 'class' => 'stdDropdown']);
             $str .= '</label>';
@@ -756,6 +794,19 @@ class AdminMotionFilterForm
                 name="Search[initiator]" value="' . Html::encode($this->initiator ?: '') . '"
                 data-values="' . Html::encode(json_encode($values)) . '"></div>';
         $str .= '</div>';
+
+
+        $str .= '<div><br><button type="submit" class="btn btn-success" name="search">' .
+            \Yii::t('admin', 'list_search_do') . '</button></div>';
+
+        $str .= '</div>';
+
+        if ($this->numReplaced > 0) {
+            $str .= '<div class="filtersBottom"><label>';
+            $str .= Html::checkbox('Search[showReplaced]', $this->showReplaced, ['value' => '1', 'id' => 'filterShowReplaced']);
+            $str .= ' ' . str_replace('%NUM%', (string)$this->numReplaced, 'Ersetzte / alte Versionen anzeigen (%NUM%)');
+            $str .= '</label></div>';
+        }
 
         return $str;
     }
@@ -823,8 +874,24 @@ class AdminMotionFilterForm
         return $out;
     }
 
+    private static function resolveTagList(array $tagStruct, string $prefix): array
+    {
+        $out = [];
+        foreach ($tagStruct as $struct) {
+            if ($struct['imotions'] > 0) {
+                $title = $struct['title'] . ' (' . $struct['imotions'] . ')';
+                if ($struct['type'] === ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) {
+                    $title = \Yii::t('admin', 'filter_tag_pp') . ': ' . $title;
+                }
+                $title = $prefix . ($prefix ? ' ' : '') . $title;
+                    $out['tag'.$struct['id']] = $title;
+            }
+            $out = array_merge($out, self::resolveTagList($struct['subtags'], $prefix . '-'));
+        }
+        return $out;
+    }
 
-    public function getTagList(): array
+    private function getTagList(): array
     {
         $tagsProposed = $this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
         $tagsPublic = $this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
@@ -838,22 +905,15 @@ class AdminMotionFilterForm
 
         $motionIds = array_map(fn(Motion $motion): int => $motion->id, $this->allMotions);
         $amendmentIds = array_map(fn(Amendment $amendment): int => $amendment->id, $this->allAmendments);
-        $stats = ConsultationSettingsTag::getMotionStats($tagIds, $motionIds, $amendmentIds);
+        $stats = ConsultationSettingsTag::getIMotionStats($tagIds, $motionIds, $amendmentIds);
+        $tagStruct = ConsultationSettingsTag::getTagStructure(
+            $this->consultation,
+            [ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, ConsultationSettingsTag::TYPE_PUBLIC_TOPIC],
+            null,
+            $stats
+        );
 
-        $outInternal = [];
-        $outPublic = [];
-        foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) as $tag) {
-            if ($stats[$tag->id] > 0) {
-                $outInternal[$tag->id] = \Yii::t('admin', 'filter_tag_pp') . ': ' . $tag->title . ' (' . $stats[$tag->id] . ')';
-            }
-        }
-        foreach ($this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            if ($stats[$tag->id] > 0) {
-                $outPublic[$tag->id] = $tag->title . ' (' . $stats[$tag->id] . ')';
-            }
-        }
-
-        return array_replace($outInternal, $outPublic);
+        return self::resolveTagList($tagStruct, '');
     }
 
     public function getAgendaItemList($skipNumbers = false): array

@@ -2,16 +2,58 @@
 
 namespace app\views\amendment;
 
+use app\models\sectionTypes\ISectionType;
 use app\views\pdfLayouts\{IPdfWriter, IPDFLayout};
 use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
-use app\models\db\{Amendment, TexTemplate};
+use app\models\db\{Amendment, AmendmentSection, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
 class LayoutHelper
 {
+    /**
+     * @return array<array{title: string, section: ISectionType}>
+     */
+    public static function getVisibleProposedProcedureSections(Amendment $amendment, ?string $procedureToken): array
+    {
+        if (!$amendment->hasVisibleAlternativeProposaltext($procedureToken)) {
+            return [];
+        }
+        $reference = $amendment->getAlternativeProposaltextReference();
+        if (!$reference) {
+            return [];
+        }
+
+        /** @var Amendment $referenceAmendment */
+        $referenceAmendment = $reference['amendment'];
+        /** @var Amendment $reference */
+        $reference = $reference['modification'];
+
+        $out = [];
+        /** @var AmendmentSection[] $sections */
+        $sections = $reference->getSortedSections(false);
+        foreach ($sections as $section) {
+            if ($referenceAmendment->id === $amendment->id) {
+                $prefix = \Yii::t('amend', 'pprocedure_title_own');
+            } else {
+                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->titlePrefix;
+            }
+            if (!$amendment->isProposalPublic()) {
+                $prefix = '[ADMIN] ' . $prefix;
+            }
+            $sectionType = $section->getSectionType();
+            $sectionType->setMotionContext($amendment->getMyMotion());
+            $out[] = [
+                'title' => $prefix,
+                'section' => $sectionType,
+            ];
+        }
+
+        return $out;
+    }
+
     public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate): Content
     {
         $content             = new Content();
@@ -55,6 +97,14 @@ class LayoutHelper
             $title             = Exporter::encodePlainString(\Yii::t('amend', 'editorial_hint'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $content->textMain .= Exporter::getMotionLinesToTeX([$amendment->changeEditorial]) . "\n";
+        }
+
+        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($amendment, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->printAmendmentTeX(false, $content, $amendment->getMyConsultation());
+            }
         }
 
         foreach ($amendment->getSortedSections(false) as $section) {

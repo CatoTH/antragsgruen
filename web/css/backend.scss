@@ -1091,10 +1091,20 @@ label.legend {
     max-width: 200px;
   }
 
-  > * {
-    float: left;
-    margin-right: 20px;
-    position: relative;
+  .filtersTop {
+    display: flex;
+    flex-direction: row;
+
+    > * {
+      margin-right: 20px;
+      position: relative;
+    }
+  }
+
+  .filtersBottom {
+    label {
+      font-weight: normal;
+    }
   }
 }
 

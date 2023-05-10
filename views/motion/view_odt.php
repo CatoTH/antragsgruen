@@ -39,6 +39,14 @@ $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $motion->agendaItem ? $motion
 $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());
 $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
 
+if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+    $ppSections = \app\views\motion\LayoutHelper::getVisibleProposedProcedureSections($motion, null);
+    foreach ($ppSections as $ppSection) {
+        $ppSection['section']->setTitlePrefix($ppSection['title']);
+        $ppSection['section']->printAmendmentToODT($doc);
+    }
+}
+
 foreach ($motion->getSortedSections() as $section) {
     $section->getSectionType()->printMotionToODT($doc);
 }

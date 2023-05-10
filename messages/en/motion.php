@@ -74,7 +74,7 @@ return [
     'private_notes_open'            => '<span class="sr-only">Open</span> Private note',
     'private_notes_write'           => 'Write private note',
     'private_notes_edit'            => 'Edit private note',
-    'private_notes_para'            => 'Private note to paragraph no. %NO%',
+    'private_notes_para'            => 'Paragraph no. %NO%',
     'private_notes_para_open'       => '<span class="sr-only">Open</span> Private note <span class="sr-only">Open</span>to paragraph no. %NO% (%TITLE%)</span>',
     'private_notes_para_write'      => 'Write private note to paragraph no. %NO% (%TITLE%)',
     'private_notes_para_edit'       => 'Edit private note <span class="sr-only">to paragraph no. %NO% (%TITLE%)</span>',

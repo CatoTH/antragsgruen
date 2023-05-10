@@ -77,7 +77,7 @@ class TextSimple extends Text
         }
 
         $type = $this->section->getSettings();
-        $str  = '<div class="label">' . Html::encode($type->title) . '</div>';
+        $str  = '<div class="label">' . Html::encode($this->getTitle()) . '</div>';
         $str  .= '<div class="texteditorBox" data-section-id="' . $amSection->sectionId . '" ' .
             'data-changed-para-no="' . $changedParagraph . '">';
         foreach ($moParas as $paraNo => $moPara) {
@@ -90,19 +90,19 @@ class TextSimple extends Text
             $str .= ' data-original="' . Html::encode($moPara) . '"';
             $str .= ' data-paragraph-no="' . $paraNo . '"';
             $str .= ' dir="' . ($this->section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '"';
-            $str .= '><label for="' . $htmlId . '" class="hidden">' . Html::encode($type->title) . '</label>';
+            $str .= '><label for="' . $htmlId . '" class="hidden">' . Html::encode($this->getTitle()) . '</label>';
 
             $str .= '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
-                'title="' . Html::encode($type->title) . '"></textarea>';
+                'title="' . Html::encode($this->getTitle()) . '"></textarea>';
             $str .= '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
-                'title="' . Html::encode($type->title) . '"></textarea>';
+                'title="' . Html::encode($this->getTitle()) . '"></textarea>';
             $str .= '<div class="texteditor motionTextFormattings';
             if ($fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
             $str .= '" dir="' . ($this->section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '" ' .
                 'data-track-changed="1" data-enter-mode="br" data-no-strike="1" id="' . $htmlId . '_wysiwyg" ' .
-                'title="' . Html::encode($type->title) . '">';
+                'title="' . Html::encode($this->getTitle()) . '">';
             $str .= $amParas[$paraNo];
             $str .= '</div>';
 
@@ -254,19 +254,19 @@ class TextSimple extends Text
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
         if ($section->getAmendment()->globalAlternative) {
-            $str = ($skipTitle ? '' : '<h3>' . Html::encode($section->getSettings()->title) . '</h3>');
+            $str = ($skipTitle ? '' : '<h3>' . Html::encode($this->getTitle()) . '</h3>');
             $str .= '<p><strong>' . \Yii::t('amend', 'global_alternative') . '</strong></p>';
             $str .= $section->data;
             return $str;
         } elseif ($skipTitle) {
             return $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
         } else {
-            $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, $section->getSettings()->title];
+            $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, $this->getTitle()];
             $cached    = HashedStaticCache::getCache('getAmendmentPlainHtml', $cacheDeps);
             if (!$cached) {
                 $cached = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
                 if ($cached !== '') {
-                    $cached = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>' . $cached;
+                    $cached = '<h3>' . Html::encode($this->getTitle()) . '</h3>' . $cached;
                     HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $cached);
                 }
             }
@@ -283,7 +283,7 @@ class TextSimple extends Text
         $section = $this->section;
 
         $str = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str .= '<h3 class="green">' . Html::encode($this->getTitle()) . '</h3>';
         $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
 
         $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
@@ -335,7 +335,7 @@ class TextSimple extends Text
         return $diffGroupsAndSections;
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
+    public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -354,10 +354,7 @@ class TextSimple extends Text
         }
 
         $viewFullMode = ($section->getAmendment()->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true);
-        if ($sectionTitlePrefix) {
-            $sectionTitlePrefix .= ': ';
-        }
-        $title     = $sectionTitlePrefix . $section->getSettings()->title;
+        $title = $this->getTitle();
         $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($title);
         $str .= '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
@@ -415,7 +412,7 @@ class TextSimple extends Text
         $section = $this->section;
 
         if ($section->getSettings()->printTitle) {
-            $pdfLayout->printSectionHeading($section->getSettings()->title);
+            $pdfLayout->printSectionHeading($this->getTitle());
         }
 
         $pdf->printMotionSection($section);
@@ -427,7 +424,7 @@ class TextSimple extends Text
         $section = $this->section;
         if ($section->getAmendment()->globalAlternative) {
             if ($section->getSettings()->printTitle) {
-                $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+                $pdfLayout->printSectionHeading($this->getTitle());
                 $pdf->ln(7);
             }
 
@@ -448,7 +445,7 @@ class TextSimple extends Text
 
             if (count($diffGroups) > 0) {
                 if ($section->getSettings()->printTitle) {
-                    $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+                    $pdfLayout->printSectionHeading($this->getTitle());
                     $pdf->ln(7);
                 }
 
@@ -631,7 +628,7 @@ class TextSimple extends Text
         $firstLine      = $section->getFirstLineNumber();
 
         if ($settings->printTitle) {
-            $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($settings->title) . '}' . "\n";
+            $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($this->getTitle()) . '}' . "\n";
         }
 
         $cacheDeps = [$hasLineNumbers, $lineLength, $firstLine, $fixedWidth, $section->getData()];
@@ -691,7 +688,7 @@ class TextSimple extends Text
 
         if (!$tex) {
             if ($section->getAmendment()->globalAlternative) {
-                $title = Exporter::encodePlainString($section->getSettings()->title);
+                $title = Exporter::encodePlainString($this->getTitle());
                 if ($title == \Yii::t('motion', 'motion_text')) {
                     $titPattern = \Yii::t('amend', 'amendment_for_prefix');
                     $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
@@ -707,7 +704,7 @@ class TextSimple extends Text
                 $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
 
                 if (count($diffGroups) > 0) {
-                    $title = Exporter::encodePlainString($section->getSettings()->title);
+                    $title = Exporter::encodePlainString($this->getTitle());
                     if ($title == \Yii::t('motion', 'motion_text')) {
                         $titPattern = \Yii::t('amend', 'amendment_for_prefix');
                         $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
@@ -786,7 +783,7 @@ class TextSimple extends Text
         $section = $this->section;
         /** @var MotionSection $section */
         $lineNumbers = $section->getMotion()->getMyConsultation()->getSettings()->odtExportHasLineNumers;
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($section->getSettings()->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
         if ($section->getSettings()->lineNumbers && $lineNumbers) {
             $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
@@ -823,7 +820,7 @@ class TextSimple extends Text
         $section = $this->section;
 
         if ($section->getAmendment()->globalAlternative) {
-            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
 
             $html = HTMLTools::correctHtmlErrors($section->data);
             $odt->addHtmlTextBlock($html, false);
@@ -841,7 +838,7 @@ class TextSimple extends Text
                 return;
             }
 
-            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
 
             $firstLine = $section->getFirstLineNumber();
             $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);

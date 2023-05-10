@@ -521,6 +521,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_create_sidebar'  => 'Aufruf als großer, farbiger Button',
     'motion_type_create_placeh'   => 'Antrag anlegen',
     'motion_type_pdf_layout'      => 'PDF-Layout',
+    'motion_type_export_pp'       => 'Verfahrensvorschlag im PDF und Exports anzeigen',
     'motion_type_title_prefix'    => 'Antragskürzel-Präfix',
     'motion_type_title_intro'     => 'Antragstitel-Präfix',
     'motion_type_email'           => 'E-Mail-Angabe',

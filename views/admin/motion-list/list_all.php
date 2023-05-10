@@ -71,9 +71,6 @@ if ($motionId !== null) {
 
 echo $search->getFilterFormFields($hasResponsibilities);
 
-echo '<div><br><button type="submit" class="btn btn-success" name="search">' .
-     Yii::t('admin', 'list_search_do') . '</button></div>';
-
 echo '</form><br style="clear: both;">';
 
 echo $search->getAfterFormHtml();

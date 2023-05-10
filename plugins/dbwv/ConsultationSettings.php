@@ -9,5 +9,5 @@ use app\plugins\dbwv\workflow\Workflow;
 
 class ConsultationSettings extends Consultation
 {
-    public string $defaultVersionFilter = Workflow::STEP_V1;
+    public string $defaultVersionFilter = '';
 }

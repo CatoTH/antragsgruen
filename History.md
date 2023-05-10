@@ -11,18 +11,22 @@
 - The number of votes users can cast on a voting session can be limited. It is thus possible to present a list of motions or candidates and have the users choose up to that specified number of them.
 - For the proposed procedure, it is now possible to set the status "Accepted (Modified)" for motions too and to specify a modified version of it to accept. Previously, this was only possible for amendments.
 - A new motion versioning system is implemented, replacing just using the signatures for versioning. Instead of "M1new2", the signature will now remain the same but the version is saved separately.
+- In the admin motion list, replaced motions are now hidden by default if the newer version is also shown. Tn additional filter gives the option to show all versions of a motion in the list.
 - Motion sections can now be set up to hold Right-to-Left text, like Farsi, Hebrew or Arabic.
 - The date format can be set independently from the language. Also the date format yyyy-mm-dd is supported (besides dd/mm/yyyy, mm/dd/yyyy, dd.mm.yyyy).
 - It is possible for admins to create tags for a consultation but disallow proposers of motions to specify these tags themselves.
 - Admins can add additional proposers of a motion or amendment.
 - When merging amendments into motions or in the motion admin view, admins can write a protocol that can be public or not.
 - In tabular data sections of motions / applications, as an admin it is now possible to present a SELECT box with pre-defined options for the proposer to choose from.
+- Personal comments written by users to motions / amendments are now indicated on the home page to the respective user.
+- It is possible to set up PDFs and exports of motions / amendments so that the proposed procedure is included. This is set up on a per motion type level.
 - Internal / Plugins: Additional language variants are now handled as part of the plugin system, not by placing files into messages/ anymore. The latter will stop working with version 4.13.
 - Bugfix: The diff and line splitting did not work properly with grapheme consisting of multiple code points.
 - Bugfix: Changing the amendment text as admin does not clear the motion's view cache in all cases.
 - Bugfix: PHP-based PDF rendering lead to overlapping lines when the text contained nested lines without line numbering.
 - Bugfix: Setting the time of agenda items was not possible in locales using AM/PM.
 - Bugfix: Uploaded logos and background images could not always be shown with enabled maintenance mode.
+- Bugfix: When using "Tags / categories" as the home page layout, the motions were not sorted by prefix.
 
 ### Version 4.11.1 (2022-12-10)
 

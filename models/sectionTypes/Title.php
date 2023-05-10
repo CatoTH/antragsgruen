@@ -76,7 +76,7 @@ class Title extends ISectionType
         return Html::encode($this->getMotionPlainText());
     }
 
-    public function getAmendmentFormatted(string $sectionTitlePrefix = '', string $htmlIdPrefix = ''): string
+    public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -86,11 +86,8 @@ class Title extends ISectionType
         if ($this->isEmpty() || $section->data === $section->getOriginalMotionSection()->getData()) {
             return '';
         }
-        if ($sectionTitlePrefix) {
-            $sectionTitlePrefix .= ': ';
-        }
         $str = '<section id="' . $htmlIdPrefix . 'section_title" class="motionTextHolder">';
-        $str .= '<h3 class="green">' . Html::encode($sectionTitlePrefix . $section->getSettings()->title) . '</h3>';
+        $str .= '<h3 class="green">' . Html::encode($this->getTitle()) . '</h3>';
         $str .= '<div id="' . $htmlIdPrefix . 'section_title_0" class="paragraph"><div class="text fixedWidthFont motionTextFormattings" ' .
             'dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
         $str .= '<h4 class="lineSummary">' . \Yii::t('amend', 'title_amend_to') . ':</h4>';
@@ -123,7 +120,7 @@ class Title extends ISectionType
         }
 
         if ($section->getSettings()->printTitle) {
-            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+            $pdfLayout->printSectionHeading($this->getTitle());
         }
 
         $pdf->SetFont('Courier', '', 11);
@@ -184,7 +181,7 @@ class Title extends ISectionType
         if ($section->getOriginalMotionSection() && $section->data === $section->getOriginalMotionSection()->getData()) {
             return;
         }
-        $title = Exporter::encodePlainString($section->getSettings()->title);
+        $title = Exporter::encodePlainString($this->getTitle());
         $tex   = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
         $html  = '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
             Html::encode($this->section->getData()) . '</p>';

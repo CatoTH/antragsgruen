@@ -126,6 +126,44 @@ class MotionComment extends IComment
         }));
     }
 
+    private static array $cachedComments = [];
+
+    /**
+     * @return MotionComment[][]
+     */
+    public static function getAllForUserAndConsultationByMotion(Consultation $consultation, ?User $user, int $status): array
+    {
+        if (!$user) {
+            return [];
+        }
+
+        $key = $user->id . '.' . $status;
+        if (isset(self::$cachedComments[$key])) {
+            return self::$cachedComments[$key];
+        }
+
+        $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
+        /** @var MotionComment[] $allComments */
+        $allComments = static::find()->joinWith('motion', true)
+            ->where('motionComment.status = ' . intval($status))
+            ->andWhere('motionComment.userId = ' . intval($user->id))
+            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
+            ->andWhere('motion.consultationId = ' . intval($consultation->id))
+            ->orderBy('motionComment.paragraph')
+            ->all();
+
+        $byMotion = [];
+        foreach ($allComments as $comment) {
+            if (!isset($byMotion[$comment->motionId])) {
+                $byMotion[$comment->motionId] = [];
+            }
+            $byMotion[$comment->motionId][] = $comment;
+        }
+
+        self::$cachedComments[$key] = $byMotion;
+        return $byMotion;
+    }
+
     public function getConsultation(): ?Consultation
     {
         $motion = $this->getIMotion();

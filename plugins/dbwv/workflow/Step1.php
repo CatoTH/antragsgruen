@@ -45,29 +45,40 @@ class Step1
                 true
             );
         } else {
-            if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V3)) {
-                throw new Access('A new version of this motion was already created');
-            }
             $v2Motion = $motion;
         }
         unset($motion);
 
         if (count($v2Motion->getPublicTopicTags()) > 0) {
-            if ($postparams['subtag']) {
+            if ($postparams['subtag'] === 'new') {
+                $tag = $v2Motion->getPublicTopicTags()[0];
+                $createTitle = trim($postparams['subtagNew']);
+                $newTag = $tag->createSubtagOfType(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $createTitle);
+                $setTagIds = [$newTag->id];
+            } elseif ($postparams['subtag']) {
                 $tag = $v2Motion->getPublicTopicTags()[0];
                 $subtag = $v2Motion->getMyConsultation()->getTagById(intval($postparams['subtag']));
                 if (!$subtag || $subtag->type !== ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE || $subtag->parentTagId !== $tag->id) {
                     throw new NotFound('Tag not found');
                 }
-                $v2Motion->setTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, [$subtag->id]);
+                $setTagIds = [$subtag->id];
             } else {
-                $v2Motion->setTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, []);
+                $setTagIds = [];
             }
+            MotionNumbering::updateAllVersionsOfMotion($v2Motion, true, function (Motion $mot) use ($setTagIds) {
+                $mot->setTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $setTagIds);
+            });
         }
 
-        $v2Motion->titlePrefix = $postparams['motionPrefix'];
-        $v2Motion->status = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
-        $v2Motion->save();
+        MotionNumbering::updateAllVersionsOfMotion($v2Motion, true, function (Motion $mot) use ($postparams) {
+            $mot->titlePrefix = $postparams['motionPrefix'];
+            $mot->save();
+        });
+
+        if (!MotionNumbering::findMotionInHistoryOfVersion($v2Motion, Workflow::STEP_V3)) {
+            $v2Motion->status = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
+            $v2Motion->save();
+        }
 
         return $v2Motion;
     }

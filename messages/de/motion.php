@@ -74,7 +74,7 @@ return [
     'private_notes_open'                 => 'Private Notiz <span class="sr-only">öffnen</span>',
     'private_notes_write'                => 'Notiz eingeben',
     'private_notes_edit'                 => 'Notiz bearbeiten',
-    'private_notes_para'                 => 'Private Notiz zu Absatz %NO% (%TITLE%)',
+    'private_notes_para'                 => 'Absatz %NO%',
     'private_notes_para_open'            => 'Private Notiz <span class="sr-only">zu Absatz %NO% (%TITLE%) öffnen</span>',
     'private_notes_para_write'           => 'Private Notiz zu Absatz %NO% (%TITLE%) eingeben',
     'private_notes_para_edit'            => 'Private Notiz zu Absatz %NO% (%TITLE%) bearbeiten',
