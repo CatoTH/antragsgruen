@@ -27,6 +27,7 @@
 - Bugfix: Setting the time of agenda items was not possible in locales using AM/PM.
 - Bugfix: Uploaded logos and background images could not always be shown with enabled maintenance mode.
 - Bugfix: When using "Tags / categories" as the home page layout, the motions were not sorted by prefix.
+- Bugfix: It was impossible to create motions for motion types that had no title section defined.
 
 ### Version 4.11.1 (2022-12-10)
 

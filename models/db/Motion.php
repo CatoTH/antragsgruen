@@ -15,7 +15,6 @@ use app\components\{HashedStaticFileCache, MotionSorter, RequestContext, RSSExpo
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
-use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
 use app\models\sectionTypes\{Image, ISectionType, PDF};
 use app\models\settings\MotionSection as MotionSectionSettings;
@@ -945,8 +944,12 @@ class Motion extends IMotion implements IRSSItem
         return Tools::sanitizeFilename($title, $noUmlaut);
     }
 
-    public function createSlug(): string
+    public function createSlug(): ?string
     {
+        if (trim($this->title) === '') {
+            return null;
+        }
+
         $motionTitle = (grapheme_strlen($this->title) > 70 ? (string)grapheme_substr($this->title, 0, 70) : $this->title);
         $title = (new AsciiSlugger())->slug($motionTitle);
 
