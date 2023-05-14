@@ -236,9 +236,10 @@ class UsersController extends AdminBase
                     if (User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN, null)) {
                         $this->userGroupAdminMethods->setUserData(
                             intval($this->getPostValue('userId')),
-                            $this->getPostValue('nameGiven'),
-                            $this->getPostValue('nameFamily'),
-                            $this->getPostValue('organization'),
+                            $this->getPostValue('nameGiven', ''),
+                            $this->getPostValue('nameFamily', ''),
+                            $this->getPostValue('organization', ''),
+                            $this->getPostValue('ppReplyTo', ''),
                             $this->getPostValue('newPassword')
                         );
                     }

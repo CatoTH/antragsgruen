@@ -69,6 +69,17 @@ ob_start();
                 </div>
                 <div class="stdTwoCols">
                     <div class="leftColumn">
+                        <?= Yii::t('admin', 'siteacc_admins_pp_replyto' ) ?>
+                    </div>
+                    <div class="rightColumn" v-if="!permissionGlobalEdit">
+                        {{ ppreplyto }}
+                    </div>
+                    <div class="rightColumn" v-if="permissionGlobalEdit">
+                        <input type="text" class="form-control inputPpReplyTo" v-model="ppreplyto">
+                    </div>
+                </div>
+                <div class="stdTwoCols">
+                    <div class="leftColumn">
                         <?= Yii::t('admin', 'siteacc_new_groups') ?>
                     </div>
                     <div class="rightColumn">
@@ -116,6 +127,7 @@ $html = ob_get_clean();
                 name_given: null,
                 name_family: null,
                 organization: null,
+                ppreplyto: null,
                 userGroups: null,
                 settingPassword: false,
                 newPassword: ''
@@ -135,6 +147,7 @@ $html = ob_get_clean();
                 this.name_given = user.name_given;
                 this.name_family = user.name_family;
                 this.organization = user.organization;
+                this.ppreplyto = user.ppreplyto;
                 this.userGroups = user.groups;
                 this.settingPassword = false;
                 this.newPassword = '';
@@ -143,7 +156,7 @@ $html = ob_get_clean();
             },
             save: function ($event) {
                 const password = (this.settingPassword ? this.newPassword : null);
-                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, password);
+                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, password);
                 $(this.$refs['user-edit-modal']).modal("hide");
 
                 if ($event) {
