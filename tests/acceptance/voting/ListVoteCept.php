@@ -47,7 +47,7 @@ $I->assertSame('0', $I->executeJS('return $("' . $votingId . ' .votesMaxVotes in
 $I->dontSeeElement($votingId . ' .votesMaxVotesAll');
 $I->clickJS($votingId . ' .votesMaxVotes .maxVotesAll input'); // Global limit. @TODO Also add a test for per-group limits
 $I->seeElement($votingId . ' .votesMaxVotesAll');
-$I->executeJS('window.votingAdminWidget.$refs["voting-admin-widget"][0].setMaxVotesRestrictionAll("2")');
+$I->executeJS('window.votingAdminWidget.$refs["voting-admin-widget"][1].setMaxVotesRestrictionAll("2")');
 $I->clickJS($votingId . ' .votingSettings .btnSave');
 $I->wait(0.3);
 
