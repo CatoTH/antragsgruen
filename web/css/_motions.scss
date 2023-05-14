@@ -1204,3 +1204,14 @@ blockquote + .privateParagraphNoteHolder {
     font-style: italic;
   }
 }
+
+.likes .expandableList {
+  .btnShowAll {
+    padding: 0;
+    margin-left: 10px;
+    font-weight: normal;
+  }
+  .halfVisible {
+    opacity: 0.5;
+  }
+}

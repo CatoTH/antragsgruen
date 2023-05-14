@@ -7,6 +7,18 @@ class IMotionShow {
             $(".motionData .contactDetails").removeClass("hidden");
         });
     }
+
+    public initExpandableList()
+    {
+        document.querySelectorAll('.expandableList').forEach((el: HTMLDivElement) => {
+            el.querySelector('.btnShowAll').addEventListener('click', () => {
+                el.querySelector('.shortList').classList.add('hidden');
+                el.querySelector('.fullList').classList.remove('hidden');
+                el.querySelector('.btnShowAll').classList.add('hidden');
+            });
+        });
+    }
+
     public initAmendmentTextMode()
     {
         $('.amendmentTextModeSelector a.showOnlyChanges').on('click', (ev) => {

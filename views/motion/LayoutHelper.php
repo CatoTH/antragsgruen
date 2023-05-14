@@ -353,12 +353,72 @@ class LayoutHelper
         return $pdf->Output('', 'S');
     }
 
-    public static function printLikeDislikeSection(IMotion $motion, IPolicy $policy, string $supportStatus): string
+    /**
+     * @param ISupporter[] $list
+     */
+    public static function printLikeDislikeExpandableList(array $list, string $totalStr): string
     {
         $user = User::getCurrentUser();
 
-        $hasLike    = ($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE);
-        $hasDislike = ($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE);
+        $formatRow = function (ISupporter $supp, string $extraClass = '') use ($user): string {
+            if ($extraClass) {
+                $row = '<li class="' . $extraClass . '">';
+            } else {
+                $row = '<li>';
+            }
+            if ($user && $supp->userId === $user->id) {
+                $row .= '<span class="label label-info">' . \Yii::t('motion', 'likes_you') . '</span> ';
+            }
+            $row .= Html::encode($supp->getNameWithOrga());
+            $row .= '</li>';
+            return $row;
+        };
+
+        if (count($list) > 50) {
+            $str = '<div class="expandableList">';
+
+            $str .= '<strong>' . str_replace('%NUM%', count($list), $totalStr) . '</strong>';
+            $str .= '<button type="button" class="btn btn-link btnShowAll">';
+            $str .= '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>';
+            $str .= \Yii::t('motion', 'likes_dislikes_showall');
+            $str .= '</button>';
+
+            $str .= '<ul class="fullList hidden">';
+            foreach ($list as $supp) {
+                $str .= $formatRow($supp);
+            }
+            $str .= '</ul><ul class="shortList">';
+
+            $meStr = '';
+            $first = true;
+            for ($i = 0; $i < count($list); $i++) {
+                if ($user && $list[$i]->userId === $user->id) {
+                    $meStr = $formatRow($list[$i]);
+                } elseif ($i >= count($list) - 20) {
+                    $str .= $formatRow($list[$i], ($first ? 'halfVisible' : ''));
+                    $first = false;
+                }
+            }
+            $str .= $meStr;
+
+            $str .= '</ul></div>';
+
+        } else {
+            $str = '<ul>';
+            foreach ($list as $supp) {
+                $str .= $formatRow($supp);
+            }
+            $str .= '</ul>';
+        }
+        return $str;
+    }
+
+    public static function printLikeDislikeSection(IMotion $imotion, IPolicy $policy, string $supportStatus): string
+    {
+        $user = User::getCurrentUser();
+
+        $hasLike    = ($imotion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE);
+        $hasDislike = ($imotion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE);
         if (!$hasLike && !$hasDislike) {
             return '';
         }
@@ -369,14 +429,14 @@ class LayoutHelper
             $cantSupportMsg = '';
         }
 
-        foreach ($motion->getInitiators() as $supp) {
+        foreach ($imotion->getInitiators() as $supp) {
             if ($user && $supp->userId === $user->id) {
                 $canSupport = false;
             }
         }
 
-        $likes    = $motion->getLikes();
-        $dislikes = $motion->getDislikes();
+        $likes    = $imotion->getLikes();
+        $dislikes = $imotion->getDislikes();
 
         if (count($likes) === 0 && count($dislikes) === 0 && !$cantSupportMsg && !$canSupport) {
             return '';
@@ -386,32 +446,16 @@ class LayoutHelper
     <div class="content">';
 
         if ($hasLike && count($likes) > 0) {
-            $str .= '<strong>' . \Yii::t('motion', 'likes') . ':</strong><br>';
-            $str .= '<ul>';
-            foreach ($likes as $supp) {
-                $str .= '<li>';
-                if ($user && $supp->userId === $user->id) {
-                    $str .= '<span class="label label-info">' . \Yii::t('motion', 'likes_you') . '</span> ';
-                }
-                $str .= Html::encode($supp->getNameWithOrga());
-                $str .= '</li>';
+            if ($hasDislike) {
+                $str .= '<strong>' . \Yii::t('motion', 'likes') . ':</strong><br>';
             }
-            $str .= '</ul>';
+            $str .= self::printLikeDislikeExpandableList($likes, \Yii::t('motion', 'likes_total'));
             $str .= "<br>";
         }
 
         if ($hasDislike && count($dislikes) > 0) {
             $str .= '<strong>' . \Yii::t('motion', 'dislikes') . ':</strong><br>';
-            $str .= '<ul>';
-            foreach ($dislikes as $supp) {
-                $str .= '<li>';
-                if ($user && $supp->userId === $user->id) {
-                    $str .= '<span class="label label-info">' . \Yii::t('motion', 'dislikes_you') . '</span> ';
-                }
-                $str .= Html::encode($supp->getNameWithOrga());
-                $str .= '</li>';
-            }
-            $str .= '</ul>';
+            $str .= self::printLikeDislikeExpandableList($dislikes, \Yii::t('motion', 'dislikes_total'));
             $str .= "<br>";
         }
 

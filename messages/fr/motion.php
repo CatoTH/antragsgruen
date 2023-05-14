@@ -35,7 +35,6 @@ return [
     'likes_you'                     => 'Toi!',
     'dislike'                       => 'Dislikes',
     'dislikes'                      => 'Dislikes',
-    'dislikes_you'                  => 'Toi!',
     'like_withdraw'                 => 'Retirer le like',
     'button_submit_create'          => 'Créer',
     'button_submit_submit'          => 'Déposer',

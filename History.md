@@ -20,6 +20,7 @@
 - In tabular data sections of motions / applications, as an admin it is now possible to present a SELECT box with pre-defined options for the proposer to choose from.
 - Personal comments written by users to motions / amendments are now indicated on the home page to the respective user.
 - It is possible to set up PDFs and exports of motions / amendments so that the proposed procedure is included. This is set up on a per motion type level.
+- If a motion or amendment has more than 50 supports, then only the most recent few are shown by default, with the option to explicitly show all.
 - Internal / Plugins: Additional language variants are now handled as part of the plugin system, not by placing files into messages/ anymore. The latter will stop working with version 4.13.
 - Bugfix: The diff and line splitting did not work properly with grapheme consisting of multiple code points.
 - Bugfix: Changing the amendment text as admin does not clear the motion's view cache in all cases.

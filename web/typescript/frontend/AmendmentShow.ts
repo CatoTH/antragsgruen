@@ -15,6 +15,7 @@ class AmendmentShow {
         common.initCmdEnterSubmit();
         common.initDelSubmit();
         common.initDataTableActions();
+        common.initExpandableList();
     }
 
     private initPrivateComments()
