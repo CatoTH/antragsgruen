@@ -15,7 +15,7 @@
   color: transparent;
   position: absolute;
   left: 10px;
-  top: 10px;
+  top: 35px;
   &:link, &:visited {
     color: transparent;
   }
@@ -56,6 +56,26 @@ $footer_line_height: 1.5em;
   height: auto !important;
   height: 100%;
   margin: 0 auto (-1 * $footer_height);
+}
+
+#userLoginPanel {
+  height: 35px;
+  background-color: lightgrey;
+
+  display: flex;
+  flex-direction: row;
+
+  .username {
+    flex-basis: 50%;
+    text-align: left;
+    padding: 5px 10px;
+  }
+
+  .groups {
+    flex-basis: 50%;
+    text-align: right;
+    padding: 5px 10px;
+  }
 }
 
 a {

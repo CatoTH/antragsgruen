@@ -4,14 +4,57 @@ namespace app\plugins\european_youth_forum;
 
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\settings\Layout;
-use app\models\db\{Amendment, Consultation, ISupporter, IVotingItem, User, VotingBlock};
+use app\models\db\{Amendment, Consultation, ConsultationUserGroup, ISupporter, IVotingItem, User, VotingBlock};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\VotingData;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
     private const USERGROUP_REMOTE_LABEL = 'Remote'; // This needs to be _part_ of a user group name
+
+    public function beforePage(string $before): string
+    {
+        $out = '';
+        if (User::getCurrentUser()) {
+            $out .= $this->getUserBar();
+        }
+        return $out;
+    }
+
+    protected function getUserBarGroups(User $user): string
+    {
+        $groups = array_filter($user->getConsultationUserGroups($this->consultation), function (ConsultationUserGroup $group) {
+            if (str_starts_with($group->title, 'Voting ')) {
+                return false;
+            }
+            return $group->templateId !== ConsultationUserGroup::TEMPLATE_PARTICIPANT;
+        });
+        return implode(", ", array_map(function (ConsultationUserGroup $group): string {
+            return $group->getNormalizedTitle();
+        }, $groups));
+    }
+
+    protected function getUserBar(): string
+    {
+        $user = User::getCurrentUser();
+        $out = '<div id="userLoginPanel">';
+        $out .= '<div class="username"><strong>' . \Yii::t('base', 'menu_logged_in') . ':</strong> ';
+        $out .= Html::encode($user->name);
+        if ($user->organization) {
+            $out .= ' (' . Html::encode($user->organization) . ')';
+        }
+        $out .= '</div>';
+
+        $out .= '<div class="groups">';
+        $out .= Html::encode($this->getUserBarGroups($user));
+        $out .= '</div>';
+
+        $out .= '</div>';
+
+        return $out;
+    }
 
     public function endOfHead(string $before): string
     {

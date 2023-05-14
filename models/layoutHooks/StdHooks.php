@@ -2,17 +2,20 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
 use app\components\{Tools, UrlHelper};
 use app\controllers\{admin\IndexController, admin\MotionListController, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
-use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
 class StdHooks extends Hooks
 {
+    public function beforePage(string $before): string
+    {
+        return '';
+    }
+
     public function beginPage(string $before): string
     {
         $out = '<header id="mainmenu">';

@@ -35,7 +35,7 @@ if ($layout->fullScreen) {
     $bodyClasses[] = 'fullscreen';
 }
 
-$title = $layout->formatTitle(isset($this->title) ? $this->title : '');
+$title = $layout->formatTitle($this->title ?? '');
 
 $this->beginPage();
 
@@ -143,8 +143,7 @@ foreach ($layout->vueTemplates as $vueTemplate) {
     echo $this->render($vueTemplate);
 }
 
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = Yii::$app->params;
+$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 $this->endBody();
 echo '

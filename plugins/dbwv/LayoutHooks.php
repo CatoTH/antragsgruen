@@ -14,32 +14,41 @@ use yii\helpers\Html;
 
 class LayoutHooks extends StdHooks
 {
-    public function beginPage(string $before): string
+    public function beforePage(string $before): string
     {
         $out = '';
-        $user = User::getCurrentUser();
-        if ($user) {
-            $out .= '<div id="userLoginPanel">';
-            $out .= '<div class="username"><strong>Eingeloggt als:</strong> ';
-            $out .= Html::encode($user->name);
-            $out .= '</div>';
-
-            $out .= '<div class="groups">';
-            $out .= Html::encode(implode(", ", array_map(function (ConsultationUserGroup $group): string {
-                return $group->title;
-            }, $user->getConsultationUserGroups($this->consultation))));
-            $out .= '</div>';
-
-            $out .= '</div>';
+        if (User::getCurrentUser()) {
+            $out .= $this->getUserBar();
         }
-        $out .= '<header id="mainmenu">';
-        $out .= '<nav class="navbar" aria-label="' . \Yii::t('base', 'aria_mainmenu') . '">
-        <div class="navbar-inner">';
-        $out .= Layout::getStdNavbarHeader();
-        $out .= '</div>
-        </nav>';
+        return $out;
+    }
 
-        $out .= '</header>';
+    protected function getUserBarGroups(User $user): string
+    {
+        $groups = array_filter($user->getConsultationUserGroups($this->consultation), function (ConsultationUserGroup $group) {
+            return $group->templateId !== ConsultationUserGroup::TEMPLATE_PARTICIPANT;
+        });
+        return implode(", ", array_map(function (ConsultationUserGroup $group): string {
+            return $group->getNormalizedTitle();
+        }, $groups));
+    }
+
+    protected function getUserBar(): string
+    {
+        $user = User::getCurrentUser();
+        $out = '<div id="userLoginPanel">';
+        $out .= '<div class="username"><strong>' . \Yii::t('base', 'menu_logged_in') . ':</strong> ';
+        $out .= Html::encode($user->name);
+        if ($user->organization) {
+            echo ' (' . Html::encode($user->organization) . ')';
+        }
+        $out .= '</div>';
+
+        $out .= '<div class="groups">';
+        $out .= Html::encode($this->getUserBarGroups($user));
+        $out .= '</div>';
+
+        $out .= '</div>';
 
         return $out;
     }
