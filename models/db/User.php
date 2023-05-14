@@ -860,6 +860,7 @@ class User extends ActiveRecord implements IdentityInterface
             'date_creation'    => $this->dateCreation,
             'status'           => $status,
             'auth_type'        => $this->getAuthType(),
+            'ppreplyto'        => $this->getSettingsObj()->ppReplyTo,
         ];
     }
 

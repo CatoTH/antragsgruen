@@ -109,7 +109,7 @@ export class UserAdmin {
                         alert(err.responseText);
                     })
                 },
-                saveUser(userId, groups, nameGiven, nameFamily, organization, newPassword) {
+                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, newPassword) {
                     this._performOperation({
                         op: 'save-user',
                         userId,
@@ -117,6 +117,7 @@ export class UserAdmin {
                         nameFamily,
                         organization,
                         groups,
+                        ppReplyTo,
                         newPassword
                     });
                 },

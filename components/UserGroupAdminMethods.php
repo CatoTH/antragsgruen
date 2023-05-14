@@ -124,17 +124,21 @@ class UserGroupAdminMethods
         $this->consultation->refresh();
     }
 
-    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, ?string $newPassword): void
+    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword): void
     {
         $user = User::findOne(['id' => $userId]);
-        if (trim($nameGiven) === '' && trim($nameFamily) === '') {
-            return;
+
+        $settings = $user->getSettingsObj();
+        $settings->ppReplyTo = $ppReplyTo;
+        $user->setSettingsObj($settings);
+
+        if (trim($nameGiven) !== '' && trim($nameFamily) !== '') {
+            $user->nameFamily = trim($nameFamily);
+            $user->nameGiven = trim($nameGiven);
+            $user->organization = trim($organization);
+            $user->name = trim(trim($nameGiven) . ' ' . trim($nameFamily));
         }
 
-        $user->nameFamily = trim($nameFamily);
-        $user->nameGiven = trim($nameGiven);
-        $user->organization = trim($organization);
-        $user->name = trim(trim($nameGiven) . ' ' . trim($nameFamily));
         $user->save();
 
         if ($newPassword !== null && trim($newPassword) !== '') {
