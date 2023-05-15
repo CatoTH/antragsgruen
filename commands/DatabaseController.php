@@ -1,6 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 namespace app\commands;
 
+use app\models\db\{ISupporter, Motion, MotionSupporter, User};
 use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
@@ -102,6 +106,64 @@ class DatabaseController extends Controller
 
             $this->actionCreate();
             $this->actionInsertTestData();
+        }
+    }
+
+    private function createOrGetUserAccount(string $email, string $password, string $givenName, string $familyName, string $organization): User
+    {
+        $user = User::findOne(['auth' => 'email:' . $email]);
+        if ($user) {
+            return $user;
+        }
+
+        $user = new User();
+        $user->name = $givenName . ' ' . $familyName;
+        $user->nameFamily = $familyName;
+        $user->nameGiven = $givenName;
+        $user->organization = $organization;
+        $user->email = $email;
+        $user->emailConfirmed = 1;
+        $user->auth = 'email:' . $email;
+        $user->dateCreation = date('Y-m-d H:i:s');
+        $user->fixedData = User::FIXED_NAME | User::FIXED_ORGA;
+        $user->status = User::STATUS_CONFIRMED;
+        $user->pwdEnc = (string)password_hash($password, PASSWORD_DEFAULT);
+        $user->save();
+
+        return $user;
+    }
+
+    private function supportMotion(User $user, Motion $motion, int $position): void
+    {
+        $support = new MotionSupporter();
+        $support->motionId = $motion->id;
+        $support->userId = $user->id;
+        $support->personType = ISupporter::PERSON_NATURAL;
+        $support->role = ISupporter::ROLE_SUPPORTER;
+        $support->position = $position;
+        $support->dateCreation = date('Y-m-d H:i:s');
+        $support->save();
+    }
+
+    /**
+     * Create thousands of supports for a motion
+     */
+    public function actionMassSupportMotion(int $motionId): void
+    {
+        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+            $this->stderr('This action is only available in Debug-Mode' . "\n");
+            return;
+        }
+
+        /** @var Motion|null $motion */
+        $motion = Motion::findOne($motionId);
+        if (!$motion) {
+            $this->stderr('Motion not found' . "\n");
+        }
+
+        for ($i = 0; $i < 10000; $i++) {
+            $user = $this->createOrGetUserAccount('test-' . $i . '@example.org', 'Test', 'Test', (string)$i, 'Orga');
+            $this->supportMotion($user, $motion, $i);
         }
     }
 }

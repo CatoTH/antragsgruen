@@ -36,7 +36,6 @@ return [
     'Supporter'                          => 'Unterstützer*in',
     'supporters_heading'                 => 'Unterstützer*innen',
     'supporters_total'                   => 'Insgesamt %NUM% Unterstützer*innen.',
-    'supporting_you'                     => 'Du!',
     'supporting_none'                    => 'keine',
     'supporting_you_nonpublic'           => 'Nur für eingeloggte sichtbar',
     'supporting_nonpublic_1'             => '1 Unterstützer*in',

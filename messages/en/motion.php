@@ -36,7 +36,6 @@ return [
     'Supporter'                     => 'Supporters',
     'supporters_heading'            => 'Supporters',
     'supporters_total'              => '%NUM% supporters in total.',
-    'supporting_you'                => 'You!',
     'supporting_you_nonpublic'      => 'Only visible for logged in users',
     'supporting_nonpublic_1'        => '1 supporter',
     'supporting_nonpublic_x'        => '%x% supporters',

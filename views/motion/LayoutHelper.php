@@ -355,21 +355,43 @@ class LayoutHelper
 
     /**
      * @param ISupporter[] $list
+     * @param int[] $loginlessSupported
      */
-    public static function printLikeDislikeExpandableList(array $list, string $totalStr): string
+    public static function printLikeDislikeExpandableList(array $list, string $totalStr, array $loginlessSupported): string
     {
         $user = User::getCurrentUser();
 
-        $formatRow = function (ISupporter $supp, string $extraClass = '') use ($user): string {
+        $nonPublicSupportCount = 0;
+        $publicSupportCount = 0;
+        for ($i = 0; $i < count($list); $i++) {
+            $isMe = ($user && $list[$i]->userId === $user->id) || in_array($list[$i]->id, $loginlessSupported);
+            if (!$user && !$isMe && $list[$i]->isNonPublic()) {
+                $nonPublicSupportCount++;
+            } else {
+                $publicSupportCount++;
+            }
+        }
+
+        $formatRow = function (ISupporter $supp, string $extraClass = '') use ($user, $loginlessSupported): string {
+            $isMe = ($user && $supp->userId === $user->id) || in_array($supp->id, $loginlessSupported);
+
+            // Non-public supports are only shown to logged-in users
+            if (!$user && !$isMe && $supp->isNonPublic()) {
+                return '';
+            }
+
             if ($extraClass) {
                 $row = '<li class="' . $extraClass . '">';
             } else {
                 $row = '<li>';
             }
-            if ($user && $supp->userId === $user->id) {
+            if ($isMe) {
                 $row .= '<span class="label label-info">' . \Yii::t('motion', 'likes_you') . '</span> ';
             }
             $row .= Html::encode($supp->getNameWithOrga());
+            if ($isMe && $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC)) {
+                $row .= '<span class="nonPublic">(' . \Yii::t('motion', 'supporting_you_nonpublic') . ')</span>';
+            }
             $row .= '</li>';
             return $row;
         };
@@ -410,6 +432,21 @@ class LayoutHelper
             }
             $str .= '</ul>';
         }
+
+        if ($nonPublicSupportCount === 1) {
+            if ($publicSupportCount > 0) {
+                $str .= \Yii::t('motion', 'supporting_nonpublic_more_1');
+            } else {
+                $str .= \Yii::t('motion', 'supporting_nonpublic_1');
+            }
+        } elseif ($nonPublicSupportCount > 1) {
+            if ($publicSupportCount > 0) {
+                $str .= str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_more_x'));
+            } else {
+                $str .= str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_x'));
+            }
+        }
+
         return $str;
     }
 
@@ -449,13 +486,13 @@ class LayoutHelper
             if ($hasDislike) {
                 $str .= '<strong>' . \Yii::t('motion', 'likes') . ':</strong><br>';
             }
-            $str .= self::printLikeDislikeExpandableList($likes, \Yii::t('motion', 'likes_total'));
+            $str .= self::printLikeDislikeExpandableList($likes, \Yii::t('motion', 'likes_total'), []);
             $str .= "<br>";
         }
 
         if ($hasDislike && count($dislikes) > 0) {
             $str .= '<strong>' . \Yii::t('motion', 'dislikes') . ':</strong><br>';
-            $str .= self::printLikeDislikeExpandableList($dislikes, \Yii::t('motion', 'dislikes_total'));
+            $str .= self::printLikeDislikeExpandableList($dislikes, \Yii::t('motion', 'dislikes_total'), []);
             $str .= "<br>";
         }
 
@@ -533,45 +570,14 @@ class LayoutHelper
 
         $str = '';
         if (count($supporters) > 0) {
-            $nonPublicSupportCount = 0;
-            $publicSupportCount = 0;
-
-            $str .= '<ul class="supportersList">';
             foreach ($supporters as $supp) {
                 $isMe = (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $loginlessSupported));
                 if ($isMe) {
                     $iAmSupporting = true;
                 }
-                if ($currUserId === 0 && !$isMe && $supp->isNonPublic()) {
-                    $nonPublicSupportCount++;
-                    continue;
-                }
-                $publicSupportCount++;
+            }
 
-                $str .= '<li>';
-                if ($isMe) {
-                    $str .= '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
-                }
-                $str .= Html::encode($supp->getNameWithOrga());
-                if ($isMe && $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC)) {
-                    $str .= '<span class="nonPublic">(' . \Yii::t('motion', 'supporting_you_nonpublic') . ')</span>';
-                }
-                $str .= '</li>';
-            }
-            if ($nonPublicSupportCount === 1) {
-                if ($publicSupportCount > 0) {
-                    $str .= '<li>' . \Yii::t('motion', 'supporting_nonpublic_more_1') . '</li>';
-                } else {
-                    $str .= '<li>' . \Yii::t('motion', 'supporting_nonpublic_1') . '</li>';
-                }
-            } elseif ($nonPublicSupportCount > 1) {
-                if ($publicSupportCount > 0) {
-                    $str .= '<li>' . str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_more_x')) . '</li>';
-                } else {
-                    $str .= '<li>' . str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_x')) . '</li>';
-                }
-            }
-            $str .= '</ul>';
+            $str .= self::printLikeDislikeExpandableList($supporters, \Yii::t('motion', 'supporters_total'), $loginlessSupported);
         }
 
         // Hint: if supporters are given by the initiator, then the flag is not set, but we need to show the list above anyway
@@ -579,10 +585,8 @@ class LayoutHelper
             return $wrapWithContent($str);
         }
 
-        foreach ($imotion->getInitiators() as $supp) {
-            if ($user && $supp->userId === $user->id) {
-                $canSupport = false;
-            }
+        if ($imotion->iAmInitiator()) {
+            $canSupport = false;
         }
         if (!$imotion->isSupportingPossibleAtThisStatus()) {
             $canSupport = false;

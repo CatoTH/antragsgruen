@@ -25,7 +25,6 @@ return [
     'initiators_head'               => 'Auteurs',
     'Supporter'                     => 'Soutiens',
     'supporters_heading'            => 'Soutiens',
-    'supporting_you'                => 'Toi!',
     'supporting_none'               => 'aucun',
     'supporting_logged_out_warning' => 'Attention: tu n\'es pas connecté. Le soutien ne peut être annulé que pendant très peu de temps si tu n\'es pas connecté.',
     'supporting_no_orga_error'      => 'Attention: Ton organisation n\'a pas pu être identifiée, ce qui est nécessaire pour soutenir une motion. Merci de contacter les admistrateurs pour résoudre ce problème.',
