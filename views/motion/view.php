@@ -2,8 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, MotionComment, MotionSupporter, User};
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;

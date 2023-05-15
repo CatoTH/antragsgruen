@@ -110,6 +110,7 @@ class MotionShow {
         common.initCmdEnterSubmit();
         common.initDelSubmit();
         common.initDataTableActions();
+        common.initExpandableList();
     }
 
     private markMovedParagraphs() {

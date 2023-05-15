@@ -37,9 +37,9 @@ $I->uncheckOption('.nonPublicBlock input');
 $I->fillField('.supportBlock .colOrga input', 'Testorga');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 
-$I->see('Testuser (Testorga)', '.supportersList');
-$I->see('(Nur für eingeloggte sichtbar)', '.supportersList');
+$I->see('Testuser (Testorga)', '#supporters');
+$I->see('(Nur für eingeloggte sichtbar)', '#supporters');
 
 $I->logout();
-$I->dontSee('Testuser (Testorga)', '.supportersList');
+$I->dontSee('Testuser (Testorga)', '#supporters');
 $I->see('1 Unterstützer*in', '#supporters');

@@ -1196,7 +1196,18 @@ blockquote + .privateParagraphNoteHolder {
   }
 }
 
-.supportersList {
+.likes, .supporters {
+  .expandableList {
+    .btnShowAll {
+      padding: 0;
+      margin-left: 10px;
+      font-weight: normal;
+    }
+    .halfVisible {
+      opacity: 0.5;
+    }
+  }
+
   .nonPublic {
     display: inline-block;
     margin-left: 15px;
