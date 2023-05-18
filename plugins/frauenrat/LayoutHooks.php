@@ -166,7 +166,7 @@ class LayoutHooks extends Hooks
                 }
             }
             if ($motionData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
-                if (substr($motion->titlePrefix, 0, 2) === 'A ') {
+                if (substr($motion->titlePrefix, 0, 2) === 'A ' || substr($motion->titlePrefix, 0, 3) === 'SPT') {
                     $motionData[$i]['title'] = 'Empfehlung Vorstand';
                 } else {
                     $motionData[$i]['title'] = 'Votum Antragskommission';
@@ -294,7 +294,7 @@ class LayoutHooks extends Hooks
 </style>
 <script>
 $(function() {
-    $(".frauenratSelect .selectlist").on("changed.fu.selectlist", function() {
+    $(".frauenratSelect .stdDropdown").on("change", function() {
         $(this).parents(".frauenratSelect").find("button.hidden").removeClass("hidden");
     });
 });
