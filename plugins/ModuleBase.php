@@ -5,6 +5,7 @@ namespace app\plugins;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\models\db\{Amendment, Consultation, IMotion, Motion, Site, User, Vote, VotingBlock};
 use app\components\LoginProviderInterface;
+use app\models\AdminTodoItem;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\http\ResponseInterface;
 use app\models\layoutHooks\Hooks;
@@ -109,6 +110,14 @@ class ModuleBase extends Module
      * - false denies access, even if the user has access by default. (It does NOT remove the permissions to perform any actions in the motion administration)
      */
     public static function canSeeFullMotionList(Consultation $consultation, User $user): ?bool
+    {
+        return null;
+    }
+
+    /**
+     * @return AdminTodoItem[]|null
+     */
+    public static function getAdminTodoItems(Consultation $consultation, User $user): ?array
     {
         return null;
     }

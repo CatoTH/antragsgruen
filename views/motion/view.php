@@ -22,8 +22,7 @@ use yii\helpers\Html;
 
 $consultation = $motion->getMyConsultation();
 $hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = ($hasPp && !$motion->isResolution() &&
-    User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion)));
+$hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->canEditProposedProcedure());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
+use app\models\AdminTodoItem;
+use app\models\db\Consultation;
 use app\models\db\Motion;
+use app\models\db\User;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\plugins\dbwv\Module;
@@ -62,6 +65,9 @@ class Workflow
 
     public static function canMakeEditorialChangesV1(Motion $motion): bool
     {
+        if (!$motion->isInScreeningProcess()) {
+            return false;
+        }
         return $motion->getMyConsultation()->havePrivilege(
             Module::PRIVILEGE_DBWV_V1_EDITORIAL,
             PrivilegeQueryContext::motion($motion)
@@ -70,10 +76,10 @@ class Workflow
 
     public static function canSetRecommendationV2(Motion $motion): bool
     {
-        return $motion->getMyConsultation()->havePrivilege(
-            Privileges::PRIVILEGE_CHANGE_PROPOSALS,
-            PrivilegeQueryContext::motion($motion)
-        );
+        if (!$motion->isVisible()) {
+            return false;
+        }
+        return $motion->canEditProposedProcedure();
     }
 
     public static function canSetResolutionV3(Motion $motion): bool
@@ -98,5 +104,30 @@ class Workflow
             Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
             PrivilegeQueryContext::motion($motion)
         );
+    }
+
+    /**
+     * @return AdminTodoItem[]
+     */
+    public static function getAdminTodoItems(Consultation $consultation, User $user): array
+    {
+        $todo = [];
+        foreach ($consultation->motions as $motion) {
+            switch ($motion->version) {
+                case self::STEP_V1:
+                    $todo[] = Step1::getAdminTodo($motion);
+                    break;
+                case self::STEP_V2:
+                    $todo[] = Step2::getAdminTodo($motion);
+                    break;
+                case self::STEP_V3:
+                    $todo[] = Step3::getAdminTodo($motion);
+                    break;
+                case self::STEP_V4:
+                    $todo[] = Step4::getAdminTodo($motion);
+                    break;
+            }
+        }
+        return array_values(array_filter($todo));
     }
 }

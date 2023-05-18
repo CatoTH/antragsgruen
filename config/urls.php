@@ -21,7 +21,7 @@ $restBase = $dom . 'rest';
 $restBaseCon = $restBase . '/<consultationPath:[\w_-]+>';
 
 $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax|del-agenda-item-ajax|save-agenda-order-ajax';
-$consultationPaths    .= '|votings|voting-results|feeds|feedall|feedmotions|feedamendments|feedcomments';
+$consultationPaths    .= '|todo|votings|voting-results|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|speech|admin-speech|admin-votings|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf|embedded-amendments-pdf';
 $motionPaths          .= '|admin-speech|withdraw|view-changes|view-changes-odt';
@@ -39,7 +39,7 @@ $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides
 $adminAmendmentPaths  = 'excellist|odslist|odslist-short|pdflist|pdfziplist|odtziplist|openslides';
 $adminUserPaths       = 'save|poll|add-single-init|add-single|add-multiple-ww|add-multiple-email|search-groups';
 $adminPaths           = 'consultation|appearance|consultationextended|translation|translation-motion-type|siteaccess|siteconsultations|openslidesusers';
-$adminPaths           .= '|theming|files|todo|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
+$adminPaths           .= '|theming|files|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
 $adminPpPaths         = 'index-ajax|ods|save-motion-comment|save-amendment-comment|save-motion-visible|save-amendment-visible|save-responsibility';
 
 $urlRules = [

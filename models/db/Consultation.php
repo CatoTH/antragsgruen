@@ -605,7 +605,13 @@ class Consultation extends ActiveRecord
                 }
             }
         }
-        return $prefix . ($max_rev + 1);
+
+        $newNr = (string)($max_rev + 1);
+        while (strlen($newNr) < $this->getSettings()->motionTitlePrefixNumMaxLen) {
+            $newNr = '0' . $newNr;
+        }
+
+        return $prefix . $newNr;
     }
 
     public function flushCacheWithChildren(?array $items): void

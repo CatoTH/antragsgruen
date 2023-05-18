@@ -502,6 +502,22 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function canSeeProposedProcedure(?string $procedureToken): bool;
 
+    public function canEditProposedProcedure(): bool
+    {
+        $consultation = $this->getMyConsultation();
+        $havePpRights = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::imotion($this));
+        if ($consultation->getSettings()->ppEditableAfterPublication) {
+            return $havePpRights;
+        } else {
+            if ($this->proposalVisibleFrom === null) {
+                return $havePpRights;
+            } else {
+                // If the proposal is published already, then only consultation admins can edit the proposal
+                return User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
+            }
+        }
+    }
+
     public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
     {
         return ($this->hasAlternativeProposaltext(true) && (

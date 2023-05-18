@@ -38,7 +38,7 @@ class MotionNumbering
 
     public static function getHistoryRootMotion(Motion $motion, array $alreadySeenIds = []): Motion
     {
-        if ($motion->replacedMotion && !in_array($motion->id, $alreadySeenIds, true)) {
+        if ($motion->parentMotionId && $motion->replacedMotion && !in_array($motion->id, $alreadySeenIds, true)) {
             $alreadySeenIds[] = $motion->id;
             return self::getHistoryRootMotion($motion->replacedMotion, $alreadySeenIds);
         } else {

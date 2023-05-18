@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
+use app\models\AdminTodoItem;
 use app\models\exceptions\Internal;
-use app\plugins\dbwv\workflow\Step2;
 use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, User};
 use app\models\settings\{Layout, Privilege, PrivilegeQueryContext};
-use app\plugins\dbwv\workflow\Workflow;
+use app\plugins\dbwv\workflow\{Step2, Workflow};
 use app\plugins\ModuleBase;
 use yii\web\View;
 
@@ -190,5 +190,13 @@ class Module extends ModuleBase
             }
         }
         throw new Internal('No compatible motion type found');
+    }
+
+    /**
+     * @return AdminTodoItem[]|null
+     */
+    public static function getAdminTodoItems(Consultation $consultation, User $user): ?array
+    {
+        return Workflow::getAdminTodoItems($consultation, $user);
     }
 }

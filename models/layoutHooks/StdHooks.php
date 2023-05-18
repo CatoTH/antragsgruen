@@ -306,10 +306,10 @@ class StdHooks extends Hooks
                 $out .= $this->addMotionListNavbarEntry($consultation);
             }
 
-            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction())) {
+            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::anyRestriction())) {
                 $todo = AdminTodoItem::getConsultationTodos($consultation);
                 if (count($todo) > 0) {
-                    $adminUrl   = UrlHelper::createUrl('/admin/index/todo');
+                    $adminUrl   = UrlHelper::createUrl('/consultation/todo');
                     $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
                     $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo', 'aria-label' => $adminTitle]) . '</li>';
                 }

@@ -6,6 +6,9 @@ namespace app\plugins\dbwv\workflow;
 
 use app\components\MotionNumbering;
 use app\components\RequestContext;
+use app\components\Tools;
+use app\components\UrlHelper;
+use app\models\AdminTodoItem;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
@@ -16,6 +19,26 @@ use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 class Step4
 {
+    public static function getAdminTodo(Motion $motion): ?AdminTodoItem
+    {
+        if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V5)) {
+            return null;
+        }
+
+        if (Workflow::canMoveToMainV4($motion)) {
+            return new AdminTodoItem(
+                'todoDbwvMoveToMain' . $motion->id,
+                $motion->getTitleWithPrefix(),
+                'In die Hauptversammlung übernehmen',
+                UrlHelper::createMotionUrl($motion),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $motion->getInitiatorsStr()
+            );
+        }
+
+        return null;
+    }
+
     public static function renderMotionAdministration(Motion $motion): string
     {
         $html = '';

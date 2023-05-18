@@ -17,7 +17,7 @@ class SetupController extends Controller
     private const GROUP_NAME_AL_RECHT = 'AL Recht';
     private const GROUP_NAME_V1_REFERAT = 'Referat %NAME% (V1)';
     private const GROUP_NAME_V2_BUEROLEITUNG = 'Büroleitung';
-    private const GROUP_NAME_V2_ARBEITSGRUPPE = 'Arbeitsgruppe %NAME% (V2)';
+    private const GROUP_NAME_V2_AUSSCHUSS = 'Ausschuss %NAME% (V2)';
     private const GROUP_NAME_V3_REDAKTION = 'Redaktionsausschuss';
     private const GROUP_NAME_V4_KOORDINIERUNG = 'Koordinierungsausschuss';
 
@@ -25,7 +25,7 @@ class SetupController extends Controller
     private const AGENDA_ITEMS_SACHGEBIETE = [
         [
             'title' => 'Sachgebiet I - Sicherheits- und Verteidigungspolitik; Einsätze und Missionen; Europa',
-            'motionPrefix' => 'I',
+            'motionPrefix' => 'I / ',
             'position' => 1,
             'themengebiete' => [
                 [
@@ -40,31 +40,31 @@ class SetupController extends Controller
         ],
         [
             'title' => 'Sachgebiet II',
-            'motionPrefix' => 'II',
+            'motionPrefix' => 'II / ',
             'position' => 2,
             'themengebiete' => [],
         ],
         [
             'title' => 'Sachgebiet III - Dienst- und Laufbahnrecht',
-            'motionPrefix' => 'III',
+            'motionPrefix' => 'III / ',
             'position' => 3,
             'themengebiete' => [],
         ],
         [
             'title' => 'Sachgebiet IV',
-            'motionPrefix' => 'IV',
+            'motionPrefix' => 'IV / ',
             'position' => 4,
             'themengebiete' => [],
         ],
         [
             'title' => 'Sachgebiet V',
-            'motionPrefix' => 'V',
+            'motionPrefix' => 'V / ',
             'position' => 5,
             'themengebiete' => [],
         ],
         [
             'title' => 'Sachgebiet VI',
-            'motionPrefix' => 'VI',
+            'motionPrefix' => 'VI / ',
             'position' => 6,
             'themengebiete' => [],
         ],
@@ -146,7 +146,7 @@ class SetupController extends Controller
         }
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
-            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
+            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_AUSSCHUSS);
             $tag = ConsultationSettingsTag::findOne(['title' => $item['title'], 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
             $group = $this->createUserGroupIfNotExists($consultation, $groupName);
             $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Privileges::PRIVILEGE_CHANGE_PROPOSALS . ']}]}';
@@ -394,13 +394,13 @@ class SetupController extends Controller
                 continue;
             }
             */
-            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_ARBEITSGRUPPE);
+            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_AUSSCHUSS);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
                 echo "Group $groupName not found\n";
                 return;
             }
-            $user = $this->createOrGetUserAccount($urlPath.'-arbeitsgruppe-' . $item['motionPrefix'] . '@example.org', 'Test', 'Arbeitsgruppe', $item['title'], 'DBwV');
+            $user = $this->createOrGetUserAccount($urlPath.'-ausschuss-' . $item['motionPrefix'] . '@example.org', 'Test', 'Ausschuss', $item['title'], 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
             }

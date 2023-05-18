@@ -2,8 +2,11 @@
 
 namespace app\models;
 
+use app\models\settings\AntragsgruenApp;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComment};
+use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComment, User};
 
 class AdminTodoItem
 {
@@ -34,6 +37,10 @@ class AdminTodoItem
      */
     private static function addMissingStatutesItem(Consultation $consultation, array $todo): array
     {
+        if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
+            return [];
+        }
+
         foreach ($consultation->motionTypes as $motionType) {
             if (!$motionType->amendmentsOnly) {
                 continue;
@@ -62,6 +69,10 @@ class AdminTodoItem
     {
         $motions = Motion::getScreeningMotions($consultation);
         foreach ($motions as $motion) {
+            if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion))) {
+                continue;
+            }
+
             $description = \Yii::t('admin', 'todo_from') . ': ' . $motion->getInitiatorsStr();
             $todo[]      = new AdminTodoItem(
                 'motionScreen' . $motion->id,
@@ -84,6 +95,10 @@ class AdminTodoItem
     {
         $amendments = Amendment::getScreeningAmendments($consultation);
         foreach ($amendments as $amend) {
+            if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amend))) {
+                continue;
+            }
+
             $description = \Yii::t('admin', 'todo_from') . ': ' . $amend->getInitiatorsStr();
             $todo[]      = new AdminTodoItem(
                 'amendmentsScreen' . $amend->id,
@@ -104,6 +119,10 @@ class AdminTodoItem
      */
     private static function addScreeningMotionComments(Consultation $consultation, array $todo): array
     {
+        if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null)) {
+            return [];
+        }
+
         $comments = MotionComment::getScreeningComments($consultation);
         foreach ($comments as $comment) {
             $description = \Yii::t('admin', 'todo_from') . ': ' . $comment->name;
@@ -126,6 +145,10 @@ class AdminTodoItem
      */
     private static function addScreeningAmendmentComments(Consultation $consultation, array $todo): array
     {
+        if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null)) {
+            return [];
+        }
+
         $comments = AmendmentComment::getScreeningComments($consultation);
         foreach ($comments as $comment) {
             $description = \Yii::t('admin', 'todo_from') . ': ' . $comment->name;
@@ -138,6 +161,25 @@ class AdminTodoItem
                 $description
             );
         }
+        return $todo;
+    }
+
+    private static function getUnsortedItems(Consultation $consultation): array
+    {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $todo = $plugin::getAdminTodoItems($consultation, User::getCurrentUser());
+            if ($todo !== null) {
+                return $todo;
+            }
+        }
+
+        $todo = [];
+        $todo = self::addMissingStatutesItem($consultation, $todo);
+        $todo = self::addScreeningMotionsItems($consultation, $todo);
+        $todo = self::addScreeningAmendmentItems($consultation, $todo);
+        $todo = self::addScreeningMotionComments($consultation, $todo);
+        $todo = self::addScreeningAmendmentComments($consultation, $todo);
+
         return $todo;
     }
 
@@ -154,12 +196,7 @@ class AdminTodoItem
             return self::$todoCache[$consultation->id];
         }
 
-        $todo = [];
-        $todo = self::addMissingStatutesItem($consultation, $todo);
-        $todo = self::addScreeningMotionsItems($consultation, $todo);
-        $todo = self::addScreeningAmendmentItems($consultation, $todo);
-        $todo = self::addScreeningMotionComments($consultation, $todo);
-        $todo = self::addScreeningAmendmentComments($consultation, $todo);
+        $todo = self::getUnsortedItems($consultation);
 
         usort($todo, function (AdminTodoItem $todo1, AdminTodoItem $todo2) {
             return $todo1->timestamp <=> $todo2->timestamp;

@@ -21,7 +21,7 @@ $consultation = $amendment->getMyConsultation();
 $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment));
+$hasPpAdminbox = $amendment->canEditProposedProcedure();
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;

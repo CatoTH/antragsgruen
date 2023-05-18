@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
+use app\models\AdminTodoItem;
 use app\models\db\IMotion;
-use app\components\{MotionNumbering, RequestContext, UrlHelper};
+use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
 use app\models\db\Motion;
 use app\models\exceptions\Access;
 use app\models\forms\MotionDeepCopy;
@@ -13,6 +14,34 @@ use app\models\http\RedirectResponse;
 
 class Step3
 {
+    public static function getAdminTodo(Motion $motion): ?AdminTodoItem
+    {
+        if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V4)) {
+            return null;
+        }
+        if (Workflow::canSetRecommendationV2($motion) && $motion->proposalVisibleFrom === null) {
+            return new AdminTodoItem(
+                'todoDbwvSetPp' . $motion->id,
+                $motion->title,
+                'Verfahrensvorschlag veröffentlichen',
+                UrlHelper::createMotionUrl($motion),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $motion->getInitiatorsStr()
+            );
+        }
+        if (Workflow::canSetResolutionV3($motion) && $motion->proposalVisibleFrom !== null) {
+            return new AdminTodoItem(
+                'todoDbwvSetPp' . $motion->id,
+                $motion->title,
+                'Beschluss erarbeiten',
+                UrlHelper::createMotionUrl($motion),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $motion->getInitiatorsStr()
+            );
+        }
+
+        return null;
+    }
 
     public static function renderMotionAdministration(Motion $motion): string
     {

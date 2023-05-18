@@ -459,7 +459,7 @@ trait MotionActionsTrait
         if (!$motion) {
             return new RestApiExceptionResponse(404, 'Motion not found');
         }
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion))) {
+        if (!$motion->canEditProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
@@ -521,6 +521,10 @@ trait MotionActionsTrait
             $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $motion->proposalExplanation);
 
             if ($this->getHttpRequest()->post('visible', 0)) {
+                if ($motion->proposalVisibleFrom === null) {
+                    // Reload the page, to update section titles and permissions to edit the proposed procedure
+                    $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
+                }
                 $motion->setProposalPublished();
             } else {
                 $motion->proposalVisibleFrom = null;
