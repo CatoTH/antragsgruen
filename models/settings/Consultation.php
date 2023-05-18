@@ -76,6 +76,7 @@ class Consultation implements \JsonSerializable
     public bool $showIMotionEditDate = false;
 
     public int $lineLength = 80;
+    public int $motionTitlePrefixNumMaxLen = 1;
     public int $startLayoutType = 0;
     public int $robotsPolicy = 1;
     public int $motiondataMode = 0;
