@@ -7,8 +7,7 @@ use app\models\settings\Privileges;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\AntragsgruenApp;
 use app\components\{ConsultationAccessPassword, HTMLTools, Tools, UrlHelper};
-use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, ISupporter, Site, SpeechQueue, User};
-use app\models\AdminTodoItem;
+use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
 use app\models\settings\Stylesheet;
@@ -219,13 +218,6 @@ class IndexController extends AdminBase
         }
 
         return new HtmlResponse($this->render('appearance', ['consultation' => $this->consultation]));
-    }
-
-    public function actionTodo(): HtmlResponse
-    {
-        $todo = AdminTodoItem::getConsultationTodos($this->consultation);
-
-        return new HtmlResponse($this->render('todo', ['todo' => $todo]));
     }
 
     private function saveTags(Consultation $consultation): void

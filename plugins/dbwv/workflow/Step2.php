@@ -4,13 +4,49 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
-use app\components\{MotionNumbering, RequestContext};
+use app\models\AdminTodoItem;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
+use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
 use app\models\forms\MotionDeepCopy;
-use app\models\db\Motion;
+use app\models\db\{Motion, User};
 use app\models\exceptions\Access;
 
 class Step2
 {
+    public static function getAdminTodo(Motion $motion): ?AdminTodoItem
+    {
+        if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V3)) {
+            return null;
+        }
+
+        $isScreening = in_array($motion->status, $motion->getMyConsultation()->getStatuses()->getScreeningStatuses(), true);
+        $canScreen = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion));
+        if ($isScreening && $canScreen) {
+            $description = \Yii::t('admin', 'todo_from') . ': ' . $motion->getInitiatorsStr();
+            return new AdminTodoItem(
+                'motionScreen' . $motion->id,
+                $motion->getTitleWithPrefix(),
+                str_replace('%TYPE%', $motion->getMyMotionType()->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
+                UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $description
+            );
+        }
+
+        if (Workflow::canSetRecommendationV2($motion)) {
+            return new AdminTodoItem(
+                'todoDbwvSetPp' . $motion->id,
+                $motion->title,
+                'Verfahrensvorschlag erarbeiten',
+                UrlHelper::createMotionUrl($motion),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $motion->getInitiatorsStr()
+            );
+        }
+
+        return null;
+    }
+
     public static function renderMotionAdministration(Motion $motion): string
     {
         $html = '';

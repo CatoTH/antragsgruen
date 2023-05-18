@@ -2,7 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\AdminTodoItem;
+use app\models\exceptions\ResponseException;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
@@ -447,14 +450,14 @@ class ConsultationController extends Base
 
     public function actionDebugbarAjax(): JsonResponse
     {
-        switch (\Yii::$app->request->post('action')) {
+        switch ($this->getPostValue('action', '')) {
             case 'close':
                 DateTools::setDeadlineDebugMode($this->consultation, false);
 
                 return new JsonResponse(['success' => true]);
             case 'setTime':
                 try {
-                    $time = Tools::dateBootstraptime2sql(\Yii::$app->request->post('time'));
+                    $time = Tools::dateBootstraptime2sql($this->getPostValue('time'));
                 } catch (Internal $e) {
                     $time = null;
                 }
@@ -464,6 +467,17 @@ class ConsultationController extends Base
             default:
                 return new JsonResponse(['success' => false, 'error' => 'No operation given']);
         }
+    }
+
+    public function actionTodo(): HtmlResponse
+    {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::anyRestriction())) {
+            throw new ResponseException(new HtmlErrorResponse(403, \Yii::t('admin', 'no_access')));
+        }
+
+        $todo = AdminTodoItem::getConsultationTodos($this->consultation);
+
+        return new HtmlResponse($this->render('todo', ['todo' => $todo]));
     }
 
     private function getUnassignedQueueOrCreate(): SpeechQueue

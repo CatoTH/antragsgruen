@@ -6,12 +6,44 @@ namespace app\plugins\dbwv\workflow;
 
 use app\components\MotionNumbering;
 use app\components\RequestContext;
+use app\components\Tools;
+use app\components\UrlHelper;
+use app\models\AdminTodoItem;
 use app\models\forms\MotionDeepCopy;
 use app\models\db\{ConsultationSettingsTag, IMotion, Motion};
 use app\models\exceptions\{Access, NotFound};
 
 class Step1
 {
+    public static function getAdminTodo(Motion $motion): ?AdminTodoItem
+    {
+        if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V2)) {
+            return null;
+        }
+        if (count($motion->getPublicTopicTags()) === 0 && Workflow::canAssignTopicV1($motion)) {
+            return new AdminTodoItem(
+                'todoDbwvAssignTopic' . $motion->id,
+                $motion->title,
+                'Sachgebiet zuordnen',
+                UrlHelper::createMotionUrl($motion),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $motion->getInitiatorsStr()
+            );
+        }
+        if (count($motion->getPublicTopicTags()) > 0 && $motion->titlePrefix === '' && Workflow::canMakeEditorialChangesV1($motion)) {
+            return new AdminTodoItem(
+                'todoDbwvEditorial' . $motion->id,
+                $motion->title,
+                'Für die Antragsversammlung aufbereiten',
+                UrlHelper::createMotionUrl($motion),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $motion->getInitiatorsStr()
+            );
+        }
+
+        return null;
+    }
+
     public static function renderMotionAdministration(Motion $motion): string
     {
         if (!Workflow::canMakeEditorialChangesV1($motion)) {
