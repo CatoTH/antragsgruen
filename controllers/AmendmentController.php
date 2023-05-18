@@ -450,7 +450,7 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new RestApiExceptionResponse(404, 'Amendment not found');
         }
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
+        if (!$amendment->canEditProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
@@ -511,6 +511,10 @@ class AmendmentController extends Base
             $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $amendment->proposalExplanation);
 
             if ($this->getHttpRequest()->post('visible', 0)) {
+                if ($amendment->proposalVisibleFrom === null) {
+                    // Reload the page, to update section titles and permissions to edit the proposed procedure
+                    $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'view');
+                }
                 $amendment->setProposalPublished();
             } else {
                 $amendment->proposalVisibleFrom = null;

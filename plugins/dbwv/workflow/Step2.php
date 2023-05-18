@@ -27,7 +27,7 @@ class Step2
                 'motionScreen' . $motion->id,
                 $motion->getTitleWithPrefix(),
                 str_replace('%TYPE%', $motion->getMyMotionType()->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
-                UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]),
+                UrlHelper::createUrl(['/admin/motion-list/index']),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description
             );

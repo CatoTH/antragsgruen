@@ -74,6 +74,7 @@ class Consultation implements \JsonSerializable
     public bool $pProcedureExpandAll = true; // If false: only show max. 1 section in the internal proposed procedure
     public bool $adminListFilerByMotion = false; // If true: the admin list is filtered by motion. To be activated manually.
     public bool $showIMotionEditDate = false;
+    public bool $ppEditableAfterPublication = true;
 
     public int $lineLength = 80;
     public int $motionTitlePrefixNumMaxLen = 1;

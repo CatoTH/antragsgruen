@@ -65,6 +65,9 @@ class Workflow
 
     public static function canMakeEditorialChangesV1(Motion $motion): bool
     {
+        if (!$motion->isInScreeningProcess()) {
+            return false;
+        }
         return $motion->getMyConsultation()->havePrivilege(
             Module::PRIVILEGE_DBWV_V1_EDITORIAL,
             PrivilegeQueryContext::motion($motion)
@@ -76,13 +79,7 @@ class Workflow
         if (!$motion->isVisible()) {
             return false;
         }
-        if ($motion->proposalVisibleFrom !== null) {
-            return false;
-        }
-        return $motion->getMyConsultation()->havePrivilege(
-            Privileges::PRIVILEGE_CHANGE_PROPOSALS,
-            PrivilegeQueryContext::motion($motion)
-        );
+        return $motion->canEditProposedProcedure();
     }
 
     public static function canSetResolutionV3(Motion $motion): bool

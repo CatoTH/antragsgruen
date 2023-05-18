@@ -9,7 +9,9 @@ Setup Notes
 - Sachgebiete: Tags, type „Public Topic” (0)
 - Themenbereiche: Tags, type „Proposed Procedure” (1), Sachgebiete als parent tags
 - PDFs: Verfahrensvorschläge anzeigen
-- Interne Consultation-Settings: motionTitlePrefixNumMaxLen=2
+- Interne Consultation-Settings:
+  - motionTitlePrefixNumMaxLen=2
+  - ppEditableAfterPublication=false
 
 Antragstypen:
 - Anträge
