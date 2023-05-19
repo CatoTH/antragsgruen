@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\majorityType;
 
 use app\models\exceptions\Internal;
+use app\models\settings\AntragsgruenApp;
 use app\models\settings\VotingData;
 
 abstract class IMajorityType
@@ -23,11 +24,15 @@ abstract class IMajorityType
      */
     public static function getMajorityTypes(): array
     {
-        return [
-            static::MAJORITY_TYPE_SIMPLE => SimpleMajority::class,
-            static::MAJORITY_TYPE_ABSOLUTE => AbsoluteMajority::class,
-            static::MAJORITY_TYPE_TWO_THIRD => TwoThirdsMajority::class,
+        $majorityTypes = [
+            self::MAJORITY_TYPE_SIMPLE => SimpleMajority::class,
+            self::MAJORITY_TYPE_ABSOLUTE => AbsoluteMajority::class,
+            self::MAJORITY_TYPE_TWO_THIRD => TwoThirdsMajority::class,
         ];
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $majorityTypes = array_merge($majorityTypes, $plugin::getAdditionalMajorityTypes());
+        }
+        return $majorityTypes;
     }
 
     abstract public function calculateResult(VotingData $votingData): int;

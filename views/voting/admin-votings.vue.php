@@ -649,7 +649,11 @@ $html = ob_get_clean();
                 return this.voteDownloadUrl.replace(/VOTINGBLOCKID/, this.voting.id).replace(/FORMAT/, 'ods');
             },
             quorumIndicator: function () {
-                return quorumIndicator.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
+                if (this.voting.quorum === null) {
+                    return this.voting.quorum_custom_target;
+                } else {
+                    return quorumIndicator.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
+                }
             }
         },
         methods: {

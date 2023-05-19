@@ -39,6 +39,16 @@ class ConsultationUserGroup extends ActiveRecord
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
+    public function getMyConsultation(): ?Consultation
+    {
+        $current = Consultation::getCurrent();
+        if ($current && $current->id === $this->consultationId) {
+            return $current;
+        } else {
+            return Consultation::findOne($this->consultationId);
+        }
+    }
+
     public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
@@ -242,7 +252,7 @@ class ConsultationUserGroup extends ActiveRecord
             'description' => $this->getNormalizedDescription(),
             'editable' => $this->isUserEditable(),
             'auth_type' => $this->getAuthType(),
-        ], $this->getGroupPermissions()->toApi($this->consultation));
+        ], $this->getGroupPermissions()->toApi($this->getMyConsultation()));
     }
 
     public function isSpecificallyRelevantForConsultationOrSite(Consultation $consultation): bool
