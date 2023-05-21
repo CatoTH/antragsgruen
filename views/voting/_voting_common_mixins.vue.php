@@ -156,7 +156,11 @@ use app\models\policies\UserGroups;
                 return groupedItem[0].voting_status === this.VOTING_STATUS_QUORUM_MISSED;
             },
             quorumCounter: function (groupedVoting) {
-                return quorumCounter.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
+                if (groupedVoting[0].quorum_votes === null) {
+                    return groupedVoting[0].quorum_custom_current;
+                } else {
+                    return quorumCounter.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
+                }
             },
             hasVoteList: function (groupedItem) {
                 return groupedItem[0].votes !== undefined;

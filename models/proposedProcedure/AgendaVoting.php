@@ -152,6 +152,7 @@ class AgendaVoting
             $quorumType = $this->voting->getQuorumType();
             if (!is_a($quorumType, NoQuorum::class)) {
                 $votingBlockJson['quorum'] = $quorumType->getQuorum($this->voting);
+                $votingBlockJson['quorum_custom_target'] = $quorumType->getCustomQuorumTarget($this->voting);
                 $votingBlockJson['quorum_eligible'] = $quorumType->getRelevantEligibleVotersCount($this->voting);
             }
         } else {
@@ -188,8 +189,8 @@ class AgendaVoting
     {
         $quorumType = $voting->getQuorumType();
         if (!is_a($quorumType, NoQuorum::class)) {
-            $quorumVotes = $quorumType->getRelevantVotedCount($voting, $item);
-            $data['quorum_votes'] = $quorumVotes;
+            $data['quorum_votes'] = $quorumType->getRelevantVotedCount($voting, $item);
+            $data['quorum_custom_current'] = $quorumType->getCustomQuorumCurrent($voting, $item);
         }
 
         if ($voting->resultsPublic === VotingBlock::RESULTS_PUBLIC_YES) {

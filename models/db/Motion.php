@@ -772,7 +772,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function needsCollectionPhase(): bool
     {
-        $motionSupportType = $this->motionType->getMotionSupportTypeClass();
+        $motionSupportType = $this->getMyMotionType()->getMotionSupportTypeClass();
 
         return $this->iNeedsCollectionPhase($motionSupportType);
     }
@@ -974,7 +974,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->titlePrefix && !$this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->titlePrefix;
         } else {
-            return $this->motionType->titleSingular;
+            return $this->getMyMotionType()->titleSingular;
         }
     }
 
@@ -1062,10 +1062,10 @@ class Motion extends IMotion implements IRSSItem
      */
     public function setMotionType(ConsultationMotionType $motionType)
     {
-        if (!$this->motionType->isCompatibleTo($motionType)) {
+        if (!$this->getMyMotionType()->isCompatibleTo($motionType)) {
             throw new FormError('This motion cannot be changed to the type ' . $motionType->titleSingular);
         }
-        if (count($this->getSortedSections(false)) !== count($this->motionType->motionSections)) {
+        if (count($this->getSortedSections(false)) !== count($this->getMyMotionType()->motionSections)) {
             throw new FormError('This motion cannot be changed as it seems to be inconsistent');
         }
 

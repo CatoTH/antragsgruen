@@ -10,6 +10,7 @@ return [
     'edit'                  => 'Edit',
     'Home'                  => 'Home',
     'home_back'             => 'Back to home',
+    'menu_logged_in'        => 'Logged in',
     'menu_main'             => 'Main menu',
     'menu_account'          => 'Account',
     'menu_admin'            => 'Settings',

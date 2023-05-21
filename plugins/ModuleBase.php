@@ -9,7 +9,9 @@ use app\models\AdminTodoItem;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\http\ResponseInterface;
 use app\models\layoutHooks\Hooks;
+use app\models\majorityType\IMajorityType;
 use app\models\policies\IPolicy;
+use app\models\quorumType\IQuorumType;
 use app\models\settings\{IMotionStatus, Layout, Privilege, VotingData};
 use yii\base\{Action, Module};
 use yii\web\{AssetBundle, Controller, View};
@@ -229,6 +231,14 @@ class ModuleBase extends Module
     }
 
     /**
+     * @return IMajorityType[]
+     */
+    public static function getAdditionalMajorityTypes(): array
+    {
+        return [];
+    }
+
+    /**
      * @param Vote[] $votes
      */
     public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): ?array
@@ -243,6 +253,14 @@ class ModuleBase extends Module
     public static function getVotingDataClass(Consultation $consultation): ?string
     {
         return null;
+    }
+
+    /**
+     * @return IQuorumType[]|string[]
+     */
+    public static function getAdditionalQuorumTypes(): array
+    {
+        return [];
     }
 
     public static function userIsRelevantForQuorum(VotingBlock $votingBlock, User $user): ?bool

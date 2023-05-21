@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\plugins\european_youth_forum;
 
 use app\models\quorumType\NoQuorum;
@@ -32,6 +34,13 @@ class Module extends ModuleBase
     public static function getVotingDataClass(Consultation $consultation): string
     {
         return VotingData::class;
+    }
+
+    public static function getAdditionalQuorumTypes(): array
+    {
+        return [
+            OneThirdPerPillarQuorum::QUORUM_TYPE_YFJ_PILLAR_13 => OneThirdPerPillarQuorum::class,
+        ];
     }
 
     public static function userIsRelevantForQuorum(VotingBlock $votingBlock, User $user): ?bool
