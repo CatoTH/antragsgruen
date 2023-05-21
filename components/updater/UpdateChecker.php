@@ -7,40 +7,40 @@ use app\models\exceptions\Network;
 
 class UpdateChecker
 {
-    /**
-     * @return bool
-     */
-    public static function isUpdaterAvailable()
+    public static function isUpdaterAvailable(): bool
     {
+        /** @phpstan-ignore-next-line */
         return (defined('ANTRAGSGRUEN_INSTALLATION_SOURCE') && ANTRAGSGRUEN_INSTALLATION_SOURCE === 'dist');
     }
 
     /**
-     * @param null|string $version
      * @return Update[]
      * @throws Network
      * @throws Internal
      */
-    public static function getAvailableUpdates($version = null)
+    public static function getAvailableUpdates(?string $version = null): array
     {
         if ($version === null) {
             $version = ANTRAGSGRUEN_VERSION;
         }
 
         $curlc = curl_init(ANTRAGSGRUEN_UPDATE_BASE . $version);
+        if (!$curlc) {
+            throw new Network('The update could not be loaded (curl cannot be initialized)');
+        }
         curl_setopt($curlc, CURLOPT_RETURNTRANSFER, true);
         $resp = curl_exec($curlc);
         $info = curl_getinfo($curlc);
         curl_close($curlc);
 
-        if (!isset($info['http_code'])) {
-            throw new Network("The updates could not be loaded");
-        }
         if (!in_array($info['http_code'], [200, 404])) {
             throw new Network("The updates could not be loaded");
         }
         if ($info['http_code'] === 404) {
             return [];
+        }
+        if (!is_string($resp) || !$resp) {
+            throw new Network("The updates could not be loaded (empty string returned)");
         }
         try {
             $json = json_decode($resp, true);

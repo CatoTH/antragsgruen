@@ -19,8 +19,13 @@ class MigrateHelper extends MigrateController
     public function __construct($moduleId, $module, array $config = [])
     {
         parent::__construct($moduleId, $module, $config);
-        $this->db = Instance::ensure($this->db, Connection::class);
-        foreach ($this->migrationPath as $i => $path) {
+        /** @var Connection $connection */
+        $connection = Instance::ensure($this->db, Connection::class);
+        $this->db = $connection;
+
+        /** @var string[] $paths */
+        $paths = $this->migrationPath;
+        foreach ($paths as $i => $path) {
             $this->migrationPath[$i] = \Yii::getAlias($path);
         }
     }
@@ -31,6 +36,7 @@ class MigrateHelper extends MigrateController
     public static function getAvailableMigrations(): array
     {
         $controller = \Yii::createObject(static::class, ['migration', \Yii::$app]);
+        /** @var MigrateHelper $controller */
         return $controller->getNewMigrations();
     }
 
@@ -41,6 +47,7 @@ class MigrateHelper extends MigrateController
     public static function performMigrations(): void
     {
         $controller = \Yii::createObject(static::class, ['migration', \Yii::$app]);
+        /** @var MigrateHelper $controller */
         $migrations = $controller->getNewMigrations();
         foreach ($migrations as $migration) {
             if (!$controller->migrateUp($migration)) {
@@ -56,7 +63,7 @@ class MigrateHelper extends MigrateController
     public static function flushCache(): void
     {
         $conn = \Yii::$app->get('db', false);
-        if ($conn && ($conn instanceof Connection || $conn instanceof \app\components\yii\DBConnection)) {
+        if ($conn instanceof Connection) {
             $schema = $conn->getSchema();
             $schema->refresh();
         }
@@ -64,16 +71,19 @@ class MigrateHelper extends MigrateController
         $components = \Yii::$app->getComponents();
 
         foreach ($components as $name => $component) {
-            if ($component instanceof CacheInterface) {
-                \Yii::$app->get($name)->flush();
-            } elseif (is_array($component) && isset($component['class']) && is_subclass_of($component['class'], 'yii\caching\CacheInterface')) {
-                \Yii::$app->get($name)->flush();
-            } elseif (is_string($component) && is_subclass_of($component, 'yii\caching\CacheInterface')) {
-                \Yii::$app->get($name)->flush();
+            if (
+                $component instanceof CacheInterface ||
+                is_array($component) && isset($component['class']) && is_subclass_of($component['class'], 'yii\caching\CacheInterface') ||
+                is_string($component) && is_subclass_of($component, 'yii\caching\CacheInterface')
+            ) {
+                /** @var CacheInterface $cache */
+                $cache = \Yii::$app->get($name);
+                $cache->flush();
             } elseif ($component instanceof \Closure) {
                 $cache = \Yii::$app->get($name);
                 if (is_subclass_of($cache, 'yii\caching\CacheInterface')) {
-                    \Yii::$app->get($name)->flush();
+                    /** @var CacheInterface $cache */
+                    $cache->flush();
                 }
             }
         }

@@ -79,6 +79,9 @@ class Update
             return false;
         }
         $content = file_get_contents($this->getAbsolutePath());
+        if (!is_string($content)) {
+            return false;
+        }
         return $this->checkDownloadIntegrity($content);
     }
 
@@ -88,15 +91,15 @@ class Update
     public function download(): void
     {
         $curlc = curl_init($this->url);
+        if (!$curlc) {
+            throw new \Exception('The update could not be loaded (curl cannot be initialized)');
+        }
         curl_setopt($curlc, CURLOPT_RETURNTRANSFER, true);
         $resp = curl_exec($curlc);
         $info = curl_getinfo($curlc);
         curl_close($curlc);
 
-        if (!isset($info['http_code'])) {
-            throw new \Exception('The update could not be loaded');
-        }
-        if ($info['http_code'] !== 200) {
+        if ($info['http_code'] !== 200 || !is_string($resp)) {
             throw new \Exception('The update could not be loaded');
         }
 
@@ -122,8 +125,12 @@ class Update
                 throw new \Exception('Could not open the ZIP file');
             }
 
-            $updateJson      = $zipfile->getFromName('update.json');
-            $updateSignature = base64_decode($zipfile->getFromName('update.json.signature'));
+            $updateJson = $zipfile->getFromName('update.json');
+            $signature = $zipfile->getFromName('update.json.signature');
+            if (!$updateJson || !$signature) {
+                throw new \Exception('Could not get update.json or update.json.signature from the ZIP file');
+            }
+            $updateSignature = base64_decode($signature);
             $publicKey       = base64_decode(file_get_contents(__DIR__ . '/../../config/update-public.key'));
             if (!sodium_crypto_sign_verify_detached($updateSignature, $updateJson, $publicKey)) {
                 throw new \Exception('The signature of the update file is invalid');
@@ -199,6 +206,9 @@ class Update
             $corrupted = [];
             foreach ($fileList as $file => $correctHash) {
                 $content = $zipfile->getFromName($file);
+                if (!$content) {
+                    throw new \Exception('Could not get file from ZIP file: ' . $file);
+                }
                 $zipHash = base64_encode(sodium_crypto_generichash($content));
                 if ($zipHash !== $correctHash) {
                     $corrupted[] = $file;
@@ -208,7 +218,11 @@ class Update
             $fileList  = array_merge($filesObj->files_added_md5, $filesObj->files_updated_md5);
             $corrupted = [];
             foreach ($fileList as $file => $correctHash) {
-                $zipHash = md5($zipfile->getFromName($file));
+                $content = $zipfile->getFromName($file);
+                if (!$content) {
+                    throw new \Exception('Could not get file from ZIP file: ' . $file);
+                }
+                $zipHash = md5($content);
                 if ($zipHash !== $correctHash) {
                     $corrupted[] = $file;
                 }
