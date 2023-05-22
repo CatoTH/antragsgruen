@@ -644,7 +644,7 @@ class AdminMotionFilterForm
             }
 
             $prefix = $this->prefix;
-            if ($prefix !== null && $prefix !== '' && mb_stripos($amend->titlePrefix, $prefix) === false) {
+            if ($prefix !== null && $prefix !== '' && mb_stripos($amend->titlePrefix ?? '', $prefix) === false) {
                 $matches = false;
             }
 

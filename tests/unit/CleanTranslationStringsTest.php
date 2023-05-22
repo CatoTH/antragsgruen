@@ -12,11 +12,7 @@ class CleanTranslationStringsTest extends DBTestBase
 {
     use Specify;
 
-    /**
-     * @param string $str1
-     * @return string
-     */
-    protected function normalizeStr($str1)
+    protected function normalizeStr(string $str1): string
     {
         $str1 = preg_replace('/\s*/', '', $str1);
         $str1 = str_replace('&quot;', '"', $str1);
@@ -27,7 +23,7 @@ class CleanTranslationStringsTest extends DBTestBase
     /**
      * @throws \yii\base\InvalidConfigException
      */
-    public function testUnchangingTranslationStrings()
+    public function testUnchangingTranslationStrings(): void
     {
         $changedStrings = [];
         foreach (array_keys(MessageSource::getTranslatableCategories()) as $catId) {

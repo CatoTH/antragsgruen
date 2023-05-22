@@ -30,7 +30,9 @@ abstract class IMajorityType
             self::MAJORITY_TYPE_TWO_THIRD => TwoThirdsMajority::class,
         ];
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $majorityTypes = array_merge($majorityTypes, $plugin::getAdditionalMajorityTypes());
+            foreach ($plugin::getAdditionalMajorityTypes() as $key => $val) {
+                $majorityTypes[$key] = $val;
+            }
         }
         return $majorityTypes;
     }
