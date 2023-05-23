@@ -278,7 +278,7 @@ class UrlHelper
         if (!$urlParts) {
             throw new FormError('Unable to parse the url');
         }
-        $scheme   = $urlParts['scheme'] ?? ($_SERVER['REQUEST_SCHEME'] ?? 'http');
+        $scheme   = $urlParts['scheme'] ?? ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ($_SERVER['REQUEST_SCHEME'] ?? 'http'));
         $host     = $urlParts['host'] ?? $_SERVER['HTTP_HOST'];
         $fullhost = $scheme . '://' . $host . '/';
         if ($params->domainPlain === $fullhost) {
