@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.12.0 [not released yet]
+### Version 4.12.0 (2023-05-29)
 
 - User groups are now more powerful administrational tools:
   - User groups can now receive admin rights for specific administrational tasks.

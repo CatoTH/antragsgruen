@@ -21,6 +21,7 @@ class BinaryFileResponse implements ResponseInterface
     public const TYPE_ZIP = 'zip';
     public const TYPE_CSV = 'csv';
     public const TYPE_CSS = 'css';
+    public const TYPE_YAML = 'yaml';
 
     private string $type;
     private string $content;
@@ -120,6 +121,10 @@ class BinaryFileResponse implements ResponseInterface
             case self::TYPE_CSS:
                 $response->headers->add('Content-Type', 'text/css');
                 $fileEnding = 'css';
+                break;
+            case self::TYPE_YAML:
+                $response->headers->add('Content-Type', 'text/yaml');
+                $fileEnding = 'yaml';
                 break;
             default:
                 $response->headers->add('Content-Type', 'text/html');
