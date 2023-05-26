@@ -6,28 +6,30 @@ namespace app\plugins\swagger_ui\controllers;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
+use app\models\http\{BinaryFileResponse, HtmlResponse};
 use app\plugins\swagger_ui\Assets;
-use yii\web\Response;
+use yii\web\View;
 
 class SwaggeruiController extends Base
 {
-    public function actionIndex()
+    public function actionIndex(): HtmlResponse
     {
-        $assets = Assets::register($this->view);
+        /** @var View $view */
+        $view = $this->view;
+        $assets = Assets::register($view);
         $openapiUrl = UrlHelper::createUrl('/swagger_ui/swaggerui/openapi');
         $openapiUrl = preg_replace('/\?consultationPath=[\w\-]+$/siu', '', $openapiUrl);
 
-        return $this->renderPartial('@app/plugins/swagger_ui/views/index', [
+        return new HtmlResponse($this->renderPartial('@app/plugins/swagger_ui/views/index', [
             'baseUrl' => $assets->baseUrl,
             'openapiUrl' => $openapiUrl,
-        ]);
+        ]));
     }
 
-    public function actionOpenapi()
+    public function actionOpenapi(): BinaryFileResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'text/yaml');
-
-        return file_get_contents(__DIR__ . '/../../../docs/openapi.yaml');
+        $openapi = (string)file_get_contents(__DIR__ . '/../../../docs/openapi.yaml');
+        
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_YAML, $openapi, false, null);
     }
 }
