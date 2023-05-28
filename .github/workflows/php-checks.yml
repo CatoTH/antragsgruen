@@ -6,10 +6,12 @@ jobs:
   check-composer:
     strategy:
       matrix:
-        php: [ '7.4', '8.0', '8.1' ]
+        php: [ '8.0', '8.1' ]
         experimental: [ false ]
         include:
           - php: '8.2'
+            experimental: true
+          - php: '8.3'
             experimental: true
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
