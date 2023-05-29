@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
+use Codeception\Attribute\Incomplete;
 use Tests\Support\Helper\TestBase;
 
 class DiffRendererTest extends TestBase
@@ -178,10 +179,9 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<ul><li>Test<p class="inserted">Neuer Absatz</p>.</li></ul>', $rendered);
     }
 
+    #[Incomplete('TODO')]
     public function testInsertedListElement(): void
     {
-        return; // @TODO
-
         $renderer = new DiffRenderer();
 
         $html     = '<ul><li>###LINENUMBER###Nested 1###INS_START###</li><li>Nested <strong>2</strong>###INS_END###</li></ul>';
@@ -189,10 +189,9 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<ul><li>###LINENUMBER###Nested 1</li><li class="inserted">Nested <strong>2</strong></li></ul>', $rendered);
     }
 
+    #[Incomplete('TODO')]
     public function testChangedOlNumbering(): void
     {
-        return; // @TODO
-
         $renderer = new DiffRenderer();
         $html     = '###DEL_START###<ol start="2">###DEL_END######INS_START###<ol start="1">###INS_END###<li>Test 123</li></ol>';
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
