@@ -326,7 +326,9 @@ All endpoints of the API are located under `/rest`. A OpenAPI-based description 
 
 ## Testing
 
-### Installation
+### Codecept (acceptance & unit test)
+
+#### Installation
 
 * Create a separate (MySQL-)database for testing (`antragsgruen_tests`)
 * Set up the configuration file: ```
@@ -337,7 +339,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed. (is done by ``npm install``)
 * The host name ``test.antragsgruen.test`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured. If another host name is to be used, it has to be changed in the [config/TEST_DOMAIN](config/TEST_DOMAIN) and [tests/acceptance.suite.yml](tests/acceptance.suite.yml).
 
-### Running
+#### Running
 
 * Start Selenium: ```
 java -jar selenium-server-standalone-3.141.59.jar```
@@ -350,9 +352,21 @@ vendor/bin/codecept run acceptance motions/CreateCept```
 
 ### phpstan
 
+1. Before changing code, generate a baseline.
+
+```bash
+php -d memory_limit=1G vendor/bin/phpstan.phar analyse --configuration=phpstan.neon --generate-baseline
 ```
-php -d memory_limit=1G vendor/bin/phpstan.phar analyse --level 5
+
+Suggested output: `[OK] Baseline generated with 123 errors.`
+
+2. Verify that your changes do not introduce new problems.
+
+```bash
+php -d memory_limit=1G vendor/bin/phpstan.phar analyse --configuration=phpstan.use-baseline.neon
 ```
+
+Suggested output: `[OK] No errors`
 
 Reporting security issues
 -------------------------

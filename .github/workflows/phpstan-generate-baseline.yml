@@ -22,7 +22,7 @@ jobs:
           command: require yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
       - name: Generate baseline
         run: |
-          php vendor/bin/phpstan analyse --level=7 --error-format=github --generate-baseline
+          php vendor/bin/phpstan analyse --configuration=phpstan.neon --error-format=github --generate-baseline
       - name: Upload baseline
         uses: actions/upload-artifact@v3
         with:

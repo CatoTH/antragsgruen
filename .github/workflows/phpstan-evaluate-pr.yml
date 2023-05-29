@@ -27,4 +27,4 @@ jobs:
           name: phpstan-baseline.neon
       - name: phpstan
         run: |
-          php vendor/bin/phpstan analyse --level=7 --error-format=github --configuration=phpstan.use-baseline.neon
+          php vendor/bin/phpstan analyse --configuration=phpstan.use-baseline.neon --error-format=github
