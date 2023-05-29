@@ -1,11 +1,16 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
-use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
+use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\DataTypes\AffectedLineBlock;
+use app\components\diff\DiffRenderer;
 use app\models\db\Amendment;
 use app\models\sectionTypes\TextSimple;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class AmendmentLineNumberingTest extends DBTestBase
 {
     /**
@@ -18,7 +23,7 @@ class AmendmentLineNumberingTest extends DBTestBase
 
         $section = null;
         foreach ($amendment->getActiveSections() as $sect) {
-            if ($sect->sectionId == $sectionId) {
+            if ($sect->sectionId === $sectionId) {
                 $section = $sect;
             }
         }
@@ -37,7 +42,7 @@ class AmendmentLineNumberingTest extends DBTestBase
 
         $section = null;
         foreach ($amendment->getActiveSections() as $sect) {
-            if ($sect->sectionId == $sectionId) {
+            if ($sect->sectionId === $sectionId) {
                 $section = $sect;
             }
         }
@@ -58,7 +63,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         return $lines;
     }
 
-    public function testFirstAffectedLine()
+    public function testFirstAffectedLine(): void
     {
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne(1);
@@ -77,7 +82,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertEquals(24, $amendment->getFirstDiffLine());
     }
 
-    public function testTwoChangesPerLine()
+    public function testTwoChangesPerLine(): void
     {
         $diff = $this->getSectionDiffBlocks(270, 2);
         $text = '<ul><li value="1">###LINENUMBER###Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul><ul class="inserted"><li>Neue Zeile</li></ul>';
@@ -88,7 +93,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertEquals($text, $diff[0]->text);
     }
 
-    public function testSection1()
+    public function testSection1(): void
     {
         $diff = $this->getSectionDiff(3, 2);
         $this->assertEquals(9, $diff[0]->lineFrom);
@@ -101,7 +106,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertEquals(35, $diff[3]->lineTo);
     }
 
-    public function testSection1Wording()
+    public function testSection1Wording(): void
     {
         $diff = $this->getSectionDiff(3, 2);
         $this->assertStringContainsString('Nach Zeile 9 einfügen', TextSimple::formatDiffGroup([$diff[0]]));
@@ -111,7 +116,7 @@ class AmendmentLineNumberingTest extends DBTestBase
     }
 
 
-    public function testSection2()
+    public function testSection2(): void
     {
         $diff = $this->getSectionDiff(3, 4);
         $this->assertEquals(35, $diff[0]->lineFrom);
@@ -122,7 +127,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertEquals(53, $diff[2]->lineTo);
     }
 
-    public function testSection2Wording()
+    public function testSection2Wording(): void
     {
         $diff = $this->getSectionDiff(3, 4);
         $this->assertStringContainsString('Vor Zeile 36 einfügen', TextSimple::formatDiffGroup([$diff[0]], '', '', 36));
@@ -130,7 +135,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertStringContainsString('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
     }
 
-    public function testInvisibleSpaces()
+    public function testInvisibleSpaces(): void
     {
         $in     = [self::getAffectedLinesBlock(16, 16, '###LINENUMBER###Test<del> </del>Bla<ins> </ins>')];
         $expect = '<h4 class="lineSummary">In Zeile 16:</h4><div><p>' .
@@ -148,7 +153,7 @@ class AmendmentLineNumberingTest extends DBTestBase
     }
 
 
-    public function testComplicatedParagraphReplace()
+    public function testComplicatedParagraphReplace(): void
     {
         return; // @TODO
 

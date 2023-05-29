@@ -1,21 +1,20 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\UrlHelper;
 use app\models\settings\AntragsgruenApp;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
+use Yii;
 
 class URLAbsolutizeTest extends TestBase
 {
-    use Specify;
-
     /**
      */
-    public function testSubdir()
+    public function testSubdir(): void
     {
         /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = Yii::$app->params;
         $params->domainSubdomain = '';
         $params->domainPlain = 'https://antragsgruen.local/';
         $params->resourceBase = '/antragsgruen/web/';

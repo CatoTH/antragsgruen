@@ -2,6 +2,9 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use app\models\settings\Consultation;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -19,7 +22,7 @@ $I->submitForm('#comment_-1_-1_form', [], 'writeComment');
 $I->see('An amendment comment');
 
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectOption('#startLayoutType', \app\models\settings\Consultation::START_LAYOUT_AGENDA_LONG);
+$I->selectOption('#startLayoutType', Consultation::START_LAYOUT_AGENDA_LONG);
 $page->saveForm();
 
 $I->gotoConsultationHome();
@@ -139,4 +142,3 @@ $I->click('.alert-success a');
 
 $I->gotoMotion(true, (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
 $I->see('N1.2', 'h1');
-$I->fail('!');

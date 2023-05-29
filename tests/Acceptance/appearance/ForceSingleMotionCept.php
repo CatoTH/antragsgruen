@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -30,7 +33,7 @@ $I->see('A3: Textformatierungen', 'h1');
 $I->wantTo('unpublish the motion');
 $I->loginAsStdAdmin();
 $I->click('#sidebar .adminEdit a');
-$I->selectOption('#motionStatus', \app\models\db\Motion::STATUS_DRAFT);
+$I->selectOption('#motionStatus', IMotion::STATUS_DRAFT);
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 
@@ -48,7 +51,7 @@ $I->dontSeeElement('#sidebar li');
 $I->wantTo('overhaul the motion');
 $I->loginAsStdAdmin();
 $I->click('#sidebar .adminEdit a');
-$I->selectOption('#motionStatus', \app\models\db\Motion::STATUS_SUBMITTED_SCREENED);
+$I->selectOption('#motionStatus', IMotion::STATUS_SUBMITTED_SCREENED);
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 

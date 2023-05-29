@@ -1,15 +1,18 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
+use app\models\db\Consultation;
+use app\models\db\ConsultationSettingsTag;
+use app\models\db\IMotion;
+use app\models\db\Motion;
 use app\models\settings\Tag;
-use app\models\db\{Consultation, ConsultationSettingsTag, Motion};
-use Codeception\Specify;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class ConsultationNextStatusStringTest extends DBTestBase
 {
-    use Specify;
-
     public function testMotionPrefix_NoMotionExiists(): void
     {
         /** @var Consultation $consultation */
@@ -25,7 +28,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
 
         $dummyMotion = new Motion();
         $dummyMotion->title = 'Testmotion';
-        $dummyMotion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+        $dummyMotion->status = IMotion::STATUS_SUBMITTED_UNSCREENED;
         $dummyMotion->titlePrefix = 'A1';
         $dummyMotion->version = Motion::VERSION_DEFAULT;
         $dummyMotion->motionTypeId = 3;
@@ -45,7 +48,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
 
         $dummyMotion = new Motion();
         $dummyMotion->title = 'Testmotion';
-        $dummyMotion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+        $dummyMotion->status = IMotion::STATUS_SUBMITTED_UNSCREENED;
         $dummyMotion->titlePrefix = 'B1';
         $dummyMotion->version = Motion::VERSION_DEFAULT;
         $dummyMotion->motionTypeId = 4;
@@ -65,7 +68,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
 
         $dummyMotion                 = new Motion();
         $dummyMotion->title          = 'Testmotion';
-        $dummyMotion->status         = Motion::STATUS_SUBMITTED_UNSCREENED;
+        $dummyMotion->status         = IMotion::STATUS_SUBMITTED_UNSCREENED;
         $dummyMotion->titlePrefix    = 'A4';
         $dummyMotion->version        = Motion::VERSION_DEFAULT;
         $dummyMotion->motionTypeId   = 3;

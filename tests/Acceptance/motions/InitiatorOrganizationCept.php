@@ -1,12 +1,15 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\ISupporter;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $createPage = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $createPage->fillInValidSampleData('Sample motion from an organization');
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('.supporterDataHead');
 $I->dontSeeElement('.supporterData');
 $I->dontSeeElement('#initiatorOrga');

@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\HTMLTools;
+use Tests\Support\Helper\TestBase;
 
 class HTMLToolsTrimHtmlTest extends TestBase
 {

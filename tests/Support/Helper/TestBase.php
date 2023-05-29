@@ -1,12 +1,13 @@
 <?php
+namespace Tests\Support\Helper;
 
-namespace unit;
-
+use Codeception\Test\Unit;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\di\Container;
+use yii\web\Application;
 
-class TestBase extends \Codeception\TestCase\Test
+class TestBase extends Unit
 {
     /**
      * @inheritdoc
@@ -28,12 +29,12 @@ class TestBase extends \Codeception\TestCase\Test
 
     /**
      * Mocks up the application instance.
-     * @param array $config the configuration that should be used to generate the application instance.
-     * If null, [[appConfig]] will be used.
-     * @return \yii\web\Application|\yii\console\Application the application instance
+     * @param array|null $config the configuration that should be used to generate the application instance.
+     *                      If null, [[appConfig]] will be used.
+     * @return object|\yii\console\Application|\yii\web\Application
      * @throws InvalidConfigException if the application configuration is invalid
      */
-    protected function mockApplication($config = null)
+    protected function mockApplication(array $config = null): Application|\yii\console\Application
     {
         Yii::$container = new Container();
 
@@ -47,20 +48,20 @@ class TestBase extends \Codeception\TestCase\Test
         }
         if (is_array($config)) {
             if (!isset($config['class'])) {
-                $config['class'] = 'yii\web\Application';
+                $config['class'] = Application::class;
             }
             return Yii::createObject($config);
-        } else {
-            throw new InvalidConfigException('Please provide a configuration array to mock up an application.');
         }
+
+        throw new InvalidConfigException('Please provide a configuration array to mock up an application.');
     }
 
     /**
      * Destroys the application instance created by [[mockApplication]].
      */
-    protected function destroyApplication()
+    protected function destroyApplication(): void
     {
-        Yii::$app = null;
+        Yii::$app       = null;
         Yii::$container = new Container();
     }
 }

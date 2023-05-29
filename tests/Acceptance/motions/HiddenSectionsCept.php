@@ -1,6 +1,11 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\sectionTypes\ISectionType;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -15,7 +20,7 @@ $I->fillField('#typeCreateTitle', 'Create hidden');
 $I->submitForm('.motionTypeCreateForm', [], 'create');
 
 $I->clickJS('.sectionAdder');
-$I->selectOption('#sectionTypenew0', \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE);
+$I->selectOption('#sectionTypenew0', ISectionType::TYPE_TEXT_SIMPLE);
 $I->fillField('.sectionnew0 .sectionTitle input', 'Message to the admin');
 $I->dontSeeCheckboxIsChecked('.sectionnew0 .nonPublicRow input');
 $I->seeElement('.sectionnew0 .amendmentRow');
@@ -78,9 +83,9 @@ $I->dontSee('Internal hint for the admins');
 $I->wantTo('Check that the hidden section is not shown at the API');
 
 $baseUri = str_replace(['{SUBDOMAIN}', '{PATH}'], ['stdparteitag', ''], AcceptanceTester::ABSOLUTE_URL_TEMPLATE_SITE);
-$client = new \GuzzleHttp\Client([
+$client = new Client([
     'base_uri' => $baseUri,
-    \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+    RequestOptions::HTTP_ERRORS => false,
 ]);
 $request = $client->get('rest/std-parteitag');
 $consultationRest = json_decode($request->getBody()->getContents(), true);

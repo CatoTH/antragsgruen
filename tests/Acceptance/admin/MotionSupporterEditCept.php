@@ -2,7 +2,8 @@
 
 /** @var \Codeception\Scenario $scenario */
 
-use app\tests\_pages\MotionPage;
+use Tests\_pages\MotionPage;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();

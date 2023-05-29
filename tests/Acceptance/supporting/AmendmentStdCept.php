@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\supportTypes\SupportBase;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -16,7 +19,7 @@ $I->seeCheckboxIsChecked('#sameInitiatorSettingsForAmendments input');
 $I->executeJS('$("#sameInitiatorSettingsForAmendments input").prop("checked", false).trigger("change");');
 $I->seeElement('section.amendmentSupporters');
 
-$I->selectOption('#typeSupportTypeAmendment', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
+$I->selectOption('#typeSupportTypeAmendment', SupportBase::GIVEN_BY_INITIATOR);
 $I->fillField('#typeMinSupportersAmendment', '19');
 $I->submitForm('.adminTypeForm', [], 'save');
 

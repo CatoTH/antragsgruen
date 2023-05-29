@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\models\settings\Stylesheet;
+use Tests\Support\Helper\TestBase;
 
 class CssCompilerTest extends TestBase
 {
-    public function testCss() {
+    public function testCss(): void
+    {
         $stylesheetSettings = new Stylesheet(Stylesheet::DEFAULTS_CLASSIC);
-        $format = \ScssPhp\ScssPhp\Formatter\Compact::class;
         ob_start();
         require(__DIR__ . '/../../views/pages/css.php');
         $css = ob_get_clean();
@@ -18,5 +19,4 @@ class CssCompilerTest extends TestBase
         $this->assertStringNotContainsString('@if', $css);
         $this->assertStringContainsString('.col-md-push-3{left:25%}', $css);
     }
-
 }

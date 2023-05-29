@@ -2,6 +2,8 @@
 
 /** @var \Codeception\Scenario $scenario */
 use app\models\db\Motion;
+use Tests\_pages\MotionEditPage;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -16,7 +18,7 @@ $I->gotoConsultationHome();
 $I->wantTo('edit the draft');
 /** @var Motion $motion */
 $motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID);
-$I->openPage(\app\tests\_pages\MotionEditPage::class, [
+$I->openPage(MotionEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'       => $motion->getMotionSlug(),
@@ -36,7 +38,7 @@ $I->gotoConsultationHome();
 $I->wantTo('edit the draft');
 /** @var Motion $motion */
 $motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID + 1);
-$I->openPage(\app\tests\_pages\MotionEditPage::class, [
+$I->openPage(MotionEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'         => $motion->getMotionSlug(),
@@ -49,7 +51,7 @@ $I->wantTo('edit the draft logged out (should not work)');
 $I->logout();
 /** @var Motion $motion */
 $motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID + 1);
-$I->openPage(\app\tests\_pages\MotionEditPage::class, [
+$I->openPage(MotionEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'         => $motion->getMotionSlug(),

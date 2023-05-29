@@ -1,13 +1,17 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $baseUri = str_replace(['{SUBDOMAIN}', '{PATH}'], ['stdparteitag', ''], AcceptanceTester::ABSOLUTE_URL_TEMPLATE_SITE);
-$client = new \GuzzleHttp\Client([
+$client = new Client([
     'base_uri' => $baseUri,
-    \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+    RequestOptions::HTTP_ERRORS => false,
 ]);
 
 // Default: API is disabled

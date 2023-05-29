@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A helper class for Codeception (http://codeception.com/) that allows automated accessility checks
+ * A helper class for Codeception (http://codeception.com/) that allows automated accessibility checks
  * (WCAG 2.0, Section508) using the pa11y (http://pa11y.org/) command line tool
  * during acceptance testing.
  * It uses local binaries and can therefore be run offline.
@@ -18,7 +18,7 @@
  * =============
  *
  * - Copy this file to _support/Helper/ in the codeception directory
- * - Merge the following configuration to acceptance.suite.yml:
+ * - Merge the following configuration to Acceptance.suite.yml:
  *
  * modules:
  *   enabled:
@@ -53,40 +53,47 @@
  * @author Tobias Hößl <tobias@hoessl.eu>
  */
 
-namespace Helper;
+namespace Tests\Support\Helper;
 
-class AccessibilityValidator extends \Codeception\Module
+use Codeception\Module;
+use Exception;
+use PHPUnit\Framework\Assert;
+use RuntimeException;
+
+class AccessibilityValidator extends Module
 {
-    public static $SUPPORTED_STANDARDS = array(
+    public static array $SUPPORTED_STANDARDS = array(
         'WCAG2AAA',
         'WCAG2AA',
         'WCAG2A',
         'Section508',
     );
-    const STANDARD_WCAG2AAA   = 'WCAG2AAA';
-    const STANDARD_WCAG2AA    = 'WCAG2AA';
-    const STANDARD_WCAG2A     = 'WCAG2A';
-    const STANDARD_SECTION508 = 'Section508';
+    public const STANDARD_WCAG2AAA   = 'WCAG2AAA';
+    public const STANDARD_WCAG2AA    = 'WCAG2AA';
+    public const STANDARD_WCAG2A     = 'WCAG2A';
+    public const STANDARD_SECTION508 = 'Section508';
 
     /**
-     * @return string
+     * @return string|null
      * @throws \Codeception\Exception\ModuleException
      */
-    private function getPageUrl()
+    private function getPageUrl(): ?string
     {
-        if ($this->hasModule('\Helper\AntragsgruenWebDriver')) {
-            /** @var \Helper\AntragsgruenWebDriver $webdriver */
-            $webdriver = $this->getModule('\Helper\AntragsgruenWebDriver');
+        if ($this->hasModule(AntragsgruenWebDriver::class)) {
+            /** @var \Tests\Support\Helper\AntragsgruenWebDriver $webdriver */
+            $webdriver = $this->getModule(AntragsgruenWebDriver::class);
             return $webdriver->webDriver->getCurrentURL();
-        } elseif ($this->hasModule('WebDriver')) {
+        }
+
+        if ($this->hasModule('WebDriver')) {
             /** @var \Codeception\Module\WebDriver $webdriver */
             $webdriver = $this->getModule('WebDriver');
             return $webdriver->webDriver->getCurrentURL();
-        } else {
-            /** @var \Codeception\Module\PhpBrowser $phpBrowser */
-            $phpBrowser = $this->getModule('PhpBrowser');
-            return trim($phpBrowser->_getUrl(), '/') . $phpBrowser->_getCurrentUri();
         }
+
+        /** @var \Codeception\Module\PhpBrowser $phpBrowser */
+        $phpBrowser = $this->getModule('PhpBrowser');
+        return trim($phpBrowser->_getUrl(), '/').$phpBrowser->_getCurrentUri();
     }
 
     /**
@@ -95,10 +102,10 @@ class AccessibilityValidator extends \Codeception\Module
      * @return array
      * @throws \Exception
      */
-    private function validateByPa11y($url, $standard)
+    private function validateByPa11y(string $url, string $standard): array
     {
-        if (!in_array($standard, static::$SUPPORTED_STANDARDS)) {
-            throw new \Exception('Unknown standard: ' . $standard);
+        if (!in_array($standard, static::$SUPPORTED_STANDARDS, true)) {
+            throw new RuntimeException('Unknown standard: '.$standard);
         }
 
         $pa11yPath = $this->_getConfig('pa11yPath');
@@ -106,34 +113,34 @@ class AccessibilityValidator extends \Codeception\Module
             $pa11yPath = 'pa11y';
         }
         if (!file_exists($pa11yPath)) {
-            throw new \Exception('pa11y not found: ' . $pa11yPath);
+            throw new RuntimeException('pa11y not found: '.$pa11yPath);
         }
 
         exec($pa11yPath . " -s " . $standard . " -r json '" . addslashes($url) . "'", $return);
         $data = json_decode($return[0], true);
         if (!is_array($data)) {
             $msg = 'Invalid data returned from validation service: ';
-            throw new \Exception($msg . $return);
+            throw new RuntimeException($msg.$return);
         }
         return $data;
     }
 
     /**
-     * @param string $standard
+     * @param string   $standard
      * @param string[] $ignoreMessages
      */
-    public function validatePa11y($standard = 'WCAG2AA', $ignoreMessages = [])
+    public function validatePa11y(string $standard = 'WCAG2AA', array $ignoreMessages = []): void
     {
         try {
             $url      = $this->getPageUrl();
             $messages = $this->validateByPa11y($url, $standard);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
             return;
         }
         $failMessages = [];
         foreach ($messages as $message) {
-            if ($message['type'] == 'error') {
+            if ($message['type']==='error') {
                 $string = $message['code'] . "\n" . $message['selector'] . ': ';
                 $string .= $message['context'] . "\n";
                 $string .= $message['message'];
@@ -151,7 +158,7 @@ class AccessibilityValidator extends \Codeception\Module
         if (count($failMessages) > 0) {
             $failStr = 'Failed ' . $standard . ' check: ' . "\n";
             $failStr .= implode("\n\n", $failMessages);
-            \PHPUnit_Framework_Assert::fail($failStr);
+            Assert::fail($failStr);
         }
     }
 }

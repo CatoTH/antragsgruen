@@ -1,19 +1,19 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AdminConsultationPage extends BasePage
 {
-    public $route = 'admin/index/consultation';
+    public string|array $route = 'admin/index/consultation';
 
-    public static $maintenanceCheckbox = '#maintenanceMode';
+    public static string $maintenanceCheckbox = '#maintenanceMode';
 
-    public function selectAmendmentNumbering($numbering)
+    public function selectAmendmentNumbering($numbering): void
     {
         $this->actor->selectOption('#amendmentNumbering', $numbering);
     }
@@ -21,7 +21,7 @@ class AdminConsultationPage extends BasePage
     /**
      *
      */
-    public function saveForm()
+    public function saveForm(): void
     {
         $this->actor->submitForm('#consultationSettingsForm', [], 'save');
     }

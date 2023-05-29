@@ -1,12 +1,16 @@
 <?php
+namespace Tests\Support;
 
-use app\tests\_pages\AdminIndexPage;
-use app\tests\_pages\AdminMotionListPage;
-use app\tests\_pages\AmendmentPage;
-use app\tests\_pages\ConsultationHomePage;
-use app\tests\_pages\MotionCreatePage;
-use app\tests\_pages\MotionPage;
-use Helper\BasePage;
+use app\models\db\Motion;
+use Codeception\Actor;
+use Codeception\Lib\Friend;
+use Tests\_pages\AdminIndexPage;
+use Tests\_pages\AdminMotionListPage;
+use Tests\_pages\AmendmentPage;
+use Tests\_pages\ConsultationHomePage;
+use Tests\_pages\MotionCreatePage;
+use Tests\_pages\MotionPage;
+use Tests\Support\Helper\BasePage;
 
 /**
  * Inherited Methods
@@ -19,12 +23,13 @@ use Helper\BasePage;
  * @method void am($role)
  * @method void lookForwardTo($achieveValue)
  * @method void comment($description)
- * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = null)
+ * @method Friend haveFriend($name, $actorClass = null)
  *
  * @SuppressWarnings(PHPMD)
  */
-class AcceptanceTester extends \Codeception\Actor
+class AcceptanceTester extends Actor
 {
+    // do not ever remove this line!
     use _generated\AcceptanceTesterActions;
 
     public const FIRST_FREE_MOTION_ID              = 121;
@@ -61,7 +66,7 @@ class AcceptanceTester extends \Codeception\Actor
                 'consultationPath' => $path,
             ]
         );
-        if ($check && $subdomain == 'stdparteitag' && $path == 'std-parteitag') {
+        if ($check && $subdomain==='stdparteitag' && $path==='std-parteitag') {
             $this->see('Test2', 'h1');
         }
         return $page;
@@ -71,7 +76,7 @@ class AcceptanceTester extends \Codeception\Actor
     {
         if (is_numeric($motionSlug)) {
             /** @var \app\models\db\Motion $motion */
-            $motion     = \app\models\db\Motion::findOne($motionSlug);
+            $motion     = Motion::findOne($motionSlug);
             $motionSlug = $motion->getMotionSlug();
         }
         $page = MotionPage::openBy(
@@ -121,11 +126,7 @@ class AcceptanceTester extends \Codeception\Actor
         return $page;
     }
 
-    /**
-     * @param BasePage|string $page
-     * @return BasePage
-     */
-    public function openPage($page, array $params = [])
+    public function openPage(BasePage|string $page, array $params = []): BasePage
     {
         return $page::openBy($this, $params);
     }

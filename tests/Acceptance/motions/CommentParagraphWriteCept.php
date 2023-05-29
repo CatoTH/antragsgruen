@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\policies\All;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -8,7 +11,7 @@ $I->wantTo('allow comments for everyone');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
 $I->gotoStdAdminPage('bdk', 'bdk')->gotoMotionTypes(7);
-$I->selectOption('#typePolicyComments', \app\models\policies\All::getPolicyID());
+$I->selectOption('#typePolicyComments', All::getPolicyID());
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->logout();
 

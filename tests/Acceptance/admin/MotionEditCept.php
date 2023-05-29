@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -16,7 +19,7 @@ $I->seeElementInDOM('#sections_2');
 $I->seeElement('.saveholder .checkAmendmentCollisions');
 $I->dontSeeElement('.saveholder .save');
 
-$I->selectOption('#motionStatus', \app\models\db\IMotion::STATUS_COMPLETED);
+$I->selectOption('#motionStatus', IMotion::STATUS_COMPLETED);
 $I->fillField('#motionStatusString', 'völlig erschöpft');
 
 $I->fillField('#motionTitle', 'Neuer Titel');

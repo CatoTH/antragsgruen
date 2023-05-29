@@ -1,13 +1,16 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\diff\MovingParagraphDetector;
 use app\models\db\Motion;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class MovingParagraphDetectorTest extends DBTestBase
 {
-    public function testTest1()
+    public function testTest1(): void
     {
         $diffParas = [
             '<p>A paragraph with no changes</p>',
@@ -24,7 +27,7 @@ class MovingParagraphDetectorTest extends DBTestBase
         ], $markedUp);
     }
 
-    public function testTest2()
+    public function testTest2(): void
     {
         $movedParagraphInserted = [];
         $movedParagraphDeleted = [];
@@ -32,7 +35,7 @@ class MovingParagraphDetectorTest extends DBTestBase
         /** @var Motion $motion */
         $motion = Motion::findOne(117);
         foreach ($motion->getActiveSections() as $section) {
-            if ($section->sectionId == 2) {
+            if ($section->sectionId === 2) {
                 $amendments = [];
                 foreach ($motion->getVisibleAmendments() as $amendment) {
                     $amendments[] = $amendment->id;
@@ -42,11 +45,11 @@ class MovingParagraphDetectorTest extends DBTestBase
                 foreach (array_keys($paragraphs) as $paragraphNo) {
                     $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
                     foreach ($groupedParaData as $group) {
-                        if (mb_strpos($group->text, 'data-moving-partner-id') !== false) {
-                            if (mb_strpos($group->text, '###INS_START###') !== false) {
+                        if (str_contains($group->text, 'data-moving-partner-id')) {
+                            if (str_contains($group->text, '###INS_START###')) {
                                 $movedParagraphInserted[] = $paragraphNo;
                             }
-                            if (mb_strpos($group->text, '###DEL_START###') !== false) {
+                            if (str_contains($group->text, '###DEL_START###')) {
                                 $movedParagraphDeleted[] = $paragraphNo;
                             }
                         }

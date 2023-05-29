@@ -1,25 +1,21 @@
 <?php
+namespace Tests\Support\Helper;
 
-namespace unit;
-
-use Codeception\Specify;
-
-require_once(__DIR__ . '/../config/AntragsgruenSetupDB.php');
+use Tests\config\AntragsgruenSetupDB;
+use yii;
 
 class DBTestBase extends TestBase
 {
-    use Specify;
-    use \app\tests\AntragsgruenSetupDB;
+    use AntragsgruenSetupDB;
 
     protected function setUp(): void
     {
-
         parent::setUp();
         $this->createDB();
         $file = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Data/dbdata1.sql';
         $this->populateDB($file);
 
-        \yii::$app->db->close();
+        yii::$app->db->close();
     }
 
     protected function tearDown(): void

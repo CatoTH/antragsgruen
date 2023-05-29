@@ -1,9 +1,9 @@
 {
   "dbConnection": {
-    "dsn": "mysql:host=localhost;dbname=###DB###",
+    "dsn": "mysql:host=127.0.0.1;port=32768;dbname=yii",
     "emulatePrepare": true,
-    "username": "###USERNAME###",
-    "password": "###PASSWORD###",
+    "username": "yii",
+    "password": "yii",
     "charset": "utf8mb4"
   },
   "mailService": {

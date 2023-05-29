@@ -4,13 +4,16 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('set an amendment with a proposed procedure to invisible');
 $I->loginAndGotoMotionList()->gotoAmendmentEdit(281);
 
-$I->selectOption('#amendmentStatus', \app\models\db\IMotion::STATUS_WITHDRAWN_INVISIBLE);
+$I->selectOption('#amendmentStatus', IMotion::STATUS_WITHDRAWN_INVISIBLE);
 $I->submitForm('#amendmentUpdateForm', [], 'save');
 
 $I->gotoMotion(true, 'Testing_proposed_changes-630');

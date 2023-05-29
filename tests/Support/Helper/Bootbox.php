@@ -1,33 +1,36 @@
 <?php
 
-namespace Helper;
+namespace Tests\Support\Helper;
 
-class Bootbox extends \Codeception\Module
+use Codeception\Module;
+use Codeception\Module\WebDriver;
+
+class Bootbox extends Module
 {
-    public function getWebDriver(): \Codeception\Module\WebDriver
+    public function getWebDriver(): WebDriver
     {
-        return $this->getModule('\Helper\AntragsgruenWebDriver');
+        return $this->getModule(AntragsgruenWebDriver::class);
     }
 
-    public function seeBootboxDialog(string $text)
+    public function seeBootboxDialog(string $text): void
     {
         $this->getWebDriver()->wait(1);
         $this->getWebDriver()->see($text, '.bootbox');
     }
 
-    public function dontSeeBootboxDialog(string $text)
+    public function dontSeeBootboxDialog(string $text): void
     {
         $this->getWebDriver()->wait(1);
         $this->getWebDriver()->dontSee($text, '.bootbox');
     }
 
-    public function acceptBootboxAlert()
+    public function acceptBootboxAlert(): void
     {
         $this->getWebDriver()->executeJS('$(".bootbox .btn-primary").trigger("click")');
         $this->getWebDriver()->wait(1);
     }
 
-    public function acceptBootboxConfirm()
+    public function acceptBootboxConfirm(): void
     {
         $this->getWebDriver()->executeJS('$(".bootbox .btn-primary").trigger("click")');
         $this->getWebDriver()->wait(1);

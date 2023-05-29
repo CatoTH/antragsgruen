@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\votings\AnswerTemplates;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -21,9 +24,9 @@ $I->seeElement('form.creatingVoting .specificQuestion');
 
 $I->fillField('.creatingVoting .settingsTitle', 'Vote on these questions');
 $I->fillField('.creatingVoting .settingsQuestion', 'Is this cool?');
-$I->assertSame(\app\models\votings\AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION, intval($I->executeJS('return $("input[name=answersNew]:checked").val()')));
-$I->assertSame(1, intval($I->executeJS('return $("input[name=resultsPublicNew]:checked").val()')));
-$I->assertSame(0, intval($I->executeJS('return $("input[name=votesPublicNew]:checked").val()')));
+$I->assertSame(AnswerTemplates::TEMPLATE_YES_NO_ABSTENTION, (int)$I->executeJS('return $("input[name=answersNew]:checked").val()'));
+$I->assertSame(1, (int)$I->executeJS('return $("input[name=resultsPublicNew]:checked").val()'));
+$I->assertSame(0, (int)$I->executeJS('return $("input[name=votesPublicNew]:checked").val()'));
 $I->clickJS('input[name=votesPublicNew][value=\"1\"]');
 $I->clickJS('form.creatingVoting button[type=submit]');
 

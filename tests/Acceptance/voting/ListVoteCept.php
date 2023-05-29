@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\votings\AnswerTemplates;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -15,7 +18,7 @@ $I->assertSame('question', $I->executeJS('return $("input[name=votingTypeNew]:ch
 $I->fillField('.creatingVoting .settingsTitle', 'Pick your two favorite animals');
 $I->fillField('.creatingVoting .settingsQuestion', 'Dog');
 $I->seeElement('.creatingVoting .majorityTypeSettings');
-$I->clickJS('input[name=answersNew][value=\"' . \app\models\votings\AnswerTemplates::TEMPLATE_YES . '\"]');
+$I->clickJS('input[name=answersNew][value=\"' . AnswerTemplates::TEMPLATE_YES . '\"]');
 $I->dontSeeElement('.creatingVoting .majorityTypeSettings');
 $I->clickJS('form.creatingVoting button[type=submit]');
 

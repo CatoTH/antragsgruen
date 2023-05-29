@@ -2,6 +2,8 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -57,4 +59,3 @@ $I->dontSeeElement('.proposedChangesOpener');
 $I->gotoConsultationHome();
 $I->click('#proposedProcedureLink');
 $I->dontSeeElement('.motionHolder1');
-

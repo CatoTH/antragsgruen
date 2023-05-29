@@ -1,16 +1,14 @@
 <?php
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\Tools;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class DateFunctionsTest extends TestBase
 {
-    use Specify;
-
     /**
      */
-    public function testBootstrapDatesql()
+    public function testBootstrapDatesql(): void
     {
         $ret = Tools::dateBootstrapdate2sql('2.1.2016', 'de');
         $this->assertEquals('2016-01-02', $ret);
@@ -25,7 +23,7 @@ class DateFunctionsTest extends TestBase
 
     /**
      */
-    public function testBootstrapTime2sql()
+    public function testBootstrapTime2sql(): void
     {
         $ret = Tools::dateBootstraptime2sql('2.1.2016 11:05', 'de');
         $this->assertEquals('2016-01-02 11:05:00', $ret);

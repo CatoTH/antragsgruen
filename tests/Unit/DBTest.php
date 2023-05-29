@@ -1,29 +1,21 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\models\db\Site;
-use Yii;
-use Codeception\Specify;
-use Codeception\Util\Autoload;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
-Autoload::addNamespace('unit', __DIR__);
-
+#[Group('database')]
 class DBTest extends DBTestBase
 {
-    /**
-     *
-     */
-    public function testFindSite()
+    public function testFindSite(): void
     {
-        $model = null;
-        // 'should find test site'
-
         $model = Site::findOne(1);
         if (!$model) {
             $this->fail('Not found');
         } else {
-            $this->assertEquals($model->id, 1);
+            $this->assertEquals(1, $model->id);
         }
     }
 }

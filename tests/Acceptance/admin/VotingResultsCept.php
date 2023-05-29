@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -46,5 +48,3 @@ $I->gotoAmendment(true, '321-o-zapft-is', 273);
 
 $I->see('Rejected', '.votingResultRow');
 $I->see('Ja: 5, Nein: 7, Ungültig: 1', '.votingResultRow');
-
-

@@ -1,23 +1,23 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AmendmentCreatePage extends BasePage
 {
-    public $route = 'amendment/create';
+    public string|array $route = 'amendment/create';
 
-    public function createAmendment(string $title, bool $isPublishedImmediatelly): void
+    public function createAmendment(string $title, bool $isPublishedImmediately): void
     {
         $this->fillInValidSampleData($title);
         $this->saveForm();
         $this->actor->see(mb_strtoupper('Antrag bestätigen'), 'h1');
         $this->actor->submitForm('#amendmentConfirmForm', [], 'confirm');
-        if ($isPublishedImmediatelly) {
+        if ($isPublishedImmediately) {
             $this->actor->see(mb_strtoupper('Änderungsantrag veröffentlicht'), 'h1');
         } else {
             $this->actor->see(mb_strtoupper('Antrag eingereicht'), 'h1');

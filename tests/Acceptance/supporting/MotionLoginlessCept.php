@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\policies\All;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 
 $I->populateDBData1();
@@ -10,7 +13,7 @@ $I->dontSee('Unterstützer*innen');
 
 $I->wantTo('enably supporting without login');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typePolicySupportMotions', \app\models\policies\All::getPolicyID());
+$I->selectOption('#typePolicySupportMotions', All::getPolicyID());
 $I->checkOption('.motionSupportPolicy .motionSupport');
 $I->submitForm('.adminTypeForm', [], 'save');
 

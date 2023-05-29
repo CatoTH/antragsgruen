@@ -1,13 +1,13 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class ManagerStartPage extends BasePage
 {
-    public $route = '/antragsgruen_sites/manager/index';
+    public string|array $route = '/antragsgruen_sites/manager/index';
 }

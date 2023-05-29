@@ -2,6 +2,8 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBDataYfj();
 
@@ -18,7 +20,7 @@ $I->clickJS('.createRollCall');
 $I->fillField('#roll_call_number', '1');
 $I->fillField('#roll_call_name', 'Friday evening');
 $I->seeCheckboxIsChecked('#roll_call_create_groups');
-$I->submitForm('.createRollCallForm', [], NULL);
+$I->submitForm('.createRollCallForm', [], null);
 $I->wait(0.2);
 
 $I->see('Roll Call 1 (Friday evening)', '#voting1');

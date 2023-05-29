@@ -1,18 +1,21 @@
 <?php
-namespace Helper;
+namespace Tests\Support\Helper;
 
-use Codeception\TestCase;
+use Codeception\Module;
+use Exception;
+use PHPUnit\Framework\Assert;
+use RuntimeException;
 
-class OldHTMLValidator extends \Codeception\Module
+class OldHTMLValidator extends Module
 {
     /**
      * @param string $html
-     * @throws \Exception
      * @return array
+     *@throws \Exception
      */
-    private function postToHTMLValidator($html)
+    private function postToHTMLValidator(string $html): array
     {
-        $curl = curl_init('http://validator.w3.org/check');
+        $curl = curl_init('https://validator.w3.org/check');
         curl_setopt_array($curl, [
             CURLOPT_POST           => 1,
             CURLOPT_POSTFIELDS     => [
@@ -28,15 +31,15 @@ class OldHTMLValidator extends \Codeception\Module
         sleep(1); // As requested on https://validator.w3.org/docs/api.html
 
         if (curl_errno($curl) > 0) {
-            throw new \Exception(curl_error($curl));
+            throw new RuntimeException(curl_error($curl));
         }
         $info = curl_getinfo($curl);
         if ($info['http_code'] != 200) {
-            throw new \Exception('Error retrieving validator data: HTTP: ' . $info['http_code']);
+            throw new RuntimeException('Error retrieving validator data: HTTP: '.$info['http_code']);
         }
         $data = json_decode($return, true);
         if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
-            throw new \Exception('Invalid data returned from validation service: ' . $return);
+            throw new RuntimeException('Invalid data returned from validation service: '.$return);
         }
         return $data['messages'];
     }
@@ -44,7 +47,7 @@ class OldHTMLValidator extends \Codeception\Module
     /**
      * @return string
      */
-    private function getPageSource()
+    private function getPageSource(): string
     {
         /** @var \Codeception\Module\WebDriver $webdriver */
         $webdriver = $this->getModule('WebDriver');
@@ -54,19 +57,19 @@ class OldHTMLValidator extends \Codeception\Module
     /**
      * @param array $ignoreMessages
      */
-    public function validateHTML($ignoreMessages = [])
+    public function validateHTML(array $ignoreMessages = []): void
     {
         $source = $this->getPageSource();
         try {
             $messages = $this->postToHTMLValidator($source);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
             return;
         }
         $failMessages = [];
         $lines        = explode("\n", $source);
         foreach ($messages as $message) {
-            if ($message['type'] == 'error') {
+            if ($message['type']==='error') {
                 $formattedMsg = '- Line ' . $message['lastLine'] . ', column ' . $message['lastColumn'] . ': ' .
                     $message['message'] . "\n  > " . $lines[$message['lastLine'] - 1];
                 $ignoring = false;
@@ -81,14 +84,14 @@ class OldHTMLValidator extends \Codeception\Module
             }
         }
         if (count($failMessages) > 0) {
-            \PHPUnit_Framework_Assert::fail('Invalid HTML: ' . "\n" . implode("\n", $failMessages));
+            Assert::fail('Invalid HTML: ' . "\n" . implode("\n", $failMessages));
         }
     }
 
     private function postToFeedValidator($feed)
     {
         // @TODO Call does not work yet
-        $ch = curl_init('http://validator.w3.org/feed/check.cgi');
+        $ch = curl_init('https://validator.w3.org/feed/check.cgi');
         curl_setopt_array($ch, [
             CURLOPT_POST           => 1,
             CURLOPT_POSTFIELDS     => [
@@ -105,38 +108,38 @@ class OldHTMLValidator extends \Codeception\Module
         sleep(1); // As requested on https://validator.w3.org/docs/api.html
 
         if (curl_errno($ch) > 0) {
-            throw new \Exception(curl_error($ch));
+            throw new RuntimeException(curl_error($ch));
         }
         $info = curl_getinfo($ch);
         if ($info['http_code'] != 200) {
-            throw new \Exception('Error retrieving validator data: HTTP: ' . $info['http_code']);
+            throw new RuntimeException('Error retrieving validator data: HTTP: '.$info['http_code']);
         }
         $data = json_decode($return, true);
         if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
-            throw new \Exception('Invalid data returned from validation service: ' . $return);
+            throw new RuntimeException('Invalid data returned from validation service: '.$return);
         }
         return $data['messages'];
     }
 
-    public function validateRSS()
+    public function validateRSS(): void
     {
         $source = $this->getPageSource();
         try {
             $messages = $this->postToFeedValidator($source);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
             return;
         }
         $failMessages = [];
         $lines        = explode("\n", $source);
         foreach ($messages as $message) {
-            if ($message['type'] == 'error') {
+            if ($message['type']==='error') {
                 $failMessages[] = '- Line ' . $message['lastLine'] . ', column ' . $message['lastColumn'] . ': ' .
                     $message['message'] . "\n  > " . $lines[$message['lastLine'] - 1];
             }
         }
         if (count($failMessages) > 0) {
-            \PHPUnit_Framework_Assert::fail('Invalid Feed: ' . "\n" . implode("\n", $failMessages));
+            Assert::fail('Invalid Feed: '."\n".implode("\n", $failMessages));
         }
     }
 }

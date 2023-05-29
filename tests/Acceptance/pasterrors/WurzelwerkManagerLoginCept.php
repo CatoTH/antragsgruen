@@ -3,7 +3,8 @@
 /** @var \Codeception\Scenario $scenario */
 $scenario->skip('Grünes Netz not testable right now');
 
-use app\tests\_pages\ManagerStartPage;
+use Tests\_pages\ManagerStartPage;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();

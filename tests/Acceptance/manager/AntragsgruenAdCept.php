@@ -2,6 +2,7 @@
 
 /** @var \Codeception\Scenario $scenario */
 use app\models\db\Site;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();

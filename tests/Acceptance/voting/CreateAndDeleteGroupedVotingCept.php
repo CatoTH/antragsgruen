@@ -1,6 +1,8 @@
 <?php
 
+use app\models\db\IMotion;
 use app\models\db\VotingBlock;
+use Tests\Support\AcceptanceTester;
 
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
@@ -109,14 +111,14 @@ $I->wait(0.5);
 $I->seeElement('.voting_motion_114 .accepted');
 $I->click('.adminUrl114');
 $votingStatus = $I->executeJS('return $("input[name=votingStatus]:checked").val()');
-$I->assertEquals(\app\models\db\IMotion::STATUS_ACCEPTED, $votingStatus);
+$I->assertEquals(IMotion::STATUS_ACCEPTED, $votingStatus);
 $I->seeInField('#votesYes', '1');
 $I->seeInField('#votesNo', '0');
 $I->seeInField('#votesAbstention', '0');
 
 $I->gotoMotionList()->gotoAmendmentEdit(1);
 $votingStatus = $I->executeJS('return $("input[name=votingStatus]:checked").val()');
-$I->assertEquals(\app\models\db\IMotion::STATUS_ACCEPTED, $votingStatus);
+$I->assertEquals(IMotion::STATUS_ACCEPTED, $votingStatus);
 $I->seeInField('#votesYes', '1');
 $I->seeInField('#votesNo', '0');
 $I->seeInField('#votesAbstention', '0');

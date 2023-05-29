@@ -1,10 +1,14 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\supportTypes\SupportBase;
+use Tests\_pages\MotionPage;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$motionUrl = \app\tests\_pages\MotionPage::getPageUrl($I, [
+$motionUrl = MotionPage::getPageUrl($I, [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -16,9 +20,9 @@ $I->dontSeeElementInDOM('#sidebar .collecting');
 $I->wantTo('check the admin settings and enable gender support and the supporting page');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->seeInField('#typeMinSupporters', '1');
-$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
+$I->selectOption('#typeSupportType', SupportBase::ONLY_INITIATOR);
 $I->dontSeeElement('#typeMinSupporters');
-$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
+$I->selectOption('#typeSupportType', SupportBase::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeMinSupporters');
 $I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value='2']"); // Required
 $I->submitForm('.adminTypeForm', [], 'save');

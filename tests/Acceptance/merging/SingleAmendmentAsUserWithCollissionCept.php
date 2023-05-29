@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -37,7 +40,7 @@ $I->see('In den Antrag übernehmen', '#sidebar');
 $I->click('#sidebar .mergeIntoMotion a');
 $I->dontSee('Kann nicht automatisch übernommen werden', 'h1');
 $I->cantSeeElementInDOM('.otherAmendmentStatus');
-$I->selectOption('#amendmentStatus', \app\models\db\IMotion::STATUS_MODIFIED_ACCEPTED);
+$I->selectOption('#amendmentStatus', IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->executeJS('$(".save-row .goto_2").click();');
 $I->wait(1);
 $I->click('.checkAmendmentCollisions');

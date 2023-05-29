@@ -1,15 +1,13 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class DiffRendererTest extends TestBase
 {
-    use Specify;
-
     public function testNodeToText(): void
     {
         $html = '<div> 1 <em>2 <strike>###LINENUMBER### 2</strike></em> 3 <span>4</span>';
@@ -90,7 +88,7 @@ class DiffRendererTest extends TestBase
             null,
             null
         );
-        $this->assertEquals(7, count($nodes));
+        $this->assertCount(7, $nodes);
         $this->assertEquals('ins', $nodes[1]->nodeName);
         $this->assertEquals('Inserted', $nodes[1]->childNodes[0]->nodeValue);
         $this->assertEquals('Bla', $nodes[2]->nodeValue);
@@ -108,7 +106,7 @@ class DiffRendererTest extends TestBase
             null
         );
 
-        $this->assertEquals(5, count($nodes));
+        $this->assertCount(5, $nodes);
         $this->assertEquals('ins', $nodes[0]->nodeName);
         $this->assertEquals('Test1###INS_START###Inserted', $nodes[0]->childNodes[0]->nodeValue);
         $this->assertEquals('Bla', $nodes[1]->nodeValue);

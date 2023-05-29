@@ -1,17 +1,17 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\HTMLTools;
 use app\components\yii\MessageSource;
-use Codeception\Specify;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 use Yii;
 use yii\i18n\I18N;
 
+#[Group('database')]
 class CleanTranslationStringsTest extends DBTestBase
 {
-    use Specify;
-
     protected function normalizeStr(string $str1): string
     {
         $str1 = preg_replace('/\s*/', '', $str1);
@@ -21,7 +21,7 @@ class CleanTranslationStringsTest extends DBTestBase
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\base\InvalidConfigException|\app\models\exceptions\Internal
      */
     public function testUnchangingTranslationStrings(): void
     {
@@ -29,12 +29,12 @@ class CleanTranslationStringsTest extends DBTestBase
         foreach (array_keys(MessageSource::getTranslatableCategories()) as $catId) {
             /** @var I18N $i18n */
             $i18n = Yii::$app->get('i18n');
-            /** @var MessageSource $messagesource */
-            $messagesource = $i18n->getMessageSource($catId);
-            $strings       = $messagesource->getBaseMessages($catId, 'de');
+            /** @var MessageSource $messageSource */
+            $messageSource = $i18n->getMessageSource($catId);
+            $strings       = $messageSource->getBaseMessages($catId, 'de');
             foreach ($strings as $strId => $strContent) {
                 $cleaned = HTMLTools::cleanHtmlTranslationString($strContent);
-                if (static::normalizeStr($cleaned) != static::normalizeStr($strContent)) {
+                if ($this->normalizeStr($cleaned)!==$this->normalizeStr($strContent)) {
                     $changedStrings[] = $strId . ': ' . $strContent . ' => ' . $cleaned;
                 }
             }

@@ -1,15 +1,18 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\models\db\Motion;
 use app\models\db\MotionSection;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class MotionShowInlineAmendmentTest extends DBTestBase
 {
     /**
      */
-    public function testDbjr1()
+    public function testDbjr1(): void
     {
         /** @var Motion $motion */
         $motion = Motion::findOne(113);

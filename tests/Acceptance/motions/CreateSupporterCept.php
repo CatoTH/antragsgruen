@@ -1,6 +1,10 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\ISupporter;
+use app\models\supportTypes\SupportBase;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -16,7 +20,7 @@ $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
-$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
+$I->selectOption('#typeSupportType', SupportBase::GIVEN_BY_INITIATOR);
 $I->fillField('#typeMinSupporters', 0);
 $I->uncheckOption('#typeHasOrga');
 
@@ -60,13 +64,13 @@ $I->seeElement('.supporterData');
 //$I->seeElement('.initiatorData .adderRow');
 $I->seeElement('#initiatorOrga');
 $I->dontSeeElement('#resolutionDate');
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('.supporterDataHead');
 $I->dontSeeElement('.supporterData');
 //$I->dontSeeElement('.initiatorData .adderRow');
 $I->dontSeeElement('#initiatorOrga');
 $I->seeElement('#resolutionDate');
-$I->selectOption('#personTypeNatural', \app\models\db\ISupporter::PERSON_NATURAL);
+$I->selectOption('#personTypeNatural', ISupporter::PERSON_NATURAL);
 $I->seeElement('.supporterDataHead');
 $I->seeElement('.supporterData');
 //$I->seeElement('.initiatorData .adderRow');
@@ -127,15 +131,15 @@ $I->wantTo('modify the supporters');
 $I->submitForm('#motionConfirmForm', [], 'modify');
 //$I->seeInField(['name' => 'moreInitiators[name][]'], 'Initiator 2');
 $val = $I->executeJS('return $(".supporterData .supporterRow").eq(0).find("input.name").val()');
-if ($val != 'Name 1') {
+if ($val!=='Name 1') {
     $I->fail('an invalid content of field 1: ' . $val . ' (should be: Name 1)');
 }
 $val = $I->executeJS('return $(".supporterData .supporterRow").eq(1).find("input.name").val()');
-if ($val != 'Name 2') {
+if ($val!=='Name 2') {
     $I->fail('an invalid content of field 2: ' . $val . ' (should be: Name 2)');
 }
 $val = $I->executeJS('return $(".supporterData .supporterRow").eq(0).find("input.organization").val()');
-if ($val != 'Orga 1') {
+if ($val!=='Orga 1') {
     $I->fail('an invalid content of orga 1: ' . $val . ' (should be: Orga 1)');
 }
 

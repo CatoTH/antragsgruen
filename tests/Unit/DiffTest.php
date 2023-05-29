@@ -1,16 +1,17 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
-use app\components\diff\{DataTypes\DiffWord, Diff, DiffRenderer, Engine};
+use app\components\diff\DataTypes\DiffWord;
+use app\components\diff\Diff;
+use app\components\diff\DiffRenderer;
+use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class DiffTest extends TestBase
 {
-    use Specify;
-
     public function testLineNumberBeforeActualChange(): void
     {
         $engine = new Engine();
@@ -120,11 +121,11 @@ class DiffTest extends TestBase
 
     private function assertDiffWordEquals($word, $diff, $amendmentId, $diffWord): void
     {
-        $expexted = new DiffWord();
-        $expexted->word = $word;
-        $expexted->diff = $diff;
-        $expexted->amendmentId = $amendmentId;
-        $this->assertEqualsCanonicalizing($expexted, $diffWord);
+        $expected = new DiffWord();
+        $expected->word = $word;
+        $expected->diff = $diff;
+        $expected->amendmentId = $amendmentId;
+        $this->assertEqualsCanonicalizing($expected, $diffWord);
     }
 
     public function testInlineDiffToWordBased(): void
@@ -134,7 +135,7 @@ class DiffTest extends TestBase
         $diff = new Diff();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
-            $this->assertSame(2, count($arr));
+            $this->assertCount(2, $arr);
             $elements = count($arr[0]);
 
             $this->assertDiffWordEquals('</ul>', '</ul>###INS_START###<ul><li>Test2</li></ul>###INS_END###', null, $arr[0][$elements - 1]);
@@ -193,7 +194,7 @@ class DiffTest extends TestBase
             echo "\n";
             die();
         }
-        $this->assertSame(1, count($words));
+        $this->assertCount(1, $words);
         $this->assertSame('###INS_START###<ul><li>Wir bla bla</li></ul>###INS_END###<ul>', $words[0][0]->diff);
 
 
@@ -238,7 +239,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
             echo "\n";
             die();
         }
-        $this->assertSame(16, count($words[0]));
+        $this->assertCount(16, $words[0]);
 
 
         $orig = [
@@ -251,7 +252,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff = new Diff();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new, 1);
-            $this->assertSame(1, count($arr));
+            $this->assertCount(1, $arr);
             $this->assertDiffWordEquals('.', '.###DEL_END###', 1, $arr[0][21]);
             $this->assertDiffWordEquals('</p>', '</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###', 1, $arr[0][22]);
         } catch (Internal $e) {
@@ -298,7 +299,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff       = new Diff();
         $out        = $diff->groupOperations($operations, "\n");
         $this->assertSame($expected, $out);
-
     }
 
 
@@ -345,8 +345,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $orig = '###LINENUMBER###Bildungsbereich. Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.';
         $new  = 'Bildungsbereich.';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertSame('###LINENUMBER###Bildungsbereich.<del> Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.</del>',
-            $out);
+        $this->assertSame(
+            '###LINENUMBER###Bildungsbereich.<del> Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.</del>',
+            $out
+        );
     }
 
     public function testLinenumberForcelinebreak(): void
@@ -439,16 +441,26 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertSame('<p class="deleted">Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
-            $out[0]);
-        $this->assertSame('<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>',
-            $out[1]);
-        $this->assertSame('<ul class="deleted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
-            $out[2]);
-        $this->assertSame('<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li></ul><ul class="inserted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
-            $out[3]);
-        $this->assertSame('<ul><li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li></ul>',
-            $out[4]);
+        $this->assertSame(
+            '<p class="deleted">Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
+            $out[0]
+        );
+        $this->assertSame(
+            '<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>',
+            $out[1]
+        );
+        $this->assertSame(
+            '<ul class="deleted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
+            $out[2]
+        );
+        $this->assertSame(
+            '<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li></ul><ul class="inserted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
+            $out[3]
+        );
+        $this->assertSame(
+            '<ul><li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li></ul>',
+            $out[4]
+        );
     }
 
 
@@ -788,8 +800,8 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff();
 
-        var_dump($origParagraphs);
-        var_dump($newParagraphs);
+        // var_dump($origParagraphs);
+        // var_dump($newParagraphs);
 
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
@@ -877,7 +889,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertSame($expect, $arr);
     }
 
-    public function testDeleteSentenceSecondSentanceBeginningAlike1(): void
+    public function testDeleteSentenceSecondSentenceBeginningAlike1(): void
     {
         $orig   = [
             '<p>###LINENUMBER###Lorem At vero eos et accusam et justo duo dolores. Lorem ipsum dolor sit amet, ###LINENUMBER###consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et ###LINENUMBER###dolore magna aliquyam erat, sed diam voluptua.</p>'
@@ -893,7 +905,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertSame($expect, $arr);
     }
 
-    public function testDeleteSentenceSecondSentanceBeginningAlike2(): void
+    public function testDeleteSentenceSecondSentenceBeginningAlike2(): void
     {
         $orig   = [
             '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'

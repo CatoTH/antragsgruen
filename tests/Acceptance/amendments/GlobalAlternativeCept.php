@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -61,4 +64,4 @@ $I->dontSeeCheckboxIsChecked('.amendment' . AcceptanceTester::FIRST_FREE_AMENDME
 $I->gotoAmendment(true, '2', AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->click('#sidebar .mergeIntoMotion a');
 $status = $I->executeJS('return $("#otherAmendmentsStatus1").val()');
-$I->assertEquals(\app\models\db\Amendment::STATUS_REJECTED, $status);
+$I->assertEquals(IMotion::STATUS_REJECTED, $status);

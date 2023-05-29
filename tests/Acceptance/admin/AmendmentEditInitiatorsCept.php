@@ -1,6 +1,10 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\ISupporter;
+use app\models\supportTypes\SupportBase;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -8,13 +12,13 @@ $I->wantTo('edit an initiator, try setting an invalid user');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
+$I->selectOption('#typeSupportType', SupportBase::GIVEN_BY_INITIATOR);
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $page = $I->gotoMotionList()->gotoAmendmentEdit(2);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->dontSeeElement('#initiatorOrga');
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_NATURAL);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_NATURAL);
 $I->fillField('#initiatorPrimaryName', 'Another test user');
 $I->fillField('#initiatorOrga', 'KV Test');
 $I->fillField('#initiatorEmail', 'test2@example.org');

@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -53,4 +55,3 @@ $I->wait(0.3);
 $I->clickJS('.votingOperations .sortVotings');
 $I->wait(0.1);
 $I->assertEquals([$votingId3, $votingId1, $votingId2], $I->executeJS("return window.votingAdminWidget.\$refs['voting-sort-widget'].getSortedIds()"));
-

@@ -3,8 +3,9 @@
 /** @var \Codeception\Scenario $scenario */
 
 use app\models\db\User;
-use app\tests\_pages\LoginPage;
-use app\tests\_pages\PasswordRecoveryPage;
+use Tests\_pages\LoginPage;
+use Tests\_pages\PasswordRecoveryPage;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();

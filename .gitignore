@@ -20,6 +20,7 @@ config/latex-replaces.php
 web/js/bower
 assets/local/
 tests/_output/*
+tests/Support/_generated/*
 node_modules/
 npm-debug.log
 /web/updates/

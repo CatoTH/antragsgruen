@@ -1,25 +1,25 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
  * Represents contact page
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class ConsultationHomePage extends BasePage
 {
-    public $route = 'consultation/index';
+    public string|array $route = 'consultation/index';
 
     /**
-     * @param int $motionTypeId
-     * @param bool $check
+     * @param int    $motionTypeId
+     * @param bool   $check
      * @param string $subdomain
      * @param string $path
      * @return MotionCreatePage
      */
-    public function gotoMotionCreatePage($motionTypeId = 1, $check = true, $subdomain = 'stdparteitag', $path = 'std-parteitag')
+    public function gotoMotionCreatePage(int $motionTypeId = 1, bool $check = true, string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): MotionCreatePage
     {
         $page = MotionCreatePage::openBy(
             $this->actor,
@@ -37,10 +37,10 @@ class ConsultationHomePage extends BasePage
 
     /**
      * @param string $motionSlug
-     * @param bool $check
+     * @param bool   $check
      * @return AmendmentCreatePage
      */
-    public function gotoAmendmentCreatePage($motionSlug = '321-o-zapft-is', $check = true)
+    public function gotoAmendmentCreatePage(string $motionSlug = '321-o-zapft-is', bool $check = true): AmendmentCreatePage
     {
         $page = AmendmentCreatePage::openBy(
             $this->actor,
@@ -60,7 +60,7 @@ class ConsultationHomePage extends BasePage
      * @param int $motionId
      * @return MotionPage
      */
-    public function gotoMotionView($motionId)
+    public function gotoMotionView(int $motionId): MotionPage
     {
         $this->actor->click('.motionLink' . $motionId);
         return new MotionPage($this->actor);
@@ -70,7 +70,7 @@ class ConsultationHomePage extends BasePage
      * @param int $amendmentId
      * @return AmendmentPage
      */
-    public function gotoAmendmentView($amendmentId)
+    public function gotoAmendmentView(int $amendmentId): AmendmentPage
     {
         $this->actor->click('.amendment' . $amendmentId);
         return new AmendmentPage($this->actor);

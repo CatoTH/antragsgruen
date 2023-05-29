@@ -1,17 +1,17 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\models\amendmentNumbering\GlobalCompact;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
-use Codeception\Specify;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class ConsultationFindMotionTest extends DBTestBase
 {
-    use Specify;
-
     public function testFindAmendment(): void
     {
         /** @var Consultation $consultation */

@@ -1,14 +1,15 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\diff\AmendmentRewriter;
+use Tests\Support\Helper\TestBase;
 
 class AmendmentRewriterCheckTest extends TestBase
 {
     /**
      */
-    public function testListInsertedAndDeleted1()
+    public function testListInsertedAndDeleted1(): void
     {
         $oldHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item 3</li><li>List item 5</li></ul>';
         $amendmentHtml = '<ul><li>List item 1</li><li>List item 2</li><li>List item 5</li></ul>';
@@ -22,7 +23,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testListInsertedAndDelete2()
+    public function testListInsertedAndDelete2(): void
     {
         $oldHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item 3</li><li>List item 5</li></ul>';
         $amendmentHtml = '<ul><li>List item 1</li><li>List item 2</li><li>List item 5</li></ul>';
@@ -36,7 +37,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testLineInserted1()
+    public function testLineInserted1(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
         $amendmentHtml = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>A new line</p>' . '<p>Test 4</p>';
@@ -48,7 +49,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testBasic1()
+    public function testBasic1(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
         $amendmentHtml = '<p>Test 456 <STRONG>STRONG</STRONG></p>' . '<p>Test 4</p>';
@@ -62,7 +63,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testBasic2()
+    public function testBasic2(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
         $amendmentHtml = '<p>Test 456 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
@@ -76,7 +77,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testCollidingLineInserted1()
+    public function testCollidingLineInserted1(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 3</p>';
         $amendmentHtml = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>A new line</p>' . '<p>Test 4</p>';
@@ -94,7 +95,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testAffectedAddingLines()
+    public function testAffectedAddingLines(): void
     {
         $oldSections = [
             '<p>The old line</p>'
@@ -106,13 +107,13 @@ class AmendmentRewriterCheckTest extends TestBase
             '<p>Inserted after</p>',
         ];
         $affected    = AmendmentRewriter::computeAffectedParagraphs($oldSections, $newSections, true);
-        $this->assertEquals(1, count($affected));
+        $this->assertCount(1, $affected);
         $this->assertEquals('<p><ins>Inserted before</ins></p><p class="inserted">Inserted before2</p><p>The old line</p><p><ins>Inserted after</ins></p>', $affected[0]);
     }
 
     /**
      */
-    public function testInParagraph1()
+    public function testInParagraph1(): void
     {
         $oldHtml       = '<p>Test 123 Bla <strong>STRONG</strong> Some text to circumvent change quota</p>';
         $amendmentHtml = '<p>Bla<strong>STRONG</strong> Some text to circumvent change quota</p>';
@@ -126,7 +127,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testInParagraph2()
+    public function testInParagraph2(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
         $amendmentHtml = '<p>Test2 123 <strong>STRONG</strong></p>';
@@ -138,7 +139,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testInParagraph3()
+    public function testInParagraph3(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
         $newHtml       = '<p>Test2 123 <strong>STRONG</strong></p>';
@@ -150,7 +151,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testInParagraph4()
+    public function testInParagraph4(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
         $amendmentHtml = '<p>Test2 123 <strong>STRONG</strong></p>';
@@ -162,7 +163,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testInParagraph5()
+    public function testInParagraph5(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
         $amendmentHtml = '<p>Test2 123 <strong>STRONG</strong></p>';
@@ -174,7 +175,7 @@ class AmendmentRewriterCheckTest extends TestBase
 
     /**
      */
-    public function testInParagraph6()
+    public function testInParagraph6(): void
     {
         $oldHtml       = '<p>Test 123 Bla 123 <strong>STRONG</strong></p>';
         $amendmentHtml = '<p>Bla 123 <strong>STRONG</strong></p>';

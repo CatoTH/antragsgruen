@@ -1,20 +1,20 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AdminAmendmentPage extends BasePage
 {
-    public $route = 'admin/amendment/update';
+    public string|array $route = 'admin/amendment/update';
 
     /**
      *
      */
-    public function saveForm()
+    public function saveForm(): void
     {
         $this->actor->submitForm('#amendmentUpdateForm', [], 'save');
     }

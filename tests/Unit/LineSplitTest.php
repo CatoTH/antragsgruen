@@ -1,14 +1,12 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\LineSplitter;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class LineSplitTest extends TestBase
 {
-    use Specify;
-
     public function testWorkAfterManualLineBreaks(): void
     {
         $orig1 = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun tutlabore</p>';

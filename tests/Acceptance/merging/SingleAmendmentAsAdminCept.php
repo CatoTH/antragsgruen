@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -11,8 +14,8 @@ $I->loginAsStdAdmin();
 $I->gotoAmendment(true, 2, 274);
 $I->click('.mergeIntoMotion a');
 $I->wait(1);
-$I->selectOption('#amendmentStatus', \app\models\db\IMotion::STATUS_MODIFIED_ACCEPTED);
-$I->selectOption('#otherAmendmentsStatus1', \app\models\db\IMotion::STATUS_REJECTED);
+$I->selectOption('#amendmentStatus', IMotion::STATUS_MODIFIED_ACCEPTED);
+$I->selectOption('#otherAmendmentsStatus1', IMotion::STATUS_REJECTED);
 $I->executeJS('$(".save-row .goto_2").click();');
 $I->wait(1);
 $I->click('.checkAmendmentCollisions');

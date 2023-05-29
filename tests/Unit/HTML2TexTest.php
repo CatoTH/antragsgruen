@@ -1,15 +1,13 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\latex\Exporter;
 use app\components\LineSplitter;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class HTML2TexTest extends TestBase
 {
-    use Specify;
-
 
     public function testEmptyLine(): void
     {
@@ -53,7 +51,7 @@ class HTML2TexTest extends TestBase
         $expect = "{\\color{white}.}\n";
         $out    = Exporter::getMotionLinesToTeX([$orig]);
         $this->assertSame($expect, $out);
-        }
+    }
 
     public function testBold(): void
     {

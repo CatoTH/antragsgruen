@@ -1,15 +1,17 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\models\db\MotionSection;
-use Codeception\Specify;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class AmendmentInlineDiffTest extends DBTestBase
 {
     /**
      */
-    public function testWholeChangedParagraph()
+    public function testWholeChangedParagraph(): void
     {
         $this->markTestIncomplete('kommt noch');
 
@@ -26,8 +28,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $section    = MotionSection::findOne(['motionSlug' => '112', 'sectionId' => 21]);
         $paragraphs = $section->getTextParagraphObjects(true, true, true);
 
-        $this->assertEquals(1, count($paragraphs));
-        $this->assertEquals(1, count($paragraphs[0]->amendmentSections));
+        $this->assertCount(1, $paragraphs);
+        $this->assertCount(1, $paragraphs[0]->amendmentSections);
         $this->assertEquals($expectedDiff, $paragraphs[0]->amendmentSections[0]->strDiff);
     }
 }

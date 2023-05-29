@@ -1,10 +1,11 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\diff\amendmentMerger\ParagraphMerger;
 use app\components\diff\DataTypes\GroupedParagraphData;
 use app\components\diff\DataTypes\ParagraphMergerWord;
+use Tests\Support\Helper\TestBase;
 
 class AmendmentParagraphMergerTest extends TestBase
 {
@@ -18,7 +19,7 @@ class AmendmentParagraphMergerTest extends TestBase
         return $data;
     }
 
-    public function testDeletedHash()
+    public function testDeletedHash(): void
     {
         $words = [
             $this->getParagraphMergerWord('werden', null, null),
