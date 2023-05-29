@@ -94,7 +94,7 @@ class OpenslidesClientTest extends TestBase
 
     public function testParseAutoupdaterCallbackParsing()
     {
-        $json = file_get_contents(__DIR__ . '/../_data/openslides-autoupdate-fullload.json');
+        $json = file_get_contents(__DIR__.'/../Data/openslides-autoupdate-fullload.json');
         $service = new AutoupdateSyncService();
         $data = $service->parseRequest($json);
 
