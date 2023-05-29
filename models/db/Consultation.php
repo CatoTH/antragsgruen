@@ -51,7 +51,7 @@ class Consultation extends ActiveRecord
     /**
      * @throws Internal
      */
-    public static function setCurrent(Consultation $consultation)
+    public static function setCurrent(Consultation $consultation): void
     {
         if (self::$current) {
             throw new Internal('Current consultation already set');

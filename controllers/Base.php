@@ -67,7 +67,7 @@ class Base extends Controller
         $inInstaller = (get_class($this) === InstallationController::class);
 
         if ($appParams->siteSubdomain) {
-            if (strpos($appParams->siteSubdomain, 'xn--') === 0) {
+            if (str_starts_with($appParams->siteSubdomain, 'xn--')) {
                 HTMLTools::loadNetIdna2();
                 $idna = new \Net_IDNA2();
                 $subdomain = $idna->decode($appParams->siteSubdomain);
@@ -86,7 +86,7 @@ class Base extends Controller
                 $this->layoutParams->setLayout(Layout::getDefaultLayout());
             }
         } elseif (isset($params[1]['subdomain'])) {
-            if (strpos($params[1]['subdomain'], 'xn--') === 0) {
+            if (str_starts_with($params[1]['subdomain'], 'xn--')) {
                 HTMLTools::loadNetIdna2();
                 $idna = new \Net_IDNA2();
                 $subdomain = $idna->decode($params[1]['subdomain']);
@@ -125,12 +125,12 @@ class Base extends Controller
         }
         if (get_class($this) === PagesController::class && $action->id === 'file' && $this->consultation) {
             $logo = urldecode(basename($this->consultation->getSettings()->logoUrl));
-            if ($logo && isset($params[1]) && isset($params[1]['filename']) && $params[1]['filename'] === $logo) {
+            if (isset($params[1]['filename']) && $logo && $params[1]['filename'] === $logo) {
                 return true;
             }
             if (isset($this->site->getSettings()->getStylesheet()->backgroundImage)) {
                 $bg = urldecode(basename($this->site->getSettings()->getStylesheet()->backgroundImage));
-                if (isset($params[1]) && isset($params[1]['filename']) && $params[1]['filename'] === $bg) {
+                if (isset($params[1]['filename']) && $params[1]['filename'] === $bg) {
                     return true;
                 }
             }
@@ -490,11 +490,6 @@ class Base extends Controller
         $this->showErrorpage(404, $message);
     }
 
-    protected function consultationError(): void
-    {
-        $this->showErrorpage(500, Yii::t('base', 'err_site_404'));
-    }
-
     protected function checkConsistency(?Motion $checkMotion = null, ?Amendment $checkAmendment = null, bool $throwExceptions = false): void
     {
         $consultationPath = strtolower($this->consultation->urlPath);
@@ -534,11 +529,20 @@ class Base extends Controller
         if (is_null($this->site)) {
             $this->site = Site::findOne(['subdomain' => $subdomain]);
         }
-        if (is_null($this->site) || $this->site->status == Site::STATUS_DELETED || $this->site->dateDeletion !== null) {
+
+        if ($this instanceof ConsultationController && $this->action->id == 'home') {
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                if ($plugin::hasSiteHomePage()) {
+                    return null;
+                }
+            }
+        }
+
+        if (is_null($this->site) || $this->site->status === Site::STATUS_DELETED || $this->site->dateDeletion !== null) {
             $this->consultationNotFound();
         }
 
-        if ($consultationId == '') {
+        if ($consultationId === '') {
             $consultationId = $this->site->currentConsultation->urlPath;
         }
 
@@ -589,13 +593,7 @@ class Base extends Controller
         return null;
     }
 
-    /**
-     * @param string $motionSlug
-     * @param bool $throwExceptions
-     *
-     * @return Motion|null
-     */
-    protected function getMotionWithCheck($motionSlug, bool $throwExceptions = false)
+    protected function getMotionWithCheck(string $motionSlug, bool $throwExceptions = false): ?Motion
     {
         if (is_numeric($motionSlug) && $motionSlug > 0) {
             $motion = Motion::findOne([

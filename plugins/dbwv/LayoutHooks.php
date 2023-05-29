@@ -25,6 +25,9 @@ class LayoutHooks extends StdHooks
 
     protected function getUserBarGroups(User $user): string
     {
+        if ($this->consultation === null) {
+            return '';
+        }
         $groups = array_filter($user->getConsultationUserGroups($this->consultation), function (ConsultationUserGroup $group) {
             return $group->templateId !== ConsultationUserGroup::TEMPLATE_PARTICIPANT;
         });
@@ -40,7 +43,7 @@ class LayoutHooks extends StdHooks
         $out .= '<div class="username"><strong>' . \Yii::t('base', 'menu_logged_in') . ':</strong> ';
         $out .= Html::encode($user->name);
         if ($user->organization) {
-            echo ' (' . Html::encode($user->organization) . ')';
+            $out .= ' (' . Html::encode($user->organization) . ')';
         }
         $out .= '</div>';
 

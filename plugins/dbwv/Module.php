@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
+use app\components\RequestContext;
 use app\models\AdminTodoItem;
 use app\models\exceptions\Internal;
+use app\models\http\{HtmlResponse, ResponseInterface};
 use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, User};
 use app\models\settings\{Layout, Privilege, PrivilegeQueryContext};
 use app\plugins\dbwv\workflow\{Step2, Workflow};
@@ -198,5 +200,20 @@ class Module extends ModuleBase
     public static function getAdminTodoItems(Consultation $consultation, User $user): ?array
     {
         return Workflow::getAdminTodoItems($consultation, $user);
+    }
+
+    public static function hasSiteHomePage(): bool
+    {
+        return true;
+    }
+
+    public static function getSiteHomePage(): ?ResponseInterface
+    {
+        return new HtmlResponse(RequestContext::getController()->render('@app/plugins/dbwv/views/index'));
+    }
+
+    public static function preferConsultationSpecificHomeLink(): bool
+    {
+        return true;
     }
 }
