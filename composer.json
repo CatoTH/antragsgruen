@@ -90,6 +90,7 @@
       "php": "8.0.28"
     },
     "optimize-autoloader": true,
+    "sort-packages": true,
     "allow-plugins": {
       "simplesamlphp/composer-module-installer": true,
       "yiisoft/yii2-composer": true
