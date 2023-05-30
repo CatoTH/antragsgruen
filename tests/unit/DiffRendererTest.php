@@ -113,7 +113,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('Test1###INS_START###Inserted', $nodes[0]->childNodes[0]->nodeValue);
         $this->assertEquals('Bla', $nodes[1]->nodeValue);
         $this->assertEquals('del', $nodes[4]->nodeName);
-        $this->assertEquals(false, $inIns);
+        $this->assertNull($inIns);
         $this->assertEquals('', $inDel);
     }
 
