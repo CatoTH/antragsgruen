@@ -222,9 +222,9 @@ class DiffRenderer
 
     /**
      * @internal
-     * @param \DOMText|\DOMElement|null $lastEl
+     * @return array{array<\DOMNode>, ?string, ?string}
      */
-    public function textToNodes(string $text, ?string $inIns, ?string $inDel, $lastEl): array
+    public function textToNodes(string $text, ?string $inIns, ?string $inDel, ?\DOMNode $lastEl): array
     {
         $nodes     = [];
         $lastIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
