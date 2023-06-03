@@ -1,6 +1,10 @@
 # Version history
 
-### Version 4.12.0 (2023-05-29)
+### Version 4.12.1 [not released yet]
+
+- Bugfix: The delete button in the admin motion list was shown even if no delete permissions were granted and it was therefore non-functional.
+
+## Version 4.12.0 (2023-05-29)
 
 - User groups are now more powerful administrational tools:
   - User groups can now receive admin rights for specific administrational tasks.
