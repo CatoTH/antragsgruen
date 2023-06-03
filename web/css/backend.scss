@@ -1240,6 +1240,27 @@ label.legend {
   }
 }
 
+.adminMotionListActions {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  .selectAll {
+    flex: 1;
+    line-height: 40px;
+    vertical-align: middle;
+
+    .btn {
+      font-weight: normal;
+    }
+  }
+
+  .actionButtons {
+    flex: 1;
+    text-align: right;
+  }
+}
+
 .accountsCreateForm {
   .addMultipleOpener {
     margin-top: 15px;

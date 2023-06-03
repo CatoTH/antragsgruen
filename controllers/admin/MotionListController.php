@@ -202,6 +202,7 @@ class MotionListController extends AdminBase
 
         $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
         $privilegeProposals = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
+        $privilegeDelete = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::anyRestriction());
 
         $this->activateFunctions();
 
@@ -210,7 +211,7 @@ class MotionListController extends AdminBase
         }
 
         try {
-            if ($privilegeScreening) {
+            if ($privilegeScreening || $privilegeDelete) {
                 $this->actionListallScreeningMotions();
                 $this->actionListallScreeningAmendments();
             }
@@ -256,6 +257,7 @@ class MotionListController extends AdminBase
             'search'             => $search,
             'privilegeScreening' => $privilegeScreening,
             'privilegeProposals' => $privilegeProposals,
+            'privilegeDelete'    => $privilegeDelete,
         ]));
     }
 
