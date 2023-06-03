@@ -105,6 +105,9 @@ class ConsultationSettingsTag extends ActiveRecord
 
     public function deleteIncludeRelations(): void
     {
+        foreach ($this->childTags as $childTag) {
+            $childTag->deleteIncludeRelations();
+        }
         DBConnection::executePlainQuery('DELETE FROM `###TABLE_PREFIX###motionTag` WHERE `tagId` = ' . intval($this->id));
         DBConnection::executePlainQuery('DELETE FROM `###TABLE_PREFIX###amendmentTag` WHERE `tagId` = ' . intval($this->id));
         $this->delete();
