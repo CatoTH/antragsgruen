@@ -106,6 +106,14 @@ class Workflow
         );
     }
 
+    public static function canSetRecommendationV5(Motion $motion): bool
+    {
+        if ($motion->isVisible()) {
+            return false;
+        }
+        return $motion->canEditProposedProcedure();
+    }
+
     /**
      * @return AdminTodoItem[]
      */
@@ -125,6 +133,12 @@ class Workflow
                     break;
                 case self::STEP_V4:
                     $todo[] = Step4::getAdminTodo($motion);
+                    break;
+                case self::STEP_V5:
+                    $todo[] = Step5::getAdminTodo($motion);
+                    break;
+                case self::STEP_V6:
+                    $todo[] = Step6::getAdminTodo($motion);
                     break;
             }
         }

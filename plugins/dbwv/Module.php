@@ -6,11 +6,11 @@ namespace app\plugins\dbwv;
 
 use app\components\RequestContext;
 use app\models\AdminTodoItem;
-use app\models\exceptions\Internal;
+use app\models\exceptions\{Access, Internal};
 use app\models\http\{HtmlResponse, ResponseInterface};
 use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, User};
 use app\models\settings\{Layout, Privilege, PrivilegeQueryContext};
-use app\plugins\dbwv\workflow\{Step2, Workflow};
+use app\plugins\dbwv\workflow\{Step2, Step5, Workflow};
 use app\plugins\ModuleBase;
 use yii\web\View;
 
@@ -164,8 +164,15 @@ class Module extends ModuleBase
     public static function onBeforeProposedProcedureStatusSave(IMotion $imotion): IMotion
     {
         if (is_a($imotion, Motion::class)) {
-            // This always switches to V3 and also enforces the proposed procedure to be only available on V2
-            return Step2::gotoNext($imotion);
+            if (in_array($imotion->version, [Workflow::STEP_V2, Workflow::STEP_V3], true)) {
+                // This always switches to V3 and also enforces the proposed procedure to be only available on V2
+                return Step2::gotoNext($imotion);
+            }
+            if (in_array($imotion->version, [Workflow::STEP_V5, Workflow::STEP_V6], true)) {
+                // This always switches to V6 and also enforces the proposed procedure to be only available on V5
+                return Step5::gotoNext($imotion);
+            }
+            throw new Access('Not allowed to perform this action (in this state)');
         }
         return $imotion;
     }

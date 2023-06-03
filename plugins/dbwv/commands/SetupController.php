@@ -20,6 +20,8 @@ class SetupController extends Controller
     private const GROUP_NAME_V2_AUSSCHUSS = 'Ausschuss %NAME% (V2)';
     private const GROUP_NAME_V3_REDAKTION = 'Redaktionsausschuss';
     private const GROUP_NAME_V4_KOORDINIERUNG = 'Koordinierungsausschuss';
+    private const GROUP_NAME_V5_ARBEITSGRUPPE = 'Arbeitsgruppe %NAME% (V5)';
+    private const GROUP_NAME_V6_BUEROLEITUNG = 'Büroleitung';
 
     /** @var array{array{title: string, motionPrefix: string|null, position: int, themengebiete: array{array{title: string, position: int}}}}  */
     private const AGENDA_ITEMS_SACHGEBIETE = [
@@ -138,7 +140,8 @@ class SetupController extends Controller
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V1_REFERAT);
-            $tag = ConsultationSettingsTag::findOne(['title' => $item['title'], 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
+            $groupName = str_replace(' / ', ' ', $groupName);
+            $tag = $this->findExistingMainTag($consultation, $item['title']);
             $group = $this->createUserGroupIfNotExists($consultation, $groupName);
             $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Module::PRIVILEGE_DBWV_V1_EDITORIAL . ']}]}';
             $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
@@ -147,7 +150,8 @@ class SetupController extends Controller
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_AUSSCHUSS);
-            $tag = ConsultationSettingsTag::findOne(['title' => $item['title'], 'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, 'parentTagId' => null]);
+            $groupName = str_replace(' / ', ' ', $groupName);
+            $tag = $this->findExistingMainTag($consultation, $item['title']);
             $group = $this->createUserGroupIfNotExists($consultation, $groupName);
             $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Privileges::PRIVILEGE_CHANGE_PROPOSALS . ']}]}';
             $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
@@ -163,16 +167,36 @@ class SetupController extends Controller
     private function createBundUserGroups(Consultation $consultation): void
     {
         $this->createUserGroupIfNotExists($consultation, 'Delegierte');
+
+        $hvBueroleitung = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_V6_BUEROLEITUNG);
+        $lvBueroleitungPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_SCREENING . ']}]}';
+        $hvBueroleitung->setGroupPermissions(UserGroupPermissions::fromDatabaseString($lvBueroleitungPrivileges, false));
+        $hvBueroleitung->save();
+
+        foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V5_ARBEITSGRUPPE);
+            $groupName = str_replace(' / ', ' ', $groupName);
+            $tag = $this->findExistingMainTag($consultation, $item['title']);
+            $group = $this->createUserGroupIfNotExists($consultation, $groupName);
+            $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Privileges::PRIVILEGE_CHANGE_PROPOSALS . ']}]}';
+            $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
+            $group->save();
+        }
+    }
+
+    private function findExistingMainTag(Consultation $consultation, string $title): ?ConsultationSettingsTag
+    {
+        return ConsultationSettingsTag::findOne([
+            'title' => $title,
+            'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC,
+            'parentTagId' => null,
+            'consultationId' => $consultation->id
+        ]);
     }
 
     private function createOrGetMainTag(Consultation $consultation, int $position, string $title, ?string $motionPrefix): ConsultationSettingsTag
     {
-        $tag = ConsultationSettingsTag::findOne([
-            'consultationId' => $consultation->id,
-            'title' => $title,
-            'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC,
-            'parentTagId' => null,
-        ]);
+        $tag = $this->findExistingMainTag($consultation, $title);
         if ($tag) {
             if ($tag->position !== $position) {
                 $tag->position = $position;
@@ -371,36 +395,30 @@ class SetupController extends Controller
         }
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
-            /*
-            if (!$item['motionPrefix']) {
-                continue;
-            }
-            */
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V1_REFERAT);
+            $groupName = str_replace(' / ', ' ', $groupName);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
                 echo "Group $groupName not found\n";
                 return;
             }
-            $user = $this->createOrGetUserAccount($urlPath.'-referat-' . $item['motionPrefix'] . '@example.org', 'Test', 'Referat', $item['title'], 'DBwV');
+            $prefix = explode(" ", $item['motionPrefix'])[0];
+            $user = $this->createOrGetUserAccount($urlPath.'-referat-' . $prefix . '@example.org', 'Test', 'Referat', $item['title'], 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
             }
         }
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
-            /*
-            if (!$item['motionPrefix']) {
-                continue;
-            }
-            */
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_AUSSCHUSS);
+            $groupName = str_replace(' / ', ' ', $groupName);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
                 echo "Group $groupName not found\n";
                 return;
             }
-            $user = $this->createOrGetUserAccount($urlPath.'-ausschuss-' . $item['motionPrefix'] . '@example.org', 'Test', 'Ausschuss', $item['title'], 'DBwV');
+            $prefix = explode(" ", $item['motionPrefix'])[0];
+            $user = $this->createOrGetUserAccount($urlPath.'-ausschuss-' . $prefix . '@example.org', 'Test', 'Ausschuss', $item['title'], 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
             }
@@ -422,5 +440,30 @@ class SetupController extends Controller
         $urlPath = $consultation->urlPath;
         $this->createTestAccountsForGroup($consultation, 'Delegierte', $urlPath.'-delegiert', 'Organisation', 50);
 
+        $hvBueroleitungGroup = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V6_BUEROLEITUNG]);
+        if (!$hvBueroleitungGroup) {
+            echo "Büroleitung Group not found\n";
+            return;
+        }
+        $user = $this->createOrGetUserAccount($urlPath.'-bueroleitung@example.org', 'Test', 'HV', 'Büroleitung', 'HV');
+        if (count($user->userGroups) === 0) {
+            $hvBueroleitungGroup->addUser($user);
+        }
+
+        foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
+            $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V5_ARBEITSGRUPPE);
+            $groupName = str_replace(' / ', ' ', $groupName);
+            $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
+            if (!$group) {
+                echo "Group $groupName not found\n";
+                return;
+            }
+            $userName = explode(" - ", $item['title'])[0];
+            $prefix = explode(" ", $item['motionPrefix'])[0];
+            $user = $this->createOrGetUserAccount($urlPath.'-arbeitsgruppe-' . $prefix . '@example.org', 'Test', 'Arbeitsgruppe', $userName, 'DBwV');
+            if (count($user->userGroups) === 0) {
+                $group->addUser($user);
+            }
+        }
     }
 }
