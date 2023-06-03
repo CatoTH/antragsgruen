@@ -11,6 +11,7 @@ use yii\helpers\Html;
  * @var AdminMotionFilterForm $search
  * @var boolean $privilegeScreening
  * @var boolean $privilegeProposals
+ * @var boolean $privilegeDelete
  * @var string|null $motionId
  */
 
@@ -46,8 +47,8 @@ foreach ($consultation->motionTypes as $motionType) {
     }
 }
 
-$colMark        = $privilegeProposals || $privilegeScreening;
-$colAction      = $privilegeScreening;
+$colMark        = $privilegeProposals || $privilegeScreening || $privilegeDelete;
+$colAction      = $privilegeScreening || $privilegeDelete;
 $colProposals   = $privilegeProposals && $hasProposedProcedures;
 $colResponsible = $privilegeProposals && $hasResponsibilities;
 $colDate        = in_array('date', $consultation->getSettings()->adminListAdditionalFields);
@@ -199,18 +200,22 @@ echo '</table>';
 
 if ($privilegeProposals || $privilegeScreening) {
 ?>
-    <section style="overflow: auto;">
-        <div style="float: left; line-height: 40px; vertical-align: middle;">
-            <a href="#" class="markAll"><?= Yii::t('admin', 'list_all') ?></a> &nbsp;
-            <a href="#" class="markNone"><?= Yii::t('admin', 'list_none') ?></a> &nbsp;
+    <section class="adminMotionListActions">
+        <div class="selectAll">
+            <button type="button" class="btn btn-link markAll"><?= Yii::t('admin', 'list_all') ?></button> &nbsp;
+            <button type="button" class="btn btn-link markNone"><?= Yii::t('admin', 'list_none') ?></button> &nbsp;
         </div>
 
-        <div style="float: right;"><?= Yii::t('admin', 'list_marked') ?>: &nbsp;
+        <div class="actionButtons">
+            <?= Yii::t('admin', 'list_marked') ?>: &nbsp;
             <?php
-            if ($privilegeScreening) { ?>
+            if ($privilegeDelete) { ?>
                 <button type="submit" class="btn btn-danger deleteMarkedBtn" name="delete">
                     <?= Yii::t('admin', 'list_delete') ?>
                 </button> &nbsp;
+            <?php
+            }
+            if ($privilegeScreening) { ?>
                 <button type="submit" class="btn btn-info unscreenMarkedBtn" name="unscreen">
                     <?= Yii::t('admin', 'list_unscreen') ?>
                 </button> &nbsp;

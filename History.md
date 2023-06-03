@@ -4,7 +4,11 @@
 
 - WARNING: if you are using a PHP 7.4 or older, then update to PHP 8.0 or newer first before installing this update!
 
-### Version 4.12.0 (2023-05-29)
+### Version 4.12.1 [not released yet]
+
+- Bugfix: The delete button in the admin motion list was shown even if no delete permissions were granted and it was therefore non-functional.
+
+## Version 4.12.0 (2023-05-29)
 
 - User groups are now more powerful administrational tools:
   - User groups can now receive admin rights for specific administrational tasks.
