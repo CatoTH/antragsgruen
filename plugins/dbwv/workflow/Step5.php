@@ -5,15 +5,9 @@ declare(strict_types=1);
 namespace app\plugins\dbwv\workflow;
 
 use app\models\AdminTodoItem;
-use app\models\db\ConsultationSettingsTag;
-use app\models\db\IMotion;
-use app\models\db\User;
-use app\models\exceptions\NotFound;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\db\{ConsultationSettingsTag, IMotion, User, Motion};
 use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
 use app\models\forms\MotionDeepCopy;
-use app\models\db\Motion;
 use app\models\exceptions\Access;
 
 class Step5

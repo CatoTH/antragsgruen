@@ -22,6 +22,7 @@ class SetupController extends Controller
     private const GROUP_NAME_V4_KOORDINIERUNG = 'Koordinierungsausschuss';
     private const GROUP_NAME_V5_ARBEITSGRUPPE = 'Arbeitsgruppe %NAME% (V5)';
     private const GROUP_NAME_V6_BUEROLEITUNG = 'Büroleitung';
+    private const GROUP_NAME_V7_REDAKTION = 'Redaktionsausschuss';
 
     /** @var array{array{title: string, motionPrefix: string|null, position: int, themengebiete: array{array{title: string, position: int}}}}  */
     private const AGENDA_ITEMS_SACHGEBIETE = [
@@ -182,6 +183,11 @@ class SetupController extends Controller
             $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
             $group->save();
         }
+
+        $redaktion = $this->createUserGroupIfNotExists($consultation, self::GROUP_NAME_V7_REDAKTION);
+        $redaktionPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_MOTION_STATUS_EDIT . ']}]}';
+        $redaktion->setGroupPermissions(UserGroupPermissions::fromDatabaseString($redaktionPrivileges, false));
+        $redaktion->save();
     }
 
     private function findExistingMainTag(Consultation $consultation, string $title): ?ConsultationSettingsTag
@@ -464,6 +470,16 @@ class SetupController extends Controller
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
             }
+        }
+
+        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V7_REDAKTION]);
+        if (!$group) {
+            echo "Group " . self::GROUP_NAME_V7_REDAKTION . " not found\n";
+            return;
+        }
+        $user = $this->createOrGetUserAccount($urlPath.'-redaktion@example.org', 'Test', 'Redaktions', 'Ausschuss', 'DBwV');
+        if (count($user->userGroups) === 0) {
+            $group->addUser($user);
         }
     }
 }

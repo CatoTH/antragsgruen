@@ -114,6 +114,14 @@ class Workflow
         return $motion->canEditProposedProcedure();
     }
 
+    public static function canSetResolutionV6(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->havePrivilege(
+            Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
+            PrivilegeQueryContext::motion($motion)
+        );
+    }
+
     /**
      * @return AdminTodoItem[]
      */
