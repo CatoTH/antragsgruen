@@ -124,6 +124,8 @@ return [
     'motion_move_con'             => 'Veranstaltung',
     'motion_move_con_none'        => 'Es gibt keine andere Veranstaltung mit kompatiblen Antragstypen',
     'motion_move_type'            => 'Antragstyp',
+    'motion_copy_target'          => 'Kopieren zu...',
+    'motion_copy_target_same'     => '...dieser Veranstaltung',
     'motion_vote_open'            => 'Abstimmung verwalten',
     'motion_vote_close'           => 'Schließen',
     'motion_vote_title'           => 'Abstimmung',

@@ -3,9 +3,24 @@ export class MoveMotion {
 
     constructor(private $form: JQuery) {
         this.checkBackend = $form.data('check-backend');
+        this.initCopyMove();
         this.initTarget();
         this.initConsultation();
         this.initButtonEnabled();
+    }
+
+    private initCopyMove() {
+        this.$form.find('input[name=operation]').on("change", () => {
+            if (this.$form.find('input[name=operation]:checked').val() === 'copynoref') {
+                this.$form.find('.labelTargetMove').addClass('hidden');
+                this.$form.find('.labelTargetCopy').removeClass('hidden');
+                this.$form.find('.targetSame').removeClass('hidden');
+            } else {
+                this.$form.find('.labelTargetMove').removeClass('hidden');
+                this.$form.find('.labelTargetCopy').addClass('hidden');
+                this.$form.find('.targetSame').addClass('hidden');
+            }
+        });
     }
 
     private initTarget() {
@@ -39,10 +54,11 @@ export class MoveMotion {
         }
     }
 
-    private isPrefixAvailable(prefix: string, consultation: number): Promise<boolean> {
+    private isPrefixAvailable(prefix: string, operation: string, consultation: number): Promise<boolean> {
         return new Promise((resolve, reject) => {
             return $.get(this.checkBackend, {
                 checkType: 'prefix',
+                operation,
                 newMotionPrefix: prefix,
                 newConsultationId: consultation
             }).then(res => {
@@ -61,7 +77,11 @@ export class MoveMotion {
             consultationId = null;
         }
 
-        const prefixIsAvailable = await this.isPrefixAvailable(this.$form.find('#motionTitlePrefix').val() as string, consultationId);
+        const prefixIsAvailable = await this.isPrefixAvailable(
+            this.$form.find('#motionTitlePrefix').val() as string,
+            this.$form.find('input[name=operation]:checked').val() as string,
+            consultationId
+        );
         if (prefixIsAvailable) {
             this.$form.find(".prefixAlreadyTaken").addClass("hidden");
         } else {

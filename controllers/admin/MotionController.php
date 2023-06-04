@@ -359,12 +359,15 @@ class MotionController extends AdminBase
             $newConsultation = array_values(array_filter($this->site->consultations, function(Consultation $con) use ($consultationId) {
                 return ($con->id === $consultationId);
             }))[0];
+
             $existingMotion = array_filter($newConsultation->motions, function(Motion $cmpMotion) use ($newMotionPrefix, $motion) {
-                return (
-                    mb_strtolower($cmpMotion->titlePrefix) === mb_strtolower($newMotionPrefix) &&
-                    $cmpMotion->id !== $motion->id
-                );
+                return (mb_strtolower($cmpMotion->titlePrefix) === mb_strtolower($newMotionPrefix));
             });
+            if ($this->getHttpRequest()->get('operation') === 'move' || $consultationId !== $this->consultation->id) {
+                $existingMotion = array_filter($newConsultation->motions, function(Motion $cmpMotion) use ($newMotionPrefix, $motion) {
+                    return $cmpMotion->id !== $motion->id;
+                });
+            }
             $result = (count($existingMotion) === 0);
         }
 

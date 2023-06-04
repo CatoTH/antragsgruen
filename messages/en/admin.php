@@ -128,6 +128,8 @@ return [
     'motion_move_con'             => 'New consultation',
     'motion_move_con_none'        => 'There is no consultation with a compatible motion type',
     'motion_move_type'            => 'Motion type',
+    'motion_copy_target'          => 'Copy to...',
+    'motion_copy_target_same'     => '...this consultation',
     'motion_vote_open'            => 'Enter voting data',
     'motion_vote_close'           => 'Close',
     'motion_vote_title'           => 'Voting',

@@ -3,6 +3,7 @@
 ### Version 4.13.0 [not released yet]
 
 - WARNING: if you are using a PHP 7.4 or older, then update to PHP 8.0 or newer first before installing this update!
+- It is now possible to copy/duplicate a motion within a consultation.
 
 ### Version 4.12.1 [not released yet]
 

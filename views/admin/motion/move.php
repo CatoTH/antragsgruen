@@ -1,6 +1,5 @@
 <?php
 
-use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
 use yii\helpers\Html;
@@ -36,11 +35,11 @@ echo Html::beginForm($myUrl, 'post', [
 $targetConsultations = $form->getConsultationTargets();
 
 ?>
-    <div class="content form-horizontal">
+    <div class="content">
 
-        <div class="form-group">
-            <label class="col-md-3 control-label"><?= Yii::t('admin', 'motion_move_op') ?>:</label>
-            <div class="col-md-9">
+        <div class="stdTwoCols">
+            <div class="leftColumn control-label"><?= Yii::t('admin', 'motion_move_op') ?>:</div>
+            <div class="rightColumn">
                 <label>
                     <input type="radio" name="operation" value="copynoref" required>
                     <?= Yii::t('admin', 'motion_move_op_copynoref') ?>
@@ -59,23 +58,28 @@ $targetConsultations = $form->getConsultationTargets();
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-md-3 control-label"><?= Yii::t('admin', 'motion_move_target') ?>:</label>
-            <div class="col-md-9">
+        <div class="stdTwoCols">
+            <div class="leftColumn control-label labelTargetMove"><?= Yii::t('admin', 'motion_move_target') ?>:</div>
+            <div class="leftColumn control-label labelTargetCopy hidden"><?= Yii::t('admin', 'motion_copy_target') ?>:</div>
+            <div class="rightColumn">
                 <label>
                     <input type="radio" name="target" value="agenda" required>
                     <?= Yii::t('admin', 'motion_move_target_agenda') ?>
-                </label><br>
+                </label>
                 <label>
                     <input type="radio" name="target" value="consultation" required>
                     <?= Yii::t('admin', 'motion_move_target_con') ?>
-                </label><br>
+                </label>
+                <label class="targetSame hidden">
+                    <input type="radio" name="target" value="same" required>
+                    <?= Yii::t('admin', 'motion_copy_target_same') ?>
+                </label>
             </div>
         </div>
 
-        <div class="form-group moveToAgendaItem">
-            <label class="col-md-3 control-label"><?= Yii::t('admin', 'motion_move_agenda_item') ?>:</label>
-            <div class="col-md-9">
+        <div class="stdTwoCols moveToAgendaItem">
+            <div class="leftColumn control-label"><?= Yii::t('admin', 'motion_move_agenda_item') ?>:</div>
+            <div class="rightColumn">
                 <?php
                 $agendaItems = ConsultationAgendaItem::getSortedFromConsultation($consultation);
                 if (count($agendaItems) > 0) {
@@ -93,9 +97,9 @@ $targetConsultations = $form->getConsultationTargets();
             </div>
         </div>
 
-        <div class="form-group moveToConsultationItem">
-            <label class="col-md-3 control-label"><?= Yii::t('admin', 'motion_move_con') ?>:</label>
-            <div class="col-md-9">
+        <div class="stdTwoCols moveToConsultationItem">
+            <div class="leftColumn control-label"><?= Yii::t('admin', 'motion_move_con') ?>:</div>
+            <div class="rightColumn">
                 <?php
                 if (count($targetConsultations) > 0) {
                     $selections = [];
@@ -113,9 +117,9 @@ $targetConsultations = $form->getConsultationTargets();
         <?php
         foreach ($targetConsultations as $targetCon) {
             ?>
-            <div class="form-group moveToMotionTypeId moveToMotionTypeId<?= $targetCon->id ?>">
-                <label class="col-md-3 control-label"><?= Yii::t('admin', 'motion_move_type') ?>:</label>
-                <div class="col-md-9">
+            <div class="stdTwoCols moveToMotionTypeId moveToMotionTypeId<?= $targetCon->id ?>">
+                <div class="leftColumn control-label"><?= Yii::t('admin', 'motion_move_type') ?>:</div>
+                <div class="rightColumn">
                     <?php
                     $options    = ['id' => 'motionType' . $targetCon->id, 'class' => 'stdDropdown'];
                     $selections = [];
@@ -131,9 +135,9 @@ $targetConsultations = $form->getConsultationTargets();
         }
         ?>
 
-        <div class="form-group">
-            <label class="col-md-3 control-label" for="motionTitlePrefix"><?= Yii::t('admin', 'motion_move_prefix') ?>:</label>
-            <div class="col-md-4"><?php
+        <div class="stdTwoCols">
+            <div class="leftColumn control-label" for="motionTitlePrefix"><?= Yii::t('admin', 'motion_move_prefix') ?>:</div>
+            <div class="rightColumn"><?php
                 echo Html::textInput('titlePrefix', $motion->titlePrefix, [
                     'class'       => 'form-control',
                     'id'          => 'motionTitlePrefix',
@@ -141,9 +145,7 @@ $targetConsultations = $form->getConsultationTargets();
                     'required'    => 'required',
                 ]);
                 ?>
-                <small><?= Yii::t('admin', 'motion_prefix_unique') ?></small>
-            </div>
-            <div class="col-md-5">
+                <small><?= Yii::t('admin', 'motion_prefix_unique') ?></small><br>
                 <span class="prefixAlreadyTaken hidden"><?= Yii::t('admin', 'motion_prefix_collision') ?></span>
             </div>
         </div>
