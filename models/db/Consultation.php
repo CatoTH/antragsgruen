@@ -137,12 +137,9 @@ class Consultation extends ActiveRecord
     /** @var Motion[]|null[] */
     private array $motionCache = [];
 
-    /**
-     * @param string|null|int $motionSlug
-     */
-    public function getMotion($motionSlug): ?Motion
+    public function getMotion(string|int|null $motionSlug): ?Motion
     {
-        if (is_null($motionSlug)) {
+        if (is_null($motionSlug) || $motionSlug === 0) {
             return null;
         }
         if (isset($this->motionCache[$motionSlug])) {

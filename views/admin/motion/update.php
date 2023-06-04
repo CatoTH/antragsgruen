@@ -135,10 +135,42 @@ echo '<div class="content form-horizontal">';
             $stats = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
             $options = ['id' => 'motionStatus', 'class' => 'stdDropdown fullsize'];
             echo Html::dropDownList('motion[status]', $motion->status, $stats, $options);
-            echo '</div><div class="rightColumn">';
-            $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
-            echo Html::textInput('motion[statusString]', $motion->statusString, $options);
             ?>
+        </div>
+        <div class="rightColumn">
+            <div class="motionStatusString">
+                <?php
+                $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
+                echo Html::textInput('motion[statusString]', $motion->statusString, $options);
+                ?>
+            </div>
+            <div class="motionStatusMotion hidden">
+                <?php
+                $options = ['class' => 'stdDropdown', 'id' => 'motionStatusMotion', 'placeholder' => '...'];
+                $items = ['' => '...'];
+                $hasVersions = count(array_filter($consultation->motions, fn(Motion $mot): bool => $mot->version !== Motion::VERSION_DEFAULT)) > 0;
+                foreach (\app\components\MotionSorter::getSortedIMotionsFlat($consultation, $consultation->motions) as $mot) {
+                    $items[$mot->id] = $mot->getTitleWithPrefix();
+                    if ($hasVersions) {
+                        $items[$mot->id] .= ' (' . Yii::t('motion', 'version') . ' ' . $mot->version . ')';
+                    }
+                }
+                echo Html::dropDownList('motion[statusStringMotion]', $motion->statusString, $items, $options);
+                ?>
+            </div>
+            <div class="motionStatusAmendment hidden">
+                <?php
+                $options = ['class' => 'stdDropdown', 'id' => 'motionStatusAmendment', 'placeholder' => '...'];
+                $items = ['' => '...'];
+                foreach (\app\components\MotionSorter::getSortedIMotionsFlat($consultation, $consultation->motions) as $mot) {
+                    /** @var Motion $mot */
+                    foreach ($mot->amendments as $amend) {
+                        $items[$amend->id] = $amend->getTitleWithPrefix();
+                    }
+                }
+                echo Html::dropDownList('motion[statusStringAmendment]', $motion->statusString, $items, $options);
+                ?>
+            </div>
         </div>
     </div>
 

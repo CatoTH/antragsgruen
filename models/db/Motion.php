@@ -87,7 +87,8 @@ class Motion extends IMotion implements IRSSItem
             IMotion::STATUS_MODIFIED_ACCEPTED,
             IMotion::STATUS_REFERRED,
             IMotion::STATUS_VOTE,
-            IMotion::STATUS_OBSOLETED_BY,
+            IMotion::STATUS_OBSOLETED_BY_AMENDMENT,
+            IMotion::STATUS_OBSOLETED_BY_MOTION,
             IMotion::STATUS_CUSTOM_STRING,
         ];
     }
@@ -1092,7 +1093,9 @@ class Motion extends IMotion implements IRSSItem
 
         $consultation = $this->getMyConsultation();
         $screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
-        $statusNames           = $consultation->getStatuses()->getStatusNames();
+        $statusNames = $consultation->getStatuses()->getStatusNames();
+
+        $statusString = $this->statusString;
         if ($this->isInScreeningProcess()) {
             $status .= '<span class="unscreened">' . Html::encode($statusNames[$this->status]) . '</span>';
         } elseif ($this->status === Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
@@ -1102,11 +1105,29 @@ class Motion extends IMotion implements IRSSItem
             $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
             $policy = $this->getMyMotionType()->getMotionSupportPolicy();
             $status .= $policy::getPolicyName() . ')</small>';
+        } elseif ($this->status === Motion::STATUS_OBSOLETED_BY_MOTION) {
+            $othermot = $this->getMyConsultation()->getMotion(intval($this->statusString));
+            if ($othermot) {
+                $status = \Yii::t('amend', 'obsoleted_by') . ': ';
+                $status .= Html::a(Html::encode($othermot->getTitleWithPrefix()), UrlHelper::createMotionUrl($othermot));
+                $statusString = null;
+            } else {
+                $status .= Html::encode($statusNames[$this->status]);
+            }
+        } elseif ($this->status === Motion::STATUS_OBSOLETED_BY_AMENDMENT) {
+            $otheramend = $this->getMyConsultation()->getAmendment(intval($this->statusString));
+            if ($otheramend) {
+                $status = \Yii::t('amend', 'obsoleted_by') . ': ';
+                $status .= Html::a(Html::encode($otheramend->getTitleWithPrefix()), UrlHelper::createAmendmentUrl($otheramend));
+                $statusString = null;
+            } else {
+                $status .= Html::encode($statusNames[$this->status]);
+            }
         } else {
             $status .= Html::encode($statusNames[$this->status]);
         }
-        if ($this->statusString !== null && trim($this->statusString) !== '') {
-            $status .= ' <small>(' . Html::encode($this->statusString) . ')</string>';
+        if ($statusString) {
+            $status .= ' <small>(' . Html::encode($statusString) . ')</string>';
         }
 
         return Layout::getFormattedMotionStatus($status, $this);

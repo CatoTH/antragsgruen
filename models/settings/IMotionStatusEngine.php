@@ -122,7 +122,8 @@ class IMotionStatusEngine
             false,
             true
         );
-        $statuses[] = new IMotionStatus(IMotion::STATUS_OBSOLETED_BY, \Yii::t('structure', 'STATUS_OBSOLETED_BY'));
+        $statuses[] = new IMotionStatus(IMotion::STATUS_OBSOLETED_BY_MOTION, \Yii::t('structure', 'STATUS_OBSOLETED_BY_MOTION'));
+        $statuses[] = new IMotionStatus(IMotion::STATUS_OBSOLETED_BY_AMENDMENT, \Yii::t('structure', 'STATUS_OBSOLETED_BY_AMEND'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_CUSTOM_STRING, \Yii::t('structure', 'STATUS_CUSTOM_STRING'));
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_INLINE_REPLY,

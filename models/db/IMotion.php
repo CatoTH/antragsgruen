@@ -121,9 +121,10 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     // Amendments cannot be moved, they are always sticked to the motion.
     public const STATUS_MOVED = 27;
 
-    // An amendment becomes obsoleted by another amendment. That one is referred by an id
+    // A motion/amendment becomes obsoleted by another one. That one is referred by an id
     // in statusString (a bit unelegantely), or, in case of a change proposal, in proposalComment
-    public const STATUS_OBSOLETED_BY = 22;
+    public const STATUS_OBSOLETED_BY_AMENDMENT = 22;
+    public const STATUS_OBSOLETED_BY_MOTION = 32;
 
     // The exact status is specified in a free-text field; proposalComment if this status is used in proposalStatus
     public const STATUS_CUSTOM_STRING = 23;
@@ -163,7 +164,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     protected static function findByCondition($condition)
     {
         $query = parent::findByCondition($condition);
-        $query->andWhere('status != ' . static::STATUS_DELETED);
+        $query->andWhere('status != ' . self::STATUS_DELETED);
 
         return $query;
     }
@@ -249,8 +250,8 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         return (
             $this->isVisibleForAdmins() &&
             !in_array($this->status, [
-                static::STATUS_DRAFT,
-                static::STATUS_DRAFT_ADMIN,
+                self::STATUS_DRAFT,
+                self::STATUS_DRAFT_ADMIN,
             ])
         );
     }
@@ -268,7 +269,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public function isReadable(): bool
     {
         $iAmAdmin = User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null);
-        if ($iAmAdmin && in_array($this->status, [static::STATUS_DRAFT, static::STATUS_DRAFT_ADMIN])) {
+        if ($iAmAdmin && in_array($this->status, [self::STATUS_DRAFT, self::STATUS_DRAFT_ADMIN])) {
             return true;
         }
 
@@ -372,14 +373,15 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public static function getProposedStatusNames(): array
     {
         return [
-            static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
-            static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
-            static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED'),
-            static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
-            static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
-            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND'),
-            static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION => \Yii::t('structure', 'PROPOSED_MOVE_TO_OTHER_MOTION'),
-            static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
+            self::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
+            self::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
+            self::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED'),
+            self::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
+            self::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
+            self::STATUS_OBSOLETED_BY_AMENDMENT => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND'),
+            self::STATUS_OBSOLETED_BY_MOTION    => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT'),
+            self::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION => \Yii::t('structure', 'PROPOSED_MOVE_TO_OTHER_MOTION'),
+            self::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
         ];
     }
 
@@ -543,14 +545,14 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     public function getFormattedProposalStatus(bool $includeExplanation = false): string
     {
-        if ($this->status === static::STATUS_WITHDRAWN) {
+        if ($this->status === self::STATUS_WITHDRAWN) {
             return '<span class="withdrawn">' . \Yii::t('structure', 'STATUS_WITHDRAWN') . '</span>';
         }
-        if ($this->status === static::STATUS_MOVED && is_a($this, Motion::class)) {
+        if ($this->status === self::STATUS_MOVED && is_a($this, Motion::class)) {
             /** @var Motion $this */
             return '<span class="moved">' . LayoutHelper::getMotionMovedStatusHtml($this) . '</span>';
         }
-        if ($this->status === static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION && is_a($this, Amendment::class)) {
+        if ($this->status === self::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION && is_a($this, Amendment::class)) {
             // @TODO backlink once we have a link from the moved amendment to the original, not just the other way round
             return \Yii::t('structure', 'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION');
         }
@@ -571,9 +573,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
             return $explStr;
         }
         switch ($this->proposalStatus) {
-            case static::STATUS_REFERRED:
+            case self::STATUS_REFERRED:
                 return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment) . $explStr;
-            case static::STATUS_OBSOLETED_BY:
+            case self::STATUS_OBSOLETED_BY_AMENDMENT:
                 $refAmend = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
                 if ($refAmend) {
                     $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
@@ -582,17 +584,26 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
                 } else {
                     return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
                 }
-            case static::STATUS_CUSTOM_STRING:
+            case self::STATUS_OBSOLETED_BY_MOTION:
+                $refMot = $this->getMyConsultation()->getMotion(intval($this->proposalComment));
+                if ($refMot) {
+                    $refMotStr = Html::a($refMot->getTitleWithPrefix(), UrlHelper::createMotionUrl($refMot));
+
+                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refMotStr . $explStr;
+                } else {
+                    return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
+                }
+            case self::STATUS_CUSTOM_STRING:
                 return Html::encode($this->proposalComment) . $explStr;
-            case static::STATUS_VOTE:
+            case self::STATUS_VOTE:
                 $str = static::getProposedStatusNames()[$this->proposalStatus];
                 if ($this->getMyProposalReference()) {
                     $str .= ' (' . \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED') . ')';
                 }
-                if ($this->votingStatus === static::STATUS_ACCEPTED) {
+                if ($this->votingStatus === self::STATUS_ACCEPTED) {
                     $str .= ' (' . \Yii::t('structure', 'STATUS_ACCEPTED') . ')';
                 }
-                if ($this->votingStatus === static::STATUS_REJECTED) {
+                if ($this->votingStatus === self::STATUS_REJECTED) {
                     $str .= ' (' . \Yii::t('structure', 'STATUS_REJECTED') . ')';
                 }
                 $str .= $explStr;

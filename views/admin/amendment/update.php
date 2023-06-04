@@ -4,7 +4,7 @@ use app\models\settings\AntragsgruenApp;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, ConsultationSettingsTag, User};
+use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, ConsultationSettingsTag, Motion, User};
 use yii\helpers\Html;
 
 /**
@@ -138,10 +138,39 @@ if (count($consultation->agendaItems) > 0) {
             ?>
         </div>
         <div class="rightColumn">
-            <?php
-            $options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
-            echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);
-            ?>
+            <div class="amendmentStatusString">
+                <?php
+                $options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
+                echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);
+                ?>
+            </div>
+            <div class="amendmentStatusMotion hidden">
+                <?php
+                $options = ['class' => 'stdDropdown', 'id' => 'amendmentStatusMotion', 'placeholder' => '...'];
+                $items = ['' => '...'];
+                $hasVersions = count(array_filter($consultation->motions, fn(Motion $mot): bool => $mot->version !== Motion::VERSION_DEFAULT)) > 0;
+                foreach (\app\components\MotionSorter::getSortedIMotionsFlat($consultation, $consultation->motions) as $mot) {
+                    $items[$mot->id] = $mot->getTitleWithPrefix();
+                    if ($hasVersions) {
+                        $items[$mot->id] .= ' (' . Yii::t('motion', 'version') . ' ' . $mot->version . ')';
+                    }
+                }
+                echo Html::dropDownList('amendment[statusStringMotion]', $amendment->statusString, $items, $options);
+                ?>
+            </div>
+            <div class="amendmentStatusAmendment hidden">
+                <?php
+                $options = ['class' => 'stdDropdown', 'id' => 'amendmentStatusAmendment', 'placeholder' => '...'];
+                $items = ['' => '...'];
+                foreach (\app\components\MotionSorter::getSortedIMotionsFlat($consultation, $consultation->motions) as $mot) {
+                    /** @var Motion $mot */
+                    foreach ($mot->amendments as $amend) {
+                        $items[$amend->id] = $amend->getTitleWithPrefix();
+                    }
+                }
+                echo Html::dropDownList('amendment[statusStringAmendment]', $amendment->statusString, $items, $options);
+                ?>
+            </div>
         </div>
     </div>
 

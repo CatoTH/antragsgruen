@@ -225,12 +225,19 @@ class MotionController extends AdminBase
             }
 
             $motion->title        = $modat['title'];
-            $motion->statusString = mb_substr($modat['statusString'], 0, 55);
             $motion->noteInternal = $modat['noteInternal'];
-            $motion->status       = intval($modat['status']);
             $motion->agendaItemId = (isset($modat['agendaItemId']) ? intval($modat['agendaItemId']) : null);
             $motion->nonAmendable = (isset($modat['nonAmendable']) ? 1 : 0);
             $motion->notCommentable = (isset($modat['notCommentable']) ? 1 : 0);
+
+            $motion->status       = intval($modat['status']);
+            if ($motion->status === Motion::STATUS_OBSOLETED_BY_MOTION) {
+                $motion->statusString = (string)intval($modat['statusStringMotion']);
+            } elseif ($motion->status === Motion::STATUS_OBSOLETED_BY_AMENDMENT) {
+                $motion->statusString = (string)intval($modat['statusStringAmendment']);
+            } else {
+                $motion->statusString = mb_substr($modat['statusString'], 0, 55);
+            }
 
             if (isset($modat['slug']) && preg_match('/^[\w_-]+$/i', $modat['slug'])) {
                 $collision = false;

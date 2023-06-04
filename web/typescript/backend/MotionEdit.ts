@@ -2,6 +2,8 @@ import {MotionSupporterEdit} from "./MotionSupporterEdit";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 
 const STATUS_VOTE = 11;
+const STATUS_OBSOLETED_BY_MOTION = 32;
+const STATUS_OBSOLETED_BY_AMENDMENT = 22;
 
 export class MotionEdit {
     private $updateForm: JQuery;
@@ -47,6 +49,7 @@ export class MotionEdit {
         this.initProtocolFunctions();
         this.initVotingFunctions();
         this.initSlug();
+        this.initStatus();
 
         new MotionSupporterEdit($("#motionSupporterHolder"));
     }
@@ -57,6 +60,27 @@ export class MotionEdit {
             $('.urlSlugHolder .shower').addClass('hidden');
             $('.urlSlugHolder .holder').removeClass('hidden');
         });
+    }
+    private initStatus() {
+        const onChange = () => {
+            const newStatus = parseInt((document.getElementById('motionStatus') as HTMLSelectElement).value, 10);
+            console.log(newStatus);
+            if (newStatus === STATUS_OBSOLETED_BY_MOTION) {
+                document.querySelector('.motionStatusString').classList.add('hidden');
+                document.querySelector('.motionStatusMotion').classList.remove('hidden');
+                document.querySelector('.motionStatusAmendment').classList.add('hidden');
+            } else if (newStatus === STATUS_OBSOLETED_BY_AMENDMENT) {
+                document.querySelector('.motionStatusString').classList.add('hidden');
+                document.querySelector('.motionStatusMotion').classList.add('hidden');
+                document.querySelector('.motionStatusAmendment').classList.remove('hidden');
+            } else {
+                document.querySelector('.motionStatusString').classList.remove('hidden');
+                document.querySelector('.motionStatusMotion').classList.add('hidden');
+                document.querySelector('.motionStatusAmendment').classList.add('hidden');
+            }
+        };
+        document.getElementById('motionStatus').addEventListener('change', onChange);
+        onChange();
     }
     private initProtocolFunctions() {
         const $classHolders = $(".contentProtocolCaller, .protocolHolder"),
