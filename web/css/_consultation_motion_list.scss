@@ -378,11 +378,20 @@ $agendaMarginPerLevel: 50px;
       font-weight: normal;
     }
   }
-  html.no-touchevents & .agendaItemAdder {
-    visibility: hidden;
-  }
-  html.no-touchevents &:hover > .agendaItemAdder, html.no-touchevents & ol.agenda:hover > .agendaItemAdder {
-    visibility: visible;
+  @media (hover: hover) {
+    .agendaItemAdder > * {
+      opacity: 0;
+      &:focus-within {
+        opacity: 1;
+      }
+    }
+    &:hover > .agendaItemAdder > * {
+      opacity: 1;
+    }
+
+    ol.agenda:hover > .agendaItemAdder > * {
+      opacity: 1;
+    }
   }
 
   li.agendaItem {
@@ -418,28 +427,34 @@ $agendaMarginPerLevel: 50px;
         overflow: visible; // Times
         padding: 3px;
         font-weight: normal;
-        html.no-touchevents & .delAgendaItem {
-          opacity: 0;
-        }
-        html.no-touchevents &:hover .delAgendaItem {
-          opacity: 1;
-        }
-        html.no-touchevents & .delAgendaItem:focus {
-          opacity: 1;
+
+        @media (hover: hover) {
+          & .delAgendaItem {
+            opacity: 0;
+          }
+          &:hover .delAgendaItem {
+            opacity: 1;
+          }
+          & .delAgendaItem:focus {
+            opacity: 1;
+          }
         }
 
         .editAgendaItem {
           font-size: 0.7em;
           margin-left: 10px;
         }
-        html.no-touchevents & .editAgendaItem {
-          opacity: 0;
-        }
-        html.no-touchevents &:hover .editAgendaItem {
-          opacity: 1;
-        }
-        html.no-touchevents & .editAgendaItem:focus {
-          opacity: 1;
+
+        @media (hover: hover) {
+          & .editAgendaItem {
+            opacity: 0;
+          }
+          &:hover .editAgendaItem {
+            opacity: 1;
+          }
+          & .editAgendaItem:focus {
+            opacity: 1;
+          }
         }
       }
 
@@ -671,11 +686,13 @@ $agendaMarginPerLevel: 50px;
   &.showTimes > li > div .moveHandle { // Only move the top-level handlers to the side
     margin-left: -67px;
   }
-  html.no-touchevents & li.agendaItem > div > .moveHandle {
-    display: none;
-  }
-  html.no-touchevents & li.agendaItem:hover > div > .moveHandle {
-    display: block;
+  @media (hover: hover) {
+    li.agendaItem > div > .moveHandle {
+      display: none;
+    }
+    li.agendaItem:hover > div > .moveHandle {
+      display: block;
+    }
   }
 
   .movePlaceholder {

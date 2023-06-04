@@ -6,7 +6,7 @@ export class DraftSavingEngine {
     constructor(private $form: JQuery, private $draftHint: JQuery, keyBase: string) {
         this.$html = $('html');
 
-        if (!this.$html.hasClass("localstorage")) {
+        if (!this.testLocalstorageEnabled()) {
             return;
         }
 
@@ -57,6 +57,17 @@ export class DraftSavingEngine {
         window.setTimeout(this.saveInitialData.bind(this), 2000);
 
         window.setInterval(this.doBackup.bind(this), 3000);
+    }
+
+    private testLocalstorageEnabled(): boolean {
+        try {
+            const key = `__storage__test`;
+            window.localStorage.setItem(key, null);
+            window.localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     private saveInitialData() {

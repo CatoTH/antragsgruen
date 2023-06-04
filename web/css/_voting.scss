@@ -438,11 +438,13 @@
     display: flex;
     flex-direction: row;
   }
-  html.no-touchevents & .userGroupSetter {
-    visibility: hidden;
-  }
-  html.no-touchevents & .showingSelector .userGroupSetter {
-    visibility: visible;
+  @media (hover: hover) {
+    .userGroupSetter {
+      opacity: 0;
+    }
+    .showingSelector .userGroupSetter {
+      opacity: 1;
+    }
   }
   .voteListHolder:hover .userGroupSetter {
     visibility: visible;

@@ -87,7 +87,7 @@
   .fileList {
     list-style-type: none;
 
-    html.no-touchevents & {
+    @media (hover: hover) {
       li .deleteFile {
         opacity: 0.1;
       }
