@@ -7,7 +7,7 @@ class StringSplitter
     /**
      * Split string at any of the given delimiters
      *
-     * @param string[] $delimiters
+     * @param non-empty-string[] $delimiters
      *
      * @return string[]
      */
@@ -30,12 +30,11 @@ class StringSplitter
     /**
      * Return first piece before any of the given delimiters
      *
-     * @param string[] $delimiters
+     * @param non-empty-string[] $delimiters
      */
     public static function first(array $delimiters, string $string): string
     {
         foreach ($delimiters as $delimiter) {
-            /** @var string[] $parts */
             $parts = explode($delimiter, $string);
             $string = $parts[0];
         }

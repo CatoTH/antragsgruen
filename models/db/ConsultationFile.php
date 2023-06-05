@@ -235,7 +235,7 @@ class ConsultationFile extends ActiveRecord
     public static function uploadImage(Consultation $consultation, string $formName, ?User $user): ConsultationFile
     {
         if (isset($_FILES[$formName]) && is_uploaded_file($_FILES[$formName]['tmp_name'])) {
-            $content = file_get_contents($_FILES[$formName]['tmp_name']);
+            $content = (string)file_get_contents($_FILES[$formName]['tmp_name']);
 
             if (isset($_FILES[$formName]['type']) && $_FILES[$formName]['type'] === 'image/svg+xml') {
                 $mime = 'image/svg+xml';

@@ -216,6 +216,7 @@ class ConsultationAgendaItem extends ActiveRecord
         // Needs to be synchronized with antragsgruen.js:recalcAgendaCodes
         $calcNewShownCode = function ($currShownCode, $newInternalCode) use ($separator) {
             if ($newInternalCode === self::CODE_AUTO) {
+                /** @var non-empty-string $separator */
                 $currParts = explode($separator, $currShownCode);
                 if (preg_match('/^[a-z]$/siu', $currParts[0])) { // Single alphabetical characters
                     $currParts[0] = chr(ord($currParts[0]) + 1);

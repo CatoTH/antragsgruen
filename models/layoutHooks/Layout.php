@@ -28,16 +28,12 @@ class Layout
         }
     }
 
-    /**
-     * @param mixed $initValue
-     * @return mixed
-     */
-    private static function callHook(string $name, array $args = [], $initValue = '')
+    private static function callHook(string $name, array $args = [], mixed $initValue = ''): mixed
     {
         $out = $initValue;
         foreach (self::$hooks as $hook) {
             $callArgs = array_merge([$out], $args);
-            $out      = call_user_func_array([$hook, $name], $callArgs);
+            $out = call_user_func_array([$hook, $name], $callArgs);
         }
         return $out;
     }

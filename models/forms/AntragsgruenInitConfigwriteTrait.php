@@ -39,8 +39,9 @@ trait AntragsgruenInitConfigwriteTrait
     {
         $config = $this->readConfigFromFile();
         $this->setConfigValues($config);
+        /** @var resource $file */
         $file = fopen($this->configFile, 'w');
-        fwrite($file, json_encode($config, JSON_PRETTY_PRINT));
+        fwrite($file, json_encode($config, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR));
         fclose($file);
     }
 }

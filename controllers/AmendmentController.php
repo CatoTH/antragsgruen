@@ -500,7 +500,7 @@ class AmendmentController extends Base
 
             $proposalExplanationPre = $amendment->proposalExplanation;
             if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
-                if (trim($this->getHttpRequest()->post('proposalExplanation', '') === '')) {
+                if (trim($this->getHttpRequest()->post('proposalExplanation', '')) === '') {
                     $amendment->proposalExplanation = null;
                 } else {
                     $amendment->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
