@@ -370,8 +370,11 @@ class MotionController extends AdminBase
             $existingMotion = array_filter($newConsultation->motions, function(Motion $cmpMotion) use ($newMotionPrefix) {
                 return (mb_strtolower($cmpMotion->titlePrefix) === mb_strtolower($newMotionPrefix));
             });
-            if ($this->getHttpRequest()->get('operation') === 'move' || $consultationId !== $this->consultation->id) {
-                $existingMotion = array_filter($newConsultation->motions, function(Motion $cmpMotion) use ($motion) {
+
+            // If the motion is copied (not moved) within the same consultation, then the new motion could collide with the old one.
+            // If it's moved, however, we can ignore the old motion.
+            if ($this->getHttpRequest()->get('operation') === 'move') {
+                $existingMotion = array_filter($existingMotion, function(Motion $cmpMotion) use ($motion) {
                     return $cmpMotion->id !== $motion->id;
                 });
             }

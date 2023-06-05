@@ -113,3 +113,30 @@ $I->submitForm('.mergeAllRow', [], null);
 $I->wait(0.5);
 $I->see('A big replacement', '#paragraphWrapper_2_1 .collidingParagraph');
 
+
+$I->wantTo('copy the new motion within the consultation');
+$I->gotoMotion(true, AcceptanceTester::FIRST_FREE_MOTION_ID);
+$I->click('#sidebar .adminEdit a');
+$I->click('.sidebarActions .move');
+
+$I->dontSeeElement('.moveToConsultationItem');
+$I->dontSeeElement('.targetSame');
+$I->checkOption("//input[@name='operation'][@value='copynoref']");
+$I->seeCheckboxIsChecked("//input[@name='operation'][@value='copynoref']");
+$I->wait(0.1);
+$I->seeElement('.targetSame');
+$I->checkOption("//input[@name='target'][@value='same']");
+$I->dontSeeElement('.moveToConsultationItem');
+$I->wait(0.1);
+$I->seeElement('.prefixAlreadyTaken');
+
+$I->fillField('#motionTitlePrefix', 'N1.2');
+$I->wait(0.1);
+$I->dontSeeElement('.prefixAlreadyTaken');
+
+$I->submitForm('.adminMoveForm', [], 'move');
+$I->click('.alert-success a');
+
+$I->gotoMotion(true, (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
+$I->see('N1.2', 'h1');
+$I->fail('!');
