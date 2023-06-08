@@ -219,13 +219,21 @@ class AmendmentController extends AdminBase
             }
 
             $amdat                        = $post['amendment'];
-            $amendment->statusString      = mb_substr($amdat['statusString'], 0, 55);
             $amendment->dateCreation      = Tools::dateBootstraptime2sql($amdat['dateCreation']);
             $amendment->noteInternal      = $amdat['noteInternal'];
-            $amendment->status            = intval($amdat['status']);
             $amendment->globalAlternative = (isset($amdat['globalAlternative']) ? 1 : 0);
             $amendment->dateResolution    = null;
             $amendment->notCommentable = (isset($amdat['notCommentable']) ? 1 : 0);
+
+            $amendment->status       = intval($amdat['status']);
+            if ($amendment->status === Motion::STATUS_OBSOLETED_BY_MOTION) {
+                $amendment->statusString = (string)intval($amdat['statusStringMotion']);
+            } elseif ($amendment->status === Motion::STATUS_OBSOLETED_BY_AMENDMENT) {
+                $amendment->statusString = (string)intval($amdat['statusStringAmendment']);
+            } else {
+                $amendment->statusString = mb_substr($amdat['statusString'], 0, 55);
+            }
+
             $amendment->setExtraDataKey(
                 Amendment::EXTRA_DATA_VIEW_MODE_FULL,
                 (isset($amdat['viewMode']) && $amdat['viewMode'] === '1')

@@ -98,10 +98,7 @@ if (defined('YII_ENV') && YII_ENV == 'test') {
     $bodyClasses[] = 'testing';
 }
 
-echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
-
-$modernizr = file_get_contents(Yii::$app->basePath . '/web/js/modernizr.js');
-echo '<script>' . $modernizr . '</script>' . "\n";
+echo '<body' . (count($bodyClasses) > 0 ? ' class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
 
 $this->beginBody();
 

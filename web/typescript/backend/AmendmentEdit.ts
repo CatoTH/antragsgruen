@@ -5,6 +5,8 @@ import editor = CKEDITOR.editor;
 import { AmendmentEditSinglePara } from "../shared/AmendmentEditSinglePara";
 
 const STATUS_VOTE = 11;
+const STATUS_OBSOLETED_BY_MOTION = 32;
+const STATUS_OBSOLETED_BY_AMENDMENT = 22;
 
 export class AmendmentEdit {
     private lang: string;
@@ -53,6 +55,7 @@ export class AmendmentEdit {
         });
 
         this.initVotingFunctions();
+        this.initStatus();
 
         new MotionSupporterEdit($("#motionSupporterHolder"));
     }
@@ -85,6 +88,27 @@ export class AmendmentEdit {
             new AmendmentEditSinglePara();
         }
         $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
+    }
+
+    private initStatus() {
+        const onChange = () => {
+            const newStatus = parseInt((document.getElementById('amendmentStatus') as HTMLSelectElement).value, 10);
+            if (newStatus === STATUS_OBSOLETED_BY_MOTION) {
+                document.querySelector('.amendmentStatusString').classList.add('hidden');
+                document.querySelector('.amendmentStatusMotion').classList.remove('hidden');
+                document.querySelector('.amendmentStatusAmendment').classList.add('hidden');
+            } else if (newStatus === STATUS_OBSOLETED_BY_AMENDMENT) {
+                document.querySelector('.amendmentStatusString').classList.add('hidden');
+                document.querySelector('.amendmentStatusMotion').classList.add('hidden');
+                document.querySelector('.amendmentStatusAmendment').classList.remove('hidden');
+            } else {
+                document.querySelector('.amendmentStatusString').classList.remove('hidden');
+                document.querySelector('.amendmentStatusMotion').classList.add('hidden');
+                document.querySelector('.amendmentStatusAmendment').classList.add('hidden');
+            }
+        };
+        document.getElementById('amendmentStatus').addEventListener('change', onChange);
+        onChange();
     }
 
     private initVotingFunctions() {

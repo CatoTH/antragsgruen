@@ -267,6 +267,7 @@ class DiffRenderer
                     $text = '';
                 }
             } else {
+                /** @var string[] $split */
                 $split = preg_split('/(###(?:INS|DEL)_START([^#]{0,20})###)/siu', $text, 2, PREG_SPLIT_DELIM_CAPTURE);
                 if (count($split) === 4) {
                     if ($split[0] !== '') {

@@ -409,6 +409,7 @@ class Diff
         if ($firstTag === false || $firstTag > $first) {
             return $first;
         }
+        /** @var string[] $parts */
         $parts = preg_split('/(<[^>]*>)/', $haystack, -1, PREG_SPLIT_DELIM_CAPTURE);
         $pos   = 0;
         for ($i = 0; $i < count($parts); $i++) {

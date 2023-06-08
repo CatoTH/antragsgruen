@@ -3,7 +3,7 @@
 namespace app\plugins\member_petitions;
 
 use app\components\RequestContext;
-use app\models\http\HtmlResponse;
+use app\models\http\{HtmlResponse, ResponseInterface};
 use app\models\policies\IPolicy;
 use app\models\db\{Consultation, Motion};
 use app\models\settings\Layout;
@@ -81,7 +81,7 @@ class Module extends ModuleBase
         return true;
     }
 
-    public static function getSiteHomePage(): HtmlResponse
+    public static function getSiteHomePage(): ResponseInterface
     {
         return new HtmlResponse(RequestContext::getController()->render('@app/plugins/member_petitions/views/index'));
     }

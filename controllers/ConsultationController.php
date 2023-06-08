@@ -48,14 +48,7 @@ class ConsultationController extends Base
             }
         }
 
-        $return = parent::beforeAction($action);
-        if (!$this->consultation) {
-            $this->consultationNotFound();
-
-            return false;
-        }
-
-        return $return;
+        return parent::beforeAction($action);
     }
 
     public function actionSearch(): ResponseInterface

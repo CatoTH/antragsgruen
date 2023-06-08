@@ -391,11 +391,13 @@
       display: inline-block;
       margin-top: 8px;
     }
-    html.no-touchevents & .rowDeleter {
-      visibility: hidden;
-    }
-    html.no-touchevents &:hover .rowDeleter {
-      visibility: visible;
+    @media (hover: hover) {
+      & .rowDeleter {
+        opacity: 0;
+      }
+      &:hover .rowDeleter, &:focus-within .rowDeleter {
+        opacity: 1;
+      }
     }
   }
   .moreInitiatorsAdder {

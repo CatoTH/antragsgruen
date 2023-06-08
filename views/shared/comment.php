@@ -18,7 +18,7 @@ $canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserCom
 
 ?>
 
-<article class="motionComment hoverHolder" id="comment<?= $comment->id ?>" data-id="<?= $comment->id ?>">
+<article class="motionComment" id="comment<?= $comment->id ?>" data-id="<?= $comment->id ?>">
     <div class="date"><?= Tools::formatMysqlDate($comment->dateCreation) ?></div>
     <h3 class="commentHeader"><?= Html::encode($comment->name) ?>:
         <?php

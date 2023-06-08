@@ -61,7 +61,15 @@ class MotionParagraph {
     private toggleInlineAmendmentBehavior($amendment: JQuery) {
         const $link = $amendment.find("a"),
             amendmentId = $link.data("id");
-        if ($("html").hasClass("touchevents")) {
+
+        const hasHover =  (window.matchMedia && window.matchMedia("(hover: hover)").matches);
+        if (hasHover) {
+            $amendment.on("mouseover", () => {
+                this.showInlineAmendment(amendmentId);
+            }).on("mouseout", () => {
+                this.hideInlineAmendment(amendmentId);
+            });
+        } else {
             $link.on("click", (ev) => {
                 ev.preventDefault();
                 if (this.$element.find("> .textAmendment.amendment" + amendmentId).hasClass("hidden")) {
@@ -69,12 +77,6 @@ class MotionParagraph {
                 } else {
                     this.hideInlineAmendment(amendmentId);
                 }
-            });
-        } else {
-            $amendment.on("mouseover", () => {
-                this.showInlineAmendment(amendmentId);
-            }).on("mouseout", () => {
-                this.hideInlineAmendment(amendmentId);
             });
         }
     }

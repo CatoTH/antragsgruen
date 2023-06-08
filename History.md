@@ -3,6 +3,8 @@
 ### Version 4.13.0 [not released yet]
 
 - WARNING: if you are using a PHP 7.4 or older, then update to PHP 8.0 or newer first before installing this update!
+- It is now possible to copy/duplicate a motion within a consultation.
+- When editing a motion or amendment as admin, it is possible to set the status "Obsoleted by another amendment" or te new "Obsoleted by another motion" and specify which motion/amendment that is in a dropdown.
 
 ### Version 4.12.1 [not released yet]
 

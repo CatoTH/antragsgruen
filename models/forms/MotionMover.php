@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\forms;
 
 use app\models\settings\Privileges;
@@ -8,15 +10,11 @@ use app\models\exceptions\Inconsistency;
 
 class MotionMover
 {
-    private Consultation $consultation;
-    private Motion $motion;
-    private User $mover;
-
-    public function __construct(Consultation $consultation, Motion $motion, User $user)
-    {
-        $this->consultation = $consultation;
-        $this->motion       = $motion;
-        $this->mover        = $user;
+    public function __construct(
+        private Consultation $consultation,
+        private Motion $motion,
+        private User $mover
+    ) {
     }
 
     public function getMotion(): Motion
@@ -126,6 +124,16 @@ class MotionMover
                     return $this->moveToConsultation($motionType, $titlePrefix);
                 }
                 break;
+            case "same":
+                if ($post['operation'] !== 'copynoref') {
+                    throw new Inconsistency('It is only possible to copy motions to the same consultation');
+                }
+                foreach ($this->motion->getMyConsultation()->motions as $oMotion) {
+                    if (mb_strtolower($oMotion->titlePrefix) === mb_strtolower($titlePrefix)) {
+                        throw new Inconsistency('The given prefix is already taken');
+                    }
+                }
+                return $this->copyToConsultation($this->motion->getMyMotionType(), $titlePrefix, false);
         }
 
         return null;

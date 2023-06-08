@@ -87,7 +87,7 @@ class Amendment extends IMotion implements IRSSItem
             IMotion::STATUS_MODIFIED_ACCEPTED,
             IMotion::STATUS_REFERRED,
             IMotion::STATUS_VOTE,
-            IMotion::STATUS_OBSOLETED_BY,
+            IMotion::STATUS_OBSOLETED_BY_AMENDMENT,
             IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION,
             IMotion::STATUS_CUSTOM_STRING,
         ];
@@ -1103,7 +1103,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         // This amendment is obsoleted by an amendment with a modification proposal
-        if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
+        if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
             $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
                 return $obsoletedBy->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
@@ -1138,7 +1138,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         // This amendment is obsoleted by an amendment with a modification proposal
-        if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
+        if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
             $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
                 return $obsoletedBy->getAlternativeProposaltextReference($internalNestingLevel + 1);
@@ -1204,7 +1204,9 @@ class Amendment extends IMotion implements IRSSItem
     public function getFormattedStatus(): string
     {
         $statusNames = $this->getMyConsultation()->getStatuses()->getStatusNames();
-        $status      = '';
+        $status = '';
+        $statusString = $this->statusString;
+
         switch ($this->status) {
             case Amendment::STATUS_SUBMITTED_UNSCREENED:
             case Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED:
@@ -1219,11 +1221,31 @@ class Amendment extends IMotion implements IRSSItem
                 $policy = $this->getMyMotionType()->getAmendmentSupportPolicy();
                 $status .= $policy::getPolicyName() . ')</small>';
                 break;
+            case Amendment::STATUS_OBSOLETED_BY_MOTION:
+                $othermot = $this->getMyConsultation()->getMotion(intval($this->statusString));
+                if ($othermot) {
+                    $status = \Yii::t('amend', 'obsoleted_by') . ': ';
+                    $status .= Html::a(Html::encode($othermot->getTitleWithPrefix()), UrlHelper::createMotionUrl($othermot));
+                    $statusString = null;
+                } else {
+                    $status .= Html::encode($statusNames[$this->status]);
+                }
+                break;
+            case Amendment::STATUS_OBSOLETED_BY_AMENDMENT:
+                $otheramend = $this->getMyConsultation()->getAmendment(intval($this->statusString));
+                if ($otheramend) {
+                    $status = \Yii::t('amend', 'obsoleted_by') . ': ';
+                    $status .= Html::a(Html::encode($otheramend->getTitleWithPrefix()), UrlHelper::createAmendmentUrl($otheramend));
+                    $statusString = null;
+                } else {
+                    $status .= Html::encode($statusNames[$this->status]);
+                }
+                break;
             default:
                 $status .= Html::encode($statusNames[$this->status]);
         }
-        if (trim($this->statusString) !== '') {
-            $status .= ' <small>(' . Html::encode($this->statusString) . ')</small>';
+        if ($statusString) {
+            $status .= ' <small>(' . Html::encode($statusString) . ')</small>';
         }
 
         return Layout::getFormattedAmendmentStatus($status, $this);

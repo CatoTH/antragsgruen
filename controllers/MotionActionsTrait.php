@@ -510,7 +510,7 @@ trait MotionActionsTrait
 
             $proposalExplanationPre = $motion->proposalExplanation;
             if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
-                if (trim($this->getHttpRequest()->post('proposalExplanation', '') === '')) {
+                if (trim($this->getHttpRequest()->post('proposalExplanation', '')) === '') {
                     $motion->proposalExplanation = null;
                 } else {
                     $motion->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');

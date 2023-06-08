@@ -23,7 +23,7 @@ if ($motion->proposalStatus === Motion::STATUS_REFERRED) {
 } else {
     $preReferredTo = '';
 }
-if ($motion->proposalStatus === Motion::STATUS_OBSOLETED_BY) {
+if ($motion->proposalStatus === Motion::STATUS_OBSOLETED_BY_AMENDMENT) {
     $preObsoletedBy = $motion->proposalComment;
 } else {
     $preObsoletedBy = '';
@@ -271,7 +271,7 @@ $voting = $motion->getVotingData();
         </select>
     </div>
 </section>
-<section class="statusDetails status_<?= Motion::STATUS_OBSOLETED_BY ?>">
+<section class="statusDetails status_<?= Motion::STATUS_OBSOLETED_BY_AMENDMENT ?>">
     <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
     <?php
     $options = ['-'];

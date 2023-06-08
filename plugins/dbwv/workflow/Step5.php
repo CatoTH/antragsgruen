@@ -4,16 +4,34 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
-use app\models\db\ConsultationSettingsTag;
-use app\models\db\IMotion;
-use app\models\exceptions\NotFound;
-use app\components\{MotionNumbering, RequestContext};
+use app\models\AdminTodoItem;
+use app\models\db\{ConsultationSettingsTag, IMotion, User, Motion};
+use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
 use app\models\forms\MotionDeepCopy;
-use app\models\db\Motion;
 use app\models\exceptions\Access;
 
 class Step5
 {
+    public static function getAdminTodo(Motion $motion): ?AdminTodoItem
+    {
+        if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V6)) {
+            return null;
+        }
+
+        if (Workflow::canSetRecommendationV5($motion)) {
+            return new AdminTodoItem(
+                'todoDbwvSetPp' . $motion->id,
+                $motion->title,
+                'Verfahrensvorschlag erarbeiten',
+                UrlHelper::createMotionUrl($motion),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $motion->getInitiatorsStr()
+            );
+        }
+
+        return null;
+    }
+
     public static function renderMotionAdministration(Motion $motion): string
     {
         $html = '';
@@ -36,19 +54,48 @@ class Step5
             throw new Access('Not allowed to perform this action (in this state)');
         }
 
-        if (count($motion->getPublicTopicTags()) > 0) {
-            $tag = $motion->getPublicTopicTags()[0];
-            $subtag = $motion->getMyConsultation()->getTagById(intval($postparams['subtag']));
-            if (!$subtag || $subtag->type !== ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE || $subtag->parentTagId !== $tag->id) {
-                throw new NotFound('Tag not found');
-            }
-            $motion->setTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, [$subtag->id]);
+        $newTags = [];
+        if (isset($postparams['tag']) && $postparams['tag'] > 0) {
+            $newTags[] = intval($postparams['tag']);
         }
+        $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $newTags);
 
         $motion->titlePrefix = $postparams['motionPrefix'];
         $motion->status = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
         $motion->save();
 
         return $motion;
+    }
+
+    public static function gotoNext(Motion $motion): Motion
+    {
+        if (!Workflow::canSetRecommendationV5($motion)) {
+            throw new Access('Not allowed to perform this action (generally)');
+        }
+        if (!in_array($motion->version, [Workflow::STEP_V5, Workflow::STEP_V6, true])) {
+            throw new Access('Not allowed to perform this action (in this state)');
+        }
+
+        if ($motion->version === Workflow::STEP_V5) {
+            if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V6)) {
+                throw new Access('A new version of this motion was already created');
+            }
+            $v6Motion = MotionDeepCopy::copyMotion(
+                $motion,
+                $motion->getMyMotionType(),
+                $motion->agendaItem,
+                $motion->titlePrefix,
+                Workflow::STEP_V6,
+                true
+            );
+        } else {
+            if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V7)) {
+                throw new Access('A new version of this motion was already created');
+            }
+            $v6Motion = $motion;
+        }
+        unset($motion);
+
+        return $v6Motion;
     }
 }

@@ -273,14 +273,14 @@ label.legend {
       right: 10px;
     }
 
-    html.no-touchevents & {
+    @media (hover: hover) {
       .delbox {
-        visibility: hidden;
+        opacity: 0;
       }
 
-      &:hover {
+      &:hover, &:focus-within {
         .delbox {
-          visibility: visible;
+          opacity: 1;
         }
       }
     }
@@ -970,6 +970,10 @@ label.legend {
     color: red;
     font-weight: bold;
   }
+
+  label {
+    display: block;
+  }
 }
 
 .adminTypeForm {
@@ -1430,24 +1434,24 @@ label.legend {
       margin-top: 5px;
     }
 
-    html.no-touchevents & {
+    @media (hover: hover) {
       > li {
         .moveHandle {
-          display: none;
+          opacity: 0;
         }
 
         .delSupporter {
-          visibility: hidden;
+          opacity: 0;
         }
       }
 
-      > li:hover {
+      > li:hover, > li:focus-within {
         .moveHandle {
-          display: inherit;
+          opacity: 1;
         }
 
         .delSupporter {
-          visibility: visible;
+          opacity: 1;
         }
       }
     }
@@ -1719,7 +1723,7 @@ label.legend {
     opacity: 0.5;
     margin-right: -15px;
 
-    html.no-touchevents & {
+    @media (hover: hover) {
       opacity: 0;
 
       &:active, &:focus {
@@ -1727,10 +1731,11 @@ label.legend {
       }
     }
   }
-
-  html.no-touchevents & li:hover {
-    .btnRemove {
-      opacity: 0.5;
+  @media (hover: hover) {
+    li:hover {
+      .btnRemove {
+        opacity: 0.5;
+      }
     }
   }
 

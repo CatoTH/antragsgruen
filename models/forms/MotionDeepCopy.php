@@ -37,7 +37,7 @@ class MotionDeepCopy
         $newMotion = new Motion();
         $newMotion->setAttributes($motion->getAttributes(), false);
         $newMotion->id             = null;
-        $newMotion->agendaItemId   = ($agendaItem ? $agendaItem->id : null);
+        $newMotion->agendaItemId   = $agendaItem?->id;
         $newMotion->titlePrefix    = $newPrefix;
         $newMotion->consultationId = $newConsultation->id;
         $newMotion->cache          = '';

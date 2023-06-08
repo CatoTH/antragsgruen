@@ -2,13 +2,16 @@
   display: none;
 }
 
-html.no-touchevents .hoverHolder {
-  .hoverElement {
-    display: none;
-  }
-  &:hover {
+@media (hover: hover) {
+  .hoverHolder {
     .hoverElement {
-      display: inherit;
+      display: none;
+    }
+
+    &:hover {
+      .hoverElement {
+        display: inherit;
+      }
     }
   }
 }

@@ -16,14 +16,11 @@ echo Html::beginForm($submitUrl, 'POST', [
 ]);
 
 $tagSelect = ['' => ''];
-$subtags = [];
-if (count($motion->getPublicTopicTags()) > 0) {
-    $subtags = $motion->getPublicTopicTags()[0]->getSubtagsOfType(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
-}
-foreach ($subtags as $tag) {
+foreach ($motion->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
     $tagSelect[$tag->id] = $tag->title;
 }
-$selectedTagId = (count($motion->getProposedProcedureTags()) > 0 ? (string)array_values($motion->getProposedProcedureTags())[0]->id : '');
+
+$selectedTagId = (count($motion->getPublicTopicTags()) > 0 ? (string)array_values($motion->getPublicTopicTags())[0]->id : '');
 
 $titlePrefix = $motion->titlePrefix ?? '';
 if (!$motion->titlePrefix) {
@@ -36,12 +33,12 @@ if (!$motion->titlePrefix) {
         <div>
             <div style="padding: 10px; clear:both;">
                 <label for="dbwv_step5_subtagSelect" style="display: inline-block; width: 200px;">
-                    Themenbereich:
+                    Sachgebiet:
                 </label>
                 <div style="display: inline-block; width: 400px;">
                     <?php
-                    $options = ['id' => 'dbwv_step5_subtagSelect', 'class' => 'stdDropdown', 'required' => 'required'];
-                    echo Html::dropDownList('subtag', $selectedTagId, $tagSelect, $options);
+                    $options = ['id' => 'dbwv_step5_tagSelect', 'class' => 'stdDropdown', 'required' => 'required'];
+                    echo Html::dropDownList('tag', $selectedTagId, $tagSelect, $options);
                     ?>
                 </div>
                 <br>

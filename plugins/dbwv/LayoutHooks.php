@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
-use app\models\layoutHooks\Layout;
 use app\components\{RequestContext, UrlHelper};
 use app\controllers\admin\MotionListController;
 use app\models\layoutHooks\StdHooks;
 use app\models\db\{Consultation, ConsultationUserGroup, Motion, User};
-use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Workflow};
+use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Step6, Workflow};
 use yii\helpers\Html;
 
 class LayoutHooks extends StdHooks
@@ -25,6 +24,9 @@ class LayoutHooks extends StdHooks
 
     protected function getUserBarGroups(User $user): string
     {
+        if ($this->consultation === null) {
+            return '';
+        }
         $groups = array_filter($user->getConsultationUserGroups($this->consultation), function (ConsultationUserGroup $group) {
             return $group->templateId !== ConsultationUserGroup::TEMPLATE_PARTICIPANT;
         });
@@ -40,7 +42,7 @@ class LayoutHooks extends StdHooks
         $out .= '<div class="username"><strong>' . \Yii::t('base', 'menu_logged_in') . ':</strong> ';
         $out .= Html::encode($user->name);
         if ($user->organization) {
-            echo ' (' . Html::encode($user->organization) . ')';
+            $out .= ' (' . Html::encode($user->organization) . ')';
         }
         $out .= '</div>';
 
@@ -93,6 +95,8 @@ class LayoutHooks extends StdHooks
                 return Step4::renderMotionAdministration($motion) . $before;
             case Workflow::STEP_V5:
                 return Step5::renderMotionAdministration($motion) . $before;
+            case Workflow::STEP_V6:
+                return Step6::renderMotionAdministration($motion) . $before;
             default:
                 return $before;
         }

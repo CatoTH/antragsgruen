@@ -51,7 +51,7 @@ class Consultation extends ActiveRecord
     /**
      * @throws Internal
      */
-    public static function setCurrent(Consultation $consultation)
+    public static function setCurrent(Consultation $consultation): void
     {
         if (self::$current) {
             throw new Internal('Current consultation already set');
@@ -85,10 +85,10 @@ class Consultation extends ActiveRecord
 
     const PRELOAD_ONLY_AMENDMENTS = 'amendments';
     const PRELOAD_ALL = 'all';
-    private string $preloadedAllMotionData = '';
+    private ?string $preloadedAllMotionData = null;
     private ?array $preloadedAmendmentIds  = null;
 
-    public function preloadAllMotionData(string $preloadType)
+    public function preloadAllMotionData(string $preloadType): void
     {
         $this->preloadedAllMotionData = $preloadType;
         foreach ($this->motions as $motion) {
@@ -98,7 +98,7 @@ class Consultation extends ActiveRecord
         }
     }
 
-    public function hasPreloadedMotionData(): string
+    public function hasPreloadedMotionData(): ?string
     {
         return $this->preloadedAllMotionData;
     }
@@ -137,12 +137,9 @@ class Consultation extends ActiveRecord
     /** @var Motion[]|null[] */
     private array $motionCache = [];
 
-    /**
-     * @param string|null|int $motionSlug
-     */
-    public function getMotion($motionSlug): ?Motion
+    public function getMotion(string|int|null $motionSlug): ?Motion
     {
-        if (is_null($motionSlug)) {
+        if (is_null($motionSlug) || $motionSlug === 0) {
             return null;
         }
         if (isset($this->motionCache[$motionSlug])) {
@@ -207,7 +204,7 @@ class Consultation extends ActiveRecord
 
     public function isMyAmendment(int $amendmentId): bool
     {
-        if ($this->preloadedAllMotionData !== '') {
+        if ($this->preloadedAllMotionData) {
             return in_array($amendmentId, $this->preloadedAmendmentIds);
         } else {
             $amendment = $this->getAmendment($amendmentId);

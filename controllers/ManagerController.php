@@ -100,8 +100,9 @@ class ManagerController extends Base
                     break;
             }
 
+            /** @var resource $file */
             $file = fopen($configfile, 'w');
-            fwrite($file, json_encode($config, JSON_PRETTY_PRINT));
+            fwrite($file, json_encode($config, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR));
             fclose($file);
 
             $this->getHttpSession()->setFlash('success', \Yii::t('manager', 'saved'));

@@ -7,9 +7,8 @@ namespace app\plugins\dbwv\controllers;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\ConsultationSettingsTag;
-use app\models\exceptions\Access;
-use app\models\exceptions\NotFound;
-use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Workflow};
+use app\models\exceptions\{Access, NotFound};
+use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Step6, Workflow};
 use app\models\http\{HtmlErrorResponse, RedirectResponse, ResponseInterface};
 
 class AdminWorkflowController extends Base
@@ -111,5 +110,23 @@ class AdminWorkflowController extends Base
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
+    }
+
+    public function actionStep6decide(string $motionSlug): ResponseInterface
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return new HtmlErrorResponse(404,  'Motion not found');
+        }
+
+        $decision = intval($this->getPostValue('decision'));
+        $customString = $this->getPostValue('custom_string');
+        $protocolPublic = intval($this->getPostValue('protocol_public')) === 1;
+        $protocol = trim($this->getPostValue('protocol'));
+        $response = Step6::setDecision($motion, $decision, $customString, $protocolPublic, $protocol);
+
+        $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
+
+        return $response;
     }
 }
