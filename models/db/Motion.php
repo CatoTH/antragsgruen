@@ -262,6 +262,28 @@ class Motion extends IMotion implements IRSSItem
         return $this->hasMany(Motion::class, ['parentMotionId' => 'id']);
     }
 
+    /**
+     * @return Motion[]
+     */
+    public function getReplacedByMotionsWithinConsultation(): array
+    {
+        $motions = [];
+        if ($this->getMyConsultation()->hasPreloadedMotionData()) {
+            foreach ($this->getMyConsultation()->motions as $motion) {
+                if ($motion->parentMotionId === $this->id) {
+                    $motions[] = $motion;
+                }
+            }
+        } else {
+            foreach ($this->replacedByMotions as $motion) {
+                if ($motion->consultationId === $this->consultationId) {
+                    $motions[] = $motion;
+                }
+            }
+        }
+        return $motions;
+    }
+
     public function getSpeechQueues(): ActiveQuery
     {
         return $this->hasMany(SpeechQueue::class, ['motionId' => 'id']);

@@ -85,10 +85,10 @@ class Consultation extends ActiveRecord
 
     const PRELOAD_ONLY_AMENDMENTS = 'amendments';
     const PRELOAD_ALL = 'all';
-    private string $preloadedAllMotionData = '';
+    private ?string $preloadedAllMotionData = null;
     private ?array $preloadedAmendmentIds  = null;
 
-    public function preloadAllMotionData(string $preloadType)
+    public function preloadAllMotionData(string $preloadType): void
     {
         $this->preloadedAllMotionData = $preloadType;
         foreach ($this->motions as $motion) {
@@ -98,7 +98,7 @@ class Consultation extends ActiveRecord
         }
     }
 
-    public function hasPreloadedMotionData(): string
+    public function hasPreloadedMotionData(): ?string
     {
         return $this->preloadedAllMotionData;
     }
@@ -204,7 +204,7 @@ class Consultation extends ActiveRecord
 
     public function isMyAmendment(int $amendmentId): bool
     {
-        if ($this->preloadedAllMotionData !== '') {
+        if ($this->preloadedAllMotionData) {
             return in_array($amendmentId, $this->preloadedAmendmentIds);
         } else {
             $amendment = $this->getAmendment($amendmentId);
