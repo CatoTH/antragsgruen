@@ -156,7 +156,7 @@ abstract class ISupporter extends ActiveRecord
 
     abstract public function getIMotion(): IMotion;
 
-    public static function createInitiator(SupportBase $supportType, bool $iAmAdmin): ISupporter {
+    public static function createInitiator(SupportBase $supportType, bool $iAmAdmin): static {
         $supporter = new static();
         $supporter->role = static::ROLE_INITIATOR;
         $supporter->dateCreation = date('Y-m-d H:i:s');

@@ -186,7 +186,7 @@ class AmendmentController extends Base
         }
 
         $supportStatus = '';
-        if (!\Yii::$app->user->isGuest) {
+        if (User::getCurrentUser()) {
             foreach ($amendment->amendmentSupporters as $supp) {
                 if ($supp->userId == User::getCurrentUser()->id) {
                     $supportStatus = $supp->role;
@@ -287,7 +287,7 @@ class AmendmentController extends Base
         }
 
         $fromMode = ($amendment->status === Amendment::STATUS_DRAFT ? 'create' : 'edit');
-        $form  = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
+        $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
         if (!$amendment->canEditInitiators()) {
             $form->setAllowEditingInitiators(false);
         }
