@@ -11,10 +11,7 @@ class AdminIndexPage extends BasePage
 {
     public $route = 'admin/index';
 
-    /**
-     * @param int $motionTypeId
-     */
-    public function gotoMotionTypes($motionTypeId): AdminMotionTypePage
+    public function gotoMotionTypes(int $motionTypeId): AdminMotionTypePage
     {
         $this->actor->click('.motionType' . $motionTypeId);
         $this->actor->see(mb_strtoupper('Antragstyp bearbeiten'), 'h1');
@@ -33,7 +30,7 @@ class AdminIndexPage extends BasePage
         return new AdminAppearancePage($this->actor);
     }
 
-    public function gotoUserAdministration()
+    public function gotoUserAdministration(): void
     {
         $this->actor->click('.siteUsers');
         $this->actor->wait(1);

@@ -647,6 +647,12 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'cons_create_wizard'          => 'Einrichtungs-Assistenten verwenden',
     'cons_create_template'        => 'Einstellungen übernehmen von',
     'cons_create_submit'          => 'Veranstaltung anlegen',
+    'cons_template_subsel'        => 'Folgendes übernehmen',
+    'cons_template_subsel_sett'   => 'Veranstaltungs-Einstellungen',
+    'cons_template_subsel_tags'   => 'Themen / Schlagworte',
+    'cons_template_subsel_texts'  => 'Redaktionelle Seiten',
+    'cons_template_subsel_types'  => 'Antragstypen',
+    'cons_template_subsel_users'  => 'Gruppen und Berechtigungen',
     'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
                                      'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
     'support_coll_policy_fix'     => 'Einstellungen so setzen',

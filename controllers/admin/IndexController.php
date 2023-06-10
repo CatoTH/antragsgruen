@@ -346,7 +346,7 @@ class IndexController extends AdminBase
             $form->siteCreateWizard->setAttributes($post['SiteCreateForm']);
             if (isset($newcon['template'])) {
                 foreach ($this->site->consultations as $cons) {
-                    if ($cons->id == $post['newConsultation']['template']) {
+                    if ($cons->id === (int)$post['newConsultation']['template']) {
                         $form->template = $cons;
                     }
                 }
@@ -365,7 +365,7 @@ class IndexController extends AdminBase
             if (is_array($post['setStandard']) && count($post['setStandard']) == 1) {
                 $keys = array_keys($post['setStandard']);
                 foreach ($site->consultations as $consultation) {
-                    if ($consultation->id == $keys[0]) {
+                    if ($consultation->id === (int)$keys[0]) {
                         $site->currentConsultationId = $consultation->id;
                         if ($consultation->getSettings()->maintenanceMode) {
                             $site->status = Site::STATUS_INACTIVE;
@@ -379,7 +379,7 @@ class IndexController extends AdminBase
             }
             $this->site->refresh();
         }
-        if ($this->isPostSet('delete') && count($post['delete']) == 1) {
+        if ($this->isPostSet('delete') && count($post['delete']) === 1) {
             foreach ($site->consultations as $consultation) {
                 $keys = array_keys($post['delete']);
                 if ($consultation->id === $keys[0] && $site->currentConsultationId !== $consultation->id) {

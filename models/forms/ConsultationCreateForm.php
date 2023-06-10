@@ -9,10 +9,20 @@ use app\models\exceptions\FormError;
 
 class ConsultationCreateForm
 {
+    public const SETTINGS_TYPE_TEMPLATE = 'template';
+    public const SETTINGS_TYPE_WIZARD = 'wizard';
+
+    public const SUBSELECTION_TAGS = 'tags';
+    public const SUBSELECTION_MOTION_TYPES = 'motiontypes';
+    public const SUBSELECTION_TEXTS = 'texts';
+    public const SUBSELECTION_USERS = 'users';
+
     public string $settingsType;
     public string $urlPath = '';
     public string $title = '';
     public string $titleShort = '';
+    /** @var string[] */
+    public array $templateSubselection = [];
 
     public ?Consultation $template = null;
     public bool $setAsDefault = true;
@@ -30,6 +40,7 @@ class ConsultationCreateForm
         $this->title = $values['title'];
         $this->titleShort = $values['titleShort'];
         $this->settingsType = $values['settingsType'];
+        $this->templateSubselection = $values['templateSubselect'] ?? [];
         $this->setAsDefault = isset($values['setStandard']);
     }
 
@@ -52,10 +63,36 @@ class ConsultationCreateForm
             throw new FormError(implode(', ', $consultation->getErrors()));
         }
 
+        if (in_array(self::SUBSELECTION_MOTION_TYPES, $this->templateSubselection)) {
+            $this->createConsultationFromTemplate_motionTypes($consultation);
+        }
+
+        if (in_array(self::SUBSELECTION_TEXTS, $this->templateSubselection)) {
+            $this->createConsultationFromTemplate_texts($consultation);
+        }
+
+        if (in_array(self::SUBSELECTION_TAGS, $this->templateSubselection)) {
+            $this->createConsultationFromTemplate_tags($consultation);
+        }
+
+        if (in_array(self::SUBSELECTION_USERS, $this->templateSubselection)) {
+            $this->createConsultationFromTemplate_users($consultation);
+        } else {
+            $consultation->createDefaultUserGroups();
+        }
+
+        if ($this->setAsDefault) {
+            $this->site->currentConsultationId = $consultation->id;
+            $this->site->save();
+        }
+    }
+
+    private function createConsultationFromTemplate_motionTypes(Consultation $newConsultation): void
+    {
         foreach ($this->template->motionTypes as $motionType) {
             $newType = new ConsultationMotionType();
             $newType->setAttributes($motionType->getAttributes(), false);
-            $newType->consultationId = $consultation->id;
+            $newType->consultationId = $newConsultation->id;
             $newType->id             = null;
             if (!$newType->save()) {
                 throw new FormError($newType->getErrors());
@@ -71,23 +108,29 @@ class ConsultationCreateForm
                 }
             }
         }
+    }
 
+    private function createConsultationFromTemplate_texts(Consultation $newConsultation): void
+    {
         foreach ($this->template->texts as $text) {
             $newText = new ConsultationText();
             $newText->setAttributes($text->getAttributes(), false);
-            $newText->consultationId = $consultation->id;
+            $newText->consultationId = $newConsultation->id;
             $newText->id             = null;
             if (!$newText->save()) {
                 throw new FormError(implode(', ', $newText->getErrors()));
             }
         }
+    }
 
+    private function createConsultationFromTemplate_tags(Consultation $newConsultation): void
+    {
         $newTagsByOldId = [];
         foreach ($this->template->tags as $tag) {
             $newTag = new ConsultationSettingsTag();
             $newTag->setAttributes($tag->getAttributes(), false);
             $newTag->id = null;
-            $newTag->consultationId = $consultation->id;
+            $newTag->consultationId = $newConsultation->id;
             $newTag->parentTagId = null;
             if (!$newTag->save()) {
                 throw new FormError(implode(', ', $newTag->getErrors()));
@@ -103,12 +146,15 @@ class ConsultationCreateForm
             $newTag->parentTagId = $newTagsByOldId[$tag->parentTagId]->id;
             $newTag->save();
         }
+    }
 
+    private function createConsultationFromTemplate_users(Consultation $newConsultation): void
+    {
         foreach ($this->template->userGroups as $userGroup) {
             $newGroup = new ConsultationUserGroup();
             $newGroup->setAttributes($userGroup->getAttributes(), false);
             $newGroup->id = null;
-            $newGroup->consultationId = $consultation->id;
+            $newGroup->consultationId = $newConsultation->id;
             if (!$newGroup->save()) {
                 throw new FormError(implode(', ', $newGroup->getErrors()));
             }
@@ -116,11 +162,6 @@ class ConsultationCreateForm
             foreach ($userGroup->users as $user) {
                 $newGroup->addUser($user);
             }
-        }
-
-        if ($this->setAsDefault) {
-            $this->site->currentConsultationId = $consultation->id;
-            $this->site->save();
         }
     }
 
@@ -162,10 +203,10 @@ class ConsultationCreateForm
             }
         }
 
-        if ($this->settingsType === 'wizard') {
+        if ($this->settingsType === self::SETTINGS_TYPE_WIZARD) {
             $this->createConsultationFromWizard();
         }
-        if ($this->settingsType === 'template') {
+        if ($this->settingsType === self::SETTINGS_TYPE_TEMPLATE) {
             $this->createConsultationFromTemplate();
         }
     }

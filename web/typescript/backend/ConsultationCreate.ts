@@ -6,15 +6,15 @@ export class ConsultationCreate {
     constructor() {
         $(".settingsType").find("input[type=radio]").on("change", ConsultationCreate.settingsTypeChanged).trigger("change");
 
-        let $consultationCreateForm = $(".consultationCreateForm");
-        $consultationCreateForm.find(".delbox button").on("click", function (ev) {
+        let $consultationEditForm = $(".consultationEditForm");
+        $consultationEditForm.find(".delbox button").on("click", function (ev) {
             ev.preventDefault();
             let $button = $(this);
             bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
                 if (result) {
                     let $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
-                    $consultationCreateForm.append($input);
-                    $consultationCreateForm.trigger("submit");
+                    $consultationEditForm.append($input);
+                    $consultationEditForm.trigger("submit");
                 }
             });
         });
@@ -23,12 +23,14 @@ export class ConsultationCreate {
     }
 
     private static settingsTypeChanged(): void {
-        if ($("#settingsTypeWizard").prop("checked")) {
-            $(".settingsTypeWizard").removeClass("hidden");
-            $(".settingsTypeTemplate").addClass("hidden");
+        if ((document.getElementById('settingsTypeWizard') as HTMLInputElement).checked) {
+            document.querySelector('.settingsTypeWizard').classList.remove('hidden');
+            document.querySelector('.settingsTypeTemplate').classList.add('hidden');
+            document.querySelector('.templateSubselect').classList.add('hidden');
         } else {
-            $(".settingsTypeWizard").addClass("hidden");
-            $(".settingsTypeTemplate").removeClass("hidden");
+            document.querySelector('.settingsTypeWizard').classList.add('hidden');
+            document.querySelector('.settingsTypeTemplate').classList.remove('hidden');
+            document.querySelector('.templateSubselect').classList.remove('hidden');
         }
     }
 }

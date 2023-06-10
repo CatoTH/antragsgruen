@@ -40,7 +40,7 @@ $I->openPage(AdminUsersPage::class, ['subdomain' => 'stdparteitag', 'consultatio
 $I->seeElement('.userAdminList');
 $I->openPage(AdminAdminConsultationsPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->see('Kein Zugriff auf diese Seite');
-$I->dontSeeElement('.consultationCreateForm');
+$I->dontSeeElement('.consultationEditForm');
 
 
 
@@ -82,7 +82,7 @@ $I->dontSee('Kein Zugriff auf diese Seite');
 $I->seeElement('.userAdminList');
 $I->openPage(AdminAdminConsultationsPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->dontSee('Kein Zugriff auf diese Seite');
-$I->seeElement('.consultationCreateForm');
+$I->seeElement('.consultationEditForm');
 
 
 

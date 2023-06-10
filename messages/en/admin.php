@@ -598,6 +598,12 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'cons_create_wizard'          => 'Use the wizard',
     'cons_create_template'        => 'Take settings from',
     'cons_create_submit'          => 'Create consultation',
+    'cons_template_subsel'        => 'Take the following settings',
+    'cons_template_subsel_sett'   => 'Consultation settings',
+    'cons_template_subsel_tags'   => 'Tags',
+    'cons_template_subsel_texts'  => 'Content pages',
+    'cons_template_subsel_types'  => 'Motion types',
+    'cons_template_subsel_users'  => 'Users, groups and admin permissions',
     'support_coll_policy_fix'     => 'Fix settings',
     'support_coll_policy_warning' => 'If there is a support collecting phase, it\'s recommended to enforce a login both for creating and for supporting a motion. Furthermore, enabling confirmation e-mails to the proposer is recommended.',
 
