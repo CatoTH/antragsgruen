@@ -178,34 +178,24 @@ class ConsultationUserGroup extends ActiveRecord
 
     public function getNormalizedTitle(): string
     {
-        switch ($this->templateId) {
-            case static::TEMPLATE_SITE_ADMIN:
-                return \Yii::t('user', 'group_template_siteadmin');
-            case static::TEMPLATE_CONSULTATION_ADMIN:
-                return \Yii::t('user', 'group_template_consultationadmin');
-            case static::TEMPLATE_PROPOSED_PROCEDURE:
-                return \Yii::t('user', 'group_template_proposed');
-            case static::TEMPLATE_PARTICIPANT:
-                return \Yii::t('user', 'group_template_participant');
-            default:
-                return $this->title;
-        }
+        return match ($this->templateId) {
+            static::TEMPLATE_SITE_ADMIN => \Yii::t('user', 'group_template_siteadmin'),
+            static::TEMPLATE_CONSULTATION_ADMIN => \Yii::t('user', 'group_template_consultationadmin'),
+            static::TEMPLATE_PROPOSED_PROCEDURE => \Yii::t('user', 'group_template_proposed'),
+            static::TEMPLATE_PARTICIPANT => \Yii::t('user', 'group_template_participant'),
+            default => $this->title,
+        };
     }
 
     public function getNormalizedDescription(): ?string
     {
-        switch ($this->templateId) {
-            case static::TEMPLATE_SITE_ADMIN:
-                return \Yii::t('user', 'group_template_siteadmin_h');
-            case static::TEMPLATE_CONSULTATION_ADMIN:
-                return \Yii::t('user', 'group_template_consultationadmin_h');
-            case static::TEMPLATE_PROPOSED_PROCEDURE:
-                return \Yii::t('user', 'group_template_proposed_h');
-            case static::TEMPLATE_PARTICIPANT:
-                return \Yii::t('user', 'group_template_participant_h');
-            default:
-                return null;
-        }
+        return match ($this->templateId) {
+            static::TEMPLATE_SITE_ADMIN => \Yii::t('user', 'group_template_siteadmin_h'),
+            static::TEMPLATE_CONSULTATION_ADMIN => \Yii::t('user', 'group_template_consultationadmin_h'),
+            static::TEMPLATE_PROPOSED_PROCEDURE => \Yii::t('user', 'group_template_proposed_h'),
+            static::TEMPLATE_PARTICIPANT => \Yii::t('user', 'group_template_participant_h'),
+            default => null,
+        };
     }
 
     public function addUser(User $user): void
@@ -288,6 +278,22 @@ class ConsultationUserGroup extends ActiveRecord
         }
 
         return false;
+    }
+
+    public static function getOrCreateUserGroup(Consultation $consultation, string $title): ConsultationUserGroup
+    {
+        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $title]);
+        if (!$group) {
+            $group = new ConsultationUserGroup();
+            $group->consultationId = $consultation->id;
+            $group->siteId = $consultation->siteId;
+            $group->title = $title;
+            $group->position = 0;
+            $group->selectable = 1;
+            $group->save();
+        }
+
+        return $group;
     }
 
     public static function createDefaultGroupSiteAdmin(Site $site): self

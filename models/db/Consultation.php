@@ -2,15 +2,12 @@
 
 namespace app\models\db;
 
-use app\models\settings\IMotionStatusEngine;
-use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\{IMotionStatusEngine, PrivilegeQueryContext, AntragsgruenApp};
 use app\components\{MotionSorter, UrlHelper};
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\{Internal, NotFound};
 use app\models\SearchResult;
-use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -511,6 +508,10 @@ class Consultation extends ActiveRecord
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupConsultationAdmin($this));
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupProposedProcedure($this));
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupParticipant($this));
+
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $plugin::createDefaultUserGroups($this);
+        }
     }
 
     /**

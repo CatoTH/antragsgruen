@@ -158,6 +158,10 @@ class ModuleBase extends Module
         return '';
     }
 
+    public static function createDefaultUserGroups(Consultation $consultation): void
+    {
+    }
+
     /**
      * @phpstan-ignore-next-line
      * @return string|\app\models\settings\Site|null
