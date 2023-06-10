@@ -61,7 +61,7 @@ class Consultation implements \JsonSerializable
     public ?string $accessPwd = null;
     public ?string $translationService = null;
 
-    /** @var null|string[] */
+    /** @var null|ConsultationUserOrganisation[] */
     public ?array $organisations = null;
     /** @var null|string[] */
     public ?array $speechListSubqueues = [];
@@ -94,6 +94,15 @@ class Consultation implements \JsonSerializable
     public bool $documentPage = false;
     public bool $votingPage = false;
     public bool $speechPage = false;
+
+
+    public function setOrganisations(array $orgas): void
+    {
+        $this->organisations = array_map(
+            fn(string|array $orga): ConsultationUserOrganisation => ConsultationUserOrganisation::fromJson($orga),
+            $orgas
+        );
+    }
 
     /**
      * @return string[]
@@ -139,16 +148,19 @@ class Consultation implements \JsonSerializable
     public static function getRobotPolicies(): array
     {
         return [
-            self::ROBOTS_NONE      => \Yii::t('structure', 'robots_policy_none'),
+            self::ROBOTS_NONE => \Yii::t('structure', 'robots_policy_none'),
             self::ROBOTS_ONLY_HOME => \Yii::t('structure', 'robots_policy_only_home'),
-            self::ROBOTS_ALL       => \Yii::t('structure', 'robots_policy_all'),
+            self::ROBOTS_ALL => \Yii::t('structure', 'robots_policy_all'),
         ];
     }
 
+    /**
+     * @param string[] $organisationField
+     */
     public function setOrganisationsFromInput(?array $organisationField): void
     {
         if ($organisationField) {
-            $this->organisations = $organisationField;
+            $this->organisations = ConsultationUserOrganisation::mergeObjectWithStringList($this->organisations, $organisationField);
         } else {
             $this->organisations = null;
         }
@@ -156,20 +168,13 @@ class Consultation implements \JsonSerializable
 
     public function getStartLayoutView(): string
     {
-        switch ($this->startLayoutType) {
-            case Consultation::START_LAYOUT_STD:
-                return 'index_layout_std';
-            case Consultation::START_LAYOUT_TAGS:
-                return 'index_layout_tags';
-            case Consultation::START_LAYOUT_AGENDA_LONG:
-            case Consultation::START_LAYOUT_AGENDA_HIDE_AMEND:
-            case Consultation::START_LAYOUT_AGENDA:
-                return 'index_layout_agenda';
-            case Consultation::START_LAYOUT_DISCUSSION_TAGS:
-                return 'index_layout_discussion_tags';
-            default:
-                throw new Internal('Unknown layout: ' . $this->startLayoutType);
-        }
+        return match ($this->startLayoutType) {
+            Consultation::START_LAYOUT_STD => 'index_layout_std',
+            Consultation::START_LAYOUT_TAGS => 'index_layout_tags',
+            Consultation::START_LAYOUT_AGENDA_LONG, Consultation::START_LAYOUT_AGENDA_HIDE_AMEND, Consultation::START_LAYOUT_AGENDA => 'index_layout_agenda',
+            Consultation::START_LAYOUT_DISCUSSION_TAGS => 'index_layout_discussion_tags',
+            default => throw new Internal('Unknown layout: ' . $this->startLayoutType),
+        };
     }
 
     public function getConsultationSidebar(): ?string

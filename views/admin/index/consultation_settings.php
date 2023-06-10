@@ -6,10 +6,7 @@
  * @var string $locale
  */
 
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Privileges;
-use app\models\settings\Site as SiteSettings;
-use app\models\settings\Consultation as ConsultationSettings;
+use app\models\settings\{AntragsgruenApp, Privileges, Site as SiteSettings, Consultation as ConsultationSettings};
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Consultation, Motion, User};
 use yii\helpers\Html;
@@ -359,7 +356,7 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                     <select class="tags" name="organisations[]" multiple="multiple">
                         <?php
                         foreach ($organisations as $organisation) {
-                            echo '<option name="' . Html::encode($organisation) . '" selected>' . Html::encode($organisation) . '</option>';
+                            echo '<option name="' . Html::encode($organisation->name) . '" selected>' . Html::encode($organisation->name) . '</option>';
                         }
                         ?>
                     </select>
