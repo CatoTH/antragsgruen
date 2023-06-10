@@ -2,6 +2,7 @@
 
 namespace app\models\settings;
 
+use app\components\RequestContext;
 use app\components\yii\MessageSource;
 use app\controllers\Base;
 use app\models\db\Consultation;
@@ -408,7 +409,7 @@ class Layout
     public function getLogoStr(): string
     {
         /** @var Base $controller */
-        $controller   = \Yii::$app->controller;
+        $controller   = RequestContext::getWebApplication()->controller;
 
         if ($controller->consultation && $controller->consultation->getSettings()->logoUrl) {
             $path     = parse_url($controller->consultation->getSettings()->logoUrl);
