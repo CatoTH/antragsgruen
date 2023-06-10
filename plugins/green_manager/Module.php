@@ -37,7 +37,7 @@ class Module extends ModuleBase
      */
     public static function getActiveAssetBundles(Controller $controller): array
     {
-        if (strpos($controller->route, 'green_manager') === 0) {
+        if (str_starts_with($controller->route, 'green_manager')) {
             return [
                 Assets::class,
             ];
@@ -64,11 +64,6 @@ class Module extends ModuleBase
     public static function overridesDefaultLayout(): ?string
     {
         return 'layout-plugin-green_layout-std';
-    }
-
-    public static function getCustomSiteCreateView(): string
-    {
-        return "@app/plugins/green_manager/views/sitedata_subdomain";
     }
 
     public static function onAccountConfirmed(UserEvent $event): void

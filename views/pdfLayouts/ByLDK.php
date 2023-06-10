@@ -126,9 +126,13 @@ class ByLDK extends IPDFLayout
         $pdf->startPageGroup();
         $pdf->AddPage();
 
-        if (file_exists($settings->logoUrl)) {
-            $pdf->setJPEGQuality(100);
-            $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
+        try {
+            if (file_exists($settings->logoUrl)) {
+                $pdf->setJPEGQuality(100);
+                $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
+            }
+        } catch (\Throwable $e) {
+            // Catches an \ErrorException thrown with open_basedir restrictions. See https://github.com/CatoTH/antragsgruen/issues/811
         }
 
         if (!$settings->hideTitlePrefix) {

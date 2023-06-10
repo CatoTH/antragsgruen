@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\plugins\european_youth_forum;
 
 use app\models\quorumType\NoQuorum;
-use app\models\db\{Consultation, Site, User, Vote, VotingBlock};
+use app\models\db\{Consultation, ConsultationUserGroup, User, Vote, VotingBlock};
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
 
@@ -140,5 +140,25 @@ class Module extends ModuleBase
         $results['total']['total_multiplied'] = $results['nyc']['total_multiplied'] + $results['ingyo']['total_multiplied'];
 
         return $results;
+    }
+
+    public static function createDefaultUserGroups(Consultation $consultation): void
+    {
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'INGYO Full member (OD) WITH Voting rights');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'NYC Full member (OD) WITH Voting rights');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'INGYO Full member (OD) NO Voting rights');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'NYC Full member (OD) NO Voting rights');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'INGYO Full member NOT participating');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'NYC Full member NOT participating');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'INGYO Substitute Delegate');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'NYC Substitute Delegate');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'INGYO Observer (OD)');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'NYC Observer (OD)');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'INGYO Candidate (OD)');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'NYC Candidate (OD)');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Associates');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'YFJ Board');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'YFJ Staff');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Remote user');
     }
 }

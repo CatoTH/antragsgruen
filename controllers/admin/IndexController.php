@@ -328,15 +328,14 @@ class IndexController extends AdminBase
 
     public function actionSiteconsultations(): ResponseInterface
     {
-        $site = $this->site;
-
         if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
-        $form           = new ConsultationCreateForm($site);
+        $site = $this->site;
+        $form = new ConsultationCreateForm($site);
         $form->template = $this->consultation;
-        $post           = $this->getHttpRequest()->post();
+        $post = $this->getHttpRequest()->post();
 
         if ($this->isPostSet('createConsultation')) {
             $newcon = $post['newConsultation'];
@@ -347,7 +346,7 @@ class IndexController extends AdminBase
             $form->siteCreateWizard->setAttributes($post['SiteCreateForm']);
             if (isset($newcon['template'])) {
                 foreach ($this->site->consultations as $cons) {
-                    if ($cons->id == $post['newConsultation']['template']) {
+                    if ($cons->id === (int)$post['newConsultation']['template']) {
                         $form->template = $cons;
                     }
                 }
@@ -366,7 +365,7 @@ class IndexController extends AdminBase
             if (is_array($post['setStandard']) && count($post['setStandard']) == 1) {
                 $keys = array_keys($post['setStandard']);
                 foreach ($site->consultations as $consultation) {
-                    if ($consultation->id == $keys[0]) {
+                    if ($consultation->id === (int)$keys[0]) {
                         $site->currentConsultationId = $consultation->id;
                         if ($consultation->getSettings()->maintenanceMode) {
                             $site->status = Site::STATUS_INACTIVE;
@@ -380,7 +379,7 @@ class IndexController extends AdminBase
             }
             $this->site->refresh();
         }
-        if ($this->isPostSet('delete') && count($post['delete']) == 1) {
+        if ($this->isPostSet('delete') && count($post['delete']) === 1) {
             foreach ($site->consultations as $consultation) {
                 $keys = array_keys($post['delete']);
                 if ($consultation->id === $keys[0] && $site->currentConsultationId !== $consultation->id) {

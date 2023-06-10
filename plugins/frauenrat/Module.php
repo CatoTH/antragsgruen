@@ -35,8 +35,8 @@ class Module extends ModuleBase
     {
         $urls = parent::getAllUrlRoutes($urls, $dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
 
-        $urls[$dom . '<consultationPath:[\w_-]+>/TOP_5_Schwerpunktthemen.pdf'] = '/frauenrat/motion/schwerpunktthemen';
-        $urls[$dom . '<consultationPath:[\w_-]+>/TOP_6_Sachantraege.pdf'] = '/frauenrat/motion/sachantraege';
+        $urls[$dom . '<consultationPath:[\w_-]+>/Schwerpunktthemen.pdf'] = '/frauenrat/motion/schwerpunktthemen';
+        $urls[$dom . '<consultationPath:[\w_-]+>/Sachantraege.pdf'] = '/frauenrat/motion/sachantraege';
 
         return $urls;
     }

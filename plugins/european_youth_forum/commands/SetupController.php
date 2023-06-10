@@ -4,25 +4,12 @@ declare(strict_types=1);
 
 namespace app\plugins\european_youth_forum\commands;
 
+use app\plugins\european_youth_forum\Module;
 use app\models\db\{Consultation, ConsultationUserGroup, User};
 use yii\console\Controller;
 
 class SetupController extends Controller
 {
-    private function createUserGroupIfNotExists(Consultation $consultation, string $title): void
-    {
-        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $title]);
-        if (!$group) {
-            $group = new ConsultationUserGroup();
-            $group->consultationId = $consultation->id;
-            $group->siteId = $consultation->siteId;
-            $group->title = $title;
-            $group->position = 0;
-            $group->selectable = 1;
-            $group->save();
-        }
-    }
-
     /**
      * Create necessary groups for a consultation
      */
@@ -34,22 +21,7 @@ class SetupController extends Controller
             return;
         }
 
-        $this->createUserGroupIfNotExists($consultation, 'INGYO Full member (OD) WITH Voting rights');
-        $this->createUserGroupIfNotExists($consultation, 'NYC Full member (OD) WITH Voting rights');
-        $this->createUserGroupIfNotExists($consultation, 'INGYO Full member (OD) NO Voting rights');
-        $this->createUserGroupIfNotExists($consultation, 'NYC Full member (OD) NO Voting rights');
-        $this->createUserGroupIfNotExists($consultation, 'INGYO Full member NOT participating');
-        $this->createUserGroupIfNotExists($consultation, 'NYC Full member NOT participating');
-        $this->createUserGroupIfNotExists($consultation, 'INGYO Substitute Delegate');
-        $this->createUserGroupIfNotExists($consultation, 'NYC Substitute Delegate');
-        $this->createUserGroupIfNotExists($consultation, 'INGYO Observer (OD)');
-        $this->createUserGroupIfNotExists($consultation, 'NYC Observer (OD)');
-        $this->createUserGroupIfNotExists($consultation, 'INGYO Candidate (OD)');
-        $this->createUserGroupIfNotExists($consultation, 'NYC Candidate (OD)');
-        $this->createUserGroupIfNotExists($consultation, 'Associates');
-        $this->createUserGroupIfNotExists($consultation, 'YFJ Board');
-        $this->createUserGroupIfNotExists($consultation, 'YFJ Staff');
-        $this->createUserGroupIfNotExists($consultation, 'Remote user');
+        Module::createDefaultUserGroups($consultation);
 
         echo "Created the necessary user groups.\n";
     }

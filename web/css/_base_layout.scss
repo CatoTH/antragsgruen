@@ -33,16 +33,18 @@
   > a {
     display: inline-block;
   }
-  .homeLinkLogo > img {
-    max-width: 50%;
-    max-height: 200px;
-  }
-  @media screen and (max-width: $screen-xs) {
-    .homeLinkLogo > img {
-      max-width: 90%;
+
+  .homeLinkLogo {
+    min-width: 20%; // this allows SVGs to be shown - they would get a width of 0% otherwise
+    > img {
+      max-width: 50%;
+      max-height: 200px;
     }
-    .homeLinkLogo {
+    @media screen and (max-width: $screen-xs) {
       text-align: center;
+      > img {
+        max-width: 90%;
+      }
     }
   }
 }

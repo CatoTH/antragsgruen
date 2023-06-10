@@ -158,6 +158,10 @@ class ModuleBase extends Module
         return '';
     }
 
+    public static function createDefaultUserGroups(Consultation $consultation): void
+    {
+    }
+
     /**
      * @phpstan-ignore-next-line
      * @return string|\app\models\settings\Site|null
@@ -198,11 +202,6 @@ class ModuleBase extends Module
     public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array
     {
         return [];
-    }
-
-    public static function getCustomSiteCreateView(): ?string
-    {
-        return null;
     }
 
     public static function getCustomEmailTemplate(): ?string

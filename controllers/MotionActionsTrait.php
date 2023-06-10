@@ -182,7 +182,7 @@ trait MotionActionsTrait
      * @throws FormError
      * @throws Internal
      */
-    private function motionLikeDislike(Motion $motion, string $role, string $string, string $name = '', string $orga = '', string $gender = '', bool $nonPublic = false)
+    private function motionLikeDislike(Motion $motion, string $role, string $string, string $name = '', string $orga = '', string $gender = '', bool $nonPublic = false): void
     {
         $currentUser = User::getCurrentUser();
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {
@@ -198,7 +198,7 @@ trait MotionActionsTrait
      * @throws FormError
      * @throws Internal
      */
-    private function motionLike(Motion $motion)
+    private function motionLike(Motion $motion): void
     {
         if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE)) {
             throw new FormError('Not supported');

@@ -1,14 +1,15 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\forms\{ConsultationCreateForm, SiteCreateForm};
 use yii\helpers\{Html, Url};
 
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Site $site
  * @var \app\models\db\Consultation[] $consultations
- * @var \app\models\forms\ConsultationCreateForm $createForm
- * @var \app\models\forms\SiteCreateForm $wizardModel
+ * @var ConsultationCreateForm $createForm
+ * @var SiteCreateForm $wizardModel
  */
 
 /** @var \app\controllers\Base $controller */
@@ -88,9 +89,9 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
 
 <div class="content">
 
-    <div class="form-group">
-        <label for="newTitle" class="col-md-4 control-label"><?= Yii::t('admin', 'cons_create_title') ?>:</label>
-        <div class="col-md-8"><?php
+    <div class="stdTwoCols">
+        <label for="newTitle" class="leftColumn control-label"><?= Yii::t('admin', 'cons_create_title') ?>:</label>
+        <div class="rightColumn"><?php
             echo Html::input(
                 'text',
                 'newConsultation[title]',
@@ -100,9 +101,9 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
         </div>
     </div>
 
-    <div class="form-group">
-        <label for="newShort" class="col-md-4 control-label"><?= Yii::t('admin', 'cons_create_short') ?>:</label>
-        <div class="col-md-4"><?php
+    <div class="stdTwoCols">
+        <label for="newShort" class="leftColumn control-label"><?= Yii::t('admin', 'cons_create_short') ?>:</label>
+        <div class="rightColumn"><?php
             echo Html::input(
                 'text',
                 'newConsultation[titleShort]',
@@ -112,9 +113,9 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
         </div>
     </div>
 
-    <div class="form-group">
-        <label for="newPath" class="col-md-4 control-label"><?= Yii::t('admin', 'cons_create_url') ?>:</label>
-        <div class="col-md-8 fakeUrl">
+    <div class="stdTwoCols">
+        <label for="newPath" class="leftColumn control-label"><?= Yii::t('admin', 'cons_create_url') ?>:</label>
+        <div class="rightColumn fakeUrl">
             <?php
             $input = Html::input(
                 'text',
@@ -133,68 +134,102 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
             echo str_replace('--CON--', $input, $url);
             ?>
         </div>
-
-        <div class="form-group">
-            <label for="newSetStandard" class="col-md-4 control-label">
-                <?= Yii::t('admin', 'cons_create_std') ?>:
-            </label>
-            <div class="col-md-8 checkbox">
-                <label><?php
-                    echo Html::checkbox(
-                        'newConsultation[setStandard]',
-                        $createForm->setAsDefault,
-                        ['id' => 'newSetStandard']
-                    ); ?>
-                    <?= Yii::t('admin', 'cons_create_std_do') ?>
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group settingsType">
-            <div class="col-md-4 control-label"><?= Yii::t('admin', 'cons_create_settings') ?>:</div>
-            <div class="col-md-8">
-                <label class="radio settingsTypeLabel">
-                    <input type="radio" name="newConsultation[settingsType]" id="settingsTypeWizard" required
-                           value="wizard">
-                    <?= Yii::t('admin', 'cons_create_wizard') ?>
-                </label>
-                <label class="radio settingsTypeLabel">
-                    <input type="radio" name="newConsultation[settingsType]" id="settingsTypeTemplate" required
-                           value="template" checked>
-                    <?= Yii::t('admin', 'cons_create_template') ?>:
-                </label>
-                <?php
-                $templates = [];
-                foreach ($site->consultations as $cons) {
-                    $templates[$cons->id] = $cons->title;
-                }
-                echo '<div class="settingsTypeTemplate">';
-                echo Html::dropDownList(
-                    'newConsultation[template]',
-                    ($createForm->template ? $createForm->template->id : 0),
-                    $templates,
-                    ['class' => 'stdDropdown']
-                );
-                echo '</div>';
-                ?>
-            </div>
-        </div>
-
-        <div class="settingsTypeTemplate">
-            <div class="saveholder">
-                <button type="submit" name="createConsultation" class="btn btn-primary">
-                    <?= Yii::t('admin', 'cons_create_submit') ?>
-                </button>
-            </div>
-        </div>
-        <div class="settingsTypeWizard siteCreate"><?php
-            echo $this->render(
-                '../../createsiteWizard/index',
-                ['model' => $wizardModel, 'errors' => [], 'mode' => 'consultation']
-            );
-        ?></div>
-
     </div>
+
+    <div class="stdTwoCols">
+        <label for="newSetStandard" class="leftColumn control-label">
+            <?= Yii::t('admin', 'cons_create_std') ?>:
+        </label>
+        <div class="rightColumn">
+            <label><?php
+                echo Html::checkbox(
+                    'newConsultation[setStandard]',
+                    $createForm->setAsDefault,
+                    ['id' => 'newSetStandard']
+                ); ?>
+                <?= Yii::t('admin', 'cons_create_std_do') ?>
+            </label>
+        </div>
+    </div>
+
+    <div class="stdTwoCols settingsType">
+        <div class="leftColumn control-label"><?= Yii::t('admin', 'cons_create_settings') ?>:</div>
+        <div class="rightColumn">
+            <label class="settingsTypeLabel">
+                <input type="radio" name="newConsultation[settingsType]" id="settingsTypeWizard" required
+                       value="<?= ConsultationCreateForm::SETTINGS_TYPE_WIZARD ?>">
+                <?= Yii::t('admin', 'cons_create_wizard') ?>
+            </label>
+            <label class="settingsTypeLabel">
+                <input type="radio" name="newConsultation[settingsType]" id="settingsTypeTemplate" required
+                       value="<?= ConsultationCreateForm::SETTINGS_TYPE_TEMPLATE ?>" checked>
+                <?= Yii::t('admin', 'cons_create_template') ?>:
+            </label>
+            <?php
+            $templates = [];
+            foreach ($site->consultations as $cons) {
+                $templates[$cons->id] = $cons->title;
+            }
+            echo '<div class="settingsTypeTemplate">';
+            echo Html::dropDownList(
+                'newConsultation[template]',
+                ($createForm->template ? $createForm->template->id : 0),
+                $templates,
+                ['class' => 'stdDropdown']
+            );
+            echo '</div>';
+            ?>
+        </div>
+    </div>
+
+    <div class="stdTwoCols templateSubselect">
+        <div class="leftColumn control-label"><?= Yii::t('admin', 'cons_template_subsel') ?>:</div>
+        <div class="rightColumn">
+            <label class="templateSubselectSetting">
+                <input type="checkbox" name="newConsultation[templateSubselect][]" id="templateSubselectSetting"
+                       value="settings" checked disabled>
+                <?= Yii::t('admin', 'cons_template_subsel_sett') ?>
+            </label>
+
+            <label class="templateSubselectTags">
+                <input type="checkbox" name="newConsultation[templateSubselect][]" id="templateSubselectTags"
+                       value="<?= ConsultationCreateForm::SUBSELECTION_TAGS ?>" checked>
+                <?= Yii::t('admin', 'cons_template_subsel_tags') ?>
+            </label>
+
+            <label class="templateSubselectTypes">
+                <input type="checkbox" name="newConsultation[templateSubselect][]" id="templateSubselectTypes"
+                       value="<?= ConsultationCreateForm::SUBSELECTION_MOTION_TYPES ?>" checked>
+                <?= Yii::t('admin', 'cons_template_subsel_types') ?>
+            </label>
+
+            <label class="templateSubselectTexts">
+                <input type="checkbox" name="newConsultation[templateSubselect][]" id="templateSubselectTexts"
+                       value="<?= ConsultationCreateForm::SUBSELECTION_TEXTS ?>" checked>
+                <?= Yii::t('admin', 'cons_template_subsel_texts') ?>
+            </label>
+
+            <label class="templateSubselectUsers">
+                <input type="checkbox" name="newConsultation[templateSubselect][]" id="templateSubselectUsers"
+                       value="<?= ConsultationCreateForm::SUBSELECTION_USERS ?>" checked>
+                <?= Yii::t('admin', 'cons_template_subsel_users') ?>
+            </label>
+        </div>
+    </div>
+
+    <div class="settingsTypeTemplate">
+        <div class="saveholder">
+            <button type="submit" name="createConsultation" class="btn btn-primary">
+                <?= Yii::t('admin', 'cons_create_submit') ?>
+            </button>
+        </div>
+    </div>
+    <div class="settingsTypeWizard siteCreate"><?php
+        echo $this->render(
+            '../../createsiteWizard/index',
+            ['model' => $wizardModel, 'errors' => [], 'mode' => 'consultation']
+        );
+    ?></div>
 
 </div>
 <?= Html::endForm() ?>

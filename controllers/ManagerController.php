@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\components\RequestContext;
 use app\models\db\User;
+use app\models\http\{HtmlErrorResponse, HtmlResponse, ResponseInterface};
 
 class ManagerController extends Base
 {
@@ -13,7 +15,7 @@ class ManagerController extends Base
     {
         if (in_array($action->id, ['siteconfig'])) {
             // No cookieValidationKey is set in the beginning
-            \Yii::$app->request->enableCookieValidation = false;
+            RequestContext::getWebApplication()->request->enableCookieValidation = false;
             return parent::beforeAction($action);
         }
 
@@ -21,7 +23,7 @@ class ManagerController extends Base
             return false;
         }
 
-        $currentHost = parse_url(\Yii::$app->request->getAbsoluteUrl(), PHP_URL_HOST);
+        $currentHost = parse_url(RequestContext::getWebApplication()->request->getAbsoluteUrl(), PHP_URL_HOST);
         $managerHost = parse_url($this->getParams()->domainPlain, PHP_URL_HOST);
         if ($currentHost !== $managerHost) {
             return $this->redirect($this->getParams()->domainPlain, 301);
@@ -30,26 +32,20 @@ class ManagerController extends Base
         return parent::beforeAction($action);
     }
 
-    /**
-     * @return string
-     * @throws \Yii\base\ExitException
-     */
-    public function actionSiteconfig()
+    public function actionSiteconfig(): ResponseInterface
     {
         if (!User::currentUserIsSuperuser()) {
-            $this->showErrorpage(403, 'Only admins are allowed to access this page.');
-            return '';
+            return new HtmlErrorResponse(403, 'Only admins are allowed to access this page.');
         }
 
         $configfile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.json';
         $config     = $this->getParams();
 
         if ($config->multisiteMode) {
-            $this->showErrorpage(500, 'This configuration tool can only be used for single-site installations.');
-            return '';
+            return new HtmlErrorResponse(500, 'This configuration tool can only be used for single-site installations.');
         }
 
-        $post = \Yii::$app->request->post();
+        $post = RequestContext::getWebApplication()->request->post();
         if (isset($post['save'])) {
             $config->resourceBase          = $post['resourceBase'];
             $config->baseLanguage          = $post['baseLanguage'];
@@ -117,10 +113,10 @@ class ManagerController extends Base
             $makeEditabeCommand = 'not available';
         }
 
-        return $this->render('siteconfig', [
+        return new HtmlResponse($this->render('siteconfig', [
             'config'             => $config,
             'editable'           => $editable,
             'makeEditabeCommand' => $makeEditabeCommand,
-        ]);
+        ]));
     }
 }

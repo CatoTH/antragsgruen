@@ -53,17 +53,13 @@ class Image extends ISectionType
 
     public static function getFileExtensionFromMimeType(string $mime): ?string
     {
-        switch ($mime) {
-            case 'image/png':
-                return 'png';
-            case 'image/jpg':
-            case 'image/jpeg':
-                return 'jpeg';
-            case 'image/gif':
-                return 'gif';
-            default:
-                return null;
-        }
+        return match ($mime) {
+            'image/png' => 'png',
+            'image/jpg', 'image/jpeg' => 'jpeg',
+            'image/gif' => 'gif',
+            'image/svg+xml' => 'svg',
+            default => null,
+        };
     }
 
     public function getMotionFormField(): string
@@ -277,7 +273,7 @@ class Image extends ISectionType
     {
         $scaleX = $maxX / $width;
         $scaleY = $maxY / $height;
-        $scale  = ($scaleX < $scaleY ? $scaleX : $scaleY);
+        $scale  = min($scaleX, $scaleY);
         return [$scale * $width, $scale * $height];
     }
 

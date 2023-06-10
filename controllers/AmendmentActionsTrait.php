@@ -3,24 +3,14 @@
 namespace app\controllers;
 
 use app\components\UrlHelper;
-use app\models\db\{Amendment,
-    AmendmentAdminComment,
-    AmendmentComment,
-    AmendmentSupporter,
-    ConsultationLog,
-    ConsultationSettingsTag,
-    IComment,
-    Consultation,
-    User};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, IComment, Consultation, User};
 use app\models\events\AmendmentEvent;
-use app\models\http\RedirectResponse;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\http\{JsonResponse, RedirectResponse};
+use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\exceptions\{DB, FormError, Internal, ResponseException};
 use app\models\forms\CommentForm;
-use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
-use yii\web\{Request, Response, Session};
+use yii\web\{Request, Session};
 
 /**
  * @property Consultation $consultation
@@ -414,31 +404,20 @@ trait AmendmentActionsTrait
         }
     }
 
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @return string
-     * @throws \Exception
-     * @throws \Yii\db\StaleObjectException
-     * @throws \Throwable
-     */
-    public function actionDelProposalComment($motionSlug, $amendmentId)
+    public function actionDelProposalComment(string $motionSlug, int $amendmentId): JsonResponse
     {
-        \Yii::$app->response->format = Response::FORMAT_RAW;
-        \Yii::$app->response->headers->add('Content-Type', 'application/json');
-
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
-            return json_encode(['success' => false, 'error' => 'Amendment not found']);
+            return new JsonResponse(['success' => false, 'error' => 'Amendment not found']);
         }
 
-        $commentId = \Yii::$app->request->post('id');
+        $commentId = (int)$this->getPostValue('id');
         $comment   = AmendmentAdminComment::findOne(['id' => $commentId, 'amendmentId' => $amendment->id]);
         if ($comment && User::isCurrentUser($comment->getMyUser())) {
             $comment->delete();
-            return json_encode(['success' => true]);
+            return new JsonResponse(['success' => true]);
         } else {
-            return json_encode(['success' => false, 'error' => 'No permission to delete this comment']);
+            return new JsonResponse(['success' => false, 'error' => 'No permission to delete this comment']);
         }
     }
 }

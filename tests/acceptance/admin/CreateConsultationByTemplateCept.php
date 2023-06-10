@@ -6,11 +6,6 @@ use app\tests\_pages\SiteHomePage;
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->openPage(SiteHomePage::class, [
-    'subdomain' => 'stdparteitag'
-]);
-
-
 $I->loginAndGotoStdAdminPage()->gotoConsultationCreatePage();
 
 $I->see('Standard-Veranstaltung', '.consultation1');
@@ -27,16 +22,14 @@ $I->see('Neue Veranstaltung 1', '.consultation' . AcceptanceTester::FIRST_FREE_C
 $I->see('Standard-Veranstaltung', '.consultation1');
 
 
-$I->wantTo('check that the motion types where cloned successfully');
+$I->wantTo('check that the motion types and user groups where cloned successfully');
 $I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 $I->seeNumberOfElements('#sectionsList > li', 5);
 
-
-
-$I->openPage(SiteHomePage::class, [
-    'subdomain' => 'stdparteitag'
-]);
-$I->see('Test2', 'h1');
+$I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoUserAdministration();
+$I->see('Single-Consultation Admin', '.userList');
+$I->see('Veranstaltungs-Admin', '.userList');
+$I->see('Veranstaltungs-Admin', '.groupList');
 
 
 $I->wantTo('create the same again, should not work');
@@ -52,8 +45,27 @@ $I->submitForm('.consultationCreateForm', [], 'createConsultation');
 $I->see('Diese Adresse ist leider schon von einer anderen Veranstaltung auf dieser Seite vergeben.');
 
 
+$I->wantTo('create a new consultation without taking motion types, users etc.');
+
+$I->fillField('#newTitle', 'Eine leere Veranstaltung');
+$I->fillField('#newShort', 'NeuKurzLeer');
+$I->fillField('#newPath', 'neukurzleer');
+$I->uncheckOption('#newSetStandard');
+$I->uncheckOption("//input[@name='newConsultation[templateSubselect][]'][@value='tags']");
+$I->uncheckOption("//input[@name='newConsultation[templateSubselect][]'][@value='motiontypes']");
+$I->uncheckOption("//input[@name='newConsultation[templateSubselect][]'][@value='texts']");
+$I->uncheckOption("//input[@name='newConsultation[templateSubselect][]'][@value='users']");
+$I->submitForm('.consultationCreateForm', [], 'createConsultation');
+
+$I->gotoStdAdminPage('stdparteitag', 'neukurzleer')->gotoUserAdministration();
+$I->dontSee('Single-Consultation Admin', '.userList');
+$I->dontSee('Veranstaltungs-Admin', '.userList');
+$I->see('Veranstaltungs-Admin', '.groupList');
+
+
 $I->wantTo('create a new standard consultation');
 
+$I->gotoStdAdminPage()->gotoConsultationCreatePage();
 $I->fillField('#newTitle', 'Noch eine neue Veranstaltung');
 $I->fillField('#newShort', 'NeuKurz2');
 $I->fillField('#newPath', 'neukurz2');
@@ -61,8 +73,8 @@ $I->checkOption('#newSetStandard');
 $I->submitForm('.consultationCreateForm', [], 'createConsultation');
 
 $I->see('Die neue Veranstaltung wurde angelegt.');
-$I->see('Noch eine neue Veranstaltung', '.consultation' . (AcceptanceTester::FIRST_FREE_CONSULTATION_ID + 1));
-$I->see('Standard-Veranstaltung', '.consultation' . (AcceptanceTester::FIRST_FREE_CONSULTATION_ID + 1));
+$I->see('Noch eine neue Veranstaltung', '.consultation' . (AcceptanceTester::FIRST_FREE_CONSULTATION_ID + 2));
+$I->see('Standard-Veranstaltung', '.consultation' . (AcceptanceTester::FIRST_FREE_CONSULTATION_ID + 2));
 
 $I->openPage(SiteHomePage::class, [
     'subdomain' => 'stdparteitag'
