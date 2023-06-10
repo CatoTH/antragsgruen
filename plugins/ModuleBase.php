@@ -200,11 +200,6 @@ class ModuleBase extends Module
         return [];
     }
 
-    public static function getCustomSiteCreateView(): ?string
-    {
-        return null;
-    }
-
     public static function getCustomEmailTemplate(): ?string
     {
         return null;
