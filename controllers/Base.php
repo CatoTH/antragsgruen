@@ -376,7 +376,9 @@ class Base extends Controller
             return true;
         }
         if ($this->consultation->getSettings()->managedUserAccounts) {
-            if (count(User::getCurrentUser()->getUserGroupsForConsultation($this->consultation)) === 0) {
+            $user = User::getCurrentUser();
+            if (count($user->getUserGroupsForConsultation($this->consultation)) === 0 &&
+                !User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                 $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
                 return true;
             }
