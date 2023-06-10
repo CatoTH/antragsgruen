@@ -1,21 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\forms;
 
-use app\models\db\Consultation;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\ConsultationSettingsTag;
-use app\models\db\ConsultationText;
-use app\models\db\ConsultationUserGroup;
-use app\models\db\Site;
-use app\models\db\User;
+use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, Site, User};
 use app\models\exceptions\FormError;
 
 class ConsultationCreateForm
 {
-    private Site $site;
-
     public string $settingsType;
     public string $urlPath = '';
     public string $title = '';
@@ -26,9 +19,8 @@ class ConsultationCreateForm
 
     public SiteCreateForm $siteCreateWizard;
 
-    public function __construct(Site $site)
+    public function __construct(private Site $site)
     {
-        $this->site             = $site;
         $this->siteCreateWizard = new SiteCreateForm();
     }
 

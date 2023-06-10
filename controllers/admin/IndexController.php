@@ -328,15 +328,14 @@ class IndexController extends AdminBase
 
     public function actionSiteconsultations(): ResponseInterface
     {
-        $site = $this->site;
-
         if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 
-        $form           = new ConsultationCreateForm($site);
+        $site = $this->site;
+        $form = new ConsultationCreateForm($site);
         $form->template = $this->consultation;
-        $post           = $this->getHttpRequest()->post();
+        $post = $this->getHttpRequest()->post();
 
         if ($this->isPostSet('createConsultation')) {
             $newcon = $post['newConsultation'];
