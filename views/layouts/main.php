@@ -82,9 +82,6 @@ if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
 
 echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
-if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false || strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false)) {
-    echo '<script src="' . $layout->resourceUrl('js/bluebird.min.js') . '"></script>';
-}
 echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>';
 
 echo \app\models\layoutHooks\Layout::favicons();
