@@ -107,7 +107,7 @@ $privilegeDependencies = $privileges->getPrivilegeDependencies();
 <?php
 
 
-echo $this->render('_users_add_accounts');
+echo $this->render('_users_add_accounts', ['consultation' => $consultation]);
 if (count($screening) > 0) {
     echo $this->render('_users_screening', ['screening' => $screening]);
 }
