@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\models\settings;
 
+use app\models\db\{Consultation, ConsultationUserGroup};
+
 class ConsultationUserOrganisation implements \JsonSerializable
 {
     public string $name;
@@ -20,6 +22,30 @@ class ConsultationUserOrganisation implements \JsonSerializable
             $orgaObject->autoUserGroups = $orga['autoUserGroups'];
         }
         return $orgaObject;
+    }
+
+    public static function fromHtmlForm(Consultation $consultation, array $organisations, ?array $groups): array
+    {
+        $allGroupsById = [];
+        foreach (ConsultationUserGroup::findByConsultation($consultation) as $group) {
+            $allGroupsById[$group->id] = $group;
+        }
+
+        $orgas = [];
+        for ($i = 0; $i < count($organisations); $i++) {
+            if (trim($organisations[$i]) === '') {
+                continue;
+            }
+            $orga = new self();
+            $orga->name = trim($organisations[$i]);
+            $orga->autoUserGroups = [];
+            if (isset($groups[$i]) && $groups[$i] && isset($allGroupsById[intval($groups[$i])])) {
+                $orga->autoUserGroups[] = intval($groups[$i]);
+            }
+
+            $orgas[] = $orga;
+        }
+        return $orgas;
     }
 
     /**

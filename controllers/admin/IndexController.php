@@ -51,9 +51,8 @@ class IndexController extends AdminBase
             $model->setAttributes($data);
 
             $settingsInput = $post['settings'] ?? [];
-            $settings      = $model->getSettings();
+            $settings = $model->getSettings();
             $settings->saveConsultationForm($settingsInput, $post['settingsFields']);
-            $settings->setOrganisationsFromInput($post['organisations'] ?? []);
 
             if ($model->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                 if ($this->isPostSet('pwdProtected') && $this->isPostSet('consultationPassword')) {

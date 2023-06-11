@@ -96,6 +96,9 @@ class ConsultationUserGroup extends ActiveRecord
         }));
     }
 
+    /**
+     * @return ConsultationUserGroup[]
+     */
     public static function findByConsultation(Consultation $consultation, array $additionalIds = []): array
     {
         /** @var ConsultationUserGroup[] $groups */

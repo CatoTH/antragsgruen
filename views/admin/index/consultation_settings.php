@@ -339,30 +339,6 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                 </label>
             </div>
         </div>
-
-        <?php
-        $organisations = $consultation->getSettings()->organisations;
-        if ($organisations === null) {
-            $organisations = [];
-        }
-        ?>
-        <div class="stdTwoCols">
-            <div class="leftColumn">
-                <?= Yii::t('admin', 'con_organisations') ?>:
-                <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_organisations_hint')) ?>
-            </div>
-            <div class="rightColumn">
-                <div class="selectize-wrapper" id="organisationList">
-                    <select class="tags" name="organisations[]" multiple="multiple">
-                        <?php
-                        foreach ($organisations as $organisation) {
-                            echo '<option name="' . Html::encode($organisation->name) . '" selected>' . Html::encode($organisation->name) . '</option>';
-                        }
-                        ?>
-                    </select>
-                </div>
-            </div>
-        </div>
     </div>
 
     <h2 class="green"><?= Yii::t('admin', 'con_title_amendments') ?></h2>

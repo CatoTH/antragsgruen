@@ -343,6 +343,8 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_organs_orga'        => 'Organisation',
     'siteacc_organs_autogroup'   => 'Standard-Gruppe',
     'siteacc_organs_autogroup_tt' => 'Benutzer*innen, die beim Anlegen dieser Organisation zugeordnet werden, werden auch standardmäßig folgenden Gruppen zugeordnet.',
+    'siteacc_organs_saved'       => 'Die Organisationen wurden gespeichert',
+    'siteacc_organs_add'         => 'Organisation hinzufügen',
     'siteacc_groups_title'       => 'Gruppen',
     'siteacc_groups_add_open'    => 'Gruppe anlegen',
     'siteacc_groups_add_name'    => 'Name der Gruppe',

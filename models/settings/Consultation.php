@@ -29,7 +29,7 @@ class Consultation implements \JsonSerializable
     public const DATE_FORMAT_MDY_SLASH = 'mdy-slash'; // 01/13/2022
     public const DATE_FORMAT_YMD_DASH = 'ymd-dash'; // 2022-01-13
 
-        // SETTINGS WITH TEST CASES
+    // SETTINGS WITH TEST CASES
 
     public bool $maintenanceMode = false;
     public bool $screeningMotions = false;
@@ -96,11 +96,11 @@ class Consultation implements \JsonSerializable
     public bool $speechPage = false;
 
 
-    public function setOrganisations(array $orgas): void
+    public function setOrganisations(?array $orgas): void
     {
         $this->organisations = array_map(
             fn(string|array $orga): ConsultationUserOrganisation => ConsultationUserOrganisation::fromJson($orga),
-            $orgas
+            $orgas ?? []
         );
     }
 
@@ -152,18 +152,6 @@ class Consultation implements \JsonSerializable
             self::ROBOTS_ONLY_HOME => \Yii::t('structure', 'robots_policy_only_home'),
             self::ROBOTS_ALL => \Yii::t('structure', 'robots_policy_all'),
         ];
-    }
-
-    /**
-     * @param string[] $organisationField
-     */
-    public function setOrganisationsFromInput(?array $organisationField): void
-    {
-        if ($organisationField) {
-            $this->organisations = ConsultationUserOrganisation::mergeObjectWithStringList($this->organisations, $organisationField);
-        } else {
-            $this->organisations = null;
-        }
     }
 
     public function getStartLayoutView(): string

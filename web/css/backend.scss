@@ -1787,10 +1787,15 @@ label.legend {
   td:first-child {
     padding-right: 5px;
   }
+  .btnAdd {
+    font-weight: normal;
+  }
+  .btnRemove {
+    color: $colorDelLink;
+  }
 }
 
 .editUserGroupModal {
-
   label {
     font-weight: normal;
     display: block;
