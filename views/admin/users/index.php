@@ -93,6 +93,7 @@ $privilegeDependencies = $privileges->getPrivilegeDependencies();
      data-url-user-group-log="<?= Html::encode($userGroupLogUrl) ?>"
      data-users="<?= Html::encode(json_encode($widgetData['users'])) ?>"
      data-groups="<?= Html::encode(json_encode($widgetData['groups'])) ?>"
+     data-organisations="<?= Html::encode(json_encode($consultation->getSettings()->organisations)) ?>"
      data-permission-global-edit="<?= $globalUserAdmin ? '1' : '0' ?>"
      data-non-motion-privileges="<?= Html::encode(json_encode($nonMotionPrivileges)) ?>"
      data-motion-privileges="<?= Html::encode(json_encode($motionPrivileges)) ?>"

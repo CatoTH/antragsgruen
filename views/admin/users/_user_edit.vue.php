@@ -63,8 +63,11 @@ ob_start();
                     <div class="rightColumn" v-if="!permissionGlobalEdit">
                         {{ organization }}
                     </div>
-                    <div class="rightColumn" v-if="permissionGlobalEdit">
+                    <div class="rightColumn" v-if="permissionGlobalEdit && organisationSelect.length === 0">
                         <input type="text" class="form-control inputOrganization" v-model="organization">
+                    </div>
+                    <div class="rightColumn" v-if="permissionGlobalEdit && organisationSelect.length > 0">
+                        <v-selectize @change="setOrganisation($event)" :options="organisationSelect" :values="[organization]" create="true"></v-selectize>
                     </div>
                 </div>
                 <div class="stdTwoCols">
@@ -120,7 +123,7 @@ $html = ob_get_clean();
 
     __setVueComponent('users', 'component', 'user-edit-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['groups', 'urlUserLog', 'permissionGlobalEdit'],
+        props: ['groups', 'organisations', 'urlUserLog', 'permissionGlobalEdit'],
         data() {
             return {
                 user: null,
@@ -139,6 +142,23 @@ $html = ob_get_clean();
             },
             userLogUrl: function () {
                 return this.urlUserLog.replace(/%23/g, "#").replace(/###USER###/, this.user.id);
+            },
+            organisationSelect: function () {
+                return [
+                    {
+                        'id': '',
+                        'label': ' ',
+                    }, {
+                        'id': this.organization,
+                        'label': this.organization,
+                    },
+                    ...this.organisations.map(orgaData => {
+                        return {
+                            'id': orgaData['name'],
+                            'label': orgaData['name'],
+                        };
+                    })
+                ];
             }
         },
         methods: {
@@ -179,6 +199,9 @@ $html = ob_get_clean();
                 this.$nextTick(function () {
                     this.$refs['password-setter'].focus();
                 });
+            },
+            setOrganisation: function ($event) {
+                this.organization = $event[0];
             }
         }
 

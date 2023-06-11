@@ -16,6 +16,7 @@ export class UserAdmin {
         const userSaveUrl = this.element.getAttribute('data-url-user-save');
         const initUsersJson = this.element.getAttribute('data-users');
         const initGroupsJson = this.element.getAttribute('data-groups');
+        const organisations = JSON.parse(this.element.getAttribute('data-organisations'));
         const pollUrl = this.element.getAttribute('data-url-poll');
         const urlUserLog = this.element.getAttribute('data-url-user-log');
         const urlGroupLog = this.element.getAttribute('data-url-user-group-log');
@@ -33,6 +34,7 @@ export class UserAdmin {
             template: `<div class="adminUsers">
                 <user-edit-widget
                     :groups="groups"
+                    :organisations="organisations"
                     :permissionGlobalEdit="permissionGlobalEdit"
                     :urlUserLog="urlUserLog"
                     @save-user="saveUser"
@@ -71,6 +73,7 @@ export class UserAdmin {
                     groups: null,
                     csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                     pollingId: null,
+                    organisations,
                     urlUserLog,
                     urlGroupLog,
                     nonMotionPrivileges,
