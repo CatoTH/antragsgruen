@@ -2,8 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
-use app\components\MotionNumbering;
-use app\components\Tools;
+use app\components\{MotionNumbering, Tools};
 use app\models\sectionTypes\TextSimple;
 use app\models\db\{IMotion, Motion, MotionSection, MotionSupporter};
 use app\models\events\MotionEvent;
@@ -13,14 +12,12 @@ use app\models\settings\VotingData;
 
 class Merge
 {
-    public Motion $origMotion;
-
     /** @var MotionSection[] */
     public array $motionSections = [];
 
-    public function __construct(Motion $origMotion)
-    {
-        $this->origMotion = $origMotion;
+    public function __construct(
+        public Motion $origMotion
+    ) {
     }
 
     public function getMergedMotionDraft(): ?Motion

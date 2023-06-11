@@ -13,18 +13,14 @@ class Agenda
     public const FORMAT_HTML = 0;
     public const FORMAT_ODS  = 1;
 
-    public string $title;
-    public int $blockId;
-    public ?ConsultationAgendaItem $agendaItem;
-
     /** @var AgendaVoting[] */
     public array $votingBlocks = [];
 
-    public function __construct(int $blockId, string $title, ?ConsultationAgendaItem $agendaItem = null)
-    {
-        $this->blockId = $blockId;
-        $this->title = $title;
-        $this->agendaItem = $agendaItem;
+    public function __construct(
+        public int $blockId,
+        public string $title,
+        public ?ConsultationAgendaItem $agendaItem = null
+    ) {
     }
 
     public function addVotingBlock(VotingBlock $votingBlock, bool $includeInvisible, IMotionList $handledMotions): void

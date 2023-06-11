@@ -12,12 +12,9 @@ class IMotionStatusEngine
     /** @var IMotionStatus[] */
     private array $allStatusesCache;
 
-    private \app\models\db\Consultation $consultation;
-
-    public function __construct(\app\models\db\Consultation $consultation)
-    {
-        $this->consultation = $consultation;
-
+    public function __construct(
+        private \app\models\db\Consultation $consultation
+    ) {
         $statuses = [];
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             $statuses = array_merge($statuses, $pluginClass::getAdditionalIMotionStatuses());

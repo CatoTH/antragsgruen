@@ -11,9 +11,7 @@ class MotionProposedProcedure
 {
     public static function getPpOpenAcceptToken(Motion $motion): string
     {
-        /** @var AntragsgruenApp $app */
-        $app  = \Yii::$app->params;
-        $base = 'getPpOpenAcceptToken' . $app->randomSeed . $motion->id;
+        $base = 'getPpOpenAcceptToken' . AntragsgruenApp::getInstance()->randomSeed . $motion->id;
 
         /** @noinspection PhpUnhandledExceptionInspection */
         return substr(preg_replace('/[^\w]/siu', '', base64_encode(sodium_crypto_generichash($base))), 0, 20);
@@ -53,17 +51,11 @@ class MotionProposedProcedure
         $initiator     = $motion->getInitiators();
         $initiatorName = (count($initiator) > 0 ? $initiator[0]->getGivenNameOrFull() : null);
 
-        switch ($motion->proposalStatus) {
-            case Motion::STATUS_ACCEPTED:
-                $body = \Yii::t('motion', 'proposal_email_accepted');
-                break;
-            case Motion::STATUS_MODIFIED_ACCEPTED:
-                $body = \Yii::t('motion', 'proposal_email_modified');
-                break;
-            default:
-                $body = \Yii::t('motion', 'proposal_email_other');
-                break;
-        }
+        $body = match ($motion->proposalStatus) {
+            Motion::STATUS_ACCEPTED => \Yii::t('motion', 'proposal_email_accepted'),
+            Motion::STATUS_MODIFIED_ACCEPTED => \Yii::t('motion', 'proposal_email_modified'),
+            default => \Yii::t('motion', 'proposal_email_other'),
+        };
 
         $procedureToken = static::getPpOpenAcceptToken($motion);
         $motionLink     = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'view', ['procedureToken' => $procedureToken]));

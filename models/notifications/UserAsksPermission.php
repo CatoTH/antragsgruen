@@ -7,16 +7,10 @@ use app\models\db\{Consultation, User};
 
 class UserAsksPermission extends Base implements IEmailAdmin
 {
-    /** @var User */
-    protected $user;
-    /** @var Consultation */
-    protected $consultation;
-
-    public function __construct(User $user, Consultation $consultation)
-    {
-        $this->user         = $user;
-        $this->consultation = $consultation;
-
+    public function __construct(
+        protected User $user,
+        protected Consultation $consultation
+    ) {
         parent::__construct();
     }
 

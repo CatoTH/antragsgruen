@@ -6,16 +6,10 @@ use app\models\db\{EMailLog, Motion, User};
 
 class MotionNotificationSubscriptions extends Base implements IEmailUser
 {
-    /** @var Motion */
-    private $motion;
-
-    /** @var User */
-    private $user;
-
-    public function __construct(Motion $motion, User $user)
-    {
-        $this->motion       = $motion;
-        $this->user         = $user;
+    public function __construct(
+        private Motion $motion,
+        private User $user
+    ) {
         $this->consultation = $motion->getMyConsultation();
 
         parent::__construct();

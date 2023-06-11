@@ -9,11 +9,9 @@ use yii\helpers\Html;
 
 class MotionSubmitted extends Base implements IEmailAdmin
 {
-    protected $motion;
-
-    public function __construct(Motion $motion)
-    {
-        $this->motion       = $motion;
+    public function __construct(
+        protected Motion $motion
+    ) {
         $this->consultation = $motion->getMyConsultation();
 
         parent::__construct();
@@ -66,7 +64,7 @@ class MotionSubmitted extends Base implements IEmailAdmin
         if ($this->motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
             $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
             $min        = $this->motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-            $emailText  = str_replace('%MIN%', $min, $emailText);
+            $emailText  = str_replace('%MIN%', (string)$min, $emailText);
             $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
         } else {
             $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_screening_email');

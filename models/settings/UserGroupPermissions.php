@@ -12,8 +12,6 @@ class UserGroupPermissions
     public const PERMISSION_ADMIN_ALL = 'admin-all';
     public const PERMISSION_ADMIN_SPEECH_LIST = 'admin-speech-list';
 
-    private bool $isSiteWide;
-
     /** @var string[]|null */
     private ?array $defaultPermissions = null;
 
@@ -24,9 +22,9 @@ class UserGroupPermissions
      */
     private ?array $privileges = null;
 
-    public function __construct(bool $isSiteWide)
-    {
-        $this->isSiteWide = $isSiteWide;
+    public function __construct(
+        private bool $isSiteWide
+    ) {
     }
 
     public static function fromDatabaseString(?string $str, bool $isSiteWide): self
@@ -35,7 +33,7 @@ class UserGroupPermissions
             return new self($isSiteWide);
         }
 
-        if (strpos($str, '{') === 0) {
+        if (str_starts_with($str, '{')) {
             return self::fromJsonDatabaseString($str, $isSiteWide);
         } else {
             return self::fromLegacyDatabaseString($str, $isSiteWide);

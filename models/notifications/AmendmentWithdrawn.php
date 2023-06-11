@@ -7,16 +7,9 @@ use app\models\db\Amendment;
 
 class AmendmentWithdrawn extends Base implements IEmailAdmin
 {
-    /** @var Amendment */
-    protected $amendment;
-
-    /**
-     * MotionInitiallySubmitted constructor.
-     * @param Amendment $amendment
-     */
-    public function __construct(Amendment $amendment)
-    {
-        $this->amendment       = $amendment;
+    public function __construct(
+        protected Amendment $amendment
+    ) {
         $this->consultation = $amendment->getMyMotion()->getMyConsultation();
 
         parent::__construct();
