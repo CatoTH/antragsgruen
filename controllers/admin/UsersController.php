@@ -206,6 +206,11 @@ class UsersController extends AdminBase
             $this->consultation->refresh();
         }
 
+        if ($this->isPostSet('saveOrganisations')) {
+            var_dump($this->getPostValues());
+            die();
+        }
+
         return new HtmlResponse($this->render('index', [
             'widgetData' => $this->getUsersWidgetData($consultation),
             'screening' => $consultation->screeningUsers,

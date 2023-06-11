@@ -51,6 +51,11 @@ export class UserAdmin {
                     @save-group="saveGroup"
                     ref="group-edit-widget"
                 ></group-edit-widget>
+                <organisation-edit-widget
+                    :organisations="organisations"
+                    :groups="groups"
+                    ref="organisation-edit-widget"
+                ></organisation-edit-widget>
                 <user-admin-widget
                     :users="users"
                     :groups="groups"
@@ -62,6 +67,7 @@ export class UserAdmin {
                     @create-group="createGroup"
                     @edit-group="editGroup"
                     @remove-group="removeUserGroup"
+                    @edit-organisations="editOrganisations"
                     ref="user-admin-widget"
                 ></user-admin-widget>
             </div>`,
@@ -166,6 +172,9 @@ export class UserAdmin {
                         op: 'remove-group',
                         groupId: group.id
                     });
+                },
+                editOrganisations() {
+                    userWidgetComponent.$refs["organisation-edit-widget"].open();
                 },
                 reloadData: function () {
                     const widget = this;

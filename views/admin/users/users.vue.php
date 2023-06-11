@@ -11,6 +11,12 @@ ob_start();
     ?>
     <section class="content" aria-label="<?= Yii::t('admin', 'siteacc_accounts_title') ?>">
         <div class="filterHolder">
+            <div class="orgaOpenerHolder">
+                <button type="button" class="orgaOpener btn btn-link" @click="editOrganisations()">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    <?= Yii::t('admin', 'siteacc_orgas_opener') ?>
+                </button>
+            </div>
             <div class="groupFilter">
                 <v-selectize @change="setFilterGroup($event)" :options="userGroupFilter"></v-selectize>
             </div>
@@ -114,6 +120,14 @@ $html = ob_get_clean();
         mounted: function (el) {
             el.focus()
         }
+    });
+
+    __setVueComponent('users', 'directive', 'tooltip', function (el, binding) {
+        $(el).tooltip({
+            title: binding.value,
+            placement: 'top',
+            trigger: 'hover'
+        })
     });
 
     if (window.USER_ADMIN_MIXINS === undefined) {
@@ -348,6 +362,9 @@ $html = ob_get_clean();
                         widget.$emit('remove-group', group);
                     }
                 });
+            },
+            editOrganisations: function () {
+                this.$emit('edit-organisations');
             }
         }
     });

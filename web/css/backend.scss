@@ -1649,6 +1649,14 @@ label.legend {
         white-space: nowrap;
       }
     }
+    .orgaOpenerHolder {
+      float: left;
+      text-align: left;
+      button {
+        margin-top: 5px;
+        font-weight: normal;
+      }
+    }
   }
   ul.userList, ul.groupList {
     display: block;
@@ -1766,6 +1774,18 @@ label.legend {
       text-align: right;
       padding-top: 18px;
     }
+  }
+}
+
+.editOrganisationModal {
+  table {
+    width: 100%;
+  }
+  td {
+    padding-top: 5px;
+  }
+  td:first-child {
+    padding-right: 5px;
   }
 }
 
