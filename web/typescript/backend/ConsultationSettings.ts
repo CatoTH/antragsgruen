@@ -54,12 +54,28 @@ export class ConsultationSettings {
 
     private initTags() {
         const $tagList: any = this.$form.find("#tagsList select");
-        $tagList.selectize({create: true, plugins: ["remove_button"]})
+        $tagList.selectize({
+            create: true,
+            plugins: ["remove_button"],
+            render: {
+                option_create: (data, escape) => {
+                    return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                }
+            }
+        });
     }
 
     private initOrganisations() {
         const $tagList: any = this.$form.find("#organisationList select");
-        $tagList.selectize({create: true, plugins: ["remove_button"]})
+        $tagList.selectize({
+            create: true,
+            plugins: ["remove_button"],
+            render: {
+                option_create: (data, escape) => {
+                    return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                }
+            }
+        })
     }
 
     private initConPwd() {

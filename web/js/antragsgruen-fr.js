@@ -3,6 +3,7 @@
 
 ANTRAGSGRUEN_STRINGS = {
     "std": {
+        "add_tag": "Créer",
         "del_confirm": "Really delete it?",
         "draft_del": "Delete draft",
         "draft_del_confirm": "Really delete this draft?",

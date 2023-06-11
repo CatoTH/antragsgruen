@@ -66,6 +66,11 @@ export class ChangeProposedProcedure {
         $tagsSelect.selectize({
             create: true,
             plugins: ["remove_button"],
+            render: {
+                option_create: (data, escape) => {
+                    return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                }
+            }
         });
 
         $tagsSelect.on("change", () => {

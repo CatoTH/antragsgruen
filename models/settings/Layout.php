@@ -304,7 +304,7 @@ class Layout
 
     public function loadSelectize(): void
     {
-        $this->addJs('js/selectize.min.js');
+        $this->addJs('npm/selectize.min.js');
         $this->addCSS('css/selectize.bootstrap3.css');
     }
 
