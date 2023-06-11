@@ -2,14 +2,11 @@
 
 namespace app\controllers\admin;
 
-use app\models\settings\Privileges;
-use app\models\http\{HtmlResponse, JsonResponse, RedirectResponse, RestApiResponse};
+use app\models\exceptions\{ResponseException, UserEditFailed};
+use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, Privileges};
+use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, RestApiResponse};
 use app\components\{mail\Tools as MailTools, UrlHelper, UserGroupAdminMethods};
 use app\models\db\{Consultation, ConsultationUserGroup, EMailLog, User};
-use app\models\exceptions\UserEditFailed;
-use app\models\settings\AntragsgruenApp;
-use yii\base\ExitException;
-use yii\web\Response;
 
 class UsersController extends AdminBase
 {
@@ -32,8 +29,7 @@ class UsersController extends AdminBase
         $consultation = $this->consultation;
 
         if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
-            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
-            throw new ExitException();
+            throw new ResponseException(new HtmlErrorResponse(403, \Yii::t('admin', 'no_access')));
         }
 
         return $consultation;
@@ -206,6 +202,19 @@ class UsersController extends AdminBase
             $this->consultation->refresh();
         }
 
+        if ($this->isPostSet('saveOrganisations')) {
+            $settings = $consultation->getSettings();
+            $settings->organisations = ConsultationUserOrganisation::fromHtmlForm(
+                $consultation,
+                $this->getPostValue('organisation', []),
+                $this->getPostValue('autoUserGroups', [])
+            );
+            $consultation->setSettings($settings);
+            $consultation->save();
+
+            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'siteacc_organs_saved'));
+        }
+
         return new HtmlResponse($this->render('index', [
             'widgetData' => $this->getUsersWidgetData($consultation),
             'screening' => $consultation->screeningUsers,
@@ -218,9 +227,6 @@ class UsersController extends AdminBase
         $consultation = $this->getConsultationAndCheckAdminPermission();
 
         $this->handleRestHeaders(['POST'], true);
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $additionalData = [
             'msg_success' => null,

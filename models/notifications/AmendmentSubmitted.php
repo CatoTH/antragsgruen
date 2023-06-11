@@ -14,12 +14,9 @@ use yii\helpers\Html;
 
 class AmendmentSubmitted extends Base implements IEmailAdmin
 {
-    /** @var Amendment */
-    protected $amendment;
-
-    public function __construct(Amendment $amendment)
-    {
-        $this->amendment       = $amendment;
+    public function __construct(
+        protected Amendment $amendment
+    ) {
         $this->consultation = $amendment->getMyConsultation();
 
         parent::__construct();
@@ -106,7 +103,7 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
                 $plain,
                 $html
             );
-        } catch (MailNotSent | ServerConfiguration $e) {
+        } catch (MailNotSent | ServerConfiguration) {
         }
     }
 }

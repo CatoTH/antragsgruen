@@ -14,6 +14,7 @@ const gulp = require('gulp'),
     ];
 
 async function taskCopyFiles() {
+    await gulp.src("node_modules/@selectize/selectize/dist/js/selectize.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(terser()).pipe(gulp.dest('./web/npm/'));

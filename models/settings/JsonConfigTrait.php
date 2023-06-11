@@ -6,16 +6,14 @@ use app\models\exceptions\{ConfigurationError, FormError};
 
 trait JsonConfigTrait
 {
-    /**
-     * @param null|string|array $data
-     */
-    public function __construct($data)
+    public function __construct(null|string|array $data)
     {
         $this->setPropertiesFromJSON($data);
     }
 
     /**
      * @param \ReflectionClass<self> $reflectionClass
+     * @throws \ReflectionException
      */
     private function propertyIsInt(\ReflectionClass $reflectionClass, string $key): bool
     {
@@ -43,10 +41,30 @@ trait JsonConfigTrait
     }
 
     /**
-     * @param null|string|array $data
+     * @param \ReflectionClass<self> $reflectionClass
+     * @throws \ReflectionException
+     */
+    protected function setPropertyFromJson(string $key, mixed $val, \ReflectionClass $reflectionClass): void
+    {
+        $setterMethod = 'set' . ucfirst($key);
+        if ($reflectionClass->hasMethod($setterMethod)) {
+            $this->$setterMethod($val);
+        } elseif (is_string($val) && $this->propertyIsInt($reflectionClass, $key)) {
+            // Some database entries have stored integers as string, so let's try to typecast them
+            if ($val === '' && $reflectionClass->getProperty($key)->getType()->allowsNull()) {
+                $this->$key = null;
+            } else {
+                $this->$key = $val;
+            }
+        } else {
+            $this->$key = $val;
+        }
+    }
+
+    /**
      * @throws ConfigurationError
      */
-    protected function setPropertiesFromJSON($data): void
+    protected function setPropertiesFromJSON(null|string|array $data): void
     {
         if (!$data) {
             return;
@@ -57,24 +75,19 @@ trait JsonConfigTrait
             $dataArr = self::decodeJson5($data);
         }
         if ($dataArr === null) {
-            /** @var string|null $data */
+            /** @var string $data */
             throw new ConfigurationError('Invalid JSON string: ' . $data);
         }
 
-        $reflect = new \ReflectionClass(static::class);
-        foreach ($dataArr as $key => $val) {
-            if (property_exists($this, $key)) {
-                if (is_string($val) && $this->propertyIsInt($reflect, $key)) {
-                    // Some database entries have stored integers as string, so let's try to typecast them
-                    if ($val === '' && $reflect->getProperty($key)->getType()->allowsNull()) {
-                        $this->$key = null;
-                    } else {
-                        $this->$key = $val;
-                    }
-                } else {
-                    $this->$key = $val;
+        try {
+            $reflect = new \ReflectionClass(static::class);
+            foreach ($dataArr as $key => $val) {
+                if (property_exists($this, $key)) {
+                    $this->setPropertyFromJson($key, $val, $reflect);
                 }
             }
+        } catch (\ReflectionException $e) {
+            throw new ConfigurationError('Reflection error: ' . $e->getMessage());
         }
     }
 

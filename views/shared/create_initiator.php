@@ -2,8 +2,7 @@
 
 use app\components\Tools;
 use app\models\db\ISupporter;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\InitiatorForm;
+use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, InitiatorForm};
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
@@ -29,7 +28,7 @@ $locale        = Tools::getCurrentDateLocale();
 $selectOrganisations = [];
 if ($controller->consultation->getSettings()->organisations) {
     $sorted = $controller->consultation->getSettings()->organisations;
-    usort($sorted, 'strnatcasecmp');
+    usort($sorted, fn(ConsultationUserOrganisation $orga1, ConsultationUserOrganisation $orga2): int => strnatcasecmp($orga1->name, $orga2->name));
     foreach ($sorted as $name) {
         $selectOrganisations[$name] = $name;
     }

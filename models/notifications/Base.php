@@ -11,8 +11,7 @@ use app\models\exceptions\ServerConfiguration;
 
 abstract class Base
 {
-    /** @var Consultation $consultation */
-    protected $consultation;
+    protected Consultation $consultation;
 
     public function __construct()
     {

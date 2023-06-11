@@ -5,7 +5,6 @@ export class ConsultationSettings {
         this.element = $form[0] as HTMLFormElement;
         this.initUrlPath();
         this.initTags();
-        this.initOrganisations();
         this.initAdminMayEdit();
         this.initSingleMotionMode();
         this.initConPwd();
@@ -54,12 +53,15 @@ export class ConsultationSettings {
 
     private initTags() {
         const $tagList: any = this.$form.find("#tagsList select");
-        $tagList.selectize({create: true, plugins: ["remove_button"]})
-    }
-
-    private initOrganisations() {
-        const $tagList: any = this.$form.find("#organisationList select");
-        $tagList.selectize({create: true, plugins: ["remove_button"]})
+        $tagList.selectize({
+            create: true,
+            plugins: ["remove_button"],
+            render: {
+                option_create: (data, escape) => {
+                    return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                }
+            }
+        });
     }
 
     private initConPwd() {

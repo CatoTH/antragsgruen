@@ -29,6 +29,7 @@ $layout->addVueTemplate('@app/views/shared/selectize.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/users.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/_user_edit.vue.php');
 $layout->addVueTemplate('@app/views/admin/users/_group_edit.vue.php');
+$layout->addVueTemplate('@app/views/admin/users/_organisation_edit.vue.php');
 Layout::registerAdditionalVueUserAdministrationTemplates($consultation, $layout);
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);
@@ -53,36 +54,26 @@ if ($success) {
 
 
 $privileges = \app\models\settings\Privileges::getPrivileges($consultation);
-$nonMotionPrivileges = array_values(array_map(function (Privilege $priv): array {
-    return [
-        'id' => $priv->id,
-        'title' => $priv->name,
-    ];
-}, $privileges->getNonMotionPrivileges()));
-$motionPrivileges = array_values(array_map(function (Privilege $priv): array {
-    return [
-        'id' => $priv->id,
-        'title' => $priv->name,
-    ];
-}, $privileges->getMotionPrivileges()));
-$agendaItems = array_map(function (\app\models\db\ConsultationAgendaItem $item): array {
-    return [
-        'id' => $item->id,
-        'title' => $item->title,
-    ];
-}, $consultation->agendaItems);
-$tags = array_map(function (\app\models\db\ConsultationSettingsTag $tag): array {
-    return [
-        'id' => $tag->id,
-        'title' => $tag->title,
-    ];
-}, $consultation->tags);
-$motionTypes = array_map(function (\app\models\db\ConsultationMotionType $type): array {
-    return [
-        'id' => $type->id,
-        'title' => $type->titlePlural,
-    ];
-}, $consultation->motionTypes);
+$nonMotionPrivileges = array_values(array_map(fn (Privilege $priv): array => [
+    'id' => $priv->id,
+    'title' => $priv->name,
+], $privileges->getNonMotionPrivileges()));
+$motionPrivileges = array_values(array_map(fn (Privilege $priv): array => [
+    'id' => $priv->id,
+    'title' => $priv->name,
+] , $privileges->getMotionPrivileges()));
+$agendaItems = array_map(fn (\app\models\db\ConsultationAgendaItem $item): array => [
+    'id' => $item->id,
+    'title' => $item->title,
+], $consultation->agendaItems);
+$tags = array_map(fn (\app\models\db\ConsultationSettingsTag $tag): array => [
+    'id' => $tag->id,
+    'title' => $tag->title,
+], $consultation->tags);
+$motionTypes = array_map(fn(\app\models\db\ConsultationMotionType $type): array => [
+    'id' => $type->id,
+    'title' => $type->titlePlural,
+], $consultation->motionTypes);
 $privilegeDependencies = $privileges->getPrivilegeDependencies();
 ?>
 
@@ -93,6 +84,7 @@ $privilegeDependencies = $privileges->getPrivilegeDependencies();
      data-url-user-group-log="<?= Html::encode($userGroupLogUrl) ?>"
      data-users="<?= Html::encode(json_encode($widgetData['users'])) ?>"
      data-groups="<?= Html::encode(json_encode($widgetData['groups'])) ?>"
+     data-organisations="<?= Html::encode(json_encode($consultation->getSettings()->organisations)) ?>"
      data-permission-global-edit="<?= $globalUserAdmin ? '1' : '0' ?>"
      data-non-motion-privileges="<?= Html::encode(json_encode($nonMotionPrivileges)) ?>"
      data-motion-privileges="<?= Html::encode(json_encode($motionPrivileges)) ?>"
@@ -107,7 +99,7 @@ $privilegeDependencies = $privileges->getPrivilegeDependencies();
 <?php
 
 
-echo $this->render('_users_add_accounts');
+echo $this->render('_users_add_accounts', ['consultation' => $consultation]);
 if (count($screening) > 0) {
     echo $this->render('_users_screening', ['screening' => $screening]);
 }

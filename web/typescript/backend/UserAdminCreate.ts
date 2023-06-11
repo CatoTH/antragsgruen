@@ -146,6 +146,10 @@ export class UserAdminCreate {
         (this.element.querySelector('input[name=authType]') as HTMLInputElement).value = authType;
         (this.element.querySelector('input[name=authUsername]') as HTMLInputElement).value = authUsername;
 
+        if (this.element.querySelector('#addSelectOrganization')) {
+            this.initOrganisationToUserGroup();
+        }
+
         if (response['exists']) {
             form.querySelectorAll('.showIfNew').forEach(el => {
                 el.classList.add('hidden');
@@ -161,6 +165,48 @@ export class UserAdminCreate {
                 (form.querySelector('input[name=nameGiven]') as HTMLInputElement).focus();
             }, 1);
         }
+    }
+
+    private initOrganisationToUserGroup()
+    {
+        const defaultOrganisations = [];
+        let lastGroupAssignmentWasAutomatical = true;
+        this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
+            if (input.checked) defaultOrganisations.push(parseInt(input.value, 10));
+            input.addEventListener('change', () => lastGroupAssignmentWasAutomatical = false);
+        });
+
+        const $addSelect: any = $("#addSelectOrganization"),
+            orgaList = JSON.parse(this.element.getAttribute('data-organisations')) as object[];
+        $addSelect.selectize({
+            create: true,
+            render: {
+                option_create: (data, escape) => {
+                    return '<div class="create"><strong>' + escape(data.input) + '</strong></div>';
+                }
+            }
+        });
+        $addSelect.on("change", () => {
+            let autoUserGroups = [];
+            orgaList.forEach(orga => {
+                if (orga['name'] === $addSelect.val()) {
+                    autoUserGroups = orga['autoUserGroups'];
+                }
+            });
+
+            // If it's an organisation with groups set, then set those groups.
+            // If no groups are assigned to this organisation, then reset the organisation IF no manual change has been made
+            if (autoUserGroups.length > 0) {
+                this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
+                    input.checked = autoUserGroups.indexOf(parseInt(input.value, 10)) > -1;
+                });
+                lastGroupAssignmentWasAutomatical = true;
+            } else if (lastGroupAssignmentWasAutomatical) {
+                this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
+                    input.checked = defaultOrganisations.indexOf(parseInt(input.value, 10)) > -1;
+                });
+            }
+        });
     }
 
     private initAddSingleShow()

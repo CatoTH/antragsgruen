@@ -7,16 +7,10 @@ use app\models\db\{EMailLog, IComment, User};
 
 class CommentNotificationSubscriptions extends Base implements IEmailUser
 {
-    /** @var User */
-    private $user;
-
-    /** @var IComment */
-    private $comment;
-
-    public function __construct(User $user, IComment $comment)
-    {
-        $this->user         = $user;
-        $this->comment      = $comment;
+    public function __construct(
+        private User $user,
+        private IComment $comment
+    ) {
         $this->consultation = $comment->getConsultation();
 
         parent::__construct();

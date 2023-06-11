@@ -1,8 +1,12 @@
 <script>
-    let selectizeComponent = {
-        template: '<div><select class="form-control" :multiple="multiple" :disabled="disabled"></select></div>',
+    const selectizeComponent = {
+        template: '<div><select class="form-control" :multiple="multiple" :disabled="disabled" :values="values" :create="create"></select></div>',
         props: {
             multiple: {
+                type: Boolean,
+                default: false
+            },
+            create: {
                 type: Boolean,
                 default: false
             },
@@ -36,7 +40,7 @@
                     labelField: 'label',
                     searchField: 'label',
                     options: this.options,
-                    items: this.values
+                    items: this.values,
                 };
                 if (this.loadUrl) {
                     const loadUrl = this.loadUrl;
@@ -49,6 +53,14 @@
                             });
                         }
                     });
+                }
+                if (this.create) {
+                    selectizeOption.create = true;
+                    selectizeOption.render = {
+                        option_create: (data, escape) => {
+                            return '<div class="create"><strong>' + escape(data.input) + '</strong></div>';
+                        }
+                    }
                 }
                 this.selectizeElement = $(this.$el).find("select").selectize(selectizeOption);
 

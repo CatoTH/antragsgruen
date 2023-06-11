@@ -11,19 +11,18 @@ use yii\helpers\Html;
 
 class MotionPublished
 {
-    protected Motion $motion;
     protected Consultation $consultation;
 
-    public function __construct(Motion $motion)
-    {
-        $this->motion       = $motion;
+    public function __construct(
+        protected Motion $motion
+    ) {
         $this->consultation = $motion->getMyConsultation();
 
         $this->notifyInitiators();
     }
 
     /**
-     * Sent to to the initiator of the motion, if this option is enabled by the administrator
+     * Sent to the initiator of the motion, if this option is enabled by the administrator
      * ("Send a confirmation e-mail to the proposer of a motion when it is published")
      *
      * This notification is sent to the contact e-mail-address entered when creating the motion,

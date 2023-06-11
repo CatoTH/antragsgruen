@@ -11,9 +11,7 @@ class AmendmentProposedProcedure
 {
     public static function getPpOpenAcceptToken(Amendment $amendment): string
     {
-        /** @var AntragsgruenApp $app */
-        $app  = \Yii::$app->params;
-        $base = 'getPpOpenAcceptToken' . $app->randomSeed . $amendment->motionId . '-' . $amendment->id;
+        $base = 'getPpOpenAcceptToken' . AntragsgruenApp::getInstance()->randomSeed . $amendment->motionId . '-' . $amendment->id;
 
         /** @noinspection PhpUnhandledExceptionInspection */
         return substr(preg_replace('/[^\w]/siu', '', base64_encode(sodium_crypto_generichash($base))), 0, 20);
@@ -52,17 +50,11 @@ class AmendmentProposedProcedure
     {
         $initiator = $amendment->getInitiators();
 
-        switch ($amendment->proposalStatus) {
-            case Amendment::STATUS_ACCEPTED:
-                $body = \Yii::t('amend', 'proposal_email_accepted');
-                break;
-            case Amendment::STATUS_MODIFIED_ACCEPTED:
-                $body = \Yii::t('amend', 'proposal_email_modified');
-                break;
-            default:
-                $body = \Yii::t('amend', 'proposal_email_other');
-                break;
-        }
+        $body = match ($amendment->proposalStatus) {
+            Amendment::STATUS_ACCEPTED => \Yii::t('amend', 'proposal_email_accepted'),
+            Amendment::STATUS_MODIFIED_ACCEPTED => \Yii::t('amend', 'proposal_email_modified'),
+            default => \Yii::t('amend', 'proposal_email_other'),
+        };
 
         $procedureToken = static::getPpOpenAcceptToken($amendment);
         $amendmentLink  = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'view', ['procedureToken' => $procedureToken]));

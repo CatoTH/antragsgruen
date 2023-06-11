@@ -7,11 +7,9 @@ use app\models\db\Motion;
 
 class MotionWithdrawn extends Base implements IEmailAdmin
 {
-    protected $motion;
-
-    public function __construct(Motion $motion)
-    {
-        $this->motion       = $motion;
+    public function __construct(
+        protected Motion $motion
+    ) {
         $this->consultation = $motion->getMyConsultation();
 
         parent::__construct();

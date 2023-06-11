@@ -280,6 +280,11 @@ export class VotingAdmin {
                     return $.get(loadUrl, {query}).then(res => {
                         cb(res);
                     });
+                },
+                render: {
+                    option_create: (data, escape) => {
+                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                    }
                 }
             });
         }

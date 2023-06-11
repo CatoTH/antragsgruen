@@ -82,6 +82,11 @@ class MotionTypeEdit {
                     return $.get(loadUrl, {query}).then(res => {
                         cb(res);
                     });
+                },
+                render: {
+                    option_create: (data, escape) => {
+                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                    }
                 }
             });
         }
@@ -347,7 +352,15 @@ class MotionTypeEdit {
             $row.find('input').trigger('focus');
 
             const $selecionList: any = $row.find('.selectOptions select');
-            $selecionList.selectize({create: true, plugins: ["remove_button"]});
+            $selecionList.selectize({
+                create: true,
+                plugins: ["remove_button"],
+                render: {
+                    option_create: (data, escape) => {
+                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                    }
+                }
+            });
         });
 
         $list.on('click', '.tabularDataRow .delRow', function (ev) {
@@ -371,7 +384,6 @@ class MotionTypeEdit {
 
         $list.on('change', '.tabularTypeSelect', function () {
             if ($(this).val() == TYPE_TABULAR_SELECT) {
-                console.log("show", $(this).parents("li").first().find(".selectOptions"));
                 $(this).parents("li").first().find(".selectOptions").removeClass('hidden');
             } else {
                 $(this).parents("li").first().find(".selectOptions").addClass('hidden');
@@ -380,7 +392,15 @@ class MotionTypeEdit {
         $list.find(".tabularTypeSelect").trigger("change");
         $list.find('.selectOptions select').each(function () {
             let $selecionList: any = $(this);
-            $selecionList.selectize({create: true, plugins: ["remove_button"]});
+            $selecionList.selectize({
+                create: true,
+                plugins: ["remove_button"],
+                render: {
+                    option_create: (data, escape) => {
+                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                    }
+                }
+            });
         });
     }
 }

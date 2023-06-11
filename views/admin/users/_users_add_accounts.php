@@ -33,6 +33,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
 ?>
 <section id="accountsCreateForm" class="adminForm form-horizontal accountsCreateForm"
          data-antragsgruen-widget="backend/UserAdminCreate"
+         data-organisations="<?= Html::encode(json_encode($consultation->getSettings()->organisations)) ?>"
          aria-labelledby="newUserAdderTitle">
     <h2 class="green" id="newUserAdderTitle"><?= Yii::t('admin', 'siteacc_new_users') ?></h2>
     <div class="content">
@@ -78,12 +79,34 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
                 <input type="text" name="nameFamily" class="form-control" id="addSingleNameFamily">
             </div>
         </div>
-        <div class="stdTwoCols showIfNew">
-            <label for="addSingleOrganization" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_orga') ?>:</label>
-            <div class="rightColumn">
-                <input type="text" name="organization" class="form-control" id="addSingleOrganization">
+        <?php
+        if (count($consultation->getSettings()->organisations) === 0) {
+            ?>
+            <div class="stdTwoCols showIfNew">
+                <label for="addSingleOrganization" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_orga') ?>:</label>
+                <div class="rightColumn">
+                    <input type="text" name="organization" class="form-control" id="addSingleOrganization">
+                </div>
             </div>
-        </div>
+            <?php
+        } else {
+            ?>
+            <div class="stdTwoCols showIfNew">
+                <label for="addSelectOrganization" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_orga') ?>:</label>
+                <div class="rightColumn">
+                    <select name="organization" size="1" id="addSelectOrganization">
+                        <option value=""></option>
+                        <?php
+                        foreach ($consultation->getSettings()->organisations as $organisation) {
+                            echo '<option value="' . Html::encode($organisation->name) . '">' . Html::encode($organisation->name) . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
         <div class="stdTwoCols showIfNew">
             <label for="addUserPassword" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_pass') ?>:</label>
             <div class="rightColumn">
@@ -108,7 +131,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
                     if ($userGroup->templateId === \app\models\db\ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
                         echo ' checked';
                     }
-                    echo ' class="userGroup' . $userGroup->id . '"> ' . Html::encode($userGroup->getNormalizedTitle()) . '</label><br>';
+                    echo ' class="userGroup userGroup' . $userGroup->id . '"> ' . Html::encode($userGroup->getNormalizedTitle()) . '</label><br>';
                 }
                 ?>
             </div>

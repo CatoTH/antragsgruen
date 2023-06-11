@@ -12,18 +12,14 @@ use yii\helpers\Html;
 
 class AmendmentPublished
 {
-    /** @var Amendment */
-    protected $amendment;
-
-    /** @var Consultation */
-    protected $consultation;
+    protected Consultation$consultation;
 
     /** @var string[] */
-    protected $alreadyNotified = [];
+    protected array $alreadyNotified = [];
 
-    public function __construct(Amendment $amendment)
-    {
-        $this->amendment    = $amendment;
+    public function __construct(
+        protected Amendment $amendment
+    ) {
         $this->consultation = $amendment->getMyConsultation();
 
         $this->notifyInitiators();
@@ -32,7 +28,7 @@ class AmendmentPublished
     }
 
     /**
-     * Sent to to the initiator of the amendments, if this option is enabled by the administrator
+     * Sent to the initiator of the amendments, if this option is enabled by the administrator
      * ("Send a confirmation e-mail to the proposer of a motion when it is published")
      *
      * This notification is sent to the contact e-mail-address entered when creating the motion,

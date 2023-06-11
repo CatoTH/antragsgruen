@@ -113,7 +113,6 @@ touch config/INSTALLING
 cp config/.htaccess runtime/
 cp config/.htaccess plugins/
 cp config/.htaccess vendor/
-cp config/.htaccess node_modules/
 sed -i -e 's/repository\-source/dist/g' config/defines.php
 rm config/defines.php-e
 rm phpstan.use-baseline.neon

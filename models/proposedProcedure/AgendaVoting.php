@@ -18,17 +18,15 @@ class AgendaVoting
     public const API_CONTEXT_ADMIN = 'admin';
     public const API_CONTEXT_RESULT = 'result';
 
-    public string $title;
-    public ?VotingBlock $voting;
     public IMotionList $itemIds;
 
     /** @var IVotingItem[] */
     public array $items = [];
 
-    public function __construct(string $title, ?VotingBlock $voting)
-    {
-        $this->title  = $title;
-        $this->voting = $voting;
+    public function __construct(
+        public string $title,
+        public ?VotingBlock $voting
+    ) {
         $this->itemIds = new IMotionList();
     }
 

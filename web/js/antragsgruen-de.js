@@ -2,6 +2,7 @@
 
 ANTRAGSGRUEN_STRINGS = {
     "std": {
+        "add_tag": "Anlegen",
         "del_confirm": "Wirklich löschen?",
         "draft_del": "Entwurf löschen",
         "draft_del_confirm": "Entwurf wirklich löschen?",
