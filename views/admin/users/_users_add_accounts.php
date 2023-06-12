@@ -80,7 +80,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
             </div>
         </div>
         <?php
-        if (count($consultation->getSettings()->organisations) === 0) {
+        if (count($consultation->getSettings()->organisations ?? []) === 0) {
             ?>
             <div class="stdTwoCols showIfNew">
                 <label for="addSingleOrganization" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_orga') ?>:</label>

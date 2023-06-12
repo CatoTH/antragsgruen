@@ -4,8 +4,8 @@
 
 - WARNING: if you are using a PHP 7.4 or older, then update to PHP 8.0 or newer first before installing this update!
 - It is now possible to copy/duplicate a motion within a consultation.
-- When editing a motion or amendment as admin, it is possible to set the status "Obsoleted by another amendment" or te new "Obsoleted by another motion" and specify which motion/amendment that is in a dropdown.
-- When creating a new consultation based on an existing one, it is now possible to choose if motion types and user permissions are to be taken from the existing consultation too, or if to only take the consultation and start from a empy user base.
+- When editing a motion or amendment as admin, it is possible to set the status to "Obsoleted by another amendment" or "Obsoleted by another motion" and specify which one it is in a dropdown.
+- When creating a new consultation based on an existing one, it is now possible to choose if motion types, tags and/or user permissions are to be copied from the existing consultation or not.
 - When a list of organisations is specified in the consultation settings, this list is shown as a drop-down when creating / inviting new users.
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.
