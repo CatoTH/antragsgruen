@@ -29,8 +29,8 @@ $selectOrganisations = [];
 if ($controller->consultation->getSettings()->organisations) {
     $sorted = $controller->consultation->getSettings()->organisations;
     usort($sorted, fn(ConsultationUserOrganisation $orga1, ConsultationUserOrganisation $orga2): int => strnatcasecmp($orga1->name, $orga2->name));
-    foreach ($sorted as $name) {
-        $selectOrganisations[$name] = $name;
+    foreach ($sorted as $orga) {
+        $selectOrganisations[$orga->name] = $orga->name;
     }
 }
 

@@ -1,7 +1,7 @@
 <?php
 
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\components\{Tools, UrlHelper};
+use app\components\{MotionSorter, Tools, UrlHelper};
 use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
@@ -148,8 +148,10 @@ echo '<div class="content form-horizontal">';
                 <?php
                 $options = ['class' => 'stdDropdown', 'id' => 'motionStatusMotion', 'placeholder' => '...'];
                 $items = ['' => '...'];
-                $hasVersions = count(array_filter($consultation->motions, fn(Motion $mot): bool => $mot->version !== Motion::VERSION_DEFAULT)) > 0;
-                foreach (\app\components\MotionSorter::getSortedIMotionsFlat($consultation, $consultation->motions) as $mot) {
+                $motions = $consultation->motions;
+                usort($motions, fn(Motion $motion1, Motion $motion2): int => MotionSorter::getSortedMotionsSort($motion1->titlePrefix, $motion2->titlePrefix));
+                $hasVersions = count(array_filter($motions, fn(Motion $mot): bool => $mot->version !== Motion::VERSION_DEFAULT)) > 0;
+                foreach ($motions as $mot) {
                     $items[$mot->id] = $mot->getTitleWithPrefix();
                     if ($hasVersions) {
                         $items[$mot->id] .= ' (' . Yii::t('motion', 'version') . ' ' . $mot->version . ')';
@@ -162,8 +164,7 @@ echo '<div class="content form-horizontal">';
                 <?php
                 $options = ['class' => 'stdDropdown', 'id' => 'motionStatusAmendment', 'placeholder' => '...'];
                 $items = ['' => '...'];
-                foreach (\app\components\MotionSorter::getSortedIMotionsFlat($consultation, $consultation->motions) as $mot) {
-                    /** @var Motion $mot */
+                foreach ($motions as $mot) {
                     foreach ($mot->amendments as $amend) {
                         $items[$amend->id] = $amend->getTitleWithPrefix();
                     }
