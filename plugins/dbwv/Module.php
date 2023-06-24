@@ -9,7 +9,7 @@ use app\models\AdminTodoItem;
 use app\models\exceptions\{Access, Internal};
 use app\models\http\{HtmlResponse, ResponseInterface};
 use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, User};
-use app\models\settings\{Layout, Privilege, PrivilegeQueryContext};
+use app\models\settings\{Layout, Privilege, PrivilegeQueryContext, Privileges};
 use app\plugins\dbwv\workflow\{Step2, Step5, Workflow};
 use app\plugins\ModuleBase;
 use yii\web\View;
@@ -21,6 +21,8 @@ class Module extends ModuleBase
     public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -102;
 
     public const CONSULTATION_URL_BUND = 'hv';
+    public const GROUP_NAME_DELEGIERTE = 'Delegierte';
+    public const GROUP_NAME_ANTRAGSBERECHTIGT = 'Delegierte';
 
     public static function getProvidedTranslations(): array
     {
@@ -223,5 +225,23 @@ class Module extends ModuleBase
     public static function preferConsultationSpecificHomeLink(): bool
     {
         return true;
+    }
+
+    public static function currentUserCanSeeMotions(): bool
+    {
+        if (!User::getCurrentUser()) {
+            return false;
+        }
+
+        foreach (User::getCurrentUser()->userGroups as $group) {
+            if ($group->getGroupPermissions()->containsPrivilege(Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::anyRestriction())) {
+                return true;
+            }
+            if ($group->title === Module::GROUP_NAME_DELEGIERTE) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

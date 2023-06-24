@@ -1,12 +1,13 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\settings\Layout;
 use yii\helpers\Html;
 
 /**
  * @var \app\models\db\Amendment $amendment
  * @var bool $adminEdit
- * @var \app\models\settings\Layout $layout
+ * @var Layout $layout
  */
 
 $motionType   = $amendment->getMyMotionType();
@@ -102,6 +103,7 @@ $html .= '</ul>';
 
 
 $layout->menusHtml[] = $html;
+$layout->menuSidebarType = Layout::SIDEBAR_TYPE_AMENDMENT;
 
 
 return $sidebarRows;

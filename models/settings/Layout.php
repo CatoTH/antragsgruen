@@ -15,6 +15,10 @@ use yii\web\{AssetBundle, Controller, View};
 
 class Layout
 {
+    public const SIDEBAR_TYPE_CONSULTATION = 0;
+    public const SIDEBAR_TYPE_MOTION = 1;
+    public const SIDEBAR_TYPE_AMENDMENT = 2;
+
     public array $menu = [];
     public array $breadcrumbs = [];
     public array $multimenu = [];
@@ -22,6 +26,7 @@ class Layout
     public string $postSidebarHtml = '';
     public array $menusHtml = [];
     public array $menusHtmlSmall = [];
+    public ?int $menuSidebarType = null;
     public string $menusSmallAttachment = '';
     public bool $robotsNoindex = false;
     public ?string $ogImage = null;

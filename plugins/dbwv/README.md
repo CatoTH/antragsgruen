@@ -1,6 +1,6 @@
 Setup Notes
 
-- Bundesversammlung: URL Path „hv”.
+- Hauptversammlung: URL Path „hv”.
 - Veranstaltungszugang: Nur eingeloggte Benutzer*innen, nur ausgewählten Benutzer*innen das Login erlauben.
 - Antragstellende dürfen Themen selbst angeben: deaktivieren
 - Antragsteller*innen dürfen Anträge nachträglich ändern

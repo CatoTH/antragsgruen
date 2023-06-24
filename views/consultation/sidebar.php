@@ -55,7 +55,7 @@ foreach ($consultation->motionTypes as $type) {
     }
 }
 
-
+$layout->menuSidebarType = \app\models\settings\Layout::SIDEBAR_TYPE_CONSULTATION;
 $layout->menusHtml[] = \app\models\layoutHooks\Layout::getSearchForm();
 
 $showCreate = true;

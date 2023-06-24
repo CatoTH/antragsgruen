@@ -137,7 +137,7 @@ class HTMLTools
     {
         $html = self::correctHtmlErrors($html);
 
-        $html = preg_replace_callback('/href\s*=([\'"]).*\\1/siuU', function ($matches) {
+        $html = preg_replace_callback('/href\s*=([\'"]).*\\1/siuU', function (array $matches): string {
             $part = $matches[0];
             $part = str_replace('%25URL%25', '%URL%', $part);
             $part = str_replace('%25HOME%25', '%HOME%', $part);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
+use app\models\settings\Layout;
 use app\components\{RequestContext, UrlHelper};
 use app\controllers\admin\MotionListController;
 use app\models\layoutHooks\StdHooks;
@@ -136,5 +137,14 @@ class LayoutHooks extends StdHooks
     {
         $translated = Workflow::getStepName($motion->version);
         return $translated ?? $before;
+    }
+
+    public function renderSidebar(string $before): string
+    {
+        if ($this->layout->menuSidebarType === Layout::SIDEBAR_TYPE_CONSULTATION && !Module::currentUserCanSeeMotions()) {
+            return '';
+        } else {
+            return parent::renderSidebar($before);
+        }
     }
 }

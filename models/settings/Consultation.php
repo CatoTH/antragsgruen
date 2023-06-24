@@ -154,7 +154,7 @@ class Consultation implements \JsonSerializable
         ];
     }
 
-    public function getStartLayoutView(): string
+    public function getStartLayoutView(): ?string
     {
         return match ($this->startLayoutType) {
             Consultation::START_LAYOUT_STD => 'index_layout_std',

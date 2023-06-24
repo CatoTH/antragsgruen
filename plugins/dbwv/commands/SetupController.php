@@ -110,8 +110,8 @@ class SetupController extends Controller
 
     private function createLvUserGroups(Consultation $consultation): void
     {
-        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Antragsberechtigte');
-        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Delegierte');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, Module::GROUP_NAME_ANTRAGSBERECHTIGT);
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, Module::GROUP_NAME_DELEGIERTE);
 
         $lvVorstand = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_LV_VORSTAND);
         $lvVorstandPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED . ']}]}';
@@ -151,7 +151,7 @@ class SetupController extends Controller
 
     private function createBundUserGroups(Consultation $consultation): void
     {
-        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Delegierte');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, Module::GROUP_NAME_DELEGIERTE);
 
         $hvBueroleitung = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_V6_BUEROLEITUNG);
         $lvBueroleitungPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_SCREENING . ']}]}';
