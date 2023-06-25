@@ -58,7 +58,7 @@ class LayoutHooks extends StdHooks
 
     public function getMotionViewData(array $motionData, Motion $motion): array
     {
-        if (!Workflow::canAssignTopicV1($motion)) {
+        if (!Workflow::canAssignTopic($motion)) {
             return $motionData;
         }
 

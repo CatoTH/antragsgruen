@@ -20,7 +20,7 @@ class Step1
         if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V2)) {
             return null;
         }
-        if (count($motion->getPublicTopicTags()) === 0 && Workflow::canAssignTopicV1($motion)) {
+        if (count($motion->getPublicTopicTags()) === 0 && Workflow::canAssignTopic($motion)) {
             return new AdminTodoItem(
                 'todoDbwvAssignTopic' . $motion->id,
                 $motion->getTitleWithPrefix(),

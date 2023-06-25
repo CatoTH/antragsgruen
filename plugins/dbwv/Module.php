@@ -16,7 +16,7 @@ use yii\web\View;
 
 class Module extends ModuleBase
 {
-    public const PRIVILEGE_DBWV_V1_ASSIGN_TOPIC = -100;
+    public const PRIVILEGE_DBWV_ASSIGN_TOPIC = -100;
     public const PRIVILEGE_DBWV_V1_EDITORIAL = -101;
     public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -102;
 
@@ -65,8 +65,8 @@ class Module extends ModuleBase
     public static function addCustomPrivileges(Consultation $consultation, array $origPrivileges): array
     {
         $origPrivileges[] = new Privilege(
-            self::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC,
-            'V1: Sachgebiete zuordnen',
+            self::PRIVILEGE_DBWV_ASSIGN_TOPIC,
+            'Sachgebiete zuordnen',
             true,
             null
         );
@@ -154,7 +154,7 @@ class Module extends ModuleBase
     public static function canSeeFullMotionList(Consultation $consultation, User $user): ?bool
     {
         if (
-            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC, PrivilegeQueryContext::anyRestriction()) ||
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_ASSIGN_TOPIC, PrivilegeQueryContext::anyRestriction()) ||
             $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V1_EDITORIAL, PrivilegeQueryContext::anyRestriction()) ||
             $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN, PrivilegeQueryContext::anyRestriction())
         ) {
