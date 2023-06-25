@@ -5,7 +5,7 @@ namespace app\models;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
-use app\components\{Tools, UrlHelper};
+use app\components\{MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComment, User};
 
 class AdminTodoItem
@@ -16,9 +16,10 @@ class AdminTodoItem
     public string $action;
     public string $link;
     public string $description;
+    public ?string $titlePrefix;
     public int $timestamp;
 
-    public function __construct(string $todoId, string $title, string $action, string $link, int $timestamp, ?string $description = null)
+    public function __construct(string $todoId, string $title, string $action, string $link, int $timestamp, string $description, ?string $titlePrefix)
     {
         $this->todoId      = $todoId;
         $this->link        = $link;
@@ -26,6 +27,7 @@ class AdminTodoItem
         $this->action      = $action;
         $this->timestamp   = $timestamp;
         $this->description = $description;
+        $this->titlePrefix = $titlePrefix;
     }
 
     private static array $todoCache = [];
@@ -53,7 +55,8 @@ class AdminTodoItem
                     '',
                     UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $motionType->id]),
                     0,
-                    $description
+                    $description,
+                    null,
                 );
             }
         }
@@ -80,7 +83,8 @@ class AdminTodoItem
                 str_replace('%TYPE%', $motion->getMyMotionType()->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
                 UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $description
+                $description,
+                $motion->titlePrefix,
             );
         }
         return $todo;
@@ -106,7 +110,8 @@ class AdminTodoItem
                 \Yii::t('admin', 'todo_amendment_screen'),
                 UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => $amend->id]),
                 Tools::dateSql2timestamp($amend->dateCreation),
-                $description
+                $description,
+                $amend->titlePrefix,
             );
         }
         return $todo;
@@ -132,7 +137,8 @@ class AdminTodoItem
                 \Yii::t('admin', 'todo_comment_screen'),
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
-                $description
+                $description,
+                $comment->getIMotion()->titlePrefix,
             );
         }
         return $todo;
@@ -158,7 +164,8 @@ class AdminTodoItem
                 \Yii::t('admin', 'todo_comment_screen'),
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
-                $description
+                $description,
+                $comment->getIMotion()->titlePrefix,
             );
         }
         return $todo;
@@ -197,9 +204,16 @@ class AdminTodoItem
         }
 
         $todo = self::getUnsortedItems($consultation);
-
-        usort($todo, function (AdminTodoItem $todo1, AdminTodoItem $todo2) {
-            return $todo1->timestamp <=> $todo2->timestamp;
+        usort($todo, function (AdminTodoItem $todo1, AdminTodoItem $todo2): int {
+            if ($todo1->titlePrefix === $todo2->titlePrefix) {
+                return $todo1->timestamp <=> $todo2->timestamp;
+            } elseif ($todo1->titlePrefix === null) {
+                return -1;
+            } elseif ($todo2->titlePrefix === null) {
+                return 1;
+            } else {
+                return MotionSorter::getSortedMotionsSort($todo1->titlePrefix, $todo2->titlePrefix);
+            }
         });
 
         self::$todoCache[$consultation->id] = $todo;

@@ -32,7 +32,8 @@ class Step4
                 'In die Hauptversammlung übernehmen',
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $motion->getInitiatorsStr()
+                $motion->getInitiatorsStr(),
+                $motion->titlePrefix,
             );
         }
 
