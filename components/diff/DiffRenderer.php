@@ -499,7 +499,7 @@ class DiffRenderer
             'data-changedata'       => '',
             'data-time'             => $time,
             'data-last-change-time' => $time,
-            'data-append-hint'      => '[' . $amendment->titlePrefix . ']',
+            'data-append-hint'      => '[' . $amendment->getFormattedTitlePrefix() . ']',
             'data-link'             => UrlHelper::createAmendmentUrl($amendment),
             'data-amendment-id'     => $amendment->id,
         ];

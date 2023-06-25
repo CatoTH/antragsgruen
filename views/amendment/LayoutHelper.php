@@ -38,7 +38,7 @@ class LayoutHelper
             if ($referenceAmendment->id === $amendment->id) {
                 $prefix = \Yii::t('amend', 'pprocedure_title_own');
             } else {
-                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->titlePrefix;
+                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->getFormattedTitlePrefix();
             }
             if (!$amendment->isProposalPublic()) {
                 $prefix = '[ADMIN] ' . $prefix;
@@ -62,13 +62,13 @@ class LayoutHelper
         $content->title      = $amendment->getMyMotion()->getTitleWithIntro();
         $content->lineLength = $amendment->getMyConsultation()->getSettings()->lineLength;
         $content->logoData   = $amendment->getMyConsultation()->getPdfLogoData();
-        if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->titlePrefix !== '') {
-            $content->titlePrefix = $amendment->titlePrefix;
+        if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->getFormattedTitlePrefix() !== '') {
+            $content->titlePrefix = $amendment->getFormattedTitlePrefix();
         }
-        $content->titleLong       = $amendment->titlePrefix . ' - ';
+        $content->titleLong       = $amendment->getFormattedTitlePrefix() . ' - ';
         $content->titleLong       .= str_replace(
             '%PREFIX%',
-            $amendment->getMyMotion()->titlePrefix,
+            $amendment->getMyMotion()->getFormattedTitlePrefix(),
             \Yii::t('amend', 'amendment_for_prefix')
         );
         $content->publicationDate = Tools::formatMysqlDate($amendment->datePublication);

@@ -36,14 +36,32 @@ class MotionNumbering
         }
     }
 
-    public static function getHistoryRootMotion(Motion $motion, array $alreadySeenIds = []): Motion
+    /**
+     * @return Motion[]
+     */
+    public static function getHistoryRootMotion(Motion $motion, bool $includeObsoletedByMotions, array $alreadySeenIds = []): array
     {
-        if ($motion->parentMotionId && $motion->replacedMotion && !in_array($motion->id, $alreadySeenIds, true)) {
-            $alreadySeenIds[] = $motion->id;
-            return self::getHistoryRootMotion($motion->replacedMotion, $alreadySeenIds);
+        $roots = [];
+
+        if ($motion->parentMotionId && $motion->replacedMotion) {
+            if (!in_array($motion->replacedMotion->id, $alreadySeenIds)) {
+                $alreadySeenIds[] = $motion->replacedMotion->id;
+                $roots = array_merge($roots, self::getHistoryRootMotion($motion->replacedMotion, $includeObsoletedByMotions, $alreadySeenIds));
+            }
         } else {
-            return $motion;
+            // Hint: this motion is considered a root motion even if below there is another motion found that is obsoleted by this motion
+            $roots[] = $motion;
         }
+
+        // Add the root motions of those motions that have been obsoleted by the current motion
+        foreach (Motion::getObsoletedByMotions($motion) as $obsoletedMotion) {
+            if (!in_array($obsoletedMotion->id, $alreadySeenIds)) {
+                $alreadySeenIds[] = $obsoletedMotion->id;
+                $roots = array_merge($roots, self::getHistoryRootMotion($obsoletedMotion, $includeObsoletedByMotions, $alreadySeenIds));
+            }
+        }
+
+        return $roots;
     }
 
     /**
@@ -65,12 +83,29 @@ class MotionNumbering
     }
 
     /**
+     * @param Motion[] $rootMotions
+     *
      * @return Motion[]
      */
-    public static function getSortedHistoryForMotion(Motion $motion, bool $onlyVisible): array
+    public static function getHistoryFromRoots(array $rootMotions): array
     {
-        $root = self::getHistoryRootMotion($motion);
-        $history = self::getHistoryFromRoot($root);
+        $alreadySeenIds = [];
+        $motions = [];
+        foreach ($rootMotions as $rootMotion) {
+            $alreadySeenIds[] = $rootMotion->id;
+            $motions = array_merge($motions, self::getHistoryFromRoot($rootMotion, $alreadySeenIds));
+        }
+
+        return $motions;
+    }
+
+    /**
+     * @return Motion[]
+     */
+    public static function getSortedHistoryForMotion(Motion $motion, bool $onlyVisible, bool $includeObsoletedByMotions = false): array
+    {
+        $roots = self::getHistoryRootMotion($motion, $includeObsoletedByMotions, []);
+        $history = self::getHistoryFromRoots($roots);
 
         if ($onlyVisible) {
             $invisibleStatuses = $motion->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses();

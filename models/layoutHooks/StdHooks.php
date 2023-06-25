@@ -173,7 +173,7 @@ class StdHooks extends Hooks
                 if ($amend->globalAlternative) {
                     $before .= '<strong>' . \Yii::t('amend', 'global_alternative') . ':</strong> ';
                 }
-                $aename = $amend->titlePrefix;
+                $aename = $amend->getFormattedTitlePrefix(Layout::CONTEXT_MOTION_LIST);
                 if ($aename === '') {
                     $aename = $amend->id;
                 }

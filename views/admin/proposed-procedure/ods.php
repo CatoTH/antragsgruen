@@ -119,7 +119,7 @@ $doc->drawBorder(9, $firstCol, 9, $lastCol, 0.5);
 $printAmendment = function (Spreadsheet $doc, \app\models\db\Amendment $amendment, $row)
 use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $formatComments, $onlyPublic) {
     $cellStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '10pt', 'fo:font-weight' => 'normal'];
-    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->getFormattedTitlePrefix());
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $amendment->getInitiatorsStr());
     $doc->setCellStyle($row, $COL_PREFIX, [], $cellStyle);
     $doc->setCellStyle($row, $COL_INITIATOR, [], $cellStyle);
@@ -171,7 +171,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
 $printMotion = function (Spreadsheet $doc, \app\models\db\Motion $motion, $row)
 use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $formatComments, $onlyPublic) {
     $cellStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '10pt', 'fo:font-weight' => 'normal'];
-    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->getFormattedTitlePrefix());
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $motion->getInitiatorsStr());
     $doc->setCellStyle($row, $COL_PREFIX, [], $cellStyle);
     $doc->setCellStyle($row, $COL_INITIATOR, [], $cellStyle);

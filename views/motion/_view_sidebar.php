@@ -114,6 +114,7 @@ $html .= '</ul>';
 
 if ($sidebarRows > 0) {
     $layout->menusHtml[] = $html;
+    $layout->menuSidebarType = Layout::SIDEBAR_TYPE_MOTION;
 }
 
 

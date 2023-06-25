@@ -95,7 +95,7 @@ class LayoutHelper
             if ($referenceMotion->id === $motion->id) {
                 $prefix = \Yii::t('amend', 'pprocedure_title_own');
             } else {
-                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceMotion->titlePrefix;
+                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceMotion->getFormattedTitlePrefix();
             }
             if (!$motion->isProposalPublic()) {
                 $prefix = '[ADMIN] ' . $prefix;
@@ -229,7 +229,7 @@ class LayoutHelper
             $content->title       = $motion->getTitleWithIntro();
         } else {
             $content->titleRaw    = $motion->title;
-            $content->titlePrefix = $motion->titlePrefix;
+            $content->titlePrefix = $motion->getFormattedTitlePrefix();
             $content->titleLong   = $motion->getTitleWithPrefix();
             $content->title       = $motion->getTitleWithIntro();
         }
@@ -779,7 +779,8 @@ class LayoutHelper
         $pdf->Ln(5);
         $amendmentsHtml = '<table border="1" cellpadding="5"><tr><td><h2>' . \Yii::t('export', 'amendments') . '</h2>';
         foreach ($form->motion->getVisibleAmendments(false, false) as $amendment) {
-            $amendmentsHtml .= '<div><strong>' . Html::encode($amendment->titlePrefix) . '</strong>: ' . Html::encode($amendment->getInitiatorsStr()) . '</div>';
+            $amendmentsHtml .= '<div><strong>' . Html::encode($amendment->getFormattedTitlePrefix()) . '</strong>: ' .
+                               Html::encode($amendment->getInitiatorsStr()) . '</div>';
         }
         if (count($form->motion->getVisibleAmendments(false, false)) === 0) {
             $amendmentsHtml .= '<em>' . \Yii::t('export', 'amendments_none') . '</em>';

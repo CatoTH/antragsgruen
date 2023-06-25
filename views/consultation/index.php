@@ -141,7 +141,7 @@ if ($consultation->getSettings()->hasSpeechLists) {
 echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
 
 
-if (count($consultation->motionTypes) > 0) {
+if (count($consultation->motionTypes) > 0 && $consultation->getSettings()->getStartLayoutView()) {
     echo $this->render($consultation->getSettings()->getStartLayoutView(), [
         'consultation' => $consultation,
         'layout' => $layout,

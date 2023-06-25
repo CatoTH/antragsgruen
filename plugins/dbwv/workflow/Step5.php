@@ -21,11 +21,12 @@ class Step5
         if (Workflow::canSetRecommendationV5($motion)) {
             return new AdminTodoItem(
                 'todoDbwvSetPp' . $motion->id,
-                $motion->title,
+                $motion->getTitleWithPrefix(),
                 'Verfahrensvorschlag erarbeiten',
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $motion->getInitiatorsStr()
+                $motion->getInitiatorsStr(),
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

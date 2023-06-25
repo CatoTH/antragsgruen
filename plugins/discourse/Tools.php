@@ -108,7 +108,7 @@ class Tools
     {
         $categoryId = static::getDiscourseCategory($amendment->getMyConsultation());
         $title = str_replace(['%TITLE%', '%LINE%'], [
-            $amendment->getMyMotion()->titlePrefix,
+            $amendment->getMyMotion()->getFormattedTitlePrefix(),
             $amendment->getFirstDiffLine()
         ], \Yii::t('discourse', 'title_amend'));
 

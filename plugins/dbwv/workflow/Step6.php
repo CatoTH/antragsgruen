@@ -33,17 +33,19 @@ class Step6
                 str_replace('%TYPE%', $motion->getMyMotionType()->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
                 UrlHelper::createUrl(['/admin/motion-list/index']),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $description
+                $description,
+                $motion->getFormattedTitlePrefix(),
             );
         }
         if (Workflow::canSetResolutionV6($motion) && $motion->proposalVisibleFrom !== null) {
             return new AdminTodoItem(
                 'todoDbwvSetPp' . $motion->id,
-                $motion->title,
+                $motion->getTitleWithPrefix(),
                 'Beschluss erarbeiten',
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $motion->getInitiatorsStr()
+                $motion->getInitiatorsStr(),
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

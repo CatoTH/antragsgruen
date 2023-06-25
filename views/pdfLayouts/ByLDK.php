@@ -24,7 +24,7 @@ class ByLDK extends IPDFLayout
         }
 
         if (!$settings->hideTitlePrefix) {
-            $revName = $motion->titlePrefix;
+            $revName = $motion->getFormattedTitlePrefix();
             if (grapheme_strlen($revName) > 25) {
                 $revName = grapheme_substr($revName, 0, 24) . '…';
             }
@@ -136,7 +136,7 @@ class ByLDK extends IPDFLayout
         }
 
         if (!$settings->hideTitlePrefix) {
-            $revName = $amendment->titlePrefix;
+            $revName = $amendment->getFormattedTitlePrefix();
             if ($revName === '') {
                 $revName = \Yii::t('export', 'draft');
                 $pdf->SetFont('helvetica', 'I', 25);

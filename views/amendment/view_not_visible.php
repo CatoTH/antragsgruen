@@ -20,8 +20,8 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
 } else {
     $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
     $layout->addBreadcrumb($amendment->getMyMotion()->motionType->titleSingular, $motionUrl);
-    if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix !== '') {
-        $layout->addBreadcrumb($amendment->titlePrefix);
+    if (!$consultation->getSettings()->hideTitlePrefix && $amendment->getFormattedTitlePrefix() !== '') {
+        $layout->addBreadcrumb($amendment->getFormattedTitlePrefix());
     } else {
         $layout->addBreadcrumb(Yii::t('amend', 'amendment'));
     }

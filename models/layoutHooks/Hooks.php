@@ -2,30 +2,17 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment,
-    Consultation,
-    ConsultationMotionType,
-    ConsultationText,
-    ISupporter,
-    IVotingItem,
-    Motion,
-    MotionSection,
-    Site,
-    User};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, IMotion, ISupporter, IVotingItem, Motion, MotionSection, Site, User};
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\settings\{VotingData, Layout as LayoutSettings};
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class Hooks
 {
-    protected LayoutSettings $layout;
-    protected ?Consultation $consultation;
-
-    public function __construct(LayoutSettings $layout, ?Consultation $consultation)
-    {
-        $this->layout = $layout;
-        $this->consultation = $consultation;
-    }
+    public function __construct(
+        protected LayoutSettings $layout,
+        protected ?Consultation $consultation
+    ) {}
 
     public function beforePage(string $before): string
     {
@@ -161,6 +148,11 @@ class Hooks
     }
 
     public function getFormattedMotionVersion(string $before, Motion $motion): string
+    {
+        return $before;
+    }
+
+    public function getFormattedTitlePrefix(?string $before, IMotion $imotion, ?int $context): ?string
     {
         return $before;
     }

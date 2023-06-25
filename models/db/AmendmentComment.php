@@ -163,7 +163,7 @@ class AmendmentComment extends IComment
     public function getMotionTitle(): string
     {
         $amendment = $this->getIMotion();
-        return $amendment->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') . ' ' . $amendment->getMyMotion()->getTitleWithPrefix();
+        return $amendment->getFormattedTitlePrefix() . ' ' . \Yii::t('amend', 'amend_for_motion') . ' ' . $amendment->getMyMotion()->getTitleWithPrefix();
     }
 
     public function addToFeed(RSSExporter $feed): void

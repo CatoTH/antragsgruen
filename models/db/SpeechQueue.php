@@ -104,7 +104,7 @@ class SpeechQueue extends ActiveRecord
         if ($this->motionId && $consultation->getMotion($this->motionId)) {
             $motion = $consultation->getMotion($this->motionId);
 
-            return str_replace('%TITLE%', $motion->titlePrefix, \Yii::t('speech', 'title_to'));
+            return str_replace('%TITLE%', $motion->getFormattedTitlePrefix(), \Yii::t('speech', 'title_to'));
         } elseif ($this->agendaItemId && $consultation->getAgendaItem($this->agendaItemId)) {
             $item = $consultation->getAgendaItem($this->agendaItemId);
             $title = $item->getShownCode(true) . ' ' . $item->title;
@@ -121,7 +121,7 @@ class SpeechQueue extends ActiveRecord
         if ($this->motionId && $consultation->getMotion($this->motionId)) {
             $motion = $consultation->getMotion($this->motionId);
 
-            return str_replace('%TITLE%', $motion->titlePrefix, \Yii::t('speech', 'footer_title_to'));
+            return str_replace('%TITLE%', $motion->getFormattedTitlePrefix(), \Yii::t('speech', 'footer_title_to'));
         } elseif ($this->agendaItemId && $consultation->getAgendaItem($this->agendaItemId)) {
             $item = $consultation->getAgendaItem($this->agendaItemId);
 

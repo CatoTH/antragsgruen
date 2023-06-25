@@ -29,8 +29,8 @@ class LayoutHelper
         $return    .= '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
 
         $return .= '<span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>';
-        if (!$consultation->getSettings()->hideTitlePrefix && trim($motion->titlePrefix) !== '') {
-            $return .= '<span class="motionPrefix">' . Html::encode($motion->titlePrefix) . '</span>';
+        if (!$consultation->getSettings()->hideTitlePrefix && trim($motion->getFormattedTitlePrefix()) !== '') {
+            $return .= '<span class="motionPrefix">' . Html::encode($motion->getFormattedTitlePrefix()) . '</span>';
         }
 
         $title  = (trim($motion->title) === '' ? '-' : $motion->title);
@@ -68,7 +68,7 @@ class LayoutHelper
         }
         if ($motion->parentMotionId && $motion->replacedMotion && $motion->replacedMotion->status === Motion::STATUS_MOVED) {
             $statusName = \Yii::t('motion', 'moved_from') . ': ';
-            $statusName .= Html::a(Html::encode($motion->replacedMotion->titlePrefix), UrlHelper::createMotionUrl($motion->replacedMotion));
+            $statusName .= Html::a(Html::encode($motion->replacedMotion->getFormattedTitlePrefix()), UrlHelper::createMotionUrl($motion->replacedMotion));
             $return     .= ' <span class="status">(' . $statusName . ')</span>';
         }
         $return .= '</p>';
@@ -84,7 +84,7 @@ class LayoutHelper
         $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
         $return .= LayoutHelper::getPrivateCommentIndicator($amendment, [], $privateAmendmentComments);
 
-        $title  = (trim($amendment->titlePrefix) === '' ? \Yii::t('amend', 'amendment') : $amendment->titlePrefix);
+        $title  = (trim($amendment->getFormattedTitlePrefix()) === '' ? \Yii::t('amend', 'amendment') : $amendment->getFormattedTitlePrefix());
         $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
                    'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
 
@@ -119,8 +119,8 @@ class LayoutHelper
         $return    .= '<a href="' . Html::encode($amendmentUrl) . '" class="amendmentLink' . $amendment->id . '">';
 
         $return .= '<span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>';
-        if (!$consultation->getSettings()->hideTitlePrefix && trim($amendment->titlePrefix) !== '') {
-            $return .= '<span class="motionPrefix">' . Html::encode($amendment->titlePrefix) . '</span>';
+        if (!$consultation->getSettings()->hideTitlePrefix && trim($amendment->getFormattedTitlePrefix()) !== '') {
+            $return .= '<span class="motionPrefix">' . Html::encode($amendment->getFormattedTitlePrefix()) . '</span>';
         }
 
         $title  = (trim($amendment->getMyMotion()->title) === '' ? '-' : $amendment->getMyMotion()->title);
@@ -156,7 +156,7 @@ class LayoutHelper
         $statusName = \Yii::t('motion', 'moved_to');
         $movedTos   = [];
         foreach ($motion->getVisibleReplacedByMotions() as $newMotion) {
-            $movedTos[] = Html::a(Html::encode($newMotion->titlePrefix), UrlHelper::createMotionUrl($newMotion));
+            $movedTos[] = Html::a(Html::encode($newMotion->getFormattedTitlePrefix()), UrlHelper::createMotionUrl($newMotion));
         }
         if (count($movedTos) > 0) {
             $statusName .= ': ' . implode(', ', $movedTos);
@@ -466,8 +466,8 @@ class LayoutHelper
     }
 
     /**
-     * @param MotionComment[] $motionComments
-     * @param AmendmentComment[] $amendmentComments
+     * @param MotionComment[][] $motionComments
+     * @param AmendmentComment[][] $amendmentComments
      */
     public static function getPrivateCommentIndicator(IMotion $imotion, array $motionComments, array $amendmentComments): string
     {

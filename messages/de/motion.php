@@ -171,7 +171,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'err_withdraw_permission'            => 'Dieser Antrag kann nicht zurückgezogen werden.',
     'err_not_found'                      => 'Antrag nicht gefunden.',
     'err_not_visible_title'              => 'Nicht sichtbar',
-    'err_not_visible'                    => 'Dies ist kein regulär anzeigbarer Antrag.',
+    'err_not_visible'                    => 'Dieser Antrag kann nicht angezeigt werden.',
     'err_draft_not_found'                => 'Es gibt keinen Bearbeitungs-Zwischenstand.',
     'err_user_not_found'                 => 'Benutzer*in nicht gefunden',
     'err_no_pdf'                         => 'Die PDF-Anzeige wurde deaktiviert.',

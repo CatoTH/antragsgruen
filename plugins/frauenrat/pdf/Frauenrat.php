@@ -129,7 +129,7 @@ class Frauenrat extends IPDFLayout
         $left           = 23.5;
 
         $title1 = $amendment->getMyMotion()->getTitleWithPrefix();
-        $title2 = \Yii::t('amend', 'amendment') . ' ' . $amendment->titlePrefix;
+        $title2 = \Yii::t('amend', 'amendment') . ' ' . $amendment->getFormattedTitlePrefix();
         $this->printHeader($pdf, $amendment->getMyConsultation(), $amendment->getMyMotionType(), $title1, $title2);
 
         $initiatorName = null;

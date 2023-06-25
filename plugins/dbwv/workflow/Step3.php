@@ -22,21 +22,23 @@ class Step3
         if (Workflow::canSetRecommendationV2($motion) && $motion->proposalVisibleFrom === null) {
             return new AdminTodoItem(
                 'todoDbwvSetPp' . $motion->id,
-                $motion->title,
+                $motion->getTitleWithPrefix(),
                 'Verfahrensvorschlag veröffentlichen',
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $motion->getInitiatorsStr()
+                $motion->getInitiatorsStr(),
+                $motion->getFormattedTitlePrefix(),
             );
         }
         if (Workflow::canSetResolutionV3($motion) && $motion->proposalVisibleFrom !== null) {
             return new AdminTodoItem(
                 'todoDbwvSetPp' . $motion->id,
-                $motion->title,
+                $motion->getTitleWithPrefix(),
                 'Beschluss erarbeiten',
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $motion->getInitiatorsStr()
+                $motion->getInitiatorsStr(),
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

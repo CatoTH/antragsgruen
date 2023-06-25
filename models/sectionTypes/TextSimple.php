@@ -691,7 +691,7 @@ class TextSimple extends Text
                 $title = Exporter::encodePlainString($this->getTitle());
                 if ($title == \Yii::t('motion', 'motion_text')) {
                     $titPattern = \Yii::t('amend', 'amendment_for_prefix');
-                    $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
+                    $title      = str_replace('%PREFIX%', $section->getMotion()->getFormattedTitlePrefix(), $titPattern);
                 }
 
                 $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
@@ -707,7 +707,7 @@ class TextSimple extends Text
                     $title = Exporter::encodePlainString($this->getTitle());
                     if ($title == \Yii::t('motion', 'motion_text')) {
                         $titPattern = \Yii::t('amend', 'amendment_for_prefix');
-                        $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
+                        $title      = str_replace('%PREFIX%', $section->getMotion()->getFormattedTitlePrefix(), $titPattern);
                     }
 
                     $tex  .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";

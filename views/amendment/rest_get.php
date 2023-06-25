@@ -32,7 +32,7 @@ if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
                 if ($referenceAmendment->id === $amendment->id) {
                     $prefix = Yii::t('amend', 'pprocedure_title_own');
                 } else {
-                    $prefix = Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->titlePrefix;
+                    $prefix = Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->getFormattedTitlePrefix();
                 }
                 if ($section->getSectionType()->isEmpty()) {
                     continue;

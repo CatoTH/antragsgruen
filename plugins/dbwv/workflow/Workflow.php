@@ -55,10 +55,10 @@ class Workflow
         }
     }
 
-    public static function canAssignTopicV1(Motion $motion): bool
+    public static function canAssignTopic(Motion $motion): bool
     {
         return $motion->getMyConsultation()->havePrivilege(
-            Module::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC,
+            Module::PRIVILEGE_DBWV_ASSIGN_TOPIC,
             PrivilegeQueryContext::motion($motion)
         );
     }

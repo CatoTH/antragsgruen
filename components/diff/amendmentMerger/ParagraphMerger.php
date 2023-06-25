@@ -637,12 +637,12 @@ class ParagraphMerger
                     '</button>';
             $out .= '<p class="collidingParagraphHead"><strong>' .
                     \Yii::t('amend', 'merge_colliding') . ': ' .
-                    Html::a(Html::encode($amendment->titlePrefix), $amendmentUrl) .
+                    Html::a(Html::encode($amendment->getFormattedTitlePrefix()), $amendmentUrl) .
                     '</strong></p>';
             $out .= '<div class="alert alert-danger"><p>' . \Yii::t('amend', 'merge_colliding_hint') . '</p></div>';
         } else {
             $out .= '<p class="collidingParagraphHead"><strong>' .
-                    \Yii::t('amend', 'merge_colliding') . ': ' . Html::encode($amendment->titlePrefix) .
+                    \Yii::t('amend', 'merge_colliding') . ': ' . Html::encode($amendment->getFormattedTitlePrefix()) .
                     '</strong></p>';
         }
         $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\controllers;
 
+use app\components\MotionNumbering;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\ConsultationSettingsTag;
@@ -19,7 +20,7 @@ class AdminWorkflowController extends Base
         if (!$motion) {
             return new HtmlErrorResponse(404,  'Motion not found');
         }
-        if (!Workflow::canAssignTopicV1($motion)) {
+        if (!Workflow::canAssignTopic($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
         }
 
@@ -28,7 +29,9 @@ class AdminWorkflowController extends Base
             throw new NotFound('Tag not found');
         }
 
-        $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
+        foreach (MotionNumbering::getSortedHistoryForMotion($motion, false, true) as $motionIterator) {
+            $motionIterator->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
+        }
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 

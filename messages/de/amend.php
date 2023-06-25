@@ -211,7 +211,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'err_withdraw_forbidden'          => 'Not allowed to withdraw this motion.',
     'err_edit_forbidden'              => 'Not allowed to edit this motion.',
     'err_not_visible_title'           => 'Nicht sichtbar',
-    'err_not_visible'                 => 'Dies ist kein regulär anzeigbarer Änderungsantrag.',
+    'err_not_visible'                 => 'Dieser Änderungsantrag kann nicht angezeigt werden.',
     'withdraw_done'                   => 'Der Änderungsantrag wurde zurückgezogen.',
     'withdraw_bread'                  => 'Zurückziehen',
     'withdraw'                        => 'Zurückziehen',

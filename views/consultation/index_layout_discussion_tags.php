@@ -148,7 +148,7 @@ if (count($comments) > 0) {
                 echo '<li class="' . implode(' ', $cssClasses) . '" ' .
                      'data-created="' . $motion->getTimestamp() . '" ' .
                      'data-title="' . Html::encode($motion->title) . '" ' .
-                     'data-title-prefix="' . Html::encode($motion->titlePrefix) . '" ' .
+                     'data-title-prefix="' . Html::encode($motion->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION_LIST)) . '" ' .
                      'data-num-comments="' . $commentCount . '" ' .
                      'data-num-amendments="' . $amendmentCount . '">';
                 echo '<p class="stats">';

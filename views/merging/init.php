@@ -120,7 +120,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                         );
                         echo '</td><td class="colTitle">';
                         echo '<label for="' . $id . '">';
-                        echo Html::a(Html::encode($amend->titlePrefix), $amend->getLink());
+                        echo Html::a(Html::encode($amend->getFormattedTitlePrefix()), $amend->getLink());
                         echo '</label>';
                         if ($amend->globalAlternative) {
                             echo ' <small>(' . Yii::t('amend', 'global_alternative') . ')</small>';

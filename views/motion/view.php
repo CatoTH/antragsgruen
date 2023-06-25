@@ -176,7 +176,7 @@ if ($hasPpAdminbox || $hasSpeechLists) {
         ?>
         <a href="<?= Html::encode(UrlHelper::createMotionUrl($motion, 'admin-speech')) ?>" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            <?= str_replace('%TITLE%', $motion->titlePrefix, Yii::t('speech', 'admin_title_to')) ?>
+            <?= str_replace('%TITLE%', $motion->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to')) ?>
         </a>
         <?php
     }

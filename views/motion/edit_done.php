@@ -17,8 +17,8 @@ $this->title = Yii::t('motion', 'edit_done');
 
 $motionType = $motion->getMyMotionType();
 $layout->robotsNoindex = true;
-if ($motion->titlePrefix) {
-    $layout->addBreadcrumb($motion->titlePrefix, UrlHelper::createMotionUrl($motion));
+if ($motion->getFormattedTitlePrefix()) {
+    $layout->addBreadcrumb($motion->getFormattedTitlePrefix(), UrlHelper::createMotionUrl($motion));
 } else {
     $layout->addBreadcrumb($motionType->titleSingular, UrlHelper::createMotionUrl($motion));
 }

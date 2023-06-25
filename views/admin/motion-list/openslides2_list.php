@@ -15,7 +15,7 @@ $consultation = $controller->consultation;
 $data = [];
 foreach ($motions as $motion) {
     $motionData   = [];
-    $motionData[] = $motion->titlePrefix; // Identifier
+    $motionData[] = $motion->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION_LIST); // Identifier
     $motionData[] = $motion->title; // Title
     $text         = '';
     $reason       = '';

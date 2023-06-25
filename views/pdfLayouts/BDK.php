@@ -64,7 +64,7 @@ class BDK extends IPDFLayout
         $pdf->startPageGroup();
         $pdf->AddPage();
 
-        $pdf->setMotionTitle($motion->titlePrefix, $motion->title);
+        $pdf->setMotionTitle($motion->getFormattedTitlePrefix(), $motion->title);
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
 
@@ -74,7 +74,7 @@ class BDK extends IPDFLayout
         }
 
         $motionData = '<span style="font-size: 20px; font-weight: bold">';
-        $motionData .= Html::encode($motion->titlePrefix) . ' </span>';
+        $motionData .= Html::encode($motion->getFormattedTitlePrefix()) . ' </span>';
         $motionData .= '<span style="font-size: 16px; font-weight: bold;">';
         $motionData .= Html::encode($motion->title) . '</span>';
         $motionData .= '<br><br>';
@@ -100,7 +100,7 @@ class BDK extends IPDFLayout
         $pdf->startPageGroup();
         $pdf->AddPage();
 
-        $pdf->setMotionTitle($amendment->titlePrefix, '');
+        $pdf->setMotionTitle($amendment->getFormattedTitlePrefix(), '');
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
 

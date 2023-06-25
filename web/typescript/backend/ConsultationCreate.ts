@@ -24,12 +24,13 @@ export class ConsultationCreate {
 
     private static settingsTypeChanged(): void {
         if ((document.getElementById('settingsTypeWizard') as HTMLInputElement).checked) {
+            console.log("checked");
             document.querySelector('.settingsTypeWizard').classList.remove('hidden');
-            document.querySelector('.settingsTypeTemplate').classList.add('hidden');
+            document.querySelectorAll('.settingsTypeTemplate').forEach(el => el.classList.add('hidden'));
             document.querySelector('.templateSubselect').classList.add('hidden');
         } else {
             document.querySelector('.settingsTypeWizard').classList.add('hidden');
-            document.querySelector('.settingsTypeTemplate').classList.remove('hidden');
+            document.querySelectorAll('.settingsTypeTemplate').forEach(el => el.classList.remove('hidden'));
             document.querySelector('.templateSubselect').classList.remove('hidden');
         }
     }

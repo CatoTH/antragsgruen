@@ -98,7 +98,7 @@ class SetupController extends Controller
     private function createGlobalUserGroups(Consultation $consultation): void
     {
         $alRecht = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_AL_RECHT);
-        $alRechtPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Module::PRIVILEGE_DBWV_V1_ASSIGN_TOPIC . ']}]}';
+        $alRechtPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Module::PRIVILEGE_DBWV_ASSIGN_TOPIC . ']}]}';
         $alRecht->setGroupPermissions(UserGroupPermissions::fromDatabaseString($alRechtPrivileges, false));
         $alRecht->save();
 
@@ -110,8 +110,8 @@ class SetupController extends Controller
 
     private function createLvUserGroups(Consultation $consultation): void
     {
-        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Antragsberechtigte');
-        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Delegierte');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, Module::GROUP_NAME_ANTRAGSBERECHTIGT);
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, Module::GROUP_NAME_DELEGIERTE);
 
         $lvVorstand = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_LV_VORSTAND);
         $lvVorstandPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED . ']}]}';
@@ -128,7 +128,10 @@ class SetupController extends Controller
             $groupName = str_replace(' / ', ' ', $groupName);
             $tag = $this->findExistingMainTag($consultation, $item['title']);
             $group = ConsultationUserGroup::getOrCreateUserGroup($consultation, $groupName);
-            $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Module::PRIVILEGE_DBWV_V1_EDITORIAL . ']}]}';
+            $groupPrivileges = '{"privileges":[
+                {"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Module::PRIVILEGE_DBWV_V1_EDITORIAL . ']},
+                {"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Module::PRIVILEGE_DBWV_ASSIGN_TOPIC . ']}
+            ]}';
             $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
             $group->save();
         }
@@ -151,7 +154,7 @@ class SetupController extends Controller
 
     private function createBundUserGroups(Consultation $consultation): void
     {
-        ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Delegierte');
+        ConsultationUserGroup::getOrCreateUserGroup($consultation, Module::GROUP_NAME_DELEGIERTE);
 
         $hvBueroleitung = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_V6_BUEROLEITUNG);
         $lvBueroleitungPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_SCREENING . ']}]}';

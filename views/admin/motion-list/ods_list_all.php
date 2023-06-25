@@ -64,7 +64,7 @@ foreach ($items as $item) {
     } else {
         if ($item instanceof Motion || $item instanceof Amendment) {
             $title  = $item->title;
-            $prefix = $item->titlePrefix;
+            $prefix = $item->getFormattedTitlePrefix();
 
             if ($item instanceof Motion) {
                 $subject = str_replace('%MOTION%', $prefix, Yii::t('export', 'mail_motion_x'));

@@ -71,13 +71,13 @@ class VotingItemGroup
             if ($excludeFromTitle && is_a($excludeFromTitle, Motion::class) && $motion->id === $excludeFromTitle->id) {
                 continue;
             }
-            $titles[] = $motion->titlePrefix ?: $motion->getTitleWithPrefix();
+            $titles[] = $motion->getFormattedTitlePrefix() ?: $motion->getTitleWithPrefix();
         }
         foreach ($this->amendments as $amendment) {
             if ($excludeFromTitle && is_a($excludeFromTitle, Amendment::class) && $amendment->id === $excludeFromTitle->id) {
                 continue;
             }
-            $titles[] = $amendment->titlePrefix ?: $amendment->getTitleWithPrefix();
+            $titles[] = $amendment->getFormattedTitlePrefix() ?: $amendment->getTitleWithPrefix();
         }
         return implode(', ', $titles);
     }

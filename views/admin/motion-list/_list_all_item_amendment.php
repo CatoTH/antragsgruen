@@ -41,7 +41,7 @@ echo '<a href="' . Html::encode($viewUrl) . '"><span class="glyphicon glyphicon-
 if ($lastMotion && $entry->motionId === $lastMotion->id) {
     echo "&#8627;";
 }
-echo Html::encode($entry->titlePrefix ?: '-') . '</a></td>';
+echo Html::encode($entry->getFormattedTitlePrefix() ?: '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
 if ($lastMotion && $entry->motionId === $lastMotion->id) {
     echo "&#8627;";

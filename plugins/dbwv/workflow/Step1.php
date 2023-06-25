@@ -20,24 +20,26 @@ class Step1
         if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V2)) {
             return null;
         }
-        if (count($motion->getPublicTopicTags()) === 0 && Workflow::canAssignTopicV1($motion)) {
+        if (count($motion->getPublicTopicTags()) === 0 && Workflow::canAssignTopic($motion)) {
             return new AdminTodoItem(
                 'todoDbwvAssignTopic' . $motion->id,
-                $motion->title,
+                $motion->getTitleWithPrefix(),
                 'Sachgebiet zuordnen',
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $motion->getInitiatorsStr()
+                $motion->getInitiatorsStr(),
+                $motion->getFormattedTitlePrefix(),
             );
         }
         if (count($motion->getPublicTopicTags()) > 0 && $motion->titlePrefix === '' && Workflow::canMakeEditorialChangesV1($motion)) {
             return new AdminTodoItem(
                 'todoDbwvEditorial' . $motion->id,
-                $motion->title,
+                $motion->getTitleWithPrefix(),
                 'Für die Antragsversammlung aufbereiten',
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
-                $motion->getInitiatorsStr()
+                $motion->getInitiatorsStr(),
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

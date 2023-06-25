@@ -82,7 +82,7 @@ if (count($motionsWithAmendments) > 0) {
         echo '<p class="title">';
         echo '<span class="motionLink motionLink' . $motion->id . '">';
         if (!$consultation->getSettings()->hideTitlePrefix && trim($motion->titlePrefix) !== '') {
-            echo '<span class="motionPrefix">' . Html::encode($motion->titlePrefix) . '</span>';
+            echo '<span class="motionPrefix">' . Html::encode($motion->getFormattedTitlePrefix()) . '</span>';
         }
         $title = (trim($motion->title) === '' ? '-' : $motion->title);
         echo ' <span class="motionTitle">' . Html::encode($title) . '</span>';

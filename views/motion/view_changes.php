@@ -22,7 +22,7 @@ $layout->addBreadcrumb(Yii::t('motion', 'diff_bc'));
 
 $this->title = str_replace(
     ['%FROM%', '%TO%'],
-    [$oldMotion->titlePrefix, $newMotion->titlePrefix],
+    [$oldMotion->getFormattedTitlePrefix(), $newMotion->getFormattedTitlePrefix()],
     Yii::t('motion', 'diff_title')
 );
 ?>
@@ -32,8 +32,8 @@ $this->title = str_replace(
         echo $controller->showErrors();
         $oldLink = UrlHelper::createMotionUrl($oldMotion);
         $newLink = UrlHelper::createMotionUrl($newMotion);
-        $oldTitle = $oldMotion->titlePrefix;
-        $newTitle = $newMotion->titlePrefix;
+        $oldTitle = $oldMotion->getFormattedTitlePrefix();
+        $newTitle = $newMotion->getFormattedTitlePrefix();
         if ($oldMotion->version !== Motion::VERSION_DEFAULT || $newMotion->version !== Motion::VERSION_DEFAULT) {
             $oldTitle .= ' (' . $oldMotion->getFormattedVersion() . ')';
             $newTitle .= ' (' . $newMotion->getFormattedVersion() . ')';
