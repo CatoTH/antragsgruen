@@ -12,12 +12,12 @@ class PageController extends Base
     private function findIMotionByPrefix(string $prefix): ?IMotion
     {
         foreach ($this->consultation->motions as $motion) {
-            if ($prefix === $motion->titlePrefix) {
+            if ($prefix === $motion->getFormattedTitlePrefix()) {
                 return $motion;
             }
 
             foreach ($motion->amendments as $amendment) {
-                if ($prefix === $motion->titlePrefix . ': ' . $amendment->titlePrefix) {
+                if ($prefix === $motion->getFormattedTitlePrefix() . ': ' . $amendment->getFormattedTitlePrefix()) {
                     return $amendment;
                 }
             }

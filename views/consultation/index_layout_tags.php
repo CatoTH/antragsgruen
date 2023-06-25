@@ -2,6 +2,7 @@
 
 use app\views\consultation\LayoutHelper;
 use app\components\{MotionSorter, UrlHelper};
+use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionComment, User};
 use yii\helpers\Html;
 
@@ -103,7 +104,7 @@ foreach ($tagIds as $tagId) {
         $privateComment = LayoutHelper::getPrivateCommentIndicator($imotion, $privateMotionComments, $privateAmendmentComments);
         echo '<tr class="' . implode(' ', $classes) . '">';
         if (!$consultation->getSettings()->hideTitlePrefix) {
-            echo '<td class="prefixCol">' . $privateComment . Html::encode($imotion->titlePrefix) . '</td>';
+            echo '<td class="prefixCol">' . $privateComment . Html::encode($imotion->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST)) . '</td>';
         }
         echo '<td class="titleCol">';
         if ($consultation->getSettings()->hideTitlePrefix) {
@@ -160,10 +161,10 @@ foreach ($tagIds as $tagId) {
                 }
                 echo '<tr class="' . implode(' ', $classes) . '">';
                 if (!$consultation->getSettings()->hideTitlePrefix) {
-                    echo '<td class="prefixCol">' . Html::encode($amend->titlePrefix) . '</td>';
+                    echo '<td class="prefixCol">' . Html::encode($amend->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST)) . '</td>';
                 }
                 echo '<td class="titleCol"><div class="titleLink">';
-                $title = Yii::t('amend', 'amendment_for') . ' ' . Html::encode($imotion->titlePrefix);
+                $title = Yii::t('amend', 'amendment_for') . ' ' . Html::encode($imotion->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST));
                 echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
                 if ($amend->status === Amendment::STATUS_WITHDRAWN) {
                     echo ' <span class="status">(' . Html::encode($consultation->getStatuses()->getStatusName($amend->status)) . ')</span>';

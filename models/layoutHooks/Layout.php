@@ -1,23 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment,
-    Consultation,
-    ConsultationMotionType,
-    ConsultationText,
-    ISupporter,
-    IVotingItem,
-    Motion,
-    MotionSection,
-    Site,
-    User};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, IMotion, ISupporter, IVotingItem, Motion, MotionSection, Site, User};
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\settings\{VotingData, Layout as LayoutSettings};
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class Layout
 {
+    public const CONTEXT_MOTION_LIST = 1;
+    public const CONTEXT_MOTION = 2;
+
     /** @var Hooks[] */
     private static array $hooks = [];
 
@@ -176,6 +172,11 @@ class Layout
     public static function getFormattedAmendmentStatus(string $origStatus, Amendment $amendment): string
     {
         return self::callHook('getFormattedAmendmentStatus', [$amendment], $origStatus);
+    }
+
+    public static function getFormattedTitlePrefix(?string $origVersion, IMotion $imotion, ?int $context): ?string
+    {
+        return self::callHook('getFormattedTitlePrefix', [$imotion, $context], $origVersion);
     }
 
     public static function getFormattedMotionVersion(string $origVersion, Motion $motion): string

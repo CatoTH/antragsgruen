@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\layoutHooks\Layout;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
@@ -277,6 +278,11 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     abstract public function getInitiators(): array;
 
     abstract public function iAmInitiator(): bool;
+
+    public function getFormattedTitlePrefix(?int $context = null): ?string
+    {
+        return Layout::getFormattedTitlePrefix($this->titlePrefix, $this, $context);
+    }
 
     abstract public function getTitleWithPrefix(): string;
 

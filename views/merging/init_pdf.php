@@ -30,7 +30,7 @@ $motionData .= Yii::t('export', 'pdf_merging_init');
 $motionData .= '</div><br>';
 
 $motionData .= '<span style="font-size: 20px; font-weight: bold">';
-$motionData .= Html::encode($motion->titlePrefix) . ' </span>';
+$motionData .= Html::encode($motion->getFormattedTitlePrefix()) . ' </span>';
 $motionData .= '<span style="font-size: 16px;">';
 $motionData .= Html::encode($motion->title) . '</span>';
 
@@ -53,7 +53,7 @@ foreach ($amendments as $amendment) {
         $table .= 'X';
     }
     $table .= '</td><td>';
-    $table .= Html::encode($amendment->titlePrefix);
+    $table .= Html::encode($amendment->getFormattedTitlePrefix());
     $table .= '</td><td>';
     $table .= $amendment->getFormattedStatus();
     $table .= '</td><td>';

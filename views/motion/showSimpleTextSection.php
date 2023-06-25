@@ -65,7 +65,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             $firstline = $amendmentSection->firstAffectedLine;
             echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $firstline . '">';
             echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
-            echo ($amendment->titlePrefix ? Html::encode($amendment->titlePrefix) : '&nbsp;');
+            echo ($amendment->getFormattedTitlePrefix() ? Html::encode($amendment->titlePrefix) : '&nbsp;');
             echo \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment);
             echo "</a></li>\n";
         }

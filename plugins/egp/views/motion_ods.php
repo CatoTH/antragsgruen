@@ -173,7 +173,7 @@ foreach ($amendments as $amendment) {
 
     $firstLine = $amendment->getFirstDiffLine();
 
-    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->getFormattedTitlePrefix());
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
     $doc->setCellStyle($row, $COL_INITIATOR, ['fo:wrap-option' => 'wrap'], []);
     $doc->setCell($row, $COL_SUPPORTER, Spreadsheet::TYPE_TEXT, implode(', ', $supporterNames));

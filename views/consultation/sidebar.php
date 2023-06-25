@@ -194,10 +194,10 @@ if ($hasComments) {
             $html .= Tools::formatMysqlDateTime($comment->dateCreation);
             if (is_a($comment, \app\models\db\MotionComment::class)) {
                 $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
-                    Html::encode($comment->getIMotion()->titlePrefix) . '</div>';
+                    Html::encode($comment->getIMotion()->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION)) . '</div>';
             } elseif (is_a($comment, \app\models\db\AmendmentComment::class)) {
                 $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
-                    Html::encode($comment->getIMotion()->titlePrefix) . '</div>';
+                    Html::encode($comment->getIMotion()->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION)) . '</div>';
             }
             $html .= '</a></li>';
         }

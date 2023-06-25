@@ -457,7 +457,7 @@ class ConsultationLog extends ActiveRecord
     {
         $deleted = '<span class="deleted">' . \Yii::t('structure', 'activity_deleted') . '</span>';
         if ($this->amendment) {
-            $str = str_replace('###AMENDMENT###', $this->amendment->titlePrefix, $str);
+            $str = str_replace('###AMENDMENT###', $this->amendment->getFormattedTitlePrefix(), $str);
         } elseif ($this->amendmentId) {
             $prefix = self::amendmentId2Prefix($this->actionReferenceId) . ' ' . $deleted;
             $str  = str_replace('###AMENDMENT###', $prefix, $str);

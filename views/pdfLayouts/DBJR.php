@@ -112,7 +112,7 @@ class DBJR extends IPDFLayout
         $pdf->MultiCell(0, 0, trim($amendment->getMyMotion()->getTitleWithPrefix()), 0, 'L');
         $pdf->Ln(3);
         $pdf->SetFont('helvetica', 'B', $title2Fontsize);
-        $pdf->Write(0, mb_strtoupper(\Yii::t('amend', 'amendment') . ' ' . $amendment->titlePrefix, 'UTF-8') . "\n");
+        $pdf->Write(0, mb_strtoupper(\Yii::t('amend', 'amendment') . ' ' . $amendment->getFormattedTitlePrefix(), 'UTF-8') . "\n");
         $pdf->Ln(3);
 
         $pdf->SetX($left);

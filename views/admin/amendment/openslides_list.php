@@ -15,7 +15,7 @@ $consultation = $controller->consultation;
 $data = [];
 foreach ($amendments as $amendment) {
     $motionData   = [];
-    $motionData[] = $amendment->titlePrefix . Yii::t('amend', 'amend_for') . $amendment->getMyMotion()->titlePrefix;
+    $motionData[] = $amendment->getFormattedTitlePrefix() . Yii::t('amend', 'amend_for') . $amendment->getMyMotion()->getFormattedTitlePrefix();
     $motionData[] = $amendment->getMyMotion()->title;
     $text         = '';
     foreach ($amendment->getSortedSections(true) as $section) {

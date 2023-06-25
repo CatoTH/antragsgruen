@@ -26,7 +26,7 @@ class Step5
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

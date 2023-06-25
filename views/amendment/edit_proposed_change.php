@@ -26,8 +26,8 @@ $layout->loadSelectize();
 
 $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
 $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionUrl);
-if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
-    $layout->addBreadcrumb($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
+if (!$consultation->getSettings()->hideTitlePrefix && $amendment->getFormattedTitlePrefix() != '') {
+    $layout->addBreadcrumb($amendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendment));
 } else {
     $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 }

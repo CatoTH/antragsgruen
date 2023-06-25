@@ -56,12 +56,12 @@ foreach ($collisions as $amendmentId => $sections) {
             echo '<div class="motionTextHolder"><div class="paragraph"><div class="' . $classes . '">' .
                 $para['motionNewDiff'] . '</div></div></div>';
 
-            echo '<label>' . str_replace('%AMEND%', $amendment->titlePrefix, Yii::t('amend', 'merge1_manual_amend')) .
+            echo '<label>' . str_replace('%AMEND%', $amendment->getFormattedTitlePrefix(), Yii::t('amend', 'merge1_manual_amend')) .
                 '</label>';
             echo '<div class="motionTextHolder"><div class="paragraph"><div class="' . $classes . '">' .
                 $para['amendmentDiff'] . '</div></div></div>';
 
-            echo '<label>' . str_replace('%AMEND%', $amendment->titlePrefix, Yii::t('amend', 'merge1_manual_new')) .
+            echo '<label>' . str_replace('%AMEND%', $amendment->getFormattedTitlePrefix(), Yii::t('amend', 'merge1_manual_new')) .
                 '</label>';
             echo '<textarea name="amendmentOverride[' . $amendmentId . '][' . $sectionId . '][' . $paragraphNo . ']" ';
             echo 'value="" class=""></textarea>';

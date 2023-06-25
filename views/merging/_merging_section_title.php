@@ -28,7 +28,7 @@ if ($twoCols) {
                     <div class="title"><?= Yii::t('amend', 'merge_title_changes') ?></div>
                     <?php
                     foreach ($changes as $amendingSection) {
-                        $titlePrefix = $amendingSection->getAmendment()->titlePrefix;
+                        $titlePrefix = $amendingSection->getAmendment()->getFormattedTitlePrefix();
                         ?>
                         <div class="change">
                             <div class="prefix"><?= Html::encode($titlePrefix) ?></div>
@@ -59,7 +59,7 @@ if ($twoCols) {
                     <div class="title"><?= Yii::t('amend', 'merge_title_changes') ?></div>
                     <?php
                     foreach ($changes as $amendingSection) {
-                        $titlePrefix = $amendingSection->getAmendment()->titlePrefix;
+                        $titlePrefix = $amendingSection->getAmendment()->getFormattedTitlePrefix();
                         ?>
                         <div class="change">
                             <div class="prefix"><?= Html::encode($titlePrefix) ?></div>

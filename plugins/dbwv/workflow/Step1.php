@@ -28,7 +28,7 @@ class Step1
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
         if (count($motion->getPublicTopicTags()) > 0 && $motion->titlePrefix === '' && Workflow::canMakeEditorialChangesV1($motion)) {
@@ -39,7 +39,7 @@ class Step1
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

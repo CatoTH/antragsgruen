@@ -84,7 +84,7 @@ class AdminTodoItem
                 UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description,
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
         return $todo;
@@ -111,7 +111,7 @@ class AdminTodoItem
                 UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => $amend->id]),
                 Tools::dateSql2timestamp($amend->dateCreation),
                 $description,
-                $amend->titlePrefix,
+                $amend->getFormattedTitlePrefix(),
             );
         }
         return $todo;
@@ -138,7 +138,7 @@ class AdminTodoItem
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
                 $description,
-                $comment->getIMotion()->titlePrefix,
+                $comment->getIMotion()->getFormattedTitlePrefix(),
             );
         }
         return $todo;
@@ -165,7 +165,7 @@ class AdminTodoItem
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
                 $description,
-                $comment->getIMotion()->titlePrefix,
+                $comment->getIMotion()->getFormattedTitlePrefix(),
             );
         }
         return $todo;

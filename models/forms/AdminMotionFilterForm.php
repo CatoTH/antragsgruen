@@ -210,19 +210,19 @@ class AdminMotionFilterForm
     {
         if (is_a($motion1, Motion::class)) {
             /** @var Motion $motion1 */
-            $rev1 = $motion1->titlePrefix;
+            $rev1 = $motion1->getFormattedTitlePrefix();
         } else {
             /** @var Amendment $motion1 */
-            $rev1 = $motion1->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') .
-                    ' ' . $motion1->getMyMotion()->titlePrefix;
+            $rev1 = $motion1->getFormattedTitlePrefix() . ' ' . \Yii::t('amend', 'amend_for_motion') .
+                    ' ' . $motion1->getMyMotion()->getFormattedTitlePrefix();
         }
         if (is_a($motion2, Motion::class)) {
             /** @var Motion $motion2 */
-            $rev2 = $motion2->titlePrefix;
+            $rev2 = $motion2->getFormattedTitlePrefix();
         } else {
             /** @var Amendment $motion2 */
-            $rev2 = $motion2->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') .
-                    ' ' . $motion2->getMyMotion()->titlePrefix;
+            $rev2 = $motion2->getFormattedTitlePrefix() . ' ' . \Yii::t('amend', 'amend_for_motion') .
+                    ' ' . $motion2->getMyMotion()->getFormattedTitlePrefix();
         }
 
         return strnatcasecmp($rev1, $rev2);
@@ -509,7 +509,7 @@ class AdminMotionFilterForm
             }
 
             $prefix = $this->prefix;
-            if ($prefix !== null && $prefix !== '' && mb_stripos($motion->titlePrefix, $prefix) === false) {
+            if ($prefix !== null && $prefix !== '' && mb_stripos($motion->getFormattedTitlePrefix(), $prefix) === false) {
                 $matches = false;
             }
 
@@ -644,7 +644,7 @@ class AdminMotionFilterForm
             }
 
             $prefix = $this->prefix;
-            if ($prefix !== null && $prefix !== '' && mb_stripos($amend->titlePrefix ?? '', $prefix) === false) {
+            if ($prefix !== null && $prefix !== '' && mb_stripos($amend->getFormattedTitlePrefix() ?? '', $prefix) === false) {
                 $matches = false;
             }
 

@@ -34,7 +34,7 @@ class Step6
                 UrlHelper::createUrl(['/admin/motion-list/index']),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description,
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
         if (Workflow::canSetResolutionV6($motion) && $motion->proposalVisibleFrom !== null) {
@@ -45,7 +45,7 @@ class Step6
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

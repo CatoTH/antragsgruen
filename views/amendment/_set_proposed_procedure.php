@@ -308,7 +308,7 @@ $voting = $amendment->getVotingData();
             }
             foreach ($otherMotion->amendments as $otherAmendment) {
                 if ($otherAmendment->status === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
-                    $options[$otherAmendment->id] = $otherMotion->titlePrefix . ': ' . $otherAmendment->getTitle();
+                    $options[$otherAmendment->id] = $otherMotion->getFormattedTitlePrefix() . ': ' . $otherAmendment->getTitle();
                 }
             }
         }

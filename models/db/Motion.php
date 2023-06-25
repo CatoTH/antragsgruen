@@ -416,7 +416,7 @@ class Motion extends IMotion implements IRSSItem
             return $this->getTitleWithIntro();
         }
 
-        $name = $this->titlePrefix;
+        $name = $this->getFormattedTitlePrefix();
         if (grapheme_strlen($name) > 1 && !in_array(grapheme_substr($name, grapheme_strlen($name) - 1, 1), [':', '.'])) {
             $name .= ':';
         }
@@ -976,7 +976,7 @@ class Motion extends IMotion implements IRSSItem
     public function getFilenameBase(bool $noUmlaut): string
     {
         $motionTitle = (grapheme_strlen($this->title) > 100 ? grapheme_substr($this->title, 0, 100) : $this->title);
-        $title       = $this->titlePrefix . ' ' . $motionTitle;
+        $title       = $this->getFormattedTitlePrefix() . ' ' . $motionTitle;
 
         return Tools::sanitizeFilename($title, $noUmlaut);
     }
@@ -1008,8 +1008,8 @@ class Motion extends IMotion implements IRSSItem
 
     public function getBreadcrumbTitle(): string
     {
-        if ($this->titlePrefix && !$this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $this->titlePrefix;
+        if ($this->getFormattedTitlePrefix() && !$this->getMyConsultation()->getSettings()->hideTitlePrefix) {
+            return $this->getFormattedTitlePrefix();
         } else {
             return $this->getMyMotionType()->titleSingular;
         }
@@ -1231,7 +1231,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $data = [
             'title'            => $this->title,
-            'title_prefix'     => $this->titlePrefix,
+            'title_prefix'     => $this->getFormattedTitlePrefix(),
             'url'              => $this->getLink(true),
             'initiators'       => [],
             'sections'         => [],

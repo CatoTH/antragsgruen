@@ -27,7 +27,7 @@ class Step3
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
         if (Workflow::canSetResolutionV3($motion) && $motion->proposalVisibleFrom !== null) {
@@ -38,7 +38,7 @@ class Step3
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

@@ -30,7 +30,7 @@ class Step2
                 UrlHelper::createUrl(['/admin/motion-list/index']),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description,
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
 
@@ -42,7 +42,7 @@ class Step2
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
-                $motion->titlePrefix,
+                $motion->getFormattedTitlePrefix(),
             );
         }
 

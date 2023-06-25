@@ -138,7 +138,7 @@ foreach ($motions as $motion) {
         }
         $firstLine = $amendment->getFirstDiffLine();
 
-        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
+        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->getFormattedTitlePrefix());
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
 
         $change = HTMLTools::correctHtmlErrors($change);

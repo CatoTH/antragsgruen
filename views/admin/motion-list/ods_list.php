@@ -141,7 +141,7 @@ foreach ($imotions as $imotion) {
     if ($hasAgendaItems && is_a($imotion, Motion::class) && $imotion->agendaItem) {
         $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $imotion->agendaItem->getShownCode(true));
     }
-    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $imotion->titlePrefix);
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $imotion->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION_LIST));
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
     $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacts));
 

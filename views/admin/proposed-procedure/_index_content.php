@@ -166,7 +166,7 @@ foreach ($proposedAgenda as $proposedItem) {
                                     /** @var Amendment $item */
                                     echo HTMLTools::amendmentDiffTooltip($item, 'bottom');
                                 }
-                                echo Html::a(Html::encode($titlePre . $item->titlePrefix), $item->getLink())
+                                echo Html::a(Html::encode($titlePre . $item->getFormattedTitlePrefix()), $item->getLink())
                                 ?>
                             </td>
                             <td class="initiator">

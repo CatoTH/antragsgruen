@@ -32,7 +32,7 @@ foreach ($amendingSections as $amendmentSection) {
     $amLink    = UrlHelper::createAmendmentUrl($amendment);
     echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $lineNo . '">';
     echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
-    echo Html::encode($amendment->titlePrefix) . "</a></li>\n";
+    echo Html::encode($amendment->getFormattedTitlePrefix()) . "</a></li>\n";
 }
 
 echo '</ul>';

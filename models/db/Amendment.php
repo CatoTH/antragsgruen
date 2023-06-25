@@ -288,18 +288,18 @@ class Amendment extends IMotion implements IRSSItem
     {
         $motion = $this->getMyMotion();
         if ($motion->titlePrefix !== '') {
-            $showMotionPrefix = (mb_stripos($this->titlePrefix ?: '', $motion->titlePrefix) === false);
+            $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix() ?: '', $motion->getFormattedTitlePrefix()) === false);
         } else {
             $showMotionPrefix = false;
         }
-        $prefix = $this->titlePrefix ?: \Yii::t('amend', 'amendment');
+        $prefix = $this->getFormattedTitlePrefix() ?: \Yii::t('amend', 'amendment');
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $prefix . \Yii::t('amend', 'amend_for') . $motion->title;
         } else {
-            if ($this->getMyMotion()->titlePrefix) {
+            if ($this->getMyMotion()->getFormattedTitlePrefix()) {
                 if ($showMotionPrefix) {
                     $str = $prefix . \Yii::t('amend', 'amend_for');
-                    $str .= $motion->titlePrefix . ': ' . $motion->title;
+                    $str .= $motion->getFormattedTitlePrefix() . ': ' . $motion->title;
                     return $str;
                 } else {
                     return $prefix . ': ' . $motion->title;
@@ -318,21 +318,21 @@ class Amendment extends IMotion implements IRSSItem
     public function getShortTitle(bool $includeMotionPrefix = true): string
     {
         if ($this->getMyMotion()->titlePrefix !== '' && $includeMotionPrefix) {
-            $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->getMyMotion()->titlePrefix) === false);
+            $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix(), $this->getMyMotion()->titlePrefix) === false);
         } else {
             $showMotionPrefix = false;
         }
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
+            return $this->getFormattedTitlePrefix() . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
         } else {
-            if ($this->getMyMotion()->titlePrefix !== '') {
+            if ($this->getMyMotion()->getFormattedTitlePrefix() !== '') {
                 if ($showMotionPrefix) {
-                    return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->titlePrefix;
+                    return $this->getFormattedTitlePrefix() . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->getFormattedTitlePrefix();
                 } else {
-                    return $this->titlePrefix;
+                    return $this->getFormattedTitlePrefix();
                 }
             } else {
-                return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
+                return $this->getFormattedTitlePrefix() . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
             }
         }
     }
@@ -968,10 +968,10 @@ class Amendment extends IMotion implements IRSSItem
     {
         $motionTitle  = $this->getMyMotion()->title;
         $motionPrefix = $this->getMyMotion()->titlePrefix;
-        if ($motionPrefix !== '' && mb_strpos($this->titlePrefix, $motionPrefix) === false) {
-            $title = $motionPrefix . '_' . $this->titlePrefix . ' ' . $motionTitle;
+        if ($motionPrefix !== '' && mb_strpos($this->getFormattedTitlePrefix(), $motionPrefix) === false) {
+            $title = $motionPrefix . '_' . $this->getFormattedTitlePrefix() . ' ' . $motionTitle;
         } else {
-            $title = $this->titlePrefix . ' ' . $motionTitle;
+            $title = $this->getFormattedTitlePrefix() . ' ' . $motionTitle;
         }
         $filename = Tools::sanitizeFilename($title, $noUmlaut);
 
@@ -1311,7 +1311,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $data = [
             'title'            => $this->getTitle(),
-            'title_prefix'     => $this->titlePrefix,
+            'title_prefix'     => $this->getFormattedTitlePrefix(),
             'motion_url'       => $this->getMyMotion()->getLink(true),
             'url'              => $this->getLink(true),
             'initiators'       => [],
