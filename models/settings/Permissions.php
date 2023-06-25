@@ -114,6 +114,16 @@ class Permissions
         }
     }
 
+    public function iMotionIsReadable(IMotion $imotion): bool
+    {
+        $iAmAdmin = User::havePrivilege($imotion->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null);
+        if ($iAmAdmin && in_array($imotion->status, [IMotion::STATUS_DRAFT, IMotion::STATUS_DRAFT_ADMIN])) {
+            return true;
+        }
+
+        return !in_array($imotion->status, $imotion->getMyConsultation()->getStatuses()->getUnreadableStatuses());
+    }
+
     public function iMotionCanWithdraw(IMotion $motion): bool
     {
         if (!in_array($motion->status, [

@@ -8,11 +8,7 @@ use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
 use app\models\quorumType\IQuorumType;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\MotionSection as MotionSectionSettings;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Permissions;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{MotionSection as MotionSectionSettings, AntragsgruenApp, Permissions, PrivilegeQueryContext, Privileges};
 use app\models\supportTypes\SupportBase;
 use app\models\votings\VotingItemGroup;
 use app\views\consultation\LayoutHelper;
@@ -268,12 +264,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     public function isReadable(): bool
     {
-        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null);
-        if ($iAmAdmin && in_array($this->status, [self::STATUS_DRAFT, self::STATUS_DRAFT_ADMIN])) {
-            return true;
-        }
-
-        return !in_array($this->status, $this->getMyConsultation()->getStatuses()->getUnreadableStatuses());
+        return $this->getPermissionsObject()->iMotionIsReadable($this);
     }
 
     abstract public function setDeleted(): void;

@@ -380,6 +380,20 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return Motion[]
+     */
+    public static function getObsoletedByMotions(Motion $motion): array
+    {
+        $query = Motion::find()
+            ->where('motion.status = ' . intval(IMotion::STATUS_OBSOLETED_BY_MOTION))
+            ->andWhere('motion.statusString = ' . intval($motion->id));
+        /** @var Motion[] $motions */
+        $motions = $query->all();
+
+        return $motions;
+    }
+
+    /**
      * @return string ("Application: John <Doe>")
      */
     public function getTitleWithIntro(): string
@@ -511,7 +525,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         foreach ($this->motionSupporters as $supp) {
-            if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId == $user->id) {
+            if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId === $user->id) {
                 return true;
             }
         }

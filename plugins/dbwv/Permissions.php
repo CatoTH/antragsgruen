@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv;
 
+use app\components\MotionNumbering;
 use app\models\db\ConsultationMotionType;
+use app\models\db\IMotion;
 use app\models\db\Motion;
+use app\models\db\User;
 use app\plugins\dbwv\workflow\Workflow;
 
 class Permissions extends \app\models\settings\Permissions
@@ -51,5 +54,26 @@ class Permissions extends \app\models\settings\Permissions
     public function motionCanEditInitiators(Motion $motion): bool
     {
         return parent::motionCanEditText($motion);
+    }
+
+    public function iMotionIsReadable(IMotion $imotion): bool
+    {
+        // Admins, delegates
+        if (Module::currentUserCanSeeMotions()) {
+            return parent::iMotionIsReadable($imotion);
+        }
+
+        // Proposers of the motions can only see their own motions
+        if (is_a($imotion, Motion::class)) {
+            $relevantMotionVersions = MotionNumbering::getSortedHistoryForMotion($imotion, false, true);
+            foreach ($relevantMotionVersions as $relevantMotionVersion) {
+                if ($relevantMotionVersion->iAmInitiator()) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return $imotion->iAmInitiator();
+        }
     }
 }
