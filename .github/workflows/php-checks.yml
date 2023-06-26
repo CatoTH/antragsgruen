@@ -1,6 +1,11 @@
 name: PHP checks
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
 env:
   php: "
   {php: '8.0', experimental: false},
