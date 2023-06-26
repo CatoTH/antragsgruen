@@ -1,15 +1,15 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
-use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
+use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\DataTypes\AffectedLineBlock;
+use app\components\diff\DiffRenderer;
 use app\models\sectionTypes\TextSimple;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class AmendmentSectionFormatterTest extends TestBase
 {
-    use Specify;
-
     private static function getAffectedLinesBlock(int $from, int $to, string $text): AffectedLineBlock
     {
         $lines = new AffectedLineBlock();
@@ -45,8 +45,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setTextNew($new);
         $formatter->setFirstLineNo(1);
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_INLINE);
-        $this->assertEquals(0, count($diffGroups));
-
+        $this->assertCount(0, $diffGroups);
     }
 
     public function testRemoveWhitespaces(): void
@@ -59,14 +58,14 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setTextNew($new);
         $formatter->setFirstLineNo(1);
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_INLINE);
-        $this->assertEquals(1, count($diffGroups));
+        $this->assertCount(1, $diffGroups);
 
         $formatter = new AmendmentSectionFormatter();
         $formatter->setTextOriginal($orig);
         $formatter->setTextNew($new);
         $formatter->setFirstLineNo(1);
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals(1, count($diffGroups));
+        $this->assertCount(1, $diffGroups);
     }
 
     public function testCrashing(): void
@@ -142,7 +141,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setFirstLineNo(0);
         $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals(4, count($diffGroups));
+        $this->assertCount(4, $diffGroups);
     }
 
     public function testEmptyDeletedSpaceAtEnd(): void
@@ -175,7 +174,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setFirstLineNo(1);
         $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_INLINE);
 
-        $this->assertEquals(1, count($diffGroups));
+        $this->assertCount(1, $diffGroups);
 
         $text   = TextSimple::formatDiffGroup($diffGroups);
         $expect = '<h4 class="lineSummary">In Zeile 1 löschen:</h4><div><p>Test<del style="color:#FF0000;text-decoration:line-through;"> 123</del></p></div>';
@@ -203,7 +202,9 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 <p>Die Kaputtsparpolitik ist gescheitert<br>
 Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichtiges Ziel erreicht: Der Euro, als entscheidendes Element der europäischen Integration und des europäischen Zusammenhalts, konnte bislang gerettet werden. Dafür hat Europa neue Instrumente und Mechanismen geschaffen, wie den Euro-Rettungsschirm mit dem Europäischen Stabilitätsmechanismus (ESM) oder die Bankenunion. Aber diese Instrumente allein werden die tiefgreifenden Probleme nicht lösen - weder politisch noch wirtschaftlich.</p>';
 
-        $expect = [self::getAffectedLinesBlock(4, 9,
+        $expect = [self::getAffectedLinesBlock(
+            4,
+            9,
             '<p>###LINENUMBER###Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische ' .
             '###LINENUMBER###Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ' .
             '###LINENUMBER###Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen ' .
@@ -256,12 +257,12 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $formatter->setFirstLineNo(1);
 
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES, 0);
-        $this->assertEquals(1, count($diffGroups));
+        $this->assertCount(1, $diffGroups);
         $this->assertEquals(3, $diffGroups[0]->lineFrom);
         $this->assertEquals(5, $diffGroups[0]->lineTo);
 
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES, 1);
-        $this->assertEquals(1, count($diffGroups));
+        $this->assertCount(1, $diffGroups);
         $this->assertEquals(2, $diffGroups[0]->lineFrom);
         $this->assertEquals(5, $diffGroups[0]->lineTo);
     }
@@ -288,7 +289,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $formatter->setFirstLineNo(1);
         $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals(1, count($diffGroups));
+        $this->assertCount(1, $diffGroups);
         $this->assertEquals(1, $diffGroups[0]->lineFrom);
         $this->assertEquals(5, $diffGroups[0]->lineTo);
     }

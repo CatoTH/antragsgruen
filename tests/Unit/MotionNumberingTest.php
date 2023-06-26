@@ -1,8 +1,9 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\MotionNumbering;
+use Tests\Support\Helper\TestBase;
 
 class MotionNumberingTest extends TestBase
 {

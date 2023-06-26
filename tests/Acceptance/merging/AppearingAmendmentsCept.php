@@ -1,12 +1,15 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 // Make Ä6 and Ä7 invisible
-$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 274, \app\models\db\IMotion::STATUS_SUBMITTED_UNSCREENED);
-$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 276, \app\models\db\IMotion::STATUS_SUBMITTED_UNSCREENED);
+$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 274, IMotion::STATUS_SUBMITTED_UNSCREENED);
+$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 276, IMotion::STATUS_SUBMITTED_UNSCREENED);
 
 $I->gotoConsultationHome()->gotoMotionView(2);
 $I->loginAsStdAdmin();
@@ -30,8 +33,8 @@ $I->dontSeeElement('#newAmendmentAlert');
 $I->wantTo('see the new amendments');
 
 // Make Ä6 and Ä7 visible
-$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 274, \app\models\db\IMotion::STATUS_SUBMITTED_SCREENED);
-$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 276, \app\models\db\IMotion::STATUS_SUBMITTED_SCREENED);
+$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 274, IMotion::STATUS_SUBMITTED_SCREENED);
+$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 276, IMotion::STATUS_SUBMITTED_SCREENED);
 
 $I->wait(4);
 
@@ -59,8 +62,8 @@ $I->dontSee('Schooe', '#paragraphWrapper_4_0 ins');
 
 $I->wantTo('make Ä6 and Ä7 invisible again');
 
-$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 274, \app\models\db\IMotion::STATUS_SUBMITTED_UNSCREENED);
-$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 276, \app\models\db\IMotion::STATUS_SUBMITTED_UNSCREENED);
+$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 274, IMotion::STATUS_SUBMITTED_UNSCREENED);
+$I->apiSetAmendmentStatus('stdparteitag', 'std-parteitag', 276, IMotion::STATUS_SUBMITTED_UNSCREENED);
 
 $I->wait(4);
 

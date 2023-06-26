@@ -8,8 +8,8 @@
     },
     "scripts": {
         "typings": "node_modules/.bin/typings",
-        "test:acceptance": "vendor/bin/codecept run acceptance",
-        "test:unit": "vendor/bin/codecept run unit",
+        "test:acceptance": "vendor/bin/codecept run Acceptance",
+        "test:unit": "vendor/bin/codecept run Unit",
         "watch": "gulp watch",
         "build": "gulp",
         "lint": "eslint --no-fix web/typescript/",

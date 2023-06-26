@@ -2,12 +2,13 @@
 
 /** @var \Codeception\Scenario $scenario */
 
-use app\tests\_pages\{AdminAdminConsultationsPage,
-    AdminConsultationPage,
-    AdminMotionListPage,
-    AdminMotionTypePage,
-    AdminTranslationPage,
-    AdminUsersPage};
+use Tests\_pages\AdminAdminConsultationsPage;
+use Tests\_pages\AdminConsultationPage;
+use Tests\_pages\AdminMotionListPage;
+use Tests\_pages\AdminMotionTypePage;
+use Tests\_pages\AdminTranslationPage;
+use Tests\_pages\AdminUsersPage;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();

@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -13,7 +16,7 @@ $I->dontSeeElement('#sections_2');
 $I->click('#amendmentTextEditCaller button');
 $I->seeElementInDOM('#sections_2');
 
-$I->selectOption('#amendmentStatus', \app\models\db\IMotion::STATUS_COMPLETED);
+$I->selectOption('#amendmentStatus', IMotion::STATUS_COMPLETED);
 $I->fillField('#amendmentStatusString', 'völlig erschöpft');
 $I->fillField('#amendmentTitlePrefix', 'Ä1neu');
 $I->fillField('#amendmentDateCreation', '01.01.2015 01:02');

@@ -1,14 +1,12 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\HTMLTools;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class HTMLNormalizeTest extends TestBase
 {
-    use Specify;
-
     public function testCorrectLeavesAria(): void
     {
         $htmlIn = 'Test <ins aria-label="Inserted: 1">1</ins><del aria-label="Deleted: 2">2</del><span>';

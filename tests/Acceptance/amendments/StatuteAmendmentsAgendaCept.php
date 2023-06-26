@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\settings\Consultation;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 
 $I->populateDBData1();
@@ -41,7 +44,7 @@ $I->see('Additional statute', '.baseStatutesList .statute' . (AcceptanceTester::
 
 $I->wantTo('create an agenda');
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectOption('#startLayoutType', \app\models\settings\Consultation::START_LAYOUT_AGENDA);
+$I->selectOption('#startLayoutType', Consultation::START_LAYOUT_AGENDA);
 $page->saveForm();
 
 $I->gotoConsultationHome();

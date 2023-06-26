@@ -4,21 +4,21 @@
 # Perform tests in browser using the WebDriver or PhpBrowser.
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
-class_name: AcceptanceTester
+actor: AcceptanceTester
 bootstrap: _bootstrap.php
 modules:
     enabled:
         - Asserts
-        - \Helper\AntragsgruenWebDriver
-        - \Helper\Acceptance
-        - \Helper\HTMLValidator
-        - \Helper\Download
-        - \Helper\Bootbox
-        - \Helper\AccessibilityValidator
-        - \Helper\ConfigurationChanger
-        - \Helper\TestApi
+        - Tests\Support\Helper\AntragsgruenWebDriver
+        - Tests\Support\Helper\Acceptance
+        - Tests\Support\Helper\HTMLValidator
+        - Tests\Support\Helper\Download
+        - Tests\Support\Helper\Bootbox
+        - Tests\Support\Helper\AccessibilityValidator
+        - Tests\Support\Helper\ConfigurationChanger
+        - Tests\Support\Helper\TestApi
     config:
-        \Helper\AntragsgruenWebDriver:
+        Tests\Support\Helper\AntragsgruenWebDriver:
             url: 'http://test.antragsgruen.test/'
             host: 127.0.0.1
             port: 4444
@@ -28,9 +28,9 @@ modules:
             #http_proxy: direct
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
-        \Helper\AccessibilityValidator:
+        Tests\Support\Helper\AccessibilityValidator:
             pa11yPath: node_modules/.bin/pa11y
-        \Helper\HTMLValidator:
+        Tests\Support\Helper\HTMLValidator:
             javaPath: java
             vnuPath: /usr/local/bin/vnu.jar
         Yii2:

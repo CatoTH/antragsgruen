@@ -19,7 +19,7 @@
  * =============
  *
  * - Copy this file to _support/Helper/ in the codeception directory
- * - Merge the following configuration to acceptance.suite.yml:
+ * - Merge the following configuration to Acceptance.suite.yml:
  *
  * modules:
  *   enabled:
@@ -47,18 +47,21 @@
  */
 
 
-namespace Helper;
+namespace Tests\Support\Helper;
 
-use Codeception\TestCase;
+use Codeception\Module;
+use Exception;
+use PHPUnit\Framework\Assert;
+use RuntimeException;
 
-class HTMLValidator extends \Codeception\Module
+class HTMLValidator extends Module
 {
     /**
      * @param string $html
      * @return array
      * @throws \Exception
      */
-    private function validateByVNU($html)
+    private function validateByVNU(string $html): array
     {
         $javaPath = $this->_getConfig('javaPath');
         if (!$javaPath) {
@@ -69,13 +72,13 @@ class HTMLValidator extends \Codeception\Module
             $vnuPath = '/usr/local/bin/vnu.jar';
         }
 
-        $filename = DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . uniqid('html-validate') . '.html';
+        $filename = DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . uniqid('html-validate', true).'.html';
         file_put_contents($filename, $html);
         exec($javaPath . " -Xss1024k -jar " . $vnuPath . " --format json " . $filename . " 2>&1", $return);
         $data = json_decode($return[0], true);
         unlink($filename);
         if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
-            throw new \Exception('Invalid data returned from validation service: ' . $return);
+            throw new RuntimeException('Invalid data returned from validation service: '. implode("\n", $return));
         }
         return $data['messages'];
     }
@@ -86,22 +89,24 @@ class HTMLValidator extends \Codeception\Module
      * @throws \Codeception\Exception\ModuleException
      * @throws \Exception
      */
-    private function getPageSource()
+    private function getPageSource(): string
     {
-        if (!$this->hasModule('WebDriver') && !$this->hasModule('\Helper\AntragsgruenWebDriver')) {
-            throw new \Exception('This validator needs WebDriver to work');
+        if (!$this->hasModule('WebDriver') && !$this->hasModule(AntragsgruenWebDriver::class)) {
+            throw new RuntimeException('This validator needs WebDriver to work');
         }
 
-        if ($this->hasModule('\Helper\AntragsgruenWebDriver')) {
-            $webdriver = $this->getModule('\Helper\AntragsgruenWebDriver');
+        if ($this->hasModule(AntragsgruenWebDriver::class)) {
+            /** @var \Tests\Support\Helper\AntragsgruenWebDriver $webdriver */
+            $webdriver = $this->getModule(AntragsgruenWebDriver::class);
             $html = $webdriver->webDriver->getPageSource();
         } elseif ($this->hasModule('WebDriver')) {
+            /** @var \Codeception\Module\WebDriver $webdriver */
             $webdriver = $this->getModule('WebDriver');
             $html = $webdriver->webDriver->getPageSource();
         } else {
-            throw new \Exception('This validator needs WebDriver to work');
+            throw new RuntimeException('This validator needs WebDriver to work');
         }
-        if (strpos($html, '<!DOCTYPE html>') === false) {
+        if (!str_contains($html, '<!DOCTYPE html>')) {
             // Seems to be stripped by getPageSource()
             $html = '<!DOCTYPE html>' . $html;
         }
@@ -111,19 +116,19 @@ class HTMLValidator extends \Codeception\Module
     /**
      * @param string[] $ignoreMessages
      */
-    public function validateHTML($ignoreMessages = [])
+    public function validateHTML(array $ignoreMessages = []): void
     {
         $source = $this->getPageSource();
         try {
             $messages = $this->validateByVNU($source);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
             return;
         }
         $failMessages = [];
         $lines        = explode("\n", $source);
         foreach ($messages as $message) {
-            if ($message['type'] == 'error') {
+            if ($message['type']==='error') {
                 $formattedMsg = '- Line ' . $message['lastLine'] . ', column ' . $message['lastColumn'] . ': ' .
                     $message['message'] . "\n  > " . $lines[$message['lastLine'] - 1];
                 $ignoring     = false;
@@ -138,7 +143,7 @@ class HTMLValidator extends \Codeception\Module
             }
         }
         if (count($failMessages) > 0) {
-            \PHPUnit_Framework_Assert::fail('Invalid HTML: ' . "\n" . implode("\n", $failMessages));
+            Assert::fail('Invalid HTML: ' . "\n" . implode("\n", $failMessages));
         }
     }
 }

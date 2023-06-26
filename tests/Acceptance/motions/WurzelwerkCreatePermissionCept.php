@@ -1,6 +1,10 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use Tests\_pages\MotionCreatePage;
+use Tests\_pages\MotionEditPage;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $scenario->skip('No test available');
 
@@ -18,7 +22,7 @@ $I->gotoConsultationHome(true, '1laenderrat2015', '1laenderrat2015');
 $I->loginAsStdUser();
 $I->dontSeeElement('#sidebar .createMotion');
 
-$I->openPage(\app\tests\_pages\MotionEditPage::class, [
+$I->openPage(MotionEditPage::class, [
     'subdomain'        => '1laenderrat2015',
     'consultationPath' => '1laenderrat2015',
     'motionTypeId'     => 8
@@ -42,7 +46,7 @@ $I->gotoConsultationHome(true, '1laenderrat2015', '1laenderrat2015');
 $I->loginAsStdAdmin();
 $I->dontSeeElement('#sidebar .createMotion');
 
-$I->openPage(\app\tests\_pages\MotionCreatePage::class, [
+$I->openPage(MotionCreatePage::class, [
     'subdomain'        => '1laenderrat2015',
     'consultationPath' => '1laenderrat2015',
     'motionTypeId'     => 8

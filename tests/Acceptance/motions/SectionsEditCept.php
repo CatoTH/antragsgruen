@@ -1,6 +1,7 @@
 <?php
 
 use app\models\sectionTypes\ISectionType;
+use Tests\Support\AcceptanceTester;
 
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
@@ -13,19 +14,19 @@ $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
 $I->wantTo('rearrange the list');
 $ret = $motionTypePage->getCurrentOrder();
-if (json_encode($ret) != '["1","2","4","3","5"]') {
+if (json_encode($ret)!=='["1","2","4","3","5"]') {
     $I->fail('Got invalid return from JavaScript (1): ' .  json_encode($ret));
 }
 $motionTypePage->setCurrentOrder(array(3, 2, 1, 4, 5));
 $ret = $motionTypePage->getCurrentOrder();
-if (json_encode($ret) != '["3","2","1","4","5"]') {
+if (json_encode($ret)!=='["3","2","1","4","5"]') {
     $I->fail('Got invalid return from JavaScript (2): ' .  json_encode($ret));
 }
 
 $motionTypePage->saveForm();
 
 $ret = $motionTypePage->getCurrentOrder();
-if (json_encode($ret) != '["3","2","1","4","5"]') {
+if (json_encode($ret)!=='["3","2","1","4","5"]') {
     $I->fail('Got invalid return from JavaScript (3): ' .  json_encode($ret));
 }
 
@@ -59,14 +60,14 @@ $I->selectOption('.sectionnew0 .positionRow input', "1");
 $I->wantTo('rearrange the tabular data section');
 
 $ret = $I->executeJS('return $(".sectionnew0 .tabularDataRow ul").data("sortable").toArray()');
-if (json_encode($ret) != '["ewb","ewc","ewd"]') {
+if (json_encode($ret)!=='["ewb","ewc","ewd"]') {
     $I->fail('Got invalid return from JavaScript (4): ' .  json_encode($ret));
 }
 $order = json_encode(['ewb', 'ewd', 'ewc']);
 $I->executeJS('$(".sectionnew0 .tabularDataRow ul").data("sortable").sort(' . $order . ')');
 
 $ret = $I->executeJS('return $(".sectionnew0 .tabularDataRow ul").data("sortable").toArray()');
-if (json_encode($ret) != '["ewb","ewd","ewc"]') {
+if (json_encode($ret)!=='["ewb","ewd","ewc"]') {
     $I->fail('Got invalid return from JavaScript (5): ' .  json_encode($ret));
 }
 $motionTypePage->saveForm();

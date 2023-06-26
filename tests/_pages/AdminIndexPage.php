@@ -1,16 +1,20 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AdminIndexPage extends BasePage
 {
-    public $route = 'admin/index';
+    public string|array $route = 'admin/index';
 
+    /**
+     * @param int $motionTypeId
+     * @return \Tests\_pages\AdminMotionTypePage
+     */
     public function gotoMotionTypes(int $motionTypeId): AdminMotionTypePage
     {
         $this->actor->click('.motionType' . $motionTypeId);

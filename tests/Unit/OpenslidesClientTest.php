@@ -2,22 +2,26 @@
 
 declare(strict_types=1);
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\plugins\openslides\AutoupdateSyncService;
-use app\plugins\openslides\controllers\AutoupdateController;
-use app\plugins\openslides\DTO\LoginResponse;
 use app\plugins\openslides\OpenslidesClient;
 use app\plugins\openslides\SiteSettings;
-use GuzzleHttp\{Client, Handler\MockHandler, HandlerStack, Middleware, Psr7\Request, Psr7\Response};
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use Tests\Support\Helper\TestBase;
 
 class OpenslidesClientTest extends TestBase
 {
     /** @var array */
-    protected $osApiHistory;
+    protected array $osApiHistory;
 
     /** @var MockHandler */
-    protected $mockHandler;
+    protected MockHandler $mockHandler;
 
     private function getClient(): OpenslidesClient
     {
@@ -39,7 +43,7 @@ class OpenslidesClientTest extends TestBase
         return $this->osApiHistory[$no]['request'];
     }
 
-    public function testLoginResponse_Success()
+    public function testLoginResponse_Success(): void
     {
         $client = $this->getClient();
 
@@ -92,9 +96,9 @@ class OpenslidesClientTest extends TestBase
         $this->assertJsonStringEqualsJsonString('{"username":"username","password":"password"}', $request->getBody()->getContents());
     }
 
-    public function testParseAutoupdaterCallbackParsing()
+    public function testParseAutoupdaterCallbackParsing(): void
     {
-        $json = file_get_contents(__DIR__.'/../Data/openslides-autoupdate-fullload.json');
+        $json = file_get_contents(__DIR__.'/../Support/Data/openslides-autoupdate-fullload.json');
         $service = new AutoupdateSyncService();
         $data = $service->parseRequest($json);
 

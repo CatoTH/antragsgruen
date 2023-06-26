@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\settings\Consultation;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 
 $I->populateDBData1();
@@ -88,7 +91,7 @@ $I->seeElement('.consultationIndex');
 $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
-foreach (\app\models\settings\Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
+foreach (Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
     $page = $I->gotoStdAdminPage()->gotoAppearance();
     $I->selectOption('#startLayoutType', $layoutId);
     $page->saveForm();

@@ -1,18 +1,15 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\diff\ArrayMatcher;
-use Yii;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class ArrayMatcherTest extends TestBase
 {
-    use Specify;
-
     /**
      */
-    public function testInsertAtBeginning()
+    public function testInsertAtBeginning(): void
     {
         $this->markTestIncomplete('kommt noch');
 
@@ -68,6 +65,5 @@ class ArrayMatcherTest extends TestBase
             '<p>Original line</p>',
             '<p>Changed line</p>',
         ], $matching);
-
     }
 }

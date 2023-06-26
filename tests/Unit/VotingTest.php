@@ -2,14 +2,22 @@
 
 declare(strict_types=1);
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\VotingMethods;
-use app\models\db\{Amendment, Consultation, User, VotingBlock};
+use app\models\db\Amendment;
+use app\models\db\Consultation;
+use app\models\db\IMotion;
+use app\models\db\User;
+use app\models\db\VotingBlock;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
+use Yii;
 use yii\web\Request;
 
+#[Group('database')]
 class VotingTest extends DBTestBase
 {
     private function getVotingMethods(?array $postdata): VotingMethods
@@ -39,7 +47,7 @@ class VotingTest extends DBTestBase
     private function openVotingWithSettings(?array $settings): VotingBlock
     {
         $user = User::findOne(['email' => 'testadmin@example.org']);
-        \Yii::$app->user->identity = $user;
+        Yii::$app->user->identity = $user;
 
         $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_PREPARING]);
         $votingBlock = VotingBlock::findOne(1);
@@ -98,7 +106,7 @@ class VotingTest extends DBTestBase
         $found = false;
         try {
             $this->voteForAmendment($votingBlock, $userEmail, $vote, '3');
-        } catch (FormError $e) {
+        } catch (FormError) {
             $found = true;
         }
         $this->assertTrue($found, 'No exception thrown when voting for the first amendment');
@@ -114,7 +122,7 @@ class VotingTest extends DBTestBase
         $found = false;
         try {
             $this->voteForAmendment($votingBlock, $userEmail, $vote, '270');
-        } catch (FormError $e) {
+        } catch (FormError) {
             $found = true;
         }
         $this->assertTrue($found, 'No exception thrown when voting for the second amendment');
@@ -130,7 +138,7 @@ class VotingTest extends DBTestBase
         $found = false;
         try {
             $this->voteForAmendment($votingBlock, $userEmail, $vote, '274');
-        } catch (FormError $e) {
+        } catch (FormError) {
             $found = true;
         }
         $this->assertTrue($found, 'No exception thrown when voting for the third amendment');
@@ -163,7 +171,7 @@ class VotingTest extends DBTestBase
     public function testStatusChanges(): void
     {
         $user = User::findOne(['email' => 'testadmin@example.org']);
-        \Yii::$app->user->identity = $user;
+        Yii::$app->user->identity = $user;
 
         // Set from Offline to Preparing
         $votingMethods = $this->getVotingMethods([
@@ -214,7 +222,7 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'no');
         $this->closeVotingAndPublishResults($votingBlock);
 
-        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
+        $this->assertAmendmentVotingHasStatus(IMotion::STATUS_ACCEPTED);
     }
 
     public function testVotingResultSimpleRejectedOnEqualNumbers(): void
@@ -226,7 +234,7 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'no');
         $this->closeVotingAndPublishResults($votingBlock);
 
-        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_REJECTED);
+        $this->assertAmendmentVotingHasStatus(IMotion::STATUS_REJECTED);
     }
 
     public function testVotingResultTwoThirdsAccepted(): void
@@ -238,7 +246,7 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'abstention');
         $this->closeVotingAndPublishResults($votingBlock);
 
-        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
+        $this->assertAmendmentVotingHasStatus(IMotion::STATUS_ACCEPTED);
     }
 
     public function testVotingResultTwoThirdsRejected(): void
@@ -251,7 +259,7 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'no');
         $this->closeVotingAndPublishResults($votingBlock);
 
-        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_REJECTED);
+        $this->assertAmendmentVotingHasStatus(IMotion::STATUS_REJECTED);
     }
 
     public function testVotingResultAbsoluteAccepted(): void
@@ -264,7 +272,7 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'abstention');
         $this->closeVotingAndPublishResults($votingBlock);
 
-        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
+        $this->assertAmendmentVotingHasStatus(IMotion::STATUS_ACCEPTED);
     }
 
     public function testVotingResultAbsoluteRejectedOnEqualNumbers(): void
@@ -276,7 +284,7 @@ class VotingTest extends DBTestBase
         $this->voteForFirstAmendment($votingBlock, 'fixedadmin@example.org', 'abstention');
         $this->closeVotingAndPublishResults($votingBlock);
 
-        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_REJECTED);
+        $this->assertAmendmentVotingHasStatus(IMotion::STATUS_REJECTED);
     }
 
     public function testVotingResultsVisibleOnlyAfterPublication(): void
@@ -319,7 +327,7 @@ class VotingTest extends DBTestBase
         $publishedVotings = $votingMethods->getClosedPublishedVotingsForUser($user);
         $this->assertCount(1, $publishedVotings);
 
-        $this->assertAmendmentVotingHasStatus(Amendment::STATUS_ACCEPTED);
+        $this->assertAmendmentVotingHasStatus(IMotion::STATUS_ACCEPTED);
     }
 
     public function testVotingLimitsVotesForGroups(): void

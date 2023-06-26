@@ -1,15 +1,13 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\MotionSorter;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class MotionSortTest extends TestBase
 {
-    use Specify;
-
-    public function testStd()
+    public function testStd(): void
     {
         $orig   = [
             'A3',
@@ -29,7 +27,7 @@ class MotionSortTest extends TestBase
 
     /**
      */
-    public function testNeuVariations()
+    public function testNeuVariations(): void
     {
         $orig   = [
             'A10 neub',
@@ -49,7 +47,7 @@ class MotionSortTest extends TestBase
 
     /**
      */
-    public function testAgenda()
+    public function testAgenda(): void
     {
         $orig   = [
             '6.10.',
@@ -69,7 +67,7 @@ class MotionSortTest extends TestBase
 
     /**
      */
-    public function testStripBeginning()
+    public function testStripBeginning(): void
     {
         $this->assertEquals(['1', '2'], MotionSorter::stripCommonBeginning('ab1', 'ab2'));
         $this->assertEquals(['d', 'c'], MotionSorter::stripCommonBeginning('abd', 'abc'));
@@ -82,7 +80,7 @@ class MotionSortTest extends TestBase
 
     /**
      */
-    public function testAgenda2()
+    public function testAgenda2(): void
     {
         $orig   = [
             '6.1.',

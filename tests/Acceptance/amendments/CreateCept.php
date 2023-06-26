@@ -1,8 +1,9 @@
 <?php
 
-use app\tests\_pages\MotionPage;
-
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\ISupporter;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -31,7 +32,7 @@ $I->dontSee('JavaScript aktiviert sein');
 $I->see('Gremium, LAG...');
 $I->dontSee('Beschlussdatum');
 $I->dontSee('Ansprechperson');
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->dontSee('Gremium, LAG...');
 $I->see('Beschlussdatum');
 $I->see('Ansprechperson');
@@ -55,7 +56,7 @@ $I->wantTo('submit the amendment with missing contact information');
 
 $I->fillField(['name' => 'Initiator[primaryName]'], 'My Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#amendmentEditForm', [], 'save');
 
 $I->seeBootboxDialog('Es muss ein Beschlussdatum angegeben werden');

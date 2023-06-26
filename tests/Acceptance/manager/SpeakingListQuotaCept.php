@@ -1,6 +1,7 @@
 <?php
 
-use app\tests\_pages\ManagerStartPage;
+use Tests\_pages\ManagerStartPage;
+use Tests\Support\AcceptanceTester;
 
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);

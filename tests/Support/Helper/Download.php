@@ -1,30 +1,34 @@
 <?php
-namespace Helper;
+namespace Tests\Support\Helper;
 
-class Download extends \Codeception\Module
+use Codeception\Module;
+use RuntimeException;
+
+class Download extends Module
 {
     /**
      * @param string $selector
      * @return string
+     * @throws \Codeception\Exception\ModuleException
      */
-    public function getAbsoluteHref($selector)
+    public function getAbsoluteHref(string $selector): string
     {
-        if ($this->hasModule('\Helper\AntragsgruenWebDriver')) {
-            /** @var \Helper\AntragsgruenWebDriver $webdriver */
-            $webdriver = $this->getModule('\Helper\AntragsgruenWebDriver');
+        if ($this->hasModule(AntragsgruenWebDriver::class)) {
+            /** @var \Tests\Support\Helper\AntragsgruenWebDriver $webdriver */
+            $webdriver = $this->getModule(AntragsgruenWebDriver::class);
         } elseif ($this->hasModule('WebDriver')) {
             /** @var \Codeception\Module\WebDriver $webdriver */
             $webdriver = $this->getModule('WebDriver');
         } else {
-            throw new \Exception("WebDriver not found");
+            throw new RuntimeException("WebDriver not found");
         }
 
         return $webdriver->executeJS('
             var $element = $("' . $selector . '");
             //return $element.attr("href");
             var a = document.createElement("a");
-	        a.href = $element.attr("href");
-	        return a.href;
+            a.href = $element.attr("href");
+            return a.href;
         ');
     }
 
@@ -33,7 +37,7 @@ class Download extends \Codeception\Module
      * @return string
      * @throws \Exception
      */
-    public function downloadLink($selector)
+    public function downloadLink(string $selector): string
     {
         $url    = $this->getAbsoluteHref($selector);
         $handle = curl_init();
@@ -42,8 +46,8 @@ class Download extends \Codeception\Module
         $data = curl_exec($handle);
         $info = curl_getinfo($handle);
         curl_close($handle);
-        if ($info['http_code'] != 200) {
-            throw new \Exception('File not found: ' . $info['http_code'] . ' / ' . $url);
+        if ($info['http_code'] !== 200) {
+            throw new RuntimeException('File not found: '.$info['http_code'].' / '.$url);
         }
         return $data;
     }

@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -9,10 +11,10 @@ $I->gotoConsultationHome();
 $I->click('#sidebar .feeds a');
 
 $content = $I->downloadLink('.feedMotions');
-if (mb_strpos($content, 'O’zapft is!') === false) {
+if (!str_contains($content, 'O’zapft is!')) {
     $I->fail('I don\'t see "O’zapft is!" in Source');
 }
-if (mb_strpos($content, 'Test') === false) {
+if (!str_contains($content, 'Test')) {
     $I->fail('I don\'t see "Test" in Source');
 }
 
@@ -22,10 +24,10 @@ $I->gotoConsultationHome();
 $I->click('#sidebar .feeds a');
 
 $content = $I->downloadLink('.feedAmendments');
-if (mb_strpos($content, 'Tester') === false) {
+if (!str_contains($content, 'Tester')) {
     $I->fail('I don\'t see "Tester" in Source');
 }
-if (mb_strpos($content, 'Ä1') === false) {
+if (!str_contains($content, 'Ä1')) {
     $I->fail('I don\'t see "Ä1" in Source');
 }
 
@@ -47,7 +49,7 @@ $lookFor = [
     'Auf gehds beim Schichtl pfiad',
 ];
 foreach ($lookFor as $look) {
-    if (mb_strpos($content, $look) === false) {
+    if (!str_contains($content, $look)) {
         $I->fail('I don\'t see "' . $look . '" in Source');
     }
 }

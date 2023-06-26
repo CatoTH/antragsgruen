@@ -1,18 +1,18 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\yii\UrlManager;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
+use Yii;
 use yii\web\Request;
 
 class RoutingTest extends TestBase
 {
-    use Specify;
-
-    private function resolveRequest(string $method, string $route): array {
+    private function resolveRequest(string $method, string $route): array
+    {
         /** @var UrlManager $manager */
-        $manager = \Yii::$app->get('urlManager');
+        $manager = Yii::$app->get('urlManager');
 
         $request = new class($method, $route) extends Request {
             private $url;
@@ -39,7 +39,7 @@ class RoutingTest extends TestBase
         return $manager->parseRequest($request);
     }
 
-    public function testConsultationIndex()
+    public function testConsultationIndex(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/std-parteitag');
         $this->assertEquals([
@@ -51,7 +51,7 @@ class RoutingTest extends TestBase
         ], $resolvedRoute);
     }
 
-    public function testMotionViewBySlug()
+    public function testMotionViewBySlug(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/std-parteitag/Testing_proposed_changes-630');
         $this->assertEquals([
@@ -64,7 +64,7 @@ class RoutingTest extends TestBase
         ], $resolvedRoute);
     }
 
-    public function testMotionViewById()
+    public function testMotionViewById(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/std-parteitag/motion/630');
         $this->assertEquals([
@@ -77,7 +77,7 @@ class RoutingTest extends TestBase
         ], $resolvedRoute);
     }
 
-    public function testAmendmentViewBySlug()
+    public function testAmendmentViewBySlug(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/std-parteitag/Testing_proposed_changes-630/12345');
         $this->assertEquals([
@@ -91,7 +91,7 @@ class RoutingTest extends TestBase
         ], $resolvedRoute);
     }
 
-    public function testRestSiteIndex()
+    public function testRestSiteIndex(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/rest');
         $this->assertEquals([
@@ -102,7 +102,7 @@ class RoutingTest extends TestBase
         ], $resolvedRoute);
     }
 
-    public function testRestConsultationIndex()
+    public function testRestConsultationIndex(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/rest/std-parteitag');
         $this->assertEquals([
@@ -114,7 +114,7 @@ class RoutingTest extends TestBase
         ], $resolvedRoute);
     }
 
-    public function testRestConsultationWithDashIndex()
+    public function testRestConsultationWithDashIndex(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/rest/std-parteitag-2010');
         $this->assertEquals([
@@ -126,7 +126,7 @@ class RoutingTest extends TestBase
         ], $resolvedRoute);
     }
 
-    public function testRestMotionViewById()
+    public function testRestMotionViewById(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/rest/std-parteitag/motion/630');
         $this->assertEquals([
@@ -139,7 +139,7 @@ class RoutingTest extends TestBase
         ], $resolvedRoute);
     }
 
-    public function testRestAmendmentViewBySlug()
+    public function testRestAmendmentViewBySlug(): void
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/12345');
         $this->assertEquals([

@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -47,7 +49,7 @@ $I->fillField('#sections_1', str_repeat('x', 21));
 $I->see('Der Text ist zu lang');
 $I->see('Max. 20 Zeichen (Aktuell: 21)');
 $disabled = $I->executeJS('return ($(".motionEditForm button[type=submit]").prop("disabled") ? "yes" : "no");');
-if ($disabled != 'yes') {
+if ($disabled!=='yes') {
     $I->fail('submitting still allowed');
 }
 
@@ -56,7 +58,7 @@ $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("'. str_repeat('x',
 $I->see('Der Text ist zu lang');
 $I->see('Max. 100 Zeichen (Aktuell: 101)');
 $disabled = $I->executeJS('return ($(".motionEditForm button[type=submit]").prop("disabled") ? "yes" : "no");');
-if ($disabled != 'yes') {
+if ($disabled!=='yes') {
     $I->fail('submitting still allowed');
 }
 
@@ -65,7 +67,7 @@ $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("'. str_repeat('x',
 $I->see('Max. 150 Zeichen (Aktuell: 151)');
 $I->see('Der Text ist zu lang');
 $disabled = $I->executeJS('return ($(".motionEditForm button[type=submit]").prop("disabled") ? "yes" : "no");');
-if ($disabled != 'no') {
+if ($disabled!=='no') {
     $I->fail('submitting not allowed');
 }
 

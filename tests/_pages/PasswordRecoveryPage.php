@@ -1,14 +1,14 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
  * Represents login page
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class PasswordRecoveryPage extends BasePage
 {
-    public $route = 'user/recovery';
+    public string|array $route = 'user/recovery';
 }

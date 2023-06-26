@@ -2,7 +2,6 @@
 
 /**
  * @var \app\models\settings\Stylesheet $stylesheetSettings
- * @var string $format
  */
 
 use ScssPhp\ScssPhp\OutputStyle;

@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -121,7 +124,7 @@ $I->fillField('#votesYes3', '15');
 $I->fillField('#votesNo3', '4');
 
 $I->seeOptionIsSelected('#amendmentStatus274', 'Abgelehnt');
-$I->selectOption('#amendmentStatus274', \app\models\db\IMotion::STATUS_ACCEPTED);
+$I->selectOption('#amendmentStatus274', IMotion::STATUS_ACCEPTED);
 
 
 $I->wantTo('modify the text');

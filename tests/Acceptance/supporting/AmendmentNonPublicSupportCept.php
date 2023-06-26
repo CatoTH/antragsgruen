@@ -1,6 +1,10 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\policies\IPolicy;
+use app\models\supportTypes\SupportBase;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 
 $I->populateDBData1();
@@ -8,10 +12,10 @@ $I->populateDBData1();
 $I->wantTo('enable non-public supports');
 $page = $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
 $I->dontSeeElement('#typeOfferNonPublicSupports');
-$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
+$I->selectOption('#typeSupportType', SupportBase::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeOfferNonPublicSupports');
 $I->checkOption("#typeOfferNonPublicSupports");
-$I->selectOption('#typePolicySupportAmendments', \app\models\policies\IPolicy::POLICY_LOGGED_IN);
+$I->selectOption('#typePolicySupportAmendments', IPolicy::POLICY_LOGGED_IN);
 $I->fillField('#typeMinSupporters', 3);
 $I->checkOption('.amendmentSupport');
 

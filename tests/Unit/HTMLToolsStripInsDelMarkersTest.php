@@ -1,14 +1,12 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\HTMLTools;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class HTMLToolsStripInsDelMarkersTest extends TestBase
 {
-    use Specify;
-
     public function testInsDel(): void
     {
         $orig     = '<strong>Test <ins>Inserted <em>EM</em></ins><del>old</del></strong><br>';

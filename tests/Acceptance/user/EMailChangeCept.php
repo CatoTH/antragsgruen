@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use Tests\_pages\EmailChangePage;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -25,7 +28,7 @@ $I->see('an die angegebene Adresse geschickt', '.alert-success');
 $I->see('E-mail sent to: noemail@example.org');
 $I->seeElement('.changeRequested');
 
-$I->openPage(\app\tests\_pages\EmailChangePage::class, [
+$I->openPage(EmailChangePage::class, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
     'email'            => 'kjkjh@example.org',
@@ -33,7 +36,7 @@ $I->openPage(\app\tests\_pages\EmailChangePage::class, [
 ]);
 $I->see('Diese E-Mail-Änderung wurde nicht beantragt oder bereits durchgeführt.');
 
-$I->openPage(\app\tests\_pages\EmailChangePage::class, [
+$I->openPage(EmailChangePage::class, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
     'email'            => 'noemail@example.org',
@@ -50,7 +53,7 @@ $I->see('5 Minuten', '.alert-danger');
 
 $I->wantTo('confirm the previous mail');
 
-$I->openPage(\app\tests\_pages\EmailChangePage::class, [
+$I->openPage(EmailChangePage::class, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
     'email'            => 'noemail@example.org',
@@ -78,7 +81,7 @@ $I->see('an die angegebene Adresse geschickt', '.alert-success');
 $I->see('E-mail sent to: noemail2@example.org');
 $I->see('noemail2@example.org', '.changeRequested');
 
-$I->openPage(\app\tests\_pages\EmailChangePage::class, [
+$I->openPage(EmailChangePage::class, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
     'email'            => 'noemail2@example.org',

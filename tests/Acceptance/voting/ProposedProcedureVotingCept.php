@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\VotingBlock;
+use Tests\Support\AcceptanceTester;
 
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);

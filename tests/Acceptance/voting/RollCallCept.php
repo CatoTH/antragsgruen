@@ -2,7 +2,9 @@
 
 /** @var \Codeception\Scenario $scenario */
 
-use app\tests\_pages\VotingResultsPage;
+use app\models\votings\AnswerTemplates;
+use Tests\_pages\VotingResultsPage;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -19,9 +21,9 @@ $I->fillField('.creatingVoting .settingsTitle', 'Roll call');
 $I->fillField('.creatingVoting .settingsQuestion', 'Who is present?');
 $I->seeElement('.majorityTypeSettings');
 
-$I->clickJS("input[name=answersNew][value='" . \app\models\votings\AnswerTemplates::TEMPLATE_PRESENT . "']");
+$I->clickJS("input[name=answersNew][value='" . AnswerTemplates::TEMPLATE_PRESENT . "']");
 $I->dontSeeElement('.majorityTypeSettings');
-$I->assertSame(1, intval($I->executeJS('return $("input[name=resultsPublicNew]:checked").val()')));
+$I->assertSame(1, (int)$I->executeJS('return $("input[name=resultsPublicNew]:checked").val()'));
 $I->clickJS('input[name=votesPublicNew][value=\"2\"]');
 $I->clickJS('input[name=resultsPublicNew][value=\"1\"]');
 $I->clickJS('form.creatingVoting button[type=submit]');

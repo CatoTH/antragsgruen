@@ -1,19 +1,23 @@
 <?php
 
-namespace Helper;
+namespace Tests\Support\Helper;
 
-class TestApi extends \Codeception\Module
+use Codeception\Module;
+use RuntimeException;
+use Tests\Support\AcceptanceTester;
+
+class TestApi extends Module
 {
     public function getUrlBase()
     {
-        if ($this->hasModule('\Helper\AntragsgruenWebDriver')) {
-            /** @var \Helper\AntragsgruenWebDriver $webdriver */
-            $webdriver = $this->getModule('\Helper\AntragsgruenWebDriver');
+        if ($this->hasModule(AntragsgruenWebDriver::class)) {
+            /** @var \Tests\Support\Helper\AntragsgruenWebDriver $webdriver */
+            $webdriver = $this->getModule(AntragsgruenWebDriver::class);
         } elseif ($this->hasModule('WebDriver')) {
             /** @var \Codeception\Module\WebDriver $webdriver */
             $webdriver = $this->getModule('WebDriver');
         } else {
-            throw new \Exception("WebDriver not found");
+            throw new RuntimeException("WebDriver not found");
         }
 
         return $webdriver->_getConfig('url');
@@ -21,7 +25,7 @@ class TestApi extends \Codeception\Module
 
     private function executeCall($subdomain, $consultationUrl, $operation, $data): array
     {
-        $baseUrl = str_replace(['{SUBDOMAIN}', '{PATH}'], [$subdomain, $consultationUrl], \AcceptanceTester::ABSOLUTE_URL_TEMPLATE_SITE);
+        $baseUrl = str_replace(['{SUBDOMAIN}', '{PATH}'], [$subdomain, $consultationUrl], AcceptanceTester::ABSOLUTE_URL_TEMPLATE_SITE);
         $url = $baseUrl . '/test/' . $operation;
 
         $handle = curl_init();
@@ -35,7 +39,7 @@ class TestApi extends \Codeception\Module
         $info = curl_getinfo($handle);
         curl_close($handle);
         if ($info['http_code'] !== 200) {
-            throw new \Exception('File not found: ' . $info['http_code'] . ' / ' . $url);
+            throw new RuntimeException('File not found: '.$info['http_code'].' / '.$url);
         }
 
         return json_decode($data, true);

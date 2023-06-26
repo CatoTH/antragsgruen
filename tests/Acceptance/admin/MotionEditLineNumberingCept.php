@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use Tests\Support\AcceptanceTester;
+
 $motionId = AcceptanceTester::FIRST_FREE_MOTION_ID;
 
 $I = new AcceptanceTester($scenario);

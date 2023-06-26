@@ -1,17 +1,18 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
+use app\models\db\Consultation;
+use app\models\db\IMotion;
+use app\models\forms\AdminMotionFilterForm;
 use app\models\layoutHooks\StdHooks;
 use app\models\settings\Layout;
-use app\models\db\{Consultation, IMotion};
-use app\models\forms\AdminMotionFilterForm;
-use Codeception\Specify;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class AdminMotionFilterFormTest extends DBTestBase
 {
-    use Specify;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -62,7 +63,6 @@ class AdminMotionFilterFormTest extends DBTestBase
         $entries = $this->serializeMotions($form->getSorted());
         $first   = array_slice($entries, 0, 5);
         $this->assertEquals(['F-01', '', 'T-01'], $first);
-
     }
 
     public function testSort(): void

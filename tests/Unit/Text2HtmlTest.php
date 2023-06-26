@@ -1,27 +1,26 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\HTMLTools;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class Text2HtmlTest extends TestBase
 {
-    use Specify;
-
-    /**
-     */
-    public function testInsertLinks()
+    public function testInsertLinks1(): void
     {
-        $orig   = 'http://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2
+        $orig   = 'https://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2
 Link
-http://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2';
-        $expect = '<a rel="nofollow" href="http://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2">http://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2</a><br>
+https://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2';
+        $expect = '<a rel="nofollow" href="https://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2">https://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2</a><br>
 Link<br>
-<a rel="nofollow" href="http://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2">http://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2</a>';
+<a rel="nofollow" href="https://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2">https://stdparteitag.antragsgruen.localhost/std-parteitag/motion/2</a>';
         $html   = HTMLTools::textToHtmlWithLink($orig);
         $this->assertEquals($expect, $html);
-
+    }
+    public function testInsertLinks2(): void
+    {
+        // TODO should be HTTPS
         $orig   = 'www.antragsgruen.de
 www.antragsgruen.de/test2?';
         $expect = '<a rel="nofollow" href="http://www.antragsgruen.de">www.antragsgruen.de</a><br>

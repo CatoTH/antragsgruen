@@ -1,15 +1,17 @@
 <?php
 
-namespace Helper;
+namespace Tests\Support\Helper;
 
+use Codeception\Module\WebDriver;
 use Codeception\Util\Uri;
 
-class AntragsgruenWebDriver extends \Codeception\Module\WebDriver
+class AntragsgruenWebDriver extends WebDriver
 {
     /**
      * @param string $page
+     * @throws \JsonException
      */
-    public function amOnPage($page)
+    public function amOnPage($page): void
     {
         $urlParts = parse_url($page);
         if (!isset($urlParts['host']) && !isset($urlParts['scheme'])) {

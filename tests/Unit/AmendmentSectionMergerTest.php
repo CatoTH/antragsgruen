@@ -1,10 +1,11 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\diff\amendmentMerger\SectionMerger;
 use app\components\diff\DataTypes\GroupedParagraphData;
 use app\components\HTMLTools;
+use Tests\Support\Helper\TestBase;
 
 class AmendmentSectionMergerTest extends TestBase
 {
@@ -17,7 +18,7 @@ class AmendmentSectionMergerTest extends TestBase
         return $data;
     }
 
-    public function testChangedList()
+    public function testChangedList(): void
     {
         $merger = new SectionMerger();
 
@@ -36,7 +37,7 @@ class AmendmentSectionMergerTest extends TestBase
         ], $merger->getGroupedParagraphData(1));
     }
 
-    public function testInsertWithinDeletion()
+    public function testInsertWithinDeletion(): void
     {
         $origText = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>';
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
@@ -57,7 +58,7 @@ class AmendmentSectionMergerTest extends TestBase
         $this->assertTrue(isset($collisions[2]));
     }
 
-    public function testBasic()
+    public function testBasic(): void
     {
         $orig   = [
             '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>'
@@ -76,7 +77,7 @@ class AmendmentSectionMergerTest extends TestBase
         ], $groupedParaData);
     }
 
-    public function testInsertedLinebreak()
+    public function testInsertedLinebreak(): void
     {
         $orig   = [
             '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>'
@@ -98,7 +99,7 @@ class AmendmentSectionMergerTest extends TestBase
         ], $groupedParaData);
     }
 
-    public function testInsertedParagraph()
+    public function testInsertedParagraph(): void
     {
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs(['<p>Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag zu einer weniger gewaltvollen Gesellschaft.</p>']);
@@ -106,15 +107,16 @@ class AmendmentSectionMergerTest extends TestBase
 <p>Prävention sexualisierter Gewalt ist schon lange ein wichtiges Anliegen der Jugendverbände. Mit unseren Maßnahmen zur Prävention und Intervention gegen sexualisierte Gewalt leisten wir dabei einen wichtigen Beitrag.</p>
 <p>zu einer weniger gewaltvollen Gesellschaft.</p>']);
 
-        $this->assertEqualsCanonicalizing([
+        $this->assertEqualsCanonicalizing(
+            [
             $this->getGroupedParagraphData(0, ''),
             $this->getGroupedParagraphData(1, '###DEL_START###<p>Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag zu einer weniger gewaltvollen Gesellschaft.</p>###DEL_END######INS_START###<p>Der Kampf für Gleichberechtigung von Frauen und Männern stellt die Grundlage der präventiven Arbeit dar. Eine präventive Arbeit gegen sexualisierte Gewalt bedeutet eben auch sexistische Strukturen in der Gesellschaft aufzudecken und stetig dagegen anzugehen.</p>' . "\n" . '<p>Prävention sexualisierter Gewalt ist schon lange ein wichtiges Anliegen der Jugendverbände. Mit unseren Maßnahmen zur Prävention und Intervention gegen sexualisierte Gewalt leisten wir dabei einen wichtigen Beitrag.</p>' . "\n" . '<p>zu einer weniger gewaltvollen Gesellschaft.</p>###INS_END###'),
-        ],
+            ],
             $merger->getGroupedParagraphData(0)
         );
     }
 
-    public function testPrependPToChangedList()
+    public function testPrependPToChangedList(): void
     {
         $this->markTestIncomplete('kommt noch');
 
@@ -127,7 +129,7 @@ class AmendmentSectionMergerTest extends TestBase
         ], $merger->getGroupedParagraphData(0));
     }
 
-    public function testChangeWholeParagraph()
+    public function testChangeWholeParagraph(): void
     {
         $origText   = '<p><strong>Demokratie und Freiheit </strong><br>
 Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird.</p>';
@@ -158,7 +160,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $merger->getGroupedParagraphData(0));
     }
 
-    public function testMergeWithComplication1_WithCollisionMerging()
+    public function testMergeWithComplication1_WithCollisionMerging(): void
     {
         $origText = '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>';
 
@@ -192,7 +194,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertFalse(isset($colliding[3]));
     }
 
-    public function testMergeWithComplication1_WithoutCollisionMerging()
+    public function testMergeWithComplication1_WithoutCollisionMerging(): void
     {
         $origText = '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>';
 
@@ -230,7 +232,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
     /**
      * Hint, Does not collide anymore, since 3.7
      */
-    public function testMergeWithComplication2_WithoutCollisionMerging()
+    public function testMergeWithComplication2_WithoutCollisionMerging(): void
     {
         $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25</p>';
 
@@ -264,7 +266,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
     /**
      * Hint, Does not collide anymore, since 3.7
      */
-    public function testMergeWithComplication2_WithCollisionMerging()
+    public function testMergeWithComplication2_WithCollisionMerging(): void
     {
         $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25</p>';
 
@@ -297,7 +299,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
     /**
      * Is not colliding anymore
      */
-    public function testMergeWithComplicationStripUnchangedLi()
+    public function testMergeWithComplicationStripUnchangedLi(): void
     {
         $origText = '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li></ul>';
 
@@ -320,7 +322,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertEqualsCanonicalizing(0, count($colliding));
     }
 
-    public function testMerge1()
+    public function testMerge1(): void
     {
         $origText   = '<ul>
 <li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li>
@@ -346,7 +348,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $merger->getGroupedParagraphData(1));
     }
 
-    public function testMerge2()
+    public function testMerge2(): void
     {
         $origText   = '<p>Woaß wia Gams, damischa. A ganze Hoiwe Ohrwaschl Greichats iabaroi Prosd Engelgwand nix Reiwadatschi.Weibaleid ognudelt Ledahosn noch da Giasinga Heiwog</p>';
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
@@ -366,7 +368,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $merger->getGroupedParagraphData(0));
     }
 
-    public function testMerge3()
+    public function testMerge3(): void
     {
         $origText = '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>
 <p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd!</p>';
@@ -395,7 +397,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $merger->getGroupedParagraphData(1));
     }
 
-    public function testCollisionWithMultipleMergableParts()
+    public function testCollisionWithMultipleMergableParts(): void
     {
         $origText = '<p>A beginning. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>';
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
@@ -420,7 +422,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertCount(0, $collisions);
     }
 
-    public function testCollisionWithTwoDeletedParts_WithCollisionMerging()
+    public function testCollisionWithTwoDeletedParts_WithCollisionMerging(): void
     {
         // This tests that partially overlapping deletions CAN be merged
         $origText = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>';
@@ -443,7 +445,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertCount(0, $collisions);
     }
 
-    public function testCollisionWithTwoDeletedParts_WithoutCollisionMerging()
+    public function testCollisionWithTwoDeletedParts_WithoutCollisionMerging(): void
     {
         $origText = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>';
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
@@ -467,7 +469,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertSame('###DEL_START###consetetur sadipscing elitr, sed diam nonumy eirmod ###DEL_END###', $collisions[1][1]->text);
     }
 
-    public function testCollisionTooBigToBeMerged_WithCollisionMerging()
+    public function testCollisionTooBigToBeMerged_WithCollisionMerging(): void
     {
         // This tests that a collision can NOT be merged when it is too long
         $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>';
@@ -495,7 +497,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertSame('###DEL_START###test23###DEL_END######INS_START###Here we are inserting a rather long text. As this exceeds the limit set in ParagraphMerger::$collisionMergingLimit, this should lead to a collisiontest23###INS_END### ', $colliding[2][1]->text);
     }
 
-    public function testCollisionTooHtmlishToBeMerged_WithCollisionMerging()
+    public function testCollisionTooHtmlishToBeMerged_WithCollisionMerging(): void
     {
         // This tests that a collision can NOT be merged when it contains HTML tags
         $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>';
@@ -521,7 +523,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertSame('###DEL_START###test23 ###DEL_END######INS_START###<strong>Replacement no. 2</strong> ###INS_END###', $colliding[2][1]->text);
     }
 
-    public function testCollisionSeveralConfusingCollisions_WithCollisionMerging()
+    public function testCollisionSeveralConfusingCollisions_WithCollisionMerging(): void
     {
         $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>';
 

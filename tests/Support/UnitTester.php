@@ -1,5 +1,9 @@
 <?php
 
+namespace Tests\Support;
+
+use Codeception\Actor;
+use Codeception\Lib\Friend;
 
 /**
  * Inherited Methods
@@ -12,15 +16,16 @@
  * @method void am($role)
  * @method void lookForwardTo($achieveValue)
  * @method void comment($description)
- * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = null)
+ * @method Friend haveFriend($name, $actorClass = NULL)
  *
  * @SuppressWarnings(PHPMD)
-*/
-class UnitTester extends \Codeception\Actor
+ */
+class UnitTester extends Actor
 {
+    // do not ever remove this line!
     use _generated\UnitTesterActions;
 
-   /**
-    * Define custom actions here
-    */
+    /**
+     * Define custom actions here.
+     */
 }

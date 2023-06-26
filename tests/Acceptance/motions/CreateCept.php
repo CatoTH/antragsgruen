@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\ISupporter;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -24,7 +27,7 @@ $I->dontSee('JavaScript aktiviert sein');
 $I->see('Gremium, LAG...');
 $I->dontSee('Beschlussdatum');
 $I->dontSee('Ansprechperson');
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->dontSee('Gremium, LAG...');
 $I->see('Beschlussdatum');
 $I->see('Ansprechperson');
@@ -39,7 +42,7 @@ $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><strong>Test 2<
 $I->fillField(['name' => 'Initiator[primaryName]'], 'Mein Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
 $I->fillField(['name' => 'Initiator[contactPhone]'], '+49123456789');
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->seeBootboxDialog('Es muss ein Beschlussdatum angegeben werden');
@@ -65,7 +68,7 @@ $I->executeJS('$("#initiatorPrimaryName").removeAttr("required");');
 $I->fillField(['name' => 'Initiator[primaryName]'], '');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
 $I->fillField(['name' => 'Initiator[contactPhone]'], '+49-123-456789');
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->wait(1);

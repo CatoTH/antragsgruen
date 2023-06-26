@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\ISupporter;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -20,7 +23,7 @@ $I->seeCheckboxIsChecked("//input[@name='motionInitiatorSettings[hasResolutionDa
 $I->wantTo('see the field being optional');
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $page->fillInValidSampleData();
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->seeElement('#resolutionDate');
 $I->fillField('#resolutionDate', '');
 $I->fillField('#initiatorPrimaryName', 'My party');
@@ -40,7 +43,7 @@ $I->seeCheckboxIsChecked("//input[@name='motionInitiatorSettings[hasResolutionDa
 $I->wantTo('see the field being optional');
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $page->fillInValidSampleData();
-$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('#resolutionDate');
 $I->fillField('#initiatorPrimaryName', 'My party');
 

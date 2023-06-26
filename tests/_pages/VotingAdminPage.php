@@ -1,13 +1,13 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class VotingAdminPage extends BasePage
 {
-    public $route = 'consultation/admin-votings';
+    public string|array $route = 'consultation/admin-votings';
 }

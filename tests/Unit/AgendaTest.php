@@ -1,16 +1,18 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
-use Codeception\Specify;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class AgendaTest extends DBTestBase
 {
     /**
      */
-    public function testSortingChildItems()
+    public function testSortingChildItems(): void
     {
         /** @var ConsultationAgendaItem $item6 */
         $item6       = ConsultationAgendaItem::findOne(6);
@@ -45,14 +47,14 @@ class AgendaTest extends DBTestBase
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(3);
         $pos1 = $pos2 = $pos3 = null;
-        foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $i =>$item) {
-            if ($item->title == 'New Item 1') {
+        foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $i => $item) {
+            if ($item->title==='New Item 1') {
                 $pos1 = $i;
             }
-            if ($item->title == 'New Item 2') {
+            if ($item->title==='New Item 2') {
                 $pos2 = $i;
             }
-            if ($item->title == 'New Item 3') {
+            if ($item->title==='New Item 3') {
                 $pos3 = $i;
             }
         }
@@ -63,7 +65,7 @@ class AgendaTest extends DBTestBase
 
     /**
      */
-    public function testNonNumericAgenda()
+    public function testNonNumericAgenda(): void
     {
         /** @var ConsultationAgendaItem $item6 */
         $item6       = ConsultationAgendaItem::findOne(6);
@@ -110,10 +112,10 @@ class AgendaTest extends DBTestBase
         $items        = ConsultationAgendaItem::getSortedFromConsultation($consultation);
         $item6        = $item7 = null;
         foreach ($items as $item) {
-            if ($item->id == 6) {
+            if ($item->id === 6) {
                 $item6 = $item;
             }
-            if ($item->id == 7) {
+            if ($item->id === 7) {
                 $item7 = $item;
             }
         }
@@ -132,7 +134,7 @@ class AgendaTest extends DBTestBase
 
     /**
      */
-    public function testShownCodes()
+    public function testShownCodes(): void
     {
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(3);

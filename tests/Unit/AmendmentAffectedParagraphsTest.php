@@ -1,18 +1,23 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
-use app\components\diff\{Diff, DiffRenderer};
+use app\components\diff\Diff;
+use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
-use app\models\db\{AmendmentSection, MotionSection};
+use app\models\db\AmendmentSection;
+use app\models\db\MotionSection;
+use Codeception\Attribute\Group;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class AmendmentAffectedParagraphsTest extends DBTestBase
 {
     /**
      * @return string[]
      * @throws \app\models\exceptions\Internal
      */
-    private function getAffected(int $amendmentId, int $sectionId)
+    private function getAffected(int $amendmentId, int $sectionId): array
     {
         /** @var AmendmentSection $section */
         $section   = AmendmentSection::findOne(['amendmentId' => $amendmentId, 'sectionId' => $sectionId]);
@@ -64,7 +69,7 @@ class AmendmentAffectedParagraphsTest extends DBTestBase
 
     /**
      */
-    public function testLineNumbers()
+    public function testLineNumbers(): void
     {
         /** @var MotionSection $section */
         $section   = MotionSection::findOne(['motionId' => 2, 'sectionId' => 2]);

@@ -1,10 +1,16 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\IMotion;
+use app\models\supportTypes\SupportBase;
+use Tests\_pages\AmendmentPage;
+use Tests\_pages\MotionPage;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$amendmentUrl = \app\tests\_pages\AmendmentPage::getPageUrl($I, [
+$amendmentUrl = AmendmentPage::getPageUrl($I, [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -16,7 +22,7 @@ $I->dontSeeElementInDOM('#sidebar .collecting');
 
 
 $I->wantTo('publish the amendment');
-$I->openPage(\app\tests\_pages\MotionPage::class,  [
+$I->openPage(MotionPage::class, [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -25,7 +31,7 @@ $I->dontSeeElement("#sidebar .amendmentCreate a");
 $I->loginAsStdAdmin();
 $I->seeElement("#sidebar .amendmentCreate a");
 $I->click('#sidebar .adminEdit a');
-$I->selectOption('#motionStatus', \app\models\db\Motion::STATUS_SUBMITTED_SCREENED);
+$I->selectOption('#motionStatus', IMotion::STATUS_SUBMITTED_SCREENED);
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 $I->wantTo('activate the collecting page');
@@ -40,7 +46,7 @@ $I->wantTo('check that amendments created as normal person are in supporting pha
 
 $I->gotoConsultationHome(false, 'supporter', 'supporter');
 $I->loginAsStdUser();
-$I->openPage(\app\tests\_pages\MotionPage::class,  [
+$I->openPage(MotionPage::class, [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -66,7 +72,7 @@ $I->see('Aktueller Stand: 0 / 1', '.amendment' . AcceptanceTester::FIRST_FREE_AM
 
 $I->wantTo('check that amendments created as organizations are not in supporting phase');
 
-$I->openPage(\app\tests\_pages\MotionPage::class,  [
+$I->openPage(MotionPage::class, [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -91,9 +97,9 @@ $I->logout();
 $I->wantTo('check the admin settings');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->seeInField('#typeMinSupporters', '1');
-$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
+$I->selectOption('#typeSupportType', SupportBase::ONLY_INITIATOR);
 $I->dontSeeElement('#typeMinSupporters');
-$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
+$I->selectOption('#typeSupportType', SupportBase::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeMinSupporters');
 
 $I->submitForm('#policyFixForm', [], 'supportCollPolicyFix');

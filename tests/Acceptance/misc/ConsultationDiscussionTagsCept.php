@@ -2,12 +2,15 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use app\models\settings\Consultation;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->gotoConsultationHome();
 $page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoAppearance();
-$I->selectOption('#startLayoutType', \app\models\settings\Consultation::START_LAYOUT_DISCUSSION_TAGS);
+$I->selectOption('#startLayoutType', Consultation::START_LAYOUT_DISCUSSION_TAGS);
 $page->saveForm();
 
 $I->wantTo('test the tag filtering');
@@ -35,4 +38,3 @@ $I->gotoConsultationHome();
 $I->seeElement('.expandableRecentComments ');
 $I->see('Test-Kommentar', '.motionComment');
 $I->seeElement('.motionRow2 .comments');
-

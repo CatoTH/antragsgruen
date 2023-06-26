@@ -1,10 +1,11 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\diff\AffectedLinesFilter;
 use app\components\diff\DataTypes\AffectedLineBlock;
 use app\models\sectionTypes\TextSimple;
+use Tests\Support\Helper\TestBase;
 
 class AffectedLinesFilterTest extends TestBase
 {
@@ -135,7 +136,6 @@ class AffectedLinesFilterTest extends TestBase
         $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($diff, 1);
         $expected       = [self::getAffectedLinesBlock(1, 5, $diff)];
         $this->assertEquals($expected, $affectedBlocks);
-
     }
 
 
@@ -184,7 +184,9 @@ class AffectedLinesFilterTest extends TestBase
             self::getAffectedLinesBlock(18, 18, '<del>###LINENUMBER###is schee jedza hogg di hera dringma aweng Spezi nia Musi. </del>'),
         ]);
 
-        $expectedPart = self::getAffectedLinesBlock(16, 18,
+        $expectedPart = self::getAffectedLinesBlock(
+            16,
+            18,
             '<del>###LINENUMBER###Leonhardifahrt ma da middn. Greichats an naa do. </del>' .
             '<del>###LINENUMBER###Marei, des um Godds wujn Biakriagal! </del>' .
             '<del>###LINENUMBER###is schee jedza hogg di hera dringma aweng Spezi nia Musi. </del>'

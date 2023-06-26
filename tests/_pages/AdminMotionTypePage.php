@@ -1,15 +1,15 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AdminMotionTypePage extends BasePage
 {
-    public $route = 'admin/motion-type/type';
+    public string|array $route = 'admin/motion-type/type';
 
     public static string $tabularLabel = 'Angaben';
     public static string $commentsLabel = 'Kommentare';
@@ -17,7 +17,7 @@ class AdminMotionTypePage extends BasePage
     /**
      * @return int[]
      */
-    public function getCurrentOrder()
+    public function getCurrentOrder(): array
     {
         return $this->actor->executeJS('return $("#sectionsList").data("sortable").toArray()');
     }
@@ -25,7 +25,7 @@ class AdminMotionTypePage extends BasePage
     /**
      * @param int[] $order
      */
-    public function setCurrentOrder($order)
+    public function setCurrentOrder(array $order): void
     {
         $order = json_encode($order);
         $this->actor->executeJS('$("#sectionsList").data("sortable").sort(' . $order . ')');
@@ -34,7 +34,7 @@ class AdminMotionTypePage extends BasePage
     /**
      *
      */
-    public function saveForm()
+    public function saveForm(): void
     {
         $this->actor->submitForm('.adminTypeForm', [], 'save');
     }

@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\policies\IPolicy;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -14,7 +17,7 @@ $I->wantTo('enable supporting motions for logged in users');
 
 $I->loginAsStdAdmin();
 $mtPage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typePolicySupportMotions', \app\models\policies\IPolicy::POLICY_LOGGED_IN);
+$I->selectOption('#typePolicySupportMotions', IPolicy::POLICY_LOGGED_IN);
 $I->checkOption('.motionLike');
 $I->checkOption('.motionDislike');
 $mtPage->saveForm();

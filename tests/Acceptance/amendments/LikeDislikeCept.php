@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\policies\IPolicy;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -13,7 +16,7 @@ $I->wantTo('enable supporting amendments for logged in users');
 
 $I->loginAsStdAdmin();
 $mtPage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typePolicySupportAmendments', \app\models\policies\IPolicy::POLICY_LOGGED_IN);
+$I->selectOption('#typePolicySupportAmendments', IPolicy::POLICY_LOGGED_IN);
 $I->checkOption('.amendmentLike');
 $I->checkOption('.amendmentDislike');
 $mtPage->saveForm();

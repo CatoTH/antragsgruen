@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\supportTypes\SupportBase;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 
 $I->populateDBData1();
@@ -50,7 +53,7 @@ $I->dontSee('My name (Orga)', '#supporters');
 $I->wantTo('ensure it is not enabled for published motions by default if there is a collection phase');
 
 $page = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
+$I->selectOption('#typeSupportType', SupportBase::COLLECTING_SUPPORTERS);
 $page->saveForm();
 
 $I->gotoMotion();

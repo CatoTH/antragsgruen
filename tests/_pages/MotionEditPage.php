@@ -1,14 +1,14 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
  * Represents contact page
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class MotionEditPage extends BasePage
 {
-    public $route = 'motion/edit';
+    public string|array $route = 'motion/edit';
 }

@@ -1,10 +1,19 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
-use app\models\amendmentNumbering\{ByLine, GlobalCompact, IAmendmentNumbering, PerMotionCompact, PerMotionEnglish};
-use app\models\db\{Amendment, Motion};
+use app\models\amendmentNumbering\ByLine;
+use app\models\amendmentNumbering\GlobalCompact;
+use app\models\amendmentNumbering\IAmendmentNumbering;
+use app\models\amendmentNumbering\PerMotionCompact;
+use app\models\amendmentNumbering\PerMotionEnglish;
+use app\models\db\Amendment;
+use app\models\db\Motion;
+use Codeception\Attribute\Group;
+use Tests\Support\AcceptanceTester;
+use Tests\Support\Helper\DBTestBase;
 
+#[Group('database')]
 class AmendmentNumberingTest extends DBTestBase
 {
     public function testMaxTitlePrefixNumber(): void
@@ -28,7 +37,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(2);
 
         $sorter = new GlobalCompact();
-        $expect = \AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
+        $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
         $out    = $sorter->getAmendmentNumber($amend, $motion);
 
         $this->assertEquals($expect, $out);
@@ -38,7 +47,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(3);
 
         $sorter = new GlobalCompact();
-        $expect = \AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
+        $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
         $out    = $sorter->getAmendmentNumber($amend, $motion);
 
         $this->assertEquals($expect, $out);
@@ -48,7 +57,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(58);
 
         $sorter = new GlobalCompact();
-        $expect = \AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
+        $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
         $out    = $sorter->getAmendmentNumber($amend, $motion);
 
         $this->assertEquals($expect, $out);
@@ -62,7 +71,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(2);
 
         $sorter = new PerMotionCompact();
-        $expect = \AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
+        $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
         $out    = $sorter->getAmendmentNumber($amend, $motion);
 
         $this->assertEquals($expect, $out);
@@ -114,7 +123,7 @@ class AmendmentNumberingTest extends DBTestBase
         $amendment              = Amendment::findOne(274);
         $amendment->titlePrefix = '';
         foreach ($amendment->getMyMotion()->amendments as $amend) {
-            if ($amend->id == 272) {
+            if ($amend->id === 272) {
                 $amend->titlePrefix = 'A2-027';
             }
         }
@@ -129,10 +138,10 @@ class AmendmentNumberingTest extends DBTestBase
         $amendment              = Amendment::findOne(273);
         $amendment->titlePrefix = '';
         foreach ($amendment->getMyMotion()->amendments as $amend) {
-            if ($amend->id == 272) {
+            if ($amend->id === 272) {
                 $amend->titlePrefix = 'A2-027';
             }
-            if ($amend->id == 274) {
+            if ($amend->id === 274) {
                 $amend->titlePrefix = 'A2-027-2';
             }
         }

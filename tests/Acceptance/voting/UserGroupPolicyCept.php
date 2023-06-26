@@ -3,6 +3,9 @@
 /** @var \Codeception\Scenario $scenario */
 
 use app\models\policies\IPolicy;
+use app\models\policies\UserGroups;
+use app\models\votings\AnswerTemplates;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -27,9 +30,9 @@ $I->assertSame('question', $I->executeJS('return $("input[name=votingTypeNew]:ch
 $I->fillField('.creatingVoting .settingsTitle', 'Roll call');
 $I->fillField('.creatingVoting .settingsQuestion', 'Who is present?');
 $I->seeElement('.majorityTypeSettings');
-$I->clickJS("input[name=answersNew][value='" . \app\models\votings\AnswerTemplates::TEMPLATE_PRESENT . "']");
+$I->clickJS("input[name=answersNew][value='" . AnswerTemplates::TEMPLATE_PRESENT . "']");
 $I->dontSeeElement('.majorityTypeSettings');
-$I->assertSame(1, intval($I->executeJS('return $("input[name=resultsPublicNew]:checked").val()')));
+$I->assertSame(1, (int)$I->executeJS('return $("input[name=resultsPublicNew]:checked").val()'));
 $I->clickJS('input[name=votesPublicNew][value=\"2\"]');
 $I->clickJS('input[name=resultsPublicNew][value=\"1\"]');
 
@@ -47,7 +50,7 @@ $I->wait(0.3);
 $votingBaseId = '#voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID;
 $I->see('Seiten-Admin', $votingBaseId . ' .votingSettingsSummary .votingPolicy');
 $I->clickJS($votingBaseId . ' .settingsToggleGroup button');
-$I->seeOptionIsSelected($votingBaseId . ' .v-policy-select .stdDropdown', \app\models\policies\UserGroups::getPolicyName());
+$I->seeOptionIsSelected($votingBaseId . ' .v-policy-select .stdDropdown', UserGroups::getPolicyName());
 $I->seeElement($votingBaseId . ' .v-policy-select .selectize-control');
 $selected = $I->executeJS('return votingAdminWidget.$refs["voting-admin-widget"][1].$refs["policy-select"].userGroups');
 $I->assertSame([1], $selected);

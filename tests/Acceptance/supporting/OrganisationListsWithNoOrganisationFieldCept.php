@@ -2,11 +2,13 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 /*
- * This tests an edge case where an organisation list is set, but the initiator field did not contain an organization.
+ * This tests an edge case where an organisation list is set, but the initiator field did not contain an organisation.
  * If a person name was entered and the form is saved incompletely, the name should still be present
  * in the following form asking the fill out the missing information.
  */

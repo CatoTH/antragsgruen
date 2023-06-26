@@ -3,6 +3,7 @@
 /** @var \Codeception\Scenario $scenario */
 
 use app\models\db\IMotion;
+use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();

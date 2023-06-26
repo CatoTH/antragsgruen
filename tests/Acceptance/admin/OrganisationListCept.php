@@ -2,6 +2,8 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -111,5 +113,3 @@ $I->seeElement('#initiatorPrimaryOrgaName');
 $I->dontSeeElement('#initiatorOrga');
 $selectedOrga = $I->executeJS('return $("#initiatorPrimaryOrgaName").val()');
 $I->assertEquals('Working group: infrastructure', $selectedOrga);
-
-

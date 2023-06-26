@@ -1,6 +1,11 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\policies\IPolicy;
+use app\models\quorumType\IQuorumType;
+use app\models\votings\AnswerTemplates;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -44,14 +49,14 @@ $I->assertSame('question', $I->executeJS('return $("input[name=votingTypeNew]:ch
 $I->fillField('.creatingVoting .settingsTitle', 'Roll call');
 $I->fillField('.creatingVoting .settingsQuestion', 'Who is present?');
 
-$I->clickJS("input[name=answersNew][value='" . \app\models\votings\AnswerTemplates::TEMPLATE_PRESENT . "']");
+$I->clickJS("input[name=answersNew][value='" . AnswerTemplates::TEMPLATE_PRESENT . "']");
 $I->dontSeeElement('.createVotingHolder .userGroupSelectList');
-$I->selectOption('.createVotingHolder .policySelect', \app\models\policies\IPolicy::POLICY_USER_GROUPS);
+$I->selectOption('.createVotingHolder .policySelect', IPolicy::POLICY_USER_GROUPS);
 $I->wait(0.1);
 $I->seeElement('.createVotingHolder .userGroupSelectList');
 $I->executeJS('document.querySelector(".createVotingHolder select.userGroupSelectList").selectize.addItem(' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ')');
 
-$I->assertSame(1, intval($I->executeJS('return $("input[name=resultsPublicNew]:checked").val()')));
+$I->assertSame(1, (int)$I->executeJS('return $("input[name=resultsPublicNew]:checked").val()'));
 $I->clickJS('input[name=votesPublicNew][value=\"2\"]');
 $I->clickJS('input[name=resultsPublicNew][value=\"1\"]');
 $I->clickJS('form.creatingVoting button[type=submit]');
@@ -63,7 +68,7 @@ $I->see('Roll call', $votingId . ' h2');
 $I->clickJS($votingId . ' .settingsToggleGroup .dropdown-toggle');
 $I->seeElement($votingId . ' .votingSettings .selectize-control');
 $I->seeElement($votingId . ' .quorumTypeSettings');
-$I->clickJS($votingId . ' .quorumTypeSettings input[value=\"' . \app\models\quorumType\IQuorumType::QUORUM_TYPE_HALF . '\"]');
+$I->clickJS($votingId . ' .quorumTypeSettings input[value=\"' . IQuorumType::QUORUM_TYPE_HALF . '\"]');
 $I->clickJS($votingId . ' .btnSave');
 $I->wait(0.3);
 $I->see('Einfache Mehrheit (2 von 3 Berechtigten)', $votingId . ' .quorumType');

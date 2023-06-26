@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 $I->gotoAmendment();

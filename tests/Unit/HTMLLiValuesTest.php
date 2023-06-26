@@ -1,14 +1,12 @@
 <?php
 
-namespace unit;
+namespace Tests\Unit;
 
 use app\components\HTMLTools;
-use Codeception\Specify;
+use Tests\Support\Helper\TestBase;
 
 class HTMLLiValuesTest extends TestBase
 {
-    use Specify;
-
     public function testExplicitlySetLiValues_testExample1(): void
     {
         $orig = '<ol><li>Item 1</li><li value="3">Item 2</li><li>Item 3</li></ol>';
@@ -43,7 +41,7 @@ class HTMLLiValuesTest extends TestBase
 </li></ol>
 <ol class="inserted" start="2"><li value="2">Test3</li></ol>
 <ol class="deleted lowerAlpha" start="5"><li value="e">Test3</li></ol>
-</div>';;
+</div>';
 
         $out  = HTMLTools::explicitlySetLiValues($orig);
         $this->assertEquals($expect, $out);

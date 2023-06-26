@@ -2,12 +2,15 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use app\models\settings\Consultation;
+use Tests\Support\AcceptanceTester;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->gotoConsultationHome();
 $page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoAppearance();
-$I->selectOption('#startLayoutType', \app\models\settings\Consultation::START_LAYOUT_AGENDA_HIDE_AMEND);
+$I->selectOption('#startLayoutType', Consultation::START_LAYOUT_AGENDA_HIDE_AMEND);
 $page->saveForm();
 
 $I->gotoConsultationHome();

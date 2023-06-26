@@ -341,14 +341,16 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 
 #### Running
 
-* Start Selenium: ```
-java -jar selenium-server-standalone-3.141.59.jar```
-* Run all acceptance tests: ```
-vendor/bin/codecept run acceptance```
-* Run all unit tests: ```
-vendor/bin/codecept run unit```
-* Run a single acceptance-test: ```
-vendor/bin/codecept run acceptance motions/CreateCept```
+* Start Selenium:
+```java -jar selenium-server-standalone-3.141.59.jar```
+* Run all acceptance tests:
+```vendor/bin/codecept run Acceptance```
+* Run all unit tests:
+```vendor/bin/codecept run Unit```
+* Run unit tests without database:
+```vendor/bin/codecept run Unit --skip-group=database```
+* Run a single acceptance-test: 
+```vendor/bin/codecept run Acceptance motions/CreateCept```
 
 ### phpstan
 

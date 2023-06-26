@@ -1,24 +1,22 @@
 <?php
-namespace Helper;
+namespace Tests\Support\Helper;
 
+use Codeception\Module;
 use Codeception\Module\WebDriver;
-use Codeception\TestCase;
+use Codeception\TestInterface;
 use Codeception\Util\Uri;
+use Tests\config\AntragsgruenSetupDB;
 
-require_once(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' .
-    DIRECTORY_SEPARATOR . 'config'
-    . DIRECTORY_SEPARATOR . 'AntragsgruenSetupDB.php');
-
-class Acceptance extends \Codeception\Module
+class Acceptance extends Module
 {
-    use \app\tests\AntragsgruenSetupDB;
+    use AntragsgruenSetupDB;
 
-    public function _before(TestCase $test): void
+    public function _before(TestInterface $test): void
     {
         $this->createDB();
     }
 
-    public function _after(TestCase $test): void
+    public function _after(TestInterface $test): void
     {
         $this->deleteDB();
     }
