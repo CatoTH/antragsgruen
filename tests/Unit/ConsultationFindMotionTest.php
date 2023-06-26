@@ -30,7 +30,7 @@ class ConsultationFindMotionTest extends DBTestBase
 
         $this->assertEquals($amendA1, $motion->findAmendmentWithPrefix('Ä1'));
         $this->assertEquals($amendA1, $motion->findAmendmentWithPrefix('ä1'));
-        $this->assertEquals(null, $motion->findAmendmentWithPrefix('Ä1', $amendA1));
+        $this->assertNull($motion->findAmendmentWithPrefix('Ä1', $amendA1));
         $this->assertEquals($amendA1, $motion->findAmendmentWithPrefix('Ä1', $amendA2));
 
 
@@ -69,7 +69,7 @@ class ConsultationFindMotionTest extends DBTestBase
         $this->assertEquals($motionA2, $consultation->findMotionWithPrefixAndVersion('A2', Motion::VERSION_DEFAULT));
         $this->assertNull($consultation->findMotionWithPrefixAndVersion('A2', '2'));
         $this->assertEquals($motionA2, $consultation->findMotionWithPrefixAndVersion('a2', Motion::VERSION_DEFAULT));
-        $this->assertEquals(null, $consultation->findMotionWithPrefixAndVersion('A2', Motion::VERSION_DEFAULT, $motionA2));
+        $this->assertNull($consultation->findMotionWithPrefixAndVersion('A2', Motion::VERSION_DEFAULT, $motionA2));
         $this->assertEquals($motionA2, $consultation->findMotionWithPrefixAndVersion('A2', Motion::VERSION_DEFAULT, $motionA3));
 
         $motionA2->titlePrefix = '6.1';
