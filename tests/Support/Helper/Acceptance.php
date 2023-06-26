@@ -37,13 +37,13 @@ class Acceptance extends \Codeception\Module
 
     public function populateDBData1(): void
     {
-        $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
-            '..' . DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata1.sql');
+        $this->populateDB(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.
+                          '..'.DIRECTORY_SEPARATOR.'Data'.DIRECTORY_SEPARATOR.'dbdata1.sql');
     }
 
     public function populateDBDataYfj(): void
     {
-        $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
-            '..' . DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata-yfj.sql');
+        $this->populateDB(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.
+                          '..'.DIRECTORY_SEPARATOR.'Data'.DIRECTORY_SEPARATOR.'dbdata-yfj.sql');
     }
 }

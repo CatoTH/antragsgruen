@@ -16,7 +16,7 @@ class DBTestBase extends TestBase
 
         parent::setUp();
         $this->createDB();
-        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '_data/dbdata1.sql';
+        $file = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Data/dbdata1.sql';
         $this->populateDB($file);
 
         \yii::$app->db->close();

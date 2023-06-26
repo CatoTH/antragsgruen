@@ -18,4 +18,4 @@ Yii::setAlias('@tests', dirname(__DIR__));
 
 use Codeception\Util\Autoload;
 
-Autoload::addNamespace('unit', __DIR__ . DIRECTORY_SEPARATOR . 'unit');
+Autoload::addNamespace('unit', __DIR__.DIRECTORY_SEPARATOR.'Unit');
