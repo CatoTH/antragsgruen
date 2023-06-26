@@ -81,7 +81,6 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<ins test="1"> kjhkjh </ins><ul class="inserted" test="1"><li>List</li></ul> Ende', $rendered);
     }
 
-    #[Skip('FIXME Test does fail. Failed asserting that null is false.')]
     public function testSplitText(): void
     {
         $renderer = new DiffRenderer();
@@ -98,8 +97,8 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('ins', $nodes[3]->nodeName);
         $this->assertEquals('del', $nodes[5]->nodeName);
         $this->assertEquals('Ende', $nodes[6]->nodeValue);
-        $this->assertEquals(null, $inIns);
-        $this->assertEquals(null, $inDel);
+        $this->assertNull($inIns);
+        $this->assertNull($inDel);
 
         $renderer = new DiffRenderer();
         list($nodes, $inIns, $inDel) = $renderer->textToNodes(
