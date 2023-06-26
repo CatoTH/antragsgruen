@@ -30,7 +30,9 @@ class AdminWorkflowController extends Base
         }
 
         foreach (MotionNumbering::getSortedHistoryForMotion($motion, false, true) as $motionIterator) {
-            $motionIterator->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
+            if ($motionIterator->consultationId === $motion->consultationId) {
+                $motionIterator->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
+            }
         }
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
