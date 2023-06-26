@@ -277,6 +277,8 @@ return [
     'con_amend_globalalt'     => '<strong>Globalalternativen</strong> zulassen <small>(Änderungsanträge, die den Antrag komplett ersetzen)</small>',
     'con_proposal_procedure'  => 'Den <strong>Verfahrensvorschlag</strong> auf einer separaten Seite anzeigen',
     'con_proposal_tt'         => 'Admins können für (Änderungs-)Anträge ein Verfahren vorschlagen. Muss noch pro Antragstyp explizit aktiviert werden.',
+    'con_pp_inline'           => '<strong>Vorgeschlagene Änderungen</strong> von Verfahrensvorschlägen standardmäßig im Antragstext anzeigen',
+    'con_pp_inline_tt'        => 'Wirkt sich nur auf Anträge aus, und auch nur wenn diese keine Änderungsanträge haben',
     'con_collecting'          => '(Änderungs-)Anträge, die <strong>Unterstützer*innen sammeln</strong>, auf einer separaten Seite anzeigen',
     'con_collecting_tt'       => 'Relevant wenn es Anträge mit einer Unterstützungs-Phase vor Veröffentlichung gibt',
     'con_new_motions'         => '<strong>Neue Anträge</strong> in der Sidebar anzeigen',

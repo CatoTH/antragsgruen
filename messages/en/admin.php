@@ -280,6 +280,8 @@ return [
     'con_amend_globalalt'     => 'Allow <strong>global alternatives</strong> <small>(amendments that completely replace the motion)</small>',
     'con_proposal_procedure'  => 'Show the <strong>proposed procedure</strong> on a separate page',
     'con_proposal_tt'         => 'Allows admins to propose a procedure for motions and amendments. Has to be explicitly activated per motion type.',
+    'con_pp_inline'           => '<strong>Show changes inline</strong> by default if the proposed procedure proposes changes',
+    'con_pp_inline_tt'        => 'Only works for motions, and only if they do not have amendments',
     'con_collecting'          => 'Show motions / amendments <strong>collecting supporters</strong> on a separate page',
     'con_collecting_tt'       => 'Relevant if there are motions with a collecting phase before publication',
     'con_new_motions'         => 'Show <strong>new motions</strong> in the sidebar',
