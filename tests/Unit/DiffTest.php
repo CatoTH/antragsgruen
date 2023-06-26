@@ -8,6 +8,7 @@ use app\components\diff\DiffRenderer;
 use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
+use Codeception\Attribute\Incomplete;
 use Tests\Support\Helper\TestBase;
 
 class DiffTest extends TestBase
@@ -100,10 +101,9 @@ class DiffTest extends TestBase
         $this->assertSame($expected, $out);
     }
 
+    #[Incomplete('Does not work yet')]
     public function testBreakListpintIntoTwo(): void
     {
-        $this->markTestIncomplete('Does not work yet');
-
         $orig   = [
             '<ul><li><p>Es packte seine sieben Versalien, schob sich sein Initial in den Gürtel und machte sich auf den Weg.</p><ul><li><p>Als es die ersten Hügel des Kursivgebirges erklommen hatte, warf es einen letzten Blick zurück auf die Skyline</p></li><li><p>seiner Heimatstadt Buchstabhausen, die Headline von Alphabetdorf und die Subline seiner eigenen Straße, der Zeilengasse.</p></li></ul></li></ul>'
         ];
@@ -364,10 +364,9 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertSame($expect, $out);
     }
 
+    #[Incomplete('TODO')]
     public function testDeleteMultipleParagraphs(): void
     {
-        $this->markTestIncomplete('kommt noch');
-
         $orig = '<p>Noch Frieden</p>
 <p>Etwas Text in P</p>
 <ul>
@@ -415,10 +414,9 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertSame($expected, $out);
     }
 
+    #[Incomplete('TODO')]
     public function testSwitchAndInsertListItems(): void
     {
-        $this->markTestIncomplete('kommt noch');
-
         $orig = '<p>Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>
 <p>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>
 <ul>
@@ -934,10 +932,9 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $this->assertSame($expect, $diffParas);
     }
 
+    #[Incomplete('2b will not be added as of yet, because the diff ignores changes in tag values')]
     public function testNumberedSubLists(): void
     {
-        $this->markTestIncomplete('2b will not be added as of yet, because the diff ignores changes in tag values');
-
         $orig = '<ol><li><ol class="lowerAlpha"><li>Point 1</li><li value="3">Point 3</li></ol></li></ol>';
         $new = '<ol><li><ol class="lowerAlpha"><li>Point 1</li><li value="2b">Point 2</li><li value="3">Point 3</li></ol></li></ol>';
 

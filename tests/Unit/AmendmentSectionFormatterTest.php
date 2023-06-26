@@ -6,6 +6,7 @@ use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DataTypes\AffectedLineBlock;
 use app\components\diff\DiffRenderer;
 use app\models\sectionTypes\TextSimple;
+use Codeception\Attribute\Incomplete;
 use Tests\Support\Helper\TestBase;
 
 class AmendmentSectionFormatterTest extends TestBase
@@ -144,10 +145,9 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertCount(4, $diffGroups);
     }
 
+    #[Incomplete('TODO')]
     public function testEmptyDeletedSpaceAtEnd(): void
     {
-        $this->markTestIncomplete('kommt noch'); // @TODO
-
         $strPre  = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich. Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich dem rechten Mob entgegenstellen, der die Not von Schutzsuchenden für Hass und rechtsextreme Propaganda missbraucht.</p>';
         $strPost = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.</p>
 <p>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich konsequent rechtsextremen Tendenzen entgegenstellen, welche die Not von Schutzsuchenden für Hass und populistische Propaganda missbrauchen.</p>';

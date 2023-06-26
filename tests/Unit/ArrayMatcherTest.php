@@ -3,16 +3,14 @@
 namespace Tests\Unit;
 
 use app\components\diff\ArrayMatcher;
+use Codeception\Attribute\Incomplete;
 use Tests\Support\Helper\TestBase;
 
 class ArrayMatcherTest extends TestBase
 {
-    /**
-     */
+    #[Incomplete('TODO')]
     public function testInsertAtBeginning(): void
     {
-        $this->markTestIncomplete('kommt noch');
-
         $orig    = [
             '<p>Original line</p>',
             '<p>Another original line</p>'
