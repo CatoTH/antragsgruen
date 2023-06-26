@@ -353,7 +353,7 @@ class TextSimple extends Text
             return '';
         }
 
-        $viewFullMode = ($section->getAmendment()->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true);
+        $viewFullMode = ($section->getAmendment()->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true || !$this->defaultOnlyDiff);
         $title = $this->getTitle();
         $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($title);

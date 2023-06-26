@@ -286,6 +286,10 @@ $handledSiteSettings = [];
             $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_proposal_tt'));
             $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . ' ' . $tooltip);
 
+            $propTitle = Yii::t('admin', 'con_pp_inline');
+            $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_pp_inline_tt'));
+            $boolSettingRow($settings, 'proposalProcedureInline', $handledSettings, $propTitle . ' ' . $tooltip);
+
             $propTitle = Yii::t('admin', 'con_collecting');
             $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_collecting_tt'));
             $boolSettingRow($settings, 'collectingPage', $handledSettings, $propTitle . ' ' . $tooltip);
