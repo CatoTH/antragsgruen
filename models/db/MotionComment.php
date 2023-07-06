@@ -21,7 +21,7 @@ use yii\db\ActiveQuery;
  * @property int $replyNotification
  *
  * @property User $user
- * @property Motion $motion
+ * @property Motion|null $motion
  * @property MotionCommentSupporter[] $supporters
  * @property MotionSection $section
  * @property MotionComment $parentComment

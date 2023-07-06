@@ -27,7 +27,7 @@ use yii\db\ActiveQuery;
  * @property string $extraData
  *
  * @property User $user
- * @property Motion $motion
+ * @property Motion|null $motion
  */
 class MotionSupporter extends ISupporter
 {
