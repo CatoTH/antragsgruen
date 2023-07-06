@@ -63,7 +63,7 @@ class ByLDK extends IPDFLayout
 
         $str = $motion->motionType->titleSingular;
         $pdf->SetFont('helvetica', 'B', 25);
-        $width = $pdf->GetStringWidth($str);
+        $width = (float)$pdf->GetStringWidth($str);
 
         $pdf->SetXY((210 - $width) / 2, 60);
         $pdf->Write(20, $str);
@@ -172,7 +172,7 @@ class ByLDK extends IPDFLayout
 
         $str = $amendment->getMyMotion()->motionType->titleSingular;
         $pdf->SetFont('helvetica', 'B', 25);
-        $width = $pdf->GetStringWidth($str);
+        $width = (float)$pdf->GetStringWidth($str);
 
         $pdf->SetXY((210 - $width) / 2, 60);
         $pdf->Write(20, $str);

@@ -27,7 +27,7 @@ use yii\db\ActiveQuery;
  * @property string $extraData
  *
  * @property User $user
- * @property Amendment $amendment
+ * @property Amendment|null $amendment
  */
 class AmendmentSupporter extends ISupporter
 {
