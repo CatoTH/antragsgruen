@@ -36,8 +36,8 @@ INSERT INTO `###TABLE_PREFIX###consultationSettingsMotionSection` (`id`, `motion
 (28, 10, 0, 0, 0, 'Name', NULL, 0, 1, 0, 0, 0, 0, 0, 1, NULL),
 (29, 10, 6, 1, 0, 'PDF', NULL, 0, 1, 0, 0, 0, 0, 0, 1, '{\n    \"imgMaxWidth\": 0,\n    \"imgMaxHeight\": 0,\n    \"showInHtml\": true,\n    \"public\": 1\n}');
 
-INSERT INTO `###TABLE_PREFIX###consultationSettingsTag` (`id`, `consultationId`, `type`, `position`, `title`, `cssicon`) VALUES
-(6, 4, 0, 0, 'Linguistic Amendment', 0);
+INSERT INTO `###TABLE_PREFIX###consultationSettingsTag` (`id`, `consultationId`, `type`, `position`, `title`) VALUES
+(6, 4, 0, 0, 'Linguistic Amendment');
 
 INSERT INTO `###TABLE_PREFIX###consultationText` (`id`, `motionTypeId`, `consultationId`, `siteId`, `category`, `textId`, `menuPosition`, `title`, `breadcrumb`, `text`, `editDate`) VALUES
 (1, NULL, NULL, 1, 'pagedata', 'legal', NULL, NULL, NULL, '<p><strong>Responsible for the contents (§ 5 TMG)</strong></p><address>Tobias Hößl</address>', '2021-08-06 19:39:50'),

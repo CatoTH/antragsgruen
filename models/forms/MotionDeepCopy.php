@@ -36,17 +36,14 @@ class MotionDeepCopy
 
         $newMotion = new Motion();
         $newMotion->setAttributes($motion->getAttributes(), false);
-        $newMotion->id             = null;
-        $newMotion->agendaItemId   = $agendaItem?->id;
-        $newMotion->titlePrefix    = $newPrefix;
+        $newMotion->id = null;
+        $newMotion->agendaItemId = $agendaItem?->id;
+        $newMotion->titlePrefix = $newPrefix;
         $newMotion->consultationId = $newConsultation->id;
-        $newMotion->cache          = '';
-        $newMotion->slug           = $slug;
-        $newMotion->version        = $newVersion;
-
-        if ($linkMotions) {
-            $newMotion->parentMotionId = $motion->id;
-        }
+        $newMotion->cache = '';
+        $newMotion->slug = $slug;
+        $newMotion->version = $newVersion;
+        $newMotion->parentMotionId = ($linkMotions ? $motion->id : null);
 
         $newMotion->save();
 

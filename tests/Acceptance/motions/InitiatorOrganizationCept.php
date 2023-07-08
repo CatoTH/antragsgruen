@@ -9,7 +9,7 @@ $I->populateDBData1();
 
 $createPage = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $createPage->fillInValidSampleData('Sample motion from an organization');
-$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', (string)ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('.supporterDataHead');
 $I->dontSeeElement('.supporterData');
 $I->dontSeeElement('#initiatorOrga');

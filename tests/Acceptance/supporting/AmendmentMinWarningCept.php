@@ -38,7 +38,7 @@ $I->acceptBootboxAlert();
 
 $I->wantTo('make sure it does not appear for organizations');
 
-$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', (string)ISupporter::PERSON_ORGANIZATION);
 $I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->submitForm('#amendmentEditForm', [], 'save');
 

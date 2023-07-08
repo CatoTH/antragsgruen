@@ -21,7 +21,7 @@ $title = 'Nicht freigeschalteter Testantrag';
 $I->fillField(['name' => 'sections[20]'], $title);
 $I->executeJS('CKEDITOR.instances.sections_21_wysiwyg.setData("<p><strong>Test</strong></p>");');
 $I->executeJS('CKEDITOR.instances.sections_22_wysiwyg.setData("<p><strong>Test 2</strong></p>");');
-$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', (string)ISupporter::PERSON_ORGANIZATION);
 $I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->fillField('#initiatorEmail', 'test@example.org');
 $I->fillField('#resolutionDate', '01.01.2000');
