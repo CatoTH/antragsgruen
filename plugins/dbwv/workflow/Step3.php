@@ -6,6 +6,7 @@ namespace app\plugins\dbwv\workflow;
 
 use app\models\AdminTodoItem;
 use app\models\db\IMotion;
+use app\models\db\MotionSupporter;
 use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
 use app\models\db\Motion;
 use app\models\exceptions\Access;
@@ -60,7 +61,7 @@ class Step3
         return $html;
     }
 
-    public static function setDecision(Motion $motion, int $status, ?string $comment, bool $protocolPublic, ?string $protocol): RedirectResponse
+    public static function setDecision(Motion $motion, bool $followProposal, int $status, ?string $comment, bool $protocolPublic, ?string $protocol): RedirectResponse
     {
         if (!Workflow::canSetResolutionV3($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
@@ -70,30 +71,43 @@ class Step3
                 throw new Access('A new version of this motion was already created');
             }
 
-            $motion->status = $status;
-            $motion->save();
+            if ($followProposal) {
+                $newInitiator = new MotionSupporter();
+                $newInitiator->position = 0;
+                $newInitiator->dateCreation = date('Y-m-d H:i:s');
+                $newInitiator->personType = MotionSupporter::PERSON_ORGANIZATION;
+                $newInitiator->role = MotionSupporter::ROLE_INITIATOR;
+                $newInitiator->organization = $motion->getMyConsultation()->title;
+                $newInitiator->resolutionDate = date('Y-m-d H:i:s');
 
-            if ($status === IMotion::STATUS_MODIFIED_ACCEPTED) {
-                $motion->setProtocol($protocol, $protocolPublic);
-                return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'merge-amendments-init'));
+                $v4Motion = $motion->followProposalAndCreateNewVersion(Workflow::STEP_V4, Motion::STATUS_RESOLUTION_FINAL, [$newInitiator]);
+            } else {
+                if ($status === IMotion::STATUS_MODIFIED_ACCEPTED) {
+                    $motion->setProtocol($protocol, $protocolPublic);
+
+                    return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'merge-amendments-init'));
+                }
+
+                $v4Motion = MotionDeepCopy::copyMotion(
+                    $motion,
+                    $motion->getMyMotionType(),
+                    $motion->agendaItem,
+                    $motion->titlePrefix,
+                    Workflow::STEP_V4,
+                    true
+                );
+                $v4Motion->status = $status;
+                $v4Motion->proposalComment = $comment;
+                $v4Motion->save();
             }
-
-            $v4Motion = MotionDeepCopy::copyMotion(
-                $motion,
-                $motion->getMyMotionType(),
-                $motion->agendaItem,
-                $motion->titlePrefix,
-                Workflow::STEP_V4,
-                true
-            );
         } else {
             $v4Motion = $motion;
+
+            $v4Motion->status = $status;
+            $v4Motion->proposalComment = $comment;
+            $v4Motion->save();
         }
         unset($motion);
-
-        $v4Motion->status = $status;
-        $v4Motion->proposalComment = $comment;
-        $v4Motion->save();
 
         $v4Motion->setProtocol($protocol, $protocolPublic);
 

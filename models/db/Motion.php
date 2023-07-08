@@ -2,22 +2,20 @@
 
 namespace app\models\db;
 
+use app\models\forms\MotionDeepCopy;
 use app\models\proposedProcedure\Agenda;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp, MotionSection as MotionSectionSettings};
 use app\models\notifications\{MotionProposedProcedure,
     MotionPublished,
     MotionSubmitted as MotionSubmittedNotification,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
-use app\models\settings\AntragsgruenApp;
 use app\components\{HashedStaticFileCache, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
 use app\models\events\MotionEvent;
 use app\models\sectionTypes\{Image, ISectionType, PDF};
-use app\models\settings\MotionSection as MotionSectionSettings;
 use app\models\supportTypes\SupportBase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use yii\db\ActiveQuery;
@@ -1097,7 +1095,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @throws FormError
      */
-    public function setMotionType(ConsultationMotionType $motionType)
+    public function setMotionType(ConsultationMotionType $motionType): void
     {
         if (!$this->getMyMotionType()->isCompatibleTo($motionType)) {
             throw new FormError('This motion cannot be changed to the type ' . $motionType->titleSingular);
@@ -1199,6 +1197,71 @@ class Motion extends IMotion implements IRSSItem
         }
 
         return null;
+    }
+
+    // Hint: All statuses selectable except STATUS_VOTE
+    public const FOLLOWABLE_PROPOSAL_STATUSES = [
+        self::STATUS_MODIFIED_ACCEPTED,
+        self::STATUS_ACCEPTED,
+        self::STATUS_REJECTED,
+        self::STATUS_REFERRED,
+        self::STATUS_OBSOLETED_BY_MOTION,
+        self::STATUS_OBSOLETED_BY_AMENDMENT,
+        self::STATUS_CUSTOM_STRING,
+    ];
+
+    /**
+     * @param MotionSupporter[] $newInitiators
+     */
+    public function followProposalAndCreateNewVersion(string $versionId, int $acceptStatus = self::STATUS_ACCEPTED, ?array $newInitiators = null): Motion
+    {
+        if (!in_array($this->proposalStatus, [self::STATUS_MODIFIED_ACCEPTED, self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_CUSTOM_STRING])) {
+            throw new FormError('No proposal set');
+        }
+
+        $newVersion = MotionDeepCopy::copyMotion(
+            $this,
+            $this->getMyMotionType(),
+            $this->agendaItem,
+            $this->titlePrefix,
+            $versionId,
+            true
+        );
+
+        if ($newInitiators !== null) {
+            foreach ($newVersion->motionSupporters as $supporter) {
+                $supporter->delete();
+            }
+            foreach ($newInitiators as $newInitiator) {
+                $newInitiator->motionId = $newVersion->id;
+                $newInitiator->save();
+            }
+        }
+
+        $newVersion->status = match ($this->proposalStatus) {
+            self::STATUS_MODIFIED_ACCEPTED, self::STATUS_ACCEPTED => $acceptStatus,
+            default => $this->proposalStatus,
+        };
+        if (in_array($this->proposalStatus, [self::STATUS_OBSOLETED_BY_MOTION, self::STATUS_OBSOLETED_BY_AMENDMENT])) {
+            $newVersion->statusString = $this->proposalComment;
+        }
+        if ($this->proposalStatus === self::STATUS_CUSTOM_STRING) {
+            $newVersion->statusString = $this->proposalComment;
+        }
+        if ($this->proposalStatus === self::STATUS_MODIFIED_ACCEPTED && ($modified = $this->getMyProposalReference())) {
+            foreach ($newVersion->sections as $section) {
+                $amendmentSection = $modified->getSection($section->sectionId);
+                if ($amendmentSection) {
+                    $section->setData($amendmentSection->getData());
+                    $section->save();
+                }
+            }
+        }
+        $newVersion->proposalStatus = null;
+        $newVersion->proposalComment = null;
+        $newVersion->save();
+
+        return $newVersion;
     }
 
     public function getLink(bool $absolute = false): string
