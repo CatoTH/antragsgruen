@@ -60,6 +60,7 @@ $I->seeCheckboxIsChecked("//input[@name='operation'][@value='move']");
 $I->checkOption("//input[@name='target'][@value='agenda']");
 $I->seeElement('.moveToAgendaItem');
 $I->selectOption('#agendaItemId1', $mars);
+$I->wait(0.3);
 $I->submitForm('.adminMoveForm', [], 'move');
 
 $I->see('A8: Testing proposed changes', 'h1');
@@ -138,7 +139,5 @@ $I->wait(0.1);
 $I->dontSeeElement('.prefixAlreadyTaken');
 
 $I->submitForm('.adminMoveForm', [], 'move');
-$I->click('.alert-success a');
-
-$I->gotoMotion(true, (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
 $I->see('N1.2', 'h1');
+$I->dontSeeElement('.motionDataTable .motionHistory');

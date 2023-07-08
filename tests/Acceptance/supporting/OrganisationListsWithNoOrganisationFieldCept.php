@@ -16,16 +16,27 @@ $I->populateDBData1();
 
 $I->wantTo('Create three organisations');
 
-$page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
 
-$I->wait(0.2);
-$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: environment");');
-$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: infrastructure");');
-$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: education");');
-$page->saveForm();
-if ($I->executeJS('return document.querySelector("#organisationList select").selectize.items.length') != 3) {
-    $I->fail('Invalid return from tag-List');
-}
+$I->dontSeeElement('.editOrganisationModal');
+$I->clickJS('.orgaOpenerHolder .orgaOpener');
+$I->wait(0.5);
+$I->seeElement('.editOrganisationModal');
+$I->clickJS('.editOrganisationModal .btnAdd');
+$I->clickJS('.editOrganisationModal .btnAdd');
+$I->clickJS('.editOrganisationModal .btnAdd');
+
+$I->executeJS('document.querySelectorAll(".editOrganisationModal input.form-control").item(0).value = "Working group: environment"');
+$I->executeJS('document.querySelectorAll(".editOrganisationModal input.form-control").item(1).value = "Working group: infrastructure"');
+$I->executeJS('document.querySelectorAll(".editOrganisationModal input.form-control").item(2).value = "Working group: education"');
+
+$I->clickJS('.editOrganisationModal .btnSave');
+
+$I->clickJS('.orgaOpenerHolder .orgaOpener');
+$I->wait(0.5);
+$I->seeInField('.editOrganisationModal input', 'Working group: environment');
+$I->seeInField('.editOrganisationModal input', 'Working group: infrastructure');
+$I->seeInField('.editOrganisationModal input', 'Working group: education');
 
 $page = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->uncheckOption("//input[@name='initiatorCanBeOrganization']");
