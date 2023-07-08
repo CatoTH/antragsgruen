@@ -11,6 +11,7 @@ use yii\helpers\Html;
 
 $submitUrl = UrlHelper::createUrl(['/dbwv/admin-workflow/step4next', 'motionSlug' => $motion->getMotionSlug()]);
 
+/*
 $mainConsultation = \app\plugins\dbwv\Module::getBundConsultation();
 $tagSelect = [
     '' => '- nicht zugeordnet -',
@@ -23,6 +24,7 @@ foreach ($mainConsultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_T
         $selectedTagId = (string)$tag->id;
     }
 }
+*/
 
 $v5Created = MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V5) !== null;
 
@@ -43,12 +45,6 @@ echo Html::beginForm($submitUrl, 'POST', [
             <?php
         } else {
             ?>
-            <div>
-                <?php
-                $options = ['id' => 'dbwv_main_tagSelect', 'class' => 'stdDropdown', 'required' => 'required'];
-                echo Html::dropDownList('tag', $selectedTagId, $tagSelect, $options);
-                ?>
-            </div>
             <div style="text-align: right; padding: 10px;">
                 <button type="submit" class="btn btn-primary">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
