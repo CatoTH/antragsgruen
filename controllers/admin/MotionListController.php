@@ -210,6 +210,13 @@ class MotionListController extends AdminBase
             $consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         }
 
+        $motionListClass = AdminMotionFilterForm::class;
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($plugin::getFullMotionListClassOverride()) {
+                $motionListClass = $plugin::getFullMotionListClassOverride();
+            }
+        }
+
         try {
             if ($privilegeScreening || $privilegeDelete) {
                 $this->actionListallScreeningMotions();
@@ -218,17 +225,11 @@ class MotionListController extends AdminBase
             if ($privilegeProposals) {
                 $this->actionListallProposalAmendments();
             }
+            $motionListClass::performAdditionalListActions($this->consultation);
         } catch (Access $e) {
             throw new ResponseException(new HtmlErrorResponse(403, $e->getMessage()));
         } catch (NotFound $e) {
             throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
-        }
-
-        $motionListClass = AdminMotionFilterForm::class;
-        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            if ($plugin::getFullMotionListClassOverride()) {
-                $motionListClass = $plugin::getFullMotionListClassOverride();
-            }
         }
 
         if ($motionId !== null && $motionId !== 'all' && $consultation->getMotion($motionId) === null) {
