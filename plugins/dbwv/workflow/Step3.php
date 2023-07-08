@@ -100,6 +100,10 @@ class Step3
                 $v4Motion->proposalComment = $comment;
                 $v4Motion->save();
             }
+
+            foreach ($motion->getProposedProcedureTags() as $tag) {
+                $v4Motion->link('tags', $tag);
+            }
         } else {
             $v4Motion = $motion;
 

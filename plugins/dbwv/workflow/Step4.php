@@ -9,6 +9,7 @@ use app\components\RequestContext;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\AdminTodoItem;
+use app\models\db\ConsultationSettingsTag;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
@@ -61,7 +62,32 @@ class Step4
         return $html;
     }
 
-    public static function moveToMain(Motion $motion, ?int $newTagId): Motion
+    public static function getCorrespondingTagFromMain(ConsultationSettingsTag $lvTag): ConsultationSettingsTag
+    {
+        $main = Module::getBundConsultation();
+        foreach ($main->tags as $mainTag) {
+            if (mb_strtolower($mainTag->title) === mb_strtolower($lvTag->title) && $mainTag->type === $lvTag->type) {
+                return $mainTag;
+            }
+        }
+
+        if ($lvTag->parentTag) {
+            $mainParentTag = self::getCorrespondingTagFromMain($lvTag->parentTag);
+        } else {
+            $mainParentTag = null;
+        }
+        $mainTag = new ConsultationSettingsTag();
+        $mainTag->consultationId = $main->id;
+        $mainTag->parentTagId = $mainParentTag?->id;
+        $mainTag->type = $lvTag->type;
+        $mainTag->title = $lvTag->title;
+        $mainTag->position = 0;
+        $mainTag->save();
+
+        return $mainTag;
+    }
+
+    public static function moveToMain(Motion $motion): Motion
     {
         if (!Workflow::canMoveToMainV4($motion)) {
             throw new Access('Not allowed to perform this action (generally)');
@@ -111,8 +137,8 @@ class Step4
         $newProposer->dateCreation = date('Y-m-d H:i:s');
         $newProposer->save();
 
-        if ($newTagId) {
-            $newTag = Module::getBundConsultation()->getTagById($newTagId);
+        foreach ($motion->tags as $tag) {
+            $newTag = self::getCorrespondingTagFromMain($tag);
             $v5Motion->link('tags', $newTag);
         }
 

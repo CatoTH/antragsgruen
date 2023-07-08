@@ -101,8 +101,7 @@ class AdminWorkflowController extends Base
             return new HtmlErrorResponse(404,  'Motion not found');
         }
 
-        $tagId = $this->getPostValue('tag');
-        $newMotion = Step4::moveToMain($motion, $tagId > 0 ? intval($tagId) : null);
+        $newMotion = Step4::moveToMain($motion);
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
