@@ -198,43 +198,7 @@ foreach ($entries as $entry) {
 
 echo '</table>';
 
-if ($privilegeProposals || $privilegeScreening) {
-?>
-    <section class="adminMotionListActions">
-        <div class="selectAll">
-            <button type="button" class="btn btn-link markAll"><?= Yii::t('admin', 'list_all') ?></button> &nbsp;
-            <button type="button" class="btn btn-link markNone"><?= Yii::t('admin', 'list_none') ?></button> &nbsp;
-        </div>
-
-        <div class="actionButtons">
-            <?= Yii::t('admin', 'list_marked') ?>: &nbsp;
-            <?php
-            if ($privilegeDelete) { ?>
-                <button type="submit" class="btn btn-danger deleteMarkedBtn" name="delete">
-                    <?= Yii::t('admin', 'list_delete') ?>
-                </button> &nbsp;
-            <?php
-            }
-            if ($privilegeScreening) { ?>
-                <button type="submit" class="btn btn-info unscreenMarkedBtn" name="unscreen">
-                    <?= Yii::t('admin', 'list_unscreen') ?>
-                </button> &nbsp;
-                <button type="submit" class="btn btn-success screenMarkedBtn" name="screen">
-                    <?= Yii::t('admin', 'list_screen') ?>
-                </button> &nbsp;
-                <?php
-            }
-            if ($privilegeProposals) { ?>
-                <button type="submit" class="btn btn-success" name="proposalVisible">
-                    <?= Yii::t('admin', 'list_proposal_visible') ?>
-                </button>
-                <?php
-            }
-            ?>
-        </div>
-    </section>
-<?php
-}
+echo $search->showListActions();
 
 echo Html::endForm();
 

@@ -98,6 +98,14 @@ class Workflow
         );
     }
 
+    public static function canMoveToMainGenerally(Consultation $consultation): bool
+    {
+        return $consultation->havePrivilege(
+            Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
+            PrivilegeQueryContext::anyRestriction()
+        );
+    }
+
     public static function canMakeEditorialChangesV5(Motion $motion): bool
     {
         return $motion->getMyConsultation()->havePrivilege(

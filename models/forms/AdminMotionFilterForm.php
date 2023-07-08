@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace app\models\forms;
 
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\Privileges;
 use app\components\{Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter};
+use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
 class AdminMotionFilterForm
@@ -1045,5 +1047,48 @@ class AdminMotionFilterForm
             'Search[responsibility]' => $this->responsibility,
             'Search[prefix]'         => $this->prefix,
         ], $add));
+    }
+
+    protected function showAdditionalActions(): string
+    {
+        return '';
+    }
+
+    public function showListActions(): string
+    {
+        $privilegeScreening = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
+        $privilegeProposals = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
+        $privilegeDelete = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::anyRestriction());
+
+        if (!$privilegeProposals && !$privilegeScreening && !$privilegeDelete) {
+            return '';
+        }
+
+        $str = '<section class="adminMotionListActions">
+        <div class="selectAll">
+            <button type="button" class="btn btn-link markAll">' . \Yii::t('admin', 'list_all') . '</button> &nbsp;
+            <button type="button" class="btn btn-link markNone">' . \Yii::t('admin', 'list_none') . '</button> &nbsp;
+        </div>
+
+        <div class="actionButtons">' . \Yii::t('admin', 'list_marked') . ': &nbsp;';
+            if ($privilegeDelete) {
+                $str .= '<button type="submit" class="btn btn-danger deleteMarkedBtn" name="delete">' . \Yii::t('admin', 'list_delete') . '</button> &nbsp;';
+            }
+            if ($privilegeScreening) {
+                $str .= '<button type="submit" class="btn btn-info unscreenMarkedBtn" name="unscreen">' . \Yii::t('admin', 'list_unscreen') . '</button> &nbsp;';
+                $str .= '<button type="submit" class="btn btn-success screenMarkedBtn" name="screen">' . \Yii::t('admin', 'list_screen') . '</button> &nbsp;';
+            }
+            if ($privilegeProposals) {
+                $str .= '<button type="submit" class="btn btn-success" name="proposalVisible">' . \Yii::t('admin', 'list_proposal_visible') . '</button>';
+            }
+            $str .= $this->showAdditionalActions();
+            $str .= '</div>
+        </section>';
+
+        return $str;
+    }
+
+    public static function performAdditionalListActions(Consultation $consultation): void
+    {
     }
 }

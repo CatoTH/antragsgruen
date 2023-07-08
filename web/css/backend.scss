@@ -1257,7 +1257,8 @@ label.legend {
   width: 100%;
 
   .selectAll {
-    flex: 1;
+    flex-basis: 200px;
+    flex-grow: 0.1;
     line-height: 40px;
     vertical-align: middle;
 
