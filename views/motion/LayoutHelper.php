@@ -401,7 +401,7 @@ class LayoutHelper
         if (count($list) > 50) {
             $str = '<div class="expandableList">';
 
-            $str .= '<strong>' . str_replace('%NUM%', count($list), $totalStr) . '</strong>';
+            $str .= '<strong>' . str_replace('%NUM%', (string)count($list), $totalStr) . '</strong>';
             $str .= '<button type="button" class="btn btn-link btnShowAll">';
             $str .= '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>';
             $str .= \Yii::t('motion', 'likes_dislikes_showall');
@@ -443,9 +443,9 @@ class LayoutHelper
             }
         } elseif ($nonPublicSupportCount > 1) {
             if ($publicSupportCount > 0) {
-                $str .= str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_more_x'));
+                $str .= str_replace('%x%', (string)$nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_more_x'));
             } else {
-                $str .= str_replace('%x%', $nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_x'));
+                $str .= str_replace('%x%', (string)$nonPublicSupportCount, \Yii::t('motion', 'supporting_nonpublic_x'));
             }
         }
 
@@ -662,7 +662,7 @@ class LayoutHelper
         // data-append-hint's should be added as SUB elements, convert INS/DEL to inline colored text
         $html = preg_replace_callback('/<ins(?<attrs> [^>]*)?>(?<content>.*)<\/ins>/siuU', function ($matches) {
             $content = $matches['content'];
-            if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attrs'], $matches2)) {
+            if (preg_match('/data-append-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attrs'], $matches2)) {
                 $content .= '<sub>' . $matches2['append'] . '</sub> ';
             }
 
@@ -670,7 +670,7 @@ class LayoutHelper
         }, $html);
         $html = preg_replace_callback('/<del(?<attrs> [^>]*)?>(?<content>.*)<\/del>/siuU', function ($matches) {
             $content = $matches['content'];
-            if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attrs'], $matches2)) {
+            if (preg_match('/data-append-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attrs'], $matches2)) {
                 $content .= '<sub>' . $matches2['append'] . '</sub> ';
             }
 
@@ -684,7 +684,7 @@ class LayoutHelper
             '<\/\k<tag>>/siuU',
             function ($matches) {
                 $content = $matches['content'];
-                if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attributes'], $matches2)) {
+                if (preg_match('/data-append-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attributes'], $matches2)) {
                     $content .= '<sub>' . $matches2['append'] . '</sub> ';
                 }
 
@@ -694,7 +694,7 @@ class LayoutHelper
         );
         // ice-ins class should be converted to a green DIV element (ice-ins will probably only be used on block elements)
         $html = preg_replace_callback(
-            '/<(?<tag>\w+) (?<attributes>[^>]*ice\-ins[^>]*)>' .
+            '/<(?<tag>\w+) (?<attributes>[^>]*ice-ins[^>]*)>' .
             '(?<content>.*)' .
             '<\/\k<tag>>/siuU',
             function ($matches) {
@@ -707,7 +707,7 @@ class LayoutHelper
         );
         // ice-del class should be converted to a red DIV element (ice-ins will probably only be used on block elements)
         $html = preg_replace_callback(
-            '/<(?<tag>\w+) (?<attributes>[^>]*ice\-del[^>]*)>' .
+            '/<(?<tag>\w+) (?<attributes>[^>]*ice-del[^>]*)>' .
             '(?<content>.*)' .
             '<\/\k<tag>>/siuU',
             function ($matches) {
@@ -828,6 +828,49 @@ class LayoutHelper
             } else {
                 $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
             }
+        }
+    }
+
+    public static function printMotionToOdt(Motion $motion, \CatoTH\HTML2OpenDocument\Text $doc): void
+    {
+        $initiators = [];
+        foreach ($motion->motionSupporters as $supp) {
+            if ($supp->role === ISupporter::ROLE_INITIATOR) {
+                $initiators[] = $supp->getNameWithOrga();
+            }
+        }
+        if (count($initiators) === 1) {
+            $initiatorStr = \Yii::t('export', 'InitiatorSingle');
+        } else {
+            $initiatorStr = \Yii::t('export', 'InitiatorMulti');
+        }
+        $initiatorStr .= ': ' . implode(', ', $initiators);
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $motion->agendaItem ? $motion->agendaItem->title : '');
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
+
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->printAmendmentToODT($doc);
+            }
+        }
+
+        foreach ($motion->getSortedSections() as $section) {
+            $section->getSectionType()->printMotionToODT($doc);
+        }
+
+        $limitedSupporters = LimitedSupporterList::createFromIMotion($motion);
+        if (count($limitedSupporters->supporters) > 0) {
+            $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('motion', 'supporters_heading')) . '</h2>', false);
+
+            $supps = [];
+            foreach ($limitedSupporters->supporters as $supp) {
+                $supps[] = $supp->getNameWithOrga();
+            }
+
+            $doc->addHtmlTextBlock('<p>' . Html::encode(implode('; ', $supps)) . $limitedSupporters->truncatedToString(';') . '</p>', false);
         }
     }
 }

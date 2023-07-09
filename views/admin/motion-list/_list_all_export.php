@@ -150,6 +150,10 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                     $path  = ['admin/motion-list/motion-odtziplist'];
                     echo $getExportLinkLi($title, $path, $motionType->id, 'motionOdtZIP');
 
+                    $title = Yii::t('admin', 'index_odt_allmot');
+                    $path  = ['admin/motion-list/motion-odtall'];
+                    echo $getExportLinkLi($title, $path, $motionType->id, 'motionOdtAll');
+
                     $title = Yii::t('admin', 'index_export_ods_listall');
                     $path  = ['admin/motion-list/motion-odslistall'];
                     echo $getExportLinkLi($title, $path, $motionType->id, 'motionODSlist');

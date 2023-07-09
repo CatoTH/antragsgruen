@@ -2,11 +2,12 @@
 
 namespace app\views\amendment;
 
+use app\components\HTMLTools;
 use app\models\sectionTypes\ISectionType;
 use app\views\pdfLayouts\{IPdfWriter, IPDFLayout};
 use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
-use app\models\db\{Amendment, AmendmentSection, TexTemplate};
+use app\models\db\{Amendment, AmendmentSection, ISupporter, Motion, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
@@ -210,5 +211,65 @@ class LayoutHelper
         \Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);
 
         return $pdf;
+    }
+
+    public static function printAmendmentToOdt(Amendment $amendment, \CatoTH\HTML2OpenDocument\Text $doc): void
+    {
+        $initiators = [];
+        foreach ($amendment->amendmentSupporters as $supp) {
+            if ($supp->role === ISupporter::ROLE_INITIATOR) {
+                $initiators[] = $supp->getNameWithOrga();
+            }
+        }
+        if (count($initiators) === 1) {
+            $initiatorStr = \Yii::t('export', 'InitiatorSingle');
+        } else {
+            $initiatorStr = \Yii::t('export', 'InitiatorMulti');
+        }
+        $initiatorStr .= ': ' . implode(', ', $initiators);
+        if ($amendment->getMyMotion()->agendaItem) {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $amendment->getMyMotion()->agendaItem->title);
+        } else {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', '');
+        }
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $amendment->getTitle());
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
+
+
+        if ($amendment->changeEditorial !== '') {
+            $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'editorial_hint')) . '</h2>', false);
+            $editorial = HTMLTools::correctHtmlErrors($amendment->changeEditorial);
+            $doc->addHtmlTextBlock($editorial, false);
+        }
+
+        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($amendment, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->printAmendmentToODT($doc);
+            }
+        }
+
+        foreach ($amendment->getSortedSections(false) as $section) {
+            $section->getSectionType()->printAmendmentToODT($doc);
+        }
+
+        if ($amendment->changeExplanation !== '') {
+            $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'reason')) . '</h2>', false);
+            $explanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
+            $doc->addHtmlTextBlock($explanation, false);
+        }
+
+        $limitedSupporters = LimitedSupporterList::createFromIMotion($amendment);
+        if (count($limitedSupporters->supporters) > 0) {
+            $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('motion', 'supporters_heading')) . '</h2>', false);
+
+            $supps = [];
+            foreach ($limitedSupporters->supporters as $supp) {
+                $supps[] = $supp->getNameWithOrga();
+            }
+
+            $doc->addHtmlTextBlock('<p>' . Html::encode(implode('; ', $supps)) . $limitedSupporters->truncatedToString(';') . '</p>', false);
+        }
     }
 }
