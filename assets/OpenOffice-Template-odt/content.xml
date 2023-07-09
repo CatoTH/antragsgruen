@@ -48,7 +48,7 @@
                 <text:sequence-decl text:display-outline-level="0" text:name="Text"/>
                 <text:sequence-decl text:display-outline-level="0" text:name="Drawing"/>
             </text:sequence-decls>
-            <text:p text:style-name="Antragsgrün_20_H2">
+            <text:p text:style-name="Antragsgrün_20_NewMotion">
                 <draw:frame draw:style-name="fr1" draw:name="Rahmen1" text:anchor-type="paragraph" svg:width="17cm" draw:z-index="0">
                     <draw:text-box fo:min-height="0.499cm">
                         <text:p text:style-name="Frame_20_contents">

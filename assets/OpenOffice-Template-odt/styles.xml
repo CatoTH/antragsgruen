@@ -181,6 +181,10 @@
                                    style:font-style-name="Standard" style:font-family-generic="modern"
                                    style:font-pitch="fixed" style:font-size-asian="10.5pt"/>
         </style:style>
+        <style:style style:name="Antragsgrün_20_NewMotion" style:display-name="Antragsgrün New Motion" style:family="paragraph"
+                     style:parent-style-name="Heading" style:class="text">
+            <style:paragraph-properties text:number-lines="false" fo:break-before="page" />
+        </style:style>
         <style:style style:name="Antragsgrün_20_H2" style:display-name="Antragsgrün H2" style:family="paragraph"
                      style:parent-style-name="Heading" style:class="text">
             <style:paragraph-properties text:number-lines="false" text:line-number="0"/>
