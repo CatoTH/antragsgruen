@@ -416,7 +416,10 @@ class MotionListController extends AdminBase
 
         $doc = $imotions[0]->getMyMotionType()->createOdtTextHandler();
 
-        foreach ($imotions as $imotion) {
+        foreach ($imotions as $i => $imotion) {
+            if ($i > 0) {
+                $doc->nextPage();
+            }
             if (is_a($imotion, Motion::class)) {
                 MotionLayoutHelper::printMotionToOdt($imotion, $doc);
             }
