@@ -41,6 +41,8 @@ rm composer.phar composer.lock codeception.yml phpci.yml .gitignore .travis.yml 
 rm package-lock.json composer.json
 rm config/TEST_DOMAIN
 rm assets/phpstan-helper.php
+rm -R assets/OpenOffice-Template-ods
+rm -R assets/OpenOffice-Template-odt
 mv web/index-production.php web/index.php
 rm docs/create-dist.sh docs/create-update.php
 
