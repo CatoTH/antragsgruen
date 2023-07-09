@@ -298,7 +298,10 @@ trait MotionExportTraits
             return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
         }
 
-        $odtData = $this->renderPartial('view_odt', ['motion' => $motion]);
+        $doc = $motion->getMyMotionType()->createOdtTextHandler();
+        LayoutHelper::printMotionToOdt($motion, $doc);
+        $odtData = $doc->finishAndGetDocument();
+
         return new BinaryFileResponse(
             BinaryFileResponse::TYPE_ODT,
             $odtData,

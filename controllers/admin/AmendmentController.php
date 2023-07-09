@@ -84,8 +84,9 @@ class AmendmentController extends AdminBase
                 continue;
             }
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
-                $content = $this->renderPartial('@app/views/amendment/view_odt', ['amendment' => $amendment]);
-                $zip->addFile($amendment->getFilenameBase(false) . '.odt', $content);
+                $doc = $amendment->getMyMotionType()->createOdtTextHandler();
+                LayoutHelper::printAmendmentToOdt($amendment, $doc);
+                $zip->addFile($amendment->getFilenameBase(false) . '.odt', $doc->finishAndGetDocument());
             }
         }
 

@@ -14,7 +14,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 $motion     = $amendment->getMyMotion();
 
-$layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMotionUrl($motion));
+$layout->addBreadcrumb($motion->getMyMotionType()->titleSingular, UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 $layout->addBreadcrumb(Yii::t('amend', 'withdraw_bread'));
 

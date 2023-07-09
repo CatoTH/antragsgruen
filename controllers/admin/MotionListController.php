@@ -195,7 +195,7 @@ class MotionListController extends AdminBase
 
     public function actionIndex(?string $motionId = null): ResponseInterface
     {
-        $consultation       = $this->consultation;
+        $consultation = $this->consultation;
         if (!self::haveAccessToList($consultation)) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
@@ -328,7 +328,10 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_CSV, $csv, true, $filename);
     }
 
-    public function actionMotionPdfziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
+    /**
+     * @return IMotion[]
+     */
+    private function getVisibleAmendmentsForExport(int $motionTypeId = 0, int $withdrawn = 0): array
     {
         $withdrawn = ($withdrawn === 1);
 
@@ -339,7 +342,7 @@ class MotionListController extends AdminBase
                 $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
             if (count($motions) === 0) {
-                return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
+                throw new ResponseException(new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet')));
             }
             /** @var IMotion[] $imotions */
             $imotions = [];
@@ -351,8 +354,15 @@ class MotionListController extends AdminBase
                 }
             }
         } catch (ExceptionBase $e) {
-            return new HtmlErrorResponse(404, $e->getMessage());
+            throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
         }
+
+        return $imotions;
+    }
+
+    public function actionMotionPdfziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
+    {
+        $imotions = $this->getVisibleAmendmentsForExport($motionTypeId, $withdrawn);
 
         $zip      = new ZipWriter();
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
@@ -381,42 +391,40 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdtziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
     {
-        $withdrawn = ($withdrawn === 1);
-
-        try {
-            if ($motionTypeId > 0) {
-                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions($withdrawn);
-            } else {
-                $motions = $this->consultation->getVisibleMotions($withdrawn);
-            }
-            if (count($motions) === 0) {
-                return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
-            }
-            /** @var IMotion[] $imotions */
-            $imotions = [];
-            foreach ($motions as $motion) {
-                if ($motion->getMyMotionType()->amendmentsOnly) {
-                    $imotions = array_merge($imotions, $motion->getVisibleAmendments($withdrawn));
-                } else {
-                    $imotions[] = $motion;
-                }
-            }
-        } catch (ExceptionBase $e) {
-            return new HtmlErrorResponse(404, $e->getMessage());
-        }
+        $imotions = $this->getVisibleAmendmentsForExport($motionTypeId, $withdrawn);
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
             if (is_a($imotion, Motion::class)) {
-                $content = $this->renderPartial('@app/views/motion/view_odt', ['motion' => $imotion]);
-                $zip->addFile($imotion->getFilenameBase(false) . '.odt', $content);
+                $doc = $imotion->getMyMotionType()->createOdtTextHandler();
+                MotionLayoutHelper::printMotionToOdt($imotion, $doc);
+                $zip->addFile($imotion->getFilenameBase(false) . '.odt', $doc->finishAndGetDocument());
             }
             if (is_a($imotion, Amendment::class)) {
-                $content = $this->renderPartial('@app/views/amendment/view_odt', ['amendment' => $imotion]);
-                $zip->addFile($imotion->getFilenameBase(false) . '.odt', $content);
+                $doc = $imotion->getMyMotionType()->createOdtTextHandler();
+                AmendmentLayoutHelper::printAmendmentToOdt($imotion, $doc);
+                $zip->addFile($imotion->getFilenameBase(false) . '.odt', $doc->finishAndGetDocument());
             }
         }
 
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'motions_odt');
+    }
+
+    public function actionMotionOdtall(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
+    {
+        $imotions = $this->getVisibleAmendmentsForExport($motionTypeId, $withdrawn);
+
+        $doc = $imotions[0]->getMyMotionType()->createOdtTextHandler();
+
+        foreach ($imotions as $imotion) {
+            if (is_a($imotion, Motion::class)) {
+                MotionLayoutHelper::printMotionToOdt($imotion, $doc);
+            }
+            if (is_a($imotion, Amendment::class)) {
+                AmendmentLayoutHelper::printAmendmentToOdt($imotion, $doc);
+            }
+        }
+
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ODT, $doc->finishAndGetDocument(), true, 'motions');
     }
 }

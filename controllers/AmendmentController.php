@@ -121,9 +121,12 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
+        $doc = $amendment->getMyMotionType()->createOdtTextHandler();
+        LayoutHelper::printAmendmentToOdt($amendment, $doc);
+
         return new BinaryFileResponse(
             BinaryFileResponse::TYPE_ODT,
-            $this->renderPartial('view_odt', ['amendment' => $amendment]),
+            $doc->finishAndGetDocument(),
             false,
             $amendment->getFilenameBase(false),
             $this->layoutParams->isRobotsIndex($this->action)

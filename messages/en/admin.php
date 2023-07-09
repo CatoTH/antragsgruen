@@ -38,6 +38,7 @@ return [
     'index_pdf_list'              => 'List of all PDFs',
     'index_pdf_zip_list'          => 'ZIP archive of all PDFs',
     'index_odt_zip_list'          => 'ZIP archive of all ODTs',
+    'index_odt_allmot'            => 'One ODT with all motion texts',
     'index_settings'              => 'Settings',
     'index_appearance'            => 'Appearance and components of this site',
     'index_consultation_settings' => 'This consultation',
