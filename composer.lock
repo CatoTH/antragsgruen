@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ab15644c6c6a4215375858db1c2a14b",
+    "content-hash": "cdab150719700b42af0b9235c8c531f0",
     "packages": [
         {
             "name": "async-aws/core",
@@ -136,7 +136,7 @@
             "version": "3.3.11",
             "source": {
                 "type": "git",
-                "url": "git@github.com:RobinHerbots/Inputmask.git",
+                "url": "https://github.com/RobinHerbots/Inputmask.git",
                 "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
             },
             "dist": {
@@ -208,16 +208,16 @@
         },
         {
             "name": "catoth/html2opendocument",
-            "version": "0.16",
+            "version": "0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/html2opendocument.git",
-                "reference": "ea77e4697fd9b8aafdc4259d237d1d9dc6609b18"
+                "reference": "87d814cca55e3ac9c82cabc805d14a8efedca619"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/ea77e4697fd9b8aafdc4259d237d1d9dc6609b18",
-                "reference": "ea77e4697fd9b8aafdc4259d237d1d9dc6609b18",
+                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/87d814cca55e3ac9c82cabc805d14a8efedca619",
+                "reference": "87d814cca55e3ac9c82cabc805d14a8efedca619",
                 "shasum": ""
             },
             "require": {
@@ -252,9 +252,9 @@
             ],
             "support": {
                 "issues": "https://github.com/CatoTH/html2opendocument/issues",
-                "source": "https://github.com/CatoTH/html2opendocument/tree/rm"
+                "source": "https://github.com/CatoTH/html2opendocument/tree/0.17"
             },
-            "time": "2022-03-26T07:21:21+00:00"
+            "time": "2023-07-09T15:23:51+00:00"
         },
         {
             "name": "cebe/markdown",
@@ -5364,16 +5364,16 @@
         },
         {
             "name": "codeception/module-yii2",
-            "version": "1.1.8",
+            "version": "1.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/module-yii2.git",
-                "reference": "75f2fdf7f1912c1b95885d56a5098ed10f586411"
+                "reference": "70ad7544fc256363acd082b4ef9e7220a18017a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/module-yii2/zipball/75f2fdf7f1912c1b95885d56a5098ed10f586411",
-                "reference": "75f2fdf7f1912c1b95885d56a5098ed10f586411",
+                "url": "https://api.github.com/repos/Codeception/module-yii2/zipball/70ad7544fc256363acd082b4ef9e7220a18017a0",
+                "reference": "70ad7544fc256363acd082b4ef9e7220a18017a0",
                 "shasum": ""
             },
             "require": {
@@ -5418,9 +5418,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Codeception/module-yii2/issues",
-                "source": "https://github.com/Codeception/module-yii2/tree/1.1.8"
+                "source": "https://github.com/Codeception/module-yii2/tree/1.1.9"
             },
-            "time": "2023-02-10T18:47:53+00:00"
+            "time": "2023-06-16T03:48:50+00:00"
         },
         {
             "name": "codeception/stub",
@@ -6110,16 +6110,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.24",
+            "version": "1.10.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "360ecc90569e9a60c2954ee209ec04fa0d958e14"
+                "reference": "578f4e70d117f9a90699324c555922800ac38d8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/360ecc90569e9a60c2954ee209ec04fa0d958e14",
-                "reference": "360ecc90569e9a60c2954ee209ec04fa0d958e14",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/578f4e70d117f9a90699324c555922800ac38d8c",
+                "reference": "578f4e70d117f9a90699324c555922800ac38d8c",
                 "shasum": ""
             },
             "require": {
@@ -6168,7 +6168,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-05T12:32:13+00:00"
+            "time": "2023-07-06T12:11:37+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
