@@ -257,7 +257,8 @@ class Motion extends IMotion implements IRSSItem
 
     public function getReplacedByMotions(): ActiveQuery
     {
-        return $this->hasMany(Motion::class, ['parentMotionId' => 'id']);
+        return $this->hasMany(Motion::class, ['parentMotionId' => 'id'])
+            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
     /**
