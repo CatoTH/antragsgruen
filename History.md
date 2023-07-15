@@ -9,6 +9,7 @@
 - When a list of organisations is specified in the consultation settings, this list is shown as a drop-down when creating / inviting new users.
 - It can now be set up so that the modified version proposed as part of a proposed procedure is shown inline as part of the motion.
 - Besides of exporting all motions as a ZIP-file containing single ODT files, a single ODT file containing all motion texts can now be exported.
+- The ODT export now also supports numbered lists.
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.
 
