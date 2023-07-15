@@ -23,10 +23,13 @@ if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->p
     } elseif ($entry->proposalFeedbackHasBeenRequested()) {
         $title = Yii::t('admin', 'list_prop_user_asked');
         echo '<span class="asked" title="' . $title . '">❓</span>';
-    } else {
+    }
+    /*
+       else {
         $title = Yii::t('admin', 'list_prop_user_not_asked');
         echo '<span class="not_asked" title="' . $title . '">❔</span>';
     }
+    */
 
     if ($show_visibility) {
         if ($entry->isProposalPublic()) {

@@ -248,8 +248,14 @@ abstract class SupportBase
             $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
         }
 
+        $preCreatedByAdmin = [];
+        $preNonPublic = [];
         foreach ($motion->motionSupporters as $supp) {
             if (in_array($supp->role, $affectedRoles)) {
+                if ($supp->userId) {
+                    $preCreatedByAdmin[$supp->userId] = $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, false);
+                    $preNonPublic[$supp->userId] = $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, false);
+                }
                 $supp->delete();
             }
         }
@@ -258,6 +264,10 @@ abstract class SupportBase
         foreach ($supporters as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
                 $sup->motionId = $motion->id;
+                if (isset($preCreatedByAdmin[$sup->userId])) {
+                    $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
+                    $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
+                }
                 $sup->save();
             }
         }
@@ -274,8 +284,14 @@ abstract class SupportBase
             $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
         }
 
+        $preCreatedByAdmin = [];
+        $preNonPublic = [];
         foreach ($amendment->amendmentSupporters as $supp) {
             if (in_array($supp->role, $affectedRoles)) {
+                if ($supp->userId) {
+                    $preCreatedByAdmin[$supp->userId] = $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, false);
+                    $preNonPublic[$supp->userId] = $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, false);
+                }
                 $supp->delete();
             }
         }
@@ -285,6 +301,10 @@ abstract class SupportBase
         foreach ($supportersAndInitiators as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
                 $sup->amendmentId = $amendment->id;
+                if (isset($preCreatedByAdmin[$sup->userId])) {
+                    $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
+                    $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
+                }
                 $sup->save();
             }
             if ($sup->role === ISupporter::ROLE_INITIATOR) {

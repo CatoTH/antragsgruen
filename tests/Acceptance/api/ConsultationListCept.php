@@ -44,7 +44,7 @@ $I->assertJsonStringEqualsJsonString('[
     {
         "title": "Test2",
         "title_short": "Test2",
-        "date_published": "2015-11-16T22:35:58+01:00",
+        "date_published": "2015-11-16T22:35:58+00:00",
         "url_path": "std-parteitag",
         "url_json": "' . $baseUri . 'rest/std-parteitag",
         "url_html": "' . $baseUri . 'std-parteitag"

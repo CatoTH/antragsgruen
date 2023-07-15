@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\policies\Nobody;
+use CatoTH\HTML2OpenDocument\Text;
 use app\components\{DateTools, Tools, UrlHelper};
 use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
@@ -223,6 +224,16 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
             $dir = \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
             return $dir . 'OpenOffice-Template-Std.odt';
         }
+    }
+
+    public function createOdtTextHandler(): Text
+    {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return new Text([
+            'templateFile' => $this->getOdtTemplateFile(),
+            'tmpPath'      => AntragsgruenApp::getInstance()->getTmpDir(),
+            'trustHtml'    => true,
+        ]);
     }
 
     public function getDeadlinesByType(string $type): array

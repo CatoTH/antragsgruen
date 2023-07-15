@@ -44,6 +44,7 @@ class Consultation implements \JsonSerializable
     public bool $editorialAmendments = true;
     public bool $globalAlternatives = true;
     public bool $proposalProcedurePage = false;
+    public bool $proposalProcedureInline = false;
     public bool $collectingPage = false;
     public bool $sidebarNewMotions = true;
     public bool $forceLogin = false;

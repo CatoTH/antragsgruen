@@ -28,7 +28,7 @@ class SetupController extends Controller
     private const AGENDA_ITEMS_SACHGEBIETE = [
         [
             'title' => 'Sachgebiet I - Sicherheits- und Verteidigungspolitik; Einsätze und Missionen; Europa',
-            'motionPrefix' => 'I / ',
+            'motionPrefix' => 'I/',
             'position' => 1,
             'themengebiete' => [
                 [
@@ -43,31 +43,31 @@ class SetupController extends Controller
         ],
         [
             'title' => 'Sachgebiet II',
-            'motionPrefix' => 'II / ',
+            'motionPrefix' => 'II/',
             'position' => 2,
             'themengebiete' => [],
         ],
         [
             'title' => 'Sachgebiet III - Dienst- und Laufbahnrecht',
-            'motionPrefix' => 'III / ',
+            'motionPrefix' => 'III/',
             'position' => 3,
             'themengebiete' => [],
         ],
         [
             'title' => 'Sachgebiet IV',
-            'motionPrefix' => 'IV / ',
+            'motionPrefix' => 'IV/',
             'position' => 4,
             'themengebiete' => [],
         ],
         [
             'title' => 'Sachgebiet V',
-            'motionPrefix' => 'V / ',
+            'motionPrefix' => 'V/',
             'position' => 5,
             'themengebiete' => [],
         ],
         [
             'title' => 'Sachgebiet VI',
-            'motionPrefix' => 'VI / ',
+            'motionPrefix' => 'VI/',
             'position' => 6,
             'themengebiete' => [],
         ],

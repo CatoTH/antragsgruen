@@ -72,7 +72,6 @@ if (count($sortedTags) > 0 && mb_stripos($sortedTags[0]->title, Yii::t('motion',
 }
 
 foreach ($tagIds as $tagId) {
-    /** @var ConsultationSettingsTag $tag */
     $tag = $tags[$tagId];
     echo '<h3 class="green" id="tag_' . $tagId . '">' . Html::encode($tag['name']) . '</h3>
     <div class="content">

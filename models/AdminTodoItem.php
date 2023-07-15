@@ -1,33 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models;
 
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{MotionSorter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComment, User};
+use app\models\db\{Amendment, AmendmentComment, Consultation, IMotion, Motion, MotionComment, User};
 
 class AdminTodoItem
 {
-    /** @var string */
-    public string $todoId;
-    public string $title;
-    public string $action;
-    public string $link;
-    public string $description;
-    public ?string $titlePrefix;
-    public int $timestamp;
+    public const TARGET_MOTION = 1;
+    public const TARGET_AMENDMENT = 2;
 
-    public function __construct(string $todoId, string $title, string $action, string $link, int $timestamp, string $description, ?string $titlePrefix)
-    {
-        $this->todoId      = $todoId;
-        $this->link        = $link;
-        $this->title       = $title;
-        $this->action      = $action;
-        $this->timestamp   = $timestamp;
-        $this->description = $description;
-        $this->titlePrefix = $titlePrefix;
+    public function __construct(
+        public string $todoId,
+        public string $title,
+        public string $action,
+        public string $link,
+        public int $timestamp,
+        public string $description,
+        public ?int $targetType,
+        public ?int $targetId,
+        public ?string $titlePrefix
+    ) {
     }
 
     private static array $todoCache = [];
@@ -57,6 +55,8 @@ class AdminTodoItem
                     0,
                     $description,
                     null,
+                    null,
+                    null,
                 );
             }
         }
@@ -84,6 +84,8 @@ class AdminTodoItem
                 UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description,
+                self::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }
@@ -111,6 +113,8 @@ class AdminTodoItem
                 UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => $amend->id]),
                 Tools::dateSql2timestamp($amend->dateCreation),
                 $description,
+                self::TARGET_AMENDMENT,
+                $amend->id,
                 $amend->getFormattedTitlePrefix(),
             );
         }
@@ -138,6 +142,8 @@ class AdminTodoItem
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
                 $description,
+                self::TARGET_MOTION,
+                $comment->motionId,
                 $comment->getIMotion()->getFormattedTitlePrefix(),
             );
         }
@@ -165,6 +171,8 @@ class AdminTodoItem
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
                 $description,
+                self::TARGET_AMENDMENT,
+                $comment->amendmentId,
                 $comment->getIMotion()->getFormattedTitlePrefix(),
             );
         }
@@ -173,8 +181,13 @@ class AdminTodoItem
 
     private static function getUnsortedItems(Consultation $consultation): array
     {
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return [];
+        }
+
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $todo = $plugin::getAdminTodoItems($consultation, User::getCurrentUser());
+            $todo = $plugin::getAdminTodoItems($consultation, $user);
             if ($todo !== null) {
                 return $todo;
             }
@@ -219,5 +232,29 @@ class AdminTodoItem
         self::$todoCache[$consultation->id] = $todo;
 
         return $todo;
+    }
+
+    /**
+     * @param IMotion $IMotion
+     *
+     * @return AdminTodoItem[]
+     */
+    public static function getTodosForIMotion(IMotion $IMotion): array
+    {
+        return array_values(array_filter(
+            self::getConsultationTodos($IMotion->getMyConsultation()),
+            fn(AdminTodoItem $item): bool => $item->isForIMotion($IMotion)
+        ));
+    }
+
+    public function isForIMotion(IMotion $IMotion): bool
+    {
+        if (is_a($IMotion, Motion::class) && $this->targetType === self::TARGET_MOTION && $this->targetId === $IMotion->id) {
+            return true;
+        }
+        if (is_a($IMotion, Amendment::class) && $this->targetType === self::TARGET_AMENDMENT && $this->targetId === $IMotion->id) {
+            return true;
+        }
+        return false;
     }
 }

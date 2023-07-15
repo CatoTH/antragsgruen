@@ -10,22 +10,26 @@ $I->populateDBData1();
 
 $I->wantTo('Create three organisations');
 
-$page = $I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
+$I->dontSeeElement('.editOrganisationModal');
+$I->clickJS('.orgaOpenerHolder .orgaOpener');
+$I->wait(0.5);
+$I->seeElement('.editOrganisationModal');
+$I->clickJS('.editOrganisationModal .btnAdd');
+$I->clickJS('.editOrganisationModal .btnAdd');
+$I->clickJS('.editOrganisationModal .btnAdd');
 
-$I->wait(0.3);
-$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: environment");');
-$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: infrastructure");');
-$I->executeJS('document.querySelector("#organisationList select").selectize.createItem("Working group: education");');
+$I->executeJS('document.querySelectorAll(".editOrganisationModal input.form-control").item(0).value = "Working group: environment"');
+$I->executeJS('document.querySelectorAll(".editOrganisationModal input.form-control").item(1).value = "Working group: infrastructure"');
+$I->executeJS('document.querySelectorAll(".editOrganisationModal input.form-control").item(2).value = "Working group: education"');
 
-if ($I->executeJS('return document.querySelector("#organisationList select").selectize.items.length') != 3) {
-    $I->fail('Invalid return from tag-List');
-}
+$I->clickJS('.editOrganisationModal .btnSave');
 
-$page->saveForm();
-
-if ($I->executeJS('return document.querySelector("#organisationList select").selectize.items.length') != 3) {
-    $I->fail('Invalid return from tag-List');
-}
+$I->clickJS('.orgaOpenerHolder .orgaOpener');
+$I->wait(0.5);
+$I->seeInField('.editOrganisationModal input', 'Working group: environment');
+$I->seeInField('.editOrganisationModal input', 'Working group: infrastructure');
+$I->seeInField('.editOrganisationModal input', 'Working group: education');
 
 
 $I->wantTo('see the organisations when creating motions');

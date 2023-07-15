@@ -27,7 +27,7 @@ class Workflow
     public const STEP_NAME_V2 = 'V2: Redaktionell aufbereitet';
     public const STEP_NAME_V3 = 'V3: Ergebnis Antragsberatung der AG';
     public const STEP_NAME_V4 = 'V4: Beschluss LV';
-    public const STEP_NAME_V5 = 'V5: Redaktionell aufbereitet';
+    public const STEP_NAME_V5 = 'V5: In HV eingereicht';
     public const STEP_NAME_V6 = 'V6: Ergebnis Antragsberatung KoordA';
     public const STEP_NAME_V7 = 'V7: Beschluss der HV';
     public const STEP_NAME_V8 = 'V8: Beschluss im Beschlussumdruck';
@@ -95,6 +95,14 @@ class Workflow
         return $motion->getMyConsultation()->havePrivilege(
             Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
             PrivilegeQueryContext::motion($motion)
+        );
+    }
+
+    public static function canMoveToMainGenerally(Consultation $consultation): bool
+    {
+        return $consultation->havePrivilege(
+            Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
+            PrivilegeQueryContext::anyRestriction()
         );
     }
 

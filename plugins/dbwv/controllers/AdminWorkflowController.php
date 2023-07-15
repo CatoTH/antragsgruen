@@ -30,7 +30,9 @@ class AdminWorkflowController extends Base
         }
 
         foreach (MotionNumbering::getSortedHistoryForMotion($motion, false, true) as $motionIterator) {
-            $motionIterator->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
+            if ($motionIterator->consultationId === $motion->consultationId) {
+                $motionIterator->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, [$tag->id]);
+            }
         }
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
@@ -73,14 +75,19 @@ class AdminWorkflowController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            return new HtmlErrorResponse(404,  'Motion not found');
+            return new HtmlErrorResponse(404, 'Motion not found');
         }
 
+        if (!in_array($this->getPostValue('followproposal'), ['yes', 'no'])) {
+            return new HtmlErrorResponse(400, 'followproposal not provided');
+        }
+
+        $followProposal = ($this->getPostValue('followproposal') === 'yes');
         $decision = intval($this->getPostValue('decision'));
         $customString = $this->getPostValue('custom_string');
         $protocolPublic = intval($this->getPostValue('protocol_public')) === 1;
         $protocol = trim($this->getPostValue('protocol'));
-        $response = Step3::setDecision($motion, $decision, $customString, $protocolPublic, $protocol);
+        $response = Step3::setDecision($motion, $followProposal, $decision, $customString, $protocolPublic, $protocol);
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
@@ -94,8 +101,7 @@ class AdminWorkflowController extends Base
             return new HtmlErrorResponse(404,  'Motion not found');
         }
 
-        $tagId = $this->getPostValue('tag');
-        $newMotion = Step4::moveToMain($motion, $tagId > 0 ? intval($tagId) : null);
+        $newMotion = Step4::moveToMain($motion);
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
@@ -122,11 +128,16 @@ class AdminWorkflowController extends Base
             return new HtmlErrorResponse(404,  'Motion not found');
         }
 
+        if (!in_array($this->getPostValue('followproposal'), ['yes', 'no'])) {
+            return new HtmlErrorResponse(400, 'followproposal not provided');
+        }
+
+        $followProposal = ($this->getPostValue('followproposal') === 'yes');
         $decision = intval($this->getPostValue('decision'));
         $customString = $this->getPostValue('custom_string');
         $protocolPublic = intval($this->getPostValue('protocol_public')) === 1;
         $protocol = trim($this->getPostValue('protocol'));
-        $response = Step6::setDecision($motion, $decision, $customString, $protocolPublic, $protocol);
+        $response = Step6::setDecision($motion, $followProposal, $decision, $customString, $protocolPublic, $protocol);
 
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 

@@ -18,7 +18,7 @@ $I->submitForm('.adminTypeForm', [], 'save');
 $page = $I->gotoMotionList()->gotoAmendmentEdit(2);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->dontSeeElement('#initiatorOrga');
-$I->selectOption('#personTypeOrga', ISupporter::PERSON_NATURAL);
+$I->selectOption('#personTypeOrga', (string)ISupporter::PERSON_NATURAL);
 $I->fillField('#initiatorPrimaryName', 'Another test user');
 $I->fillField('#initiatorOrga', 'KV Test');
 $I->fillField('#initiatorEmail', 'test2@example.org');

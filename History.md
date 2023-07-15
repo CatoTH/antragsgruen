@@ -7,12 +7,17 @@
 - When editing a motion or amendment as admin, it is possible to set the status to "Obsoleted by another amendment" or "Obsoleted by another motion" and specify which one it is in a dropdown.
 - When creating a new consultation based on an existing one, it is now possible to choose if motion types, tags and/or user permissions are to be copied from the existing consultation or not.
 - When a list of organisations is specified in the consultation settings, this list is shown as a drop-down when creating / inviting new users.
+- It can now be set up so that the modified version proposed as part of a proposed procedure is shown inline as part of the motion.
+- Besides of exporting all motions as a ZIP-file containing single ODT files, a single ODT file containing all motion texts can now be exported.
+- The ODT export now also supports numbered lists.
+- The motion list can now be filtered for To Do items (that is, motions/amendments that need to be screened).
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.
 
 ### Version 4.12.1 [not released yet]
 
 - Bugfix: The delete button in the admin motion list was shown even if no delete permissions were granted and it was therefore non-functional.
+- Bugfix: If a motion collecting supporters was edited by an admin, then no publication mail was sent later when it was actually published.
 
 ## Version 4.12.0 (2023-05-29)
 

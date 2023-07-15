@@ -247,6 +247,10 @@ label.legend {
       }
     }
   }
+
+  .motionListLink {
+    text-align: right;
+  }
 }
 
 #consultationsList {
@@ -1181,6 +1185,12 @@ label.legend {
     }
   }
 
+  .todo {
+    font-style: italic;
+    font-size: 0.8em;
+    color: gray;
+  }
+
   td.exportCol {
     font-size: 0.9em;
   }
@@ -1257,7 +1267,8 @@ label.legend {
   width: 100%;
 
   .selectAll {
-    flex: 1;
+    flex-basis: 200px;
+    flex-grow: 0.1;
     line-height: 40px;
     vertical-align: middle;
 

@@ -44,7 +44,7 @@ $I->seeElement('#sidebar .adminEdit');
 
 $I->logout();
 $I->dontSee('A3: Textformatierungen', 'h1');
-$I->see('Dies ist kein regulär anzeigbarer Antrag.');
+$I->see('Dieser Antrag kann nicht angezeigt werden.');
 $I->dontSeeElement('#sidebar li');
 
 

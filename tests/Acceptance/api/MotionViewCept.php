@@ -44,7 +44,7 @@ $I->assertJsonStringEqualsJsonString('{
     "first_line": 24,
     "status_id": 3,
     "status_title": "<span class=\"screened\">Gepr\u00fcft</span>",
-    "date_published": "2018-11-03T07:14:01+01:00",
+    "date_published": "2018-11-03T06:14:01+00:00",
     "motion": {
         "id": 118,
         "agenda_item": null,

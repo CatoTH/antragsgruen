@@ -3,7 +3,7 @@
 namespace app\components;
 
 use app\controllers\Base;
-use yii\web\{Application, Controller, Session, User};
+use yii\web\{Application, Controller, Request, Session, User};
 
 final class RequestContext
 {
@@ -30,5 +30,10 @@ final class RequestContext
         /** @var Base $controller */
         $controller = self::getWebApplication()->controller;
         return $controller;
+    }
+
+    public static function getWebRequest(): Request
+    {
+        return self::getWebApplication()->request;
     }
 }

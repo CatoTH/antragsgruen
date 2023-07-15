@@ -41,9 +41,16 @@ $titleSection = $motion->getTitleSection();
 $main = $right = '';
 $bottom = '';
 
-foreach (LayoutHelper::getVisibleProposedProcedureSections($motion, $procedureToken) as $ppSection) {
-    $ppSection['section']->setTitlePrefix($ppSection['title']);
-    $main .= $ppSection['section']->getAmendmentFormatted('pp_');
+$ppSections = LayoutHelper::getVisibleProposedProcedureSections($motion, $procedureToken);
+$ppShouldBeShownInline = $motion->getMyConsultation()->getSettings()->proposalProcedureInline
+                         && count($motion->getVisibleAmendments()) === 0
+                         && count($motion->comments) === 0
+                         && $motion->isProposalPublic();
+if (!$ppShouldBeShownInline) {
+    foreach ($ppSections as $ppSection) {
+        $ppSection['section']->setTitlePrefix($ppSection['title']);
+        $main .= $ppSection['section']->getAmendmentFormatted('pp_');
+    }
 }
 
 
@@ -94,13 +101,31 @@ foreach ($sections as $i => $section) {
             $sectionText .= ' smallFont';
         }
         $sectionText .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '" aria-labelledby="section_' . $section->sectionId . '_title">';
-        if (!in_array($sectionType, [ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_IMAGE])) {
-            $sectionText .= '<h3 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h3>';
-        }
-        $sectionText .= $nonPublicHint;
 
-        $commOp = $openedComments[$section->sectionId] ?? [];
-        $sectionText   .= $section->getSectionType()->showMotionView($commentForm, $commOp);
+        $shownPp = false;
+        if ($ppShouldBeShownInline) {
+            foreach ($ppSections as $ppSection) {
+                if ($ppSection['section']->getSectionId() === $section->sectionId) {
+                    $ppSection['section']->setDefaultToOnlyDiff(false);
+                    $pp = $ppSection['section']->getAmendmentFormatted('pp_');
+                    if ($pp) {
+                        $sectionText .= $pp;
+                        $shownPp = true;
+                    }
+                }
+            }
+        }
+
+        if (!$shownPp) {
+            if (!in_array($sectionType, [ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_IMAGE])) {
+                $sectionText .= '<h3 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h3>';
+            }
+            $sectionText .= $nonPublicHint;
+
+            $commOp = $openedComments[$section->sectionId] ?? [];
+
+            $sectionText .= $section->getSectionType()->showMotionView($commentForm, $commOp);
+        }
 
         $sectionText .= '</section>';
 

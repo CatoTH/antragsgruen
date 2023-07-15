@@ -23,7 +23,7 @@ $I->seeCheckboxIsChecked("//input[@name='motionInitiatorSettings[hasResolutionDa
 $I->wantTo('see the field being optional');
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $page->fillInValidSampleData();
-$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', (string)ISupporter::PERSON_ORGANIZATION);
 $I->seeElement('#resolutionDate');
 $I->fillField('#resolutionDate', '');
 $I->fillField('#initiatorPrimaryName', 'My party');
@@ -43,7 +43,7 @@ $I->seeCheckboxIsChecked("//input[@name='motionInitiatorSettings[hasResolutionDa
 $I->wantTo('see the field being optional');
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $page->fillInValidSampleData();
-$I->selectOption('#personTypeOrga', ISupporter::PERSON_ORGANIZATION);
+$I->selectOption('#personTypeOrga', (string)ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('#resolutionDate');
 $I->fillField('#initiatorPrimaryName', 'My party');
 

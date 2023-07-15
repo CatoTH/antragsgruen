@@ -35,6 +35,7 @@ abstract class ISectionType
     protected IMotionSection $section;
     protected bool $absolutizeLinks = false;
     protected ?string $titlePrefix = null;
+    protected bool $defaultOnlyDiff = true;
     protected ?Motion $motionContext = null;
 
     public function __construct(IMotionSection $section)
@@ -91,6 +92,16 @@ abstract class ISectionType
     public function setTitlePrefix(?string $titlePrefix): void
     {
         $this->titlePrefix = $titlePrefix;
+    }
+
+    public function setDefaultToOnlyDiff(bool $onlyDiff): void
+    {
+        $this->defaultOnlyDiff = $onlyDiff;
+    }
+
+    public function getSectionId(): int
+    {
+        return $this->section->sectionId;
     }
 
     public function getTitle(): string
