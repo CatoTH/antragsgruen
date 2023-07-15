@@ -1,5 +1,6 @@
 <?php
 use app\components\UrlHelper;
+use app\models\AdminTodoItem;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, User};
 use yii\helpers\Html;
@@ -72,6 +73,14 @@ if ($entry->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
 if ($entry->statusString !== null && $entry->statusString !== '') {
     echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
 }
+
+$todos = array_map(fn(AdminTodoItem $item): string => $item->action, AdminTodoItem::getTodosForIMotion($entry));
+if (count($todos) > 0) {
+    echo '<div class="todo">' . Yii::t('admin', 'list_todo') . ': ';
+    echo Html::encode(implode(', ', $todos));
+    echo '</div>';
+}
+
 echo '</td>';
 if ($colDate) {
     echo '<td class="dateCol">';

@@ -553,6 +553,7 @@ class AdminMotionFilterForm
         }
 
         $out = $this->calcAndFilterReplacedMotions($out);
+        /** @var Motion[] $out */
         $out = $this->calcAndFilterTodoItems($out);
 
         return $out;

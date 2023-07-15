@@ -148,6 +148,7 @@ return [
     'list_tag'                    => 'Tag',
     'list_initiators'             => 'Proposers',
     'list_status'                 => 'Status',
+    'list_todo'                   => 'To Do',
     'list_date'                   => 'Submitted',
     'list_proposal'               => 'Proposed procedure',
     'list_responsible'            => 'Responsible',
