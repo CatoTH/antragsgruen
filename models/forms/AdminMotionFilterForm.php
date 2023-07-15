@@ -1049,6 +1049,11 @@ class AdminMotionFilterForm
         ], $add));
     }
 
+    public function hasAdditionalActions(): bool
+    {
+        return false;
+    }
+
     protected function showAdditionalActions(): string
     {
         return '';
@@ -1060,7 +1065,7 @@ class AdminMotionFilterForm
         $privilegeProposals = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::anyRestriction());
         $privilegeDelete = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_DELETE, PrivilegeQueryContext::anyRestriction());
 
-        if (!$privilegeProposals && !$privilegeScreening && !$privilegeDelete) {
+        if (!$privilegeProposals && !$privilegeScreening && !$privilegeDelete && !$this->hasAdditionalActions()) {
             return '';
         }
 
@@ -1081,7 +1086,9 @@ class AdminMotionFilterForm
             if ($privilegeProposals) {
                 $str .= '<button type="submit" class="btn btn-success" name="proposalVisible">' . \Yii::t('admin', 'list_proposal_visible') . '</button>';
             }
-            $str .= $this->showAdditionalActions();
+            if ($this->hasAdditionalActions()) {
+                $str .= $this->showAdditionalActions();
+            }
             $str .= '</div>
         </section>';
 

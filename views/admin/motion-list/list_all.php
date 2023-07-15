@@ -47,7 +47,7 @@ foreach ($consultation->motionTypes as $motionType) {
     }
 }
 
-$colMark        = $privilegeProposals || $privilegeScreening || $privilegeDelete;
+$colMark        = $privilegeProposals || $privilegeScreening || $privilegeDelete || $search->hasAdditionalActions();
 $colAction      = $privilegeScreening || $privilegeDelete;
 $colProposals   = $privilegeProposals && $hasProposedProcedures;
 $colResponsible = $privilegeProposals && $hasResponsibilities;
