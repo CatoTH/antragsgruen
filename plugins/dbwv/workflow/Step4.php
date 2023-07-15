@@ -25,6 +25,14 @@ class Step4
         if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V5)) {
             return null;
         }
+        if (!in_array($motion->status, [
+            IMotion::STATUS_RESOLUTION_FINAL,
+            IMotion::STATUS_RESOLUTION_FINAL,
+            IMotion::STATUS_ACCEPTED,
+            IMotion::STATUS_MODIFIED_ACCEPTED,
+        ])) {
+            return null;
+        }
 
         if (Workflow::canMoveToMainV4($motion)) {
             return new AdminTodoItem(
@@ -34,6 +42,8 @@ class Step4
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
+                AdminTodoItem::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }

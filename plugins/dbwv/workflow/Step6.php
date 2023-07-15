@@ -23,6 +23,20 @@ class Step6
             return null;
         }
 
+        if (Workflow::canSetRecommendationV5($motion) && !$motion->isProposalPublic()) {
+            return new AdminTodoItem(
+                'todoDbwvSetPp' . $motion->id,
+                $motion->getTitleWithPrefix(),
+                'Verfahrensvorschlag veröffentlichen',
+                UrlHelper::createMotionUrl($motion),
+                Tools::dateSql2timestamp($motion->dateCreation),
+                $motion->getInitiatorsStr(),
+                AdminTodoItem::TARGET_MOTION,
+                $motion->id,
+                $motion->getFormattedTitlePrefix(),
+            );
+        }
+
         $isScreening = in_array($motion->status, $motion->getMyConsultation()->getStatuses()->getScreeningStatuses(), true);
         $canScreen = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion));
         if ($isScreening && $canScreen) {
@@ -35,6 +49,8 @@ class Step6
                 UrlHelper::createUrl(['/admin/motion-list/index']),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description,
+                AdminTodoItem::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }
@@ -46,6 +62,8 @@ class Step6
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
+                AdminTodoItem::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }
@@ -87,7 +105,7 @@ class Step6
                 $newInitiator->organization = $motion->getMyConsultation()->title;
                 $newInitiator->resolutionDate = date('Y-m-d H:i:s');
 
-                $v7Motion = $motion->followProposalAndCreateNewVersion(Workflow::STEP_V4, Motion::STATUS_RESOLUTION_FINAL, [$newInitiator]);
+                $v7Motion = $motion->followProposalAndCreateNewVersion(Workflow::STEP_V7, Motion::STATUS_RESOLUTION_FINAL, [$newInitiator]);
             } else {
                 if ($status === IMotion::STATUS_MODIFIED_ACCEPTED) {
                     $motion->setProtocol($protocol, $protocolPublic);

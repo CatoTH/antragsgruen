@@ -53,6 +53,8 @@ return [
     'index_flush_caches'          => 'Flush system caches',
     'index_flushed_cached'        => 'All caches have been flushed',
     'index_todo'                  => 'To Do',
+    'index_todo_motions'          => 'Show To Do\'s in motion list',
+    'index_todo_none'             => 'No entries',
     'index_site_del'              => 'Delete site',
     'index_pages'                 => 'Content pages',
     'amend_deleted'               => 'The amendment has been deleted.',
@@ -210,6 +212,8 @@ return [
     'filter_agenda_item'          => 'Agenda item',
     'filter_prefix'               => 'Signature',
     'filter_responsibility'       => 'Responsibility',
+    'filter_show_replaced'        => 'Show old / replaced versions (%NUM%)',
+    'filter_only_todo'            => 'Show only "To Do"\'s (%NUM%)',
 
     'con_email_from'          => 'From Name',
     'con_email_from_place'    => 'Standard: "%NAME%"',

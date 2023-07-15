@@ -30,6 +30,8 @@ class Step2
                 UrlHelper::createUrl(['/admin/motion-list/index']),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description,
+                AdminTodoItem::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }
@@ -42,6 +44,8 @@ class Step2
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
+                AdminTodoItem::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }
