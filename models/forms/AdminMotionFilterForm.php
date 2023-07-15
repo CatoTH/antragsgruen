@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace app\models\forms;
 
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\AdminTodoItem;
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter, User};
 use yii\helpers\Html;
@@ -35,18 +34,15 @@ class AdminMotionFilterForm
     public ?string $title = null;
     public ?string $prefix = null;
 
-    /** @var Motion [] */
-    public array $allMotions;
-
     /** @var Amendment[] */
     public array $allAmendments;
-    public Consultation $consultation;
 
     public int $sort = self::SORT_TITLE_PREFIX;
-    protected bool $showScreening;
 
     public bool $showReplaced = false;
+    public bool $onlyTodo = false;
     public int $numReplaced;
+    public int $numTodo;
 
     /** @var string[] */
     protected array $route;
@@ -54,10 +50,11 @@ class AdminMotionFilterForm
     /**
      * @param Motion[] $allMotions
      */
-    public function __construct(Consultation $consultation, array $allMotions, bool $showScreening)
-    {
-        $this->showScreening = $showScreening;
-        $this->consultation  = $consultation;
+    public function __construct(
+        public Consultation $consultation,
+        public array $allMotions,
+        protected bool $showScreening
+    ) {
         $this->allMotions    = [];
         $this->allAmendments = [];
         foreach ($allMotions as $motion) {
@@ -112,6 +109,7 @@ class AdminMotionFilterForm
         }
 
         $this->showReplaced = isset($values['showReplaced']) && $values['showReplaced'] === '1';
+        $this->onlyTodo = isset($values['onlyTodo']) && $values['onlyTodo'] === '1';
     }
 
     private ?array $versionNames = null;
@@ -469,6 +467,40 @@ class AdminMotionFilterForm
     }
 
     /**
+     * @param IMotion[] $imotions
+     * @return IMotion[]
+     */
+    private function calcAndFilterTodoItems(array $imotions): array
+    {
+        $todoMotionIds = [];
+        $todoAmendmentIds = [];
+        foreach (AdminTodoItem::getConsultationTodos($this->consultation) as $item) {
+            if ($item->targetType === AdminTodoItem::TARGET_MOTION) {
+                $todoMotionIds[] = $item->targetId;
+            }
+            if ($item->targetType === AdminTodoItem::TARGET_AMENDMENT) {
+                $todoAmendmentIds[] = $item->targetId;
+            }
+        }
+
+        $this->numTodo = count($todoMotionIds) + count($todoAmendmentIds);
+
+        if ($this->onlyTodo) {
+            return array_values(array_filter($imotions, function (IMotion $imotion) use ($todoMotionIds, $todoAmendmentIds): bool {
+                if (is_a($imotion, Motion::class)) {
+                    return in_array($imotion->id, $todoMotionIds);
+                }
+                if (is_a($imotion, Amendment::class)) {
+                    return in_array($imotion->id, $todoAmendmentIds);
+                }
+                return false;
+            }));
+        } else {
+            return $imotions;
+        }
+    }
+
+    /**
      * @return Motion[]
      */
     public function getFilteredMotions(): array
@@ -520,7 +552,10 @@ class AdminMotionFilterForm
             }
         }
 
-        return $this->calcAndFilterReplacedMotions($out);
+        $out = $this->calcAndFilterReplacedMotions($out);
+        $out = $this->calcAndFilterTodoItems($out);
+
+        return $out;
     }
 
 
@@ -803,11 +838,21 @@ class AdminMotionFilterForm
 
         $str .= '</div>';
 
-        if ($this->numReplaced > 0) {
-            $str .= '<div class="filtersBottom"><label>';
-            $str .= Html::checkbox('Search[showReplaced]', $this->showReplaced, ['value' => '1', 'id' => 'filterShowReplaced']);
-            $str .= ' ' . str_replace('%NUM%', (string)$this->numReplaced, 'Ersetzte / alte Versionen anzeigen (%NUM%)');
-            $str .= '</label></div>';
+        if ($this->numReplaced > 0 || $this->numTodo > 0) {
+            $str .= '<div class="filtersBottom">';
+            if ($this->numReplaced > 0) {
+                $str .= '<label>';
+                $str .= Html::checkbox('Search[showReplaced]', $this->showReplaced, ['value' => '1', 'id' => 'filterShowReplaced']);
+                $str .= ' ' . str_replace('%NUM%', (string)$this->numReplaced, \Yii::t('admin', 'filter_show_replaced'));
+                $str .= '</label> &nbsp; ';
+            }
+            if ($this->numTodo > 0) {
+                $str .= '<label>';
+                $str .= Html::checkbox('Search[onlyTodo]', $this->onlyTodo, ['value' => '1', 'id' => 'filterOnlyTodo']);
+                $str .= ' ' . str_replace('%NUM%', (string)$this->numTodo, \Yii::t('admin', 'filter_only_todo'));
+                $str .= '</label>';
+            }
+            $str .= '</div>';
         }
 
         return $str;

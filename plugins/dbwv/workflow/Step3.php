@@ -20,7 +20,7 @@ class Step3
         if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V4)) {
             return null;
         }
-        if (Workflow::canSetRecommendationV2($motion) && $motion->proposalVisibleFrom === null) {
+        if (Workflow::canSetRecommendationV2($motion) && !$motion->isProposalPublic()) {
             return new AdminTodoItem(
                 'todoDbwvSetPp' . $motion->id,
                 $motion->getTitleWithPrefix(),
@@ -28,10 +28,12 @@ class Step3
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
+                AdminTodoItem::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }
-        if (Workflow::canSetResolutionV3($motion) && $motion->proposalVisibleFrom !== null) {
+        if (Workflow::canSetResolutionV3($motion) && $motion->isProposalPublic()) {
             return new AdminTodoItem(
                 'todoDbwvSetPp' . $motion->id,
                 $motion->getTitleWithPrefix(),
@@ -39,6 +41,8 @@ class Step3
                 UrlHelper::createMotionUrl($motion),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $motion->getInitiatorsStr(),
+                AdminTodoItem::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }

@@ -53,6 +53,8 @@ return [
     'index_flush_caches'          => 'Alle System-Caches leeren',
     'index_flushed_cached'        => 'Die Caches wurden geleert',
     'index_todo'                  => 'To Do',
+    'index_todo_motions'          => 'To Do\'s in der Antragsliste anzeigen',
+    'index_todo_none'             => 'Keine Einträge',
     'index_site_del'              => 'Seite löschen',
     'index_pages'                 => 'Redaktionelle Seiten',
     'motion_prefix_collision'     => 'Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.',
@@ -206,6 +208,8 @@ return [
     'filter_agenda_item'          => 'Tagesordnungspunkt',
     'filter_prefix'               => 'Antragsnr.',
     'filter_responsibility'       => 'Zuständigkeit',
+    'filter_show_replaced'        => 'Ersetzte / alte Versionen anzeigen (%NUM%)',
+    'filter_only_todo'            => 'Nur "To Do"\'s anzeigen (%NUM%)',
 
     'con_email_from'          => 'Absender-Name',
     'con_email_from_place'    => 'Standard: "%NAME%"',

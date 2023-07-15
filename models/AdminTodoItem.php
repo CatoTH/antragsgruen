@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models;
 
 use app\models\settings\AntragsgruenApp;
@@ -10,24 +12,20 @@ use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComm
 
 class AdminTodoItem
 {
-    /** @var string */
-    public string $todoId;
-    public string $title;
-    public string $action;
-    public string $link;
-    public string $description;
-    public ?string $titlePrefix;
-    public int $timestamp;
+    public const TARGET_MOTION = 1;
+    public const TARGET_AMENDMENT = 2;
 
-    public function __construct(string $todoId, string $title, string $action, string $link, int $timestamp, string $description, ?string $titlePrefix)
-    {
-        $this->todoId      = $todoId;
-        $this->link        = $link;
-        $this->title       = $title;
-        $this->action      = $action;
-        $this->timestamp   = $timestamp;
-        $this->description = $description;
-        $this->titlePrefix = $titlePrefix;
+    public function __construct(
+        public string $todoId,
+        public string $title,
+        public string $action,
+        public string $link,
+        public int $timestamp,
+        public string $description,
+        public ?int $targetType,
+        public ?int $targetId,
+        public ?string $titlePrefix
+    ) {
     }
 
     private static array $todoCache = [];
@@ -57,6 +55,8 @@ class AdminTodoItem
                     0,
                     $description,
                     null,
+                    null,
+                    null,
                 );
             }
         }
@@ -84,6 +84,8 @@ class AdminTodoItem
                 UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]),
                 Tools::dateSql2timestamp($motion->dateCreation),
                 $description,
+                self::TARGET_MOTION,
+                $motion->id,
                 $motion->getFormattedTitlePrefix(),
             );
         }
@@ -111,6 +113,8 @@ class AdminTodoItem
                 UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => $amend->id]),
                 Tools::dateSql2timestamp($amend->dateCreation),
                 $description,
+                self::TARGET_AMENDMENT,
+                $amend->id,
                 $amend->getFormattedTitlePrefix(),
             );
         }
@@ -138,6 +142,8 @@ class AdminTodoItem
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
                 $description,
+                self::TARGET_MOTION,
+                $comment->motionId,
                 $comment->getIMotion()->getFormattedTitlePrefix(),
             );
         }
@@ -165,6 +171,8 @@ class AdminTodoItem
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
                 $description,
+                self::TARGET_AMENDMENT,
+                $comment->amendmentId,
                 $comment->getIMotion()->getFormattedTitlePrefix(),
             );
         }
