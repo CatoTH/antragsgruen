@@ -8,7 +8,7 @@ use app\models\settings\AntragsgruenApp;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{MotionSorter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComment, User};
+use app\models\db\{Amendment, AmendmentComment, Consultation, IMotion, Motion, MotionComment, User};
 
 class AdminTodoItem
 {
@@ -181,8 +181,13 @@ class AdminTodoItem
 
     private static function getUnsortedItems(Consultation $consultation): array
     {
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return [];
+        }
+
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $todo = $plugin::getAdminTodoItems($consultation, User::getCurrentUser());
+            $todo = $plugin::getAdminTodoItems($consultation, $user);
             if ($todo !== null) {
                 return $todo;
             }
@@ -227,5 +232,29 @@ class AdminTodoItem
         self::$todoCache[$consultation->id] = $todo;
 
         return $todo;
+    }
+
+    /**
+     * @param IMotion $IMotion
+     *
+     * @return AdminTodoItem[]
+     */
+    public static function getTodosForIMotion(IMotion $IMotion): array
+    {
+        return array_values(array_filter(
+            self::getConsultationTodos($IMotion->getMyConsultation()),
+            fn(AdminTodoItem $item): bool => $item->isForIMotion($IMotion)
+        ));
+    }
+
+    public function isForIMotion(IMotion $IMotion): bool
+    {
+        if (is_a($IMotion, Motion::class) && $this->targetType === self::TARGET_MOTION && $this->targetId === $IMotion->id) {
+            return true;
+        }
+        if (is_a($IMotion, Amendment::class) && $this->targetType === self::TARGET_AMENDMENT && $this->targetId === $IMotion->id) {
+            return true;
+        }
+        return false;
     }
 }

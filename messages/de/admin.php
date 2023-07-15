@@ -144,6 +144,7 @@ return [
     'list_tag'                    => 'Thema',
     'list_initiators'             => 'Initiator*innen',
     'list_status'                 => 'Status',
+    'list_todo'                   => 'To Do',
     'list_date'                   => 'Eingereicht',
     'list_proposal'               => 'Verfahrensvorschlag',
     'list_responsible'            => 'Verantwortlich',
