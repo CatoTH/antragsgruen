@@ -38,6 +38,11 @@ class AdminMotionFilterForm extends \app\models\forms\AdminMotionFilterForm
         return $str;
     }
 
+    public function hasAdditionalActions(): bool
+    {
+        return Workflow::canMoveToMainGenerally($this->consultation);
+    }
+
     protected function showAdditionalActions(): string
     {
         if (!Workflow::canMoveToMainGenerally($this->consultation)) {
