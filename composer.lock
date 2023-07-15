@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cdab150719700b42af0b9235c8c531f0",
+    "content-hash": "e7d7cdeeeb3c15d98430d3be05c71e89",
     "packages": [
         {
             "name": "async-aws/core",
@@ -208,16 +208,16 @@
         },
         {
             "name": "catoth/html2opendocument",
-            "version": "0.17",
+            "version": "0.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/html2opendocument.git",
-                "reference": "87d814cca55e3ac9c82cabc805d14a8efedca619"
+                "reference": "a41554f54a99e0f36fffd53f4b4d5f8d7f3f52f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/87d814cca55e3ac9c82cabc805d14a8efedca619",
-                "reference": "87d814cca55e3ac9c82cabc805d14a8efedca619",
+                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/a41554f54a99e0f36fffd53f4b4d5f8d7f3f52f8",
+                "reference": "a41554f54a99e0f36fffd53f4b4d5f8d7f3f52f8",
                 "shasum": ""
             },
             "require": {
@@ -252,9 +252,9 @@
             ],
             "support": {
                 "issues": "https://github.com/CatoTH/html2opendocument/issues",
-                "source": "https://github.com/CatoTH/html2opendocument/tree/0.17"
+                "source": "https://github.com/CatoTH/html2opendocument/tree/0.18"
             },
-            "time": "2023-07-09T15:23:51+00:00"
+            "time": "2023-07-15T07:30:03+00:00"
         },
         {
             "name": "cebe/markdown",
@@ -6490,16 +6490,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.9",
+            "version": "9.6.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a9aceaf20a682aeacf28d582654a1670d8826778"
+                "reference": "a6d351645c3fe5a30f5e86be6577d946af65a328"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a9aceaf20a682aeacf28d582654a1670d8826778",
-                "reference": "a9aceaf20a682aeacf28d582654a1670d8826778",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a6d351645c3fe5a30f5e86be6577d946af65a328",
+                "reference": "a6d351645c3fe5a30f5e86be6577d946af65a328",
                 "shasum": ""
             },
             "require": {
@@ -6573,7 +6573,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.9"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.10"
             },
             "funding": [
                 {
@@ -6589,7 +6589,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-11T06:13:56+00:00"
+            "time": "2023-07-10T04:04:23+00:00"
         },
         {
             "name": "psy/psysh",
@@ -8585,16 +8585,16 @@
         },
         {
             "name": "yiisoft/yii2-debug",
-            "version": "2.1.23",
+            "version": "2.1.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-debug.git",
-                "reference": "73af53bd1b99d40f983ba57386ac6c374d9ef177"
+                "reference": "e15e954d0beb82b0b532f998f55e7275083de592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-debug/zipball/73af53bd1b99d40f983ba57386ac6c374d9ef177",
-                "reference": "73af53bd1b99d40f983ba57386ac6c374d9ef177",
+                "url": "https://api.github.com/repos/yiisoft/yii2-debug/zipball/e15e954d0beb82b0b532f998f55e7275083de592",
+                "reference": "e15e954d0beb82b0b532f998f55e7275083de592",
                 "shasum": ""
             },
             "require": {
@@ -8671,7 +8671,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-22T19:44:57+00:00"
+            "time": "2023-07-10T06:07:43+00:00"
         },
         {
             "name": "yiisoft/yii2-shell",
