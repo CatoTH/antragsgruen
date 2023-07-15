@@ -1,32 +1,32 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
  * Represents contact page
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AmendmentPage extends BasePage
 {
-    public $route = 'amendment/view';
+    public string|array $route = 'amendment/view';
 
     /**
      * @param string $subdomain
      * @param string $consultationPath
      * @param string $motionSlug
-     * @param int $amendmentId
+     * @param int    $amendmentId
      * @return AmendmentPage
      * @internal param bool $check
      */
-    public function gotoAmendmentPage($subdomain, $consultationPath, $motionSlug, $amendmentId)
+    public function gotoAmendmentPage(string $subdomain, string $consultationPath, string $motionSlug, int $amendmentId): AmendmentPage
     {
-        $page = AmendmentPage::openBy(
+        $page = self::openBy(
             $this->actor,
             [
-                'subdomain'        => ($subdomain ? $subdomain : 'stdparteitag'),
-                'consultationPath' => ($consultationPath ? $consultationPath : 'std-parteitag'),
+                'subdomain'        => ($subdomain ?: 'stdparteitag'),
+                'consultationPath' => ($consultationPath ?: 'std-parteitag'),
                 'motionSlug'       => $motionSlug,
                 'amendmentId'      => $amendmentId,
             ]

@@ -1,0 +1,11 @@
+# Codeception Test Suite Configuration
+#
+# Suite for unit (internal) tests.
+
+actor: UnitTester
+modules:
+    enabled:
+        - Asserts
+    config:
+        Yii2:
+            configFile: 'tests/config/functional.php'

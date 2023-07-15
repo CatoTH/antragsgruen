@@ -1,20 +1,20 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AdminAppearancePage extends BasePage
 {
-    public $route = 'admin/index/appearance';
+    public string|array $route = 'admin/index/appearance';
 
     /**
      *
      */
-    public function saveForm()
+    public function saveForm(): void
     {
         $this->actor->submitForm('#consultationAppearanceForm', [], 'save');
     }

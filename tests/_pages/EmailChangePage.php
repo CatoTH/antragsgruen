@@ -1,14 +1,14 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
  * Represents contact page
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class EmailChangePage extends BasePage
 {
-    public $route = 'user/emailchange';
+    public string|array $route = 'user/emailchange';
 }

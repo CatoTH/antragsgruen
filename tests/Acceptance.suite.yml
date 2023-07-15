@@ -1,0 +1,37 @@
+# Codeception Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+
+actor: AcceptanceTester
+bootstrap: _bootstrap.php
+modules:
+    enabled:
+        - Asserts
+        - Tests\Support\Helper\AntragsgruenWebDriver
+        - Tests\Support\Helper\Acceptance
+        - Tests\Support\Helper\HTMLValidator
+        - Tests\Support\Helper\Download
+        - Tests\Support\Helper\Bootbox
+        - Tests\Support\Helper\AccessibilityValidator
+        - Tests\Support\Helper\ConfigurationChanger
+        - Tests\Support\Helper\TestApi
+    config:
+        Tests\Support\Helper\AntragsgruenWebDriver:
+            url: 'http://test.antragsgruen.test/'
+            host: 127.0.0.1
+            port: 4444
+            browser: chrome
+            window_size: 1280x1024
+#            wait: 1
+            #http_proxy: direct
+            capabilities:
+                unexpectedAlertBehaviour: 'accept'
+        Tests\Support\Helper\AccessibilityValidator:
+            pa11yPath: node_modules/.bin/pa11y
+        Tests\Support\Helper\HTMLValidator:
+            javaPath: java
+            vnuPath: /usr/local/bin/vnu.jar
+        Yii2:
+            configFile: 'tests/config/functional.php'

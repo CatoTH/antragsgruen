@@ -1,21 +1,22 @@
-actor: Tester
+namespace: Tests
+support_namespace: Support
+actor_suffix: Tester
 paths:
-    tests: tests
-    log: tests/_output
-    data: tests/_data
-    support: tests/_support
-    envs: tests/_envs
+  tests: tests
+  output: tests/_output
+  data: tests/Support/Data
+  support: tests/Support
 bootstrap: _bootstrap.php
 settings:
-    colors: true
-    memory_limit: 1024M
+  colors: true
+  memory_limit: 1024M
 extensions:
-    enabled:
-        - Codeception\Extension\RunFailed
+  enabled:
+    - Codeception\Extension\RunFailed
 modules:
   config:
     Yii2:
       configFile: 'config/test.php'
       cleanup: false
 config:
-    test_entry_url: http://test.antragsgruen.test/index-test.php
+  test_entry_url: http://test.antragsgruen.test/index-test.php

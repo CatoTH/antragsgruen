@@ -1,22 +1,22 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
  * Represents login page
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class LoginPage extends BasePage
 {
-    public $route = 'user/login';
+    public string|array $route = 'user/login';
 
     /**
      * @param string $username
      * @param string $password
      */
-    public function login($username, $password)
+    public function login(string $username, string $password): void
     {
         $this->actor->fillField('input[name="LoginForm[username]"]', $username);
         $this->actor->fillField('input[name="LoginForm[password]"]', $password);

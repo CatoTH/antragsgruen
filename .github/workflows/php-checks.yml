@@ -1,26 +1,58 @@
 name: PHP checks
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+env:
+  php: "
+  {php: '8.0', experimental: false},
+  {php: '8.1', experimental: false},
+  {php: '8.2', experimental: false},
+  {php: '8.3', experimental: true},
+  "
+  php-ext: curl, dom, fileinfo, iconv, intl, mbstring, mysql, pdo, zip
 
 jobs:
+  set-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.out }}
+      php-ext: ${{ steps.set-php-ext.outputs.out }}
+
+    steps:
+      - id: set-matrix
+        run: echo "out={\"include\":[${{ env.php }}]}" >> $GITHUB_OUTPUT
+      - id: set-php-ext
+        run: echo "out=${{ env.php-ext }}" >> $GITHUB_OUTPUT
+
   check-composer:
+    needs: [ set-environment ]
+    name: Check Composer - PHP(${{ matrix.php }}) Experimental(${{ matrix.experimental }})
     strategy:
-      matrix:
-        php: [ '8.0', '8.1' ]
-        experimental: [ false ]
-        include:
-          - php: '8.2'
-            experimental: true
-          - php: '8.3'
-            experimental: true
+      matrix: ${{fromJson(needs.set-environment.outputs.matrix)}}
+      fail-fast: false
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: ${{ needs.set-environment.outputs.php-ext }}
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.php }}-composer-
       - name: Validate composer.json and composer.lock
         run: composer validate --no-cache --no-interaction
       - name: Check required php extensions
@@ -32,3 +64,63 @@ jobs:
       - name: Install experimental dependencies, ignore php requirements
         if: "${{ matrix.experimental == true }}"
         run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+
+  unittest-codecept:
+    needs: [ set-environment, check-composer ]
+    name: Unittest by Codecept - PHP(${{ matrix.php }}) Experimental(${{ matrix.experimental }})
+    strategy:
+      matrix: ${{fromJson(needs.set-environment.outputs.matrix)}}
+      fail-fast: false
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+
+    # Docs: https://docs.github.com/en/actions/using-containerized-services
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: yii
+          MYSQL_PASSWORD: yii
+          MYSQL_USER: yii
+          MYSQL_DATABASE: yii
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ needs.set-environment.outputs.php-ext }}
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.php }}-composer-
+      - name: Install dependencies
+        if: "${{ matrix.experimental == false }}"
+        run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install experimental dependencies, ignore php requirements
+        if: "${{ matrix.experimental == true }}"
+        run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+
+      - name: Copy test config.
+        run: cp config/config_tests.template.json config/config_tests.json
+
+      - name: Validate config of codecept.
+        run: |
+          vendor/bin/codecept --version
+          vendor/bin/codecept config:validate
+
+      - name: Run unittest.
+        run: |
+          vendor/bin/codecept clean
+          vendor/bin/codecept build
+          vendor/bin/codecept run Unit

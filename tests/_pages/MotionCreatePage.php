@@ -1,15 +1,15 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class MotionCreatePage extends BasePage
 {
-    public $route = 'motion/create';
+    public string|array $route = 'motion/create';
 
     public function createMotion(string $title = 'Testantrag 1', bool $screeningNeeded = false): void
     {

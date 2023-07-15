@@ -1,21 +1,21 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AdminMotionListPage extends BasePage
 {
-    public $route = 'admin/motion-list/index';
+    public string|array $route = 'admin/motion-list/index';
 
     /**
      * @param int $motionId
      * @return AdminMotionPage
      */
-    public function gotoMotionEdit($motionId)
+    public function gotoMotionEdit(int $motionId): AdminMotionPage
     {
         $this->actor->click('.adminMotionTable .motion' . $motionId . ' .titleCol a');
         return new AdminMotionPage($this->actor);
@@ -25,7 +25,7 @@ class AdminMotionListPage extends BasePage
      * @param int $amendmentId
      * @return AdminAmendmentPage
      */
-    public function gotoAmendmentEdit($amendmentId)
+    public function gotoAmendmentEdit(int $amendmentId): AdminAmendmentPage
     {
         $this->actor->click('.adminMotionTable .amendment' . $amendmentId . ' .titleCol a');
         return new AdminAmendmentPage($this->actor);

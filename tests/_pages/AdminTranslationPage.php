@@ -1,13 +1,13 @@
 <?php
 
-namespace app\tests\_pages;
+namespace Tests\_pages;
 
-use Helper\BasePage;
+use Tests\Support\Helper\BasePage;
 
 /**
- * @property \AcceptanceTester|\FunctionalTester $actor
+ * @property \Tests\Support\AcceptanceTester $actor
  */
 class AdminTranslationPage extends BasePage
 {
-    public $route = 'admin/index/translation';
+    public string|array $route = 'admin/index/translation';
 }

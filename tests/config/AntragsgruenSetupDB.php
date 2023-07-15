@@ -1,6 +1,6 @@
 <?php
 
-namespace app\tests;
+namespace Tests\config;
 
 use Yii;
 use yii\db\Connection;
