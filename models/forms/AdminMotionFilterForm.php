@@ -83,9 +83,6 @@ class AdminMotionFilterForm
         $this->title = $values['title'] ?? null;
         $this->initiator = $values['initiator'] ?? null;
         $this->prefix = $values['prefix'] ?? null;
-        if (isset($values['sort'])) {
-            $this->sort = intval($values['sort']);
-        }
         if (isset($values['status'])) {
             $this->status = ($values['status'] === '' ? null : intval($values['status']));
         }
@@ -110,6 +107,58 @@ class AdminMotionFilterForm
 
         $this->showReplaced = isset($values['showReplaced']) && $values['showReplaced'] === '1';
         $this->onlyTodo = isset($values['onlyTodo']) && $values['onlyTodo'] === '1';
+
+        if (isset($values['sort'])) {
+            $this->sort = intval($values['sort']);
+        }
+    }
+
+    public function getAttributes(): array
+    {
+        return [
+            'title' => $this->title,
+            'initiator' => $this->initiator,
+            'prefix' => $this->prefix,
+            'status' => $this->status,
+            'version' => $this->version,
+            'tag' => $this->tag,
+            'responsibility' => $this->responsibility,
+            'agendaItem' => $this->agendaItem,
+            'proposalStatus' => $this->proposalStatus,
+            'showReplaced' => ($this->showReplaced ? '1' : null),
+            'onlyTodo' => ($this->onlyTodo ? '1' : null),
+            'sort' => $this->sort,
+        ];
+    }
+
+    public function isDefaultSettings(): bool
+    {
+        return $this->title === null &&
+               $this->initiator === null &&
+               $this->prefix === null &&
+               $this->status === null &&
+               $this->version === null &&
+               $this->tag === null &&
+               $this->responsibility === null &&
+               $this->agendaItem === null &&
+               $this->proposalStatus === null &&
+               $this->showReplaced === false &&
+               $this->onlyTodo === false &&
+               $this->sort === self::SORT_TITLE_PREFIX;
+    }
+
+    public function setCurrentRoute(array $route): void
+    {
+        $this->route = $route;
+    }
+
+    public function getCurrentUrl(array $add = []): string
+    {
+        $attributes = [];
+        foreach ($this->getAttributes() as $key => $val) {
+            $attributes['Search[' . $key . ']'] = $val;
+        }
+        return UrlHelper::createUrl(array_merge($this->route, $attributes, $add));
     }
 
     private ?array $versionNames = null;
@@ -837,6 +886,11 @@ class AdminMotionFilterForm
         $str .= '<div><br><button type="submit" class="btn btn-success" name="search">' .
             \Yii::t('admin', 'list_search_do') . '</button></div>';
 
+        if (!$this->isDefaultSettings()) {
+            $str .= '<div><br><button type="submit" class="btn btn-default" name="reset">' .
+                    \Yii::t('admin', 'list_search_reset') . '</button></div>';
+        }
+
         $str .= '</div>';
 
         if ($this->numReplaced > 0 || $this->numTodo > 0) {
@@ -1075,26 +1129,6 @@ class AdminMotionFilterForm
         return $out;
     }
 
-    public function setCurrentRoute(array $route): void
-    {
-        $this->route = $route;
-    }
-
-    public function getCurrentUrl(array $add = []): string
-    {
-        return UrlHelper::createUrl(array_merge($this->route, [
-            'Search[status]'         => $this->status,
-            'Search[tag]'            => $this->tag,
-            'Search[version]'        => $this->version,
-            'Search[initiator]'      => $this->initiator,
-            'Search[title]'          => $this->title,
-            'Search[sort]'           => $this->sort,
-            'Search[agendaItem]'     => $this->agendaItem,
-            'Search[responsibility]' => $this->responsibility,
-            'Search[prefix]'         => $this->prefix,
-        ], $add));
-    }
-
     public function hasAdditionalActions(): bool
     {
         return false;
@@ -1103,6 +1137,10 @@ class AdminMotionFilterForm
     protected function showAdditionalActions(): string
     {
         return '';
+    }
+
+    public static function performAdditionalListActions(Consultation $consultation): void
+    {
     }
 
     public function showListActions(): string
@@ -1139,9 +1177,5 @@ class AdminMotionFilterForm
         </section>';
 
         return $str;
-    }
-
-    public static function performAdditionalListActions(Consultation $consultation): void
-    {
     }
 }

@@ -157,6 +157,7 @@ return [
     'list_motion_short'           => 'A',
     'list_amend_short'            => 'ÄA',
     'list_search_do'              => 'Suchen',
+    'list_search_reset'           => 'Zurücksetzen',
     'list_delete'                 => 'Löschen',
     'list_unscreen'               => 'Ent-Freischalten',
     'list_screen'                 => 'Freischalten',
