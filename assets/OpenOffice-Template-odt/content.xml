@@ -57,6 +57,9 @@
                         <text:p text:style-name="Frame_20_contents">
                             <text:span text:style-name="T1">{{ANTRAGSGRUEN:INITIATORS}}</text:span>
                         </text:p>
+                        <text:p text:style-name="Frame_20_contents">
+                            <text:span text:style-name="T1">{{ANTRAGSGRUEN:STATUS}}</text:span>
+                        </text:p>
                     </draw:text-box>
                 </draw:frame>
             </text:p>

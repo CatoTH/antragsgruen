@@ -40,9 +40,9 @@ if (count($initiators) === 1) {
     $initiatorStr = Yii::t('export', 'InitiatorMulti');
 }
 $initiatorStr .= ': ' . implode(', ', $initiators);
-$doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $oldMotion->agendaItem ? $oldMotion->agendaItem->title : '');
 $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $oldMotion->getTitleWithPrefix());
 $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
+$doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', '');
 
 
 foreach ($changes as $change) {

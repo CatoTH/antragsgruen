@@ -2,6 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
+use app\components\RequestContext;
 use app\components\yii\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
@@ -19,8 +20,8 @@ class LayoutSettings extends Layout
         $this->consultation = $consultation;
         if (count($this->breadcrumbs) === 0) {
             $this->breadcrumbs['/'] = \Yii::t('member_petitions', 'bc');
-            $url                    = \Yii::$app->request->url;
-            if (strpos($url, $consultation->urlPath) !== false) {
+            $url                    = RequestContext::getWebRequest()->url;
+            if (str_contains($url, $consultation->urlPath)) {
                 $this->breadcrumbs[UrlHelper::createUrl('consultation/index')] = $consultation->titleShort;
             }
         }

@@ -226,8 +226,7 @@ class IPdfWriter extends Fpdi
         $strokecolor = $this->strokecolor;
         $textitem    = '';
         $tmpx        = $this->x;
-        /** @var float $lspace */
-        $lspace      = $this->GetStringWidth('  ');
+        $lspace      = (float)$this->GetStringWidth('  ');
         if ($listtype == '^') {
             // special symbol used for avoid justification of rect bullet
             $this->lispacer = '';
@@ -361,8 +360,7 @@ class IPdfWriter extends Fpdi
                     $textitem = $textitem . '.';
                 }
             }
-            /** @var float $strWidth */
-            $strWidth = $this->GetStringWidth($textitem);
+            $strWidth = (float)$this->GetStringWidth($textitem);
             $lspace += $strWidth;
             if ($this->rtl) {
                 $this->x += $lspace;

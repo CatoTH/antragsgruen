@@ -77,8 +77,8 @@ class Egp extends IPDFLayout
         }
 
         $revName = \Yii::t('export', 'draft');
-        $pdf->SetFont('roboto', 'B', '25');
-        $width = $pdf->GetStringWidth($revName, 'roboto', 'I', '25') + 3.1;
+        $pdf->SetFont('roboto', 'B', 25);
+        $width = (float)$pdf->GetStringWidth($revName, 'roboto', 'I', 25) + 3.1;
 
         if ($width < 35) {
             $width = 35;

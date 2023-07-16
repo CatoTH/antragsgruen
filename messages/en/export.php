@@ -34,6 +34,7 @@ return [
     'tags'                  => 'Tags',
     'contact'               => 'Contact',
     'procedure'             => 'Procedure',
+    'proposed_procedure'    => 'Proposed procedure',
     'comments'              => 'Comments',
     'mail_motion_x'         => 'motion %MOTION%',
     'mail_amendment_x_to_y' => 'amendment %AMENDMENT% to the motion %MOTION%',
