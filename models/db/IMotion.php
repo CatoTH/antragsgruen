@@ -501,19 +501,27 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function canSeeProposedProcedure(?string $procedureToken): bool;
 
+    /**
+     * Hint: "Limited" refers to functionality that comes after setting the actual proposed procedure,
+     * i.e., internal comments, voting blocks and communication with the proposer
+     */
+    public function canEditLimitedProposedProcedure(): bool
+    {
+        return User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::imotion($this)) ||
+               User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
+    }
+
     public function canEditProposedProcedure(): bool
     {
-        $consultation = $this->getMyConsultation();
-        $havePpRights = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::imotion($this));
-        if ($consultation->getSettings()->ppEditableAfterPublication) {
-            return $havePpRights;
+        if (!$this->canEditLimitedProposedProcedure()) {
+            return false;
+        }
+
+        if ($this->isProposalPublic()) {
+            return $this->getMyConsultation()->getSettings()->ppEditableAfterPublication ||
+                   User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
         } else {
-            if ($this->proposalVisibleFrom === null) {
-                return $havePpRights;
-            } else {
-                // If the proposal is published already, then only consultation admins can edit the proposal
-                return User::havePrivilege($consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
-            }
+            return true;
         }
     }
 

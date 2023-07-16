@@ -21,7 +21,7 @@ $consultation = $amendment->getMyConsultation();
 $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = $amendment->canEditProposedProcedure();
+$hasPpAdminbox = ($hasPp && $amendment->canEditLimitedProposedProcedure());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;

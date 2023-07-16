@@ -43,6 +43,8 @@ $votingBlocks = $consultation->votingBlocks;
 $allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
 $selectedTags = $motion->getProposedProcedureTags();
 $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeRemoved());
+$canBeChangedUnlimitedly = $motion->canEditProposedProcedure();
+$limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 $voting = $motion->getVotingData();
 ?>
 <h2>
@@ -63,10 +65,13 @@ $voting = $motion->getVotingData();
         foreach (Motion::getProposedChangeStatuses() as $statusId) {
             ?>
             <label class="proposalStatus<?= $statusId ?>">
-                <input type="radio" name="proposalStatus" value="<?= $statusId ?>" <?php
+                <input type="radio" name="proposalStatus" value="<?= $statusId ?>"<?php
                 if (intval($motion->proposalStatus) === intval($statusId)) {
                     $foundStatus = true;
-                    echo 'checked';
+                    echo ' checked';
+                }
+                if (!$canBeChangedUnlimitedly) {
+                    echo ' disabled';
                 }
                 ?>> <?= Motion::getProposedStatusNames()[$statusId] ?>
             </label><br>
@@ -74,7 +79,7 @@ $voting = $motion->getVotingData();
         }
         ?>
         <label>
-            <?= Html::radio('proposalStatus', !$foundStatus, ['value' => '0']) ?>
+            <?= Html::radio('proposalStatus', !$foundStatus, ['value' => '0', 'disabled' => $limitedDisabled]) ?>
             - <?= Yii::t('amend', 'proposal_status_na') ?> -
         </label>
     </fieldset>
@@ -83,11 +88,11 @@ $voting = $motion->getVotingData();
             <legend class="hidden"><?= Yii::t('amend', 'proposal_publicity') ?></legend>
             <h3><?= Yii::t('amend', 'proposal_publicity') ?></h3>
             <label>
-                <?= Html::checkbox('proposalVisible', ($motion->proposalVisibleFrom !== null)) ?>
+                <?= Html::checkbox('proposalVisible', ($motion->proposalVisibleFrom !== null), ['disabled' => $limitedDisabled]) ?>
                 <?= Yii::t('amend', 'proposal_visible') ?>
             </label>
             <label>
-                <?= Html::checkbox('setPublicExplanation', ($motion->proposalExplanation !== null)) ?>
+                <?= Html::checkbox('setPublicExplanation', ($motion->proposalExplanation !== null), ['disabled' => $limitedDisabled]) ?>
                 <?= Yii::t('amend', 'proposal_public_expl_set') ?>
             </label>
         </fieldset>
@@ -286,18 +291,20 @@ $voting = $motion->getVotingData();
             $options[$otherAmend->id] = $otherAmend->getTitle();
         }
     }
-    $attrs = ['id' => 'obsoletedByAmendment'];
+    $attrs = ['id' => 'obsoletedByAmendment', 'disabled' => $limitedDisabled];
     echo Html::dropDownList('obsoletedByMotion', $preObsoletedBy, $options, $attrs);
     ?>
 </section>
 <section class="statusDetails status_<?= Motion::STATUS_REFERRED ?>">
     <label class="headingLabel" for="referredTo"><?= Yii::t('amend', 'proposal_refer_to') ?>...</label>
     <input type="text" name="referredTo" id="referredTo" value="<?= Html::encode($preReferredTo) ?>"
+        <?php if (!$canBeChangedUnlimitedly) echo 'disabled'; ?>
            class="form-control">
 </section>
 <section class="statusDetails status_<?= Motion::STATUS_CUSTOM_STRING ?>">
     <label class="headingLabel" for="statusCustomStr"><?= Yii::t('amend', 'proposal_custom_str') ?>:</label>
     <input type="text" name="statusCustomStr" id="statusCustomStr" value="<?= Html::encode($preCustomStr) ?>"
+        <?php if (!$canBeChangedUnlimitedly) echo 'disabled'; ?>
            class="form-control">
 </section>
 <section class="statusDetails status_<?= Motion::STATUS_VOTE ?>">
@@ -327,6 +334,7 @@ $voting = $motion->getVotingData();
         [
             'title' => Yii::t('amend', 'proposal_public_expl_title'),
             'class' => 'form-control',
+            'disabled' => $limitedDisabled,
         ]
     );
     ?>
@@ -384,7 +392,7 @@ $voting = $motion->getVotingData();
     <?= Yii::t('base', 'saved') ?>
 </section>
 <?php
-if ($context !== 'edit') {
+if ($context !== 'edit' && $canBeChangedUnlimitedly) {
     $classes   = ['statusDetails'];
     $classes[] = 'status_' . Motion::STATUS_MODIFIED_ACCEPTED;
     $classes[] = 'status_' . Motion::STATUS_VOTE;
