@@ -227,14 +227,13 @@ class LayoutHelper
             $initiatorStr = \Yii::t('export', 'InitiatorMulti');
         }
         $initiatorStr .= ': ' . implode(', ', $initiators);
-        if ($amendment->getMyMotion()->agendaItem) {
-            $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $amendment->getMyMotion()->agendaItem->title);
-        } else {
-            $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', '');
-        }
         $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $amendment->getTitle());
         $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
-
+        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports && $amendment->proposalStatus !== null && $amendment->isProposalPublic()) {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', \Yii::t('export', 'proposed_procedure') . ': ' . strip_tags($amendment->getFormattedProposalStatus(false)));
+        } else {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', '');
+        }
 
         if ($amendment->changeEditorial !== '') {
             $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'editorial_hint')) . '</h2>', false);

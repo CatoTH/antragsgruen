@@ -845,9 +845,13 @@ class LayoutHelper
             $initiatorStr = \Yii::t('export', 'InitiatorMulti');
         }
         $initiatorStr .= ': ' . implode(', ', $initiators);
-        $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $motion->agendaItem ? $motion->agendaItem->title : '');
         $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());
         $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && $motion->proposalStatus !== null && $motion->isProposalPublic()) {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', \Yii::t('export', 'proposed_procedure') . ': ' . strip_tags($motion->getFormattedProposalStatus(false)));
+        } else {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', '');
+        }
 
         if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
             $ppSections = self::getVisibleProposedProcedureSections($motion, null);

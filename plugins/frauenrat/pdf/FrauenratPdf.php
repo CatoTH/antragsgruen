@@ -7,25 +7,24 @@ use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 
 class FrauenratPdf extends IPdfWriter
 {
-    /** @var IPDFLayout */
-    private $layout;
+    private IPDFLayout $layout;
 
-    public $calibri;
-    public $calibriBold;
-    public $calibriItalic;
-    public $calibriItalicBold;
+    public string $calibri;
+    public string $calibriBold;
+    public string $calibriItalic;
+    public string $calibriItalicBold;
 
-    public $pageNumberStartPage = 1;
+    public int $pageNumberStartPage = 1;
 
     public function __construct(IPDFLayout $layout)
     {
         $this->layout = $layout;
         parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $this->calibri           = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Regular.ttf', 'TrueTypeUnicode', '', 96);
-        $this->calibriBold       = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Bold.ttf', 'TrueTypeUnicode', '', 96);
-        $this->calibriItalic     = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Italic.ttf', 'TrueTypeUnicode', '', 96);
-        $this->calibriItalicBold = \TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Bold Italic.ttf', 'TrueTypeUnicode', '', 96);
+        $this->calibri           = (string)\TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Regular.ttf', 'TrueTypeUnicode', '', 96);
+        $this->calibriBold       = (string)\TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Bold.ttf', 'TrueTypeUnicode', '', 96);
+        $this->calibriItalic     = (string)\TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Italic.ttf', 'TrueTypeUnicode', '', 96);
+        $this->calibriItalicBold = (string)\TCPDF_FONTS::addTTFfont(__DIR__ . '/../fonts/Calibri Bold Italic.ttf', 'TrueTypeUnicode', '', 96);
     }
 
     public function getMotionFont(?MotionSection $section): string
@@ -71,7 +70,7 @@ class FrauenratPdf extends IPdfWriter
         // Set font
         $this->SetFont($this->calibri, '', 8);
         // Page number
-        $this->Cell(0, 10, $this->getPage(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, $this->getPage(), 0, 0, 'C', false, '', 0, false, 'T', 'M');
     }
     // @codingStandardsIgnoreEnd
 }

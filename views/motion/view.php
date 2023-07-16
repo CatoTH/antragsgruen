@@ -22,7 +22,7 @@ use yii\helpers\Html;
 
 $consultation = $motion->getMyConsultation();
 $hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->canEditProposedProcedure());
+$hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->canEditLimitedProposedProcedure());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -160,27 +160,15 @@ if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
     <?php
 }
 
-//$hasSpeechLists = $consultation->getSettings()->hasSpeechLists;
-$hasSpeechLists = false;
-if ($hasPpAdminbox || $hasSpeechLists) {
-    echo '<div class="proposedChangesOpener">';
-    if ($hasPpAdminbox) {
-        ?>
+if ($hasPpAdminbox) {
+    ?>
+    <div class="proposedChangesOpener">
         <button class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
             <?= Yii::t('amend', 'proposal_open') ?>
         </button>
-        <?php
-    }
-    if ($hasSpeechLists) {
-        ?>
-        <a href="<?= Html::encode(UrlHelper::createMotionUrl($motion, 'admin-speech')) ?>" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            <?= str_replace('%TITLE%', $motion->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to')) ?>
-        </a>
-        <?php
-    }
-    echo '</div>';
+    </div>
+    <?php
 }
 if ($hasPp) {
     if ($hasPpAdminbox) {

@@ -51,7 +51,7 @@ class BackendController extends Base
             $supporter               = new MotionSupporter();
             $supporter->motionId     = $newMotion->id;
             $supporter->userId       = $user->id;
-            $supporter->name         = \Yii::$app->request->post('responseFrom');
+            $supporter->name         = $this->getPostValue('responseFrom');
             $supporter->organization = '';
             $supporter->position     = 0;
             $supporter->role         = MotionSupporter::ROLE_INITIATOR;
@@ -60,7 +60,7 @@ class BackendController extends Base
                 throw new DB($supporter->getErrors());
             }
 
-            $postSections = \Yii::$app->request->post('sections', []);
+            $postSections = $this->getPostValue('sections', []);
             foreach ($motion->getActiveSections() as $section) {
                 $newSection            = new MotionSection();
                 $newSection->sectionId = $section->sectionId;

@@ -8,7 +8,7 @@ use app\models\http\{HtmlErrorResponse, HtmlResponse, ResponseInterface};
 
 class CandidaturesController extends Base
 {
-    public function actionIndex($agendaItemId = 0, $motionTypeId = 0): ResponseInterface
+    public function actionIndex(int $agendaItemId = 0, int $motionTypeId = 0): ResponseInterface
     {
         if ($agendaItemId) {
             $agendaItem = $this->consultation->getAgendaItem($agendaItemId);

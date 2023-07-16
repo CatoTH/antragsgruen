@@ -68,7 +68,7 @@ class EgpPdf extends IPdfWriter
             10,
             \Yii::t('export', 'Page') . ' ' . $this->getGroupPageNo() . ' / ' . $this->getPageGroupAlias(),
             0,
-            false,
+            0,
             'C',
             false,
             '',

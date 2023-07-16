@@ -161,6 +161,7 @@ return [
     'list_motion_short'           => 'A',
     'list_amend_short'            => 'ÄA',
     'list_search_do'              => 'Search',
+    'list_search_reset'           => 'Reset',
     'list_delete'                 => 'Delete',
     'list_unscreen'               => 'Unscreen',
     'list_screen'                 => 'Screen',

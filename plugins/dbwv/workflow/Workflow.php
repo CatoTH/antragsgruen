@@ -79,7 +79,7 @@ class Workflow
         if (!$motion->isVisible()) {
             return false;
         }
-        return $motion->canEditProposedProcedure();
+        return $motion->canEditLimitedProposedProcedure();
     }
 
     public static function canSetResolutionV3(Motion $motion): bool

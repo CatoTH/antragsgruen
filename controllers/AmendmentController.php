@@ -453,9 +453,10 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new RestApiExceptionResponse(404, 'Amendment not found');
         }
-        if (!$amendment->canEditProposedProcedure()) {
+        if (!$amendment->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
+        $canChangeProposalUnlimitedly = $amendment->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
@@ -467,18 +468,20 @@ class AmendmentController extends Base
                 $amendment = $plugin::onBeforeProposedProcedureStatusSave($amendment);
             }
 
-            $setStatus = intval($this->getHttpRequest()->post('setStatus'));
-            if ($amendment->proposalStatus !== $setStatus) {
-                $ppChanges->setProposalStatusChanges($amendment->proposalStatus, $setStatus);
-                if ($amendment->proposalUserStatus !== null) {
-                    $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+            if ($canChangeProposalUnlimitedly) {
+                $setStatus = intval($this->getHttpRequest()->post('setStatus'));
+                if ($amendment->proposalStatus !== $setStatus) {
+                    $ppChanges->setProposalStatusChanges($amendment->proposalStatus, $setStatus);
+                    if ($amendment->proposalUserStatus !== null) {
+                        $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+                    }
+                    $amendment->proposalUserStatus = null;
                 }
-                $amendment->proposalUserStatus = null;
-            }
-            $amendment->proposalStatus  = $setStatus;
+                $amendment->proposalStatus = $setStatus;
 
-            $ppChanges->setProposalCommentChanges($amendment->proposalComment, $this->getHttpRequest()->post('proposalComment', ''));
-            $amendment->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
+                $ppChanges->setProposalCommentChanges($amendment->proposalComment, $this->getHttpRequest()->post('proposalComment', ''));
+                $amendment->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
+            }
 
             $oldTags = $amendment->getProposedProcedureTags();
             $newTags = [];
@@ -501,26 +504,28 @@ class AmendmentController extends Base
                 $ppChanges->setProposalTagsHaveChanged(array_keys($oldTags), $newTags);
             }
 
-            $proposalExplanationPre = $amendment->proposalExplanation;
-            if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
-                if (trim($this->getHttpRequest()->post('proposalExplanation', '')) === '') {
-                    $amendment->proposalExplanation = null;
+            if ($canChangeProposalUnlimitedly) {
+                $proposalExplanationPre = $amendment->proposalExplanation;
+                if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
+                    if (trim($this->getHttpRequest()->post('proposalExplanation', '')) === '') {
+                        $amendment->proposalExplanation = null;
+                    } else {
+                        $amendment->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
+                    }
                 } else {
-                    $amendment->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
+                    $amendment->proposalExplanation = null;
                 }
-            } else {
-                $amendment->proposalExplanation = null;
-            }
-            $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $amendment->proposalExplanation);
+                $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $amendment->proposalExplanation);
 
-            if ($this->getHttpRequest()->post('visible', 0)) {
-                if ($amendment->proposalVisibleFrom === null) {
-                    // Reload the page, to update section titles and permissions to edit the proposed procedure
-                    $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'view');
+                if ($this->getHttpRequest()->post('visible', 0)) {
+                    if ($amendment->proposalVisibleFrom === null) {
+                        // Reload the page, to update section titles and permissions to edit the proposed procedure
+                        $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'view');
+                    }
+                    $amendment->setProposalPublished();
+                } else {
+                    $amendment->proposalVisibleFrom = null;
                 }
-                $amendment->setProposalPublished();
-            } else {
-                $amendment->proposalVisibleFrom = null;
             }
 
             try {
@@ -628,7 +633,7 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
+        if (!$amendment->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 

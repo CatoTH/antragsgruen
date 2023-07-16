@@ -6,6 +6,9 @@ use app\components\RequestContext;
 use app\components\yii\MessageSource;
 use app\components\UrlHelper;
 use app\controllers\Base;
+use app\models\http\HtmlResponse;
+use app\models\http\JsonResponse;
+use app\models\http\ResponseInterface;
 use app\models\db\{Consultation, ConsultationText, Site, User};
 use app\models\exceptions\{FormError, LoginInvalidUser};
 use app\models\forms\{LoginUsernamePasswordForm, SiteCreateForm};
@@ -15,26 +18,16 @@ use yii\web\Response;
 
 class ManagerController extends Base
 {
-    /**
-     * @return string
-     */
-    public function actionIndex()
+    public function actionIndex(): HtmlResponse
     {
         $this->layout = '@app/views/layouts/column1';
-        return $this->render('index');
+        return new HtmlResponse($this->render('index'));
     }
 
-    /**
-     * @param string $test
-     * @return string
-     */
-    public function actionCheckSubdomain($test)
+    public function actionCheckSubdomain(string $test): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $available = Site::isSubdomainAvailable($test);
-        return json_encode([
+        return new JsonResponse([
             'available' => $available,
             'subdomain' => $test,
         ]);
@@ -54,20 +47,7 @@ class ManagerController extends Base
         }
     }
 
-    protected function requireEligibleToCreateUser(): void
-    {
-        $user = $this->eligibleToCreateUser();
-        if (!$user) {
-            $this->redirect(UrlHelper::createUrl('/green_manager/manager/index'));
-            \Yii::$app->end();
-        }
-    }
-
-    /**
-     * @param string $name
-     * @throws FormError
-     */
-    protected function createWelcomePage(Consultation $consultation, $name)
+    protected function createWelcomePage(Consultation $consultation, string $name): void
     {
         $welcomeHtml = '<h2>Welcome to ' . Html::encode($name) . '</h2>';
         $welcomeHtml .= '<p>You can now start by creating motions, or adjust some detailed settings. As a admin, ';
@@ -87,10 +67,7 @@ class ManagerController extends Base
         }
     }
 
-    /**
-     * @return string
-     */
-    public function actionCreatesite()
+    public function actionCreatesite(): ResponseInterface
     {
         $language = $this->getRequestValue('language');
         if ($language && isset(MessageSource::getBaseLanguages()[$language])) {
@@ -135,7 +112,7 @@ class ManagerController extends Base
 
                     $this->createWelcomePage($consultation, $post['SiteCreateForm']['title']);
 
-                    return $this->render('@app/plugins/green_manager/views/manager/created', ['form' => $model]);
+                    return new HtmlResponse($this->render('@app/plugins/green_manager/views/manager/created', ['form' => $model]));
                 } else {
                     throw new FormError($model->getErrors());
                 }
@@ -144,41 +121,32 @@ class ManagerController extends Base
             }
         }
 
-        return $this->render(
+        return new HtmlResponse($this->render(
             '@app/plugins/green_manager/views/manager/createsite',
             [
                 'model'  => $model,
                 'errors' => $errors
             ]
-        );
+        ));
     }
 
-    /**
-     * @return string
-     */
-    public function actionHelp()
+    public function actionHelp(): HtmlResponse
     {
-        return $this->render('help');
+        return new HtmlResponse($this->render('help'));
     }
 
-    /**
-     * @return string
-     */
-    public function actionFreeHosting()
+    public function actionFreeHosting(): HtmlResponse
     {
-        return $this->render('free_hosting_faq');
+        return new HtmlResponse($this->render('free_hosting_faq'));
     }
 
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionLegal(): string
+    public function actionLegal(): HtmlResponse
     {
-        return $this->renderContentPage('legal');
+        return new HtmlResponse($this->renderContentPage('legal'));
     }
 
-    public function actionPrivacy(): string
+    public function actionPrivacy(): HtmlResponse
     {
-        return $this->renderContentPage('privacy');
+        return new HtmlResponse($this->renderContentPage('privacy'));
     }
 }

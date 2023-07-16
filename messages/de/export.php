@@ -34,6 +34,7 @@ return [
     'tags'                  => 'Themen',
     'contact'               => 'Kontakt',
     'procedure'             => 'Verfahren',
+    'proposed_procedure'    => 'Verfahrensvorschlag',
     'comments'              => 'Kommentare',
     'mail_motion_x'         => 'Antrags %MOTION%',
     'mail_amendment_x_to_y' => 'Änderungsantrags %AMENDMENT% zum Antrag %MOTION%',

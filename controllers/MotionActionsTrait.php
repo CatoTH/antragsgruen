@@ -459,9 +459,10 @@ trait MotionActionsTrait
         if (!$motion) {
             return new RestApiExceptionResponse(404, 'Motion not found');
         }
-        if (!$motion->canEditProposedProcedure()) {
+        if (!$motion->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
+        $canChangeProposalUnlimitedly = $motion->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
@@ -474,18 +475,20 @@ trait MotionActionsTrait
                 $motion = $plugin::onBeforeProposedProcedureStatusSave($motion);
             }
 
-            $setStatus = intval($this->getHttpRequest()->post('setStatus'));
-            if ($motion->proposalStatus !== $setStatus) {
-                $ppChanges->setProposalStatusChanges($motion->proposalStatus, $setStatus);
-                if ($motion->proposalUserStatus !== null) {
-                    $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+            if ($canChangeProposalUnlimitedly) {
+                $setStatus = intval($this->getHttpRequest()->post('setStatus'));
+                if ($motion->proposalStatus !== $setStatus) {
+                    $ppChanges->setProposalStatusChanges($motion->proposalStatus, $setStatus);
+                    if ($motion->proposalUserStatus !== null) {
+                        $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+                    }
+                    $motion->proposalUserStatus = null;
                 }
-                $motion->proposalUserStatus = null;
-            }
-            $motion->proposalStatus  = $setStatus;
+                $motion->proposalStatus = $setStatus;
 
-            $ppChanges->setProposalCommentChanges($motion->proposalComment, $this->getHttpRequest()->post('proposalComment', ''));
-            $motion->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
+                $ppChanges->setProposalCommentChanges($motion->proposalComment, $this->getHttpRequest()->post('proposalComment', ''));
+                $motion->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
+            }
 
             $oldTags = $motion->getProposedProcedureTags();
             $newTags = [];
@@ -508,26 +511,28 @@ trait MotionActionsTrait
                 $ppChanges->setProposalTagsHaveChanged(array_keys($oldTags), $newTags);
             }
 
-            $proposalExplanationPre = $motion->proposalExplanation;
-            if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
-                if (trim($this->getHttpRequest()->post('proposalExplanation', '')) === '') {
-                    $motion->proposalExplanation = null;
+            if ($canChangeProposalUnlimitedly) {
+                $proposalExplanationPre = $motion->proposalExplanation;
+                if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
+                    if (trim($this->getHttpRequest()->post('proposalExplanation', '')) === '') {
+                        $motion->proposalExplanation = null;
+                    } else {
+                        $motion->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
+                    }
                 } else {
-                    $motion->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
+                    $motion->proposalExplanation = null;
                 }
-            } else {
-                $motion->proposalExplanation = null;
-            }
-            $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $motion->proposalExplanation);
+                $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $motion->proposalExplanation);
 
-            if ($this->getHttpRequest()->post('visible', 0)) {
-                if ($motion->proposalVisibleFrom === null) {
-                    // Reload the page, to update section titles and permissions to edit the proposed procedure
-                    $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
+                if ($this->getHttpRequest()->post('visible', 0)) {
+                    if ($motion->proposalVisibleFrom === null) {
+                        // Reload the page, to update section titles and permissions to edit the proposed procedure
+                        $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
+                    }
+                    $motion->setProposalPublished();
+                } else {
+                    $motion->proposalVisibleFrom = null;
                 }
-                $motion->setProposalPublished();
-            } else {
-                $motion->proposalVisibleFrom = null;
             }
 
             try {
@@ -630,7 +635,7 @@ trait MotionActionsTrait
         if (!$motion) {
             return new HtmlErrorResponse(404, 'Motion not found');
         }
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion))) {
+        if (!$motion->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to edit the proposed procedure');
         }
 

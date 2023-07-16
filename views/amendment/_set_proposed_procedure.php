@@ -50,6 +50,8 @@ $votingBlocks = $consultation->votingBlocks;
 $allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
 $selectedTags = $amendment->getProposedProcedureTags();
 $currBlockIsLocked = ($amendment->votingBlock && !$amendment->votingBlock->itemsCanBeRemoved());
+$canBeChangedUnlimitedly = $amendment->canEditProposedProcedure();
+$limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 $voting = $amendment->getVotingData();
 ?>
     <h2>
@@ -68,10 +70,13 @@ $voting = $amendment->getVotingData();
             foreach (Amendment::getProposedChangeStatuses() as $statusId) {
                 ?>
                 <label class="proposalStatus<?= $statusId ?>">
-                    <input type="radio" name="proposalStatus" value="<?= $statusId ?>" <?php
+                    <input type="radio" name="proposalStatus" value="<?= $statusId ?>"<?php
                     if ($amendment->proposalStatus == $statusId) {
                         $foundStatus = true;
-                        echo 'checked';
+                        echo ' checked';
+                    }
+                    if (!$canBeChangedUnlimitedly) {
+                        echo ' disabled';
                     }
                     ?>> <?= Amendment::getProposedStatusNames()[$statusId] ?>
                 </label><br>
@@ -79,7 +84,7 @@ $voting = $amendment->getVotingData();
             }
             ?>
             <label>
-                <?= Html::radio('proposalStatus', !$foundStatus, ['value' => '0']) ?>
+                <?= Html::radio('proposalStatus', !$foundStatus, ['value' => '0', 'disabled' => $limitedDisabled]) ?>
                 - <?= Yii::t('amend', 'proposal_status_na') ?> -
             </label>
         </section>
@@ -87,11 +92,11 @@ $voting = $amendment->getVotingData();
             <div class="visibilitySettings showIfStatusSet">
                 <h3><?= Yii::t('amend', 'proposal_publicity') ?></h3>
                 <label>
-                    <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null)) ?>
+                    <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null), ['disabled' => $limitedDisabled]) ?>
                     <?= Yii::t('amend', 'proposal_visible') ?>
                 </label>
                 <label>
-                    <?= Html::checkbox('setPublicExplanation', ($amendment->proposalExplanation !== null)) ?>
+                    <?= Html::checkbox('setPublicExplanation', ($amendment->proposalExplanation !== null), ['disabled' => $limitedDisabled]) ?>
                     <?= Yii::t('amend', 'proposal_public_expl_set') ?>
                 </label>
             </div>
@@ -294,7 +299,7 @@ $voting = $amendment->getVotingData();
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
-        $attrs = ['id' => 'obsoletedByAmendment'];
+        $attrs = ['id' => 'obsoletedByAmendment', 'disabled' => $limitedDisabled];
         echo Html::dropDownList('obsoletedByAmendment', $preObsoletedBy, $options, $attrs);
         ?>
     </section>
@@ -312,7 +317,7 @@ $voting = $amendment->getVotingData();
                 }
             }
         }
-        $attrs = ['id' => 'movedToOtherMotion'];
+        $attrs = ['id' => 'movedToOtherMotion', 'disabled' => $limitedDisabled];
         echo Html::dropDownList('movedToOtherMotion', $preMovedToMotion, $options, $attrs);
         echo '<div>' . Yii::t('amend', 'proposal_moved_to_other_motion_h') . '</div>';
         ?>
@@ -320,11 +325,13 @@ $voting = $amendment->getVotingData();
     <section class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">
         <label class="headingLabel" for="referredTo"><?= Yii::t('amend', 'proposal_refer_to') ?>...</label>
         <input type="text" name="referredTo" id="referredTo" value="<?= Html::encode($preReferredTo) ?>"
+            <?php if (!$canBeChangedUnlimitedly) echo 'disabled'; ?>
                class="form-control">
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_CUSTOM_STRING ?>">
         <label class="headingLabel" for="statusCustomStr"><?= Yii::t('amend', 'proposal_custom_str') ?>:</label>
         <input type="text" name="statusCustomStr" id="statusCustomStr" value="<?= Html::encode($preCustomStr) ?>"
+            <?php if (!$canBeChangedUnlimitedly) echo 'disabled'; ?>
                class="form-control">
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_VOTE ?>">
@@ -354,6 +361,7 @@ $voting = $amendment->getVotingData();
             [
                 'title' => Yii::t('amend', 'proposal_public_expl_title'),
                 'class' => 'form-control',
+                'disabled' => $limitedDisabled,
             ]
         );
         ?>
@@ -427,7 +435,7 @@ $voting = $amendment->getVotingData();
         <?= Yii::t('base', 'saved') ?>
     </section>
 <?php
-if ($context !== 'edit') {
+if ($context !== 'edit' && $canBeChangedUnlimitedly) {
     $classes   = ['statusDetails'];
     $classes[] = 'status_' . Amendment::STATUS_MODIFIED_ACCEPTED;
     $classes[] = 'status_' . Amendment::STATUS_VOTE;

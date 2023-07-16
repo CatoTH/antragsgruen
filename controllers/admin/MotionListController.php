@@ -3,10 +3,10 @@
 namespace app\controllers\admin;
 
 use app\models\exceptions\{Access, NotFound, ExceptionBase, ResponseException};
-use app\components\{Tools, ZipWriter};
+use app\components\{RequestContext, Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
 use app\models\forms\AdminMotionFilterForm;
-use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, ResponseInterface};
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
@@ -248,8 +248,16 @@ class MotionListController extends AdminBase
 
         /** @var AdminMotionFilterForm $search */
         $search = new $motionListClass($consultation, $motions, $privilegeScreening);
-        if ($this->isRequestSet('Search')) {
-            $search->setAttributes($this->getRequestValue('Search'));
+        if ($this->isRequestSet('reset')) {
+            RequestContext::getSession()->set('motionListSearch', null);
+            return new RedirectResponse(UrlHelper::createUrl('/admin/motion-list/index'));
+        }
+        if ($this->getRequestValue('Search')) {
+            $attributes = $this->getRequestValue('Search');
+            RequestContext::getSession()->set('motionListSearch', $attributes);
+            $search->setAttributes($attributes);
+        } elseif (RequestContext::getSession()->get('motionListSearch')) {
+            $search->setAttributes(RequestContext::getSession()->get('motionListSearch'));
         }
 
         return new HtmlResponse($this->render('list_all', [
