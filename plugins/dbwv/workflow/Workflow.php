@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace app\plugins\dbwv\workflow;
 
 use app\models\AdminTodoItem;
-use app\models\db\Consultation;
-use app\models\db\Motion;
-use app\models\db\User;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\db\{Consultation, Motion, User};
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\plugins\dbwv\Module;
 
 class Workflow
@@ -76,6 +73,9 @@ class Workflow
 
     public static function canSetRecommendationV2(Motion $motion): bool
     {
+        if ($motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
+            return true;
+        }
         if (!$motion->isVisible()) {
             return false;
         }
@@ -116,6 +116,9 @@ class Workflow
 
     public static function canSetRecommendationV5(Motion $motion): bool
     {
+        if ($motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
+            return true;
+        }
         if ($motion->isVisible()) {
             return false;
         }
