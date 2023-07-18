@@ -5,12 +5,6 @@
   font-style: normal
 }
 
-.saveholder {
-  clear: both;
-  padding: 10px;
-  text-align: center;
-}
-
 #gotoMainContent {
   color: transparent;
   position: absolute;
@@ -25,14 +19,34 @@
   }
 }
 
-.logo {
-  margin-top: 14px;
-  display: block;
-  margin-bottom: 40px;
+body {
+  font-family: $bodyFont;
+  height: 100%;
+}
 
-  > a {
-    display: inline-block;
+#page {
+  margin-left: auto;
+  margin-right: auto;
+  @media (min-width: $screen-sm-min) {
+    width: $container-sm;
   }
+  @media (min-width: $screen-md-min) {
+    width: $container-md;
+  }
+  @media (min-width: $screen-lg-min) {
+    width: $container-lg;
+  }
+
+  body.fullscreen & {
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+.logoRow {
+  display: flex;
+  margin: 14px 0 40px;
 
   .homeLinkLogo {
     min-width: 20%; // this allows SVGs to be shown - they would get a width of 0% otherwise
@@ -129,7 +143,7 @@ body > footer {
   > #sidebar {
     max-width: $sidebarWidth;
     float: left;
-    padding-right: floor(($grid-gutter-width * 0.5));
+    padding-right: 0;
     padding-left: ceil(($grid-gutter-width * 0.5));
   }
 

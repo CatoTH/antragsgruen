@@ -28,7 +28,7 @@ class LayoutHooks extends Hooks
 
     public function logoRow(string $before): string
     {
-        $out = '<header class="row logo" role="banner">' .
+        $out = '<header class="logoRow" role="banner">' .
                '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo" title="' .
                Html::encode(\Yii::t('base', 'home_back')) . '">' .
                $this->layout->getLogoStr() .

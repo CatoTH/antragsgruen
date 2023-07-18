@@ -29,7 +29,7 @@
                 </div>
             </div>
         </header>
-        <div class="row logo">
+        <div class="logoRow">
             <a href="<?= $config['resourceBase'] ?>" class="homeLinkLogo text-hide" disabled>Home<span class="logoImg"></span></a>
         </div>
         <ol class="breadcrumb"></ol>

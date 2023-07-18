@@ -12,10 +12,10 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->registerPluginAssets($this, $controller);
-if (strpos($layout->mainCssFile, 'layout-custom-') === 0) {
+if (str_starts_with($layout->mainCssFile, 'layout-custom-')) {
     $mainCssHash = str_replace('layout-custom', '', $layout->mainCssFile);
     $mainCssFile = \app\components\UrlHelper::createUrl(['/pages/css', 'hash' => $mainCssHash]);
-} elseif (strpos($layout->mainCssFile, 'layout-plugin-') === 0) {
+} elseif (str_starts_with($layout->mainCssFile, 'layout-plugin-')) {
     try {
         $mainCssFile = null;
         $layout->setPluginLayout($this);
@@ -104,14 +104,13 @@ echo '<a href="#mainContent" id="gotoMainContent">' . Yii::t('base', 'goto_main_
 echo '<div class="over_footer_wrapper">';
 
 echo \app\models\layoutHooks\Layout::beforePage();
-echo '<div class="container" id="page">';
+echo '<div id="page">';
 echo \app\models\layoutHooks\Layout::beginPage();
 
 echo \app\models\layoutHooks\Layout::logoRow();
 echo $controller->showErrors();
 echo \app\models\layoutHooks\Layout::beforeContent();
 
-/** @var string $content */
 echo $content;
 
 if (\app\components\DateTools::isDeadlineDebugModeActive($controller->consultation)) {

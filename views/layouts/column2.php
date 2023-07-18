@@ -10,7 +10,7 @@ $this->beginContent('@app/views/layouts/main.php');
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
-$rowClasses = ['row', 'antragsgruen-content'];
+$rowClasses = ['antragsgruen-content'];
 
 $menus = [];
 if ($params->menu) {
