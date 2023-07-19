@@ -190,10 +190,10 @@ class LayoutHooks extends Hooks
             $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
         }
         if ($privilegeScreening) {
-            $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
-            if (count($todo) > 0) {
+            $todo = AdminTodoItem::getConsultationTodoCount($controller->consultation);
+            if ($todo > 0) {
                 $adminUrl   = UrlHelper::createUrl('/admin/index/todo');
-                $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
+                $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . $todo . ')';
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo', 'aria-label' => $adminTitle]) . '</li>';
             }
         }
