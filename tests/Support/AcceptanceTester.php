@@ -206,6 +206,16 @@ class AcceptanceTester extends Actor
         return $this->loginWithData('fixeddata@example.org', 'testuser');
     }
 
+    public function loginAsDbwvTestUser(string $username): self
+    {
+        $this->see('LOGIN', 'h1');
+        $this->fillField('#username', $username . '@example.org');
+        $this->fillField('#passwordInput', 'Test');
+        $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+
+        return $this;
+    }
+
     public function loginAsFixedDataAdmin(): self
     {
         return $this->loginWithData('fixedadmin@example.org', 'testadmin');
