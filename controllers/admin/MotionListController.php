@@ -237,6 +237,7 @@ class MotionListController extends AdminBase
         }
         if ($motionId === null && $consultation->getSettings()->adminListFilerByMotion) {
             $search = new $motionListClass($consultation, $consultation->motions, $privilegeScreening);
+            $search->getSorted(); // Initialize internal fields
             return new HtmlResponse($this->render('motion_list', ['motions' => $consultation->motions, 'search' => $search]));
         }
 
