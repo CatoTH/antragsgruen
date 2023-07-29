@@ -51,6 +51,7 @@
     },
     "dependencies": {
         "@selectize/selectize": "^0.15.2",
+        "@stomp/stompjs": "^7.0.0",
         "bootbox": "^5.5.2",
         "bootstrap": "^3.4.1",
         "bootstrap-toggle": "^2.2.2",

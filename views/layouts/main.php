@@ -9,7 +9,8 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$layout     = $controller->layoutParams;
+$layout = $controller->layoutParams;
+$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 $layout->registerPluginAssets($this, $controller);
 if (str_starts_with($layout->mainCssFile, 'layout-custom-')) {
@@ -84,6 +85,15 @@ echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
 echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>';
 
+$user = \app\models\db\User::getCurrentUser();
+if ($user && $controller->consultation && $params->liveWsUri) {
+    $consultation = $controller->consultation;
+    echo '<meta name="live-jwt" content="' . Html::encode(\app\components\live\JwtCreator::createJwt($user, $consultation)) . '">' . "\n";
+    echo '<meta name="live-uri" content="' . Html::encode($params->liveWsUri) . '">' . "\n";
+    echo '<meta name="live-userid" content="' . Html::encode($user->id) . '">' . "\n";
+    echo '<meta name="live-sitecon" content="' . Html::encode($consultation->site->subdomain . '/' . $consultation->urlPath) . '">' . "\n";
+    echo '<script src="' . $layout->resourceUrl('npm/stomp.umd.min.js') . '"></script>';
+}
 echo \app\models\layoutHooks\Layout::favicons();
 
 $this->head();
@@ -135,8 +145,6 @@ echo $layout->getAMDLoader();
 foreach ($layout->vueTemplates as $vueTemplate) {
     echo $this->render($vueTemplate);
 }
-
-$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 $this->endBody();
 echo '

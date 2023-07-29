@@ -224,6 +224,26 @@ Add the following settings to your config.json (and adapt them to your needs):
 ```
 
 
+### Enabling the Live Server
+
+The optional [Live Server](https://github.com/CatoTH/antragsgruen-live) can be installed to enable live updates for speaking lists (and potentially more components in the future).0
+
+First, a Public/Private key pair used for JWT authentication needs to be generated:
+```shell
+ssh-keygen -t rsa -b 4096 -m PEM -f jwt.key
+openssl rsa -in jwt.key -pubout -outform PEM -out jwt.pub
+```
+
+For configuration of the Live Server, look at its configuration. In the Antragsgrün main installation (here), you need to enable it by adding three configuration keys to `config.json`:
+```json
+{
+    "liveWsUri": "ws://localhost:8080/websocket", // The Full URI of the websocket endpoint of the Live Component
+    "liveRabbitMqUri": "http://localhost:15672", // Base URI to the REST API of RabbitMQ
+    "livePublicKey": "/var/www/antragsgruen/config/jwt.key" // Link to the private key
+}
+```
+
+
 Developing
 ----------
 
