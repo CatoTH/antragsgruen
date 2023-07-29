@@ -248,4 +248,9 @@ class AcceptanceTester extends Actor
     {
         $this->executeJS('document.querySelector("' . $selector . '").dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true}))');
     }
+
+    public function trigerChangeJS(string $selector): void
+    {
+        $this->executeJS('document.querySelector("' . $selector . '").dispatchEvent(new Event("change", { view: window, bubbles: true, cancelable: true}))');
+    }
 }

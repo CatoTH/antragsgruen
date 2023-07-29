@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace app\models;
 
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{HashedStaticCache, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentComment, Consultation, IMotion, Motion, MotionComment, User};
 
