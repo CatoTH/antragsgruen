@@ -14,6 +14,7 @@ config/drupal_civicrm.json
 config/discourse.json
 config/config_tests.json
 config/config_tests_yfj.json
+config/config_tests_dbwv.json
 config/DEBUG
 config/update-private.key
 config/latex-replaces.php

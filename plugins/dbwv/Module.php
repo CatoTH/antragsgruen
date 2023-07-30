@@ -22,7 +22,7 @@ class Module extends ModuleBase
 
     public const CONSULTATION_URL_BUND = 'hv';
     public const GROUP_NAME_DELEGIERTE = 'Delegierte';
-    public const GROUP_NAME_ANTRAGSBERECHTIGT = 'Delegierte';
+    public const GROUP_NAME_ANTRAGSBERECHTIGT = 'Antragsberechtigte';
 
     public static function getProvidedTranslations(): array
     {

@@ -98,7 +98,6 @@ export class ChangeProposedProcedure {
         data['context'] = this.context;
 
         $.post(this.saveUrl, data, (ret) => {
-            console.log(ret);
             if (ret['redirectToUrl']) {
                 window.location.href = ret['redirectToUrl'];
             } else if (ret['success']) {

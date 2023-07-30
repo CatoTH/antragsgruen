@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components;
 
 use app\models\settings\AntragsgruenApp;
 
 class HashedStaticFileCache
 {
-    /**
-     * @param mixed $dep
-     */
-    private static function hashDependencies($dep): string
+    private static function hashDependencies(?array $dep): string
     {
         return md5(print_r($dep, true));
     }
@@ -18,10 +17,7 @@ class HashedStaticFileCache
         return AntragsgruenApp::getInstance()->viewCacheFilePath . '/' . substr($key, 0, 2);
     }
 
-    /**
-     * @param mixed $dependencies
-     */
-    public static function getCache(string $function, $dependencies): ?string
+    public static function getCache(string $function, ?array $dependencies): ?string
     {
         if (!AntragsgruenApp::getInstance()->viewCacheFilePath) {
             return HashedStaticCache::getCache($function, $dependencies);
@@ -39,10 +35,7 @@ class HashedStaticFileCache
         }
     }
 
-    /**
-     * @param mixed $dependencies
-     */
-    public static function setCache(string $function, $dependencies, string $data): void
+    public static function setCache(string $function, ?array $dependencies, string $data): void
     {
         if (!AntragsgruenApp::getInstance()->viewCacheFilePath) {
             HashedStaticCache::setCache($function, $dependencies, $data);
@@ -58,10 +51,7 @@ class HashedStaticFileCache
         file_put_contents($directory . '/' . $key, $data);
     }
 
-    /**
-     * @param mixed $dependencies
-     */
-    public static function flushCache(string $function, $dependencies)
+    public static function flushCache(string $function, ?array $dependencies): void
     {
         if (!AntragsgruenApp::getInstance()->viewCacheFilePath) {
             HashedStaticCache::flushCache($function, $dependencies);

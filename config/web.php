@@ -6,8 +6,13 @@ require_once($configDir . 'JsonConfigTrait.php');
 require_once($configDir . 'AntragsgruenApp.php');
 
 if (YII_ENV == 'test') {
-    if (strpos($_SERVER['REQUEST_URI'] ?? '', '/std/yfj-test') === 0) {
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+    if (str_starts_with($requestUri ?? '', '/std/yfj-test')) {
         $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests_yfj.json';
+    } elseif (str_starts_with($requestUri ?? '', '/std/hv') || str_contains($requestUri, '%2Fstd%2Fhv&subdomain=std')) {
+        $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests_dbwv.json';
+    } elseif (str_starts_with($requestUri ?? '', '/std/lv-sued') || str_contains($requestUri, '%2Fstd%2Flv-sued&subdomain=std')) {
+        $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests_dbwv.json';
     } else {
         $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json';
     }

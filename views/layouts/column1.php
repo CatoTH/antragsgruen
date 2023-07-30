@@ -10,7 +10,7 @@ $this->beginContent('@app/views/layouts/main.php');
 $controller = $this->context;
 $layout  = $controller->layoutParams;
 
-$rowClasses = ['row', 'antragsgruen-content'];
+$rowClasses = ['antragsgruen-content'];
 $widthClass = ($layout->fullWidth ? 'antragsgruen-width-full' : 'antragsgruen-width-main');
 
 echo '<div class="' . implode(' ', $rowClasses) . '">';

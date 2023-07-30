@@ -1,23 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components;
 
 class HashedStaticCache
 {
-    /**
-     * @param mixed $dep
-     */
-    private static function hashDependencies($dep): string
+    private static function hashDependencies(?array $dep): string
     {
         return md5(print_r($dep, true));
     }
 
     /**
-     * @param mixed $dependencies
-     *
      * @return mixed|false
      */
-    public static function getCache(string $function, $dependencies)
+    public static function getCache(string $function, ?array $dependencies): mixed
     {
         if (YII_ENV === 'test') {
             return false;
@@ -27,23 +24,16 @@ class HashedStaticCache
         return \Yii::$app->cache->get($key);
     }
 
-    /**
-     * @param mixed $dependencies
-     * @param mixed $data
-     */
-    public static function setCache(string $function, $dependencies, $data): void
+    public static function setCache(string $function, ?array $dependencies, mixed $data, ?int $duration = null): void
     {
         if (YII_ENV === 'test') {
             return;
         }
         $key = md5($function . self::hashDependencies($dependencies));
-        \Yii::$app->cache->set($key, $data);
+        \Yii::$app->cache->set($key, $data, $duration);
     }
 
-    /**
-     * @param mixed $dependencies
-     */
-    public static function flushCache(string $function, $dependencies)
+    public static function flushCache(string $function, ?array $dependencies): void
     {
         if (YII_ENV === 'test') {
             return;

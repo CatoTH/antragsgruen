@@ -166,8 +166,8 @@ body {
   }
 }
 
-.row.logo {
-  margin-bottom: 1em;
+.logoRow {
+  margin: 0;
   position: relative;
   min-height: 110px;
 
@@ -189,7 +189,7 @@ body {
     text-align: right;
     z-index: 2;
     position: absolute;
-    top: 10%;
+    top: 28px;
     right: 0;
     border-top: 0.2em solid #fff;
     border-bottom: 0.2em solid #fff;
@@ -227,9 +227,6 @@ body {
 
 .navwrap {
   margin-bottom: 2em;
-  margin-left: -15px;
-
-  margin-right: -15px;
 }
 
 .breadcrumb {

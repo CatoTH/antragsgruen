@@ -557,7 +557,7 @@ class Exporter
         foreach ($pdfHashes as $file => $hash) {
             $cacheDepend = str_replace($file, $hash, $cacheDepend);
         }
-        $cached = HashedStaticCache::getCache('latexCreatePDF', $cacheDepend);
+        $cached = HashedStaticCache::getCache('latexCreatePDF', [$cacheDepend]);
 
         if (YII_ENV_DEV && isset($_REQUEST['latex_src'])) {
             Header('Content-Type: text/plain');
@@ -598,7 +598,7 @@ class Exporter
             unlink($file);
         }
 
-        HashedStaticCache::setCache('latexCreatePDF', $cacheDepend, $pdf);
+        HashedStaticCache::setCache('latexCreatePDF', [$cacheDepend], $pdf);
 
         return $pdf;
     }

@@ -42,4 +42,9 @@ class Acceptance extends Module
     {
         $this->populateDB(__DIR__.'/../Data/dbdata-yfj.sql');
     }
+
+    public function populateDBDataDbwv(): void
+    {
+        $this->populateDB(__DIR__.'/../Data/dbdata-dbwv.sql');
+    }
 }

@@ -2,19 +2,6 @@ html {
   height: 100%;
 }
 
-body {
-  font-family: $bodyFont;
-  height: 100%;
-
-  &.fullscreen {
-    .container {
-      width: auto;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-  }
-}
-
 blockquote {
   margin: 3px 3px 3px 15px;
   border-left: dotted 2px gray;
@@ -230,4 +217,10 @@ button.link {
     margin: 0;
     padding: 0;
   }
+}
+
+.saveholder {
+  clear: both;
+  padding: 10px;
+  text-align: center;
 }

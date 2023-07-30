@@ -41,3 +41,18 @@
     text-align: left;
     width: 67%;
 }
+
+.logoRow .yfjTitleGroup {
+    flex: 1;
+    padding-top: 21px;
+    text-align: right;
+    font-family: "Open Sans",sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 36px;
+    line-height: 36px;
+    text-shadow: none;
+    color: #757676;
+}

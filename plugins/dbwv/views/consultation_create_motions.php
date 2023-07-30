@@ -25,7 +25,7 @@ use yii\helpers\Html;
         foreach ($creatableTypes as $creatableType) {
             $motionCreateLink = $creatableType->getCreateLink(false, true);
 
-            echo '<a href="' . Html::encode($motionCreateLink) . '" class="btn btn-primary">';
+            echo '<a href="' . Html::encode($motionCreateLink) . '" class="btn btn-primary btnCreateMotion">';
             echo Html::encode($creatableType->createTitle);
             echo '</a>';
         }

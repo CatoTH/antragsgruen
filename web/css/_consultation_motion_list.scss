@@ -56,6 +56,10 @@
     > .date {
       top: 12px;
       right: 12px;
+      @media (max-width: $screen-sm-max) {
+        top: 0;
+        right: -8px;
+      }
     }
 
     > .title {

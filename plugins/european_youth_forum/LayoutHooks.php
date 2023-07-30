@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\european_youth_forum;
 
+use app\components\UrlHelper;
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\settings\Layout;
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, ISupporter, IVotingItem, User, VotingBlock};
@@ -63,6 +64,31 @@ class LayoutHooks extends Hooks
         $before .= '<style>' . file_get_contents(__DIR__ . '/assets/styles.css') . '</style>';
 
         return $before;
+    }
+
+    public function logoRow(string $before): string
+    {
+        $user = User::getCurrentUser();
+
+        $out = '<div class="logoRow">';
+        $out .= '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo">';
+        $out .= '<span class="sr-only">' . \Yii::t('base', 'home_back') . '</span>';
+        $out .= $this->layout->getLogoStr();
+        $out .= '</a>';
+        $out .= '<div class="yfjTitleGroup">';
+        if ($user) {
+            $groups = $this->getUserBarGroups($user);
+            if (str_contains($groups, 'INGYO')) {
+                $out .= 'INGYO';
+            }
+            if (str_contains($groups, 'NYC')) {
+                $out .= 'NYC';
+            }
+        }
+        $out .= '</div>';
+        $out .= '</div>';
+
+        return $out;
     }
 
     public function getAdditionalUserAdministrationVueTemplate(string $before, Consultation $consultation): string

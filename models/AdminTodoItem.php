@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace app\models;
 
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
-use app\components\{MotionSorter, Tools, UrlHelper};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
+use app\components\{HashedStaticCache, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentComment, Consultation, IMotion, Motion, MotionComment, User};
 
 class AdminTodoItem
@@ -231,7 +229,22 @@ class AdminTodoItem
 
         self::$todoCache[$consultation->id] = $todo;
 
+        $cachedCount = HashedStaticCache::getCache('getConsultationTodoCount', [User::getCurrentUser()?->id]);
+        if ($cachedCount !== count($todo)) {
+            HashedStaticCache::setCache('getConsultationTodoCount', [User::getCurrentUser()?->id], count($todo), 30);
+        }
+
         return $todo;
+    }
+
+    public static function getConsultationTodoCount(?Consultation $consultation): int
+    {
+        $count = HashedStaticCache::getCache('getConsultationTodoCount', [User::getCurrentUser()?->id]);
+        if ($count === false) {
+            $count = count(static::getConsultationTodos($consultation));
+            HashedStaticCache::setCache('getConsultationTodoCount', [User::getCurrentUser()?->id], $count, 30);
+        }
+        return $count;
     }
 
     /**

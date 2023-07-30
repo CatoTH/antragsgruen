@@ -13,6 +13,10 @@ use yii\console\Controller;
  */
 class DatabaseController extends Controller
 {
+    public const TEST_MODE_STD = 'std';
+    public const TEST_MODE_YFJ = 'yfj';
+    public const TEST_MODE_DBWV = 'dbwv';
+
     /**
      * Deletes the whole database. CAUTION!
      *
@@ -20,15 +24,12 @@ class DatabaseController extends Controller
      */
     public function actionDestroy(): void
     {
-        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+        if (!file_exists(__DIR__ . '/../config/DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");
             return;
         }
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
-            $deleteString = (string)file_get_contents(
-                \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
-                'db' . DIRECTORY_SEPARATOR . 'delete.sql'
-            );
+            $deleteString = (string)file_get_contents(__DIR__ . '/../assets/db/delete.sql');
             $deleteString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $deleteString);
             $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
@@ -42,22 +43,16 @@ class DatabaseController extends Controller
      */
     public function actionCreate(): void
     {
-        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+        if (!file_exists(__DIR__ . '/../config/DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");
             return;
         }
-        $createString = (string)file_get_contents(
-            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
-            'db' . DIRECTORY_SEPARATOR . 'create.sql'
-        );
+        $createString = (string)file_get_contents(__DIR__ . '/../assets/db/create.sql');
         $createString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $createString);
         $command      = \Yii::$app->db->createCommand($createString);
         $command->execute();
 
-        $createString = (string)file_get_contents(
-            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
-            'db' . DIRECTORY_SEPARATOR . 'data.sql'
-        );
+        $createString = (string)file_get_contents(__DIR__ . '/../assets/db/data.sql');
         $createString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $createString);
         $command      = \Yii::$app->db->createCommand($createString);
         $command->execute();
@@ -68,16 +63,17 @@ class DatabaseController extends Controller
      *
      * @throws \yii\db\Exception
      */
-    public function actionInsertTestData(): void
+    public function actionInsertTestData(string $testmode): void
     {
-        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+        if (!file_exists(__DIR__ . '/../config/DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");
             return;
         }
-        $testdata = (string)file_get_contents(
-            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'tests' .
-            DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata1.sql'
-        );
+        $testdata = match($testmode) {
+            self::TEST_MODE_DBWV => (string)file_get_contents(__DIR__ . '/../tests/Support/Data/dbdata-dbwv.sql'),
+            self::TEST_MODE_YFJ => (string)file_get_contents(__DIR__ . '/../tests/Support/Data/dbdata-yfj.sql'),
+            default => (string)file_get_contents(__DIR__ . '/../tests/Support/Data/dbdata1.sql'),
+        };
         $testdata = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $testdata);
         $command  = \Yii::$app->db->createCommand($testdata);
         $command->execute();
@@ -88,24 +84,21 @@ class DatabaseController extends Controller
      *
      * @throws \yii\db\Exception
      */
-    public function actionCreateTest(): void
+    public function actionCreateTest(string $testmode = self::TEST_MODE_STD): void
     {
-        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+        if (!file_exists(__DIR__ . '/../config/DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");
             return;
         }
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
-            $deleteString = (string)file_get_contents(
-                \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
-                'db' . DIRECTORY_SEPARATOR . 'delete.sql'
-            );
+            $deleteString = (string)file_get_contents(__DIR__ . '/../assets/db/delete.sql');
             $deleteString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $deleteString);
             $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
             unset($command);
 
             $this->actionCreate();
-            $this->actionInsertTestData();
+            $this->actionInsertTestData($testmode);
         }
     }
 
@@ -150,7 +143,7 @@ class DatabaseController extends Controller
      */
     public function actionMassSupportMotion(int $motionId): void
     {
-        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+        if (!file_exists(__DIR__ . '/../config/DEBUG')) {
             $this->stderr('This action is only available in Debug-Mode' . "\n");
             return;
         }
