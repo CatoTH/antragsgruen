@@ -260,6 +260,7 @@ class MotionListController extends AdminBase
             $search->setAttributes(RequestContext::getSession()->get('motionListSearch'));
         }
 
+        /** @var AdminMotionFilterForm $search */
         return new HtmlResponse($this->render('list_all', [
             'motionId'           => $motionId,
             'entries'            => $search->getSorted(),
