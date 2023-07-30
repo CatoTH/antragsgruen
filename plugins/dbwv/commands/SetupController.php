@@ -125,7 +125,7 @@ class SetupController extends Controller
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V1_REFERAT);
-            $groupName = str_replace(' / ', ' ', $groupName);
+            $groupName = str_replace('/', ' ', $groupName);
             $tag = $this->findExistingMainTag($consultation, $item['title']);
             $group = ConsultationUserGroup::getOrCreateUserGroup($consultation, $groupName);
             $groupPrivileges = '{"privileges":[
@@ -138,7 +138,7 @@ class SetupController extends Controller
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_AUSSCHUSS);
-            $groupName = str_replace(' / ', ' ', $groupName);
+            $groupName = str_replace('/', ' ', $groupName);
             $tag = $this->findExistingMainTag($consultation, $item['title']);
             $group = ConsultationUserGroup::getOrCreateUserGroup($consultation, $groupName);
             $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Privileges::PRIVILEGE_CHANGE_PROPOSALS . ']}]}';
@@ -163,7 +163,7 @@ class SetupController extends Controller
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V5_ARBEITSGRUPPE);
-            $groupName = str_replace(' / ', ' ', $groupName);
+            $groupName = str_replace('/', ' ', $groupName);
             $tag = $this->findExistingMainTag($consultation, $item['title']);
             $group = ConsultationUserGroup::getOrCreateUserGroup($consultation, $groupName);
             $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":' .  $tag->id . ',"privileges":[' . Privileges::PRIVILEGE_CHANGE_PROPOSALS . ']}]}';
@@ -389,13 +389,13 @@ class SetupController extends Controller
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V1_REFERAT);
-            $groupName = str_replace(' / ', ' ', $groupName);
+            $groupName = str_replace('/', ' ', $groupName);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
                 echo "Group $groupName not found\n";
                 return;
             }
-            $prefix = explode(" ", $item['motionPrefix'])[0];
+            $prefix = explode("/", $item['motionPrefix'])[0];
             $user = $this->createOrGetUserAccount($urlPath.'-referat-' . $prefix . '@example.org', 'Test', 'Referat', $item['title'], 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
@@ -404,13 +404,13 @@ class SetupController extends Controller
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V2_AUSSCHUSS);
-            $groupName = str_replace(' / ', ' ', $groupName);
+            $groupName = str_replace('/', ' ', $groupName);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
                 echo "Group $groupName not found\n";
                 return;
             }
-            $prefix = explode(" ", $item['motionPrefix'])[0];
+            $prefix = explode("/", $item['motionPrefix'])[0];
             $user = $this->createOrGetUserAccount($urlPath.'-ausschuss-' . $prefix . '@example.org', 'Test', 'Ausschuss', $item['title'], 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
@@ -445,14 +445,14 @@ class SetupController extends Controller
 
         foreach (self::AGENDA_ITEMS_SACHGEBIETE as $item) {
             $groupName = str_replace('%NAME%', $item['motionPrefix'], self::GROUP_NAME_V5_ARBEITSGRUPPE);
-            $groupName = str_replace(' / ', ' ', $groupName);
+            $groupName = str_replace('/', ' ', $groupName);
             $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $groupName]);
             if (!$group) {
                 echo "Group $groupName not found\n";
                 return;
             }
             $userName = explode(" - ", $item['title'])[0];
-            $prefix = explode(" ", $item['motionPrefix'])[0];
+            $prefix = explode("/", $item['motionPrefix'])[0];
             $user = $this->createOrGetUserAccount($urlPath.'-arbeitsgruppe-' . $prefix . '@example.org', 'Test', 'Arbeitsgruppe', $userName, 'DBwV');
             if (count($user->userGroups) === 0) {
                 $group->addUser($user);
