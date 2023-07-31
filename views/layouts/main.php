@@ -86,12 +86,12 @@ echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>';
 
 $user = \app\models\db\User::getCurrentUser();
-if ($user && $controller->consultation && $params->liveWsUri) {
-    $consultation = $controller->consultation;
-    echo '<meta name="live-jwt" content="' . Html::encode(\app\components\live\JwtCreator::createJwt($user, $consultation)) . '">' . "\n";
-    echo '<meta name="live-uri" content="' . Html::encode($params->liveWsUri) . '">' . "\n";
-    echo '<meta name="live-userid" content="' . Html::encode($user->id) . '">' . "\n";
-    echo '<meta name="live-sitecon" content="' . Html::encode($consultation->site->subdomain . '/' . $consultation->urlPath) . '">' . "\n";
+$consultation = $controller->consultation;
+if ($layout->provideJwt && $params->jwtPrivateKey && $user && $consultation) {
+    echo '<meta name="user-jwt" content="' . Html::encode(\app\components\JwtCreator::createJwt($user, $consultation)) . '">' . "\n";
+}
+if ($layout->connectLiveEvents && $params->live && $user && $consultation) {
+    echo '<meta name="live-config" content="' . Html::encode(json_encode(\app\components\LiveTools::getJsConfig($consultation, $user))) . '">' . "\n";
     echo '<script src="' . $layout->resourceUrl('npm/stomp.umd.min.js') . '"></script>';
 }
 echo \app\models\layoutHooks\Layout::favicons();
@@ -132,6 +132,11 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 </div></div>';
 
 echo \app\models\layoutHooks\Layout::endPage();
+
+if ($layout->connectLiveEvents && $params->live && $user && $consultation) {
+    echo '<script src="' . $layout->resourceUrl('npm/stomp.umd.min.js') . '"></script>';
+    echo '<script src="' . $layout->resourceUrl('js/antragsgruen-live-events.js') . '"></script>';
+}
 
 foreach ($layout->getJSFiles() as $jsFile) {
     echo '<script src="' . $jsFile . '"></script>' . "\n";

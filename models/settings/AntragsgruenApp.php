@@ -46,9 +46,7 @@ class AntragsgruenApp implements \JsonSerializable
     public ?string $viewCacheFilePath = null; // If set, then view caches are saved to a separate directory, overriding the default and not using Redis
     public string $mode = 'production'; // [production | sandbox]
     public ?string $updateKey = null;
-    public ?string $liveWsUri = null;
-    public ?string $liveRabbitMqUri = null; // URL of the RabbitMQ REST URI
-    public ?string $livePublicKey = null;
+    public ?string $jwtPrivateKey = null;
 
     /** @var string[] */
     protected array $plugins = [];
@@ -57,6 +55,9 @@ class AntragsgruenApp implements \JsonSerializable
     protected array $sitePlugins = [];
 
     public array $mailService = ['transport' => 'sendmail'];
+
+    /** @var array{wsUri: string, rabbitMqUri: string, rabbitMqExchangeName: string, rabbitMqUsername: string, rabbitMqPassword: string}|null */
+    public ?array $live = null;
 
     public static function getInstance(): AntragsgruenApp
     {

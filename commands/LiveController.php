@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\commands;
 
-use app\components\live\EventPublisher;
+use app\components\LiveTools;
 use yii\console\Controller;
 
 class LiveController extends Controller
@@ -16,6 +16,6 @@ class LiveController extends Controller
     {
         $routingKey = 'user.' . $site . '.' . $consultation . '.' . $userId;
 
-        EventPublisher::sendToRabbitMq($routingKey, $message);
+        LiveTools::sendToRabbitMq($routingKey, (string)json_encode(['username' => $message]));
     }
 }

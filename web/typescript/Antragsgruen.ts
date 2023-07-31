@@ -1,6 +1,5 @@
 declare let requirejs: any;
 declare let ANTRAGSGRUEN_STRINGS: string[][];
-declare let StompJs: any;
 
 (function ($: JQueryStatic) {
     const $myScriptTag = $("#antragsgruenScript");
@@ -149,45 +148,6 @@ declare let StompJs: any;
         }
         return ANTRAGSGRUEN_STRINGS[category][str];
     };
-
-    if ($("meta[name=live-jwt]").length > 0) {
-        const userid = $("meta[name=live-userid]").attr("content");
-        const sitecon = $("meta[name=live-sitecon]").attr("content");
-        const stompClient = new StompJs.Client({
-            brokerURL: $("meta[name=live-uri]").attr("content"),
-
-            debug: function (str) {
-                console.log(str);
-            },
-            reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000,
-            connectHeaders: {
-                jwt: $("meta[name=live-jwt]").attr("content")
-            }
-        });
-
-        stompClient.onConnect = (frame) => {
-            console.log("Connected");
-            stompClient.subscribe('/topic/' + sitecon + '/greetings', (greeting) => {
-                console.log("GLOBAL: " + JSON.parse(greeting.body).content);
-            });
-            stompClient.subscribe('/user/' + sitecon + '/' + encodeURIComponent(userid) + '/update', (message) => {
-                console.log("USER 1: " + JSON.parse(message.body).content);
-            });
-        };
-
-        stompClient.onWebSocketError = (error) => {
-            console.error('Error with websocket', error);
-        };
-
-        stompClient.onStompError = (frame) => {
-            console.error('Broker reported error: ' + frame.headers['message']);
-            console.error('Additional details: ' + frame.body);
-        };
-
-        stompClient.activate();
-    }
 }(jQuery));
 
 // Components defined in HTML templates should be registered here, so the actual Vue app can initialize it on initialization

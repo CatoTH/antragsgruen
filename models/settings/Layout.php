@@ -40,6 +40,8 @@ class Layout
     public bool $fullScreen = false;
     public ?string $mainCssFile = null;
     public array $mainAMDModules = [];
+    public bool $provideJwt = false;
+    public bool $connectLiveEvents = false;
     public ?string $canonicalUrl = null;
     public array $alternateLanuages = [];
     public array $feeds = [];
