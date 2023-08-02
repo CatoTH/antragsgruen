@@ -31,9 +31,6 @@ class SpeechController extends Base
     {
         $this->handleRestHeaders(['GET'], true);
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $user       = User::getCurrentUser();
         $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
 
@@ -42,7 +39,7 @@ class SpeechController extends Base
             return $this->returnRestResponseFromException(new \Exception('Queue not found'));
         }
 
-        return new RestApiResponse(200, $queue->getUserApiObject($user, $cookieUser));
+        return new RestApiResponse(200, \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser));
     }
 
     public function actionRegister(string $queueId): RestApiResponse
@@ -97,7 +94,7 @@ class SpeechController extends Base
 
         $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser, $pointOfOrder);
 
-        return new RestApiResponse(200, $queue->getUserApiObject($user, $cookieUser));
+        return new RestApiResponse(200, \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser));
     }
 
     public function actionUnregister(string $queueId): RestApiResponse
@@ -127,7 +124,7 @@ class SpeechController extends Base
         }
         $queue->refresh();
 
-        return new RestApiResponse(200, $queue->getUserApiObject($user, $cookieUser));
+        return new RestApiResponse(200, \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser));
     }
 
     // *** Admin-facing methods ***

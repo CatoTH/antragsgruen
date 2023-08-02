@@ -346,7 +346,7 @@ class SpeechQueue extends ActiveRecord
 
         // Users without subqueue when there actually are existing subqueues:
         // this happens if a queue starts off without subqueues, someone registers,
-        // and only afterwards subqueues are created. In this case, there will be a placeholder "default" queue.
+        // and only afterward subqueues are created. In this case, there will be a placeholder "default" queue.
         $usersWithoutSubqueue = 0;
         foreach ($this->items as $item) {
             if ($item->subqueueId === null && $item->position < 0) {
@@ -358,35 +358,6 @@ class SpeechQueue extends ActiveRecord
         }
 
         return $subqueues;
-    }
-
-    private function getActiveSlots(): array
-    {
-        $slots = [];
-        foreach ($this->items as $item) {
-            if ($item->position === null || $item->position < 0) {
-                continue;
-            }
-            $subqueue = ($item->subqueueId ? $this->getSubqueueById($item->subqueueId) : null);
-            $slots[]  = [
-                'id'           => $item->id,
-                'subqueue'     => [
-                    'id'   => ($subqueue ? $subqueue->id : null),
-                    'name' => ($subqueue ? $subqueue->name : 'default'),
-                ],
-                'name'         => $item->name,
-                'user_id'      => $item->userId,
-                'position'     => $item->position,
-                'date_started' => ($item->getDateStarted() ? $item->getDateStarted()->format('c') : null),
-                'date_stopped' => ($item->getDateStopped() ? $item->getDateStopped()->format('c') : null),
-                'date_applied' => ($item->getDateApplied() ? $item->getDateApplied()->format('c') : null),
-            ];
-        }
-        usort($slots, function (array $entry1, array $entry2) {
-            return $entry1['position'] <=> $entry2['position'];
-        });
-
-        return $slots;
     }
 
     public function getAdminApiObject(): array
@@ -406,88 +377,6 @@ class SpeechQueue extends ActiveRecord
             'slots'             => $this->getActiveSlots(),
             'other_active_name' => $otherActiveName,
             'current_time' => round(microtime(true) * 1000), // needs to include milliseconds for accuracy
-        ];
-    }
-
-    private function getUserApiSubqueue(?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser): array
-    {
-        $showNames = $this->getSettings()->showNames;
-        $appliedItems = $this->getAppliedItems($subqueue);
-
-        $obj = [
-            'id'           => ($subqueue ? $subqueue->id : null),
-            'name'         => ($subqueue ? $subqueue->name : 'default'),
-            'num_applied'  => count($appliedItems),
-            'have_applied' => false, // true if a user (matching userID or userToken) is on the list, but has not spoken yet (including assigned places)
-        ];
-
-        foreach ($appliedItems as $item) {
-            if (!$item->dateStarted && $item->isMe($user, $cookieUser)) {
-                $obj['have_applied'] = true;
-            }
-        }
-
-        if ($showNames) {
-            $obj['applied'] = array_map(function (SpeechQueueItem $item): array {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'user_id' => $item->userId,
-                    'is_point_of_order' => $item->isPointOfOrder(),
-                    'applied_at' => $item->getDateApplied()->format('c'),
-                ];
-            }, $appliedItems);
-        }
-
-        return $obj;
-    }
-
-    private function getUserApiSubqueues(?User $user, ?CookieUser $cookieUser): array
-    {
-        $subqueues = [];
-        foreach ($this->subqueues as $subqueue) {
-            $subqueues[] = $this->getUserApiSubqueue($subqueue, $user, $cookieUser);
-        }
-
-        // Users without subqueue when there actually are existing subqueues:
-        // this happens if a queue starts off without subqueues, someone registers,
-        // and only afterwards subqueues are created. In this case, there will be a placeholder "default" queue.
-        $usersWithoutSubqueue = 0;
-        foreach ($this->items as $item) {
-            if ($item->subqueueId === null && $item->position < 0) {
-                $usersWithoutSubqueue++;
-            }
-        }
-        if (count($subqueues) === 0 || $usersWithoutSubqueue > 0) {
-            $subqueues[] = $this->getUserApiSubqueue(null, $user, $cookieUser);
-        }
-
-        return $subqueues;
-    }
-
-    public function getUserApiObject(?User $user, ?CookieUser $cookieUser): array
-    {
-        // haveApplied: true if a user (matching userID or userToken) is on the list, but has not spoken yet
-        $haveApplied = false;
-        foreach ($this->items as $item) {
-            if (!$item->dateStarted && $item->isMe($user, $cookieUser)) {
-                $haveApplied = true;
-            }
-        }
-
-        $settings = $this->getSettings();
-
-        return [
-            'id' => $this->id,
-            'is_open' => $settings->isOpen,
-            'have_applied' => $haveApplied,
-            'allow_custom_names' => $settings->allowCustomNames,
-            'is_open_poo' => $settings->isOpenPoo,
-            'subqueues' => $this->getUserApiSubqueues($user, $cookieUser),
-            'slots' => $this->getActiveSlots(),
-            'requires_login' => $this->getMyConsultation()->getSettings()->speechRequiresLogin,
-            'current_time' => (int)round(microtime(true) * 1000), // needs to include milliseconds for accuracy
-            'speaking_time' => $settings->speakingTime,
         ];
     }
 

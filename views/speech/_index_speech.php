@@ -25,7 +25,7 @@ $layout->loadVue();
 $layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/speech/user-inline-widget.vue.php');
 
-$initData = $queue->getUserApiObject($user, $cookieUser);
+$initData = \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser);
 $userData = new SpeechUser($user, $cookieUser);
 
 if ($queue->motionId || $queue->agendaItemId) {

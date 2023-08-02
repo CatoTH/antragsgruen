@@ -10,7 +10,7 @@ if ($consultation->getSettings()->hasSpeechLists) {
     $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
 
     $speakingLists = array_map(function (SpeechQueue $queue) use ($user, $cookieUser): array {
-        return $queue->getUserApiObject($user, $cookieUser);
+        return \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser);
     }, $consultation->speechQueues);
 } else {
     $speakingLists = null;
