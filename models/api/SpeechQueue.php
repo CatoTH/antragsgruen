@@ -5,23 +5,22 @@ declare(strict_types=1);
 namespace app\models\api;
 
 use app\components\CookieUser;
-use app\models\db\User;
+use app\models\db\{Consultation, User};
+use app\models\settings\SpeechQueue as SpeechQueueSettings;
 
 class SpeechQueue
 {
     public int $id;
-    public bool $isOpen;
+    public bool $isActive;
     public array $appliedUserIds;
     public array $appliedUserTokens;
-    public bool $allowCustomNames;
-    public bool $isOpenPoo;
+    public SpeechQueueSettings $settings;
     /** @var array */
     public array $subqueues;
     /** @var array */
     public array $slots;
     public bool $requiresLogin;
-    public ?int $speakingTime;
-    public bool $showNames;
+    public ?string $otherActiveName;
 
     /**
      * @return SpeechQueueActiveSlot[]
@@ -58,20 +57,22 @@ class SpeechQueue
             }
         }
 
-        $settings = $entity->getSettings();
-
         $dto = new self();
         $dto->id = $entity->id;
-        $dto->isOpen = $settings->isOpen;
+        $dto->isActive = !!$entity->isActive;
         $dto->appliedUserIds = $appliedUserIds;
         $dto->appliedUserTokens = $appliedUserTokens;
-        $dto->allowCustomNames = $settings->allowCustomNames;
-        $dto->isOpenPoo = $settings->isOpenPoo;
+        $dto->settings = $entity->getSettings();
         $dto->subqueues = self::getSubqueues($entity);
         $dto->slots = self::getActiveSlots($entity);
         $dto->requiresLogin = $entity->getMyConsultation()->getSettings()->speechRequiresLogin;
-        $dto->speakingTime = $settings->speakingTime;
-        $dto->showNames = $settings->showNames;
+
+        $dto->otherActiveName = null;
+        foreach ($entity->getMyConsultation()->speechQueues as $otherQueue) {
+            if ($otherQueue->isActive && $otherQueue->id !== $entity->id) {
+                $dto->otherActiveName = $otherQueue->getTitle();
+            }
+        }
 
         return $dto;
     }
@@ -111,15 +112,28 @@ class SpeechQueue
 
         return [
             'id' => $this->id,
-            'is_open' => $this->isOpen,
+            'is_open' => $this->settings->isOpen,
             'have_applied' => $haveApplied,
-            'allow_custom_names' => $this->allowCustomNames,
-            'is_open_poo' => $this->isOpenPoo,
-            'subqueues' => array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toUserApi($this->showNames, $user, $cookieUser), $this->subqueues),
+            'allow_custom_names' => $this->settings->allowCustomNames,
+            'is_open_poo' => $this->settings->isOpenPoo,
+            'subqueues' => array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toUserApi($this->settings->showNames, $user, $cookieUser), $this->subqueues),
             'slots' => array_map(fn(SpeechQueueActiveSlot $slot) => $slot->toApi(), $this->slots),
             'requires_login' => $this->requiresLogin,
             'current_time' => (int)round(microtime(true) * 1000), // needs to include milliseconds for accuracy
-            'speaking_time' => $this->speakingTime,
+            'speaking_time' => $this->settings->speakingTime,
+        ];
+    }
+
+    public function getAdminApiObject(): array
+    {
+        return [
+            'id'                => $this->id,
+            'is_active'         => $this->isActive,
+            'settings'          => $this->settings->getAdminApiObject(),
+            'subqueues'         => array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toAdminApi(), $this->subqueues),
+            'slots'             => array_map(fn(SpeechQueueActiveSlot $slot) => $slot->toApi(), $this->slots),
+            'other_active_name' => $this->otherActiveName,
+            'current_time' => round(microtime(true) * 1000), // needs to include milliseconds for accuracy
         ];
     }
 }

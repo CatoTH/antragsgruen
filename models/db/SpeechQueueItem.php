@@ -86,20 +86,8 @@ class SpeechQueueItem extends ActiveRecord
         }
     }
 
-    public function isMe(?User $user, ?CookieUser $cookieUser): bool
-    {
-        if ($user && $this->userId && $user->id === $this->userId) {
-            return true;
-        }
-        if ($cookieUser && $cookieUser->userToken === $this->userToken) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function isPointOfOrder(): bool
     {
-        return strpos($this->name, self::POO_MARKER) === 0;
+        return str_starts_with($this->name, self::POO_MARKER);
     }
 }

@@ -3,11 +3,11 @@
 namespace app\controllers;
 
 use app\components\CookieUser;
-use app\models\api\SpeechUser;
+use app\models\api\{SpeechUser, SpeechQueue as SpeechQueueApi};
 use app\models\http\{RestApiExceptionResponse, RestApiResponse};
 use app\models\settings\Privileges;
 use app\views\speech\LayoutHelper;
-use app\models\db\{SpeechQueue, User};
+use app\models\db\{SpeechQueue, SpeechQueueItem, User};
 use yii\web\Response;
 
 class SpeechController extends Base
@@ -39,7 +39,7 @@ class SpeechController extends Base
             return $this->returnRestResponseFromException(new \Exception('Queue not found'));
         }
 
-        return new RestApiResponse(200, \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser));
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser));
     }
 
     public function actionRegister(string $queueId): RestApiResponse
@@ -94,7 +94,7 @@ class SpeechController extends Base
 
         $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser, $pointOfOrder);
 
-        return new RestApiResponse(200, \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser));
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser));
     }
 
     public function actionUnregister(string $queueId): RestApiResponse
@@ -124,7 +124,7 @@ class SpeechController extends Base
         }
         $queue->refresh();
 
-        return new RestApiResponse(200, \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser));
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser));
     }
 
     // *** Admin-facing methods ***
@@ -156,7 +156,7 @@ class SpeechController extends Base
             return $this->returnRestResponseFromException($e);
         }
 
-        return new RestApiResponse(200, $queue->getAdminApiObject());
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->getAdminApiObject());
     }
 
     public function actionPostQueueSettings(string $queueId): RestApiResponse
@@ -200,7 +200,7 @@ class SpeechController extends Base
         }
 
         $jsonResponse = [
-            'queue'   => $queue->getAdminApiObject(),
+            'queue'   => SpeechQueueApi::fromEntity($queue)->getAdminApiObject(),
             'sidebar' => LayoutHelper::getSidebars($this->consultation, $queue),
         ];
         return new RestApiResponse(200, $jsonResponse);
@@ -220,7 +220,7 @@ class SpeechController extends Base
         }
 
         $queue->refresh();
-        return new RestApiResponse(200, $queue->getAdminApiObject());
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->getAdminApiObject());
     }
 
     public function actionPostItemOperation(string $queueId, string $itemId, string $op): RestApiResponse
@@ -285,7 +285,8 @@ class SpeechController extends Base
                     $item->subqueueId = null;
                 }
 
-                foreach ($queue->getAppliedItems($subqueue) as $pos => $otherItem) {
+                $applied = array_values(array_filter($queue->getSortedItems($subqueue), fn(SpeechQueueItem $item) => $item->position < 0));
+                foreach ($applied as $pos => $otherItem) {
                     if ($otherItem->id === $item->id) {
                         continue;
                     }
@@ -306,7 +307,7 @@ class SpeechController extends Base
         }
 
         $queue->refresh();
-        return new RestApiResponse(200, $queue->getAdminApiObject());
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->getAdminApiObject());
     }
 
     public function actionAdminCreateItem(string $queueId): RestApiResponse
@@ -334,6 +335,6 @@ class SpeechController extends Base
 
         $queue->createItemOnAppliedList($name, $subqueue, null, null, false);
 
-        return new RestApiResponse(200, $queue->getAdminApiObject());
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->getAdminApiObject());
     }
 }

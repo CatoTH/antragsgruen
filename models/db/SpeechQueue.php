@@ -235,9 +235,9 @@ class SpeechQueue extends ActiveRecord
 
         $item              = new SpeechQueueItem();
         $item->queueId     = $this->id;
-        $item->subqueueId  = ($subqueue ? $subqueue->id : null);
-        $item->userId      = ($user ? $user->id : null);
-        $item->userToken   = ($cookieUser ? $cookieUser->userToken : null);
+        $item->subqueueId  = $subqueue?->id;
+        $item->userId      = $user?->id;
+        $item->userToken   = $cookieUser?->userToken;
         $item->name        = $name;
         $item->position    = $position;
         $item->dateApplied = date('Y-m-d H:i:s');
@@ -267,36 +267,14 @@ class SpeechQueue extends ActiveRecord
     /**
      * @return SpeechQueueItem[]
      */
-    public function getItemsOnList(?SpeechSubqueue $subqueue): array
-    {
-        $itemsOnList = [];
-        foreach ($this->items as $item) {
-            if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
-                continue;
-            }
-            if ($item->position > 0) {
-                $itemsOnList[] = $item;
-            }
-        }
-        usort($itemsOnList, function (SpeechQueueItem $item1, SpeechQueueItem $item2): int {
-            return $item1->position <=> $item2->position;
-        });
-        return $itemsOnList;
-    }
-
-    /**
-     * @return SpeechQueueItem[]
-     */
-    public function getAppliedItems(?SpeechSubqueue $subqueue): array
+    public function getSortedItems(?SpeechSubqueue $subqueue): array
     {
         $itemsApplied = [];
         foreach ($this->items as $item) {
             if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
                 continue;
             }
-            if ($item->position < 0) {
-                $itemsApplied[] = $item;
-            }
+            $itemsApplied[] = $item;
         }
         usort($itemsApplied, function (SpeechQueueItem $item1, SpeechQueueItem $item2): int {
             if ($item1->isPointOfOrder() && !$item2->isPointOfOrder()) {
@@ -309,75 +287,6 @@ class SpeechQueue extends ActiveRecord
             return $item2->position <=> $item1->position;
         });
         return $itemsApplied;
-    }
-
-    private function getAdminApiSubqueue(?SpeechSubqueue $subqueue): array
-    {
-        return [
-            'id' => ($subqueue ? $subqueue->id : null),
-            'name' => ($subqueue ? $subqueue->name : 'default'),
-            'onlist' => array_map(function (SpeechQueueItem $item): array {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'user_id' => $item->userId,
-                    'is_point_of_order' => $item->isPointOfOrder(),
-                    'position' => $item->position,
-                ];
-            }, $this->getItemsOnList($subqueue)),
-            'applied' => array_map(function (SpeechQueueItem $item): array {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'user_id' => $item->userId,
-                    'is_point_of_order' => $item->isPointOfOrder(),
-                    'applied_at' => $item->getDateApplied()->format('c'),
-                ];
-            }, $this->getAppliedItems($subqueue)),
-        ];
-    }
-
-    private function getAdminApiSubqueues(): array
-    {
-        $subqueues = [];
-        foreach ($this->subqueues as $subqueue) {
-            $subqueues[] = $this->getAdminApiSubqueue($subqueue);
-        }
-
-        // Users without subqueue when there actually are existing subqueues:
-        // this happens if a queue starts off without subqueues, someone registers,
-        // and only afterward subqueues are created. In this case, there will be a placeholder "default" queue.
-        $usersWithoutSubqueue = 0;
-        foreach ($this->items as $item) {
-            if ($item->subqueueId === null && $item->position < 0) {
-                $usersWithoutSubqueue++;
-            }
-        }
-        if (count($subqueues) === 0 || $usersWithoutSubqueue > 0) {
-            $subqueues[] = $this->getAdminApiSubqueue(null);
-        }
-
-        return $subqueues;
-    }
-
-    public function getAdminApiObject(): array
-    {
-        $otherActiveName = null;
-        foreach ($this->getMyConsultation()->speechQueues as $otherQueue) {
-            if ($otherQueue->isActive && $otherQueue->id !== $this->id) {
-                $otherActiveName = $otherQueue->getTitle();
-            }
-        }
-
-        return [
-            'id'                => $this->id,
-            'is_active'         => !!$this->isActive,
-            'settings'          => $this->getSettings()->getAdminApiObject(),
-            'subqueues'         => $this->getAdminApiSubqueues(),
-            'slots'             => $this->getActiveSlots(),
-            'other_active_name' => $otherActiveName,
-            'current_time' => round(microtime(true) * 1000), // needs to include milliseconds for accuracy
-        ];
     }
 
     /**

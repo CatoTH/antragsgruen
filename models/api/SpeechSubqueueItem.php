@@ -16,6 +16,7 @@ class SpeechSubqueueItem
     public bool $isPointOfOrder;
     public \DateTime $dateApplied;
     public ?\DateTime $dateStarted;
+    public ?int $position;
 
     public static function fromEntity(SpeechQueueItem $entity): self
     {
@@ -27,6 +28,7 @@ class SpeechSubqueueItem
         $dto->isPointOfOrder = $entity->isPointOfOrder();
         $dto->dateApplied = $entity->getDateApplied() ?? new \DateTime();
         $dto->dateStarted = $entity->getDateStarted();
+        $dto->position = $entity->position;
 
         return $dto;
     }
@@ -41,6 +43,16 @@ class SpeechSubqueueItem
         }
 
         return false;
+    }
+
+    public function isOnList(): bool
+    {
+        return $this->position > 0;
+    }
+
+    public function isApplication(): bool
+    {
+        return $this->position < 0;
     }
 
     public function toUserApi(): array

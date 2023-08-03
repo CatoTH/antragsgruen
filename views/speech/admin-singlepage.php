@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\api\SpeechQueue as SpeechQueueApi;
 use app\models\db\SpeechQueue;
 use yii\helpers\Html;
 
@@ -32,7 +33,7 @@ if ($htmls[1] !== '') {
     $layout->menusHtmlSmall[] = $htmls[1];
 }
 
-$initData = $queue->getAdminApiObject();
+$initData = SpeechQueueApi::fromEntity($queue)->getAdminApiObject();
 
 if ($queue->motion) {
     $this->title = str_replace('%TITLE%', $queue->motion->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to'));
