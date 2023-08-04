@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\exceptions\ConfigurationError;
+use app\models\api\SpeechQueue;
+use app\models\exceptions\{ConfigurationError, Internal};
 use app\models\db\{Consultation, User};
 use app\models\settings\AntragsgruenApp;
-use GuzzleHttp\{Client, RequestOptions};
+use GuzzleHttp\{Client, Exception\GuzzleException, RequestOptions};
 
 class LiveTools
 {
@@ -38,15 +39,37 @@ class LiveTools
             'payload_encoding' => 'string',
         ], JSON_FORCE_OBJECT);
 
-        $response = $client->request('POST', '/api/exchanges/%2f/' . urlencode($params['rabbitMqExchangeName']) . '/publish', [
-            RequestOptions::AUTH => [$params['rabbitMqUsername'], $params['rabbitMqPassword']],
-            RequestOptions::HEADERS => ['Content-Type' => 'application/json'],
-            RequestOptions::BODY => $payload,
-        ]);
+        try {
+            $response = $client->request('POST', '/api/exchanges/%2f/' . urlencode($params['rabbitMqExchangeName']) . '/publish', [
+                RequestOptions::AUTH => [$params['rabbitMqUsername'], $params['rabbitMqPassword']],
+                RequestOptions::HEADERS => ['Content-Type' => 'application/json'],
+                RequestOptions::BODY => $payload,
+            ]);
 
-        echo $routingKey . "\n";
-        echo $payload . "\n";
+            $data = json_decode($response->getBody()->getContents(), true);
+            if (!$data['routed']) {
+                throw new Internal('Could not send message - maybe no listener is running? ' . json_encode($data));
+            }
+        } catch (GuzzleException $e) {
+            throw new Internal('Could not send message: ' . $e->getMessage());
+        }
+    }
 
-        echo $response->getBody()->getContents();
+    public static function sendSpeechQueue(Consultation $consultation, SpeechQueue $queue, bool $debug = false): void
+    {
+        if (!AntragsgruenApp::getInstance()->live) {
+            return;
+        }
+
+        $serializer = Tools::getSerializer();
+        $json = $serializer->serialize($queue, 'json', ['live']);
+
+        if ($debug) {
+            echo $json . "\n";
+        }
+
+        $routingKey = 'speech.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
+
+        self::sendToRabbitMq($routingKey, $json);
     }
 }

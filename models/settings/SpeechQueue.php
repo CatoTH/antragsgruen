@@ -2,6 +2,8 @@
 
 namespace app\models\settings;
 
+use Symfony\Component\Serializer\Annotation\Ignore;
+
 class SpeechQueue implements \JsonSerializable
 {
     use JsonConfigTrait;
@@ -14,6 +16,9 @@ class SpeechQueue implements \JsonSerializable
     /** @var null|int - in seconds */
     public ?int $speakingTime = null;
 
+    /**
+     * @Ignore()
+     */
     public function getAdminApiObject(): array
     {
         return [

@@ -21,11 +21,16 @@ if (!document.head.querySelector("meta[name=user-jwt]") || !document.head.queryS
 
     stompClient.onConnect = (frame) => {
         console.log("Connected to Live Server");
-        stompClient.subscribe('/topic/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] + '/greetings', (greeting) => {
-            console.log("GLOBAL: " + JSON.parse(greeting.body).content);
+        /*
+        stompClient.subscribe('/topic/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] + '/update', (greeting) => {
+            console.log("GLOBAL", JSON.parse(greeting.body));
         });
-        stompClient.subscribe('/user/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] + '/' + encodeURIComponent(liveConfig['user_id']) + '/update', (message) => {
-            console.log("USER 1: " + JSON.parse(message.body).content);
+        stompClient.subscribe('/user/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] + '/' + encodeURIComponent(liveConfig['user_id']) + '/default', (message) => {
+            console.log("USER DEFAULT", JSON.parse(message.body));
+        });
+         */
+        stompClient.subscribe('/user/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] + '/' + encodeURIComponent(liveConfig['user_id']) + '/speech', (message) => {
+            console.log("USER SPEECH", JSON.parse(message.body));
         });
     };
 

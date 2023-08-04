@@ -9,20 +9,11 @@ use app\models\exceptions\{Internal, Login, LoginInvalidUser};
 
 class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
 {
-    /** @var SiteSettings */
-    private $settings;
-
-    /** @var OpenslidesClient $osClient */
-    private $osClient;
-
-    /** @var AutoupdateSyncService */
-    private $syncService;
-
-    public function __construct(SiteSettings $settings, OpenslidesClient $osClient, AutoupdateSyncService $syncService)
-    {
-        $this->settings = $settings;
-        $this->osClient = $osClient;
-        $this->syncService = $syncService;
+    public function __construct(
+        private SiteSettings $settings,
+        private OpenslidesClient $osClient,
+        private AutoupdateSyncService $syncService
+    ) {
     }
 
     public function getAuthPrefix(): string

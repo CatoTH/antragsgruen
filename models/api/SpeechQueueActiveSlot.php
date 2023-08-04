@@ -9,12 +9,13 @@ use app\models\db\{SpeechQueueItem, SpeechSubqueue};
 class SpeechQueueActiveSlot
 {
     public int $id;
-    /** @var array{id: int|null, name: string} */
-    public array $subqueue;
+    public ?int $subqueueId;
+    private string $subqueueName;
     public string $name;
     public ?int $userId;
     public ?string $userToken;
     public int $position;
+
     public ?\DateTime $dateStarted;
     public ?\DateTime $dateStopped;
     public ?\DateTime $dateApplied;
@@ -23,10 +24,8 @@ class SpeechQueueActiveSlot
     {
         $dto = new self();
         $dto->id = $entity->id;
-        $dto->subqueue = [
-            'id' => $subqueue?->id,
-            'name' => ($subqueue ? $subqueue->name : 'default'),
-        ];
+        $dto->subqueueId = $subqueue?->id;
+        $dto->subqueueName = ($subqueue ? $subqueue->name : 'default');
         $dto->name = $entity->name;
         $dto->userId = $entity->userId;
         $dto->userToken = $entity->userToken;
@@ -43,8 +42,8 @@ class SpeechQueueActiveSlot
         return [
             'id' => $this->id,
             'subqueue' => [
-                'id' => $this->subqueue['id'],
-                'name' => $this->subqueue['name'],
+                'id' => $this->subqueueId,
+                'name' => $this->subqueueName,
             ],
             'name' => $this->name,
             'user_id' => $this->userId,

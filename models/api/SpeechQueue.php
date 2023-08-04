@@ -5,25 +5,30 @@ declare(strict_types=1);
 namespace app\models\api;
 
 use app\components\CookieUser;
-use app\models\db\{Consultation, User};
+use app\models\db\User;
 use app\models\settings\SpeechQueue as SpeechQueueSettings;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 class SpeechQueue
 {
     public int $id;
     public bool $isActive;
-    public array $appliedUserIds;
-    public array $appliedUserTokens;
     public SpeechQueueSettings $settings;
-    /** @var array */
+    /** @var SpeechSubqueue[] */
     public array $subqueues;
-    /** @var array */
+    /** @var SpeechQueueActiveSlot[] */
     public array $slots;
     public bool $requiresLogin;
     public ?string $otherActiveName;
 
+    /** @Ignore */
+    private array $appliedUserIds;
+    /** @Ignore */
+    private array $appliedUserTokens;
+
     /**
      * @return SpeechQueueActiveSlot[]
+     * @Ignore
      */
     private static function getActiveSlots(\app\models\db\SpeechQueue $entity): array
     {
@@ -77,6 +82,10 @@ class SpeechQueue
         return $dto;
     }
 
+    /**
+     * @return SpeechSubqueue[]
+     * @Ignore()
+     */
     private static function getSubqueues(\app\models\db\SpeechQueue $entity): array
     {
         $subqueues = [];
@@ -124,6 +133,9 @@ class SpeechQueue
         ];
     }
 
+    /**
+     * @Ignore()
+     */
     public function getAdminApiObject(): array
     {
         return [
