@@ -35,7 +35,7 @@ $boolSettingRow = function (ConsultationSettings $settings, string $field, array
 <?php
 echo Html::beginForm('', 'post', [
     'id'                       => 'consultationSettingsForm',
-    'class'                    => 'adminForm form-horizontal',
+    'class'                    => 'adminForm',
     'enctype'                  => 'multipart/form-data',
     'data-antragsgruen-widget' => 'backend/ConsultationSettings',
 ]);
@@ -288,57 +288,7 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
         $boolSettingRow($settings, 'iniatorsMayEdit', $handledSettings, Yii::t('admin', 'con_initiators_may_edit'));
 
         $boolSettingRow($settings, 'screeningMotionsShown', $handledSettings, Yii::t('admin', 'con_show_screening'));
-
-
-        $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
         ?>
-        <div class="stdTwoCols">
-            <div class="leftColumn"><?= Yii::t('admin', 'con_topics') ?>:</div>
-            <div class="rightColumn">
-                <div class="selectize-wrapper" id="tagsList">
-                    <select class="tags" name="tags[]" multiple="multiple">
-                        <?php
-                        foreach ($tags as $tag) {
-                            echo '<option name="' . Html::encode($tag->title) . '" selected>' . Html::encode($tag->title) . '</option>';
-                        }
-                        ?>
-                    </select>
-                </div>
-                <label>
-                    <?php
-                    $handledSettings[] = 'allowUsersToSetTags';
-                    echo Html::checkbox(
-                        'settings[allowUsersToSetTags]',
-                        $settings->allowUsersToSetTags,
-                        ['id' => 'allowUsersToSetTags']
-                    );
-                    echo ' ' . Yii::t('admin', 'con_allow_set_tags');
-                    ?>
-                </label>
-                <label>
-                    <?php
-                    $handledSettings[] = 'allowMultipleTags';
-                    echo Html::checkbox(
-                        'settings[allowMultipleTags]',
-                        $settings->allowMultipleTags,
-                        ['id' => 'allowMultipleTags']
-                    );
-                    echo ' ' . Yii::t('admin', 'con_multiple_topics');
-                    ?>
-                </label>
-                <label>
-                    <?php
-                    $handledSettings[] = 'amendmentsHaveTags';
-                    echo Html::checkbox(
-                        'settings[amendmentsHaveTags]',
-                        $settings->amendmentsHaveTags,
-                        ['id' => 'amendmentsHaveTags']
-                    );
-                    echo ' ' . Yii::t('admin', 'con_amendment_tags');
-                    ?>
-                </label>
-            </div>
-        </div>
     </div>
 
     <h2 class="green"><?= Yii::t('admin', 'con_title_amendments') ?></h2>
@@ -426,6 +376,56 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             </label></div>
 
     </div>
+
+    <h2 class="green" id="conTopics"><?= Yii::t('admin', 'con_topics') ?></h2>
+    <div class="content">
+    <?php
+    $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
+        ?>
+        <div class="selectize-wrapper" id="tagsList">
+            <select class="tags" name="tags[]" multiple="multiple">
+                <?php
+                foreach ($tags as $tag) {
+                    echo '<option name="' . Html::encode($tag->title) . '" selected>' . Html::encode($tag->title) . '</option>';
+                }
+                ?>
+            </select>
+        </div>
+        <div><label>
+            <?php
+            $handledSettings[] = 'allowUsersToSetTags';
+            echo Html::checkbox(
+                'settings[allowUsersToSetTags]',
+                $settings->allowUsersToSetTags,
+                ['id' => 'allowUsersToSetTags']
+            );
+            echo ' ' . Yii::t('admin', 'con_allow_set_tags');
+            ?>
+        </label></div>
+        <div><label>
+            <?php
+            $handledSettings[] = 'allowMultipleTags';
+            echo Html::checkbox(
+                'settings[allowMultipleTags]',
+                $settings->allowMultipleTags,
+                ['id' => 'allowMultipleTags']
+            );
+            echo ' ' . Yii::t('admin', 'con_multiple_topics');
+            ?>
+        </label></div>
+        <div><label>
+            <?php
+            $handledSettings[] = 'amendmentsHaveTags';
+            echo Html::checkbox(
+                'settings[amendmentsHaveTags]',
+                $settings->amendmentsHaveTags,
+                ['id' => 'amendmentsHaveTags']
+            );
+            echo ' ' . Yii::t('admin', 'con_amendment_tags');
+            ?>
+        </label></div>
+    </div>
+
     <h2 class="green"><?= Yii::t('admin', 'con_title_email') ?></h2>
     <div class="content">
         <div class="stdTwoCols">

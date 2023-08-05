@@ -81,7 +81,7 @@ echo '</ul></div>';
 echo Html::endForm();
 
 
-echo Html::beginForm('', 'post', ['class' => 'consultationCreateForm form-horizontal']);
+echo Html::beginForm('', 'post', ['class' => 'consultationCreateForm']);
 
 $textOpts = ['required' => 'required', 'class' => 'form-control'];
 ?>
