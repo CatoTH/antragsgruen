@@ -17,7 +17,6 @@ $layout     = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
-$layout->loadSelectize();
 
 $this->title = Yii::t('admin', 'con_h1');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
@@ -80,7 +79,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                     <label for="consultationPath" class="sr-only"><?= Yii::t('admin', 'con_url_path') ?></label>
                     <input type="text" required name="consultation[urlPath]"
                            value="<?= Html::encode($consultation->urlPath) ?>" class="form-control"
-                           pattern="[\w_-]+" id="consultationPath">
+                           pattern="[\w_\-]+" id="consultationPath">
                     <small><?= Yii::t('admin', 'con_url_path_hint') ?></small>
                 </div>
             </div>
@@ -140,8 +139,8 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
 if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
     $conPwd = new \app\components\ConsultationAccessPassword($consultation);
     ?>
-    <h2 class="green"><?= Yii::t('admin', 'siteacc_title') ?></h2>
-    <div class="content">
+    <h2 class="green" id="conSettingsTitle"><?= Yii::t('admin', 'siteacc_title') ?></h2>
+    <div class="content" aria-labelledby="conSettingsTitle">
         <?php $handledSettings[] = 'forceLogin'; ?>
         <div class="forceLogin">
             <label>
@@ -216,8 +215,8 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
 }
 ?>
 
-    <h2 class="green"><?= Yii::t('admin', 'con_title_motions') ?></h2>
-    <div class="content">
+    <h2 class="green" id="conMotionsTitle"><?= Yii::t('admin', 'con_title_motions') ?></h2>
+    <section class="content" aria-labelledby="conMotionsTitle">
         <div>
             <label>
                 <?php
@@ -289,10 +288,10 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
 
         $boolSettingRow($settings, 'screeningMotionsShown', $handledSettings, Yii::t('admin', 'con_show_screening'));
         ?>
-    </div>
+    </section>
 
-    <h2 class="green"><?= Yii::t('admin', 'con_title_amendments') ?></h2>
-    <div class="content">
+    <h2 class="green" id="conAmendmentsTitle"><?= Yii::t('admin', 'con_title_amendments') ?></h2>
+    <section class="content" aria-labelledby="conAmendmentsTitle">
 
         <div class="stdTwoCols">
             <div class="leftColumn">
@@ -345,11 +344,10 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                 echo ' ' . Yii::t('admin', 'con_amend_globalalt');
                 ?>
             </label></div>
-    </div>
+    </section>
 
-    <h2 class="green"><?= Yii::t('admin', 'con_title_comments') ?></h2>
-
-    <div class="content">
+    <h2 class="green" id="conCommentsTitle"><?= Yii::t('admin', 'con_title_comments') ?></h2>
+    <section id="conComments" aria-labelledby="conCommentsTitle" class="content">
 
         <div><label>
                 <?php
@@ -375,22 +373,57 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
                 ?>
             </label></div>
 
-    </div>
+    </section>
 
-    <h2 class="green" id="conTopics"><?= Yii::t('admin', 'con_topics') ?></h2>
-    <div class="content">
+    <h2 class="green" id="conTopicsTitle"><?= Yii::t('admin', 'con_topics') ?></h2>
+    <section id="tagsEditForm" aria-labelledby="conTopicsTitle" class="content" data-delete-warnings="<?= Html::encode(Yii::t('admin', 'con_topic_del_warn')) ?>">
     <?php
     $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
         ?>
-        <div class="selectize-wrapper" id="tagsList">
-            <select class="tags" name="tags[]" multiple="multiple">
-                <?php
-                foreach ($tags as $tag) {
-                    echo '<option name="' . Html::encode($tag->title) . '" selected>' . Html::encode($tag->title) . '</option>';
-                }
+        <ol class="stdNonFormattedList editList">
+            <?php
+            foreach ($tags as $tag) {
+                $hasIMotions = (count($tag->motions) > 0 || count($tag->amendments) > 0);
                 ?>
-            </select>
+                <li data-has-imotions="<?= $hasIMotions ? 1 : 0 ?>">
+                    <input type="hidden" name="tags[id][]" value="<?= $tag->id ?>">
+                    <span class="drag-handle">&#9776;</span>
+
+                    <label class="tagTitle">
+                        <input type="text" name="tags[title][]" value="<?= Html::encode($tag->title) ?>"
+                               required class="form-control" title="<?= Html::encode(Yii::t('admin', 'con_topic_title')) ?>">
+                    </label>
+
+                    <button type="button" class="btn-link remover" title="<?= Html::encode(Yii::t('admin', 'con_topic_del')) ?>">
+                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                        <span class="sr-only"><?= Yii::t('admin', 'con_topic_del') ?></span>
+                    </button>
+                </li>
+                <?php
+            }
+            ?>
+            <li class="newTagRowTemplate" data-has-imotions="0">
+                <input type="hidden" name="tags[id][]" value="NEW">
+                <span class="drag-handle">&#9776;</span>
+
+                <label class="tagTitle">
+                    <input type="text" name="tags[title][]" value="" autocomplete="off"
+                           class="form-control" title="<?= Html::encode(Yii::t('admin', 'con_topic_title')) ?>">
+                </label>
+
+                <button type="button" class="btn-link remover" title="<?= Html::encode(Yii::t('admin', 'con_topic_del')) ?>">
+                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                    <span class="sr-only"><?= Yii::t('admin', 'con_topic_del') ?></span>
+                </button>
+            </li>
+        </ol>
+        <div class="adderRow">
+            <button class="btn btn-link tagAdderBtn" type="button">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <?= Yii::t('admin', 'con_topic_add') ?>
+            </button>
         </div>
+
         <div><label>
             <?php
             $handledSettings[] = 'allowUsersToSetTags';
@@ -424,10 +457,10 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             echo ' ' . Yii::t('admin', 'con_amendment_tags');
             ?>
         </label></div>
-    </div>
+    </section>
 
-    <h2 class="green"><?= Yii::t('admin', 'con_title_email') ?></h2>
-    <div class="content">
+    <h2 class="green" id="conEmailTitle"><?= Yii::t('admin', 'con_title_email') ?></h2>
+    <div class="content" aria-labelledby="conEmailTitle">
         <div class="stdTwoCols">
             <label class="leftColumn" for="adminEmail"><?= Yii::t('admin', 'con_email_admins') ?>:</label>
             <div class="rightColumn">

@@ -45,6 +45,52 @@
   }
 }
 
+#tagsEditForm {
+  .editList {
+    width: 100%;
+    @media screen and (min-width: $screenMinWith) {
+      width: 50%;
+    }
+
+    li {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+
+    .drag-handle {
+      cursor: move;
+      flex-basis: 80px;
+    }
+
+    .drag-handle {
+      cursor: move;
+      flex-basis: 22px;
+      font-size: 18px;
+      padding-top: 2px;
+      text-align: center;
+      margin-right: 10px;
+    }
+
+    .tagTitle {
+      flex-grow: 1;
+    }
+  }
+
+  .adderRow {
+    width: 100%;
+    @media screen and (min-width: $screenMinWith) {
+      width: 50%;
+    }
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .tagAdderBtn {
+    font-weight: normal;
+    font-size: 0.9em;
+  }
+}
+
 .siteaccAdminsForm {
   .ppReplyToOpener {
     padding: 0 5px;

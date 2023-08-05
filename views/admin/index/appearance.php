@@ -166,7 +166,7 @@ $handledSiteSettings = [];
                     ?></div>
                 <?php
                 if ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_TAGS) {
-                    echo '<a href="' . Html::encode(UrlHelper::createUrl('/admin/index/consultation')) . '#conTopics">';
+                    echo '<a href="' . Html::encode(UrlHelper::createUrl('/admin/index/consultation')) . '#conTopicsTitle">';
                     echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>';
                     echo 'Tags verwalten</a>';
                 }

@@ -15,18 +15,18 @@ $I->wantTo('Create some tags');
 $I->loginAndGotoStdAdminPage()->gotoConsultation();
 
 $I->wait(0.5);
-if ($I->executeJS('return document.querySelector("#tagsList select").selectize.items.length') != 3) {
-    $I->fail('Invalid return from tag-List');
-}
-$I->executeJS('document.querySelector("#tagsList select").selectize.createItem("Economy");');
+
+$I->clickJS('#tagsEditForm .tagAdderBtn');
+$I->fillField('#tagsEditForm .newTagRowTemplate .tagTitle input', 'Economy');
 
 $I->submitForm('#consultationSettingsForm', [], 'save');
-$I->see('Economy');
+$I->seeInField('#tagsEditForm input', 'Economy');
 
-$I->executeJS('document.querySelector("#tagsList select").selectize.createItem("Environment");');
+$I->clickJS('#tagsEditForm .tagAdderBtn');
+$I->fillField('#tagsEditForm .newTagRowTemplate .tagTitle input', 'Environment');
 $I->submitForm('#consultationSettingsForm', [], 'save');
-$I->see('Economy');
-$I->see('Environment');
+$I->seeInField('#tagsEditForm input', 'Economy');
+$I->seeInField('#tagsEditForm input', 'Environment');
 
 
 $I->wantTo('See the motion logged out now');

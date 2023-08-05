@@ -52,14 +52,31 @@ export class ConsultationSettings {
     }
 
     private initTags() {
-        const $tagList: any = this.$form.find("#tagsList select");
-        $tagList.selectize({
-            create: true,
-            plugins: ["remove_button"],
-            render: {
-                option_create: (data, escape) => {
-                    return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
-                }
+        const $form = this.$form.find('#tagsEditForm');
+        const $tagRowTemplate= $form.find(".newTagRowTemplate").remove();
+        const $tagList = $form.find('.editList');
+
+        Sortable.create(<HTMLElement>$tagList[0], {
+            handle: '.drag-handle',
+            animation: 150
+        });
+
+        $form.find('.adderRow button').on('click', () => {
+            $tagList.append($tagRowTemplate.clone());
+        });
+
+        $tagList.on('click', '.remover', function(ev) {
+            let $li = $(this).parents("li").first();
+            ev.preventDefault();
+
+            if ($li.data('has-imotions')) {
+                bootbox.confirm($form.data('delete-warnings'), function (result) {
+                    if (result) {
+                        $li.remove();
+                    }
+                });
+            } else {
+                $li.remove();
             }
         });
     }
