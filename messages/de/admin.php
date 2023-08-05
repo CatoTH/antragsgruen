@@ -269,6 +269,8 @@ return [
     'con_odt_has_lines'       => '<strong>ODT-Export</strong>: Zeilennummern und feste Zeilenumbrüche',
     'con_initiators_may_edit' => 'Antragsteller*innen dürfen Anträge <strong>nachträglich ändern</strong>.',
     'con_show_screening'      => 'Anträge (ausgegraut) anzeigen, auch wenn sie noch nicht freigeschaltet sind',
+    'con_topics_home_list'    => 'Themenliste mit Sprungmarken über der Antragsliste anzeigen',
+    'con_topics_manage'       => 'Themen / Schlagworte verwalten',
     'con_topics'              => 'Themen',
     'con_topic_add'           => 'Neues Thema',
     'con_topic_title'         => 'Name des Themas',

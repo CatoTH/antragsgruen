@@ -55,7 +55,7 @@ if ($hasNoTagMotions) {
 
 echo '<section class="motionListTags">';
 
-if (count($sortedTags) > 0 && mb_stripos($sortedTags[0]->title, Yii::t('motion', 'agenda_filter')) === false) {
+if (count($sortedTags) > 0 && $consultation->getSettings()->homepageTagsList) {
     echo '<h3 class="green">' . Yii::t('motion', 'tags_head') . '</h3>';
     echo '<ul id="tagList" class="content">';
 

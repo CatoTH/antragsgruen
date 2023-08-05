@@ -168,7 +168,9 @@ $handledSiteSettings = [];
                 if ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_TAGS) {
                     echo '<a href="' . Html::encode(UrlHelper::createUrl('/admin/index/consultation')) . '#conTopicsTitle">';
                     echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>';
-                    echo 'Tags verwalten</a>';
+                    echo Yii::t('admin', 'con_topics_manage') . '</a><br>';
+
+                    $boolSettingRow($settings, 'homepageTagsList', $handledSettings, Yii::t('admin', 'con_topics_home_list'));
                 }
                 ?>
             </fieldset>

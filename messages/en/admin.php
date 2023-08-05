@@ -272,6 +272,8 @@ return [
     'con_odt_has_lines'       => '<strong>ODT-Export</strong>: Line numbers and fixed line breaks',
     'con_initiators_may_edit' => 'Motion proposers may edit them after publication.',
     'con_show_screening'      => 'Show motions publicly during the screening process',
+    'con_topics_home_list'    => 'Show tag list with links above motion list',
+    'con_topics_manage'       => 'Manage tags',
     'con_topics'              => 'Available tags',
     'con_topic_add'           => 'New topic',
     'con_topic_title'         => 'Name of the topic',
