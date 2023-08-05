@@ -10,7 +10,11 @@ use app\models\settings\AntragsgruenApp;
 class OidcLogin implements LoginProviderInterface
 {
 
-    public function __construct(private string $issuerUrl, private string $clientId, private string $clientSecret){}
+    public function __construct(private string $issuerUrl, private string $clientId, private string $clientSecret){
+        if(! str_ends_with($this->issuerUrl, '/')){
+            $this->issuerUrl .= '/';
+        }
+    }
 
     // map KC Claims to User attributes
     private const PARAM_EMAIL = 'email';
@@ -119,7 +123,7 @@ class OidcLogin implements LoginProviderInterface
             return null;
         }
         RequestContext::getUser()->logout(true);
-        return "https://login.rote.tools/realms/user/protocol/openid-connect/logout";
+        return $this->issuerUrl . "protocol/openid-connect/logout";
     }
 
     public function renderAddMultipleUsersForm(): ?string
