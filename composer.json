@@ -28,6 +28,7 @@
     "colinodell/json5": "^2.3",
     "doctrine/annotations": "^1.14.3",
     "guzzlehttp/guzzle": "^7.7",
+    "jumbojett/openid-connect-php": "^0.9.10",
     "paragonie/sodium_compat": "^1.20",
     "phpoffice/phpspreadsheet": "^1.28",
     "s1syphos/php-simple-captcha": "^2.3",
