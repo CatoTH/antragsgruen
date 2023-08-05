@@ -76,6 +76,7 @@ class Consultation implements \JsonSerializable
     public bool $adminListFilerByMotion = false; // If true: the admin list is filtered by motion. To be activated manually.
     public bool $showIMotionEditDate = false;
     public bool $ppEditableAfterPublication = true;
+    public bool $homepageTagsList = true;
 
     public int $lineLength = 80;
     public int $motionTitlePrefixNumMaxLen = 1;

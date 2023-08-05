@@ -171,6 +171,10 @@ button.link {
     .middleColumn + .rightColumn {
       flex-basis: 30%;
     }
+    .halfColumn {
+      flex-basis: 50%;
+      padding-left: 15px;
+    }
 
     .modal-body & {
       .leftColumn {

@@ -127,7 +127,7 @@ $handledSiteSettings = [];
                 <div class="customThemeSelector">
                     <label>
                         <?php
-                        $isCustom  = (strpos($layoutId, 'layout-custom-') !== false);
+                        $isCustom  = str_contains($layoutId, 'layout-custom-');
                         $hasCustom = (count($consultation->site->getSettings()->stylesheetSettings) > 0);
                         $options   = ['value' => $layoutId];
                         if (!$hasCustom) {
@@ -164,6 +164,15 @@ $handledSiteSettings = [];
                         ['id' => 'startLayoutType', 'class' => 'stdDropdown fullsize']
                     );
                     ?></div>
+                <?php
+                if ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_TAGS) {
+                    echo '<a href="' . Html::encode(UrlHelper::createUrl('/admin/index/consultation')) . '#conTopicsTitle">';
+                    echo '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>';
+                    echo Yii::t('admin', 'con_topics_manage') . '</a><br>';
+
+                    $boolSettingRow($settings, 'homepageTagsList', $handledSettings, Yii::t('admin', 'con_topics_home_list'));
+                }
+                ?>
             </fieldset>
 
             <fieldset class="form-group selectRow">

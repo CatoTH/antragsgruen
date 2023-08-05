@@ -28,15 +28,15 @@ echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>
 <div class="alert alert-info">' . Yii::t('admin', 'translating_hint') . '</div>';
 
 
-echo Html::beginForm('', 'post', ['id' => 'wordingBaseForm', 'class' => 'adminForm form-horizontal']);
+echo Html::beginForm('', 'post', ['id' => 'wordingBaseForm', 'class' => 'adminForm']);
 echo '<input type="hidden" name="category" value="' . Html::encode($category) . '">';
 echo $controller->showErrors();
 
 
-echo '<div class="form-group">
-        <label class="col-sm-4 control-label" for="wordingBase">' .
+echo '<div class="stdTwoCols">
+        <label class="halfColumn" for="wordingBase">' .
     Yii::t('admin', 'translating_base') . ':</label>
-        <div class="col-sm-8">';
+        <div class="halfColumn">';
 echo Html::dropDownList(
     'wordingBase',
     $consultation->wordingBase,
@@ -74,7 +74,7 @@ foreach ($consultation->motionTypes as $motionType) {
 }
 
 
-echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminForm form-horizontal']);
+echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminForm']);
 echo '<input type="hidden" name="category" value="' . Html::encode($category) . '">';
 
 /** @var I18N $i18n */
@@ -96,7 +96,7 @@ echo '<br><br>';
 
 foreach ($strings as $i => $string) {
     $encKey = Html::encode(urlencode($string['id']));
-    $value  = (isset($consStrings[$string['id']]) ? $consStrings[$string['id']] : '');
+    $value  = $consStrings[$string['id']] ?? '';
     $htmlId = 'string' . $i;
     echo '<div class="form-group"><label class="col-sm-6 control-label" for="' . $htmlId . '">';
     if (isset($string['title']) && $string['title'] !== '') {

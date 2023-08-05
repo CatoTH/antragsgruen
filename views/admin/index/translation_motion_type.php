@@ -29,7 +29,7 @@ foreach ($motionType->consultationTexts as $consultationText) {
     $existingTranslations[$consultationText->category][$consultationText->textId] = $consultationText;
 }
 
-echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminForm form-horizontal']);
+echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminForm']);
 
 ?>
 
@@ -53,12 +53,12 @@ foreach (MessageSource::getMotionTypeChangableTexts() as $categoryId => $textIds
         $value = ($existingText ? $existingText->text : '');
         $htmlId = 'string_' . $categoryId . '_' . $textId;
         ?>
-        <div class="form-group">
-            <label class="col-sm-6 control-label" for="<?= $htmlId ?>">
+        <div class="stdTwoCols">
+            <label class="halfColumn" for="<?= $htmlId ?>">
                 <span class="description"><?= nl2br(Html::encode(Yii::t($categoryId, $textId))) ?></span>
                 <span class="identifier"><?= Html::encode($textId) ?></span>
             </label>
-            <div class="col-sm-6">
+            <div class="halfColumn">
                 <?= HTMLTools::smallTextarea('categories[' . $categoryId . '][' . $textId . ']', ['class' => 'form-control', 'id' => $htmlId], $value) ?>
             </div>
         </div>
