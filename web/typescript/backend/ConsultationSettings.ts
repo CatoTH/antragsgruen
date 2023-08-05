@@ -62,7 +62,11 @@ export class ConsultationSettings {
         });
 
         $form.find('.adderRow button').on('click', () => {
-            $tagList.append($tagRowTemplate.clone());
+            const $newRow = $tagRowTemplate.clone();
+            $tagList.append($newRow);
+            window.setTimeout(() => {
+                $newRow.find("input").focus();
+            }, 100);
         });
 
         $tagList.on('click', '.remover', function(ev) {
