@@ -333,6 +333,7 @@ trait MotionMergingTrait
         $mergingDraft = $oldMotion->getMergingDraft(false);
 
         return new HtmlResponse($this->render('@app/views/merging/confirm', [
+            'oldMotion'    => $oldMotion,
             'newMotion'    => $newMotion,
             'mergingDraft' => $mergingDraft,
             'changes'      => $changes,

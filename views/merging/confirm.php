@@ -7,6 +7,7 @@ use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
+ * @var Motion $oldMotion
  * @var Motion $newMotion
  * @var Draft $mergingDraft
  * @var \app\models\MotionSectionChanges[] $changes
@@ -57,7 +58,7 @@ $odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
 <?php
 
 if ($newMotion->canCreateResolution()) {
-    echo $this->render('_confirm_resolution_voting', ['motion' => $newMotion]);
+    echo $this->render('_confirm_resolution_voting', ['motion' => $newMotion, 'oldMotion' => $oldMotion]);
 }
 
 foreach ($newMotion->getSortedSections(true) as $section) {
@@ -123,31 +124,31 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
                         <label for="votesComment<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][comment]" type="text"
                                id="votesComment<?= $amendment->id ?>"
-                               value="<?= Html::encode($voting->comment ? $voting->comment : '') ?>">
+                               value="<?= Html::encode($voting->comment ?: '') ?>">
                     </div>
                     <div class="col-md-1">
                         <label for="votesYes<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_yes') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][yes]" type="number"
                                id="votesYes<?= $amendment->id ?>"
-                               value="<?= Html::encode($voting->votesYes ? $voting->votesYes : '') ?>">
+                               value="<?= Html::encode($voting->votesYes ?: '') ?>">
                     </div>
                     <div class="col-md-1">
                         <label for="votesNo<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_no') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][no]" type="number"
                                id="votesNo<?= $amendment->id ?>"
-                               value="<?= Html::encode($voting->votesNo ? $voting->votesNo : '') ?>">
+                               value="<?= Html::encode($voting->votesNo ?: '') ?>">
                     </div>
                     <div class="col-md-1">
                         <label for="votesAbstention<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_abstention') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][abstention]" type="number"
                                id="votesAbstention<?= $amendment->id ?>"
-                               value="<?= Html::encode($voting->votesAbstention ? $voting->votesAbstention : '') ?>">
+                               value="<?= Html::encode($voting->votesAbstention ?: '') ?>">
                     </div>
                     <div class="col-md-1">
                         <label for="votesInvalid<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_invalid') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][invalid]" type="number"
                                id="votesInvalid<?= $amendment->id ?>"
-                               value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
+                               value="<?= Html::encode($voting->votesInvalid ?: '') ?>">
                     </div>
                 </div>
                 <?php

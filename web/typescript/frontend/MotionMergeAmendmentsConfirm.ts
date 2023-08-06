@@ -4,8 +4,7 @@ export class MotionMergeAmendmentsConfirm {
 
     constructor(public $widget: JQuery) {
         this.$sections = $widget.find(".motionTextHolder");
-        $widget.find("input[name=diffStyle]").change(this.onChangeDiffStyle.bind(this));
-        $widget.find("input[name=diffStyle]").first().change();
+        $widget.find("input[name=diffStyle]").on("change", this.onChangeDiffStyle.bind(this)).trigger("change");
 
         this.initResolutionFunctions();
         this.initVotingFunctions();
@@ -26,8 +25,10 @@ export class MotionMergeAmendmentsConfirm {
         this.$newStatus = this.$widget.find('.newMotionStatus input');
         this.$newStatus.on('change', () => {
             if (this.$newStatus.filter(':checked').val() === 'motion') {
+                this.$widget.find('.newMotionSubstatus').removeClass('hidden');
                 this.$widget.find('.newMotionInitiator').addClass('hidden');
             } else {
+                this.$widget.find('.newMotionSubstatus').addClass('hidden');
                 this.$widget.find('.newMotionInitiator').removeClass('hidden');
             }
         }).trigger('change');
@@ -41,12 +42,12 @@ export class MotionMergeAmendmentsConfirm {
         const $closer = $(".votingResultCloser"),
             $opener = $(".votingResultOpener"),
             $inputRows = $(".contentVotingResult, .contentVotingResultComment");
-        $opener.click(() => {
+        $opener.on("click", () => {
             $closer.removeClass("hidden");
             $opener.addClass("hidden");
             $inputRows.removeClass("hidden");
         });
-        $closer.click(() => {
+        $closer.on("click", () => {
             $closer.addClass("hidden");
             $opener.removeClass("hidden");
             $inputRows.addClass("hidden");

@@ -100,6 +100,7 @@ return [
     'merge_new_status_screened'    => 'A new verstion of this motion',
     'merge_new_status_res_f'       => 'A resolution',
     'merge_new_status_res_p'       => 'A preliminary resolution',
+    'merge_new_substatus'          => 'Status of new version',
     'merge_new_orga'               => 'Deciding body',
     'merge_new_resolution_date'    => 'Resolution date',
     'merge_new_votes_enter'        => 'Voting data',

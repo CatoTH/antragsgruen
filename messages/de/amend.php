@@ -122,6 +122,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_new_status_screened'         => 'Eine neue Version dieses Antrags',
     'merge_new_status_res_f'            => 'Ein Beschluss',
     'merge_new_status_res_p'            => 'Ein vorläufiger Beschluss',
+    'merge_new_substatus'               => 'Neuer Antragsstatus',
     'merge_new_orga'                    => 'Beschlussfassendes Gremium',
     'merge_new_resolution_date'         => 'Beschlussdatum',
     'merge_new_votes_enter'             => 'Abstimmung',
