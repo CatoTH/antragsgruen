@@ -119,7 +119,7 @@ class Merge
     /**
      * @param int[] $amendmentStatuses
      */
-    public function confirm(Motion $newMotion, array $amendmentStatuses, ?string $resolutionMode, string $resolutionBody, array $votes, ?array $amendmentVotes): Motion
+    public function confirm(Motion $newMotion, array $amendmentStatuses, ?string $resolutionMode, ?string $resolutionSubstatus, string $resolutionBody, array $votes, ?array $amendmentVotes): Motion
     {
         $oldMotion    = $this->origMotion;
         $consultation = $oldMotion->getMyConsultation();
@@ -163,6 +163,10 @@ class Merge
             } elseif ($resolutionMode === 'resolution_preliminary') {
                 $newMotion->status = IMotion::STATUS_RESOLUTION_PRELIMINARY;
                 $isResolution      = true;
+            } elseif (intval($resolutionSubstatus) === IMotion::STATUS_ACCEPTED) {
+                $newMotion->status = IMotion::STATUS_ACCEPTED;
+            } elseif (intval($resolutionSubstatus) === IMotion::STATUS_MODIFIED_ACCEPTED) {
+                $newMotion->status = IMotion::STATUS_MODIFIED_ACCEPTED;
             } else {
                 $newMotion->status = $oldMotion->status;
             }
