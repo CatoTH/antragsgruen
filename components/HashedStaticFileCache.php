@@ -20,7 +20,8 @@ class HashedStaticFileCache
     public static function getCache(string $function, ?array $dependencies): ?string
     {
         if (!AntragsgruenApp::getInstance()->viewCacheFilePath) {
-            return HashedStaticCache::getCache($function, $dependencies);
+            $cached = HashedStaticCache::getCache($function, $dependencies);
+            return (is_string($cached) ? $cached : null);
         }
         $key = md5($function . self::hashDependencies($dependencies));
         $directory = self::getDirectory($key);
@@ -29,7 +30,7 @@ class HashedStaticFileCache
         }
 
         if (file_exists($directory . '/' . $key)) {
-            return file_get_contents($directory . '/' . $key);
+            return (string)file_get_contents($directory . '/' . $key);
         } else {
             return null;
         }
