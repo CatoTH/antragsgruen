@@ -7,18 +7,14 @@ use app\views\consultation\LayoutHelper;
 use yii\helpers\Html;
 
 /**
- * @var yii\web\View $this
  * @var Consultation $consultation
  * @var Layout $layout
  * @var bool $admin
+ * @var IMotion[] $imotions
+ * @var string $currResolutionMode
  */
 
 $layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
-
-list($_motions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
-if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
-}
 
 $longVersion = (in_array($consultation->getSettings()->startLayoutType, [
     ConsultationSettings::START_LAYOUT_AGENDA_LONG,
@@ -93,7 +89,7 @@ if ($longVersion) {
 
 /** @var IMotion[] $otherMotions */
 $otherMotions = [];
-foreach ($_motions as $imotion) {
+foreach ($imotions as $imotion) {
     if (!$shownIMotions->hasVotingItem($imotion)) {
         if ($imotion->status === IMotion::STATUS_MOVED) {
             continue;

@@ -10,6 +10,8 @@ use yii\helpers\Html;
  * @var yii\web\View $this
  * @var Consultation $consultation
  * @var \app\models\settings\Layout $layout
+ * @var IMotion[] $imotions
+ * @var string $currResolutionMode
  */
 $tags = $tagIds = [];
 $hasNoTagMotions = false;
@@ -18,11 +20,6 @@ $privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($co
 $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
 
 $layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
-
-list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
-if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
-}
 
 foreach ($imotions as $imotion) {
     if (!MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses)) {

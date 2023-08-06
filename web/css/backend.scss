@@ -401,6 +401,14 @@ label.legend {
       vertical-align: top;
     }
   }
+
+  .showResolutionsSeparateHolder {
+    padding-left: 20px;
+    margin-bottom: 15px;
+    label {
+      display: block;
+    }
+  }
 }
 
 #consultationSettingsForm {

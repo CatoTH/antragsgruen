@@ -5,6 +5,7 @@ export class AppearanceEdit {
         this.initTranslationService();
         this.initRestApi();
         this.initSpeechQueues();
+        this.initResolutions();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -87,6 +88,16 @@ export class AppearanceEdit {
                 this.$form.find(".quotaName").removeClass("hidden");
             } else {
                 this.$form.find(".quotaName").addClass("hidden");
+            }
+        }).trigger("change");
+    }
+
+    private initResolutions() {
+        this.$form.find("#showResolutionsCombined").on('change', (ev) => {
+            if ($(ev.currentTarget).prop("checked")) {
+                this.$form.find(".showResolutionsSeparateHolder").addClass("hidden");
+            } else {
+                this.$form.find(".showResolutionsSeparateHolder").removeClass("hidden");
             }
         }).trigger("change");
     }

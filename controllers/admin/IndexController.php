@@ -3,14 +3,12 @@
 namespace app\controllers\admin;
 
 use app\components\updater\UpdateChecker;
-use app\models\settings\Privileges;
+use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
-use app\models\settings\AntragsgruenApp;
 use app\components\{ConsultationAccessPassword, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
-use app\models\settings\Stylesheet;
 
 class IndexController extends AdminBase
 {
@@ -175,6 +173,14 @@ class IndexController extends AdminBase
                 }
 
                 $settings->speechListSubqueues = $subqueues;
+            }
+
+            if ($settingsInput['showResolutionsCombined'] ?? false) {
+                $settings->startLayoutResolutions = ConsultationSettings::START_LAYOUT_RESOLUTIONS_ABOVE;
+            } elseif (intval($settingsInput['showResolutionsSeparateMode'] ?? 0) === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
+                $settings->startLayoutResolutions = ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT;
+            } else {
+                $settings->startLayoutResolutions = ConsultationSettings::START_LAYOUT_RESOLUTIONS_SEPARATE;
             }
 
             $settings->saveConsultationForm($settingsInput, $post['settingsFields']);

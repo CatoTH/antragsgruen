@@ -22,7 +22,7 @@ class Workflow
 
     public const STEP_NAME_V1 = 'V1: Originalantrag Kameradschaft';
     public const STEP_NAME_V2 = 'V2: Redaktionell aufbereitet';
-    public const STEP_NAME_V3 = 'V3: Ergebnis Antragsberatung der AG';
+    public const STEP_NAME_V3 = 'V3: Ergebnis Antragsberatung des Ausschusses';
     public const STEP_NAME_V4 = 'V4: Beschluss LV';
     public const STEP_NAME_V5 = 'V5: In HV eingereicht';
     public const STEP_NAME_V6 = 'V6: Ergebnis Antragsberatung KoordA';
@@ -30,26 +30,17 @@ class Workflow
     public const STEP_NAME_V8 = 'V8: Beschluss im Beschlussumdruck';
 
     public static function getStepName(string $step): ?string {
-        switch ($step) {
-            case self::STEP_V1:
-                return self::STEP_NAME_V1;
-            case self::STEP_V2:
-                return self::STEP_NAME_V2;
-            case self::STEP_V3:
-                return self::STEP_NAME_V3;
-            case self::STEP_V4:
-                return self::STEP_NAME_V4;
-            case self::STEP_V5:
-                return self::STEP_NAME_V5;
-            case self::STEP_V6:
-                return self::STEP_NAME_V6;
-            case self::STEP_V7:
-                return self::STEP_NAME_V7;
-            case self::STEP_V8:
-                return self::STEP_NAME_V8;
-            default:
-                return null;
-        }
+        return match ($step) {
+            self::STEP_V1 => self::STEP_NAME_V1,
+            self::STEP_V2 => self::STEP_NAME_V2,
+            self::STEP_V3 => self::STEP_NAME_V3,
+            self::STEP_V4 => self::STEP_NAME_V4,
+            self::STEP_V5 => self::STEP_NAME_V5,
+            self::STEP_V6 => self::STEP_NAME_V6,
+            self::STEP_V7 => self::STEP_NAME_V7,
+            self::STEP_V8 => self::STEP_NAME_V8,
+            default => null,
+        };
     }
 
     public static function canAssignTopic(Motion $motion): bool

@@ -278,7 +278,17 @@ class ConsultationController extends Base
         return $this->actionIndex();
     }
 
-    public function actionIndex(): ResponseInterface
+    public function actionIndexMotions(): ResponseInterface
+    {
+        return $this->actionIndex(\app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_SEPARATE);
+    }
+
+    public function actionIndexResolutions(): ResponseInterface
+    {
+        return $this->actionIndex(\app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_DEFAULT);
+    }
+
+    public function actionIndex($resolutionMotionMode = 0): ResponseInterface
     {
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $pluginHome = $plugin::getConsultationHomePage($this->consultation);
@@ -305,15 +315,13 @@ class ConsultationController extends Base
             $myAmendments = null;
         }
 
-        return new HtmlResponse($this->render(
-            'index',
-            [
-                'consultation' => $this->consultation,
-                'myself'       => $myself,
-                'myMotions'    => $myMotions,
-                'myAmendments' => $myAmendments,
-            ]
-        ));
+        return new HtmlResponse($this->render('index', [
+            'consultation' => $this->consultation,
+            'myself' => $myself,
+            'myMotions' => $myMotions,
+            'myAmendments' => $myAmendments,
+            'currResolutionMotionMode' => $resolutionMotionMode
+        ]));
     }
 
     public function actionActivitylog(string $page = "0", ?string $showAll = null): ResponseInterface
