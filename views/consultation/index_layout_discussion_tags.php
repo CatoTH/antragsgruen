@@ -75,7 +75,7 @@ if (count($comments) > 0) {
 }
 ?>
 
-    <h2 class="green" id="motionListSorterTitle"><?= Yii::t('con', 'All Motions') ?></h2>
+    <h2 class="green" id="motionListSorterTitle"><?= ($isResolutionList ? Yii::t('con', 'resolutions') : Yii::t('con', 'All Motions')) ?></h2>
     <section class="motionListFilter content" id="motionListSorter" aria-labelledby="motionListSorterTitle">
         <?php
         $tags = ConsultationSettingsTag::getMostPopularTags($imotions);
