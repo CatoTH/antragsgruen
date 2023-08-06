@@ -56,7 +56,7 @@ class LayoutHelper
         $return .= '<span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
                    Tools::formatMysqlDateWithAria($motion->dateCreation) . '</p>' . "\n";
 
-        if (!in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY])) {
+        if (!$motion->isResolution()) {
             $return .= '<p class="info">';
             $return .= Html::encode($motion->getInitiatorsStr());
             if ($motion->status === Motion::STATUS_WITHDRAWN) {
