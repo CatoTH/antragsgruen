@@ -15,6 +15,7 @@ return [
     'My Amendments'        => 'Meine Änderungsanträge',
     'Agenda'               => 'Tagesordnung',
     'Other Motions'        => 'Sonstige Anträge',
+    'other_resolutions'    => 'Sonstige Beschlüsse',
     'no motions'           => 'Keine Anträge',
     'news'                 => 'Neuigkeiten',
     'sidebar_procedure'    => 'Verfahren',

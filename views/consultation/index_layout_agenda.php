@@ -11,7 +11,7 @@ use yii\helpers\Html;
  * @var Layout $layout
  * @var bool $admin
  * @var IMotion[] $imotions
- * @var string $currResolutionMode
+ * @var bool $isResolutionList
  */
 
 $layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
@@ -30,7 +30,7 @@ echo '<h2 class="green" id="sectionAgendaTitle">' . Yii::t('con', 'Agenda') . '<
 if ($admin) {
     echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit" ';
     echo 'data-save-order="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-order-ajax'])) . '">';
-    $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
+    $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $isResolutionList, $admin, true);
     $templateItem                 = new ConsultationAgendaItem();
     $templateItem->consultationId = $consultation->id;
     $templateItem->refresh();
@@ -40,13 +40,13 @@ if ($admin) {
     $templateItem->time  = null;
 
     ob_start();
-    LayoutHelper::showAgendaItem($templateItem, $consultation, $admin);
+    LayoutHelper::showAgendaItem($templateItem, $consultation, $isResolutionList, $admin);
     $newElementTemplate = ob_get_clean();
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
 
     ob_start();
     $templateItem->title = '';
-    LayoutHelper::showDateAgendaItem($templateItem, $consultation, $admin);
+    LayoutHelper::showDateAgendaItem($templateItem, $consultation, $isResolutionList, $admin);
     $newElementTemplate = ob_get_clean();
     echo '<input id="agendaNewDateTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
 
@@ -56,7 +56,7 @@ if ($admin) {
     echo '</div>';
 } else {
     echo '<div class="agendaHolder">';
-    $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
+    $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $isResolutionList, $admin, true);
     echo '</div>';
 }
 echo '</section>';
@@ -66,15 +66,19 @@ echo '</section>';
 if ($longVersion) {
     $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
     foreach ($items as $agendaItem) {
-        if (count($agendaItem->getVisibleIMotions(true, false)) > 0) {
-            echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
+        if ($isResolutionList) {
+            $itemImotions = $agendaItem->getResolutions();
+        } else {
+            $itemImotions = $agendaItem->getVisibleIMotions(true, false);
+        }
+
+        if (count($itemImotions) > 0) {
+            $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
+            echo '<h2 class="green">' . $prefix . Html::encode($agendaItem->title) . '</h2>';
             echo '<ul class="motionList motionListStd motionListBelowAgenda agenda' . $agendaItem->id . '">';
-            $imotions = MotionSorter::getSortedIMotionsFlat($consultation, $agendaItem->getVisibleIMotions());
-            foreach ($imotions as $imotion) {
+            $itemImotions = MotionSorter::getSortedIMotionsFlat($consultation, $itemImotions);
+            foreach ($itemImotions as $imotion) {
                 if (is_a($imotion, Motion::class)) {
-                    if ($imotion->isResolution()) {
-                        continue;
-                    }
                     echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmendsByDefault, true);
                 } else {
                     /** @var Amendment $imotion */
@@ -97,7 +101,7 @@ foreach ($imotions as $imotion) {
         if (in_array($imotion->status, $consultation->getStatuses()->getInvisibleMotionStatuses())) {
             continue;
         }
-        if (is_a($imotion, Motion::class) && count($imotion->getVisibleReplacedByMotions()) > 0) {
+        if (is_a($imotion, Motion::class) && count($imotion->getVisibleReplacedByMotions(false)) > 0) {
             continue;
         }
         $otherMotions[] = $imotion;
@@ -105,7 +109,7 @@ foreach ($imotions as $imotion) {
 }
 $otherMotions = MotionSorter::getSortedIMotionsFlat($consultation, $otherMotions);
 if (count($otherMotions) > 0) {
-    echo '<h2 class="green">' . Yii::t('con', 'Other Motions') . '</h2>';
+    echo '<h2 class="green">' . ($isResolutionList ? Yii::t('con', 'other_resolutions') : Yii::t('con', 'Other Motions')) . '</h2>';
     echo '<ul class="motionList motionListStd motionListBelowAgenda agenda0">';
     foreach ($otherMotions as $motion) {
         if (is_a($motion, Motion::class)) {

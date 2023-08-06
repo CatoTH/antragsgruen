@@ -15,6 +15,7 @@ return [
     'My Amendments'        => 'My amendments',
     'Agenda'               => 'Agenda',
     'Other Motions'        => 'Other motions',
+    'other_resolutions'    => 'Other resolutions',
     'no motions'           => 'No motions',
     'news'                 => 'News',
     'sidebar_procedure'    => 'Procedure',

@@ -278,17 +278,17 @@ class ConsultationController extends Base
         return $this->actionIndex();
     }
 
-    public function actionIndexMotions(): ResponseInterface
+    public function actionMotions(): ResponseInterface
     {
-        return $this->actionIndex(\app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_SEPARATE);
+        return new HtmlResponse($this->render('motions', []));
     }
 
-    public function actionIndexResolutions(): ResponseInterface
+    public function actionResolutions(): ResponseInterface
     {
-        return $this->actionIndex(\app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_DEFAULT);
+        return new HtmlResponse($this->render('resolutions', []));
     }
 
-    public function actionIndex($resolutionMotionMode = 0): ResponseInterface
+    public function actionIndex(): ResponseInterface
     {
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $pluginHome = $plugin::getConsultationHomePage($this->consultation);
@@ -320,7 +320,6 @@ class ConsultationController extends Base
             'myself' => $myself,
             'myMotions' => $myMotions,
             'myAmendments' => $myAmendments,
-            'currResolutionMotionMode' => $resolutionMotionMode
         ]));
     }
 

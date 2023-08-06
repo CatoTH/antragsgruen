@@ -609,11 +609,17 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return Motion[]
      */
-    public function getVisibleReplacedByMotions(): array
+    public function getVisibleReplacedByMotions(bool $hideIfReplacedByResolution = true): array
     {
+        $invisibleStatuses = $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses();
+        if (!$hideIfReplacedByResolution) {
+            $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_FINAL;
+            $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
+        }
+
         $replacedByMotions = [];
         foreach ($this->replacedByMotions as $replMotion) {
-            if (!in_array($replMotion->status, $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses())) {
+            if (!in_array($replMotion->status, $invisibleStatuses)) {
                 $replacedByMotions[] = $replMotion;
             }
         }
@@ -647,11 +653,6 @@ class Motion extends IMotion implements IRSSItem
             'parentMotionId' => $this->id,
             'status'         => Motion::STATUS_DRAFT,
         ]);
-    }
-
-    public function isResolution(): bool
-    {
-        return in_array($this->status, [static::STATUS_RESOLUTION_FINAL, static::STATUS_RESOLUTION_PRELIMINARY]);
     }
 
     public function getNumberOfCountableLines(): int

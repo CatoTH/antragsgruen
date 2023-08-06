@@ -9,7 +9,7 @@ use yii\helpers\Html;
  * @var Consultation $consultation
  * @var \app\models\settings\Layout $layout
  * @var IMotion[] $imotions
- * @var string $currResolutionMode
+ * @var bool $isResolutionList
  */
 
 $layout->addJS('npm/isotope.pkgd.min.js');

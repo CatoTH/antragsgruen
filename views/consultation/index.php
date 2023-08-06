@@ -158,6 +158,6 @@ if (count($consultation->motionTypes) > 0 && $consultation->getSettings()->getSt
         'layout' => $layout,
         'admin' => $contentAdmin,
         'imotions' => $toShowImotions,
-        'currResolutionMode' => $resolutionMode,
+        'isResolutionList' => ($resolutionMode === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT),
     ]);
 }

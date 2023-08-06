@@ -67,6 +67,7 @@ return [
     'button_submit_publish'              => 'Veröffentlichen',
     'button_correct'                     => 'Korrigieren',
     'Prefix'                             => 'Antragsnummer',
+    'ResolutionPrefix'                   => 'Beschlussnummer',
     'Title'                              => 'Titel',
     'replaces_motion'                    => 'Ersetzt',
     'resolution_of'                      => 'Basierend auf',

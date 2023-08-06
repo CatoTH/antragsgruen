@@ -17,7 +17,7 @@ use yii\helpers\Html;
 $controller   = $this->context;
 $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
-
+$settings = $consultation->getSettings();
 
 $hasComments   = false;
 $hasMotions    = false;
@@ -59,7 +59,7 @@ $layout->menuSidebarType = \app\models\settings\Layout::SIDEBAR_TYPE_CONSULTATIO
 $layout->menusHtml[] = \app\models\layoutHooks\Layout::getSearchForm();
 
 $showCreate = true;
-if ($consultation->getSettings()->getStartLayoutView() === 'index_layout_agenda') {
+if ($settings->getStartLayoutView() === 'index_layout_agenda') {
     foreach ($consultation->agendaItems as $item) {
         if ($item->getMyMotionType()) {
             $showCreate = false;
@@ -110,7 +110,7 @@ $title = '<span class="fontello fontello-rss-squared" aria-hidden="true"></span>
 $link  = UrlHelper::createUrl('consultation/feeds');
 $html  .= '<li class="feeds">' . Html::a($title, $link) . '</li>';
 
-if ($consultation->getSettings()->collectingPage) {
+if ($settings->collectingPage) {
     $title = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'sb_collecting');
     $link  = UrlHelper::createUrl('consultation/collecting');
     $html  .= '<li class="collecting">' . Html::a($title, $link) . '</li>';
@@ -121,11 +121,11 @@ $layout->menusHtml[]      = $html;
 $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'news'), $link) . '</li>';
 
 $closedVotings = VotingBlock::getPublishedClosedVotings($consultation);
-if ($consultation->getSettings()->proposalProcedurePage || count($closedVotings) > 0) {
+if ($settings->proposalProcedurePage || count($closedVotings) > 0 || $settings->startLayoutResolutions !== \app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_ABOVE) {
     $html = '<section class="sidebar-box" aria-labelledby="sidebarPpTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarPpTitle">' . Yii::t('con', 'sidebar_procedure') . '</li>';
 
-    if ($consultation->getSettings()->proposalProcedurePage) {
+    if ($settings->proposalProcedurePage) {
         $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'proposed_procedure');
         $url = UrlHelper::createUrl('consultation/proposed-procedure');
         $html .= '<li>' . Html::a($name, $url, ['id' => 'proposedProcedureLink']) . "</li>\n";
@@ -137,12 +137,24 @@ if ($consultation->getSettings()->proposalProcedurePage || count($closedVotings)
         $html .= '<li>' . Html::a($name, $url, ['id' => 'votingResultsLink']) . "</li>\n";
         $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'voting_results'), $url) . '</li>';
     }
+    if ($settings->startLayoutResolutions === \app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_SEPARATE) {
+        $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'resolutions');
+        $url = UrlHelper::createUrl('consultation/resolutions');
+        $html .= '<li>' . Html::a($name, $url, ['id' => 'sidebarResolutions']) . "</li>\n";
+        $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'resolutions'), $url) . '</li>';
+    }
+    if ($settings->startLayoutResolutions === \app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_DEFAULT) {
+        $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'All Motions');
+        $url = UrlHelper::createUrl('consultation/motions');
+        $html .= '<li>' . Html::a($name, $url, ['id' => 'sidebarMotions']) . "</li>\n";
+        $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'All Motions'), $url) . '</li>';
+    }
     $html .= "</ul></section>";
 
     $layout->menusHtml[] = $html;
 }
 
-if ($hasMotions && $consultation->getSettings()->sidebarNewMotions) {
+if ($hasMotions && $settings->sidebarNewMotions) {
     $html = '<section class="sidebar-box" aria-labelledby="sidebarNewMotionsTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarNewMotionsTitle">' . Yii::t('con', 'new_motions') . '</li>';
     if (count($newestMotions) === 0) {
@@ -159,7 +171,7 @@ if ($hasMotions && $consultation->getSettings()->sidebarNewMotions) {
     $layout->menusHtml[] = $html;
 }
 
-if ($hasAmendments && $consultation->getSettings()->sidebarNewMotions) {
+if ($hasAmendments && $settings->sidebarNewMotions) {
     $html = '<section class="sidebar-box" aria-labelledby="sidebarNewAmendmentsTitle"><ul class="nav nav-list amendments">';
     $html .= '<li class="nav-header" id="sidebarNewAmendmentsTitle">' . Yii::t('con', 'new_amendments') . '</li>';
     if (count($newestAmendments) == 0) {
