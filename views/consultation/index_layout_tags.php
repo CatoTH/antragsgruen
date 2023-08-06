@@ -10,6 +10,8 @@ use yii\helpers\Html;
  * @var yii\web\View $this
  * @var Consultation $consultation
  * @var \app\models\settings\Layout $layout
+ * @var IMotion[] $imotions
+ * @var bool $isResolutionList
  */
 $tags = $tagIds = [];
 $hasNoTagMotions = false;
@@ -18,11 +20,6 @@ $privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($co
 $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
 
 $layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
-
-list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
-if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
-}
 
 foreach ($imotions as $imotion) {
     if (!MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses)) {
@@ -73,17 +70,20 @@ if (count($sortedTags) > 0 && $consultation->getSettings()->homepageTagsList) {
 
 foreach ($tagIds as $tagId) {
     $tag = $tags[$tagId];
-    echo '<h3 class="green" id="tag_' . $tagId . '">' . Html::encode($tag['name']) . '</h3>
+    $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
+    echo '<h3 class="green" id="tag_' . $tagId . '">' . $prefix . Html::encode($tag['name']) . '</h3>
     <div class="content">
     <table class="motionTable">
         <thead><tr>';
     if (!$consultation->getSettings()->hideTitlePrefix) {
-        echo '<th class="prefixCol">' . Yii::t('motion', 'Prefix') . '</th>';
+        $title = ($isResolutionList ? Yii::t('motion', 'ResolutionPrefix') : Yii::t('motion', 'Prefix'));
+        echo '<th class="prefixCol">' . $title . '</th>';
     }
-    echo '
-            <th class="titleCol">' . Yii::t('motion', 'Title') . '</th>
-            <th class="initiatorCol">' . Yii::t('motion', 'Initiator') . '</th>
-        </tr></thead>';
+    echo '<th class="titleCol">' . Yii::t('motion', 'Title') . '</th>';
+    if (!$isResolutionList) {
+        echo '<th class="initiatorCol">' . Yii::t('motion', 'Initiator') . '</th>';
+    }
+    echo '</tr></thead>';
     $sortedIMotions = MotionSorter::getSortedIMotionsFlat($consultation, $tag['motions']);
     foreach ($sortedIMotions as $imotion) {
         /** @var IMotion $imotion */
@@ -139,17 +139,21 @@ foreach ($tagIds as $tagId) {
                 );
             }
         }
-        echo '</div></td><td class="initiatorRow">';
-        $initiators = [];
-        foreach ($imotion->getInitiators() as $init) {
-            if ($init->personType === ISupporter::PERSON_NATURAL) {
-                $initiators[] = $init->name;
-            } else {
-                $initiators[] = $init->organization;
+        echo '</div></td>';
+        if (!$isResolutionList) {
+            echo '<td class="initiatorRow">';
+            $initiators = [];
+            foreach ($imotion->getInitiators() as $init) {
+                if ($init->personType === ISupporter::PERSON_NATURAL) {
+                    $initiators[] = $init->name;
+                } else {
+                    $initiators[] = $init->organization;
+                }
             }
+            echo Html::encode(implode(', ', $initiators));
+            echo '</td>';
         }
-        echo Html::encode(implode(', ', $initiators));
-        echo '</td></tr>';
+        echo '</tr>';
 
         if (is_a($imotion, Motion::class)) {
             $amends = MotionSorter::getSortedAmendments($consultation, $imotion->getVisibleAmendments());
@@ -169,20 +173,23 @@ foreach ($tagIds as $tagId) {
                     echo ' <span class="status">(' . Html::encode($consultation->getStatuses()->getStatusName($amend->status)) . ')</span>';
                 }
                 echo '</div></td>';
-                echo '<td class="initiatorRow">';
-                $initiators = [];
-                foreach ($amend->getInitiators() as $init) {
-                    if ($init->personType === ISupporter::PERSON_NATURAL) {
-                        $initiators[] = $init->name;
-                    } else {
-                        $initiators[] = $init->organization;
+                if (!$isResolutionList) {
+                    echo '<td class="initiatorRow">';
+                    $initiators = [];
+                    foreach ($amend->getInitiators() as $init) {
+                        if ($init->personType === ISupporter::PERSON_NATURAL) {
+                            $initiators[] = $init->name;
+                        } else {
+                            $initiators[] = $init->organization;
+                        }
                     }
+                    echo Html::encode(implode(', ', $initiators));
+                    if ($amend->status != Amendment::STATUS_SUBMITTED_SCREENED) {
+                        echo ', ' . Html::encode($consultation->getStatuses()->getStatusName($amend->status));
+                    }
+                    echo '</td>';
                 }
-                echo Html::encode(implode(', ', $initiators));
-                if ($amend->status != Amendment::STATUS_SUBMITTED_SCREENED) {
-                    echo ', ' . Html::encode($consultation->getStatuses()->getStatusName($amend->status));
-                }
-                echo '</td></tr>';
+                echo '</tr>';
             }
         }
     }

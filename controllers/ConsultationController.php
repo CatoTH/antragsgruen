@@ -278,6 +278,16 @@ class ConsultationController extends Base
         return $this->actionIndex();
     }
 
+    public function actionMotions(): ResponseInterface
+    {
+        return new HtmlResponse($this->render('motions', []));
+    }
+
+    public function actionResolutions(): ResponseInterface
+    {
+        return new HtmlResponse($this->render('resolutions', []));
+    }
+
     public function actionIndex(): ResponseInterface
     {
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
@@ -305,15 +315,12 @@ class ConsultationController extends Base
             $myAmendments = null;
         }
 
-        return new HtmlResponse($this->render(
-            'index',
-            [
-                'consultation' => $this->consultation,
-                'myself'       => $myself,
-                'myMotions'    => $myMotions,
-                'myAmendments' => $myAmendments,
-            ]
-        ));
+        return new HtmlResponse($this->render('index', [
+            'consultation' => $this->consultation,
+            'myself' => $myself,
+            'myMotions' => $myMotions,
+            'myAmendments' => $myAmendments,
+        ]));
     }
 
     public function actionActivitylog(string $page = "0", ?string $showAll = null): ResponseInterface

@@ -295,6 +295,26 @@ $handledSiteSettings = [];
             $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_proposal_tt'));
             $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . ' ' . $tooltip);
 
+            $showResolutionsCombined = $settings->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_ABOVE;
+            $motionsByDefault = in_array($settings->startLayoutResolutions, [ConsultationSettings::START_LAYOUT_RESOLUTIONS_SEPARATE, ConsultationSettings::START_LAYOUT_RESOLUTIONS_ABOVE]);
+            ?>
+            <div><label>
+                <?= Html::checkbox('settings[showResolutionsCombined]', $showResolutionsCombined, ['id' => 'showResolutionsCombined']) . ' ';
+                echo ' <strong>Beschlüsse</strong> und Anträge gleichzeitig auf der Startseite anzeigen';
+            ?></label></div>
+            <div class="showResolutionsSeparateHolder">
+                <label>
+                    <?= Html::radio('settings[showResolutionsSeparateMode]', $motionsByDefault, ['value' => ConsultationSettings::START_LAYOUT_RESOLUTIONS_SEPARATE]) ?>
+                    Standardmäßig Anträge anzeigen - Beschlüsse auf separater Seite
+                </label>
+                <label>
+                    <?= Html::radio('settings[showResolutionsSeparateMode]', !$motionsByDefault, ['value' => ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT]) ?>
+                    Standardmäßig Beschlüsse anzeigen - Anträge auf separater Seite
+                </label>
+            </div>
+
+            <?php
+
             $propTitle = Yii::t('admin', 'con_pp_inline');
             $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_pp_inline_tt'));
             $boolSettingRow($settings, 'proposalProcedureInline', $handledSettings, $propTitle . ' ' . $tooltip);

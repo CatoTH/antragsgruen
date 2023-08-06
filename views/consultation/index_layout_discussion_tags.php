@@ -8,21 +8,18 @@ use yii\helpers\Html;
  * @var yii\web\View $this
  * @var Consultation $consultation
  * @var \app\models\settings\Layout $layout
+ * @var IMotion[] $imotions
+ * @var bool $isResolutionList
  */
 
 $layout->addJS('npm/isotope.pkgd.min.js');
 $showPrefix = !$consultation->getSettings()->hideTitlePrefix;
 
-list($motions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
-if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
-}
-
-$motions = array_filter($motions, function(IMotion $motion) {
+$imotions = array_filter($imotions, function(IMotion $motion) {
     return !in_array($motion->status, $motion->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses(false));
 });
 if (!$showPrefix) {
-    usort($motions, function (IMotion $motion1, IMotion $motion2) {
+    usort($imotions, function (IMotion $motion1, IMotion $motion2) {
         return $motion2->getTimestamp() <=> $motion1->getTimestamp();
     });
 }
@@ -78,10 +75,10 @@ if (count($comments) > 0) {
 }
 ?>
 
-    <h2 class="green" id="motionListSorterTitle"><?= Yii::t('con', 'All Motions') ?></h2>
+    <h2 class="green" id="motionListSorterTitle"><?= ($isResolutionList ? Yii::t('con', 'resolutions') : Yii::t('con', 'All Motions')) ?></h2>
     <section class="motionListFilter content" id="motionListSorter" aria-labelledby="motionListSorterTitle">
         <?php
-        $tags = ConsultationSettingsTag::getMostPopularTags($motions);
+        $tags = ConsultationSettingsTag::getMostPopularTags($imotions);
         ?>
         <div>
             <div class="tagList">
@@ -129,7 +126,7 @@ if (count($comments) > 0) {
         <div class="motionListFiltered">
             <?php
             echo '<ul class="motionList motionListFilterTags">';
-            foreach ($motions as $motion) {
+            foreach ($imotions as $motion) {
                 $status = $motion->getFormattedStatus();
 
                 $cssClasses   = ['sortitem', 'motion'];

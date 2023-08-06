@@ -137,7 +137,7 @@ class ConsultationAgendaItem extends ActiveRecord
                 continue;
             }
             if ($motion->agendaItemId === $this->id &&
-                count($motion->getVisibleReplacedByMotions()) === 0 &&
+                count($motion->getVisibleReplacedByMotions(false)) === 0 &&
                 $motion->status !== Motion::STATUS_MOVED &&
                 !$motion->getMyMotionType()->amendmentsOnly) {
                 // In case of "moved / copied", the whole point of copying it instead of just overwriting the old motion is so that it is still visible
@@ -328,6 +328,21 @@ class ConsultationAgendaItem extends ActiveRecord
         $return = [];
         foreach ($this->getMyIMotions() as $imotion) {
             if (!in_array($imotion->status, $statuses)) {
+                $return[] = $imotion;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return IMotion[]
+     */
+    public function getResolutions(): array
+    {
+        $return = [];
+        foreach ($this->getMyIMotions() as $imotion) {
+            if (in_array($imotion->status, [IMotion::STATUS_RESOLUTION_PRELIMINARY, IMotion::STATUS_RESOLUTION_FINAL])) {
                 $return[] = $imotion;
             }
         }

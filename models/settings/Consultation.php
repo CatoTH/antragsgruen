@@ -15,6 +15,10 @@ class Consultation implements \JsonSerializable
     public const START_LAYOUT_AGENDA_HIDE_AMEND = 5;
     public const START_LAYOUT_DISCUSSION_TAGS = 6;
 
+    public const START_LAYOUT_RESOLUTIONS_ABOVE = 0;
+    public const START_LAYOUT_RESOLUTIONS_SEPARATE = 1; // On separate page
+    public const START_LAYOUT_RESOLUTIONS_DEFAULT = 2; // On separate page - being the default page
+
     public const ROBOTS_NONE = 0;
     public const ROBOTS_ONLY_HOME = 1;
     public const ROBOTS_ALL = 2;
@@ -81,6 +85,7 @@ class Consultation implements \JsonSerializable
     public int $lineLength = 80;
     public int $motionTitlePrefixNumMaxLen = 1;
     public int $startLayoutType = 0;
+    public int $startLayoutResolutions = 0;
     public int $robotsPolicy = 1;
     public int $motiondataMode = 0;
     public int $discourseCategoryId = 0;

@@ -253,6 +253,11 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         );
     }
 
+    public function isResolution(): bool
+    {
+        return in_array($this->status, [static::STATUS_RESOLUTION_FINAL, static::STATUS_RESOLUTION_PRELIMINARY]);
+    }
+    
     public function isProposalPublic(): bool
     {
         if (!$this->proposalVisibleFrom) {

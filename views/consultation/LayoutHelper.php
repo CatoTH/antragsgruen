@@ -56,22 +56,24 @@ class LayoutHelper
         $return .= '<span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
                    Tools::formatMysqlDateWithAria($motion->dateCreation) . '</p>' . "\n";
 
-        $return .= '<p class="info">';
-        $return .= Html::encode($motion->getInitiatorsStr());
-        if ($motion->status === Motion::STATUS_WITHDRAWN) {
-            $statusName = Html::encode($motion->getMyConsultation()->getStatuses()->getStatusName($motion->status));
-            $return     .= ' <span class="status">(' . $statusName . ')</span>';
+        if (!in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY])) {
+            $return .= '<p class="info">';
+            $return .= Html::encode($motion->getInitiatorsStr());
+            if ($motion->status === Motion::STATUS_WITHDRAWN) {
+                $statusName = Html::encode($motion->getMyConsultation()->getStatuses()->getStatusName($motion->status));
+                $return .= ' <span class="status">(' . $statusName . ')</span>';
+            }
+            if ($motion->status === Motion::STATUS_MOVED) {
+                $statusName = LayoutHelper::getMotionMovedStatusHtml($motion);
+                $return .= ' <span class="status">(' . $statusName . ')</span>';
+            }
+            if ($motion->parentMotionId && $motion->replacedMotion && $motion->replacedMotion->status === Motion::STATUS_MOVED) {
+                $statusName = \Yii::t('motion', 'moved_from') . ': ';
+                $statusName .= Html::a(Html::encode($motion->replacedMotion->getFormattedTitlePrefix()), UrlHelper::createMotionUrl($motion->replacedMotion));
+                $return .= ' <span class="status">(' . $statusName . ')</span>';
+            }
+            $return .= '</p>';
         }
-        if ($motion->status === Motion::STATUS_MOVED) {
-            $statusName = LayoutHelper::getMotionMovedStatusHtml($motion);
-            $return     .= ' <span class="status">(' . $statusName . ')</span>';
-        }
-        if ($motion->parentMotionId && $motion->replacedMotion && $motion->replacedMotion->status === Motion::STATUS_MOVED) {
-            $statusName = \Yii::t('motion', 'moved_from') . ': ';
-            $statusName .= Html::a(Html::encode($motion->replacedMotion->getFormattedTitlePrefix()), UrlHelper::createMotionUrl($motion->replacedMotion));
-            $return     .= ' <span class="status">(' . $statusName . ')</span>';
-        }
-        $return .= '</p>';
 
         return \app\models\layoutHooks\Layout::getConsultationMotionLineContent($return, $motion);
     }
@@ -253,7 +255,7 @@ class LayoutHelper
         return $return;
     }
 
-    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): IMotionList
+    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $isResolutionList, bool $admin): IMotionList
     {
         $showMotions = !in_array($consultation->getSettings()->startLayoutType, [
             ConsultationSettings::START_LAYOUT_AGENDA_LONG,
@@ -357,7 +359,9 @@ class LayoutHelper
         if ($showMotions) {
             $imotions = [];
             foreach ($agendaItem->getIMotionsFromConsultation() as $imotion) {
-                $imotions[] = $imotion;
+                if (($isResolutionList && $imotion->isResolution()) || (!$isResolutionList && !$imotion->isResolution())) {
+                    $imotions[] = $imotion;
+                }
             }
             $imotions = MotionSorter::getSortedIMotionsFlat($consultation, $imotions);
             if (count($imotions) > 0) {
@@ -377,7 +381,7 @@ class LayoutHelper
         echo '</div>';
 
         $children = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-        $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false);
+        $agendaListShownMotions = static::showAgendaList($children, $consultation, $isResolutionList, $admin, false);
         $shownMotions->addIMotionList($agendaListShownMotions);
 
         echo '</li>';
@@ -385,7 +389,7 @@ class LayoutHelper
         return $shownMotions;
     }
 
-    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): IMotionList
+    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $isResolutionList, bool $admin): IMotionList
     {
         $fullTitle = '';
         if ($agendaItem->time && $agendaItem->time !== '0000-00-00') {
@@ -430,7 +434,7 @@ class LayoutHelper
         echo '</div>';
 
         $children               = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-        $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false);
+        $agendaListShownMotions = static::showAgendaList($children, $consultation, $isResolutionList, $admin, false);
 
         echo '</li>';
 
@@ -440,7 +444,7 @@ class LayoutHelper
     /**
      * @param ConsultationAgendaItem[] $items
      */
-    public static function showAgendaList(array $items, Consultation $consultation, bool $admin, bool $isRoot = false): IMotionList
+    public static function showAgendaList(array $items, Consultation $consultation, bool $isResolutionList, bool $admin, bool $isRoot = false): IMotionList
     {
         $timesClass = 'noShowTimes ';
         foreach ($consultation->agendaItems as $agendaItem) {
@@ -454,9 +458,9 @@ class LayoutHelper
         $shownIMotions = new IMotionList();
         foreach ($items as $item) {
             if ($item->isDateSeparator()) {
-                $newShown = static::showDateAgendaItem($item, $consultation, $admin);
+                $newShown = static::showDateAgendaItem($item, $consultation, $isResolutionList, $admin);
             } else {
-                $newShown = static::showAgendaItem($item, $consultation, $admin);
+                $newShown = static::showAgendaItem($item, $consultation, $isResolutionList, $admin);
             }
             $shownIMotions->addIMotionList($newShown);
         }

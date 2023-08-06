@@ -51,7 +51,8 @@ trait ConsultationAgendaTrait
             return new RestApiExceptionResponse(403, 'No access');
         }
 
-        $data   = json_decode($this->getPostValue('data'), true, 512, JSON_THROW_ON_ERROR);
+        $isResolutionList = ($this->consultation->getSettings()->startLayoutResolutions === \app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_DEFAULT);
+        $data = json_decode($this->getPostValue('data'), true, 512, JSON_THROW_ON_ERROR);
 
         if ($itemId === -1) {
             $item                 = new ConsultationAgendaItem();
@@ -108,7 +109,7 @@ trait ConsultationAgendaTrait
             $item->refresh();
 
             ob_start();
-            LayoutHelper::showAgendaItem($item, $this->consultation, true);
+            LayoutHelper::showAgendaItem($item, $this->consultation, $isResolutionList, true);
             $newHtml = ob_get_clean();
         } elseif ($data['type'] === 'date') {
             $item->title = mb_substr($data['title'], 0, 250);
@@ -124,7 +125,7 @@ trait ConsultationAgendaTrait
             $item->refresh();
 
             ob_start();
-            LayoutHelper::showDateAgendaItem($item, $this->consultation, true);
+            LayoutHelper::showDateAgendaItem($item, $this->consultation, $isResolutionList, true);
             $newHtml = ob_get_clean();
         } else {
             return new JsonResponse(['success' => false, 'message' => 'Unknown item type']);

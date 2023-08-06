@@ -67,6 +67,7 @@ return [
     'created_bread_publish'         => 'Published',
     'button_correct'                => 'Go back',
     'Prefix'                        => 'Signature',
+    'ResolutionPrefix'              => 'Signature',
     'Title'                         => 'Title',
     'replaces_motion'               => 'Replaces',
     'resolution_of'                 => 'Based on',
