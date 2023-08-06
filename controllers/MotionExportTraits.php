@@ -173,8 +173,7 @@ trait MotionExportTraits
 
         $imotionsFiltered = [];
         foreach ($imotions as $imotion) {
-            $resolutionStates = [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY];
-            if ($resolutions && !in_array($imotion->status, $resolutionStates)) {
+            if ($resolutions && !$imotion->isResolution()) {
                 continue;
             }
             if ($texTemplate === null) {

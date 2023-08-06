@@ -1,7 +1,7 @@
 @import "variables";
 
 .motionMergeConfirmForm {
-  .newMotionStatus, .newMotionInitiator {
+  .newMotionStatus, .newMotionInitiator, .newMotionSubstatus {
     label {
       font-weight: normal;
       display: block;
@@ -9,6 +9,16 @@
   }
   .contentMotionStatus {
     padding-bottom: 0;
+    @media screen and (min-width: $screenMinWith) {
+      display: flex;
+      width: 100%;
+      > * {
+        flex-basis: 50%;
+      }
+    }
+  }
+  .newMotionSubstatus .title {
+    font-weight: bold;
   }
   .contentVotingResult, .contentVotingResultComment {
     padding-bottom: 0;

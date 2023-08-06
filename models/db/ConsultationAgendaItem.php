@@ -342,7 +342,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         $return = [];
         foreach ($this->getMyIMotions() as $imotion) {
-            if (in_array($imotion->status, [IMotion::STATUS_RESOLUTION_PRELIMINARY, IMotion::STATUS_RESOLUTION_FINAL])) {
+            if ($imotion->isResolution()) {
                 $return[] = $imotion;
             }
         }

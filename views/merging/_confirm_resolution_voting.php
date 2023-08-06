@@ -4,17 +4,21 @@ use app\components\Tools;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
-/** @var Motion $motion */
+/**
+ * @var Motion $motion
+ * @var Motion $oldMotion
+ */
 
 $locale = Tools::getCurrentDateLocale();
 $date   = Tools::dateSql2bootstrapdate(date('Y-m-d'));
 
 $voting       = $motion->getVotingData();
 $votingOpened = $voting->hasAnyData();
+$statusesAll = $motion->getMyConsultation()->getStatuses()->getStatusNames();
 ?>
 <h2 class="green"><?= Yii::t('amend', 'merge_new_status') ?></h2>
-<div class="content row contentMotionStatus">
-    <div class="col-md-6 newMotionStatus">
+<div class="content contentMotionStatus">
+    <div class="newMotionStatus">
         <label>
             <input type="radio" name="newStatus" value="motion" checked>
             <?= Yii::t('amend', 'merge_new_status_screened') ?>
@@ -28,7 +32,7 @@ $votingOpened = $voting->hasAnyData();
             <?= Yii::t('amend', 'merge_new_status_res_p') ?>
         </label>
     </div>
-    <div class="col-md-6 newMotionInitiator">
+    <div class="newMotionInitiator">
         <label for="newInitiator"><?= Yii::t('amend', 'merge_new_orga') ?></label>
         <input class="form-control" name="newInitiator" type="text" id="newInitiator">
         <label for="dateResolution"><?= Yii::t('amend', 'merge_new_resolution_date') ?></label>
@@ -37,6 +41,21 @@ $votingOpened = $voting->hasAnyData();
                    value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
         </div>
+    </div>
+    <div class="newMotionSubstatus">
+        <div class="title"><?= Yii::t('amend', 'merge_new_substatus') ?>:</div>
+        <label>
+            <input type="radio" name="newSubstatus" value="unchanged" checked>
+            <?= Yii::t('amend', 'merge1_status_unchanged') ?> (<?= Html::encode($statusesAll[$oldMotion->status]) ?>)
+        </label>
+        <label>
+            <input type="radio" name="newSubstatus" value="<?= \app\models\db\IMotion::STATUS_ACCEPTED ?>">
+            <?= Yii::t('structure', 'STATUS_ACCEPTED') ?>
+        </label>
+        <label>
+            <input type="radio" name="newSubstatus" value="<?= \app\models\db\IMotion::STATUS_MODIFIED_ACCEPTED ?>">
+            <?= Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED') ?>
+        </label>
     </div>
 </div>
 <div class="content contentVotingResultCaller">
@@ -49,32 +68,32 @@ $votingOpened = $voting->hasAnyData();
         <?= Yii::t('amend', 'merge_new_votes_enter') ?>:
     </button>
 </div>
-<div class="content contentVotingResult row <?= ($votingOpened ? '' : 'hidden') ?>">
-    <div class="col-md-3">
+<div class="content contentVotingResult <?= ($votingOpened ? '' : 'hidden') ?>">
+    <div>
         <label for="votesYes"><?= Yii::t('amend', 'merge_new_votes_yes') ?></label>
         <input class="form-control" name="votes[yes]" type="number" id="votesYes"
-               value="<?= Html::encode($voting->votesYes ? $voting->votesYes : '') ?>">
+               value="<?= Html::encode($voting->votesYes ?: '') ?>">
     </div>
-    <div class="col-md-3">
+    <div>
         <label for="votesNo"><?= Yii::t('amend', 'merge_new_votes_no') ?></label>
         <input class="form-control" name="votes[no]" type="number" id="votesNo"
-               value="<?= Html::encode($voting->votesNo ? $voting->votesNo : '') ?>">
+               value="<?= Html::encode($voting->votesNo ?: '') ?>">
     </div>
-    <div class="col-md-3">
+    <div>
         <label for="votesAbstention"><?= Yii::t('amend', 'merge_new_votes_abstention') ?></label>
         <input class="form-control" name="votes[abstention]" type="number" id="votesAbstention"
-               value="<?= Html::encode($voting->votesAbstention ? $voting->votesAbstention : '') ?>">
+               value="<?= Html::encode($voting->votesAbstention ?: '') ?>">
     </div>
-    <div class="col-md-3">
+    <div>
         <label for="votesInvalid"><?= Yii::t('amend', 'merge_new_votes_invalid') ?></label>
         <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid"
-               value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
+               value="<?= Html::encode($voting->votesInvalid ?: '') ?>">
     </div>
 </div>
-<div class="content contentVotingResultComment row <?= ($votingOpened ? '' : 'hidden') ?>">
-    <div class="col-md-12">
+<div class="content contentVotingResultComment <?= ($votingOpened ? '' : 'hidden') ?>">
+    <div>
         <label for="votesComment"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
         <input class="form-control" name="votes[comment]" type="text" id="votesComment"
-               value="<?= Html::encode($voting->comment ? $voting->comment : '') ?>">
+               value="<?= Html::encode($voting->comment ?: '') ?>">
     </div>
 </div>

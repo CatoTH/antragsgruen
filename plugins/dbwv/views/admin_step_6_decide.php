@@ -58,8 +58,8 @@ echo Html::beginForm($submitUrl, 'POST', [
                 </label><br>
                 <div style="padding-left: 16px;">
                     <label>
-                        <?= Html::radio('decision', $decision === IMotion::STATUS_RESOLUTION_FINAL, ['value' => IMotion::STATUS_RESOLUTION_FINAL]) ?>
-                        <?= Yii::t('structure', 'STATUS_RESOLUTION_FINAL') ?>
+                        <?= Html::radio('decision', $decision === IMotion::STATUS_ACCEPTED, ['value' => IMotion::STATUS_ACCEPTED]) ?>
+                        <?= Yii::t('structure', 'STATUS_ACCEPTED') ?>
                     </label><br>
                     <label>
                         <?= Html::radio('decision', $decision === IMotion::STATUS_MODIFIED_ACCEPTED, ['value' => IMotion::STATUS_MODIFIED_ACCEPTED]) ?>

@@ -314,6 +314,7 @@ trait MotionMergingTrait
                 $newMotion,
                 array_map('intval', $this->getHttpRequest()->post('amendStatus', [])),
                 $this->getHttpRequest()->post('newStatus'),
+                $this->getHttpRequest()->post('newSubstatus'),
                 $this->getHttpRequest()->post('newInitiator', ''),
                 $this->getHttpRequest()->post('votes', []),
                 $this->getHttpRequest()->post('amendVotes', [])
@@ -333,6 +334,7 @@ trait MotionMergingTrait
         $mergingDraft = $oldMotion->getMergingDraft(false);
 
         return new HtmlResponse($this->render('@app/views/merging/confirm', [
+            'oldMotion'    => $oldMotion,
             'newMotion'    => $newMotion,
             'mergingDraft' => $mergingDraft,
             'changes'      => $changes,

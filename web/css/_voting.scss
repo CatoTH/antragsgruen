@@ -453,3 +453,19 @@
     font-weight: normal;
   }
 }
+
+.contentVotingResult {
+  display: flex;
+  width: 100%;
+  > * {
+    flex-basis: 25%;
+    padding-left: 15px;
+    padding-right: 15px;
+    &:first-child {
+      padding-left: 0;
+    }
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
