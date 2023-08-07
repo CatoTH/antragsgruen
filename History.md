@@ -6,7 +6,7 @@
 - It is now possible to copy/duplicate a motion within a consultation.
 - When editing a motion or amendment as admin, it is possible to set the status to "Obsoleted by another amendment" or "Obsoleted by another motion" and specify which one it is in a dropdown.
 - When creating a new consultation based on an existing one, it is now possible to choose if motion types, tags and/or user permissions are to be copied from the existing consultation or not.
-- When a list of organisations is specified in the consultation settings, this list is shown as a drop-down when creating / inviting new users.
+- When a list of organisations is specified in the user list (used to be in consultation settings), this list is shown as a drop-down when creating / inviting new users.
 - The list of resolutions made during a consultation, which is by default listed above the motion list on the home page, can now be put onto a separate page - or replace the motion list, moving the motion list to a separate page.
 - The list of tags / topics can now be re-ordered and existing tags can be renamed.
 - When choosing "Tags / categories" as home page layout, then the consolidated category-list at the top can now be deactivated.
