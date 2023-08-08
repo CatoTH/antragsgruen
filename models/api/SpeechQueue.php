@@ -20,6 +20,7 @@ class SpeechQueue
     public array $slots;
     public bool $requiresLogin;
     public ?string $otherActiveName;
+    public int $currentTime;
 
     /** @Ignore */
     private array $appliedUserIds;
@@ -71,6 +72,7 @@ class SpeechQueue
         $dto->subqueues = self::getSubqueues($entity);
         $dto->slots = self::getActiveSlots($entity);
         $dto->requiresLogin = $entity->getMyConsultation()->getSettings()->speechRequiresLogin;
+        $dto->currentTime = (int)round(microtime(true) * 1000); // needs to include milliseconds for accuracy
 
         $dto->otherActiveName = null;
         foreach ($entity->getMyConsultation()->speechQueues as $otherQueue) {
@@ -128,7 +130,7 @@ class SpeechQueue
             'subqueues' => array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toUserApi($this->settings->showNames, $user, $cookieUser), $this->subqueues),
             'slots' => array_map(fn(SpeechQueueActiveSlot $slot) => $slot->toApi(), $this->slots),
             'requires_login' => $this->requiresLogin,
-            'current_time' => (int)round(microtime(true) * 1000), // needs to include milliseconds for accuracy
+            'current_time' => $this->currentTime,
             'speaking_time' => $this->settings->speakingTime,
         ];
     }
@@ -145,7 +147,7 @@ class SpeechQueue
             'subqueues'         => array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toAdminApi(), $this->subqueues),
             'slots'             => array_map(fn(SpeechQueueActiveSlot $slot) => $slot->toApi(), $this->slots),
             'other_active_name' => $this->otherActiveName,
-            'current_time' => round(microtime(true) * 1000), // needs to include milliseconds for accuracy
+            'current_time' => $this->currentTime,
         ];
     }
 }

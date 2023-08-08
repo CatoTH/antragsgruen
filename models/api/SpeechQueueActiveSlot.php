@@ -10,7 +10,7 @@ class SpeechQueueActiveSlot
 {
     public int $id;
     public ?int $subqueueId;
-    private string $subqueueName;
+    public string $subqueueName;
     public string $name;
     public ?int $userId;
     public ?string $userToken;
@@ -46,8 +46,6 @@ class SpeechQueueActiveSlot
                 'name' => $this->subqueueName,
             ],
             'name' => $this->name,
-            'user_id' => $this->userId,
-            'user_token' => $this->userToken,
             'position' => $this->position,
             'date_started' => $this->dateStarted?->format('c'),
             'date_stopped' => $this->dateStopped?->format('c'),

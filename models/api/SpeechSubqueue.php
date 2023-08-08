@@ -30,14 +30,15 @@ class SpeechSubqueue
 
     public function toUserApi(bool $showNames, ?User $user, ?CookieUser $cookieUser): array
     {
+        $applied = array_values(array_filter($this->items, fn(SpeechSubqueueItem $item): bool => $item->isApplication()));
+
         $data = [
             'id' => $this->id,
             'name' => $this->name,
-            'num_applied'  => count($this->items),
+            'num_applied'  => count($applied),
             'have_applied' => false, // true if a user (matching userID or userToken) is on the list, but has not spoken yet (including assigned places)
         ];
 
-        $applied = array_values(array_filter($this->items, fn(SpeechSubqueueItem $item): bool => $item->isApplication()));
         foreach ($applied as $item) {
             if (!$item->dateStarted && $item->isMe($user, $cookieUser)) {
                 $data['have_applied'] = true;
