@@ -45,6 +45,8 @@ return [
     'supporting_logged_out_warning'      => 'Achtung: Du bist nicht eingeloggt. Unterstützungen, die ohne Login ausgesprochen werden, können nur für kurze Zeit zurückgenommen werden.',
     'supporting_no_orga_error'           => 'Achtung: dein Gremium konnte nicht ermittelt werden. Das ist zum Unterstützen aber notwendig. Bitte melde dich bei den Administrator*innen dieser Veranstaltung, um das Problem zu klären.',
     'likes_title'                        => 'Zustimmung',
+    'likes_name'                         => 'Name',
+    'likes_introduction'                 => ' ',
     'like'                               => 'Zustimmung',
     'likes'                              => 'Zustimmung',
     'likes_total'                        => 'Insgesamt %NUM% Zustimmungen.',

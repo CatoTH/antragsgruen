@@ -189,6 +189,12 @@ trait MotionActionsTrait
             throw new FormError('Supporting this motion is not possible');
         }
 
+        if (User::getCurrentUser()) {
+            $name = '';
+        } else {
+            $name = $this->getHttpRequest()->post('likeName', '');
+        }
+
         MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender, $nonPublic);
 
         $this->getHttpSession()->setFlash('success', $string);
