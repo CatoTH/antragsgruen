@@ -484,6 +484,10 @@ class LayoutHelper
         $str = '<section class="likes" aria-labelledby="likesTitle"><h2 class="green" id="likesTitle">' . \Yii::t('motion', 'likes_title') . '</h2>
     <div class="content">';
 
+        if (trim(\Yii::t('motion', 'likes_introduction')) !== '') {
+            $str .= '<div class="alert alert-info"><p>' . \Yii::t('motion', 'likes_introduction') . '</p></div>';
+        }
+
         if ($hasLike && count($likes) > 0) {
             if ($hasDislike) {
                 $str .= '<strong>' . \Yii::t('motion', 'likes') . ':</strong><br>';
@@ -501,7 +505,7 @@ class LayoutHelper
         if ($canSupport) {
             $str .= Html::beginForm();
 
-            $str .= '<div style="text-align: center; margin-bottom: 20px;">';
+            $str .= '<div class="likeDislikeHolder">';
             switch ($supportStatus) {
                 case ISupporter::ROLE_INITIATOR:
                     break;
@@ -512,6 +516,13 @@ class LayoutHelper
                     $str .= '</button>';
                     break;
                 default:
+                    if (!$user) {
+                        $str .= '<div class="likeNameHolder"><label class="input-group">';
+                        $str .= '<span class="input-group-addon">' . \Yii::t('motion', 'likes_name') . '</span>';
+                        $str .= '<input type="text" name="likeName" required class="form-control">';
+                        $str .= '</label></div>';
+                    }
+
                     if ($hasLike) {
                         $str .= '<button type="submit" name="motionLike" class="btn btn-success">';
                         $str .= '<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> ' . \Yii::t('motion', 'like');

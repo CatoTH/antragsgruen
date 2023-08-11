@@ -181,23 +181,14 @@ class AmendmentController extends Base
         ];
 
         try {
-            $this->performShowActions($amendment, intval($commentId), $amendmentViewParams);
+            $this->performShowActions($amendment, $commentId, $amendmentViewParams);
         } catch (ResponseException $e) {
             throw $e;
         } catch (\Throwable $e) {
             $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
 
-        $supportStatus = '';
-        if (User::getCurrentUser()) {
-            foreach ($amendment->amendmentSupporters as $supp) {
-                if ($supp->userId == User::getCurrentUser()->id) {
-                    $supportStatus = $supp->role;
-                }
-            }
-        }
-        $amendmentViewParams['supportStatus'] = $supportStatus;
-
+        $amendmentViewParams['supportStatus'] = AmendmentSupporter::getCurrUserSupportStatus($amendment);
 
         return new HtmlResponse($this->render('view', $amendmentViewParams));
     }

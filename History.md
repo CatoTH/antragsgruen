@@ -21,6 +21,7 @@
 
 ### Version 4.12.1 [not released yet]
 
+- Bugfix: If not-logged-in users are allowed to support motions/amendments, they showed up as empty bullet points in the supporter list. Now they have to enter their name.
 - Bugfix: The delete button in the admin motion list was shown even if no delete permissions were granted and it was therefore non-functional.
 - Bugfix: If a motion collecting supporters was edited by an admin, then no publication mail was sent later when it was actually published.
 
