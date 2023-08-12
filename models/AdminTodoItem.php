@@ -247,6 +247,11 @@ class AdminTodoItem
         return $count;
     }
 
+    public static function flushConsultationTodoCount(): void
+    {
+        HashedStaticCache::flushCache('getConsultationTodoCount', [User::getCurrentUser()?->id]);
+    }
+
     /**
      * @param IMotion $IMotion
      *

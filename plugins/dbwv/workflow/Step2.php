@@ -95,6 +95,8 @@ class Step2
         }
         unset($motion);
 
+        AdminTodoItem::flushConsultationTodoCount();
+
         return $v3Motion;
     }
 }

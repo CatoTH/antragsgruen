@@ -99,6 +99,8 @@ class Step5
         }
         unset($motion);
 
+        AdminTodoItem::flushConsultationTodoCount();
+
         return $v6Motion;
     }
 }

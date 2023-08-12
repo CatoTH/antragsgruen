@@ -96,7 +96,8 @@ class Step3
                     $motion->agendaItem,
                     $motion->titlePrefix,
                     Workflow::STEP_V4,
-                    true
+                    true,
+                    [MotionDeepCopy::SKIP_PROPOSED_PROCEDURE]
                 );
                 $v4Motion->status = $status;
                 $v4Motion->proposalComment = $comment;
@@ -116,6 +117,8 @@ class Step3
         unset($motion);
 
         $v4Motion->setProtocol($protocol, $protocolPublic);
+
+        AdminTodoItem::flushConsultationTodoCount();
 
         return new RedirectResponse(UrlHelper::createMotionUrl($v4Motion));
     }

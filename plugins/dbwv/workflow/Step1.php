@@ -115,6 +115,8 @@ class Step1
             $v2Motion->save();
         }
 
+        AdminTodoItem::flushConsultationTodoCount();
+
         return $v2Motion;
     }
 }
