@@ -19,6 +19,7 @@ class Module extends ModuleBase
     public const PRIVILEGE_DBWV_ASSIGN_TOPIC = -100;
     public const PRIVILEGE_DBWV_V1_EDITORIAL = -101;
     public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -102;
+    public const PRIVILEGE_DBWV_V7_PUBLISH_RESOLUTION = -103;
 
     public const CONSULTATION_URL_BUND = 'hv';
     public const GROUP_NAME_DELEGIERTE = 'Delegierte';
@@ -81,6 +82,13 @@ class Module extends ModuleBase
         $origPrivileges[] = new Privilege(
             self::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
             'V4: Zur Hauptversammlung übertragen',
+            true,
+            null
+        );
+
+        $origPrivileges[] = new Privilege(
+            self::PRIVILEGE_DBWV_V7_PUBLISH_RESOLUTION,
+            'V7: Beschlüsse veröffentlichen',
             true,
             null
         );

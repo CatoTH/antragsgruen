@@ -23,7 +23,7 @@ class Step6
             return null;
         }
 
-        if (Workflow::canSetRecommendationV5($motion) && !$motion->isProposalPublic()) {
+        if (Workflow::shouldPublishRecommendationV5($motion) && !$motion->isProposalPublic()) {
             return new AdminTodoItem(
                 'todoDbwvSetPp' . $motion->id,
                 $motion->getTitleWithPrefix(),

@@ -116,6 +116,17 @@ class Workflow
         return $motion->canEditProposedProcedure();
     }
 
+    public static function shouldPublishRecommendationV5(Motion $motion): bool
+    {
+        if ($motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
+            return true;
+        }
+        if ($motion->isVisible()) {
+            return false;
+        }
+        return $motion->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CHANGE_PROPOSALS, null); // This is "Arbeitsgruppe Leitung"
+    }
+
     public static function canSetResolutionV6(Motion $motion): bool
     {
         return $motion->getMyConsultation()->havePrivilege(
