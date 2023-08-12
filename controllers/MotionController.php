@@ -91,16 +91,7 @@ class MotionController extends Base
             $this->getHttpSession()->setFlash('error', $e->getMessage());
         }
 
-        $supportStatus = '';
-        if (!RequestContext::getUser()->isGuest) {
-            foreach ($motion->motionSupporters as $supp) {
-                if ($supp->userId === User::getCurrentUser()->id) {
-                    $supportStatus = $supp->role;
-                }
-            }
-        }
-        $motionViewParams['supportStatus'] = $supportStatus;
-
+        $motionViewParams['supportStatus'] = MotionSupporter::getCurrUserSupportStatus($motion);
 
         return new HtmlResponse($this->render('view', $motionViewParams));
     }

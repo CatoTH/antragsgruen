@@ -244,6 +244,12 @@ trait AmendmentActionsTrait
             throw new FormError('Supporting this amendment is not possible');
         }
 
+        if (User::getCurrentUser()) {
+            $name = '';
+        } else {
+            $name = $this->getHttpRequest()->post('likeName', '');
+        }
+
         AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role, $gender, $nonPublic);
 
         $this->getHttpSession()->setFlash('success', $string);

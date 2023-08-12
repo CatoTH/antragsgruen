@@ -64,17 +64,33 @@ class AmendmentSupporter extends ISupporter
      */
     public static function getMyLoginlessSupportIds(): array
     {
-        return array_merge(
-            RequestContext::getSession()->get('loginless_amendment_supports', []),
-            RequestContext::getSession()->get('anonymous_amendment_supports', []) // @TODO After v4.8
-        );
+        return RequestContext::getSession()->get('loginless_amendment_supports', []);
     }
 
-    public static function addLoginlessSupportedAmendment(AmendmentSupporter $support)
+    public static function addLoginlessSupportedAmendment(AmendmentSupporter $support): void
     {
         $pre   = self::getMyLoginlessSupportIds();
         $pre[] = intval($support->id);
-        RequestContext::getSession()->set('anonymous_amendment_supports', $pre);
+        RequestContext::getSession()->set('loginless_amendment_supports', $pre);
+    }
+
+    public static function getCurrUserSupportStatus(Amendment $amendment): string
+    {
+        if (User::getCurrentUser()) {
+            foreach ($amendment->amendmentSupporters as $supp) {
+                if ($supp->userId === User::getCurrentUser()->id) {
+                    return $supp->role;
+                }
+            }
+        } else {
+            $supportedIds = self::getMyLoginlessSupportIds();
+            foreach ($amendment->amendmentSupporters as $supp) {
+                if (in_array($supp->id, $supportedIds)) {
+                    return $supp->role;
+                }
+            }
+        }
+        return '';
     }
 
     public static function createSupport(Amendment $amendment, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false): void
