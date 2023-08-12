@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\plugins\dbwv\workflow;
 
 use app\models\AdminTodoItem;
-use app\models\db\{ConsultationSettingsTag, IMotion, User, Motion};
+use app\models\db\{ConsultationSettingsTag, IMotion, Motion};
 use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
 use app\models\forms\MotionDeepCopy;
 use app\models\exceptions\Access;

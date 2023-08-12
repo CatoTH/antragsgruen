@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
-use app\components\MotionNumbering;
-use app\components\RequestContext;
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
 use app\models\AdminTodoItem;
 use app\models\forms\MotionDeepCopy;
 use app\models\db\{ConsultationSettingsTag, IMotion, Motion};

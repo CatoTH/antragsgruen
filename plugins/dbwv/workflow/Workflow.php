@@ -135,6 +135,14 @@ class Workflow
         );
     }
 
+    public static function canPublishResolutionV7(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->havePrivilege(
+            Module::PRIVILEGE_DBWV_V7_PUBLISH_RESOLUTION,
+            PrivilegeQueryContext::motion($motion)
+        );
+    }
+
     /**
      * @return AdminTodoItem[]
      */
@@ -160,6 +168,9 @@ class Workflow
                     break;
                 case self::STEP_V6:
                     $todo[] = Step6::getAdminTodo($motion);
+                    break;
+                case self::STEP_V7:
+                    $todo[] = Step7::getAdminTodo($motion);
                     break;
             }
         }

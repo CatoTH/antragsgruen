@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace app\plugins\dbwv\workflow;
 
 use app\models\AdminTodoItem;
-use app\models\db\IMotion;
-use app\models\db\MotionSupporter;
-use app\models\db\User;
+use app\models\db\{IMotion, MotionSupporter, User, Motion};
 use app\models\exceptions\Access;
 use app\models\forms\MotionDeepCopy;
 use app\models\http\RedirectResponse;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
-use app\models\db\Motion;
 
 class Step6
 {
@@ -105,7 +102,7 @@ class Step6
                 $newInitiator->organization = $motion->getMyConsultation()->title;
                 $newInitiator->resolutionDate = date('Y-m-d H:i:s');
 
-                $v7Motion = $motion->followProposalAndCreateNewVersion(Workflow::STEP_V7, Motion::STATUS_RESOLUTION_FINAL, [$newInitiator]);
+                $v7Motion = $motion->followProposalAndCreateNewVersion(Workflow::STEP_V7, Motion::STATUS_ACCEPTED, [$newInitiator]);
             } else {
                 if ($status === IMotion::STATUS_MODIFIED_ACCEPTED) {
                     $motion->setProtocol($protocol, $protocolPublic);

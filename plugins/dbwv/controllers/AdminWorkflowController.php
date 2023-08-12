@@ -9,7 +9,7 @@ use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\ConsultationSettingsTag;
 use app\models\exceptions\{Access, NotFound};
-use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Step6, Workflow};
+use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Step6, Step7, Workflow};
 use app\models\http\{HtmlErrorResponse, RedirectResponse, ResponseInterface};
 
 class AdminWorkflowController extends Base
@@ -142,5 +142,18 @@ class AdminWorkflowController extends Base
         $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
         return $response;
+    }
+
+    public function actionStep7PublishResolution(string $motionSlug): ResponseInterface
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return new HtmlErrorResponse(404,  'Motion not found');
+        }
+
+        $newMotion = Step7::saveResolution($motion, $this->getPostValues());
+
+        $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
+        return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));
     }
 }

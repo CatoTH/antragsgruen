@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\sectionTypes\{ISectionType, TabularData};
-use app\models\settings\AntragsgruenApp;
+use app\models\settings\{AntragsgruenApp, MotionSection as MotionSectionSettings};
 use yii\db\ActiveRecord;
 
 /**
@@ -63,18 +63,17 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
-    /** @var null|\app\models\settings\MotionSection */
-    private $settingsObject = null;
+    private ?MotionSectionSettings $settingsObject = null;
 
-    public function getSettingsObj(): \app\models\settings\MotionSection
+    public function getSettingsObj(): MotionSectionSettings
     {
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new \app\models\settings\MotionSection($this->settings);
+            $this->settingsObject = new MotionSectionSettings($this->settings);
         }
         return $this->settingsObject;
     }
 
-    public function setSettingsObj(\app\models\settings\MotionSection $settings): void
+    public function setSettingsObj(MotionSectionSettings $settings): void
     {
         $this->settingsObject = $settings;
         $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);

@@ -126,6 +126,7 @@ class Module extends ModuleBase
             'workflow-step4' => 'dbwv/admin-workflow/step4next',
             'workflow-step5-assign-number' => 'dbwv/admin-workflow/step5-assign-number',
             'workflow-step6-decide' => 'dbwv/admin-workflow/step6decide',
+            'workflow-step7-publish-resolution' => 'dbwv/admin-workflow/step7-publish-resolution',
         ];
     }
 

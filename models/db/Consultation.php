@@ -565,7 +565,7 @@ class Consultation extends ActiveRecord
      * @param ConsultationSettingsTag[] $tags
      * @throws NotFound
      */
-    public function getNextMotionPrefix(int $motionTypeId, array $tags): string
+    public function getNextMotionPrefix(int $motionTypeId, array $tags, ?string $forcePrefix = null): string
     {
         $max_rev = 0;
         $motionType = $this->getMotionType($motionTypeId);
@@ -578,10 +578,13 @@ class Consultation extends ActiveRecord
                 $prefix = $tag->getSettingsObj()->motionPrefix;
             }
         }
-
         if ($prefix === '' || $prefix === null) {
             $prefix = 'A';
         }
+        if ($forcePrefix) {
+            $prefix = $forcePrefix;
+        }
+
         $prefixLen = (int)grapheme_strlen($prefix);
         foreach ($this->motions as $motion) {
             if ($motion->status !== Motion::STATUS_DELETED) {
