@@ -92,7 +92,7 @@ if ($layout->provideJwt && $params->jwtPrivateKey && $user && $consultation) {
 }
 if ($layout->connectLiveEvents && $params->live && $user && $consultation) {
     echo '<meta name="live-config" content="' . Html::encode(json_encode(\app\components\LiveTools::getJsConfig($consultation, $user))) . '">' . "\n";
-    echo '<script src="' . $layout->resourceUrl('npm/stomp.umd.min.js') . '"></script>';
+    echo '<script src="' . Html::encode($params->live['stompJsUri']) . '"></script>';
 }
 echo \app\models\layoutHooks\Layout::favicons();
 
