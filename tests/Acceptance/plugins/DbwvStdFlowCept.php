@@ -172,7 +172,10 @@ $I->dontSeeElement('#pp_section_2');
 $I->see('Dritter Absatz', '#section_2_2');
 $I->dontSee('Third paragraph', '#section_2_2');
 $I->gotoConsultationHome(true, 'std', 'lv-sued');
-$I->see('Testantrag', '.resolutionList .motionLink4');
+$I->dontSeeElement('.resolutionList .motionLink4');
+$I->click('#sidebarResolutions');
+$I->see('Beschlussnummer', '.prefixCol');
+$I->see('Testantrag', '.motionLink4');
 $I->logout();
 
 
@@ -207,7 +210,16 @@ $I->click('.goBackLink');
 $I->dontSee('Lorem ipsum dolor', '#pp_section_5');
 $I->see('Vierter', '#pp_section_5 ins');
 $I->assertFalse($I->executeJS('return $("#proposedChanges .proposalStatus6 input").prop("disabled")'));
+$I->dontSeeElement('#adminTodo');
+$I->logout();
+
+
+$I->wantTo('Arbeitsgruppe Leitung: Verfahrensvorschlag veröffentlichen');
+$I->loginAsDbwvTestUser('hv-arbeitsgruppe-leitung');
 $I->see('To Do (1)', '#adminTodo');
+$I->click('#adminTodo');
+$I->see('Verfahrensvorschlag veröffentlichen');
+$I->click('.todoDbwvSetPp6 a');
 $I->executeJS('$("#proposedChanges input[name=\"proposalVisible\"]").prop("checked", true).trigger("change")');
 $I->clickJS('#proposedChanges .saving button');
 $I->wait(0.5);
@@ -256,6 +268,23 @@ $I->dontSeeElement('#pp_section_5');
 $I->see('Vierter Absatz', '#section_5_2');
 $I->dontSee('Dritter Absatz', '#section_5_2');
 $I->gotoConsultationHome(true, 'std', 'hv');
-$I->see('Testantrag', '.resolutionList .motionLink7');
+$I->see('Testantrag', '.motionListTags .motionLink7');
 $I->click('.motionLink7');
 $I->logout();
+
+
+$I->wantTo('Beschlussveröffentlichung');
+$I->loginAsDbwvTestUser('hv-beschlussfassung');
+$I->see('To Do (1)', '#adminTodo');
+$I->click('#adminTodo');
+$I->see('Beschluss veröffentlichen');
+$I->click('.todoDbwvPublishResolution7 a');
+$I->seeInField('#dbwv_step7_prefix', 'B/01');
+$I->submitForm('#dbwv_step7_publish_resolution', [], '');
+$I->dontSee('To Do (1)', '#adminTodo');
+$I->dontSee('Begründung');
+$I->see('V8: Beschluss im Beschlussumdruck', '.motionHistory .currentVersion');
+$I->gotoConsultationHome(true, 'std', 'hv');
+$I->see('Testantrag', '.motionListTags .motionLink7');
+$I->click('#sidebarResolutions');
+$I->see('Testantrag', '.motionLink8');

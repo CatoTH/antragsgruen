@@ -1,29 +1,27 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace app\models\forms;
 
-use app\models\db\{Amendment,
-    AmendmentAdminComment,
-    AmendmentComment,
-    AmendmentSection,
-    AmendmentSupporter,
-    ConsultationAgendaItem,
-    ConsultationMotionType,
-    Motion,
-    MotionAdminComment,
-    MotionComment,
-    MotionSection,
-    MotionSupporter};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSection, AmendmentSupporter, ConsultationAgendaItem, ConsultationMotionType, Motion, MotionAdminComment, MotionComment, MotionSection, MotionSupporter};
 
 class MotionDeepCopy
 {
+    public const SKIP_NON_AMENDABLE = 'non_amendable';
+    public const SKIP_SUPPORTERS = 'supporters';
+    public const SKIP_COMMENTS = 'comments';
+    public const SKIP_AMENDMENTS = 'amendments';
+    public const SKIP_PROPOSED_PROCEDURE = 'proposed_procedure';
+
     public static function copyMotion(
         Motion $motion,
         ConsultationMotionType $motionType,
         ?ConsultationAgendaItem $agendaItem,
         string $newPrefix,
         string $newVersion,
-        bool $linkMotions
+        bool $linkMotions,
+        array $skip = []
     ): Motion
     {
         $newConsultation = $motionType->getConsultation();
@@ -45,20 +43,45 @@ class MotionDeepCopy
         $newMotion->version = $newVersion;
         $newMotion->parentMotionId = ($linkMotions ? $motion->id : null);
 
+        if (in_array(self::SKIP_PROPOSED_PROCEDURE, $skip)) {
+            self::resetProposedProcedure($newMotion);
+        }
+
         $newMotion->save();
 
         self::copyTags($motion, $newMotion);
-        self::copyMotionSections($motion, $newMotion);
-        self::copyMotionSupporters($motion, $newMotion);
-        self::copyMotionAdminComments($motion, $newMotion);
-        self::copyMotionComments($motion, $newMotion);
-        self::copyAmendments($motion, $newMotion);
+        self::copyMotionSections($motion, $newMotion, $skip);
+        if (!in_array(self::SKIP_SUPPORTERS, $skip)) {
+            self::copyMotionSupporters($motion, $newMotion);
+        }
+        if (!in_array(self::SKIP_COMMENTS, $skip)) {
+            self::copyMotionAdminComments($motion, $newMotion);
+            self::copyMotionComments($motion, $newMotion);
+        }
+        if (!in_array(self::SKIP_AMENDMENTS, $skip)) {
+            self::copyAmendments($motion, $newMotion);
+        }
 
         if ($newMotion->motionTypeId !== $motionType->id) {
             $newMotion->setMotionType($motionType);
         }
 
         return $newMotion;
+    }
+
+    private static function resetProposedProcedure(Motion $newMotion): void
+    {
+        $newMotion->proposalStatus = null;
+        $newMotion->proposalReferenceId = null;
+        $newMotion->proposalVisibleFrom = null;
+        $newMotion->proposalComment = null;
+        $newMotion->proposalNotification = null;
+        $newMotion->proposalUserStatus = null;
+        $newMotion->proposalExplanation = null;
+        $newMotion->votingBlockId = null;
+        $newMotion->votingData = null;
+        $newMotion->votingStatus = null;
+        $newMotion->responsibilityId = null;
     }
 
     private static function copyTags(Motion $oldMotion, Motion $newMotion): void
@@ -73,9 +96,12 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyMotionSections(Motion $oldMotion, Motion $newMotion): void
+    private static function copyMotionSections(Motion $oldMotion, Motion $newMotion, array $skip): void
     {
         foreach ($oldMotion->sections as $section) {
+            if (!$section->getSettings()->hasAmendments && in_array(self::SKIP_NON_AMENDABLE, $skip)) {
+                continue;
+            }
             $newSection = new MotionSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->setData($section->getData());

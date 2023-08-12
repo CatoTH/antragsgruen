@@ -19,6 +19,7 @@ class Module extends ModuleBase
     public const PRIVILEGE_DBWV_ASSIGN_TOPIC = -100;
     public const PRIVILEGE_DBWV_V1_EDITORIAL = -101;
     public const PRIVILEGE_DBWV_V4_MOVE_TO_MAIN = -102;
+    public const PRIVILEGE_DBWV_V7_PUBLISH_RESOLUTION = -103;
 
     public const CONSULTATION_URL_BUND = 'hv';
     public const GROUP_NAME_DELEGIERTE = 'Delegierte';
@@ -85,6 +86,13 @@ class Module extends ModuleBase
             null
         );
 
+        $origPrivileges[] = new Privilege(
+            self::PRIVILEGE_DBWV_V7_PUBLISH_RESOLUTION,
+            'V7: Beschlüsse veröffentlichen',
+            true,
+            null
+        );
+
         return $origPrivileges;
     }
 
@@ -118,6 +126,7 @@ class Module extends ModuleBase
             'workflow-step4' => 'dbwv/admin-workflow/step4next',
             'workflow-step5-assign-number' => 'dbwv/admin-workflow/step5-assign-number',
             'workflow-step6-decide' => 'dbwv/admin-workflow/step6decide',
+            'workflow-step7-publish-resolution' => 'dbwv/admin-workflow/step7-publish-resolution',
         ];
     }
 

@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace app\plugins\dbwv\workflow;
 
 use app\models\AdminTodoItem;
-use app\models\db\IMotion;
-use app\models\db\MotionSupporter;
+use app\models\db\{IMotion, MotionSupporter, Motion};
 use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
-use app\models\db\Motion;
 use app\models\exceptions\Access;
 use app\models\forms\MotionDeepCopy;
 use app\models\http\RedirectResponse;

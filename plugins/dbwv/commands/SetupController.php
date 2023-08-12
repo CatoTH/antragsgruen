@@ -16,13 +16,15 @@ class SetupController extends Controller
     private const GROUP_NAME_LV_VORSTAND = 'LV Vorstand';
     private const GROUP_NAME_AL_RECHT = 'AL Recht';
     private const GROUP_NAME_V1_REFERAT = 'Referat %NAME% (V1)';
-    private const GROUP_NAME_V2_BUEROLEITUNG = 'Büroleitung';
+    private const GROUP_NAME_V2_BUEROLEITUNG = 'Antrags-Veröffentlichung';
     private const GROUP_NAME_V2_AUSSCHUSS = 'Ausschuss %NAME% (V2)';
     private const GROUP_NAME_V3_REDAKTION = 'Redaktionsausschuss';
     private const GROUP_NAME_V4_KOORDINIERUNG = 'Koordinierungsausschuss';
     private const GROUP_NAME_V5_ARBEITSGRUPPE = 'Arbeitsgruppe %NAME% (V5)';
-    private const GROUP_NAME_V6_BUEROLEITUNG = 'Büroleitung';
-    private const GROUP_NAME_V7_REDAKTION = 'Redaktionsausschuss';
+    private const GROUP_NAME_V5_ARBEITSGRUPPE_LEITUNG = 'Arbeitsgruppe Leitung (V5)';
+    private const GROUP_NAME_V6_BUEROLEITUNG = 'Antrags-Veröffentlichung';
+    private const GROUP_NAME_V6_REDAKTION = 'Redaktionsausschuss';
+    private const GROUP_NAME_V7_BESCHLUSSFASSUNG = 'Veröffentlichung Beschlüsse (V7)';
 
     /** @var array{array{title: string, motionPrefix: string|null, position: int, themengebiete: array{array{title: string, position: int}}}}  */
     private const AGENDA_ITEMS_SACHGEBIETE = [
@@ -171,10 +173,20 @@ class SetupController extends Controller
             $group->save();
         }
 
-        $redaktion = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_V7_REDAKTION);
+        $group = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_V5_ARBEITSGRUPPE_LEITUNG);
+        $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_CHANGE_PROPOSALS . ']}]}';
+        $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
+        $group->save();
+
+        $redaktion = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_V6_REDAKTION);
         $redaktionPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_MOTION_STATUS_EDIT . ']}]}';
         $redaktion->setGroupPermissions(UserGroupPermissions::fromDatabaseString($redaktionPrivileges, false));
         $redaktion->save();
+
+        $group = ConsultationUserGroup::getOrCreateUserGroup($consultation, self::GROUP_NAME_V7_BESCHLUSSFASSUNG);
+        $groupPrivileges = '{"privileges":[{"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Module::PRIVILEGE_DBWV_V7_PUBLISH_RESOLUTION . ']}]}';
+        $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
+        $group->save();
     }
 
     private function findExistingMainTag(Consultation $consultation, string $title): ?ConsultationSettingsTag
@@ -459,12 +471,32 @@ class SetupController extends Controller
             }
         }
 
-        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V7_REDAKTION]);
+        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V5_ARBEITSGRUPPE_LEITUNG]);
         if (!$group) {
-            echo "Group " . self::GROUP_NAME_V7_REDAKTION . " not found\n";
+            echo "Group " . self::GROUP_NAME_V5_ARBEITSGRUPPE . " not found\n";
+            return;
+        }
+        $user = $this->createOrGetUserAccount($urlPath.'-arbeitsgruppe-leitung@example.org', 'Test', 'Arbeitsgruppe', 'Leitung', 'DBwV');
+        if (count($user->userGroups) === 0) {
+            $group->addUser($user);
+        }
+
+        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V6_REDAKTION]);
+        if (!$group) {
+            echo "Group " . self::GROUP_NAME_V6_REDAKTION . " not found\n";
             return;
         }
         $user = $this->createOrGetUserAccount($urlPath.'-redaktion@example.org', 'Test', 'Redaktions', 'Ausschuss', 'DBwV');
+        if (count($user->userGroups) === 0) {
+            $group->addUser($user);
+        }
+
+        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => self::GROUP_NAME_V7_BESCHLUSSFASSUNG]);
+        if (!$group) {
+            echo "Group " . self::GROUP_NAME_V7_BESCHLUSSFASSUNG . " not found\n";
+            return;
+        }
+        $user = $this->createOrGetUserAccount($urlPath.'-beschlussfassung@example.org', 'Test', 'Beschlüsse', 'Veröffentlichen', 'DBwV');
         if (count($user->userGroups) === 0) {
             $group->addUser($user);
         }

@@ -9,7 +9,7 @@ use app\components\{RequestContext, UrlHelper};
 use app\controllers\admin\MotionListController;
 use app\models\layoutHooks\StdHooks;
 use app\models\db\{Consultation, ConsultationUserGroup, IMotion, Motion, User};
-use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Step6, Workflow};
+use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Step6, Step7, Workflow};
 use yii\helpers\Html;
 
 class LayoutHooks extends StdHooks
@@ -98,6 +98,8 @@ class LayoutHooks extends StdHooks
                 return Step5::renderMotionAdministration($motion) . $before;
             case Workflow::STEP_V6:
                 return Step6::renderMotionAdministration($motion) . $before;
+            case Workflow::STEP_V7:
+                return Step7::renderMotionAdministration($motion) . $before;
             default:
                 return $before;
         }

@@ -4,19 +4,12 @@ declare(strict_types=1);
 
 namespace app\plugins\dbwv\workflow;
 
-use app\components\MotionNumbering;
-use app\components\RequestContext;
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{MotionNumbering, RequestContext, Tools, UrlHelper};
 use app\models\AdminTodoItem;
-use app\models\db\ConsultationSettingsTag;
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\MotionSupporter;
+use app\models\db\{ConsultationSettingsTag, IMotion, Motion, MotionSupporter};
 use app\models\exceptions\Access;
 use app\models\forms\MotionDeepCopy;
 use app\plugins\dbwv\Module;
-use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 class Step4
 {
@@ -117,25 +110,12 @@ class Step4
             null,
             '',
             Workflow::STEP_V5,
-            true
+            true,
+            [MotionDeepCopy::SKIP_SUPPORTERS, MotionDeepCopy::SKIP_COMMENTS, MotionDeepCopy::SKIP_PROPOSED_PROCEDURE]
         );
         $v5Motion->status = IMotion::STATUS_SUBMITTED_UNSCREENED;
-        $v5Motion->proposalStatus = null;
-        $v5Motion->proposalReferenceId = null;
-        $v5Motion->proposalVisibleFrom = null;
-        $v5Motion->proposalComment = null;
-        $v5Motion->proposalNotification = null;
-        $v5Motion->proposalUserStatus = null;
-        $v5Motion->proposalExplanation = null;
-        $v5Motion->votingBlockId = null;
-        $v5Motion->votingData = null;
-        $v5Motion->votingStatus = null;
-        $v5Motion->responsibilityId = null;
         $v5Motion->save();
 
-        foreach ($v5Motion->motionSupporters as $motionSupporter) {
-            $v5Motion->unlink('motionSupporters', $motionSupporter, true);
-        }
         $newProposer = new MotionSupporter();
         $newProposer->motionId = $v5Motion->id;
         $newProposer->position = 0;
