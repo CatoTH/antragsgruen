@@ -22,7 +22,7 @@ class SpeechSubqueueItem
     {
         $dto = new self();
         $dto->id = $entity->id;
-        $dto->name = $entity->name;
+        $dto->name = $entity->getLocalizedName();
         $dto->userId = $entity->userId;
         $dto->userToken = $entity->userToken;
         $dto->isPointOfOrder = $entity->isPointOfOrder();

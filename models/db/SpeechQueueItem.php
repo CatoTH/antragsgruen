@@ -90,4 +90,13 @@ class SpeechQueueItem extends ActiveRecord
     {
         return str_starts_with($this->name, self::POO_MARKER);
     }
+
+    public function getLocalizedName(): string
+    {
+        if ($this->isPointOfOrder()) {
+            return str_replace(self::POO_MARKER, '[[' . \Yii::t('speech', 'name_poo') . ']]', $this->name);
+        } else {
+            return $this->name;
+        }
+    }
 }

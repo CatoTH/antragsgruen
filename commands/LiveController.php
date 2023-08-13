@@ -44,7 +44,7 @@ class LiveController extends Controller
 
         $queue = null;
         foreach ($consultation->speechQueues as $speechQueue) {
-            if ($speechQueue->id) {
+            if ($speechQueue->id === $speechId) {
                 $queue = $speechQueue;
             }
         }
