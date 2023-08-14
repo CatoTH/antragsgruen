@@ -11,7 +11,7 @@ use Firebase\JWT\JWT;
 
 class JwtCreator
 {
-    public static function createJwt(User $user, Consultation $consultation): string
+    public static function createJwt(Consultation $consultation, string $userId): string
     {
         $params = AntragsgruenApp::getInstance();
         if (!file_exists($params->jwtPrivateKey)) {
@@ -23,7 +23,7 @@ class JwtCreator
             'iss' => $params->domainPlain,
             'iat' => time(),
             'exp' => time() + 600, // 10 minutes
-            'sub' => $user->id,
+            'sub' => $userId,
             'payload' => [
                 'consultation' => $consultation->urlPath,
                 'site' => $consultation->site->subdomain,

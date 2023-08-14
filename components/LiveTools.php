@@ -12,7 +12,18 @@ use GuzzleHttp\{Client, Exception\GuzzleException, RequestOptions};
 
 class LiveTools
 {
-    public static function getJsConfig(Consultation $consultation, User $user): array
+    public static function getCurrUserId(): string
+    {
+        if ($user = User::getCurrentUser()) {
+            return 'login-' . $user->id;
+        } elseif ($cookieUser = CookieUser::getFromCookieOrCache()) {
+            return 'anonymous-'.$cookieUser->userToken;
+        } else {
+            return 'anonymous-'.uniqid();
+        }
+    }
+
+    public static function getJsConfig(Consultation $consultation): array
     {
         $params = AntragsgruenApp::getInstance()->live;
         if (!$params) {
@@ -21,7 +32,7 @@ class LiveTools
 
         return [
             'uri' => $params['wsUri'],
-            'user_id' => $user->id,
+            'user_id' => self::getCurrUserId(),
             'subdomain' => $consultation->site->subdomain,
             'consultation' => $consultation->urlPath,
         ];

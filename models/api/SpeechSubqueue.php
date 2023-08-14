@@ -38,6 +38,7 @@ class SpeechSubqueue
 
     public function toUserApi(bool $showNames, ?User $user, ?CookieUser $cookieUser): array
     {
+        /** @var SpeechSubqueueItem[] $applied */
         $applied = array_values(array_filter($this->items, fn(SpeechSubqueueItem $item): bool => $item->isApplication()));
 
         $data = [
