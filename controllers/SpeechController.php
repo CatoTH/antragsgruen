@@ -231,6 +231,24 @@ class SpeechController extends Base
         return new RestApiResponse(200, $apiDto->getAdminApiObject());
     }
 
+    /**
+     * @param SpeechQueueItem[] $items
+     */
+    private function moveAppliedItemsDownStartingPosition(array $items, int $position, ?int $excludeItemId = null): void
+    {
+        $applied = array_values(array_filter($items, function (SpeechQueueItem $item) use ($excludeItemId) {
+            return $item->position < 0 && $item->id !== $excludeItemId;
+        }));
+        foreach ($applied as $pos => $otherItem) {
+            if ($pos < $position) {
+                $otherItem->position = -1 * $pos - 1;
+            } else {
+                $otherItem->position = -1 * $pos - 2;
+            }
+            $otherItem->save();
+        }
+    }
+
     public function actionPostItemOperation(string $queueId, string $itemId, string $op): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
@@ -260,7 +278,10 @@ class SpeechController extends Base
                 $item->save();
                 break;
             case "unset-slot":
-                $item->position    = null;
+                $subqueue = $queue->getSubqueueById($item->subqueueId);
+                $this->moveAppliedItemsDownStartingPosition($queue->getSortedItems($subqueue), 0, $item->id);
+
+                $item->position    = -1;
                 $item->dateStarted = null;
                 $item->dateStopped = null;
                 $item->save();
@@ -292,19 +313,7 @@ class SpeechController extends Base
                     $subqueue = null;
                     $item->subqueueId = null;
                 }
-
-                $applied = array_values(array_filter($queue->getSortedItems($subqueue), fn(SpeechQueueItem $item) => $item->position < 0));
-                foreach ($applied as $pos => $otherItem) {
-                    if ($otherItem->id === $item->id) {
-                        continue;
-                    }
-                    if ($pos < $newPosition) {
-                        $otherItem->position = -1 * $pos - 1;
-                    } else {
-                        $otherItem->position = -1 * $pos - 2;
-                    }
-                    $otherItem->save();
-                }
+                $this->moveAppliedItemsDownStartingPosition($queue->getSortedItems($subqueue), $newPosition, $item->id);
 
                 $item->position = -1 * $newPosition - 1;
                 $item->save();

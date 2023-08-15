@@ -24,7 +24,7 @@ class LiveController extends Controller
     /**
      * Sends a speech queue object to the live server
      */
-    public function actionSendSpeechQueue(string $site, string $conPath, int $speechId): void
+    public function actionSendSpeechQueue(string $site, string $conPath): void
     {
         $site = Site::findOne(['subdomain' => $site]);
         if (!$site) {
@@ -42,17 +42,15 @@ class LiveController extends Controller
             return;
         }
 
-        $queue = null;
+        $sent = false;
         foreach ($consultation->speechQueues as $speechQueue) {
-            if ($speechQueue->id === $speechId) {
-                $queue = $speechQueue;
+            if ($speechQueue->isActive) {
+                LiveTools::sendSpeechQueue($consultation, SpeechQueue::fromEntity($speechQueue), true);
+                $sent = true;
             }
         }
-        if (!$queue) {
+        if (!$sent) {
             $this->stderr('Speech queue not found');
-            return;
         }
-
-        LiveTools::sendSpeechQueue($consultation, SpeechQueue::fromEntity($queue), true);
     }
 }

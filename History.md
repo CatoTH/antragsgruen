@@ -18,6 +18,7 @@
 - The motion list now persists its filter and sort settings for each user session, until changed or reset.
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.
+- Bugfix: Putting a active speaker back into the speaking waiting list did not work - the speaker vanished from the list completely.
 
 ### Version 4.12.1 [not released yet]
 
