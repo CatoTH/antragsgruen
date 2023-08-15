@@ -22,11 +22,6 @@ class SpeechQueue
     public ?string $otherActiveName;
     public int $currentTime;
 
-    /** @Ignore */
-    private array $appliedUserIds;
-    /** @Ignore */
-    private array $appliedUserTokens;
-
     /**
      * @return SpeechQueueActiveSlot[]
      * @Ignore
@@ -49,25 +44,9 @@ class SpeechQueue
 
     public static function fromEntity(\app\models\db\SpeechQueue $entity): self
     {
-        $appliedUserIds = [];
-        $appliedUserTokens = [];
-        foreach ($entity->items as $item) {
-            if ($item->dateStarted) {
-                continue;
-            }
-            if ($item->userId && !in_array($item->userId, $appliedUserIds)) {
-                $appliedUserIds[] = $item->userId;
-            }
-            if ($item->userToken && !in_array($item->userToken, $appliedUserTokens)) {
-                $appliedUserTokens[] = $item->userToken;
-            }
-        }
-
         $dto = new self();
         $dto->id = $entity->id;
         $dto->isActive = !!$entity->isActive;
-        $dto->appliedUserIds = $appliedUserIds;
-        $dto->appliedUserTokens = $appliedUserTokens;
         $dto->settings = $entity->getSettings();
         $dto->subqueues = self::getSubqueues($entity);
         $dto->slots = self::getActiveSlots($entity);
@@ -113,12 +92,13 @@ class SpeechQueue
 
     public function toUserApi(?User $user, ?CookieUser $cookieUser): array
     {
+        $subqueues = array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toUserApi($this->settings->showNames, $user, $cookieUser), $this->subqueues);
+
         $haveApplied = false;
-        if ($user && in_array($user->id, $this->appliedUserIds, true)) {
-            $haveApplied = true;
-        }
-        if ($cookieUser && in_array($cookieUser->userToken, $this->appliedUserTokens, true)) {
-            $haveApplied = true;
+        foreach ($subqueues as $subqueue) {
+            if ($subqueue['have_applied']) {
+                $haveApplied = true;
+            }
         }
 
         return [
@@ -127,7 +107,7 @@ class SpeechQueue
             'have_applied' => $haveApplied,
             'allow_custom_names' => $this->settings->allowCustomNames,
             'is_open_poo' => $this->settings->isOpenPoo,
-            'subqueues' => array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toUserApi($this->settings->showNames, $user, $cookieUser), $this->subqueues),
+            'subqueues' => $subqueues,
             'slots' => array_map(fn(SpeechQueueActiveSlot $slot) => $slot->toApi(), $this->slots),
             'requires_login' => $this->requiresLogin,
             'current_time' => $this->currentTime,

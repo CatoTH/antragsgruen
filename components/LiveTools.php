@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\models\api\SpeechQueue;
+use app\models\settings\Privileges;
 use app\models\exceptions\{ConfigurationError, Internal};
 use app\models\db\{Consultation, User};
 use app\models\settings\AntragsgruenApp;
@@ -12,6 +13,8 @@ use GuzzleHttp\{Client, Exception\GuzzleException, RequestOptions};
 
 class LiveTools
 {
+    private const ROLE_SPEECH_ADMIN = 'ROLE_SPEECH_ADMIN';
+
     public static function getCurrUserId(): string
     {
         if ($user = User::getCurrentUser()) {
@@ -21,6 +24,18 @@ class LiveTools
         } else {
             return 'anonymous-'.uniqid();
         }
+    }
+
+    public static function getJwtForCurrUser(Consultation $consultation): string
+    {
+        $userId = self::getCurrUserId();
+
+        $roles = [];
+        if (User::getCurrentUser()?->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
+            $roles[] = self::ROLE_SPEECH_ADMIN;
+        }
+
+        return JwtCreator::createJwt($consultation, $userId, $roles);
     }
 
     public static function getJsConfig(Consultation $consultation): array

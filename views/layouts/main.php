@@ -87,7 +87,7 @@ echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>'
 
 $consultation = $controller->consultation;
 if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
-    $jwt = \app\components\JwtCreator::createJwt($consultation, \app\components\LiveTools::getCurrUserId());
+    $jwt = \app\components\LiveTools::getJwtForCurrUser($consultation);
     echo '<meta name="user-jwt" content="' . Html::encode($jwt) . '">' . "\n";
 }
 if ($layout->connectLiveEvents && $params->live && $consultation) {

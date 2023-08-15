@@ -24,6 +24,8 @@ $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache()
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/speech/user-footer-widget.vue.php');
+$layout->provideJwt = true;
+$layout->connectLiveEvents = true;
 
 $initData = \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser);
 $userData = new SpeechUser($user, $cookieUser);

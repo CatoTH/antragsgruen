@@ -11,7 +11,7 @@ use Firebase\JWT\JWT;
 
 class JwtCreator
 {
-    public static function createJwt(Consultation $consultation, string $userId): string
+    public static function createJwt(Consultation $consultation, string $userId, array $roles = []): string
     {
         $params = AntragsgruenApp::getInstance();
         if (!file_exists($params->jwtPrivateKey)) {
@@ -27,6 +27,7 @@ class JwtCreator
             'payload' => [
                 'consultation' => $consultation->urlPath,
                 'site' => $consultation->site->subdomain,
+                'roles' => $roles,
             ],
         ];
 

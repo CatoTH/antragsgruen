@@ -27,11 +27,6 @@ if ($contentAdmin) {
     $layout->loadDatepicker();
 }
 
-// @TODO Restrict to situations where speech lists or votings are enabled
-$layout->provideJwt = true;
-$layout->connectLiveEvents = true;
-
-
 echo '<h1>' . Html::encode($consultation->title) . '</h1>';
 
 echo $layout->getMiniMenu('sidebarSmall');
