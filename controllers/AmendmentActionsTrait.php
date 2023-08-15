@@ -237,17 +237,11 @@ trait AmendmentActionsTrait
      * @throws FormError
      * @throws Internal
      */
-    private function amendmentLikeDislike(Amendment $amendment, string $role, string $string, string $name = '', string $orga = '', string $gender = '', bool $nonPublic = false): void
+    private function amendmentLikeDislike(Amendment $amendment, string $role, string $string, string $name, string $orga = '', string $gender = '', bool $nonPublic = false): void
     {
         $currentUser = User::getCurrentUser();
         if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this amendment is not possible');
-        }
-
-        if (User::getCurrentUser()) {
-            $name = '';
-        } else {
-            $name = $this->getHttpRequest()->post('likeName', '');
         }
 
         AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role, $gender, $nonPublic);
@@ -264,7 +258,9 @@ trait AmendmentActionsTrait
             throw new FormError('Not supported');
         }
         $msg = \Yii::t('amend', 'like_done');
-        $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_LIKE, $msg);
+        $name = (User::getCurrentUser() ? '' : $this->getHttpRequest()->post('likeName', ''));
+
+        $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_LIKE, $msg, $name);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_LIKE, $amendment->id);
     }
 
@@ -278,7 +274,10 @@ trait AmendmentActionsTrait
         }
         $msg          = \Yii::t('amend', 'dislike_done');
         $consultation = $amendment->getMyConsultation();
-        $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_DISLIKE, $msg);
+
+        $name = (User::getCurrentUser() ? '' : $this->getHttpRequest()->post('likeName', ''));
+
+        $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_DISLIKE, $msg, $name);
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_DISLIKE, $amendment->id);
     }
 

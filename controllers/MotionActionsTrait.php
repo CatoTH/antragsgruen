@@ -182,17 +182,11 @@ trait MotionActionsTrait
      * @throws FormError
      * @throws Internal
      */
-    private function motionLikeDislike(Motion $motion, string $role, string $string, string $name = '', string $orga = '', string $gender = '', bool $nonPublic = false): void
+    private function motionLikeDislike(Motion $motion, string $role, string $string, string $name, string $orga = '', string $gender = '', bool $nonPublic = false): void
     {
         $currentUser = User::getCurrentUser();
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this motion is not possible');
-        }
-
-        if (User::getCurrentUser()) {
-            $name = '';
-        } else {
-            $name = $this->getHttpRequest()->post('likeName', '');
         }
 
         MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender, $nonPublic);
@@ -209,7 +203,10 @@ trait MotionActionsTrait
         if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE)) {
             throw new FormError('Not supported');
         }
-        $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, \Yii::t('motion', 'like_done'));
+
+        $name = (User::getCurrentUser() ? '' : $this->getHttpRequest()->post('likeName', ''));
+
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, \Yii::t('motion', 'like_done'), $name);
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_LIKE, $motion->id);
     }
 
@@ -243,6 +240,7 @@ trait MotionActionsTrait
         } else {
             $orga = $this->getHttpRequest()->post('motionSupportOrga', '');
         }
+
         if ($supportType->getSettingsObj()->hasOrganizations && $orga === '') {
             $this->getHttpSession()->setFlash('error', 'No organization entered');
             return;
@@ -275,7 +273,10 @@ trait MotionActionsTrait
         if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE)) {
             throw new FormError('Not supported');
         }
-        $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, \Yii::t('motion', 'dislike_done'));
+
+        $name = (User::getCurrentUser() ? '' : $this->getHttpRequest()->post('likeName', ''));
+
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, \Yii::t('motion', 'dislike_done'), $name);
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_DISLIKE, $motion->id);
     }
 
