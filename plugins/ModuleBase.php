@@ -162,6 +162,12 @@ class ModuleBase extends Module
     {
     }
 
+    /** @return null|int[] */
+    public static function getSelectableGroupsForUser(Consultation $consultation, User $user): ?array
+    {
+        return null;
+    }
+
     /**
      * @phpstan-ignore-next-line
      * @return string|\app\models\settings\Site|null

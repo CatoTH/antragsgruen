@@ -816,10 +816,31 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->emailChange;
     }
 
+    /**
+     * Usually, null is returned, meaning all groups are selectable. If an array is returned, only the group IDs mentioned there are selectable.
+     *
+     * @return null|int[]
+     */
+    public function getSelectableUserGroups(Consultation $consultation): ?array
+    {
+        $selectableGroups = null;
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $pluginSelectableGroups = $plugin::getSelectableGroupsForUser($consultation, $this);
+            if ($pluginSelectableGroups !== null && $selectableGroups === null) {
+                $selectableGroups = [];
+            }
+            if ($pluginSelectableGroups !== null) {
+                $selectableGroups = array_merge($selectableGroups, $pluginSelectableGroups);
+            }
+        }
+        return $selectableGroups;
+    }
+
     public function getUserAdminApiObject(?Consultation $consultation): array
     {
         $data = $this->getUserdataExportObject();
         $data['id'] = $this->id;
+        $data['selectable_groups'] = ($consultation ? $this->getSelectableUserGroups($consultation) : null);
 
         $groups = $this->userGroups;
         if ($consultation) {
@@ -836,19 +857,12 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserdataExportObject(): array
     {
-        switch ($this->status) {
-            case static::STATUS_CONFIRMED:
-                $status = 'confirmed';
-                break;
-            case static::STATUS_UNCONFIRMED:
-                $status = 'unconfirmed';
-                break;
-            case static::STATUS_DELETED:
-                $status = 'deleted';
-                break;
-            default:
-                $status = '';
-        }
+        $status = match ($this->status) {
+            static::STATUS_CONFIRMED => 'confirmed',
+            static::STATUS_UNCONFIRMED => 'unconfirmed',
+            static::STATUS_DELETED => 'deleted',
+            default => '',
+        };
         return [
             'name'             => $this->name,
             'name_given'       => $this->nameGiven,

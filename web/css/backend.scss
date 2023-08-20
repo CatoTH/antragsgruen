@@ -1782,7 +1782,6 @@ label.legend {
     padding: 2px;
   }
 
-
   .groupInfo {
     flex-grow: 1;
     .name {
@@ -1902,6 +1901,12 @@ label.legend {
     .restrictedTo {
       min-height: 100px;
     }
+  }
+}
+
+.editUserModal {
+  label.disabled {
+    opacity: 0.5;
   }
 }
 
