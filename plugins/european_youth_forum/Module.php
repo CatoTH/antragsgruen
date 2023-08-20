@@ -161,4 +161,43 @@ class Module extends ModuleBase
         ConsultationUserGroup::getOrCreateUserGroup($consultation, 'YFJ Staff');
         ConsultationUserGroup::getOrCreateUserGroup($consultation, 'Remote user');
     }
+
+    public static function getSelectableGroupsForUser(Consultation $consultation, User $user): ?array
+    {
+        $organisations = $consultation->getSettings()->organisations;
+        if ($organisations === null || $user->organization === null) {
+            return null;
+        }
+
+        // Determining if the auto-assigned group(s) of that organization is INGYO/NYC
+        $isIngyo = false;
+        $isNyc = false;
+        foreach ($organisations as $organisation) {
+            if (str_contains(mb_strtolower($user->organization), mb_strtolower($organisation->name))) {
+                foreach ($organisation->autoUserGroups as $autoGroupId) {
+                    if (str_contains($consultation->getUserGroupById($autoGroupId)->getNormalizedTitle(), 'INGYO')) {
+                        $isIngyo = true;
+                    }
+                    if (str_contains($consultation->getUserGroupById($autoGroupId)->getNormalizedTitle(), 'NYC')) {
+                        $isNyc = true;
+                    }
+                }
+            }
+        }
+        if ((!$isNyc && !$isIngyo) || ($isNyc && $isIngyo)) {
+            return null;
+        }
+
+        $validGroups = [];
+        foreach ($consultation->getAllAvailableUserGroups([], true) as $group) {
+            if ($isIngyo && str_contains($group->getNormalizedTitle(), 'INGYO')) {
+                $validGroups[] = $group->id;
+            }
+            if ($isNyc && str_contains($group->getNormalizedTitle(), 'NYC')) {
+                $validGroups[] = $group->id;
+            }
+        }
+
+        return $validGroups;
+    }
 }

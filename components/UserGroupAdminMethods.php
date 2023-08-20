@@ -97,6 +97,15 @@ class UserGroupAdminMethods
         $user = User::findOne(['id' => $userId]);
         $userHasGroups = [];
 
+        $selectableUserGroups = $user->getSelectableUserGroups($this->consultation);
+        if ($selectableUserGroups !== null) {
+            foreach ($groupIds as $groupId) {
+                if (!in_array($groupId, $selectableUserGroups)) {
+                    throw new UserEditFailed('User group not allowed for this user: ' . $groupId);
+                }
+            }
+        }
+
         // Remove all groups belonging to this consultation that are not in the array sent by the client
         foreach ($user->userGroups as $userGroup) {
             $userHasGroups[] = $userGroup->id;

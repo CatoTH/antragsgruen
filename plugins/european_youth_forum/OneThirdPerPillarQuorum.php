@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\european_youth_forum;
 
+use app\models\votings\AnswerTemplates;
 use app\models\db\{ConsultationUserGroup, IVotingItem, VotingBlock};
 use app\models\policies\UserGroups;
 use app\models\quorumType\IQuorumType;
@@ -45,11 +46,13 @@ class OneThirdPerPillarQuorum extends IQuorumType
         $currNyc = 0;
         $currIngyo = 0;
         foreach ($votingBlock->getVotesForVotingItem($votingItem) as $vote) {
-            if (in_array($vote->userId, $nycIds)) {
-                $currNyc++;
-            }
-            if (in_array($vote->userId, $ingyoIds)) {
-                $currIngyo++;
+            if (in_array($vote->vote, [AnswerTemplates::VOTE_YES, AnswerTemplates::VOTE_PRESENT])) {
+                if (in_array($vote->userId, $nycIds)) {
+                    $currNyc++;
+                }
+                if (in_array($vote->userId, $ingyoIds)) {
+                    $currIngyo++;
+                }
             }
         }
 
@@ -64,6 +67,9 @@ class OneThirdPerPillarQuorum extends IQuorumType
         $userIds = $group->getUserIds();
         $votingUserCount = [];
         foreach ($votingBlock->votes as $vote) {
+            if ($vote->vote === AnswerTemplates::VOTE_ABSTENTION) {
+                continue;
+            }
             if (in_array($vote->userId, $userIds) && !in_array($vote->userId, $votingUserCount)) {
                 $votingUserCount[] = $vote->userId;
             }
@@ -73,7 +79,8 @@ class OneThirdPerPillarQuorum extends IQuorumType
 
     /**
      * The quorum for each group is a third of all participating delegates.
-     * Participating means, a person has voted vor _any_ item in this voting block, not for a specific item.
+     * Participating means, a person has voted vor _any_ item in this voting block (except abstentions), not for a specific item.
+     * Abstentions are ignored, as if not having voted at all.
      */
     private function getMinFromGroup(VotingBlock $votingBlock, ConsultationUserGroup $group): int
     {
@@ -116,11 +123,13 @@ class OneThirdPerPillarQuorum extends IQuorumType
         $currNyc = 0;
         $currIngyo = 0;
         foreach ($votingBlock->getVotesForVotingItem($votingItem) as $vote) {
-            if (in_array($vote->userId, $nycIds)) {
-                $currNyc++;
-            }
-            if (in_array($vote->userId, $ingyoIds)) {
-                $currIngyo++;
+            if (in_array($vote->vote, [AnswerTemplates::VOTE_YES, AnswerTemplates::VOTE_PRESENT])) {
+                if (in_array($vote->userId, $nycIds)) {
+                    $currNyc++;
+                }
+                if (in_array($vote->userId, $ingyoIds)) {
+                    $currIngyo++;
+                }
             }
         }
 

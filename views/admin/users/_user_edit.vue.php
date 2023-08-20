@@ -86,8 +86,8 @@ ob_start();
                         <?= Yii::t('admin', 'siteacc_new_groups') ?>
                     </div>
                     <div class="rightColumn">
-                        <label v-for="group in groups" :class="'userGroup' + group.id">
-                            <input type="checkbox" :checked="isInGroup(group)" @click="toggleGroup(group)">
+                        <label v-for="group in groups" :class="['userGroup' + group.id, isGroupSelectable(group) ? '' : 'disabled']">
+                            <input type="checkbox" :checked="isInGroup(group)" @click="toggleGroup(group)" :disabled="!isGroupSelectable(group)">
                             {{ group.title }}
                         </label>
                     </div>
@@ -183,6 +183,12 @@ $html = ob_get_clean();
                     $event.preventDefault();
                     $event.stopPropagation();
                 }
+            },
+            isGroupSelectable: function (group) {
+                if (!this.user.selectable_groups) {
+                    return true;
+                }
+                return this.user.selectable_groups.indexOf(group.id) !== -1;
             },
             isInGroup: function (group) {
                 return this.userGroups.indexOf(group.id) !== -1;
