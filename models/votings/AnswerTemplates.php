@@ -23,17 +23,12 @@ final class AnswerTemplates
      */
     public static function fromVotingBlockData(int $templateId): array
     {
-        switch ($templateId) {
-            case self::TEMPLATE_PRESENT:
-                return self::getCollectionPresent();
-            case self::TEMPLATE_YES_NO:
-                return self::getCollectionYesNo();
-            case self::TEMPLATE_YES:
-                return self::getCollectionYes();
-            case self::TEMPLATE_YES_NO_ABSTENTION:
-            default:
-                return self::getCollectionYesNoAbstention();
-        }
+        return match ($templateId) {
+            self::TEMPLATE_PRESENT => self::getCollectionPresent(),
+            self::TEMPLATE_YES_NO => self::getCollectionYesNo(),
+            self::TEMPLATE_YES => self::getCollectionYes(),
+            default => self::getCollectionYesNoAbstention(),
+        };
     }
 
     /**

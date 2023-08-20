@@ -268,6 +268,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return $votes;
     }
 
+    /**
+     * @return Vote[]
+     */
     public function getVotesForVotingItem(IVotingItem $votingItem): array
     {
         if (is_a($votingItem, Amendment::class)) {
