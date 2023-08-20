@@ -15,15 +15,21 @@ class LiveTools
 {
     private const ROLE_SPEECH_ADMIN = 'ROLE_SPEECH_ADMIN';
 
+    private static ?string $currUserId = null;
+
     public static function getCurrUserId(): string
     {
-        if ($user = User::getCurrentUser()) {
-            return 'login-' . $user->id;
-        } elseif ($cookieUser = CookieUser::getFromCookieOrCache()) {
-            return 'anonymous-'.$cookieUser->userToken;
-        } else {
-            return 'anonymous-'.uniqid();
+        if (!self::$currUserId) {
+            if ($user = User::getCurrentUser()) {
+                self::$currUserId = 'login-' . $user->id;
+            } elseif ($cookieUser = CookieUser::getFromCookieOrCache()) {
+                self::$currUserId = 'anonymous-'.$cookieUser->userToken;
+            } else {
+                self::$currUserId = 'anonymous-'.uniqid();
+            }
         }
+
+        return self::$currUserId;
     }
 
     public static function getJwtForCurrUser(Consultation $consultation): string

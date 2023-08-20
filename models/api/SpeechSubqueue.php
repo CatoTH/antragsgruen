@@ -68,24 +68,8 @@ class SpeechSubqueue
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'onlist' => array_map(function (SpeechSubqueueItem $item): array {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'user_id' => $item->userId,
-                    'is_point_of_order' => $item->isPointOfOrder,
-                    'position' => $item->position,
-                ];
-            }, $onList),
-            'applied' => array_map(function (SpeechSubqueueItem $item): array {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'user_id' => $item->userId,
-                    'is_point_of_order' => $item->isPointOfOrder,
-                    'applied_at' => $item->dateApplied->format('c'),
-                ];
-            }, $applied),
+            'onlist' => array_map(fn (SpeechSubqueueItem $item) => $item->toAdminApi(), $onList),
+            'applied' => array_map(fn (SpeechSubqueueItem $item) => $item->toAdminApi(), $applied),
         ];
     }
 }

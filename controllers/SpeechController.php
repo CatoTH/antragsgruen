@@ -278,7 +278,7 @@ class SpeechController extends Base
                 $item->save();
                 break;
             case "unset-slot":
-                $subqueue = $queue->getSubqueueById($item->subqueueId);
+                $subqueue = $item->subqueueId ? $queue->getSubqueueById($item->subqueueId) : null;
                 $this->moveAppliedItemsDownStartingPosition($queue->getSortedItems($subqueue), 0, $item->id);
 
                 $item->position    = -1;
