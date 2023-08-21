@@ -24,6 +24,8 @@ $layout->addBreadcrumb(Yii::t('speech', 'admin_bc'));
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/speech/admin-widget.vue.php');
 $layout->addVueTemplate('@app/views/speech/admin-subqueue.vue.php');
+$layout->provideJwt = true;
+$layout->addLiveEventSubscription('admin', 'speech');
 
 $htmls = \app\views\speech\LayoutHelper::getSidebars($consultation, $queue);
 if ($htmls[0] !== '') {

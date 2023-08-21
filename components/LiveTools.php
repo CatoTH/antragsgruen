@@ -44,7 +44,10 @@ class LiveTools
         return JwtCreator::createJwt($consultation, $userId, $roles);
     }
 
-    public static function getJsConfig(Consultation $consultation): array
+    /**
+     * @param array<array{role: string, channel: string}> $subscriptions
+     */
+    public static function getJsConfig(Consultation $consultation, array $subscriptions): array
     {
         $params = AntragsgruenApp::getInstance()->live;
         if (!$params) {
@@ -56,6 +59,7 @@ class LiveTools
             'user_id' => self::getCurrUserId(),
             'subdomain' => $consultation->site->subdomain,
             'consultation' => $consultation->urlPath,
+            'subscriptions' => $subscriptions,
         ];
     }
 

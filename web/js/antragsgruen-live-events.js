@@ -7,30 +7,40 @@ if (!document.head.querySelector("meta[name=user-jwt]") || !document.head.queryS
 
     class AntragsgruenLiveEvents {
         listeners = {
-            speech: []
+            user: {
+                speech: []
+            },
+            admin: {
+                speech: []
+            }
         };
         connected = {
-            speech: false
+            user: {
+                speech: false
+            },
+            admin: {
+                speech: false
+            }
         };
 
         constructor() {}
 
-        registerListener(namespace, listener) {
-            this.listeners[namespace].push(listener);
-            if (this.listeners[namespace]) {
+        registerListener(role, channel, listener) {
+            this.listeners[role][channel].push(listener);
+            if (this.listeners[role][channel]) {
                 listener(true, null);
             }
         }
 
-        publishEvent(namespace, event) {
-            this.listeners[namespace].forEach(listener => {
+        publishEvent(role, channel, event) {
+            this.listeners[role][channel].forEach(listener => {
                 listener(null, event);
             });
         }
 
-        onConnected(namespace) {
-            this.connected[namespace] = true;
-            this.listeners[namespace].forEach(listener => {
+        onConnected(role, channel) {
+            this.connected[role][channel] = true;
+            this.listeners[role][channel].forEach(listener => {
                 listener(true, null);
             });
         }
@@ -61,29 +71,29 @@ if (!document.head.querySelector("meta[name=user-jwt]") || !document.head.queryS
 
     stompClient.onConnect = (frame) => {
         console.info("Connected to Antragsgrün Live Server");
-        /*
-        stompClient.subscribe('/topic/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] + '/update', (greeting) => {
-            console.log("GLOBAL", JSON.parse(greeting.body));
+        liveConfig['subscriptions'].forEach(subscription => {
+            const topicUrl = '/' + subscription['role'] + '/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] +
+                '/' + encodeURIComponent(liveConfig['user_id']) + '/' + subscription['channel'];
+            stompClient.subscribe(topicUrl, message => {
+                window['ANTRAGSGRUEN_LIVE_EVENTS'].publishEvent(subscription.role, subscription.channel, JSON.parse(message.body));
+            });
+            window['ANTRAGSGRUEN_LIVE_EVENTS'].onConnected(subscription.role, subscription.channel);
         });
-        stompClient.subscribe('/user/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] + '/' + encodeURIComponent(liveConfig['user_id']) + '/default', (message) => {
-            console.log("USER DEFAULT", JSON.parse(message.body));
-        });
-         */
-        stompClient.subscribe('/user/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] + '/' + encodeURIComponent(liveConfig['user_id']) + '/speech', (message) => {
-            window['ANTRAGSGRUEN_LIVE_EVENTS'].publishEvent('speech', JSON.parse(message.body));
-        });
-        window['ANTRAGSGRUEN_LIVE_EVENTS'].onConnected('speech');
     };
 
     stompClient.onWebSocketError = (error) => {
         console.error('Error with websocket', error);
-        window['ANTRAGSGRUEN_LIVE_EVENTS'].onDisconnected('speech');
+        liveConfig['subscriptions'].forEach(subscription => {
+            window['ANTRAGSGRUEN_LIVE_EVENTS'].onDisconnected(subscription.role, subscription.channel);
+        })
     };
 
     stompClient.onStompError = (frame) => {
         console.error('Broker reported error: ' + frame.headers['message']);
         console.error('Additional details: ' + frame.body);
-        window['ANTRAGSGRUEN_LIVE_EVENTS'].onDisconnected('speech');
+        liveConfig['subscriptions'].forEach(subscription => {
+            window['ANTRAGSGRUEN_LIVE_EVENTS'].onDisconnected(subscription.role, subscription.channel);
+        });
     };
 
     stompClient.activate();

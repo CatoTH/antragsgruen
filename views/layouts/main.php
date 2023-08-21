@@ -90,8 +90,9 @@ if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
     $jwt = \app\components\LiveTools::getJwtForCurrUser($consultation);
     echo '<meta name="user-jwt" content="' . Html::encode($jwt) . '">' . "\n";
 }
-if ($layout->connectLiveEvents && $params->live && $consultation) {
-    echo '<meta name="live-config" content="' . Html::encode(json_encode(\app\components\LiveTools::getJsConfig($consultation))) . '">' . "\n";
+if (count($layout->connectLiveEvents) > 0 && $params->live && $consultation) {
+    $liveConfig = \app\components\LiveTools::getJsConfig($consultation, $layout->connectLiveEvents);
+    echo '<meta name="live-config" content="' . Html::encode(json_encode($liveConfig)) . '">' . "\n";
     echo '<script src="' . Html::encode($params->live['stompJsUri']) . '"></script>';
 }
 echo \app\models\layoutHooks\Layout::favicons();
@@ -133,7 +134,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 
 echo \app\models\layoutHooks\Layout::endPage();
 
-if ($layout->connectLiveEvents && $params->live && $consultation) {
+if (count($layout->connectLiveEvents) && $params->live && $consultation) {
     echo '<script src="' . $layout->resourceUrl('npm/stomp.umd.min.js') . '"></script>';
     echo '<script src="' . $layout->resourceUrl('js/antragsgruen-live-events.js') . '"></script>';
 }

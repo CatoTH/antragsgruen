@@ -25,7 +25,7 @@ $layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
 $layout->addVueTemplate('@app/views/speech/user-full-list-widget.vue.php');
 $layout->addFullscreenTemplates();
 $layout->provideJwt = true;
-$layout->connectLiveEvents = true;
+$layout->addLiveEventSubscription('user', 'speech');
 
 $initData = \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser);
 $userData = new SpeechUser($user, $cookieUser);

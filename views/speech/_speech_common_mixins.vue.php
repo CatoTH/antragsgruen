@@ -175,7 +175,7 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                 }, 100);
 
                 if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
-                    window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('speech', (connectionEvent, speechEvent) => {
+                    window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('user', 'speech', (connectionEvent, speechEvent) => {
                         if (connectionEvent !== null) {
                             widget.liveConnected = connectionEvent;
                         }
