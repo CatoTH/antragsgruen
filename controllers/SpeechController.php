@@ -306,7 +306,7 @@ class SpeechController extends Base
                 break;
             case "move":
                 $newPosition = $this->getHttpRequest()->post('position');
-                if ($this->getHttpRequest()->post('newSubqueueId')) {
+                if ($this->getHttpRequest()->post('newSubqueueId') > 0) {
                     $subqueue         = $queue->getSubqueueById(intval($this->getHttpRequest()->post('newSubqueueId')));
                     $item->subqueueId = $subqueue->id;
                 } else {
