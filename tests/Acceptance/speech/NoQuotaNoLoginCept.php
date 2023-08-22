@@ -59,7 +59,7 @@ $I->dontSeeElement('.currentSpeechInline .notPossible');
 $I->see('Bewerben', '.waitingSingle .apply button');
 $I->executeJS('var btn = document.querySelector(".waitingSingle .apply button"), evt = document.createEvent("HTMLEvents"); evt.initEvent("click", false, true); btn.dispatchEvent(evt);');
 $I->wait(0.1);
-$I->seeInField('#speechRegisterNamenull', 'Testadmin');
+$I->seeInField('#speechRegisterName-1', 'Testadmin');
 $I->executeJS('var form = document.querySelector(".waitingSingle form"), evt = document.createEvent("HTMLEvents"); evt.initEvent("submit", false, true); form.dispatchEvent(evt);');
 $I->wait(0.1);
 $I->seeElement('.currentSpeechInline .appliedMe');
@@ -77,7 +77,7 @@ $I->dontSeeElement('.subqueueAdder form');
 $I->executeJS('var btn = document.querySelector(".subqueues .adderOpener"), evt = document.createEvent("HTMLEvents"); evt.initEvent("click", false, true); btn.dispatchEvent(evt);');
 $I->wait(0.1);
 $I->seeElement('.subqueueAdder form');
-$I->fillField('#subqueueAdderNamenull', 'Testperson');
+$I->fillField('#subqueueAdderName-1', 'Testperson');
 $I->executeJS('var btn = document.querySelector(".subqueues .subqueueAdder form"), evt = document.createEvent("HTMLEvents"); evt.initEvent("submit", false, true); btn.dispatchEvent(evt);');
 $I->wait(0.1);
 

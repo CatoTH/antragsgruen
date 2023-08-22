@@ -9,7 +9,8 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$layout     = $controller->layoutParams;
+$layout = $controller->layoutParams;
+$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 $layout->registerPluginAssets($this, $controller);
 if (str_starts_with($layout->mainCssFile, 'layout-custom-')) {
@@ -84,6 +85,16 @@ echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
 echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>';
 
+$consultation = $controller->consultation;
+if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
+    $jwt = \app\components\LiveTools::getJwtForCurrUser($consultation);
+    echo '<meta name="user-jwt" content="' . Html::encode($jwt) . '">' . "\n";
+}
+if (count($layout->connectLiveEvents) > 0 && $params->live && $consultation) {
+    $liveConfig = \app\components\LiveTools::getJsConfig($consultation, $layout->connectLiveEvents);
+    echo '<meta name="live-config" content="' . Html::encode(json_encode($liveConfig)) . '">' . "\n";
+    echo '<script src="' . Html::encode($params->live['stompJsUri']) . '"></script>';
+}
 echo \app\models\layoutHooks\Layout::favicons();
 
 $this->head();
@@ -123,6 +134,11 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 
 echo \app\models\layoutHooks\Layout::endPage();
 
+if (count($layout->connectLiveEvents) && $params->live && $consultation) {
+    echo '<script src="' . $layout->resourceUrl('npm/stomp.umd.min.js') . '"></script>';
+    echo '<script src="' . $layout->resourceUrl('js/antragsgruen-live-events.js') . '"></script>';
+}
+
 foreach ($layout->getJSFiles() as $jsFile) {
     echo '<script src="' . $jsFile . '"></script>' . "\n";
 }
@@ -135,8 +151,6 @@ echo $layout->getAMDLoader();
 foreach ($layout->vueTemplates as $vueTemplate) {
     echo $this->render($vueTemplate);
 }
-
-$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 $this->endBody();
 echo '

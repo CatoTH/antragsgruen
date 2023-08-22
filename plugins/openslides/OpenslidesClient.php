@@ -4,34 +4,17 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides;
 
+use app\components\Tools;
 use app\models\exceptions\{Login, LoginInvalidUser};
 use app\plugins\openslides\DTO\LoginResponse;
 use GuzzleHttp\{Client, RequestOptions};
-use Doctrine\Common\Annotations\AnnotationReader;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
-use Symfony\Component\Serializer\{Encoder\JsonEncoder,
-    Mapping\Factory\ClassMetadataFactory,
-    Mapping\Loader\AnnotationLoader,
-    NameConverter\MetadataAwareNameConverter,
-    Normalizer\ObjectNormalizer,
-    Serializer,
-    SerializerInterface};
 
 class OpenslidesClient
 {
-    /** @var SiteSettings */
-    private $siteSettings;
-
-    /** @var Client|null */
-    private $client;
-
-    /** @var SerializerInterface|null */
-    private $serializer = null;
-
-    public function __construct(SiteSettings $siteSettings, ?Client $client = null)
-    {
-        $this->siteSettings = $siteSettings;
-        $this->client = $client;
+    public function __construct(
+        private SiteSettings $siteSettings,
+        private ?Client $client = null
+    ) {
     }
 
     private function getClient(): Client
@@ -42,18 +25,6 @@ class OpenslidesClient
             ]);
         }
         return $this->client;
-    }
-
-    private function getSerializer(): SerializerInterface
-    {
-        if ($this->serializer === null) {
-            $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-            $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
-            $encoders = [new JsonEncoder()];
-            $normalizers = [new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, new ReflectionExtractor())];
-            $this->serializer = new Serializer($normalizers, $encoders);
-        }
-        return $this->serializer;
     }
 
     /**
@@ -81,7 +52,7 @@ class OpenslidesClient
         }
 
         /** @var LoginResponse $loginResponse */
-        $loginResponse = $this->getSerializer()->deserialize($response->getBody()->getContents(), LoginResponse::class, 'json');
+        $loginResponse = Tools::getSerializer()->deserialize($response->getBody()->getContents(), LoginResponse::class, 'json');
         return $loginResponse;
     }
 }

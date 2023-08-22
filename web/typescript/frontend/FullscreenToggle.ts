@@ -115,7 +115,7 @@ export class FullscreenToggle {
                         widget.destroyVueElement();
                         widget.holderElement.remove();
                     }
-                    if (newUrl !== window.location.href) {
+                    if (newUrl && newUrl !== window.location.href) {
                         window.location.href = newUrl;
                     }
                 },

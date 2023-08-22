@@ -27,6 +27,7 @@
     "catoth/html2opendocument": "0.18",
     "colinodell/json5": "^2.3",
     "doctrine/annotations": "^1.14.3",
+    "firebase/php-jwt": "^6.8",
     "guzzlehttp/guzzle": "^7.7",
     "paragonie/sodium_compat": "^1.20",
     "phpoffice/phpspreadsheet": "^1.28",

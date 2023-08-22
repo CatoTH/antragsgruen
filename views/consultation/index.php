@@ -27,7 +27,6 @@ if ($contentAdmin) {
     $layout->loadDatepicker();
 }
 
-
 echo '<h1>' . Html::encode($consultation->title) . '</h1>';
 
 echo $layout->getMiniMenu('sidebarSmall');

@@ -3,12 +3,12 @@
 namespace app\controllers;
 
 use app\components\CookieUser;
-use app\models\api\SpeechUser;
+use app\components\LiveTools;
+use app\models\api\{SpeechUser, SpeechQueue as SpeechQueueApi};
 use app\models\http\{RestApiExceptionResponse, RestApiResponse};
 use app\models\settings\Privileges;
 use app\views\speech\LayoutHelper;
-use app\models\db\{SpeechQueue, User};
-use yii\web\Response;
+use app\models\db\{SpeechQueue, SpeechQueueItem, User};
 
 class SpeechController extends Base
 {
@@ -31,9 +31,6 @@ class SpeechController extends Base
     {
         $this->handleRestHeaders(['GET'], true);
 
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $user       = User::getCurrentUser();
         $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
 
@@ -42,7 +39,7 @@ class SpeechController extends Base
             return $this->returnRestResponseFromException(new \Exception('Queue not found'));
         }
 
-        return new RestApiResponse(200, $queue->getUserApiObject($user, $cookieUser));
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser));
     }
 
     public function actionRegister(string $queueId): RestApiResponse
@@ -97,15 +94,15 @@ class SpeechController extends Base
 
         $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser, $pointOfOrder);
 
-        return new RestApiResponse(200, $queue->getUserApiObject($user, $cookieUser));
+        $apiDto = SpeechQueueApi::fromEntity($queue);
+        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+
+        return new RestApiResponse(200, $apiDto->toUserApi($user, $cookieUser));
     }
 
     public function actionUnregister(string $queueId): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
         $cookieUser = CookieUser::getFromCookieOrCache();
@@ -127,16 +124,16 @@ class SpeechController extends Base
         }
         $queue->refresh();
 
-        return new RestApiResponse(200, $queue->getUserApiObject($user, $cookieUser));
+        $apiDto = SpeechQueueApi::fromEntity($queue);
+        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+
+        return new RestApiResponse(200, $apiDto->toUserApi($user, $cookieUser));
     }
 
     // *** Admin-facing methods ***
 
     private function getQueueAndCheckMethodAndPermission(string $queueId): SpeechQueue
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $user = User::getCurrentUser();
         if (!$user || !$user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
             throw new \Exception('Missing privileges');
@@ -159,7 +156,7 @@ class SpeechController extends Base
             return $this->returnRestResponseFromException($e);
         }
 
-        return new RestApiResponse(200, $queue->getAdminApiObject());
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->getAdminApiObject());
     }
 
     public function actionPostQueueSettings(string $queueId): RestApiResponse
@@ -202,8 +199,11 @@ class SpeechController extends Base
             }
         }
 
+        $apiDto = SpeechQueueApi::fromEntity($queue);
+        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+
         $jsonResponse = [
-            'queue'   => $queue->getAdminApiObject(),
+            'queue'   => $apiDto->getAdminApiObject(),
             'sidebar' => LayoutHelper::getSidebars($this->consultation, $queue),
         ];
         return new RestApiResponse(200, $jsonResponse);
@@ -223,7 +223,29 @@ class SpeechController extends Base
         }
 
         $queue->refresh();
-        return new RestApiResponse(200, $queue->getAdminApiObject());
+
+        $apiDto = SpeechQueueApi::fromEntity($queue);
+        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+
+        return new RestApiResponse(200, $apiDto->getAdminApiObject());
+    }
+
+    /**
+     * @param SpeechQueueItem[] $items
+     */
+    private function moveAppliedItemsDownStartingPosition(array $items, int $position, ?int $excludeItemId = null): void
+    {
+        $applied = array_values(array_filter($items, function (SpeechQueueItem $item) use ($excludeItemId) {
+            return $item->position < 0 && $item->id !== $excludeItemId;
+        }));
+        foreach ($applied as $pos => $otherItem) {
+            if ($pos < $position) {
+                $otherItem->position = -1 * $pos - 1;
+            } else {
+                $otherItem->position = -1 * $pos - 2;
+            }
+            $otherItem->save();
+        }
     }
 
     public function actionPostItemOperation(string $queueId, string $itemId, string $op): RestApiResponse
@@ -255,7 +277,10 @@ class SpeechController extends Base
                 $item->save();
                 break;
             case "unset-slot":
-                $item->position    = null;
+                $subqueue = $item->subqueueId ? $queue->getSubqueueById($item->subqueueId) : null;
+                $this->moveAppliedItemsDownStartingPosition($queue->getSortedItems($subqueue), 0, $item->id);
+
+                $item->position    = -1;
                 $item->dateStarted = null;
                 $item->dateStopped = null;
                 $item->save();
@@ -280,25 +305,14 @@ class SpeechController extends Base
                 break;
             case "move":
                 $newPosition = $this->getHttpRequest()->post('position');
-                if ($this->getHttpRequest()->post('newSubqueueId')) {
+                if ($this->getHttpRequest()->post('newSubqueueId') > 0) {
                     $subqueue         = $queue->getSubqueueById(intval($this->getHttpRequest()->post('newSubqueueId')));
                     $item->subqueueId = $subqueue->id;
                 } else {
                     $subqueue = null;
                     $item->subqueueId = null;
                 }
-
-                foreach ($queue->getAppliedItems($subqueue) as $pos => $otherItem) {
-                    if ($otherItem->id === $item->id) {
-                        continue;
-                    }
-                    if ($pos < $newPosition) {
-                        $otherItem->position = -1 * $pos - 1;
-                    } else {
-                        $otherItem->position = -1 * $pos - 2;
-                    }
-                    $otherItem->save();
-                }
+                $this->moveAppliedItemsDownStartingPosition($queue->getSortedItems($subqueue), $newPosition, $item->id);
 
                 $item->position = -1 * $newPosition - 1;
                 $item->save();
@@ -309,7 +323,11 @@ class SpeechController extends Base
         }
 
         $queue->refresh();
-        return new RestApiResponse(200, $queue->getAdminApiObject());
+
+        $apiDto = SpeechQueueApi::fromEntity($queue);
+        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+
+        return new RestApiResponse(200, $apiDto->getAdminApiObject());
     }
 
     public function actionAdminCreateItem(string $queueId): RestApiResponse
@@ -337,6 +355,9 @@ class SpeechController extends Base
 
         $queue->createItemOnAppliedList($name, $subqueue, null, null, false);
 
-        return new RestApiResponse(200, $queue->getAdminApiObject());
+        $apiDto = SpeechQueueApi::fromEntity($queue);
+        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+
+        return new RestApiResponse(200, $apiDto->getAdminApiObject());
     }
 }

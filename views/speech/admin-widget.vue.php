@@ -233,6 +233,7 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 queue: null,
                 showPreviousList: false,
                 pollingId: null,
+                liveConnected: false,
                 timerId: null,
                 dragging: false,
                 changedSettings: {
@@ -482,13 +483,21 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
 
                 this.remainingSpeakingTime = this.queue.settings.speaking_time - secondsPassed;
             },
+            setData: function (data) {
+                this.queue = data;
+                this.recalcTimeOffset(new Date(data['current_time']));
+                this.recalcRemainingTime();
+            },
             reloadData: function () {
                 const widget = this;
-                $.get(pollUrl.replace(/QUEUEID/, widget.queue.id), function (data) {
-                    widget.queue = data;
-                    widget.recalcTimeOffset(new Date(data['current_time']));
-                    widget.recalcRemainingTime();
-                }).catch(function(err) {
+                if (widget.liveConnected) {
+                    return;
+                }
+
+                $.get(
+                    pollUrl.replace(/QUEUEID/, widget.queue.id),
+                    this.setData.bind(this)
+                ).catch(function(err) {
                     console.error("Could not load speech queue data from backend", err);
                 });
             },
@@ -510,6 +519,17 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                 this.timerId = window.setInterval(function () {
                     widget.recalcRemainingTime();
                 }, 100);
+
+                if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
+                    window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('admin', 'speech', (connectionEvent, speechEvent) => {
+                        if (connectionEvent !== null) {
+                            widget.liveConnected = connectionEvent;
+                        }
+                        if (speechEvent !== null) {
+                            this.setData(speechEvent);
+                        }
+                    });
+                }
             }
         },
         beforeUnmount() {

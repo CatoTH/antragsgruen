@@ -35,6 +35,7 @@ return [
     'applied_aria'       => 'Du hast dich für einen Platz auf der Redeliste beworben',
     'apply_revoke'       => 'Zurückziehen',
     'apply_revoke_aria'  => 'Die Bewerbung zurückziehen',
+    'name_poo'           => 'GO-Antrag',
 
     'footer_title_plain'    => 'Redeliste',
     'footer_title_to'       => '%TITLE%',

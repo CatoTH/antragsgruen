@@ -40,9 +40,13 @@ class Layout
     public bool $fullScreen = false;
     public ?string $mainCssFile = null;
     public array $mainAMDModules = [];
+    public bool $provideJwt = false;
     public ?string $canonicalUrl = null;
     public array $alternateLanuages = [];
     public array $feeds = [];
+
+    /** @var array<array{role: string, channel: string}> */
+    public array $connectLiveEvents = [];
 
     protected ?Consultation $consultation = null;
 
@@ -200,6 +204,11 @@ class Layout
             $this->vueTemplates[] = $template;
         }
         return $this;
+    }
+
+    public function addLiveEventSubscription(string $role, string $channel): void
+    {
+        $this->connectLiveEvents[] = ['role' => $role, 'channel' => $channel];
     }
 
     public function getHTMLLanguageCode(): string

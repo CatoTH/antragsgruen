@@ -223,6 +223,42 @@ Add the following settings to your config.json (and adapt them to your needs):
 }
 ```
 
+### JWT Key Signing
+
+Some of the more advanced features of Antragsgrün need JWT signing set up. Right now, this is only the integration of the Live Server, but in the future this will also enable logged in access to the REST API.
+
+First, a Public/Private key pair used for JWT authentication needs to be generated:
+```shell
+ssh-keygen -t rsa -b 4096 -m PEM -f bundle.pem
+openssl rsa -in bundle.pem -pubout -outform PEM -out public.key
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in bundle.pem -out private.key -nocrypt
+```
+
+Move the keys to a safe place and point the `jwtPrivateKey` parameter in `config.json` to its absolute location, like:
+```json
+{
+    "jwtPrivateKey": "/var/www/antragsgruen/config/jwt.key"
+}
+```
+
+### Enabling the Live Server
+
+The optional [Live Server](https://github.com/CatoTH/antragsgruen-live) can be installed to enable live updates for speaking lists (and potentially more components in the future).
+
+As a prerequisite, JWT Signing needs to be enabled (see above). Then, the location of the RabbitMQ server, the credentials of the management API and the name of the exchange needs to configured, along with the absolute URI of the Websocket endpoint the Live Server exposes:
+
+```json
+{
+    "live": {
+        "wsUri": "ws://localhost:8080/websocket", // The full URI of the websocket endpoint of the Live Component
+        "stompJsUri": "http://localhost:8080/stomp.umd.min.js", // The full URI of a hosted StompJS library
+        "rabbitMqUri": "http://localhost:15672", // Base URI to the REST API of RabbitMQ
+        "rabbitMqExchangeName": "antragsgruen-exchange", // Created by the Live Server
+        "rabbitMqUsername": "guest", // Default username of RabbitMQ
+        "rabbitMqPassword": "guest" // Default password of RabbitMQ
+    }
+}
+```
 
 Developing
 ----------

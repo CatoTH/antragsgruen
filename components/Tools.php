@@ -1,13 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components;
 
 use app\models\db\Consultation;
 use app\models\settings\Consultation as ConsultationSettings;
 use app\models\exceptions\Internal;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class Tools
 {
+    private static SerializerInterface $serializer;
+
+    public static function getSerializer(): SerializerInterface
+    {
+        if (!isset(self::$serializer)) {
+            $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+            $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
+            $encoders = [new JsonEncoder()];
+            $normalizers = [
+                new DateTimeNormalizer(),
+                new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, new ReflectionExtractor()),
+            ];
+            self::$serializer = new Serializer($normalizers, $encoders);
+        }
+        return self::$serializer;
+    }
+
     public static function dateSql2timestamp(string $input): int
     {
         $parts = explode(' ', $input);

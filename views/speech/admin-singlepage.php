@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\api\SpeechQueue as SpeechQueueApi;
 use app\models\db\SpeechQueue;
 use yii\helpers\Html;
 
@@ -23,6 +24,8 @@ $layout->addBreadcrumb(Yii::t('speech', 'admin_bc'));
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/speech/admin-widget.vue.php');
 $layout->addVueTemplate('@app/views/speech/admin-subqueue.vue.php');
+$layout->provideJwt = true;
+$layout->addLiveEventSubscription('admin', 'speech');
 
 $htmls = \app\views\speech\LayoutHelper::getSidebars($consultation, $queue);
 if ($htmls[0] !== '') {
@@ -32,7 +35,7 @@ if ($htmls[1] !== '') {
     $layout->menusHtmlSmall[] = $htmls[1];
 }
 
-$initData = $queue->getAdminApiObject();
+$initData = SpeechQueueApi::fromEntity($queue)->getAdminApiObject();
 
 if ($queue->motion) {
     $this->title = str_replace('%TITLE%', $queue->motion->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to'));

@@ -7,11 +7,8 @@ use app\models\settings\Site;
 
 class SiteSettings extends Site
 {
-    /** @var string|null */
-    public $osBaseUri; // https://demo.openslides.org/
-
-    /** @var string */
-    public $osApiKey;
+    public ?string $osBaseUri = null; // https://demo.openslides.org/
+    public string $osApiKey;
 
     public function getAuthPrefix(): string
     {

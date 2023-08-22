@@ -35,6 +35,7 @@ return [
     'applied_aria'       => 'You applied to speak',
     'apply_revoke'       => 'Withdraw',
     'apply_revoke_aria'  => 'Withdraw the application',
+    'name_poo'           => 'Point of Order',
 
     'footer_title_plain'    => 'Speaking list',
     'footer_title_to'       => '%TITLE%',

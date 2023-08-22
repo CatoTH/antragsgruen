@@ -86,20 +86,17 @@ class SpeechQueueItem extends ActiveRecord
         }
     }
 
-    public function isMe(?User $user, ?CookieUser $cookieUser): bool
-    {
-        if ($user && $this->userId && $user->id === $this->userId) {
-            return true;
-        }
-        if ($cookieUser && $cookieUser->userToken === $this->userToken) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function isPointOfOrder(): bool
     {
-        return strpos($this->name, self::POO_MARKER) === 0;
+        return str_starts_with($this->name, self::POO_MARKER);
+    }
+
+    public function getLocalizedName(): string
+    {
+        if ($this->isPointOfOrder()) {
+            return str_replace(self::POO_MARKER, '[[' . \Yii::t('speech', 'name_poo') . ']]', $this->name);
+        } else {
+            return $this->name;
+        }
     }
 }

@@ -18,6 +18,7 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
             return {
                 queue: null,
                 pollingId: null,
+                liveConnected: false,
                 timerId: null,
                 timeOffset: 0, // milliseconds the browser is ahead of the server time
                 remainingSpeakingTime: null
@@ -139,17 +140,24 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
 
                 this.remainingSpeakingTime = this.queue.speaking_time - secondsPassed;
             },
+            setData: function (data) {
+                this.queue = data;
+                this.recalcTimeOffset(new Date(data['current_time']));
+                this.recalcRemainingTime();
+            },
             reloadData: function () {
                 const widget = this;
                 if (!widget.queue) {
                     return;
                 }
+                if (widget.liveConnected) {
+                    return;
+                }
 
-                $.get(pollUrl.replace(/QUEUEID/, widget.queue.id), function (data) {
-                    widget.queue = data;
-                    widget.recalcTimeOffset(new Date(data['current_time']));
-                    widget.recalcRemainingTime();
-                }).catch(function(err) {
+                $.get(
+                    pollUrl.replace(/QUEUEID/, widget.queue.id),
+                    this.setData.bind(this)
+                ).catch(function(err) {
                     console.error("Could not load speech queue data from backend", err);
                 });
             },
@@ -165,6 +173,17 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                 this.timerId = window.setInterval(function () {
                     widget.recalcRemainingTime();
                 }, 100);
+
+                if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
+                    window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('user', 'speech', (connectionEvent, speechEvent) => {
+                        if (connectionEvent !== null) {
+                            widget.liveConnected = connectionEvent;
+                        }
+                        if (speechEvent !== null) {
+                            this.setData(speechEvent);
+                        }
+                    });
+                }
             },
             stopPolling: function () {
                 window.clearInterval(this.pollingId);

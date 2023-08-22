@@ -3,6 +3,7 @@
 ### Version 4.13.0 [not released yet]
 
 - WARNING: if you are using a PHP 7.4 or older, then update to PHP 8.0 or newer first before installing this update!
+- For larger consultations using the Speaking Lists, there is now a separate live server component, allowing real-time updates of the speaking lists at reduced load on the server. As it runs on Java, it is not compatible with "traditional" webhosting. Sites running on antragsgruen.de / discuss.green are getting the real-time update feature automatically.
 - It is now possible to copy/duplicate a motion within a consultation.
 - When editing a motion or amendment as admin, it is possible to set the status to "Obsoleted by another amendment" or "Obsoleted by another motion" and specify which one it is in a dropdown.
 - When creating a new consultation based on an existing one, it is now possible to choose if motion types, tags and/or user permissions are to be copied from the existing consultation or not.
@@ -18,6 +19,8 @@
 - The motion list now persists its filter and sort settings for each user session, until changed or reset.
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.
+- Bugfix: Putting a active speaker back into the speaking waiting list did not work - the speaker vanished from the list completely.
+- Bugfix: Closing the full screen mode of a speaking list was leading to an error page.
 
 ### Version 4.12.1 [not released yet]
 
