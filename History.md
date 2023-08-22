@@ -20,6 +20,7 @@
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.
 - Bugfix: Putting a active speaker back into the speaking waiting list did not work - the speaker vanished from the list completely.
+- Bugfix: Closing the full screen mode of a speaking list was leading to an error page.
 
 ### Version 4.12.1 [not released yet]
 

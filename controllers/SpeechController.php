@@ -9,7 +9,6 @@ use app\models\http\{RestApiExceptionResponse, RestApiResponse};
 use app\models\settings\Privileges;
 use app\views\speech\LayoutHelper;
 use app\models\db\{SpeechQueue, SpeechQueueItem, User};
-use yii\web\Response;
 
 class SpeechController extends Base
 {

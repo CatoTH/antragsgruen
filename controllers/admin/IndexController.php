@@ -3,9 +3,10 @@
 namespace app\controllers\admin;
 
 use app\components\updater\UpdateChecker;
+use app\models\api\SpeechQueue as SpeechQueueApi;
 use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
-use app\components\{ConsultationAccessPassword, HTMLTools, Tools, UrlHelper};
+use app\components\{ConsultationAccessPassword, HTMLTools, LiveTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
@@ -215,6 +216,12 @@ class IndexController extends AdminBase
 
                 $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
                 $this->layoutParams->setLayout($siteSettings->siteLayout);
+
+                $consultation->refresh();
+                foreach ($this->consultation->speechQueues as $speechQueue) {
+                    $apiDto = SpeechQueueApi::fromEntity($speechQueue);
+                    LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+                }
 
                 $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
             } else {
