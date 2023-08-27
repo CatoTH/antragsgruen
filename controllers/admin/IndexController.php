@@ -72,7 +72,7 @@ class IndexController extends AdminBase
 
             $model->setSettings($settings);
 
-            if (preg_match('/^[\w_-]+$/i', $data['urlPath']) && trim($data['urlPath']) !== 'rest') {
+            if (preg_match('/^[\w_-]+$/i', $data['urlPath']) && !in_array(trim($data['urlPath']), Consultation::BLOCKED_URL_PATHS, true)) {
                 $model->urlPath = $data['urlPath'];
             } else {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'con_url_path_err'));
@@ -374,7 +374,7 @@ class IndexController extends AdminBase
         if ($this->isPostSet('createConsultation')) {
             $newcon = $post['newConsultation'];
             $form->setAttributes($newcon);
-            if (preg_match('/^[\w_-]+$/i', $newcon['urlPath'])) {
+            if (preg_match('/^[\w_-]+$/i', $newcon['urlPath']) && !in_array(trim($newcon['urlPath']), Consultation::BLOCKED_URL_PATHS, true)) {
                 $form->urlPath = $newcon['urlPath'];
             }
             $form->siteCreateWizard->setAttributes($post['SiteCreateForm']);

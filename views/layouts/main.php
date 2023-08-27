@@ -87,8 +87,8 @@ echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>'
 
 $consultation = $controller->consultation;
 if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
-    $jwt = \app\components\LiveTools::getJwtForCurrUser($consultation);
-    echo '<meta name="user-jwt" content="' . Html::encode($jwt) . '">' . "\n";
+    $jwtConfig = \app\components\JwtCreator::getJwtConfigForCurrUser($consultation);
+    echo '<meta name="user-jwt-config" content="' . Html::encode(json_encode($jwtConfig)) . '">' . "\n";
 }
 if (count($layout->connectLiveEvents) > 0 && $params->live && $consultation) {
     $liveConfig = \app\components\LiveTools::getJsConfig($consultation, $layout->connectLiveEvents);
@@ -135,7 +135,6 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 echo \app\models\layoutHooks\Layout::endPage();
 
 if (count($layout->connectLiveEvents) && $params->live && $consultation) {
-    echo '<script src="' . $layout->resourceUrl('npm/stomp.umd.min.js') . '"></script>';
     echo '<script src="' . $layout->resourceUrl('js/antragsgruen-live-events.js') . '"></script>';
 }
 

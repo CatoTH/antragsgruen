@@ -1,8 +1,8 @@
-if (!document.head.querySelector("meta[name=user-jwt]") || !document.head.querySelector("meta[name=live-config]"))
+if (!document.head.querySelector("meta[name=user-jwt-config]") || !document.head.querySelector("meta[name=live-config]"))
 {
     console.warn("JWT and Live configuration needs to be set for live events to work");
 } else {
-    const jwt = document.head.querySelector("meta[name=user-jwt]").content;
+    let jwtConfig = JSON.parse(document.head.querySelector("meta[name=user-jwt-config]").content);
     const liveConfig = JSON.parse(document.head.querySelector("meta[name=live-config]").content);
 
     class AntragsgruenLiveEvents {
@@ -45,9 +45,9 @@ if (!document.head.querySelector("meta[name=user-jwt]") || !document.head.queryS
             });
         }
 
-        onDisconnected(namespace) {
-            this.connected[namespace] = false;
-            this.listeners[namespace].forEach(listener => {
+        onDisconnected(namespace, channel) {
+            this.connected[namespace][channel] = false;
+            this.listeners[namespace][channel].forEach(listener => {
                 listener(false, null);
             });
         }
@@ -65,7 +65,7 @@ if (!document.head.querySelector("meta[name=user-jwt]") || !document.head.queryS
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
         connectHeaders: {
-            jwt: jwt
+            jwt: jwtConfig.token
         }
     });
 
@@ -93,6 +93,25 @@ if (!document.head.querySelector("meta[name=user-jwt]") || !document.head.queryS
         console.error('Additional details: ' + frame.body);
         liveConfig['subscriptions'].forEach(subscription => {
             window['ANTRAGSGRUEN_LIVE_EVENTS'].onDisconnected(subscription.role, subscription.channel);
+        });
+    };
+
+    stompClient.beforeConnect = () => {
+        return new Promise((resolve, reject) => {
+            const validUntilWithSafetyMargin = (jwtConfig.exp - 2) * 1000;
+            if (validUntilWithSafetyMargin >= (new Date()).getTime()) {
+                resolve();
+                return;
+            }
+
+            return fetch(jwtConfig.reload_uri)
+                .then(response => response.json())
+                .then(json => {
+                    console.debug("Renewing JWT");
+                    jwtConfig = json;
+                    stompClient.connectHeaders.jwt = json.token;
+                    resolve();
+                });
         });
     };
 
