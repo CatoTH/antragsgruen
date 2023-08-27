@@ -58,6 +58,9 @@ trait JsonConfigTrait
             } else {
                 $this->$key = $val;
             }
+        } elseif (is_null($val) && !$reflectionClass->getProperty($key)->getType()->allowsNull()) {
+            // This might come from an earlier version, where the property of the JSON was accidentally null'ed.
+            // In this case, we fall back to the default value - that is, we leave the property unchanged.
         } else {
             $this->$key = $val;
         }

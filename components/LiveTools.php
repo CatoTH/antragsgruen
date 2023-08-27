@@ -5,45 +5,13 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\models\api\SpeechQueue;
-use app\models\settings\Privileges;
 use app\models\exceptions\{ConfigurationError, Internal};
-use app\models\db\{Consultation, User};
+use app\models\db\Consultation;
 use app\models\settings\AntragsgruenApp;
 use GuzzleHttp\{Client, Exception\GuzzleException, RequestOptions};
 
 class LiveTools
 {
-    private const ROLE_SPEECH_ADMIN = 'ROLE_SPEECH_ADMIN';
-
-    private static ?string $currUserId = null;
-
-    public static function getCurrUserId(): string
-    {
-        if (!self::$currUserId) {
-            if ($user = User::getCurrentUser()) {
-                self::$currUserId = 'login-' . $user->id;
-            } elseif ($cookieUser = CookieUser::getFromCookieOrCache()) {
-                self::$currUserId = 'anonymous-'.$cookieUser->userToken;
-            } else {
-                self::$currUserId = 'anonymous-'.uniqid();
-            }
-        }
-
-        return self::$currUserId;
-    }
-
-    public static function getJwtForCurrUser(Consultation $consultation): string
-    {
-        $userId = self::getCurrUserId();
-
-        $roles = [];
-        if (User::getCurrentUser()?->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
-            $roles[] = self::ROLE_SPEECH_ADMIN;
-        }
-
-        return JwtCreator::createJwt($consultation, $userId, $roles);
-    }
-
     /**
      * @param array<array{role: string, channel: string}> $subscriptions
      */
@@ -56,7 +24,7 @@ class LiveTools
 
         return [
             'uri' => $params['wsUri'],
-            'user_id' => self::getCurrUserId(),
+            'user_id' => JwtCreator::getCurrJwtUserId(),
             'subdomain' => $consultation->site->subdomain,
             'consultation' => $consultation->urlPath,
             'subscriptions' => $subscriptions,

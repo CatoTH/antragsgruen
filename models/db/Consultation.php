@@ -41,7 +41,9 @@ use yii\db\{ActiveQuery, ActiveRecord};
  */
 class Consultation extends ActiveRecord
 {
-    const TITLE_SHORT_MAX_LEN = 45;
+    public const TITLE_SHORT_MAX_LEN = 45;
+
+    public const BLOCKED_URL_PATHS = ['login', 'logout', 'rest', 'token'];
 
     private static ?Consultation $current = null;
 
