@@ -136,7 +136,7 @@ class Base extends Controller
             }
         }
 
-        if ($this->testMaintenanceMode() || $this->testSiteForcedLogin() || $this->testConsultationPwd()) {
+        if ($this->testMaintenanceMode($action->id) || $this->testSiteForcedLogin() || $this->testConsultationPwd()) {
             return false;
         }
         return true;
@@ -346,15 +346,22 @@ class Base extends Controller
     /**
      * @throws \yii\base\ExitException
      */
-    public function testMaintenanceMode(): bool
+    public function testMaintenanceMode(?string $actionId): bool
     {
         if ($this->consultation == null) {
+            return false;
+        }
+
+
+
+        if (get_class($this) === ConsultationController::class && $actionId === 'index') {
+            // On home, the actual error is shown on the regular page
             return false;
         }
         $settings = $this->consultation->getSettings();
         $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
         if ($settings->maintenanceMode && !$admin) {
-            $this->redirect(UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'maintenance']));
+            $this->redirect(UrlHelper::createUrl(['/consultation/index']));
             return true;
         }
         return false;

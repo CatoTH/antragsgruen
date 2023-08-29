@@ -60,7 +60,7 @@ class PagesController extends Base
         // For everything else, check for maintenance mode and login.
         $allowedPages = [ConsultationText::DEFAULT_PAGE_MAINTENANCE, ConsultationText::DEFAULT_PAGE_LEGAL, ConsultationText::DEFAULT_PAGE_PRIVACY];
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
-            if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
+            if ($this->testMaintenanceMode(null) || $this->testSiteForcedLogin()) {
                 $this->showErrorpage(404, 'Page not found');
                 return null;
             }
