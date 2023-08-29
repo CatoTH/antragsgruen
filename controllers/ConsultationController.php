@@ -290,6 +290,10 @@ class ConsultationController extends Base
 
     public function actionIndex(): ResponseInterface
     {
+        if ($this->consultation->getSettings()->maintenanceMode && !User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
+            return new HtmlResponse($this->renderContentPage('maintenance'));
+        }
+
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $pluginHome = $plugin::getConsultationHomePage($this->consultation);
             if ($pluginHome !== null) {

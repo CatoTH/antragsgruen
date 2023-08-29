@@ -21,7 +21,7 @@ $saveUrl      = $pageData->getSaveUrl();
 $this->title = $pageData->title ?: $pageData->textId;
 
 $layout = $controller->layoutParams;
-if ($controller->action->id !== 'home') {
+if (!in_array($controller->action->id, ['home', 'index'])) {
     $layout->addBreadcrumb($pageData->breadcrumb ?: $pageData->textId);
 } else {
     $layout->breadcrumbs = [];
