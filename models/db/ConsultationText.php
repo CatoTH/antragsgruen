@@ -276,7 +276,7 @@ class ConsultationText extends ActiveRecord
             }
         }
         if (!$foundText) {
-            $siteId    = ($site ? $site->id : null);
+            $siteId = $site?->id;
             $foundText = ConsultationText::findOne([
                 'siteId'         => $siteId,
                 'consultationId' => null,
@@ -307,10 +307,10 @@ class ConsultationText extends ActiveRecord
         if (!$foundText) {
             $foundText = $defaultPage;
             if (!in_array($pageKey, static::getSystemwidePages())) {
-                $foundText->siteId = ($site ? $site->id : null);
+                $foundText->siteId = $site?->id;
             }
             if (!in_array($pageKey, static::getSitewidePages())) {
-                $foundText->consultationId = ($consultation ? $consultation->id : null);
+                $foundText->consultationId = $consultation?->id;
             }
         } else {
             if (!$foundText->breadcrumb) {

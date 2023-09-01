@@ -42,11 +42,7 @@ $main = $right = '';
 $bottom = '';
 
 $ppSections = LayoutHelper::getVisibleProposedProcedureSections($motion, $procedureToken);
-$ppShouldBeShownInline = $motion->getMyConsultation()->getSettings()->proposalProcedureInline
-                         && count($motion->getVisibleAmendments()) === 0
-                         && count($motion->comments) === 0
-                         && $motion->isProposalPublic();
-if (!$ppShouldBeShownInline) {
+if (!LayoutHelper::showProposedProceduresInline($motion)) {
     foreach ($ppSections as $ppSection) {
         $ppSection['section']->setTitlePrefix($ppSection['title']);
         $main .= $ppSection['section']->getAmendmentFormatted('pp_');
@@ -103,7 +99,7 @@ foreach ($sections as $i => $section) {
         $sectionText .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '" aria-labelledby="section_' . $section->sectionId . '_title">';
 
         $shownPp = false;
-        if ($ppShouldBeShownInline) {
+        if (LayoutHelper::showProposedProceduresInline($motion)) {
             foreach ($ppSections as $ppSection) {
                 if ($ppSection['section']->getSectionId() === $section->sectionId) {
                     $ppSection['section']->setDefaultToOnlyDiff(false);

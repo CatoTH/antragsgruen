@@ -7,6 +7,7 @@ namespace app\views\motion;
 use app\components\HashedStaticFileCache;
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\mergeAmendments\Init;
+use app\models\sectionTypes\TextSimple;
 use app\models\settings\{PrivilegeQueryContext, Privileges, VotingData, AntragsgruenApp};
 use app\components\latex\{Content, Exporter, Layout as LatexLayout};
 use app\components\Tools;
@@ -109,6 +110,14 @@ class LayoutHelper
             ];
         }
         return $out;
+    }
+
+    public static function showProposedProceduresInline(Motion $motion): bool
+    {
+        return $motion->getMyConsultation()->getSettings()->proposalProcedureInline
+               && count($motion->getVisibleAmendments()) === 0
+               && count($motion->comments) === 0
+               && $motion->isProposalPublic();
     }
 
     public static function addVotingResultsRow(VotingData $votingData, array &$rows): void
@@ -257,6 +266,10 @@ class LayoutHelper
 
         if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
             $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+        }
+
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && !self::showProposedProceduresInline($motion)) {
+            /** @var array<array{title: string, section: ISectionType}> $ppSections */
             foreach ($ppSections as $ppSection) {
                 $ppSection['section']->setTitlePrefix($ppSection['title']);
                 $ppSection['section']->printAmendmentTeX(false, $content, $motion->getMyConsultation());
@@ -265,7 +278,20 @@ class LayoutHelper
 
         foreach ($motion->getSortedSections(true) as $section) {
             $isRight = $section->isLayoutRight();
-            $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
+            $shownPp = false;
+            if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+                /** @var array{array{title: string, section: TextSimple}} $ppSections */
+                foreach ($ppSections as $ppSection) {
+                    if ($ppSection['section']->getSectionId() === $section->sectionId) {
+                        $ppSection['section']->setDefaultToOnlyDiff(false);
+                        $ppSection['section']->printAmendmentTex($isRight, $content);
+                        $shownPp = true;
+                    }
+                }
+            }
+            if (!$shownPp) {
+                $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
+            }
         }
         if ($content->textRight) {
             // If there is a figure to the right, and the text of the main part is centered, then \newline\linebreak (BR) leads to
@@ -290,8 +316,6 @@ class LayoutHelper
 
     public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Motion $motion): void
     {
-        error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
-
         $alternatveSection = $motion->getAlternativePdfSection();
         if ($alternatveSection) {
             $alternatveSection->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
@@ -302,6 +326,10 @@ class LayoutHelper
 
         if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
             $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+        }
+
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && !self::showProposedProceduresInline($motion)) {
+            /** @var array<array{title: string, section: ISectionType}> $ppSections */
             foreach ($ppSections as $ppSection) {
                 $ppSection['section']->setTitlePrefix($ppSection['title']);
                 $ppSection['section']->printAmendmentToPDF($pdfLayout, $pdf);
@@ -314,7 +342,20 @@ class LayoutHelper
             if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
                 $pdfAttachments[] = $section;
             } else {
-                $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+                $shownPp = false;
+                if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+                    /** @var array{array{title: string, section: TextSimple}} $ppSections */
+                    foreach ($ppSections as $ppSection) {
+                        if ($ppSection['section']->getSectionId() === $section->sectionId) {
+                            $ppSection['section']->setDefaultToOnlyDiff(false);
+                            $ppSection['section']->printAmendmentToPDF($pdfLayout, $pdf);
+                            $shownPp = true;
+                        }
+                    }
+                }
+                if (!$shownPp) {
+                    $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+                }
             }
         }
         foreach ($pdfAttachments as $section) {
@@ -866,6 +907,10 @@ class LayoutHelper
 
         if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
             $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+        }
+
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && !self::showProposedProceduresInline($motion)) {
+            /** @var array<array{title: string, section: ISectionType}> $ppSections */
             foreach ($ppSections as $ppSection) {
                 $ppSection['section']->setTitlePrefix($ppSection['title']);
                 $ppSection['section']->printAmendmentToODT($doc);
@@ -873,7 +918,20 @@ class LayoutHelper
         }
 
         foreach ($motion->getSortedSections() as $section) {
-            $section->getSectionType()->printMotionToODT($doc);
+            $shownPp = false;
+            if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+                /** @var array{array{title: string, section: TextSimple}} $ppSections */
+                foreach ($ppSections as $ppSection) {
+                    if ($ppSection['section']->getSectionId() === $section->sectionId) {
+                        $ppSection['section']->setDefaultToOnlyDiff(false);
+                        $ppSection['section']->printAmendmentToOdt($doc);
+                        $shownPp = true;
+                    }
+                }
+            }
+            if (!$shownPp) {
+                $section->getSectionType()->printMotionToODT($doc);
+            }
         }
 
         $limitedSupporters = LimitedSupporterList::createFromIMotion($motion);
