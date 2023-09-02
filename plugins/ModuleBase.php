@@ -116,6 +116,11 @@ class ModuleBase extends Module
         return null;
     }
 
+    public static function canSeeContactDetails(IMotion $imotion, ?User $user): ?bool
+    {
+        return null;
+    }
+
     /**
      * @return AdminTodoItem[]|null
      */

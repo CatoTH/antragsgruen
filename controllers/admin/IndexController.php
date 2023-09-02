@@ -234,8 +234,7 @@ class IndexController extends AdminBase
 
     private function saveTags(Consultation $consultation): void
     {
-        $foundTags = [];
-        $newTags   = $this->getHttpRequest()->post('tags', []);
+        $newTags = $this->getHttpRequest()->post('tags', []);
 
         $existingTagsById = [];
         foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
@@ -243,7 +242,7 @@ class IndexController extends AdminBase
         }
 
         $pos = 0;
-        for ($i = 0; $i < count($newTags['id']); $i++) {
+        for ($i = 0; $i < count($newTags['id'] ?? []); $i++) {
             if (!isset($newTags['title'][$i])) {
                 throw new FormError('Inconsistent input');
             }

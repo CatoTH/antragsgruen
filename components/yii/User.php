@@ -2,20 +2,16 @@
 
 namespace app\components\yii;
 
+use app\components\RequestContext;
 use app\models\settings\AntragsgruenApp;
-use Yii;
 use yii\web\Cookie;
 use yii\web\IdentityInterface;
 
 class User extends \yii\web\User
 {
-    /**
-     * @return string
-     */
-    protected function getCookieDomain()
+    protected function getCookieDomain(): string
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
         if ($params->cookieDomain) {
             return $params->cookieDomain;
         } elseif ($params->domainPlain) {
@@ -30,10 +26,10 @@ class User extends \yii\web\User
      * This method will set the expiration time of the identity cookie to be the current time
      * plus the originally specified cookie duration.
      */
-    protected function renewIdentityCookie()
+    protected function renewIdentityCookie(): void
     {
         $name  = $this->identityCookie['name'];
-        $value = Yii::$app->getRequest()->getCookies()->getValue($name);
+        $value = \Yii::$app->getRequest()->getCookies()->getValue($name);
         if ($value !== null) {
             $data = json_decode($value, true);
             if (is_array($data) && isset($data[2])) {
@@ -41,7 +37,7 @@ class User extends \yii\web\User
                 $cookie->value  = $value;
                 $cookie->expire = time() + (int)$data[2];
                 $cookie->domain = $this->getCookieDomain();
-                Yii::$app->getResponse()->getCookies()->add($cookie);
+                \Yii::$app->getResponse()->getCookies()->add($cookie);
             }
         }
     }
@@ -55,7 +51,7 @@ class User extends \yii\web\User
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * @see loginByCookie()
      */
-    protected function sendIdentityCookie($identity, $duration)
+    protected function sendIdentityCookie($identity, $duration): void
     {
         $cookie         = new Cookie($this->identityCookie);
         $cookie->domain = $this->getCookieDomain();
@@ -65,7 +61,7 @@ class User extends \yii\web\User
             $duration,
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $cookie->expire = time() + $duration;
-        Yii::$app->getResponse()->getCookies()->add($cookie);
+        \Yii::$app->getResponse()->getCookies()->add($cookie);
     }
 
     /**
@@ -82,7 +78,7 @@ class User extends \yii\web\User
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * This parameter is used only when `$identity` is not null.
      */
-    public function switchIdentity($identity, $duration = 0)
+    public function switchIdentity($identity, $duration = 0): void
     {
         $this->setIdentity($identity);
 
@@ -94,10 +90,10 @@ class User extends \yii\web\User
         if ($this->enableAutoLogin) {
             $cookie         = new Cookie($this->identityCookie);
             $cookie->domain = $this->getCookieDomain();
-            Yii::$app->getResponse()->getCookies()->remove($cookie);
+            \Yii::$app->getResponse()->getCookies()->remove($cookie);
         }
 
-        $session = Yii::$app->getSession();
+        $session = RequestContext::getSession();
         if (!YII_ENV_TEST) {
             $session->regenerateID(true);
         }

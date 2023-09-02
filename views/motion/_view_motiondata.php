@@ -62,7 +62,7 @@ if (count($initiators) > 0 && !$motion->isResolution()) {
     $title        = (count($initiators) === 1 ? Yii::t('motion', 'initiators_1') : Yii::t('motion', 'initiators_x'));
     $motionData[] = [
         'title'   => $title,
-        'content' => MotionLayoutHelper::formatInitiators($initiators, $controller->consultation),
+        'content' => MotionLayoutHelper::formatInitiators($initiators, $motion),
     ];
 }
 

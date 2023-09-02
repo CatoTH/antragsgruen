@@ -173,6 +173,25 @@ class Module extends ModuleBase
         return null;
     }
 
+    public static function canSeeContactDetails(IMotion $imotion, ?User $user): ?bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        $consultation = $imotion->getMyConsultation();
+        if (
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_ASSIGN_TOPIC, PrivilegeQueryContext::imotion($imotion)) ||
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V1_EDITORIAL, PrivilegeQueryContext::imotion($imotion)) ||
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN, PrivilegeQueryContext::imotion($imotion)) ||
+            $user->hasPrivilege($consultation, self::PRIVILEGE_DBWV_V7_PUBLISH_RESOLUTION, PrivilegeQueryContext::imotion($imotion))
+        ) {
+            return true;
+        }
+
+        return null;
+    }
+
     public static function onBeforeProposedProcedureStatusSave(IMotion $imotion): IMotion
     {
         if (is_a($imotion, Motion::class)) {
