@@ -41,7 +41,7 @@ if (!$motionType->amendmentsOnly) {
 
 $amendmentData[] = [
     'title'   => Yii::t('amend', 'initiator'),
-    'content' => MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $consultation),
+    'content' => MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $amendment),
 ];
 
 $amendmentData[] = [

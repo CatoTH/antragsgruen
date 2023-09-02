@@ -21,22 +21,37 @@ use yii\helpers\Html;
 
 class LayoutHelper
 {
+    private static function canSeeContactDetails(IMotion $imotion, ?User $user): bool
+    {
+        $privilege = $user && (
+            $user->hasPrivilege($imotion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, null) ||
+            $user->hasPrivilege($imotion->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, null)
+        );
+
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $override = $plugin::canSeeContactDetails($imotion, $user);
+            if ($override !== null) {
+                $privilege = $override;
+            }
+        }
+
+        return $privilege;
+    }
+
     /**
      * @param ISupporter[] $initiators
      */
-    public static function formatInitiators(array $initiators, Consultation $consultation, bool $expanded = false, bool $adminMode = false): string
+    public static function formatInitiators(array $initiators, IMotion $imotion, bool $expanded = false, bool $adminMode = false): string
     {
         $inits = [];
         foreach ($initiators as $supp) {
             $name = $supp->getNameWithResolutionDate(true);
             $name = LayoutHooks::getMotionDetailsInitiatorName($name, $supp);
 
-            $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, null) ||
-                     User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
-            if ($admin && ($supp->contactEmail || $supp->contactPhone)) {
+            if (self::canSeeContactDetails($imotion, User::getCurrentUser()) && ($supp->contactEmail || $supp->contactPhone)) {
                 if (!$expanded) {
-                    $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
-                    $name .= \Yii::t('initiator', 'contact_show') . '</a>';
+                    $name .= '<button type="button" class="btn btn-link contactShow"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
+                    $name .= \Yii::t('initiator', 'contact_show') . '</button>';
                 }
 
                 $name .= '<div class="contactDetails' . ($expanded ? '' : ' hidden') . '">';
@@ -52,10 +67,10 @@ class LayoutHelper
                     $name .= Html::a(Html::encode($supp->contactEmail), 'mailto:' . $supp->contactEmail);
                     $user = $supp->getMyUser();
                     if ($user && $user->email === $supp->contactEmail && $user->emailConfirmed) {
-                        $name .= ' <span class="glyphicon glyphicon-ok-sign" style="color: gray;" ' .
+                        $name .= ' <span class="glyphicon glyphicon-ok-sign" style="color: grey;" ' .
                             'title="' . \Yii::t('initiator', 'email_confirmed') . '"></span>';
                     } else {
-                        $name .= ' <span class="glyphicon glyphicon-question-sign" style="color: gray;" ' .
+                        $name .= ' <span class="glyphicon glyphicon-question-sign" style="color: grey;" ' .
                             'title="' . \Yii::t('initiator', 'email_not_confirmed') . '"></span>';
                     }
                 }
