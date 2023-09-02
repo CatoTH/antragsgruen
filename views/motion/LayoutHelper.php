@@ -287,7 +287,7 @@ class LayoutHelper
             /** @var array<array{title: string, section: ISectionType}> $ppSections */
             foreach ($ppSections as $ppSection) {
                 $ppSection['section']->setTitlePrefix($ppSection['title']);
-                $ppSection['section']->printAmendmentTeX(false, $content, $motion->getMyConsultation());
+                $ppSection['section']->printAmendmentTeX(false, $content);
             }
         }
 

@@ -81,7 +81,7 @@ abstract class IPDFLayout
     }
 
     /**
-     * @return IPDFLayout|string|null
+     * @return class-string<IPDFLayout>|null
      * @throws Internal
      */
     public static function getClassById(int $classId): ?string
@@ -97,23 +97,17 @@ abstract class IPDFLayout
         throw new Internal('Unknown PDF Layout');
     }
 
-    protected ConsultationMotionType $motionType;
     protected ?array $headerlogo = null;
-
     protected TCPDF $pdf;
 
-    public function __construct(ConsultationMotionType $motionType)
-    {
-        $this->motionType = $motionType;
-    }
-
-    public function getFonts(): void
-    {
+    public function __construct(
+        protected ConsultationMotionType $motionType
+    ) {
     }
 
     public function printSectionHeading(string $text): void
     {
-        $this->pdf->SetFont('helvetica', '', 12);
+        $this->pdf->setFont('helvetica', '', 12);
         $this->pdf->ln(2);
         $this->pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, null, null, true, 0, true);
     }

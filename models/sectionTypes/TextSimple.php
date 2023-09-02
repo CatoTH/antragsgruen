@@ -437,6 +437,8 @@ class TextSimple extends Text
 
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
+        $pdf->setFont('helvetica', '', 12);
+
         /** @var AmendmentSection $section */
         $section = $this->section;
         if ($section->getAmendment()->globalAlternative) {
@@ -524,7 +526,7 @@ class TextSimple extends Text
     {
         return preg_replace_callback('/((<br>\s*)+<\/ins>)(?<rest>.*)(?<end><\/[a-z]+>*)$/siu', function ($match) {
             $rest = $match['rest'];
-            if (strpos($rest, '<') !== false) {
+            if (str_contains($rest, '<')) {
                 return $match[0];
             } else {
                 return '</ins>' . $match['end'];
