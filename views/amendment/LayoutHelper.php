@@ -104,12 +104,16 @@ class LayoutHelper
             $ppSections = self::getVisibleProposedProcedureSections($amendment, null);
             foreach ($ppSections as $ppSection) {
                 $ppSection['section']->setTitlePrefix($ppSection['title']);
-                $ppSection['section']->printAmendmentTeX(false, $content, $amendment->getMyConsultation());
+                $ppSection['section']->printAmendmentTeX(false, $content);
             }
         }
 
         foreach ($amendment->getSortedSections(false) as $section) {
-            $section->getSectionType()->printAmendmentTeX(false, $content);
+            $sectionType = $section->getSectionType();
+            if ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL)) {
+                $sectionType->setDefaultToOnlyDiff(false);
+            }
+            $sectionType->printAmendmentTeX(false, $content);
         }
 
         if ($amendment->changeExplanation !== '') {
@@ -135,24 +139,26 @@ class LayoutHelper
 
     public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Amendment $amendment): void
     {
-        error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
-
         $pdfLayout->printAmendmentHeader($amendment);
 
         if ($amendment->changeEditorial !== '') {
             $pdfLayout->printSectionHeading(\Yii::t('amend', 'editorial_hint'));
-            $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeEditorial, 0, 1, 0, true, '', true);
+            $pdf->writeHTMLCell(170, 0, 27, null, $amendment->changeEditorial, 0, 1, false, true, '', true);
             $pdf->Ln(7);
         }
 
         foreach ($amendment->getSortedSections(false) as $section) {
-            $section->getSectionType()->printAmendmentToPDF($pdfLayout, $pdf);
+            $sectionType = $section->getSectionType();
+            if ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL)) {
+                $sectionType->setDefaultToOnlyDiff(false);
+            }
+            $sectionType->printAmendmentToPDF($pdfLayout, $pdf);
         }
 
         if ($amendment->changeExplanation !== '') {
             $pdfLayout->printSectionHeading(\Yii::t('amend', 'reason'));
             $pdf->Ln(0);
-            $pdf->writeHTMLCell(0, '', '', '', $amendment->changeExplanation, 0, 1, 0, true, '', true);
+            $pdf->writeHTMLCell(0, 0, null, null, $amendment->changeExplanation, 0, 1, false, true, '', true);
             $pdf->Ln(7);
         }
 
@@ -164,7 +170,7 @@ class LayoutHelper
                 $supportersStr[] = Html::encode($supp->getNameWithOrga());
             }
             $listStr = implode(', ', $supportersStr) . $limitedSupporters->truncatedToString(',');
-            $pdf->writeHTMLCell(170, '', 27, '', $listStr, 0, 1, 0, true, '', true);
+            $pdf->writeHTMLCell(170, 0, 27, null, $listStr, 0, 1, false, true, '', true);
             $pdf->Ln(7);
         }
     }
