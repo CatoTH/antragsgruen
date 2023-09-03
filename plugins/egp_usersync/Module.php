@@ -4,17 +4,8 @@ declare(strict_types=1);
 
 namespace app\plugins\egp_usersync;
 
-use app\components\UrlHelper;
-use app\models\db\{AmendmentSupporter, Consultation, Motion, MotionSupporter, Site};
-use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\ConfigurationError;
-use app\models\http\RedirectResponse;
-use app\models\http\ResponseInterface;
-use app\models\settings\IMotionStatus;
-use app\plugins\egp\pdf\Egp;
 use app\plugins\ModuleBase;
-use yii\base\Event;
-use yii\web\View;
 
 class Module extends ModuleBase
 {

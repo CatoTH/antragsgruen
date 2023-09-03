@@ -60,6 +60,8 @@ class User extends ActiveRecord implements IdentityInterface
     public const FIXED_NAME = 1; // When submitting as a natural person, this fixes name + orga of the person
     public const FIXED_ORGA = 2; // Only affects when submitting as the organization
 
+    public const AUTH_EMAIL = 'email';
+
     /**
      * @return string[]
      */
@@ -112,7 +114,7 @@ class User extends ActiveRecord implements IdentityInterface
         if ($authName === null) {
             return null;
         }
-        if ($authType === 'email') {
+        if ($authType === self::AUTH_EMAIL) {
             return User::findOne(['auth' => 'email:' . $authName]);
         }
 
@@ -487,7 +489,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function isEmailAuthUser(): bool
     {
         $authParts = explode(':', $this->auth);
-        return ($authParts[0] === 'email');
+        return ($authParts[0] === self::AUTH_EMAIL);
     }
 
     /**
@@ -638,7 +640,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         switch ($authparts[0]) {
-            case 'email':
+            case self::AUTH_EMAIL:
                 return 'E-Mail: ' . $authparts[1];
             case 'openid':
                 if ($this->isGruenesNetzUser()) {
@@ -655,7 +657,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $authparts = explode(':', $this->auth);
         switch ($authparts[0]) {
-            case 'email':
+            case self::AUTH_EMAIL:
                 $username = $authparts[1] ?? '';
                 break;
             case 'openid':
@@ -678,11 +680,11 @@ class User extends ActiveRecord implements IdentityInterface
             return \app\models\settings\Site::LOGIN_GRUENES_NETZ;
         }
         $authparts = explode(':', $this->auth);
-        if (preg_match('/^openslides\-/siu', $authparts[0])) {
+        if (preg_match('/^openslides-/siu', $authparts[0])) {
             return \app\models\settings\Site::LOGIN_OPENSLIDES;
         }
         switch ($authparts[0]) {
-            case 'email':
+            case self::AUTH_EMAIL:
                 return \app\models\settings\Site::LOGIN_STD;
             default:
                 return \app\models\settings\Site::LOGIN_EXTERNAL;

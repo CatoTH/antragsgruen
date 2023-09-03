@@ -8,8 +8,7 @@ use app\components\Tools;
 use app\controllers\Base;
 use app\models\http\RestApiResponse;
 use app\plugins\egp_usersync\DTO\UserList;
-use app\plugins\egp_usersync\Module;
-use app\plugins\egp_usersync\UserSyncService;
+use app\plugins\egp_usersync\{Module, UserSyncService};
 
 class UsersyncController extends Base
 {
