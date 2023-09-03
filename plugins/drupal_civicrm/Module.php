@@ -7,8 +7,7 @@ use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
 {
-    /** @var PasswordAuthenticator */
-    private static $authenticator = null;
+    private static ?PasswordAuthenticator $authenticator = null;
 
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {

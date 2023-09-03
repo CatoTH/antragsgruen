@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides;
 
+use app\components\Tools;
 use app\models\db\{ConsultationUserGroup, Site, User as InternalUser, User};
 use app\models\exceptions\Internal;
 use app\plugins\openslides\DTO\{AutoupdateUpdate, User as OSUser, Usergroup};
@@ -29,25 +30,12 @@ class AutoupdateSyncService
         $this->siteSettings = $settings;
     }
 
-    private function getSerializer(): SerializerInterface
-    {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
-        $encoders = [new JsonEncoder()];
-        $normalizers = [
-            new ArrayDenormalizer(),
-            new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, new ReflectionExtractor()),
-        ];
-
-        return new Serializer($normalizers, $encoders);
-    }
-
     /**
      * The purpose of this method is to make the parsing of the configured Serializer testable
      */
     public function parseRequest(string $postedJson): AutoupdateUpdate
     {
-        return $this->getSerializer()->deserialize($postedJson, AutoupdateUpdate::class, 'json');
+        return Tools::getSerializer()->deserialize($postedJson, AutoupdateUpdate::class, 'json');
     }
 
     /**
