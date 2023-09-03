@@ -10,7 +10,7 @@ $configFile = __DIR__ . '/../../config/config.json';
 if (!file_exists($configFile)) {
     die("config.json not found");
 }
-$config = json_decode(file_get_contents($configFile), true);
+$config = json_decode((string)file_get_contents($configFile), true);
 
 if (!\app\components\updater\UpdateChecker::isUpdaterAvailable()) {
     $title = 'Not available';

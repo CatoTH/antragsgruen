@@ -61,7 +61,7 @@ class Tools
         ?array $noLogReplaces = null,
         ?string $fromName = null,
         ?string $replyTo = null
-    ) {
+    ): void {
         $params = AntragsgruenApp::getInstance();
         $mailer = Base::createMailer($params->mailService);
         if (!$mailer) {

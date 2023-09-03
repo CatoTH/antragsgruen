@@ -130,6 +130,7 @@ class Update
             if (!$updateJson || !$signature) {
                 throw new \Exception('Could not get update.json or update.json.signature from the ZIP file');
             }
+            /** @var non-empty-string $updateSignature */
             $updateSignature = base64_decode($signature);
             /** @var non-empty-string $publicKey */
             $publicKey       = base64_decode((string)file_get_contents(__DIR__ . '/../../config/update-public.key'));

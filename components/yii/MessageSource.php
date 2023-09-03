@@ -10,7 +10,7 @@ class MessageSource extends \yii\i18n\MessageSource
 {
     public string $basePath = '@app/messages';
 
-    public function init()
+    public function init(): void
     {
         parent::init();
         if (YII_DEBUG) {

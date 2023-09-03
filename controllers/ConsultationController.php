@@ -215,7 +215,7 @@ class ConsultationController extends Base
         $con  = $this->consultation;
 
         if ($this->isPostSet('save')) {
-            $newNotis = \Yii::$app->request->post('notifications', []);
+            $newNotis = $this->getPostValue('notifications', []);
             if (isset($newNotis['motion'])) {
                 UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_MOTION);
             } else {
@@ -291,7 +291,7 @@ class ConsultationController extends Base
     public function actionIndex(): ResponseInterface
     {
         if ($this->consultation->getSettings()->maintenanceMode && !User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
-            return new HtmlResponse($this->renderContentPage('maintenance'));
+            return $this->renderContentPage('maintenance');
         }
 
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {

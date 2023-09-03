@@ -11,7 +11,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout = $controller->layoutParams;
 
-$backUrl = Yii::$app->request->url;
+$backUrl = \app\components\RequestContext::getWebRequest()->url;
 $loginUrl = UrlHelper::createUrl(['/user/login', 'backUrl' => $backUrl]);
 
 $html = '<section class="sidebar-box" id="sidebarYourSites" aria-labelledby="sidebarYourSitesTitle">' .

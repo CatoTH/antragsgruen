@@ -147,8 +147,8 @@ class VideoEmbed extends ISectionType
         $pdf->Ln(7);
 
         $y    = $pdf->getY();
-        $pdf->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
-        $pdf->writeHTMLCell(173, '', 24, '', $html, 0, 1, 0, true, '', true);
+        $pdf->writeHTMLCell(12, 0, 12, $y, '', 0, 0, false, true, '', true);
+        $pdf->writeHTMLCell(173, 0, 24, null, $html, 0, 1, false, true, '', true);
     }
 
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
