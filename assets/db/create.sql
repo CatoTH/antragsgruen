@@ -1283,16 +1283,16 @@ ALTER TABLE `###TABLE_PREFIX###speechQueueItem`
 ALTER TABLE `###TABLE_PREFIX###texTemplate`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `###TABLE_PREFIX###user`
+    MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
 -- Constraints for table `userGroup`
 --
 ALTER TABLE `###TABLE_PREFIX###userGroup`
   ADD CONSTRAINT `usergroup_fk_group` FOREIGN KEY (`groupId`) REFERENCES `###TABLE_PREFIX###consultationUserGroup` (`id`),
   ADD CONSTRAINT `usergroup_fk_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`);
---
--- AUTO_INCREMENT for table `user`
---
-ALTER TABLE `###TABLE_PREFIX###user`
-  MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `userNotification`
 --
