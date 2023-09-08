@@ -41,7 +41,7 @@ class AdminMotionFilterForm
 
     public bool $showReplaced = false;
     public bool $onlyTodo = false;
-    public int $numReplaced;
+    public int $numReplacedAndDrafts;
     public int $numTodo;
 
     /** @var string[] */
@@ -384,7 +384,9 @@ class AdminMotionFilterForm
      */
     public function getSorted(): array
     {
-        $merge = array_merge($this->getFilteredMotions(), $this->getFilteredAmendments());
+        $filteredMotions = $this->getFilteredMotions();
+        $merge = array_merge($filteredMotions, $this->getFilteredAmendments($filteredMotions));
+
         switch ($this->sort) {
             case static::SORT_TITLE:
                 usort($merge, [$this, 'sortTitle']);
@@ -491,19 +493,22 @@ class AdminMotionFilterForm
      */
     private function calcAndFilterReplacedMotions(array $motions): array
     {
-        $this->numReplaced = 0;
-        $replacedMotionIds = [];
+        $this->numReplacedAndDrafts = 0;
+        $replacedAndDraftMotionIds = [];
         foreach ($motions as $motion) {
-            if ($motion->parentMotionId) {
-                $replacedMotionIds[] = $motion->parentMotionId;
+            if ($motion->status === Motion::STATUS_DRAFT) {
+                // Motions in draft state should be hidden by default. Their parentMotionId status should also not hide the parent motion.
+                $replacedAndDraftMotionIds[] = $motion->id;
+            } elseif ($motion->parentMotionId) {
+                $replacedAndDraftMotionIds[] = $motion->parentMotionId;
             }
         }
 
         /** @var Motion[] $out */
         $out = [];
         foreach ($motions as $motion) {
-            if (in_array($motion->id, $replacedMotionIds)) {
-                $this->numReplaced++;
+            if (in_array($motion->id, $replacedAndDraftMotionIds)) {
+                $this->numReplacedAndDrafts++;
                 if ($this->showReplaced) {
                     $out[] = $motion;
                 }
@@ -675,13 +680,20 @@ class AdminMotionFilterForm
     }
 
     /**
+     * @param Motion[] $filteredMotions
      * @return Amendment[]
      */
-    public function getFilteredAmendments(): array
+    public function getFilteredAmendments(array $filteredMotions): array
     {
+        $motionIds = array_map(fn (Motion $motion) => $motion->id, $filteredMotions);
+
         $out = [];
         foreach ($this->allAmendments as $amend) {
             $matches = true;
+
+            if (!in_array($amend->motionId, $motionIds)) {
+                $matches = false;
+            }
 
             if ($this->status !== null && $this->status !== "" && $amend->status !== $this->status) {
                 $matches = false;
@@ -893,12 +905,12 @@ class AdminMotionFilterForm
 
         $str .= '</div>';
 
-        if ($this->numReplaced > 0 || $this->numTodo > 0) {
+        if ($this->numReplacedAndDrafts > 0 || $this->numTodo > 0) {
             $str .= '<div class="filtersBottom">';
-            if ($this->numReplaced > 0) {
+            if ($this->numReplacedAndDrafts > 0) {
                 $str .= '<label>';
                 $str .= Html::checkbox('Search[showReplaced]', $this->showReplaced, ['value' => '1', 'id' => 'filterShowReplaced']);
-                $str .= ' ' . str_replace('%NUM%', (string)$this->numReplaced, \Yii::t('admin', 'filter_show_replaced'));
+                $str .= ' ' . str_replace('%NUM%', (string)$this->numReplacedAndDrafts, \Yii::t('admin', 'filter_show_replaced'));
                 $str .= '</label> &nbsp; ';
             }
             if ($this->numTodo > 0) {

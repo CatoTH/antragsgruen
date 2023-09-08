@@ -210,7 +210,7 @@ return [
     'filter_agenda_item'          => 'Tagesordnungspunkt',
     'filter_prefix'               => 'Antragsnr.',
     'filter_responsibility'       => 'Zuständigkeit',
-    'filter_show_replaced'        => 'Ersetzte / alte Versionen anzeigen (%NUM%)',
+    'filter_show_replaced'        => 'Entwürfe, ersetzte &amp; alte Versionen anzeigen (%NUM%)',
     'filter_only_todo'            => 'Nur "To Do"\'s anzeigen (%NUM%)',
 
     'con_email_from'          => 'Absender-Name',

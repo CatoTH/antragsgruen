@@ -18,6 +18,7 @@
 - The motion list can now be filtered for To Do items (that is, motions/amendments that need to be screened) and also shows the To Do action for items on that list as part of the Status.
 - The motion list now persists its filter and sort settings for each user session, until changed or reset.
 - If an amendment is set to show the full text by default, this now also affects the PDF export.
+- Bugfix: If a draft of a revised motion (by merging amendments) existed and the motion list was opened, the original motion was not shown anymore by default.
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.
 - Bugfix: Putting a active speaker back into the speaking waiting list did not work - the speaker vanished from the list completely.
