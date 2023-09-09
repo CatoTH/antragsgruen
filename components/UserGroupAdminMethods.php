@@ -5,9 +5,7 @@ namespace app\components;
 use app\components\mail\Tools as MailTools;
 use app\models\exceptions\{AlreadyExists, FormError, MailNotSent, UserEditFailed};
 use app\models\consultationLog\UserGroupChange;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Privileges;
-use app\models\settings\UserGroupPermissions;
+use app\models\settings\{AntragsgruenApp, Privileges, UserGroupPermissions};
 use app\models\db\{Consultation, ConsultationLog, ConsultationUserGroup, EMailLog, User};
 use yii\web\{Request, Session};
 
@@ -79,7 +77,11 @@ class UserGroupAdminMethods
 
     private function logUserGroupAdd(User $user, ConsultationUserGroup $group): void
     {
-        $changeData = UserGroupChange::create(User::getCurrentUser()->id, User::getCurrentUser()->auth)->jsonSerialize();
+        if (User::getCurrentUser()) {
+            $changeData = UserGroupChange::create(User::getCurrentUser()->id, User::getCurrentUser()->auth)->jsonSerialize();
+        } else {
+            $changeData = null;
+        }
         ConsultationLog::log($this->consultation, $user->id, ConsultationLog::USER_ADD_TO_GROUP, $group->id, $changeData);
     }
 
@@ -471,7 +473,7 @@ class UserGroupAdminMethods
             $password = User::createPassword();
         }
 
-        if ($authType === 'email') {
+        if ($authType === User::AUTH_EMAIL) {
             $auth = 'email:' . $authUsername;
             $email = $authUsername;
         } else {

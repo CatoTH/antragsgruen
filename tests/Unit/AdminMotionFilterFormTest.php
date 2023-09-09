@@ -48,6 +48,11 @@ class AdminMotionFilterFormTest extends DBTestBase
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
         $form->setAttributes(['tag' => '3']);
         $entries = $form->getSorted();
+        $this->assertEquals(['F-01', 'T-01'], $this->serializeMotions($entries));
+
+        $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
+        $form->setAttributes(['tag' => '3', 'showReplaced' => '1']);
+        $entries = $form->getSorted();
         $this->assertEquals(['', 'F-01', 'T-01'], $this->serializeMotions($entries));
 
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
@@ -62,7 +67,7 @@ class AdminMotionFilterFormTest extends DBTestBase
         $form->setAttributes(['agendaItem' => 8, 'sort' => AdminMotionFilterForm::SORT_TITLE]);
         $entries = $this->serializeMotions($form->getSorted());
         $first   = array_slice($entries, 0, 5);
-        $this->assertEquals(['F-01', '', 'T-01'], $first);
+        $this->assertEquals(['F-01', 'T-01'], $first);
     }
 
     public function testSort(): void
@@ -80,7 +85,7 @@ class AdminMotionFilterFormTest extends DBTestBase
         $form->setAttributes(['sort' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
         $entries = $this->serializeMotions($form->getSorted());
         $first   = array_slice($entries, 0, 5);
-        $this->assertEquals(['', 'EGP-01', 'F-01', 'S-01', 'S-ohne Nummer'], $first);
+        $this->assertEquals(['EGP-01', 'F-01', 'S-01', 'S-ohne Nummer', 'T-01'], $first);
 
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
         $form->setAttributes(['initiator' => 'Bundesvorstand', 'sort' => AdminMotionFilterForm::SORT_TAG]);

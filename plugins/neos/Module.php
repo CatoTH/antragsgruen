@@ -75,7 +75,7 @@ class Module extends ModuleBase
 
     public static function getSiteHomePage(): ?HtmlResponse
     {
-        return new HtmlResponse(RequestContext::getController()->renderContentPage('MV-Seiten'));
+        return RequestContext::getController()->renderContentPage('MV-Seiten');
     }
 
     public static function preferConsultationSpecificHomeLink(): bool

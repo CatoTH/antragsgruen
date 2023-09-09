@@ -2,19 +2,11 @@
 
 namespace app\controllers;
 
-use app\models\settings\Layout;
-use app\models\settings\Privileges;
-use app\models\http\{BinaryFileResponse,
-    HtmlErrorResponse,
-    HtmlResponse,
-    JsonResponse,
-    RedirectResponse,
-    ResponseInterface,
-    RestApiResponse};
+use app\models\settings\{Layout, Privileges, AntragsgruenApp};
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface, RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
 use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, User};
-use app\models\exceptions\{Access, FormError};
-use app\models\settings\AntragsgruenApp;
+use app\models\exceptions\{Access, FormError, ResponseException};
 use yii\web\{NotFoundHttpException, Response};
 
 class PagesController extends Base
@@ -28,7 +20,7 @@ class PagesController extends Base
         if ($this->isPostSet('create')) {
             try {
                 $url = $this->getHttpRequest()->post('url');
-                if (trim($url) === '' || preg_match('/[^\w_\-,\.äöüß]/siu', $url)) {
+                if (trim($url) === '' || preg_match('/[^\w_\-,.äöüß]/siu', $url)) {
                     throw new FormError('Invalid character in the URL');
                 }
                 $page = new ConsultationText();
@@ -61,19 +53,16 @@ class PagesController extends Base
         $allowedPages = [ConsultationText::DEFAULT_PAGE_MAINTENANCE, ConsultationText::DEFAULT_PAGE_LEGAL, ConsultationText::DEFAULT_PAGE_PRIVACY];
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
             if ($this->testMaintenanceMode(null) || $this->testSiteForcedLogin()) {
-                $this->showErrorpage(404, 'Page not found');
-                return null;
+                throw new ResponseException(new HtmlErrorResponse(404, 'Page not found'));
             }
         }
 
         return $pageData;
     }
 
-    public function actionShowPage(string $pageSlug): string
+    public function actionShowPage(string $pageSlug): ResponseInterface
     {
-        if (!$this->getPageForView($pageSlug)) {
-            return '';
-        }
+        $this->getPageForView($pageSlug); // Assert the page exists
 
         return $this->renderContentPage($pageSlug);
     }
@@ -184,7 +173,7 @@ class PagesController extends Base
                 }
             }
             $newTextId = $this->getHttpRequest()->post('url');
-            if ($newTextId && !preg_match('/[^\w_\-,\.äöüß]/siu', $newTextId) && $page->textId !== $newTextId) {
+            if ($newTextId && !preg_match('/[^\w_\-,.äöüß]/siu', $newTextId) && $page->textId !== $newTextId) {
                 $page->textId = $newTextId;
                 $needsReload  = true;
             }
@@ -261,18 +250,18 @@ class PagesController extends Base
     }
 
 
-    public function actionMaintenance(): string
+    public function actionMaintenance(): HtmlResponse
     {
         return $this->renderContentPage('maintenance');
     }
 
-    public function actionLegal(): string
+    public function actionLegal(): HtmlResponse
     {
         if (AntragsgruenApp::getInstance()->multisiteMode) {
             $admin      = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
             $viewParams = ['pageKey' => 'legal', 'admin' => $admin];
 
-            return $this->render('imprint_multisite', $viewParams);
+            return new HtmlResponse($this->render('imprint_multisite', $viewParams));
         } else {
             return $this->renderContentPage('legal');
         }

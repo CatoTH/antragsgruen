@@ -214,7 +214,7 @@ return [
     'filter_agenda_item'          => 'Agenda item',
     'filter_prefix'               => 'Signature',
     'filter_responsibility'       => 'Responsibility',
-    'filter_show_replaced'        => 'Show old / replaced versions (%NUM%)',
+    'filter_show_replaced'        => 'Show drafts, old &amp; replaced versions (%NUM%)',
     'filter_only_todo'            => 'Show only "To Do"\'s (%NUM%)',
 
     'con_email_from'          => 'From Name',

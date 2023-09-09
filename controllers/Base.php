@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
-use app\models\http\{ResponseInterface, RestApiExceptionResponse, RestApiResponse};
+use app\models\http\{HtmlResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, Site, User};
@@ -229,12 +229,7 @@ class Base extends Controller
         return $this->isPostSet($name) || $this->isGetSet($name);
     }
 
-    /**
-     * @param string $name
-     * @param null|mixed $default
-     * @return mixed
-     */
-    public function getRequestValue($name, $default = null)
+    public function getRequestValue(string $name, mixed $default = null): mixed
     {
         $post = $this->getHttpRequest()->post();
         if (isset($post[$name])) {
@@ -247,11 +242,7 @@ class Base extends Controller
         return $default;
     }
 
-    /**
-     * @param mixed|null $default
-     * @return array|mixed|object
-     */
-    public function getPostValue(string $name, $default = null)
+    public function getPostValue(string $name, mixed $default = null): mixed
     {
         return $this->getHttpRequest()->post($name, $default);
     }
@@ -261,7 +252,7 @@ class Base extends Controller
         return $this->getHttpRequest()->post();
     }
 
-    public function renderContentPage(string $pageKey): string
+    public function renderContentPage(string $pageKey): HtmlResponse
     {
         if ($this->consultation) {
             $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
@@ -269,13 +260,13 @@ class Base extends Controller
             $user  = User::getCurrentUser();
             $admin = ($user && in_array($user->id, $this->getParams()->adminUserIds));
         }
-        return $this->render(
+        return new HtmlResponse($this->render(
             '@app/views/pages/contentpage',
             [
                 'pageKey' => $pageKey,
                 'admin'   => $admin,
             ]
-        );
+        ));
     }
 
     /**

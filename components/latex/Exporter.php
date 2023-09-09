@@ -583,7 +583,7 @@ class Exporter
         if (!file_exists($filenameBase . '.pdf')) {
             throw new Internal('An error occurred while creating the PDF: ' . $cmd);
         }
-        $pdf = file_get_contents($filenameBase . '.pdf');
+        $pdf = (string)file_get_contents($filenameBase . '.pdf');
 
         unlink($filenameBase . '.aux');
         unlink($filenameBase . '.log');

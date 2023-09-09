@@ -48,10 +48,10 @@ class AntragsgruenApp implements \JsonSerializable
     public ?string $updateKey = null;
     public ?string $jwtPrivateKey = null;
 
-    /** @var string[] */
+    /** @var array<class-string<ModuleBase>> */
     protected array $plugins = [];
 
-    /** @var string[][] */
+    /** @var array<array<class-string<ModuleBase>>> */
     protected array $sitePlugins = [];
 
     public array $mailService = ['transport' => 'sendmail'];
@@ -115,7 +115,7 @@ class AntragsgruenApp implements \JsonSerializable
     }
 
     /**
-     * @return string[]
+     * @return array<class-string<ModuleBase>>
      */
     public function getPluginNames(): array
     {
@@ -126,11 +126,14 @@ class AntragsgruenApp implements \JsonSerializable
                 $names[] = $name;
             }
         }
-        return array_unique($names);
+        /** @var array<class-string<ModuleBase>> $plugins */
+        $plugins = array_unique($names);
+
+        return $plugins;
     }
 
     /**
-     * @return ModuleBase[]
+     * @return array<string, class-string<ModuleBase>>
      */
     public function getPluginClasses(): array
     {
@@ -138,11 +141,12 @@ class AntragsgruenApp implements \JsonSerializable
         foreach ($this->getPluginNames() as $name) {
             $plugins[$name] = 'app\\plugins\\' . $name . '\\Module';
         }
+        /** @var array<class-string<ModuleBase>> $plugins */
         return $plugins;
     }
 
     /**
-     * @return ModuleBase[]
+     * @return array<string, class-string<ModuleBase>>
      */
     public static function getActivePlugins(): array
     {

@@ -617,9 +617,25 @@ class Motion extends IMotion implements IRSSItem
             $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
         }
 
+        return $this->getReplacedByMotionsWithoutStatus($invisibleStatuses);
+    }
+
+    public function getReadableReplacedByMotions(): array
+    {
+        $unreadableStatuses = $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses();
+
+        return $this->getReplacedByMotionsWithoutStatus($unreadableStatuses);
+    }
+
+    /**
+     * @param int[] $filteredOutStatuses
+     * @return Motion[]
+     */
+    private function getReplacedByMotionsWithoutStatus(array $filteredOutStatuses): array
+    {
         $replacedByMotions = [];
         foreach ($this->replacedByMotions as $replMotion) {
-            if (!in_array($replMotion->status, $invisibleStatuses)) {
+            if (!in_array($replMotion->status, $filteredOutStatuses)) {
                 $replacedByMotions[] = $replMotion;
             }
         }

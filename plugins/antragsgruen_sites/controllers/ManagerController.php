@@ -270,11 +270,11 @@ class ManagerController extends Base
 
     public function actionLegal(): HtmlResponse
     {
-        return new HtmlResponse($this->renderContentPage('legal'));
+        return $this->renderContentPage('legal');
     }
 
     public function actionPrivacy(): HtmlResponse
     {
-        return new HtmlResponse($this->renderContentPage('privacy'));
+        return $this->renderContentPage('privacy');
     }
 }

@@ -28,7 +28,7 @@ class Module extends ModuleBase
 
     public static function getDiscourseConfiguration(): array
     {
-        return json_decode(file_get_contents(__DIR__ . '/../../config/discourse.json'), true);
+        return json_decode((string)file_get_contents(__DIR__ . '/../../config/discourse.json'), true);
     }
 
     protected static function getMotionUrlRoutes(): array

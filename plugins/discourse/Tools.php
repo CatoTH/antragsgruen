@@ -26,7 +26,7 @@ class Tools
 
     public static function createTopic(string $title, string $body, int $categoryId): array
     {
-        $config = json_decode(file_get_contents(__DIR__ . '/../../config/discourse.json'), true);
+        $config = json_decode((string)file_get_contents(__DIR__ . '/../../config/discourse.json'), true);
 
         $client = new \GuzzleHttp\Client(['base_uri' => $config['host']]);
 

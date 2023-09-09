@@ -21,7 +21,7 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 
 $hasTags        = (count($consultation->tags) > 0);
-$isReplaced     = (count($entry->replacedByMotions) > 0);
+$isReplaced     = (count($entry->getReadableReplacedByMotions()) > 0);
 $motionStatuses = $consultation->getStatuses()->getStatusNames();
 $viewUrl        = UrlHelper::createMotionUrl($entry);
 if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\MotionController::REQUIRED_PRIVILEGES, PrivilegeQueryContext::motion($entry))) {
