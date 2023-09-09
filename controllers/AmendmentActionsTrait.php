@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\UrlHelper;
+use app\components\{RequestContext, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, IComment, Consultation, User};
 use app\models\events\AmendmentEvent;
 use app\models\http\{JsonResponse, RedirectResponse};
@@ -199,7 +199,7 @@ trait AmendmentActionsTrait
         $role = AmendmentSupporter::ROLE_SUPPORTER;
         $user = User::getCurrentUser();
         $gender = $this->getHttpRequest()->post('motionSupportGender', '');
-        $nonPublic = ($supportClass->getSettingsObj()->offerNonPublicSupports && \Yii::$app->request->post('motionSupportPublic') === null);
+        $nonPublic = ($supportClass->getSettingsObj()->offerNonPublicSupports && RequestContext::getWebRequest()->post('motionSupportPublic') === null);
         if ($user && ($user->fixedData & User::FIXED_NAME)) {
             $name = $user->name;
         } else {
@@ -327,7 +327,7 @@ trait AmendmentActionsTrait
 
     private function setProposalAgree(Amendment $amendment): void
     {
-        $procedureToken = \Yii::$app->request->get('procedureToken');
+        $procedureToken = RequestContext::getWebRequest()->get('procedureToken');
         if (!$amendment->canSeeProposedProcedure($procedureToken) || !$amendment->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
@@ -344,7 +344,7 @@ trait AmendmentActionsTrait
     private function savePrivateNote(Amendment $amendment): void
     {
         $user     = User::getCurrentUser();
-        $noteText = trim(\Yii::$app->request->post('noteText', ''));
+        $noteText = trim(RequestContext::getWebRequest()->post('noteText', ''));
         if (!$user) {
             return;
         }
@@ -376,7 +376,7 @@ trait AmendmentActionsTrait
      */
     private function performShowActions(Amendment $amendment, int $commentId, array &$viewParameters): void
     {
-        $post = \Yii::$app->request->post();
+        $post = RequestContext::getWebRequest()->post();
         if ($commentId === 0 && isset($post['commentId'])) {
             $commentId = intval($post['commentId']);
         }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\layoutHooks;
 
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
-use app\components\{Tools, UrlHelper};
+use app\components\{RequestContext, Tools, UrlHelper};
 use app\controllers\{admin\IndexController, admin\MotionListController, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
@@ -344,10 +344,10 @@ class StdHooks extends Hooks
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink', 'aria-label' => $adminTitle]) . '</li>';
             }
 
-            if (get_class(\Yii::$app->controller) === UserController::class) {
+            if (get_class(RequestContext::getController()) === UserController::class) {
                 $backUrl = UrlHelper::createUrl('/consultation/index');
             } else {
-                $backUrl = \Yii::$app->request->url;
+                $backUrl = RequestContext::getWebRequest()->url;
             }
             if (User::getCurrentUser()) {
                 $link = Html::a(

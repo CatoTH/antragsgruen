@@ -35,7 +35,7 @@ class DeadlineForm
         return $form;
     }
 
-    public function createFromInputSimple(array $input)
+    public function createFromInputSimple(array $input): void
     {
         try {
             $motionsEnd    = Tools::dateBootstraptime2sql($input['motionsSimple']);

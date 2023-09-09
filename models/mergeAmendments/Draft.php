@@ -148,6 +148,7 @@ class Draft implements \JsonSerializable
 
         $draft->paragraphs = [];
         foreach ($form->motion->getSortedSections(false) as $section) {
+            /** @var MotionSection $section */
             if ($section->getSettings()->type !== \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
@@ -211,7 +212,7 @@ class Draft implements \JsonSerializable
             $section->setAttributes($this->origMotion->getActiveSections()[0]->getAttributes(), false);
             $section->motionId = $this->draftMotion->id;
         }
-        $section->dataRaw = json_encode($this);
+        $section->dataRaw = json_encode($this, JSON_THROW_ON_ERROR);
         $section->setData('');
         $section->save();
 

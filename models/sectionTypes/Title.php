@@ -128,7 +128,7 @@ class Title extends ISectionType
 
         $html = '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
             Html::encode($this->getMotionPlainText()) . '</p>';
-        $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
+        $pdf->writeHTMLCell(170, 0, 24, null, $html, 0, 1, false, true, '', true);
         $pdf->Ln(7);
     }
 
