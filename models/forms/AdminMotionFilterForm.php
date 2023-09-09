@@ -131,19 +131,24 @@ class AdminMotionFilterForm
         ];
     }
 
+    public function isFilterSet(): bool
+    {
+        return $this->title !== null ||
+               $this->initiator !== null ||
+               $this->prefix !== null ||
+               $this->status !== null ||
+               $this->version !== null ||
+               $this->tag !== null ||
+               $this->responsibility !== null ||
+               $this->agendaItem !== null ||
+               $this->proposalStatus !== null ||
+               $this->onlyTodo === true;
+    }
+
     public function isDefaultSettings(): bool
     {
-        return $this->title === null &&
-               $this->initiator === null &&
-               $this->prefix === null &&
-               $this->status === null &&
-               $this->version === null &&
-               $this->tag === null &&
-               $this->responsibility === null &&
-               $this->agendaItem === null &&
-               $this->proposalStatus === null &&
+        return !$this->isFilterSet() &&
                $this->showReplaced === false &&
-               $this->onlyTodo === false &&
                $this->sort === self::SORT_TITLE_PREFIX;
     }
 
@@ -691,7 +696,11 @@ class AdminMotionFilterForm
         foreach ($this->allAmendments as $amend) {
             $matches = true;
 
-            if (!in_array($amend->motionId, $motionIds)) {
+            if (!$this->isFilterSet() && !in_array($amend->motionId, $motionIds)) {
+                // For the unfiltered list, amendments are considered dependent on their motions. If the motion is not visible anymore,
+                // because it's replaced or set to draft status, the amendments are not to be shown.
+                // If it is specifically filtered for a specific attribute, then the visibility of an amendment should not depend on its parent
+                // motion anymore.
                 $matches = false;
             }
 
