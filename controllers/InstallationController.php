@@ -2,12 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, ResponseInterface};
 use app\components\{yii\MessageSource, RequestContext, UrlHelper};
 use app\models\db\User;
 use app\models\exceptions\Internal;
 use app\models\forms\{AntragsgruenInitDb, AntragsgruenInitSite};
 use yii\helpers\{Html, Url};
-use yii\web\Response;
 
 class InstallationController extends Base
 {
@@ -33,7 +33,7 @@ class InstallationController extends Base
     }
 
 
-    private function initDb(AntragsgruenInitDb $dbForm, string $delInstallFileCmd, string $makeEditabeCommand, string $configDir, bool $editable): string
+    private function initDb(AntragsgruenInitDb $dbForm, string $delInstallFileCmd, string $makeEditabeCommand, string $configDir, bool $editable): HtmlResponse
     {
         if (!version_compare(PHP_VERSION, ANTRAGSGRUEN_MIN_PHP_VERSION, '>=')) {
             $phpVersionWarning = str_replace(
@@ -45,17 +45,17 @@ class InstallationController extends Base
             $phpVersionWarning = null;
         }
 
-        return $this->render('init_db', [
+        return new HtmlResponse($this->render('init_db', [
             'form'                 => $dbForm,
             'installFileDeletable' => is_writable($configDir),
             'delInstallFileCmd'    => $delInstallFileCmd,
             'editable'             => $editable,
             'makeEditabeCommand'   => $makeEditabeCommand,
             'phpVersionWarning'    => $phpVersionWarning,
-        ]);
+        ]));
     }
 
-    private function createSite(string $installFile, string $delInstallFileCmd, string $configDir): string
+    private function createSite(string $installFile, string $delInstallFileCmd, string $configDir): HtmlResponse
     {
         $configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
         $siteForm   = new AntragsgruenInitSite($configFile);
@@ -78,11 +78,11 @@ class InstallationController extends Base
                 $consultationUrl = str_replace('consultation/index', '', $consultationUrl);
 
                 unlink($installFile);
-                return $this->render('done', [
+                return new HtmlResponse($this->render('done', [
                     'installFileDeletable' => is_writable($configDir),
                     'delInstallFileCmd'    => $delInstallFileCmd,
                     'consultationUrl'      => $consultationUrl,
-                ]);
+                ]));
             } catch (\Exception $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
@@ -91,14 +91,14 @@ class InstallationController extends Base
             $siteForm->openNow = true;
         }
 
-        return $this->render('create_site', [
+        return new HtmlResponse($this->render('create_site', [
             'form'                 => $siteForm,
             'installFileDeletable' => is_writable($configDir),
             'delInstallFileCmd'    => $delInstallFileCmd,
-        ]);
+        ]));
     }
 
-    public function actionIndex(string $language = ''): string
+    public function actionIndex(string $language = ''): ResponseInterface
     {
         $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
@@ -109,14 +109,16 @@ class InstallationController extends Base
             $url = Url::toRoute('manager/siteconfig');
             $msg .= Html::a(\Yii::t('manager', 'created_goon_std_config'), $url, ['class' => 'btn btn-primary']);
             $msg = str_replace('%FILE%', Html::encode($installFile), $msg);
-            $this->showErrorpage(403, $msg);
-            return '';
+            return new HtmlErrorResponse(403, $msg);
         }
 
         if (file_exists($configFile)) {
             $editable = is_writable($configFile);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
-                $myUsername         = posix_getpwuid(posix_geteuid());
+                $myUsername = posix_getpwuid(posix_geteuid());
+                if (!$myUsername || !isset($myUsername['name'])) {
+                    return new HtmlErrorResponse(500, 'Could not determine username');
+                }
                 $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile . "\n";
                 $makeEditabeCommand .= 'sudo chmod u+rwx ' . $configFile . "\n";
             } else {
@@ -125,7 +127,10 @@ class InstallationController extends Base
         } else {
             $editable = is_writable($configDir);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
-                $myUsername         = posix_getpwuid(posix_geteuid());
+                $myUsername = posix_getpwuid(posix_geteuid());
+                if (!$myUsername || !isset($myUsername['name'])) {
+                    return new HtmlErrorResponse(500, 'Could not determine username');
+                }
                 $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir . "\n";
                 $makeEditabeCommand .= 'sudo chmod u+rwx ' . $configDir . "\n";
             } else {
@@ -141,7 +146,7 @@ class InstallationController extends Base
         }
         if (isset(MessageSource::getBaseLanguages()[$language])) {
             $dbForm->language    = $language;
-            \Yii::$app->language = $language;
+            RequestContext::getWebApplication()->language = $language;
         }
 
 
@@ -176,11 +181,8 @@ class InstallationController extends Base
         }
     }
 
-    public function actionDbTest(): string
+    public function actionDbTest(): JsonResponse
     {
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
         $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
         $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
@@ -200,12 +202,12 @@ class InstallationController extends Base
 
         try {
             $success = $form->verifyDBConnection(true);
-            return json_encode([
+            return new JsonResponse([
                 'success'        => $success,
                 'alreadyCreated' => $form->tablesAreCreated(),
             ]);
         } catch (\Exception $e) {
-            return json_encode([
+            return new JsonResponse([
                 'success'        => false,
                 'error'          => $e->getMessage(),
                 'alreadyCreated' => null,

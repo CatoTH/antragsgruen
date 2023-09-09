@@ -87,7 +87,7 @@ class TextHTML extends Text
         if (function_exists('normalizer_normalize')) {
             $html = normalizer_normalize($html);
         }
-        $pdf->writeHTML($html);
+        $pdf->writeHTML((string)$html);
     }
 
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void

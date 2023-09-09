@@ -135,7 +135,7 @@ class AmendmentEditForm
         }
     }
 
-    public function setAttributes(array $values, array $files)
+    public function setAttributes(array $values, array $files): void
     {
         $consultation = $this->motion->getMyConsultation();
         if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($this->motion))) {

@@ -101,7 +101,7 @@ class ConsultationCreateForm
             foreach ($motionType->motionSections as $section) {
                 $newSection = new ConsultationSettingsMotionSection();
                 $newSection->setAttributes($section->getAttributes(), false);
-                $newSection->motionTypeId = $newType->id;
+                $newSection->motionTypeId = (int)$newType->id;
                 $newSection->id           = null;
                 if (!$newSection->save()) {
                     throw new FormError($newType->getErrors());

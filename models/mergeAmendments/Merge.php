@@ -2,7 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
-use app\components\{MotionNumbering, Tools};
+use app\components\{MotionNumbering, RequestContext, Tools};
 use app\models\sectionTypes\TextSimple;
 use app\models\db\{IMotion, Motion, MotionSection, MotionSupporter};
 use app\models\events\MotionEvent;
@@ -174,7 +174,7 @@ class Merge
             $newMotion->status = $oldMotion->status;
         }
         if ($isResolution) {
-            $resolutionDate            = \Yii::$app->request->post('dateResolution', '');
+            $resolutionDate            = RequestContext::getWebRequest()->post('dateResolution', '');
             $resolutionDate            = Tools::dateBootstrapdate2sql($resolutionDate);
             $newMotion->dateResolution = ($resolutionDate ? $resolutionDate : null);
         } else {
@@ -197,9 +197,9 @@ class Merge
                 $body->personType     = MotionSupporter::PERSON_ORGANIZATION;
                 $body->role           = MotionSupporter::ROLE_INITIATOR;
                 $body->organization   = $resolutionBody;
-                $resolutionDate       = \Yii::$app->request->post('dateResolution', '');
+                $resolutionDate       = RequestContext::getWebRequest()->post('dateResolution', '');
                 $resolutionDate       = Tools::dateBootstrapdate2sql($resolutionDate);
-                $body->resolutionDate = ($resolutionDate ? $resolutionDate : null);
+                $body->resolutionDate = ($resolutionDate ?: null);
                 if (!$body->save()) {
                     var_dump($body->getErrors());
                     die();

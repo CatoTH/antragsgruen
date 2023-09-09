@@ -360,10 +360,10 @@ class SiteCreateForm extends Model
             $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
             $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
         }
-        $type->supportTypeMotions = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+        $type->supportTypeMotions = json_encode($initiatorSettings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
 
-        $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
-        $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
+        $deadlineMotions = $this->motionDeadline?->format('Y-m-d H:i:s');
+        $deadlineAmendments = $this->amendmentDeadline?->format('Y-m-d H:i:s');
         $type->setSimpleDeadlines($deadlineMotions, $deadlineAmendments);
 
         if (!$type->save()) {
@@ -426,10 +426,10 @@ class SiteCreateForm extends Model
         } else {
             $initiatorSettings->type = SupportBase::ONLY_INITIATOR;
         }
-        $type->supportTypeMotions    = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+        $type->supportTypeMotions    = json_encode($initiatorSettings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
 
-        $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
-        $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
+        $deadlineMotions = $this->motionDeadline?->format('Y-m-d H:i:s');
+        $deadlineAmendments = $this->amendmentDeadline?->format('Y-m-d H:i:s');
         $type->setSimpleDeadlines($deadlineMotions, $deadlineAmendments);
 
         if (!$type->save()) {
@@ -479,17 +479,17 @@ class SiteCreateForm extends Model
 
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::NO_INITIATOR;
-        $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+        $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
 
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::ONLY_INITIATOR;
         $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
         $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
         $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
-        $type->supportTypeAmendments     = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+        $type->supportTypeAmendments     = json_encode($initiatorSettings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
 
-        $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
-        $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
+        $deadlineMotions = $this->motionDeadline?->format('Y-m-d H:i:s');
+        $deadlineAmendments = $this->amendmentDeadline?->format('Y-m-d H:i:s');
         $type->setSimpleDeadlines($deadlineMotions, $deadlineAmendments);
 
         if (!$type->save()) {

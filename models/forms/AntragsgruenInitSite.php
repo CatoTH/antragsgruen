@@ -35,7 +35,7 @@ class AntragsgruenInitSite extends SiteCreateForm
      * @param array $values
      * @param bool $safeOnly
      */
-    public function setAttributes($values, $safeOnly = true)
+    public function setAttributes($values, $safeOnly = true): void
     {
         parent::setAttributes($values, $safeOnly);
         $this->siteEmail  = $values['siteEmail'];

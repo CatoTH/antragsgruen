@@ -3,7 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, Diff, DiffRenderer};
-use app\components\{HashedStaticCache, HTMLTools, LineSplitter, UrlHelper};
+use app\components\{HashedStaticCache, HTMLTools, LineSplitter, RequestContext, UrlHelper};
 use app\components\latex\{Content, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection};
 use app\models\forms\CommentForm;
@@ -146,7 +146,7 @@ class TextSimple extends Text
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        $post    = \Yii::$app->request->post();
+        $post    = RequestContext::getWebRequest()->post();
 
         $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
         if ($this->forceMultipleParagraphs) {

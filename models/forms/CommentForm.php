@@ -102,7 +102,7 @@ class CommentForm
     {
         if (RequestContext::getUser()->isGuest) {
             $jsToken = AntiSpam::createToken((string)$this->motionType->consultationId);
-            if ($jsToken !== \Yii::$app->request->post('jsprotection')) {
+            if ($jsToken !== RequestContext::getWebRequest()->post('jsprotection')) {
                 throw new Access(\Yii::t('base', 'err_js_or_login'));
             }
         }

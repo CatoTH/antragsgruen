@@ -39,7 +39,7 @@ class Motion
         $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
         $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
         $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
-        $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+        $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
         $type->supportTypeAmendments     = null;
 
         $type->setSettingsObj(new MotionType(null));
