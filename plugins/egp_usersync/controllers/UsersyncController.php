@@ -36,6 +36,9 @@ class UsersyncController extends Base
         if ($this->getHttpHeader('X-API-Key') === null || $this->getHttpHeader('X-API-Key') !== Module::$webhookApiToken) {
             return new RestApiResponse(401, ['success' => false, 'error' => 'No or invalid X-API-Key given']);
         }
+        if (!in_array($_SERVER['REMOTE_ADDR'], Module::$webhookAllowedIps)) {
+            return new RestApiResponse(403, ['success' => false, 'error' => 'IP Address is not allowed to access this endpoint']);
+        }
 
         $userLists = Tools::getSerializer()->deserialize($this->getPostBody(), UserList::class . '[]', 'json');
         $result = $this->userSyncService->syncLists($userLists);

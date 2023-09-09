@@ -25,8 +25,14 @@ class UserSyncService
         return $results;
     }
 
-    private function getUserGroupForConsultation(string $consultationUrl): ConsultationUserGroup
+    private function getUserGroupForList(string $listName): ConsultationUserGroup
     {
+        if (isset(Module::$consultationListMapping[$listName])) {
+            $consultationUrl = Module::$consultationListMapping[$listName];
+        } else {
+            $consultationUrl = $listName;
+        }
+
         $foundConsultation = null;
         $knownConsultationUrls = [];
         foreach (UrlHelper::getCurrentSite()->consultations as $consultation) {
@@ -59,7 +65,7 @@ class UserSyncService
         $removed = 0;
         $unchanged = 0;
 
-        $userGroup = $this->getUserGroupForConsultation($userList->getListName());
+        $userGroup = $this->getUserGroupForList($userList->getListName());
         $currentUserIdsInGroup = $userGroup->getUserIds();
 
         $newUserIds = [];
@@ -67,6 +73,13 @@ class UserSyncService
             $dbUser = User::findByAuthTypeAndName(User::AUTH_EMAIL, $user->getEmail());
             if ($dbUser) {
                 if (in_array($dbUser->id, $currentUserIdsInGroup)) {
+                    if ($dbUser->nameFamily !== $user->getLastName() || $dbUser->nameGiven !== $user->getName() || $dbUser->organization !== $user->getParty()) {
+                        $dbUser->nameFamily = $user->getLastName();
+                        $dbUser->nameGiven = $user->getName();
+                        $dbUser->name = $user->getName() . ' ' . $user->getLastName();
+                        $dbUser->organization = $user->getParty();
+                        $dbUser->save();
+                    }
                     $unchanged++;
                 } else {
                     $this->getUserGroupAdminMethods($userGroup->consultation)->addSingleDetailedUser(
