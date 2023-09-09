@@ -63,7 +63,7 @@ echo $controller->showErrors();
 
 if ($amendment->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'amendmentScreenForm']);
-    $newRev = $amendment->titlePrefix;
+    $newRev = $amendment->titlePrefix ?? '';
     if ($newRev === '') {
         $newRev = Amendment::getNewNumberForAmendment($amendment);
     }

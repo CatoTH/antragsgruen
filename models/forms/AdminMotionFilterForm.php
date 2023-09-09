@@ -761,6 +761,9 @@ class AdminMotionFilterForm
             }
         }
 
+        /** @var Amendment[] $out */
+        $out = $this->calcAndFilterTodoItems($out);
+
         return $out;
     }
 
