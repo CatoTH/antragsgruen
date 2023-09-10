@@ -290,6 +290,9 @@ class ConsultationController extends Base
 
     public function actionIndex(): ResponseInterface
     {
+        if (!$this->consultation) {
+            return new HtmlErrorResponse(500, 'The page was not found. This might be due to a misconfiguration of the installation.');
+        }
         if ($this->consultation->getSettings()->maintenanceMode && !User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
             return $this->renderContentPage('maintenance');
         }
