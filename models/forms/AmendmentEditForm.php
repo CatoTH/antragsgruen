@@ -244,7 +244,7 @@ class AmendmentEditForm
         $amendment->changeEditorial = $this->editorial;
         $amendment->changeExplanation = $this->reason;
         $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
-        $amendment->agendaItemId = ($this->agendaItem ? $this->agendaItem->id : null);
+        $amendment->agendaItemId = $this->agendaItem?->id;
         $amendment->changeText = '';
         $amendment->cache = '';
 

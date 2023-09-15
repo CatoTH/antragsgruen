@@ -183,11 +183,12 @@ class AmendmentController extends AdminBase
         $post = $this->getHttpRequest()->post();
 
         if ($this->isPostSet('screen') && $amendment->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
-            if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
+            $toSetPrefix = (mb_strlen($post['titlePrefix']) > 45 ? mb_substr($post['titlePrefix'], 0, 45) : $post['titlePrefix']);
+            if ($amendment->getMyMotion()->findAmendmentWithPrefix($toSetPrefix, $amendment)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
-                $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
-                $amendment->titlePrefix = $post['titlePrefix'];
+                $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
+                $amendment->titlePrefix = $toSetPrefix;
                 $amendment->save();
                 $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
                 $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'amend_screened'));
@@ -251,10 +252,11 @@ class AmendmentController extends AdminBase
                 }
             }
 
-            if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
+            $toSetPrefix = (mb_strlen($amdat['titlePrefix']) > 45 ? mb_substr($amdat['titlePrefix'], 0, 45) : $amdat['titlePrefix']);
+            if ($amendment->getMyMotion()->findAmendmentWithPrefix($toSetPrefix, $amendment)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
-                $amendment->titlePrefix = $post['amendment']['titlePrefix'];
+                $amendment->titlePrefix = $toSetPrefix;
             }
 
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {

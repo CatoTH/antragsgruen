@@ -8,12 +8,8 @@ namespace app\models\db;
  */
 trait CacheTrait
 {
-    /** @var null|array */
-    protected $cacheObj = null;
+    protected ?array $cacheObj = null;
 
-    /**
-     * @return array
-     */
     protected function getCacheObj(): array
     {
         if ($this->cacheObj === null) {
@@ -45,7 +41,7 @@ trait CacheTrait
         // item "motion" deletes cache keys like "motion", "motionSupporter"
         foreach (array_keys($data) as $existingKey) {
             foreach ($items as $toDeleteKey) {
-                if (strpos($existingKey, $toDeleteKey) === 0) {
+                if (str_starts_with($existingKey, $toDeleteKey)) {
                     $changed = true;
                     unset($data[$existingKey]);
                 }
@@ -59,10 +55,7 @@ trait CacheTrait
         }
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCacheItem(string $key)
+    public function getCacheItem(string $key): mixed
     {
         $data = $this->getCacheObj();
         if (!isset($data[$key])) {
@@ -72,10 +65,7 @@ trait CacheTrait
         return $data[$key];
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setCacheItem(string $key, $value, bool $save = true): void
+    public function setCacheItem(string $key, mixed $value, bool $save = true): void
     {
         $data           = $this->getCacheObj();
         $data[$key]     = $value;
