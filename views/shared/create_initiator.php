@@ -55,7 +55,7 @@ echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget=
 
 echo '<legend class="green">' . Yii::t('motion', 'initiators_head') . '</legend>';
 
-echo '<div class="initiatorData form-horizontal content">';
+echo '<div class="initiatorData content">';
 
 if ($allowOther) {
     if ($adminMode) {
@@ -71,9 +71,9 @@ if ($allowOther) {
 
 if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
     ?>
-    <fieldset class="form-group personTypeSelector">
-        <legend class="col-sm-3 control-label"><?= Yii::t('initiator', 'iAmA') ?></legend>
-        <div class="col-sm-9">
+    <div class="personTypeSelector stdTwoCols">
+        <div class="leftColumn"><?= Yii::t('initiator', 'iAmA') ?></div>
+        <div class="rightColumn">
             <label class="radio-inline">
                 <?php
                 echo Html::radio(
@@ -95,7 +95,7 @@ if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
                 <?= Yii::t('initiator', 'personOrganization') ?>
             </label>
         </div>
-    </fieldset>
+    </div>
     <?php
 }
 if ($settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
@@ -107,9 +107,9 @@ if (!$settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
 
 if ($adminMode) {
     ?>
-    <div class="form-group initiatorCurrentUsername">
-        <label class="col-sm-3 control-label" for="initiatorName"><?= Yii::t('initiator', 'username') ?></label>
-        <div class="col-sm-6 username">
+    <div class="stdTwoCols initiatorCurrentUsername">
+        <label class="leftColumn" for="initiatorName"><?= Yii::t('initiator', 'username') ?></label>
+        <div class="middleColumn username">
             <?php
             if ($initiator->user) {
                 echo Html::encode($initiator->user->getAuthName());
@@ -121,8 +121,8 @@ if ($adminMode) {
             </button>
         </div>
     </div>
-    <div class="form-group initiatorSetUsername hidden">
-        <label class="col-sm-3 control-label" for="initiatorName"><?= Yii::t('initiator', 'username') ?></label>
+    <div class="stdTwoCols initiatorSetUsername hidden">
+        <label class="leftColumn" for="initiatorName"><?= Yii::t('initiator', 'username') ?></label>
         <?php
         $loginTypes = [
             'email' => Yii::t('admin', 'siteacc_add_email') . ':',
@@ -137,11 +137,11 @@ if ($adminMode) {
             }
         }
         ?>
-        <div class="col-md-3 admin-type">
+        <div class="middleColumn admin-type">
             <input type="hidden" name="initiatorSet" value="">
             <?= Html::dropDownList('initiatorSetType', $logininit, $loginTypes, ['class' => 'stdDropdown']) ?>
         </div>
-        <div class="col-md-4">
+        <div class="rightColumn">
             <input type="text" name="initiatorSetUsername" id="initiatorSetUsername" class="form-control"
                    value="<?= Html::encode($initiator->user ? $initiator->user->getAuthUsername() : '') ?>"
                    title="<?= Html::encode(Yii::t('admin', 'siteacc_add_name_title')) ?>">
@@ -151,12 +151,12 @@ if ($adminMode) {
 }
 
 ?>
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="initiatorPrimaryName">
+    <div class="stdTwoCols">
+        <label class="leftColumn" for="initiatorPrimaryName">
             <span class="only-person"><?= Yii::t('initiator', 'name') ?></span>
             <span class="only-organization"><?= Yii::t('initiator', 'nameOrga') ?></span>
         </label>
-        <div class="col-sm-4">
+        <div class="middleColumn">
             <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
                    value="<?= Html::encode($prePrimaryName ?: '') ?>" autocomplete="name" required>
             <?php
@@ -175,11 +175,11 @@ if ($adminMode) {
 if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
     $preOrga = $initiator->organization;
     ?>
-    <div class="form-group organizationRow">
-        <label class="col-sm-3 control-label" for="initiatorOrga">
+    <div class="stdTwoCols organizationRow">
+        <label class="leftColumn" for="initiatorOrga">
             <?= Yii::t('initiator', 'orgaName') ?>
         </label>
-        <div class="col-sm-4">
+        <div class="middleColumn">
             <?php
             if (count($selectOrganisations) > 0) {
                 echo Html::dropDownList('Initiator[organization]', $preOrga, $selectOrganisations, [
@@ -202,11 +202,11 @@ if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
 if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBeOrganization) {
     $preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
     ?>
-    <div class="form-group resolutionRow">
-        <label class="col-sm-3 control-label" for="resolutionDate">
+    <div class="stdTwoCols resolutionRow">
+        <label class="leftColumn control-label" for="resolutionDate">
             <?= Yii::t('initiator', 'orgaResolution') ?>
         </label>
-        <div class="col-sm-4">
+        <div class="middleColumn">
             <div class="input-group date" id="resolutionDateHolder">
                 <input type="text" class="form-control" id="resolutionDate" name="Initiator[resolutionDate]"
                        value="<?= Html::encode($preResolution) ?>" data-locale="<?= Html::encode($locale) ?>">
@@ -220,9 +220,9 @@ if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->i
 if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBePerson) {
     $genderChoices = array_merge(['' => ''], SupportBase::getGenderSelection());
     ?>
-    <div class="form-group genderRow">
-        <label class="col-sm-3 control-label" for="initiatorGender"><?= Yii::t('initiator', 'gender') ?></label>
-        <div class="col-sm-4">
+    <div class="stdTwoCols genderRow">
+        <label class="leftColumn" for="initiatorGender"><?= Yii::t('initiator', 'gender') ?></label>
+        <div class="middleColumn">
             <?php
             echo Html::dropDownList('Initiator[gender]', $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER), $genderChoices, [
                 'id' => 'initiatorGender',
@@ -235,18 +235,16 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initi
 }
 
 ?>
-    <div class="form-group row contact-head">
-        <div class="col-sm-9 col-sm-offset-3 contact-head">
-            <h3><?= Yii::t('initiator', 'contactHead') ?></h3>
-            <div class="hint">(<?= Yii::t('initiator', 'visibilityAdmins') ?>)</div>
-        </div>
+    <div class="contactHead">
+        <h3><?= Yii::t('initiator', 'contactHead') ?></h3>
+        <div class="hint">(<?= Yii::t('initiator', 'visibilityAdmins') ?>)</div>
     </div>
 
-    <div class="form-group contactNameRow">
-        <label class="col-sm-3 control-label" for="initiatorContactName">
+    <div class="stdTwoCols contactNameRow">
+        <label class="leftColumn" for="initiatorContactName">
             <?= Yii::t('initiator', 'orgaContactName') ?>
         </label>
-        <div class="col-sm-4">
+        <div class="middleColumn">
             <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]"
                    value="<?= Html::encode($preContactName ?: '') ?>" autocomplete="name">
         </div>
@@ -256,9 +254,9 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initi
 if ($settings->contactEmail !== InitiatorForm::CONTACT_NONE) {
     $preEmail = $initiator->contactEmail;
     ?>
-    <div class="form-group emailRow">
-        <label class="col-sm-3 control-label" for="initiatorEmail"><?= Yii::t('initiator', 'email') ?></label>
-        <div class="col-sm-4">
+    <div class="stdTwoCols emailRow">
+        <label class="leftColumn control-label" for="initiatorEmail"><?= Yii::t('initiator', 'email') ?></label>
+        <div class="middleColumn">
             <input type="text" class="form-control" id="initiatorEmail" name="Initiator[contactEmail]"
                 <?php
                 if ($settings->contactEmail === InitiatorForm::CONTACT_REQUIRED && !$adminMode) {
@@ -274,9 +272,9 @@ if ($settings->contactEmail !== InitiatorForm::CONTACT_NONE) {
 if ($settings->contactPhone !== InitiatorForm::CONTACT_NONE) {
     $prePhone = $initiator->contactPhone;
     ?>
-    <div class="form-group phoneRow">
-        <label class="col-sm-3 control-label" for="initiatorPhone"><?= Yii::t('initiator', 'phone') ?></label>
-        <div class="col-sm-4">
+    <div class="stdTwoCols phoneRow">
+        <label class="leftColumn" for="initiatorPhone"><?= Yii::t('initiator', 'phone') ?></label>
+        <div class="middleColumn">
             <input type="text" class="form-control" id="initiatorPhone" name="Initiator[contactPhone]"
                 <?php
                 if ($settings->contactPhone === InitiatorForm::CONTACT_REQUIRED && !$adminMode) {
@@ -290,9 +288,9 @@ if ($settings->contactPhone !== InitiatorForm::CONTACT_NONE) {
 
 
 $getInitiatorRow = function (ISupporter $initiator, InitiatorForm $settings) {
-    $str = '<div class="form-group initiatorRow">';
-    $str .= '<div class="col-sm-3 control-label">' . Yii::t('initiator', 'moreInitiators') . '</div>';
-    $str .= '<div class="col-md-4">';
+    $str = '<div class="initiatorRow stdTwoCols">';
+    $str .= '<div class="leftColumn">' . Yii::t('initiator', 'moreInitiators') . '</div>';
+    $str .= '<div class="rightColumn"><div class="nameCol">';
     $str .= Html::textInput(
         'moreInitiators[name][]',
         $initiator->name,
@@ -300,7 +298,7 @@ $getInitiatorRow = function (ISupporter $initiator, InitiatorForm $settings) {
     );
     $str .= '</div>';
     if ($settings->hasOrganizations) {
-        $str .= '<div class="col-md-4">';
+        $str .= '<div class="orgaCal">';
         $str .= Html::textInput(
             'moreInitiators[organization][]',
             $initiator->organization,
@@ -308,12 +306,12 @@ $getInitiatorRow = function (ISupporter $initiator, InitiatorForm $settings) {
         );
         $str .= '</div>';
     }
-    $str .= '<div class="col-md-1"><button type="button" class="btn btn-link rowDeleter" title="' . Html::encode(Yii::t('initiator', 'removeInitiator')) . '">';
+    $str .= '<div class="delRow"><button type="button" class="btn btn-link rowDeleter" title="' . Html::encode(Yii::t('initiator', 'removeInitiator')) . '">';
     $str .= '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>';
     $str .= '<span class="sr-only">' . Yii::t('initiator', 'removeInitiator') . '</span>';
     $str .= '</button></div>';
 
-    $str .= '</div>';
+    $str .= '</div></div>';
 
     return $str;
 };
@@ -344,8 +342,8 @@ echo '</div>';
 
 if ($hasSupporters && !$adminMode) {
     $getSupporterRow = function (ISupporter $supporter, InitiatorForm $settings) {
-        $str = '<div class="form-group supporterRow">';
-        $str .= '<div class="col-md-6">';
+        $str = '<div class="supporterRow">';
+        $str .= '<div class="nameCol">';
         $str .= Html::textInput(
             'supporters[name][]',
             $supporter->name,
@@ -353,7 +351,7 @@ if ($hasSupporters && !$adminMode) {
         );
         $str .= '</div>';
         if ($settings->hasOrganizations) {
-            $str .= '<div class="col-md-5">';
+            $str .= '<div class="orgaCal">';
             $str .= Html::textInput(
                 'supporters[organization][]',
                 $supporter->organization,
@@ -362,7 +360,7 @@ if ($hasSupporters && !$adminMode) {
             $str .= '</div>';
         }
         if ($settings->allowMoreSupporters) {
-            $str .= '<div class="col-md-1"><button type="button" class="btn btn-link rowDeleter" title="' . Html::encode(Yii::t('initiator', 'removeSupporter')) . '">';
+            $str .= '<div class="delCol"><button type="button" class="btn btn-link rowDeleter" title="' . Html::encode(Yii::t('initiator', 'removeSupporter')) . '">';
             $str .= '<span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>';
             $str .= '<span class="sr-only">' . Yii::t('initiator', 'removeSupporter') . '</span>';
             $str .= '</button></div>';
@@ -381,7 +379,7 @@ if ($hasSupporters && !$adminMode) {
     echo '<div class="supporterData form-horizontal content" ';
     echo 'data-min-supporters="' . Html::encode($settings->minSupporters) . '">';
 
-    echo '<div class="form-group"><div class="col-md-3">';
+    echo '<div class="stdTwoCols"><div class="leftColumn">';
     if ($settings->allowMoreSupporters) {
         if ($settings->minSupporters > 1) {
             echo str_replace('%min%', $settings->minSupporters, Yii::t('initiator', 'minSupportersX'));
@@ -395,7 +393,7 @@ if ($hasSupporters && !$adminMode) {
     }
     echo '</div>';
 
-    echo '<div class="col-md-9">';
+    echo '<div class="rightColumn">';
     foreach ($supporters as $supporter) {
         echo $getSupporterRow($supporter, $settings);
     }
@@ -411,14 +409,14 @@ if ($hasSupporters && !$adminMode) {
         $fullTextSyntax = Yii::t('initiator', 'fullTextSyntax');
         ?>
         <div class="fullTextAdder"><button type="button" class="btn btn-link"><?= Yii::t('initiator', 'fullTextField') ?></button></div>
-        <div class="form-group hidden" id="fullTextHolder">
-            <div class="col-md-9">
+        <div class="hidden" id="fullTextHolder">
+            <div class="textHolder">
                 <textarea class="form-control" placeholder="<?= Html::encode($fullTextSyntax) ?>" rows="10"
                           title="<?= Html::encode(Yii::t('initiator', 'fullTextField')) ?>"></textarea>
             </div>
-            <div class="col-md-3">
+            <div class="btnHolder">
                 <button type="button" class="btn btn-success fullTextAdd">
-                    <span class="glyphicon glyphicon-plus"></span> <?= Yii::t('initiator', 'fullTextAdd') ?>
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <?= Yii::t('initiator', 'fullTextAdd') ?>
                 </button>
             </div>
         </div>

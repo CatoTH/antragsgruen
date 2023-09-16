@@ -120,6 +120,13 @@ export class InitiatorForm {
             }
             this.wasPerson = true;
         }
+
+        if (isOrganization || this.settings.contactName !== CONTACT_NONE ||
+            this.$initiatorData.find('.emailRow').length > 0 || this.$initiatorData.find('.phoneRow').length > 0) {
+            this.$initiatorData.find('.contactHead').removeClass('hidden');
+        } else {
+            this.$initiatorData.find('.contactHead').addClass('hidden');
+        }
     }
 
     private setFieldsVisibilityOrganization() {

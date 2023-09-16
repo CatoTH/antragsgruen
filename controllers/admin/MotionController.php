@@ -136,11 +136,12 @@ class MotionController extends AdminBase
         $post         = $this->getHttpRequest()->post();
 
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
-            if ($consultation->findMotionWithPrefixAndVersion($post['titlePrefix'], $post['version'], $motion)) {
+            $toSetPrefix = (mb_strlen($post['titlePrefix']) > 50 ? mb_substr($post['titlePrefix'], 0, 50) : $post['titlePrefix']);
+            if ($consultation->findMotionWithPrefixAndVersion($toSetPrefix, $post['version'], $motion)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
-                $motion->titlePrefix = $post['titlePrefix'];
+                $motion->titlePrefix = $toSetPrefix;
                 $motion->version = $post['version'];
                 $motion->save();
                 $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
@@ -283,11 +284,12 @@ class MotionController extends AdminBase
                 $motion->parentMotionId = null;
             }
 
-            if ($consultation->findMotionWithPrefixAndVersion($modat['titlePrefix'], $modat['version'], $motion)) {
+            $toSetPrefix = (mb_strlen($modat['titlePrefix']) > 50 ? mb_substr($modat['titlePrefix'], 0, 50) : $modat['titlePrefix']);
+            if ($consultation->findMotionWithPrefixAndVersion($toSetPrefix, $modat['version'], $motion)) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
-                $motion->titlePrefix = $modat['titlePrefix'];
-                $motion->version = $modat['version'];
+                $motion->titlePrefix = $toSetPrefix;
+                $motion->version = (mb_strlen($modat['version']) > 50 ? mb_substr($modat['version'], 0, 50) : $modat['version']);
             }
 
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
