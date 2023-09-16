@@ -5,4 +5,7 @@ return [
     'preset_app_singular' => 'Candidature',
     'preset_app_plural' => 'Candidatures',
     'preset_app_title_int' => 'Candidature: ',
+
+    'STATUS_SUBMITTED_SCREENED' => 'Tabled',
+    'STATUS_ACCEPTED' => 'Adopted',
 ];
