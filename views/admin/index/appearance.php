@@ -300,16 +300,16 @@ $handledSiteSettings = [];
             ?>
             <div><label>
                 <?= Html::checkbox('settings[showResolutionsCombined]', $showResolutionsCombined, ['id' => 'showResolutionsCombined']) . ' ';
-                echo ' <strong>Beschlüsse</strong> und Anträge gleichzeitig auf der Startseite anzeigen';
+                echo Yii::t('admin', 'con_resol_comb_both');
             ?></label></div>
             <div class="showResolutionsSeparateHolder">
                 <label>
                     <?= Html::radio('settings[showResolutionsSeparateMode]', $motionsByDefault, ['value' => ConsultationSettings::START_LAYOUT_RESOLUTIONS_SEPARATE]) ?>
-                    Standardmäßig Anträge anzeigen - Beschlüsse auf separater Seite
+                    <?= Yii::t('admin', 'con_resol_comb_motions') ?>
                 </label>
                 <label>
                     <?= Html::radio('settings[showResolutionsSeparateMode]', !$motionsByDefault, ['value' => ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT]) ?>
-                    Standardmäßig Beschlüsse anzeigen - Anträge auf separater Seite
+                    <?= Yii::t('admin', 'con_resol_comb_res') ?>
                 </label>
             </div>
 

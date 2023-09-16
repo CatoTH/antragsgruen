@@ -312,6 +312,9 @@ return [
     'con_title_email'         => 'E-mails',
     'con_email_admins'        => 'Admins',
     'con_send_motion_email'   => 'Send a confirmation e-mail to the proposer of a motion when it is published',
+    'con_resol_comb_both'     => 'Show <strong>resolutions</strong> and motions on the home page at the same time',
+    'con_resol_comb_motions'  => 'Show motions by default - resolutions on a separate page',
+    'con_resol_comb_res'      => 'Show resolutions by default - motions on a separate page',
 
     'siteacc_bread'             => 'Access',
     'siteacc_title'             => 'Access to this consultation',

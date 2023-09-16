@@ -309,6 +309,9 @@ return [
     'con_title_email'         => 'E-Mails',
     'con_email_admins'        => 'Admins',
     'con_send_motion_email'   => 'Beim Anlegen/Freischalten eines Antrags: Bestätigungs-E-Mail an die Antragsteller*in schicken',
+    'con_resol_comb_both'     => '<strong>Beschlüsse</strong> und Anträge gleichzeitig auf der Startseite anzeigen',
+    'con_resol_comb_motions'  => 'Standardmäßig Anträge anzeigen - Beschlüsse auf separater Seite',
+    'con_resol_comb_res'      => 'Standardmäßig Beschlüsse anzeigen - Anträge auf separater Seite',
 
     'siteacc_bread'              => 'Zugang',
     'siteacc_title'              => 'Zugang zur Veranstaltung',
