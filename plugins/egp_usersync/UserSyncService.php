@@ -78,6 +78,7 @@ class UserSyncService
                         $dbUser->nameGiven = $user->getName();
                         $dbUser->name = $user->getName() . ' ' . $user->getLastName();
                         $dbUser->organization = $user->getParty();
+                        $dbUser->fixedData = User::FIXED_NAME | User::FIXED_ORGA;
                         $dbUser->save();
                     }
                     $unchanged++;
@@ -100,6 +101,10 @@ class UserSyncService
                     [$userGroup],
                     \Yii::t('admin', 'siteacc_email_text_pre')
                 );
+
+                $dbUser->fixedData = User::FIXED_NAME | User::FIXED_ORGA;
+                $dbUser->save();
+
                 $invited++;
             }
             $newUserIds[] = $dbUser->id;
