@@ -18,15 +18,13 @@
 - The motion list can now be filtered for To Do items (that is, motions/amendments that need to be screened) and also shows the To Do action for items on that list as part of the Status.
 - The motion list now persists its filter and sort settings for each user session, until changed or reset.
 - If an amendment is set to show the full text by default, this now also affects the PDF export.
+- Merging a single amendment into a motion now also handles amendments only changing the title of the motion.
+- The maintenance mode page is now specific to a consultation; that is, delegates bookmarking a link to a consultation that is still in maintenance mode can open that bookmark later and get to theat very consultation, not the generic home page.
 - Bugfix: If a draft of a revised motion (by merging amendments) existed and the motion list was opened, the original motion was not shown anymore by default.
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.
 - Bugfix: Putting a active speaker back into the speaking waiting list did not work - the speaker vanished from the list completely.
 - Bugfix: Closing the full screen mode of a speaking list was leading to an error page.
-
-### Version 4.12.1 [not released yet]
-
-- The maintenance mode page is now specific to a consultation; that is, delegates bookmarking a link to a consultation that is still in maintenance mode can open that bookmark later and get to theat very consultation, not the generic home page.
 - Bugfix: If not-logged-in users are allowed to support motions/amendments, they showed up as empty bullet points in the supporter list. Now they have to enter their name.
 - Bugfix: The delete button in the admin motion list was shown even if no delete permissions were granted and it was therefore non-functional.
 - Bugfix: If a motion collecting supporters was edited by an admin, then no publication mail was sent later when it was actually published.

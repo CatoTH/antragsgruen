@@ -11,32 +11,18 @@ class MergeSingleAmendmentForm
 {
     public Motion $oldMotion;
     public ?Motion $newMotion = null;
-    public string $newTitlePrefix;
-    public string $newVersion;
-    public Amendment $mergeAmendment;
-    public int $mergeAmendStatus;
-    public array $otherAmendStatuses;
-    public array $otherAmendOverrides;
-    public array $paragraphs;
 
     public function __construct(
-        Amendment $amendment,
-        string $newTitlePrefix,
-        string $newVersion,
-        int $newStatus,
-        array $paragraphs,
-        array $otherAmendOverrides,
-        array $otherAmendStatuses
+        public Amendment $mergeAmendment,
+        public string $newTitlePrefix,
+        public string $newVersion,
+        public int $mergeAmendStatus,
+        public array $paragraphs,
+        public array $otherAmendOverrides,
+        public array $otherAmendStatuses
     )
     {
-        $this->newTitlePrefix = $newTitlePrefix;
-        $this->newVersion = $newVersion;
-        $this->oldMotion = $amendment->getMyMotion();
-        $this->mergeAmendment = $amendment;
-        $this->mergeAmendStatus = $newStatus;
-        $this->paragraphs = $paragraphs;
-        $this->otherAmendStatuses = $otherAmendStatuses;
-        $this->otherAmendOverrides = $otherAmendOverrides;
+        $this->oldMotion = $mergeAmendment->getMyMotion();
     }
 
     private function getNewHtmlParas(): array
@@ -141,6 +127,9 @@ class MergeSingleAmendmentForm
                     $newSection->dataRaw = '';
                 }
             }
+            if ($section->getSettings()->type === ISectionType::TYPE_TITLE && $this->mergeAmendment->getSection($section->sectionId)) {
+                $newSection->setData($this->mergeAmendment->getSection($section->sectionId)->getData());
+            }
             if (!$newSection->save()) {
                 throw new DB($newSection->getErrors());
             }
@@ -173,6 +162,15 @@ class MergeSingleAmendmentForm
                 $section->cache   = '';
                 if (!$section->save()) {
                     throw new DB($section->getErrors());
+                }
+            }
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TITLE) as $section) {
+                foreach ($this->oldMotion->sections as $motionSection) {
+                    if ($motionSection->sectionId === $section->sectionId && $motionSection->getData() === $section->getData() && $this->mergeAmendment->getSection($section->sectionId)) {
+                        // Change the title of amendments that didn't try to change the title of the motion
+                        $section->setData($this->mergeAmendment->getSection($section->sectionId)->getData());
+                        $section->save();
+                    }
                 }
             }
             $amendment->motionId = $this->newMotion->id;
@@ -232,6 +230,8 @@ class MergeSingleAmendmentForm
             $consultation->save();
         }
 
+        $this->newMotion->refreshTitle();
+        $this->newMotion->save();
         $this->newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($this->newMotion));
 
         return $this->newMotion;
