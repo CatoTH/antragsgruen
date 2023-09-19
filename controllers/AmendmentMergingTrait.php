@@ -133,7 +133,7 @@ trait AmendmentMergingTrait
                     $this->getPostValue('motionTitlePrefix'),
                     $this->getPostValue('motionVersion'),
                     $this->getPostValue('amendmentStatus'),
-                    $this->getPostValue('newParas'),
+                    $this->getPostValue('newParas', []),
                     $this->getPostValue('amendmentOverride', []),
                     $newAmendmentStatuses
                 );
