@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
-use app\models\http\{HtmlResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
+use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, Site, User};
@@ -490,6 +490,10 @@ class Base extends Controller
         $this->showErrorpage(404, $message);
     }
 
+    /**
+     * @throws ResponseException
+     * @throws Internal
+     */
     protected function checkConsistency(?Motion $checkMotion = null, ?Amendment $checkAmendment = null, bool $throwExceptions = false): void
     {
         $consultationPath = strtolower($this->consultation->urlPath);
@@ -500,7 +504,7 @@ class Base extends Controller
                 throw new Internal(Yii::t('base', 'err_cons_not_site'), 400);
             }
             $this->getHttpSession()->setFlash("error", Yii::t('base', 'err_cons_not_site'));
-            $this->redirect(UrlHelper::createUrl('/consultation/index'));
+            throw new ResponseException(new RedirectResponse(UrlHelper::homeUrl()));
         }
 
         if (is_object($checkMotion) && strtolower($checkMotion->getMyConsultation()->urlPath) !== $consultationPath) {
@@ -508,7 +512,7 @@ class Base extends Controller
                 throw new Internal(Yii::t('motion', 'err_not_found'), 404);
             }
             $this->getHttpSession()->setFlash('error', Yii::t('motion', 'err_not_found'));
-            $this->redirect(UrlHelper::createUrl('/consultation/index'));
+            throw new ResponseException(new RedirectResponse(UrlHelper::homeUrl()));
         }
 
         if ($checkAmendment !== null && ($checkMotion === null || $checkAmendment->motionId !== $checkMotion->id)) {
@@ -516,7 +520,12 @@ class Base extends Controller
                 throw new Internal(Yii::t('base', 'err_amend_not_consult'), 400);
             }
             $this->getHttpSession()->setFlash('error', Yii::t('base', 'err_amend_not_consult'));
-            $this->redirect(UrlHelper::createUrl('/consultation/index'));
+            throw new ResponseException(new RedirectResponse(UrlHelper::homeUrl()));
+        }
+
+        if ($checkAmendment !== null && ($checkAmendment->amendingAmendmentId && !$checkAmendment->amendedAmendment)) {
+            $this->getHttpSession()->setFlash('error', Yii::t('base', 'err_amend_no_parent'));
+            throw new ResponseException(new RedirectResponse(UrlHelper::homeUrl()));
         }
     }
 

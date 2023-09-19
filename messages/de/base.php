@@ -33,6 +33,7 @@ return [
     'err_max_len_exceed'    => 'Maximum length of %MAX% exceeded',
     'err_no_site_internal'  => 'Keine Seite angegeben. Das dürfte ein Fehler bei der Installation sein.',
     'err_amend_not_consult' => 'Der Änderungsantrag gehört nicht zum Antrag.',
+    'err_amend_no_parent'   => 'Der Basis-Änderungsantrag dieses ÄAs wurde gelöscht.',
     'err_cons_not_site'     => 'Fehlerhafte Parameter - die Veranstaltung gehört nicht zur Veranstaltungsreihe.',
     'err_site_403'          => 'Kein Zugriff auf diese Seite.',
     'err_site_410'          => 'Dieser Inhalt wurde gelöscht.',

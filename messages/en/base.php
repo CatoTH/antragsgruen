@@ -33,6 +33,7 @@ return [
     'err_max_len_exceed'    => 'Maximum length of %MAX% exceeded',
     'err_no_site_internal'  => 'No site given. This is probably an installation error.',
     'err_amend_not_consult' => 'Invalid URL: this amendment does not belong to the given motion.',
+    'err_amend_no_parent'   => 'The parent amendment for this amendment was deleted.',
     'err_cons_not_site'     => 'Invalid URL: this consultation is not part of the given site.',
     'err_site_403'          => 'No access',
     'err_site_410'          => 'This content has been deleted.',
