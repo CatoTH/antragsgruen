@@ -107,7 +107,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
 
 if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     $pwMinLen         = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
-    $supportsCreating = ($externalAuthenticator === null || $externalAuthenticator->supportsCreatingAccounts());
+    $supportsCreating = $usernamePasswordForm->supportsCreatingAccounts();
 
     $classes = ['loginUsername'];
     if ($shownAccessPwdForm) {

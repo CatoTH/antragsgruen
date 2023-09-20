@@ -20,6 +20,7 @@
 - If an amendment is set to show the full text by default, this now also affects the PDF export.
 - Merging a single amendment into a motion now also handles amendments only changing the title of the motion.
 - The maintenance mode page is now specific to a consultation; that is, delegates bookmarking a link to a consultation that is still in maintenance mode can open that bookmark later and get to theat very consultation, not the generic home page.
+- On single-site instances, user registration can be disabled altogether by setting the allowRegistration key in config.json to false.
 - Bugfix: If a draft of a revised motion (by merging amendments) existed and the motion list was opened, the original motion was not shown anymore by default.
 - Bugfix: Some edge cases around uploaded logos breaking the PDF export or not being shown on the page were resolved.
 - Bugfix: Super-admins could lock themselves out of protected consultations.

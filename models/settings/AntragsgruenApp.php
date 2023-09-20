@@ -22,6 +22,7 @@ class AntragsgruenApp implements \JsonSerializable
     public ?string $cookieDomain = null;
     public bool $hasSaml = false;
     public bool $prependWWWToSubdomain = true;
+    public bool $allowRegistration = true;
     public bool $confirmEmailAddresses = true;
     public bool $dataPrivacyCheckbox = false;
     public string $mailFromName = 'Antragsgrün';
@@ -38,7 +39,7 @@ class AntragsgruenApp implements \JsonSerializable
     public ?string $xdvipdfmx = null; // @TODO OBSOLETE
     public ?string $lualatexPath = null;
     public bool $pdfExportConcat = true;
-    public $pdfExportIntegFrame = false; // Type: mixed, can be ether int or array
+    public mixed $pdfExportIntegFrame = false; // Type: mixed, can be ether int or array
     public array $localMessages = [];
     public ?string $imageMagickPath = null;
     public ?int $sitePurgeAfterDays = null;
