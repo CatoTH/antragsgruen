@@ -13,7 +13,7 @@ use yii\base\Model;
 
 class LoginUsernamePasswordForm extends Model
 {
-    const PASSWORD_MIN_LEN = 4;
+    public const PASSWORD_MIN_LEN = 8;
 
     public ?string $username = null;
     public ?string $password = null;
@@ -24,12 +24,9 @@ class LoginUsernamePasswordForm extends Model
 
     public bool $createAccount = false;
 
-    private ?ExternalPasswordAuthenticatorInterface $externalAuthenticator;
-
-    public function __construct(?ExternalPasswordAuthenticatorInterface $externalAuthenticator)
+    public function __construct(private ?ExternalPasswordAuthenticatorInterface $externalAuthenticator)
     {
         parent::__construct();
-        $this->externalAuthenticator = $externalAuthenticator;
     }
 
     public function rules(): array
@@ -75,7 +72,7 @@ class LoginUsernamePasswordForm extends Model
      */
     private function doCreateAccountValidate(?Site $site): void
     {
-        if ($this->externalAuthenticator && !$this->externalAuthenticator->supportsCreatingAccounts()) {
+        if (!$this->supportsCreatingAccounts()) {
             throw new Internal('Creating account is not supported');
         }
         if ($site) {
@@ -114,15 +111,28 @@ class LoginUsernamePasswordForm extends Model
         }
     }
 
+    public function supportsCreatingAccounts(): bool
+    {
+        if (!AntragsgruenApp::getInstance()->allowRegistration) {
+            return false;
+        }
+
+        if ($this->externalAuthenticator) {
+            return $this->externalAuthenticator->supportsCreatingAccounts();
+        } else {
+            return true;
+        }
+    }
+
     /**
      * @throws Login
      */
     public function doCreateAccount(?Site $site): User
     {
-        if ($this->externalAuthenticator && !$this->externalAuthenticator->supportsCreatingAccounts()) {
+        if (!$this->supportsCreatingAccounts()) {
             throw new Internal('Creating account is not supported');
         }
-        if ($this->externalAuthenticator && $this->externalAuthenticator->supportsCreatingAccounts()) {
+        if ($this->externalAuthenticator) {
             return $this->externalAuthenticator->performRegistration($this->username, $this->password);
         }
 
@@ -135,8 +145,7 @@ class LoginUsernamePasswordForm extends Model
         $user->pwdEnc = password_hash($this->password, PASSWORD_DEFAULT);
         $user->organizationIds = '';
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params = AntragsgruenApp::getInstance();
         if ($params->confirmEmailAddresses) {
             $user->status = User::STATUS_UNCONFIRMED;
             $user->emailConfirmed = 0;
