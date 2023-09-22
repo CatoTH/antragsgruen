@@ -2,11 +2,15 @@
 
 namespace app\plugins\green_layout;
 
+use app\models\layoutHooks\Hooks;
 use app\plugins\ModuleBase;
 use yii\web\View;
 
 class Module extends ModuleBase
 {
+    /**
+     * @return array<string, array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}>
+     */
     public static function getProvidedLayouts(?View $view = null): array
     {
         if ($view) {

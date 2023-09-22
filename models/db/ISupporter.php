@@ -104,10 +104,10 @@ abstract class ISupporter extends ActiveRecord
      * @param array $values
      * @param bool $safeOnly
      */
-    public function setAttributes($values, $safeOnly = true)
+    public function setAttributes($values, $safeOnly = true): void
     {
         parent::setAttributes($values, $safeOnly);
-        if (!isset($values['extraData']) || $values['extraData'] === null) {
+        if (!isset($values['extraData'])) {
             $this->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, $values['gender'] ?? null);
         }
         $this->contactEmail = ($this->contactEmail === null ? null : trim($this->contactEmail));

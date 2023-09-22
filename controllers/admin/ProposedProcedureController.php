@@ -104,7 +104,7 @@ class ProposedProcedureController extends AdminBase
         $comment               = new MotionAdminComment();
         $comment->motionId     = $motion->id;
         $comment->text         = $text;
-        $comment->userId       = User::getCurrentUser()->getId();
+        $comment->userId       = (int)User::getCurrentUser()->getId();
         $comment->status       = MotionAdminComment::TYPE_PROPOSED_PROCEDURE;
         $comment->dateCreation = date('Y-m-d H:i:s');
         if (!$comment->save()) {
@@ -138,7 +138,7 @@ class ProposedProcedureController extends AdminBase
         $comment               = new AmendmentAdminComment();
         $comment->amendmentId  = $motion->id;
         $comment->text         = $text;
-        $comment->userId       = User::getCurrentUser()->getId();
+        $comment->userId       = (int)User::getCurrentUser()->getId();
         $comment->status       = MotionAdminComment::TYPE_PROPOSED_PROCEDURE;
         $comment->dateCreation = date('Y-m-d H:i:s');
         if (!$comment->save()) {

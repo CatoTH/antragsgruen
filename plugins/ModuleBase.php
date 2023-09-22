@@ -181,6 +181,9 @@ class ModuleBase extends Module
         return null;
     }
 
+    /**
+     * @return array<string, array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}>
+     */
     public static function getProvidedLayouts(?View $view = null): array
     {
         return [];

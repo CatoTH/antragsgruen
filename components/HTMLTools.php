@@ -3,8 +3,7 @@
 namespace app\components;
 
 use app\models\db\Amendment;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
+use app\models\exceptions\{FormError, Internal};
 use yii\helpers\Html;
 
 class HTMLTools

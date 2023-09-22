@@ -5,8 +5,8 @@ namespace app\plugins\egp;
 use app\components\UrlHelper;
 use app\models\db\{AmendmentSupporter, Consultation, Motion, MotionSupporter, Site};
 use app\models\amendmentNumbering\IAmendmentNumbering;
-use app\models\http\RedirectResponse;
-use app\models\http\ResponseInterface;
+use app\models\http\{RedirectResponse, ResponseInterface};
+use app\models\layoutHooks\Hooks;
 use app\models\settings\IMotionStatus;
 use app\plugins\egp\pdf\Egp;
 use app\plugins\ModuleBase;
@@ -49,6 +49,9 @@ class Module extends ModuleBase
         ];
     }
 
+    /**
+     * @return array<string, array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}>
+     */
     public static function getProvidedLayouts(?View $view = null): array
     {
         if ($view) {
