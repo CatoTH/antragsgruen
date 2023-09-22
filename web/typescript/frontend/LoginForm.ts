@@ -23,9 +23,9 @@ class LoginForm {
                 $(".managedAccountHint").addClass('hidden');
             }
         }).trigger("change");
-        $form.submit(function (ev) {
+        $form.on("submit", (ev) => {
             let pwd = $("#passwordInput").val() as string;
-            if (pwd.length < pwMinLen) {
+            if (pwd.length < pwMinLen && $form.find("input[name=createAccount]").prop("checked")) {
                 ev.preventDefault();
                 bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, pwMinLen.toString(10)));
             }
