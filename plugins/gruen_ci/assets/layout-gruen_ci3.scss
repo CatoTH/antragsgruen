@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+$icon-font-path: "../../fonts/";
+@import "../../../web/css/variables";
+
+$ptSansFontPath: "./";
+@import "ptsans";
+@import "gruenetype";
+
+$primary-600: #008939;
+$secondary-600: #005437;
+$grashalm: #8ABD24;
+
+$use-box-shadow: false;
+$container-md: 1200px;
+$contentBorderRadius: 8px;
+$sidebarBackground: $secondary-600;
+$sidebarWidth: 280px;
+$sidebarActionFont: "PT Sans Bold", sans-serif;
+$createMotionBtnColor: $secondary-600;
+$bookmarkAmendmentBackground: #afcb08;
+$bookmarkCommentColor: $secondary-600;
+$headingFont: "GrueneType", sans-serif;
+$headingPrimaryText: #ffffff;
+$headingPrimaryBackground: $primary-600;
+$headingPrimarySize: 30px;
+$headingSecondaryText: #444;
+$headingSecondaryBackground: $grashalm;
+$headingSecondarySize: 20px;
+$headingTertiaryText: #000000;
+$headingTertiaryBackground: #1b4afb;
+$headingTertiarySize: 15px;
+$uppercaseTitles: false;
+$menuFont: "PT Sans Bold", sans-serif;
+$menuLink: #4b7000;
+$menuActive: #646464;
+$bodyFont: "PT Sans", sans-serif;
+$font-size-base: 14px;
+$textColor: #484649;
+$colorLinks: #6d7e00;
+$colorLinksLight: #6d7e00;
+$colorDelLink: #FF7777;
+$linkTextDecoration: none;
+$motionFixedFont: "VeraMono", Consolas, Courier, sans-serif;
+$motionFixedFontColor: #222;
+$motionStdFontSize: 18px;
+$brand-primary: #015437;
+$btn-success-bg: #008939;
+$buttonFont: "PT Sans Bold", sans-serif;
+
+$colorLinksFooter: $colorLinks;
+$label-success-bg: $btn-success-bg;
+
+$screen-md-min: ($container-md + 90px) !default; // Extra spacing for the "create motion button"
+$mainContentWidth: $container-md - $sidebarWidth !default;
+$content-max-width: $mainContentWidth - 2px !default;
+$grid-float-breakpoint: $screen-md-min !default;
+$font-size-base: 18px;
+
+$table-border-color: $colorGreenLight;
+
+$sidebarActionFont: "PT Sans", sans-serif;
+$deadlineCircleFont: "PT Sans", sans-serif;
+$motionFixedWidth: 740px;
+$inlineAmendmentPreambleHeight: 35px;
+$inlineAmendmentPreambleColor: $secondary-600;
+
+@import "../../../web/css/bootstrap";
+@import "../../../web/css/fontello";
+@import "../../../web/css/wizard";
+@import "../../../web/css/helpers";
+@import "../../../web/css/elements";
+@import "../../../web/css/bootstrap_overwrites";
+@import "../../../web/css/base_layout";
+@import "../../../web/css/contentpage";
+@import "../../../web/css/consultation_motion_list";
+@import "../../../web/css/speech_lists";
+@import "../../../web/css/voting";
+@import "../../../web/css/motions";
+@import "../../../web/css/proposed_procedure";
+@import "../../../web/css/styles";
+@import "../../../web/css/merging";
+@import "../../../web/css/sidebar";
+@import "../../../web/css/projector";
+@import "../../../web/css/user_pages";
+
+html {
+  background: #F6F1E9;
+}
+
+body {
+  background: #F6F1E9;
+}
+
+.well {
+  h1 {
+    font-style: italic;
+  }
+  h2.green, h3.green {
+    font-style: italic;
+  }
+}
