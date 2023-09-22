@@ -30,6 +30,9 @@ class Module extends ModuleBase
         return SiteSettings::class;
     }
 
+    /**
+     * @return class-string<\app\models\settings\Consultation>
+     */
     public static function getConsultationSettingsClass(Consultation $consultation): string
     {
         return ConsultationSettings::class;

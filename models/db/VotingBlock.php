@@ -518,7 +518,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             'type' => $type,
             'date' => date('c'),
         ];
-        $this->activityLog = json_encode($activityLog);
+        $this->activityLog = (string)json_encode($activityLog);
     }
 
     public function getActivityLogForApi(): array

@@ -178,7 +178,7 @@ class Consultation implements \JsonSerializable
     }
 
     /**
-     * @return null|string|Layout
+     * @return class-string<Layout>|null
      */
     public function getSpecializedLayoutClass(): ?string
     {

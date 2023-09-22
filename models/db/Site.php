@@ -20,7 +20,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property string $contact
  * @property int $status
  *
- * @property Consultation $currentConsultation
+ * @property Consultation|null $currentConsultation
  * @property Consultation[] $consultations
  * @property ConsultationText[] $texts
  * @property ConsultationFile[] $files

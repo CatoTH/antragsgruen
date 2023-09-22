@@ -60,7 +60,7 @@ class AntragsgruenInitDb extends Model
      * @param array $values
      * @param bool $safeOnly
      */
-    public function setAttributes($values, $safeOnly = true)
+    public function setAttributes($values, $safeOnly = true): void
     {
         parent::setAttributes($values, $safeOnly);
 
@@ -240,7 +240,7 @@ class AntragsgruenInitDb extends Model
         $connConfig = $this->getDBConfig();
         $connection = new Connection($connConfig);
 
-        $createString = file_get_contents(
+        $createString = (string)file_get_contents(
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'create.sql'
         );
@@ -248,7 +248,7 @@ class AntragsgruenInitDb extends Model
         $command      = $connection->createCommand($createString);
         $command->execute();
 
-        $createString = file_get_contents(
+        $createString = (string)file_get_contents(
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'data.sql'
         );

@@ -3,6 +3,7 @@
 namespace app\components;
 
 use app\models\db\Amendment;
+use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use yii\helpers\Html;
 
@@ -61,6 +62,9 @@ class HTMLTools
     {
         if (function_exists('normalizer_normalize')) {
             $html = normalizer_normalize($html);
+            if ($html === false) {
+                throw new FormError('Could not normalize HTML');
+            }
         }
 
         $html = str_replace(chr(194) . chr(160), ' ', $html); // U+00A0 / No-break space, long space
@@ -209,9 +213,11 @@ class HTMLTools
     public static function cleanSimpleHtml(string $htmlIn, array $forbiddenFormattings = []): string
     {
         $cacheKey = 'cleanSimpleHtml_' . implode(',', $forbiddenFormattings) . '_' . md5($htmlIn);
+        /*
         if (self::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey) && false) {
             return \Yii::$app->getCache()->get($cacheKey);
         }
+        */
 
         $html = str_replace("\r", '', $htmlIn);
 
@@ -663,14 +669,16 @@ class HTMLTools
                 $appendToPrev = true;
             }
             if (strtolower($child->nodeName) === 'ol' && strtolower($children->item($i - 1)->nodeName) === 'ol') {
-                $startPrev = $children->item($i - 1)->getAttribute('start');
+                /** @var \DOMElement $olElement */
+                $olElement = $children->item($i - 1);
+                $startPrev = $olElement->getAttribute('start');
                 if ($startPrev) {
                     $startPrev = IntVal($startPrev);
                 } else {
                     $startPrev = 1;
                 }
                 $currExpected = $startPrev;
-                foreach ($children->item($i - 1)->childNodes as $tmpChild) {
+                foreach ($olElement->childNodes as $tmpChild) {
                     if (is_a($tmpChild, \DOMElement::class) && strtolower($tmpChild->nodeName) == 'li') {
                         $currExpected++;
                     }
@@ -735,9 +743,9 @@ class HTMLTools
     }
 
     /** @var bool */
-    private static $LINKS;
+    private static bool $LINKS;
     /** @var string[] */
-    private static $LINK_CACHE;
+    private static array $LINK_CACHE;
 
     public static function toPlainText(string $html, bool $linksAtEnd = false): string
     {

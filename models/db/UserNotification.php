@@ -55,11 +55,7 @@ class UserNotification extends ActiveRecord
         ];
     }
 
-    /**
-     * @param mixed $default
-     * @return null|mixed
-     */
-    public function getSettingByKey(string $key, $default = null)
+    public function getSettingByKey(string $key, mixed $default = null): mixed
     {
         if ($this->settings) {
             $settings = json_decode($this->settings, true);
@@ -70,10 +66,7 @@ class UserNotification extends ActiveRecord
         return $default;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setSettingByKey(string $key, $value)
+    public function setSettingByKey(string $key, mixed $value): void
     {
         $settings = [];
         if ($this->settings) {

@@ -20,7 +20,7 @@ abstract class IMajorityType
     public const MAJORITY_TYPE_TWO_THIRD = 3;
 
     /**
-     * @return string[]|IMajorityType[]
+     * @return array<class-string<IMajorityType>>
      */
     public static function getMajorityTypes(): array
     {

@@ -150,8 +150,7 @@ class ModuleBase extends Module
     }
 
     /**
-     * @phpstan-ignore-next-line
-     * @return string|\app\models\settings\Consultation|null
+     * @return class-string<\app\models\settings\Consultation>|null
      */
     public static function getConsultationSettingsClass(Consultation $consultation): ?string
     {
@@ -241,7 +240,7 @@ class ModuleBase extends Module
     }
 
     /**
-     * @return IMajorityType[]
+     * @return array<class-string<IMajorityType>>
      */
     public static function getAdditionalMajorityTypes(): array
     {
@@ -257,7 +256,7 @@ class ModuleBase extends Module
     }
 
     /**
-     * @return string|VotingData
+     * @return class-string<VotingData>|null
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getVotingDataClass(Consultation $consultation): ?string

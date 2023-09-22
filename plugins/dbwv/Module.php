@@ -102,7 +102,7 @@ class Module extends ModuleBase
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return class-string<\app\models\settings\Consultation>
      */
     public static function getConsultationSettingsClass(Consultation $consultation): string
     {

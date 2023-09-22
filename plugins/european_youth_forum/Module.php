@@ -30,6 +30,7 @@ class Module extends ModuleBase
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return class-string<VotingData>
      */
     public static function getVotingDataClass(Consultation $consultation): string
     {
