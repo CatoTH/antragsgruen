@@ -30,6 +30,12 @@ class Module extends ModuleBase
                 'bundle'      => Assets1::class,
                 'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
             ],
+            'layout2023' => [
+                'title'       => 'Grünes CI 2023',
+                'preview'     => null,
+                'bundle'      => Assets3::class,
+                'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
+            ],
         ];
     }
 }
