@@ -273,14 +273,14 @@ class ConsultationLog extends ActiveRecord
         $log->actionType = $type;
         $log->actionReferenceId = $typeRefId;
         $log->actionTime = date('Y-m-d H:i:s');
-        $log->data = ($data ? json_encode($data) : null);
+        $log->data = ($data ? json_encode($data, JSON_THROW_ON_ERROR) : null);
         $log->save();
     }
 
     public static function logCurrUser(Consultation $consultation, int $type, int $typeRefId, ?array $data = null): void
     {
         $user = User::getCurrentUser();
-        self::log($consultation, ($user ? $user->id : null), $type, $typeRefId, $data);
+        self::log($consultation, $user?->id, $type, $typeRefId, $data);
     }
 
     /**
@@ -474,6 +474,7 @@ class ConsultationLog extends ActiveRecord
             ->from(AntragsgruenApp::getInstance()->tablePrefix . 'amendment')
             ->where(['id' => IntVal($amendmentId)])
             ->one();
+        /** @var array{titlePrefix: string|null}|null $row */
         return ($row ? $row['titlePrefix'] : null);
     }
 
@@ -484,6 +485,7 @@ class ConsultationLog extends ActiveRecord
             ->from(AntragsgruenApp::getInstance()->tablePrefix . 'amendment')
             ->where(['id' => IntVal($amendmentId)])
             ->one();
+        /** @var array{motionId: int}|null $row */
         if (!$row) {
             return null;
         }
@@ -497,6 +499,7 @@ class ConsultationLog extends ActiveRecord
             ->from(AntragsgruenApp::getInstance()->tablePrefix . 'motion')
             ->where(['id' => IntVal($motionId)])
             ->one();
+        /** @var array{titlePrefix: string|null}|null $row */
         return ($row ? $row['titlePrefix'] : null);
     }
 

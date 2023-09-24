@@ -246,7 +246,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
 
     public function setAllDeadlines(array $deadlines): void
     {
-        $this->deadlines       = json_encode($deadlines);
+        $this->deadlines = json_encode($deadlines, JSON_THROW_ON_ERROR);
         $this->deadlinesObject = null;
     }
 
@@ -363,7 +363,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         return $this->settingsObject;
     }
 
-    public function setSettingsObj(MotionType $settings)
+    public function setSettingsObj(MotionType $settings): void
     {
         $this->settingsObject = $settings;
         $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);

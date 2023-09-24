@@ -33,6 +33,9 @@ class ConsultationSettings extends Consultation
         }
     }
 
+    /**
+     * @return class-string<LayoutSettings>
+     */
     public function getSpecializedLayoutClass(): string
     {
         return LayoutSettings::class;

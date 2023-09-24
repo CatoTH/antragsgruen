@@ -65,5 +65,5 @@ abstract class IMotionSection extends ActiveRecord
 
     abstract public function getData(): string;
 
-    abstract public function setData(string $data);
+    abstract public function setData(string $data): void;
 }

@@ -52,14 +52,12 @@ class FrauenratPdf extends IPdfWriter
         $keepmargins = false,
         $tocpage = false,
         $footer = true
-    ) {
+    ): void {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }
 
-    // @codingStandardsIgnoreStart
-
-    public function Footer()
+    public function Footer(): void
     {
         if ($this->getPage() < $this->pageNumberStartPage) {
             return;
@@ -70,7 +68,6 @@ class FrauenratPdf extends IPdfWriter
         // Set font
         $this->SetFont($this->calibri, '', 8);
         // Page number
-        $this->Cell(0, 10, $this->getPage(), 0, 0, 'C', false, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, (string)$this->getPage(), 0, 0, 'C', false, '', 0, false, 'T', 'M');
     }
-    // @codingStandardsIgnoreEnd
 }

@@ -7,6 +7,7 @@ namespace app\plugins\dbwv;
 use app\components\RequestContext;
 use app\models\AdminTodoItem;
 use app\models\exceptions\{Access, Internal};
+use app\models\layoutHooks\Hooks;
 use app\models\http\{HtmlResponse, ResponseInterface};
 use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, User};
 use app\models\settings\{Layout, Privilege, PrivilegeQueryContext, Privileges};
@@ -102,7 +103,7 @@ class Module extends ModuleBase
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return class-string<\app\models\settings\Consultation>
      */
     public static function getConsultationSettingsClass(Consultation $consultation): string
     {
@@ -139,6 +140,9 @@ class Module extends ModuleBase
         return $urls;
     }
 
+    /**
+     * @return array<string, array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}>
+     */
     public static function getProvidedLayouts(?View $view = null): array
     {
         return [

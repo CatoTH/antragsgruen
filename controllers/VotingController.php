@@ -226,7 +226,7 @@ class VotingController extends Base
 
     // *** User-facing methods ***
 
-    public function actionGetOpenVotingBlocks($assignedToMotionId): RestApiResponse
+    public function actionGetOpenVotingBlocks(?int $assignedToMotionId): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
 
@@ -257,7 +257,7 @@ class VotingController extends Base
      * votes[0][vote]=yes
      * [optional] votes[0][public]=1
      */
-    public function actionPostVote($votingBlockId, $assignedToMotionId): RestApiResponse
+    public function actionPostVote(int $votingBlockId, ?int $assignedToMotionId): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
 
@@ -267,7 +267,7 @@ class VotingController extends Base
             $assignedToMotion = null;
         }
 
-        $votingBlock = $this->consultation->getVotingBlock(intval($votingBlockId));
+        $votingBlock = $this->consultation->getVotingBlock($votingBlockId);
         if (!$votingBlock) {
             return $this->returnRestResponseFromException(new \Exception('Voting not found'));
         }

@@ -27,7 +27,7 @@ class FailedLoginAttempt extends ActiveRecord
 
     private static function getCurrentIpHash(): string
     {
-        $ip = \Yii::$app->request->getRemoteIP() ?? '';
+        $ip = RequestContext::getWebRequest()->getRemoteIP() ?? '';
         return hash('sha256', $ip);
     }
 

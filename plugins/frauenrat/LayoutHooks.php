@@ -69,7 +69,7 @@ class LayoutHooks extends Hooks
         $form     = Html::beginForm($saveUrl, 'post', ['class' => 'frauenratSelect']);
         $preTagId = null;
         foreach ($motion->getPublicTopicTags() as $tag) {
-            $preTagId = $tag->id;
+            $preTagId = (string)$tag->id;
         }
         $allTags = [
             '' => '- keines -',

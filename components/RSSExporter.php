@@ -13,6 +13,7 @@ class RSSExporter
     private ?string $feedLink    = null;
     private ?string $description = null;
 
+    /** @var array<array{link: string, title: string, author: string, description: string, date: int}> */
     private array $entries = [];
 
     public function setImage(string $image): void
@@ -45,7 +46,7 @@ class RSSExporter
         $this->description = $description;
     }
 
-    public function addEntry(string $link, string $title, string $author, string $description, string $date): void
+    public function addEntry(string $link, string $title, string $author, string $description, int $date): void
     {
         $this->entries[] = [
             'link'        => $link,

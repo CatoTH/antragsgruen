@@ -18,7 +18,7 @@ trait AntragsgruenInitConfigwriteTrait
         }
 
         if (file_exists($this->configFile)) {
-            $configJson = file_get_contents($this->configFile);
+            $configJson = (string)file_get_contents($this->configFile);
             try {
                 $config = new AntragsgruenApp($configJson);
             } catch (\Exception $e) {

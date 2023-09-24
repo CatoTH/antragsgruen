@@ -3,9 +3,9 @@
 namespace app\plugins\neos;
 
 use app\components\RequestContext;
-use app\controllers\Base;
 use app\models\http\HtmlResponse;
-use app\models\db\{Consultation, Site};
+use app\models\layoutHooks\Hooks;
+use app\models\db\Consultation;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
 use yii\web\View;
@@ -17,6 +17,9 @@ class Module extends ModuleBase
         parent::init();
     }
 
+    /**
+     * @return array<string, array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}>
+     */
     public static function getProvidedLayouts(?View $view = null): array
     {
         if ($view) {
@@ -42,6 +45,7 @@ class Module extends ModuleBase
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return class-string<\app\models\settings\Consultation>
      */
     public static function getConsultationSettingsClass(Consultation $consultation): string
     {

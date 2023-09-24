@@ -163,7 +163,7 @@ class AmendmentController extends AdminBase
         $motion->refresh();
     }
 
-    public function actionUpdate(string $amendmentId): ResponseInterface
+    public function actionUpdate(int $amendmentId): ResponseInterface
     {
         $consultation = $this->consultation;
 

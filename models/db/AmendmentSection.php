@@ -281,7 +281,7 @@ class AmendmentSection extends IMotionSection
         return $this->data;
     }
 
-    public function setData(string $data)
+    public function setData(string $data): void
     {
         $this->data = $data;
     }
