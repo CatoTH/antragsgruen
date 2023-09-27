@@ -48,7 +48,7 @@ apt-get install php8.2 php8.2-cli php8.2-fpm php8.2-intl php8.2-gd php8.2-mysql 
 
 - Download the [latest ZIP/BZIP2-package of Antragsgrün](https://github.com/CatoTH/antragsgruen/releases/latest).
 - Extract the contents into your web folder
-- Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
+- Access the "antragsgruen/"-folder of your web server, e.g. if you have extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
 
 ### From the sources
@@ -162,7 +162,7 @@ define("K_PATH_FONTS", "/path/to/writable/directory/");
 ### FPDI-PDF
 
 If you run into the error "This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)" and decide to use the commercial plugin, you can install the package using the following steps:
-- Extract the content of the package into the directory ``components/fpdi``, so there exists a sub-directory ``src``.
+- Extract the content of the package into the directory ``components/fpdi``, so there exists a subdirectory ``src``.
 - Run the command ``./composer.phar dump-autoload``
 
 After that, newer PDF files should be able to be parsed as well.
@@ -247,7 +247,7 @@ The optional [Live Server](https://github.com/CatoTH/antragsgruen-live) can be i
 
 As a prerequisite, JWT Signing needs to be enabled (see above). Then, the location of the RabbitMQ server, the credentials of the management API and the name of the exchange needs to configured, along with the absolute URI of the Websocket endpoint the Live Server exposes:
 
-```json
+```json5
 {
     "live": {
         "wsUri": "ws://localhost:8080/websocket", // The full URI of the websocket endpoint of the Live Component
@@ -265,8 +265,8 @@ Developing
 
 ### Technical considerations
 
-- PHP version support: Antragsgrün supports PHP versions for one year after its end of life (that is, if PHP 7.2 is supported until end 2020, the first major version of Antragsgrün after end 2021 will drop support for PHP 7.2).
-- PHP Framework: [Yii2](https://www.yiiframework.com/) is used. While it would not being the framework of choice for a fresh start anymore, it works sufficiently well since its introduction in 2015 and is still supported, so there is no plan to migrate to Symfony of Laravel as of yet.
+- PHP version support: Antragsgrün supports PHP versions for one year after its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.0 is supported until end 2023, the first major version of Antragsgrün after end 2024 will drop support for PHP 8.0).
+- PHP Framework: [Yii2](https://www.yiiframework.com/) is used. While it would not be the framework of choice for a fresh start anymore, it works sufficiently well since its introduction in 2015 and is still supported, so there is no plan to migrate to Symfony of Laravel yet.
 - JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though written in TypeScript and loaded via [RequireJS](https://requirejs.org/). For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
 - REST API: The API is documented below. There will be more development regarding the REST API, including authorized endpoints using JWT based authentication.
 
@@ -328,7 +328,7 @@ Known limitations:
 
 ### Custom themes as plugin
 
-The most frequent use case for plugins are custom themes / layouts. You can develop a custom theme using SASS/SCSS for Antragsgrün using the following steps:
+The most frequent use case for plugins is custom themes / layouts. You can develop a custom theme using SASS/SCSS for Antragsgrün using the following steps:
 
 - Create a directory for the plugin with a ``Module.php`` and ``Assets.php``. If your directory / plugin ID is ``mylayout``, the namespace of these classes needs to be ``app\plugins\mylayout``.
 - The ``Module.php`` needs the static method ``getProvidedLayout`` that returns the asset bundle. See the [gruen_ci](plugins/gruen_ci/Module.php) or [neos](plugins/neos/Module.php) for examples.
@@ -358,7 +358,7 @@ An optional API is under development for Antragsgrün, extended by functionality
 
 The API is disabled by default and can be enabled under "Settings" -> "Appearance and components of this site" -> "Enable the REST-API".
 
-All endpoints of the API are located under `/rest`. A OpenAPI-based description of the API can be found at [docs/openapi.yaml](docs/openapi.yaml). A [SwaggerUI](https://swagger.io/tools/swagger-ui/)-based viewer of the documentation can be installed by uploading the [swagger_ui](plugins/swagger_ui) plugin to `/plugins/` and adding it to the list of plugins in `config/config.json`.
+All endpoints of the API are located under `/rest`. An OpenAPI-based description of the API can be found at [docs/openapi.yaml](docs/openapi.yaml). A [SwaggerUI](https://swagger.io/tools/swagger-ui/)-based viewer of the documentation can be installed by uploading the [swagger_ui](plugins/swagger_ui) plugin to `/plugins/` and adding it to the list of plugins in `config/config.json`.
 
 ## Testing
 
@@ -370,9 +370,9 @@ All endpoints of the API are located under `/rest`. A OpenAPI-based description 
 * Set up the configuration file: ```
 cp config/config_tests.template.json config/config_tests.json && vi config/config_tests.json```
 * Download [ChromeDriver](https://sites.google.com/chromium.org/driver/) and move the binary into the PATH (e.g. /usr/local/bin/)
-* Download the [Selenium Standalone Server](http://www.seleniumhq.org/download/)
-* For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
-* For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed. (is done by ``npm install``)
+* Download the [Selenium Standalone Server](https://www.selenium.dev/downloads/)
+* For the automated HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
+* For the automated accessibility validation, [Pa11y](https://pa11y.org/) needs to be installed. (is done by ``npm install``)
 * The host name ``test.antragsgruen.test`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured. If another host name is to be used, it has to be changed in the [config/TEST_DOMAIN](config/TEST_DOMAIN) and [tests/acceptance.suite.yml](tests/acceptance.suite.yml).
 
 #### Running
@@ -383,7 +383,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 ```vendor/bin/codecept run Acceptance```
 * Run all unit tests:
 ```vendor/bin/codecept run Unit```
-* Run unit tests without database:
+* Run unit tests without a database:
 ```vendor/bin/codecept run Unit --skip-group=database```
 * Run a single acceptance-test: 
 ```vendor/bin/codecept run Acceptance motions/CreateCept```
@@ -412,4 +412,4 @@ Reporting security issues
 If you found a security problem with Antragsgrün, please report it to: tobias@hoessl.eu. If you want to encrypt the mail, you can use this [PGP-Key](https://www.hoessl.eu/PGP-Key-tobias-hoessl-eu-99C2D2A2.txt).
 
 
-[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
