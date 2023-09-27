@@ -28,7 +28,7 @@ if (!defined('YII_ENV')) {
     $configFile = $_SERVER['ANTRAGSGRUEN_CONFIG'] ?? $configDir . DIRECTORY_SEPARATOR . 'config.json';
     $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
     if (!file_exists($configFile) && !file_exists($installFile)) {
-        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'de') === 0) {
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && str_starts_with($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'de')) {
             die('Antragsgrün ist noch nicht eingerichtet. Bitte lege die Datei config/INSTALLING an und öffne diese Seite erneut, um in den Installationsmodus zu gelangen.');
         } else {
             die('Antragsgrün is not configured yet. Please create the config/INSTALLING file and call this site again to open the installation wizard.');
@@ -54,7 +54,7 @@ try {
     $error = htmlentities($e->getMessage(), ENT_COMPAT, 'UTF-8');
     $file = $_SERVER['ANTRAGSGRUEN_CONFIG'] ?? 'config/config.json';
 
-    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'de') === 0) {
+    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && str_starts_with($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'de')) {
         $message = 'Leider ist die Antragsgrün-Konfigurationsdatei (%FILE%) fehlerhaft.
         Die Fehlermeldung lautet: %ERROR%<br><br>
         Du kannst auf folgende Weisen versuchen, sie zu korrigieren:<ul>

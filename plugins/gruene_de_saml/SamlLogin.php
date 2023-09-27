@@ -109,7 +109,7 @@ class SamlLogin implements LoginProviderInterface
     {
         $orgas = [];
         foreach ($user->userGroups as $userGroup) {
-            if ($userGroup->externalId && strpos($userGroup->externalId, Module::AUTH_KEY_GROUPS . ':') === 0) {
+            if ($userGroup->externalId && str_starts_with($userGroup->externalId, Module::AUTH_KEY_GROUPS.':')) {
                 $orgas[] = $userGroup;
             }
         }

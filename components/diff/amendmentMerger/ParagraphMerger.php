@@ -93,10 +93,10 @@ class ParagraphMerger
 
             while ($wordNo >= 0) {
                 $str = explode("###DEL_", $this->diffs[$locAmendNo]->diff[$wordNo]->diff);
-                if (count($str) > 1 && strpos($str[count($str) - 1], 'START') === 0) {
+                if (count($str) > 1 && str_starts_with($str[count($str) - 1], 'START')) {
                     return $this->diffs[$locAmendNo]->diff[$wordNo]->amendmentId;
                 }
-                if (count($str) > 1 && strpos($str[count($str) - 1], 'END') === 0) {
+                if (count($str) > 1 && str_starts_with($str[count($str) - 1], 'END')) {
                     return null;
                 }
                 $wordNo--;

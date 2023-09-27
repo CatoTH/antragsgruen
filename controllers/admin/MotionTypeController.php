@@ -126,7 +126,7 @@ class MotionTypeController extends AdminBase
             $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());
 
             $pdfTemplate = $this->getHttpRequest()->post('pdfTemplate', '');
-            if (strpos($pdfTemplate, 'php') === 0) {
+            if (str_starts_with($pdfTemplate, 'php')) {
                 $motionType->pdfLayout     = intval(str_replace('php', '', $pdfTemplate));
                 $motionType->texTemplateId = null;
             } elseif ($pdfTemplate) {
@@ -328,7 +328,7 @@ class MotionTypeController extends AdminBase
             $motionType->createTitle   = $type['createTitle'];
             $motionType->motionPrefix  = substr($type['motionPrefix'], 0, 10);
 
-            if (strpos($type['pdfLayout'], 'php') === 0) {
+            if (str_starts_with($type['pdfLayout'], 'php')) {
                 $motionType->pdfLayout     = intval(str_replace('php', '', $type['pdfLayout']));
                 $motionType->texTemplateId = null;
             } elseif ($type['pdfLayout']) {
