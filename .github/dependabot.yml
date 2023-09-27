@@ -11,3 +11,7 @@ updates:
       interval: "monthly"
       timezone: "Europe/Berlin"
       time: "05:00"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
