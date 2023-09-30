@@ -195,7 +195,7 @@ class UrlHelper
 
     public static function absolutizeLink(string $url): string
     {
-        if (strpos($url, 'http') === 0) {
+        if (str_starts_with($url, 'http')) {
             return $url;
         }
 

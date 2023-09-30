@@ -122,7 +122,7 @@ class MotionController extends Base
             case 'mv2021':
                 $topPageFile = __DIR__ . '/../assets/2021_top5_antragsspiegel.pdf';
                 foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-                    if (strpos($motion->titlePrefix, 'A') === 0 && is_a($motion, Motion::class)) {
+                    if (str_starts_with($motion->titlePrefix, 'A') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
                 }
@@ -130,7 +130,7 @@ class MotionController extends Base
             case 'mv2022':
                 $topPageFile = __DIR__ . '/../assets/2022_top5_antragsspiegel.pdf';
                 foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-                    if (strpos($motion->titlePrefix, 'A') === 0 && is_a($motion, Motion::class)) {
+                    if (str_starts_with($motion->titlePrefix, 'A') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
                 }
@@ -138,7 +138,7 @@ class MotionController extends Base
             case 'mv2023':
                 $topPageFile = __DIR__ . '/../assets/2023_schwerpunkt.pdf';
                 foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-                    if (strpos($motion->titlePrefix, 'SPT') === 0 && is_a($motion, Motion::class)) {
+                    if (str_starts_with($motion->titlePrefix, 'SPT') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
                 }
@@ -159,7 +159,7 @@ class MotionController extends Base
         switch ($this->consultation->urlPath) {
             case 'mv2021':
                 foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-                    if (strpos($motion->titlePrefix, 'A') !== 0 && is_a($motion, Motion::class)) {
+                    if (!str_starts_with($motion->titlePrefix, 'A') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
                 }
@@ -167,7 +167,7 @@ class MotionController extends Base
                 break;
             case 'mv2022':
                 foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-                    if (strpos($motion->titlePrefix, 'A') !== 0 && is_a($motion, Motion::class)) {
+                    if (!str_starts_with($motion->titlePrefix, 'A') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
                 }
@@ -175,7 +175,7 @@ class MotionController extends Base
                 break;
             case 'mv2023':
                 foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-                    if (strpos($motion->titlePrefix, 'SPT') !== 0 && strpos($motion->titlePrefix, 'POS') !== 0 && strpos($motion->titlePrefix, 'SAT') !== 0 && is_a($motion, Motion::class)) {
+                    if (!str_starts_with($motion->titlePrefix, 'SPT') && !str_starts_with($motion->titlePrefix, 'POS') && !str_starts_with($motion->titlePrefix, 'SAT') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
                 }

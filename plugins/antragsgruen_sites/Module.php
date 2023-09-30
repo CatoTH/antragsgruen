@@ -27,7 +27,7 @@ class Module extends ModuleBase
      */
     public static function getActiveAssetBundles(\yii\web\Controller $controller): array
     {
-        if (strpos($controller->route, 'antragsgruen_sites') === 0) {
+        if (str_starts_with($controller->route, 'antragsgruen_sites')) {
             return [
                 Assets::class,
             ];

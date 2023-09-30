@@ -13,7 +13,7 @@ class UrlManager extends \yii\web\UrlManager
         $url = parent::createUrl($params);
         if (isset($_SERVER['REQUEST_SCHEME']) && isset($_SERVER['HTTP_HOST'])) {
             $currHost = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
-            if (strpos($url, $currHost) === 0) {
+            if (str_starts_with($url, $currHost)) {
                 $url = substr($url, strlen($currHost));
             }
         }
