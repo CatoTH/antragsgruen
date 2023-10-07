@@ -177,9 +177,6 @@ class Consultation extends ActiveRecord
     /** @var Amendment[]|null[] */
     private array $amendmentCache = [];
 
-    /**
-     * @param int $amendmentId
-     */
     public function getAmendment(int $amendmentId): ?Amendment
     {
         $amendmentId = IntVal($amendmentId);

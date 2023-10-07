@@ -23,15 +23,15 @@ $I->fillField('#nameGiven', 'My new');
 $I->fillField('#nameFamily', 'name');
 $I->fillField('#userPwd', '123');
 $I->submitForm('.userAccountForm', [], 'save');
-$I->seeBootboxDialog('Das Passwort muss mindestens 4 Zeichen');
+$I->seeBootboxDialog('Das Passwort muss mindestens 8 Zeichen');
 $I->acceptBootboxConfirm();
 
-$I->fillField('#userPwd', '1234');
+$I->fillField('#userPwd', '12345678');
 $I->submitForm('.userAccountForm', [], 'save');
 $I->seeBootboxDialog('Die beiden Passwörter stimmen nicht überein');
 $I->acceptBootboxConfirm();
 
-$I->fillField('#userPwd2', '1234');
+$I->fillField('#userPwd2', '12345678');
 $I->checkOption('input[name=emailBlocklist]');
 $I->submitForm('.userAccountForm', [], 'save');
 $I->see('Gespeichert.');
@@ -51,7 +51,7 @@ $I->fillField('#passwordInput', 'testuser');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
 $I->see('Falsches Passwort');
-$I->fillField('#passwordInput', '1234');
+$I->fillField('#passwordInput', '12345678');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
 $I->see('Willkommen!');

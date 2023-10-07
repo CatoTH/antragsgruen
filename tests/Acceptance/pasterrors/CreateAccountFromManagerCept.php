@@ -15,8 +15,8 @@ $I->click('#createAccount');
 $I->seeElement('#name');
 
 $I->fillField('#username', 'newuser@example.org');
-$I->fillField('#passwordInput', 'newuser');
-$I->fillField('#passwordConfirm', 'newuser');
+$I->fillField('#passwordInput', 'newuser2');
+$I->fillField('#passwordConfirm', 'newuser2');
 $I->fillField('#name', 'New User');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 

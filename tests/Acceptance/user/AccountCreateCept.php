@@ -35,7 +35,7 @@ $I->fillField(['id' => 'name'], 'Tester');
 $I->fillField('#passwordInput', 'n');
 $I->fillField('#passwordConfirm', 'n');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->seeBootboxDialog('Das Passwort muss mindestens 4 Zeichen lang sein.');
+$I->seeBootboxDialog('Das Passwort muss mindestens 8 Zeichen lang sein.');
 $I->acceptBootboxAlert();
 
 $I->fillField('#passwordInput', 'newuser');

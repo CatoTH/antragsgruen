@@ -66,7 +66,7 @@ $I->openPage(PasswordRecoveryPage::class, [
 
 $I->seeInField('#recoveryEmail', 'testuser@example.org');
 $I->seeInField('#recoveryCode', 'test');
-$I->fillField('#recoveryPassword', 'test2');
+$I->fillField('#recoveryPassword', 'testpwd2');
 $I->submitForm('.resetPasswortForm', [], 'recover');
 
 $I->see('Alles klar! Dein Passwort wurde geändert.');
@@ -79,6 +79,6 @@ $I->openPage(PasswordRecoveryPage::class, [
     'email'            => 'testuser@example.org',
     'code'             => 'test',
 ]);
-$I->fillField('#recoveryPassword', 'test2');
+$I->fillField('#recoveryPassword', 'testpwd2');
 $I->submitForm('.resetPasswortForm', [], 'recover');
 $I->see('Es wurde kein Wiederherstellungs-Antrag innerhalb der letzten 24 Stunden gestellt.');
