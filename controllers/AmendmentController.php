@@ -207,13 +207,18 @@ class AmendmentController extends Base
     public function actionCreatedone(string $motionSlug, int $amendmentId, string $fromMode): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
-        /** @var Amendment $amendment */
+        /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne(
             [
                 'id'       => $amendmentId,
                 'motionId' => $motion->id
             ]
         );
+        if (!$amendment) {
+            $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
+            return new RedirectResponse(UrlHelper::homeUrl());
+        }
+
         return new HtmlResponse($this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]));
     }
 
@@ -230,7 +235,7 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
         if (!$amendment->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
