@@ -12,13 +12,15 @@ use yii\helpers\Html;
  */
 
 
-$pdfLayout = new BDK($motion->motionType);
-$pdf       = $pdfLayout->createPDFClass();
+$pdfLayout = new BDK($motion->getMyMotionType());
+/** @var \app\views\pdfLayouts\BDKPDF $pdf */
+$pdf = $pdfLayout->createPDFClass();
 
 // set document information
 $pdf->SetCreator(Yii::t('export', 'default_creator'));
 $pdf->SetTitle(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix() . ' - Merge Configuration');
 $pdf->SetSubject(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix() . ' - Merge Configuration');
+$pdf->setMotionTitle($motion->getTitleWithPrefix(), Yii::t('export', 'draft'));
 
 $pdf->startPageGroup();
 $pdf->AddPage();
