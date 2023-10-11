@@ -10,6 +10,8 @@ $ptSansFontPath: "./";
 $primary-600: #008939;
 $secondary-600: #005437;
 $grashalm: #8ABD24;
+$tanne: #005437;
+$klee: #008939;
 
 $use-box-shadow: false;
 $container-md: 1200px;
@@ -22,14 +24,15 @@ $bookmarkAmendmentBackground: #afcb08;
 $bookmarkCommentColor: $secondary-600;
 $headingFont: "GrueneType", sans-serif;
 $headingPrimaryText: #ffffff;
-$headingPrimaryBackground: $primary-600;
+$headingPrimaryBackground: $tanne;
 $headingPrimarySize: 30px;
-$headingSecondaryText: #444;
-$headingSecondaryBackground: $grashalm;
+$headingSecondaryText: #ffffff;
+$headingSecondaryBackground: $primary-600;
 $headingSecondarySize: 20px;
-$headingTertiaryText: #000000;
-$headingTertiaryBackground: #1b4afb;
+$headingTertiaryText: #444;
+$headingTertiaryBackground: $grashalm;
 $headingTertiarySize: 15px;
+$headingFontUppercase: false;
 $uppercaseTitles: false;
 $menuFont: "PT Sans Bold", sans-serif;
 $menuLink: #4b7000;
@@ -37,8 +40,8 @@ $menuActive: #646464;
 $bodyFont: "PT Sans", sans-serif;
 $font-size-base: 14px;
 $textColor: #484649;
-$colorLinks: #6d7e00;
-$colorLinksLight: #6d7e00;
+$colorLinks: $klee;
+$colorLinksLight: $klee;
 $colorDelLink: #FF7777;
 $linkTextDecoration: none;
 $motionFixedFont: "VeraMono", Consolas, Courier, sans-serif;
@@ -95,8 +98,14 @@ body {
 .well {
   h1 {
     font-style: italic;
+    text-shadow: none;
   }
   h2.green, h3.green {
     font-style: italic;
+    text-shadow: none;
+  }
+  .nav-header {
+    font-style: italic;
+    text-shadow: none;
   }
 }

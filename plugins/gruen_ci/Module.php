@@ -32,7 +32,7 @@ class Module extends ModuleBase
             ],
             'layout2023' => [
                 'title'       => 'Grünes CI 2023',
-                'preview'     => null,
+                'preview'     => $thumbBase . '/layout-preview-ci3.png',
                 'bundle'      => Assets3::class,
                 'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
             ],
