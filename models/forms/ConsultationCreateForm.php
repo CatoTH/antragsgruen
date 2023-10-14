@@ -181,7 +181,7 @@ class ConsultationCreateForm
         $con->siteId       = $this->site->id;
         $con->urlPath      = $this->urlPath;
         $con->title        = $this->title;
-        $con->titleShort   = $this->titleShort;
+        $con->titleShort   = mb_substr($this->titleShort, 0, Consultation::TITLE_SHORT_MAX_LEN);
         $con->dateCreation = date('Y-m-d H:i:s');
         $con->adminEmail   = $user->email;
 
