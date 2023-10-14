@@ -529,6 +529,20 @@ class Base extends Controller
         }
     }
 
+    private function getConsultationUrlFromBackLink(string $backLink): string
+    {
+        preg_match('/\/(?<con>[\w_-]+)(\/.*)?$/siu', $this->getRequestValue('backUrl'), $matches);
+        if (!isset($matches['con']) || $matches['con'] === '') {
+            return '';
+        }
+        $consultation = Consultation::findOne(['urlPath' => $matches['con'], 'siteId' => $this->site->id]);
+        if ($consultation) {
+            return $consultation->urlPath;
+        } else {
+            return '';
+        }
+    }
+
     /**
      * @throws Internal
      * @throws \yii\base\ExitException
@@ -539,7 +553,7 @@ class Base extends Controller
             $this->site = Site::findOne(['subdomain' => $subdomain]);
         }
 
-        if ($this instanceof ConsultationController && $this->action->id == 'home') {
+        if ($this instanceof ConsultationController && $this->action->id === 'home') {
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 if ($plugin::hasSiteHomePage()) {
                     return null;
@@ -551,6 +565,9 @@ class Base extends Controller
             $this->consultationNotFound();
         }
 
+        if ($consultationId === '' && $this instanceof UserController && $this->action->id === 'login' && $this->getRequestValue('backUrl')) {
+            $consultationId = $this->getConsultationUrlFromBackLink($this->getRequestValue('backUrl'));
+        }
         if ($consultationId === '') {
             $consultationId = $this->site->currentConsultation->urlPath;
         }

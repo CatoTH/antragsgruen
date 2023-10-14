@@ -8,16 +8,11 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class SMTP extends Base
 {
-    /** @var string */
-    private $host;
-    /** @var int */
-    private $port = 25;
-    /** @var string */
-    private $username = null;
-    /** @var string */
-    private $password = null;
-    /** @var string */
-    private $encryption = null;
+    private string $host;
+    private int $port = 25;
+    private ?string $username = null;
+    private ?string $password = null;
+    private ?string $encryption = null;
 
     /**
      * @throws ServerConfiguration
