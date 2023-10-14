@@ -8,12 +8,9 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class AmazonSES extends Base
 {
-    /** @var string */
-    private $accessKey;
-    /** @var string */
-    private $secretKey;
-    /** @var string */
-    private $region;
+    private string $accessKey;
+    private string $secretKey;
+    private string $region;
 
     /**
      * @throws ServerConfiguration

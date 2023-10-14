@@ -9,10 +9,8 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class Mailjet extends Base
 {
-    /** @var string */
-    private $apiKey;
-    /** @var string */
-    private $secret;
+    private string $apiKey;
+    private string $secret;
 
     /**
      * @throws ServerConfiguration
