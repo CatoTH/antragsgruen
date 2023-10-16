@@ -174,14 +174,18 @@ class Module extends ModuleBase
         $isIngyo = false;
         $isNyc = false;
         foreach ($organisations as $organisation) {
-            if (str_contains(mb_strtolower($user->organization), mb_strtolower($organisation->name))) {
-                foreach ($organisation->autoUserGroups as $autoGroupId) {
-                    if (str_contains($consultation->getUserGroupById($autoGroupId)->getNormalizedTitle(), 'INGYO')) {
-                        $isIngyo = true;
-                    }
-                    if (str_contains($consultation->getUserGroupById($autoGroupId)->getNormalizedTitle(), 'NYC')) {
-                        $isNyc = true;
-                    }
+            if (
+                !str_contains(mb_strtolower($user->organization), mb_strtolower($organisation->name)) ||
+                str_contains($user->organization, 'YFJ') // Prevent a collision YFJ/FJ
+            ) {
+                continue;
+            }
+            foreach ($organisation->autoUserGroups as $autoGroupId) {
+                if (str_contains($consultation->getUserGroupById($autoGroupId)->getNormalizedTitle(), 'INGYO')) {
+                    $isIngyo = true;
+                }
+                if (str_contains($consultation->getUserGroupById($autoGroupId)->getNormalizedTitle(), 'NYC')) {
+                    $isNyc = true;
                 }
             }
         }
