@@ -86,7 +86,12 @@ class MotionSubmitted extends Base implements IEmailAdmin
             $motionHtml .= '</div>';
         }
 
-        $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+        if (str_contains($emailText, '<br>') || str_contains($emailText, '<p>')) {
+            $html = $plain . '<br><br>' . $motionHtml;
+        } else {
+            $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+        }
+
         $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
 
         $plain = str_replace('%LINK%', $motionLink, $plain);
