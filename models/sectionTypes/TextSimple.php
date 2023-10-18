@@ -677,7 +677,7 @@ class TextSimple extends Text
                 }
 
                 if ($hasLineNumbers) {
-                    if (substr($tex2, -9, 9) == "\\newline\n") {
+                    if (str_ends_with($tex2, "\\newline\n")) {
                         $tex2 = substr($tex2, 0, strlen($tex2) - 9) . "\n";
                     }
                     $tex2 .= "\n\\nolinenumbers\n";

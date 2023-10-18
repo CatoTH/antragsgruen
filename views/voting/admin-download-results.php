@@ -68,9 +68,9 @@ function printResultTable(Worksheet $worksheet, int $startRow, AgendaVoting $age
 
 /**
  * @param Vote[] $votes
- * @param EligibilityByGroup[] $eligibilityList
+ * @param EligibilityByGroup[]|null $eligibilityList
  */
-function printVoteResults(Worksheet $worksheet, string $col, int $startRow, Answer $answer, array $votes, array $eligibilityList): void
+function printVoteResults(Worksheet $worksheet, string $col, int $startRow, Answer $answer, array $votes, ?array $eligibilityList): void
 {
     $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['bold' => true]]);
     $worksheet->setCellValue($col . $startRow, $answer->title);
@@ -85,7 +85,7 @@ function printVoteResults(Worksheet $worksheet, string $col, int $startRow, Answ
 
     // Hint: a user can be shown in multiple groups
     $shownUsers = [];
-    foreach ($eligibilityList as $eligibility) {
+    foreach ($eligibilityList ?? [] as $eligibility) {
         $worksheet->getStyle($col . $startRow)->applyFromArray(['font' => ['underline' => true]]);
         $worksheet->setCellValue($col . $startRow, $eligibility->groupTitle);
         $startRow++;
