@@ -1,0 +1,8 @@
+$grueneFontPath: './' !default;
+
+@font-face {
+  font-family: 'GrueneType';
+  font-style: italic;
+  font-weight: bold;
+  src: url($grueneFontPath + 'GrueneType-BlackCondensedItalic.woff2') format('woff2');
+}
