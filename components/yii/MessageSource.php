@@ -88,6 +88,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'de-parteitag'       => 'Konferenz / Parteitag',
                 'de-bewerbung'       => 'Bewerbungsverfahren',
                 'de-programm'        => 'Programmdiskussion',
+                'de-aevorschlaege'   => 'Änderungsvorschläge',
                 'de-bdk'             => 'BDK',
             ], $localMessages);
         }

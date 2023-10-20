@@ -64,7 +64,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'create_select_statutes'            => 'Es gibt mehrere Abschnitte, zu denen ein Änderungsantrag gestellt werden kann. Wähle hier den aus, den du ändern möchtest.',
     'create_explanation'                => 'Bitte ändere unten den ursprünglichen Antragstext so ab, wie du ihn gerne beschlossen haben möchtest.<br>' . "\n" .
                                            'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
-                                           'Falls Du der Antragskommission über einen inhaltlichen  Änderungsantrag hinaus oder ausschließlich redaktionelle Hinweise zum Antrag geben möchtest, kannst du diese als „<strong>Redaktionelle Änderung</strong>” beifügen und entsprechend kennzeichnen.',
+                                           'Falls Du der Antragskommission über einen inhaltlichen Änderungsantrag hinaus oder ausschließlich redaktionelle Hinweise zum Antrag geben möchtest, kannst du diese als „<strong>Redaktionelle Änderung</strong>” beifügen und entsprechend kennzeichnen.',
     'create_explanation_statutes'       => 'Bitte ändere unten die Satzung so ab, wie sie deinem Änderungsantrag nach lauten sollte.<br>Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.',
     'create_explanation_amendtoamend'   => 'Bitte ändere unten den Änderungsantrag so ab, wie er lauten sollte.<br>Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen. Die Änderungen werden als neuer Änderungsantrag veröffentlicht.',
     'support_collect_explanation_title' => 'Einen Änderungsantrag gemeinschaftlich stellen',
