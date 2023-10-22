@@ -133,16 +133,16 @@
         },
         {
             "name": "bower-asset/inputmask",
-            "version": "3.3.11",
+            "version": "5.0.8",
             "source": {
                 "type": "git",
-                "url": "git@github.com:RobinHerbots/Inputmask.git",
-                "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
+                "url": "https://github.com/RobinHerbots/Inputmask.git",
+                "reference": "e0f39e0c93569c6b494c3a57edef2c59313a6b64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/5e670ad62f50c738388d4dcec78d2888505ad77b",
-                "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
+                "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/e0f39e0c93569c6b494c3a57edef2c59313a6b64",
+                "reference": "e0f39e0c93569c6b494c3a57edef2c59313a6b64"
             },
             "require": {
                 "bower-asset/jquery": ">=1.7"
@@ -172,16 +172,16 @@
         },
         {
             "name": "bower-asset/punycode",
-            "version": "v1.3.2",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mathiasbynens/punycode.js.git",
-                "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3"
+                "reference": "46d412120e2feb868876769a9847790ba278c882"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mathiasbynens/punycode.js/zipball/38c8d3131a82567bfef18da09f7f4db68c84f8a3",
-                "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3"
+                "url": "https://api.github.com/repos/mathiasbynens/punycode.js/zipball/46d412120e2feb868876769a9847790ba278c882",
+                "reference": "46d412120e2feb868876769a9847790ba278c882"
             },
             "type": "bower-asset"
         },
@@ -4523,22 +4523,22 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.49.1",
+            "version": "2.0.49.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "f3d608c338860699d9e12238835e212048f49aa1"
+                "reference": "7d38bf7584acbe838a8d08e40e949b6393162441"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/f3d608c338860699d9e12238835e212048f49aa1",
-                "reference": "f3d608c338860699d9e12238835e212048f49aa1",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/7d38bf7584acbe838a8d08e40e949b6393162441",
+                "reference": "7d38bf7584acbe838a8d08e40e949b6393162441",
                 "shasum": ""
             },
             "require": {
-                "bower-asset/inputmask": "~3.2.2 | ~3.3.5",
+                "bower-asset/inputmask": "~3.2.2 | ~3.3.5 | ~5.0.8 ",
                 "bower-asset/jquery": "3.7.*@stable | 3.6.*@stable | 3.5.*@stable | 3.4.*@stable | 3.3.*@stable | 3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
-                "bower-asset/punycode": "1.3.*",
+                "bower-asset/punycode": "1.3.* | 2.2.*",
                 "bower-asset/yii2-pjax": "~2.0.1",
                 "cebe/markdown": "~1.0.0 | ~1.1.0 | ~1.2.0",
                 "ext-ctype": "*",
@@ -4641,7 +4641,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-29T13:36:45+00:00"
+            "time": "2023-10-12T15:46:26+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
@@ -4962,16 +4962,16 @@
         },
         {
             "name": "codeception/codeception",
-            "version": "5.0.11",
+            "version": "5.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Codeception.git",
-                "reference": "1998a287a3d7f2771c9591aef1c528d9d44cc4b4"
+                "reference": "7f528f5fd8cdcd05cd0a85eb1e24d05df989e0c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/1998a287a3d7f2771c9591aef1c528d9d44cc4b4",
-                "reference": "1998a287a3d7f2771c9591aef1c528d9d44cc4b4",
+                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/7f528f5fd8cdcd05cd0a85eb1e24d05df989e0c4",
+                "reference": "7f528f5fd8cdcd05cd0a85eb1e24d05df989e0c4",
                 "shasum": ""
             },
             "require": {
@@ -5066,7 +5066,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Codeception/Codeception/issues",
-                "source": "https://github.com/Codeception/Codeception/tree/5.0.11"
+                "source": "https://github.com/Codeception/Codeception/tree/5.0.12"
             },
             "funding": [
                 {
@@ -5074,7 +5074,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2023-08-22T06:42:39+00:00"
+            "time": "2023-10-15T18:04:50+00:00"
         },
         {
             "name": "codeception/lib-asserts",
@@ -5487,16 +5487,16 @@
         },
         {
             "name": "codeception/stub",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Stub.git",
-                "reference": "4aaeffdc7089f3cae173b73bd4bc3672e4618747"
+                "reference": "f6bc56e33e3f5ba7a831dfb968c49b27cf1676ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Stub/zipball/4aaeffdc7089f3cae173b73bd4bc3672e4618747",
-                "reference": "4aaeffdc7089f3cae173b73bd4bc3672e4618747",
+                "url": "https://api.github.com/repos/Codeception/Stub/zipball/f6bc56e33e3f5ba7a831dfb968c49b27cf1676ad",
+                "reference": "f6bc56e33e3f5ba7a831dfb968c49b27cf1676ad",
                 "shasum": ""
             },
             "require": {
@@ -5522,22 +5522,22 @@
             "description": "Flexible Stub wrapper for PHPUnit's Mock Builder",
             "support": {
                 "issues": "https://github.com/Codeception/Stub/issues",
-                "source": "https://github.com/Codeception/Stub/tree/4.1.1"
+                "source": "https://github.com/Codeception/Stub/tree/4.1.2"
             },
-            "time": "2023-08-16T19:17:44+00:00"
+            "time": "2023-10-07T19:22:36+00:00"
         },
         {
             "name": "composer/pcre",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
-                "reference": "4bff79ddd77851fe3cdd11616ed3f92841ba5bd2"
+                "reference": "00104306927c7a0919b4ced2aaa6782c1e61a3c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/pcre/zipball/4bff79ddd77851fe3cdd11616ed3f92841ba5bd2",
-                "reference": "4bff79ddd77851fe3cdd11616ed3f92841ba5bd2",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/00104306927c7a0919b4ced2aaa6782c1e61a3c9",
+                "reference": "00104306927c7a0919b4ced2aaa6782c1e61a3c9",
                 "shasum": ""
             },
             "require": {
@@ -5579,7 +5579,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.1.0"
+                "source": "https://github.com/composer/pcre/tree/3.1.1"
             },
             "funding": [
                 {
@@ -5595,7 +5595,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-17T09:50:14+00:00"
+            "time": "2023-10-11T07:11:09+00:00"
         },
         {
             "name": "composer/xdebug-handler",
@@ -6024,16 +6024,16 @@
         },
         {
             "name": "php-webdriver/webdriver",
-            "version": "1.15.0",
+            "version": "1.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-webdriver/php-webdriver.git",
-                "reference": "a1578689290055586f1ee51eaf0ec9d52895bb6d"
+                "reference": "cd52d9342c5aa738c2e75a67e47a1b6df97154e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/a1578689290055586f1ee51eaf0ec9d52895bb6d",
-                "reference": "a1578689290055586f1ee51eaf0ec9d52895bb6d",
+                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/cd52d9342c5aa738c2e75a67e47a1b6df97154e8",
+                "reference": "cd52d9342c5aa738c2e75a67e47a1b6df97154e8",
                 "shasum": ""
             },
             "require": {
@@ -6042,7 +6042,7 @@
                 "ext-zip": "*",
                 "php": "^7.3 || ^8.0",
                 "symfony/polyfill-mbstring": "^1.12",
-                "symfony/process": "^5.0 || ^6.0"
+                "symfony/process": "^5.0 || ^6.0 || ^7.0"
             },
             "replace": {
                 "facebook/webdriver": "*"
@@ -6084,9 +6084,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-webdriver/php-webdriver/issues",
-                "source": "https://github.com/php-webdriver/php-webdriver/tree/1.15.0"
+                "source": "https://github.com/php-webdriver/php-webdriver/tree/1.15.1"
             },
-            "time": "2023-08-29T13:52:26+00:00"
+            "time": "2023-10-20T12:21:20+00:00"
         },
         {
             "name": "phpmd/phpmd",
@@ -6174,16 +6174,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.38",
+            "version": "1.10.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "5302bb402c57f00fb3c2c015bac86e0827e4b691"
+                "reference": "d9dedb0413f678b4d03cbc2279a48f91592c97c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/5302bb402c57f00fb3c2c015bac86e0827e4b691",
-                "reference": "5302bb402c57f00fb3c2c015bac86e0827e4b691",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d9dedb0413f678b4d03cbc2279a48f91592c97c4",
+                "reference": "d9dedb0413f678b4d03cbc2279a48f91592c97c4",
                 "shasum": ""
             },
             "require": {
@@ -6232,7 +6232,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-06T14:19:14+00:00"
+            "time": "2023-10-17T15:46:26+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -6658,16 +6658,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.11.21",
+            "version": "v0.11.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "bcb22101107f3bf770523b65630c9d547f60c540"
+                "reference": "128fa1b608be651999ed9789c95e6e2a31b5802b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/bcb22101107f3bf770523b65630c9d547f60c540",
-                "reference": "bcb22101107f3bf770523b65630c9d547f60c540",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/128fa1b608be651999ed9789c95e6e2a31b5802b",
+                "reference": "128fa1b608be651999ed9789c95e6e2a31b5802b",
                 "shasum": ""
             },
             "require": {
@@ -6696,7 +6696,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "0.11.x-dev"
+                    "dev-0.11": "0.11.x-dev"
                 },
                 "bamarni-bin": {
                     "bin-links": false,
@@ -6732,9 +6732,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.11.21"
+                "source": "https://github.com/bobthecow/psysh/tree/v0.11.22"
             },
-            "time": "2023-09-17T21:15:54+00:00"
+            "time": "2023-10-14T21:56:36+00:00"
         },
         {
             "name": "sebastian/cli-parser",
