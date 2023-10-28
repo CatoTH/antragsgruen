@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\plugins\gruen_ci;
 
 use app\models\layoutHooks\Hooks;
@@ -25,7 +27,7 @@ class Module extends ModuleBase
                 'title'       => 'Grünes CI',
                 'preview'     => $thumbBase . '/layout-preview-green.png',
                 'bundle'      => Assets2::class,
-                'hooks'       => LayoutHooks::class,
+                'hooks'       => LayoutHooks2::class,
                 'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
             ],
             'old' => [
@@ -38,6 +40,7 @@ class Module extends ModuleBase
                 'title'       => 'Grünes CI 2023',
                 'preview'     => $thumbBase . '/layout-preview-ci3.png',
                 'bundle'      => Assets3::class,
+                'hooks'       => LayoutHooks3::class,
                 'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
             ],
         ];

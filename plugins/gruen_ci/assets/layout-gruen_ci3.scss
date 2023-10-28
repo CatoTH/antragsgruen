@@ -109,3 +109,71 @@ body {
     text-shadow: none;
   }
 }
+
+#pageHeader {
+  background: $tanne;
+
+  .headerContent {
+    display: flex;
+    flex-direction: row;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    margin-left: auto;
+    margin-right: auto;
+    @media (min-width: $screen-sm-min) {
+      width: $container-sm;
+    }
+    @media (min-width: $screen-md-min) {
+      width: $container-md;
+    }
+    @media (min-width: $screen-lg-min) {
+      width: $container-lg;
+    }
+
+    body.fullscreen & {
+      width: auto;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  }
+
+  .logoHolder {
+
+  }
+  .mainMenu {
+    flex-grow: 1;
+    text-align: left;
+    padding-top: 15px;
+    .navbar .nav {
+      float: none;
+      li a {
+        font-weight: normal;
+        color: white;
+      }
+      li.active a {
+        font-weight: normal;
+        color: white !important;
+      }
+    }
+  }
+  .titleHolder {
+    text-align: right;
+    .antragsgruen {
+      color: white;
+      font-size: 42px;
+      line-height: 48px;
+      font-style: italic;
+      text-shadow: none;
+      font-family: $headingFont;
+      text-transform: uppercase;
+    }
+    .consultationTitle {
+      margin-top: 5px;
+      color: white;
+      font-size: 24px;
+      line-height: 26px;
+      text-shadow: none;
+    }
+  }
+}
