@@ -6,7 +6,7 @@ use app\components\UrlHelper;
 use app\models\layoutHooks\{Hooks, Layout};
 use yii\helpers\Html;
 
-class LayoutHooks extends Hooks
+class LayoutHooks2 extends Hooks
 {
     public function beginPage(string $before): string
     {
