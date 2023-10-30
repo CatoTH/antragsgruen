@@ -149,7 +149,7 @@ if ($motion->canFinishSupportCollection()) {
 
 echo '</div>';
 
-if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
+if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1) && $consultation->getSettings()->showPrivateNotes) {
     ?>
     <div class="privateNoteOpener">
         <button class="btn btn-link btn-sm" tabindex="0">

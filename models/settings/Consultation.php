@@ -60,6 +60,7 @@ class Consultation implements \JsonSerializable
     public bool $allowUsersToSetTags = true;
     public bool $amendmentsHaveTags = false;
     public bool $openslidesExportEnabled = false;
+    public bool $showPrivateNotes = true;
 
     public ?int $forceMotion = null;
 

@@ -1,6 +1,10 @@
 # Version history
 
-### Version 4.13.0 (2023-10-29)
+### Vertion 4.13.1 [not released yet]
+
+- As admin, it is possible to deactivate private notes on the site.
+
+## Version 4.13.0 (2023-10-29)
 
 - WARNING: if you are using a PHP 7.4 or older, then update to PHP 8.0 or newer first before installing this update!
 - For larger consultations using the Speaking Lists, there is now a separate live server component, allowing real-time updates of the speaking lists at reduced load on the server. As it runs on Java, it is not compatible with "traditional" webhosting. Sites running on antragsgruen.de / discuss.green are getting the real-time update feature automatically.

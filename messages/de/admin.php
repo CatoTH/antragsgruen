@@ -288,6 +288,7 @@ return [
     'con_amend_editorial'     => '<strong>Redaktionelle Änderungsanträge</strong> zulassen <small>(ein separates Textfeld für Anmerkungen an die Antragskommission)</small>',
     'con_amend_globalalt'     => '<strong>Globalalternativen</strong> zulassen <small>(Änderungsanträge, die den Antrag komplett ersetzen)</small>',
     'con_proposal_procedure'  => 'Den <strong>Verfahrensvorschlag</strong> auf einer separaten Seite anzeigen',
+    'con_show_private_notes'  => 'Mitglieder können <strong>Private Notizen</strong> verwalten',
     'con_proposal_tt'         => 'Admins können für (Änderungs-)Anträge ein Verfahren vorschlagen. Muss noch pro Antragstyp explizit aktiviert werden.',
     'con_pp_inline'           => '<strong>Vorgeschlagene Änderungen</strong> von Verfahrensvorschlägen standardmäßig im Antragstext anzeigen',
     'con_pp_inline_tt'        => 'Wirkt sich nur auf Anträge aus, und auch nur wenn diese keine Änderungsanträge haben',
