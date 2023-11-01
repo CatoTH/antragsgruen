@@ -2,10 +2,12 @@
 
 namespace app\controllers\admin;
 
+use app\models\consultationLog\ProposedProcedureChange;
+use app\models\exceptions\{FormError, ResponseException};
 use app\models\http\{BinaryFileResponse, HtmlResponse, JsonResponse};
 use app\models\settings\Privileges;
 use app\components\{HTMLTools, Tools};
-use app\models\db\{AmendmentAdminComment, Consultation, IMotion, MotionAdminComment, User};
+use app\models\db\{AmendmentAdminComment, Consultation, ConsultationLog, IMotion, Motion, MotionAdminComment, User};
 use app\models\proposedProcedure\Factory;
 
 class ProposedProcedureController extends AdminBase
@@ -205,9 +207,8 @@ class ProposedProcedureController extends AdminBase
         ]);
     }
 
-    public function actionSaveResponsibility(string $type, string $id): JsonResponse
+    private function loadIMotion(string $type, string $id): IMotion
     {
-        /** @var null|IMotion $imotion */
         $imotion = null;
         switch ($type) {
             case 'motion':
@@ -218,11 +219,18 @@ class ProposedProcedureController extends AdminBase
                 break;
         }
         if (!$imotion) {
-            return new JsonResponse([
+            throw new ResponseException(new JsonResponse([
                 'success' => false,
-                'error'   => 'Could not open amendment',
-            ]);
+                'error'   => 'Could not open ' . $type,
+            ]));
         }
+
+        return $imotion;
+    }
+
+    public function actionSaveResponsibility(string $type, string $id): JsonResponse
+    {
+        $imotion = $this->loadIMotion($type, $id);
 
         if ($this->getPostValue('comment') !== null) {
             $imotion->responsibilityComment = $this->getPostValue('comment');
@@ -235,6 +243,27 @@ class ProposedProcedureController extends AdminBase
                 $imotion->responsibilityId = intval($this->getPostValue('user'));
             }
             $imotion->save();
+        }
+
+        return new JsonResponse([
+            'success' => true
+        ]);
+    }
+
+    public function actionSaveTags(string $type, string $id): JsonResponse
+    {
+        $imotion = $this->loadIMotion($type, $id);
+        if (!isset($this->getPostValues()['tags'])) {
+            throw new FormError('Missing tags');
+        }
+
+        $tags = $this->getPostValues()['tags'];
+
+        $ppChanges = new ProposedProcedureChange(null);
+        $imotion->setProposedProcedureTags($tags, $ppChanges);
+        if ($ppChanges->hasChanges()) {
+            $changeType = (is_a($imotion, Motion::class) ? ConsultationLog::MOTION_SET_PROPOSAL : ConsultationLog::AMENDMENT_SET_PROPOSAL);
+            ConsultationLog::logCurrUser($imotion->getMyConsultation(), $changeType, $imotion->id, $ppChanges->jsonSerialize());
         }
 
         return new JsonResponse([

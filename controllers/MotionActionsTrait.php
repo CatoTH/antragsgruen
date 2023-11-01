@@ -497,26 +497,7 @@ trait MotionActionsTrait
                 $motion->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
             }
 
-            $oldTags = $motion->getProposedProcedureTags();
-            $newTags = [];
-            $changed = false;
-            foreach ($this->getHttpRequest()->post('tags', []) as $newTag) {
-                $tag = $motion->getMyConsultation()->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $newTag, 0);
-                if (!isset($oldTags[$tag->getNormalizedName()])) {
-                    $motion->link('tags', $tag);
-                    $changed = true;
-                }
-                $newTags[] = ConsultationSettingsTag::normalizeName($newTag);
-            }
-            foreach ($oldTags as $tagKey => $tag) {
-                if (!in_array($tagKey, $newTags)) {
-                    $motion->unlink('tags', $tag, true);
-                    $changed = true;
-                }
-            }
-            if ($changed) {
-                $ppChanges->setProposalTagsHaveChanged(array_keys($oldTags), $newTags);
-            }
+            $motion->setProposedProcedureTags($this->getHttpRequest()->post('tags', []), $ppChanges);
 
             if ($canChangeProposalUnlimitedly) {
                 $proposalExplanationPre = $motion->proposalExplanation;

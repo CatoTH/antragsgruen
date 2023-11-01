@@ -40,7 +40,7 @@ $adminAmendmentPaths  = 'excellist|odslist|odslist-short|pdflist|pdfziplist|odtz
 $adminUserPaths       = 'save|poll|add-single-init|add-single|add-multiple-ww|add-multiple-email|search-groups';
 $adminPaths           = 'consultation|appearance|consultationextended|translation|translation-motion-type|siteaccess|siteconsultations|openslidesusers';
 $adminPaths           .= '|theming|files|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
-$adminPpPaths         = 'index-ajax|ods|save-motion-comment|save-amendment-comment|save-motion-visible|save-amendment-visible|save-responsibility';
+$adminPpPaths         = 'index-ajax|ods|save-motion-comment|save-amendment-comment|save-motion-visible|save-amendment-visible|save-responsibility|save-tags';
 
 $urlRules = [
     $domadmin                                                     => 'admin/index',

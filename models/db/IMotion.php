@@ -228,6 +228,33 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
     }
 
+    /**
+     * @param string[] $newList
+     */
+    public function setProposedProcedureTags(array $newList, ProposedProcedureChange $ppChanges): void
+    {
+        $oldTags = $this->getProposedProcedureTags();
+        $newTags = [];
+        $changed = false;
+        foreach ($newList as $newTag) {
+            $tag = $this->getMyConsultation()->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $newTag, 0);
+            if (!isset($oldTags[$tag->getNormalizedName()])) {
+                $this->link('tags', $tag);
+                $changed = true;
+            }
+            $newTags[] = ConsultationSettingsTag::normalizeName($newTag);
+        }
+        foreach ($oldTags as $tagKey => $tag) {
+            if (!in_array($tagKey, $newTags)) {
+                $this->unlink('tags', $tag, true);
+                $changed = true;
+            }
+        }
+        if ($changed) {
+            $ppChanges->setProposalTagsHaveChanged(array_keys($oldTags), $newTags);
+        }
+    }
+
     public function isVisible(): bool
     {
         if (!$this->getMyConsultation()) {
@@ -257,7 +284,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     {
         return in_array($this->status, [static::STATUS_RESOLUTION_FINAL, static::STATUS_RESOLUTION_PRELIMINARY]);
     }
-    
+
     public function isProposalPublic(): bool
     {
         if (!$this->proposalVisibleFrom) {

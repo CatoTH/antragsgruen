@@ -23,6 +23,7 @@ $this->title = Yii::t('con', 'proposal_title_internal');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('/admin/motion-list/index'));
 $layout->addBreadcrumb(Yii::t('con', 'proposal_bc'));
 $layout->loadBootstrapToggle();
+$layout->loadSelectize();
 $layout->addCSS('css/backend.css');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
