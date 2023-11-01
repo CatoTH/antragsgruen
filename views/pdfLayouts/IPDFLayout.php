@@ -45,6 +45,7 @@ abstract class IPDFLayout
         return $pdfClasses;
     }
 
+    /** @var array<string, array{title: string, preview: string, id?: int, className?: class-string}>|null */
     private static ?array $_availableClassesWithLatex = null;
 
     public static function getAvailableClassesWithLatex(): array
@@ -68,7 +69,7 @@ abstract class IPDFLayout
                 } else {
                     $preview = null;
                 }
-                $return[$layout->id] = [
+                $return[(string)$layout->id] = [
                     'title'   => $layout->title,
                     'preview' => $preview,
                 ];
@@ -97,7 +98,9 @@ abstract class IPDFLayout
         throw new Internal('Unknown PDF Layout');
     }
 
+    /** @var array{scale: float, x: float, y: float, w: float, h: float, data: string}|null */
     protected ?array $headerlogo = null;
+
     protected TCPDF $pdf;
 
     public function __construct(

@@ -46,6 +46,11 @@
 }
 
 #tagsEditForm {
+  .tagTypeSelector {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
   .editList {
     width: 100%;
     @media screen and (min-width: $screenMinWith) {

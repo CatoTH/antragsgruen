@@ -54,22 +54,34 @@ export class ConsultationSettings {
     private initTags() {
         const $form = this.$form.find('#tagsEditForm');
         const $tagRowTemplate= $form.find(".newTagRowTemplate").remove();
-        const $tagList = $form.find('.editList');
 
-        Sortable.create(<HTMLElement>$tagList[0], {
-            handle: '.drag-handle',
-            animation: 150
+        let activeTagType = 0;
+
+        $form.find('.tagTypeSelector input').on('change', () => {
+            const $selected = $form.find('.tagTypeSelector input:checked');
+            activeTagType = $selected.val() as number;
+
+            $form.find('.editList').addClass('hidden');
+            $form.find('.editList' + activeTagType).removeClass('hidden');
+        }).trigger('change');
+
+        document.querySelectorAll('#tagsEditForm .editList').forEach((tagList: HTMLElement) => {
+            Sortable.create(tagList, {
+                handle: '.drag-handle',
+                animation: 150
+            });
         });
 
         $form.find('.adderRow button').on('click', () => {
             const $newRow = $tagRowTemplate.clone();
-            $tagList.append($newRow);
+            $newRow.find('.tagTypeInput').val(activeTagType);
+            $form.find('.editList' + activeTagType).append($newRow);
             window.setTimeout(() => {
-                $newRow.find("input").focus();
+                $newRow.find("input").trigger('focus');
             }, 100);
         });
 
-        $tagList.on('click', '.remover', function(ev) {
+        $form.on('click', '.editList .remover', function(ev) {
             let $li = $(this).parents("li").first();
             ev.preventDefault();
 
