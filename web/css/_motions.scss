@@ -518,6 +518,20 @@
       margin: 0;
     }
   }
+
+  .amendmentParaLink {
+    position: absolute;
+    display: none;
+    top: 50%;
+    right: -5px;
+    margin-top: -30px;
+    img {
+      width: 35px;
+    }
+  }
+  .paragraph:hover .amendmentParaLink {
+    display: block;
+  }
 }
 
 .bookmarks {

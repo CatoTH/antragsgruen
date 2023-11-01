@@ -221,6 +221,7 @@ export class AmendmentEdit {
     }
 
     private spmInit() {
+        console.log("spm");
         this.$spmParagraphs = $(".wysiwyg-textarea.single-paragraph");
         this.$spmParagraphs.on("click", this.spmOnParaClick.bind(this));
         this.$spmParagraphs.find(".modifiedActions .revert").on("click", this.spmRevert.bind(this));
@@ -237,6 +238,12 @@ export class AmendmentEdit {
                 $("#section_holder_" + sectionId + "_" + paraNo).trigger("click");
             }
         });
+
+        if (this.$form.data('init-section-id')) {
+            const $holder = $("#section_holder_" + this.$form.data('init-section-id') + "_" + this.$form.data('init-paragraph-no'));
+            $holder.trigger("click");
+            $holder.scrollintoview({top_offset: -50});
+        }
     }
 
     public static onLeavePage(): string {

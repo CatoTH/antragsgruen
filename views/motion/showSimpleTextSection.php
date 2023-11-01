@@ -8,12 +8,13 @@
 use app\components\UrlHelper;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
-use app\models\db\{ConsultationSettingsMotionSection, MotionComment, User};
+use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection, MotionComment, User};
 use app\models\forms\CommentForm;
 use yii\helpers\Html;
 
 $consultation   = $section->getConsultation();
 $motion         = $section->getMotion();
+$motionType     = $motion->getMyMotionType();
 $hasLineNumbers = $section->getSettings()->lineNumbers;
 $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
 $screenAdmin    = User::havePrivilege($section->getConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion));
@@ -43,7 +44,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     if ($hasComments || $hasAmendments) {
         echo '<ul class="bookmarks">';
         if ($hasComments) {
-            $mayOpen     = $section->getMotion()->getMyMotionType()->maySeeIComments();
+            $mayOpen = $motionType->maySeeIComments();
             $numComments = $paragraph->getNumOfAllVisibleComments($screenAdmin);
             if ($numComments > 0 || $mayOpen) {
                 echo '<li class="comment">';
@@ -101,6 +102,11 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     // Only static HTML should be returned from this view, so we can safely cache it.
     echo '<!--PRIVATE_NOTE_' . $section->sectionId . '_' . $paragraphNo . '-->';
 
+    if ($section->getSettings()->hasAmendments &&
+        in_array($motionType->amendmentMultipleParagraphs, [ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH, ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH])) {
+        echo '<!--AMENDMENT_LINK_' . $section->sectionId . '_' . $paragraphNo . '-->';
+    }
+
     echo '</div>';
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
@@ -131,9 +137,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         gc_collect_cycles();
     }
 
-    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS &&
-        $motion->getMyMotionType()->maySeeIComments()) {
-        if (count($paragraph->comments) > 0 || $section->getMotion()->motionType->getCommentPolicy()) {
+    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS && $motionType->maySeeIComments()) {
+        if (count($paragraph->comments) > 0 || $motionType->getCommentPolicy()) {
             echo '<section class="commentHolder" data-antragsgruen-widget="frontend/Comments">';
             $motion = $section->getMotion();
             $form   = $commentForm;

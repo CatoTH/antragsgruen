@@ -3,6 +3,7 @@
 ### Vertion 4.13.1 [not released yet]
 
 - As admin, it is possible to deactivate private notes on the site.
+- If amendments are set up to be restricted to one paragraph, then each paragraph in the motion now shows a direct link to the amendment creation page, with that paragraph pre-selected.
 
 ## Version 4.13.0 (2023-10-29)
 

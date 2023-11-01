@@ -166,7 +166,7 @@ class LayoutHooks extends Hooks
                 }
             }
             if ($motionData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
-                if (substr($motion->titlePrefix, 0, 2) === 'A ' || substr($motion->titlePrefix, 0, 3) === 'SPT') {
+                if (str_starts_with($motion->titlePrefix, 'A ') || str_starts_with($motion->titlePrefix, 'SPT')) {
                     $motionData[$i]['title'] = 'Empfehlung Vorstand';
                 } else {
                     $motionData[$i]['title'] = 'Votum Antragskommission';
@@ -306,7 +306,7 @@ $(function() {
 
     public function renderMotionSection(?string $before, MotionSection $section, Motion $motion): ?string
     {
-        if (strpos($section->getSettings()->title, 'Adressat') !== false) {
+        if (str_contains($section->getSettings()->title, 'Adressat')) {
             return '';
         } else {
             return null;
@@ -315,7 +315,7 @@ $(function() {
 
     public function renderSidebar(string $before): string
     {
-        if (strpos($before, 'Suche') !== false) {
+        if (str_contains($before, 'Suche')) {
             return '';
         } else {
             return $before;
