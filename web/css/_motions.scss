@@ -625,6 +625,20 @@
   color: darkgray;
 }
 
+.motionTwoCols {
+  margin-top: 2px;
+  @media screen and (min-width: $screenMinWith) {
+    display: flex;
+    width: 100%;
+    .motionMainCol {
+      flex-basis: 66.6%;
+    }
+    .motionRightCol {
+      flex-basis: 33.4%;
+    }
+  }
+}
+
 .motionComment {
   border: solid 1px $commentBorder;
   background: $commentBackground;
