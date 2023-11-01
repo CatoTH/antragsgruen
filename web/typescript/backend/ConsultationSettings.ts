@@ -53,8 +53,49 @@ export class ConsultationSettings {
     }
 
     private initTags() {
-        const $tagList: any = this.$form.find("#tagsList select");
-        $tagList.selectize({create: true, plugins: ["remove_button"]})
+        const $form = this.$form.find('#tagsEditForm');
+        const $tagRowTemplate= $form.find(".newTagRowTemplate").remove();
+
+        let activeTagType = 0;
+
+        $form.find('.tagTypeSelector input').on('change', () => {
+            const $selected = $form.find('.tagTypeSelector input:checked');
+            activeTagType = $selected.val() as number;
+
+            $form.find('.editList').addClass('hidden');
+            $form.find('.editList' + activeTagType).removeClass('hidden');
+        }).trigger('change');
+
+        document.querySelectorAll('#tagsEditForm .editList').forEach((tagList: HTMLElement) => {
+            Sortable.create(tagList, {
+                handle: '.drag-handle',
+                animation: 150
+            });
+        });
+
+        $form.find('.adderRow button').on('click', () => {
+            const $newRow = $tagRowTemplate.clone();
+            $newRow.find('.tagTypeInput').val(activeTagType);
+            $form.find('.editList' + activeTagType).append($newRow);
+            window.setTimeout(() => {
+                $newRow.find("input").trigger('focus');
+            }, 100);
+        });
+
+        $form.on('click', '.editList .remover', function(ev) {
+            let $li = $(this).parents("li").first();
+            ev.preventDefault();
+
+            if ($li.data('has-imotions')) {
+                bootbox.confirm($form.data('delete-warnings'), function (result) {
+                    if (result) {
+                        $li.remove();
+                    }
+                });
+            } else {
+                $li.remove();
+            }
+        });
     }
 
     private initOrganisations() {

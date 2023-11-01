@@ -222,21 +222,50 @@ class IndexController extends AdminBase
 
     private function saveTags(Consultation $consultation): void
     {
-        $foundTags = [];
-        $newTags   = $this->getHttpRequest()->post('tags', []);
-        foreach ($newTags as $pos => $newTag) {
-            $tag = $consultation->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $newTag, $pos);
-            if ($tag->position !== $pos) {
-                $tag->position = $pos;
-                $tag->save();
-            }
-            $foundTags[] = $tag->id;
+        $newTags = $this->getHttpRequest()->post('tags', []);
+
+        if (isset($newTags['id']) && !isset($newTags['type'])) {
+            // Submitted with a page that was loaded before the update; let's better not do anything instead of messing things up
+            return;
         }
 
+        $existingTagsById = [];
         foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            if (!in_array($tag->id, $foundTags)) {
-                $tag->deleteIncludeRelations();
+            $existingTagsById[$tag->id] = $tag;
+        }
+        foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) as $tag) {
+            $existingTagsById[$tag->id] = $tag;
+        }
+
+        $pos = 0;
+        for ($i = 0; $i < count($newTags['id'] ?? []); $i++) {
+            if (!isset($newTags['title'][$i]) || !isset($newTags['type'][$i])) {
+                throw new FormError('Inconsistent input');
             }
+            $title = trim($newTags['title'][$i]);
+            if ($newTags['id'][$i] === 'NEW') {
+                if ($title !== '') {
+                    $tag = new ConsultationSettingsTag();
+                    $tag->type = intval($newTags['type'][$i]);
+                    $tag->title = $title;
+                    $tag->consultationId = $this->consultation->id;
+                    $tag->position = $pos++;
+                    $tag->save();
+                }
+            } else {
+                $tag = $existingTagsById[intval($newTags['id'][$i])];
+                unset($existingTagsById[intval($newTags['id'][$i])]);
+
+                $tag->position = $pos++;
+                if ($title !== '') {
+                    $tag->title = $title;
+                }
+                $tag->save();
+            }
+        }
+
+        foreach ($existingTagsById as $tag) {
+            $tag->deleteIncludeRelations();
         }
 
         $consultation->refresh();
