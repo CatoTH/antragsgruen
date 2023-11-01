@@ -444,6 +444,31 @@
       }
     }
   }
+
+  .tagNames {
+    color: grey;
+    font-size: 0.8em;
+
+    .btn {
+      opacity: 0.5;
+    }
+  }
+  .noTags {
+    opacity: 0;
+    &:hover {
+      opacity: 0.5;
+    }
+    .btn {
+      font-weight: normal;
+    }
+  }
+  .tagsSelector {
+    display: flex;
+    width: 100%;
+    .proposalTagsSelect {
+      flex-grow: 1;
+    }
+  }
 }
 
 .agreeToProposal {
