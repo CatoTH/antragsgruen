@@ -304,11 +304,28 @@ class MotionSection extends IMotionSection
         /** @var MotionSectionParagraph[] $return */
         $return = [];
         $paras  = $this->getTextParagraphLines();
+        $paraNoWithoutSplitLists = 0;
         foreach ($paras as $paraNo => $para) {
             $paragraph              = new MotionSectionParagraph();
             $paragraph->paragraphNo = $paraNo;
             $paragraph->lines       = $para;
             $paragraph->origStr     = str_replace('###LINENUMBER###', '', implode('', $para));
+
+            // If this is the same list type as the previous paragraph, then this is a split up list.
+            // In that case, we don't want to increase the counter after all.
+            $isSplitListItem = false;
+            if ($paraNo > 0) {
+                if (str_starts_with($paragraph->origStr, '<ol') && str_starts_with($return[$paraNo - 1]->origStr, '<ol')) {
+                    $isSplitListItem = true;
+                }
+                if (str_starts_with($paragraph->origStr, '<ul') && str_starts_with($return[$paraNo - 1]->origStr, '<ul')) {
+                    $isSplitListItem = true;
+                }
+            }
+            if ($isSplitListItem) {
+                $paraNoWithoutSplitLists--;
+            }
+            $paragraph->paragraphNoWithoutSplitLists = $paraNoWithoutSplitLists;
 
             if ($includeAmendment) {
                 $paragraph->amendmentSections = [];
@@ -324,13 +341,16 @@ class MotionSection extends IMotionSection
             }
 
             $return[$paraNo] = $paragraph;
+
+            $paraNoWithoutSplitLists++;
         }
         if ($minOnePara && count($return) === 0) {
             $para              = new MotionSectionParagraph();
             $para->paragraphNo = 0;
-            $para->lines       = [];
-            $para->origStr     = '';
-            $return[0]         = $para;
+            $para->paragraphNoWithoutSplitLists = 0;
+            $para->lines = [];
+            $para->origStr = '';
+            $return[0] = $para;
         }
         if ($includeAmendment) {
             $motion = $this->getConsultation()->getMotion($this->motionId);

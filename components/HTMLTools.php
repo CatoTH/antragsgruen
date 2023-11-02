@@ -445,15 +445,10 @@ class HTMLTools
     }
 
     /**
-     * @param \DOMElement $element
-     * @param bool $split
-     * @param bool $splitListItems
-     * @param string $pre
-     * @param string $post
      * @return string[]
      * @throws Internal
      */
-    private static function sectionSimpleHTMLInt(\DOMElement $element, $split, $splitListItems, $pre, $post)
+    private static function sectionSimpleHTMLInt(\DOMElement $element, bool $split, bool $splitListItems, string $pre, string $post): array
     {
         $inlineElements = ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b', 'sub', 'sup'];
         if (!$splitListItems) {
