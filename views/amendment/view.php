@@ -3,7 +3,6 @@
 use app\components\UrlHelper;
 use app\models\db\{Amendment, User};
 use app\models\forms\CommentForm;
-use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 
