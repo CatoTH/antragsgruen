@@ -2,6 +2,8 @@
 
 ### Vertion 4.13.1 [not released yet]
 
+- As admin, is now possible to edit the list of internal (proposed procedure) tags, just like the public ones.
+- Proposed procedure tags can now be assigned directly in the procedure overview page.
 - As admin, it is possible to deactivate private notes on the site.
 - If amendments are set up to be restricted to one paragraph, then each paragraph in the motion now shows a direct link to the amendment creation page, with that paragraph pre-selected.
 - It can be set up so that external links and PDF-links will be opened in new, blank browser tabs/windows.

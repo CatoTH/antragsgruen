@@ -290,6 +290,7 @@ return [
     'proposal_refer_to'          => 'Referred to',
     'proposal_custom_str'        => 'Custom status',
     'proposal_tags'              => 'Internal tags',
+    'proposal_edit_tags'         => 'Edit tags',
     'proposal_obsoleted_by'      => 'Handled by',
     'proposal_modified_accepted' => 'Modification',
     'proposal_comment_title'     => 'Internal comment',

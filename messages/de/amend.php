@@ -317,6 +317,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_refer_to'          => 'Überweisen an',
     'proposal_custom_str'        => 'Sonstiger Status',
     'proposal_tags'              => 'Interne Schlagworte',
+    'proposal_edit_tags'         => 'Schlagworte bearbeiten',
     'proposal_obsoleted_by'      => 'Erledigt durch',
     'proposal_moved_to_other_motion' => 'Ersatz-Änderungsantrag',
     'proposal_moved_to_other_motion_h' => 'Muss aktuell noch von Hand angelegt und auf den Status &quot;Vorgeschlagene Verschiebung von anderem Antrag&quot; gesetzt werden, um hier aufzutauchen.',

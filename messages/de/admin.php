@@ -272,6 +272,8 @@ return [
     'con_topics_home_list'    => 'Themenliste mit Sprungmarken über der Antragsliste anzeigen',
     'con_topics_manage'       => 'Themen / Schlagworte verwalten',
     'con_topics'              => 'Themen',
+    'con_topics_public'       => 'Öffentliche Themen',
+    'con_topics_procedure'    => 'Verfahrensvorschlag / Intern',
     'con_topic_add'           => 'Neues Thema',
     'con_topic_title'         => 'Name des Themas',
     'con_topic_del'           => 'Thema löschen',

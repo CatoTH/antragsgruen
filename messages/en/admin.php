@@ -275,6 +275,8 @@ return [
     'con_topics_home_list'    => 'Show tag list with links above motion list',
     'con_topics_manage'       => 'Manage tags',
     'con_topics'              => 'Available tags',
+    'con_topics_public'       => 'Public tags',
+    'con_topics_procedure'    => 'Proposed procedure / Internal',
     'con_topic_add'           => 'New topic',
     'con_topic_title'         => 'Name of the topic',
     'con_topic_del'           => 'Delete topic',

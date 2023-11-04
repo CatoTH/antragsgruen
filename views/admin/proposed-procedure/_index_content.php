@@ -41,6 +41,8 @@ if ($tagId !== null) {
     }
 }
 
+$allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+
 // Hint: there are probably a lot more motions/amendments than tags. So to limit the amount of queries,
 // it's faster to iterate over the tags than to iterate over motions/amendments.
 $getRelevantItemsFromBlock = function(AgendaVoting $votingBlock) use ($taggedMotionIds, $taggedAmendmentIds): array
@@ -91,6 +93,7 @@ foreach ($proposedAgenda as $proposedItem) {
         <div class="content">
             <?php
             foreach ($proposedItem->votingBlocks as $votingBlock) {
+                /** @var \app\models\db\IVotingItem[] $items */
                 $items = $getRelevantItemsFromBlock($votingBlock);
                 if (count($items) === 0) {
                     continue;
@@ -130,9 +133,11 @@ foreach ($proposedAgenda as $proposedItem) {
 
                         if (is_a($item, Amendment::class)) {
                             $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-amendment-visible');
+                            $saveTagsUrl = UrlHelper::createUrl(['admin/proposed-procedure/save-tags', 'type' => 'amendment', 'id' => $item->id]);
                             $type          = 'amendment';
                         } else {
                             $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-motion-visible');
+                            $saveTagsUrl = UrlHelper::createUrl(['admin/proposed-procedure/save-tags', 'type' => 'motion', 'id' => $item->id]);
                             $type          = 'motion';
                         }
 
@@ -188,14 +193,48 @@ foreach ($proposedAgenda as $proposedItem) {
                                 <?php
                                 echo $this->render('_status_icons', ['entry' => $item, 'show_visibility' => false]);
                                 echo Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
+
+                                $selectedTags = [];
                                 if (count($item->getProposedProcedureTags()) > 0) {
                                     $tags = [];
                                     foreach ($item->getProposedProcedureTags() as $tag) {
                                         $tags[] = Html::encode($tag->title);
+                                        $selectedTags[] = $tag->id;
                                     }
-                                    echo '<small style="color: grey;">' . implode(', ', $tags) . '</small>';
+                                    echo '<div class="tagNames">';
+                                    echo implode(', ', $tags);
+                                    echo '<button class="btn btn-sm btn-link tagEditOpener" type="button" title="' . Yii::t('amend', 'proposal_edit_tags') . '">';
+                                    echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
+                                    echo '</button>';
+                                    echo '</div>';
+                                } else {
+                                    echo '<div class="noTags">';
+                                    echo '<button class="btn btn-sm btn-link tagEditOpener" type="button">';
+                                    echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
+                                    echo ' ' . Yii::t('amend', 'proposal_edit_tags');
+                                    echo '</button>';
+                                    echo '</div>';
                                 }
-                                ?></td>
+                                ?>
+                                <div class="selectize-wrapper tagsSelector hidden">
+                                    <select class="proposalTagsSelect" name="proposalTags[]" multiple="multiple" id="proposalTagsSelect">
+                                        <?php
+                                        foreach ($allTags as $tag) {
+                                            echo '<option name="' . Html::encode($tag->title) . '"';
+                                            if (in_array($tag->id, $selectedTags)) {
+                                                echo ' selected';
+                                            }
+                                            echo '>' . Html::encode($tag->title) . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    <div class="proposalTagsSelectHolder">
+                                        <button type="button" class="tagsSaver btn btn-primary" data-save-url="<?= Html::encode($saveTagsUrl) ?>">
+                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
                             <td class="visible">
                                 <input type="checkbox" name="visible"
                                        title="<?= Yii::t('con', 'proposal_table_visible') ?>"

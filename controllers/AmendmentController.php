@@ -13,14 +13,7 @@ use app\models\http\{BinaryFileResponse,
     RestApiExceptionResponse,
     RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment,
-    AmendmentAdminComment,
-    AmendmentSupporter,
-    ConsultationLog,
-    ConsultationSettingsTag,
-    ISupporter,
-    Motion,
-    User};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, ISupporter, Motion, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
 use app\models\forms\{AmendmentEditForm, ProposedChangeForm};
@@ -479,26 +472,7 @@ class AmendmentController extends Base
                 $amendment->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
             }
 
-            $oldTags = $amendment->getProposedProcedureTags();
-            $newTags = [];
-            $changed = false;
-            foreach ($this->getHttpRequest()->post('tags', []) as $newTag) {
-                $tag = $amendment->getMyConsultation()->getExistingTagOrCreate(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, $newTag, 0);
-                if (!isset($oldTags[$tag->getNormalizedName()])) {
-                    $amendment->link('tags', $tag);
-                    $changed = true;
-                }
-                $newTags[] = ConsultationSettingsTag::normalizeName($newTag);
-            }
-            foreach ($oldTags as $tagKey => $tag) {
-                if (!in_array($tagKey, $newTags)) {
-                    $amendment->unlink('tags', $tag, true);
-                    $changed = true;
-                }
-            }
-            if ($changed) {
-                $ppChanges->setProposalTagsHaveChanged(array_keys($oldTags), $newTags);
-            }
+            $amendment->setProposedProcedureTags($this->getHttpRequest()->post('tags', []), $ppChanges);
 
             if ($canChangeProposalUnlimitedly) {
                 $proposalExplanationPre = $amendment->proposalExplanation;

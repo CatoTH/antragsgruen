@@ -375,89 +375,9 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
 
     </section>
 
-    <h2 class="green" id="conTopicsTitle"><?= Yii::t('admin', 'con_topics') ?></h2>
-    <section id="tagsEditForm" aria-labelledby="conTopicsTitle" class="content" data-delete-warnings="<?= Html::encode(Yii::t('admin', 'con_topic_del_warn')) ?>">
     <?php
-    $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
-        ?>
-        <ol class="stdNonFormattedList editList">
-            <?php
-            foreach ($tags as $tag) {
-                $hasIMotions = (count($tag->motions) > 0 || count($tag->amendments) > 0);
-                ?>
-                <li data-has-imotions="<?= $hasIMotions ? 1 : 0 ?>">
-                    <input type="hidden" name="tags[id][]" value="<?= $tag->id ?>">
-                    <span class="drag-handle">&#9776;</span>
-
-                    <label class="tagTitle">
-                        <input type="text" name="tags[title][]" value="<?= Html::encode($tag->title) ?>"
-                               required class="form-control" title="<?= Html::encode(Yii::t('admin', 'con_topic_title')) ?>">
-                    </label>
-
-                    <button type="button" class="btn-link remover" title="<?= Html::encode(Yii::t('admin', 'con_topic_del')) ?>">
-                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                        <span class="sr-only"><?= Yii::t('admin', 'con_topic_del') ?></span>
-                    </button>
-                </li>
-                <?php
-            }
-            ?>
-            <li class="newTagRowTemplate" data-has-imotions="0">
-                <input type="hidden" name="tags[id][]" value="NEW">
-                <span class="drag-handle">&#9776;</span>
-
-                <label class="tagTitle">
-                    <input type="text" name="tags[title][]" value="" autocomplete="off"
-                           class="form-control" title="<?= Html::encode(Yii::t('admin', 'con_topic_title')) ?>">
-                </label>
-
-                <button type="button" class="btn-link remover" title="<?= Html::encode(Yii::t('admin', 'con_topic_del')) ?>">
-                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                    <span class="sr-only"><?= Yii::t('admin', 'con_topic_del') ?></span>
-                </button>
-            </li>
-        </ol>
-        <div class="adderRow">
-            <button class="btn btn-link tagAdderBtn" type="button">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                <?= Yii::t('admin', 'con_topic_add') ?>
-            </button>
-        </div>
-
-        <div><label>
-            <?php
-            $handledSettings[] = 'allowUsersToSetTags';
-            echo Html::checkbox(
-                'settings[allowUsersToSetTags]',
-                $settings->allowUsersToSetTags,
-                ['id' => 'allowUsersToSetTags']
-            );
-            echo ' ' . Yii::t('admin', 'con_allow_set_tags');
-            ?>
-        </label></div>
-        <div><label>
-            <?php
-            $handledSettings[] = 'allowMultipleTags';
-            echo Html::checkbox(
-                'settings[allowMultipleTags]',
-                $settings->allowMultipleTags,
-                ['id' => 'allowMultipleTags']
-            );
-            echo ' ' . Yii::t('admin', 'con_multiple_topics');
-            ?>
-        </label></div>
-        <div><label>
-            <?php
-            $handledSettings[] = 'amendmentsHaveTags';
-            echo Html::checkbox(
-                'settings[amendmentsHaveTags]',
-                $settings->amendmentsHaveTags,
-                ['id' => 'amendmentsHaveTags']
-            );
-            echo ' ' . Yii::t('admin', 'con_amendment_tags');
-            ?>
-        </label></div>
-    </section>
+    require __DIR__ . '/_consultation_tags.php';
+    ?>
 
     <h2 class="green" id="conEmailTitle"><?= Yii::t('admin', 'con_title_email') ?></h2>
     <div class="content" aria-labelledby="conEmailTitle">

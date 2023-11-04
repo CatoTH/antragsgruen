@@ -19,6 +19,7 @@ export class ProposedProcedureOverview {
         this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
         this.$widget.on('change', 'input[name=visible]', this.onVisibleChanged.bind(this));
         this.initComments();
+        this.initTagsEdit();
         this.initUpdateWidget();
         this.onContentUpdated();
 
@@ -76,6 +77,54 @@ export class ProposedProcedureOverview {
         });
     }
 
+    private initTagsEdit() {
+        this.$widget.on('click', '.tagEditOpener', (ev) => {
+            const $col = $(ev.currentTarget).parents(".procedure").first();
+            $col.find('.noTags, .tagNames').addClass('hidden');
+            $col.find('.tagsSelector').removeClass('hidden').addClass('editing');
+
+            const $tagsSelect = $col.find('.tagsSelector select') as any;
+            $tagsSelect.selectize({
+                create: true,
+                plugins: ["remove_button"],
+                render: {
+                    option_create: (data, escape) => {
+                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                    }
+                }
+            });
+        });
+
+        this.$widget.on('click', '.tagsSaver', (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const $btn = $(ev.currentTarget),
+                saveUrl = $btn.data('save-url'),
+                $col = $btn.parents(".procedure").first(),
+                select = $col.find(".tagsSelector select")[0] as any;
+
+            $.ajax({
+                url: saveUrl,
+                type: "POST",
+                data: JSON.stringify({tags: select.selectize.items}),
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                headers: {"X-CSRF-Token": this.csrf},
+                success: data => {
+                    if (data.msg_error) {
+                        bootbox.alert(data.msg_error);
+                    } else {
+                        $col.find('.tagsSelector').addClass('hidden').removeClass('editing');
+                        this.reload(() => {});
+                    }
+                }
+            }).catch(function (err) {
+                alert(err.responseText);
+            })
+        });
+    }
+
     private openWriting(ev) {
         ev.preventDefault();
         let $btn = $(ev.currentTarget),
@@ -118,6 +167,8 @@ export class ProposedProcedureOverview {
         if (this.$widget.find('.respHolder.dropdown.open').length > 0) {
             return true;
         } else if (this.$widget.find('.comments.writing').length > 0) {
+            return true;
+        } else if (this.$widget.find('.tagsSelector.editing').length > 0) {
             return true;
         } else {
             return false;

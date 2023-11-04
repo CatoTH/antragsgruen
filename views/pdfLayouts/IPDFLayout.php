@@ -9,6 +9,9 @@ use TCPDF;
 
 abstract class IPDFLayout
 {
+    /**
+     * @return array<array{title: string, preview: string|null, id: int, className?: class-string}>
+     */
     public static function getAvailableTcpdfClasses(): array
     {
         $params = AntragsgruenApp::getInstance();
@@ -45,6 +48,7 @@ abstract class IPDFLayout
         return $pdfClasses;
     }
 
+    /** @var array<string|int, array{title: string, preview: string|null, id?: int, className?: class-string}>|null */
     private static ?array $_availableClassesWithLatex = null;
 
     public static function getAvailableClassesWithLatex(): array
@@ -97,7 +101,9 @@ abstract class IPDFLayout
         throw new Internal('Unknown PDF Layout');
     }
 
+    /** @var array{scale: float, x: float, y: float, w: float, h: float, data: string}|null */
     protected ?array $headerlogo = null;
+
     protected TCPDF $pdf;
 
     public function __construct(
@@ -118,23 +124,26 @@ abstract class IPDFLayout
         if ($logo && !$this->headerlogo) {
             $dim = $this->pdf->getPageDimensions();
 
-            $scaleWidth = $scaleHeight = 1;
+            $scaleWidth = $scaleHeight = 1.0;
             if ($maxWidth && $logo->width > $maxWidth) {
                 $scaleWidth = $maxWidth / $logo->width;
             }
             if ($maxHeight && $logo->height > $maxHeight) {
                 $scaleHeight = $maxHeight / $logo->height;
             }
-            $this->headerlogo['scale'] = min($scaleHeight, $scaleWidth);
-            $this->headerlogo['w']     = $logo->width * $this->headerlogo['scale'];
-            $this->headerlogo['h']     = $logo->height * $this->headerlogo['scale'];
-            $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
-            $this->headerlogo['data']  = $logo->data;
-            if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
-                $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
+
+            $logoData = [];
+            $logoData['scale'] = min($scaleHeight, $scaleWidth);
+            $logoData['w'] = $logo->width * $logoData['scale'];
+            $logoData['h'] = $logo->height * $logoData['scale'];
+            $logoData['x'] = $dim['wk'] - $dim['rm'] - $logoData['w'];
+            $logoData['data'] = $logo->data;
+            if ($logoData['h'] + $abs < $dim['tm'] / 2) {
+                $logoData['y'] = $dim['tm'] - $logoData['h'] - $abs;
             } else {
-                $this->headerlogo['y'] = $dim['tm'];
+                $logoData['y'] = $dim['tm'];
             }
+            $this->headerlogo = $logoData;
         }
     }
 

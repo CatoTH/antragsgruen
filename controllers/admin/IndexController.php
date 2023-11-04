@@ -236,21 +236,29 @@ class IndexController extends AdminBase
     {
         $newTags = $this->getHttpRequest()->post('tags', []);
 
+        if (isset($newTags['id']) && !isset($newTags['type'])) {
+            // Submitted with a page that was loaded before the update; let's better not do anything instead of messing things up
+            return;
+        }
+
         $existingTagsById = [];
         foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+            $existingTagsById[$tag->id] = $tag;
+        }
+        foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) as $tag) {
             $existingTagsById[$tag->id] = $tag;
         }
 
         $pos = 0;
         for ($i = 0; $i < count($newTags['id'] ?? []); $i++) {
-            if (!isset($newTags['title'][$i])) {
+            if (!isset($newTags['title'][$i]) || !isset($newTags['type'][$i])) {
                 throw new FormError('Inconsistent input');
             }
             $title = trim($newTags['title'][$i]);
             if ($newTags['id'][$i] === 'NEW') {
                 if ($title !== '') {
                     $tag = new ConsultationSettingsTag();
-                    $tag->type = ConsultationSettingsTag::TYPE_PUBLIC_TOPIC;
+                    $tag->type = intval($newTags['type'][$i]);
                     $tag->title = $title;
                     $tag->consultationId = $this->consultation->id;
                     $tag->position = $pos++;

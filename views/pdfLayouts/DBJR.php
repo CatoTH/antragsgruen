@@ -80,16 +80,20 @@ class DBJR extends IPDFLayout
         if ($logo) {
             if (empty($this->headerlogo)) {
                 //$this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
-                $this->headerlogo['w']     = 50;
-                $this->headerlogo['scale'] = $this->headerlogo['w'] / $logo->width;
-                $this->headerlogo['h']     = $logo->height * $this->headerlogo['scale'];
-                $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
-                if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
-                    $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
+                $headerlogo = [];
+                $headerlogo['w']     = 50.0;
+                $headerlogo['scale'] = $headerlogo['w'] / $logo->width;
+                $headerlogo['h']     = $logo->height * $headerlogo['scale'];
+                $headerlogo['x']     = $dim['wk'] - $dim['rm'] - $headerlogo['w'];
+                $headerlogo['data']  = $logo->data;
+                if ($headerlogo['h'] + $abs < $dim['tm'] / 2) {
+                    $headerlogo['y'] = $dim['tm'] - $headerlogo['h'] - $abs;
                 } else {
-                    $this->headerlogo['y'] = $dim['tm'];
+                    $headerlogo['y'] = $dim['tm'];
                 }
+                $this->headerlogo = $headerlogo;
             }
+
 
             $headerlogo = $this->headerlogo;
             $pdf->setJPEGQuality(100);

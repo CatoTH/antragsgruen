@@ -33,6 +33,10 @@ class Egp extends IPDFLayout
             $logo = file_get_contents(__DIR__ . '/../assets/council-2020-12.png');
             $width = 678;
             $height = 298;
+        } elseif ($consultation->urlPath === '38thEGPCongress') {
+            $logo = file_get_contents(__DIR__ . '/../assets/congress-2023-12.png');
+            $width = 678;
+            $height = 298;
         } else {
             $logo = file_get_contents(__DIR__ . '/../assets/council-2020-06.png');
             $width = 2194;
@@ -41,23 +45,26 @@ class Egp extends IPDFLayout
 
         $dim = $this->pdf->getPageDimensions();
 
-        $scaleWidth = $scaleHeight = 1;
+        $scaleWidth = $scaleHeight = 1.0;
         if ($maxWidth && $width > $maxWidth) {
             $scaleWidth = $maxWidth / $width;
         }
         if ($maxHeight && $height > $maxHeight) {
             $scaleHeight = $maxHeight / $height;
         }
-        $this->headerlogo['scale'] = min($scaleHeight, $scaleWidth);
-        $this->headerlogo['w'] = $width * $this->headerlogo['scale'];
-        $this->headerlogo['h'] = $height * $this->headerlogo['scale'];
-        $this->headerlogo['x'] = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
-        $this->headerlogo['data'] = $logo;
-        if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
-            $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
+
+        $headerlogo = [];
+        $headerlogo['scale'] = min($scaleHeight, $scaleWidth);
+        $headerlogo['w'] = $width * $headerlogo['scale'];
+        $headerlogo['h'] = $height * $headerlogo['scale'];
+        $headerlogo['x'] = $dim['wk'] - $dim['rm'] - $headerlogo['w'];
+        $headerlogo['data'] = (string)$logo;
+        if ($headerlogo['h'] + $abs < $dim['tm'] / 2) {
+            $headerlogo['y'] = $dim['tm'] - $headerlogo['h'] - $abs;
         } else {
-            $this->headerlogo['y'] = $dim['tm'];
+            $headerlogo['y'] = $dim['tm'];
         }
+        $this->headerlogo = $headerlogo;
     }
 
     public function printMotionHeader(Motion $motion): void
