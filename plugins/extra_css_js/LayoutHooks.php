@@ -16,7 +16,11 @@ class LayoutHooks extends StdHooks
 {
     private function getAssetPath(): string
     {
-        return __DIR__ . '/assets/' . $this->consultation->site->subdomain . '/' . $this->consultation->urlPath;
+        if ($this->consultation && $this->consultation->site) {
+            return __DIR__ . '/assets/' . $this->consultation->site->subdomain . '/' . $this->consultation->urlPath;
+        } else {
+            return __DIR__ . '/assets/default';
+        }
     }
 
     public function endOfHead(string $before): string
