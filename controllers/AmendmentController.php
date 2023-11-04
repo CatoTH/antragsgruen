@@ -286,7 +286,7 @@ class AmendmentController extends Base
         }
 
         $fromMode = ($amendment->status === Amendment::STATUS_DRAFT ? 'create' : 'edit');
-        $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment);
+        $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, null, null);
         if (!$amendment->canEditInitiators()) {
             $form->setAllowEditingInitiators(false);
         }
@@ -331,7 +331,7 @@ class AmendmentController extends Base
     /**
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function actionCreate(string $motionSlug, int $agendaItemId = 0, int $cloneFrom = 0, int $createFromAmendment = 0): ResponseInterface
+    public function actionCreate(string $motionSlug, int $agendaItemId = 0, int $cloneFrom = 0, int $createFromAmendment = 0, ?int $sectionId = null, ?int $paragraphNo = null): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -349,12 +349,12 @@ class AmendmentController extends Base
         }
 
         if ($agendaItemId > 0) {
-            $agendaItem = $this->consultation->getAgendaItem(intval($agendaItemId));
+            $agendaItem = $this->consultation->getAgendaItem($agendaItemId);
         } else {
             $agendaItem = null;
         }
 
-        $form = new AmendmentEditForm($motion, $agendaItem, null);
+        $form = new AmendmentEditForm($motion, $agendaItem, null, $sectionId, $paragraphNo);
         $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
         $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null);
 

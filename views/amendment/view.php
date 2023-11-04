@@ -3,7 +3,6 @@
 use app\components\UrlHelper;
 use app\models\db\{Amendment, User};
 use app\models\forms\CommentForm;
-use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 
@@ -144,7 +143,7 @@ if ($amendment->canFinishSupportCollection()) {
 echo '</div>';
 echo '</div>';
 
-if (User::getCurrentUser() && !$amendment->getPrivateComment()) {
+if (User::getCurrentUser() && !$amendment->getPrivateComment() && $consultation->getSettings()->showPrivateNotes) {
     ?>
     <div class="privateNoteOpener">
         <button class="btn btn-link btn-sm" tabindex="0" type="button">

@@ -50,16 +50,16 @@ $handledSiteSettings = [];
     <section aria-labelledby="conCiTitle">
         <h2 class="green" id="conCiTitle"><?= Yii::t('admin', 'con_ci') ?></h2>
         <div class="content">
-            <fieldset class="form-group logoRow">
-                <legend class="col-sm-3"><?= Yii::t('admin', 'con_logo_url') ?>:</legend>
-                <div class="col-sm-2 logoPreview">
+            <fieldset class="logoRow">
+                <div class="logoRowTitle"><?= Yii::t('admin', 'con_logo_url') ?>:</div>
+                <div class="logoPreview">
                     <?php
                     if ($settings->logoUrl) {
                         echo $layout->getLogoStr();
                     }
                     ?>
                 </div>
-                <div class="col-sm-7 imageChooser">
+                <div class="imageChooser">
                     <input type="hidden" name="consultationLogo" value="">
                     <div class="uploadCol">
                         <label for="logoUrl">
@@ -104,7 +104,7 @@ $handledSiteSettings = [];
                 </div>
             </fieldset>
 
-            <fieldset class="form-group thumbnailRow">
+            <fieldset class="thumbnailRow">
                 <legend class="sr-only"><?= Yii::t('admin', 'con_ci_legend') ?></legend>
                 <div class="thumbnailedLayoutSelector">
                     <?php
@@ -151,7 +151,7 @@ $handledSiteSettings = [];
     <section aria-labelledby="conAppearanceTitle">
         <h2 class="green" id="conAppearanceTitle"><?= Yii::t('admin', 'con_appearance_content') ?></h2>
         <div class="content">
-            <fieldset class="form-group selectRow">
+            <fieldset class="selectRow">
                 <?php $handledSettings[] = 'startLayoutType'; ?>
                 <legend>
                     <?= Yii::t('admin', 'con_home_page_style') ?>:
@@ -175,7 +175,7 @@ $handledSiteSettings = [];
                 ?>
             </fieldset>
 
-            <fieldset class="form-group selectRow">
+            <fieldset class="selectRow">
                 <?php $handledSettings[] = 'motiondataMode'; ?>
                 <legend>
                     <?= Yii::t('admin', 'con_motion_data') ?>:
@@ -190,7 +190,7 @@ $handledSiteSettings = [];
                     ?></div>
             </fieldset>
 
-            <fieldset class="form-group selectRow">
+            <fieldset class="selectRow">
                 <?php $handledSettings[] = 'dateFormat'; ?>
                 <legend>
                     <?= Yii::t('admin', 'con_date_format') ?>:
@@ -290,6 +290,12 @@ $handledSiteSettings = [];
             echo Html::checkbox('siteSettings[showBreadcrumbs]', $siteSettings->showBreadcrumbs, ['id' => 'showBreadcrumbs']) . ' ';
             echo Yii::t('admin', 'con_show_breadcrumbs');
             echo '</label></div>';
+
+            $propTitle = Yii::t('admin', 'con_show_private_notes');
+            $boolSettingRow($settings, 'showPrivateNotes', $handledSettings, $propTitle);
+
+            $propTitle = Yii::t('admin', 'con_open_links_new_tab');
+            $boolSettingRow($settings, 'externalLinksNewWindow', $handledSettings, $propTitle);
 
             $propTitle = Yii::t('admin', 'con_proposal_procedure');
             $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_proposal_tt'));

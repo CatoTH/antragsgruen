@@ -2,6 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\ConsultationMotionType;
 use yii\helpers\Html;
 
 /**
@@ -67,6 +68,10 @@ if ($motionType->amendmentsOnly) {
     $backUrl = UrlHelper::homeUrl();
 } else {
     $backUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
+    if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED &&
+        in_array($motionType->amendmentMultipleParagraphs, [ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH, ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_CHANGE])) {
+        $backUrl .= '#amendment' . $amendment->id;
+    }
 }
 echo Html::beginForm($backUrl, 'post', ['id' => 'motionConfirmedForm']);
 

@@ -137,7 +137,7 @@ export class AmendmentEdit {
                 ev.preventDefault();
                 ev.stopPropagation();
                 $para.find('.oneChangeHint').removeClass('hidden');
-                $para.scrollintoview({top_offset: -50});
+                $para.scrollintoview({top_offset: -100});
                 return;
             }
 
@@ -237,6 +237,12 @@ export class AmendmentEdit {
                 $("#section_holder_" + sectionId + "_" + paraNo).trigger("click");
             }
         });
+
+        if (this.$form.data('init-section-id')) {
+            const $holder = $("#section_holder_" + this.$form.data('init-section-id') + "_" + this.$form.data('init-paragraph-no'));
+            $holder.trigger("click");
+            $holder.scrollintoview({top_offset: -100});
+        }
     }
 
     public static onLeavePage(): string {

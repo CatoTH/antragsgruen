@@ -445,15 +445,10 @@ class HTMLTools
     }
 
     /**
-     * @param \DOMElement $element
-     * @param bool $split
-     * @param bool $splitListItems
-     * @param string $pre
-     * @param string $post
      * @return string[]
      * @throws Internal
      */
-    private static function sectionSimpleHTMLInt(\DOMElement $element, $split, $splitListItems, $pre, $post)
+    private static function sectionSimpleHTMLInt(\DOMElement $element, bool $split, bool $splitListItems, string $pre, string $post): array
     {
         $inlineElements = ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b', 'sub', 'sup'];
         if (!$splitListItems) {
@@ -741,7 +736,6 @@ class HTMLTools
         return $html;
     }
 
-    /** @var bool */
     private static bool $LINKS;
     /** @var string[] */
     private static array $LINK_CACHE;
@@ -972,17 +966,19 @@ class HTMLTools
         $endPattern     = "($urlPatternEnd|($urlPattern*\\($urlPattern{0,$urlMaxlenEnd}\\)){1,3})";
         $hostUrlPattern = "$urlPatternHost{1,$urlMaxlenHost}(\\/?($urlPattern{0,$urlMaxlen}$endPattern)?)?";
 
+        $targetHtml = (UrlHelper::getCurrentConsultation()?->getSettings()->externalLinksNewWindow ? ' target="_blank"' : '');
+
         $urlsearch[]  = "/([({\\[\\|>\\s])((https?|ftp|news):\\/\\/|mailto:)($hostUrlPattern)/siu";
-        $urlreplace[] = "\\1<a rel=\"nofollow\" href=\"\\2\\4\">\\2\\4</a>";
+        $urlreplace[] = "\\1<a rel=\"nofollow\" href=\"\\2\\4\"$targetHtml>\\2\\4</a>";
 
         $urlsearch[]  = "/^((https?|ftp|news):\\/\\/|mailto:)($hostUrlPattern)/siu";
-        $urlreplace[] = "<a rel=\"nofollow\" href=\"\\1\\3\">\\1\\3</a>";
+        $urlreplace[] = "<a rel=\"nofollow\" href=\"\\1\\3\"$targetHtml>\\1\\3</a>";
 
         $wwwsearch[]  = "/([({\\[\\|>\\s])((?<![\\/\\/])www\\.)($hostUrlPattern)/siu";
-        $wwwreplace[] = "\\1<a rel=\"nofollow\" href=\"http://\\2\\3\">\\2\\3</a>";
+        $wwwreplace[] = "\\1<a rel=\"nofollow\" href=\"http://\\2\\3\"$targetHtml>\\2\\3</a>";
 
         $wwwsearch[]  = "/^((?<![\\/\\/])www\\.)($hostUrlPattern)/siu";
-        $wwwreplace[] = "<a rel=\"nofollow\" href=\"http://\\1\\2\">\\1\\2</a>";
+        $wwwreplace[] = "<a rel=\"nofollow\" href=\"http://\\1\\2\"$targetHtml>\\1\\2</a>";
 
         $html = preg_replace($urlsearch, $urlreplace, $html);
         $html = preg_replace($wwwsearch, $wwwreplace, $html);
@@ -1005,7 +1001,7 @@ class HTMLTools
      * @param \DOMNode $node
      * @return \DOMNode[]
      */
-    private static function stripInsDelMarkersInt(\DOMNode $node)
+    private static function stripInsDelMarkersInt(\DOMNode $node): array
     {
         if (!is_a($node, \DOMElement::class)) {
             return [$node];
@@ -1086,5 +1082,15 @@ class HTMLTools
         }
 
         return self::correctHtmlErrors($shortenedHtml, false);
+    }
+
+    public static function createExternalLink(string $htmlContent, string $url, array $additionalAtts = []): string
+    {
+        $consultation = UrlHelper::getCurrentConsultation();
+        if ($consultation?->getSettings()->externalLinksNewWindow) {
+            $additionalAtts['target'] = '_blank';
+        }
+
+        return Html::a($htmlContent, $url, $additionalAtts);
     }
 }

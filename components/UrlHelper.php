@@ -41,10 +41,9 @@ class UrlHelper
     }
 
     /**
-     * @param string $route
-     * @return string[]
+     * @return array{module: string|null, controller: string|null, action?: string, view?: string}
      */
-    protected static function getRouteParts($route)
+    protected static function getRouteParts(string $route): array
     {
         $parts = explode('/', $route);
         if (count($parts) === 3) {
@@ -76,7 +75,7 @@ class UrlHelper
 
         if ($consultation !== null && !isset($route['consultationPath'])) {
             // for pages/show-page, consultationPath is optional
-            if ($routeParts['controller'] !== 'pages' || !in_array($routeParts['action'], ['show-page', 'save-page'])) {
+            if ($routeParts['controller'] !== 'pages' || !in_array(($routeParts['action'] ?? ''), ['show-page', 'save-page'])) {
                 $route['consultationPath'] = $consultation->urlPath;
             }
         }
@@ -84,7 +83,7 @@ class UrlHelper
             $route['subdomain'] = $site->subdomain;
         }
 
-        if ($routeParts['controller'] === 'user' && $routeParts['action'] !== 'consultationaccesserror') {
+        if ($routeParts['controller'] === 'user' && ($routeParts['action'] ?? '') !== 'consultationaccesserror') {
             unset($route['consultationPath']);
         }
         if (in_array(
@@ -111,10 +110,7 @@ class UrlHelper
         return $finalRoute;
     }
 
-    /**
-     * @param string|array $route
-     */
-    public static function createUrl($route, ?Consultation $forceConsultation = null): string
+    public static function createUrl(string|array $route, ?Consultation $forceConsultation = null): string
     {
         if (!is_array($route)) {
             $route = [$route];
@@ -137,10 +133,7 @@ class UrlHelper
         }
     }
 
-    /**
-     * @param string|array $route
-     */
-    public static function createLoginUrl($route): string
+    public static function createLoginUrl(string|array $route): string
     {
         $target_url = self::createUrl($route);
         if (RequestContext::getWebApplication()->user->isGuest) {

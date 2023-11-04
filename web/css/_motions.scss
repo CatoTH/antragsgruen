@@ -518,6 +518,23 @@
       margin: 0;
     }
   }
+
+  .amendmentParaLink {
+    position: absolute;
+    display: none;
+    top: 50%;
+    right: -5px;
+    margin-top: -30px;
+    img {
+      width: 35px;
+    }
+  }
+  .paragraph:hover .amendmentParaLink {
+    display: block;
+  }
+  .paragraph.hover .amendmentParaLink { // Used for testing
+    display: block;
+  }
 }
 
 .bookmarks {
@@ -623,6 +640,20 @@
 .commentScreeningQueue {
   margin-left: 50px;
   color: darkgray;
+}
+
+.motionTwoCols {
+  margin-top: 2px;
+  @media screen and (min-width: $screenMinWith) {
+    display: flex;
+    width: 100%;
+    .motionMainCol {
+      flex-basis: 66.6%;
+    }
+    .motionRightCol {
+      flex-basis: 33.4%;
+    }
+  }
 }
 
 .motionComment {

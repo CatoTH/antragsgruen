@@ -66,3 +66,27 @@ $I->dontSeeElement('#section_2_1 #comm2');
 $I->seeElement('.privateNoteOpener');
 $I->dontSeeElement('.privateNotes form');
 $I->dontSeeElement('.privateParagraphNoteOpener');
+
+
+$I->wantTo('Disabled private notes');
+$I->gotoConsultationHome();
+$I->logout();
+$page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoAppearance();
+$I->uncheckOption('#showPrivateNotes');
+$page->saveForm();
+
+$I->gotoMotion();
+$I->dontSeeElement('.privateNoteOpener');
+$I->gotoAmendment();
+$I->dontSeeElement('.privateNoteOpener');
+
+
+$I->wantTo('Enable private notes again');
+$page = $I->gotoStdAdminPage()->gotoAppearance();
+$I->checkOption('#showPrivateNotes');
+$page->saveForm();
+
+$I->gotoMotion();
+$I->seeElement('.privateNoteOpener');
+$I->gotoAmendment();
+$I->seeElement('.privateNoteOpener');

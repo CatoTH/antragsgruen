@@ -359,9 +359,25 @@ label.legend {
     .image-chooser-dd {
       text-align: right;
     }
+
+    @media (min-width: $screen-sm-min) {
+      display: flex;
+      width: 100%;
+      > .logoRowTitle {
+        flex-basis: 20%;
+      }
+      .logoPreview {
+        flex-basis: 20%;
+      }
+      .imageChooser {
+        flex-basis: 60%;
+      }
+    }
   }
 
   .selectRow {
+    margin-top: 10px;
+
     label {
       display: block;
     }

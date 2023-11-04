@@ -149,7 +149,7 @@ if ($motion->canFinishSupportCollection()) {
 
 echo '</div>';
 
-if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
+if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1) && $consultation->getSettings()->showPrivateNotes) {
     ?>
     <div class="privateNoteOpener">
         <button class="btn btn-link btn-sm" tabindex="0">
@@ -204,12 +204,29 @@ $viewText = $this->render('_view_text', [
     'procedureToken' => $procedureToken
 ]);
 
-$viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragraphNo>\d+)-->/siu', function ($matches) use ($motion) {
+$viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragraphNo>\d+)-->/iu', function ($matches) use ($motion) {
     return $this->render('_view_paragraph_private_note', [
         'motion'      => $motion,
         'sectionId'   => intval($matches['sectionId']),
         'paragraphNo' => intval($matches['paragraphNo']),
     ]);
+}, $viewText);
+
+$viewText = preg_replace_callback('/<!--AMENDMENT_LINK_(?<sectionId>\d+)_(?<paragraphNo>\d+)-->/iu', function ($matches) use ($motion) {
+    if (!$motion->isCurrentlyAmendable(false, true)) {
+        return '';
+    }
+
+    $imgUrl = \app\models\settings\AntragsgruenApp::getInstance()->resourceBase . 'img/aa-new-icon.svg';
+    $title = '<img src="' . $imgUrl . '" alt="' . Yii::t('motion', 'amendment_create_paragraph') . '"></span>';
+    $amendCreateUrl = UrlHelper::createUrl([
+        '/amendment/create',
+        'motionSlug' => $motion->getMotionSlug(),
+        'sectionId' => $matches['sectionId'],
+        'paragraphNo' => $matches['paragraphNo'],
+    ]);
+    return '<a class="btn btn-link btn-sm amendmentParaLink" href="' . Html::encode($amendCreateUrl) . '" title="' . Yii::t('motion', 'amendment_create_paragraph') . '"
+                rel="nofollow">' . $title . '</a>';
 }, $viewText);
 
 echo $viewText;

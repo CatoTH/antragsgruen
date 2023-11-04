@@ -11,6 +11,7 @@ return [
     'create_prerequisites'          => 'Requirements for a motion',
     'sidebar_title_aria'            => 'Functionality and links regarding this motion',
     'amendment_create'              => 'Create an amendment',
+    'amendment_create_paragraph'    => 'Create an amendment to this paragraph',
     'amendment_create_based_on_amend' => 'Create new amendment using this as template',
     'amendment_create_admin'        => 'admin',
     'amendments_merge'              => 'Merge amendments',

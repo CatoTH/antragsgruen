@@ -137,3 +137,27 @@ $I->see('Gespeichert.');
 
 $I->see('Test 456', '.motionTextHolder .inserted');
 $I->see('Auffi Gamsbart nimma de Sepp', '.motionTextHolder .deleted');
+
+
+$I->wantTo('Create amendment through paragraph-based links');
+$I->gotoMotion(true, '115');
+$I->see('rhetorische Frage', '#section_2_5');
+$I->dontSeeElement('.amendmentParaLink');
+$I->executeJS('document.getElementById("section_2_5").classList.add("hover")');
+$I->seeElement('.amendmentParaLink');
+$I->clickJS('#section_2_5 .amendmentParaLink');
+$I->wait(1);
+
+// Note that 2_5 becomes 2_2 because lists are not split anymore
+$I->dontSeeElement('#section_holder_2_2.modifyable');
+$I->seeElement('#section_holder_2_2.modified');
+$I->dontSeeElement('#section_holder_2_1.modifyable');
+
+$I->executeJS('CKEDITOR.instances.sections_2_2_wysiwyg.setData("<p>Yet another test</p>");');
+$I->see('Yet another test');
+
+$I->wantTo('submit the amendment');
+$I->fillField('#initiatorPrimaryName', 'My name');
+$I->fillField('#initiatorEmail', 'test@example.org');
+$I->submitForm('#amendmentEditForm', [], 'save');
+$I->submitForm('#amendmentConfirmForm', [], 'confirm');

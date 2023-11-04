@@ -60,6 +60,7 @@ class Consultation implements \JsonSerializable
     public bool $allowUsersToSetTags = true;
     public bool $amendmentsHaveTags = false;
     public bool $openslidesExportEnabled = false;
+    public bool $showPrivateNotes = true;
 
     public ?int $forceMotion = null;
 
@@ -81,6 +82,7 @@ class Consultation implements \JsonSerializable
     public bool $showIMotionEditDate = false;
     public bool $ppEditableAfterPublication = true;
     public bool $homepageTagsList = true;
+    public bool $externalLinksNewWindow = false;
 
     public int $lineLength = 80;
     public int $motionTitlePrefixNumMaxLen = 1;

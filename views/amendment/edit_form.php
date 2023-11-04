@@ -92,6 +92,8 @@ echo Html::beginForm('', 'post', [
     'enctype'                   => 'multipart/form-data',
     'data-antragsgruen-widget'  => 'frontend/AmendmentEdit',
     'data-multi-paragraph-mode' => $motionType->amendmentMultipleParagraphs,
+    'data-init-section-id'      => $form->initSectionId,
+    'data-init-paragraph-no'    => $form->initParagraphNo,
 ]);
 
 echo '<h2 class="green">' . Yii::t('amend', 'merge_new_text') . '</h2>';
