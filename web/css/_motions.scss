@@ -532,6 +532,9 @@
   .paragraph:hover .amendmentParaLink {
     display: block;
   }
+  .paragraph.hover .amendmentParaLink { // Used for testing
+    display: block;
+  }
 }
 
 .bookmarks {

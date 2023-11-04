@@ -221,7 +221,6 @@ export class AmendmentEdit {
     }
 
     private spmInit() {
-        console.log("spm");
         this.$spmParagraphs = $(".wysiwyg-textarea.single-paragraph");
         this.$spmParagraphs.on("click", this.spmOnParaClick.bind(this));
         this.$spmParagraphs.find(".modifiedActions .revert").on("click", this.spmRevert.bind(this));

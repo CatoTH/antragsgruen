@@ -9,7 +9,6 @@ class MotionParagraph {
     constructor(private $element: JQuery) {
         const s = location.hash.split('#amendment');
         if (s.length == 2) {
-            console.log(s, $(".bookmarks .amendment" + s[1]));
             $(".bookmarks .amendment" + s[1]).first().scrollintoview({top_offset: -100});
         }
 
