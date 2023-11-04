@@ -112,6 +112,7 @@ body {
 
 #pageHeader {
   background: $tanne;
+  margin-bottom: 60px;
 
   .headerContent {
     display: flex;
@@ -138,9 +139,6 @@ body {
     }
   }
 
-  .logoHolder {
-
-  }
   .mainMenu {
     flex-grow: 1;
     text-align: left;
@@ -174,6 +172,35 @@ body {
       font-size: 24px;
       line-height: 26px;
       text-shadow: none;
+    }
+  }
+
+  @media screen and (max-width: $screen-md-min) {
+    .headerContent {
+      flex-wrap: wrap;
+    }
+    .logoHolder {
+      order: 2;
+      flex-basis: 33%;
+    }
+    .titleHolder {
+      order: 2;
+      flex-basis: 67%;
+    }
+    .mainMenu {
+      order: 3;
+      flex-basis: 100%;
+    }
+    .navbar-nav > li {
+      float: left;
+    }
+  }
+  @media screen and (max-width: 800px) {
+    .logoHolder {
+      padding-left: 20px;
+    }
+    .titleHolder {
+      padding-right: 20px;
     }
   }
 }
