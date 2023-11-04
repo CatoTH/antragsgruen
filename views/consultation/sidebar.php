@@ -237,7 +237,7 @@ if ($hasPDF) {
             'filename'    => 'resolutions.pdf',
         ]);
         $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_resolutions');
-        $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'resolutionPdfCompilation']) . '</li>';
+        $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'resolutionPdfCompilation']) . '</li>';
 
         $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
         $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
@@ -258,7 +258,7 @@ if ($hasPDF) {
             ]);
             $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all_short');
             $name    .= ': ' . Html::encode($motionType->titlePlural);
-            $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
+            $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
             $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
             $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
@@ -270,7 +270,7 @@ if ($hasPDF) {
             'filename'     => $consultation->motionTypes[0]->titlePlural . '.pdf',
         ]);
         $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all');
-        $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
+        $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
         $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
         $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
@@ -283,7 +283,7 @@ if ($hasPDF) {
         ]);
         $linkTitle    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>';
         $linkTitle    .= Yii::t('con', 'pdf_amendments');
-        $html         .= '<li>' . Html::a($linkTitle, $amendPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
+        $html         .= '<li>' . HtmlTools::createExternalLink($linkTitle, $amendPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
         $link         = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendPdfLink, ['class' => 'amendmentPdfs']);
 
         $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';

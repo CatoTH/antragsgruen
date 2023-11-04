@@ -111,7 +111,7 @@ if ($hasTags) {
 }
 echo '<td class="exportCol">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {
-    echo Html::a('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
+    echo HtmlTools::createExternalLink('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
 }
 echo Html::a('ODT', UrlHelper::createAmendmentUrl($entry, 'odt'), ['class' => 'odt']);
 echo '</td>';

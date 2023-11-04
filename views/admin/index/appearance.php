@@ -294,6 +294,9 @@ $handledSiteSettings = [];
             $propTitle = Yii::t('admin', 'con_show_private_notes');
             $boolSettingRow($settings, 'showPrivateNotes', $handledSettings, $propTitle);
 
+            $propTitle = Yii::t('admin', 'con_open_links_new_tab');
+            $boolSettingRow($settings, 'externalLinksNewWindow', $handledSettings, $propTitle);
+
             $propTitle = Yii::t('admin', 'con_proposal_procedure');
             $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_proposal_tt'));
             $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . ' ' . $tooltip);

@@ -36,7 +36,7 @@ $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
     }
     $attrs = ['class' => $cssClass, 'data-href-tpl' => $linkTpl];
 
-    return '<li class="exportLink">' . Html::a($title, $link, $attrs) . '</li>';
+    return '<li class="exportLink">' . HtmlTools::createExternalLink($title, $link, $attrs) . '</li>';
 };
 
 $creatableMotions = [];

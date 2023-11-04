@@ -1,6 +1,6 @@
 <?php
 
-use app\components\UrlHelper;
+use app\components\{HTMLTools, UrlHelper};
 use app\models\settings\Layout;
 use yii\helpers\Html;
 
@@ -18,7 +18,7 @@ if ($motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
     $html .= '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt" aria-hidden="true"></span>' .
         Yii::t('motion', 'download_pdf');
-    $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'pdf')) . '</li>';
+    $html .= HtmlTools::createExternalLink($title, UrlHelper::createAmendmentUrl($amendment, 'pdf')) . '</li>';
     $sidebarRows++;
 }
 

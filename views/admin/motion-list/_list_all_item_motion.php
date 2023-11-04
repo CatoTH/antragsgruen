@@ -1,4 +1,6 @@
 <?php
+
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\AdminTodoItem;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
@@ -127,17 +129,17 @@ echo '<td class="exportCol"><div class="btn-group">
   </button>
   <ul class="dropdown-menu">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {
-    echo '<li>' . Html::a(
+    echo '<li>' . HtmlTools::createExternalLink(
         str_replace('%TITLE%', $entry->getMyMotionType()->titleSingular, Yii::t('admin', 'list_export_motion_only')),
         UrlHelper::createMotionUrl($entry, 'pdf'),
         ['class' => 'pdf']
     ) . '</li>';
-    echo '<li>' . Html::a(
+    echo '<li>' . HtmlTools::createExternalLink(
         Yii::t('admin', 'list_export_amend_attach'),
         UrlHelper::createMotionUrl($entry, 'pdfamendcollection'),
         ['class' => 'pdfamend']
     ) . '</li>';
-    echo '<li>' . Html::a(
+    echo '<li>' . HtmlTools::createExternalLink(
         Yii::t('admin', 'list_export_amend_embed'),
         UrlHelper::createMotionUrl($entry, 'embedded-amendments-pdf'),
         ['class' => 'pdfEmbeddedAmendments']

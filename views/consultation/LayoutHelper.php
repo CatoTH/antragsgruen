@@ -3,7 +3,7 @@
 namespace app\views\consultation;
 
 use app\models\IMotionList;
-use app\components\{MotionSorter, Tools, UrlHelper};
+use app\components\{HTMLTools, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentComment,
     Consultation,
@@ -41,7 +41,7 @@ class LayoutHelper
         $hasPDF = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
         if ($hasPDF && $motion->status !== Motion::STATUS_MOVED) {
             $html   = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> PDF';
-            $return .= Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
+            $return .= HtmlTools::createExternalLink($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
         }
         $return .= "</p>\n";
 
@@ -133,7 +133,7 @@ class LayoutHelper
         $hasPDF = ($amendment->getMyMotionType()->getPDFLayoutClass() !== null);
         if ($hasPDF && $amendment->status !== Motion::STATUS_MOVED) {
             $html   = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> PDF';
-            $return .= Html::a($html, UrlHelper::createAmendmentUrl($amendment, 'pdf'), ['class' => 'pdfLink']);
+            $return .= HtmlTools::createExternalLink($html, UrlHelper::createAmendmentUrl($amendment, 'pdf'), ['class' => 'pdfLink']);
         }
         $return .= "</p>\n";
 

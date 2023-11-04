@@ -4,6 +4,7 @@
 
 - As admin, it is possible to deactivate private notes on the site.
 - If amendments are set up to be restricted to one paragraph, then each paragraph in the motion now shows a direct link to the amendment creation page, with that paragraph pre-selected.
+- It can be set up so that external links and PDF-links will be opened in new, blank browser tabs/windows.
 
 ## Version 4.13.0 (2023-10-29)
 
