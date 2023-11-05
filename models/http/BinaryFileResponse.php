@@ -88,7 +88,7 @@ class BinaryFileResponse implements ResponseInterface
                 break;
             case self::TYPE_XLSX:
                 $response->headers->add('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                $fileEnding = 'xslx';
+                $fileEnding = 'xlsx';
                 break;
             case self::TYPE_PDF:
                 $response->headers->add('Content-Type', 'application/pdf');

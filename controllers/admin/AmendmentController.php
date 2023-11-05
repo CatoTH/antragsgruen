@@ -35,9 +35,9 @@ class AmendmentController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true,'amendments');
     }
 
-    public function actionXslxList(bool $textCombined = false, int $withdrawn = 0): BinaryFileResponse
+    public function actionXlsxList(bool $textCombined = false, int $withdrawn = 0): BinaryFileResponse
     {
-        $ods = $this->renderPartial('xslx_list', [
+        $ods = $this->renderPartial('xlsx_list', [
             'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn === 1),
             'textCombined' => $textCombined,
             'withdrawn'    => ($withdrawn === 1),
