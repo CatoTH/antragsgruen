@@ -485,7 +485,7 @@ class Exporter
         $pdfHashes   = [];
         foreach ($contents as $content) {
             if ($count > 0) {
-                $contentStr .= "\n\\newpage\n";
+                $contentStr .= "\n\\clearpage\\newpage\n"; // hint: clearpage helps to clear all remaining whitespace from previous wrapfigures
             }
 
             if ($content->replacingPdf) {
