@@ -500,6 +500,19 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         $this->votingStatus = static::STATUS_DELETED;
         $this->save();
 
+        foreach ($this->motions as $motion) {
+            $motion->votingBlockId = null;
+            $motion->save();
+        }
+        foreach ($this->amendments as $amendment) {
+            $amendment->votingBlockId = null;
+            $amendment->save();
+        }
+        foreach ($this->questions as $question) {
+            $question->votingBlockId = null;
+            $question->save();
+        }
+
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_DELETE, $this->id);
     }
 
