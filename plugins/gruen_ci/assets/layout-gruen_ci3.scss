@@ -254,3 +254,15 @@ a:hover {
   text-decoration: underline;
   text-underline-offset: 8px;
 }
+
+#sidebar .nav-list > li a:hover {
+  text-decoration: underline;
+  text-underline-offset: 8px;
+}
+#sidebarSmall .nav li a {
+  color: $colorLinks;
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 8px;
+  }
+}
