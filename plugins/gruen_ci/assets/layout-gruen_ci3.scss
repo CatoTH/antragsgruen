@@ -35,8 +35,8 @@ $headingTertiarySize: 15px;
 $headingFontUppercase: false;
 $uppercaseTitles: false;
 $menuFont: "PT Sans Bold", sans-serif;
-$menuLink: #4b7000;
-$menuActive: #646464;
+$menuLink: #fff;
+$menuActive: #ddd;
 $bodyFont: "PT Sans", sans-serif;
 $font-size-base: 14px;
 $textColor: #484649;
@@ -108,11 +108,28 @@ body {
     font-style: italic;
     text-shadow: none;
   }
+  .greenHeaderExtraLink {
+    color: white;
+  }
+  h1 .btnFullscreen, .primaryHeader .btnFullscreen {
+    margin-top: -30px;
+    margin-right: -8px;
+  }
 }
 
 #pageHeader {
   background: $tanne;
   margin-bottom: 60px;
+
+  @media screen and (min-width: $screen-md-min) and (min-height: 600px) {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logoHolder {
+    line-height: 0;
+  }
 
   .headerContent {
     display: flex;
@@ -139,6 +156,21 @@ body {
     }
   }
 
+  .logoImg {
+    display: block;
+    width: 80px;
+    height: 80px;
+    background-image: url(Sonnenblume_RGB_gelb.svg);
+    background-repeat: no-repeat;
+
+    @media screen and (max-width: 479px) {
+      width: 40px;
+      height: 40px;
+      background-size: 300px 44px;
+    }
+  }
+
+
   .mainMenu {
     flex-grow: 1;
     text-align: left;
@@ -148,6 +180,9 @@ body {
       li a {
         font-weight: normal;
         color: white;
+        &:hover {
+          text-decoration: underline;
+        }
       }
       li.active a {
         font-weight: normal;
@@ -203,4 +238,19 @@ body {
       padding-right: 20px;
     }
   }
+}
+
+.breadcrumb {
+  color: $klee;
+  .pseudoLink, a {
+    color: $klee;
+  }
+  .active {
+    color: darken($klee, 10%);
+  }
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 8px;
 }
