@@ -116,7 +116,7 @@ class MergeSingleAmendmentForm
     {
         $newSections = $this->getNewHtmlParas();
 
-        foreach ($this->oldMotion->sections as $section) {
+        foreach ($this->oldMotion->getActiveSections(null, true) as $section) {
             $newSection = new MotionSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->motionId = $this->newMotion->id;
