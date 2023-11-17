@@ -10,6 +10,7 @@
 - Bugfix: If a motion section was removed from a motion type that already had motions, then amendments to this motion could not be merged individually anymore.
 - Bugfix: If a voting block was deleted with motions/amendments assigned to it, then these motions/amendments could not be assigned to new voting blocks anymore.
 - Bugfix: If a motion had an empty optional section, amendments adding text to that section were breaking the motion view.
+- Bugfix: Copying a motion with amendments amending another amendment to another consultation was breaking the assignments between the amendments.
 
 ## Version 4.13.0 (2023-10-29)
 

@@ -179,6 +179,10 @@ class MotionDeepCopy
                 $newAmendment->proposalReferenceId = $amendmentIdMapping[$newAmendment->proposalReferenceId];
                 $newAmendment->save();
             }
+            if ($newAmendment->amendingAmendmentId && isset($amendmentIdMapping[$newAmendment->amendingAmendmentId])) {
+                $newAmendment->amendingAmendmentId = $amendmentIdMapping[$newAmendment->amendingAmendmentId];
+                $newAmendment->save();
+            }
         }
     }
 
