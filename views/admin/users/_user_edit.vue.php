@@ -27,7 +27,8 @@ ob_start();
                             <?= Yii::t('admin', 'siteacc_usermodal_passset') ?>
                         </button>
                         <input type="password" v-model="newPassword" class="form-control inputPassword"
-                                v-if="settingPassword"
+                               v-if="settingPassword"
+                               autocomplete="off"
                                title="<?= Yii::t('admin', 'siteacc_usermodal_passnew') ?>"
                                placeholder="<?= Yii::t('admin', 'siteacc_usermodal_passnew') ?>"
                                ref="password-setter"
