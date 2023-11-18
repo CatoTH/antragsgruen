@@ -16,7 +16,7 @@ $consultation   = $section->getConsultation();
 $motion         = $section->getMotion();
 $motionType     = $motion->getMyMotionType();
 $hasLineNumbers = $section->getSettings()->lineNumbers;
-$paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
+$paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true, true);
 $screenAdmin    = User::havePrivilege($section->getConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion));
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
@@ -26,11 +26,12 @@ if ($hasLineNumbers) {
 
 foreach ($paragraphs as $paragraphNo => $paragraph) {
     $parClasses = $classes;
-    if (mb_stripos($paragraph->lines[0], '<ul>') === 0) {
+    $firstLine = $paragraph->lines[0] ?? '';
+    if (str_starts_with($firstLine, '<ul>')) {
         $parClasses[] = 'list';
-    } elseif (mb_stripos($paragraph->lines[0], '<ol>') === 0) {
+    } elseif (str_starts_with($firstLine, '<ol>')) {
         $parClasses[] = 'list';
-    } elseif (mb_stripos($paragraph->lines[0], '<blockquote>') === 0) {
+    } elseif (str_starts_with($firstLine, '<blockquote>')) {
         $parClasses[] = 'blockquote';
     }
     if (in_array($paragraphNo, $openedComments)) {

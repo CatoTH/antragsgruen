@@ -58,7 +58,7 @@ foreach ($sections as $i => $section) {
     }
 
     $sectionType = $section->getSettings()->type;
-    if ($section->getSectionType()->isEmpty()) {
+    if ($section->getSectionType()->isEmpty() && count($section->getAmendmentSectionsToBeShownInMotionView()) === 0) {
         continue;
     }
 

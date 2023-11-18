@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\Consultation;
-use app\models\settings\AntragsgruenApp;
+use app\models\settings\{AntragsgruenApp, Privileges};
 use yii\helpers\Html;
 
 /**
@@ -126,10 +126,13 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
             <div class="leftColumn"><?= Yii::t('admin', 'siteacc_new_groups') ?>:</div>
             <div class="rightColumn">
                 <?php
-                foreach ($controller->consultation->getAllAvailableUserGroups() as $userGroup) {
+                foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
                     echo '<label><input type="checkbox" name="userGroups[]" value="' . Html::encode($userGroup->id) . '"';
                     if ($userGroup->templateId === \app\models\db\ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
                         echo ' checked';
+                    }
+                    if ($userGroup->consultationId === null && !$consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
+                        echo ' disabled';
                     }
                     echo ' class="userGroup userGroup' . $userGroup->id . '"> ' . Html::encode($userGroup->getNormalizedTitle()) . '</label><br>';
                 }
