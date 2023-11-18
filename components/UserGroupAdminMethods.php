@@ -40,7 +40,7 @@ class UserGroupAdminMethods
      *
      * @throws UserEditFailed
      */
-    private function preventInvalidSiteAdminEdit(Consultation $consultation, ConsultationUserGroup $group): void
+    public function preventInvalidSiteAdminEdit(Consultation $consultation, ConsultationUserGroup $group): void
     {
         if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             // This check is not relevant if the user is Site Admin

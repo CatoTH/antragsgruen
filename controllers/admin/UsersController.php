@@ -81,6 +81,7 @@ class UsersController extends AdminBase
         $toAssignGroups = [];
         foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {
             if (in_array($userGroup->id, $toAssignGroupIds)) {
+                $this->userGroupAdminMethods->preventInvalidSiteAdminEdit($this->consultation, $userGroup);
                 $toAssignGroups[] = $userGroup;
             }
         }
