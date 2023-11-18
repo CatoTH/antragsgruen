@@ -41,6 +41,7 @@ class MotionDeepCopy
         $newMotion->cache = '';
         $newMotion->slug = $slug;
         $newMotion->version = $newVersion;
+        $newMotion->votingBlockId = null;
         $newMotion->parentMotionId = ($linkMotions ? $motion->id : null);
 
         if (in_array(self::SKIP_PROPOSED_PROCEDURE, $skip)) {
@@ -152,9 +153,10 @@ class MotionDeepCopy
         foreach ($oldMotion->amendments as $amendment) {
             $newAmendment = new Amendment();
             $newAmendment->setAttributes($amendment->getAttributes(), false);
-            $newAmendment->id       = null;
+            $newAmendment->id = null;
             $newAmendment->motionId = $newMotion->id;
-            $newAmendment->cache    = '';
+            $newAmendment->cache = '';
+            $newAmendment->votingBlockId = null;
 
             $oldTitlePre = $oldMotion->titlePrefix . '-';
             $newTitlePre = $newMotion->titlePrefix . '-';
