@@ -62,6 +62,7 @@ $urlRules = [
     $domadmin . 'admins'                                          => 'admin/index/admins',
     $domadmin . 'consultations'                                   => 'admin/index/consultations',
 
+    $domv . '<_a:(' . $userPaths . ')>'       => 'user/<_a>',
     $dom . '<_a:(' . $userPaths . ')>'        => 'user/<_a>',
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
     $domv . 'consultationaccesserror'         => 'user/consultationaccesserror',

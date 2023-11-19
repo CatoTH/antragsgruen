@@ -6,6 +6,7 @@ use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComm
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use Yii;
+use yii\base\ViewRenderer;
 use yii\helpers\Url;
 
 class UrlHelper
@@ -83,7 +84,7 @@ class UrlHelper
             $route['subdomain'] = $site->subdomain;
         }
 
-        if ($routeParts['controller'] === 'user' && ($routeParts['action'] ?? '') !== 'consultationaccesserror') {
+        if ($routeParts['controller'] === 'user' && !in_array($routeParts['action'] ?? '', ['consultationaccesserror', 'myaccount'])) {
             unset($route['consultationPath']);
         }
         if (in_array(
