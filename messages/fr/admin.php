@@ -22,7 +22,6 @@ return [
     'index_export_oslides_users'  => 'Participants',
     'index_export_oslides_usersh' => '(doit d\'abord être importé sur OpenSlides)',
     'index_export_oslides_amend'  => 'Amendements',
-    'index_error_prone'           => 'error-prone',
     'index_amendments'            => 'Amendementments',
     'index_motion_export'         => 'Export',
     'index_pdf_collection'        => 'PDF Tout-en-un',

@@ -158,12 +158,8 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                     $path  = ['admin/motion-list/motion-odslistall'];
                     echo $getExportLinkLi($title, $path, $motionType->id, 'motionODSlist');
 
-                    if (AntragsgruenApp::hasPhpExcel()) {
-                        $title = Yii::t('admin', 'index_export_excel') .
-                                 ' <span class="errorProne">(' . Yii::t('admin', 'index_error_prone') . ')</span>';
-                        $path  = ['admin/motion-list/motion-excellist'];
-                        echo $getExportLinkLi($title, $path, $motionType->id, 'motionExcel');
-                    }
+                    $title = Yii::t('admin', 'index_export_comments_xlsx');
+                    echo $getExportLinkLi($title, ['admin/motion-list/motion-comments-xlsx'], $motionType->id, 'motionCommentsXlsx');
                     ?>
                 </ul>
             </div>
@@ -191,6 +187,11 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                 $title = Yii::t('admin', 'index_export_ods_short');
                 $path  = ['admin/amendment/odslist-short', 'maxLen' => 2000, 'textCombined' => 1];
                 echo $getExportLinkLi($title, $path, null, 'amendmentOdsShort');
+
+                $title = Yii::t('admin', 'index_export_excel');
+                $title .= HTMLTools::getTooltipIcon(Yii::t('admin', 'index_error_prone'));
+                $path  = ['admin/amendment/xlsx-list'];
+                echo $getExportLinkLi($title, $path, null, 'amendmentXlsx');
 
                 $title = Yii::t('admin', 'index_pdf_collection');
                 echo $getExportLinkLi($title, ['amendment/pdfcollection'], null, 'amendmentPDF');

@@ -282,14 +282,15 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'motions');
     }
 
-    public function actionMotionOdslist(int $motionTypeId, bool $textCombined = false, int $withdrawn = 0): ResponseInterface
+    /**
+     * @return IMotion[]
+     */
+    private function getSortedIMotionsByType(int $motionTypeId, bool $withdrawn): array
     {
-        $withdrawn = ($withdrawn === 1);
-
         try {
-            $motionType = $this->consultation->getMotionType($motionTypeId);
+            $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
-            return new HtmlErrorResponse(404, $e->getMessage());
+            throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
         }
 
         $imotions = [];
@@ -298,6 +299,14 @@ class MotionListController extends AdminBase
                 $imotions[] = $imotion;
             }
         }
+
+        return $imotions;
+    }
+
+    public function actionMotionOdslist(int $motionTypeId, bool $textCombined = false, int $withdrawn = 0): ResponseInterface
+    {
+        $imotions = $this->getSortedIMotionsByType($motionTypeId, ($withdrawn === 1));
+        $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
         $ods = $this->renderPartial('ods_list', [
@@ -310,32 +319,34 @@ class MotionListController extends AdminBase
 
     public function actionMotionOpenslides(int $motionTypeId, int $version = 1): ResponseInterface
     {
-        try {
-            $motionType = $this->consultation->getMotionType($motionTypeId);
-        } catch (ExceptionBase $e) {
-            return new HtmlErrorResponse(404, $e->getMessage());
-        }
-
+        $imotions = $this->getSortedIMotionsByType($motionTypeId, false);
+        $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
 
-        $motions = [];
-        foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
-            if ($motion->getMyMotionType()->id == $motionTypeId) {
-                $motions[] = $motion;
-            }
-        }
-
         if ($version == 1) {
             $csv = $this->renderPartial('openslides1_list', [
-                'motions' => $motions,
+                'motions' => $imotions,
             ]);
         } else {
             $csv = $this->renderPartial('openslides2_list', [
-                'motions' => $motions,
+                'motions' => $imotions,
             ]);
         }
         return new BinaryFileResponse(BinaryFileResponse::TYPE_CSV, $csv, true, $filename);
+    }
+
+    public function actionMotionCommentsXlsx(int $motionTypeId, int $withdrawn = 0): ResponseInterface
+    {
+        $imotions = $this->getSortedIMotionsByType($motionTypeId, ($withdrawn === 1));
+        $motionType = $this->consultation->getMotionType($motionTypeId);
+
+        $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
+        $xlsx = $this->renderPartial('xlsx_comments', [
+            'imotions'     => $imotions,
+            'motionType'   => $motionType,
+        ]);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_XLSX, $xlsx, true, $filename);
     }
 
     /**
