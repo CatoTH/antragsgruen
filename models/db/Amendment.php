@@ -417,40 +417,68 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param string[] $original
-     * @param string[] $new
+     * @param array<array{original: string, new: string, firstLine: int}> $sectionData
+     * @return array{from: int, to: int}
      * @throws Internal
      */
-    public static function calcFirstDiffLineCached(int $firstLine, int $lineLength, array $original, array $new): int
+    public static function calcAffectedDiffLinesCached(array $sectionData, int $lineLength): array
     {
-        $cacheFunc = 'calcFirstDiffLineCached';
-        $cacheDeps = [$firstLine, $lineLength, $original, $new];
+        $cacheFunc = 'calcAffectedDiffLinesCached';
+        $cacheDeps = [$sectionData, $lineLength];
 
         $cache = HashedStaticCache::getCache($cacheFunc, $cacheDeps);
         if ($cache !== false) {
             return $cache;
         }
 
-        $firstLineFallback = $firstLine;
+        $firstAffectedLine = null;
+        $lastAffectedLine = null;
 
-        for ($i = 0; $i < count($original) && $i < count($new); $i++) {
+        foreach ($sectionData as $section) {
             $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($original[$i]);
-            $formatter->setTextNew($new[$i]);
-            $formatter->setFirstLineNo($firstLine);
+            $formatter->setTextOriginal($section['original']);
+            $formatter->setTextNew($section['new']);
+            $formatter->setFirstLineNo($section['firstLine']);
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, 0);
 
-            if (count($diffGroups) > 0) {
-                $firstLine = $diffGroups[0]->lineFrom;
-                HashedStaticCache::setCache($cacheFunc, $cacheDeps, $firstLine);
-                return $firstLine;
+            foreach ($diffGroups as $diffGroup) {
+                if ($firstAffectedLine === null) {
+                    $firstAffectedLine = $diffGroup->lineFrom;
+                }
+                $lastAffectedLine = $diffGroup->lineTo;
             }
         }
 
-        HashedStaticCache::setCache($cacheFunc, $cacheDeps, $firstLineFallback);
-        return $firstLineFallback;
+        $result = [
+            'from' => $firstAffectedLine ?? $sectionData[0]['firstLine'],
+            'to' => $lastAffectedLine ?? $sectionData[0]['firstLine'],
+        ];
+        HashedStaticCache::setCache($cacheFunc, $cacheDeps, $result);
+
+        return $result;
     }
 
+    /**
+     * @return array{from: int, to: int}
+     */
+    public function getAffectedLines(): array
+    {
+        $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
+        $sectionData = [];
+
+        foreach ($this->getActiveSections() as $section) {
+            if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
+                continue;
+            }
+            $sectionData[] = [
+                'original' => $section->getOriginalMotionSection()->getData(),
+                'new' => $section->data,
+                'firstLine' => $section->getFirstLineNumber(),
+            ];
+        }
+
+        return self::calcAffectedDiffLinesCached($sectionData, $lineLength);
+    }
 
     /**
      * @throws Internal
@@ -461,22 +489,11 @@ class Amendment extends IMotion implements IRSSItem
         if ($cached !== null) {
             return $cached;
         }
-        $firstLine  = $this->getMyMotion()->getFirstLineNumber();
-        $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
-        $original   = $new = [];
 
-        foreach ($this->getActiveSections() as $section) {
-            if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
-                continue;
-            }
-            $original[] = $section->getOriginalMotionSection()->getData();
-            $new[]      = $section->data;
-        }
+        $affectedLines = $this->getAffectedLines();
 
-        $firstLine = static::calcFirstDiffLineCached($firstLine, $lineLength, $original, $new);
-
-        $this->setCacheItem('lines.getFirstDiffLine', $firstLine);
-        return $firstLine;
+        $this->setCacheItem('lines.getFirstDiffLine', $affectedLines['from']);
+        return $affectedLines['from'];
     }
 
     public static function compareByLineNumbers(Amendment $ae1, Amendment $ae2): int

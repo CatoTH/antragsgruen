@@ -2,6 +2,7 @@
 
 use app\components\HTMLTools;
 use app\models\db\{AmendmentSection, Motion};
+use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -174,7 +175,7 @@ foreach ($motions as $motion) {
                 $initiatorContacs[] = $supp->contactPhone;
             }
         }
-        $firstLine = $amendment->getFirstDiffLine();
+        $affectedLines = $amendment->getAffectedLines();
 
         if ($hasAgendaItems && $motion->agendaItem) {
             $sheet->setCellValue($COL_AGENDA_ITEM . $row, $motion->agendaItem->getShownCode(true));
@@ -182,11 +183,13 @@ foreach ($motions as $motion) {
         $sheet->setCellValue($COL_PREFIX . $row, $amendment->getFormattedTitlePrefix());
         $sheet->setCellValue($COL_INITIATOR . $row, implode(', ', $initiatorNames));
         $sheet->setCellValue($COL_CONTACT . $row, implode(', ', $initiatorContacs));
-        $sheet->setCellValue($COL_FIRST_LINE . $row, $firstLine);
+        if ($affectedLines['from'] === $affectedLines['to']) {
+            $sheet->setCellValue($COL_FIRST_LINE . $row, $affectedLines['from']);
+        } else {
+            $sheet->setCellValue($COL_FIRST_LINE . $row, $affectedLines['from'] . ' - ' . $affectedLines['to']);
+        }
 
         $sheet->setCellValue($COL_STATUS . $row, $htmlHelper->toRichTextObject($amendment->getFormattedStatus()));
-        $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
-        $sheet->setCellValue($COL_REASON . $row, $htmlHelper->toRichTextObject($changeExplanation));
 
         $change = '';
         if ($amendment->changeEditorial != '') {
@@ -194,11 +197,17 @@ foreach ($motions as $motion) {
             $change .= $amendment->changeEditorial;
         }
         foreach ($amendment->getSortedSections(false) as $section) {
-            $change .= $section->getSectionType()->getAmendmentPlainHtml();
+            if ($section->getSettings()->type === ISectionType::TYPE_TITLE) {
+                continue;
+            }
+            $change .= $section->getSectionType()->getAmendmentPlainHtml(true);
         }
+        $change = preg_replace('/<h4 class="lineSummary">([^<]+)<\/h4>/iu', '<h4><em>$1</em></h4>', $change);
         $change = HTMLTools::correctHtmlErrors($change);
-
         $sheet->setCellValue($COL_CHANGE . $row, $htmlHelper->toRichTextObject($change));
+
+        $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
+        $sheet->setCellValue($COL_REASON . $row, $htmlHelper->toRichTextObject($changeExplanation));
 
         $proposal = $amendment->getFormattedProposalStatus();
         if ($amendment->hasAlternativeProposaltext()) {
