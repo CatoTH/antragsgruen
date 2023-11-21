@@ -13,7 +13,7 @@ class BinaryFileResponse implements ResponseInterface
     public const TYPE_HTML = 'html';
     public const TYPE_ODS = 'ods';
     public const TYPE_ODT = 'odt';
-    public const TYPE_XSLX = 'xlsx';
+    public const TYPE_XLSX = 'xlsx';
     public const TYPE_PNG = 'png';
     public const TYPE_JPEG = 'jpeg';
     public const TYPE_GIF = 'gif';
@@ -86,9 +86,9 @@ class BinaryFileResponse implements ResponseInterface
                 $response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
                 $fileEnding = 'ods';
                 break;
-            case self::TYPE_XSLX:
+            case self::TYPE_XLSX:
                 $response->headers->add('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                $fileEnding = 'xslx';
+                $fileEnding = 'xlsx';
                 break;
             case self::TYPE_PDF:
                 $response->headers->add('Content-Type', 'application/pdf');

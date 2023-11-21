@@ -105,11 +105,6 @@ class AntragsgruenApp implements \JsonSerializable
         \Yii::$app->cache->flush();
     }
 
-    public static function hasPhpExcel(): bool
-    {
-        return class_exists('\PHPExcel', true);
-    }
-
     public function isSamlActive(): bool
     {
         return ($this->hasSaml && class_exists('\SimpleSAML\Auth\Simple'));

@@ -9,10 +9,12 @@
 - It can be set up so that external links and PDF-links will be opened in new, blank browser tabs/windows.
 - Security: Consultation admins could grant privileges to other consultations within the same site.
 - The backlinkt on the "my account" page leads to the consultation where the user was coming from.
+- Admins can now download Excel/XLSX-exports of amendments and the comments to motions.
 - Bugfix: If a motion section was removed from a motion type that already had motions, then amendments to this motion could not be merged individually anymore.
 - Bugfix: If a voting block was deleted with motions/amendments assigned to it, then these motions/amendments could not be assigned to new voting blocks anymore.
 - Bugfix: If a motion had an empty optional section, amendments adding text to that section were breaking the motion view.
 - Bugfix: Copying a motion with amendments amending another amendment to another consultation was breaking the assignments between the amendments.
+- Bugfix: The first line of an amendment was determined incorrectly if the first change was in the second or later amendable motion section.
 
 ## Version 4.13.0 (2023-10-29)
 
