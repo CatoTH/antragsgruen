@@ -4,11 +4,7 @@ namespace app\models\db;
 
 use app\models\layoutHooks\Layout;
 use app\models\settings\PrivilegeQueryContext;
-use app\components\{ExternalPasswordAuthenticatorInterface,
-    RequestContext,
-    Tools,
-    UrlHelper,
-    mail\Tools as MailTools};
+use app\components\{ExternalPasswordAuthenticatorInterface, MotionNumbering, RequestContext, Tools, UrlHelper, mail\Tools as MailTools};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, MailNotSent, ServerConfiguration};
 use app\models\settings\AntragsgruenApp;
@@ -528,14 +524,30 @@ class User extends ActiveRecord implements IdentityInterface
             'motion',
             'motionSupporter.motionId = motion.id'
         );
-        $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
-        $query->andWhere('motionSupporter.userId = ' . IntVal($this->id));
+        $query->where('motion.status != ' . intval(Motion::STATUS_DELETED));
+        $query->andWhere('motion.consultationId = ' . intval($consultation->id));
+        $query->andWhere('motionSupporter.userId = ' . intval($this->id));
         $query->orderBy('(motionSupporter.role = "initiates") DESC, motion.dateCreation DESC');
 
         /** @var MotionSupporter[] $supporters */
         $supporters = $query->all();
-        return $supporters;
+
+        // Hint: we go through the supports, from the newest motion version to the oldest, and keep track of the root motions already seen.
+        // Skipping older entries resolving to the same root motion. Thus, we will only return the most recent version of each motion.
+        $filteredSupporters = [];
+        $firstMotionIds = [];
+        foreach ($supporters as $supporter) {
+            /** @var Motion $motion */
+            $motion = $supporter->getIMotion();
+            $first = MotionNumbering::getSortedHistoryForMotion($motion, false)[0];
+            if (in_array($first->id, $firstMotionIds)) {
+                continue;
+            }
+            $firstMotionIds[] = $first->id;
+            $filteredSupporters[] = $supporter;
+        }
+
+        return $filteredSupporters;
     }
 
     /**

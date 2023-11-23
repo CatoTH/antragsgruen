@@ -29,7 +29,7 @@ echo '<div class="content">';
 echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::createMotionUrl($motion)]);
 
 $iAmAdmin = User::havePrivilege(Consultation::getCurrent(), Privileges::PRIVILEGE_ANY, null);
-$motionHistory = MotionNumbering::getSortedHistoryForMotion($motion, !$iAmAdmin);
+$motionHistory = MotionNumbering::getSortedHistoryForMotion($motion, !$iAmAdmin && !$motion->iAmInitiator());
 
 $replacedByMotion = MotionNumbering::findMostRecentVersionOfMotion($motion, true);
 if ($replacedByMotion) {
