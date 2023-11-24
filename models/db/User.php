@@ -527,7 +527,7 @@ class User extends ActiveRecord implements IdentityInterface
         $query->where('motion.status != ' . intval(Motion::STATUS_DELETED));
         $query->andWhere('motion.consultationId = ' . intval($consultation->id));
         $query->andWhere('motionSupporter.userId = ' . intval($this->id));
-        $query->orderBy('(motionSupporter.role = "initiates") DESC, motion.dateCreation DESC');
+        $query->orderBy('(motionSupporter.role = "initiates") DESC, motion.dateCreation DESC, motion.id DESC');
 
         /** @var MotionSupporter[] $supporters */
         $supporters = $query->all();
