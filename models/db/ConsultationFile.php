@@ -254,14 +254,27 @@ class ConsultationFile extends ActiveRecord
         $content  = null;
         if (isset($_FILES[$formName]) && is_uploaded_file($_FILES[$formName]['tmp_name'])) {
             $content = file_get_contents($_FILES[$formName]['tmp_name']);
-            $info    = getimagesizefromstring($content);
-            if ($info && in_array($info['mime'], ['image/png', 'image/jpeg', 'image/gif'])) {
-                $mime     = $info['mime'];
-                $width    = $info[0];
-                $height   = $info[1];
+
+            if (isset($_FILES[$formName]['type']) && $_FILES[$formName]['type'] === 'image/svg+xml') {
+                $mime = 'image/svg+xml';
+                if (preg_match('/viewBox="0 0 (?<width>[\d\.]+) (?<height>[\d\.]+)"/siu', $content, $matches)) {
+                    $width = intval(round($matches['width']));
+                    $height = intval(round($matches['height']));
+                } else {
+                    $width = null;
+                    $height = null;
+                }
                 $filename = $_FILES[$formName]['name'];
             } else {
-                throw new FormError('Not a valid image file');
+                $info = getimagesizefromstring($content);
+                if ($info && in_array($info['mime'], ['image/png', 'image/jpeg', 'image/gif'])) {
+                    $mime = $info['mime'];
+                    $width = $info[0];
+                    $height = $info[1];
+                    $filename = $_FILES[$formName]['name'];
+                } else {
+                    throw new FormError('Not a valid image file');
+                }
             }
         } else {
             throw new FormError('No image data uploaded');

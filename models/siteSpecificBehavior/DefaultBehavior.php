@@ -76,20 +76,4 @@ class DefaultBehavior
     {
         return false;
     }
-
-    /**
-     * @param Consultation $consultation
-     * @return string
-     */
-    public static function getConsultationSettingsForm(Consultation $consultation)
-    {
-        return '';
-    }
-
-    /**
-     * @param Consultation $consultation
-     */
-    public static function saveConsultationSettings(Consultation $consultation)
-    {
-    }
 }

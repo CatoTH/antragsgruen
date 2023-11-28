@@ -542,6 +542,18 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
+    /**
+     * @return \DateTime|null
+     */
+    public function getPublicationDateTime()
+    {
+        if ($this->datePublication) {
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->datePublication);
+        } else {
+            return null;
+        }
+    }
+
     abstract public function isSupportingPossibleAtThisStatus(): bool;
 
     /**

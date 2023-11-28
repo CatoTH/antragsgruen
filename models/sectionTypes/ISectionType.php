@@ -20,6 +20,14 @@ abstract class ISectionType
     const TYPE_PDF_ATTACHMENT  = 5;
     const TYPE_PDF_ALTERNATIVE = 6;
 
+    const TYPE_API_TITLE = 'Title';
+    const TYPE_API_TEXT_SIMPLE = 'TextSimple';
+    const TYPE_API_TEXT_HTML = 'TextHTML';
+    const TYPE_API_IMAGE = 'Image';
+    const TYPE_API_TABULAR = 'TabularData';
+    const TYPE_API_PDF_ATTACHMENT = 'PDFAttachment';
+    const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
+
     /** @var IMotionSection */
     protected $section;
 
@@ -46,7 +54,29 @@ abstract class ISectionType
         ];
     }
 
-    public function setAbsolutizeLinks(bool $absolutize)
+    public static function typeIdToApi(int $type): string
+    {
+        switch ($type) {
+            case static::TYPE_TITLE:
+                return static::TYPE_API_TITLE;
+            case static::TYPE_TEXT_SIMPLE:
+                return static::TYPE_API_TEXT_SIMPLE;
+            case static::TYPE_TEXT_HTML:
+                return static::TYPE_API_TEXT_HTML;
+            case static::TYPE_IMAGE:
+                return static::TYPE_API_IMAGE;
+            case static::TYPE_TABULAR:
+                return static::TYPE_API_TABULAR;
+            case static::TYPE_API_PDF_ALTERNATIVE:
+                return static::TYPE_API_PDF_ALTERNATIVE;
+            case static::TYPE_API_PDF_ATTACHMENT:
+                return static::TYPE_API_PDF_ATTACHMENT;
+            default:
+                return 'Unknown';
+        }
+    }
+
+    public function setAbsolutizeLinks(bool $absolutize): void
     {
         $this->absolutizeLinks = $absolutize;
     }

@@ -89,10 +89,14 @@ $urlRules = [
     $dommotionOld . '/amendment/create'            => 'amendment/create',
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
+
+    $domv . 'rest'                                 => 'consultation/rest',
+    $domv . 'rest/motion/<motionSlug:[^\/]+>' => '/motion/rest',
+    $domv . 'rest/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>' => '/amendment/rest',
 ];
 
 foreach ($params->getPluginClasses() as $pluginClass) {
-    $urlRules = array_merge($urlRules, $pluginClass::getAllUrlRoutes($dommotion, $dommotionOld));
+    $urlRules = array_merge($urlRules, $pluginClass::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld));
 }
 
 // Catch-All-Routes, should be loaded last

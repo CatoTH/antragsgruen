@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\components\{HTMLTools, Tools, UrlHelper, EmailNotifications};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, User, VotingBlock};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\{FormError, MailNotSent};
+use app\models\exceptions\{FormError, MailNotSent, NotFound};
 use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
@@ -21,30 +21,6 @@ class AmendmentController extends Base
 {
     use AmendmentActionsTrait;
     use AmendmentMergingTrait;
-
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @param null|string $redirectView
-     * @return Amendment|null
-     */
-    private function getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null)
-    {
-        $motion    = $this->consultation->getMotion($motionSlug);
-        $amendment = $this->consultation->getAmendment($amendmentId);
-        if (!$amendment || !$motion) {
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
-            return null;
-        }
-        if ($amendment->motionId !== $motion->id && $amendment->getMyConsultation()->id === $motion->consultationId) {
-            if ($redirectView) {
-                $this->redirect(UrlHelper::createAmendmentUrl($amendment, $redirectView));
-                return null;
-            }
-        }
-        $this->checkConsistency($motion, $amendment);
-        return $amendment;
-    }
 
     /**
      * @param string $motionSlug
@@ -147,6 +123,29 @@ class AmendmentController extends Base
         }
 
         return $this->renderPartial('view_odt', ['amendment' => $amendment]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     *
+     * @return string
+     */
+    public function actionRest($motionSlug, $amendmentId)
+    {
+        $this->handleRestHeaders();
+
+        try {
+            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
+
+        if (!$amendment->isReadable()) {
+            return $this->returnRestResponseFromException(new NotFound('Amendment is not readable'));
+        }
+
+        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['amendment' => $amendment]));
     }
 
     /**

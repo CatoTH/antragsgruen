@@ -12,12 +12,14 @@ class Site implements \JsonSerializable
     /** @var bool */
     public $showAntragsgruenAd = true;
     public $showBreadcrumbs = true;
+    public $apiEnabled = false;
 
     /** @var int[] */
     public $loginMethods = [0, 1, 3];
 
     /** @var array */
     public $stylesheetSettings = [];
+    public $apiCorsOrigins = [];
 
     const LOGIN_STD        = 0;
     const LOGIN_WURZELWERK = 1;

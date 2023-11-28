@@ -210,11 +210,11 @@ $handledSiteSettings = [];
 
             $propTitle = Yii::t('admin', 'con_proposal_procedure');
             $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_proposal_tt'));
-            $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
+            $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . ' ' . $tooltip);
 
             $propTitle = Yii::t('admin', 'con_collecting');
             $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_collecting_tt'));
-            $boolSettingRow($settings, 'collectingPage', $handledSettings, $propTitle . $tooltip);
+            $boolSettingRow($settings, 'collectingPage', $handledSettings, $propTitle . ' ' . $tooltip);
 
             $propTitle = Yii::t('admin', 'con_new_motions');
             $boolSettingRow($settings, 'sidebarNewMotions', $handledSettings, $propTitle);
@@ -241,6 +241,18 @@ $handledSiteSettings = [];
                 </fieldset>
             </div>
 
+            <?php
+            $handledSiteSettings[] = 'apiEnabled';
+            echo '<div class="apiEnabledRow"><label>';
+            echo Html::checkbox('siteSettings[apiEnabled]', $siteSettings->apiEnabled, ['id' => 'apiEnabled']) . ' ';
+            echo Yii::t('admin', 'con_rest_api_enabled');
+            echo ' ' . HTMLTools::getTooltipIcon(Yii::t('admin', 'con_rest_api_hint'));
+            echo '</label><div class="apiBaseUrl">';
+            $baseUrl = UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/rest'));
+            $urlLink = '<a href="' . Html::encode($baseUrl) . '">' . Html::encode($baseUrl) . '</a>';
+            echo str_replace('%URL%', $urlLink, Yii::t('admin', 'con_rest_api_url'));
+            echo '</div></div>';
+            ?>
         </div>
     </section>
 

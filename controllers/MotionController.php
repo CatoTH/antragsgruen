@@ -3,8 +3,7 @@
 namespace app\controllers;
 
 use app\components\{UrlHelper, EmailNotifications};
-use app\models\db\{Amendment,
-    ConsultationAgendaItem,
+use app\models\db\{ConsultationAgendaItem,
     ConsultationLog,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
@@ -25,45 +24,6 @@ class MotionController extends Base
     use MotionActionsTrait;
     use MotionMergingTrait;
     use MotionExportTraits;
-
-    /**
-     * @param string $motionSlug
-     *
-     * @return Motion|null
-     */
-    private function getMotionWithCheck($motionSlug)
-    {
-        if (is_numeric($motionSlug) && $motionSlug > 0) {
-            $motion = Motion::findOne([
-                'consultationId' => $this->consultation->id,
-                'id'             => $motionSlug,
-                'slug'           => null
-            ]);
-        } else {
-            $motion = Motion::findOne([
-                'consultationId' => $this->consultation->id,
-                'slug'           => $motionSlug
-            ]);
-        }
-        /** @var Motion $motion */
-        if (!$motion) {
-            $redirect = $this->guessRedirectByPrefix($motionSlug);
-            if ($redirect) {
-                $this->redirect($redirect);
-            } else {
-                \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-                $this->redirect(UrlHelper::createUrl('consultation/index'));
-            }
-            \Yii::$app->end();
-
-            return null;
-        }
-
-        $this->checkConsistency($motion);
-
-        return $motion;
-    }
-
 
     /**
      * @param string $motionSlug
@@ -103,11 +63,15 @@ class MotionController extends Base
             }
         }
 
-
-        $commentWholeMotions = false;
-        foreach ($motion->getActiveSections() as $section) {
-            if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_MOTION) {
-                $commentWholeMotions = true;
+        $textSections = $motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
+        if (count($textSections) === 0) {
+            $commentWholeMotions = true;
+        } else {
+            $commentWholeMotions = false;
+            foreach ($textSections as $section) {
+                if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_MOTION) {
+                    $commentWholeMotions = true;
+                }
             }
         }
 
@@ -471,29 +435,6 @@ class MotionController extends Base
         }
 
         return $this->render('withdraw', ['motion' => $motion]);
-    }
-
-    protected function guessRedirectByPrefix(string $prefix): ?string
-    {
-        $motion = Motion::findOne([
-            'consultationId' => $this->consultation->id,
-            'titlePrefix'    => $prefix
-        ]);
-        if ($motion && $motion->isReadable()) {
-            return $motion->getLink();
-        }
-
-        /** @var Amendment|null $amendment */
-        $amendment = Amendment::find()->joinWith('motionJoin')->where([
-            'motion.consultationId' => $this->consultation->id,
-            'amendment.titlePrefix' => $prefix,
-        ])->one();
-
-        if ($amendment && $amendment->isReadable()) {
-            return $amendment->getLink();
-        }
-
-        return null;
     }
 
     /**

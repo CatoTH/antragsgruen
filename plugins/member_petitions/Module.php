@@ -3,7 +3,6 @@
 namespace app\plugins\member_petitions;
 
 use app\models\db\{Consultation, Motion, Site};
-use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
@@ -59,12 +58,14 @@ class Module extends ModuleBase
         return ConsultationSettings::class;
     }
 
-    /**
-     * @param Layout $layoutSettings
-     * @param Consultation $consultation
-     * @return Hooks[]
-     */
-    public static function getForcedLayoutHooks($layoutSettings, $consultation)
+    public static function getConsultationExtraSettingsForm(Consultation $consultation): string
+    {
+        return \Yii::$app->controller->renderPartial(
+            '@app/plugins/member_petitions/views/admin/consultation_settings', ['consultation' => $consultation]
+        );
+    }
+
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)

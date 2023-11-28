@@ -4,7 +4,6 @@ namespace app\plugins\green_manager;
 
 use app\models\db\{Consultation, Site, User};
 use app\models\events\UserEvent;
-use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
 use yii\base\Event;
@@ -35,7 +34,7 @@ class Module extends ModuleBase
 
     /**
      * @param Controller $controller
-     * @return \yii\web\AssetBundle[]
+     * @return \yii\web\AssetBundle[]|string[]
      */
     public static function getActiveAssetBundles(Controller $controller)
     {
@@ -48,12 +47,7 @@ class Module extends ModuleBase
         }
     }
 
-    /**
-     * @param Layout $layoutSettings
-     * @param Consultation $consultation
-     * @return Hooks[]
-     */
-    public static function getForcedLayoutHooks($layoutSettings, $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)

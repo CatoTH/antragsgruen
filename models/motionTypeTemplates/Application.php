@@ -69,7 +69,7 @@ trait Application
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
         $section->settings      = null;
@@ -85,7 +85,7 @@ trait Application
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 0;
         $section->positionRight = 1;
         $section->settings      = null;
@@ -101,7 +101,7 @@ trait Application
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 0;
         $section->positionRight = 1;
         $section->settings      = null;
@@ -145,7 +145,7 @@ trait Application
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
         $section->settings      = null;
@@ -161,7 +161,7 @@ trait Application
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
         $settings = $section->getSettingsObj();

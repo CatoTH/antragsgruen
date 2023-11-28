@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\exceptions\NotFound;
 use app\components\{ConsultationAccessPassword, HTMLTools, UrlHelper};
 use app\models\exceptions\Internal;
 use app\models\settings\{AntragsgruenApp, Layout};
@@ -10,6 +11,7 @@ use Yii;
 use yii\base\Module;
 use yii\helpers\Html;
 use yii\web\Controller;
+use yii\web\Response;
 
 class Base extends Controller
 {
@@ -241,6 +243,49 @@ class Base extends Controller
         return parent::render($view, $params);
     }
 
+    public function handleRestHeaders(): void
+    {
+        $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
+        $this->layoutParams->robotsNoindex = true;
+
+        if (!$this->site->getSettings()->apiEnabled) {
+            $this->returnRestResponseFromException(new \Exception('API disabled', 403));
+            Yii::$app->end();
+        }
+
+        if ($this->site->getSettings()->apiCorsOrigins) {
+            if (in_array('*', $this->site->getSettings()->apiCorsOrigins)) {
+                Yii::$app->response->headers->add('Access-Control-Allow-Origin', '*');
+            } elseif (Yii::$app->request->origin && in_array(Yii::$app->request->origin, $this->site->getSettings()->apiCorsOrigins)) {
+                Yii::$app->response->headers->add('Access-Control-Allow-Origin', Yii::$app->request->origin);
+            }
+        }
+
+        if (Yii::$app->request->method === 'OPTIONS') {
+            Yii::$app->end();
+        }
+    }
+
+    public function returnRestResponse(int $statusCode, string $json)
+    {
+        $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
+        $this->layoutParams->robotsNoindex = true;
+        Yii::$app->response->format = Response::FORMAT_RAW;
+        Yii::$app->response->headers->add('Content-Type', 'application/json');
+        Yii::$app->response->statusCode    = $statusCode;
+        Yii::$app->response->content       = $json;
+        Yii::$app->end();
+
+        return null;
+    }
+
+    public function returnRestResponseFromException(\Exception $exception) {
+        return $this->returnRestResponse($exception->getCode() > 0 ? $exception->getCode() : 500, json_encode([
+            'success' => false,
+            'message' => $exception->getMessage()
+        ]));
+    }
+
     /**
      * @return AntragsgruenApp
      */
@@ -278,7 +323,6 @@ class Base extends Controller
         if ($this->consultation == null) {
             return false;
         }
-        /** @var \app\models\settings\Consultation $settings */
         $settings = $this->consultation->getSettings();
         $admin    = User::havePrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
         if ($settings->maintenanceMode && !$admin) {
@@ -316,10 +360,7 @@ class Base extends Controller
         return false;
     }
 
-    /**
-     * @return bool
-     */
-    public function testConsultationPwd()
+    public function testConsultationPwd(): bool
     {
         if (!Yii::$app->user->getIsGuest()) {
             return false;
@@ -342,9 +383,7 @@ class Base extends Controller
         }
     }
 
-    /**
-     */
-    public function forceLogin()
+    public function forceLogin(): void
     {
         if (Yii::$app->user->getIsGuest()) {
             $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
@@ -404,12 +443,7 @@ class Base extends Controller
         return $str;
     }
 
-    /**
-     * @param $status
-     * @param $message
-     * @throws \yii\base\ExitException
-     */
-    protected function showErrorpage($status, $message)
+    protected function showErrorpage(int $status, ?string $message): void
     {
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
@@ -425,45 +459,43 @@ class Base extends Controller
         Yii::$app->end();
     }
 
-    /**
-     * @throws \yii\base\ExitException
-     */
-    protected function consultationNotFound()
+    protected function consultationNotFound(): void
     {
         $url     = Html::encode($this->getParams()->domainPlain);
         $message = str_replace('%URL%', $url, Yii::t('base', 'err_cons_404'));
         $this->showErrorpage(404, $message);
     }
 
-    /**
-     * @throws \yii\base\ExitException
-     */
-    protected function consultationError()
+    protected function consultationError(): void
     {
         $this->showErrorpage(500, Yii::t('base', 'err_site_404'));
     }
 
-    /**
-     * @param null|Motion $checkMotion
-     * @param null|Amendment $checkAmendment
-     * @throws \yii\base\ExitException
-     */
-    protected function checkConsistency($checkMotion = null, $checkAmendment = null)
+    protected function checkConsistency(?Motion $checkMotion = null, ?Amendment $checkAmendment = null, bool $throwExceptions = false): void
     {
         $consultationPath = strtolower($this->consultation->urlPath);
         $subdomain        = strtolower($this->site->subdomain);
 
         if (strtolower($this->consultation->site->subdomain) !== $subdomain) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('base', 'err_cons_not_site'), 400);
+            }
             Yii::$app->user->setFlash("error", Yii::t('base', 'err_cons_not_site'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (is_object($checkMotion) && strtolower($checkMotion->getMyConsultation()->urlPath) !== $consultationPath) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('motion', 'err_not_found'), 404);
+            }
             Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($checkAmendment !== null && ($checkMotion === null || $checkAmendment->motionId !== $checkMotion->id)) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('base', 'err_amend_not_consult'), 400);
+            }
             Yii::$app->session->setFlash('error', Yii::t('base', 'err_amend_not_consult'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -512,5 +544,101 @@ class Base extends Controller
         $this->checkConsistency($checkMotion, $checkAmendment);
 
         return $this->consultation;
+    }
+
+    protected function guessRedirectByPrefix(string $prefix): ?string
+    {
+        $motion = Motion::findOne([
+            'consultationId' => $this->consultation->id,
+            'titlePrefix'    => $prefix
+        ]);
+        if ($motion && $motion->isReadable()) {
+            return $motion->getLink();
+        }
+
+        /** @var Amendment|null $amendment */
+        $amendment = Amendment::find()->joinWith('motionJoin')->where([
+            'motion.consultationId' => $this->consultation->id,
+            'amendment.titlePrefix' => $prefix,
+        ])->one();
+
+        if ($amendment && $amendment->isReadable()) {
+            return $amendment->getLink();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param bool $throwExceptions
+     *
+     * @return Motion|null
+     */
+    protected function getMotionWithCheck($motionSlug, bool $throwExceptions = false)
+    {
+        if (is_numeric($motionSlug) && $motionSlug > 0) {
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'id'             => $motionSlug,
+                'slug'           => null
+            ]);
+        } else {
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'slug'           => $motionSlug
+            ]);
+        }
+        /** @var Motion $motion */
+        if (!$motion) {
+            if ($throwExceptions) {
+                throw new NotFound('Motion not found', 404);
+            }
+            $redirect = $this->guessRedirectByPrefix($motionSlug);
+            if ($redirect) {
+                $this->redirect($redirect);
+            } else {
+                Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
+                $this->redirect(UrlHelper::createUrl('consultation/index'));
+            }
+            Yii::$app->end();
+
+            return null;
+        }
+
+        $this->checkConsistency($motion, null, $throwExceptions);
+
+        return $motion;
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @param null|string $redirectView
+     * @param bool $throwExceptions
+     * @return Amendment|null
+     */
+    protected function getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null, bool $throwExceptions = false): ?Amendment
+    {
+        $motion    = $this->consultation->getMotion($motionSlug);
+        $amendment = $this->consultation->getAmendment($amendmentId);
+        if (!$amendment || !$motion) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('amend', 'err_not_found'), 404);
+            }
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return null;
+        }
+        if ($amendment->motionId !== $motion->id && $amendment->getMyConsultation()->id === $motion->consultationId) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('base', 'err_amend_not_consult'), 404);
+            }
+            if ($redirectView) {
+                $this->redirect(UrlHelper::createAmendmentUrl($amendment, $redirectView));
+                return null;
+            }
+        }
+        $this->checkConsistency($motion, $amendment, $throwExceptions);
+        return $amendment;
     }
 }

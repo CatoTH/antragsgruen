@@ -41,16 +41,6 @@ $settings = $consultation->getSettings();
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label"
-               for="consultationDiscourseCat"><?= Yii::t('member_petitions', 'sett_discourse_cat') ?>:</label>
-        <div class="col-sm-9">
-            <input type="text" required name="settings[discourseCategoryId]"
-                   value="<?= Html::encode($settings->discourseCategoryId) ?>"
-                   class="form-control" id="discourseCategoryId">
-            <input type="hidden" name="settingsFields[]" value="discourseCategoryId">
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label"
                for="minDiscussionTimeId"><?= Yii::t('member_petitions', 'sett_minDiscussionTime') ?>:</label>
         <div class="col-sm-9">
             <input type="number" required name="settings[minDiscussionTime]"

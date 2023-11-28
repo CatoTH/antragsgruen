@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
 
 namespace app\plugins;
 
@@ -17,6 +17,7 @@ class ModuleBase extends Module
         parent::init();
 
         if (\Yii::$app instanceof \yii\console\Application) {
+            /** @noinspection PhpUnhandledExceptionInspection */
             $ref                       = new \ReflectionClass($this);
             $this->controllerNamespace = $ref->getNamespaceName() . '\\commands';
         }
@@ -26,7 +27,6 @@ class ModuleBase extends Module
      * @param Controller $controller
      *
      * @return AssetBundle[]
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getActiveAssetBundles(Controller $controller)
     {
@@ -34,6 +34,11 @@ class ModuleBase extends Module
     }
 
     protected static function getMotionUrlRoutes(): array
+    {
+        return [];
+    }
+
+    protected static function getAmendmentUrlRoutes(): array
     {
         return [];
     }
@@ -48,12 +53,16 @@ class ModuleBase extends Module
         return null;
     }
 
-    public static function getAllUrlRoutes(string $dommotion, string $dommotionOld): array
+    public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
         $urls = [];
         foreach (static::getMotionUrlRoutes() as $url => $route) {
             $urls[$dommotion . '/' . $url]    = $route;
             $urls[$dommotionOld . '/' . $url] = $route;
+        }
+        foreach (static::getAmendmentUrlRoutes() as $url => $route) {
+            $urls[$domamend . '/' . $url]    = $route;
+            $urls[$domamendOld . '/' . $url] = $route;
         }
 
         return $urls;
@@ -63,7 +72,6 @@ class ModuleBase extends Module
      * @param Site $site
      *
      * @return null|DefaultBehavior|string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getSiteSpecificBehavior(Site $site)
     {
@@ -73,19 +81,22 @@ class ModuleBase extends Module
     /**
      * @param Consultation $consultation
      *
-     * @return string|\app\models\settings\Consultation
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return string|\app\models\settings\Consultation|null
      */
     public static function getConsultationSettingsClass(Consultation $consultation)
     {
         return null;
     }
 
+    public static function getConsultationExtraSettingsForm(Consultation $consultation): string
+    {
+        return '';
+    }
+
     /**
      * @param Site $site
      *
      * @return string|\app\models\settings\Site
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getSiteSettingsClass(Site $site)
     {
@@ -114,12 +125,11 @@ class ModuleBase extends Module
 
     /**
      * @param Layout $layoutSettings
-     * @param Consultation $consultation
+     * @param Consultation|null $consultation
      *
      * @return Hooks[]
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getForcedLayoutHooks($layoutSettings, $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
     {
         return [];
     }

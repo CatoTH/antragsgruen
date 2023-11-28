@@ -257,11 +257,11 @@ if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution() && !$
 
     $screening = Yii::$app->session->getFlash('screening', null, true);
     if ($screening) {
-        echo '<div class="alert alert-success" role="alert">
+        echo '<div class="content"><div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                 <span class="sr-only">' . Yii::t('base', 'aria_success') . ':</span>
                 ' . Html::encode($screening) . '
-            </div>';
+            </div></div>';
     }
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
