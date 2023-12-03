@@ -126,6 +126,16 @@ $I->see('Third paragraph', '.inserted');
 $I->logout();
 $I->gotoConsultationHome(true, 'std', 'lv-sued');
 
+$I->wantTo('LV-Vorstand: kann Antrag inkl. Historie sehen');
+$I->loginAsDbwvTestUser('lv-sued-vorstand');
+$I->click('.motionLink2');
+$I->see('Third paragraph');
+$I->see('V2', '.motionHistory .currentVersion');
+$I->clickJS('.motionHistory .historyOpener button');
+$I->see('V1', '.motionHistory .otherVersion');
+$I->logout();
+$I->gotoConsultationHome(true, 'std', 'lv-sued');
+
 $I->wantTo('Referat: kann nicht mehr bearbeiten');
 $I->loginAsDbwvTestUser('lv-sued-referat-iii');
 $I->click('.motionLink2');

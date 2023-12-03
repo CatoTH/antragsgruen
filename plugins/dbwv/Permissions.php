@@ -95,6 +95,7 @@ class Permissions extends \app\models\settings\Permissions
             Privileges::PRIVILEGE_CONTENT_EDIT,
             Privileges::PRIVILEGE_SCREENING,
             Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
+            Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED,
             Module::PRIVILEGE_DBWV_ASSIGN_TOPIC,
             Module::PRIVILEGE_DBWV_V1_EDITORIAL,
             Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
