@@ -519,7 +519,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMySupportedMotionsByConsultation(Consultation $consultation): array
     {
-        $query     = MotionSupporter::find();
+        $query = MotionSupporter::find();
         $query->innerJoin(
             'motion',
             'motionSupporter.motionId = motion.id'
@@ -539,11 +539,11 @@ class User extends ActiveRecord implements IdentityInterface
         foreach ($supporters as $supporter) {
             /** @var Motion $motion */
             $motion = $supporter->getIMotion();
-            $first = MotionNumbering::getSortedHistoryForMotion($motion, false)[0];
-            if (in_array($first->id, $firstMotionIds)) {
+            $history = MotionNumbering::getSortedHistoryForMotion($motion, false);
+            if (count($history) === 0 || in_array($history[0]->id, $firstMotionIds)) {
                 continue;
             }
-            $firstMotionIds[] = $first->id;
+            $firstMotionIds[] = $history[0]->id;
             $filteredSupporters[] = $supporter;
         }
 

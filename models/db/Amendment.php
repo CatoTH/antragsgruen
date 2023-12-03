@@ -450,8 +450,8 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         $result = [
-            'from' => $firstAffectedLine ?? $sectionData[0]['firstLine'],
-            'to' => $lastAffectedLine ?? $sectionData[0]['firstLine'],
+            'from' => $firstAffectedLine ?? ($sectionData[0]['firstLine'] ?? 0),
+            'to' => $lastAffectedLine ?? ($sectionData[0]['firstLine'] ?? 0),
         ];
         HashedStaticCache::setCache($cacheFunc, $cacheDeps, $result);
 
