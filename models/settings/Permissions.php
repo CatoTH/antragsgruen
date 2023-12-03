@@ -218,7 +218,7 @@ class Permissions
                 }
             }
         }
-        $policy  = $motion->motionType->getAmendmentPolicy();
+        $policy  = $motion->getMyMotionType()->getAmendmentPolicy();
         $allowed = $policy->checkCurrUser($allowAdmins, $assumeLoggedIn);
 
         if (!$allowed) {
