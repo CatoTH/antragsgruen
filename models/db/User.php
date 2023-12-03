@@ -527,7 +527,7 @@ class User extends ActiveRecord implements IdentityInterface
         $query->where('motion.status != ' . intval(Motion::STATUS_DELETED));
         $query->andWhere('motion.consultationId = ' . intval($consultation->id));
         $query->andWhere('motionSupporter.userId = ' . intval($this->id));
-        $query->orderBy('(motionSupporter.role = "initiates") DESC, motion.dateCreation DESC, motion.id DESC');
+        $query->orderBy('(motionSupporter.role = "initiates") DESC, motion.titlePrefix ASC, motion.dateCreation DESC, motion.id DESC');
 
         /** @var MotionSupporter[] $supporters */
         $supporters = $query->all();
@@ -565,7 +565,7 @@ class User extends ActiveRecord implements IdentityInterface
         $query->andWhere('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->andWhere('amendmentSupporter.userId = ' . IntVal($this->id));
-        $query->orderBy('(amendmentSupporter.role = "initiates") DESC, amendment.dateCreation DESC');
+        $query->orderBy('(amendmentSupporter.role = "initiates") DESC, motion.titlePrefix ASC, amendment.titlePrefix ASC, amendment.dateCreation DESC');
         /** @var AmendmentSupporter[] $supporters */
         $supporters = $query->all();
         return $supporters;
