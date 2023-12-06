@@ -1,5 +1,6 @@
 <?php
 return [
+    'edit_welcome'         => 'Introductie aanpassen',
     'start_motion'         => 'Maak een nieuw document aan',
     'new_motions'          => 'Nieuwe voorstellen',
     'new_amendments'       => 'Nieuwe amendementen',
@@ -14,9 +15,12 @@ return [
     'My Amendments'        => 'Mijn amendementen',
     'Agenda'               => 'Agenda',
     'Other Motions'        => 'Andere voorstellen',
+    'other_resolutions'    => 'Other resolutions',
     'no motions'           => 'Geen voorstellen',
     'news'                 => 'Nieuws',
+    'sidebar_procedure'    => 'Procedure',
     'proposed_procedure'   => 'Voorgestelde procedure',
+    'voting_results'       => 'Voting results',
     'email_notifications'  => 'E-mailnotificaties',
     'activity_log'         => 'Activiteit',
     'feed_motions'         => 'Voorstellen',
@@ -48,6 +52,8 @@ return [
 
     'activity_bc'    => 'Activiteiten',
     'activity_title' => 'Activiteitenlogboek',
+    'activity_next'  => 'Next page',
+    'activity_prev'  => 'Previous page',
 
     'collecting_bc'      => 'Steun aan het verzamelen',
     'collecting_title'   => 'Steun aan het verzamelen',
@@ -95,15 +101,16 @@ return [
     'proposal_autoupdate'      => 'Automatisch bijwerken',
     'proposal_updated'         => 'Bijgewerkt',
 
-    'aad_title' => 'Antragsgrün gebruiken',
-    'aad_text'  => 'Wil je Antragsgrün / motion.tools voor je eigen ledenvergadering gebruiken?',
-    'aad_btn'   => 'Informatie over het gebruik van Antragsgrün',
+    'aad_title' => 'motion.tools gebruiken',
+    'aad_text'  => 'Wil je motion.tools voor je eigen ledenvergadering gebruiken?',
+    'aad_btn'   => 'Informatie over het gebruik van motion.tools',
 
     'agenda_title'   => 'Titel',
     'agenda_time'    => 'Tijd',
     'agenda_comment' => 'Commentaar',
     'agenda_date'    => 'Datum',
     'agenda_pp'      => 'In voorgestelde procedure',
+    'agenda_speaking' => 'Has a speaking list',
 
     'discuss_comments_title'  => 'Recent bediscussieerd',
     'discuss_comment_link'    => 'meer',

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'err_no_screening'        => 'Geen screeningsbevoegdheidNo screening permissions',
+    'err_no_screening'        => 'Geen screeningsbevoegdheid',
     'err_not_found'           => 'Commentaar niet gevonden',
     'err_no_del'              => 'Geen bevoegdheid om te verwijderen',
     'err_no_name'             => 'Vul je naam in alsjeblieft.',
