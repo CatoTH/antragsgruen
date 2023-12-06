@@ -2,7 +2,7 @@
 
 namespace app\commands;
 
-use app\components\UserGroupAdminMethods;
+use app\components\{UrlHelper, UserGroupAdminMethods};
 use app\models\settings\AntragsgruenApp;
 use app\models\db\{ConsultationUserGroup, Site, User};
 use yii\console\Controller;
@@ -95,6 +95,8 @@ class UserController extends Controller
 
         $site = Site::findOne(['subdomain' => AntragsgruenApp::getInstance()->siteSubdomain]);
         $consultation = $site->currentConsultation;
+        UrlHelper::setCurrentSite($site);
+        UrlHelper::setCurrentConsultation($consultation);
 
         $toUserGroups = $this->getToSetUserGroups();
 
