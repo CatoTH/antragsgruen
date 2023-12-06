@@ -98,6 +98,7 @@ export class AntragsgruenEditor {
             title: title,
             enterMode: enterMode,
             shiftEnterMode: (enterMode === CKEDITOR.ENTER_BR ? CKEDITOR.ENTER_P : CKEDITOR.ENTER_BR),
+            linkDefaultProtocol: 'https://',
         };
 
         let strikeEl = (noStrike ? '' : ' s'),
