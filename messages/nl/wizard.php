@@ -14,11 +14,18 @@ return [
     'prev'   => 'Terug',
     'finish' => 'Klaar, maak site',
 
-    'purpose_title'          => 'What will be discussed?',
-    'purpose_desc'           => 'This only affects the wording.',
-    'purpose_motions'        => 'Voorstellen',
-    'purpose_manifesto'      => 'Een manifest',
-    'purpose_manifesto_desc' => '&nbsp;',
+    'functionality_title'          => 'Which functionality should the site provide?',
+    'functionality_desc'           => 'You can select multiple options.<br>Everything can also be (de-)activated after creating the site.',
+    'functionality_motions'        => 'Motions',
+    'functionality_manifesto_desc' => '&nbsp;',
+    'functionality_manifesto'      => 'Manifesto',
+    'functionality_applications'   => 'Candidatures',
+    'functionality_agenda'         => 'An agenda',
+    'functionality_speech'         => 'Speaking lists',
+    'functionality_statute_amendments' => 'Statutes<br>amendments',
+    'functionality_votings'        => 'Votings',
+    'functionality_documents_desc' => '(Document)',
+    'functionality_documents'      => 'Downloads',
 
     'language_title' => 'Language of the site',
 
@@ -70,20 +77,27 @@ return [
     'amend_singlepara_single' => 'Only one passage',
     'amend_singlepara_multi'  => 'Multiple passages',
 
-    'amend_merging_title'  => 'Adopting amendments',
-    'amend_merging_desc'   => 'Are proposers of motions allowed to adopt amendments by themselves?',
-    'amend_merging_yes'    => 'Yes',
-    'amend_merging_no'     => 'No',
+    'comments_title' => 'Comments to motions?',
+    'comments_desc'  => 'Are users allowed to comment on motions and amendments?',
+    'comments_no'    => 'No',
+    'comments_yes'   => 'Yes',
 
-    'comments_title' => 'Commentaar op voorstellen?',
-    'comments_desc'  => 'Mogen gebruikers commentaar maken op voorstellen en amendementen?',
-    'comments_no'    => 'Nee',
-    'comments_yes'   => 'Ja',
+    'applicationtype_title' => 'Type of applications',
+    'applicationtype_desc' => 'In which format are applications / candidatures submitted?',
+    'applicationtype_text' => 'Form',
+    'applicationtype_text_desc' => 'Text, photo, personal data',
+    'applicationtype_pdf' => 'PDF',
+    'applicationtype_pdf_desc' => 'A ready-layouted PDF can be uploaded',
 
-    'agenda_title' => 'Is er een formele agenda?',
-    'agenda_desc'  => 'If so, it can be specified on the home page',
-    'agenda_no'    => 'No',
-    'agenda_yes'   => 'Yes',
+    'speech_quotas_title' => 'Quoted speaking lists',
+    'speech_quotas_desc' => 'Two alternating lists for women and men',
+    'speech_quotas_no' => 'No',
+    'speech_quotas_yes' => 'Yes',
+
+    'speech_login_title' => 'Login for speaking lists',
+    'speech_login_desc' => 'Is registering necessary to apply for the speaking list?',
+    'speech_login_no' => 'No',
+    'speech_login_yes' => 'Yes',
 
     'opennow_title' => 'Publish this site immediately?',
     'opennow_desc'  => 'If not, it will be created in maintenance mode',
@@ -92,7 +106,7 @@ return [
 
     'sitedate_title'          => 'Almost finished!',
     'sitedate_desc'           => 'Just some more organization questions...',
-    'sitedata_sitetitle'      => 'Naam van deze site / deze consultatie',
+    'sitedata_sitetitle'      => 'Naam van deze site / raadpleging',
     'sitedata_organization'   => 'Name of the organization of this consultation',
     'sitedata_subdomain'      => 'Site URL',
     'sitedata_subdomain_hint' => 'Only letters, numbers, "_" and "-" are allowed.',
@@ -111,8 +125,8 @@ return [
     'sandbox_dummy_contact' => 'Test contact',
     'sandbox_dummy_orga'    => 'Organiszation X',
     'sandbox_dummy_title'   => 'Test event',
-    'sandbox_dummy_welcome' => '<h2>Welcome to Antragsgrün!</h2><br><br>
-                                On this sandbox site, you can freely test all Antragsgrün features.
+    'sandbox_dummy_welcome' => '<h2>Welcome to Motion Tools!</h2><br><br>
+                                On this sandbox site, you can freely test all Motion Tools features.
                                 Everyone can access this site using this URL:<br><br>
                                 <blockquote><strong><a href="%SITE_URL%">%SITE_URL%</a></strong></blockquote>
                                 <br><br>

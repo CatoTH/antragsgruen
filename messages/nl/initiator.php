@@ -1,4 +1,5 @@
 <?php
+
 return [
     'createForOther'      => 'Ik maak dit voorstel voor een andere indiener',
     'adminFunction'       => 'Beheerdersfeature',
@@ -18,11 +19,13 @@ return [
     'phone'               => 'Telefoon',
     'moreInitiators'      => 'Andere indieners',
     'addInitiator'        => 'Voeg een indiener toe',
+    'removeInitiator'     => 'Verwijder een indiener',
     'copy_to_clipboard'   => 'Kopieer',
     'copy_to_clipboard_h' => 'Kopieer de lijst met ondersteuners boven het klembord in een formaat dat in het volle tekstveld geplakt kan worden.',
     'supporters'          => 'Ondersteuners',
     'supportersHead'      => 'Ondersteuners',
     'addSupporter'        => 'Voeg een ondersteuner toe',
+    'removeSupporter'     => 'Verwijder een ondersteuner',
     'minSupporters1'      => 'Minimaal %min% ondersteuner',
     'minSupportersX'      => 'Minimaal %min% ondersteuners',
     'fullTextField'       => 'Vol tekstveld',

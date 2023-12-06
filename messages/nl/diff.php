@@ -17,4 +17,5 @@ return [
     'plain_text_ins' => 'TOEVOEGEN',
     'aria_ins'       => 'Toevoegen: "%INS%"',
     'aria_del'       => 'Verwijderen: "%DEL%"',
+    'modu_prefix'    => 'Mod.',
 ];
