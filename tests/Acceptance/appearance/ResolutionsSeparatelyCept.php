@@ -31,6 +31,7 @@ $I->wantTo('See the resolution on the default home page');
 $I->gotoConsultationHome();
 $I->see('O’zapft is!', '.sectionResolutions .motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
 $I->see('O’zapft is!', '.motionLink2');
+$I->dontSee('A2', '.sectionResolutions');
 
 
 foreach (Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
@@ -44,10 +45,16 @@ foreach (Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
     $I->gotoConsultationHome();
     $I->seeElement('.motionLink2');
     $I->dontSeeElement('.motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
+
     $I->click('#sidebarResolutions');
     $I->see('Beschlüsse', 'h1');
     $I->dontSeeElement('.motionLink2');
     $I->seeElement('.motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
+    if ($layoutId !== Consultation::START_LAYOUT_TAGS && $layoutId !== Consultation::START_LAYOUT_DISCUSSION_TAGS) {
+        // Maybe refactor the tags page later on to also not show prefixes?
+        $I->dontSee('A2');
+    }
+
 
     $I->wantTo('Test with resolutions as default view');
     $page = $I->gotoStdAdminPage()->gotoAppearance();
@@ -58,6 +65,15 @@ foreach (Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
     $I->see('Beschlüsse', '.green');
     $I->dontSeeElement('.motionLink2');
     $I->seeElement('.motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
+    if ($layoutId === Consultation::START_LAYOUT_TAGS) {
+        $I->see('O’zapft is!', '.motionTable');
+    } elseif ($layoutId === Consultation::START_LAYOUT_DISCUSSION_TAGS) {
+        $I->see('O’zapft is!', '.motionList');
+    } else {
+        $I->see('O’zapft is!', '.motionList');
+        $I->dontSee('A2', '.motionList');
+    }
+
     $I->click('#sidebarMotions');
     $I->see('Anträge', 'h1');
     $I->seeElement('.motionLink2');

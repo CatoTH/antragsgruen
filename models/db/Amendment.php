@@ -310,6 +310,16 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
+    public function showTitlePrefix(): bool
+    {
+        // For statute amendments, the hideTitlePrefix is relevant; for regular amendments not.
+        if ($this->getMyMotionType()->amendmentsOnly && $this->getMyConsultation()->getSettings()->hideTitlePrefix) {
+            return false;
+        }
+
+        return trim($this->getFormattedTitlePrefix()) !== '';
+    }
+
     public function getTitleWithPrefix(): string
     {
         return $this->getTitle();

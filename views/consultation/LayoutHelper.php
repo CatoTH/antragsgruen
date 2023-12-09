@@ -29,7 +29,7 @@ class LayoutHelper
         $return    .= '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
 
         $return .= '<span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>';
-        if (!$consultation->getSettings()->hideTitlePrefix && trim($motion->getFormattedTitlePrefix()) !== '') {
+        if ($motion->showTitlePrefix()) {
             $return .= '<span class="motionPrefix">' . Html::encode($motion->getFormattedTitlePrefix()) . '</span>';
         }
 
@@ -86,7 +86,7 @@ class LayoutHelper
         $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
         $return .= LayoutHelper::getPrivateCommentIndicator($amendment, [], $privateAmendmentComments);
 
-        $title  = (trim($amendment->getFormattedTitlePrefix()) === '' ? \Yii::t('amend', 'amendment') : $amendment->getFormattedTitlePrefix());
+        $title  = ($amendment->showTitlePrefix() ? $amendment->getFormattedTitlePrefix() : \Yii::t('amend', 'amendment'));
         $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
                    'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
 
@@ -114,14 +114,13 @@ class LayoutHelper
 
     private static function getStatuteAmendmentLineContent(Amendment $amendment, Consultation $consultation): string
     {
-        $return = '';
-        $return .= '<p class="title">' . "\n";
+        $return = '<p class="title">' . "\n";
 
         $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
         $return    .= '<a href="' . Html::encode($amendmentUrl) . '" class="amendmentLink' . $amendment->id . '">';
 
         $return .= '<span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>';
-        if (!$consultation->getSettings()->hideTitlePrefix && trim($amendment->getFormattedTitlePrefix()) !== '') {
+        if ($amendment->showTitlePrefix()) {
             $return .= '<span class="motionPrefix">' . Html::encode($amendment->getFormattedTitlePrefix()) . '</span>';
         }
 

@@ -11,6 +11,7 @@
 - The backlinkt on the "my account" page leads to the consultation where the user was coming from.
 - Admins can now download Excel/XLSX-exports of amendments and the comments to motions.
 - Motions and amendment in the "My motions" section of the home page are now sorted by prefix.
+- Bugfix: When resolutions were shown on a separate page, title prefixes / motion signatures were shown.
 - Bugfix: Motion history might also show changes of invisible motions.
 - Bugfix: Comparing motion versions did not show changes in titles.
 - Bugfix: If a motion section was removed from a motion type that already had motions, then amendments to this motion could not be merged individually anymore.
