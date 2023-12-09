@@ -311,6 +311,8 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function iAmInitiator(): bool;
 
+    abstract public function showTitlePrefix(): bool;
+
     public function getFormattedTitlePrefix(?int $context = null): ?string
     {
         return Layout::getFormattedTitlePrefix($this->titlePrefix, $this, $context);
