@@ -1,6 +1,6 @@
 # Version history
 
-### Vertion 4.13.1 [not released yet]
+### Version 4.13.1 (2023-12-09)
 
 - As admin, is now possible to edit the list of internal (proposed procedure) tags, just like the public ones.
 - Proposed procedure tags can now be assigned directly in the procedure overview page.
