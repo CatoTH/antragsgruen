@@ -16,14 +16,14 @@ use yii\web\View;
 abstract class SupportBase
 {
     // Also defined in Typescript
-    const ONLY_INITIATOR        = 0;
-    const GIVEN_BY_INITIATOR    = 1;
-    const COLLECTING_SUPPORTERS = 2;
-    const NO_INITIATOR          = 3;
+    public const ONLY_INITIATOR        = 0;
+    public const GIVEN_BY_INITIATOR    = 1;
+    public const COLLECTING_SUPPORTERS = 2;
+    public const NO_INITIATOR          = 3;
 
-    const LIKEDISLIKE_LIKE    = 1;
-    const LIKEDISLIKE_DISLIKE = 2;
-    const LIKEDISLIKE_SUPPORT = 4;
+    public const LIKEDISLIKE_LIKE    = 1;
+    public const LIKEDISLIKE_DISLIKE = 2;
+    public const LIKEDISLIKE_SUPPORT = 4;
 
     protected bool $adminMode = false;
     protected InitiatorForm $settingsObject;

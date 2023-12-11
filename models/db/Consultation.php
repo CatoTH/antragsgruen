@@ -82,8 +82,8 @@ class Consultation extends ActiveRecord
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
-    const PRELOAD_ONLY_AMENDMENTS = 'amendments';
-    const PRELOAD_ALL = 'all';
+    public const PRELOAD_ONLY_AMENDMENTS = 'amendments';
+    public const PRELOAD_ALL = 'all';
     private ?string $preloadedAllMotionData = null;
     private ?array $preloadedAmendmentIds  = null;
 
