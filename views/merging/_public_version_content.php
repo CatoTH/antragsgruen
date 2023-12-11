@@ -15,7 +15,7 @@ $changesets = [];
 foreach ($motion->getSortedSections(false) as $section) {
     $type = $section->getSettings();
     if ($type->type === ISectionType::TYPE_TITLE) {
-        $content = (isset($draft->sections[$section->sectionId]) ? $draft->sections[$section->sectionId] : '');
+        $content = ($draft->sections[$section->sectionId] ?? '');
         $htmlId  = 'sections_' . $type->id;
         echo '<div class="form-group paragraph" id="section_holder_' . $type->id . '">';
         echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';

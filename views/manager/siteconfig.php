@@ -83,7 +83,7 @@ echo '<div class="form-group">
   </div>
 </div>';
 
-$currTransport = (isset($config->mailService['transport']) ? $config->mailService['transport'] : '');
+$currTransport = ($config->mailService['transport'] ?? '');
 echo '<div class="form-group">
   <label class="col-sm-4 control-label" for="emailTransport">' . Yii::t('manager', 'email_transport') . ':</label>
   <div class="col-sm-8">';
@@ -103,15 +103,15 @@ echo Html::dropDownList(
 echo '</div>
 </div>';
 
-$currApiKey        = (isset($config->mailService['apiKey']) ? $config->mailService['apiKey'] : '');
-$currMailjetSecret = (isset($config->mailService['mailjetApiSecret']) ? $config->mailService['mailjetApiSecret'] : '');
-$currDomain        = (isset($config->mailService['domain']) ? $config->mailService['domain'] : '');
+$currApiKey        = ($config->mailService['apiKey'] ?? '');
+$currMailjetSecret = ($config->mailService['mailjetApiSecret'] ?? '');
+$currDomain        = ($config->mailService['domain'] ?? '');
 
-$currHost     = (isset($config->mailService['host']) ? $config->mailService['host'] : '');
-$currPort     = (isset($config->mailService['port']) ? $config->mailService['port'] : 25);
-$currAuthType = (isset($config->mailService['authType']) ? $config->mailService['authType'] : '');
-$currUsername = (isset($config->mailService['username']) ? $config->mailService['username'] : '');
-$currPassword = (isset($config->mailService['password']) ? $config->mailService['password'] : '');
+$currHost     = ($config->mailService['host'] ?? '');
+$currPort     = ($config->mailService['port'] ?? 25);
+$currAuthType = ($config->mailService['authType'] ?? '');
+$currUsername = ($config->mailService['username'] ?? '');
+$currPassword = ($config->mailService['password'] ?? '');
 $currTls      = (isset($config->mailService['encryption']) && $config->mailService['encryption'] === 'tls');
 
 ?>

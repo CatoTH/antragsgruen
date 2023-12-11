@@ -22,7 +22,7 @@ try {
     (new yii\web\Application($config))->run();
 } catch (\yii\base\InvalidConfigException $e) {
     $error = htmlentities($e->getMessage(), ENT_COMPAT, 'UTF-8');
-    $file  = (isset($_SERVER['ANTRAGSGRUEN_CONFIG']) ? $_SERVER['ANTRAGSGRUEN_CONFIG'] : 'config/config.json');
+    $file  = ($_SERVER['ANTRAGSGRUEN_CONFIG'] ?? 'config/config.json');
     echo str_replace('%ERROR%', $error, 'Leider ist die Antragsgrün-Konfigurationsdatei (' . $file . ') fehlerhaft.
     Die Fehlermeldung lautet: %ERROR%<br><br>
     Du kannst auf folgende Weisen versuchen, sie zu korrigieren:<ul>
