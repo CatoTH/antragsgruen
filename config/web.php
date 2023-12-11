@@ -104,7 +104,7 @@ if ($params->cookieDomain) {
     ];
 }
 
-if (YII_ENV_DEV && file_exists($configFile) && strpos($_SERVER['HTTP_USER_AGENT'], 'pa11y') === false) {
+if (YII_ENV_DEV && file_exists($configFile) && !str_contains($_SERVER['HTTP_USER_AGENT'], 'pa11y')  ) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][]      = 'debug';
     $config['modules']['debug'] = [

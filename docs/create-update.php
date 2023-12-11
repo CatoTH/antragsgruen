@@ -130,11 +130,11 @@ function readChangelog(string $dirNew, string $versionOld, string $versionNew): 
     $foundOld = false;
     for ($i = 0; $i < count($defines) && !$foundOld; $i++) {
         $line = $defines[$i];
-        if (strpos($line, '## Version ' . $versionNew) !== false) {
+        if (str_contains($line, '## Version ' . $versionNew)  ) {
             $foundNew = true;
             continue;
         }
-        if (strpos($line, '## Version ' . $versionOld) !== false) {
+        if (str_contains($line, '## Version ' . $versionOld)  ) {
             $foundOld = true;
             continue;
         }

@@ -101,7 +101,7 @@ class MovingParagraphDetector
         $inserts = [];
         foreach ($paras as $paraNo => $para) {
             foreach ($para as $wordNo => $word) {
-                if (strpos($word->diff, '###INS_START###') !== false) {
+                if (str_contains($word->diff, '###INS_START###')  ) {
                     $insBlocks = explode('###INS_START###', $word->diff);
                     for ($i = 1; $i < count($insBlocks); $i++) {
                         $txt = explode('###INS_END###', $insBlocks[$i]);
@@ -133,15 +133,15 @@ class MovingParagraphDetector
                 if ($currDelBlockStart === null) {
                     // If a DEL starts and ends at the same word, it only deletes a single word
                     // As we're only interested in larger deleted blocks, we can ignore those cases here
-                    if (strpos($word->diff, '###DEL_START###') !== false &&
-                        strpos($word->diff, '###DEL_END###') === false
+                    if (str_contains($word->diff, '###DEL_START###')   &&
+                        !str_contains($word->diff, '###DEL_END###')  
                     ) {
                         $x                 = explode('###DEL_START###', $word->diff);
                         $currDelBlock      = $x[1];
                         $currDelBlockStart = $wordNo;
                     }
                 } else {
-                    if (strpos($word->diff, '###DEL_END###') !== false) {
+                    if (str_contains($word->diff, '###DEL_END###')  ) {
                         $x            = explode('###DEL_END###', $word->diff);
                         $currDelBlock .= $x[0];
                         foreach (self::getBlocks($currDelBlock) as $block) {

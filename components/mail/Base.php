@@ -125,7 +125,7 @@ abstract class Base
         } catch (TransportExceptionInterface $e) {
             $fallbackTransport = $this->getFallbackTransport();
             // "Expected response code 220 but got an empty response" is triggered is regular sendmail is not accessible
-            if ($fallbackTransport && strpos($e->getMessage(), 'Expected response code 220') !== false) {
+            if ($fallbackTransport && str_contains($e->getMessage(), 'Expected response code 220')  ) {
                 $sentMessage = $fallbackTransport->send($message);
 
                 return $sentMessage->getMessageId();

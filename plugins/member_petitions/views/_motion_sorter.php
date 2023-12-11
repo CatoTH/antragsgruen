@@ -32,10 +32,10 @@ $showArchived = isset($_REQUEST['showArchived']);
     $tagsTop3 = array_splice($tags, 0, 3);
     $allTags  = ConsultationSettingsTag::getMostPopularTags($motions);
     usort($allTags, function ($tag1, $tag2) {
-        if (strpos($tag1['title'], 'Cluster') !== false && strpos($tag2['title'], 'Cluster') === false) {
+        if (str_contains($tag1['title'], 'Cluster')   && !str_contains($tag2['title'], 'Cluster')  ) {
             return -1;
         }
-        if (strpos($tag1['title'], 'Cluster') === false && strpos($tag2['title'], 'Cluster') !== false) {
+        if (!str_contains($tag1['title'], 'Cluster')   && str_contains($tag2['title'], 'Cluster')  ) {
             return 1;
         }
         return strnatcasecmp($tag1['title'], $tag2['title']);
@@ -47,7 +47,7 @@ $showArchived = isset($_REQUEST['showArchived']);
         <?php
         $inCluster = true;
         foreach ($allTags as $tag) {
-            if (strpos($tag['title'], 'Cluster') !== false) {
+            if (str_contains($tag['title'], 'Cluster')  ) {
                 if ($inCluster === false) {
                     echo '<br>';
                 }
