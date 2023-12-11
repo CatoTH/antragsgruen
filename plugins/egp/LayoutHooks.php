@@ -14,7 +14,7 @@ use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
-    const CANDIDATURE_TYPES = [9];
+    public const CANDIDATURE_TYPES = [9];
 
     public function beginPage(string $before): string
     {

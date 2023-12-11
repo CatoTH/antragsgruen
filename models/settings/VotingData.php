@@ -10,7 +10,7 @@ use app\models\db\{IVotingItem, Vote, VotingBlock};
 
 class VotingData implements \JsonSerializable
 {
-    const ORGANIZATION_DEFAULT = '0';
+    public const ORGANIZATION_DEFAULT = '0';
 
     use JsonConfigTrait;
 
