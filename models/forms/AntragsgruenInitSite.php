@@ -24,7 +24,7 @@ class AntragsgruenInitSite extends SiteCreateForm
             $this->subdomain = $config->siteSubdomain;
         } else {
             if (Site::findOne(['subdomain' => 'std'])) {
-                $this->subdomain = 'std' . rand(0, 99999999);
+                $this->subdomain = 'std' . random_int(0, 99999999);
             } else {
                 $this->subdomain = 'std';
             }
