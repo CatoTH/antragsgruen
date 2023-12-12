@@ -37,6 +37,10 @@ class Egp extends IPDFLayout
             $logo = file_get_contents(__DIR__ . '/../assets/congress-2023-12.png');
             $width = 678;
             $height = 298;
+        } elseif ($consultation->urlPath === 'Electoralcongress2024') {
+            $logo = file_get_contents(__DIR__ . '/../assets/congress-2024-02.png');
+            $width = 678;
+            $height = 298;
         } else {
             $logo = file_get_contents(__DIR__ . '/../assets/council-2020-06.png');
             $width = 2194;

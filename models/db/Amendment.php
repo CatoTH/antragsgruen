@@ -310,6 +310,16 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
+    public function showTitlePrefix(): bool
+    {
+        // For statute amendments, the hideTitlePrefix is relevant; for regular amendments not.
+        if ($this->getMyMotionType()->amendmentsOnly && $this->getMyConsultation()->getSettings()->hideTitlePrefix) {
+            return false;
+        }
+
+        return trim($this->getFormattedTitlePrefix()) !== '';
+    }
+
     public function getTitleWithPrefix(): string
     {
         return $this->getTitle();
@@ -450,8 +460,8 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         $result = [
-            'from' => $firstAffectedLine ?? $sectionData[0]['firstLine'],
-            'to' => $lastAffectedLine ?? $sectionData[0]['firstLine'],
+            'from' => $firstAffectedLine ?? ($sectionData[0]['firstLine'] ?? 0),
+            'to' => $lastAffectedLine ?? ($sectionData[0]['firstLine'] ?? 0),
         ];
         HashedStaticCache::setCache($cacheFunc, $cacheDeps, $result);
 

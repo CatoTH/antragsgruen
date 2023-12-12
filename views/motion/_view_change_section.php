@@ -25,6 +25,13 @@ if (!$change->hasChanges()) {
 }
 
 switch ($change->getSectionTypeId()) {
+    case ISectionType::TYPE_TITLE:
+        echo '<div class="motionTextHolder"><div class="paragraph lineNumbers"><section class="paragraph"><div class="text motionTextFormattings">';
+        echo '<strong>' . Yii::t('diff', 'change_from') . ':</strong><br>';
+        echo Html::encode($change->oldSection->getData()) . "<br><br>";
+        echo '<strong>' . Yii::t('diff', 'change_to') . ':</strong><br>' . Html::encode($change->newSection->getData()) . "<br><br>";
+        echo '</div></section></div></div>';
+        break;
     case ISectionType::TYPE_TEXT_SIMPLE:
         $firstLine  = $change->getFirstLineNumber();
 

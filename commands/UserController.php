@@ -2,8 +2,9 @@
 
 namespace app\commands;
 
-use app\models\db\ConsultationUserGroup;
-use app\models\db\User;
+use app\components\{UrlHelper, UserGroupAdminMethods};
+use app\models\settings\AntragsgruenApp;
+use app\models\db\{ConsultationUserGroup, Site, User};
 use yii\console\Controller;
 
 class UserController extends Controller
@@ -11,17 +12,15 @@ class UserController extends Controller
     public ?string $groupIds = null;
     public ?string $organization = null;
     public ?string $password = null;
+    public ?string $welcomeFile = null;
 
     public function options($actionID): array
     {
-        switch ($actionID) {
-            case 'create':
-                return ['groupIds', 'organization'];
-            case 'update':
-                return ['groupIds', 'organization', 'password'];
-            default:
-                return [];
-        }
+        return match ($actionID) {
+            'create' => ['groupIds', 'organization', 'welcomeFile'],
+            'update' => ['groupIds', 'organization', 'password'],
+            default => [],
+        };
     }
 
     private function findUserByAuth(string $auth): ?User
@@ -80,12 +79,25 @@ class UserController extends Controller
      * Creates a user
      *
      * Example:
-     * ./yii user/create email:test@example.org test@example.org "Given Name" "Family Name" TestPassword --groupIds 1,2 --organization Antragsgrün
+     * ./yii user/create email:test@example.org test@example.org "Given Name" "Family Name" TestPassword --groupIds 1,2 --organization Antragsgrün --welcome-file welcome-email.txt
      *
      * "groupIds" refer to the primary IDs in "consultationUserGroup"
      */
     public function actionCreate(string $auth, string $email, string $givenName, string $familyName, string $password): int
     {
+        $welcomeTemplate = null;
+        if ($this->welcomeFile) {
+            if (!file_exists($this->welcomeFile)) {
+                throw new \RuntimeException('welcome template not found');
+            }
+            $welcomeTemplate = file_get_contents($this->welcomeFile);
+        }
+
+        $site = Site::findOne(['subdomain' => AntragsgruenApp::getInstance()->siteSubdomain]);
+        $consultation = $site->currentConsultation;
+        UrlHelper::setCurrentSite($site);
+        UrlHelper::setCurrentConsultation($consultation);
+
         $toUserGroups = $this->getToSetUserGroups();
 
         $user = new User();
@@ -106,6 +118,14 @@ class UserController extends Controller
         }
 
         $this->stdout('Created the user');
+
+        if ($welcomeTemplate) {
+            \Yii::$app->urlManager->setBaseUrl("/");
+            \Yii::$app->language = substr($consultation->wordingBase, 0, 2);
+            $methods = new UserGroupAdminMethods();
+            $methods->setRequestData($consultation, null, null);
+            $methods->sendWelcomeEmail($user, $welcomeTemplate, $password);
+        }
 
         return 0;
     }

@@ -1,6 +1,6 @@
 # Version history
 
-### Vertion 4.13.1 [not released yet]
+### Version 4.13.1 (2023-12-09)
 
 - As admin, is now possible to edit the list of internal (proposed procedure) tags, just like the public ones.
 - Proposed procedure tags can now be assigned directly in the procedure overview page.
@@ -10,6 +10,10 @@
 - Security: Consultation admins could grant privileges to other consultations within the same site.
 - The backlinkt on the "my account" page leads to the consultation where the user was coming from.
 - Admins can now download Excel/XLSX-exports of amendments and the comments to motions.
+- Motions and amendment in the "My motions" section of the home page are now sorted by prefix.
+- Bugfix: When resolutions were shown on a separate page, title prefixes / motion signatures were shown.
+- Bugfix: Motion history might also show changes of invisible motions.
+- Bugfix: Comparing motion versions did not show changes in titles.
 - Bugfix: If a motion section was removed from a motion type that already had motions, then amendments to this motion could not be merged individually anymore.
 - Bugfix: If a voting block was deleted with motions/amendments assigned to it, then these motions/amendments could not be assigned to new voting blocks anymore.
 - Bugfix: If a motion had an empty optional section, amendments adding text to that section were breaking the motion view.

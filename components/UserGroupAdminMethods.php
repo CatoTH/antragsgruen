@@ -8,14 +8,15 @@ use app\models\consultationLog\UserGroupChange;
 use app\models\settings\{AntragsgruenApp, Privileges, UserGroupPermissions};
 use app\models\db\{Consultation, ConsultationLog, ConsultationUserGroup, EMailLog, User};
 use yii\web\{Request, Session};
+use yii\helpers\Html;
 
 class UserGroupAdminMethods
 {
     private Consultation $consultation;
-    private Request $request;
-    private Session $session;
+    private ?Request $request;
+    private ?Session $session;
 
-    public function setRequestData(Consultation $consultation, Request $request, Session $session): void
+    public function setRequestData(Consultation $consultation, ?Request $request, ?Session $session): void
     {
         $this->consultation = $consultation;
         $this->request = $request;
@@ -372,14 +373,18 @@ class UserGroupAdminMethods
         }
     }
 
-    private function sendWelcomeEmail(User $user, ?string $emailText, ?string $plainPassword): void
+    public function sendWelcomeEmail(User $user, ?string $emailText, ?string $plainPassword): void
     {
         if ($emailText === null || trim($emailText) === '' || !$user->email) {
             return;
         }
 
         $consUrl = UrlHelper::absolutizeLink(UrlHelper::homeUrl());
-        $emailText = str_replace('%LINK%', $consUrl, $emailText);
+        $emailText = str_replace(
+            ['%LINK%', '%NAME_GIVEN%', '%NAME_FAMILY%'],
+            [$consUrl, $user->nameGiven ?? '', $user->nameFamily ?? ''],
+            $emailText
+        );
 
         if ($plainPassword && $user->isEmailAuthUser()) {
             $accountText = str_replace(
@@ -391,6 +396,15 @@ class UserGroupAdminMethods
             $accountText = '';
         }
 
+        if (str_contains($emailText, '<br>') || str_contains($emailText, '<p>')) {
+            $html = $emailText;
+            $text = HTMLTools::toPlainText($html);
+            $accountText = nl2br(Html::encode($accountText));
+        } else {
+            $html = '';
+            $text = $emailText;
+        }
+
         try {
             MailTools::sendWithLog(
                 EMailLog::TYPE_ACCESS_GRANTED,
@@ -398,8 +412,8 @@ class UserGroupAdminMethods
                 $user->email,
                 $user->id,
                 \Yii::t('user', 'acc_grant_email_title'),
-                $emailText,
-                '',
+                $text,
+                $html,
                 ['%ACCOUNT%' => $accountText]
             );
         } catch (MailNotSent $e) {
@@ -563,7 +577,7 @@ class UserGroupAdminMethods
                         ($hasEmail ? $post['emailText'] : '')
                     );
                     $created++;
-                } catch (AlreadyExists $e) {
+                } catch (AlreadyExists) {
                     $alreadyExisted[] = $emails[$i];
                 } catch (\Exception $e) {
                     $errors[] = $emails[$i] . ': ' . $e->getMessage();

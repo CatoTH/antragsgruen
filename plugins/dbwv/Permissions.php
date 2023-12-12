@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace app\plugins\dbwv;
 
 use app\components\MotionNumbering;
-use app\models\db\ConsultationMotionType;
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\User;
+use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, User};
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\plugins\dbwv\workflow\Workflow;
 
 class Permissions extends \app\models\settings\Permissions
@@ -56,13 +54,8 @@ class Permissions extends \app\models\settings\Permissions
         return parent::motionCanEditText($motion);
     }
 
-    public function iMotionIsReadable(IMotion $imotion): bool
+    private function iAmInitiator(IMotion $imotion): bool
     {
-        // Admins, delegates
-        if (Module::currentUserCanSeeMotions()) {
-            return parent::iMotionIsReadable($imotion);
-        }
-
         // Proposers of the motions can only see their own motions
         if (is_a($imotion, Motion::class)) {
             $relevantMotionVersions = MotionNumbering::getSortedHistoryForMotion($imotion, false, true);
@@ -74,6 +67,47 @@ class Permissions extends \app\models\settings\Permissions
             return false;
         } else {
             return $imotion->iAmInitiator();
+        }
+    }
+
+    public function iMotionIsReadable(IMotion $imotion): bool
+    {
+        if (!parent::iMotionIsReadable($imotion) || !$imotion->getMyConsultation()) {
+            return false;
+        }
+
+        // Proposers of the motions can only see their own motions
+        if ($this->iAmInitiator($imotion)) {
+            return true;
+        }
+
+        if (!Module::currentUserCanSeeMotions()) {
+            return false;
+        }
+
+        // No special handling for amendments
+        if (!is_a($imotion, Motion::class)) {
+            return true;
+        }
+        /** @var Motion $imotion */
+
+        $privileges = [
+            Privileges::PRIVILEGE_CONTENT_EDIT,
+            Privileges::PRIVILEGE_SCREENING,
+            Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
+            Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED,
+            Module::PRIVILEGE_DBWV_ASSIGN_TOPIC,
+            Module::PRIVILEGE_DBWV_V1_EDITORIAL,
+            Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
+        ];
+        if ($imotion->getMyConsultation()->urlPath === Module::CONSULTATION_URL_BUND) {
+            $privileges[] = Privileges::PRIVILEGE_CHANGE_PROPOSALS;
+        }
+
+        if (User::haveOneOfPrivileges($imotion->getMyConsultation(), $privileges, PrivilegeQueryContext::motion($imotion))) {
+            return parent::iMotionIsReadable($imotion);
+        } else {
+            return $imotion->isVisible();
         }
     }
 }

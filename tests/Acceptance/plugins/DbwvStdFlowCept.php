@@ -96,21 +96,47 @@ $I->see('Sachgebiet III - Dienst- und Laufbahnrecht', 'h3');
 $I->logout();
 
 
-$I->wantTo('Delegierte: Antrag sehen - Antragstellende nicht - Referat kann nicht mehr bearbeiten');
+$I->wantTo('Delegierte: Antrag sehen');
 $I->loginAsDbwvTestUser('lv-sued-delegiert-0');
 $I->see('Testantrag');
 $I->see('Sachgebiet III - Dienst- und Laufbahnrecht', 'h3');
+$I->click('.motionLink2');
+$I->see('Third paragraph');
+$I->dontSeeElement('.motionHistory');
 $I->logout();
+$I->gotoConsultationHome(true, 'std', 'lv-sued');
+
+$I->wantTo('Andere Antragstellende: Antrag nicht sichtbar');
 $I->loginAsDbwvTestUser('lv-sued-antragsberechtigt-1');
 $I->dontSee('Testantrag');
 $I->dontSee('Sachgebiet III - Dienst- und Laufbahnrecht', 'h3');
 $I->logout();
 
+$I->wantTo('Antragstellende des Antrags: können Antrag inkl. Historie sehen');
 $I->loginAsDbwvTestUser('lv-sued-antragsberechtigt-0');
 $I->see('Testantrag');
 $I->dontSee('Sachgebiet III - Dienst- und Laufbahnrecht', 'h3');
+$I->click('.motion2');
+$I->see('Third paragraph');
+$I->see('V2', '.motionHistory .currentVersion');
+$I->clickJS('.motionHistory .historyOpener button');
+$I->see('V1', '.motionHistory .otherVersion');
+$I->click('.motionHistory .currentVersion .changesLink a');
+$I->see('Third paragraph', '.inserted');
 $I->logout();
+$I->gotoConsultationHome(true, 'std', 'lv-sued');
 
+$I->wantTo('LV-Vorstand: kann Antrag inkl. Historie sehen');
+$I->loginAsDbwvTestUser('lv-sued-vorstand');
+$I->click('.motionLink2');
+$I->see('Third paragraph');
+$I->see('V2', '.motionHistory .currentVersion');
+$I->clickJS('.motionHistory .historyOpener button');
+$I->see('V1', '.motionHistory .otherVersion');
+$I->logout();
+$I->gotoConsultationHome(true, 'std', 'lv-sued');
+
+$I->wantTo('Referat: kann nicht mehr bearbeiten');
 $I->loginAsDbwvTestUser('lv-sued-referat-iii');
 $I->click('.motionLink2');
 $I->dontSeeElement('#dbwv_step1_assign_number');
@@ -122,8 +148,7 @@ $I->wantTo('Ausschuss: Verfahrensvorschlag erarbeiten (ModÜ)');
 $I->loginAsDbwvTestUser('lv-sued-ausschuss-iii');
 $I->see('To Do (1)', '#adminTodo');
 $I->dontSeeElement('#proposedChanges');
-$I->see('V2', '.motionHistory');
-$I->dontSee('V3', '.motionHistory');
+$I->dontSeeElement('.motionHistory');
 $I->clickJS('.proposedChangesOpener button');
 $I->seeElement('#proposedChanges');
 $I->clickJS('#proposedChanges .proposalStatus6 input');
@@ -131,6 +156,9 @@ $I->clickJS('#proposedChanges .saving button');
 $I->wait(0.3);
 $I->dontSee('V2', '.motionHistory');
 $I->see('V3', '.motionHistory');
+$I->clickJS('.motionHistory .historyOpener button');
+$I->see('V2', '.motionHistory');
+$I->dontSee('V1', '.motionHistory');
 $I->click('#proposedChanges .editModification');
 $I->wait(0.3);
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData().replace(/Third paragraph/, "Dritter Absatz"))');
