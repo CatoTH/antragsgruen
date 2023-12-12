@@ -40,7 +40,11 @@ if ($amendment->changeExplanation !== '') {
     echo '<section id="amendmentExplanation" class="motionTextHolder">';
     echo '<h3 class="green">' . Yii::t('amend', 'reason') . '</h3>';
     echo '<div class="paragraph"><div class="text">';
-    echo $amendment->changeExplanation;
+    if ($consultation->getSettings()->externalLinksNewWindow) {
+        echo preg_replace('/<a( href=["\']([^"\']*)["\']>)/iu', '<a target="_blank"$1', $amendment->changeExplanation);
+    } else {
+        echo $amendment->changeExplanation;
+    }
     echo '</div></div>';
     echo '</section>';
 }
