@@ -94,10 +94,18 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             if ($i > 0 && !in_array($first3, ['<ol', '<ul', '<p>', '<di'])) {
                 echo '<br>';
             }
-            echo $line;
+            if ($consultation->getSettings()->externalLinksNewWindow) {
+                echo preg_replace('/<a( href=["\']([^"\']*)["\']>)/iu', '<a target="_blank"$1', $line);
+            } else {
+                echo $line;
+            }
         }
     } else {
-        echo $paragraph->origStr;
+        if ($consultation->getSettings()->externalLinksNewWindow) {
+            echo preg_replace('/<a( href=["\']([^"\']*)["\']>)/iu', '<a target="_blank"$1', $paragraph->origStr);
+        } else {
+            echo $paragraph->origStr;
+        }
     }
 
     // Only static HTML should be returned from this view, so we can safely cache it.
