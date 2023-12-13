@@ -57,7 +57,7 @@ class Tools
         $str = '';
 
         for ($i = 0; $i < $len; $i++) {
-            $index = rand(0, strlen($characters) - 1);
+            $index = random_int(0, strlen($characters) - 1);
             $str .= $characters[$index];
         }
 
