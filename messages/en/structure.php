@@ -141,6 +141,7 @@ return [
     'dateformat_dmy_slash' => 'dd/mm/yyyy (e.g. France)',
     'dateformat_mdy_slash' => 'mm/dd/yyyy (e.g. USA)',
     'dateformat_ymd_dash' => 'yyyy-mm-dd (int. standard)',
+    'dateformat_dmy_dash' => 'dd-mm-yyyy (e.g. the Netherlands)',
 
     'STATUS_DELETED'                      => 'Deleted',
     'STATUSV_DELETED'                     => 'Delete',
