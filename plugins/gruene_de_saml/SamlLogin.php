@@ -82,7 +82,7 @@ class SamlLogin implements LoginProviderInterface
         $user->fixedData = User::FIXED_NAME;
         $user->auth = $auth;
         $user->status = User::STATUS_CONFIRMED;
-        $user->organization = $user->organization ?? '';
+        $user->organization ??= '';
         if (!$user->save()) {
             throw new \Exception('Could not create user');
         }
