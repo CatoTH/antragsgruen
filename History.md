@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.14.0 [not released yet]
+
+- A Dutch translation is provided, thanks to m-rtijn and MickVolt.
+
 ### Version 4.13.1 (2023-12-09)
 
 - As admin, is now possible to edit the list of internal (proposed procedure) tags, just like the public ones.

@@ -1,0 +1,11 @@
+All the files which have a _untranslated extension in the title, are documents with complete strings, but are not translated.
+All the files which have a _NL_incomplete extension in the title, are documents which have correct NL translations, but might miss some strings.
+
+All the files which have neither, are combined files with the above two. So they have a complete list of strings, and can be translated.
+
+You can start to translate the following files:
+- admin.php
+- amend.php
+- speech.php
+- user.php
+- voting.php

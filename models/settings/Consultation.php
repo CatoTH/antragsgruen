@@ -32,6 +32,7 @@ class Consultation implements \JsonSerializable
     public const DATE_FORMAT_DMY_SLASH = 'dmy-slash'; // 13/01/2022
     public const DATE_FORMAT_MDY_SLASH = 'mdy-slash'; // 01/13/2022
     public const DATE_FORMAT_YMD_DASH = 'ymd-dash'; // 2022-01-13
+    public const DATE_FORMAT_DMY_DASH = 'dmy-dash'; // 13-01-2022
 
     // SETTINGS WITH TEST CASES
 
@@ -148,6 +149,7 @@ class Consultation implements \JsonSerializable
             self::DATE_FORMAT_DMY_SLASH => \Yii::t('structure', 'dateformat_dmy_slash'),
             self::DATE_FORMAT_MDY_SLASH => \Yii::t('structure', 'dateformat_mdy_slash'),
             self::DATE_FORMAT_YMD_DASH => \Yii::t('structure', 'dateformat_ymd_dash'),
+            self::DATE_FORMAT_DMY_DASH => \Yii::t('structure', 'dateformat_dmy_dash'),
         ];
     }
 
