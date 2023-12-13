@@ -8,7 +8,7 @@
 - If amendments are set up to be restricted to one paragraph, then each paragraph in the motion now shows a direct link to the amendment creation page, with that paragraph pre-selected.
 - It can be set up so that external links and PDF-links will be opened in new, blank browser tabs/windows.
 - Security: Consultation admins could grant privileges to other consultations within the same site.
-- The backlinkt on the "my account" page leads to the consultation where the user was coming from.
+- The backlink on the "my account" page leads to the consultation where the user was coming from.
 - Admins can now download Excel/XLSX-exports of amendments and the comments to motions.
 - Motions and amendment in the "My motions" section of the home page are now sorted by prefix.
 - Bugfix: When resolutions were shown on a separate page, title prefixes / motion signatures were shown.
