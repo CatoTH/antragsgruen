@@ -16,8 +16,8 @@ return [
     'supporter_you'          => 'Jouw!',
     'supporter_none'         => 'Geen',
     'table_caption'          => 'Metadata van dit amendement',
-    'table_description'      => 'Deze tabel geeft de status, de indiener en de metadata van dit amendement weer', 
-    
+    'table_description'      => 'Deze tabel geeft de status, de indiener en de metadata van dit amendement weer',
+
     'status'                 => 'Status',
     'proposed_status'        => 'Voorgestelde procedure',
     'referred_to'            => 'Verwezen naar',
@@ -215,7 +215,7 @@ return [
     'merge_explanation'                 => 'De text, met alle amendementen in de text, wordt hier getoond.' .
                                            'Voor elke wijziging, kun je aangeve  of je hem <strong>accepteert of afwijst</strong> Beweeg de cursor over de text en kies "accepteer" of "wijs af".<br><br>' .
                                            'Aanvullend, kun je<strong>vrij wijzigen</strong> in de text.<br>###COLLIDINGHINT###<br><br>' .
-                                           'Daarna selecteer je amendement status en clickt “Continue”. Een <strong>nieuwe motie ###NEWPREFIX###, version ###NEWVERSION###</strong> wordt aangemaakt. De originele motie, inclusief de amendementen, 
+                                           'Daarna selecteer je amendement status en clickt “Continue”. Een <strong>nieuwe motie ###NEWPREFIX###, version ###NEWVERSION###</strong> wordt aangemaakt. De originele motie, inclusief de amendementen,
                                         wordt bewaard als referentie, maar gemarkeerd als “obsolete”.',
     'merge_init_explanation'            => '<p>Je kunt een nieuwe versie van deze motie maken inclusief de voorgestelde amendementen. </p>
             <p>Je kunt kiezen om een enkel amendement in te voegen, of alle amendementen tegelijk. In het laatste geval kun je amendementen uitsluiten die afgewezen zijn of die strijdig zijn met andere amendementen.</p>
@@ -264,7 +264,7 @@ return [
     'merge1_amend_by'           => 'door',
     'merge1_goon'               => 'Volgende',
     'merge1_loading'            => 'Checking...',
-    'merge1_motion_prefix'      => 'Nieuwe ondersteuning op het voorstel',d
+    'merge1_motion_prefix'      => 'Nieuwe ondersteuning op het voorstel',
     'merge1_motion_version'     => 'Nieuwe versie van het voorstel',
     'merge1_amend_status'       => 'Nieuwe status van dit amendement',
     'merge1_done_title'         => 'Het voorstel is aangepast.',
@@ -278,7 +278,6 @@ return [
     'merge1_manual_new'         => 'Nieuwe versie van een conflicterend amendement %AMEND%',
     'merge1_err_collision'      => 'Kan niet autoatisch samengevoegd worden',
     'merge1_err_collision_desc' => 'Dit amendement kan niet automatisch samengevoegd worden met de motie, er zijn conflicten tussen aanpassingen van dit amendement en andere amendementen. Colflicterende amendementen moeten eerst teruggetrokken worden door de indieners of de adminsitratie. Neem aub contact op met admin voor overleg voor een oplossing.<br><br>De volgende amendementen hebben tegenstrijdige wijzingsvoorstellen:',
-
     'proposal_amend_title'       => 'Voorgestelde procedure',
     'proposal_edit_title'        => 'Wijzig voorgestelde versie',
     'proposal_edit_bread'        => 'Voorgestelde procedure',
@@ -351,7 +350,7 @@ return [
                                     "Kijk aub naar de volgende link voor het voorstel en bevestig of je hiermee instemt:\n%LINK%\n\n" .
                                     "Hint: Als je deze link doorstuurt zal de ontvanger het voorstel niet kunnen zien of ermee instemmen.\n\n" .
                                     "Met vriendelijke groet,\n" .
-                                    "  Het Het Motion Tools Team,
+                                    "  Het Het Motion Tools Team",
     'proposal_user_agree'        => 'Ik accepteer het voorstel',
     'proposal_user_agreed'       => 'je hebt het voorstel geaccepteerd',
     'proposal_user_disagree_h'   => 'als je het oneens bent, neem aub contact op met de orginasitoren van deze raadpleging.',
