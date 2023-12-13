@@ -54,7 +54,7 @@ use yii\helpers\Html;
                     <label class="url" for="subdomain"><?= $t('sitedata_subdomain') ?>:</label>
                     <div class="fakeurl">
                         <?php
-                        if (strpos($params->domainSubdomain ?: '', '<subdomain:[\w_-]+>') !== false) {
+                        if (str_contains($params->domainSubdomain ?: '', '<subdomain:[\w_-]+>')  ) {
                             echo str_replace('&lt;subdomain:[\w_-]+&gt;', $input, Html::encode($params->domainSubdomain ?: ''));
                         } else {
                             echo $input;

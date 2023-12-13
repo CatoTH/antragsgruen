@@ -199,7 +199,7 @@ class LayoutHooks extends Hooks
         }
 
         foreach ($motion->getActiveSections() as $section) {
-            if (strpos($section->getSettings()->title, 'Adressat') !== false && trim($section->data) !== '') {
+            if (str_contains($section->getSettings()->title, 'Adressat')   && trim($section->data) !== '') {
                 $motionData[] = [
                     'title'   => 'Konkrete Adressat*innen',
                     'content' => Html::encode($section->data),

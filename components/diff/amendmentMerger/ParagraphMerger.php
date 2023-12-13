@@ -154,7 +154,7 @@ class ParagraphMerger
 
                 // INS_START appears, is an attachment to the original word without changig it.
                 // However, do NOT do this if it's a plain insertion into plain text and we are merging collisions as we have better handling in those routines.
-                if (count($split) === 2 && $split[0] === $word->word && !(strpos($split[1], '<') === false && $this->mergeCollisions)) {
+                if (count($split) === 2 && $split[0] === $word->word && !(!str_contains($split[1], '<')   && $this->mergeCollisions)) {
                     $this->moveInsertIntoOwnWord($changeSetNo, $wordNo, '###INS_START###' . $split[1]);
                     $changeSet = $this->diffs[$changeSetNo];
                     $wordNo++;
@@ -288,8 +288,8 @@ class ParagraphMerger
             return false;
         }
 
-        $hasInsert = (strpos($paragraphDiffGroup->tokens[$firstPos]->diff, '###INS_START###') !== false);
-        $hasDelete = (strpos($paragraphDiffGroup->tokens[$firstPos]->diff, '###DEL_START###') !== false);
+        $hasInsert = (str_contains($paragraphDiffGroup->tokens[$firstPos]->diff, '###INS_START###')  );
+        $hasDelete = (str_contains($paragraphDiffGroup->tokens[$firstPos]->diff, '###DEL_START###')  );
         return ($hasInsert && !$hasDelete);
     }
 

@@ -89,7 +89,7 @@ class Frauenrat extends IPDFLayout
             $topic[] = $tag->title;
         }
         foreach ($motion->getActiveSections() as $section) {
-            if (strpos($section->getSettings()->title, 'Adressat') !== false) {
+            if (str_contains($section->getSettings()->title, 'Adressat')  ) {
                 $addressedTo = $section->getData();
             }
         }
@@ -194,7 +194,7 @@ class Frauenrat extends IPDFLayout
 
     public function printSectionHeading(string $text): void
     {
-        if (strpos($_SERVER['REQUEST_URI'], 'TOP_5') !== false) {
+        if (str_contains($_SERVER['REQUEST_URI'], 'TOP_5')  ) {
             return;
         }
 

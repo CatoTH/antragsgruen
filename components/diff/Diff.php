@@ -341,8 +341,8 @@ class Diff
         $combined = str_replace(DiffRenderer::INS_END . DiffRenderer::INS_START, '', $combined);
 
         // If too much of the whole paragraph changes, then we don't display an inline diff anymore
-        if (strpos($combined, DiffRenderer::DEL_START) !== false &&
-            strpos($combined, DiffRenderer::INS_START) !== false
+        if (str_contains($combined, DiffRenderer::DEL_START)   &&
+            str_contains($combined, DiffRenderer::INS_START)  
         ) {
             $changeRatio = $this->computeLineDiffChangeRatio($lineOld, $combined);
             if ($changeRatio > self::MAX_LINE_CHANGE_RATIO) {

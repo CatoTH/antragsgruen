@@ -86,11 +86,11 @@ class VotingItemGroup
     {
         if (str_starts_with($idToSet, static::ADHOC_PREFIX)) {
             $otherItem = null;
-            if (strpos($idToSet, static::ADHOC_PREFIX_AMENDMENT) !== false) {
+            if (str_contains($idToSet, static::ADHOC_PREFIX_AMENDMENT)  ) {
                 $groupWithId = intval(explode('-', $idToSet)[2]);
                 $otherItem = $imotion->getMyConsultation()->getAmendment($groupWithId);
             }
-            if (strpos($idToSet, static::ADHOC_PREFIX_MOTION) !== false) {
+            if (str_contains($idToSet, static::ADHOC_PREFIX_MOTION)  ) {
                 $groupWithId = intval(explode('-', $idToSet)[2]);
                 $otherItem = $imotion->getMyConsultation()->getMotion($groupWithId);
             }

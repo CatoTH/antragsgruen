@@ -76,7 +76,7 @@ class AntragsgruenInitDb extends Model
         } else {
             $this->prettyUrls = true;
         }
-        if (strpos($this->sqlHost, ':') !== false) {
+        if (str_contains($this->sqlHost, ':')  ) {
             list($host, $port) = explode(':', $this->sqlHost);
             $this->sqlHost = $host;
             $this->sqlPort = IntVal($port);
