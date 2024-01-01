@@ -24,7 +24,7 @@ jobs:
         run: |
           php vendor/bin/phpstan analyse --configuration=phpstan.neon --error-format=github --generate-baseline
       - name: Upload baseline
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: phpstan-baseline.neon
           path: phpstan-baseline.neon
