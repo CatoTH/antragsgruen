@@ -14,7 +14,7 @@ use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
-    public const CANDIDATURE_TYPES = [9];
+    private const CANDIDATURE_TYPES = [9];
 
     public function beginPage(string $before): string
     {
@@ -32,7 +32,7 @@ class LayoutHooks extends Hooks
             /** @var Base $controller */
             $controller = \Yii::$app->controller;
             // Back link to candidature page
-            if ($controller->route === 'motion/view' && $controller->motion && in_array($controller->motion->motionTypeId, static::CANDIDATURE_TYPES)) {
+            if ($controller->route === 'motion/view' && $controller->motion && in_array($controller->motion->motionTypeId, self::CANDIDATURE_TYPES)) {
                 $candidatureUrl = UrlHelper::createUrl(['/egp/candidatures/index', 'motionTypeId' => $controller->motion->motionTypeId]);
                 $str = preg_replace('/(<li class="back">.*href=")[^"]*(".*<\/li>)/siuU', '$1 ' . $candidatureUrl . '$2', $str);
             }
@@ -53,7 +53,7 @@ class LayoutHooks extends Hooks
         $controller = RequestContext::getWebApplication()->controller;
 
         // Back link to candidature page
-        if ($controller->route === 'motion/view' && $controller->motion && in_array($controller->motion->motionTypeId, static::CANDIDATURE_TYPES)) {
+        if ($controller->route === 'motion/view' && $controller->motion && in_array($controller->motion->motionTypeId, self::CANDIDATURE_TYPES)) {
             $lastBreadcrumb = array_pop($this->layout->breadcrumbs);
             $candidatureUrl = UrlHelper::createUrl(['/egp/candidatures/index', 'motionTypeId' => $controller->motion->motionTypeId]);
             $this->layout->breadcrumbs[$candidatureUrl] = 'Candidatures';

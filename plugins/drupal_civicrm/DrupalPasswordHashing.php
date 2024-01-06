@@ -10,9 +10,9 @@ namespace app\plugins\drupal_civicrm;
  */
 class DrupalPasswordHashing
 {
-    public const DRUPAL_MIN_HASH_COUNT = 7;
-    public const DRUPAL_MAX_HASH_COUNT = 30;
-    public const DRUPAL_HASH_LENGTH = 55;
+    private const DRUPAL_MIN_HASH_COUNT = 7;
+    private const DRUPAL_MAX_HASH_COUNT = 30;
+    private const DRUPAL_HASH_LENGTH = 55;
 
     private static function _password_base64_encode(string $input, int $count): string
     {

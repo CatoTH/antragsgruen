@@ -9,9 +9,9 @@ use app\models\exceptions\FormError;
 
 class VotingItemGroup
 {
-    public const ADHOC_PREFIX = 'adhoc-';
-    public const ADHOC_PREFIX_MOTION = 'motion-';
-    public const ADHOC_PREFIX_AMENDMENT = 'amendment-';
+    private const ADHOC_PREFIX = 'adhoc-';
+    private const ADHOC_PREFIX_MOTION = 'motion-';
+    private const ADHOC_PREFIX_AMENDMENT = 'amendment-';
 
     public string $groupId;
     public ?string $groupName;
@@ -37,11 +37,11 @@ class VotingItemGroup
         $this->groupName = $groupName;
 
         if ($groupId === null && is_a($adhocItem, Motion::class)) {
-            $this->groupId = static::ADHOC_PREFIX . static::ADHOC_PREFIX_MOTION . $adhocItem->id;
+            $this->groupId = self::ADHOC_PREFIX . self::ADHOC_PREFIX_MOTION . $adhocItem->id;
             $this->motions[] = $adhocItem;
             $this->motionIds[] = $adhocItem->id;
         } elseif ($groupId === null && is_a($adhocItem, Amendment::class)) {
-            $this->groupId = static::ADHOC_PREFIX . static::ADHOC_PREFIX_AMENDMENT . $adhocItem->id;
+            $this->groupId = self::ADHOC_PREFIX . self::ADHOC_PREFIX_AMENDMENT . $adhocItem->id;
             $this->amendments[] = $adhocItem;
             $this->amendmentIds[] = $adhocItem->id;
         } else {
@@ -51,7 +51,7 @@ class VotingItemGroup
 
     public function isAdhocGroup(): bool
     {
-        return (str_starts_with($this->groupId, static::ADHOC_PREFIX));
+        return (str_starts_with($this->groupId, self::ADHOC_PREFIX));
     }
 
     public function isOnlyMyselfGroup(IMotion $item): bool {
@@ -84,13 +84,13 @@ class VotingItemGroup
 
     public static function setVotingItemGroupToAllItems(VotingBlock $votingBlock, IMotion $imotion, string $idToSet, ?string $nameToSet): void
     {
-        if (str_starts_with($idToSet, static::ADHOC_PREFIX)) {
+        if (str_starts_with($idToSet, self::ADHOC_PREFIX)) {
             $otherItem = null;
-            if (str_contains($idToSet, static::ADHOC_PREFIX_AMENDMENT)  ) {
+            if (str_contains($idToSet, self::ADHOC_PREFIX_AMENDMENT)  ) {
                 $groupWithId = intval(explode('-', $idToSet)[2]);
                 $otherItem = $imotion->getMyConsultation()->getAmendment($groupWithId);
             }
-            if (str_contains($idToSet, static::ADHOC_PREFIX_MOTION)  ) {
+            if (str_contains($idToSet, self::ADHOC_PREFIX_MOTION)  ) {
                 $groupWithId = intval(explode('-', $idToSet)[2]);
                 $otherItem = $imotion->getMyConsultation()->getMotion($groupWithId);
             }
