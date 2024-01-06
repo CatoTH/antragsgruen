@@ -10,7 +10,7 @@ use Yii;
 
 class ConfigurationChanger extends Module
 {
-    public const DEFAULT_CONFIGURATION = [
+    private const DEFAULT_CONFIGURATION = [
         'confirmEmailAddresses' => true,
         'xelatexPath'           => null,
         'xdvipdfmx'             => null,

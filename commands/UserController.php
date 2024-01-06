@@ -117,7 +117,7 @@ class UserController extends Controller
             $user->link('userGroups', $toUserGroup);
         }
 
-        $this->stdout('Created the user');
+        $this->stdout('Created the user: ' . $user->auth . "\n");
 
         if ($welcomeTemplate) {
             \Yii::$app->urlManager->setBaseUrl("/");

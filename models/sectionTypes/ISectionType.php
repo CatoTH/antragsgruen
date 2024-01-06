@@ -23,14 +23,14 @@ abstract class ISectionType
     public const TYPE_PDF_ALTERNATIVE = 6;
     public const TYPE_VIDEO_EMBED     = 7;
 
-    public const TYPE_API_TITLE = 'Title';
-    public const TYPE_API_TEXT_SIMPLE = 'TextSimple';
-    public const TYPE_API_TEXT_HTML = 'TextHTML';
-    public const TYPE_API_IMAGE = 'Image';
-    public const TYPE_API_TABULAR = 'TabularData';
-    public const TYPE_API_PDF_ATTACHMENT = 'PDFAttachment';
-    public const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
-    public const TYPE_API_VIDEO_EMBED = 'VideoEmbed';
+    protected const TYPE_API_TITLE = 'Title';
+    protected const TYPE_API_TEXT_SIMPLE = 'TextSimple';
+    protected const TYPE_API_TEXT_HTML = 'TextHTML';
+    protected const TYPE_API_IMAGE = 'Image';
+    protected const TYPE_API_TABULAR = 'TabularData';
+    protected const TYPE_API_PDF_ATTACHMENT = 'PDFAttachment';
+    protected const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
+    protected const TYPE_API_VIDEO_EMBED = 'VideoEmbed';
 
     protected IMotionSection $section;
     protected bool $absolutizeLinks = false;
@@ -62,26 +62,17 @@ abstract class ISectionType
 
     public static function typeIdToApi(int $type): string
     {
-        switch ($type) {
-            case static::TYPE_TITLE:
-                return static::TYPE_API_TITLE;
-            case static::TYPE_TEXT_SIMPLE:
-                return static::TYPE_API_TEXT_SIMPLE;
-            case static::TYPE_TEXT_HTML:
-                return static::TYPE_API_TEXT_HTML;
-            case static::TYPE_IMAGE:
-                return static::TYPE_API_IMAGE;
-            case static::TYPE_TABULAR:
-                return static::TYPE_API_TABULAR;
-            case static::TYPE_API_PDF_ALTERNATIVE:
-                return static::TYPE_API_PDF_ALTERNATIVE;
-            case static::TYPE_API_PDF_ATTACHMENT:
-                return static::TYPE_API_PDF_ATTACHMENT;
-            case static::TYPE_VIDEO_EMBED:
-                return static::TYPE_API_VIDEO_EMBED;
-            default:
-                return 'Unknown';
-        }
+        return match ($type) {
+            static::TYPE_TITLE => static::TYPE_API_TITLE,
+            static::TYPE_TEXT_SIMPLE => static::TYPE_API_TEXT_SIMPLE,
+            static::TYPE_TEXT_HTML => static::TYPE_API_TEXT_HTML,
+            static::TYPE_IMAGE => static::TYPE_API_IMAGE,
+            static::TYPE_TABULAR => static::TYPE_API_TABULAR,
+            static::TYPE_PDF_ALTERNATIVE => static::TYPE_API_PDF_ALTERNATIVE,
+            static::TYPE_PDF_ATTACHMENT => static::TYPE_API_PDF_ATTACHMENT,
+            static::TYPE_VIDEO_EMBED => static::TYPE_API_VIDEO_EMBED,
+            default => 'Unknown',
+        };
     }
 
     public function setAbsolutizeLinks(bool $absolutize): void
