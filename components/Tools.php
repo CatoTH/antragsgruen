@@ -73,15 +73,12 @@ class Tools
             return $consultation->getSettings()->dateFormat;
         }
 
-        switch (self::getCurrentDateLocale()) {
-            case 'de':
-                return ConsultationSettings::DATE_FORMAT_DMY_DOT;
-            case 'fr':
-                return ConsultationSettings::DATE_FORMAT_DMY_SLASH;
-            case 'en':
-            default:
-                return ConsultationSettings::DATE_FORMAT_MDY_SLASH;
-        }
+        return match (self::getCurrentDateLocale()) {
+            'de' => ConsultationSettings::DATE_FORMAT_DMY_DOT,
+            'fr' => ConsultationSettings::DATE_FORMAT_DMY_SLASH,
+            'nl' => ConsultationSettings::DATE_FORMAT_DMY_DASH,
+            default => ConsultationSettings::DATE_FORMAT_MDY_SLASH,
+        };
     }
 
     public static function dateBootstraptime2sql(string $time, ?string $locale = null): string
@@ -280,17 +277,13 @@ class Tools
             $locale = Tools::getCurrentDateLocale();
         }
 
-        if ($locale === 'de') {
-            return $time->format('d.m.Y H:i');
-        } elseif ($locale === 'fr') {
-            return $time->format('d/m/Y H:i');
-        } elseif ($locale === 'en') {
-            return $time->format('m/d/Y H:i');
-        } elseif ($locale === 'nl') {
-            return $time->format('d-m-Y H:i');
-        } else {
-            throw new Internal('Unsupported Locale: ' . $locale);
-        }
+        return match ($locale) {
+            'de' => $time->format('d.m.Y H:i'),
+            'fr' => $time->format('d/m/Y H:i'),
+            'en' => $time->format('m/d/Y H:i'),
+            'nl' => $time->format('d-m-Y H:i'),
+            default => throw new Internal('Unsupported Locale: ' . $locale)
+        };
     }
 
     private static int $last_time = 0;
@@ -329,25 +322,14 @@ class Tools
             '%MONTHNAME%' => \Yii::t('structure', 'months_' . intval($date[1])),
         ];
 
-        switch (self::getCurrentDateFormat()) {
-            case ConsultationSettings::DATE_FORMAT_DMY_DOT:
-                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%.%MONTH%.%YEAR%</span>';
-                break;
-            case ConsultationSettings::DATE_FORMAT_DMY_SLASH:
-                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%/%MONTH%/%YEAR%</span>';
-                break;
-            case ConsultationSettings::DATE_FORMAT_MDY_SLASH:
-                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%MONTH%/%DAY%/%YEAR%</span>';
-                break;
-            case ConsultationSettings::DATE_FORMAT_YMD_DASH:
-                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%YEAR%-%MONTH%-%DAY%</span>';
-                break;
-            case ConsultationSettings::DATE_FORMAT_DMY_DASH:
-                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%-%MONTH%-%YEAR%</span>';
-                break;
-            default:
-                throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat());
-        }
+        $pattern = match (self::getCurrentDateFormat()) {
+            ConsultationSettings::DATE_FORMAT_DMY_DOT => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%.%MONTH%.%YEAR%</span>',
+            ConsultationSettings::DATE_FORMAT_DMY_SLASH => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%/%MONTH%/%YEAR%</span>',
+            ConsultationSettings::DATE_FORMAT_MDY_SLASH => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%MONTH%/%DAY%/%YEAR%</span>',
+            ConsultationSettings::DATE_FORMAT_YMD_DASH => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%YEAR%-%MONTH%-%DAY%</span>',
+            ConsultationSettings::DATE_FORMAT_DMY_DASH => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%-%MONTH%-%YEAR%</span>',
+            default => throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat()),
+        };
 
         return str_replace(array_keys($replaces), array_values($replaces), $pattern);
     }
@@ -369,20 +351,14 @@ class Tools
             return '-';
         }
 
-        switch (self::getCurrentDateFormat()) {
-            case ConsultationSettings::DATE_FORMAT_DMY_DOT:
-                return sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]);
-            case ConsultationSettings::DATE_FORMAT_DMY_SLASH:
-                return sprintf('%02d/%02d/%04d', $date[2], $date[1], $date[0]);
-            case ConsultationSettings::DATE_FORMAT_MDY_SLASH:
-                return sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]);
-            case ConsultationSettings::DATE_FORMAT_YMD_DASH:
-                return sprintf('%04d-%02d-%02d', $date[0], $date[1], $date[2]);
-            case ConsultationSettings::DATE_FORMAT_DMY_DASH:
-                return sprintf('%02d-%02d-%04d', $date[2], $date[1], $date[0]);
-            default:
-                throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat());
-        }
+        return match (self::getCurrentDateFormat()) {
+            ConsultationSettings::DATE_FORMAT_DMY_DOT => sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]),
+            ConsultationSettings::DATE_FORMAT_DMY_SLASH => sprintf('%02d/%02d/%04d', $date[2], $date[1], $date[0]),
+            ConsultationSettings::DATE_FORMAT_MDY_SLASH => sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]),
+            ConsultationSettings::DATE_FORMAT_YMD_DASH => sprintf('%04d-%02d-%02d', $date[0], $date[1], $date[2]),
+            ConsultationSettings::DATE_FORMAT_DMY_DASH => sprintf('%02d-%02d-%04d', $date[2], $date[1], $date[0]),
+            default => throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat()),
+        };
     }
 
     public static function formatMysqlDateTime(string $mysqlDate, bool $allowRelativeDates = true): string
