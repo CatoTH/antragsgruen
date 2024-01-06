@@ -14,23 +14,23 @@ use yii\helpers\Html;
 abstract class ISectionType
 {
     // Synchronize with MotionTypeEdit.ts
-    const TYPE_TITLE           = 0;
-    const TYPE_TEXT_SIMPLE     = 1;
-    const TYPE_TEXT_HTML       = 2;
-    const TYPE_IMAGE           = 3;
-    const TYPE_TABULAR         = 4;
-    const TYPE_PDF_ATTACHMENT  = 5;
-    const TYPE_PDF_ALTERNATIVE = 6;
-    const TYPE_VIDEO_EMBED     = 7;
+    public const TYPE_TITLE           = 0;
+    public const TYPE_TEXT_SIMPLE     = 1;
+    public const TYPE_TEXT_HTML       = 2;
+    public const TYPE_IMAGE           = 3;
+    public const TYPE_TABULAR         = 4;
+    public const TYPE_PDF_ATTACHMENT  = 5;
+    public const TYPE_PDF_ALTERNATIVE = 6;
+    public const TYPE_VIDEO_EMBED     = 7;
 
-    const TYPE_API_TITLE = 'Title';
-    const TYPE_API_TEXT_SIMPLE = 'TextSimple';
-    const TYPE_API_TEXT_HTML = 'TextHTML';
-    const TYPE_API_IMAGE = 'Image';
-    const TYPE_API_TABULAR = 'TabularData';
-    const TYPE_API_PDF_ATTACHMENT = 'PDFAttachment';
-    const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
-    const TYPE_API_VIDEO_EMBED = 'VideoEmbed';
+    public const TYPE_API_TITLE = 'Title';
+    public const TYPE_API_TEXT_SIMPLE = 'TextSimple';
+    public const TYPE_API_TEXT_HTML = 'TextHTML';
+    public const TYPE_API_IMAGE = 'Image';
+    public const TYPE_API_TABULAR = 'TabularData';
+    public const TYPE_API_PDF_ATTACHMENT = 'PDFAttachment';
+    public const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
+    public const TYPE_API_VIDEO_EMBED = 'VideoEmbed';
 
     protected IMotionSection $section;
     protected bool $absolutizeLinks = false;

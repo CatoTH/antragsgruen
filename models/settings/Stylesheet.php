@@ -6,15 +6,15 @@ class Stylesheet implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    const TYPE_COLOR = 'color';
-    const TYPE_CHECKBOX = 'checkbox';
-    const TYPE_PIXEL = 'pixel';
-    const TYPE_NUMBER = 'number';
-    const TYPE_FONT = 'font';
-    const TYPE_IMAGE = 'image';
+    public const TYPE_COLOR = 'color';
+    public const TYPE_CHECKBOX = 'checkbox';
+    public const TYPE_PIXEL = 'pixel';
+    public const TYPE_NUMBER = 'number';
+    public const TYPE_FONT = 'font';
+    public const TYPE_IMAGE = 'image';
 
-    const DEFAULTS_LAYOUT_CLASSIC = 'layout-classic';
-    const DEFAULTS_LAYOUT_DBJR = 'layout-dbjr';
+    public const DEFAULTS_LAYOUT_CLASSIC = 'layout-classic';
+    public const DEFAULTS_LAYOUT_DBJR = 'layout-dbjr';
 
     public string $bodyFont;
     public int $bodyFontSize;

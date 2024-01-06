@@ -6,9 +6,9 @@ class InitiatorForm implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    const CONTACT_NONE = 0;
-    const CONTACT_OPTIONAL = 1;
-    const CONTACT_REQUIRED = 2;
+    public const CONTACT_NONE = 0;
+    public const CONTACT_OPTIONAL = 1;
+    public const CONTACT_REQUIRED = 2;
 
     public int $type = 0;
 

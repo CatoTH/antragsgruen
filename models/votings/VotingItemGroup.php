@@ -9,9 +9,9 @@ use app\models\exceptions\FormError;
 
 class VotingItemGroup
 {
-    const ADHOC_PREFIX = 'adhoc-';
-    const ADHOC_PREFIX_MOTION = 'motion-';
-    const ADHOC_PREFIX_AMENDMENT = 'amendment-';
+    public const ADHOC_PREFIX = 'adhoc-';
+    public const ADHOC_PREFIX_MOTION = 'motion-';
+    public const ADHOC_PREFIX_AMENDMENT = 'amendment-';
 
     public string $groupId;
     public ?string $groupName;
