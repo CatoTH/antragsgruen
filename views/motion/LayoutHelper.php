@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace app\views\motion;
 
 use app\components\HashedStaticFileCache;
-use app\models\layoutHooks\Layout as LayoutHooks;
-use app\models\mergeAmendments\Init;
-use app\models\sectionTypes\TextSimple;
-use app\models\settings\{PrivilegeQueryContext, Privileges, VotingData, AntragsgruenApp};
-use app\components\latex\{Content, Exporter, Layout as LatexLayout};
+use app\components\html2pdf\Html2PdfConverter;
+use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
 use app\components\Tools;
 use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
+use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\LimitedSupporterList;
+use app\models\mergeAmendments\Init;
 use app\models\policies\IPolicy;
-use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\{ISectionType, TextSimple};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, VotingData};
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
@@ -237,9 +237,9 @@ class LayoutHelper
      * @throws \app\models\exceptions\Internal
      * @throws \Exception
      */
-    public static function renderTeX(Motion $motion): Content
+    public static function renderTeX(Motion $motion): LatexContent
     {
-        $content                  = new Content();
+        $content                  = new LatexContent();
         $content->template        = $motion->getMyMotionType()->texTemplate->texContent;
         $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
         $content->logoData        = $motion->getMyConsultation()->getPdfLogoData();
@@ -715,6 +715,111 @@ class LayoutHelper
         $content  = LayoutHelper::renderTeX($motion);
         $pdf      = $exporter->createPDF([$content]);
         HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdf);
+        return $pdf;
+    }
+
+    public static function createPdfFromHtml(Motion $motion): string
+    {
+        //$cache = HashedStaticFileCache::getCache($motion->getPdfCacheKey(), null);
+        //if ($cache && !YII_DEBUG) {
+        //    return $cache;
+        //}
+
+        $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
+        $content = new LatexContent();
+
+        $content->template        = file_get_contents(__DIR__ . '/../../assets/html2pdf/application.html');
+        $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
+        $content->logoData        = $motion->getMyConsultation()->getPdfLogoData();
+        $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
+        $content->introductionBig = $intro[0];
+        if ($motion->isResolution()) {
+            $names                = $motion->getMyConsultation()->getStatuses()->getStatusNames();
+            $content->titleRaw    = $motion->title;
+            $content->titlePrefix = $names[$motion->status] . "\n";
+            $content->titleLong   = $names[$motion->status] . ': ' . $motion->getTitleWithIntro();
+            $content->title       = $motion->getTitleWithIntro();
+        } else {
+            $content->titleRaw    = $motion->title;
+            $content->titlePrefix = $motion->getFormattedTitlePrefix();
+            $content->titleLong   = $motion->getTitleWithPrefix();
+            $content->title       = $motion->getTitleWithIntro();
+        }
+        if (count($intro) > 1) {
+            array_shift($intro);
+            $content->introductionSmall = implode("\n", $intro);
+        }
+        $initiators = [];
+        foreach ($motion->getInitiators() as $init) {
+            $initiators[] = $init->getNameWithResolutionDate(false);
+        }
+        $initiatorsStr            = implode(', ', $initiators);
+        $content->author          = $initiatorsStr;
+        $content->publicationDate = Tools::formatMysqlDate($motion->datePublication);
+        $content->typeName        = $motion->getMyMotionType()->titleSingular;
+
+        if ($motion->agendaItem) {
+            $content->agendaItemName = $motion->agendaItem->title;
+        }
+
+        foreach ($motion->getDataTable() as $key => $val) {
+            $content->motionDataTable .= Html::encode($key) . ':   &   ';
+            $content->motionDataTable .= Html::encode($val) . '   \\\\';
+        }
+
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            $ppSections = self::getVisibleProposedProcedureSections($motion, null);
+        }
+
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && !self::showProposedProceduresInline($motion)) {
+            /** @var array<array{title: string, section: ISectionType}> $ppSections */
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                if ($ppSection['section']->isLayoutRight()) {
+                    $content->textRight .= $ppSection['section']->getAmendmentPlainHtml();
+                } else {
+                    $content->textMain .= $ppSection['section']->getAmendmentPlainHtml();
+                }
+            }
+        }
+
+        foreach ($motion->getSortedSections(true) as $section) {
+            $shownPp = false;
+            if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+                /** @var array<array{title: string, section: TextSimple}> $ppSections */
+                foreach ($ppSections as $ppSection) {
+                    if ($ppSection['section']->getSectionId() === $section->sectionId) {
+                        $ppSection['section']->setDefaultToOnlyDiff(false);
+                        if ($section->isLayoutRight()) {
+                            $content->textRight .= $ppSection['section']->getAmendmentPlainHtml();
+                        } else {
+                            $content->textMain .= $ppSection['section']->getAmendmentPlainHtml();
+                        }
+                        $shownPp = true;
+                    }
+                }
+            }
+            if (!$shownPp) {
+                if ($section->isLayoutRight()) {
+                    $content->textRight .= $section->getSectionType()->getMotionPlainHtml();;
+                } else {
+                    $content->textMain .= $section->getSectionType()->getMotionPlainHtml();;
+                }
+            }
+        }
+
+        $limitedSupporters = LimitedSupporterList::createFromIMotion($motion);
+        if (count($limitedSupporters->supporters) > 0) {
+            $content->textMain .= "<h2>" . Html::encode(\Yii::t('motion', 'supporters_heading')) . "</h2><br>";
+            $supps             = [];
+            foreach ($limitedSupporters->supporters as $supp) {
+                $supps[] = $supp->getNameWithOrga();
+            }
+            $content->textMain .= '<p>' . Html::encode(implode('; ', $supps)) . $limitedSupporters->truncatedToString(';') . '</p>';
+        }
+
+        $pdf      = $exporter->createPDF([$content]);
+        //HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdf);
         return $pdf;
     }
 

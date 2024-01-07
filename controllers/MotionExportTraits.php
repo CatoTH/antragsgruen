@@ -104,6 +104,8 @@ trait MotionExportTraits
 
         if ($motion->getAlternativePdfSection()) {
             $pdfData = $motion->getAlternativePdfSection()->getData();
+        } elseif (AntragsgruenApp::getInstance()->weasyprintPath) {
+            $pdfData = LayoutHelper::createPdfFromHtml($motion);
         } elseif ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
             $pdfData = LayoutHelper::createPdfLatex($motion);
         } else {
