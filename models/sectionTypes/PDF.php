@@ -1,8 +1,7 @@
 <?php
 
 namespace app\models\sectionTypes;
-
-use app\components\{latex\Content, Tools, UrlHelper};
+use app\components\{latex\Content as LatexContent, html2pdf\Content as HtmlToPdfContent, Tools, UrlHelper};
 use app\models\db\{Consultation, MotionSection};
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
@@ -311,7 +310,7 @@ class PDF extends ISectionType
         return '[PDF]';
     }
 
-    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
+    public function printMotionTeX(bool $isRight, LatexContent $content, Consultation $consultation): void
     {
         if ($this->isEmpty()) {
             return;
@@ -326,9 +325,19 @@ class PDF extends ISectionType
         }
     }
 
-    public function printAmendmentTeX(bool $isRight, Content $content): void
+    public function printAmendmentTeX(bool $isRight, LatexContent $content): void
     {
         // @TODO
+    }
+
+    public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
+    {
+        // TODO: Implement printMotionHtml2Pdf() method.
+    }
+
+    public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
+    {
+        // TODO: Implement printAmendmentHtml2Pdf() method.
     }
 
     public function getMotionODS(): string

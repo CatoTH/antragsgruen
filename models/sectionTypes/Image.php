@@ -2,7 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\{latex\Content, Tools, UrlHelper};
+use app\components\{latex\Content as LatexContent, html2pdf\Content as HtmlToPdfContent, Tools, UrlHelper};
 use app\models\db\{AmendmentSection, Consultation, MotionSection};
 use app\models\exceptions\{FormError, Internal};
 use app\models\settings\AntragsgruenApp;
@@ -246,8 +246,6 @@ class Image extends ISectionType
             return '';
         }
 
-        /** @var MotionSection $section */
-        $section = $this->section;
         $url     = $this->getImageUrl($this->absolutizeLinks, $showAlways);
 
         return '<img src="' . Html::encode($url) . '" alt="' . Html::encode($this->getTitle()) . '">';
@@ -344,7 +342,7 @@ class Image extends ISectionType
         return ($this->isEmpty() ? '' : '[IMAGE]');
     }
 
-    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
+    public function printMotionTeX(bool $isRight, LatexContent $content, Consultation $consultation): void
     {
         if ($this->isEmpty()) {
             return;
@@ -384,7 +382,44 @@ class Image extends ISectionType
         $content->imageData[$filenameBase] = $imageData;
     }
 
-    public function printAmendmentTeX(bool $isRight, Content $content): void
+    public function printAmendmentTeX(bool $isRight, LatexContent $content): void
+    {
+        if ($isRight) {
+            $content->textRight .= ($this->isEmpty() ? '' : '[IMAGE]');
+        } else {
+            $content->textMain .= ($this->isEmpty() ? '' : '[IMAGE]');
+        }
+    }
+
+    public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
+    {
+        if ($this->isEmpty()) {
+            return;
+        }
+
+        $metadata = json_decode($this->section->metadata, true);
+
+        $fileExt      = static::getFileExtensionFromMimeType($metadata['mime']);
+        if ($isRight) {
+            $imageData          = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
+        } else {
+            $imageData         = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
+        }
+
+        $params   = AntragsgruenApp::getInstance();
+        $filenameBase = uniqid('motion-pdf-image') . '.' . $fileExt;
+        $filenameHtml = $params->getTmpDir() . $filenameBase;
+
+        if ($isRight) {
+            $content->textRight .= '<img src="' . Html::encode($filenameHtml) . '" alt="image">';
+        } else {
+            $content->textMain .= '<img src="' . Html::encode($filenameHtml) . '" alt="image">';
+        }
+
+        $content->imageData[$filenameBase] = $imageData;
+    }
+
+    public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
     {
         if ($isRight) {
             $content->textRight .= ($this->isEmpty() ? '' : '[IMAGE]');

@@ -2,7 +2,8 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\latex\Content;
+use app\components\latex\Content as LatexContent;
+use app\components\html2pdf\Content as HtmlToPdfContent;
 use app\models\settings\MotionSection;
 use app\models\db\{Consultation, IMotionSection, Motion};
 use app\models\exceptions\FormError;
@@ -175,9 +176,13 @@ abstract class ISectionType
 
     abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void;
 
-    abstract public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void;
+    abstract public function printMotionTeX(bool $isRight, LatexContent $content, Consultation $consultation): void;
 
-    abstract public function printAmendmentTeX(bool $isRight, Content $content): void;
+    abstract public function printAmendmentTeX(bool $isRight, LatexContent $content): void;
+
+    abstract public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void;
+
+    abstract public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void;
 
     abstract public function getMotionODS(): string;
 

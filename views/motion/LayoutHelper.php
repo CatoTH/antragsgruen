@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\views\motion;
 
 use app\components\HashedStaticFileCache;
-use app\components\html2pdf\Html2PdfConverter;
+use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
 use app\components\Tools;
 use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
@@ -726,7 +726,7 @@ class LayoutHelper
         //}
 
         $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
-        $content = new LatexContent();
+        $content = new HtmlToPdfContent();
 
         $content->template        = file_get_contents(__DIR__ . '/../../assets/html2pdf/application.html');
         $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
@@ -775,11 +775,7 @@ class LayoutHelper
             /** @var array<array{title: string, section: ISectionType}> $ppSections */
             foreach ($ppSections as $ppSection) {
                 $ppSection['section']->setTitlePrefix($ppSection['title']);
-                if ($ppSection['section']->isLayoutRight()) {
-                    $content->textRight .= $ppSection['section']->getAmendmentPlainHtml();
-                } else {
-                    $content->textMain .= $ppSection['section']->getAmendmentPlainHtml();
-                }
+                $ppSection['section']->getSectionType()->printAmendmentHtml2Pdf($ppSection['section']->isLayoutRight(), $content);
             }
         }
 
@@ -790,21 +786,13 @@ class LayoutHelper
                 foreach ($ppSections as $ppSection) {
                     if ($ppSection['section']->getSectionId() === $section->sectionId) {
                         $ppSection['section']->setDefaultToOnlyDiff(false);
-                        if ($section->isLayoutRight()) {
-                            $content->textRight .= $ppSection['section']->getAmendmentPlainHtml();
-                        } else {
-                            $content->textMain .= $ppSection['section']->getAmendmentPlainHtml();
-                        }
+                        $ppSection['section']->getSectionType()->printAmendmentHtml2Pdf($section->isLayoutRight(), $content);
                         $shownPp = true;
                     }
                 }
             }
             if (!$shownPp) {
-                if ($section->isLayoutRight()) {
-                    $content->textRight .= $section->getSectionType()->getMotionPlainHtml();;
-                } else {
-                    $content->textMain .= $section->getSectionType()->getMotionPlainHtml();;
-                }
+                $section->getSectionType()->printMotionHtml2Pdf($section->isLayoutRight(), $content, $motion->getMyConsultation());
             }
         }
 

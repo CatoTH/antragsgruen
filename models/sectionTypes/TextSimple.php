@@ -4,8 +4,8 @@ namespace app\models\sectionTypes;
 
 use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, Diff, DiffRenderer};
 use app\models\SectionedParagraph;
-use app\components\{HashedStaticCache, HTMLTools, LineSplitter, RequestContext, UrlHelper};
-use app\components\latex\{Content, Exporter};
+use app\components\{HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LineSplitter, RequestContext, UrlHelper};
+use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -643,7 +643,7 @@ class TextSimple extends Text
         return HTMLTools::toPlainText($this->section->getData());
     }
 
-    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
+    public function printMotionTeX(bool $isRight, LatexContent $content, Consultation $consultation): void
     {
         if ($this->isEmpty()) {
             return;
@@ -705,7 +705,7 @@ class TextSimple extends Text
         }
     }
 
-    public function printAmendmentTeX(bool $isRight, Content $content): void
+    public function printAmendmentTeX(bool $isRight, LatexContent $content): void
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
@@ -773,6 +773,59 @@ class TextSimple extends Text
         } else {
             $content->textMain .= $tex;
         }
+    }
+
+    public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
+    {
+        /** @var MotionSection $section */
+        $section = $this->section;
+        $settings = $section->getSettings();
+
+        $html = '';
+
+        if ($settings->printTitle) {
+            $html .= '<h2>' . Html::encode($this->getTitle()) . "</h2>\n";
+        }
+
+        $paragraphs = $section->getTextParagraphObjects($section->getSettings()->lineNumbers);
+        $lineNo = $section->getFirstLineNumber();
+
+        foreach ($paragraphs as $paragraph) {
+            $html .= '<div class="text motionTextFormattings textOrig';
+            if ($section->getSettings()->fixedWidth) {
+                $html .= ' fixedWidthFont';
+            }
+            $html .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
+            if ($section->getSettings()->fixedWidth || $section->getSettings()->lineNumbers) {
+                foreach ($paragraph->lines as $i => $line) {
+                    if ($section->getSettings()->lineNumbers) {
+                        $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '" aria-hidden="true"></span>';
+                        $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
+                    } else {
+                        $line      = str_replace('###LINENUMBER###', '', $line);
+                    }
+                    $line = str_replace('<br>', '', $line);
+                    $first3 = substr($line, 0, 3);
+                    if ($i > 0 && !in_array($first3, ['<ol', '<ul', '<p>', '<di'])) {
+                        $html .= '<br>';
+                    }
+                    $html .= $line;
+                }
+            } else {
+                $html .= $paragraph->origStr;
+            }
+        }
+
+        if ($section->isLayoutRight()) {
+            $content->textRight .= $html;
+        } else {
+            $content->textMain .= $html;
+        }
+    }
+
+    public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
+    {
+        // TODO: Implement printAmendmentHtml2Pdf() method.
     }
 
     public function getMotionODS(): string

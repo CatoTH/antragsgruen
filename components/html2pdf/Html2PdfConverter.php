@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace app\components\html2pdf;
 
-use app\components\HashedStaticCache;
-use app\components\latex\Content;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\Image;
 use app\models\settings\AntragsgruenApp;
@@ -37,9 +35,22 @@ class Html2PdfConverter
 
         $filenameBase = $this->app->getTmpDir() . uniqid('motion-html');
 
+        $imageFiles  = [];
+        $imageHashes = [];
+
         $html = '';
         foreach ($contents as $content) {
             $html .= self::createContentString($content);
+
+            foreach ($content->imageData as $fileName => $fileData) {
+                if (!preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/siu', $fileName)) {
+                    throw new Internal('Invalid image filename');
+                }
+                file_put_contents($this->app->getTmpDir() . $fileName, $fileData);
+                $imageHashes[$this->app->getTmpDir() . $fileName] = md5($fileData);
+
+                $imageFiles[] = $this->app->getTmpDir() . $fileName;
+            }
         }
 
         file_put_contents($filenameBase . '.html', '<!doctype html>
@@ -64,6 +75,9 @@ class Html2PdfConverter
         $pdf = (string)file_get_contents($filenameBase . '.pdf');
 
         unlink($filenameBase . '.html');
+        foreach ($imageFiles as $file) {
+            unlink($file);
+        }
 
         return $pdf;
     }
