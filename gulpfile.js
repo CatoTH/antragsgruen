@@ -83,6 +83,15 @@ function taskBuildJsNl() {
         .pipe(gulp.dest('./web/js/build/'));
 }
 
+function taskBuildJsCa() {
+    return gulp.src(["web/js/antragsgruen-ca.js"])
+        .pipe(sourcemaps.init())
+        .pipe(concat('antragsgruen-ca.min.js'))
+        .pipe(terser())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./web/js/build/'));
+}
+
 function taskBuildJsEn() {
     return gulp.src(["web/js/antragsgruen-en.js"])
         .pipe(sourcemaps.init())
@@ -101,7 +110,7 @@ function taskBuildJsEnGb() {
         .pipe(gulp.dest('./web/js/build/'));
 }
 
-const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsFr, taskBuildJsNl, taskBuildJsEn, taskBuildJsEnGb, taskBuildDatetimepicker);
+const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsFr, taskBuildJsNl, taskBuildJsCa, taskBuildJsEn, taskBuildJsEnGb, taskBuildDatetimepicker);
 
 function taskBuildCss() {
     return gulp.src("web/css/*.scss")

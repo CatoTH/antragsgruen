@@ -2,7 +2,7 @@
 
 ## Version 4.14.0 [not released yet]
 
-- A Dutch translation is provided, thanks to m-rtijn and MickVolt.
+- New translations are provided: Dutch (thanks to m-rtijn and MickVolt) and Catalan (thanks to Gerard).
 
 ### Version 4.13.1 (2023-12-09)
 

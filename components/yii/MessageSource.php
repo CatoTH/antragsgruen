@@ -108,6 +108,11 @@ class MessageSource extends \yii\i18n\MessageSource
                 'nl' => 'Nederlands',
             ], $localMessages);
         }
+        if ($language === 'ca') {
+            return array_merge([
+                'ca' => 'Català',
+            ], $localMessages);
+        }
         return [];
     }
 
@@ -118,6 +123,7 @@ class MessageSource extends \yii\i18n\MessageSource
             'en' => 'English',
             'fr' => 'Français',
             'nl' => 'Nederlands',
+            'ca' => 'Català',
         ];
     }
 
