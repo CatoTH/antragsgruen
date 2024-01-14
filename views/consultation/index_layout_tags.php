@@ -12,7 +12,28 @@ use yii\helpers\Html;
  * @var \app\models\settings\Layout $layout
  * @var IMotion[] $imotions
  * @var bool $isResolutionList
+ * @var ConsultationSettingsTag $selectedTag
  */
+
+if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
+    echo '<div class="content">';
+    foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+        $motions = array_filter($consultation->getMotionsOfTag($tag), function(Motion $motion): bool {
+            return $motion->isReadable();
+        });
+        if (count($motions) === 0) {
+            continue;
+        }
+        echo '<div style="font-size: 1.2em;"><a href="';
+        echo UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $tag->id]);
+        echo '"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
+        echo Html::encode($tag->title) . '</a></div>' . "\n";
+    }
+    echo '</div>';
+
+    return;
+}
+
 $tags = $tagIds = [];
 $hasNoTagMotions = false;
 $invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
@@ -71,8 +92,10 @@ if (count($sortedTags) > 0 && $consultation->getSettings()->homepageTagsList) {
 foreach ($tagIds as $tagId) {
     $tag = $tags[$tagId];
     $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
-    echo '<h3 class="green" id="tag_' . $tagId . '">' . $prefix . Html::encode($tag['name']) . '</h3>
-    <div class="content">
+    if (!$consultation->getSettings()->homepageByTag) {
+        echo '<h3 class="green" id="tag_' . $tagId . '">' . $prefix . Html::encode($tag['name']) . '</h3>';
+    }
+    echo '<div class="content">
     <table class="motionTable">
         <thead><tr>';
     if (!$consultation->getSettings()->hideTitlePrefix) {
