@@ -75,7 +75,7 @@ return [
             No utilitzis aquesta funció si vols fusionar una esmena amb la resolució original.
             En aquest cas, si us plau, ves a l\'esmena i tria "Fusionar amb la resolució" a la barra lateral.<br>
             <br>
-            Si canvies el text d\'un passatge de text que també està referenciat a una esmena, això provocarà un conflicte; llavors el canvi s\'ha d\'adoptar en totes les esmenes col·lidides.'
+            Si canvies el text d\'un passatge de text que també està referenciat a una esmena, això provocarà un conflicte; llavors el canvi s\'ha d\'adoptar en totes les esmenes col·lidides.',
     'motion_amrew_btn1'           => 'Edició finalitzada / comprovar conflictes',
     'motion_amrew_btn2'           => 'Comprovar conflictes',
     'motion_supp_name'            => 'Nom',
