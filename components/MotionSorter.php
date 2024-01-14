@@ -292,6 +292,9 @@ class MotionSorter
         $motions     = [];
         $resolutions = [];
         foreach ($allMotions as $mot) {
+            if (!$mot->isReadable()) {
+                continue;
+            }
             if ($mot->getMyMotionType()->amendmentsOnly) {
                 foreach ($mot->amendments as $amendment) {
                     $motions[] = $amendment;
