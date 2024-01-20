@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\html2pdf\Content as HtmlToPdfContent;
+use app\models\db\MotionSection;
 use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\Consultation;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -287,7 +288,13 @@ class TabularData extends ISectionType
 
     public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
     {
-        // TODO: Implement printMotionHtml2Pdf() method.
+        $html = $this->getSimple($isRight);
+
+        if ($isRight) {
+            $content->textRight .= $html;
+        } else {
+            $content->textMain .= $html;
+        }
     }
 
     public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void

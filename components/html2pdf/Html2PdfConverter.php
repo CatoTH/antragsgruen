@@ -88,7 +88,7 @@ class Html2PdfConverter
 
         $replaces                         = [];
         $replaces['%TITLE%']              = Html::encode($content->title);
-        $replaces['%TITLEPREFIX%']        = Html::encode($content->titlePrefix);
+        $replaces['%TITLE_PREFIX%']        = Html::encode($content->titlePrefix);
         $replaces['%TITLE_LONG%']         = Html::encode($content->titleLong);
         $replaces['%TITLE_RAW%']          = Html::encode($content->titleRaw);
         $replaces['%AUTHOR%']             = Html::encode($content->author);

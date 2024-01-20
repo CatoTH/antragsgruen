@@ -245,6 +245,10 @@ class LayoutHelper
         $content->logoData        = $motion->getMyConsultation()->getPdfLogoData();
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
+        if (count($intro) > 1) {
+            array_shift($intro);
+            $content->introductionSmall = implode("\n", $intro);
+        }
         if ($motion->isResolution()) {
             $names                = $motion->getMyConsultation()->getStatuses()->getStatusNames();
             $content->titleRaw    = $motion->title;
@@ -256,10 +260,6 @@ class LayoutHelper
             $content->titlePrefix = $motion->getFormattedTitlePrefix();
             $content->titleLong   = $motion->getTitleWithPrefix();
             $content->title       = $motion->getTitleWithIntro();
-        }
-        if (count($intro) > 1) {
-            array_shift($intro);
-            $content->introductionSmall = implode("\n", $intro);
         }
         $initiators = [];
         foreach ($motion->getInitiators() as $init) {
@@ -733,6 +733,10 @@ class LayoutHelper
         $content->logoData        = $motion->getMyConsultation()->getPdfLogoData();
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
+        if (count($intro) > 1) {
+            array_shift($intro);
+            $content->introductionSmall = implode("\n", $intro);
+        }
         if ($motion->isResolution()) {
             $names                = $motion->getMyConsultation()->getStatuses()->getStatusNames();
             $content->titleRaw    = $motion->title;
@@ -744,10 +748,6 @@ class LayoutHelper
             $content->titlePrefix = $motion->getFormattedTitlePrefix();
             $content->titleLong   = $motion->getTitleWithPrefix();
             $content->title       = $motion->getTitleWithIntro();
-        }
-        if (count($intro) > 1) {
-            array_shift($intro);
-            $content->introductionSmall = implode("\n", $intro);
         }
         $initiators = [];
         foreach ($motion->getInitiators() as $init) {
@@ -763,8 +763,10 @@ class LayoutHelper
         }
 
         foreach ($motion->getDataTable() as $key => $val) {
-            $content->motionDataTable .= Html::encode($key) . ':   &   ';
-            $content->motionDataTable .= Html::encode($val) . '   \\\\';
+            $content->motionDataTable .= '<tr>';
+            $content->motionDataTable .= '<th>' . Html::encode($key) . '</th>';
+            $content->motionDataTable .= '<td>' . Html::encode($val) . '</td>';
+            $content->motionDataTable .= '</tr>';
         }
 
         if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
