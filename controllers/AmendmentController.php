@@ -45,7 +45,9 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
-        if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
+        if (AntragsgruenApp::getInstance()->weasyprintPath) {
+            $pdf = LayoutHelper::createPdfFromHtml($amendment);
+        } elseif ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
             $pdf = LayoutHelper::createPdfLatex($amendment);
         } else {
             $pdf = LayoutHelper::createPdfTcpdf($amendment);

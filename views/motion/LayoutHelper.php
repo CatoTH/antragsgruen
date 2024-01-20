@@ -718,14 +718,12 @@ class LayoutHelper
         return $pdf;
     }
 
-    public static function createPdfFromHtml(Motion $motion): string
+    /**
+     * @throws \app\models\exceptions\Internal
+     * @throws \Exception
+     */
+    public static function renderPdfContentFromHtml(Motion $motion): HtmlToPdfContent
     {
-        //$cache = HashedStaticFileCache::getCache($motion->getPdfCacheKey(), null);
-        //if ($cache && !YII_DEBUG) {
-        //    return $cache;
-        //}
-
-        $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
         $content = new HtmlToPdfContent();
 
         $content->template        = file_get_contents(__DIR__ . '/../../assets/html2pdf/application.html');
@@ -807,6 +805,19 @@ class LayoutHelper
             }
             $content->textMain .= '<p>' . Html::encode(implode('; ', $supps)) . $limitedSupporters->truncatedToString(';') . '</p>';
         }
+
+        return $content;
+    }
+
+    public static function createPdfFromHtml(Motion $motion): string
+    {
+        //$cache = HashedStaticFileCache::getCache($motion->getPdfCacheKey(), null);
+        //if ($cache && !YII_DEBUG) {
+        //    return $cache;
+        //}
+
+        $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
+        $content = self::renderPdfContentFromHtml($motion);
 
         $pdf      = $exporter->createPDF([$content]);
         //HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdf);

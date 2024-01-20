@@ -825,7 +825,65 @@ class TextSimple extends Text
 
     public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
     {
-        // TODO: Implement printAmendmentHtml2Pdf() method.
+        $str = '';
+
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+
+        $str = '<h3 class="green">' . Html::encode($this->getTitle()) . '</h3>';
+
+        if ($section->getAmendment()->globalAlternative) {
+            $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+
+            $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
+            foreach ($htmlSections as $htmlSection) {
+                $str .= '<div class="paragraph"><div class="text motionTextFormattings';
+                if ($this->section->getSettings()->fixedWidth) {
+                    $str .= ' fixedWidthFont';
+                }
+                $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection . '</div></div>';
+            }
+
+            $str .= '</div>';
+            $content->textMain .= $str;
+
+            return;
+        }
+
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+        $firstLine  = $section->getFirstLineNumber();
+
+        $diffGroupsAndSections = $this->getMaybeCachedDiffGroups($section, $lineLength, $firstLine);
+
+        if (count($diffGroupsAndSections['groups']) === 0) {
+            $str .= '<div class="paragraph lineNumbers">';
+
+            $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
+            foreach ($htmlSections as $htmlSection) {
+                $str .= '<div class="paragraph"><div class="text motionTextFormattings';
+                if ($this->section->getSettings()->fixedWidth) {
+                    $str .= ' fixedWidthFont';
+                }
+                $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection . '</div></div>';
+            }
+
+            $str .= '</div>';
+        }
+
+        $str       .= '<div class="paragraph lineNumbers">';
+
+        $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
+        if ($section->getSettings()->fixedWidth) {
+            $wrapStart .= ' fixedWidthFont';
+        }
+        $wrapStart .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
+        $wrapEnd   = '</div></section>';
+        $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, null);
+
+        $str       .= '</div>';
+        $str       .= '</div>';
+
+        $content->textMain .= $str;
     }
 
     public function getMotionODS(): string
