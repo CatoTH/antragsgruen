@@ -16,6 +16,9 @@ class DBJR extends IPDFLayout
         $pdf->startPageGroup();
         $pdf->AddPage();
 
+        $pdf->setDestination('motion' . $motion->id, 0, '');
+        $pdf->Bookmark($motion->getTitleWithPrefix(), 0, 0, '', 'BI', array(128,0,0), -1, '#motion' . $motion->id);
+
         $left     = 23.5;
         $abs      = 5;
         $fontsize = 30;
@@ -68,6 +71,9 @@ class DBJR extends IPDFLayout
         $pdf->setPrintFooter(true);
         $pdf->startPageGroup();
         $pdf->AddPage();
+
+        $pdf->setDestination('amendment' . $amendment->id, 0, '');
+        $pdf->Bookmark($amendment->getTitleWithPrefix(), 0, 0, '', 'BI', [128,0,0], -1, '#amendment' . $amendment->id);
 
         $left           = 23.5;
         $abs            = 5;
