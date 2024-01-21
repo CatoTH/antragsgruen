@@ -365,7 +365,8 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
             },
             getPreviousForSubqueue: function (subqueue) {
                 return this.previousSpeakers.filter(function (item) {
-                    return item.subqueue.id === subqueue.id;
+                    return item.subqueue.id === subqueue.id ||
+                        (item.subqueue.id === null && subqueue.id === -1);
                 });
             },
             startSlot: function ($event, slot) {
