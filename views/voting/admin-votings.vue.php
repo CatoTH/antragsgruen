@@ -40,7 +40,7 @@ ob_start();
             <?= Yii::t('voting', 'admin_voting_use') ?>
             <span class="glyphicon glyphicon-info-sign"
                   aria-label="<?= Html::encode(Yii::t('voting', 'admin_voting_use_h')) ?>"
-                  v-tooltip="'<?= Html::encode(Yii::t('voting', 'admin_voting_use_h')) ?>'"></span>
+                  v-tooltip="'<?= Html::encode(addslashes(Yii::t('voting', 'admin_voting_use_h'))) ?>'"></span>
         </label>
     </h2>
     <div class="content votingShow" v-if="!settingsOpened">
@@ -332,13 +332,15 @@ ob_start();
                 <input type="radio" :value="ANSWER_TEMPLATE_YES" v-model="answerTemplate" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_answers_yes') ?>
                 <span class="glyphicon glyphicon-info-sign"
-                      :aria-label="'<?= Html::encode(Yii::t('voting', 'settings_answers_yesh')) ?>'" v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_answers_yesh')) ?>'"></span>
+                      :aria-label="'<?= Html::encode(Yii::t('voting', 'settings_answers_yesh')) ?>'"
+                      v-tooltip="'<?= Html::encode(addslashes(Yii::t('voting', 'settings_answers_yesh'))) ?>'"></span>
             </label>
             <label>
                 <input type="radio" :value="ANSWER_TEMPLATE_PRESENT" v-model="answerTemplate" :disabled="isOpen || isClosed">
                 <?= Yii::t('voting', 'settings_answers_present') ?>
                 <span class="glyphicon glyphicon-info-sign"
-                  :aria-label="'<?= Html::encode(Yii::t('voting', 'settings_answers_presenth')) ?>'" v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_answers_presenth')) ?>'"></span>
+                      :aria-label="'<?= Html::encode(Yii::t('voting', 'settings_answers_presenth')) ?>'"
+                      v-tooltip="'<?= Html::encode(addslashes(Yii::t('voting', 'settings_answers_presenth'))) ?>'"></span>
             </label>
         </fieldset>
         <fieldset class="votePolicy">
@@ -350,7 +352,7 @@ ob_start();
             <legend><?= Yii::t('voting', 'settings_maxvotes') ?>:
                 <span class="glyphicon glyphicon-info-sign"
                       aria-label="<?= Html::encode(Yii::t('voting', 'settings_maxvotes_h')) ?>"
-                      v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_maxvotes_h')) ?>'"></span>
+                      v-tooltip="'<?= Html::encode(addslashes(Yii::t('voting', 'settings_maxvotes_h'))) ?>'"></span>
             </legend>
             <label class="maxVotesNone">
                 <input type="radio" value="0" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
@@ -433,7 +435,7 @@ ob_start();
             <legend><?= Yii::t('voting', 'settings_timer') ?>:
                 <span class="glyphicon glyphicon-info-sign"
                       aria-label="<?= Html::encode(Yii::t('voting', 'settings_timer_h')) ?>"
-                      v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_timer_h')) ?>'"></span>
+                      v-tooltip="'<?= Html::encode(addslashes(Yii::t('voting', 'settings_timer_h'))) ?>'"></span>
             </legend>
             <label class="input-group input-group-sm">
                 <input type="number" class="form-control" v-model="votingTime" autocomplete="off">
@@ -444,7 +446,7 @@ ob_start();
             <?= Yii::t('voting', 'settings_motionassign') ?>:
             <span class="glyphicon glyphicon-info-sign"
                   aria-label="<?= Html::encode(Yii::t('voting', 'settings_motionassign_h')) ?>"
-                  v-tooltip="'<?= Html::encode(Yii::t('voting', 'settings_motionassign_h')) ?>'"></span>
+                  v-tooltip="'<?= Html::encode(addslashes(Yii::t('voting', 'settings_motionassign_h'))) ?>'"></span>
             <br>
             <select class="stdDropdown" v-model="settingsAssignedMotion">
                 <option :value="''"> - <?= Yii::t('voting', 'settings_motionassign_none') ?> - </option>

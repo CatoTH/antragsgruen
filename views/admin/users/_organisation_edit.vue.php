@@ -26,7 +26,7 @@ ob_start();
                     <th v-if="hasCustomGroups"><?= Yii::t('admin', 'siteacc_organs_autogroup') ?>
                         <span class="glyphicon glyphicon-info-sign"
                               aria-label="<?= Html::encode(Yii::t('admin', 'siteacc_organs_autogroup_tt')) ?>"
-                              v-tooltip="'<?= Html::encode(Yii::t('admin', 'siteacc_organs_autogroup_tt')) ?>'"></span>
+                              v-tooltip="'<?= Html::encode(addslashes(Yii::t('admin', 'siteacc_organs_autogroup_tt'))) ?>'"></span>
                     </th>
                     <th></th>
                 </tr>
