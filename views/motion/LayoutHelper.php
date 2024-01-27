@@ -11,7 +11,7 @@ use app\models\sectionTypes\TextSimple;
 use app\models\settings\{PrivilegeQueryContext, Privileges, VotingData, AntragsgruenApp};
 use app\components\latex\{Content, Exporter, Layout as LatexLayout};
 use app\components\Tools;
-use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
+use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
 use app\models\LimitedSupporterList;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;

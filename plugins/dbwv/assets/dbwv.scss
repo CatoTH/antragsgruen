@@ -99,3 +99,20 @@
 .passwordRecovery {
   display: none;
 }
+
+.motionDataTable {
+  .proposedStatusRow {
+    .accepted {
+      font-weight: bold;
+      color: green;
+    }
+    .rejected {
+      font-weight: bold;
+      color: red;
+    }
+    .modifiedAccepted {
+      font-weight: bold;
+      color: blue;
+    }
+  }
+}

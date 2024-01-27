@@ -612,6 +612,12 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
             return $explStr;
         }
         switch ($this->proposalStatus) {
+            case self::STATUS_ACCEPTED:
+                return '<span class="accepted">' . static::getProposedStatusNames()[$this->proposalStatus] . '</span>' . $explStr;
+            case self::STATUS_REJECTED:
+                return '<span class="rejected">' . static::getProposedStatusNames()[$this->proposalStatus] . '</span>' . $explStr;
+            case self::STATUS_MODIFIED_ACCEPTED:
+                return '<span class="modifiedAccepted">' . static::getProposedStatusNames()[$this->proposalStatus] . '</span>' . $explStr;
             case self::STATUS_REFERRED:
                 return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment) . $explStr;
             case self::STATUS_OBSOLETED_BY_AMENDMENT:
