@@ -1,0 +1,353 @@
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: url("fonts/ptsans_regular.woff") format('woff');
+}
+@font-face {
+  font-family: 'PT Sans Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: url('fonts/ptsans_bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Arvo';
+  font-style: normal;
+  font-weight: normal;
+  src: url('fonts/arvo_regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Arvo Gruen';
+  font-style: normal;
+  font-weight: normal;
+  src: url('fonts/arvo_gruen.woff') format('woff');
+}
+
+
+@page {
+  margin: 1.5cm 1.4cm 1.5cm 1.8cm;
+  padding: .5cm 0 .5cm 0;
+  size: A4 portrait;
+  border-top: solid 1px black;
+  border-bottom: solid 1px black;
+}
+
+@page {
+  @top-right {
+    content: string(title);
+    padding-top: 0.7cm;
+    z-index: -1;
+    font-family: 'Arvo';
+    font-size: 0.8em;
+  }
+  @bottom-right {
+    content: "Seite " counter(page);
+    padding-bottom: 0.7cm;
+    z-index: -1;
+    font-family: 'Arvo';
+    font-size: 0.8em;
+  }
+}
+
+@page header {
+  border: none;
+  margin-top: 0cm;
+  margin-bottom: 0cm;
+
+  @top-right {
+    content: none;
+  }
+  @bottom-right {
+    content: none;
+  }
+}
+
+h1 {
+  string-set: title content();
+}
+
+article > header:first-child {
+  page: header;
+}
+
+
+body {
+  font-family: 'PT Sans';
+  font-size: 15px;
+}
+
+.headerWhere {
+  font-family: 'Arvo';
+  font-size: 1em;
+  text-align: right;
+  font-weight: normal;
+  margin: 0;
+}
+
+.headerMain {
+  border: solid 1px black;
+  padding: 0.5cm;
+  margin-top: 0.5cm;
+  margin-bottom: 1.5cm;
+
+  h1 {
+    font-size: 1em;
+    margin: 0;
+    font-weight: normal;
+  }
+  .prefix {
+    font-size: 1.3em;
+    font-weight: bold;
+  }
+
+  table {
+    margin-top: 0.3cm;
+  }
+  td {
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+  }
+  th {
+    font-weight: normal;
+    padding: 0 0.5cm 0 0;
+    margin: 0;
+  }
+}
+
+aside {
+  float: right;
+  width: 5cm;
+  font-size: 14px;
+  margin-left: 1.5cm;
+  margin-bottom: 1cm;
+
+  img {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+  }
+
+  p {
+    margin: 0.5em 0;
+  }
+}
+
+
+main {
+  p {
+    text-align: justify;
+    margin: 0 0 .7em;
+  }
+
+  img {
+    max-height: 150px;
+    max-width: 100%;
+  }
+}
+
+h2 {
+  font-family: 'Arvo';
+  font-size: 1.2em;
+}
+
+
+$fixedWidthTextStdPadding: 50px !default;
+$fixedWidthTextStdPaddingSmall: 30px !default;
+$fixedWidthTextListPadding: 40px !default;
+$fixedWidthTextQuotePadding: 15px !default;
+$fixedWidthTextQuoteMargin: 38px !default;
+$fixedWidthTextQuoteMarginSmall: 18px !default;
+$fixedWidthTextQuoteBorder: 2px !default;
+$lineNumberOffset: 25px !default;
+$lineNumberOffset4: 3px !default;
+
+
+ul, ol {
+  padding-left: $fixedWidthTextListPadding;
+
+  .lineNumber {
+    left: $lineNumberOffset + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+  }
+
+  ul, ol {
+    padding-left: $fixedWidthTextListPadding;
+
+    .lineNumber {
+      left: $lineNumberOffset + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+    }
+
+    ul, ol {
+      .lineNumber {
+        left: $lineNumberOffset + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+      }
+
+      ul, ol {
+        .lineNumber {
+          left: $lineNumberOffset + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+        }
+      }
+    }
+  }
+}
+
+ol {
+  counter-reset: antragsgruen-counter;
+  list-style: none;
+
+  @for $i from 1 through 100 {
+    &[start="#{$i}"] {
+      counter-reset: antragsgruen-counter #{$i - 1};
+    }
+  }
+
+  > li {
+    counter-increment: antragsgruen-counter;
+    position: relative;
+
+    &::before {
+      content: counter(antragsgruen-counter) ".";
+      position: absolute;
+      left: -40px;
+      top: 0;
+    }
+
+    &[value]::before {
+      content: attr(value) ".";
+    }
+
+    @for $i from 1 through 100 {
+      &[value="#{$i}"] {
+        counter-reset: antragsgruen-counter #{$i - 1};
+      }
+    }
+    &[value="A"] { counter-reset: antragsgruen-counter 0; }
+    &[value="a"] { counter-reset: antragsgruen-counter 0; }
+    &[value="B"] { counter-reset: antragsgruen-counter 1; }
+    &[value="b"] { counter-reset: antragsgruen-counter 1; }
+    &[value="C"] { counter-reset: antragsgruen-counter 2; }
+    &[value="c"] { counter-reset: antragsgruen-counter 2; }
+    &[value="D"] { counter-reset: antragsgruen-counter 3; }
+    &[value="d"] { counter-reset: antragsgruen-counter 3; }
+    &[value="E"] { counter-reset: antragsgruen-counter 4; }
+    &[value="e"] { counter-reset: antragsgruen-counter 4; }
+    &[value="F"] { counter-reset: antragsgruen-counter 5; }
+    &[value="f"] { counter-reset: antragsgruen-counter 5; }
+    &[value="G"] { counter-reset: antragsgruen-counter 6; }
+    &[value="g"] { counter-reset: antragsgruen-counter 6; }
+    &[value="H"] { counter-reset: antragsgruen-counter 7; }
+    &[value="h"] { counter-reset: antragsgruen-counter 7; }
+    &[value="I"] { counter-reset: antragsgruen-counter 8; }
+    &[value="i"] { counter-reset: antragsgruen-counter 8; }
+    &[value="J"] { counter-reset: antragsgruen-counter 9; }
+    &[value="j"] { counter-reset: antragsgruen-counter 9; }
+    &[value="K"] { counter-reset: antragsgruen-counter 10; }
+    &[value="k"] { counter-reset: antragsgruen-counter 10; }
+    &[value="L"] { counter-reset: antragsgruen-counter 11; }
+    &[value="l"] { counter-reset: antragsgruen-counter 11; }
+    &[value="M"] { counter-reset: antragsgruen-counter 12; }
+    &[value="m"] { counter-reset: antragsgruen-counter 12; }
+    &[value="N"] { counter-reset: antragsgruen-counter 13; }
+    &[value="n"] { counter-reset: antragsgruen-counter 13; }
+    &[value="O"] { counter-reset: antragsgruen-counter 14; }
+    &[value="o"] { counter-reset: antragsgruen-counter 14; }
+    &[value="P"] { counter-reset: antragsgruen-counter 15; }
+    &[value="p"] { counter-reset: antragsgruen-counter 15; }
+    &[value="Q"] { counter-reset: antragsgruen-counter 16; }
+    &[value="q"] { counter-reset: antragsgruen-counter 16; }
+    &[value="R"] { counter-reset: antragsgruen-counter 17; }
+    &[value="r"] { counter-reset: antragsgruen-counter 17; }
+    &[value="S"] { counter-reset: antragsgruen-counter 18; }
+    &[value="s"] { counter-reset: antragsgruen-counter 18; }
+    &[value="T"] { counter-reset: antragsgruen-counter 19; }
+    &[value="t"] { counter-reset: antragsgruen-counter 19; }
+    &[value="U"] { counter-reset: antragsgruen-counter 20; }
+    &[value="u"] { counter-reset: antragsgruen-counter 20; }
+    &[value="V"] { counter-reset: antragsgruen-counter 21; }
+    &[value="v"] { counter-reset: antragsgruen-counter 21; }
+    &[value="W"] { counter-reset: antragsgruen-counter 22; }
+    &[value="w"] { counter-reset: antragsgruen-counter 22; }
+    &[value="X"] { counter-reset: antragsgruen-counter 23; }
+    &[value="x"] { counter-reset: antragsgruen-counter 23; }
+    &[value="Y"] { counter-reset: antragsgruen-counter 24; }
+    &[value="y"] { counter-reset: antragsgruen-counter 24; }
+    &[value="Z"] { counter-reset: antragsgruen-counter 25; }
+    &[value="z"] { counter-reset: antragsgruen-counter 25; }
+  }
+  &.decimalCircle {
+    > li {
+      &::before {
+        content: "(" counter(antragsgruen-counter) ")";
+      }
+
+      &[value]::before {
+        content: "(" attr(value) ")";
+      }
+    }
+  }
+  &.lowerAlpha {
+    > li {
+      &::before {
+        content: counter(antragsgruen-counter, lower-alpha) ".";
+      }
+
+      &[value]::before {
+        content: attr(value) ".";
+      }
+    }
+  }
+  &.upperAlpha {
+    > li {
+      &::before {
+        content: counter(antragsgruen-counter, upper-alpha) ".";
+      }
+
+      &[value]::before {
+        content: attr(value) ".";
+      }
+    }
+  }
+}
+
+
+dl {
+  dt, dd {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+  dt {
+    font-weight: bold;
+  }
+  dd {
+    margin-bottom: 10px;
+  }
+}
+
+.lineNumber {
+  position: relative;
+  left: -25px;
+  width: 0;
+  display: inline-block;
+  float: left; // otherwise problems appear at li > p constructs
+}
+.lineNumber:after {
+  content: attr(data-line-number);
+  color: #C3C3C3;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+
+del, ul.deleted, ol.deleted, li.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted, h1.deleted, h2.deleted, h3.deleted, h4.deleted, h5.deleted {
+  color: #880000;
+  text-decoration: line-through;
+}
+
+ins, ul.inserted, ol.inserted, li.inserted, blockquote.inserted, pre.inserted, div.inserted, p.inserted, h1.inserted, h2.inserted, h3.inserted, h4.inserted, h5.inserted {
+  color: #008800;
+  text-decoration: underline;
+}

@@ -257,7 +257,9 @@ trait MotionExportTraits
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
-        if ($hasLaTeX && $texTemplate) {
+        if (AntragsgruenApp::getInstance()->weasyprintPath) {
+            $pdfData = $this->renderPartial('pdf_collection_html2pdf', ['imotions' => $imotions]);
+        } elseif ($hasLaTeX && $texTemplate) {
             $pdfData = $this->renderPartial('pdf_collection_tex', ['imotions' => $imotions, 'texTemplate' => $texTemplate]);
         } else {
             $pdfData = $this->renderPartial('pdf_collection_tcpdf', ['imotions' => $imotions]);

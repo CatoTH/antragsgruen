@@ -86,7 +86,9 @@ class AmendmentController extends Base
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
-        if ($hasLaTeX && $texTemplate) {
+        if (AntragsgruenApp::getInstance()->weasyprintPath) {
+            $pdf = $this->renderPartial('pdf_collection_html2pdf', ['amendments' => $amendments]);
+        } elseif ($hasLaTeX && $texTemplate) {
             $pdf = $this->renderPartial('pdf_collection_tex', [
                 'amendments'  => $amendments,
                 'texTemplate' => $texTemplate,
