@@ -36,7 +36,6 @@ class Html2PdfConverter
         $filenameBase = $this->app->getTmpDir() . uniqid('motion-html');
 
         $imageFiles  = [];
-        $imageHashes = [];
 
         $html = '';
         foreach ($contents as $content) {
@@ -47,7 +46,6 @@ class Html2PdfConverter
                     throw new Internal('Invalid image filename');
                 }
                 file_put_contents($this->app->getTmpDir() . $fileName, $fileData);
-                $imageHashes[$this->app->getTmpDir() . $fileName] = md5($fileData);
 
                 $imageFiles[] = $this->app->getTmpDir() . $fileName;
             }

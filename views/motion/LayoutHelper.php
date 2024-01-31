@@ -17,6 +17,7 @@ use app\models\sectionTypes\{ISectionType, TextSimple};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, VotingData};
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
+use setasign\Fpdi\PdfParser\StreamReader;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -819,9 +820,39 @@ class LayoutHelper
         $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
         $content = self::renderPdfContentFromHtml($motion);
 
-        $pdf      = $exporter->createPDF([$content]);
+        $pdfData = $exporter->createPDF([$content]);
+
+        foreach ($motion->getSortedSections(true) as $section) {
+            if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
+                $pdf = new IPdfWriter();
+                $pdf->SetCreator(\Yii::t('export', 'default_creator'));
+                $pdf->SetAuthor(\Yii::t('export', 'default_creator'));
+                $pdf->SetTitle($motion->getTitleWithPrefix());
+                $pdf->SetSubject($motion->getTitleWithPrefix());
+                $pdf->setPrintHeader(false);
+                $pdf->setPrintFooter(false);
+
+                $pageCount = $pdf->setSourceFile(StreamReader::createByString($pdfData));
+                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                    $page = $pdf->ImportPage($pageNo);
+                    $dim  = $pdf->getTemplatesize($page);
+                    $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
+                    $pdf->useTemplate($page);
+                }
+
+                $pageCount = $pdf->setSourceFile(StreamReader::createByString($section->getData()));
+                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                    $page = $pdf->ImportPage($pageNo);
+                    $dim  = $pdf->getTemplatesize($page);
+                    $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
+                    $pdf->useTemplate($page);
+                }
+
+                $pdfData = $pdf->Output('', 'S');
+            }
+        }
         //HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdf);
-        return $pdf;
+        return $pdfData;
     }
 
     /*
