@@ -42,7 +42,7 @@ foreach ($imotions as $imotion) {
 
         if ($pageNo === 1) {
             $pdf->setDestination($bookmarkId, 0, '');
-            $pdf->Bookmark($imotion->getTitleWithPrefix(), 0, 0, '', 'BI', [128,0,0], -1, '#' . $bookmarkId);
+            $pdf->Bookmark($imotion->getTitleWithPrefix(), 0, 0, '', '', [128,0,0], -1, '#' . $bookmarkId);
         }
 
         $pdf->useTemplate($page);

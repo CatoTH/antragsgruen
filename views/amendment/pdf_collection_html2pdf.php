@@ -34,7 +34,7 @@ foreach ($amendments as $amendment) {
 
         if ($pageNo === 1) {
             $pdf->setDestination($bookmarkId, 0, '');
-            $pdf->Bookmark($amendment->getTitleWithPrefix(), 0, 0, '', 'BI', [128,0,0], -1, '#' . $bookmarkId);
+            $pdf->Bookmark($amendment->getTitleWithPrefix(), 0, 0, '', '', [128,0,0], -1, '#' . $bookmarkId);
         }
 
         $pdf->useTemplate($page);

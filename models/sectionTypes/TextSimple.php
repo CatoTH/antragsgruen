@@ -777,6 +777,10 @@ class TextSimple extends Text
 
     public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
     {
+        if ($this->isEmpty()) {
+            return;
+        }
+
         /** @var MotionSection $section */
         $section = $this->section;
         $settings = $section->getSettings();
