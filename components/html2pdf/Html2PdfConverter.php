@@ -58,7 +58,9 @@ class Html2PdfConverter
                 <meta name="author" content="">
                 <title>Test</title>
             </head>
-        <body>' . $html . '</body></html>');
+        <body
+            data-str-page="' . Html::encode(\Yii::t('export', 'pdf_page_label')) . '"
+        >' . $html . '</body></html>');
 
         $cmd = $this->app->weasyprintPath;
         $cmd .= ' ' . escapeshellarg($filenameBase . '.html');
@@ -86,7 +88,7 @@ class Html2PdfConverter
 
         $replaces                         = [];
         $replaces['%TITLE%']              = Html::encode($content->title);
-        $replaces['%TITLE_PREFIX%']        = Html::encode($content->titlePrefix);
+        $replaces['%TITLE_PREFIX%']       = Html::encode($content->titlePrefix);
         $replaces['%TITLE_LONG%']         = Html::encode($content->titleLong);
         $replaces['%TITLE_RAW%']          = Html::encode($content->titleRaw);
         $replaces['%AUTHOR%']             = Html::encode($content->author);
@@ -112,7 +114,7 @@ class Html2PdfConverter
             $fileExt = Image::getFileExtensionFromMimeType($content->logoData[0]);
             $filenameBase = uniqid('motion-pdf-image') . '.' . $fileExt;
             $tmpPath = AntragsgruenApp::getInstance()->getTmpDir() . $filenameBase;
-            $replaces['%LOGO%'] = '\includegraphics[width=4.9cm]{' . $tmpPath . '}';
+            $replaces['%LOGO%'] = '<img src="' . $tmpPath . '" alt="logo">';
             $content->imageData[$filenameBase] = $content->logoData[1];
         } else {
             $replaces['%LOGO%'] = '';

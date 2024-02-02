@@ -24,6 +24,9 @@
   src: url('fonts/arvo_gruen.woff') format('woff');
 }
 
+body {
+  string-set: strPage attr(data-str-page);
+}
 
 @page {
   margin: 1.5cm 1.4cm 1.5cm 1.8cm;
@@ -42,7 +45,7 @@
     font-size: 0.8em;
   }
   @bottom-right {
-    content: "Seite " counter(page);
+    content: string(strPage) " " counter(page);
     padding-bottom: 0.7cm;
     z-index: -1;
     font-family: 'Arvo';
@@ -83,6 +86,16 @@ body {
   text-align: right;
   font-weight: normal;
   margin: 0;
+  overflow: auto;
+
+  .logo {
+    float: left;
+    text-align: left;
+    img {
+      max-width: 40%;
+      max-height: 4cm;
+    }
+  }
 }
 
 .headerMain {

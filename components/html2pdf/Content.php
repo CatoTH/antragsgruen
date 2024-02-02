@@ -18,11 +18,9 @@ class Content
     public string $textMain = '';
     public string $textRight = '';
     public array $imageData = [];
-    public array $attachedPdfs = [];
     public int $lineLength;
     public string $agendaItemName = '';
     public string $publicationDate = '';
     public string $typeName = '';
     public ?array $logoData = null;
-    public ?string $replacingPdf = null;
 }

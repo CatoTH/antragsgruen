@@ -791,7 +791,7 @@ class TextSimple extends Text
             $html .= '<h2>' . Html::encode($this->getTitle()) . "</h2>\n";
         }
 
-        $paragraphs = $section->getTextParagraphObjects($section->getSettings()->lineNumbers);
+        $paragraphs = $section->getTextParagraphObjects(!!$section->getSettings()->lineNumbers);
         $lineNo = $section->getFirstLineNumber();
 
         foreach ($paragraphs as $paragraph) {

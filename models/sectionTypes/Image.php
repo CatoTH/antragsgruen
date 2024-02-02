@@ -309,20 +309,12 @@ class Image extends ISectionType
         }
 
         $img = '@' . $imageData;
-        switch ($metadata['mime']) {
-            case 'image/png':
-                $type = 'PNG';
-                break;
-            case 'image/jpg':
-            case 'image/jpeg':
-                $type = 'JPEG';
-                break;
-            case 'image/gif':
-                $type = 'GIF';
-                break;
-            default:
-                $type = '';
-        }
+        $type = match ($metadata['mime']) {
+            'image/png' => 'PNG',
+            'image/jpg', 'image/jpeg' => 'JPEG',
+            'image/gif' => 'GIF',
+            default => '',
+        };
         $pdf->Image($img, '', '', $size[0], $size[1], $type, '', '', true, 300, 'C');
         $pdf->Ln($size[1] + 7);
     }
@@ -354,11 +346,11 @@ class Image extends ISectionType
         $extraSettings = $this->section->getSettings()->getSettingsObj();
         $maxHeight     = ($extraSettings->imgMaxHeight > 0 ? $extraSettings->imgMaxHeight : null);
 
-        $fileExt      = static::getFileExtensionFromMimeType($metadata['mime']);
+        $fileExt = static::getFileExtensionFromMimeType($metadata['mime']);
         if ($isRight) {
-            $imageData          = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
+            $imageData = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
         } else {
-            $imageData         = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
+            $imageData = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
         }
 
         if ($fileExt === 'gif') {
@@ -399,11 +391,11 @@ class Image extends ISectionType
 
         $metadata = json_decode($this->section->metadata, true);
 
-        $fileExt      = static::getFileExtensionFromMimeType($metadata['mime']);
+        $fileExt = static::getFileExtensionFromMimeType($metadata['mime']);
         if ($isRight) {
-            $imageData          = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
+            $imageData = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
         } else {
-            $imageData         = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
+            $imageData = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
         }
 
         $params   = AntragsgruenApp::getInstance();
