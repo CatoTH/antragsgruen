@@ -2,6 +2,7 @@
 
 namespace app\views\amendment;
 
+use app\components\HashedStaticFileCache;
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\HTMLTools;
 use app\models\sectionTypes\ISectionType;
@@ -261,7 +262,7 @@ class LayoutHelper
 
         foreach ($amendment->getDataTable() as $key => $val) {
             $content->motionDataTable .= '<tr>';
-            $content->motionDataTable .= '<th>' . Html::encode($key) . '</th>';
+            $content->motionDataTable .= '<th>' . Html::encode($key) . ':</th>';
             $content->motionDataTable .= '<td>' . Html::encode($val) . '</td>';
             $content->motionDataTable .= '</tr>';
         }
@@ -308,18 +309,19 @@ class LayoutHelper
 
     public static function createPdfFromHtml(Amendment $amendment): string
     {
-        //$cache = \Yii::$app->cache->get($amendment->getPdfCacheKey());
-        //if ($cache) {
-        //    return $cache;
-        //}
+        $cache = HashedStaticFileCache::getCache($amendment->getPdfCacheKey(), null);
+        if ($cache && !YII_DEBUG) {
+            return $cache;
+        }
 
         $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
 
-        $content  = static::renderPdfContentFromHtml($amendment);
-        $pdf      = $exporter->createPDF([$content]);
-        //\Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);
+        $content = static::renderPdfContentFromHtml($amendment);
+        $pdfData = $exporter->createPDF([$content]);
 
-        return $pdf;
+        HashedStaticFileCache::setCache($amendment->getPdfCacheKey(), null, $pdfData);
+
+        return $pdfData;
     }
 
     public static function printAmendmentToOdt(Amendment $amendment, \CatoTH\HTML2OpenDocument\Text $doc): void

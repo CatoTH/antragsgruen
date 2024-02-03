@@ -763,7 +763,7 @@ class LayoutHelper
 
         foreach ($motion->getDataTable() as $key => $val) {
             $content->motionDataTable .= '<tr>';
-            $content->motionDataTable .= '<th>' . Html::encode($key) . '</th>';
+            $content->motionDataTable .= '<th>' . Html::encode($key) . ':</th>';
             $content->motionDataTable .= '<td>' . Html::encode($val) . '</td>';
             $content->motionDataTable .= '</tr>';
         }
@@ -812,10 +812,10 @@ class LayoutHelper
 
     public static function createPdfFromHtml(Motion $motion): string
     {
-        //$cache = HashedStaticFileCache::getCache($motion->getPdfCacheKey(), null);
-        //if ($cache && !YII_DEBUG) {
-        //    return $cache;
-        //}
+        $cache = HashedStaticFileCache::getCache($motion->getPdfCacheKey(), null);
+        if ($cache && !YII_DEBUG) {
+            return $cache;
+        }
 
         $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
         $content = self::renderPdfContentFromHtml($motion);
@@ -851,7 +851,8 @@ class LayoutHelper
                 $pdfData = $pdf->Output('', 'S');
             }
         }
-        //HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdf);
+
+        HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdfData);
         return $pdfData;
     }
 
