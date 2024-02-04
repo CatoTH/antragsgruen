@@ -181,6 +181,9 @@ class Module extends ModuleBase
                 continue;
             }
             foreach ($organisation->autoUserGroups as $autoGroupId) {
+                if (!$consultation->getUserGroupById($autoGroupId)) {
+                    continue;
+                }
                 if (str_contains($consultation->getUserGroupById($autoGroupId)->getNormalizedTitle(), 'INGYO')) {
                     $isIngyo = true;
                 }
