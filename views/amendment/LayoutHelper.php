@@ -317,7 +317,7 @@ class LayoutHelper
         $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
 
         $content = static::renderPdfContentFromHtml($amendment);
-        $pdfData = $exporter->createPDF([$content]);
+        $pdfData = $exporter->createPDF($content);
 
         HashedStaticFileCache::setCache($amendment->getPdfCacheKey(), null, $pdfData);
 

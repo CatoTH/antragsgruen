@@ -24,10 +24,9 @@ class Html2PdfConverter
     }
 
     /**
-     * @param Content[] $contents
      * @throws Internal
      */
-    public function createPDF(array $contents): string
+    public function createPDF(Content $content): string
     {
         if (!$this->app->xelatexPath && !$this->app->lualatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
@@ -37,18 +36,19 @@ class Html2PdfConverter
 
         $imageFiles  = [];
 
-        $html = '';
-        foreach ($contents as $content) {
-            $html .= self::createContentString($content);
+        $html = self::createContentString($content);
 
-            foreach ($content->imageData as $fileName => $fileData) {
-                if (!preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/siu', $fileName)) {
-                    throw new Internal('Invalid image filename');
-                }
-                file_put_contents($this->app->getTmpDir() . $fileName, $fileData);
+        if (isset($_REQUEST['html']) && YII_DEBUG) {
+            echo $html; die();
+        }
 
-                $imageFiles[] = $this->app->getTmpDir() . $fileName;
+        foreach ($content->imageData as $fileName => $fileData) {
+            if (!preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/siu', $fileName)) {
+                throw new Internal('Invalid image filename');
             }
+            file_put_contents($this->app->getTmpDir() . $fileName, $fileData);
+
+            $imageFiles[] = $this->app->getTmpDir() . $fileName;
         }
 
         file_put_contents($filenameBase . '.html', '<!doctype html>

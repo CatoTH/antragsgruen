@@ -820,7 +820,7 @@ class LayoutHelper
         $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
         $content = self::renderPdfContentFromHtml($motion);
 
-        $pdfData = $exporter->createPDF([$content]);
+        $pdfData = $exporter->createPDF($content);
 
         foreach ($motion->getSortedSections(true) as $section) {
             if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {

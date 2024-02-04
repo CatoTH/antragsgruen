@@ -785,32 +785,36 @@ class TextSimple extends Text
         $section = $this->section;
         $settings = $section->getSettings();
 
-        $html = '';
-
-        if ($settings->printTitle) {
-            $html .= '<h2>' . Html::encode($this->getTitle()) . "</h2>\n";
-        }
+        $html = '<section class="motionSection">';
 
         $paragraphs = $section->getTextParagraphObjects(!!$section->getSettings()->lineNumbers);
         $lineNo = $section->getFirstLineNumber();
 
-        foreach ($paragraphs as $paragraph) {
+        foreach ($paragraphs as $i => $paragraph) {
             $html .= '<div class="text motionTextFormattings textOrig';
             if ($section->getSettings()->fixedWidth) {
                 $html .= ' fixedWidthFont';
             }
+            if ($i === 0 && $settings->printTitle) {
+                $html .= ' paragraphWithHeader';
+            }
             $html .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
+
+            if ($i === 0 && $settings->printTitle) {
+                $html .= '<h2>' . Html::encode($this->getTitle()) . "</h2>\n";
+            }
+
             if ($section->getSettings()->fixedWidth || $section->getSettings()->lineNumbers) {
-                foreach ($paragraph->lines as $i => $line) {
+                foreach ($paragraph->lines as $j => $line) {
                     if ($section->getSettings()->lineNumbers) {
                         $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '" aria-hidden="true"></span>';
-                        $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
+                        $line = str_replace('###LINENUMBER###', $lineNoStr, $line);
                     } else {
-                        $line      = str_replace('###LINENUMBER###', '', $line);
+                        $line = str_replace('###LINENUMBER###', '', $line);
                     }
                     $line = str_replace('<br>', '', $line);
                     $first3 = substr($line, 0, 3);
-                    if ($i > 0 && !in_array($first3, ['<ol', '<ul', '<p>', '<di'])) {
+                    if ($j > 0 && !in_array($first3, ['<ol', '<ul', '<p>', '<di'])) {
                         $html .= '<br>';
                     }
                     $html .= $line;
@@ -818,7 +822,10 @@ class TextSimple extends Text
             } else {
                 $html .= $paragraph->origStr;
             }
+            $html .= '</div>';
         }
+
+        $html .= '</section>';
 
         if ($section->isLayoutRight()) {
             $content->textRight .= $html;
@@ -829,12 +836,15 @@ class TextSimple extends Text
 
     public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
     {
-        $str = '';
-
         /** @var AmendmentSection $section */
         $section = $this->section;
 
-        $str = '<h3 class="green">' . Html::encode($this->getTitle()) . '</h3>';
+        $title = $this->getTitle();
+        if ($title == \Yii::t('motion', 'motion_text')) {
+            $titPattern = \Yii::t('amend', 'amendment_for_prefix');
+            $title = str_replace('%PREFIX%', $section->getMotion()->getFormattedTitlePrefix(), $titPattern);
+        }
+        $str = '<h3 class="green">' . Html::encode($title) . '</h3>';
 
         if ($section->getAmendment()->globalAlternative) {
             $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
@@ -845,7 +855,7 @@ class TextSimple extends Text
                 if ($this->section->getSettings()->fixedWidth) {
                     $str .= ' fixedWidthFont';
                 }
-                $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection . '</div></div>';
+                $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection->html . '</div></div>';
             }
 
             $str .= '</div>';
@@ -857,24 +867,10 @@ class TextSimple extends Text
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
         $firstLine  = $section->getFirstLineNumber();
 
-        $diffGroupsAndSections = $this->getMaybeCachedDiffGroups($section, $lineLength, $firstLine);
-
-        if (count($diffGroupsAndSections['groups']) === 0) {
-            $str .= '<div class="paragraph lineNumbers">';
-
-            $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
-            foreach ($htmlSections as $htmlSection) {
-                $str .= '<div class="paragraph"><div class="text motionTextFormattings';
-                if ($this->section->getSettings()->fixedWidth) {
-                    $str .= ' fixedWidthFont';
-                }
-                $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection . '</div></div>';
-            }
-
-            $str .= '</div>';
-        }
-
-        $str       .= '<div class="paragraph lineNumbers">';
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
 
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
         if ($section->getSettings()->fixedWidth) {
@@ -882,10 +878,31 @@ class TextSimple extends Text
         }
         $wrapStart .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
         $wrapEnd   = '</div></section>';
-        $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, null);
 
-        $str       .= '</div>';
-        $str       .= '</div>';
+        if ($this->defaultOnlyDiff) {
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+            if (count($diffGroups) === 0) {
+                return;
+            }
+
+            $str .= '<div class="paragraph lineNumbers">';
+            $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine, null);
+            $str .= '</div>';
+        } else {
+            $str .= '<div class="paragraph lineNumbers">';
+
+            $diffs = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+            $lineNo = $firstLine;
+            foreach ($diffs as $diffSection) {
+                $lineNumbers = substr_count($diffSection, '###LINENUMBER###');
+                $html = LineSplitter::replaceLinebreakPlaceholdersByMarkup($diffSection, !!$section->getSettings()->lineNumbers, $lineNo);
+                $lineNo += $lineNumbers;
+                $str .= $wrapStart . $html . $wrapEnd;
+            }
+
+            $str .= '</div>';
+        }
 
         $content->textMain .= $str;
     }

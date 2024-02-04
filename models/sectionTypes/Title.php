@@ -210,7 +210,9 @@ class Title extends ISectionType
             return;
         }
 
-        $html  = '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
+        $html = '<h3 class="green">' . Html::encode($this->getTitle()) . '</h3>';
+
+        $html .= '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
                  Html::encode($this->section->getData()) . '</p>';
         if ($isRight) {
             $content->textRight .= $html;

@@ -160,8 +160,8 @@ aside {
 main {
   p {
     //text-align: justify; in rare cases causes flowing into the float; maybe check again with later versions of weasyprint
-    margin: 0 0 .9em;
-    line-height: 1.3;
+    margin: 0 0 0.7em;
+    line-height: 1.2;
   }
 
   img {
@@ -173,7 +173,7 @@ main {
 h2 {
   font-family: 'Arvo';
   font-size: 1.2em;
-  margin-top: 2em;
+  margin-top: 1.7em;
 }
 
 
@@ -187,8 +187,11 @@ $fixedWidthTextQuoteBorder: 2px !default;
 $lineNumberOffset: 25px !default;
 $lineNumberOffset4: 3px !default;
 
-
 .motionTextFormattings {
+  &.paragraphWithHeader { // H2's are wrapped within this paragraph to avoid orphaned H2's
+    page-break-inside: avoid;
+  }
+
   ul, ol {
     padding-left: $fixedWidthTextListPadding;
     aside & {
@@ -200,7 +203,7 @@ $lineNumberOffset4: 3px !default;
     }
 
     li {
-      line-height: 1.3;
+      line-height: 1.2;
     }
 
     ul, ol {
@@ -553,6 +556,9 @@ $lineNumberOffset4: 3px !default;
     text-decoration: none;
   }
 
+  .lineSummary {
+    margin-bottom: 0;
+  }
 
   del, ul.deleted, ol.deleted, li.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted, h1.deleted, h2.deleted, h3.deleted, h4.deleted, h5.deleted {
     color: #880000;
