@@ -39,7 +39,7 @@ foreach ($consultation->motionTypes as $type) {
     if (!is_a($type->getAmendmentPolicy(), Nobody::class)) {
         $hasAmendments = true;
     }
-    if ($type->getPDFLayoutClass() !== null) {
+    if ($type->hasPdfLayout()) {
         $hasPDF = true;
     }
 
@@ -224,8 +224,7 @@ if ($hasPDF) {
 
     $hasResolutions = false;
     foreach ($consultation->motions as $motion) {
-        $typeHasPdf = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
-        if ($motion->isResolution() && $typeHasPdf) {
+        if ($motion->isResolution() && $motion->getMyMotionType()->hasPdfLayout()) {
             $hasResolutions = $motion->motionTypeId;
         }
     }
@@ -248,7 +247,7 @@ if ($hasPDF) {
             if (count($motionType->getVisibleMotions(false)) === 0) {
                 continue;
             }
-            if ($motionType->getPDFLayoutClass() === null) {
+            if (!$motionType->hasPdfLayout()) {
                 continue;
             }
             $pdfLink = UrlHelper::createUrl([

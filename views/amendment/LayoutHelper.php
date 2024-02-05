@@ -179,7 +179,7 @@ class LayoutHelper
 
     public static function createPdfTcpdf(Amendment $amendment): string
     {
-        $pdfLayout = $amendment->getMyMotion()->motionType->getPDFLayoutClass();
+        $pdfLayout = $amendment->getMyMotion()->getMyMotionType()->getPDFLayoutClass();
         $pdf       = $pdfLayout->createPDFClass();
 
         $initiators = [];

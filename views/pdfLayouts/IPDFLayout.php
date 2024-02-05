@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\views\pdfLayouts;
 
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, Motion, TexTemplate};
@@ -9,37 +11,41 @@ use TCPDF;
 
 abstract class IPDFLayout
 {
+    public const LAYOUT_NONE = -1;
+    public const LAYOUT_WEASYPRINT_DEFAULT = 3;
+
+    public static function getTcpdfDefaultLayout(): PdfLayoutDescription
+    {
+        $params = AntragsgruenApp::getInstance();
+
+        return new PdfLayoutDescription(0, null, 'LDK Bayern', $params->resourceBase . 'img/pdf_preview_byldk.png', ByLDK::class);
+    }
+
+    public static function getWeasyprintDefaultLayout(): PdfLayoutDescription
+    {
+        $params = AntragsgruenApp::getInstance();
+
+        return new PdfLayoutDescription(
+            self::LAYOUT_WEASYPRINT_DEFAULT,
+            null,
+            'Default',
+            $params->resourceBase . 'img/pdf_preview_latex_bdk.png',
+            null
+        );
+    }
+
     /**
-     * @return array<array{title: string, preview: string|null, id: int, className?: class-string}>
+     * @return array<PdfLayoutDescription>
      */
     public static function getAvailableTcpdfClasses(): array
     {
         $params = AntragsgruenApp::getInstance();
 
         $pdfClasses = [
-            [
-                'id'      => -1,
-                'title'   => '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -',
-                'preview' => null,
-            ],
-            [
-                'id'      => 0,
-                'title'   => 'LDK Bayern',
-                'preview' => $params->resourceBase . 'img/pdf_preview_byldk.png',
-                'className'   => ByLDK::class,
-            ],
-            [
-                'id'      => 1,
-                'title'   => 'BDK',
-                'preview' => $params->resourceBase . 'img/pdf_preview_bdk.png',
-                'className'   => BDK::class,
-            ],
-            [
-                'id'      => 2,
-                'title'   => 'DBJR',
-                'preview' => $params->resourceBase . 'img/pdf_preview_dbjr.png',
-                'className'   => DBJR::class,
-            ],
+            new PdfLayoutDescription(-1, null, '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -', null, null),
+            self::getTcpdfDefaultLayout(),
+            new PdfLayoutDescription(1, null, 'BDK', $params->resourceBase . 'img/pdf_preview_bdk.png', BDK::class),
+            new PdfLayoutDescription(2, null, 'DBJR', $params->resourceBase . 'img/pdf_preview_dbjr.png', DBJR::class),
         ];
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $pdfClasses = $plugin::getProvidedPdfLayouts($pdfClasses);
@@ -48,22 +54,27 @@ abstract class IPDFLayout
         return $pdfClasses;
     }
 
-    /** @var array<string|int, array{title: string, preview: string|null, id?: int, className?: class-string}>|null */
-    private static ?array $_availableClassesWithLatex = null;
+    /** @var array<PdfLayoutDescription>|null */
+    private static ?array $_availablePdfLayouts = null;
 
-    public static function getAvailableClassesWithLatex(): array
+    /**
+     * @return PdfLayoutDescription[]
+     */
+    public static function getSelectablePdfLayouts(): array
     {
-        if (self::$_availableClassesWithLatex) {
-            return self::$_availableClassesWithLatex;
+        if (self::$_availablePdfLayouts) {
+            return self::$_availablePdfLayouts;
         }
 
         $return = [];
         foreach (self::getAvailableTcpdfClasses() as $data) {
-            $return['php' . $data['id']] = $data;
+            $return[] = $data;
         }
 
         $params = AntragsgruenApp::getInstance();
-        if ($params->xelatexPath || $params->lualatexPath) {
+        if ($params->weasyprintPath) {
+            $return[] = self::getWeasyprintDefaultLayout();
+        } elseif ($params->xelatexPath || $params->lualatexPath) {
             /** @var TexTemplate[] $texLayouts */
             $texLayouts = TexTemplate::find()->all();
             foreach ($texLayouts as $layout) {
@@ -72,30 +83,53 @@ abstract class IPDFLayout
                 } else {
                     $preview = null;
                 }
-                $return[$layout->id] = [
-                    'title'   => $layout->title,
-                    'preview' => $preview,
-                ];
+                $return[] = new PdfLayoutDescription(null, $layout->id,  $layout->title, $preview, null);
             }
         }
 
-        self::$_availableClassesWithLatex = $return;
+        self::$_availablePdfLayouts = $return;
 
         return $return;
     }
 
+    public static function getPdfLayoutForMotionType(ConsultationMotionType $motionType): PdfLayoutDescription
+    {
+        $weasyPrintActive = AntragsgruenApp::getInstance()->weasyprintPath !== null;
+
+        foreach (self::getSelectablePdfLayouts() as $layout) {
+            $isWeasyprintDefault = ($layout->id === self::LAYOUT_WEASYPRINT_DEFAULT);
+            if ($weasyPrintActive) {
+                if ($isWeasyprintDefault && $motionType->texTemplateId !== null) {
+                    return $layout;
+                }
+            } else {
+                if ($layout->latexId !== null && $motionType->texTemplateId === $layout->latexId) {
+                    return $layout;
+                }
+            }
+            if ($motionType->texTemplateId === null && $layout->id === $motionType->pdfLayout) {
+                return $layout;
+            }
+        }
+
+        if (AntragsgruenApp::getInstance()->weasyprintPath) {
+            return self::getWeasyprintDefaultLayout();
+        } else {
+            return self::getTcpdfDefaultLayout();
+        }
+    }
+
     /**
-     * @return class-string<IPDFLayout>|null
      * @throws Internal
      */
-    public static function getClassById(int $classId): ?string
+    public static function getClassById(int $classId): ?PdfLayoutDescription
     {
         if ($classId === -1) {
             return null;
         }
-        foreach (static::getAvailableClassesWithLatex() as $data) {
-            if (isset($data['id']) && $data['id'] === $classId) {
-                return $data['className'];
+        foreach (static::getSelectablePdfLayouts() as $data) {
+            if ($data->id !== null && $data->id === $classId) {
+                return $data;
             }
         }
         throw new Internal('Unknown PDF Layout');

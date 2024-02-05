@@ -124,7 +124,7 @@ foreach ($tagIds as $tagId) {
             );
         }
         echo '</div><div class="pdflink">';
-        if ($imotion->getMyMotionType()->getPDFLayoutClass() !== null && $imotion->isVisible()) {
+        if ($imotion->getMyMotionType()->hasPdfLayout() && $imotion->isVisible()) {
             if (is_a($imotion, Amendment::class)) {
                 echo Html::a(
                     Yii::t('motion', 'as_pdf'),

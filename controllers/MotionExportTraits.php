@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\views\pdfLayouts\IPDFLayout;
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
 use app\components\{RequestContext, Tools, UrlHelper};
 use app\models\exceptions\NotFound;
@@ -97,16 +98,18 @@ trait MotionExportTraits
             return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
         }
 
+        $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($motion->getMyMotionType());
+
         $hasLaTeX = (AntragsgruenApp::getInstance()->xelatexPath || AntragsgruenApp::getInstance()->lualatexPath);
-        if (!($hasLaTeX && $motion->getMyMotionType()->texTemplateId) && !$motion->getMyMotionType()->getPDFLayoutClass()) {
+        if (!($hasLaTeX && $selectedPdfLayout->latexId !== null) && $selectedPdfLayout->id === null) {
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
         if ($motion->getAlternativePdfSection()) {
             $pdfData = $motion->getAlternativePdfSection()->getData();
-        } elseif (AntragsgruenApp::getInstance()->weasyprintPath) {
+        } elseif ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
             $pdfData = LayoutHelper::createPdfFromHtml($motion);
-        } elseif ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
+        } elseif ($selectedPdfLayout->latexId !== null) {
             $pdfData = LayoutHelper::createPdfLatex($motion);
         } else {
             $pdfData = LayoutHelper::createPdfTcpdf($motion);
@@ -252,14 +255,16 @@ trait MotionExportTraits
             return new HtmlErrorResponse(404, $e->getMessage());
         }
 
+        $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($motionType);
+
         $hasLaTeX = (AntragsgruenApp::getInstance()->xelatexPath || AntragsgruenApp::getInstance()->lualatexPath);
-        if (!($hasLaTeX && $texTemplate) && !$motionType->getPDFLayoutClass()) {
+        if (!($hasLaTeX && $selectedPdfLayout->latexId !== null) && $selectedPdfLayout->id === null) {
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
-        if (AntragsgruenApp::getInstance()->weasyprintPath) {
+        if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
             $pdfData = $this->renderPartial('pdf_collection_html2pdf', ['imotions' => $imotions]);
-        } elseif ($hasLaTeX && $texTemplate) {
+        } elseif ($selectedPdfLayout->latexId !== null) {
             $pdfData = $this->renderPartial('pdf_collection_tex', ['imotions' => $imotions, 'texTemplate' => $texTemplate]);
         } else {
             $pdfData = $this->renderPartial('pdf_collection_tcpdf', ['imotions' => $imotions]);

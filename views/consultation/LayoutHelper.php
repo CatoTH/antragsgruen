@@ -38,8 +38,7 @@ class LayoutHelper
 
         $return .= '</a>';
 
-        $hasPDF = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
-        if ($hasPDF && $motion->status !== Motion::STATUS_MOVED) {
+        if ($motion->getMyMotionType()->hasPdfLayout() && $motion->status !== Motion::STATUS_MOVED) {
             $html   = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> PDF';
             $return .= HtmlTools::createExternalLink($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
         }
@@ -129,8 +128,7 @@ class LayoutHelper
 
         $return .= '</a>';
 
-        $hasPDF = ($amendment->getMyMotionType()->getPDFLayoutClass() !== null);
-        if ($hasPDF && $amendment->status !== Motion::STATUS_MOVED) {
+        if ($amendment->getMyMotionType()->hasPdfLayout() && $amendment->status !== Motion::STATUS_MOVED) {
             $html   = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> PDF';
             $return .= HtmlTools::createExternalLink($html, UrlHelper::createAmendmentUrl($amendment, 'pdf'), ['class' => 'pdfLink']);
         }

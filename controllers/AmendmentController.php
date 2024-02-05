@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
+use app\views\pdfLayouts\IPDFLayout;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
     HtmlResponse,
@@ -36,8 +37,10 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
 
+        $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendment->getMyMotionType());
+
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
-        if (!($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) && !$amendment->getMyMotionType()->getPDFLayoutClass()) {
+        if (!($hasLaTeX && $selectedPdfLayout->latexId !== null) && $selectedPdfLayout->id === null) {
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
@@ -45,9 +48,9 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
-        if (AntragsgruenApp::getInstance()->weasyprintPath) {
+        if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
             $pdf = LayoutHelper::createPdfFromHtml($amendment);
-        } elseif ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
+        } elseif ($selectedPdfLayout->latexId !== null) {
             $pdf = LayoutHelper::createPdfLatex($amendment);
         } else {
             $pdf = LayoutHelper::createPdfTcpdf($amendment);
@@ -85,10 +88,16 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
         }
 
+        $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($motion->getMyMotionType());
+
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
-        if (AntragsgruenApp::getInstance()->weasyprintPath) {
+        if (!($hasLaTeX && $selectedPdfLayout->latexId !== null) && $selectedPdfLayout->id === null) {
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
+        }
+
+        if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
             $pdf = $this->renderPartial('pdf_collection_html2pdf', ['amendments' => $amendments]);
-        } elseif ($hasLaTeX && $texTemplate) {
+        } elseif ($selectedPdfLayout->latexId !== null) {
             $pdf = $this->renderPartial('pdf_collection_tex', [
                 'amendments'  => $amendments,
                 'texTemplate' => $texTemplate,

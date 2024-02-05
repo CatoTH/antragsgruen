@@ -52,7 +52,7 @@ try {
     }
 }
 
-if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
+if ($motion->getMyMotionType()->hasPdfLayout() && $motion->isVisible()) {
     $pdfLi = '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt" aria-hidden="true"></span>' .
         Yii::t('motion', 'pdf_version');

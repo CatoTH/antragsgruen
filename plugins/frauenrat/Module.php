@@ -6,6 +6,7 @@ use app\models\db\Consultation;
 use app\models\settings\Layout;
 use app\plugins\frauenrat\pdf\Frauenrat;
 use app\plugins\ModuleBase;
+use app\views\pdfLayouts\PdfLayoutDescription;
 use yii\helpers\Url;
 
 class Module extends ModuleBase
@@ -43,12 +44,7 @@ class Module extends ModuleBase
 
     public static function getProvidedPdfLayouts(array $default): array
     {
-        $default[] = [
-            'id'        => 100,
-            'title'     => 'Deutscher Frauenrat',
-            'preview'   => null,
-            'className' => Frauenrat::class,
-        ];
+        $default[] = new PdfLayoutDescription(100, null, 'Deutscher Frauenrat', null, Frauenrat::class);
 
         return $default;
     }
