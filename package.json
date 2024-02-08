@@ -7,7 +7,6 @@
         "url": "https://github.com/CatoTH/antragsgruen"
     },
     "scripts": {
-        "typings": "node_modules/.bin/typings",
         "test:acceptance": "vendor/bin/codecept run Acceptance",
         "test:unit": "vendor/bin/codecept run Unit",
         "watch": "gulp watch",
