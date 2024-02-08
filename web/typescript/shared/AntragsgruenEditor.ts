@@ -68,6 +68,7 @@ export class AntragsgruenEditor {
 
     private static createConfig(title: string, noStrike: boolean, trackChanged: boolean, allowDiffFormattings: boolean, autocolorize: boolean, enterMode: any): any {
         let ckeditorConfig = {
+            versionCheck: false,
             coreStyles_strike: {
                 element: 'span',
                 attributes: {'class': 'strike'},
@@ -182,6 +183,7 @@ export class AntragsgruenEditor {
             (this.$el.data('autocolorize') == '1'),
             (this.$el.data('enter-mode') == 'br' ? CKEDITOR.ENTER_BR : CKEDITOR.ENTER_P)
         );
+        ckeditorConfig.versionCheck = false;
 
         // This prevents strange behavior in chrome: after switching from the WYSIWYG editor field to a regular input,
         // the focus of the new input field was lost after 200ms
