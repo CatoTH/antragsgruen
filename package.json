@@ -25,13 +25,13 @@
         "@types/jquery": "^3.5.11",
         "@types/sortablejs": "^1.10.7",
         "@types/typeahead": "^0.11.32",
-        "@typescript-eslint/eslint-plugin": "^5.10.1",
-        "@typescript-eslint/parser": "^5.10.1",
+        "@typescript-eslint/eslint-plugin": "^6.21.0",
+        "@typescript-eslint/parser": "^6.21.0",
         "autoprefixer": "^10.4.1",
         "cloneable-readable": "^2.1.0",
-        "eslint": "^8.32.0",
+        "eslint": "^8.56.0",
         "eslint-plugin-promise": "^6.1.1",
-        "eslint-plugin-unicorn": "^45.0.2",
+        "eslint-plugin-unicorn": "^51.0.1",
         "gulp": "^4.0.2",
         "gulp-concat": "^2.6.1",
         "gulp-postcss": "^9.0.1",
@@ -43,7 +43,7 @@
         "pa11y": "^5.3.1",
         "postcss": "^8.4.5",
         "sass": "^1.54.9",
-        "typescript": "^5.0.4"
+        "typescript": "~5.3.3"
     },
     "directories": {
         "bin": "./bin/"
