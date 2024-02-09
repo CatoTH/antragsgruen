@@ -755,7 +755,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function createEmailChangeToken(string $newEmail, int $timestamp): string
     {
-        if (YII_ENV == 'test' && mb_strpos($newEmail, '@example.org') !== false) {
+        if (YII_ENV==='test' && str_contains($newEmail, '@example.org')) {
             return 'testCode';
         }
 

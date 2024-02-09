@@ -103,7 +103,7 @@ class DiffRenderer
 
     public static function nodeContainsText(\DOMNode $node, string $text): bool
     {
-        return (mb_strpos($node->nodeValue, $text) !== false);
+        return (str_contains($node->nodeValue, $text));
     }
 
     public static function nodeStartInsDel(\DOMNode $node): bool

@@ -26,7 +26,7 @@ class AffectedLinesFilter
         }
 
         for ($i = 0; $i < count($parts); $i++) {
-            if ($i == 0 && mb_strpos($parts[$i], '###LINENUMBER###') === false) {
+            if ($i == 0 && !str_contains($parts[$i], '###LINENUMBER###')) {
                 $line--;
             }
 

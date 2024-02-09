@@ -995,7 +995,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $motionTitle  = $this->getMyMotion()->title;
         $motionPrefix = $this->getMyMotion()->titlePrefix;
-        if ($motionPrefix !== '' && mb_strpos($this->getFormattedTitlePrefix(), $motionPrefix) === false) {
+        if ($motionPrefix !== '' && !str_contains($this->getFormattedTitlePrefix(), $motionPrefix)) {
             $title = $motionPrefix . '_' . $this->getFormattedTitlePrefix() . ' ' . $motionTitle;
         } else {
             $title = $this->getFormattedTitlePrefix() . ' ' . $motionTitle;
