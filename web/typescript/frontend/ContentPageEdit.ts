@@ -1,4 +1,5 @@
 import editor = CKEDITOR.editor;
+import config = CKEDITOR.config;
 
 export class ContentPageEdit {
     private $editCaller: JQuery;
@@ -36,6 +37,7 @@ export class ContentPageEdit {
         this.$textHolder.attr('contenteditable', "true");
 
         this.editor = CKEDITOR.inline(this.$textHolder.attr('id'), {
+            versionCheck: false,
             scayt_sLang: 'de_DE',
             removePlugins: 'lite,showbloks,about,selectall,forms',
             extraPlugins: 'uploadimage',
@@ -53,7 +55,7 @@ export class ContentPageEdit {
                 {name: 'styles'},
                 {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']}
             ]
-        });
+        } as config);
         this.editor.on('fileUploadRequest', (evt) => {
             evt.data['requestData']['_csrf'] = this.$form.find('> input[name=_csrf]').val();
         });
