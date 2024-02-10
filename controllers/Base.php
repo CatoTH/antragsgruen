@@ -68,9 +68,7 @@ class Base extends Controller
 
         if ($appParams->siteSubdomain) {
             if (str_starts_with($appParams->siteSubdomain, 'xn--')) {
-                HTMLTools::loadNetIdna2();
-                $idna = new \Net_IDNA2();
-                $subdomain = $idna->decode($appParams->siteSubdomain);
+                $subdomain = idn_to_utf8($appParams->siteSubdomain);
             } else {
                 $subdomain = $appParams->siteSubdomain;
             }
@@ -87,9 +85,7 @@ class Base extends Controller
             }
         } elseif (isset($params[1]['subdomain'])) {
             if (str_starts_with($params[1]['subdomain'], 'xn--')) {
-                HTMLTools::loadNetIdna2();
-                $idna = new \Net_IDNA2();
-                $subdomain = $idna->decode($params[1]['subdomain']);
+                $subdomain = idn_to_utf8($params[1]['subdomain']);
             } else {
                 $subdomain = $params[1]['subdomain'];
             }

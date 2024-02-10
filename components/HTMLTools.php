@@ -22,18 +22,6 @@ class HTMLTools
         return strlen($str) > 1000;
     }
 
-    /*
-     * Required by HTML Purifier to handle Umlaut domains
-     */
-    public static function loadNetIdna2(): void
-    {
-        $dir  = __DIR__ . DIRECTORY_SEPARATOR . 'Net_IDNA2-0.1.1' . DIRECTORY_SEPARATOR . 'Net' . DIRECTORY_SEPARATOR;
-        $dir2 = $dir . 'IDNA2' . DIRECTORY_SEPARATOR;
-        @require_once $dir2 . 'Exception.php';
-        @require_once $dir2 . 'Exception' . DIRECTORY_SEPARATOR . 'Nameprep.php';
-        @require_once $dir . 'IDNA2.php';
-    }
-
     public static function purify(\HTMLPurifier_Config $config, string $html): string {
         /** @var \HTMLPurifier_HTMLDefinition $def */
         $def = $config->getHTMLDefinition(true);
@@ -100,7 +88,6 @@ class HTMLTools
             return \Yii::$app->getCache()->get($cacheKey);
         }
 
-        self::loadNetIdna2();
         $configInstance = \HTMLPurifier_Config::create([
             'HTML.Doctype'                            => 'HTML 4.01 Transitional',
             'HTML.AllowedElements'                    => null,
@@ -247,7 +234,6 @@ class HTMLTools
 
         $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
 
-        self::loadNetIdna2();
         $configInstance = \HTMLPurifier_Config::create([
             'HTML.Doctype'                            => 'HTML 4.01 Transitional',
             'HTML.AllowedElements'                    => implode(',', $allowedTags),
