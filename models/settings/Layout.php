@@ -375,7 +375,7 @@ class Layout
         $mtime    = (file_exists($absolute) ? filemtime($absolute) : 0);
         $age      = time() - $mtime;
         if ($age < 604800) { // 1 Week
-            $url .= (mb_strpos($url, '?') !== false ? '&' : '?');
+            $url .= (str_contains($url, '?') ? '&' : '?');
             $url .= $mtime;
         }
         $newUrl = AntragsgruenApp::getInstance()->resourceBase . $url;

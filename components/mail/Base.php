@@ -109,7 +109,7 @@ abstract class Base
      */
     public function send(Email $message, string $toEmail)
     {
-        if (YII_ENV === 'test' || mb_strpos($toEmail, '@example.org') !== false) {
+        if (YII_ENV === 'test' || str_contains($toEmail, '@example.org')) {
             return EMailLog::STATUS_SKIPPED_OTHER;
         }
         if (EMailBlocklist::isBlocked($toEmail)) {
