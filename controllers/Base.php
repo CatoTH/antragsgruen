@@ -66,35 +66,21 @@ class Base extends Controller
         $inManager = (get_class($this) === ManagerController::class);
         $inInstaller = (get_class($this) === InstallationController::class);
 
-        if ($appParams->siteSubdomain) {
-            if (str_starts_with($appParams->siteSubdomain, 'xn--')) {
-                $subdomain = idn_to_utf8($appParams->siteSubdomain);
-            } else {
-                $subdomain = $appParams->siteSubdomain;
+        if ($appParams->siteSubdomain || isset($params[1]['subdomain'])) {
+            $subdomain = $appParams->siteSubdomain ?? $params[1]['subdomain'];
+            if (str_starts_with($subdomain, 'xn--')) {
+                $convertedSubdomain = idn_to_utf8($subdomain);
+                if ($convertedSubdomain === false) {
+                    $convertedSubdomain = '';
+                }
+                $subdomain = $convertedSubdomain;
             }
-
             $consultation = $params[1]['consultationPath'] ?? '';
             if ($consultation === '' && $this->isGetSet('passConId')) {
                 $consultation = $this->getHttpRequest()->get('passConId');
             }
             $this->loadConsultation($subdomain, $consultation);
-            if ($this->site) {
-                $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
-            } else {
-                $this->layoutParams->setLayout(Layout::getDefaultLayout());
-            }
-        } elseif (isset($params[1]['subdomain'])) {
-            if (str_starts_with($params[1]['subdomain'], 'xn--')) {
-                $subdomain = idn_to_utf8($params[1]['subdomain']);
-            } else {
-                $subdomain = $params[1]['subdomain'];
-            }
 
-            $consultation = $params[1]['consultationPath'] ?? '';
-            if ($consultation === '' && $this->isGetSet('passConId')) {
-                $consultation = $this->getHttpRequest()->get('passConId');
-            }
-            $this->loadConsultation($subdomain, $consultation);
             if ($this->site) {
                 $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
             } else {
