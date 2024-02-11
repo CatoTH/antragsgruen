@@ -5,7 +5,6 @@ use app\components\Tools;
 use app\views\pdfLayouts\IPdfWriter;
 use app\views\amendment\{LayoutHelper as AmendmentLayoutHelper};
 use app\views\motion\{LayoutHelper as MotionLayoutHelper};
-use setasign\Fpdi\PdfParser\StreamReader;
 
 /**
  * @var IMotion[] $imotions
@@ -33,20 +32,7 @@ foreach ($imotions as $imotion) {
         $bookmarkId = 'amendment' . $imotion->id;
     }
 
-    $pageCount = $pdf->setSourceFile(StreamReader::createByString($pdfData));
-
-    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-        $page = $pdf->ImportPage($pageNo);
-        $dim  = $pdf->getTemplatesize($page);
-        $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
-
-        if ($pageNo === 1) {
-            $pdf->setDestination($bookmarkId, 0, '');
-            $pdf->Bookmark($imotion->getTitleWithPrefix(), 0, 0, '', '', [128,0,0], -1, '#' . $bookmarkId);
-        }
-
-        $pdf->useTemplate($page);
-    }
+    Tools::appendPdfToPdf($pdf, $pdfData, $bookmarkId, $imotion->getTitleWithPrefix());
 }
 
 

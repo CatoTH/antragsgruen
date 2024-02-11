@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\models\exceptions\{Access, NotFound, ExceptionBase, ResponseException};
+use app\views\pdfLayouts\IPDFLayout;
 use app\components\{RequestContext, Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
 use app\models\forms\AdminMotionFilterForm;
@@ -388,23 +389,31 @@ class MotionListController extends AdminBase
         $zip      = new ZipWriter();
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         foreach ($imotions as $imotion) {
+            if (!$imotion->getMyMotionType()->hasPdfLayout()) {
+                continue;
+            }
+
+            $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($imotion->getMyMotionType());
             if (is_a($imotion, Motion::class)) {
-                if ($hasLaTeX && $imotion->getMyMotionType()->texTemplateId) {
+                if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+                    $file = MotionLayoutHelper::createPdfFromHtml($imotion);
+                } elseif ($selectedPdfLayout->latexId !== null) {
                     $file = MotionLayoutHelper::createPdfLatex($imotion);
-                    $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
-                } elseif ($imotion->getMyMotionType()->getPDFLayoutClass()) {
+                } else {
                     $file = MotionLayoutHelper::createPdfTcpdf($imotion);
-                    $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
                 }
             } elseif (is_a($imotion, Amendment::class))  {
-                if ($hasLaTeX && $imotion->getMyMotionType()->texTemplateId) {
+                if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+                    $file = AmendmentLayoutHelper::createPdfFromHtml($imotion);
+                } elseif ($selectedPdfLayout->latexId !== null) {
                     $file = AmendmentLayoutHelper::createPdfLatex($imotion);
-                    $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
-                } elseif ($imotion->getMyMotionType()->getPDFLayoutClass()) {
+                } else {
                     $file = AmendmentLayoutHelper::createPdfTcpdf($imotion);
-                    $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
                 }
+            } else {
+                continue;
             }
+            $zip->addFile($imotion->getFilenameBase(false) . '.pdf', $file);
         }
 
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'motions_pdf');
