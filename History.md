@@ -1,9 +1,12 @@
 # Version history
 
-## Version 4.14.0 [not released yet]
+## Version 4.13.2 (2024-02-18)
 
-- New translations are provided: Dutch (thanks to m-rtijn and MickVolt) and Catalan (thanks to gtriasg and reixacu).
+- Bugfix: the version check in the editor that lead to warnings is now disabled.
 - Bugfix: The list of previous speakers was not expandable.
+- Bugfix: In rare cases, the sorting of motions on the home page was not working properly.
+- New translations are provided: Dutch (thanks to m-rtijn and MickVolt) and Catalan (thanks to gtriasg and reixacu).
+
 
 ### Version 4.13.1 (2023-12-09)
 

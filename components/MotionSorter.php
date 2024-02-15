@@ -18,13 +18,7 @@ class MotionSorter
                 $return = 0;
             }
         } else {
-            if ($str1 < $str2) {
-                $return = -1;
-            } elseif ($str1 > $str2) {
-                $return = 1;
-            } else {
-                $return = 0;
-            }
+            $return = strnatcasecmp($str1, $str2);
         }
 
         return $return;

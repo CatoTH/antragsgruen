@@ -22,12 +22,10 @@ class MotionSortTest extends TestBase
             'A10'
         ];
         $out    = MotionSorter::getSortedMotionsSortTest($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    /**
-     */
-    public function testNeuVariations(): void
+    public function testNeuVariations1(): void
     {
         $orig   = [
             'A10 neub',
@@ -42,11 +40,17 @@ class MotionSortTest extends TestBase
             'A10 neub'
         ];
         $out    = MotionSorter::getSortedMotionsSortTest($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    /**
-     */
+    public function testNeuVariations2(): void
+    {
+        $orig = ['W-01-WES', 'W-01-NEU'];
+        $expect = ['W-01-NEU', 'W-01-WES'];
+        $out = MotionSorter::getSortedMotionsSortTest($orig);
+        $this->assertSame($expect, $out);
+    }
+
     public function testAgenda(): void
     {
         $orig   = [
@@ -62,24 +66,20 @@ class MotionSortTest extends TestBase
             '6.10.',
         ];
         $out    = MotionSorter::getSortedMotionsSortTest($orig);
-        $this->assertEquals($expect, $out);
+        $this->assertSame($expect, $out);
     }
 
-    /**
-     */
     public function testStripBeginning(): void
     {
-        $this->assertEquals(['1', '2'], MotionSorter::stripCommonBeginning('ab1', 'ab2'));
-        $this->assertEquals(['d', 'c'], MotionSorter::stripCommonBeginning('abd', 'abc'));
-        $this->assertEquals(['1', ''], MotionSorter::stripCommonBeginning('ab1', 'ab'));
+        $this->assertSame(['1', '2'], MotionSorter::stripCommonBeginning('ab1', 'ab2'));
+        $this->assertSame(['d', 'c'], MotionSorter::stripCommonBeginning('abd', 'abc'));
+        $this->assertSame(['1', ''], MotionSorter::stripCommonBeginning('ab1', 'ab'));
 
-        $this->assertEquals(['1', '2'], MotionSorter::stripCommonBeginning('1.1', '1.2'));
-        $this->assertEquals(['1', '3'], MotionSorter::stripCommonBeginning('1.2.1', '1.2.3'));
-        $this->assertEquals(['1neu', '1neu2'], MotionSorter::stripCommonBeginning('1.1neu', '1.1neu2'));
+        $this->assertSame(['1', '2'], MotionSorter::stripCommonBeginning('1.1', '1.2'));
+        $this->assertSame(['1', '3'], MotionSorter::stripCommonBeginning('1.2.1', '1.2.3'));
+        $this->assertSame(['1neu', '1neu2'], MotionSorter::stripCommonBeginning('1.1neu', '1.1neu2'));
     }
 
-    /**
-     */
     public function testAgenda2(): void
     {
         $orig   = [
@@ -94,7 +94,7 @@ class MotionSortTest extends TestBase
             '6.14neu',
             '6.15. Neu b',
         ];
-        $out    = MotionSorter::getSortedMotionsSortTest($orig);
-        $this->assertEquals($expect, $out);
+        $out = MotionSorter::getSortedMotionsSortTest($orig);
+        $this->assertSame($expect, $out);
     }
 }
