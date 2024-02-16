@@ -3,6 +3,7 @@
 namespace app\components;
 
 use app\models\db\Amendment;
+use app\models\SectionedParagraph;
 use app\models\exceptions\{FormError, Internal};
 use yii\helpers\Html;
 
@@ -445,11 +446,13 @@ class HTMLTools
     }
 
     /**
-     * @return string[]
+     * @return SectionedParagraph[]
      * @throws Internal
      */
-    private static function sectionSimpleHTMLInt(\DOMElement $element, bool $split, bool $splitListItems, string $pre, string $post): array
+    private static function sectionSimpleHTMLInt(\DOMElement $element, int &$paragraphNoWithoutSplit, bool $split, bool $splitListItems, string $pre, string $post): array
     {
+        $origParagraphNoWithoutSplit = $paragraphNoWithoutSplit;
+
         $inlineElements = ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b', 'sub', 'sup'];
         if (!$splitListItems) {
             $inlineElements[] = 'li';
@@ -461,7 +464,7 @@ class HTMLTools
         $children      = $element->childNodes;
         $pendingInline = null;
 
-        $lino          = 0;
+        $lino = 0;
         if ($element->nodeName === 'ol') {
             $start = $element->getAttribute('start');
             if ($start !== null && $start > 0) {
@@ -474,7 +477,7 @@ class HTMLTools
             switch (get_class($child)) {
                 case 'DOMElement':
                     /** @var \DOMElement $child */
-                    if ($child->nodeName == 'br') {
+                    if ($child->nodeName === 'br') {
                         if ($pendingInline === null) {
                             $pendingInline = '';
                         }
@@ -514,16 +517,16 @@ class HTMLTools
                         }
                         $newPre .= '>';
                         $newPost = '</' . $child->nodeName . '>';
-                        $newArrs = self::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
+                        $newArrs = self::sectionSimpleHTMLInt($child, $paragraphNoWithoutSplit, $split, $splitListItems, $newPre, $newPost);
                         if ($pendingInline === null) {
                             $pendingInline = '';
                         }
                         foreach ($newArrs as $str) {
-                            $pendingInline .= $str;
+                            $pendingInline .= $str->html;
                         }
                     } else {
                         if ($pendingInline !== null) {
-                            $return[]      = $pre . $pendingInline . $post;
+                            $return[] = new SectionedParagraph($pre . $pendingInline . $post, $origParagraphNoWithoutSplit);
                             $pendingInline = null;
                         }
 
@@ -545,7 +548,13 @@ class HTMLTools
                             }
                             $newPre .= ' start="#LINO#">';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = self::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
+                            $newArrs = self::sectionSimpleHTMLInt($child, $paragraphNoWithoutSplit, $split, $splitListItems, $newPre, $newPost);
+                            if (count($return) > 0) {
+                                foreach ($newArrs as $arr) {
+                                    $arr->paragraphWithoutLineSplit++;
+                                }
+                                $paragraphNoWithoutSplit++;
+                            }
                             $return  = array_merge($return, $newArrs);
                         } elseif ($child->nodeName === 'li') {
                             $lino = self::getNextLiCounter($child, $lino);
@@ -557,12 +566,18 @@ class HTMLTools
                                 $newPre .= '<' . $child->nodeName . '>';
                             }
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = self::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
+                            $newArrs = self::sectionSimpleHTMLInt($child, $paragraphNoWithoutSplit, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } elseif (in_array($child->nodeName, ['ul', 'blockquote', 'p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = self::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
+                            $newArrs = self::sectionSimpleHTMLInt($child, $paragraphNoWithoutSplit, $split, $splitListItems, $newPre, $newPost);
+                            if (count($return) > 0) {
+                                foreach ($newArrs as $arr) {
+                                    $arr->paragraphWithoutLineSplit++;
+                                }
+                                $paragraphNoWithoutSplit++;
+                            }
                             $return  = array_merge($return, $newArrs);
                         } else {
                             throw new Internal('Unknown Tag: ' . $child->nodeName);
@@ -583,10 +598,8 @@ class HTMLTools
             }
         }
         if ($pendingInline !== null) {
-            $return[]      = $pre . $pendingInline . $post;
-            $pendingInline = null;
+            $return[] = new SectionedParagraph($pre . $pendingInline . $post, $origParagraphNoWithoutSplit);
         }
-        $return = str_replace("\r", "", $return); // @TODO Array ./. string?
         return $return;
     }
 
@@ -615,9 +628,7 @@ class HTMLTools
      * - Root level paragraphs are returned as paragraphs
      * - Blockquotes can be split into paragraphs, if multiple P elements are contained
      *
-     * @param string $html
-     * @param bool $splitListItems
-     * @return string[]
+     * @return SectionedParagraph[]
      * @throws Internal
      */
     public static function sectionSimpleHTML(string $html, bool $splitListItems = true): array
@@ -630,8 +641,14 @@ class HTMLTools
             return $cache;
         }
 
+        $paragraphNoWithoutSplit = 0;
         $body = self::html2DOM($html);
-        $result = self::sectionSimpleHTMLInt($body, true, $splitListItems, '', '');
+        $result = self::sectionSimpleHTMLInt($body, $paragraphNoWithoutSplit, true, $splitListItems, '', '');
+        if ($splitListItems) {
+            for ($i = 0; $i < count($result); $i++) {
+                $result[$i]->paragraphWithLineSplit = $i;
+            }
+        }
 
         HashedStaticCache::setCache($cacheFunc, $cacheDeps, $result);
 

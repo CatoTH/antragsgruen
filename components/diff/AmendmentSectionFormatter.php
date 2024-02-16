@@ -6,11 +6,13 @@ use app\components\diff\DataTypes\AffectedLineBlock;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\exceptions\Internal;
+use app\models\SectionedParagraph;
 
 class AmendmentSectionFormatter
 {
-    /** @var string[] */
+    /** @var SectionedParagraph[] */
     private array $paragraphsOriginal;
+    /** @var SectionedParagraph[] */
     private array $paragraphsNew;
 
     private int $firstLine = 0;
@@ -137,16 +139,18 @@ class AmendmentSectionFormatter
             $originals     = [];
             $newParagraphs = [];
             foreach ($this->paragraphsOriginal as $section) {
-                $html = static::addLineNumberPlaceholders($section, $lineLength);
-                $html = HTMLTools::explicitlySetLiValues($html);
-                $originals[] = $html;
+                $section = clone $section;
+                $section->html = static::addLineNumberPlaceholders($section->html, $lineLength);
+                $section->html = HTMLTools::explicitlySetLiValues($section->html);
+                $originals[] = $section;
             }
             foreach ($this->paragraphsNew as $newParagraph) {
                 // Besides adding line numbers, addLineNumberPlaceholders also breaks overly long words into parts
                 // and addes a dash at the end of the first line. We need to do this on the amendments as well,
                 // even if we don't need the line number markers
-                $newParagraph    = static::addLineNumberPlaceholders($newParagraph, $lineLength);
-                $newParagraph    = str_replace('###LINENUMBER###', '', $newParagraph);
+                $newParagraph = clone $newParagraph;
+                $newParagraph->html = static::addLineNumberPlaceholders($newParagraph->html, $lineLength);
+                $newParagraph->html = str_replace('###LINENUMBER###', '', $newParagraph->html);
                 $newParagraphs[] = $newParagraph;
             }
 

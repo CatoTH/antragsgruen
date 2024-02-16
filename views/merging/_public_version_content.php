@@ -41,8 +41,8 @@ foreach ($motion->getSortedSections(false) as $section) {
         echo '" id="' . $htmlId . '">';
 
         $paragraphs = [];
-        foreach ($section->getTextParagraphLines() as $paraNo => $para) {
-            $paragraphs[] = $draft->paragraphs[$section->sectionId . '_' . $paraNo]->text;
+        foreach ($section->getTextParagraphLines() as $para) {
+            $paragraphs[] = $draft->paragraphs[$section->sectionId . '_' . $para->paragraphWithLineSplit]->text;
         }
         echo implode("\n", $paragraphs);
 

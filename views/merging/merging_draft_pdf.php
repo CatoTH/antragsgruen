@@ -52,8 +52,8 @@ foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section)
     $pdf->SetFont('Courier');
 
     $paragraphs = [];
-    foreach ($section->getTextParagraphLines() as $paraNo => $para) {
-        $paragraphs[] = $draft->paragraphs[$section->sectionId . '_' . $paraNo]->text;
+    foreach ($section->getTextParagraphLines() as $para) {
+        $paragraphs[] = $draft->paragraphs[$section->sectionId . '_' . $para->paragraphWithLineSplit]->text;
     }
     $html = implode("\n", $paragraphs);
 

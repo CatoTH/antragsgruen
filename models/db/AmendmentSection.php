@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\SectionedParagraph;
 use app\models\settings\AntragsgruenApp;
 use app\components\{diff\AmendmentRewriter, diff\ArrayMatcher, diff\Diff, diff\DiffRenderer, HTMLTools, LineSplitter};
 use app\models\exceptions\Internal;
@@ -85,18 +86,6 @@ class AmendmentSection extends IMotionSection
         ];
     }
 
-    /**
-     * @return string[]
-     * @throws Internal
-     */
-    public function getTextParagraphs(): array
-    {
-        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-            throw new Internal('Paragraphs are only available for simple text sections.');
-        }
-        return HTMLTools::sectionSimpleHTML($this->data);
-    }
-
     public function getOriginalMotionSection(): ?MotionSection
     {
         if ($this->originalMotionSection === null) {
@@ -144,7 +133,8 @@ class AmendmentSection extends IMotionSection
      */
     public function getParagraphLineNumberHelper(): array
     {
-        $motionParas     = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->getData());
+        $motionParas = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->getData());
+        $motionParas = array_map(fn(SectionedParagraph $par) => $par->html, $motionParas);
         $lineLength      = $this->getMotion()->getMyConsultation()->getSettings()->lineLength;
         $lineNumber      = $this->getFirstLineNumber();
         $paraLineNumbers = [];
@@ -160,7 +150,7 @@ class AmendmentSection extends IMotionSection
      * Returns a hashmap of changed paragraphs.
      * The paragraphs are returned as object including additional information about the line numbers etc.
      *
-     * @param string[] $origParagraphs
+     * @param SectionedParagraph[] $origParagraphs
      * @param bool $splitListItems
      * @return MotionSectionParagraphAmendment[]
      */
@@ -177,7 +167,7 @@ class AmendmentSection extends IMotionSection
         $lineLength = $this->getMotion()->getMyConsultation()->getSettings()->lineLength;
 
         $amParagraphs = [];
-        $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
+        $newSections = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
         $diff         = new Diff();
         $diffParas    = $diff->compareHtmlParagraphs($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
 
@@ -198,7 +188,7 @@ class AmendmentSection extends IMotionSection
             }
             if (count($origParagraphs) > 0) {
                 // $origParagraphs can be empty if the original motion is completely empty
-                $firstLine += LineSplitter::countMotionParaLines($origParagraphs[$paraNo], $lineLength);
+                $firstLine += LineSplitter::countMotionParaLines($origParagraphs[$paraNo]->html, $lineLength);
             }
         }
         /*
@@ -210,13 +200,13 @@ class AmendmentSection extends IMotionSection
     /**
      * Returns a hashmap of changed paragraphs. Only the actual diff-string is returned.
      *
-     * @param string[] $origParagraphs
+     * @param SectionedParagraph[] $origParagraphs
      * @return string[]
      */
     public function diffStrToOrigParagraphs(array $origParagraphs, bool $splitListItems, int $formatting): array
     {
         $amParagraphs = [];
-        $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
+        $newSections = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
         $diff         = new Diff();
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newSections, $formatting);
         foreach ($diffParas as $paraNo => $diffPara) {

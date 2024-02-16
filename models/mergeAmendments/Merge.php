@@ -64,8 +64,8 @@ class Merge
     private function mergeSimpleTextSection(MotionSection $section, MotionSection $origSection, Draft $draft): void
     {
         $paragraphs = [];
-        foreach ($origSection->getTextParagraphLines(true) as $paraNo => $para) {
-            $consolidated = $draft->paragraphs[$section->sectionId . '_' . $paraNo]->text;
+        foreach ($origSection->getTextParagraphLines(true) as $para) {
+            $consolidated = $draft->paragraphs[$section->sectionId . '_' . $para->paragraphWithLineSplit]->text;
             $consolidated = str_replace('<li>&nbsp;</li>', '', $consolidated);
             $paragraphs[] = $consolidated;
         }

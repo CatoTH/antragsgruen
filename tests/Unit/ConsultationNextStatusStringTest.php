@@ -41,7 +41,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $this->assertEquals('A2', $consultation->getNextMotionPrefix(3, []));
     }
 
-    public function testMotionPreifx_B1_exists(): void
+    public function testMotionPrefix_B1_exists(): void
     {
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(2);

@@ -119,7 +119,7 @@ class IPdfWriter extends Fpdi
         } else {
             $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
-                $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $html = str_replace('###LINENUMBER###', '', implode('', $para->lines));
                 $html = str_replace('</li>', '<br></li>', $html);
                 $html = str_replace('<ol', '<br><ol', $html);
                 $html = str_replace('<ul', '<br><ul', $html);

@@ -3,11 +3,10 @@
 namespace app\components\diff\amendmentMerger;
 
 use app\components\diff\DataTypes\GroupedParagraphData;
-use app\components\diff\Diff;
-use app\components\diff\MovingParagraphDetector;
+use app\components\diff\{Diff, MovingParagraphDetector};
 use app\components\HTMLTools;
-use app\models\db\AmendmentSection;
-use app\models\db\MotionSection;
+use app\models\db\{AmendmentSection, MotionSection};
+use app\models\SectionedParagraph;
 
 class SectionMerger
 {
@@ -30,25 +29,26 @@ class SectionMerger
      */
     public function initByMotionSection(MotionSection $section): void
     {
-        $paras    = $section->getTextParagraphLines();
-        $sections = [];
-        foreach ($paras as $para) {
-            $sections[] = str_replace('###LINENUMBER###', '', implode('', $para));
-        }
+        $sections = array_map(fn(SectionedParagraph $para) => new SectionedParagraph(
+            str_replace('###LINENUMBER###', '', implode('', $para->lines)),
+            $para->paragraphWithoutLineSplit,
+            $para->paragraphWithLineSplit
+        ), $section->getTextParagraphLines());
+
         $this->initByMotionParagraphs($sections);
     }
 
     /**
-     * @param string[] $paras
+     * @param SectionedParagraph[] $paras
      */
     public function initByMotionParagraphs(array $paras): void
     {
-        $this->paragraphStrings = $paras;
+        $this->paragraphStrings = array_map(fn(SectionedParagraph $para) => $para->html, $paras);
 
         $this->paragraphs = [];
         if (count($paras) > 0) {
-            foreach ($paras as $paraNo => $paraStr) {
-                $this->paragraphs[$paraNo] = new ParagraphMerger($paraStr, $this->mergeCollisions);
+            foreach ($paras as $para) {
+                $this->paragraphs[$para->paragraphWithLineSplit] = new ParagraphMerger($para->html, $this->mergeCollisions);
             }
         } else {
             $this->paragraphs[0] = new ParagraphMerger('<p></p>', $this->mergeCollisions);
@@ -56,10 +56,12 @@ class SectionMerger
     }
 
     /**
-     * @param string[] $amendingParas
+     * @param SectionedParagraph[] $amendingParas
      */
     public function addAmendingParagraphs(int $amendmentId, array $amendingParas): void
     {
+        $amendingParas = array_map(fn(SectionedParagraph $par) => $par->html, $amendingParas);
+
         $diff     = new Diff();
         $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->paragraphStrings, $amendingParas, intval($amendmentId));
         $paraArr  = MovingParagraphDetector::markupWordArrays($paraArr);

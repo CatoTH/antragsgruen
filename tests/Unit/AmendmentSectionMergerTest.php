@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use app\components\diff\amendmentMerger\SectionMerger;
 use app\components\diff\DataTypes\GroupedParagraphData;
 use app\components\HTMLTools;
+use app\models\SectionedParagraph;
 use Codeception\Attribute\Incomplete;
 use Tests\Support\Helper\TestBase;
 
@@ -46,8 +47,8 @@ class AmendmentSectionMergerTest extends TestBase
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore fnord et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p></p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore fnord et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p></p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore '),
@@ -62,10 +63,10 @@ class AmendmentSectionMergerTest extends TestBase
     public function testBasic(): void
     {
         $orig   = [
-            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>'
+            new SectionedParagraph('<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>', 0, 0),
         ];
         $new    = [
-            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. etza nix Gwiass woass ma ned owe.</p>'
+            new SectionedParagraph('<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. etza nix Gwiass woass ma ned owe.</p>', 0, 0),
         ];
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($orig);
@@ -81,11 +82,11 @@ class AmendmentSectionMergerTest extends TestBase
     public function testInsertedLinebreak(): void
     {
         $orig   = [
-            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>'
+            new SectionedParagraph('<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>', 0, 0),
         ];
         $new    = [
-            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.</p>',
-            '<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>',
+            new SectionedParagraph('<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.</p>', 0, 0),
+            new SectionedParagraph('<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>', 1, 1),
         ];
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($orig);
@@ -103,10 +104,12 @@ class AmendmentSectionMergerTest extends TestBase
     public function testInsertedParagraph(): void
     {
         $merger = new SectionMerger();
-        $merger->initByMotionParagraphs(['<p>Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag zu einer weniger gewaltvollen Gesellschaft.</p>']);
-        $merger->addAmendingParagraphs(1, [0 => '<p>Der Kampf für Gleichberechtigung von Frauen und Männern stellt die Grundlage der präventiven Arbeit dar. Eine präventive Arbeit gegen sexualisierte Gewalt bedeutet eben auch sexistische Strukturen in der Gesellschaft aufzudecken und stetig dagegen anzugehen.</p>
+        $merger->initByMotionParagraphs([
+            new SectionedParagraph('<p>Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag zu einer weniger gewaltvollen Gesellschaft.</p>', 0, 0),
+        ]);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>Der Kampf für Gleichberechtigung von Frauen und Männern stellt die Grundlage der präventiven Arbeit dar. Eine präventive Arbeit gegen sexualisierte Gewalt bedeutet eben auch sexistische Strukturen in der Gesellschaft aufzudecken und stetig dagegen anzugehen.</p>
 <p>Prävention sexualisierter Gewalt ist schon lange ein wichtiges Anliegen der Jugendverbände. Mit unseren Maßnahmen zur Prävention und Intervention gegen sexualisierte Gewalt leisten wir dabei einen wichtigen Beitrag.</p>
-<p>zu einer weniger gewaltvollen Gesellschaft.</p>']);
+<p>zu einer weniger gewaltvollen Gesellschaft.</p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing(
             [
@@ -121,8 +124,8 @@ class AmendmentSectionMergerTest extends TestBase
     public function testPrependPToChangedList(): void
     {
         $merger = new SectionMerger();
-        $merger->initByMotionParagraphs(['<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust</li></ul>']);
-        $merger->addAmendingParagraphs(1, [0 => '<p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert.</p><ul><li>Wir stellen uns immer wieder neu der Frage.</li></ul>']);
+        $merger->initByMotionParagraphs([new SectionedParagraph('<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust</li></ul>', 0, 0)]);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert.</p><ul><li>Wir stellen uns immer wieder neu der Frage.</li></ul>', 0, 0)]);
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, ''),
             $this->getGroupedParagraphData(1, '<ul><li><del>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust</del></li></ul><p><ins>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert.</ins></p><ul><li><ins>Wir stellen uns immer wieder neu der Frage.</ins></li></ul>'),
@@ -137,14 +140,14 @@ Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipat
 
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
-        $merger->addAmendingParagraphs(1, [0 => '<p><strong>Demokratie und Freiheit </strong><br>
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p><strong>Demokratie und Freiheit </strong><br>
 Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die<br>
 gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir<br>
 sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese<br>
 Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen<br>
 werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung<br>
 der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die<br>
-Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</p>']);
+Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p><strong>Demokratie und Freiheit </strong><br>' .
@@ -169,9 +172,9 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>owe gwihss Sauwedda ded Hier was Neues Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim schena Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, und hier was Neues gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
-        $merger->addAmendingParagraphs(3, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>owe gwihss Sauwedda ded Hier was Neues Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim schena Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, und hier was Neues gsuffa Oachkatzlschwoaf hod Wiesn.</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(3, [new SectionedParagraph('<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>', 0, 0)]);
 
 
         $this->assertEqualsCanonicalizing([
@@ -203,9 +206,9 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger(false);
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>owe gwihss Sauwedda ded Hier was Neues Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim schena Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, und hier was Neues gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
-        $merger->addAmendingParagraphs(3, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>owe gwihss Sauwedda ded Hier was Neues Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim schena Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, und hier was Neues gsuffa Oachkatzlschwoaf hod Wiesn.</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(3, [new SectionedParagraph('<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>', 0, 0)]);
 
 
         $this->assertEqualsCanonicalizing([
@@ -241,8 +244,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger(false);
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test6 test7 test9 test11 test13 test15 test16.1 test17 test19 test21 test22 test23 test25</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test10 test11 test13 test15 test16.2 test17 test19 test21 test23 test25 test26</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>test1 test3 test5 test6 test7 test9 test11 test13 test15 test16.1 test17 test19 test21 test22 test23 test25</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test10 test11 test13 test15 test16.2 test17 test19 test21 test23 test25 test26</p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p>test1 test3 test5 '),
@@ -275,8 +278,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test6 test7 test9 test11 test13 test15 test16.1 test17 test19 test21 test22 test23 test25</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test10 test11 test13 test15 test16.2 test17 test19 test21 test23 test25 test26</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>test1 test3 test5 test6 test7 test9 test11 test13 test15 test16.1 test17 test19 test21 test22 test23 test25</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test10 test11 test13 test15 test16.2 test17 test19 test21 test23 test25 test26</p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p>test1 test3 test5 '),
@@ -308,8 +311,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 1</li></ul>']);
-        $merger->addAmendingParagraphs(2, [0 => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 2</li></ul>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 1</li></ul>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 2</li></ul>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li>'),
@@ -331,8 +334,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
         $affectedParagraphs = [
-            0 => "<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul><ul><li>Neuer Punkt</li></ul>",
-            1 => "<ul><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li></ul>",
+            new SectionedParagraph("<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul><ul><li>Neuer Punkt</li></ul>", 0, 0),
+            new SectionedParagraph("<ul><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li></ul>", 1, 1),
         ];
 
         $merger = new SectionMerger();
@@ -354,7 +357,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
         $affectedParagraphs = [
-            0 => "<p>Woaß wia Gams, damischa. A ganze Hoiwe Ohrwaschl Greichats iabaroi Prosd Engelgwand nix Reiwadatschi. Woibbadinga damischa owe gwihss Sauwedda Weibaleid ognudelt Ledahosn noch da Giasinga Heiwog</p>",
+            new SectionedParagraph("<p>Woaß wia Gams, damischa. A ganze Hoiwe Ohrwaschl Greichats iabaroi Prosd Engelgwand nix Reiwadatschi. Woibbadinga damischa owe gwihss Sauwedda Weibaleid ognudelt Ledahosn noch da Giasinga Heiwog</p>", 0, 0),
         ];
 
         $merger = new SectionMerger();
@@ -376,8 +379,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
         $affectedParagraphs = [
-            0 => "<p>New line at beginning</p><p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p><p>Neuer Absatz</p>",
-            1 => "<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd!</p>",
+            new SectionedParagraph("<p>New line at beginning</p><p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p><p>Neuer Absatz</p>", 0, 0),
+            new SectionedParagraph("<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd!</p>", 1, 1),
         ];
 
         $merger = new SectionMerger();
@@ -405,8 +408,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>A beginning. Bavaria ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>A beginning. Zombie ipsum dolor sit amet o’ha wea nia ausgähd, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>A beginning. Bavaria ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>A beginning. Zombie ipsum dolor sit amet o’ha wea nia ausgähd, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p>A beginning. '),
@@ -431,8 +434,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>Lorem ipsum dolor sit amet, tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>Lorem ipsum dolor sit amet, tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, '),
@@ -453,8 +456,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger(false);
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>Lorem ipsum dolor sit amet, tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, et dolore magna aliquyam erat, sed diam voluptua.</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>Lorem ipsum dolor sit amet, tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, '),
@@ -479,10 +482,10 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger(true);
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 Replacement no. 1 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 ' .
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 Replacement no. 1 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 ' .
                                                 'Here we are inserting a rather long text. As this exceeds the limit set in ParagraphMerger::$collisionMergingLimit, this should lead to a collision' .
-                                                'test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+                                                'test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>', 0, 0)]);
 
 
         $this->assertEqualsCanonicalizing([
@@ -507,8 +510,8 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger(true);
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 Replacement no. 1 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 <strong>Replacement no. 2</strong> test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 Replacement no. 1 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 <strong>Replacement no. 2</strong> test25 test27 test29 test31 test33 test33 test35 test37 test39</p>', 0, 0)]);
 
 
         $this->assertEqualsCanonicalizing([
@@ -532,10 +535,10 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $merger = new SectionMerger(true);
         $merger->initByMotionParagraphs($paragraphs);
 
-        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test7 test9 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17.8 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
-        $merger->addAmendingParagraphs(3, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test16.test17 Test18 test19 test21 test23 test25 test27 test33 test33 test35 test37 test39</p>']);
-        $merger->addAmendingParagraphs(4, [0 => '<p>test1 test3 test5 test7 test9 test11 test13 test15 test18 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>']);
+        $merger->addAmendingParagraphs(1, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test27 test29 test31 test33 test33 test35 test37 test39</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(2, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test11 test13 test15 test17.8 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(3, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test11 test13 test16.test17 Test18 test19 test21 test23 test25 test27 test33 test33 test35 test37 test39</p>', 0, 0)]);
+        $merger->addAmendingParagraphs(4, [new SectionedParagraph('<p>test1 test3 test5 test7 test9 test11 test13 test15 test18 test19 test21 test23 test25 test27 test29 test31 test33 test33 test35 test37 test39</p>', 0, 0)]);
 
         $this->assertEqualsCanonicalizing([
             $this->getGroupedParagraphData(0, '<p>test1 test3 test5 test7 test9 test11 test13 test15 '),

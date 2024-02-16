@@ -8,6 +8,7 @@ use app\components\diff\DiffRenderer;
 use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
+use app\models\SectionedParagraph;
 use Codeception\Attribute\Incomplete;
 use Tests\Support\Helper\TestBase;
 
@@ -354,8 +355,8 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     public function testLinenumberForcelinebreak(): void
     {
         // Unrealistic test case - $new would be two paragraphs
-        $orig = '<p>###LINENUMBER###Wir wollen eine Wirtschaftsweise, in der alle Rohstoffe immer wieder neu verarbeitet und ###LINENUMBER###nicht auf einer Deponie landen oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts in Entwicklungs- und Schwellenländer ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäden. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von ###LINENUMBER###Produkten und Verpackungen eine Produktverantwortung zukommt, indem ambitionierte, aber ###LINENUMBER###machbare Recyclingziele eingeführt werden. Dadurch werden Rohstoffpreise befördert, die die ###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des ###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig. Wir setzen uns ###LINENUMBER###dafür ein, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen ###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
-        $new  = '<p>Der beste Abfall ist der, der nicht entsteht. Wir wollen eine Wirtschaftsweise, in der Material- und Rohstoffeffizienz an erster Stelle stehen und in der alle Rohstoffe immer wieder neu verarbeitet werden und nicht auf einer Deponie landen, in Entwicklungs- und Schwellenländer exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<br>Produkten und Verpackungen eine ökologische Produktverantwortung zukommt, indem ambitionierte, abermachbare Recyclingziele sowie Ziele zur Material- und Rohstoffeffizienz eingeführt werden. Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für die Verwendung von Recyclingmaterialien zu schaffen.</p><p>Wir setzen uns dafür ein, dass die Rohstoffpreise die<br>sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<br>Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird Ökologie zum Wettbewerbsvorteil: Wer weniger Rohstoffe verbraucht oder Recyclingmaterial anstatt Primärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann, setzen wir uns außerdem dafür ein , dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<br>Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
+        $orig = new SectionedParagraph('<p>###LINENUMBER###Wir wollen eine Wirtschaftsweise, in der alle Rohstoffe immer wieder neu verarbeitet und ###LINENUMBER###nicht auf einer Deponie landen oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts in Entwicklungs- und Schwellenländer ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäden. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von ###LINENUMBER###Produkten und Verpackungen eine Produktverantwortung zukommt, indem ambitionierte, aber ###LINENUMBER###machbare Recyclingziele eingeführt werden. Dadurch werden Rohstoffpreise befördert, die die ###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des ###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig. Wir setzen uns ###LINENUMBER###dafür ein, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen ###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>', 0, 0);
+        $new  = new SectionedParagraph('<p>Der beste Abfall ist der, der nicht entsteht. Wir wollen eine Wirtschaftsweise, in der Material- und Rohstoffeffizienz an erster Stelle stehen und in der alle Rohstoffe immer wieder neu verarbeitet werden und nicht auf einer Deponie landen, in Entwicklungs- und Schwellenländer exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<br>Produkten und Verpackungen eine ökologische Produktverantwortung zukommt, indem ambitionierte, abermachbare Recyclingziele sowie Ziele zur Material- und Rohstoffeffizienz eingeführt werden. Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für die Verwendung von Recyclingmaterialien zu schaffen.</p><p>Wir setzen uns dafür ein, dass die Rohstoffpreise die<br>sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<br>Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird Ökologie zum Wettbewerbsvorteil: Wer weniger Rohstoffe verbraucht oder Recyclingmaterial anstatt Primärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann, setzen wir uns außerdem dafür ein , dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<br>Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>', 0, 0);
 
         $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs([$orig], [$new], DiffRenderer::FORMATTING_CLASSES);
@@ -406,8 +407,13 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
 
     public function testInsertWithSameBeginningWord(): void
     {
-        $orig     = ['<ul><li>Wir sind Nummer 1</li></ul>'];
-        $new      = ['<ul><li>Wir bla bla</li></ul>', '<ul><li>Wir sind Nummer 1</li></ul>'];
+        $orig     = [
+            new SectionedParagraph('<ul><li>Wir sind Nummer 1</li></ul>', 0, 0)
+        ];
+        $new      = [
+            new SectionedParagraph('<ul><li>Wir bla bla</li></ul>', 0, 0),
+            new SectionedParagraph('<ul><li>Wir sind Nummer 1</li></ul>', 1, 1)
+        ];
         $expected = ['<ul class="inserted"><li>Wir bla bla</li></ul><ul><li>Wir sind Nummer 1</li></ul>'];
         $diff     = new Diff();
         $out      = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
@@ -532,8 +538,12 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
 
     public function testDeletedSentenceAtEnd(): void
     {
-        $origParagraphs = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren. Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</p>'];
-        $newParagraphs  = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.</p>'];
+        $origParagraphs = [
+            new SectionedParagraph('<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren. Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</p>', 0, 0)
+        ];
+        $newParagraphs  = [
+            new SectionedParagraph('<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.</p>', 0, 0)
+        ];
         $expect         = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.<del> Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</del></p>'];
 
         $diff      = new Diff();
@@ -748,8 +758,8 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
 
     public function testLineDiffWithTags(): void
     {
-        $strPre    = ['<ul><li>Listenpunkt</li></ul>'];
-        $strPost   = ['<p>Test</p>'];
+        $strPre    = [new SectionedParagraph('<ul><li>Listenpunkt</li></ul>', 0, 0)];
+        $strPost   = [new SectionedParagraph('<p>Test</p>', 0, 0)];
         $diff      = new Diff();
         $diffParas = $diff->compareHtmlParagraphs($strPre, $strPost, DiffRenderer::FORMATTING_CLASSES);
         $expected  = ['<ul class="deleted"><li>Listenpunkt</li></ul><p class="inserted">Test</p>'];
@@ -862,8 +872,8 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
      */
     public function testDotAsSeparator(): void
     {
-        $origParagraphs = ['<p>wieder<sup>Test</sup>.</p>'];
-        $newParagraphs  = ['<p>wieder.</p>'];
+        $origParagraphs = [new SectionedParagraph('<p>wieder<sup>Test</sup>.</p>', 0, 0)];
+        $newParagraphs  = [new SectionedParagraph('<p>wieder.</p>', 0, 0)];
         $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertSame('<p>wieder<del><sup>Test</sup></del>.</p>', $diffParas[0]);
@@ -873,10 +883,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     public function testStripEmptyLinenumberDels(): void
     {
         $orig   = [
-            '<p>###LINENUMBER###<em><strong>Test</strong></em> bla bla bla bla bla lkj bla',
+            new SectionedParagraph('<p>###LINENUMBER###<em><strong>Test</strong></em> bla bla bla bla bla lkj bla', 0, 0),
         ];
         $new    = [
-            '<p><em><strong>Test</strong></em> bla bla bla bla bla bla',
+            new SectionedParagraph('<p><em><strong>Test</strong></em> bla bla bla bla bla bla', 0, 0),
         ];
         $expect = [
             '<p>###LINENUMBER###<em><strong>Test</strong></em> bla bla bla bla bla <del>lkj </del>bla</p>',
@@ -890,10 +900,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     public function testDeleteSentenceSecondSentenceBeginningAlike1(): void
     {
         $orig   = [
-            '<p>###LINENUMBER###Lorem At vero eos et accusam et justo duo dolores. Lorem ipsum dolor sit amet, ###LINENUMBER###consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et ###LINENUMBER###dolore magna aliquyam erat, sed diam voluptua.</p>'
+            new SectionedParagraph('<p>###LINENUMBER###Lorem At vero eos et accusam et justo duo dolores. Lorem ipsum dolor sit amet, ###LINENUMBER###consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et ###LINENUMBER###dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0),
         ];
         $new    = [
-            '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'
+            new SectionedParagraph('<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0),
         ];
         $expect = [
             '<p><del>###LINENUMBER###Lorem At vero eos et accusam et justo duo dolores. </del>Lorem ipsum dolor sit amet, ###LINENUMBER###consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et ###LINENUMBER###dolore magna aliquyam erat, sed diam voluptua.</p>',
@@ -906,10 +916,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
     public function testDeleteSentenceSecondSentenceBeginningAlike2(): void
     {
         $orig   = [
-            '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'
+            new SectionedParagraph('<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0),
         ];
         $new    = [
-            '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. sed diam Dolor veram Test bla<br>' . "\n<br>\n" . 'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'
+            new SectionedParagraph('<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. sed diam Dolor veram Test bla<br>' . "\n<br>\n" . 'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>', 0, 0),
         ];
         $expect = [
             '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. <ins>sed diam Dolor veram Test bla<br><br></ins>sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>',

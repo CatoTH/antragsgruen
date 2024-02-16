@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\SectionedParagraph;
 use app\models\settings\AntragsgruenApp;
 use app\components\{diff\amendmentMerger\SectionMerger, HashedStaticCache, HTMLTools, LineSplitter};
 use app\models\sectionTypes\ISectionType;
@@ -252,7 +253,7 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return string[][]
+     * @return SectionedParagraph[]
      * @throws Internal
      */
     public function getTextParagraphLines(bool $minOnePara = false): array
@@ -268,19 +269,18 @@ class MotionSection extends IMotionSection
             return $cache;
         }
 
-        $paragraphs      = HTMLTools::sectionSimpleHTML($this->getData());
-        $paragraphsLines = [];
-        foreach ($paragraphs as $paraNo => $paragraph) {
-            $lines                    = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
-            $paragraphsLines[$paraNo] = $lines;
+        $paragraphs = HTMLTools::sectionSimpleHTML($this->getData());
+        foreach ($paragraphs as $paragraph) {
+            $paragraph->lines = LineSplitter::splitHtmlToLines($paragraph->html, $lineLength, '###LINENUMBER###');
         }
-        if ($minOnePara && count($paragraphsLines) === 0) {
-            $paragraphsLines[0] = [];
+        if ($minOnePara && count($paragraphs) === 0) {
+            $paragraphs[] = new SectionedParagraph('', 0, 0);
+            $paragraphs[0]->lines = [];
         }
 
-        HashedStaticCache::setCache('getTextParagraphLines', $cacheDeps, $paragraphsLines);
+        HashedStaticCache::setCache('getTextParagraphLines', $cacheDeps, $paragraphs);
 
-        return $paragraphsLines;
+        return $paragraphs;
     }
 
     /**
@@ -360,28 +360,12 @@ class MotionSection extends IMotionSection
         /** @var MotionSectionParagraph[] $return */
         $return = [];
         $paras  = $this->getTextParagraphLines();
-        $paraNoWithoutSplitLists = 0;
-        foreach ($paras as $paraNo => $para) {
+        foreach ($paras as $para) {
             $paragraph              = new MotionSectionParagraph();
-            $paragraph->paragraphNo = $paraNo;
-            $paragraph->lines       = $para;
-            $paragraph->origStr     = str_replace('###LINENUMBER###', '', implode('', $para));
-
-            // If this is the same list type as the previous paragraph, then this is a split up list.
-            // In that case, we don't want to increase the counter after all.
-            $isSplitListItem = false;
-            if ($paraNo > 0) {
-                if (str_starts_with($paragraph->origStr, '<ol') && str_starts_with($return[$paraNo - 1]->origStr, '<ol')) {
-                    $isSplitListItem = true;
-                }
-                if (str_starts_with($paragraph->origStr, '<ul') && str_starts_with($return[$paraNo - 1]->origStr, '<ul')) {
-                    $isSplitListItem = true;
-                }
-            }
-            if ($isSplitListItem) {
-                $paraNoWithoutSplitLists--;
-            }
-            $paragraph->paragraphNoWithoutSplitLists = $paraNoWithoutSplitLists;
+            $paragraph->paragraphNo = $para->paragraphWithLineSplit;
+            $paragraph->paragraphNoWithoutSplitLists = $para->paragraphWithoutLineSplit;
+            $paragraph->lines       = $para->lines;
+            $paragraph->origStr     = str_replace('###LINENUMBER###', '', implode('', $para->lines));
 
             if ($includeAmendment) {
                 $paragraph->amendmentSections = [];
@@ -390,15 +374,13 @@ class MotionSection extends IMotionSection
             if ($includeComments) {
                 $paragraph->comments = [];
                 foreach ($this->comments as $comment) {
-                    if ($comment->paragraph === $paraNo) {
+                    if ($comment->paragraph === $para->paragraphWithLineSplit) {
                         $paragraph->comments[] = $comment;
                     }
                 }
             }
 
-            $return[$paraNo] = $paragraph;
-
-            $paraNoWithoutSplitLists++;
+            $return[$para->paragraphWithLineSplit] = $paragraph;
         }
         if ($minOnePara) {
             $return = $this->ensureAtLeastOneParagraph($return, $includeAmendment);
@@ -424,16 +406,6 @@ class MotionSection extends IMotionSection
         return $return;
     }
 
-    public function getTextWithLineNumberPlaceholders(): string
-    {
-        $return = '';
-        $paras  = $this->getTextParagraphLines();
-        foreach ($paras as $para) {
-            $return .= implode('', $para) . "\n";
-        }
-        return trim($return);
-    }
-
     public function getNumberOfCountableLines(): int
     {
         if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
@@ -450,7 +422,7 @@ class MotionSection extends IMotionSection
         $num   = 0;
         $paras = $this->getTextParagraphLines();
         foreach ($paras as $para) {
-            $num += count($para);
+            $num += count($para->lines);
         }
 
         return $num;
