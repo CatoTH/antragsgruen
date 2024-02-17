@@ -1,17 +1,24 @@
-const gulp = require('gulp'),
-    terser = require('gulp-terser'),
-    concat = require('gulp-concat'),
-    sass = require('gulp-sass')(require('sass')),
-    ts = require('gulp-typescript'),
-    postcss = require('gulp-postcss'),
-    autoprefixer = require('autoprefixer'),
-    tsProject = ts.createProject('tsconfig.json'),
-    sourcemaps = require('gulp-sourcemaps'),
+'use strict';
+import autoprefixer from 'autoprefixer';
+import gulp from 'gulp';
+import concat from 'gulp-concat';
+import postcss from 'gulp-postcss';
+import sourcemaps from 'gulp-sourcemaps';
+import terser from 'gulp-terser';
+import ts from 'gulp-typescript';
+// SASS
+import * as dartSass from 'sass';
+import gulpSass from 'gulp-sass';
+const sass = gulpSass(dartSass);
 
-    main_js_files = [
-        "node_modules/bootstrap/dist/js/bootstrap.js", "node_modules/bootbox/bootbox.all.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
-        "node_modules/intl/dist/Intl.min.js"
-    ];
+const tsProject = ts.createProject('tsconfig.json');
+const main_js_files = [
+    "node_modules/bootstrap/dist/js/bootstrap.js",
+    "node_modules/bootbox/bootbox.all.js",
+    "web/js/scrollintoview.js",
+    "web/js/jquery.isonscreen.js",
+    "node_modules/intl/dist/Intl.min.js",
+];
 
 async function taskCopyFiles() {
     await gulp.src("node_modules/@selectize/selectize/dist/js/selectize.min.js").pipe(gulp.dest('./web/npm/'));
