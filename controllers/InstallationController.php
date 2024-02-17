@@ -38,7 +38,7 @@ class InstallationController extends Base
         if (!version_compare(PHP_VERSION, ANTRAGSGRUEN_MIN_PHP_VERSION, '>=')) {
             $phpVersionWarning = str_replace(
                 ['%MIN_VERSION%', '%CURR_VERSION%'],
-                [ANTRAGSGRUEN_MIN_PHP_VERSION, phpversion()],
+                [ANTRAGSGRUEN_MIN_PHP_VERSION, PHP_VERSION],
                 \Yii::t('manager', 'err_php_version')
             );
         } else {
