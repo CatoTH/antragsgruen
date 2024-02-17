@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\Motion;
@@ -105,7 +105,7 @@ if ($adminEdit) {
 if (!$motion->getMyConsultation()->getForcedMotion()) {
     $html .= '<li class="back">';
     $title = '<span class="icon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>' . Yii::t('motion', 'back_start');
-    $html .= Html::a($title, UrlHelper::homeUrl()) . '</li>';
+    $html .= Html::a($title, \app\views\motion\LayoutHelper::getMotionBackLink($motion)) . '</li>';
     $sidebarRows++;
 }
 
