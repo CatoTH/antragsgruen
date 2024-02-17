@@ -633,7 +633,7 @@ class HTMLTools
      */
     public static function sectionSimpleHTML(string $html, bool $splitListItems = true): array
     {
-        $cacheFunc = 'sectionSimpleHTML';
+        $cacheFunc = 'sectionSimpleHTML2';
         $cacheDeps = [$html, $splitListItems];
 
         $cache = HashedStaticCache::getCache($cacheFunc, $cacheDeps);

@@ -264,7 +264,8 @@ class MotionSection extends IMotionSection
 
         $lineLength = $this->getConsultation()->getSettings()->lineLength;
         $cacheDeps  = [$lineLength, $minOnePara, $this->getData()];
-        $cache      = HashedStaticCache::getCache('getTextParagraphLines', $cacheDeps);
+        $cacheFunc  = 'getTextParagraphLines2';
+        $cache      = HashedStaticCache::getCache($cacheFunc, $cacheDeps);
         if ($cache) {
             return $cache;
         }
@@ -278,7 +279,7 @@ class MotionSection extends IMotionSection
             $paragraphs[0]->lines = [];
         }
 
-        HashedStaticCache::setCache('getTextParagraphLines', $cacheDeps, $paragraphs);
+        HashedStaticCache::setCache($cacheFunc, $cacheDeps, $paragraphs);
 
         return $paragraphs;
     }
