@@ -29,7 +29,7 @@ class LayoutHooks3 extends Hooks
 
         $str .= '<div class="titleHolder">';
         $str .= '<div class="antragsgruen">Antragsgrün</div>';
-        $str .= '<div class="consultationTitle">' . Html::encode($this->consultation->title) . '</div>';
+        $str .= '<div class="consultationTitle">' . Html::encode($this->consultation?->title ?? '') . '</div>';
         $str .= '</div>';
 
         return $str . '</div></header>';
