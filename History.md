@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.13.2 (2024-02-18)
+### Version 4.13.2 (2024-02-18)
 
 - Bugfix: the version check in the editor that lead to warnings is now disabled.
 - Bugfix: The list of previous speakers was not expandable.
