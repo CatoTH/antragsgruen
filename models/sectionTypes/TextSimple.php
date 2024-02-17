@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, Diff, DiffRenderer};
+use app\models\SectionedParagraph;
 use app\components\{HashedStaticCache, HTMLTools, LineSplitter, RequestContext, UrlHelper};
 use app\components\latex\{Content, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection};
@@ -67,9 +68,9 @@ class TextSimple extends Text
         /** @var AmendmentSection $amSection */
         $amSection = $this->section;
         $moSection = $amSection->getOriginalMotionSection();
-        $moParas   = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
+        $moParas = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
+        $amParas = array_map(fn(SectionedParagraph $par) => $par->html, $moParas);
 
-        $amParas          = $moParas;
         $changedParagraph = -1;
         foreach ($amSection->diffStrToOrigParagraphs($moParas, false, DiffRenderer::FORMATTING_ICE) as $paraNo => $para) {
             $amParas[$paraNo] = $para;
@@ -87,7 +88,7 @@ class TextSimple extends Text
 
             $str .= '<div class="form-group wysiwyg-textarea single-paragraph" id="' . $holderId . '"';
             $str .= ' data-max-len="' . $type->maxLen . '" data-full-html="0"';
-            $str .= ' data-original="' . Html::encode($moPara) . '"';
+            $str .= ' data-original="' . Html::encode($moPara->html) . '"';
             $str .= ' data-paragraph-no="' . $paraNo . '"';
             $str .= ' dir="' . ($this->section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '"';
             $str .= '><label for="' . $htmlId . '" class="hidden">' . Html::encode($this->getTitle()) . '</label>';
@@ -159,7 +160,9 @@ class TextSimple extends Text
         } else {
             // On server side, we do not make a difference between single paragraph and single change mode, as this is enforced on client-side only
             $moSection = $section->getOriginalMotionSection();
-            $paras     = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
+            $paras = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
+            $paras = array_map(fn(SectionedParagraph $par) => $par->html, $paras);
+
             $parasRaw  = $paras;
             if ($post['modifiedParagraphNo'] !== '' && $post['modifiedSectionId'] == $section->sectionId) {
                 $paraNo            = IntVal($post['modifiedParagraphNo']);
@@ -180,7 +183,7 @@ class TextSimple extends Text
             if ($this->section->getSettings()->fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
-            $str .= '">' . $section . '</div></div>';
+            $str .= '">' . $section->html . '</div></div>';
         }
         return $str;
     }
@@ -292,7 +295,7 @@ class TextSimple extends Text
             if ($this->section->getSettings()->fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
-            $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection . '</div></div>';
+            $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection->html . '</div></div>';
         }
 
         $str .= '</div>';
@@ -685,7 +688,7 @@ class TextSimple extends Text
             } else {
                 $paras = $section->getTextParagraphLines();
                 foreach ($paras as $para) {
-                    $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                    $html = str_replace('###LINENUMBER###', '', implode('', $para->lines));
                     $tex2 .= Exporter::getMotionLinesToTeX([$html]) . "\n";
                 }
             }
@@ -852,7 +855,7 @@ class TextSimple extends Text
         } else {
             $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
-                $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $html = str_replace('###LINENUMBER###', '', implode('', $para->lines));
                 $html = HTMLTools::correctHtmlErrors($html);
                 $odt->addHtmlTextBlock($html, false);
             }

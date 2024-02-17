@@ -254,7 +254,7 @@ class LineSplitter
         $sections = HTMLTools::sectionSimpleHTML($html, true);
         $lines = [];
         foreach ($sections as $section) {
-            $lines = array_merge($lines, LineSplitter::splitHtmlToLines($section, $lineLength, ''));
+            $lines = array_merge($lines, LineSplitter::splitHtmlToLines($section->html, $lineLength, ''));
         }
         $intLineFrom = $lineFrom - $paraFirstLineNo;
         $intLineTo = $lineTo - $paraFirstLineNo;

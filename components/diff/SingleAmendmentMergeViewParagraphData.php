@@ -73,8 +73,8 @@ class SingleAmendmentMergeViewParagraphData
                     // The original amendment should always be filled with data.
                     // This case is necessary when the modified amendment modifies a paragraph that was not modified
                     // by the original amendment.
-                    $paraDiff  = $motionParas[$paraNo];
-                    $paraPlain = $motionParas[$paraNo];
+                    $paraDiff  = $motionParas[$paraNo]->html;
+                    $paraPlain = $motionParas[$paraNo]->html;
                 }
 
                 if ($modifiedPara && $modifiedPara !== $paragraph) {

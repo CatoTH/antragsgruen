@@ -5,6 +5,7 @@ namespace app\components\diff;
 use app\components\diff\DataTypes\DiffWord;
 use app\components\HashedStaticCache;
 use app\models\exceptions\Internal;
+use app\models\SectionedParagraph;
 
 /*
  * Hint: type declarations are missing on purpose in this class, as they unfortunately slow down PHP.
@@ -342,7 +343,7 @@ class Diff
 
         // If too much of the whole paragraph changes, then we don't display an inline diff anymore
         if (str_contains($combined, DiffRenderer::DEL_START)   &&
-            str_contains($combined, DiffRenderer::INS_START)  
+            str_contains($combined, DiffRenderer::INS_START)
         ) {
             $changeRatio = $this->computeLineDiffChangeRatio($lineOld, $combined);
             if ($changeRatio > self::MAX_LINE_CHANGE_RATIO) {
@@ -525,13 +526,16 @@ class Diff
     }
 
     /**
-     * @param string[] $referenceParas
-     * @param string[] $newParas
+     * @param SectionedParagraph[] $referenceParas
+     * @param SectionedParagraph[] $newParas
      * @return string[]
      * @throws Internal
      */
     public function compareHtmlParagraphs(array $referenceParas, array $newParas, int $diffFormatting): array
     {
+        $referenceParas = array_map(fn(SectionedParagraph $par) => $par->html, $referenceParas);
+        $newParas = array_map(fn(SectionedParagraph $par) => $par->html, $newParas);
+
         $cache_deps = [$referenceParas, $newParas, $diffFormatting];
         $cached     = HashedStaticCache::getCache('compareHtmlParagraphs', $cache_deps);
         if ($cached) {
@@ -752,6 +756,8 @@ class Diff
     }
 
     /**
+     * @param SectionedParagraph[] $referenceParas
+     * @param SectionedParagraph[] $newParas
      * @throws Internal
      */
     public static function computeAffectedParagraphs(array $referenceParas, array $newParas, int $diffFormatting): array

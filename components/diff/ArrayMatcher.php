@@ -3,6 +3,7 @@
 namespace app\components\diff;
 
 use app\models\exceptions\Internal;
+use app\models\SectionedParagraph;
 
 class ArrayMatcher
 {
@@ -276,13 +277,16 @@ class ArrayMatcher
     }
 
     /**
-     * @param string[] $oldParagraphs
-     * @param string[] $newParagraphs
+     * @param SectionedParagraph[] $oldParagraphs
+     * @param SectionedParagraph[] $newParagraphs
      * @return string[]
      * @throws Internal
      */
     public static function computeMatchingAffectedParagraphs(array $oldParagraphs, array $newParagraphs): array
     {
+        $newParagraphs = array_map(fn(SectionedParagraph $par) => $par->html, $newParagraphs);
+        $oldParagraphs = array_map(fn(SectionedParagraph $par) => $par->html, $oldParagraphs);
+
         $matcher = new ArrayMatcher();
         list($oldAdjusted, $newAdjusted) = $matcher->matchForDiff($oldParagraphs, $newParagraphs);
         if (count($oldAdjusted) != count($newAdjusted)) {
@@ -309,7 +313,7 @@ class ArrayMatcher
             }
         }
 
-        if (serialize($oldParagraphs) != serialize($oldWithoutEmpty)) {
+        if (serialize($oldParagraphs) !== serialize($oldWithoutEmpty)) {
             throw new Internal("An internal error matching the paragraphs occurred");
         }
 

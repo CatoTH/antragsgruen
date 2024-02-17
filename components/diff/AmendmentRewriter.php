@@ -5,13 +5,14 @@ namespace app\components\diff;
 use app\components\diff\DataTypes\DiffWord;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
+use app\models\SectionedParagraph;
 
 class AmendmentRewriter
 {
 
     /**
-     * @param string[] $oldParagraphs
-     * @param string[] $newParagraphs
+     * @param SectionedParagraph[] $oldParagraphs
+     * @param SectionedParagraph[] $newParagraphs
      * @return string[]
      * @throws Internal
      */
@@ -23,9 +24,9 @@ class AmendmentRewriter
         $diff         = new Diff();
         $diffRenderer = new DiffRenderer();
         for ($i = 0; $i < count($matchingNewParagraphs); $i++) {
-            if ($oldParagraphs[$i] != $matchingNewParagraphs[$i]) {
+            if ($oldParagraphs[$i]->html !== $matchingNewParagraphs[$i]) {
                 if ($asDiff) {
-                    $diffPlain    = $diff->computeLineDiff($oldParagraphs[$i], $matchingNewParagraphs[$i]);
+                    $diffPlain    = $diff->computeLineDiff($oldParagraphs[$i]->html, $matchingNewParagraphs[$i]);
                     $affected[$i] = $diffRenderer->renderHtmlWithPlaceholders($diffPlain);
                 } else {
                     $affected[$i] = $matchingNewParagraphs[$i];
@@ -144,7 +145,7 @@ class AmendmentRewriter
                 continue;
             }
             try {
-                self::createMerge($motionOldParas[$col], $affectedByNewMotion[$col], $affectedByAmendment[$col]);
+                self::createMerge($motionOldParas[$col]->html, $affectedByNewMotion[$col], $affectedByAmendment[$col]);
             } catch (\Exception $e) {
                 //var_dump($e->getMessage());
                 //die();
@@ -213,7 +214,7 @@ class AmendmentRewriter
                     var_dump($affectedByAmendment[$paraNo]);
                 }
                 $merge = self::createMerge(
-                    $motionOldParas[$paraNo],
+                    $motionOldParas[$paraNo]->html,
                     $affectedByNewMotion[$paraNo],
                     $affectedByAmendment[$paraNo]
                 );
@@ -224,9 +225,9 @@ class AmendmentRewriter
                 if ($debug) {
                     echo "COLLISION\n";
                 }
-                $motionNewDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $affectedByNewMotion[$paraNo]);
+                $motionNewDiff = $diff->computeLineDiff($motionOldParas[$paraNo]->html, $affectedByNewMotion[$paraNo]);
                 $motionNewDiff = $renderer->renderHtmlWithPlaceholders($motionNewDiff);
-                $amendmentDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $affectedByAmendment[$paraNo]);
+                $amendmentDiff = $diff->computeLineDiff($motionOldParas[$paraNo]->html, $affectedByAmendment[$paraNo]);
                 $amendmentDiff = $renderer->renderHtmlWithPlaceholders($amendmentDiff);
                 $data          = [
                     'text'          => $affectedByAmendment[$paraNo],
@@ -263,7 +264,7 @@ class AmendmentRewriter
                 $newVersion[$paragraphNo] = $overrides[$paragraphNo];
             } elseif (isset($affectedByAmendment[$paragraphNo]) && isset($affectedByNewMotion[$paragraphNo])) {
                 $newVersion[$paragraphNo] = self::createMerge(
-                    $motionOldParas[$paragraphNo],
+                    $motionOldParas[$paragraphNo]->html,
                     $affectedByNewMotion[$paragraphNo],
                     $affectedByAmendment[$paragraphNo]
                 );
@@ -273,7 +274,7 @@ class AmendmentRewriter
             } elseif (isset($affectedByNewMotion[$paragraphNo])) {
                 $newVersion[$paragraphNo] = $affectedByNewMotion[$paragraphNo];
             } else {
-                $newVersion[$paragraphNo] = $motionOldParas[$paragraphNo];
+                $newVersion[$paragraphNo] = $motionOldParas[$paragraphNo]->html;
             }
         }
 

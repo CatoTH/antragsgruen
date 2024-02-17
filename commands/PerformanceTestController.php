@@ -5,6 +5,7 @@ namespace app\commands;
 use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
+use app\models\SectionedParagraph;
 use yii\console\Controller;
 
 class PerformanceTestController extends Controller

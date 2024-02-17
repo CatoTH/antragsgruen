@@ -3,12 +3,11 @@
 namespace Tests\Unit;
 
 use app\components\diff\AmendmentRewriter;
+use app\models\SectionedParagraph;
 use Tests\Support\Helper\TestBase;
 
 class AmendmentRewriterCheckTest extends TestBase
 {
-    /**
-     */
     public function testListInsertedAndDeleted1(): void
     {
         $oldHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item 3</li><li>List item 5</li></ul>';
@@ -21,8 +20,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertTrue($rewritable);
     }
 
-    /**
-     */
     public function testListInsertedAndDelete2(): void
     {
         $oldHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item 3</li><li>List item 5</li></ul>';
@@ -35,8 +32,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertFalse($rewritable);
     }
 
-    /**
-     */
     public function testLineInserted1(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
@@ -47,8 +42,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertTrue($rewritable);
     }
 
-    /**
-     */
     public function testBasic1(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
@@ -61,8 +54,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertTrue($rewritable);
     }
 
-    /**
-     */
     public function testBasic2(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
@@ -75,8 +66,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertFalse($rewritable);
     }
 
-    /**
-     */
     public function testCollidingLineInserted1(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 3</p>';
@@ -93,26 +82,22 @@ class AmendmentRewriterCheckTest extends TestBase
         ], $colliding);
     }
 
-    /**
-     */
     public function testAffectedAddingLines(): void
     {
         $oldSections = [
-            '<p>The old line</p>'
+            new SectionedParagraph('<p>The old line</p>', 0, 0),
         ];
         $newSections = [
-            '<p>Inserted before</p>',
-            '<p>Inserted before2</p>',
-            '<p>The old line</p>',
-            '<p>Inserted after</p>',
+            new SectionedParagraph('<p>Inserted before</p>', 0, 0),
+            new SectionedParagraph('<p>Inserted before2</p>', 1, 1),
+            new SectionedParagraph('<p>The old line</p>', 2, 2),
+            new SectionedParagraph('<p>Inserted after</p>', 3, 3),
         ];
         $affected    = AmendmentRewriter::computeAffectedParagraphs($oldSections, $newSections, true);
         $this->assertCount(1, $affected);
         $this->assertEquals('<p><ins>Inserted before</ins></p><p class="inserted">Inserted before2</p><p>The old line</p><p><ins>Inserted after</ins></p>', $affected[0]);
     }
 
-    /**
-     */
     public function testInParagraph1(): void
     {
         $oldHtml       = '<p>Test 123 Bla <strong>STRONG</strong> Some text to circumvent change quota</p>';
@@ -125,8 +110,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertTrue($rewritable);
     }
 
-    /**
-     */
     public function testInParagraph2(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
@@ -137,8 +120,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertTrue($rewritable);
     }
 
-    /**
-     */
     public function testInParagraph3(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
@@ -149,8 +130,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertTrue($rewritable);
     }
 
-    /**
-     */
     public function testInParagraph4(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
@@ -161,8 +140,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertFalse($rewritable);
     }
 
-    /**
-     */
     public function testInParagraph5(): void
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
@@ -173,8 +150,6 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertTrue($rewritable);
     }
 
-    /**
-     */
     public function testInParagraph6(): void
     {
         $oldHtml       = '<p>Test 123 Bla 123 <strong>STRONG</strong></p>';
