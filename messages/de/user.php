@@ -89,7 +89,7 @@ return [
     'login_password'          => 'Passwort',
     'login_password_rep'      => 'Passwort (Bestätigung)',
     'login_create_name'       => 'Dein Name',
-    'login_captcha'           => 'Gib den angezeigten Code hier ein',
+    'login_captcha'           => 'Gib den angezeigten Code ein',
     'login_btn_login'         => 'Einloggen',
     'login_btn_create'        => 'Anlegen',
     'login_forgot_pw'         => 'Passwort vergessen?',

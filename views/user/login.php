@@ -51,7 +51,7 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
         ?>
         <section class="loginConPwd">
             <h2 class="green"><?= Yii::t('user', 'login_con_pwd_title') ?></h2>
-            <?= Html::beginForm('', 'post', ['class' => 'content row', 'id' => 'conPwdForm']) ?>
+            <?= Html::beginForm('', 'post', ['class' => 'content', 'id' => 'conPwdForm']) ?>
             <div class="content">
                 <?php
                 if ($conPwdErr) {
@@ -62,26 +62,22 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
                     echo '</div>';
                 }
                 ?>
-                <div class="row content">
+                <div class="content">
                     <label><?= Yii::t('motion', 'consultation') ?>:</label>
                     <div>
                         <?= Html::encode($conPwdConsultation->title) ?>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label for="conpwd"><?= Yii::t('user', 'login_con_pwd') ?>:</label>
-                        <input type="password" value="" name="password" id="conpwd" class="form-control"
-                               autocomplete="current-password">
-                    </div>
+                <div>
+                    <label for="conpwd"><?= Yii::t('user', 'login_con_pwd') ?>:</label>
+                    <input type="password" value="" name="password" id="conpwd" class="form-control"
+                           autocomplete="current-password">
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary" name="loginconpwd">
-                            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-                            <?= Yii::t('user', 'login_btn_login') ?>
-                        </button>
-                    </div>
+                <div>
+                    <button type="submit" class="btn btn-primary" name="loginconpwd">
+                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+                        <?= Yii::t('user', 'login_btn_login') ?>
+                    </button>
                 </div>
             </div>
             <?php
@@ -116,7 +112,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
 
     echo '<section class="' . implode(' ', $classes) . '">
     <h2 class="green">' . Yii::t('user', 'login_username_title') . '</h2>
-    <div class="content row">';
+    <div class="content">';
 
     if ($usernamePasswordForm->error) {
         echo '<div class="alert alert-danger passwordError" role="alert">
@@ -126,7 +122,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         echo '</div>';
     }
 
-    echo Html::beginForm('', 'post', ['class' => 'col-sm-6', 'id' => 'usernamePasswordForm']);
+    echo Html::beginForm('', 'post', ['id' => 'usernamePasswordForm']);
 
     $preUsername = $usernamePasswordForm->username;
     $preName     = $usernamePasswordForm->name;
@@ -190,47 +186,39 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     if (Captcha::needsCaptcha(null)) {
         $image = Captcha::createInlineCaptcha();
         ?>
-        <div class="form-group row">
-            <div class="col-md-12">
-                <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label>
-            </div>
-            <div class="col-md-5">
-                <img src="<?= $image ?>" alt="" width="150">
-            </div>
-            <div class="col-md-7">
-                <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
-            </div>
+        <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label><br>
+        <div class="captchaHolder">
+            <img src="<?= $image ?>" alt="" width="150">
+            <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
         </div>
+        <br><br>
         <?php
     }
     ?>
 
-    <div class="row">
-        <div class="col-md-6">
-            <button type="submit" class="btn btn-primary" name="loginusernamepassword">
-                <span id="loginStr"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-                    <?= Yii::t('user', 'login_btn_login') ?></span>
-                <?php
-                if ($supportsCreating) {
-                    ?>
-                    <span id="createStr"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
-                    <?= Yii::t('user', 'login_btn_create') ?></span>
-                    <?php
-                }
+        <button type="submit" class="btn btn-primary" name="loginusernamepassword">
+            <span id="loginStr"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+                <?= Yii::t('user', 'login_btn_login') ?></span>
+            <?php
+            if ($supportsCreating) {
                 ?>
-            </button>
-        </div>
+                <span id="createStr"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                <?= Yii::t('user', 'login_btn_create') ?></span>
+                <?php
+            }
+            ?>
+        </button>
 
         <?php
         if ($externalAuthenticator === null || $externalAuthenticator->supportsResetPassword()) {
             ?>
-            <div class="col-md-6 passwordRecovery">
+            <div class="passwordRecovery">
                 <?= Html::a(Yii::t('user', 'login_forgot_pw'), UrlHelper::createUrl('user/recovery')) ?>
             </div>
             <?php
         } elseif ($externalAuthenticator->resetPasswordAlternativeLink()) {
             ?>
-            <div class="col-md-6 passwordRecovery">
+            <div class="passwordRecovery">
                 <?= Html::a(Yii::t('user', 'login_forgot_pw'), $externalAuthenticator->resetPasswordAlternativeLink()) ?>
             </div>
             <?php

@@ -22,13 +22,40 @@
   }
 }
 
+.captchaHolder {
+  input.form-control {
+    display: inline-block;
+    width: 200px;
+  }
+}
+
+#usernamePasswordForm {
+  @media (min-width: $screenMinWith) {
+    width: 400px;
+  }
+}
+
 .loginUsername {
   .passwordRecovery {
-    text-align: right;
+    float: right;
     font-size: 0.8em;
   }
   #regConfirmation {
     font-size: 11px;
+  }
+}
+
+.accountDeleteForm .submit {
+  display: flex;
+  width: 100%;
+
+  label {
+    font-weight: normal;
+    flex-basis: 50%;
+  }
+  > div {
+    flex-basis: 50%;
+    text-align: right;
   }
 }
 

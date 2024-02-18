@@ -252,13 +252,9 @@ if ($externalAuthenticator === null) {
         <div class="alert alert-info">
             <?= Yii::t('user', 'del_explanation') ?>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="checkbox">
-                    <label><?= Html::checkbox('accountDeleteConfirm') . Yii::t('user', 'del_confirm') ?></label>
-                </div>
-            </div>
-            <div class="col-md-6" style="text-align: right;">
+        <div class="submit">
+            <label class="confirmation"><?= Html::checkbox('accountDeleteConfirm') . Yii::t('user', 'del_confirm') ?></label>
+            <div>
                 <button type="submit" name="accountDelete" class="btn btn-danger"><?= Yii::t('user', 'del_do') ?></button>
             </div>
         </div>

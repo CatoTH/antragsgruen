@@ -32,9 +32,9 @@ $inlineCaptcha = (Captcha::needsCaptcha(null) ? Captcha::createInlineCaptcha() :
 ?>
     <h2 class="green" id="step1title"><?= Yii::t('user', 'recover_step1') ?></h2>
     <div class="content">
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label for="sendEmail"><?= Yii::t('user', 'recover_email') ?>:</label>
+        <div class="stdTwoCols">
+            <label for="sendEmail" class="leftColumn"><?= Yii::t('user', 'recover_email') ?>:</label>
+            <div class="rightColumn">
                 <input class="form-control" name="email" id="sendEmail" type="email" required
                        placeholder="<?= Html::encode(Yii::t('user', 'recover_email_place')) ?>" value="">
             </div>
@@ -42,27 +42,22 @@ $inlineCaptcha = (Captcha::needsCaptcha(null) ? Captcha::createInlineCaptcha() :
         <?php
         if (Captcha::needsCaptcha(null)) {
             ?>
-            <div class="row">
-                <div class="col-md-12">
-                    <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label>
-                </div>
-                <div class="form-group col-md-3">
+            <div class="stdTwoCols">
+                <label for="captchaInput" class="leftColumn"><?= Yii::t('user', 'login_captcha') ?>:</label>
+                <div class="rightColumn captchaHolder">
                     <img src="<?= $inlineCaptcha ?>" alt="" width="150">
-                </div>
-                <div class="form-group col-md-3">
                     <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
                 </div>
             </div>
             <?php
         }
         ?>
-        <div class="row">
-            <div class="col-sm-6">
-                <button type="submit" class="btn btn-primary" name="send">
-                    <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-                    <?= Yii::t('user', 'recover_send_email') ?>
-                </button>
-            </div>
+        <br>
+        <div class="saveholder">
+            <button type="submit" class="btn btn-primary" name="send">
+                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                <?= Yii::t('user', 'recover_send_email') ?>
+            </button>
         </div>
     </div>
 <?= Html::endForm() ?>
@@ -70,52 +65,47 @@ $inlineCaptcha = (Captcha::needsCaptcha(null) ? Captcha::createInlineCaptcha() :
 <?= Html::beginForm($url, 'post', ['class' => 'resetPasswortForm', 'aria-labelledby' => 'step2title']) ?>
     <h2 class="green" id="step2title"><?= Yii::t('user', 'recover_step2') ?></h2>
     <div class="content">
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label for="recoveryEmail"><?= Yii::t('user', 'recover_email') ?>:</label>
+        <div class="stdTwoCols">
+            <label for="recoveryEmail" class="leftColumn"><?= Yii::t('user', 'recover_email') ?>:</label>
+            <div class="rightColumn">
                 <input class="form-control" name="email" id="recoveryEmail" type="email" required
                        placeholder="<?= Html::encode(Yii::t('user', 'recover_email_place')) ?>"
                        value="<?= Html::encode($preEmail) ?>">
             </div>
         </div>
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label for="recoveryCode"><?= Yii::t('user', 'recover_code') ?>:</label>
+        <div class="stdTwoCols">
+            <label for="recoveryCode" class="leftColumn"><?= Yii::t('user', 'recover_code') ?>:</label>
+            <div class="rightColumn">
                 <input class="form-control" name="recoveryCode" id="recoveryCode" type="text" required
                        value="<?= Html::encode($preCode) ?>">
             </div>
         </div>
 
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label for="recoveryPassword"><?= Yii::t('user', 'recover_new_pwd') ?>:</label>
+        <div class="stdTwoCols">
+            <label for="recoveryPassword" class="leftColumn"><?= Yii::t('user', 'recover_new_pwd') ?>:</label>
+            <div class="rightColumn">
                 <input class="form-control" name="newPassword" id="recoveryPassword" type="password" required value="">
             </div>
         </div>
         <?php
         if (Captcha::needsCaptcha(null)) {
             ?>
-            <div class="row">
-                <div class="col-md-12">
-                    <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label>
-                </div>
-                <div class="form-group col-md-3">
+            <div class="stdTwoCols">
+                <label for="captchaInput" class="leftColumn"><?= Yii::t('user', 'login_captcha') ?>:</label>
+                <div class="rightColumn captchaHolder">
                     <img src="<?= $inlineCaptcha ?>" alt="" width="150">
-                </div>
-                <div class="form-group col-md-3">
                     <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
                 </div>
             </div>
             <?php
         }
         ?>
-        <div class="row">
-            <div class="col-sm-6">
-                <button type="submit" class="btn btn-primary" name="recover">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    <?= Yii::t('user', 'recover_set_pwd') ?>
-                </button>
-            </div>
+        <br>
+        <div class="saveholder">
+            <button type="submit" class="btn btn-primary" name="recover">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                <?= Yii::t('user', 'recover_set_pwd') ?>
+            </button>
         </div>
     </div>
 
