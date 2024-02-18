@@ -21,6 +21,8 @@ class Captcha
     public static function createInlineCaptcha(): string
     {
         $builder = new CaptchaBuilder();
+        $builder->distort = true;
+        $builder->bgColor = '#fff';
         $builder->build(300, 80);
 
         $phrase = $builder->phrase;

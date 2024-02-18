@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.14.0 [not released yet]
+
+- Bugfix: CAPTCHAs were sometimes hardly to read.
+
 ### Version 4.13.2 (2024-02-18)
 
 - Bugfix: the version check in the editor that lead to warnings is now disabled.
