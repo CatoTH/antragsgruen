@@ -154,7 +154,7 @@ echo Html::beginForm('', 'post', [
     </label>
     <div class="rightColumn thumbnailedLayoutSelector">
         <?php
-        $pdfTemplates = IPDFLayout::getAvailableClassesWithLatex();
+        $pdfTemplates = IPDFLayout::getSelectablePdfLayouts();
         $hasTex = isset($pdfTemplates[1]);
         foreach ($pdfTemplates as $lId => $layout) {
             if ($hasTex) {

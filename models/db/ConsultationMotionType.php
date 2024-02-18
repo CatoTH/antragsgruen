@@ -205,13 +205,19 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         return SupportBase::getImplementation($settings, $this);
     }
 
+    public function hasPdfLayout(): bool
+    {
+        $layout = IPDFLayout::getPdfLayoutForMotionType($this);
+        return $layout->id !== IPDFLayout::LAYOUT_NONE;
+    }
+
     public function getPDFLayoutClass(): ?IPDFLayout
     {
-        $class = IPDFLayout::getClassById($this->pdfLayout);
-        if ($class === null) {
+        $layout = IPDFLayout::getClassById($this->pdfLayout);
+        if ($layout === null || $layout->className === null) {
             return null;
         }
-        return new $class($this);
+        return new $layout->className($this);
     }
 
     public function getOdtTemplateFile(): string

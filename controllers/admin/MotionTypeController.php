@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\views\pdfLayouts\IPDFLayout;
 use app\components\{DateTools, UrlHelper};
 use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection, ConsultationUserGroup, TexTemplate, User};
 use app\models\exceptions\ExceptionBase;
@@ -126,11 +127,11 @@ class MotionTypeController extends AdminBase
             $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());
 
             $pdfTemplate = $this->getHttpRequest()->post('pdfTemplate', '');
-            if (str_starts_with($pdfTemplate, 'php')) {
-                $motionType->pdfLayout     = intval(str_replace('php', '', $pdfTemplate));
-                $motionType->texTemplateId = null;
-            } elseif ($pdfTemplate) {
-                $motionType->texTemplateId = intval($pdfTemplate);
+            foreach (IPDFLayout::getSelectablePdfLayouts() as $layout) {
+                if ($layout->getHtmlId() === $pdfTemplate) {
+                    $motionType->pdfLayout = $layout->id ?? 0;
+                    $motionType->texTemplateId = $layout->latexId;
+                }
             }
 
             $motionType->motionLikesDislikes = 0;

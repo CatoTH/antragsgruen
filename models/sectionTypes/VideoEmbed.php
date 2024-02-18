@@ -2,7 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\{HTMLTools, latex\Content, latex\Exporter};
+use app\components\{html2pdf\Content as HtmlToPdfContent, HTMLTools, latex\Content as LatexContent, latex\Exporter};
 use app\models\db\Consultation;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -166,7 +166,7 @@ class VideoEmbed extends ISectionType
         return ($this->isEmpty() ? '' : $this->section->getData());
     }
 
-    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
+    public function printMotionTeX(bool $isRight, LatexContent $content, Consultation $consultation): void
     {
         if ($this->isEmpty()) {
             return;
@@ -182,7 +182,7 @@ class VideoEmbed extends ISectionType
         }
     }
 
-    public function printAmendmentTeX(bool $isRight, Content $content): void
+    public function printAmendmentTeX(bool $isRight, LatexContent $content): void
     {
         if ($this->isEmpty()) {
             return;
@@ -197,6 +197,17 @@ class VideoEmbed extends ISectionType
             $content->textMain .= $text;
         }
     }
+
+    public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
+    {
+        // TODO: Implement printMotionHtml2Pdf() method.
+    }
+
+    public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
+    {
+        // TODO: Implement printAmendmentHtml2Pdf() method.
+    }
+
 
     public function getMotionODS(): string
     {

@@ -7,7 +7,10 @@ namespace app\components;
 use app\models\db\Consultation;
 use app\models\settings\Consultation as ConsultationSettings;
 use app\models\exceptions\Internal;
+use app\views\pdfLayouts\IPdfWriter;
 use Doctrine\Common\Annotations\AnnotationReader;
+use setasign\Fpdi\FpdiException;
+use setasign\Fpdi\PdfParser\StreamReader;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
@@ -470,6 +473,31 @@ class Tools
             return $upload_size;
         } else {
             return $post_max_size;
+        }
+    }
+
+    /**
+     * @throws FpdiException
+     */
+    public static function appendPdfToPdf(IPdfWriter $pdf, string $toAppendData, ?string $bookmarkId = null, ?string $bookmarkName = null): void
+    {
+        $pageCount = $pdf->setSourceFile(StreamReader::createByString($toAppendData));
+
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $page = $pdf->ImportPage($pageNo);
+            $dim  = $pdf->getTemplatesize($page);
+            if (is_array($dim)) {
+                $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
+            } else {
+                $pdf->AddPage();
+            }
+
+            if ($pageNo === 1) {
+                $pdf->setDestination($bookmarkId, 0, '');
+                $pdf->Bookmark($bookmarkName, 0, 0, '', '', [128,0,0], -1, '#' . $bookmarkId);
+            }
+
+            $pdf->useTemplate($page);
         }
     }
 }

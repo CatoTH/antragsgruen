@@ -2,12 +2,14 @@
 
 namespace app\views\amendment;
 
+use app\components\HashedStaticFileCache;
+use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\HTMLTools;
 use app\models\sectionTypes\ISectionType;
 use app\views\pdfLayouts\{IPdfWriter, IPDFLayout};
-use app\components\latex\{Content, Exporter, Layout};
+use app\components\latex\{Content as LatexContent, Exporter, Layout};
 use app\components\Tools;
-use app\models\db\{Amendment, AmendmentSection, ISupporter, Motion, TexTemplate};
+use app\models\db\{Amendment, AmendmentSection, ISupporter, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
@@ -55,9 +57,9 @@ class LayoutHelper
         return $out;
     }
 
-    public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate): Content
+    public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate): LatexContent
     {
-        $content             = new Content();
+        $content             = new LatexContent();
         $content->template   = $texTemplate->texContent;
         $content->titleRaw   = $amendment->getMyMotion()->title;
         $content->title      = $amendment->getMyMotion()->getTitleWithIntro();
@@ -177,7 +179,7 @@ class LayoutHelper
 
     public static function createPdfTcpdf(Amendment $amendment): string
     {
-        $pdfLayout = $amendment->getMyMotion()->motionType->getPDFLayoutClass();
+        $pdfLayout = $amendment->getMyMotion()->getMyMotionType()->getPDFLayoutClass();
         $pdf       = $pdfLayout->createPDFClass();
 
         $initiators = [];
@@ -217,6 +219,109 @@ class LayoutHelper
         \Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);
 
         return $pdf;
+    }
+
+    public static function renderPdfContentFromHtml(Amendment $amendment): HtmlToPdfContent
+    {
+        $content = new HtmlToPdfContent();
+
+        $content->template        = file_get_contents(__DIR__ . '/../../assets/html2pdf/application.html');
+        $content->lineLength      = $amendment->getMyConsultation()->getSettings()->lineLength;
+        $intro                    = explode("\n", $amendment->getMyMotionType()->getSettingsObj()->pdfIntroduction);
+        $content->introductionBig = $intro[0];
+        if (count($intro) > 1) {
+            array_shift($intro);
+            $content->introductionSmall = implode("\n", $intro);
+        }
+
+        $content->titleRaw   = $amendment->getMyMotion()->title;
+        $content->title      = $amendment->getMyMotion()->getTitleWithIntro();
+        $content->lineLength = $amendment->getMyConsultation()->getSettings()->lineLength;
+        $content->logoData   = $amendment->getMyConsultation()->getPdfLogoData();
+        if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->getFormattedTitlePrefix() !== '') {
+            $content->titlePrefix = $amendment->getFormattedTitlePrefix();
+        }
+        $content->titleLong       = $amendment->getFormattedTitlePrefix() . ' - ';
+        $content->titleLong       .= str_replace(
+            '%PREFIX%',
+            $amendment->getMyMotion()->getFormattedTitlePrefix(),
+            \Yii::t('amend', 'amendment_for_prefix')
+        );
+        $initiators = [];
+        foreach ($amendment->getInitiators() as $init) {
+            $initiators[] = $init->getNameWithResolutionDate(false);
+        }
+        $initiatorsStr            = implode(', ', $initiators);
+        $content->author          = $initiatorsStr;
+        $content->publicationDate = Tools::formatMysqlDate($amendment->datePublication);
+        $content->typeName        = $amendment->getMyMotionType()->titleSingular;
+
+        if ($amendment->agendaItem) {
+            $content->agendaItemName = $amendment->agendaItem->title;
+        }
+
+        foreach ($amendment->getDataTable() as $key => $val) {
+            $content->motionDataTable .= '<tr>';
+            $content->motionDataTable .= '<th>' . Html::encode($key) . ':</th>';
+            $content->motionDataTable .= '<td>' . Html::encode($val) . '</td>';
+            $content->motionDataTable .= '</tr>';
+        }
+
+        if ($amendment->changeEditorial !== '') {
+            $content->textMain .= '<h2>' . Html::encode(\Yii::t('amend', 'editorial_hint')) . '</h2>';
+            $content->textMain .= $amendment->changeEditorial;
+        }
+
+        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            /** @var array<array{title: string, section: ISectionType}> $ppSections */
+            $ppSections = self::getVisibleProposedProcedureSections($amendment, null);
+            foreach ($ppSections as $ppSection) {
+                $ppSection['section']->setTitlePrefix($ppSection['title']);
+                $ppSection['section']->getSectionType()->printAmendmentHtml2Pdf($ppSection['section']->isLayoutRight(), $content);
+            }
+        }
+
+        foreach ($amendment->getSortedSections(false) as $section) {
+            $sectionType = $section->getSectionType();
+            if ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL)) {
+                $sectionType->setDefaultToOnlyDiff(false);
+            }
+            $sectionType->printAmendmentHtml2Pdf(false, $content);
+        }
+
+        if ($amendment->changeExplanation !== '') {
+            $content->textMain .= '<h2>' . Html::encode(\Yii::t('amend', 'reason')) . '</h2>';
+            $content->textMain .= $amendment->changeExplanation;
+        }
+
+        $limitedSupporters = LimitedSupporterList::createFromIMotion($amendment);
+        if (count($limitedSupporters->supporters) > 0) {
+            $content->textMain .= "<h2>" . Html::encode(\Yii::t('motion', 'supporters_heading')) . "</h2><br>";
+            $supps             = [];
+            foreach ($limitedSupporters->supporters as $supp) {
+                $supps[] = $supp->getNameWithOrga();
+            }
+            $content->textMain .= '<p>' . Html::encode(implode('; ', $supps)) . $limitedSupporters->truncatedToString(';') . '</p>';
+        }
+
+        return $content;
+    }
+
+    public static function createPdfFromHtml(Amendment $amendment): string
+    {
+        $cache = HashedStaticFileCache::getCache($amendment->getPdfCacheKey(), null);
+        if ($cache && !YII_DEBUG) {
+            return $cache;
+        }
+
+        $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
+
+        $content = static::renderPdfContentFromHtml($amendment);
+        $pdfData = $exporter->createPDF($content);
+
+        HashedStaticFileCache::setCache($amendment->getPdfCacheKey(), null, $pdfData);
+
+        return $pdfData;
     }
 
     public static function printAmendmentToOdt(Amendment $amendment, \CatoTH\HTML2OpenDocument\Text $doc): void

@@ -2,8 +2,9 @@
 
 namespace app\models\sectionTypes;
 
+use app\components\html2pdf\Content as HtmlToPdfContent;
 use app\components\HTMLTools;
-use app\components\latex\Content;
+use app\components\latex\Content as LatexContent;
 use app\models\db\{AmendmentSection, Consultation};
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
@@ -105,7 +106,7 @@ class TextHTML extends Text
         return HTMLTools::toPlainText($this->section->getData());
     }
 
-    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
+    public function printMotionTeX(bool $isRight, LatexContent $content, Consultation $consultation): void
     {
         if ($isRight) {
             $content->textRight .= '[TEST HTML]'; // @TODO
@@ -114,12 +115,30 @@ class TextHTML extends Text
         }
     }
 
-    public function printAmendmentTeX(bool $isRight, Content $content): void
+    public function printAmendmentTeX(bool $isRight, LatexContent $content): void
     {
         if ($isRight) {
             $content->textRight .= '[TEST HTML]'; // @TODO
         } else {
             $content->textMain .= '[TEST HTML]'; // @TODO
+        }
+    }
+
+    public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
+    {
+        if ($isRight) {
+            $content->textRight .= $this->section->getData();
+        } else {
+            $content->textMain .= $this->section->getData();
+        }
+    }
+
+    public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
+    {
+        if ($isRight) {
+            $content->textRight .= $this->section->getData();
+        } else {
+            $content->textMain .= $this->section->getData();
         }
     }
 

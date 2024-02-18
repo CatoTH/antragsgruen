@@ -14,7 +14,7 @@ $motionType   = $amendment->getMyMotionType();
 $html        = '<ul class="sidebarActions" aria-label="' . Html::encode(Yii::t('amend', 'sidebar_title_aria')) . '">';
 $sidebarRows = 0;
 
-if ($motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
+if ($motionType->hasPdfLayout() && $amendment->isVisible()) {
     $html .= '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt" aria-hidden="true"></span>' .
         Yii::t('motion', 'download_pdf');

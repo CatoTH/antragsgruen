@@ -119,19 +119,42 @@ If you encounter any problem using the web-based updater, please consult the [Up
 - If you have shell access to your server: execute ``./yii migrate`` on the command line to apply database changes
 - If you don't have shell access to your server: please refer to [UPGRADING.md](docs/UPGRADING.md) on how to upgrade your database
 
-## Deployment techniques
+## PDF-Rendering
 
-### Setting Super-Admins
+Generating PDFs is performed by the PHP-Library [TCPDF](https://github.com/tecnickcom/tcpdf) by default.
+In some cases, nicer and easier to customize PDFs can be generated though by using a separate command line tool to generate them. They need to be set up and configured by hand on the server though.
 
-Super-Admins are administrators with some additional set of privileges not available to regular site administrators:
-- They can modify the user data of registered users (setting the name, organization and a new password).
-- They can download and install new versions of Antragsgrün and set the whole site into maintenance mode.
-- On Multisite installations, they are automatically set as administrator for every site.
+### PHP-Based PDF-Rendering
 
-The list of super-admins cannot (on purpose) be changed using the Web-UI,
-but has to be manually changed in the `config/config.json` by adding and removing the user IDs in the `adminUserIds` array.
+The PHP-processes need writing permissions to the folder
+If this is not possible, you need to specify an alternative writable folder by hand by adding the following line to the beginning of `web/index.php`:
+```php
+define("K_PATH_FONTS", "/path/to/writable/directory/");
+```
 
-### LaTeX/XeTeX-based PDF-rendering
+### FPDI-PDF
+
+If you run into the error "This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)" and decide to use the commercial plugin, you can install the package using the following steps:
+- Extract the content of the package into the directory ``components/fpdi``, so there exists a subdirectory ``src``.
+- Run the command ``./composer.phar dump-autoload``
+
+After that, newer PDF files should be able to be parsed as well.
+
+### Weasyprint-based PDF-rendering
+
+```bash
+apt-get install weasyprint
+```
+
+Add the following settings to your config.json (and adapt them to your needs):
+
+```json
+{
+    "weasyprintPath": "/usr/bin/weasyprint"
+}
+```
+
+### LaTeX/XeTeX-based PDF-rendering (deprecated)
 
 Necessary packets on Linux (Debian):
 ```bash
@@ -155,21 +178,17 @@ Add the following settings to your config.json (and adapt them to your needs):
 
 When LaTeX complains about `scrlayer2.sty` not found, executing the SQL statement `UPDATE texTemplate SET texLayout = REPLACE(texLayout, 'scrpage2', 'scrlayer-scrpage');` followed by clearing all caches (`./yii cache/flush-all`) should fix this problem.
 
-### PHP-Based PDF-Rendering
+## Deployment and Performance Optimization
 
-The PHP-processes need writing permissions to the folder
-If this is not possible, you need to specify an alternative writable folder by hand by adding the following line to the beginning of `web/index.php`:
-```php
-define("K_PATH_FONTS", "/path/to/writable/directory/");
-```
+### Setting Super-Admins
 
-### FPDI-PDF
+Super-Admins are administrators with some additional set of privileges not available to regular site administrators:
+- They can modify the user data of registered users (setting the name, organization and a new password).
+- They can download and install new versions of Antragsgrün and set the whole site into maintenance mode.
+- On Multisite installations, they are automatically set as administrator for every site.
 
-If you run into the error "This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)" and decide to use the commercial plugin, you can install the package using the following steps:
-- Extract the content of the package into the directory ``components/fpdi``, so there exists a subdirectory ``src``.
-- Run the command ``./composer.phar dump-autoload``
-
-After that, newer PDF files should be able to be parsed as well.
+The list of super-admins cannot (on purpose) be changed using the Web-UI,
+but has to be manually changed in the `config/config.json` by adding and removing the user IDs in the `adminUserIds` array.
 
 ### ImageMagick
 

@@ -5,6 +5,7 @@ namespace app\plugins\egp;
 use app\components\UrlHelper;
 use app\models\db\{AmendmentSupporter, Consultation, Motion, MotionSupporter, Site};
 use app\models\amendmentNumbering\IAmendmentNumbering;
+use app\views\pdfLayouts\PdfLayoutDescription;
 use app\models\http\{RedirectResponse, ResponseInterface};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\IMotionStatus;
@@ -102,12 +103,7 @@ class Module extends ModuleBase
 
     public static function getProvidedPdfLayouts(array $default): array
     {
-        $default[] = [
-            'id'        => 101,
-            'title'     => 'European Greens',
-            'preview'   => null,
-            'className' => Egp::class,
-        ];
+        $default[] = new PdfLayoutDescription(101, null, 'European Greens', null, Egp::class);
 
         return $default;
     }

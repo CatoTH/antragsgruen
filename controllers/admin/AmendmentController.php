@@ -3,6 +3,8 @@
 namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
+use app\views\pdfLayouts\IPDFLayout;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{Tools, UrlHelper, ZipWriter};
@@ -66,17 +68,19 @@ class AmendmentController extends AdminBase
     public function actionPdfziplist(int $withdrawn = 0): BinaryFileResponse
     {
         $withdrawn = ($withdrawn === 1);
-        $zip       = new ZipWriter();
-        $hasLaTeX  = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        $zip = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
-            if ($motion->getMyMotionType()->amendmentsOnly) {
+            if ($motion->getMyMotionType()->amendmentsOnly || !$motion->getMyMotionType()->hasPdfLayout()) {
                 continue;
             }
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
-                if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
-                    $file = LayoutHelper::createPdfLatex($amendment);
+                $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendment->getMyMotionType());
+                if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+                    $file = AmendmentLayoutHelper::createPdfFromHtml($amendment);
+                } elseif ($selectedPdfLayout->latexId !== null) {
+                    $file = AmendmentLayoutHelper::createPdfLatex($amendment);
                 } else {
-                    $file = LayoutHelper::createPdfTcpdf($amendment);
+                    $file = AmendmentLayoutHelper::createPdfTcpdf($amendment);
                 }
                 $zip->addFile($amendment->getFilenameBase(false) . '.pdf', $file);
             }
