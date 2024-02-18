@@ -85,11 +85,15 @@ sudo chown -R www-data:www-data runtime
 sudo chown -R www-data:www-data config #Can be skipped if you don't use the Installer
 ```
 
-### Using Docker
+### Using container images – Docker and other container orchestrations
 
-A Dockerfile to compile and run the latest development version of Antragsgrün is provided by [Jugendpresse Deutschland e.V.](https://www.jugendpresse.de) at this repository:
+[Jugendpresse Deutschland e.V.](https://www.jugendpresse.de) developed a container image, which is now maintained as an open source / collaborative project at [github.com/devops-ansible/docker-antragsgruen](https://github.com/devops-ansible/docker-antragsgruen).
 
-[https://github.com/jugendpresse/docker-antragsgruen](https://github.com/jugendpresse/docker-antragsgruen)
+The repository is maintained to run its workflows once a week to build the `devopsansiblede/antragsgruen` image.  
+The latest contents of the `master` branch will result in a `dev_YYYYMMDD-HHII` image-tag with the build date and time mentioned as well as the `development` image-tag.  
+The actual (new) releases by git tags in the official [Motiontool repository](https://github.com/CatoTH/antragsgruen) are built into images as well. They result in the tags `latest` being the latest (highest) released version, and semantic version partials mapping the corresponding versions, so `vA.B.C` is the current patch level version, `vA.B` is the latest released patch of the minor version, and `vA` is the latest released patch of the major version.
+
+You can find the container images published on [DockerHub](https://hub.docker.com/repository/docker/devopsansiblede/antragsgruen).
 
 ## Updating
 
