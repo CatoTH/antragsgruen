@@ -544,7 +544,7 @@ $lineNumberOffset4: 3px !default;
     width: 0;
     display: inline-block;
     text-align: right;
-    float: left; // otherwise problems appear at li > p constructs
+    // float: left; // with float, the bullet points tend to be in the page before the content of the list item
   }
 
   .lineNumber:after {
