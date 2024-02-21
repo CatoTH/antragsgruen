@@ -165,12 +165,12 @@ echo Html::beginForm('', 'post', [
             echo '<label class="layout">';
             echo Html::radio('type[pdfLayout]', $checked, ['value' => $lId, 'required' => 'required']);
             echo '<span>';
-            if ($layout['preview']) {
-                echo '<img src="' . Html::encode($layout['preview']) . '" ' .
-                    'alt="' . Html::encode($layout['title']) . '" ' .
-                    'title="' . Html::encode($layout['title']) . '"></span>';
+            if ($layout->preview) {
+                echo '<img src="' . Html::encode($layout->preview) . '" ' .
+                    'alt="' . Html::encode($layout->title) . '" ' .
+                    'title="' . Html::encode($layout->title) . '"></span>';
             } else {
-                echo '<span class="placeholder">' . Html::encode($layout['title']) . '</span>';
+                echo '<span class="placeholder">' . Html::encode($layout->title) . '</span>';
             }
             echo '</label>';
         }
