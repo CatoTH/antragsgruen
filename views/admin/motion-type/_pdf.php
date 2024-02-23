@@ -56,7 +56,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
     $params = \app\models\settings\AntragsgruenApp::getInstance();
     if (($params->xelatexPath || $params->lualatexPath) && !$params->weasyprintPath) {
         echo '<div class="alert alert-danger" role="alert"><p>';
-        echo '<strong>Hinweis:</strong> Aktuell ist LaTeX für die PDF-Erzeugung eingerichtet. Dies wird mit der nächsten Antragsgrün-Version nicht mehr unterstützt. Bitte nutze stattdessen <a href="https://github.com/CatoTH/antragsgruen/blob/main/README.md">Weasyprint</a>.';
+        echo Yii::t('admin', 'motion_type_latex_warning');
         echo '</p></div>';
     }
     ?>

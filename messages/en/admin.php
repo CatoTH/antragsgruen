@@ -545,6 +545,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_create_sidebar'  => 'Call to create as big, colored button',
     'motion_type_create_placeh'   => 'Create a motion',
     'motion_type_pdf_layout'      => 'PDF layout',
+    'motion_type_latex_warning'   => '<strong>Hint:</strong> Currently, LaTeX is set up for PDF generation. This will not be supported anymore with the next version of Antragsgrün. Please use <a href="https://github.com/CatoTH/antragsgruen/blob/main/README.md">Weasyprint</a> instead.',
     'motion_type_export_pp'       => 'Include proposed procedure in PDFs and exports',
     'motion_type_title_prefix'    => 'Signature prefix',
     'motion_type_title_intro'     => 'Title prefix',
