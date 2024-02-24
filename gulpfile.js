@@ -17,7 +17,6 @@ const main_js_files = [
     "node_modules/bootbox/bootbox.all.js",
     "web/js/scrollintoview.js",
     "web/js/jquery.isonscreen.js",
-    "node_modules/intl/dist/Intl.min.js",
 ];
 
 async function taskCopyFiles() {
