@@ -1,6 +1,3 @@
-/*global Intl */
-
-
 ANTRAGSGRUEN_STRINGS = {
     "std": {
         "add_tag": "Créer",
