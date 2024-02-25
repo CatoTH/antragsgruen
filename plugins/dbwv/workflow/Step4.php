@@ -132,7 +132,7 @@ class Step4
             $v5Motion->link('tags', $newTag);
         }
 
-        AdminTodoItem::flushConsultationTodoCount();
+        AdminTodoItem::flushConsultationTodoCount($v5Motion->getMyConsultation());
 
         return $v5Motion;
     }

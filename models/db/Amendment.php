@@ -433,39 +433,31 @@ class Amendment extends IMotion implements IRSSItem
      */
     public static function calcAffectedDiffLinesCached(array $sectionData, int $lineLength): array
     {
-        $cacheFunc = 'calcAffectedDiffLinesCached';
-        $cacheDeps = [$sectionData, $lineLength];
+        $cache = HashedStaticCache::getInstance('calcAffectedDiffLinesCached', [$sectionData, $lineLength]);
+        return $cache->getCached(function () use ($sectionData, $lineLength) {
+            $firstAffectedLine = null;
+            $lastAffectedLine = null;
 
-        $cache = HashedStaticCache::getCache($cacheFunc, $cacheDeps);
-        if ($cache !== false) {
-            return $cache;
-        }
+            foreach ($sectionData as $section) {
+                $formatter = new AmendmentSectionFormatter();
+                $formatter->setTextOriginal($section['original']);
+                $formatter->setTextNew($section['new']);
+                $formatter->setFirstLineNo($section['firstLine']);
+                $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, 0);
 
-        $firstAffectedLine = null;
-        $lastAffectedLine = null;
-
-        foreach ($sectionData as $section) {
-            $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section['original']);
-            $formatter->setTextNew($section['new']);
-            $formatter->setFirstLineNo($section['firstLine']);
-            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, 0);
-
-            foreach ($diffGroups as $diffGroup) {
-                if ($firstAffectedLine === null) {
-                    $firstAffectedLine = $diffGroup->lineFrom;
+                foreach ($diffGroups as $diffGroup) {
+                    if ($firstAffectedLine === null) {
+                        $firstAffectedLine = $diffGroup->lineFrom;
+                    }
+                    $lastAffectedLine = $diffGroup->lineTo;
                 }
-                $lastAffectedLine = $diffGroup->lineTo;
             }
-        }
 
-        $result = [
-            'from' => $firstAffectedLine ?? ($sectionData[0]['firstLine'] ?? 0),
-            'to' => $lastAffectedLine ?? ($sectionData[0]['firstLine'] ?? 0),
-        ];
-        HashedStaticCache::setCache($cacheFunc, $cacheDeps, $result);
-
-        return $result;
+            return [
+                'from' => $firstAffectedLine ?? ($sectionData[0]['firstLine'] ?? 0),
+                'to' => $lastAffectedLine ?? ($sectionData[0]['firstLine'] ?? 0),
+            ];
+        });
     }
 
     /**

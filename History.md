@@ -3,6 +3,7 @@
 ## Version 4.14.0 [not released yet]
 
 - LaTeX will be deprecated for rendering PDFs. Instead, a new rendering based on Weasyprint is introduced, that should handle several edge cases better and will make it easier to customize PDF layouts. The default PHP-based PDF renderer will remain unchanged.
+- The internal caching system has been optimized, preventing parallel processes generating the same cache, which might overload systems with a high number of users after cache invalidation.
 - Bugfix: CAPTCHAs were sometimes hardly to read.
 
 ### Version 4.13.2 (2024-02-18)

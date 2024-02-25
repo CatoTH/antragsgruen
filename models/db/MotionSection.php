@@ -263,25 +263,21 @@ class MotionSection extends IMotionSection
         }
 
         $lineLength = $this->getConsultation()->getSettings()->lineLength;
-        $cacheDeps  = [$lineLength, $minOnePara, $this->getData()];
-        $cacheFunc  = 'getTextParagraphLines2';
-        $cache      = HashedStaticCache::getCache($cacheFunc, $cacheDeps);
-        if ($cache) {
-            return $cache;
-        }
+        $cacheDeps = [$lineLength, $minOnePara, $this->getData()];
+        $cache = HashedStaticCache::getInstance('getTextParagraphLines2', $cacheDeps);
 
-        $paragraphs = HTMLTools::sectionSimpleHTML($this->getData());
-        foreach ($paragraphs as $paragraph) {
-            $paragraph->lines = LineSplitter::splitHtmlToLines($paragraph->html, $lineLength, '###LINENUMBER###');
-        }
-        if ($minOnePara && count($paragraphs) === 0) {
-            $paragraphs[] = new SectionedParagraph('', 0, 0);
-            $paragraphs[0]->lines = [];
-        }
+        return $cache->getCached(function () use ($minOnePara, $lineLength) {
+            $paragraphs = HTMLTools::sectionSimpleHTML($this->getData());
+            foreach ($paragraphs as $paragraph) {
+                $paragraph->lines = LineSplitter::splitHtmlToLines($paragraph->html, $lineLength, '###LINENUMBER###');
+            }
+            if ($minOnePara && count($paragraphs) === 0) {
+                $paragraphs[] = new SectionedParagraph('', 0, 0);
+                $paragraphs[0]->lines = [];
+            }
 
-        HashedStaticCache::setCache($cacheFunc, $cacheDeps, $paragraphs);
-
-        return $paragraphs;
+            return $paragraphs;
+        });
     }
 
     /**

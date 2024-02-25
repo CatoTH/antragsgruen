@@ -265,15 +265,14 @@ class TextSimple extends Text
             return $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
         } else {
             $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, $this->getTitle()];
-            $cached    = HashedStaticCache::getCache('getAmendmentPlainHtml', $cacheDeps);
-            if (!$cached) {
-                $cached = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
-                if ($cached !== '') {
-                    $cached = '<h3>' . Html::encode($this->getTitle()) . '</h3>' . $cached;
-                    HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $cached);
+            $cache = HashedStaticCache::getInstance('getAmendmentPlainHtml', $cacheDeps);
+            return $cache->getCached(function () use ($section, $firstLine, $lineLength) {
+                $text = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
+                if ($text !== '') {
+                    $text = '<h3>' . Html::encode($this->getTitle()) . '</h3>' . $text;
                 }
-            }
-            return $cached;
+                return $text;
+            });
         }
     }
 
@@ -309,33 +308,27 @@ class TextSimple extends Text
      */
     private function getMaybeCachedDiffGroups(AmendmentSection $section, int $lineLength, int $firstLine): array
     {
-        // Only use cache for long motions
-        $useCache = strlen($section->getOriginalMotionSection()->getData()) > 10000;
         $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA];
+        $cache = HashedStaticCache::getInstance('getMaybeCachedDiffGroups', $cacheDeps);
 
-        $diffGroupsAndSections = null;
-        if ($useCache) {
-            $diffGroupsAndSections = HashedStaticCache::getCache('getMaybeCachedDiffGroups', $cacheDeps);
+        // Only use cache for long motions
+        if (strlen($section->getOriginalMotionSection()->getData()) < 10000) {
+            $cache->setSkipCache(true);
         }
 
-        if (!$diffGroupsAndSections) {
+        return $cache->getCached(function () use ($section, $lineLength, $firstLine) {
             $formatter = new AmendmentSectionFormatter();
             $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
             $diffSections = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
-            $diffGroupsAndSections = [
+
+            return [
                 'groups' => $diffGroups,
                 'sections' => $diffSections,
             ];
-        }
-
-        if ($useCache) {
-            HashedStaticCache::setCache('getMaybeCachedDiffGroups', $cacheDeps, $diffGroupsAndSections);
-        }
-
-        return $diffGroupsAndSections;
+        });
     }
 
     public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
@@ -664,9 +657,8 @@ class TextSimple extends Text
         }
 
         $cacheDeps = [$hasLineNumbers, $lineLength, $firstLine, $fixedWidth, $section->getData()];
-        $tex2      = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);
-
-        if (!$tex2) {
+        $cache = HashedStaticCache::getInstance('printMotionTeX', $cacheDeps);
+        $tex2 = $cache->getCached(function () use ($section, $fixedWidth, $hasLineNumbers, $firstLine) {
             $tex2 = '';
             if ($fixedWidth || $hasLineNumbers) {
                 if ($hasLineNumbers) {
@@ -693,10 +685,8 @@ class TextSimple extends Text
                 }
             }
 
-            $tex2 = Exporter::fixLatexErrorsInFinalDocument($tex2);
-
-            HashedStaticCache::setCache('printMotionTeX', $cacheDeps, $tex2);
-        }
+            return Exporter::fixLatexErrorsInFinalDocument($tex2);
+        });
 
         if ($isRight) {
             $content->textRight .= $tex . $tex2;
@@ -716,9 +706,8 @@ class TextSimple extends Text
             $firstLine, $lineLength, $section->getOriginalMotionSection()->getData(), $section->data,
             $section->getAmendment()->globalAlternative
         ];
-        $tex = HashedStaticCache::getCache('printAmendmentTeX', $cacheDeps);
-
-        if (!$tex) {
+        $cache = HashedStaticCache::getInstance('printAmendmentTeX', $cacheDeps);
+        $tex = $cache->getCached(function () use ($section, $firstLine, $lineLength) {
             $tex = '';
             if ($section->getAmendment()->globalAlternative) {
                 $title = Exporter::encodePlainString($this->getTitle());
@@ -764,9 +753,8 @@ class TextSimple extends Text
                     }
                 }
             }
-
-            HashedStaticCache::setCache('printAmendmentTeX', $cacheDeps, $tex);
-        }
+            return $tex;
+        });
 
         if ($isRight) {
             $content->textRight .= $tex;

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace app\views\motion;
 
-use app\components\HashedStaticFileCache;
+use app\components\{HashedStaticCache, Tools};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
-use app\components\Tools;
 use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\LimitedSupporterList;
@@ -699,24 +698,25 @@ class LayoutHelper
      */
     public static function createPdfLatex(Motion $motion): string
     {
-        $cache = HashedStaticFileCache::getCache($motion->getPdfCacheKey(), null);
-        if ($cache && !YII_DEBUG) {
-            return $cache;
-        }
-        $texTemplate = $motion->getMyMotionType()->texTemplate;
+        $cache = HashedStaticCache::getInstance($motion->getPdfCacheKey(), null);
+        $cache->setIsBulky(true);
+        $cache->setIsSynchronized(true);
 
-        $layout             = new LatexLayout();
-        $layout->assetRoot  = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-        $layout->pluginRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
-        $layout->template   = $texTemplate->texLayout;
-        $layout->author     = $motion->getInitiatorsStr();
-        $layout->title      = $motion->getTitleWithPrefix();
+        return $cache->getCached(function () use ($motion) {
+            $texTemplate = $motion->getMyMotionType()->texTemplate;
 
-        $exporter = new Exporter($layout, AntragsgruenApp::getInstance());
-        $content  = LayoutHelper::renderTeX($motion);
-        $pdf      = $exporter->createPDF([$content]);
-        HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdf);
-        return $pdf;
+            $layout             = new LatexLayout();
+            $layout->assetRoot  = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+            $layout->pluginRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
+            $layout->template   = $texTemplate->texLayout;
+            $layout->author     = $motion->getInitiatorsStr();
+            $layout->title      = $motion->getTitleWithPrefix();
+
+            $exporter = new Exporter($layout, AntragsgruenApp::getInstance());
+            $content  = LayoutHelper::renderTeX($motion);
+
+            return $exporter->createPDF([$content]);
+        });
     }
 
     /**
@@ -812,48 +812,48 @@ class LayoutHelper
 
     public static function createPdfFromHtml(Motion $motion): string
     {
-        $cache = HashedStaticFileCache::getCache($motion->getPdfCacheKey(), null);
-        if ($cache && !YII_DEBUG) {
-            return $cache;
-        }
+        $cache = HashedStaticCache::getInstance($motion->getPdfCacheKey(), null);
+        $cache->setIsBulky(true);
+        $cache->setIsSynchronized(true);
 
-        $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
-        $content = self::renderPdfContentFromHtml($motion);
+        return $cache->getCached(function () use ($motion) {
+            $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
+            $content = self::renderPdfContentFromHtml($motion);
 
-        $pdfData = $exporter->createPDF($content);
+            $pdfData = $exporter->createPDF($content);
 
-        foreach ($motion->getSortedSections(true) as $section) {
-            if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
-                $pdf = new IPdfWriter();
-                $pdf->SetCreator(\Yii::t('export', 'default_creator'));
-                $pdf->SetAuthor(\Yii::t('export', 'default_creator'));
-                $pdf->SetTitle($motion->getTitleWithPrefix());
-                $pdf->SetSubject($motion->getTitleWithPrefix());
-                $pdf->setPrintHeader(false);
-                $pdf->setPrintFooter(false);
+            foreach ($motion->getSortedSections(true) as $section) {
+                if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
+                    $pdf = new IPdfWriter();
+                    $pdf->SetCreator(\Yii::t('export', 'default_creator'));
+                    $pdf->SetAuthor(\Yii::t('export', 'default_creator'));
+                    $pdf->SetTitle($motion->getTitleWithPrefix());
+                    $pdf->SetSubject($motion->getTitleWithPrefix());
+                    $pdf->setPrintHeader(false);
+                    $pdf->setPrintFooter(false);
 
-                $pageCount = $pdf->setSourceFile(StreamReader::createByString($pdfData));
-                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                    $page = $pdf->ImportPage($pageNo);
-                    $dim  = $pdf->getTemplatesize($page);
-                    $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
-                    $pdf->useTemplate($page);
+                    $pageCount = $pdf->setSourceFile(StreamReader::createByString($pdfData));
+                    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                        $page = $pdf->ImportPage($pageNo);
+                        $dim  = $pdf->getTemplatesize($page);
+                        $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
+                        $pdf->useTemplate($page);
+                    }
+
+                    $pageCount = $pdf->setSourceFile(StreamReader::createByString($section->getData()));
+                    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                        $page = $pdf->ImportPage($pageNo);
+                        $dim  = $pdf->getTemplatesize($page);
+                        $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
+                        $pdf->useTemplate($page);
+                    }
+
+                    $pdfData = $pdf->Output('', 'S');
                 }
-
-                $pageCount = $pdf->setSourceFile(StreamReader::createByString($section->getData()));
-                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                    $page = $pdf->ImportPage($pageNo);
-                    $dim  = $pdf->getTemplatesize($page);
-                    $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
-                    $pdf->useTemplate($page);
-                }
-
-                $pdfData = $pdf->Output('', 'S');
             }
-        }
 
-        HashedStaticFileCache::setCache($motion->getPdfCacheKey(), null, $pdfData);
-        return $pdfData;
+            return $pdfData;
+        });
     }
 
     /*

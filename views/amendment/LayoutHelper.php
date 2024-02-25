@@ -2,13 +2,11 @@
 
 namespace app\views\amendment;
 
-use app\components\HashedStaticFileCache;
+use app\components\{HashedStaticCache, HTMLTools, Tools};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
-use app\components\HTMLTools;
+use app\components\latex\{Content as LatexContent, Exporter, Layout};
 use app\models\sectionTypes\ISectionType;
 use app\views\pdfLayouts\{IPdfWriter, IPDFLayout};
-use app\components\latex\{Content as LatexContent, Exporter, Layout};
-use app\components\Tools;
 use app\models\db\{Amendment, AmendmentSection, ISupporter, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
@@ -309,19 +307,16 @@ class LayoutHelper
 
     public static function createPdfFromHtml(Amendment $amendment): string
     {
-        $cache = HashedStaticFileCache::getCache($amendment->getPdfCacheKey(), null);
-        if ($cache && !YII_DEBUG) {
-            return $cache;
-        }
+        $cache = HashedStaticCache::getInstance($amendment->getPdfCacheKey(), null);
+        $cache->setIsBulky(true);
+        $cache->setIsSynchronized(true);
 
-        $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
+        return $cache->getCached(function () use ($amendment) {
+            $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
+            $content = static::renderPdfContentFromHtml($amendment);
 
-        $content = static::renderPdfContentFromHtml($amendment);
-        $pdfData = $exporter->createPDF($content);
-
-        HashedStaticFileCache::setCache($amendment->getPdfCacheKey(), null, $pdfData);
-
-        return $pdfData;
+            return $exporter->createPDF($content);
+        });
     }
 
     public static function printAmendmentToOdt(Amendment $amendment, \CatoTH\HTML2OpenDocument\Text $doc): void

@@ -102,6 +102,17 @@ final class ResourceLock
         static::$acquiredLocks = [];
     }
 
+
+    public static function lockCacheForWrite(HashedStaticCache $cache): void
+    {
+        ResourceLock::acquireWriteLock('cache.' . $cache->getCacheKey());
+    }
+
+    public static function unlockCache(HashedStaticCache $cache): void
+    {
+        ResourceLock::unlockResources(['cache.' . $cache->getCacheKey()]);
+    }
+
     public static function lockVotingBlockForRead(VotingBlock $votingBlock): void
     {
         ResourceLock::acquireReadLock('voting.' . $votingBlock->id);
