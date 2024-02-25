@@ -95,7 +95,7 @@ class Step2
         }
         unset($motion);
 
-        AdminTodoItem::flushConsultationTodoCount();
+        AdminTodoItem::flushConsultationTodoCount($v3Motion->getMyConsultation());
 
         return $v3Motion;
     }

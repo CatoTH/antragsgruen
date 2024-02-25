@@ -134,7 +134,7 @@ class Step6
 
         $v7Motion->setProtocol($protocol, $protocolPublic);
 
-        AdminTodoItem::flushConsultationTodoCount();
+        AdminTodoItem::flushConsultationTodoCount($v7Motion->getMyConsultation());
 
         return new RedirectResponse(UrlHelper::createMotionUrl($v7Motion));
     }

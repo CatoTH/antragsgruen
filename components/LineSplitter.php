@@ -189,22 +189,18 @@ class LineSplitter
      */
     public static function splitHtmlToLines(string $html, int $lineLength, string $prependLines): array
     {
-        $cache_depends = [$html, $lineLength, $prependLines];
-        $cache = HashedStaticCache::getCache('splitHtmlToLines', $cache_depends);
-        if ($cache) {
-            return $cache;
-        }
+        $cache = HashedStaticCache::getInstance('splitHtmlToLines', [$html, $lineLength, $prependLines]);
 
-        $dom = HTMLTools::html2DOM($html);
-        if (is_a($dom, \DOMText::class)) {
-            $spl = new LineSplitter($html, $lineLength);
-            $result = $spl->splitLines();
-        } else {
-            $result = self::splitHtmlToLinesInt($dom, $lineLength, $prependLines);
-        }
+        return $cache->getCached(function () use ($html, $lineLength, $prependLines) {
+            $dom = HTMLTools::html2DOM($html);
+            if (is_a($dom, \DOMText::class)) {
+                $spl = new LineSplitter($html, $lineLength);
 
-        HashedStaticCache::setCache('splitHtmlToLines', $cache_depends, $result);
-        return $result;
+                return $spl->splitLines();
+            } else {
+                return self::splitHtmlToLinesInt($dom, $lineLength, $prependLines);
+            }
+        });
     }
 
     /**

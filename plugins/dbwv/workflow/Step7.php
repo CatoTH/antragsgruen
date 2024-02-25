@@ -81,7 +81,7 @@ class Step7
         $newProposer->dateCreation = date('Y-m-d H:i:s');
         $newProposer->save();
 
-        AdminTodoItem::flushConsultationTodoCount();
+        AdminTodoItem::flushConsultationTodoCount($v8Motion->getMyConsultation());
 
         return $v8Motion;
     }

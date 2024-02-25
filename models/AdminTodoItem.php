@@ -201,6 +201,11 @@ class AdminTodoItem
         return $todo;
     }
 
+    private static function getTodoCache(?Consultation $consultation): HashedStaticCache
+    {
+        return HashedStaticCache::getInstance('getConsultationTodoCount', [User::getCurrentUser()?->id, $consultation?->id]);;
+    }
+
     /**
      * @return AdminTodoItem[]
      */
@@ -229,27 +234,30 @@ class AdminTodoItem
 
         self::$todoCache[$consultation->id] = $todo;
 
-        $cachedCount = HashedStaticCache::getCache('getConsultationTodoCount', [User::getCurrentUser()?->id]);
-        if ($cachedCount !== count($todo)) {
-            HashedStaticCache::setCache('getConsultationTodoCount', [User::getCurrentUser()?->id], count($todo), 30);
-        }
+        // Only set the cache
+        $cache = self::getTodoCache($consultation);
+        $cache->setTimeout(30);
+        $cache->getCached(function () use ($todo) {
+            return count($todo);
+        });
 
         return $todo;
     }
 
     public static function getConsultationTodoCount(?Consultation $consultation): int
     {
-        $count = HashedStaticCache::getCache('getConsultationTodoCount', [User::getCurrentUser()?->id]);
-        if ($count === false) {
-            $count = count(static::getConsultationTodos($consultation));
-            HashedStaticCache::setCache('getConsultationTodoCount', [User::getCurrentUser()?->id], $count, 30);
-        }
-        return $count;
+        $cache = self::getTodoCache($consultation);
+        $cache->setTimeout(30);
+
+        return $cache->getCached(function () use ($consultation) {
+            return count(static::getConsultationTodos($consultation));
+        });
     }
 
-    public static function flushConsultationTodoCount(): void
+    public static function flushConsultationTodoCount(?Consultation $consultation): void
     {
-        HashedStaticCache::flushCache('getConsultationTodoCount', [User::getCurrentUser()?->id]);
+        $cache = self::getTodoCache($consultation);
+        $cache->flushCache();
     }
 
     /**

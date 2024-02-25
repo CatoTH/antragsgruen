@@ -557,39 +557,26 @@ class Exporter
         foreach ($pdfHashes as $file => $hash) {
             $cacheDepend = str_replace($file, $hash, $cacheDepend);
         }
-        $cached = HashedStaticCache::getCache('latexCreatePDF', [$cacheDepend]);
 
-        if (YII_ENV_DEV && isset($_REQUEST['latex_src'])) {
-            Header('Content-Type: text/plain');
-            echo $str;
-            echo "\n\nIs in cache: " . ($cached ? "Yes" : "No") . "\n%" . $cmd;
-            die();
-        }
+        $cache = HashedStaticCache::getInstance('latexCreatePDF', [$cacheDepend]);
+        $pdf = $cache->getCached(function () use ($filenameBase, $cmd, $str) {
+            file_put_contents($filenameBase . '.tex', $str);
+            shell_exec($cmd);
+            shell_exec($cmd); // Do it twice, to get the LastPage-reference right
 
-        if ($cached) {
-            foreach ($imageFiles as $file) {
-                unlink($file);
+            if (!file_exists($filenameBase . '.pdf')) {
+                throw new Internal('An error occurred while creating the PDF: ' . $cmd);
             }
-            foreach ($pdfFiles as $file) {
-                unlink($file);
-            }
-            return $cached;
-        }
+            $pdf = (string)file_get_contents($filenameBase . '.pdf');
 
-        file_put_contents($filenameBase . '.tex', $str);
-        shell_exec($cmd);
-        shell_exec($cmd); // Do it twice, to get the LastPage-reference right
+            unlink($filenameBase . '.aux');
+            unlink($filenameBase . '.log');
+            unlink($filenameBase . '.tex');
+            unlink($filenameBase . '.pdf');
+            unlink($filenameBase . '.out');
 
-        if (!file_exists($filenameBase . '.pdf')) {
-            throw new Internal('An error occurred while creating the PDF: ' . $cmd);
-        }
-        $pdf = (string)file_get_contents($filenameBase . '.pdf');
-
-        unlink($filenameBase . '.aux');
-        unlink($filenameBase . '.log');
-        unlink($filenameBase . '.tex');
-        unlink($filenameBase . '.pdf');
-        unlink($filenameBase . '.out');
+            return $pdf;
+        });
 
         foreach ($imageFiles as $file) {
             unlink($file);
@@ -597,8 +584,6 @@ class Exporter
         foreach ($pdfFiles as $file) {
             unlink($file);
         }
-
-        HashedStaticCache::setCache('latexCreatePDF', [$cacheDepend], $pdf);
 
         return $pdf;
     }

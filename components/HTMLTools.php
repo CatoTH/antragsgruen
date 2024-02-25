@@ -619,26 +619,19 @@ class HTMLTools
      */
     public static function sectionSimpleHTML(string $html, bool $splitListItems = true): array
     {
-        $cacheFunc = 'sectionSimpleHTML2';
-        $cacheDeps = [$html, $splitListItems];
+        $cache = HashedStaticCache::getInstance('sectionSimpleHTML2', [$html, $splitListItems]);
 
-        $cache = HashedStaticCache::getCache($cacheFunc, $cacheDeps);
-        if ($cache !== false) {
-            return $cache;
-        }
-
-        $paragraphNoWithoutSplit = 0;
-        $body = self::html2DOM($html);
-        $result = self::sectionSimpleHTMLInt($body, $paragraphNoWithoutSplit, true, $splitListItems, '', '');
-        if ($splitListItems) {
-            for ($i = 0; $i < count($result); $i++) {
-                $result[$i]->paragraphWithLineSplit = $i;
+        return $cache->getCached(function () use ($html, $splitListItems) {
+            $paragraphNoWithoutSplit = 0;
+            $body = self::html2DOM($html);
+            $result = self::sectionSimpleHTMLInt($body, $paragraphNoWithoutSplit, true, $splitListItems, '', '');
+            if ($splitListItems) {
+                for ($i = 0; $i < count($result); $i++) {
+                    $result[$i]->paragraphWithLineSplit = $i;
+                }
             }
-        }
-
-        HashedStaticCache::setCache($cacheFunc, $cacheDeps, $result);
-
-        return $result;
+            return $result;
+        });
     }
 
     /*

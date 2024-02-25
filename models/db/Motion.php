@@ -10,7 +10,7 @@ use app\models\notifications\{MotionProposedProcedure,
     MotionSubmitted as MotionSubmittedNotification,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
-use app\components\{HashedStaticFileCache, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
+use app\components\{HashedStaticCache, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
@@ -980,7 +980,7 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $this->flushCache();
         }
-        HashedStaticFileCache::flushCache($this->getPdfCacheKey(), null);
+        HashedStaticCache::getInstance($this->getPdfCacheKey(), null)->setIsBulky(true)->flushCache();
         foreach ($this->amendments as $amend) {
             $amend->flushCacheWithChildren($items);
         }
@@ -989,8 +989,8 @@ class Motion extends IMotion implements IRSSItem
 
     public function flushViewCache(): void
     {
-        HashedStaticFileCache::flushCache(\app\views\motion\LayoutHelper::getViewCacheKey($this), null);
-        HashedStaticFileCache::flushCache($this->getPdfCacheKey(), null);
+        HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getViewCacheKey($this), null)->setIsBulky(true)->flushCache();
+        HashedStaticCache::getInstance($this->getPdfCacheKey(), null)->setIsBulky(true)->flushCache();
     }
 
     public function getPdfCacheKey(): string

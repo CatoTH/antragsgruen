@@ -118,7 +118,7 @@ class Step3
 
         $v4Motion->setProtocol($protocol, $protocolPublic);
 
-        AdminTodoItem::flushConsultationTodoCount();
+        AdminTodoItem::flushConsultationTodoCount($v4Motion->getMyConsultation());
 
         return new RedirectResponse(UrlHelper::createMotionUrl($v4Motion));
     }
