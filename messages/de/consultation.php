@@ -12,6 +12,7 @@ return [
     'All Motions'          => 'Anträge',
     'resolutions'          => 'Beschlüsse',
     'no_motions_yet'       => 'Es gibt noch keine Anträge.',
+    'no_resolutions_yet'   => 'Es gibt noch keine Beschlüsse.',
     'My Amendments'        => 'Meine Änderungsanträge',
     'Agenda'               => 'Tagesordnung',
     'Other Motions'        => 'Sonstige Anträge',

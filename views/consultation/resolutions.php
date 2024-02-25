@@ -22,5 +22,6 @@ if (count($consultation->motionTypes) > 0 && $consultation->getSettings()->getSt
         'imotions' => $resolutions,
         'isResolutionList' => true,
     ]);
+} else {
+    echo '<div class="content noMotionsYet">' . Yii::t('con', 'no_resolutions_yet') . '</div>';
 }
-
