@@ -14,7 +14,7 @@ echo '<h1>' . Html::encode(Yii::t('con', 'resolutions')) . '</h1>';
 
 list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
 
-if (count($consultation->motionTypes) > 0 && $consultation->getSettings()->getStartLayoutView()) {
+if (count($consultation->motionTypes) > 0 && $consultation->getSettings()->getStartLayoutView() && count ($resolutions) > 0) {
     echo $this->render($consultation->getSettings()->getStartLayoutView(), [
         'consultation' => $consultation,
         'layout' => $layout,
