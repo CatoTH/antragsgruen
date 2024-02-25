@@ -246,6 +246,18 @@ Add the following settings to your config.json (and adapt them to your needs):
 }
 ```
 
+### View Caching
+
+Antragsgrün already does a decent amount of caching by default. a more aggressive caching mode that caches some fully rendered HTML pages and PDFs can be enabled by enabling the following option in the `config.json`:
+
+```json
+{
+    "viewCacheFilePath": "/tmp/some-viewcache-directory/"
+}
+```
+
+Note that this might in some edge case lead to old information being shown and is only meant as a last resort if hundreds to thousands of users are accessing large motions in parallel.
+
 ### JWT Key Signing
 
 Some of the more advanced features of Antragsgrün need JWT signing set up. Right now, this is only the integration of the Live Server, but in the future this will also enable logged in access to the REST API.

@@ -700,6 +700,8 @@ class LayoutHelper
     {
         $cache = HashedStaticCache::getInstance($motion->getPdfCacheKey(), null);
         $cache->setIsBulky(true);
+        $cache->setIsSynchronized(true);
+
         return $cache->getCached(function () use ($motion) {
             $texTemplate = $motion->getMyMotionType()->texTemplate;
 
@@ -812,6 +814,7 @@ class LayoutHelper
     {
         $cache = HashedStaticCache::getInstance($motion->getPdfCacheKey(), null);
         $cache->setIsBulky(true);
+        $cache->setIsSynchronized(true);
 
         return $cache->getCached(function () use ($motion) {
             $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());

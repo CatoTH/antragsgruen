@@ -10,8 +10,10 @@ class HashedStaticCache
 {
     private string $functionName;
     private ?array $dependencies;
+    private string $cacheKey;
 
     private bool $isBulky = false;
+    private bool $isSynchronized = false;
     private bool $skipCache = false;
     private ?int $timeout = null;
 
@@ -23,6 +25,8 @@ class HashedStaticCache
         if (YII_ENV === 'test') {
             $this->skipCache = true;
         }
+
+        $this->cacheKey = $this->calculateCacheKey();
     }
 
     public static function getInstance(string $functionName, ?array $dependencies): HashedStaticCache
@@ -44,6 +48,18 @@ class HashedStaticCache
         return $this;
     }
 
+    /**
+     * Setting a cache to synchronized prevents the system from generating the same cache in parallel.
+     * This does come with some performance impact due to the communication with Redis / File system,
+     * so it should only be set for larger operation.
+     */
+    public function setIsSynchronized(bool $isSynchronized): self
+    {
+        $this->isSynchronized = $isSynchronized;
+
+        return $this;
+    }
+
     public function setTimeout(?int $timeout): self
     {
         $this->timeout = $timeout;
@@ -51,23 +67,42 @@ class HashedStaticCache
         return $this;
     }
 
-    private function getCacheKey(): string
+    private function calculateCacheKey(): string
     {
         $dependencies = md5(print_r($this->dependencies, true));
 
         return md5($this->functionName . $dependencies);
     }
 
+    public function getCacheKey(): string
+    {
+        return $this->cacheKey;
+    }
+
     public function getCached(callable $method): mixed
     {
         if (!$this->skipCache) {
+            // Hint: don't even try to aquire a lock if a cache item already exists
             $cached = $this->getCache();
             if ($cached !== false) {
                 return $cached;
             }
         }
 
-        $result = $method();
+        if ($this->isSynchronized && !$this->skipCache) {
+            ResourceLock::lockCacheForWrite($this);
+
+            // Check if the cache item has been generated in the meantime
+            $cached = $this->getCache();
+            if ($cached !== false) {
+                return $cached;
+            }
+
+            $result = $method();
+            ResourceLock::unlockCache($this);
+        } else {
+            $result = $method();
+        }
 
         if (!$this->skipCache) {
             $this->setCache($result);
@@ -85,47 +120,41 @@ class HashedStaticCache
      */
     private function getCache(): mixed
     {
-        $key = $this->getCacheKey();
-
         if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
-            $directory = self::getDirectory($key);
-            if (file_exists($directory . '/' . $key)) {
-                return (string)file_get_contents($directory . '/' . $key);
+            $directory = self::getDirectory($this->cacheKey);
+            if (file_exists($directory . '/' . $this->cacheKey)) {
+                return (string)file_get_contents($directory . '/' . $this->cacheKey);
             } else {
                 return false;
             }
         } else {
-            return \Yii::$app->cache->get($this->getCacheKey());
+            return \Yii::$app->cache->get($this->cacheKey);
         }
     }
 
     private function setCache(mixed $data): void
     {
-        $key = $this->getCacheKey();
-
         if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
-            $directory = self::getDirectory($key);
+            $directory = self::getDirectory($this->cacheKey);
             if (!file_exists($directory)) {
                 mkdir($directory, 0700);
             }
 
-            file_put_contents($directory . '/' . $key, $data);
+            file_put_contents($directory . '/' . $this->cacheKey, $data);
         } else {
-            \Yii::$app->cache->set($key, $data, $this->timeout);
+            \Yii::$app->cache->set($this->cacheKey, $data, $this->timeout);
         }
     }
 
     public function flushCache(): void
     {
-        $key = $this->getCacheKey();
-
         if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
-            $directory = self::getDirectory($key);
-            if (file_exists($directory . '/' . $key)) {
-                unlink($directory . '/' . $key);
+            $directory = self::getDirectory($this->cacheKey);
+            if (file_exists($directory . '/' . $this->cacheKey)) {
+                unlink($directory . '/' . $this->cacheKey);
             }
         } else {
-            \Yii::$app->cache->delete($key);
+            \Yii::$app->cache->delete($this->cacheKey);
         }
     }
 }

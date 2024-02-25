@@ -309,6 +309,7 @@ class LayoutHelper
     {
         $cache = HashedStaticCache::getInstance($amendment->getPdfCacheKey(), null);
         $cache->setIsBulky(true);
+        $cache->setIsSynchronized(true);
 
         return $cache->getCached(function () use ($amendment) {
             $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());

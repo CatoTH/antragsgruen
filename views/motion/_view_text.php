@@ -16,7 +16,10 @@ use yii\helpers\Html;
 
 $sections  = $motion->getSortedSections(false, true);
 
-$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections() && $procedureToken === null) && false;
+$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections() && $procedureToken === null);
+if (!\app\models\settings\AntragsgruenApp::getInstance()->viewCacheFilePath) {
+    $useCache = false;
+}
 foreach ($sections as $section) {
     // Paragraph-based comments have inlined forms, which break the caching mechanism
     if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
@@ -25,6 +28,7 @@ foreach ($sections as $section) {
 }
 $cache = \app\components\HashedStaticCache::getInstance(LayoutHelper::getViewCacheKey($motion), null);
 $cache->setIsBulky(true);
+$cache->setIsSynchronized(true);
 $cache->setSkipCache(!$useCache);
 
 echo $cache->getCached(function () use ($motion, $sections, $commentForm, $procedureToken, $openedComments) {
