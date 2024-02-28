@@ -62,6 +62,7 @@ return [
     'pdf_app_top_label'     => 'Agenda item:',
     'pdf_merging_draft'     => 'Resolution text in changed view',
     'pdf_merging_init'      => 'Selected amendments',
+    'pdf_err_parsing'       => 'Incorrect PDF file',
     'truncated_supp_1'      => 'and 1 more proposer that can be seen on Antragsgrün.',
     'truncated_supp_x'      => 'and %NUM% more proposers that can be seen on Antragsgrün.',
     'voting_export_date'    => 'Exported on',
