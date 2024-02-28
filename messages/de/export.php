@@ -62,6 +62,7 @@ return [
     'pdf_app_top_label'     => 'Tagesordnungspunkt:',
     'pdf_merging_draft'     => 'Beschlusstext im Änderungsmodus',
     'pdf_merging_init'      => 'Ausgewählte Änderungsanträge',
+    'pdf_err_parsing'       => 'Ungültige PDF-Datei',
     'truncated_supp_1'      => 'sowie 1 weitere Antragsteller*in, die online auf Antragsgrün eingesehen werden kann.',
     'truncated_supp_x'      => 'sowie %NUM% weitere Antragsteller*innen, die online auf Antragsgrün eingesehen werden können.',
     'voting_export_date'    => 'Exportiert am',

@@ -16,7 +16,7 @@ use app\models\sectionTypes\{ISectionType, TextSimple};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, VotingData};
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use setasign\Fpdi\PdfParser\StreamReader;
+use setasign\Fpdi\PdfParser\PdfParserException;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -823,7 +823,7 @@ class LayoutHelper
             $pdfData = $exporter->createPDF($content);
 
             foreach ($motion->getSortedSections(true) as $section) {
-                if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
+                if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT && $section->getData() !== '') {
                     $pdf = new IPdfWriter();
                     $pdf->SetCreator(\Yii::t('export', 'default_creator'));
                     $pdf->SetAuthor(\Yii::t('export', 'default_creator'));
@@ -832,20 +832,12 @@ class LayoutHelper
                     $pdf->setPrintHeader(false);
                     $pdf->setPrintFooter(false);
 
-                    $pageCount = $pdf->setSourceFile(StreamReader::createByString($pdfData));
-                    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                        $page = $pdf->ImportPage($pageNo);
-                        $dim  = $pdf->getTemplatesize($page);
-                        $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
-                        $pdf->useTemplate($page);
-                    }
-
-                    $pageCount = $pdf->setSourceFile(StreamReader::createByString($section->getData()));
-                    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                        $page = $pdf->ImportPage($pageNo);
-                        $dim  = $pdf->getTemplatesize($page);
-                        $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
-                        $pdf->useTemplate($page);
+                    Tools::appendPdfToPdf($pdf, $pdfData);
+                    try {
+                        Tools::appendPdfToPdf($pdf, $section->getData());
+                    } catch (PdfParserException $e) {
+                        $pdf->AddPage();
+                        $pdf->writeHTML('<font color="red">' . \Yii::t('export', 'pdf_err_parsing') . '</font>');
                     }
 
                     $pdfData = $pdf->Output('', 'S');

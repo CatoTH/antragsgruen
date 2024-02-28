@@ -492,7 +492,7 @@ class Tools
                 $pdf->AddPage();
             }
 
-            if ($pageNo === 1) {
+            if ($pageNo === 1 && $bookmarkId !== null) {
                 $pdf->setDestination($bookmarkId, 0, '');
                 $pdf->Bookmark($bookmarkName, 0, 0, '', '', [128,0,0], -1, '#' . $bookmarkId);
             }
