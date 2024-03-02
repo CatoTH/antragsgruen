@@ -133,6 +133,27 @@ class Consultation extends ActiveRecord
         return $motions;
     }
 
+    /**
+     * @return Motion[]
+     */
+    public function getMotionsOfTag(ConsultationSettingsTag $tag): array
+    {
+        $motions = [];
+        foreach ($this->motions as $motion) {
+            $foundTag = false;
+            foreach ($motion->getPublicTopicTags() as $_tag) {
+                if ($_tag->id === $tag->id) {
+                    $foundTag = true;
+                }
+            }
+            if ($foundTag) {
+                $motions[] = $motion;
+            }
+        }
+
+        return $motions;
+    }
+
     /** @var Motion[]|null[] */
     private array $motionCache = [];
 

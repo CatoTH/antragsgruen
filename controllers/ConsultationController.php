@@ -575,4 +575,14 @@ class ConsultationController extends Base
 
         return new HtmlResponse($this->render('@app/views/voting/voting-results'));
     }
+
+    public function actionTagsMotions(int $tagId): ResponseInterface
+    {
+        $tag = $this->consultation->getTagById($tagId);
+        if (!$tag) {
+            return new HtmlErrorResponse(404, 'Tag not found');
+        }
+
+        return new HtmlResponse($this->render('tag_motion_list', ['tag' => $tag]));
+    }
 }

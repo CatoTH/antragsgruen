@@ -171,6 +171,8 @@ $handledSiteSettings = [];
                     echo Yii::t('admin', 'con_topics_manage') . '</a><br>';
 
                     $boolSettingRow($settings, 'homepageTagsList', $handledSettings, Yii::t('admin', 'con_topics_home_list'));
+
+                    $boolSettingRow($settings, 'homepageByTag', $handledSettings, Yii::t('admin', 'con_topics_home_split'));
                 }
                 ?>
             </fieldset>

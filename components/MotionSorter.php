@@ -142,11 +142,11 @@ class MotionSorter
         /** @var array{string: array<IMotion>} $motionsNoPrefix */
         $motionsNoPrefix = [];
 
-        $inivisible   = $consultation->getStatuses()->getInvisibleMotionStatuses();
-        $inivisible[] = IMotion::STATUS_MODIFIED;
+        $invisible   = $consultation->getStatuses()->getInvisibleMotionStatuses();
+        $invisible[] = IMotion::STATUS_MODIFIED;
 
         foreach ($motions as $motion) {
-            if (!self::imotionIsVisibleOnHomePage($motion, $inivisible)) {
+            if (!self::imotionIsVisibleOnHomePage($motion, $invisible)) {
                 continue;
             }
 

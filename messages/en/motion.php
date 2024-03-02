@@ -29,6 +29,8 @@ return [
     'table_description'             => 'The following table describes the status, the proposer and other metadata of this motion.',
     'Type'                          => 'Type',
     'Motion'                        => 'Motion',
+    'motion_1'                      => '1 Motion',
+    'motion_x'                      => '%x% Motions',
     'Initiator'                     => 'Proposer',
     'initiators_1'                  => 'Proposer',
     'initiators_x'                  => 'Proposers',

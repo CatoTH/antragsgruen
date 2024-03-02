@@ -4,6 +4,7 @@ use app\views\consultation\LayoutHelper;
 use app\components\{MotionSorter, UrlHelper};
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionComment, User};
+use app\models\settings\{Consultation as ConsultationSettings};
 use yii\helpers\Html;
 
 /**
@@ -12,10 +13,54 @@ use yii\helpers\Html;
  * @var \app\models\settings\Layout $layout
  * @var IMotion[] $imotions
  * @var bool $isResolutionList
+ * @var ConsultationSettingsTag $selectedTag
  */
+
+$invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
+
+if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
+    $sortedTags = $consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
+
+    echo '<section aria-labelledby="tagOverviewTitle" class="homeTagList">';
+    echo '<h2 class="green" id="tagOverviewTitle">' . Yii::t('con', 'All Motions') . '</h2>';
+    echo '<div class="content">';
+
+    $list = '';
+    foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+        list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->getMotionsOfTag($tag));
+        if ($consultation->getSettings()->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
+            $toShowImotions = $resolutions;
+        } else {
+            $toShowImotions = $imotions;
+        }
+        $toShowImotions = array_values(array_filter($toShowImotions, function (IMotion $imotion) use ($invisibleStatuses): bool {
+            return MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses);
+        }));
+
+        if (count($toShowImotions) === 0) {
+            continue;
+        }
+
+        $list .= '<li><a class="tagLink" href="';
+        $list .= UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $tag->id]);
+        $list .= '"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
+        $list .= Html::encode($tag->title) . '</a>';
+        $list .= '<div class="info">';
+        $list .= (count($toShowImotions) === 1 ? Yii::t('motion', 'motion_1') : str_replace('%x%', count($toShowImotions), Yii::t('motion', 'motion_x')));
+        $list .= '</div></li>' . "\n";
+    }
+    if ($list !== '') {
+        echo '<ol class="tagList">' . $list . '</ol>';
+    } else {
+        echo '<div class="noMotionsYet">' . Yii::t('con', 'no_motions_yet') . '</div>';
+    }
+    echo '</div></section>';
+
+    return;
+}
+
 $tags = $tagIds = [];
 $hasNoTagMotions = false;
-$invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
 $privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), MotionComment::STATUS_PRIVATE);
 $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
 
@@ -71,8 +116,10 @@ if (count($sortedTags) > 0 && $consultation->getSettings()->homepageTagsList) {
 foreach ($tagIds as $tagId) {
     $tag = $tags[$tagId];
     $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
-    echo '<h3 class="green" id="tag_' . $tagId . '">' . $prefix . Html::encode($tag['name']) . '</h3>
-    <div class="content">
+    if (!$consultation->getSettings()->homepageByTag) {
+        echo '<h3 class="green" id="tag_' . $tagId . '">' . $prefix . Html::encode($tag['name']) . '</h3>';
+    }
+    echo '<div class="content">
     <table class="motionTable">
         <thead><tr>';
     if (!$consultation->getSettings()->hideTitlePrefix) {

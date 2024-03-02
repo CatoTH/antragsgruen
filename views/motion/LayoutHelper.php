@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\views\motion;
 
-use app\components\{HashedStaticCache, Tools};
+use app\components\{HashedStaticCache, Tools, UrlHelper};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
 use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
@@ -13,7 +13,7 @@ use app\models\LimitedSupporterList;
 use app\models\mergeAmendments\Init;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\{ISectionType, TextSimple};
-use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, VotingData};
+use app\models\settings\{AntragsgruenApp, Consultation, PrivilegeQueryContext, Privileges, VotingData};
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use setasign\Fpdi\PdfParser\PdfParserException;
@@ -36,6 +36,20 @@ class LayoutHelper
         }
 
         return $privilege;
+    }
+
+    public static function getMotionBackLink(Motion $motion): string
+    {
+        $settings = $motion->getMyConsultation()->getSettings();
+        if ($settings->startLayoutType === Consultation::START_LAYOUT_TAGS && $settings->homepageByTag) {
+            if (count($motion->tags) > 0) {
+                return UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $motion->tags[0]->id]);
+            } else {
+                return UrlHelper::homeUrl();
+            }
+        } else {
+            return UrlHelper::homeUrl();
+        }
     }
 
     /**

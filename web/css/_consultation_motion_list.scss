@@ -945,6 +945,36 @@ $agendaMarginPerLevel: 50px;
   }
 }
 
+.homeTagList {
+  ol {
+    list-style: none;
+    margin: 15px 0;
+    padding: 0;
+    > li {
+      margin: 0 0 15px 0;
+      padding: 0;
+    }
+  }
+  .tagLink {
+    font-size: 1.3em;
+  }
+  .info {
+    padding-left: 24px;
+    color: gray;
+    float: right;
+  }
+}
+
+.tagSelectToolbar {
+  margin-bottom: 20px;
+  .selectHolder {
+    text-align: right;
+  }
+  select {
+    display: inline-block;
+    width: auto;
+  }
+}
 
 .consultationPhasesWizard {
   margin-bottom: 40px;

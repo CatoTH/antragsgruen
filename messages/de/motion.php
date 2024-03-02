@@ -29,6 +29,8 @@ return [
     'table_description'                  => 'Diese Tabelle beschreibt den Status, die Antragstellerin und verschiedene Rahmendaten zum Antrag',
     'Type'                               => 'Typ',
     'Motion'                             => 'Antrag',
+    'motion_1'                           => '1 Antrag',
+    'motion_x'                           => '%x% Anträge',
     'Initiator'                          => 'Antragsteller*in',
     'initiators_1'                       => 'Antragsteller*in',
     'initiators_x'                       => 'Antragsteller*innen',
