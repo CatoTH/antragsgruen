@@ -136,7 +136,7 @@ class UserGroupAdminMethods
         $this->consultation->refresh();
     }
 
-    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword): void
+    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail): void
     {
         $user = User::findOne(['id' => $userId]);
 
@@ -149,6 +149,21 @@ class UserGroupAdminMethods
             $user->nameGiven = trim($nameGiven);
             $user->organization = trim($organization);
             $user->name = trim(trim($nameGiven) . ' ' . trim($nameFamily));
+        }
+
+        if (trim($newEmail ?? '')) {
+            $newEmail = filter_var(trim($newEmail ?? ''), FILTER_VALIDATE_EMAIL);
+            if (!$newEmail) {
+                throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_invalid_email'));
+            }
+            $newAuth = User::AUTH_EMAIL . ':' . $newEmail;
+            $existingUser = User::findOne(['auth' => $newAuth]);
+            if ($existingUser) {
+                throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_email_exists'));
+            }
+
+            $user->auth = $newAuth;
+            $user->email = $newEmail;
         }
 
         $user->save();
@@ -427,7 +442,7 @@ class UserGroupAdminMethods
     public function addUserByEmail(string $email, string $name, ?string $setPassword, ConsultationUserGroup $initGroup, string $emailText): User
     {
         $email = mb_strtolower($email);
-        $auth = 'email:' . $email;
+        $auth = User::AUTH_EMAIL . ':' . $email;
 
         /** @var User|null $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();

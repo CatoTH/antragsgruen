@@ -13,8 +13,21 @@ ob_start();
                     <div class="leftColumn">
                         <?= Yii::t('admin', 'siteacc_usermodal_identity' ) ?>
                     </div>
-                    <div class="rightColumn">
+                    <div class="rightColumn" v-if="!canModifyAuth">
                         {{ user.auth }}
+                    </div>
+                    <div class="rightColumn" v-if="canModifyAuth">
+                        <div v-if="!settingAuth">
+                            {{ user.auth }}
+                            <button class="btn btn-link" @click="openSetAuth()">
+                                <span class="glyphicon glyphicon-wrench"></span>
+                                <span class="sr-only"><?= Yii::t('admin', 'siteacc_usermodal_idnew') ?></span>
+                            </button>
+                        </div>
+                        <div v-if="settingAuth">
+                            <input type="email" class="form-control" autocomplete="off" title="<?= Yii::t('admin', 'siteacc_usermodal_idnew') ?>"
+                                   v-model="newAuth" ref="auth-setter">
+                        </div>
                     </div>
                 </div>
                 <div class="stdTwoCols" v-if="permissionGlobalEdit">
@@ -134,7 +147,9 @@ $html = ob_get_clean();
                 ppreplyto: null,
                 userGroups: null,
                 settingPassword: false,
-                newPassword: ''
+                settingAuth: false,
+                newPassword: '',
+                newAuth: '',
             }
         },
         computed: {
@@ -160,6 +175,9 @@ $html = ob_get_clean();
                         };
                     })
                 ];
+            },
+            canModifyAuth: function() {
+                return this.permissionGlobalEdit && this.user && this.user.auth.indexOf("email:") === 0;
             }
         },
         methods: {
@@ -171,13 +189,16 @@ $html = ob_get_clean();
                 this.ppreplyto = user.ppreplyto;
                 this.userGroups = user.groups;
                 this.settingPassword = false;
+                this.settingAuth = false;
                 this.newPassword = '';
+                this.newAuth = '';
 
                 $(this.$refs['user-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
             },
             save: function ($event) {
                 const password = (this.settingPassword ? this.newPassword : null);
-                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, password);
+                const auth = (this.settingAuth ? this.newAuth : null);
+                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, password, auth);
                 $(this.$refs['user-edit-modal']).modal("hide");
 
                 if ($event) {
@@ -205,6 +226,13 @@ $html = ob_get_clean();
                 this.settingPassword = true;
                 this.$nextTick(function () {
                     this.$refs['password-setter'].focus();
+                });
+            },
+            openSetAuth: function () {
+                this.settingAuth = true;
+                this.newAuth = this.user.email;
+                this.$nextTick(function () {
+                    this.$refs['auth-setter'].focus();
                 });
             },
             setOrganisation: function ($event) {

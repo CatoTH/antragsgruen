@@ -247,7 +247,8 @@ class UsersController extends AdminBase
                             $this->getPostValue('nameFamily', ''),
                             $this->getPostValue('organization', ''),
                             $this->getPostValue('ppReplyTo', ''),
-                            $this->getPostValue('newPassword')
+                            $this->getPostValue('newPassword'),
+                            $this->getPostValue('newAuth')
                         );
                     }
                     break;
