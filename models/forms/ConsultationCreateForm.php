@@ -81,6 +81,8 @@ class ConsultationCreateForm
             $consultation->createDefaultUserGroups();
         }
 
+        $this->createConsultationFromTemplate_fixOrganisations($this->template, $consultation);
+
         if ($this->setAsDefault) {
             $this->site->currentConsultationId = $consultation->id;
             $this->site->save();
@@ -146,6 +148,38 @@ class ConsultationCreateForm
             $newTag->parentTagId = $newTagsByOldId[$tag->parentTagId]->id;
             $newTag->save();
         }
+    }
+
+    private function createConsultationFromTemplate_fixOrganisations(Consultation $oldConsultation, Consultation $newConsultation): void
+    {
+        $oldOrgas = $oldConsultation->getSettings()->organisations;
+        $newSettings = $newConsultation->getSettings();
+        $newOrgas = $newSettings->organisations;
+        if (!$oldOrgas || !$newOrgas) {
+            return;
+        }
+
+        $newConsultation->refresh();
+        $newOrgasByName = [];
+        foreach ($newConsultation->userGroups as $userGroup) {
+            $newOrgasByName[$userGroup->getNormalizedTitle()] = $userGroup->id;
+        }
+
+        $oldToNewMapping = [];
+        foreach ($oldConsultation->userGroups as $userGroup) {
+            if (isset($newOrgasByName[$userGroup->getNormalizedTitle()])) {
+                $oldToNewMapping[$userGroup->id] = $newOrgasByName[$userGroup->getNormalizedTitle()];
+            }
+        }
+
+        foreach ($newOrgas as $orga) {
+            $orga->autoUserGroups = array_filter(array_map(function ($oldOrgaId) use ($oldToNewMapping) {
+                return $oldToNewMapping[$oldOrgaId] ?? null;
+            }, $orga->autoUserGroups));
+        }
+        $newSettings->organisations = $newOrgas;
+        $newConsultation->setSettings($newSettings);
+        $newConsultation->save();
     }
 
     private function createConsultationFromTemplate_users(Consultation $newConsultation): void

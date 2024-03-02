@@ -27,6 +27,11 @@
                 default: null
             }
         },
+        watch: {
+            values: function (newVal, oldVal) {
+                this.selectizeElement[0].selectize.setValue(newVal);
+            }
+        },
         data() {
             return {
                 selectizeElement: null

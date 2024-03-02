@@ -9,7 +9,8 @@ use app\models\db\{Consultation, ConsultationUserGroup};
 class ConsultationUserOrganisation implements \JsonSerializable
 {
     public string $name;
-    public array $autoUserGroups; // No UI exists to set this field yet - needs to be set via database
+    /** @var int[] */
+    public array $autoUserGroups;
 
     public static function fromJson(string|array $orga): self
     {
