@@ -57,7 +57,11 @@ class UsersController extends AdminBase
         $user = User::findByAuthTypeAndName($this->getPostValue('type'), $this->getPostValue('username'));
         if ($user) {
             $thisConRoles = $user->getConsultationUserGroupIds($this->consultation);
-            $response = ['exists' => true, 'already_member' => (count($thisConRoles) > 0)];
+            $response = [
+                'exists' => true,
+                'alreadyMember' => (count($thisConRoles) > 0),
+                'organization' => $user->organization,
+            ];
         } else {
             $response = ['exists' => false];
         }

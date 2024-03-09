@@ -1,3 +1,14 @@
+type OrganizationEntry = {
+    name: string;
+    autoUserGroups: number[];
+}
+
+type QueryUserResponse = {
+    exists: boolean;
+    alreadyMember?: boolean;
+    organization?: string;
+}
+
 export class UserAdminCreate {
     private element: HTMLElement;
 
@@ -129,7 +140,7 @@ export class UserAdminCreate {
     /**
      * Functions that are to be called when showing the form
      */
-    private showAddSingleShowFromResponse(response, authType: string, authUsername: string)
+    private showAddSingleShowFromResponse(response: QueryUserResponse, authType: string, authUsername: string)
     {
         const alreadyMember = this.element.querySelector('.alreadyMember') as HTMLDivElement;
         const form = this.element.querySelector('.addUsersByLogin.singleuser') as HTMLFormElement;
@@ -147,7 +158,11 @@ export class UserAdminCreate {
         (this.element.querySelector('input[name=authUsername]') as HTMLInputElement).value = authUsername;
 
         if (this.element.querySelector('#addSelectOrganization')) {
-            this.initOrganisationToUserGroup();
+            if (response.exists && response.organization) {
+                this.initOrganizationToUserGroup(response.organization);
+            } else {
+                this.initOrganizationToUserGroup(null);
+            }
         }
 
         if (response['exists']) {
@@ -167,46 +182,58 @@ export class UserAdminCreate {
         }
     }
 
-    private initOrganisationToUserGroup()
-    {
-        const defaultOrganisations = [];
-        let lastGroupAssignmentWasAutomatical = true;
-        this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
-            if (input.checked) defaultOrganisations.push(parseInt(input.value, 10));
-            input.addEventListener('change', () => lastGroupAssignmentWasAutomatical = false);
-        });
+    private organizationList: OrganizationEntry[];
+    private defaultOrganisations: number[];
+    private lastGroupAssignmentWasAutomatical: boolean = true;
 
-        const $addSelect: any = $("#addSelectOrganization"),
-            orgaList = JSON.parse(this.element.getAttribute('data-organisations')) as object[];
-        $addSelect.selectize({
-            create: true,
-            render: {
-                option_create: (data, escape) => {
-                    return '<div class="create"><strong>' + escape(data.input) + '</strong></div>';
-                }
+    private setAutoOrganizations(selectedOrganization: string): void
+    {
+        let autoUserGroups: number[] = [];
+        this.organizationList.forEach(orga => {
+            if (orga.name === selectedOrganization) {
+                autoUserGroups = orga.autoUserGroups;
             }
         });
-        $addSelect.on("change", () => {
-            let autoUserGroups = [];
-            orgaList.forEach(orga => {
-                if (orga['name'] === $addSelect.val()) {
-                    autoUserGroups = orga['autoUserGroups'];
+
+        // If it's an organisation with groups set, then set those groups.
+        // If no groups are assigned to this organisation, then reset the organisation IF no manual change has been made
+        if (autoUserGroups.length > 0) {
+            this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
+                input.checked = autoUserGroups.indexOf(parseInt(input.value, 10)) > -1;
+            });
+            this.lastGroupAssignmentWasAutomatical = true;
+        } else if (this.lastGroupAssignmentWasAutomatical) {
+            this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
+                input.checked = this.defaultOrganisations.indexOf(parseInt(input.value, 10)) > -1;
+            });
+        }
+    }
+
+    private initOrganizationToUserGroup(fixedOrganization: string|null)
+    {
+        this.defaultOrganisations = [];
+        this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
+            if (input.checked) this.defaultOrganisations.push(parseInt(input.value, 10));
+            input.addEventListener('change', () => this.lastGroupAssignmentWasAutomatical = false);
+        });
+        this.organizationList = JSON.parse(this.element.getAttribute('data-organisations')) as OrganizationEntry[];
+
+        if (fixedOrganization) {
+            this.setAutoOrganizations(fixedOrganization);
+        } else {
+            const $addSelect: any = $("#addSelectOrganization");
+            $addSelect.selectize({
+                create: true,
+                render: {
+                    option_create: (data, escape) => {
+                        return '<div class="create"><strong>' + escape(data.input) + '</strong></div>';
+                    }
                 }
             });
-
-            // If it's an organisation with groups set, then set those groups.
-            // If no groups are assigned to this organisation, then reset the organisation IF no manual change has been made
-            if (autoUserGroups.length > 0) {
-                this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
-                    input.checked = autoUserGroups.indexOf(parseInt(input.value, 10)) > -1;
-                });
-                lastGroupAssignmentWasAutomatical = true;
-            } else if (lastGroupAssignmentWasAutomatical) {
-                this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
-                    input.checked = defaultOrganisations.indexOf(parseInt(input.value, 10)) > -1;
-                });
-            }
-        });
+            $addSelect.on("change", () => {
+                this.setAutoOrganizations($addSelect.val());
+            });
+        }
     }
 
     private initAddSingleShow()

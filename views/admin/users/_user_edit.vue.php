@@ -210,6 +210,9 @@ $html = ob_get_clean();
                 if (!this.user.selectable_groups) {
                     return true;
                 }
+                if (this.isInGroup(group)) {
+                    return true; // Always allow to deselect a selected group
+                }
                 return this.user.selectable_groups.indexOf(group.id) !== -1;
             },
             isInGroup: function (group) {
