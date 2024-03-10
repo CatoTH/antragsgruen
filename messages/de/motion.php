@@ -24,6 +24,8 @@ return [
     'motion_admin_edit'                  => 'Admin: bearbeiten',
     'back_start'                         => 'Zurück zur Übersicht',
     'fullscreen'                         => 'Projektor-Ansicht (Vollbild)',
+    'prevnext_links_prev'                => 'Voriger %TYPE%',
+    'prevnext_links_next'                => 'Nächster %TYPE%',
     'pdf_version'                        => 'PDF-Version',
     'table_caption'                      => 'Rahmendaten zum Antrag',
     'table_description'                  => 'Diese Tabelle beschreibt den Status, die Antragstellerin und verschiedene Rahmendaten zum Antrag',

@@ -337,6 +337,9 @@ $handledSiteSettings = [];
             $propTitle = Yii::t('admin', 'con_am_bookmark_names');
             $boolSettingRow($settings, 'amendmentBookmarksWithNames', $handledSettings, $propTitle);
 
+            $propTitle = Yii::t('admin', 'con_prevnext_links');
+            $boolSettingRow($settings, 'motionPrevNextLinks', $handledSettings, $propTitle);
+
             $propTitle = Yii::t('admin', 'con_imotion_edit_time');
             $boolSettingRow($settings, 'showIMotionEditDate', $handledSettings, $propTitle);
 

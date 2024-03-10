@@ -213,6 +213,22 @@ body > footer {
   > * {
     display: table-cell;
   }
+  &:last-child {
+    border-bottom: none;
+    border-top: solid 1px #aaa;
+  }
+}
+
+.motionPrevNextLinks {
+  padding: 5px 10px;
+  .prev {
+    width: 50%;
+    text-align: left;
+  }
+  .next {
+    width: 50%;
+    text-align: right;
+  }
 }
 
 .stickyAdminDebugFooter {

@@ -98,6 +98,8 @@ if ($consultation->getSettings()->hasSpeechLists) {
 
 echo $layout->getMiniMenu('motionSidebarSmall');
 
+echo $this->render('_view_prevnext', ['motion' => $motion]);
+
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
 
 include(__DIR__ . DIRECTORY_SEPARATOR . '_view_motiondata.php');
@@ -352,3 +354,5 @@ if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alt
 
     echo '</section>';
 }
+
+echo $this->render('_view_prevnext', ['motion' => $motion]);

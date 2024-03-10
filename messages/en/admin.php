@@ -305,6 +305,7 @@ return [
     'con_collecting_tt'       => 'Relevant if there are motions with a collecting phase before publication',
     'con_new_motions'         => 'Show <strong>new motions</strong> in the sidebar',
     'con_am_bookmark_names'   => 'Show the names of proposers in the amendment-bookmarks',
+    'con_prevnext_links'      => 'Show links on the motion page to allow directly going to the previous / next motion',
     'con_imotion_edit_time'   => '<strong>Show the edit time</strong> of amendments or motions on the home page',
     'con_rest_api_enabled'    => 'Enable the <strong>REST-API</strong> for all consultations for external clients',
     'con_rest_api_hint'       => 'Using the API, developers can write apps that access motions, amendments etc. of this site',

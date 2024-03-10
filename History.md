@@ -6,6 +6,7 @@
 - The internal caching system has been optimized, preventing parallel processes generating the same cache, which might overload systems with a high number of users after cache invalidation.
 - Super-admins can now change the e-mail-address / logins of registered users, not only their passwords.
 - If the home page layout "Tags" is used, it is now possible to show only the list of tags, and the actual motions on tag-specific sub-pages. This is mostly aimed towards consultations with hundreds of motions.
+- Optionally, "previous motion" and "next motion" links can be activated on motions, to enable browsing through the motions without having to go back to the home page.
 - Bugfix: Several issues with the predefined organisation list for user administration were fixed.
 - Bugfix: CAPTCHAs were sometimes hardly to read.
 
