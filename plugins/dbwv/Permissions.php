@@ -98,9 +98,9 @@ class Permissions extends \app\models\settings\Permissions
             Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED,
             Module::PRIVILEGE_DBWV_ASSIGN_TOPIC,
             Module::PRIVILEGE_DBWV_V1_EDITORIAL,
-            Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN,
         ];
         if ($imotion->getMyConsultation()->urlPath === Module::CONSULTATION_URL_BUND) {
+            $privileges[] = Module::PRIVILEGE_DBWV_V4_MOVE_TO_MAIN;
             $privileges[] = Privileges::PRIVILEGE_CHANGE_PROPOSALS;
         }
 

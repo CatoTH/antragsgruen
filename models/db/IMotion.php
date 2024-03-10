@@ -266,7 +266,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     public function isVisibleForAdmins(): bool
     {
-        return !in_array($this->status, $this->getMyConsultation()->getStatuses()->getStatusesInvisibleForAdmins());
+        return
+            $this->isReadable() &&
+            !in_array($this->status, $this->getMyConsultation()->getStatuses()->getStatusesInvisibleForAdmins());
     }
 
     public function isVisibleForProposalAdmins(): bool
