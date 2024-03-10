@@ -3,10 +3,13 @@
 namespace app\components;
 
 use app\controllers\Base;
-use yii\web\{Application, Controller, Request, Session, User};
+use app\models\db\User as DbUser;
+use yii\web\{Application, Request, Session, User as YiiUser};
 
 final class RequestContext
 {
+    private static ?DbUser $overrideUser = null;
+
     public static function getWebApplication(): Application
     {
         /** @var Application $app */
@@ -20,9 +23,33 @@ final class RequestContext
         return self::getWebApplication()->session;
     }
 
-    public static function getUser(): User
+    public static function getYiiUser(): YiiUser
     {
         return self::getWebApplication()->user;
+    }
+
+    public static function getDbUser(): ?DbUser
+    {
+        if (self::$overrideUser) {
+            return self::$overrideUser;
+        }
+        try {
+            if (RequestContext::getYiiUser()->getIsGuest()) {
+                return null;
+            } else {
+                /** @var DbUser $user */
+                $user = RequestContext::getYiiUser()->identity;
+                return $user;
+            }
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (\yii\base\UnknownPropertyException $e) {
+            // Can happen with console commands
+            return null;
+        }
+    }
+
+    public static function setOverrideUser(?DbUser $user): void
+    {
+        self::$overrideUser = $user;
     }
 
     public static function getController(): Base

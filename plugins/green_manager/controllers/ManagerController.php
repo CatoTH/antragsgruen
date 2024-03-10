@@ -94,10 +94,10 @@ class ManagerController extends Base
                     ]);
                     try {
                         $user = $userForm->checkLogin(null);
-                        RequestContext::getUser()->login($user, $this->getParams()->autoLoginDuration);
+                        RequestContext::getYiiUser()->login($user, $this->getParams()->autoLoginDuration);
                     } catch (LoginInvalidUser $e) {
                         $user = $userForm->doCreateAccount(null);
-                        RequestContext::getUser()->login($user, $this->getParams()->autoLoginDuration);
+                        RequestContext::getYiiUser()->login($user, $this->getParams()->autoLoginDuration);
                     }
                 }
 

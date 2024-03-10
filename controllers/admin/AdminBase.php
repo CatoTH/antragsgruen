@@ -37,7 +37,7 @@ class AdminBase extends Base
             return true;
         }
 
-        if (RequestContext::getUser()->isGuest) {
+        if (RequestContext::getYiiUser()->isGuest) {
             $url = UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]);
             throw new ResponseException(new RedirectResponse($url));
         }

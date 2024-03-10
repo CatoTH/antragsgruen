@@ -70,21 +70,9 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-
     public static function getCurrentUser(): ?User
     {
-        try {
-            if (RequestContext::getUser()->getIsGuest()) {
-                return null;
-            } else {
-                /** @var User $user */
-                $user = RequestContext::getUser()->identity;
-                return $user;
-            }
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (\yii\base\UnknownPropertyException $e) {
-            // Can happen with console commands
-            return null;
-        }
+        return RequestContext::getDbUser();
     }
 
     private static array $userCache = [];

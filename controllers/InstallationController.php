@@ -71,7 +71,7 @@ class InstallationController extends Base
                 $admin = User::findOne($siteForm->readConfigFromFile()->adminUserIds[0]);
                 $siteForm->create($admin);
 
-                RequestContext::getUser()->login($admin, $this->getParams()->autoLoginDuration);
+                RequestContext::getYiiUser()->login($admin, $this->getParams()->autoLoginDuration);
 
                 $consultationUrl = UrlHelper::createUrl('consultation/index');
                 $consultationUrl = UrlHelper::absolutizeLink($consultationUrl);

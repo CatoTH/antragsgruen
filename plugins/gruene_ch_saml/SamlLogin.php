@@ -78,7 +78,7 @@ class SamlLogin implements LoginProviderInterface
         $params = $samlClient->getAttributes();
 
         $user = $this->getOrCreateUser($params);
-        RequestContext::getUser()->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
+        RequestContext::getYiiUser()->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
 
         $user->dateLastLogin = date('Y-m-d H:i:s');
         $user->save();

@@ -21,7 +21,7 @@ class UserController extends Base
 
     protected function loginUser(User $user): void
     {
-        RequestContext::getUser()->login($user, $this->getParams()->autoLoginDuration);
+        RequestContext::getYiiUser()->login($user, $this->getParams()->autoLoginDuration);
 
         $user->dateLastLogin = date('Y-m-d H:i:s');
         $user->save();
@@ -172,7 +172,7 @@ class UserController extends Base
             }
         }
 
-        RequestContext::getUser()->logout();
+        RequestContext::getYiiUser()->logout();
         return new RedirectResponse($backUrl, RedirectResponse::REDIRECT_TEMPORARY);
     }
 
@@ -332,7 +332,7 @@ class UserController extends Base
 
         if ($this->isPostSet('accountDeleteConfirm') && $this->isPostSet('accountDelete')) {
             $user->deleteAccount();
-            RequestContext::getUser()->logout(true);
+            RequestContext::getYiiUser()->logout(true);
             return new HtmlResponse($this->render('account_deleted'));
         }
 

@@ -672,7 +672,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function iAmInitiator(): bool
     {
-        $user = RequestContext::getUser();
+        $user = RequestContext::getYiiUser();
         if ($user->isGuest) {
             return false;
         }

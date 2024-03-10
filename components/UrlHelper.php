@@ -2,11 +2,10 @@
 
 namespace app\components;
 
-use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComment, Site};
-use app\models\exceptions\FormError;
+use app\models\db\{Amendment, AmendmentComment, Consultation, IMotion, Motion, MotionComment, Site};
+use app\models\exceptions\{FormError, Internal};
 use app\models\settings\AntragsgruenApp;
 use Yii;
-use yii\base\ViewRenderer;
 use yii\helpers\Url;
 
 class UrlHelper
@@ -216,6 +215,15 @@ class UrlHelper
             }
             return $params->domainPlain . $url;
         }
+    }
+
+    public static function createIMotionUrl(IMotion $IMotion, string $mode = 'view', array $addParams = []): string
+    {
+        return match (get_class($IMotion)) {
+            Motion::class => self::createMotionUrl($IMotion, $mode, $addParams),
+            Amendment::class => self::createAmendmentUrl($IMotion, $mode, $addParams),
+            default => throw new Internal('Unknown class: ' . get_class($IMotion))
+        };
     }
 
     public static function createMotionUrl(Motion $motion, string $mode = 'view', array $addParams = []): string

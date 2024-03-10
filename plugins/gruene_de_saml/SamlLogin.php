@@ -47,7 +47,7 @@ class SamlLogin implements LoginProviderInterface
         $params = $samlClient->getAttributes();
 
         $user = $this->getOrCreateUser($params);
-        RequestContext::getUser()->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
+        RequestContext::getYiiUser()->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
 
         $user->dateLastLogin = date('Y-m-d H:i:s');
         $user->save();
@@ -134,7 +134,7 @@ class SamlLogin implements LoginProviderInterface
             }
 
             // First step on the subdomain: logout and redirect to the main domain
-            RequestContext::getUser()->logout();
+            RequestContext::getYiiUser()->logout();
             $backParts = parse_url($backUrl);
             if ($backParts === false || !isset($backParts['host'])) {
                 $backUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
@@ -165,14 +165,14 @@ class SamlLogin implements LoginProviderInterface
         if ($samlClient->isAuthenticated()) {
             $samlClient->logout();
         }
-        RequestContext::getUser()->logout();
+        RequestContext::getYiiUser()->logout();
     }
 
     public static function createGruenesNetzLoginUrl(string $route): string
     {
         $target_url = Url::toRoute($route);
 
-        if (RequestContext::getUser()->getIsGuest()) {
+        if (RequestContext::getYiiUser()->getIsGuest()) {
             return Url::toRoute(['/gruene_de_saml/login/login', 'backUrl' => $target_url]);
         } else {
             return $target_url;
