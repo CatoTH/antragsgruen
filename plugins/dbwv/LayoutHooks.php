@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\plugins\dbwv;
 
 use app\models\settings\Layout;
-use app\components\{RequestContext, UrlHelper};
+use app\components\{MotionSorter, RequestContext, UrlHelper};
 use app\controllers\admin\MotionListController;
 use app\models\layoutHooks\StdHooks;
 use app\models\db\{Consultation, ConsultationUserGroup, IMotion, Motion, User};
@@ -85,24 +85,16 @@ class LayoutHooks extends StdHooks
 
     public function beforeMotionView(string $before, Motion $motion): string
     {
-        switch ($motion->version) {
-            case Workflow::STEP_V1:
-                return Step1::renderMotionAdministration($motion) . $before;
-            case Workflow::STEP_V2:
-                return Step2::renderMotionAdministration($motion) . $before;
-            case Workflow::STEP_V3:
-                return Step3::renderMotionAdministration($motion) . $before;
-            case Workflow::STEP_V4:
-                return Step4::renderMotionAdministration($motion) . $before;
-            case Workflow::STEP_V5:
-                return Step5::renderMotionAdministration($motion) . $before;
-            case Workflow::STEP_V6:
-                return Step6::renderMotionAdministration($motion) . $before;
-            case Workflow::STEP_V7:
-                return Step7::renderMotionAdministration($motion) . $before;
-            default:
-                return $before;
-        }
+        return match ($motion->version) {
+            Workflow::STEP_V1 => Step1::renderMotionAdministration($motion) . $before,
+            Workflow::STEP_V2 => Step2::renderMotionAdministration($motion) . $before,
+            Workflow::STEP_V3 => Step3::renderMotionAdministration($motion) . $before,
+            Workflow::STEP_V4 => Step4::renderMotionAdministration($motion) . $before,
+            Workflow::STEP_V5 => Step5::renderMotionAdministration($motion) . $before,
+            Workflow::STEP_V6 => Step6::renderMotionAdministration($motion) . $before,
+            Workflow::STEP_V7 => Step7::renderMotionAdministration($motion) . $before,
+            default => $before,
+        };
     }
 
     public function endOfHead(string $before): string
@@ -165,5 +157,15 @@ class LayoutHooks extends StdHooks
         } else {
             return parent::renderSidebar($before);
         }
+    }
+
+    /**
+     * @return IMotion[]
+     */
+    public static function getLeitantraege(Consultation $consultation): array
+    {
+        list($imotions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
+
+        return array_values(array_filter($imotions, fn (IMotion $imotion) => str_contains($imotion->getInitiatorsStr(), Module::LEITANTRAG_IDENTIFIER)));
     }
 }

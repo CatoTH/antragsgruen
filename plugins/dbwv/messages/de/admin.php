@@ -8,4 +8,5 @@ return [
     'con_topic_add' => 'Neues Sachgebiet',
     'list_tag' => 'Sach- / Themengebiet',
     'filter_tag' => 'Sach- / Themengebiet',
+    'bread_tag' => 'Sachgebiet',
 ];

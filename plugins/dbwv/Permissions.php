@@ -72,7 +72,15 @@ class Permissions extends \app\models\settings\Permissions
 
     public function iMotionIsReadable(IMotion $imotion): bool
     {
-        if (!parent::iMotionIsReadable($imotion) || !$imotion->getMyConsultation()) {
+        if (!$imotion->getMyConsultation()) {
+            return false;
+        }
+
+        if (str_contains($imotion->getInitiatorsStr(), Module::LEITANTRAG_IDENTIFIER)) {
+            return true;
+        }
+
+        if (!parent::iMotionIsReadable($imotion)) {
             return false;
         }
 

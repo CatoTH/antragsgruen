@@ -38,7 +38,7 @@ if (
     $consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_TAGS && $consultation->getSettings()->homepageByTag &&
     count($motion->tags) > 0
 ) {
-    $layout->addBreadcrumb(\Yii::t('admin', 'bread_tag'), UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $motion->tags[0]->id]));
+    $layout->addBreadcrumb(Yii::t('admin', 'bread_tag'), UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $motion->tags[0]->id]));
 }
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));

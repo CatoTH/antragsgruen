@@ -3,8 +3,28 @@
  * @var \app\models\db\Consultation $consultation
  */
 
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
+$leitantraege = \app\plugins\dbwv\LayoutHooks::getLeitantraege($consultation);
+if (count($leitantraege) > 0) {
+    ?>
+    <section aria-labelledby="leitantraegeTitle">
+        <h2 class="green" id="leitantraegeTitle">Leitanträge</h2>
+        <div class="content homeTagList">
+            <ol>
+            <?php
+            foreach ($leitantraege as $leitantrag) {
+                echo '<li><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
+                echo Html::a(Html::encode($leitantrag->getTitleWithPrefix()), UrlHelper::createIMotionUrl($leitantrag), ['class' => 'tagLink']);
+                echo '</li>';
+            }
+            ?>
+            </ol>
+        </div>
+    </section>
+<?php
+}
 ?>
 
 <div class="content" style="text-align: center;">
