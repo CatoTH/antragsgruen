@@ -302,6 +302,7 @@ return [
     'con_collecting_tt'       => 'Relevant wenn es Anträge mit einer Unterstützungs-Phase vor Veröffentlichung gibt',
     'con_new_motions'         => '<strong>Neue Anträge</strong> in der Sidebar anzeigen',
     'con_am_bookmark_names'   => 'In den Änderungsantrags-Lesezeichen auch den Namen der Initiator*in anzeigen',
+    'con_prevnext_links'      => 'Links zum nächsten / vorigen Antrag auf der Antragsseite anzeigen',
     'con_imotion_edit_time'   => 'Auf der Startseite auch das <strong>Änderungsdatum von (Änderungs-)Anträgen</strong> anzeigen',
     'con_rest_api_enabled'    => '<strong>REST-API</strong> für alle Veranstaltungen für externe Clients öffnen',
     'con_rest_api_hint'       => 'Mit der REST-API können Programmierer*innen Programme wie z.B. mobile Apps entwickeln, die auf die Anträge, Änderungsanträge etc. dieser Seite zugreifen',
