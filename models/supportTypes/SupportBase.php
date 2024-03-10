@@ -424,7 +424,7 @@ abstract class SupportBase
         $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion));
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
-        if (RequestContext::getUser()->isGuest) {
+        if (RequestContext::getYiiUser()->isGuest) {
             $init               = new MotionSupporter();
             $init->dateCreation = date('Y-m-d H:i:s');
             $init->userId       = null;
@@ -536,7 +536,7 @@ abstract class SupportBase
         $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment));
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
-        if (RequestContext::getUser()->isGuest) {
+        if (RequestContext::getYiiUser()->isGuest) {
             $init               = new AmendmentSupporter();
             $init->dateCreation = date('Y-m-d H:i:s');
             $init->userId       = null;

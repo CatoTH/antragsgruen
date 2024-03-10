@@ -351,7 +351,7 @@ class Base extends Controller
         if (!$this->consultation->getSettings()->forceLogin) {
             return false;
         }
-        if (RequestContext::getUser()->getIsGuest()) {
+        if (RequestContext::getYiiUser()->getIsGuest()) {
             $this->redirect(UrlHelper::createUrl(['/user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return true;
         }
@@ -368,7 +368,7 @@ class Base extends Controller
 
     public function testConsultationPwd(): bool
     {
-        if (!RequestContext::getUser()->getIsGuest()) {
+        if (!RequestContext::getYiiUser()->getIsGuest()) {
             return false;
         }
         if (!$this->consultation || !$this->consultation->getSettings()->accessPwd) {
@@ -391,7 +391,7 @@ class Base extends Controller
 
     public function forceLogin(): void
     {
-        if (RequestContext::getUser()->getIsGuest()) {
+        if (RequestContext::getYiiUser()->getIsGuest()) {
             $loginUrl = UrlHelper::createUrl(['/user/login', 'backUrl' => $this->getHttpRequest()->url]);
             $this->redirect($loginUrl);
             Yii::$app->end();

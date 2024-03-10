@@ -100,7 +100,7 @@ class CommentForm
      */
     private function checkWritePermissions(): void
     {
-        if (RequestContext::getUser()->isGuest) {
+        if (RequestContext::getYiiUser()->isGuest) {
             $jsToken = AntiSpam::createToken((string)$this->motionType->consultationId);
             if ($jsToken !== RequestContext::getWebRequest()->post('jsprotection')) {
                 throw new Access(\Yii::t('base', 'err_js_or_login'));

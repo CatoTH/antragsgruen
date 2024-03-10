@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use app\models\db\Consultation;
-use app\models\db\IMotion;
+use app\components\RequestContext;
+use app\models\db\{Consultation, IMotion, User};
 use app\models\forms\AdminMotionFilterForm;
 use app\models\layoutHooks\StdHooks;
 use app\models\settings\Layout;
@@ -50,11 +50,19 @@ class AdminMotionFilterFormTest extends DBTestBase
         $entries = $form->getSorted();
         $this->assertEquals(['F-01', 'T-01'], $this->serializeMotions($entries));
 
+        RequestContext::setOverrideUser(null);
+        $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
+        $form->setAttributes(['tag' => '3', 'showReplaced' => '1']);
+        $entries = $form->getSorted();
+        $this->assertEquals(['F-01', 'T-01'], $this->serializeMotions($entries));
+
+        RequestContext::setOverrideUser(User::findByAuthTypeAndName(User::AUTH_EMAIL, 'testadmin@example.org'));
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
         $form->setAttributes(['tag' => '3', 'showReplaced' => '1']);
         $entries = $form->getSorted();
         $this->assertEquals(['', 'F-01', 'T-01'], $this->serializeMotions($entries));
 
+        RequestContext::setOverrideUser(null);
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
         $form->setAttributes(['prefix' => 'S']);
         $entries = $form->getSorted();
