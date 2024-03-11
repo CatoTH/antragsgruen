@@ -4,6 +4,7 @@ use app\components\HTMLTools;
 use app\models\db\{AmendmentSection, Motion};
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
+use app\models\supportTypes\SupportBase;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use yii\helpers\Html;
@@ -33,6 +34,8 @@ $currCol = 0;
 
 $hasAgendaItems = false;
 $hasResponsibilities = false;
+$hasLikes = false;
+$hasDislikes = false;
 foreach ($motions as $motion) {
     if ($motion->getMyMotionType()->amendmentsOnly) {
         continue;
@@ -42,6 +45,12 @@ foreach ($motions as $motion) {
     }
     if ($motion->responsibilityId || $motion->responsibilityComment) {
         $hasResponsibilities = true;
+    }
+    if ($motion->getMyMotionType()->amendmentLikesDislikes & SupportBase::LIKEDISLIKE_LIKE) {
+        $hasLikes = true;
+    }
+    if ($motion->getMyMotionType()->amendmentLikesDislikes & SupportBase::LIKEDISLIKE_DISLIKE) {
+        $hasDislikes = true;
     }
 }
 
@@ -58,8 +67,16 @@ $COL_CONTACT    = chr(ord('A') + $currCol++);
 $COL_PROCEDURE  = chr(ord('A') + $currCol++);
 $LAST_COL      = $COL_PROCEDURE;
 if ($hasResponsibilities) {
-    $COL_RESPONSIBILITY = $currCol++;
+    $COL_RESPONSIBILITY = chr(ord('A') + $currCol++);
     $LAST_COL           = $COL_RESPONSIBILITY;
+}
+if ($hasLikes) {
+    $COL_LIKES = chr(ord('A') + $currCol++);
+    $LAST_COL = $COL_LIKES;
+}
+if ($hasDislikes) {
+    $COL_DISLIKES = chr(ord('A') + $currCol++);
+    $LAST_COL = $COL_DISLIKES;
 }
 
 
@@ -107,6 +124,16 @@ $sheet->getColumnDimension($COL_PROCEDURE)->setWidth(6, 'cm');
 if ($hasResponsibilities) {
     $sheet->setCellValue($COL_RESPONSIBILITY . '2', Yii::t('export', 'responsibility'));
     $sheet->getColumnDimension($COL_RESPONSIBILITY)->setWidth(4, 'cm');
+}
+
+if ($hasLikes) {
+    $sheet->setCellValue($COL_LIKES . '2', Yii::t('motion', 'likes'));
+    $sheet->getColumnDimension($COL_LIKES)->setWidth(2, 'cm');
+}
+
+if ($hasDislikes) {
+    $sheet->setCellValue($COL_DISLIKES . '2', Yii::t('motion', 'dislikes'));
+    $sheet->getColumnDimension($COL_DISLIKES)->setWidth(2, 'cm');
 }
 
 $sheet->getStyle('A1:' . $LAST_COL . '2')->applyFromArray([
@@ -235,6 +262,15 @@ foreach ($motions as $motion) {
             }
 
             $sheet->setCellValue($COL_PROCEDURE . $row, implode(', ', $responsibility));
+        }
+
+        if ($amendment->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE) {
+            $likeCount = count($amendment->getLikes());
+            $sheet->setCellValue($COL_LIKES . $row, $likeCount);
+        }
+        if ($amendment->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE) {
+            $dislikeCount = count($amendment->getDislikes());
+            $sheet->setCellValue($COL_DISLIKES . $row, $dislikeCount);
         }
     }
 
