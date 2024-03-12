@@ -35,6 +35,20 @@
   }
 }
 
+#conPwdForm {
+  @media (min-width: $screenMinWith) {
+    width: 400px;
+  }
+
+  .consultationName {
+    margin-bottom: 30px;
+  }
+  .usernameLoginOpener button {
+    margin-top: 20px;
+    font-weight: normal;
+  }
+}
+
 .loginUsername {
   .passwordRecovery {
     float: right;

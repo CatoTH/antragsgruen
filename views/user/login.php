@@ -51,8 +51,8 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
         ?>
         <section class="loginConPwd">
             <h2 class="green"><?= Yii::t('user', 'login_con_pwd_title') ?></h2>
-            <?= Html::beginForm('', 'post', ['class' => 'content', 'id' => 'conPwdForm']) ?>
             <div class="content">
+                <?= Html::beginForm('', 'post', ['id' => 'conPwdForm']) ?>
                 <?php
                 if ($conPwdErr) {
                     echo '<div class="alert alert-danger" role="alert">
@@ -62,13 +62,13 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
                     echo '</div>';
                 }
                 ?>
-                <div class="content">
+                <div class="consultationName">
                     <label><?= Yii::t('motion', 'consultation') ?>:</label>
                     <div>
                         <?= Html::encode($conPwdConsultation->title) ?>
                     </div>
                 </div>
-                <div>
+                <div class="form-group">
                     <label for="conpwd"><?= Yii::t('user', 'login_con_pwd') ?>:</label>
                     <input type="password" value="" name="password" id="conpwd" class="form-control"
                            autocomplete="current-password">
@@ -79,17 +79,17 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
                         <?= Yii::t('user', 'login_btn_login') ?>
                     </button>
                 </div>
+                <?php
+                if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
+                    echo '<div class="usernameLoginOpener">
+                        <button type="button" class="btn btn-link" onClick="$(\'.loginUsername\').toggleClass(\'hidden\'); $(\'#username\').trigger(\'focus\').scrollintoview({top_offset: 100}); return false;">' .
+                         Yii::t('user', 'login_username_title') .
+                         '</a>
+                    </div>';
+                }
+                ?>
+                <?= Html::endForm() ?>
             </div>
-            <?php
-            if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
-                echo '<div class="usernameLoginOpener" style="padding-left: 20px;">
-                    <a href="#" onClick="$(\'.loginUsername\').toggleClass(\'hidden\'); $(\'#username\').trigger(\'focus\').scrollintoview({top_offset: 100}); return false;">' .
-                     Yii::t('user', 'login_username_title') .
-                     '</a>
-                </div>';
-            }
-            ?>
-            <?= Html::endForm() ?>
         </section>
         <?php
     }
