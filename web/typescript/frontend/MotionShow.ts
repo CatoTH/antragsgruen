@@ -7,11 +7,6 @@ class MotionParagraph {
     private readonly lineHeight: number;
 
     constructor(private $element: JQuery) {
-        const s = location.hash.split('#amendment');
-        if (s.length == 2) {
-            $(".bookmarks .amendment" + s[1]).first().scrollintoview({top_offset: -100});
-        }
-
         this.$paraFirstLine = $element.find(".lineNumber").first();
         this.lineHeight = this.$paraFirstLine.height();
 
@@ -101,10 +96,14 @@ class MotionShow {
         $paragraphs.each((i, el) => {
             new MotionParagraph($(el));
         });
-
-        let s = location.hash.split('#comm');
-        if (s.length == 2) {
-            $('#comment' + s[1]).scrollintoview({top_offset: -100});
+        
+        let sComm = location.hash.split('#comm');
+        if (sComm.length == 2) {
+            $('#comment' + sComm[1]).scrollintoview({top_offset: -100});
+        }
+        const sAmend = location.hash.split('#amendment');
+        if (sAmend.length == 2) {
+            $(".bookmarks .amendment" + sAmend[1]).first().scrollintoview({top_offset: -100});
         }
 
         this.markMovedParagraphs();
