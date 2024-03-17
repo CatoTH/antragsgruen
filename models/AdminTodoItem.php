@@ -6,7 +6,7 @@ namespace app\models;
 
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{HashedStaticCache, MotionSorter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentComment, Consultation, IMotion, Motion, MotionComment, User};
+use app\models\db\{Amendment, AmendmentComment, Consultation, IMotion, Motion, MotionComment, repostory\MotionRepository, User};
 
 class AdminTodoItem
 {
@@ -68,7 +68,7 @@ class AdminTodoItem
      */
     private static function addScreeningMotionsItems(Consultation $consultation, array $todo): array
     {
-        $motions = Motion::getScreeningMotions($consultation);
+        $motions = MotionRepository::getScreeningMotions($consultation);
         foreach ($motions as $motion) {
             if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion))) {
                 continue;

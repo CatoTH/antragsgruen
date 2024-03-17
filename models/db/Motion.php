@@ -261,28 +261,6 @@ class Motion extends IMotion implements IRSSItem
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
-    /**
-     * @return Motion[]
-     */
-    public function getReplacedByMotionsWithinConsultation(): array
-    {
-        $motions = [];
-        if ($this->getMyConsultation()->hasPreloadedMotionData()) {
-            foreach ($this->getMyConsultation()->motions as $motion) {
-                if ($motion->parentMotionId === $this->id) {
-                    $motions[] = $motion;
-                }
-            }
-        } else {
-            foreach ($this->replacedByMotions as $motion) {
-                if ($motion->consultationId === $this->consultationId) {
-                    $motions[] = $motion;
-                }
-            }
-        }
-        return $motions;
-    }
-
     public function getSpeechQueues(): ActiveQuery
     {
         return $this->hasMany(SpeechQueue::class, ['motionId' => 'id']);
@@ -334,62 +312,6 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $this->title = '';
         }
-    }
-
-    /**
-     * @return Motion[]
-     */
-    public static function getNewestByConsultation(Consultation $consultation, int $limit = 5): array
-    {
-        $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
-
-        $statuteTypes = [];
-        foreach ($consultation->motionTypes as $motionType) {
-            if ($motionType->amendmentsOnly) {
-                $statuteTypes[] = $motionType->id;
-            }
-        }
-
-        $query = Motion::find();
-        $query->where('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
-        $query->andWhere('motion.consultationId = ' . intval($consultation->id));
-        if (count($statuteTypes) > 0) {
-            $query->andWhere('motion.motionTypeId NOT IN (' . implode(', ', $statuteTypes) . ')');
-        }
-        $query->orderBy("dateCreation DESC");
-        $query->offset(0)->limit($limit);
-        /** @var Motion[] $motions */
-        $motions = $query->all();
-        return $motions;
-    }
-
-    /**
-     * @return Motion[]
-     */
-    public static function getScreeningMotions(Consultation $consultation): array
-    {
-        $query = Motion::find();
-        $statuses = array_map('intval', $consultation->getStatuses()->getScreeningStatuses());
-        $query->where('motion.status IN (' . implode(', ', $statuses) . ')');
-        $query->andWhere('motion.consultationId = ' . intval($consultation->id));
-        $query->orderBy("dateCreation DESC");
-        /** @var Motion[] $motions */
-        $motions = $query->all();
-        return $motions;
-    }
-
-    /**
-     * @return Motion[]
-     */
-    public static function getObsoletedByMotions(Motion $motion): array
-    {
-        $query = Motion::find()
-            ->where('motion.status = ' . intval(IMotion::STATUS_OBSOLETED_BY_MOTION))
-            ->andWhere('motion.statusString = ' . intval($motion->id));
-        /** @var Motion[] $motions */
-        $motions = $query->all();
-
-        return $motions;
     }
 
     /**

@@ -84,13 +84,9 @@ class Permissions extends \app\models\settings\Permissions
             return false;
         }
 
-        // Proposers of the motions can only see their own motions
-        if ($this->iAmInitiator($imotion)) {
-            return true;
-        }
-
         if (!Module::currentUserCanSeeMotions()) {
-            return false;
+            // Proposers of the motions can only see their own motions. Note that iAmInitiator is a complex call, so we only call it when really necessary.
+            return $this->iAmInitiator($imotion);
         }
 
         // No special handling for amendments
@@ -113,9 +109,15 @@ class Permissions extends \app\models\settings\Permissions
         }
 
         if (User::haveOneOfPrivileges($imotion->getMyConsultation(), $privileges, PrivilegeQueryContext::motion($imotion))) {
-            return parent::iMotionIsReadable($imotion);
+            $permission = parent::iMotionIsReadable($imotion);
         } else {
-            return $imotion->isVisible();
+            $permission = $imotion->isVisible();
+        }
+        if ($permission) {
+            return true;
+        } else {
+            // Proposers of the motions can only see their own motions. Note that iAmInitiator is a complex call, so we only call it when really necessary.
+            return $this->iAmInitiator($imotion);
         }
     }
 }

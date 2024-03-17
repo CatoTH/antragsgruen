@@ -6,6 +6,7 @@ namespace app\components;
 
 use app\models\db\IMotion;
 use app\models\db\Motion;
+use app\models\db\repostory\MotionRepository;
 
 class MotionNumbering
 {
@@ -54,7 +55,7 @@ class MotionNumbering
         }
 
         // Add the root motions of those motions that have been obsoleted by the current motion
-        foreach (Motion::getObsoletedByMotions($motion) as $obsoletedMotion) {
+        foreach (MotionRepository::getObsoletedByMotionsInAllConsultations($motion) as $obsoletedMotion) {
             if (!in_array($obsoletedMotion->id, $alreadySeenIds)) {
                 $alreadySeenIds[] = $obsoletedMotion->id;
                 $roots = array_merge($roots, self::getHistoryRootMotion($obsoletedMotion, $includeObsoletedByMotions, $alreadySeenIds));
@@ -70,7 +71,7 @@ class MotionNumbering
     public static function getHistoryFromRoot(Motion $motion, array $alreadySeenIds = []): array
     {
         $motions = [$motion];
-        foreach ($motion->replacedByMotions as $replacedByMotion) {
+        foreach (MotionRepository::getReplacedByMotionsInAllConsultations($motion) as $replacedByMotion) {
             if (in_array($replacedByMotion->id, $alreadySeenIds, true)) {
                 continue;
             }
@@ -151,7 +152,7 @@ class MotionNumbering
         // the behavior is somewhat undefined for now
         $directDescendant = null;
         $subDescendant = null;
-        foreach ($motion->replacedByMotions as $replacedByMotion) {
+        foreach (MotionRepository::getReplacedByMotionsInAllConsultations($motion) as $replacedByMotion) {
             if (!in_array($replacedByMotion->status, $invisibleStatuses)) {
                 $directDescendant = $replacedByMotion;
             }

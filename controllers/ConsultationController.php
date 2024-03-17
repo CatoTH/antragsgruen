@@ -22,6 +22,7 @@ use app\models\db\{Amendment,
     Motion,
     Consultation,
     MotionComment,
+    repostory\MotionRepository,
     SpeechQueue,
     User,
     UserNotification};
@@ -90,7 +91,7 @@ class ConsultationController extends Base
 
     public function actionFeedmotions(): BinaryFileResponse
     {
-        $newest = Motion::getNewestByConsultation($this->consultation, 20);
+        $newest = MotionRepository::getNewestByConsultation($this->consultation, 20);
 
         $feed = new RSSExporter();
         if ($this->consultation->getSettings()->logoUrl) {
@@ -172,7 +173,7 @@ class ConsultationController extends Base
     public function actionFeedall(): BinaryFileResponse
     {
         $items = array_merge(
-            Motion::getNewestByConsultation($this->consultation, 20),
+            MotionRepository::getNewestByConsultation($this->consultation, 20),
             Amendment::getNewestByConsultation($this->consultation, 20),
             MotionComment::getNewestByConsultation($this->consultation, 20),
             AmendmentComment::getNewestByConsultation($this->consultation, 20)
@@ -254,7 +255,7 @@ class ConsultationController extends Base
     private function consultationSidebar(Consultation $consultation): void
     {
         $newestAmendments = Amendment::getNewestByConsultation($consultation, 5);
-        $newestMotions    = Motion::getNewestByConsultation($consultation, 3);
+        $newestMotions    = MotionRepository::getNewestByConsultation($consultation, 3);
         $newestComments   = IComment::getNewestByConsultation($consultation, 3);
 
         $this->renderPartial(

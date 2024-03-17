@@ -3,7 +3,7 @@
 namespace app\components;
 
 use app\models\amendmentNumbering\ByLine;
-use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion, repostory\MotionRepository};
 
 class MotionSorter
 {
@@ -120,7 +120,7 @@ class MotionSorter
         $replacedInvisible[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
 
         if (is_a($imotion, Motion::class)) {
-            foreach ($imotion->getReplacedByMotionsWithinConsultation() as $replacedByMotion) {
+            foreach (MotionRepository::getReplacedByMotionsWithinConsultation($imotion) as $replacedByMotion) {
                 if (!in_array($replacedByMotion->status, $replacedInvisible)) {
                     // The motion to be checked is replaced by another motion that is visible
                     return false;
