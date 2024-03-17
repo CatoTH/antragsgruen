@@ -23,9 +23,14 @@ class JwtCreator
             throw new ConfigurationError('JWT Public key file not found');
         }
         $privateKey = (string)file_get_contents($params->jwtPrivateKey);
+        if ($params->live) {
+            $issuer = $params->live['installationId'];
+        } else {
+            $issuer = $params->domainPlain;
+        }
 
         $payload = [
-            'iss' => $params->domainPlain,
+            'iss' => $issuer,
             'iat' => time(),
             'exp' => time() + self::JWT_VALIDITY,
             'sub' => $userId,

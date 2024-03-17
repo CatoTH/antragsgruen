@@ -65,15 +65,16 @@ if (!document.head.querySelector("meta[name=user-jwt-config]") || !document.head
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
         connectHeaders: {
-            jwt: jwtConfig.token
+            jwt: jwtConfig.token,
+            installation: liveConfig['installation'],
         }
     });
 
     stompClient.onConnect = (frame) => {
         console.info("Connected to Antragsgrün Live Server");
         liveConfig['subscriptions'].forEach(subscription => {
-            const topicUrl = '/' + subscription['role'] + '/' + liveConfig['subdomain'] + '/' + liveConfig['consultation'] +
-                '/' + encodeURIComponent(liveConfig['user_id']) + '/' + subscription['channel'];
+            const topicUrl = '/' + subscription['role'] + '/' + liveConfig['installation'] + '/' + liveConfig['subdomain'] +
+                '/' + liveConfig['consultation'] + '/' + encodeURIComponent(liveConfig['user_id']) + '/' + subscription['channel'];
             stompClient.subscribe(topicUrl, message => {
                 window['ANTRAGSGRUEN_LIVE_EVENTS'].publishEvent(subscription.role, subscription.channel, JSON.parse(message.body));
             });
