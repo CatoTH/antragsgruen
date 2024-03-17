@@ -25,6 +25,7 @@ class LiveTools
         return [
             'uri' => $params['wsUri'],
             'user_id' => JwtCreator::getCurrJwtUserId(),
+            'installation' => $params['installationId'],
             'subdomain' => $consultation->site->subdomain,
             'consultation' => $consultation->urlPath,
             'subscriptions' => $subscriptions,
@@ -61,7 +62,8 @@ class LiveTools
 
     public static function sendSpeechQueue(Consultation $consultation, SpeechQueue $queue, bool $debug = false): void
     {
-        if (!AntragsgruenApp::getInstance()->live) {
+        $params = AntragsgruenApp::getInstance()->live;
+        if (!$params) {
             return;
         }
 
@@ -72,7 +74,7 @@ class LiveTools
             echo $json . "\n";
         }
 
-        $routingKey = 'speech.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
+        $routingKey = 'speech.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
 
         self::sendToRabbitMq($routingKey, $json);
     }

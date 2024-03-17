@@ -285,7 +285,8 @@ As a prerequisite, JWT Signing needs to be enabled (see above). Then, the locati
 ```json5
 {
     "live": {
-        "wsUri": "ws://localhost:8080/websocket", // The full URI of the websocket endpoint of the Live Component
+        "installationId": "std", // The ID identifying this installation at the Live Server
+        "wsUri": "ws://localhost:8080/websocket", // The full URI of the websocket endpoint of the Live Server
         "stompJsUri": "http://localhost:8080/stomp.umd.min.js", // The full URI of a hosted StompJS library
         "rabbitMqUri": "http://localhost:15672", // Base URI to the REST API of RabbitMQ
         "rabbitMqExchangeName": "antragsgruen-exchange", // Created by the Live Server

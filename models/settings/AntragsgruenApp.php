@@ -58,7 +58,7 @@ class AntragsgruenApp implements \JsonSerializable
 
     public array $mailService = ['transport' => 'sendmail'];
 
-    /** @var array{wsUri: string, stompJsUri: string, rabbitMqUri: string, rabbitMqExchangeName: string, rabbitMqUsername: string, rabbitMqPassword: string}|null */
+    /** @var array{installationId: string, wsUri: string, stompJsUri: string, rabbitMqUri: string, rabbitMqExchangeName: string, rabbitMqUsername: string, rabbitMqPassword: string}|null */
     public ?array $live = null;
 
     public static function getInstance(): AntragsgruenApp
