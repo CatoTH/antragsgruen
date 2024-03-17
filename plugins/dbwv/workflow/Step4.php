@@ -48,12 +48,17 @@ class Step4
     {
         $html = '';
 
+
         if (Workflow::canSetResolutionV3($motion)) {
             RequestContext::getController()->layoutParams->loadCKEditor();
 
             $html .= RequestContext::getController()->renderPartial(
                 '@app/plugins/dbwv/views/admin_step_3_decide', ['motion' => $motion]
             );
+        }
+
+        if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V5)) {
+            return $html;
         }
 
         if (Workflow::canMoveToMainV4($motion)) {

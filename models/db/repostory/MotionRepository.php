@@ -10,7 +10,16 @@ use app\models\db\{Consultation, IMotion, Motion};
 class MotionRepository
 {
     /** @var array<int, array<Motion>> */
+    private static array $getReplacedByMotions_cache = [];
+
+    /** @var array<int, array<Motion>> */
     private static array $getObsoletedByMotions_cache = [];
+
+    public static function flushCaches(): void
+    {
+        self::$getObsoletedByMotions_cache = [];
+        self::$getReplacedByMotions_cache = [];
+    }
 
     /**
      * @return Motion[]
@@ -61,9 +70,6 @@ class MotionRepository
         }
         return $motions;
     }
-
-    /** @var array<int, array<Motion>> */
-    private static array $getReplacedByMotions_cache = [];
 
     /**
      * @return Motion[]

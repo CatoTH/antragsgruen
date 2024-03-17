@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\db\repostory\MotionRepository;
 use app\models\forms\MotionDeepCopy;
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp, MotionSection as MotionSectionSettings};
@@ -913,6 +914,7 @@ class Motion extends IMotion implements IRSSItem
     {
         HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getViewCacheKey($this), null)->setIsBulky(true)->flushCache();
         HashedStaticCache::getInstance($this->getPdfCacheKey(), null)->setIsBulky(true)->flushCache();
+        MotionRepository::flushCaches();
     }
 
     public function getPdfCacheKey(): string

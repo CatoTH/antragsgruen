@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\forms;
 
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSection, AmendmentSupporter, ConsultationAgendaItem, ConsultationMotionType, Motion, MotionAdminComment, MotionComment, MotionSection, MotionSupporter};
+use app\components\UrlHelper;
 
 class MotionDeepCopy
 {
@@ -66,6 +67,10 @@ class MotionDeepCopy
         if ($newMotion->motionTypeId !== $motionType->id) {
             $newMotion->setMotionType($motionType);
         }
+
+        $motion->getMyConsultation()->refresh();
+        $newConsultation->refresh();
+        UrlHelper::getCurrentConsultation()->refresh();
 
         return $newMotion;
     }
