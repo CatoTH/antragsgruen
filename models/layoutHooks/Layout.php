@@ -19,6 +19,12 @@ class Layout
 
     public static function addHook(Hooks $hook): void
     {
+        // StdHooks is added by default; if another set of hooks is added that extends from StdHooks, remove it to prevent methods running twice
+        $class = get_class($hook);
+        while ($class = get_parent_class($class)) {
+            self::$hooks = array_values(array_filter(self::$hooks, fn(Hooks $searchHook) => get_class($searchHook) !== $class));
+        }
+
         if (!in_array($hook, self::$hooks)) {
             self::$hooks[] = $hook;
         }

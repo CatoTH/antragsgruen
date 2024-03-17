@@ -52,6 +52,9 @@ class Step1
         if (!Workflow::canMakeEditorialChangesV1($motion)) {
             return '';
         }
+        if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V2)) {
+            return '';
+        }
 
         return RequestContext::getController()->renderPartial(
             '@app/plugins/dbwv/views/admin_step_1_assign_number', ['motion' => $motion]

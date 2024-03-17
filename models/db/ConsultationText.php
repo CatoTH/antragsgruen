@@ -249,7 +249,7 @@ class ConsultationText extends ActiveRecord
             $pages = array_merge($pages, ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null]));
         }
         if ($consultation) {
-            $pages = array_merge($pages, ConsultationText::findAll(['consultationId' => $consultation->id]));
+            $pages = array_merge($pages, $consultation->texts);
         }
         $pages = array_filter($pages, function (ConsultationText $page) {
             if ($page->textId === 'help' && $page->text === \Yii::t('pages', 'content_help_place')) {

@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\db\repostory\MotionRepository;
 use app\models\settings\{IMotionStatusEngine, PrivilegeQueryContext, AntragsgruenApp};
 use app\components\{MotionSorter, UrlHelper};
 use app\models\amendmentNumbering\IAmendmentNumbering;
@@ -75,6 +76,15 @@ class Consultation extends ActiveRecord
             [['title', 'titleShort', 'adminEmail', 'wordingBase', 'amendmentNumbering'], 'safe'],
             ['!urlPath', 'match', 'pattern' => '/^[\w_-]+$/i'],
         ];
+    }
+
+    public function refresh(): bool
+    {
+        $this->preloadedAllMotionData = null;
+        $this->preloadedAmendmentIds  = null;
+        MotionRepository::flushCaches();
+
+        return parent::refresh();
     }
 
     public function getSite(): ActiveQuery

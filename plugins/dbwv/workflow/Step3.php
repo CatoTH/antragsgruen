@@ -52,6 +52,10 @@ class Step3
     {
         $html = '';
 
+        if (MotionNumbering::findMotionInHistoryOfVersion($motion, Workflow::STEP_V4)) {
+            return '';
+        }
+
         if (Workflow::canSetResolutionV3($motion)) {
             RequestContext::getController()->layoutParams->loadCKEditor();
 
