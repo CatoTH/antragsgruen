@@ -6,9 +6,9 @@ The latest stable version and the current work-in-progress version are supported
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 4.14.x  | :white_check_mark: |
 | 4.13.x  | :white_check_mark: |
-| 4.12.x  | :white_check_mark: |
-| < 4.12  | :x:                |
+| < 4.13  | :x:                |
 
 ## Reporting a Vulnerability
 
