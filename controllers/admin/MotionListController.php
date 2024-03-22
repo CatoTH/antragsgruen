@@ -5,7 +5,7 @@ namespace app\controllers\admin;
 use app\models\exceptions\{Access, NotFound, ExceptionBase, ResponseException};
 use app\views\pdfLayouts\IPDFLayout;
 use app\components\{RequestContext, Tools, UrlHelper, ZipWriter};
-use app\models\db\{Amendment, Consultation, IMotion, Motion, User};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, repostory\MotionRepository, User};
 use app\models\forms\AdminMotionFilterForm;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
@@ -286,7 +286,7 @@ class MotionListController extends AdminBase
     /**
      * @return IMotion[]
      */
-    private function getSortedIMotionsByType(int $motionTypeId, bool $withdrawn): array
+    private function getSortedIMotionsByType(int $motionTypeId, bool $inactive): array
     {
         try {
             $this->consultation->getMotionType($motionTypeId);
@@ -295,7 +295,7 @@ class MotionListController extends AdminBase
         }
 
         $imotions = [];
-        foreach ($this->consultation->getVisibleIMotionsSorted($withdrawn) as $imotion) {
+        foreach ($this->consultation->getVisibleIMotionsSorted($inactive) as $imotion) {
             if ($imotion->getMyMotionType()->id === $motionTypeId) {
                 $imotions[] = $imotion;
             }
@@ -304,9 +304,9 @@ class MotionListController extends AdminBase
         return $imotions;
     }
 
-    public function actionMotionOdslist(int $motionTypeId, bool $textCombined = false, int $withdrawn = 0): ResponseInterface
+    public function actionMotionOdslist(int $motionTypeId, bool $textCombined = false, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getSortedIMotionsByType($motionTypeId, ($withdrawn === 1));
+        $imotions = $this->getSortedIMotionsByType($motionTypeId, ($inactive === 1));
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
@@ -337,9 +337,9 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_CSV, $csv, true, $filename);
     }
 
-    public function actionMotionCommentsXlsx(int $motionTypeId, int $withdrawn = 0): ResponseInterface
+    public function actionMotionCommentsXlsx(int $motionTypeId, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getSortedIMotionsByType($motionTypeId, ($withdrawn === 1));
+        $imotions = $this->getSortedIMotionsByType($motionTypeId, ($inactive === 1));
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename(\Yii::t('export', 'Kommentare') . '-' . $motionType->titlePlural, false);
@@ -353,15 +353,17 @@ class MotionListController extends AdminBase
     /**
      * @return IMotion[]
      */
-    private function getVisibleAmendmentsForExport(int $motionTypeId = 0, int $withdrawn = 0): array
+    private function getMotionsForExport(int $motionTypeId = 0, int $inactive = 0): array
     {
-        $withdrawn = ($withdrawn === 1);
+        $inactive = ($inactive === 1);
+        $filteredStatuses = ($inactive ? null : $this->consultation->getStatuses()->getInvisibleMotionStatuses());
 
         try {
             if ($motionTypeId > 0) {
-                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions($withdrawn);
+                $motionType = $this->consultation->getMotionType($motionTypeId);
+                $motions = MotionRepository::getMotionsForType($motionType, $filteredStatuses);
             } else {
-                $motions = $this->consultation->getVisibleMotions($withdrawn);
+                $motions = MotionRepository::getMotionsForConsultation($this->consultation, $filteredStatuses);
             }
             if (count($motions) === 0) {
                 throw new ResponseException(new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet')));
@@ -370,7 +372,7 @@ class MotionListController extends AdminBase
             $imotions = [];
             foreach ($motions as $motion) {
                 if ($motion->getMyMotionType()->amendmentsOnly) {
-                    $imotions = array_merge($imotions, $motion->getVisibleAmendments($withdrawn));
+                    $imotions = array_merge($imotions, $motion->getVisibleAmendments($inactive));
                 } else {
                     $imotions[] = $motion;
                 }
@@ -382,12 +384,11 @@ class MotionListController extends AdminBase
         return $imotions;
     }
 
-    public function actionMotionPdfziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
+    public function actionMotionPdfziplist(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getVisibleAmendmentsForExport($motionTypeId, $withdrawn);
+        $imotions = $this->getMotionsForExport($motionTypeId, $inactive);
 
         $zip      = new ZipWriter();
-        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         foreach ($imotions as $imotion) {
             if (!$imotion->getMyMotionType()->hasPdfLayout()) {
                 continue;
@@ -419,9 +420,9 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'motions_pdf');
     }
 
-    public function actionMotionOdtziplist(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
+    public function actionMotionOdtziplist(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getVisibleAmendmentsForExport($motionTypeId, $withdrawn);
+        $imotions = $this->getMotionsForExport($motionTypeId, $inactive);
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
@@ -440,9 +441,9 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'motions_odt');
     }
 
-    public function actionMotionOdtall(int $motionTypeId = 0, int $withdrawn = 0): ResponseInterface
+    public function actionMotionOdtall(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getVisibleAmendmentsForExport($motionTypeId, $withdrawn);
+        $imotions = $this->getMotionsForExport($motionTypeId, $inactive);
 
         $doc = $imotions[0]->getMyMotionType()->createOdtTextHandler();
 

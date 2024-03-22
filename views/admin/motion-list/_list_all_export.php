@@ -20,8 +20,8 @@ $hasOpenslides = $consultation->getSettings()->openslidesExportEnabled;
 $hasInactiveFunctionality = (!$hasResponsibilities || !$hasProposedProcedures || !$hasOpenslides);
 
 $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
-    $params     = array_merge($route, ['motionTypeId' => $motionTypeId, 'withdrawn' => '0']);
-    $paramsTmpl = array_merge($route, ['motionTypeId' => $motionTypeId, 'withdrawn' => 'WITHDRAWN']);
+    $params     = array_merge($route, ['motionTypeId' => $motionTypeId, 'inactive' => '0']);
+    $paramsTmpl = array_merge($route, ['motionTypeId' => $motionTypeId, 'inactive' => 'INACTIVE']);
     if ($route[0] === 'amendment/pdfcollection') {
         $params['filename']     = Yii::t('con', 'feed_amendments') . '.pdf';
         $paramsTmpl['filename'] = Yii::t('con', 'feed_amendments') . '.pdf';
@@ -126,7 +126,7 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="exportMotionBtn<?= $motionType->id ?>">
                     <li class="checkbox"><label>
-                            <input type="checkbox" class="withdrawn" name="withdrawn">
+                            <input type="checkbox" class="inactive" name="inactive">
                             <?= Yii::t('export', 'incl_inactive') ?>
                         </label></li>
                     <li role="separator" class="divider"></li>
@@ -174,7 +174,7 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
             </button>
             <ul class="dropdown-menu" aria-labelledby="exportAmendmentsBtn">
                 <li class="checkbox"><label>
-                        <input type="checkbox" class="withdrawn" name="withdrawn">
+                        <input type="checkbox" class="inactive" name="inactive">
                         <?= Yii::t('export', 'incl_inactive') ?>
                     </label></li>
                 <li role="separator" class="divider"></li>

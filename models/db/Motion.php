@@ -373,6 +373,25 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param int[]|null $ignoredFilters
+     *
+     * @return Amendment[]
+     */
+    public function getFilteredAmendments(?array $ignoredFilters = null): array
+    {
+        if ($ignoredFilters === null) {
+            $ignoredFilters = $this->getMyConsultation()->getStatuses()->getUnreadableStatuses();
+        }
+        $return = [];
+        foreach ($this->amendments as $amendment) {
+            if (!in_array($amendment->status, $ignoredFilters)) {
+                $return[] = $amendment;
+            }
+        }
+        return $return;
+    }
+
+    /**
      * @return Amendment[]
      */
     public function getVisibleAmendments(bool $includeWithdrawn = true, bool $ifMotionIsMoved = true): array
@@ -381,15 +400,9 @@ class Motion extends IMotion implements IRSSItem
             return [];
         }
 
-        $filtered   = $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses($includeWithdrawn);
-        $amendments = [];
-        foreach ($this->amendments as $amend) {
-            if (!in_array($amend->status, $filtered)) {
-                $amendments[] = $amend;
-            }
-        }
+        $filtered = $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses($includeWithdrawn);
 
-        return $amendments;
+        return $this->getFilteredAmendments($filtered);
     }
 
     /**

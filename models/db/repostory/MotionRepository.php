@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\db\repostory;
 
 use app\components\UrlHelper;
-use app\models\db\{Consultation, IMotion, Motion};
+use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion};
 
 class MotionRepository
 {
@@ -139,5 +139,43 @@ class MotionRepository
         /** @var Motion[] $motions */
         $motions = $query->all();
         return $motions;
+    }
+
+    /**
+     * @param int[]|null $ignoredFilters
+     *
+     * @return Motion[]
+     */
+    public static function getMotionsForType(ConsultationMotionType $type, ?array $ignoredFilters = null): array
+    {
+        if ($ignoredFilters === null) {
+            $ignoredFilters = $type->getConsultation()->getStatuses()->getUnreadableStatuses();
+        }
+        $return = [];
+        foreach ($type->motions as $motion) {
+            if (!in_array($motion->status, $ignoredFilters)) {
+                $return[] = $motion;
+            }
+        }
+        return $return;
+    }
+
+    /**
+     * @param int[]|null $ignoredFilters
+     *
+     * @return Motion[]
+     */
+    public static function getMotionsForConsultation(Consultation $consultation, ?array $ignoredFilters = null): array
+    {
+        if ($ignoredFilters === null) {
+            $ignoredFilters = $consultation->getStatuses()->getUnreadableStatuses();
+        }
+        $return = [];
+        foreach ($consultation->motions as $motion) {
+            if (!in_array($motion->status, $ignoredFilters)) {
+                $return[] = $motion;
+            }
+        }
+        return $return;
     }
 }

@@ -8,12 +8,7 @@ use app\views\pdfLayouts\IPDFLayout;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{Tools, UrlHelper, ZipWriter};
-use app\models\db\{Amendment,
-    AmendmentSupporter,
-    ConsultationLog,
-    ConsultationSettingsTag,
-    Motion,
-    User};
+use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, Motion, repostory\MotionRepository, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
@@ -27,53 +22,56 @@ class AmendmentController extends AdminBase
         Privileges::PRIVILEGE_MOTION_INITIATORS,
     ];
 
-    public function actionOdslist(bool $textCombined = false, int $withdrawn = 0): BinaryFileResponse
+    public function actionOdslist(bool $textCombined = false, int $inactive = 0): BinaryFileResponse
     {
         $ods = $this->renderPartial('ods_list', [
-            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn === 1),
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($inactive === 1),
             'textCombined' => $textCombined,
-            'withdrawn'    => ($withdrawn === 1),
+            'inactive'    => ($inactive === 1),
         ]);
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true,'amendments');
     }
 
-    public function actionXlsxList(bool $textCombined = false, int $withdrawn = 0): BinaryFileResponse
+    public function actionXlsxList(bool $textCombined = false, int $inactive = 0): BinaryFileResponse
     {
         $ods = $this->renderPartial('xlsx_list', [
-            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn === 1),
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($inactive === 1),
             'textCombined' => $textCombined,
-            'withdrawn'    => ($withdrawn === 1),
+            'inactive'    => ($inactive === 1),
         ]);
         return new BinaryFileResponse(BinaryFileResponse::TYPE_XLSX, $ods, true,'amendments');
     }
 
-    public function actionOdslistShort(int $textCombined = 0, int $withdrawn = 0, int $maxLen = 2000): BinaryFileResponse
+    public function actionOdslistShort(int $textCombined = 0, int $inactive = 0, int $maxLen = 2000): BinaryFileResponse
     {
         $ods = $this->renderPartial('ods_list_short', [
-            'motions'      => $this->consultation->getVisibleIMotionsSorted($withdrawn === 1),
+            'motions'      => $this->consultation->getVisibleIMotionsSorted($inactive === 1),
             'textCombined' => ($textCombined === 1),
             'maxLen'       => $maxLen,
-            'withdrawn'    => ($withdrawn === 1),
+            'inactive'     => ($inactive === 1),
         ]);
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'amendments');
     }
 
-    public function actionPdflist(int $withdrawn = 0): HtmlResponse
+    public function actionPdflist(int $inactive = 0): HtmlResponse
     {
         return new HtmlResponse(
-            $this->render('pdf_list', ['consultation' => $this->consultation, 'withdrawn' => ($withdrawn === 1)])
+            $this->render('pdf_list', ['consultation' => $this->consultation, 'inactive' => ($inactive === 1)])
         );
     }
 
-    public function actionPdfziplist(int $withdrawn = 0): BinaryFileResponse
+    public function actionPdfziplist(int $inactive = 0): BinaryFileResponse
     {
-        $withdrawn = ($withdrawn === 1);
+        $inactive = ($inactive === 1);
+        $filteredMotionStatuses = ($inactive ? null : $this->consultation->getStatuses()->getInvisibleMotionStatuses());
+        $filteredAmendmentStatuses = ($inactive ? null : $this->consultation->getStatuses()->getInvisibleMotionStatuses());
+
         $zip = new ZipWriter();
-        foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
+        foreach (MotionRepository::getMotionsForConsultation($this->consultation, $filteredMotionStatuses) as $motion) {
             if ($motion->getMyMotionType()->amendmentsOnly || !$motion->getMyMotionType()->hasPdfLayout()) {
                 continue;
             }
-            foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
+            foreach ($motion->getFilteredAmendments($filteredAmendmentStatuses) as $amendment) {
                 $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendment->getMyMotionType());
                 if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
                     $file = AmendmentLayoutHelper::createPdfFromHtml($amendment);
@@ -89,15 +87,18 @@ class AmendmentController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'amendments_pdf');
     }
 
-    public function actionOdtziplist(int $withdrawn = 0): BinaryFileResponse
+    public function actionOdtziplist(int $inactive = 0): BinaryFileResponse
     {
-        $withdrawn = ($withdrawn === 1);
+        $inactive = ($inactive === 1);
+        $filteredMotionStatuses = ($inactive ? null : $this->consultation->getStatuses()->getInvisibleMotionStatuses());
+        $filteredAmendmentStatuses = ($inactive ? null : $this->consultation->getStatuses()->getInvisibleMotionStatuses());
+
         $zip       = new ZipWriter();
-        foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
+        foreach (MotionRepository::getMotionsForConsultation($this->consultation, $filteredMotionStatuses) as $motion) {
             if ($motion->getMyMotionType()->amendmentsOnly) {
                 continue;
             }
-            foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
+            foreach ($motion->getFilteredAmendments($filteredAmendmentStatuses) as $amendment) {
                 $doc = $amendment->getMyMotionType()->createOdtTextHandler();
                 LayoutHelper::printAmendmentToOdt($amendment, $doc);
                 $zip->addFile($amendment->getFilenameBase(false) . '.odt', $doc->finishAndGetDocument());
