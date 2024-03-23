@@ -91,8 +91,8 @@ $sName = 'sections[' . $sectionId . ']';
                     <?= Yii::t('admin', 'motion_section_line_numbers') ?>
                 </label>
 
-                <label class="lineLength">
-                    <?= Html::checkbox($sName . '[maxLenSet]', ($section->maxLen !== 0), ['class' => 'maxLenSet']) ?>
+                <label class="maxLength">
+                    <?= Html::checkbox($sName . '[maxLenSet]', ($section->maxLen !== 0 && $section->maxLen !== null), ['class' => 'maxLenSet']) ?>
                     <?= Yii::t('admin', 'motion_section_limit') ?>
                 </label>
 
@@ -122,8 +122,8 @@ $sName = 'sections[' . $sectionId . ']';
                     <?= Yii::t('admin', 'motion_section_chars') ?>
                 </label>
 
-                <label class="lineLengthSoft">
-                    <?= Html::checkbox($sName . '[maxLenSoft]', ($section->maxLen < 0), ['class' => 'maxLenSoft']) ?>
+                <label class="maxLenSoft">
+                    <?= Html::checkbox($sName . '[maxLenSoft]', ($section->maxLen < 0), ['class' => 'maxLenSoftCheckbox']) ?>
                     <?= Yii::t('admin', 'motion_section_limit_soft') ?>
                 </label>
             </div>

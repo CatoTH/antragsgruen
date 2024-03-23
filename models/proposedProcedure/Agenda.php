@@ -5,7 +5,7 @@ namespace app\models\proposedProcedure;
 use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, IMotion, VotingBlock};
 use app\models\exceptions\Internal;
 use app\models\IMotionList;
-use app\models\sectionTypes\TextSimple;
+use app\models\sectionTypes\TextSimpleCommon;
 use yii\helpers\Html;
 
 class Agenda
@@ -68,7 +68,7 @@ class Agenda
                         continue;
                     }
                     if ($format === static::FORMAT_ODS) {
-                        $proposal .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                        $proposal .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
                     } else {
                         $proposal .= $section->getSectionType()->getAmendmentPlainHtml();
                     }

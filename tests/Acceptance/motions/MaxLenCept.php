@@ -17,19 +17,19 @@ $I->checkOption('.section2 .maxLenSet');
 $I->fillField('.section2 .maxLenInput input', 100);
 $I->checkOption('.section3 .maxLenSet');
 $I->fillField('.section3 .maxLenInput input', 150);
-$I->checkOption('.section3 .maxLenSoft');
+$I->checkOption('.section3 .maxLenSoftCheckbox');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->see('Gespeichert.');
 $I->seeElement('.section1 .maxLenInput');
 $I->seeCheckboxIsChecked('.section1 .maxLenSet');
-$I->dontSeeCheckboxIsChecked('.section1 .maxLenSoft');
+$I->dontSeeCheckboxIsChecked('.section1 .maxLenSoftCheckbox');
 $I->seeInField('.section1 .maxLenInput input', '20');
 $I->seeCheckboxIsChecked('.section2 .maxLenSet');
-$I->dontSeeCheckboxIsChecked('.section2 .maxLenSoft');
+$I->dontSeeCheckboxIsChecked('.section2 .maxLenSoftCheckbox');
 $I->seeInField('.section2 .maxLenInput input', '100');
 $I->seeCheckboxIsChecked('.section3 .maxLenSet');
-$I->seeCheckboxIsChecked('.section3 .maxLenSoft');
+$I->seeCheckboxIsChecked('.section3 .maxLenSoftCheckbox');
 $I->seeInField('.section3 .maxLenInput input', '150');
 
 $I->wantTo('create a motion');

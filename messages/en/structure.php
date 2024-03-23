@@ -3,6 +3,7 @@ return [
     'section_title'           => 'Title',
     'section_text'            => 'Text',
     'section_html'            => 'Text (enhanced)',
+    'section_editorial'       => 'Editorial text',
     'section_image'           => 'Image',
     'section_tabular'         => 'Tabular data',
     'section_pdf_attachment'  => 'PDF attachment',

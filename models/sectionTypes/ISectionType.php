@@ -23,6 +23,7 @@ abstract class ISectionType
     public const TYPE_PDF_ATTACHMENT  = 5;
     public const TYPE_PDF_ALTERNATIVE = 6;
     public const TYPE_VIDEO_EMBED     = 7;
+    public const TYPE_TEXT_EDITORIAL  = 8;
 
     protected const TYPE_API_TITLE = 'Title';
     protected const TYPE_API_TEXT_SIMPLE = 'TextSimple';
@@ -32,6 +33,7 @@ abstract class ISectionType
     protected const TYPE_API_PDF_ATTACHMENT = 'PDFAttachment';
     protected const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
     protected const TYPE_API_VIDEO_EMBED = 'VideoEmbed';
+    protected const TYPE_API_TEXT_EDITORIAL = 'VideoEmbed';
 
     protected IMotionSection $section;
     protected bool $absolutizeLinks = false;
@@ -45,7 +47,7 @@ abstract class ISectionType
     }
 
     /**
-     * @return string[]
+     * @return array<int|string, string>
      */
     public static function getTypes(): array
     {
@@ -53,6 +55,7 @@ abstract class ISectionType
             static::TYPE_TITLE           => \Yii::t('structure', 'section_title'),
             static::TYPE_TEXT_SIMPLE     => \Yii::t('structure', 'section_text'),
             static::TYPE_TEXT_HTML       => \Yii::t('structure', 'section_html'),
+            static::TYPE_TEXT_EDITORIAL  => \Yii::t('structure', 'section_editorial'),
             static::TYPE_IMAGE           => \Yii::t('structure', 'section_image'),
             static::TYPE_TABULAR         => \Yii::t('structure', 'section_tabular'),
             static::TYPE_PDF_ATTACHMENT  => \Yii::t('structure', 'section_pdf_attachment'),
@@ -67,6 +70,7 @@ abstract class ISectionType
             static::TYPE_TITLE => static::TYPE_API_TITLE,
             static::TYPE_TEXT_SIMPLE => static::TYPE_API_TEXT_SIMPLE,
             static::TYPE_TEXT_HTML => static::TYPE_API_TEXT_HTML,
+            static::TYPE_TEXT_EDITORIAL => static::TYPE_API_TEXT_EDITORIAL,
             static::TYPE_IMAGE => static::TYPE_API_IMAGE,
             static::TYPE_TABULAR => static::TYPE_API_TABULAR,
             static::TYPE_PDF_ALTERNATIVE => static::TYPE_API_PDF_ALTERNATIVE,
