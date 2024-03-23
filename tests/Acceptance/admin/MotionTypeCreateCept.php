@@ -59,7 +59,6 @@ $I->seeElement('#sidebar .createMotionHolder1 .createMotion' . (AcceptanceTester
 $I->dontSeeElement('#sidebar .createMotionList .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
 
 $I->click('#sidebar .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
-$I->see('Geschlecht');
 $I->see('Alter');
 $I->click('#adminLink');
 $I->seeElement('.motionType' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);

@@ -107,7 +107,6 @@ return [
     'preset_app_data'      => 'Data',
     'preset_app_signature' => 'Signature (scanned)',
     'preset_app_age'       => 'Age',
-    'preset_app_gender'    => 'Gender',
     'preset_app_birthcity' => 'Place of birth',
     'preset_app_intro'     => 'Introduction',
     'preset_app_title_int' => 'Application: ',

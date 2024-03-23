@@ -107,7 +107,6 @@ return [
     'preset_app_data'      => 'Angaben',
     'preset_app_signature' => 'Unterschrift (eingescannt)',
     'preset_app_age'       => 'Alter',
-    'preset_app_gender'    => 'Geschlecht',
     'preset_app_birthcity' => 'Geburtsort',
     'preset_app_intro'     => 'Selbstvorstellung',
     'preset_app_title_int' => 'Bewerbung: ',
