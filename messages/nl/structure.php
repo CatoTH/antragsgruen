@@ -107,7 +107,6 @@ return [
     'preset_app_data'      => 'Data',
     'preset_app_signature' => 'Handtekening (ingescand)',
     'preset_app_age'       => 'Leeftijd',
-    'preset_app_gender'    => 'Gender',
     'preset_app_birthcity' => 'Geboorteplaats',
     'preset_app_intro'     => 'Introductie',
     'preset_app_title_int' => 'Kandidering: ',

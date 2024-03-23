@@ -97,7 +97,6 @@ return [
 	'preset_app_data' => 'Data',
 	'preset_app_signature' => 'Signatura (escanejada)',
 	'preset_app_age' => 'Edat',
-	'preset_app_gender' => 'Gènere',
 	'preset_app_birthcity' => 'Lloc de naixement',
 	'preset_app_intro' => 'Introducció',
 	'preset_app_title_int' => 'Aplicació:',

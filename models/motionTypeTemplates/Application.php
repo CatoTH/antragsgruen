@@ -107,14 +107,7 @@ class Application
                             'type'  => TabularDataType::TYPE_INTEGER,
                         ]
                     ),
-                    '2' => new TabularDataType(
-                        [
-                            'rowId' => '2',
-                            'title' => \Yii::t('structure', 'preset_app_gender'),
-                            'type'  => TabularDataType::TYPE_STRING,
-                        ]
-                    ),
-                    '3' => new TabularDataType(
+                    '4' => new TabularDataType(
                         [
                             'rowId' => '3',
                             'title' => \Yii::t('structure', 'preset_app_birthcity'),
@@ -148,7 +141,7 @@ class Application
         $section->position      = 4;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_app_signature');
-        $section->required      = 1;
+        $section->required      = 0;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
