@@ -2,8 +2,7 @@
 
 namespace app\plugins\egp\controllers;
 
-use app\components\IMotionStatusFilter;
-use app\components\MotionSorter;
+use app\components\{IMotionStatusFilter, MotionSorter};
 use app\controllers\Base;
 use app\models\db\IMotion;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, ResponseInterface};

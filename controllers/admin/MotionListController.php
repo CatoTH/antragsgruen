@@ -4,8 +4,8 @@ namespace app\controllers\admin;
 
 use app\models\exceptions\{Access, NotFound, ExceptionBase, ResponseException};
 use app\views\pdfLayouts\IPDFLayout;
-use app\components\{IMotionStatusFilter, RequestContext, Tools, UrlHelper, ZipWriter};
-use app\models\db\{Amendment, Consultation, IMotion, Motion, repostory\MotionRepository, User};
+use app\components\{IMotionStatusFilter, MotionSorter, RequestContext, Tools, UrlHelper, ZipWriter};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion, repostory\MotionRepository, User};
 use app\models\forms\AdminMotionFilterForm;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
@@ -273,12 +273,44 @@ class MotionListController extends AdminBase
         ]));
     }
 
-    public function actionMotionOdslistall(): BinaryFileResponse
+    private static function getAgendaWithIMotions(Consultation $consultation, IMotionStatusFilter $filter): array
     {
-        // @TODO: support filtering for motion types and withdrawn motions
+        $ids    = [];
+        $result = [];
+        $addMotion = function (IMotion $motion) use (&$result, $filter) {
+            $result[] = $motion;
+            if (is_a($motion, Motion::class)) {
+                $result = array_merge($result, $motion->getFilteredAndSortedAmendments($filter));
+            }
+        };
+
+        $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
+        foreach ($items as $agendaItem) {
+            $result[] = $agendaItem;
+            $motions  = MotionSorter::getSortedIMotionsFlat($consultation, $agendaItem->getMyIMotions($filter));
+            foreach ($motions as $motion) {
+                $ids[] = $motion->id;
+                $addMotion($motion);
+            }
+        }
+        $result[] = null;
+
+        foreach ($filter->getFilteredConsultationMotions() as $motion) {
+            if (!(in_array($motion->id, $ids) || count($motion->getVisibleReplacedByMotions()) > 0)) {
+                $addMotion($motion);
+            }
+        }
+        return $result;
+    }
+
+    public function actionMotionOdslistall(bool $inactive): BinaryFileResponse
+    {
+        $filter = IMotionStatusFilter::adminExport($this->consultation, $inactive);
+        $items = self::getAgendaWithIMotions($this->consultation, $filter);
 
         $ods = $this->renderPartial('ods_list_all', [
-            'items' => $this->consultation->getAgendaWithIMotions(),
+            'items' => $items,
+            'filter' => $filter,
         ]);
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'motions');
     }
@@ -355,17 +387,16 @@ class MotionListController extends AdminBase
     /**
      * @return IMotion[]
      */
-    private function getMotionsForExport(int $motionTypeId = 0, int $inactive = 0): array
+    private function getMotionsForExport(int $motionTypeId, bool $inactive): array
     {
-        $inactive = ($inactive === 1);
-        $filteredStatuses = ($inactive ? null : $this->consultation->getStatuses()->getInvisibleMotionStatuses());
+        $filter = IMotionStatusFilter::adminExport($this->consultation, $inactive);
 
         try {
             if ($motionTypeId > 0) {
                 $motionType = $this->consultation->getMotionType($motionTypeId);
-                $motions = MotionRepository::getMotionsForType($motionType, $filteredStatuses);
+                $motions = MotionRepository::getMotionsForType($motionType, $filter);
             } else {
-                $motions = MotionRepository::getMotionsForConsultation($this->consultation, $filteredStatuses);
+                $motions = $filter->getFilteredConsultationMotions();
             }
             if (count($motions) === 0) {
                 throw new ResponseException(new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet')));
@@ -374,7 +405,7 @@ class MotionListController extends AdminBase
             $imotions = [];
             foreach ($motions as $motion) {
                 if ($motion->getMyMotionType()->amendmentsOnly) {
-                    $imotions = array_merge($imotions, $motion->getVisibleAmendments($inactive));
+                    $imotions = array_merge($imotions, $motion->getFilteredAndSortedAmendments($filter));
                 } else {
                     $imotions[] = $motion;
                 }
@@ -388,9 +419,9 @@ class MotionListController extends AdminBase
 
     public function actionMotionPdfziplist(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getMotionsForExport($motionTypeId, $inactive);
+        $imotions = $this->getMotionsForExport($motionTypeId, ($inactive === 1));
 
-        $zip      = new ZipWriter();
+        $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
             if (!$imotion->getMyMotionType()->hasPdfLayout()) {
                 continue;
@@ -424,7 +455,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdtziplist(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getMotionsForExport($motionTypeId, $inactive);
+        $imotions = $this->getMotionsForExport($motionTypeId, ($inactive === 1));
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
@@ -445,7 +476,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdtall(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getMotionsForExport($motionTypeId, $inactive);
+        $imotions = $this->getMotionsForExport($motionTypeId, ($inactive === 1));
 
         $doc = $imotions[0]->getMyMotionType()->createOdtTextHandler();
 

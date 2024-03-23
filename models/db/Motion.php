@@ -373,36 +373,26 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param int[]|null $ignoredFilters
-     *
      * @return Amendment[]
      */
-    public function getFilteredAmendments(?array $ignoredFilters = null): array
+    public function getFilteredAmendments(IMotionStatusFilter $filter): array
     {
-        if ($ignoredFilters === null) {
-            $ignoredFilters = $this->getMyConsultation()->getStatuses()->getUnreadableStatuses();
-        }
-        $return = [];
-        foreach ($this->amendments as $amendment) {
-            if (!in_array($amendment->status, $ignoredFilters)) {
-                $return[] = $amendment;
-            }
-        }
-        return $return;
+        return $filter->filterAmendments($this->amendments);
+    }
+
+    public function getFilteredAndSortedAmendments(IMotionStatusFilter $filter): array
+    {
+        $amendments = $this->getFilteredAmendments($filter);
+
+        return MotionSorter::getSortedAmendments($this->getMyConsultation(), $amendments);
     }
 
     /**
      * @return Amendment[]
      */
-    public function getVisibleAmendments(bool $includeWithdrawn = true, bool $ifMotionIsMoved = true): array
+    public function getVisibleAmendments(bool $includeWithdrawn = true): array
     {
-        if (!$ifMotionIsMoved && $this->status === Motion::STATUS_MOVED) {
-            return [];
-        }
-
-        $filtered = $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses($includeWithdrawn);
-
-        return $this->getFilteredAmendments($filtered);
+        return $this->getFilteredAmendments(IMotionStatusFilter::onlyUserVisible($this->getMyConsultation(), $includeWithdrawn));
     }
 
     /**
@@ -454,9 +444,9 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return Amendment[]
      */
-    public function getVisibleAmendmentsSorted(bool $includeWithdrawn = true, bool $ifMotionIsMoved = true): array
+    public function getVisibleAmendmentsSorted(bool $includeWithdrawn = true): array
     {
-        $amendments = $this->getVisibleAmendments($includeWithdrawn, $ifMotionIsMoved);
+        $amendments = $this->getVisibleAmendments($includeWithdrawn);
 
         return MotionSorter::getSortedAmendments($this->getMyConsultation(), $amendments);
     }

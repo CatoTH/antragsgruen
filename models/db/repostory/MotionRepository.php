@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\db\repostory;
 
+use app\components\IMotionStatusFilter;
 use app\components\UrlHelper;
 use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion};
 
@@ -142,40 +143,10 @@ class MotionRepository
     }
 
     /**
-     * @param int[]|null $ignoredFilters
-     *
      * @return Motion[]
      */
-    public static function getMotionsForType(ConsultationMotionType $type, ?array $ignoredFilters = null): array
+    public static function getMotionsForType(ConsultationMotionType $type, IMotionStatusFilter $filter): array
     {
-        if ($ignoredFilters === null) {
-            $ignoredFilters = $type->getConsultation()->getStatuses()->getUnreadableStatuses();
-        }
-        $return = [];
-        foreach ($type->motions as $motion) {
-            if (!in_array($motion->status, $ignoredFilters)) {
-                $return[] = $motion;
-            }
-        }
-        return $return;
-    }
-
-    /**
-     * @param int[]|null $ignoredFilters
-     *
-     * @return Motion[]
-     */
-    public static function getMotionsForConsultation(Consultation $consultation, ?array $ignoredFilters = null): array
-    {
-        if ($ignoredFilters === null) {
-            $ignoredFilters = $consultation->getStatuses()->getUnreadableStatuses();
-        }
-        $return = [];
-        foreach ($consultation->motions as $motion) {
-            if (!in_array($motion->status, $ignoredFilters)) {
-                $return[] = $motion;
-            }
-        }
-        return $return;
+        return $filter->filterMotions($type->motions);
     }
 }

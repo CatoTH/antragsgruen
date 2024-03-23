@@ -1,9 +1,8 @@
 <?php
 
-use app\components\HTMLTools;
+use app\components\{HTMLTools, IMotionStatusFilter};
 use app\models\db\{AmendmentSection, Motion};
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
+use app\models\sectionTypes\{ISectionType, TextSimple};
 use app\models\supportTypes\SupportBase;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -12,7 +11,7 @@ use yii\helpers\Html;
 /**
  * @var $this yii\web\View
  * @var Motion[] $motions
- * @var bool $inactive
+ * @var IMotionStatusFilter $filter
  */
 
 /** @var \app\controllers\Base $controller */
@@ -185,7 +184,7 @@ foreach ($motions as $motion) {
         $sheet->setCellValue($COL_RESPONSIBILITY . $row, implode(', ', $responsibility));
     }
 
-    $amendments = $motion->getVisibleAmendmentsSorted($inactive);
+    $amendments = $motion->getFilteredAndSortedAmendments($filter);
     foreach ($amendments as $amendment) {
         $row++;
 

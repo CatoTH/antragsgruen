@@ -5,11 +5,8 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  */
 
-use app\components\IMotionStatusFilter;
-use app\components\MotionSorter;
-use app\components\Tools;
+use app\components\{IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Motion};
-use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */

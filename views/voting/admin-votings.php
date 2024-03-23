@@ -50,7 +50,8 @@ $voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBl
 $voteDownloadUrl = UrlHelper::createUrl(['/voting/download-voting-results', 'votingBlockId' => 'VOTINGBLOCKID', 'format' => 'FORMAT']);
 
 $addableMotionsData = [];
-$filter = IMotionStatusFilter::onlyUserVisible($consultation, false);
+$filter = IMotionStatusFilter::onlyUserVisible($consultation, false)
+                             ->noAmendmentsIfMotionIsMoved();
 foreach ($filter->getFilteredConsultationIMotionsSorted() as $IMotion) {
     if (is_a($IMotion, Amendment::class)) {
         $addableMotionsData[] = [
@@ -61,7 +62,7 @@ foreach ($filter->getFilteredConsultationIMotionsSorted() as $IMotion) {
     } else {
         /** @var Motion $IMotion */
         $amendments = [];
-        foreach ($IMotion->getVisibleAmendmentsSorted(false, false) as $amendment) {
+        foreach ($IMotion->getFilteredAmendments($filter) as $amendment) {
             $amendments[] = [
                 'type' => 'amendment',
                 'id' => $amendment->id,

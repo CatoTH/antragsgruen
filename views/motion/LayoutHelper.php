@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\views\motion;
 
-use app\components\{HashedStaticCache, Tools, UrlHelper};
+use app\components\{HashedStaticCache, IMotionStatusFilter, Tools, UrlHelper};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
 use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
@@ -979,8 +979,11 @@ class LayoutHelper
      */
     public static function printMotionWithEmbeddedAmendmentsToPdf(Init $form, IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
+        $filter = IMotionStatusFilter::onlyUserVisible($form->motion->getMyConsultation(), false)
+                                     ->noAmendmentsIfMotionIsMoved();
+
         $amendmentsById = [];
-        foreach ($form->motion->getVisibleAmendments(false, false) as $amendment) {
+        foreach ($form->motion->getFilteredAmendments($filter) as $amendment) {
             $amendmentsById[$amendment->id] = $amendment;
         }
 
@@ -989,11 +992,11 @@ class LayoutHelper
         $pdf->SetFont($pdf->getMotionFont(null), '', $pdf->getMotionFontSize(null));
         $pdf->Ln(5);
         $amendmentsHtml = '<table border="1" cellpadding="5"><tr><td><h2>' . \Yii::t('export', 'amendments') . '</h2>';
-        foreach ($form->motion->getVisibleAmendments(false, false) as $amendment) {
+        foreach ($form->motion->getFilteredAmendments($filter) as $amendment) {
             $amendmentsHtml .= '<div><strong>' . Html::encode($amendment->getFormattedTitlePrefix()) . '</strong>: ' .
                                Html::encode($amendment->getInitiatorsStr()) . '</div>';
         }
-        if (count($form->motion->getVisibleAmendments(false, false)) === 0) {
+        if (count($form->motion->getFilteredAmendments($filter)) === 0) {
             $amendmentsHtml .= '<em>' . \Yii::t('export', 'amendments_none') . '</em>';
         }
         $amendmentsHtml .= '</td></tr></table>';

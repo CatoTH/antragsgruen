@@ -65,11 +65,10 @@ class AmendmentController extends Base
         );
     }
 
-    public function actionPdfcollection(int $withdrawn = 0): ResponseInterface
+    public function actionPdfcollection(int $inactive = 0): ResponseInterface
     {
-        $withdrawn = ($withdrawn === 1);
-        $motions = IMotionStatusFilter::onlyUserVisible($this->consultation, $withdrawn)
-            ->getFilteredConsultationIMotionsSorted();
+        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+        $motions = $filter->getFilteredConsultationIMotionsSorted();
         if (count($motions) === 0) {
             return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
         }
@@ -84,7 +83,7 @@ class AmendmentController extends Base
             if ($texTemplate === null) {
                 $texTemplate = $motion->getMyMotionType()->texTemplate;
             }
-            $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
+            $amendments = array_merge($amendments, $motion->getFilteredAmendments($filter));
         }
         if (count($amendments) === 0) {
             return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));

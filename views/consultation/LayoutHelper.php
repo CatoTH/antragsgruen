@@ -3,7 +3,7 @@
 namespace app\views\consultation;
 
 use app\models\IMotionList;
-use app\components\{HTMLTools, MotionSorter, Tools, UrlHelper};
+use app\components\{HTMLTools, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentComment,
     Consultation,
@@ -186,7 +186,9 @@ class LayoutHelper
         $return .= static::getMotionLineContent($motion, $consultation);
         $return .= "<span class='clearfix'></span>\n";
 
-        $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments(true, false));
+        $filter = IMotionStatusFilter::onlyUserVisible($consultation, true)
+                                     ->noAmendmentsIfMotionIsMoved();
+        $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getFilteredAmendments($filter));
         if ($hasAgenda) {
             $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
                 // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion

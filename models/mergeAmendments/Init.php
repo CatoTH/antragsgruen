@@ -2,8 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
-use app\components\UrlHelper;
-use app\components\diff\amendmentMerger\ParagraphMerger;
+use app\components\{IMotionStatusFilter, UrlHelper, diff\amendmentMerger\ParagraphMerger};
 use app\models\db\{Amendment, Motion, MotionSection};
 use app\models\sectionTypes\ISectionType;
 
@@ -63,7 +62,10 @@ class Init
         $form->toMergeMainIds     = [];
         $form->toMergeResolvedIds = [];
         $textVersions = [];
-        foreach ($motion->getVisibleAmendments(false, false) as $amendment) {
+
+        $filter = IMotionStatusFilter::onlyUserVisible($motion->getMyConsultation(), false)
+                                     ->noAmendmentsIfMotionIsMoved();
+        foreach ($motion->getFilteredAmendments($filter) as $amendment) {
             $form->toMergeMainIds[] = $amendment->id;
 
             if ($amendment->hasAlternativeProposaltext(false)) {

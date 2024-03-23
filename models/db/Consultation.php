@@ -4,7 +4,7 @@ namespace app\models\db;
 
 use app\models\db\repostory\MotionRepository;
 use app\models\settings\{IMotionStatusEngine, PrivilegeQueryContext, AntragsgruenApp};
-use app\components\{IMotionStatusFilter, MotionSorter, UrlHelper};
+use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\{Internal, NotFound};
 use app\models\SearchResult;
@@ -677,38 +677,6 @@ class Consultation extends ActiveRecord
             }
         }
         return null;
-    }
-
-    public function getAgendaWithIMotions(): array
-    {
-        $filter = IMotionStatusFilter::onlyUserVisible($this, true);
-
-        $ids    = [];
-        $result = [];
-        $addMotion = function (IMotion $motion) use (&$result) {
-            $result[] = $motion;
-            if (is_a($motion, Motion::class)) {
-                $result = array_merge($result, MotionSorter::getSortedAmendments($this, $motion->getVisibleAmendments()));
-            }
-        };
-
-        $items = ConsultationAgendaItem::getSortedFromConsultation($this);
-        foreach ($items as $agendaItem) {
-            $result[] = $agendaItem;
-            $motions  = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getMyIMotions($filter));
-            foreach ($motions as $motion) {
-                $ids[] = $motion->id;
-                $addMotion($motion);
-            }
-        }
-        $result[] = null;
-
-        foreach ($filter->getFilteredConsultationMotions() as $motion) {
-            if (!(in_array($motion->id, $ids) || count($motion->getVisibleReplacedByMotions()) > 0)) {
-                $addMotion($motion);
-            }
-        }
-        return $result;
     }
 
     public function getAbsolutePdfLogo(): ?ConsultationFile

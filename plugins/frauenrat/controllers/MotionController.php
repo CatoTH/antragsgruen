@@ -2,8 +2,7 @@
 
 namespace app\plugins\frauenrat\controllers;
 
-use app\components\IMotionStatusFilter;
-use app\components\UrlHelper;
+use app\components\{IMotionStatusFilter, UrlHelper};
 use app\controllers\Base;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, RedirectResponse, ResponseInterface};
 use app\models\mergeAmendments\Init;
@@ -108,7 +107,8 @@ class MotionController extends Base
             $form = Init::forEmbeddedAmendmentsExport($motion);
             \app\views\motion\LayoutHelper::printMotionWithEmbeddedAmendmentsToPdf($form, $pdfLayout, $pdf);
 
-            foreach ($motion->getVisibleAmendmentsSorted(false, false) as $amendment) {
+            $filter = IMotionStatusFilter::onlyUserVisible($motion->getMyConsultation(), false)->noAmendmentsIfMotionIsMoved();
+            foreach ($motion->getFilteredAndSortedAmendments($filter) as $amendment) {
                 \app\views\amendment\LayoutHelper::printToPDF($pdf, $pdfLayout, $amendment);
             }
         }

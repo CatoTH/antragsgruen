@@ -2,8 +2,7 @@
 
 namespace app\commands;
 
-use app\components\IMotionStatusFilter;
-use app\components\SitePurger;
+use app\components\{IMotionStatusFilter, SitePurger};
 use app\models\db\{Amendment, Consultation, Motion, Site};
 use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;

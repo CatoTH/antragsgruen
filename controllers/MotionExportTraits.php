@@ -163,11 +163,11 @@ trait MotionExportTraits
         );
     }
 
-    private function getMotionsAndTemplate(string $motionTypeId, bool $withdrawn, bool $resolutions): array
+    private function getMotionsAndTemplate(string $motionTypeId, bool $inactive, bool $resolutions): array
     {
         /** @var TexTemplate $texTemplate */
         $texTemplate = null;
-        $imotions = IMotionStatusFilter::onlyUserVisible($this->consultation, $withdrawn)
+        $imotions = IMotionStatusFilter::adminExport($this->consultation, $inactive)
                                        ->getFilteredConsultationIMotionsSorted();
 
         if ($motionTypeId !== '' && $motionTypeId !== '0') {
@@ -199,13 +199,10 @@ trait MotionExportTraits
         return [$imotionsFiltered, $texTemplate];
     }
 
-    public function actionFullpdf(string $motionTypeId = '', int $withdrawn = 0, int $resolutions = 0): ResponseInterface
+    public function actionFullpdf(string $motionTypeId = '', int $inactive = 0, int $resolutions = 0): ResponseInterface
     {
-        $withdrawn = ($withdrawn === 1);
-        $resolutions = ($resolutions === 1);
-
         try {
-            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
+            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, ($inactive === 1), ($resolutions === 1));
             /** @var IMotion[] $imotions */
             if (count($imotions) === 0) {
                 return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
@@ -238,13 +235,10 @@ trait MotionExportTraits
         );
     }
 
-    public function actionPdfcollection(string $motionTypeId = '', int $withdrawn = 0, int $resolutions = 0): ResponseInterface
+    public function actionPdfcollection(string $motionTypeId = '', int $inactive = 0, int $resolutions = 0): ResponseInterface
     {
-        $withdrawn = ($withdrawn === 1);
-        $resolutions = ($resolutions === 1);
-
         try {
-            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
+            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, ($inactive === 1), ($resolutions === 1));
             if (count($imotions) === 0) {
                 return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
             }
@@ -254,7 +248,8 @@ trait MotionExportTraits
                 $imotions = [];
                 foreach ($motionType->motions as $motion) {
                     if (is_a($motion, Motion::class)) {
-                        $imotions = array_merge($imotions, $motion->getVisibleAmendmentsSorted($withdrawn));
+                        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+                        $imotions = array_merge($imotions, $motion->getFilteredAndSortedAmendments($filter));
                     }
                 }
                 if (count($imotions) === 0) {

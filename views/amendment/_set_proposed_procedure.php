@@ -6,8 +6,7 @@
  * @var string $context
  */
 
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
 use app\models\db\{Amendment, IAdminComment, Motion, User};
 use yii\helpers\Html;
