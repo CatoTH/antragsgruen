@@ -125,6 +125,13 @@ return [
     'preset_statutes_title'    => 'Title',
     'preset_statutes_text'     => 'Statutes',
 
+    'preset_progress_singular' => 'Progress report',
+    'preset_progress_plural'   => 'Progress reports',
+    'preset_progress_call'     => 'Progress report',
+    'preset_progress_title'    => 'Title',
+    'preset_progress_text'     => 'Resolution',
+    'preset_progress_report'   => 'Progress',
+
     'role_initiator' => 'Proposer',
     'role_supporter' => 'Supporter',
     'role_likes'     => 'Likes',

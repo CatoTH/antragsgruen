@@ -125,6 +125,13 @@ return [
     'preset_statutes_title'    => 'Titel',
     'preset_statutes_text'     => 'Satzungstext',
 
+    'preset_progress_singular' => 'Sachstandsbericht',
+    'preset_progress_plural'   => 'Sachstandsberichte',
+    'preset_progress_call'     => 'Sachstandsbericht',
+    'preset_progress_title'    => 'Titel',
+    'preset_progress_text'     => 'Beschlusstext',
+    'preset_progress_report'   => 'Sachstand',
+
     'role_initiator' => 'Initiator*in',
     'role_supporter' => 'Unterstützer*in',
     'role_likes'     => 'Mag',

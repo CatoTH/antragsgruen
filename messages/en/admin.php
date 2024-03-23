@@ -542,6 +542,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_templ_pdfapplh'  => 'Name, PDF-Upload',
     'motion_type_templ_statute'   => 'Statutes amendments',
     'motion_type_templ_statuteh'  => 'Admins define the statutes, users can create amendments for them',
+    'motion_type_templ_progress'  => 'Progress reports',
+    'motion_type_templ_progressh' => 'Resolution text plus a simple to edit text field for describing the progress made',
     'motion_type_templ_none'      => '- no template -',
     'motion_type_singular'        => 'Title (singular)',
     'motion_type_singular_pl'     => 'Motion',

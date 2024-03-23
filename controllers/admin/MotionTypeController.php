@@ -5,14 +5,14 @@ namespace app\controllers\admin;
 use app\views\pdfLayouts\IPDFLayout;
 use app\components\{DateTools, UrlHelper};
 use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection, ConsultationUserGroup, TexTemplate, User};
-use app\models\exceptions\ExceptionBase;
-use app\models\exceptions\FormError;
+use app\models\exceptions\{ExceptionBase, FormError};
 use app\models\forms\DeadlineForm;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\motionTypeTemplates\Application as ApplicationTemplate;
 use app\models\motionTypeTemplates\Motion as MotionTemplate;
 use app\models\motionTypeTemplates\PDFApplication as PDFApplicationTemplate;
 use app\models\motionTypeTemplates\Statutes as StatutesTemplate;
+use app\models\motionTypeTemplates\ProgressReport as ProgressReportTemplate;
 use app\models\policies\{All, IPolicy, Nobody, UserGroups};
 use app\models\settings\{InitiatorForm, MotionSection, MotionType, Privileges};
 use app\models\supportTypes\SupportBase;
@@ -282,6 +282,9 @@ class MotionTypeController extends AdminBase
             } elseif (isset($type['preset']) && $type['preset'] === 'statute') {
                 $motionType = StatutesTemplate::doCreateStatutesType($this->consultation);
                 StatutesTemplate::doCreateStatutesSections($motionType);
+            } elseif (isset($type['preset']) && $type['preset'] === 'progress') {
+                $motionType = ProgressReportTemplate::doCreateProgressType($this->consultation);
+                ProgressReportTemplate::doCreateProgressSections($motionType);
             } else {
                 $motionType = null;
                 foreach ($this->consultation->motionTypes as $cType) {
