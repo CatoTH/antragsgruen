@@ -56,7 +56,7 @@ $I->see('Login', 'h1');
 // The login form is hidden by default
 $I->dontSeeElement('.loginUsername');
 $I->seeElement('.usernameLoginOpener');
-$I->executeJS('$(".usernameLoginOpener a").trigger("click");');
+$I->clickJS('.usernameLoginOpener button');
 $I->seeElement('.loginUsername');
 $I->fillField('#username', 'testadmin@example.org');
 $I->fillField('#passwordInput', 'testadmin');
@@ -64,7 +64,7 @@ $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
 $page = $I->gotoStdAdminPage('stdparteitag', 'test3')->gotoConsultation();
 $I->seeElement('.setNewPassword');
-$I->executeJS('$(".setNewPassword").click()');
+$I->clickJS('.setNewPassword');
 $I->wait(0.5);
 $I->seeElement('.setPasswordHolder');
 $I->seeCheckboxIsChecked("//input[@name='otherConsultations'][@value='1']");
