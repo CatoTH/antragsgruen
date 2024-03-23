@@ -8,7 +8,7 @@
 
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
 use app\models\db\{Amendment, IAdminComment, Motion, User};
 use yii\helpers\Html;
 
@@ -283,12 +283,13 @@ $voting = $amendment->getVotingData();
         <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
         <?php
         $options = ['-'];
+        $filter = IMotionStatusFilter::onlyUserVisible($consultation, false);
         foreach ($amendment->getMyMotion()->getVisibleAmendmentsSorted() as $otherAmend) {
             if ($otherAmend->id !== $amendment->id) {
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
-        foreach ($consultation->getVisibleIMotionsSorted(false) as $otherMotion) {
+        foreach ($filter->getFilteredConsultationIMotionsSorted() as $otherMotion) {
             if ($otherMotion->id === $amendment->motionId) {
                 continue;
             }
@@ -307,7 +308,8 @@ $voting = $amendment->getVotingData();
         <label class="headingLabel"><?= Yii::t('amend', 'proposal_moved_to_other_motion') ?>:</label>
         <?php
         $options = ['-'];
-        foreach ($consultation->getVisibleMotions(true) as $otherMotion) {
+        $filter = IMotionStatusFilter::onlyUserVisible($consultation, true);
+        foreach ($filter->getFilteredConsultationMotions() as $otherMotion) {
             if ($otherMotion->id === $amendment->motionId) {
                 continue;
             }

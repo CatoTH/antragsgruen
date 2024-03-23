@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\components\IMotionStatusFilter;
 use app\components\SitePurger;
 use app\models\db\{Amendment, Consultation, Motion, Site};
 use app\models\settings\AntragsgruenApp;
@@ -73,7 +74,7 @@ class AdminController extends Controller
             return;
         }
 
-        foreach ($con->getVisibleMotions() as $motion) {
+        foreach (IMotionStatusFilter::onlyUserVisible($con, true)->getFilteredConsultationMotions() as $motion) {
             echo '- Motion ' . $motion->id . "\n";
             $motion->getNumberOfCountableLines();
             $motion->getFirstLineNumber();

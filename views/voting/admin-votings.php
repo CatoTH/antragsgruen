@@ -2,7 +2,7 @@
 
 use app\models\layoutHooks\Layout;
 use app\models\policies\IPolicy;
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{HTMLTools, IMotionStatusFilter, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
@@ -50,7 +50,8 @@ $voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBl
 $voteDownloadUrl = UrlHelper::createUrl(['/voting/download-voting-results', 'votingBlockId' => 'VOTINGBLOCKID', 'format' => 'FORMAT']);
 
 $addableMotionsData = [];
-foreach ($consultation->getVisibleIMotionsSorted(false) as $IMotion) {
+$filter = IMotionStatusFilter::onlyUserVisible($consultation, false);
+foreach ($filter->getFilteredConsultationIMotionsSorted() as $IMotion) {
     if (is_a($IMotion, Amendment::class)) {
         $addableMotionsData[] = [
             'type' => 'amendment',

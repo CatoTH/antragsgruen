@@ -338,17 +338,6 @@ class ConsultationAgendaItem extends ActiveRecord
         return $return;
     }
 
-    /**
-     * @return IMotion[]
-     */
-    public function getVisibleIMotionsSorted(bool $withdrawnAreVisible = true): array
-    {
-        $consultation = $this->getMyConsultation();
-        $motions = $this->getMyMotions(IMotionStatusFilter::onlyUserVisible($consultation, $withdrawnAreVisible));
-
-        return MotionSorter::getSortedIMotionsFlat($consultation, $motions);
-    }
-
 
     public function isDateSeparator(): bool
     {

@@ -2,6 +2,8 @@
 
 namespace app\plugins\egp\controllers;
 
+use app\components\IMotionStatusFilter;
+use app\components\MotionSorter;
 use app\controllers\Base;
 use app\models\db\IMotion;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, ResponseInterface};
@@ -15,7 +17,8 @@ class CandidaturesController extends Base
             if (!$agendaItem) {
                 return new HtmlErrorResponse(404, 'Agenda item not found');
             }
-            $motions = $agendaItem->getVisibleIMotionsSorted(false);
+            $motions = $agendaItem->getMyMotions(IMotionStatusFilter::onlyUserVisible($this->consultation, false));
+            $motions = MotionSorter::getSortedIMotionsFlat($this->consultation, $motions);
             $motionType = null;
         } elseif ($motionTypeId) {
             $motionType = $this->consultation->getMotionType($motionTypeId);

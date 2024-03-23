@@ -476,56 +476,6 @@ class Consultation extends ActiveRecord
         return $this->statusEngine;
     }
 
-    /**
-     * @return Motion[]
-     */
-    public function getVisibleMotions(bool $withdrawnAreVisible = true, bool $includeResolutions = true): array
-    {
-        $return            = [];
-        $invisibleStatuses = $this->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
-        if (!$includeResolutions) {
-            $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
-            $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_FINAL;
-        }
-        foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $invisibleStatuses)) {
-                $return[] = $motion;
-            }
-        }
-        return $return;
-    }
-
-    /**
-     * @return IMotion[]
-     */
-    public function getVisibleIMotionsSorted(bool $includeWithdrawn = true): array
-    {
-        $motions   = [];
-        $motionIds = [];
-        $items     = ConsultationAgendaItem::getSortedFromConsultation($this);
-        $filter = IMotionStatusFilter::onlyUserVisible($this, $includeWithdrawn);
-
-        foreach ($items as $agendaItem) {
-            $newMotions = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getMyIMotions($filter));
-            foreach ($newMotions as $newMotion) {
-                $motions[]   = $newMotion;
-                $motionIds[] = $newMotion->id;
-            }
-        }
-        $noAgendaMotions = [];
-        foreach ($this->getVisibleMotions($includeWithdrawn) as $motion) {
-            if ($motion->getMyMotionType()->amendmentsOnly) {
-                continue;
-            }
-            if (!in_array($motion->id, $motionIds)) {
-                $noAgendaMotions[] = $motion;
-                $motionIds[]       = $motion->id;
-            }
-        }
-        $noAgendaMotions = MotionSorter::getSortedIMotionsFlat($this, $noAgendaMotions);
-        return array_merge($motions, $noAgendaMotions);
-    }
-
     public function havePrivilege(int $privilege, ?PrivilegeQueryContext $context): bool
     {
         $user = User::getCurrentUser();
@@ -732,6 +682,7 @@ class Consultation extends ActiveRecord
     public function getAgendaWithIMotions(): array
     {
         $filter = IMotionStatusFilter::onlyUserVisible($this, true);
+
         $ids    = [];
         $result = [];
         $addMotion = function (IMotion $motion) use (&$result) {
@@ -752,7 +703,7 @@ class Consultation extends ActiveRecord
         }
         $result[] = null;
 
-        foreach ($this->getVisibleMotions() as $motion) {
+        foreach ($filter->getFilteredConsultationMotions() as $motion) {
             if (!(in_array($motion->id, $ids) || count($motion->getVisibleReplacedByMotions()) > 0)) {
                 $addMotion($motion);
             }

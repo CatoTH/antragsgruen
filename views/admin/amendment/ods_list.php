@@ -9,7 +9,7 @@ use yii\helpers\Html;
 /**
  * @var $this yii\web\View
  * @var Motion[] $motions
- * @var bool $withdrawn
+ * @var bool $inactive
  */
 
 /** @var \app\controllers\Base $controller */
@@ -148,7 +148,7 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_RESPONSIBILITY, Spreadsheet::TYPE_TEXT, implode(', ', $responsibility));
     }
 
-    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
+    $amendments = $motion->getVisibleAmendmentsSorted($inactive);
     foreach ($amendments as $amendment) {
         $row++;
 

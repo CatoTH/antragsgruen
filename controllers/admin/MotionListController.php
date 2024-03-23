@@ -4,7 +4,7 @@ namespace app\controllers\admin;
 
 use app\models\exceptions\{Access, NotFound, ExceptionBase, ResponseException};
 use app\views\pdfLayouts\IPDFLayout;
-use app\components\{RequestContext, Tools, UrlHelper, ZipWriter};
+use app\components\{IMotionStatusFilter, RequestContext, Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment, Consultation, IMotion, Motion, repostory\MotionRepository, User};
 use app\models\forms\AdminMotionFilterForm;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
@@ -294,8 +294,10 @@ class MotionListController extends AdminBase
             throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
         }
 
+        $filter = IMotionStatusFilter::adminExport($this->consultation, $inactive);
+
         $imotions = [];
-        foreach ($this->consultation->getVisibleIMotionsSorted($inactive) as $imotion) {
+        foreach ($filter->getFilteredConsultationIMotionsSorted() as $imotion) {
             if ($imotion->getMyMotionType()->id === $motionTypeId) {
                 $imotions[] = $imotion;
             }

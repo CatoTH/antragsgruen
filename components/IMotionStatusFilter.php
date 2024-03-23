@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\db\{Amendment, Consultation, IMotion, Motion};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion};
 use app\models\settings\IMotionStatusEngine;
 
 final class IMotionStatusFilter
@@ -14,13 +14,13 @@ final class IMotionStatusFilter
     /** @var int[] */
     private array $disallowedAmendmentStatuses;
 
-    private IMotionStatusEngine $statuses;
+    private Consultation $consultation;
 
     public function __construct(Consultation $consultation)
     {
-        $this->statuses = $consultation->getStatuses();
-        $this->disallowedMotionStatuses = $this->statuses->getUnreadableStatuses();
-        $this->disallowedAmendmentStatuses = $this->statuses->getUnreadableStatuses();
+        $this->consultation = $consultation;
+        $this->disallowedMotionStatuses = $consultation->getStatuses()->getUnreadableStatuses();
+        $this->disallowedAmendmentStatuses = $consultation->getStatuses()->getUnreadableStatuses();
     }
 
     /**
@@ -49,10 +49,15 @@ final class IMotionStatusFilter
     {
         $filter = new self($consultation);
 
-        $filter->addMotionStatuses($filter->statuses->getInvisibleMotionStatuses($showWithdrawnAndModified));
-        $filter->addAmendmentStatuses($filter->statuses->getInvisibleAmendmentStatuses($showWithdrawnAndModified));
+        $filter->addMotionStatuses($consultation->getStatuses()->getInvisibleMotionStatuses($showWithdrawnAndModified));
+        $filter->addAmendmentStatuses($consultation->getStatuses()->getInvisibleAmendmentStatuses($showWithdrawnAndModified));
 
         return $filter;
+    }
+
+    public static function adminExport(Consultation $consultation, bool $inactive): self
+    {
+        return self::onlyUserVisible($consultation, $inactive); // @TODO
     }
 
     public function noResolutions(): self
@@ -70,6 +75,11 @@ final class IMotionStatusFilter
     public function filterMotions(array $motions): array
     {
         return array_values(array_filter($motions, fn(Motion $motion) => !in_array($motion->status, $this->disallowedMotionStatuses)));
+    }
+
+    public function getFilteredConsultationMotions(): array
+    {
+        return $this->filterMotions($this->consultation->motions);
     }
 
     /**
@@ -97,5 +107,36 @@ final class IMotionStatusFilter
                 return !in_array($imotion->status, $this->disallowedAmendmentStatuses);
             }
         }));
+    }
+
+    /**
+     * @return IMotion[]
+     */
+    public function getFilteredConsultationIMotionsSorted(): array
+    {
+        $motions   = [];
+        $motionIds = [];
+        $items     = ConsultationAgendaItem::getSortedFromConsultation($this->consultation);
+
+        foreach ($items as $agendaItem) {
+            $newMotions = MotionSorter::getSortedIMotionsFlat($this->consultation, $agendaItem->getMyIMotions($this));
+            foreach ($newMotions as $newMotion) {
+                $motions[]   = $newMotion;
+                $motionIds[] = $newMotion->id;
+            }
+        }
+        $noAgendaMotions = [];
+        foreach ($this->getFilteredConsultationMotions() as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
+            if (!in_array($motion->id, $motionIds)) {
+                $noAgendaMotions[] = $motion;
+                $motionIds[]       = $motion->id;
+            }
+        }
+        $noAgendaMotions = MotionSorter::getSortedIMotionsFlat($this->consultation, $noAgendaMotions);
+
+        return array_merge($motions, $noAgendaMotions);
     }
 }

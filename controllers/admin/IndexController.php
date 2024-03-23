@@ -6,7 +6,7 @@ use app\components\updater\UpdateChecker;
 use app\models\api\SpeechQueue as SpeechQueueApi;
 use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
-use app\components\{ConsultationAccessPassword, HTMLTools, LiveTools, Tools, UrlHelper};
+use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
@@ -453,7 +453,9 @@ class IndexController extends AdminBase
         /** @var ISupporter[] $users */
         $users = [];
 
-        foreach ($this->consultation->getVisibleMotions(false) as $motion) {
+        $filter = IMotionStatusFilter::onlyUserVisible($this->consultation, false);
+
+        foreach ($filter->getFilteredConsultationMotions() as $motion) {
             $initiators = $motion->getInitiators();
             $users      = array_merge($users, $initiators);
 

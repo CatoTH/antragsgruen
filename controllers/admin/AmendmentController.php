@@ -7,7 +7,7 @@ use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
 use app\views\pdfLayouts\IPDFLayout;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\components\{Tools, UrlHelper, ZipWriter};
+use app\components\{IMotionStatusFilter, Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, Motion, repostory\MotionRepository, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
@@ -24,28 +24,36 @@ class AmendmentController extends AdminBase
 
     public function actionOdslist(bool $textCombined = false, int $inactive = 0): BinaryFileResponse
     {
+        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+
         $ods = $this->renderPartial('ods_list', [
-            'motions'      => $this->consultation->getVisibleIMotionsSorted($inactive === 1),
+            'motions'      => $filter->getFilteredConsultationIMotionsSorted(),
             'textCombined' => $textCombined,
             'inactive'    => ($inactive === 1),
         ]);
+
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true,'amendments');
     }
 
     public function actionXlsxList(bool $textCombined = false, int $inactive = 0): BinaryFileResponse
     {
+        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+
         $ods = $this->renderPartial('xlsx_list', [
-            'motions'      => $this->consultation->getVisibleIMotionsSorted($inactive === 1),
+            'motions'      => $filter->getFilteredConsultationIMotionsSorted(),
             'textCombined' => $textCombined,
             'inactive'    => ($inactive === 1),
         ]);
+
         return new BinaryFileResponse(BinaryFileResponse::TYPE_XLSX, $ods, true,'amendments');
     }
 
     public function actionOdslistShort(int $textCombined = 0, int $inactive = 0, int $maxLen = 2000): BinaryFileResponse
     {
+        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+
         $ods = $this->renderPartial('ods_list_short', [
-            'motions'      => $this->consultation->getVisibleIMotionsSorted($inactive === 1),
+            'motions'      => $filter->getFilteredConsultationIMotionsSorted(),
             'textCombined' => ($textCombined === 1),
             'maxLen'       => $maxLen,
             'inactive'     => ($inactive === 1),
@@ -321,7 +329,8 @@ class AmendmentController extends AdminBase
     public function actionOpenslides(): BinaryFileResponse
     {
         $amendments = [];
-        foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
+        $filter = IMotionStatusFilter::onlyUserVisible($this->consultation, false);
+        foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
             if (!is_a($motion, Motion::class)) {
                 continue;
             }

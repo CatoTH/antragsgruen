@@ -13,7 +13,7 @@ use app\models\http\{BinaryFileResponse,
     ResponseInterface,
     RestApiExceptionResponse,
     RestApiResponse};
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, ISupporter, Motion, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
@@ -68,11 +68,13 @@ class AmendmentController extends Base
     public function actionPdfcollection(int $withdrawn = 0): ResponseInterface
     {
         $withdrawn = ($withdrawn === 1);
-        $motions   = $this->consultation->getVisibleIMotionsSorted($withdrawn);
+        $motions = IMotionStatusFilter::onlyUserVisible($this->consultation, $withdrawn)
+            ->getFilteredConsultationIMotionsSorted();
         if (count($motions) === 0) {
             return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
         }
-        $amendments  = [];
+        $amendments = [];
+        $motion = null;
         $texTemplate = null;
         foreach ($motions as $motion) {
             if (!is_a($motion, Motion::class) || $motion->getMyMotionType()->amendmentsOnly) {
@@ -84,7 +86,7 @@ class AmendmentController extends Base
             }
             $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }
-        if (count($amendments) == 0) {
+        if (count($amendments) === 0) {
             return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
         }
 

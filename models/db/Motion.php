@@ -11,7 +11,7 @@ use app\models\notifications\{MotionProposedProcedure,
     MotionSubmitted as MotionSubmittedNotification,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
-use app\components\{HashedStaticCache, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
+use app\components\{HashedStaticCache, IMotionStatusFilter, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
@@ -641,7 +641,8 @@ class Motion extends IMotion implements IRSSItem
         }
 
         if ($this->getMyConsultation()->getSettings()->lineNumberingGlobal) {
-            $motions      = $this->getMyConsultation()->getVisibleMotions(false);
+            $motions = IMotionStatusFilter::onlyUserVisible($this->getMyConsultation(), false)
+                                          ->getFilteredConsultationMotions();
             $motionBlocks = MotionSorter::getSortedIMotions($this->getMyConsultation(), $motions);
             $lineNo       = 1;
             foreach ($motionBlocks as $motions) {

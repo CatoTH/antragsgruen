@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\views\pdfLayouts\IPDFLayout;
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
-use app\components\{RequestContext, Tools, UrlHelper};
+use app\components\{IMotionStatusFilter, RequestContext, Tools, UrlHelper};
 use app\models\exceptions\NotFound;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
@@ -167,7 +167,9 @@ trait MotionExportTraits
     {
         /** @var TexTemplate $texTemplate */
         $texTemplate = null;
-        $imotions = $this->consultation->getVisibleIMotionsSorted($withdrawn);
+        $imotions = IMotionStatusFilter::onlyUserVisible($this->consultation, $withdrawn)
+                                       ->getFilteredConsultationIMotionsSorted();
+
         if ($motionTypeId !== '' && $motionTypeId !== '0') {
             $motionTypeIds = explode(',', $motionTypeId);
             $imotions       = array_filter($imotions, function (IMotion $motion) use ($motionTypeIds) {

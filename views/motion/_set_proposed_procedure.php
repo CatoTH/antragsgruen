@@ -8,7 +8,7 @@
  */
 
 use app\models\settings\Privileges;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
 use app\models\db\{IAdminComment, Motion, User};
 use yii\helpers\Html;
 
@@ -280,7 +280,8 @@ $voting = $motion->getVotingData();
     <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
     <?php
     $options = ['-'];
-    foreach ($consultation->getVisibleIMotionsSorted(false) as $otherMotion) {
+    $filter = IMotionStatusFilter::onlyUserVisible($consultation, false);
+    foreach ($filter->getFilteredConsultationIMotionsSorted() as $otherMotion) {
         if ($otherMotion->id === $motion->id) {
             continue;
         }

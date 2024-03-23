@@ -3,9 +3,10 @@
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Consultation $consultation
- * @var bool $withdrawn
+ * @var bool $inactive
  */
-use app\components\UrlHelper;
+
+use app\components\{IMotionStatusFilter, UrlHelper};
 use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
@@ -20,9 +21,9 @@ $params->addBreadcrumb(Yii::t('admin', 'amend_pdf_list'));
 echo '<h1>' . Yii::t('admin', 'amend_pdf_list') . '</h1>
    <div class="content">';
 
-$motions = $consultation->getVisibleIMotionsSorted($withdrawn);
-foreach ($motions as $motion) {
-    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
+$motions = IMotionStatusFilter::adminExport($consultation, $inactive);
+foreach ($motions->getFilteredConsultationIMotionsSorted() as $motion) {
+    $amendments = $motion->getVisibleAmendmentsSorted($inactive);
     if (count($amendments) > 0) {
         echo '<h2>' . Html::encode($motion->getTitleWithPrefix()) . '</h2>';
         echo '<ul>';
