@@ -142,7 +142,8 @@ class VotingMethods
             $items[] = $this->consultation->getAmendment(intval($idParts[1]));
         } elseif (count($idParts) === 3 && $idParts[0] === 'motion' && $idParts[1] > 0 && $idParts[2] === 'amendments') {
             $motion = $this->consultation->getMotion($idParts[1]);
-            foreach ($motion->getVisibleAmendmentsSorted(false, false) as $amendment) {
+            $filter = IMotionStatusFilter::onlyUserVisible($this->consultation, false)->noAmendmentsIfMotionIsMoved();
+            foreach ($motion->getFilteredAndSortedAmendments($filter) as $amendment) {
                 $items[] = $amendment;
             }
         }

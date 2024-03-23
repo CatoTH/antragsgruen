@@ -11,7 +11,7 @@ use app\models\notifications\{MotionProposedProcedure,
     MotionSubmitted as MotionSubmittedNotification,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
-use app\components\{HashedStaticCache, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
+use app\components\{HashedStaticCache, IMotionStatusFilter, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
@@ -375,21 +375,24 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return Amendment[]
      */
-    public function getVisibleAmendments(bool $includeWithdrawn = true, bool $ifMotionIsMoved = true): array
+    public function getFilteredAmendments(IMotionStatusFilter $filter): array
     {
-        if (!$ifMotionIsMoved && $this->status === Motion::STATUS_MOVED) {
-            return [];
-        }
+        return $filter->filterAmendments($this->amendments);
+    }
 
-        $filtered   = $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses($includeWithdrawn);
-        $amendments = [];
-        foreach ($this->amendments as $amend) {
-            if (!in_array($amend->status, $filtered)) {
-                $amendments[] = $amend;
-            }
-        }
+    public function getFilteredAndSortedAmendments(IMotionStatusFilter $filter): array
+    {
+        $amendments = $this->getFilteredAmendments($filter);
 
-        return $amendments;
+        return MotionSorter::getSortedAmendments($this->getMyConsultation(), $amendments);
+    }
+
+    /**
+     * @return Amendment[]
+     */
+    public function getVisibleAmendments(bool $includeWithdrawn = true): array
+    {
+        return $this->getFilteredAmendments(IMotionStatusFilter::onlyUserVisible($this->getMyConsultation(), $includeWithdrawn));
     }
 
     /**
@@ -441,9 +444,9 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return Amendment[]
      */
-    public function getVisibleAmendmentsSorted(bool $includeWithdrawn = true, bool $ifMotionIsMoved = true): array
+    public function getVisibleAmendmentsSorted(bool $includeWithdrawn = true): array
     {
-        $amendments = $this->getVisibleAmendments($includeWithdrawn, $ifMotionIsMoved);
+        $amendments = $this->getVisibleAmendments($includeWithdrawn);
 
         return MotionSorter::getSortedAmendments($this->getMyConsultation(), $amendments);
     }
@@ -628,7 +631,8 @@ class Motion extends IMotion implements IRSSItem
         }
 
         if ($this->getMyConsultation()->getSettings()->lineNumberingGlobal) {
-            $motions      = $this->getMyConsultation()->getVisibleMotions(false);
+            $motions = IMotionStatusFilter::onlyUserVisible($this->getMyConsultation(), false)
+                                          ->getFilteredConsultationMotions();
             $motionBlocks = MotionSorter::getSortedIMotions($this->getMyConsultation(), $motions);
             $lineNo       = 1;
             foreach ($motionBlocks as $motions) {

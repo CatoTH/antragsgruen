@@ -69,10 +69,10 @@ export class MotionList {
         $exportRow.find(".exportMotionDd, .exportAmendmentDd").each(function () {
             let $dd = $(this),
                 recalcLinks = function () {
-                    let withdrawn = ($dd.find("input[name=withdrawn]").prop("checked") ? 1 : 0);
+                    let inactive = ($dd.find("input[name=inactive]").prop("checked") ? 1 : 0);
                     $dd.find(".exportLink a").each(function () {
                         let link = $(this).data("href-tpl");
-                        link = link.replace("WITHDRAWN", withdrawn);
+                        link = link.replace("INACTIVE", inactive);
                         $(this).attr("href", link);
                     });
                 };

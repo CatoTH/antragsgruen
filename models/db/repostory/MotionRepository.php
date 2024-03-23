@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace app\models\db\repostory;
 
+use app\components\IMotionStatusFilter;
 use app\components\UrlHelper;
-use app\models\db\{Consultation, IMotion, Motion};
+use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion};
 
 class MotionRepository
 {
@@ -139,5 +140,13 @@ class MotionRepository
         /** @var Motion[] $motions */
         $motions = $query->all();
         return $motions;
+    }
+
+    /**
+     * @return Motion[]
+     */
+    public static function getMotionsForType(ConsultationMotionType $type, IMotionStatusFilter $filter): array
+    {
+        return $filter->filterMotions($type->motions);
     }
 }

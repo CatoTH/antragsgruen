@@ -4,7 +4,7 @@ namespace app\models\db;
 
 use app\models\db\repostory\MotionRepository;
 use app\models\settings\{IMotionStatusEngine, PrivilegeQueryContext, AntragsgruenApp};
-use app\components\{MotionSorter, UrlHelper};
+use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\{Internal, NotFound};
 use app\models\SearchResult;
@@ -476,54 +476,6 @@ class Consultation extends ActiveRecord
         return $this->statusEngine;
     }
 
-    /**
-     * @return Motion[]
-     */
-    public function getVisibleMotions(bool $withdrawnAreVisible = true, bool $includeResolutions = true): array
-    {
-        $return            = [];
-        $invisibleStatuses = $this->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
-        if (!$includeResolutions) {
-            $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
-            $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_FINAL;
-        }
-        foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $invisibleStatuses)) {
-                $return[] = $motion;
-            }
-        }
-        return $return;
-    }
-
-    /**
-     * @return IMotion[]
-     */
-    public function getVisibleIMotionsSorted(bool $includeWithdrawn = true): array
-    {
-        $motions   = [];
-        $motionIds = [];
-        $items     = ConsultationAgendaItem::getSortedFromConsultation($this);
-        foreach ($items as $agendaItem) {
-            $newMotions = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleIMotions($includeWithdrawn));
-            foreach ($newMotions as $newMotion) {
-                $motions[]   = $newMotion;
-                $motionIds[] = $newMotion->id;
-            }
-        }
-        $noAgendaMotions = [];
-        foreach ($this->getVisibleMotions($includeWithdrawn) as $motion) {
-            if ($motion->getMyMotionType()->amendmentsOnly) {
-                continue;
-            }
-            if (!in_array($motion->id, $motionIds)) {
-                $noAgendaMotions[] = $motion;
-                $motionIds[]       = $motion->id;
-            }
-        }
-        $noAgendaMotions = MotionSorter::getSortedIMotionsFlat($this, $noAgendaMotions);
-        return array_merge($motions, $noAgendaMotions);
-    }
-
     public function havePrivilege(int $privilege, ?PrivilegeQueryContext $context): bool
     {
         $user = User::getCurrentUser();
@@ -725,36 +677,6 @@ class Consultation extends ActiveRecord
             }
         }
         return null;
-    }
-
-    public function getAgendaWithIMotions(): array
-    {
-        $ids    = [];
-        $result = [];
-        $addMotion = function (IMotion $motion) use (&$result) {
-            $result[] = $motion;
-            if (is_a($motion, Motion::class)) {
-                $result = array_merge($result, MotionSorter::getSortedAmendments($this, $motion->getVisibleAmendments()));
-            }
-        };
-
-        $items = ConsultationAgendaItem::getSortedFromConsultation($this);
-        foreach ($items as $agendaItem) {
-            $result[] = $agendaItem;
-            $motions  = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleIMotions());
-            foreach ($motions as $motion) {
-                $ids[] = $motion->id;
-                $addMotion($motion);
-            }
-        }
-        $result[] = null;
-
-        foreach ($this->getVisibleMotions() as $motion) {
-            if (!(in_array($motion->id, $ids) || count($motion->getVisibleReplacedByMotions()) > 0)) {
-                $addMotion($motion);
-            }
-        }
-        return $result;
     }
 
     public function getAbsolutePdfLogo(): ?ConsultationFile

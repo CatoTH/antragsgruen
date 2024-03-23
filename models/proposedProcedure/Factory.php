@@ -2,6 +2,7 @@
 
 namespace app\models\proposedProcedure;
 
+use app\components\IMotionStatusFilter;
 use app\models\IMotionList;
 use app\models\settings\IMotionStatusEngine;
 use app\models\db\{Consultation, ConsultationAgendaItem, IMotion, Motion, VotingBlock};
@@ -100,8 +101,9 @@ class Factory
         if ($this->agendaItem === null) {
             // Attach motions that haven't been found in the agenda at the end of the document (if no filter is set)
 
+            $filter = IMotionStatusFilter::onlyUserVisible($this->consultation, true);
             $unhandledMotions = [];
-            foreach ($this->consultation->getVisibleIMotionsSorted(true) as $motion) {
+            foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
                 if (!$handledIMotions->hasVotingItem($motion)) {
                     $unhandledMotions[] = $motion;
                 }
@@ -202,8 +204,8 @@ class Factory
             case ConsultationSettings::START_LAYOUT_STD:
             case ConsultationSettings::START_LAYOUT_TAGS:
             default:
-                $motions = $this->consultation->getVisibleIMotionsSorted(true);
-                return $this->createFromMotions($motions, [], new IMotionList());
+                $filter = IMotionStatusFilter::onlyUserVisible($this->consultation, true);
+                return $this->createFromMotions($filter->getFilteredConsultationIMotionsSorted(), [], new IMotionList());
         }
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-use app\components\HTMLTools;
+use app\components\{HTMLTools, IMotionStatusFilter};
 use app\models\db\Motion;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
@@ -8,7 +8,7 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var Motion[] $motions
- * @var bool $withdrawn
+ * @var IMotionStatusFilter $filter
  * @var bool $textCombined
  * @var int $maxLen
  */
@@ -102,7 +102,7 @@ foreach ($motions as $motion) {
     $title = HTMLTools::correctHtmlErrors($title);
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
 
-    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
+    $amendments = $motion->getFilteredAndSortedAmendments($filter);
     foreach ($amendments as $amendment) {
         $change = '';
         if ($amendment->changeEditorial !== '') {

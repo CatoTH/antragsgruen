@@ -5,10 +5,8 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  */
 
-use app\components\MotionSorter;
-use app\components\Tools;
+use app\components\{IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Motion};
-use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -65,7 +63,8 @@ if (count($motions) > 0) {
 }
 
 $motionsWithAmendments = [];
-foreach ($consultation->getVisibleMotions(false, false) as $motion) {
+$filter = IMotionStatusFilter::onlyUserVisible($consultation, false)->noResolutions();
+foreach ($filter->getFilteredConsultationMotions() as $motion) {
     foreach ($motion->amendments as $amendment) {
         if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS && !in_array($motion, $motionsWithAmendments, true)) {
             $motionsWithAmendments[] = $motion;

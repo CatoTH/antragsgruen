@@ -1,5 +1,6 @@
 <?php
 
+use app\components\IMotionStatusFilter;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
 use yii\helpers\Html;
@@ -62,7 +63,7 @@ $consultation = $controller->consultation;
         <?php
         if (count($consultation->agendaItems) > 0) {
             foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
-                if (count($item->getVisibleIMotions(true)) === 0) {
+                if (count($item->getMyIMotions(IMotionStatusFilter::onlyUserVisible($consultation, true))) === 0) {
                     continue;
                 }
                 ?>

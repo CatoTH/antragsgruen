@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{MotionSorter, UrlHelper};
+use app\components\{IMotionStatusFilter, MotionSorter, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion};
 use app\models\settings\{Layout, Consultation as ConsultationSettings};
 use app\views\consultation\LayoutHelper;
@@ -69,7 +69,7 @@ if ($longVersion) {
         if ($isResolutionList) {
             $itemImotions = $agendaItem->getResolutions();
         } else {
-            $itemImotions = $agendaItem->getVisibleIMotions(true, false);
+            $itemImotions = $agendaItem->getMyIMotions(IMotionStatusFilter::onlyUserVisible($consultation, true)->noResolutions());
         }
 
         if (count($itemImotions) > 0) {

@@ -2,7 +2,7 @@
 
 /** @var \app\models\db\Consultation $consultation */
 
-use app\components\{CookieUser, UrlHelper};
+use app\components\{CookieUser, IMotionStatusFilter, UrlHelper};
 use app\models\db\{Amendment, ConsultationText, IMotion, Motion, SpeechQueue, User};
 
 if ($consultation->getSettings()->hasSpeechLists) {
@@ -20,6 +20,8 @@ $allPages = ConsultationText::getAllPages($consultation->site, $consultation);
 $customPages = array_values(array_filter($allPages, function (ConsultationText $page): bool {
     return $page->isCustomPage();
 }));
+
+$filter = IMotionStatusFilter::onlyUserVisible($consultation, false);
 
 $json = [
     'title' => $consultation->title,
@@ -67,7 +69,7 @@ $json = [
             'url_json' => $jsonLink,
             'url_html' => $htmlLink,
         ];
-    }, $consultation->getVisibleIMotionsSorted(false)),
+    }, $filter->getFilteredConsultationIMotionsSorted()),
     'speaking_lists' => $speakingLists,
     'page_links' => array_map(function (ConsultationText $page) {
         return [

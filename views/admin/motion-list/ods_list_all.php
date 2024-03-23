@@ -1,12 +1,13 @@
 <?php
 
 use CatoTH\HTML2OpenDocument\Spreadsheet;
-use app\components\{StringSplitter, UrlHelper};
+use app\components\{IMotionStatusFilter, StringSplitter, UrlHelper};
 use app\models\db\{Amendment, ConsultationAgendaItem, Motion};
 
 /**
  * @var $this yii\web\View
  * @var array $items
+ * @var IMotionStatusFilter $filter
  */
 
 /** @var \app\controllers\Base $controller */

@@ -1,6 +1,6 @@
 <?php
 
-use app\components\HTMLTools;
+use app\components\{HTMLTools, IMotionStatusFilter};
 use app\models\db\{AmendmentSection, Motion};
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 /**
  * @var $this yii\web\View
  * @var Motion[] $motions
- * @var bool $withdrawn
+ * @var IMotionStatusFilter $filter
  */
 
 /** @var \app\controllers\Base $controller */
@@ -148,7 +148,7 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_RESPONSIBILITY, Spreadsheet::TYPE_TEXT, implode(', ', $responsibility));
     }
 
-    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
+    $amendments = $motion->getFilteredAndSortedAmendments($filter);
     foreach ($amendments as $amendment) {
         $row++;
 

@@ -2,7 +2,7 @@
 
 namespace app\plugins\frauenrat\controllers;
 
-use app\components\UrlHelper;
+use app\components\{IMotionStatusFilter, UrlHelper};
 use app\controllers\Base;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, RedirectResponse, ResponseInterface};
 use app\models\mergeAmendments\Init;
@@ -107,7 +107,8 @@ class MotionController extends Base
             $form = Init::forEmbeddedAmendmentsExport($motion);
             \app\views\motion\LayoutHelper::printMotionWithEmbeddedAmendmentsToPdf($form, $pdfLayout, $pdf);
 
-            foreach ($motion->getVisibleAmendmentsSorted(false, false) as $amendment) {
+            $filter = IMotionStatusFilter::onlyUserVisible($motion->getMyConsultation(), false)->noAmendmentsIfMotionIsMoved();
+            foreach ($motion->getFilteredAndSortedAmendments($filter) as $amendment) {
                 \app\views\amendment\LayoutHelper::printToPDF($pdf, $pdfLayout, $amendment);
             }
         }
@@ -117,11 +118,13 @@ class MotionController extends Base
 
     public function actionSchwerpunktthemen(): ResponseInterface
     {
+        $filter = IMotionStatusFilter::onlyUserVisible($this->consultation, false);
+
         $motions = [];
         switch ($this->consultation->urlPath) {
             case 'mv2021':
                 $topPageFile = __DIR__ . '/../assets/2021_top5_antragsspiegel.pdf';
-                foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
+                foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
                     if (str_starts_with($motion->titlePrefix, 'A') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
@@ -129,7 +132,7 @@ class MotionController extends Base
                 break;
             case 'mv2022':
                 $topPageFile = __DIR__ . '/../assets/2022_top5_antragsspiegel.pdf';
-                foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
+                foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
                     if (str_starts_with($motion->titlePrefix, 'A') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
@@ -137,7 +140,7 @@ class MotionController extends Base
                 break;
             case 'mv2023':
                 $topPageFile = __DIR__ . '/../assets/2023_schwerpunkt.pdf';
-                foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
+                foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
                     if (str_starts_with($motion->titlePrefix, 'SPT') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
@@ -155,10 +158,12 @@ class MotionController extends Base
 
     public function actionSachantraege(): ResponseInterface
     {
+        $filter = IMotionStatusFilter::onlyUserVisible($this->consultation, false);
+
         $motions = [];
         switch ($this->consultation->urlPath) {
             case 'mv2021':
-                foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
+                foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
                     if (!str_starts_with($motion->titlePrefix, 'A') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
@@ -166,7 +171,7 @@ class MotionController extends Base
                 $topPageFile = __DIR__ . '/../assets/2021_top6_antragsspiegel.pdf';
                 break;
             case 'mv2022':
-                foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
+                foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
                     if (!str_starts_with($motion->titlePrefix, 'A') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
@@ -174,7 +179,7 @@ class MotionController extends Base
                 $topPageFile = __DIR__ . '/../assets/2022_top6_antragsspiegel.pdf';
                 break;
             case 'mv2023':
-                foreach ($this->consultation->getVisibleIMotionsSorted(false) as $motion) {
+                foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
                     if (!str_starts_with($motion->titlePrefix, 'SPT') && !str_starts_with($motion->titlePrefix, 'POS') && !str_starts_with($motion->titlePrefix, 'SAT') && is_a($motion, Motion::class)) {
                         $motions[] = $motion;
                     }
