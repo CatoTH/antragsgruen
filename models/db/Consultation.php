@@ -4,7 +4,7 @@ namespace app\models\db;
 
 use app\models\db\repostory\MotionRepository;
 use app\models\settings\{IMotionStatusEngine, PrivilegeQueryContext, AntragsgruenApp};
-use app\components\{MotionSorter, UrlHelper};
+use app\components\{IMotionStatusFilter, MotionSorter, UrlHelper};
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\{Internal, NotFound};
 use app\models\SearchResult;
@@ -503,8 +503,10 @@ class Consultation extends ActiveRecord
         $motions   = [];
         $motionIds = [];
         $items     = ConsultationAgendaItem::getSortedFromConsultation($this);
+        $filter = IMotionStatusFilter::onlyUserVisible($this, $includeWithdrawn);
+
         foreach ($items as $agendaItem) {
-            $newMotions = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleIMotions($includeWithdrawn));
+            $newMotions = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getMyIMotions($filter));
             foreach ($newMotions as $newMotion) {
                 $motions[]   = $newMotion;
                 $motionIds[] = $newMotion->id;
@@ -729,6 +731,7 @@ class Consultation extends ActiveRecord
 
     public function getAgendaWithIMotions(): array
     {
+        $filter = IMotionStatusFilter::onlyUserVisible($this, true);
         $ids    = [];
         $result = [];
         $addMotion = function (IMotion $motion) use (&$result) {
@@ -741,7 +744,7 @@ class Consultation extends ActiveRecord
         $items = ConsultationAgendaItem::getSortedFromConsultation($this);
         foreach ($items as $agendaItem) {
             $result[] = $agendaItem;
-            $motions  = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getVisibleIMotions());
+            $motions  = MotionSorter::getSortedIMotionsFlat($this, $agendaItem->getMyIMotions($filter));
             foreach ($motions as $motion) {
                 $ids[] = $motion->id;
                 $addMotion($motion);

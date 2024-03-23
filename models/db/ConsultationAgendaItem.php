@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\{AgendaItem, AntragsgruenApp};
-use app\components\{MotionSorter, Tools, UrlHelper};
+use app\components\{IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
@@ -94,7 +94,7 @@ class ConsultationAgendaItem extends ActiveRecord
     /**
      * @return Motion[]
      */
-    public function getMyMotions(): array
+    public function getMyMotions(?IMotionStatusFilter $filter = null): array
     {
         $motions = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
@@ -103,13 +103,17 @@ class ConsultationAgendaItem extends ActiveRecord
             }
         }
 
+        if ($filter) {
+            $motions = $filter->filterMotions($motions);
+        }
+
         return $motions;
     }
 
     /**
      * @return IMotion[]
      */
-    public function getMyIMotions(): array
+    public function getMyIMotions(?IMotionStatusFilter $filter = null): array
     {
         $imotions = [];
         foreach ($this->getMyConsultation()->motions as $motion) {
@@ -121,6 +125,10 @@ class ConsultationAgendaItem extends ActiveRecord
                     $imotions[] = $amendment;
                 }
             }
+        }
+
+        if ($filter) {
+            $imotions = $filter->filterIMotions($imotions);
         }
 
         return $imotions;
@@ -318,26 +326,6 @@ class ConsultationAgendaItem extends ActiveRecord
     /**
      * @return IMotion[]
      */
-    public function getVisibleIMotions(bool $withdrawnAreVisible = true, bool $resolutionsAreVisible = true): array
-    {
-        $statuses = $this->getMyConsultation()->getStatuses()->getInvisibleMotionStatuses($withdrawnAreVisible);
-        if (!$resolutionsAreVisible) {
-            $statuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
-            $statuses[] = IMotion::STATUS_RESOLUTION_FINAL;
-        }
-        $return = [];
-        foreach ($this->getMyIMotions() as $imotion) {
-            if (!in_array($imotion->status, $statuses)) {
-                $return[] = $imotion;
-            }
-        }
-
-        return $return;
-    }
-
-    /**
-     * @return IMotion[]
-     */
     public function getResolutions(): array
     {
         $return = [];
@@ -355,9 +343,10 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public function getVisibleIMotionsSorted(bool $withdrawnAreVisible = true): array
     {
-        $motions = $this->getVisibleIMotions($withdrawnAreVisible);
+        $consultation = $this->getMyConsultation();
+        $motions = $this->getMyMotions(IMotionStatusFilter::onlyUserVisible($consultation, $withdrawnAreVisible));
 
-        return MotionSorter::getSortedIMotionsFlat($this->getMyConsultation(), $motions);
+        return MotionSorter::getSortedIMotionsFlat($consultation, $motions);
     }
 
 
