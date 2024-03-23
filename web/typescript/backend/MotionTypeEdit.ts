@@ -20,6 +20,7 @@ const TYPE_TABULAR = 4;
 const TYPE_PDF_ATTACHMENT = 5;
 const TYPE_PDF_ALTERNATIVE = 6;
 const TYPE_VIDEO_EMBED = 7;
+const TYPE_TEXT_EDITORIAL = 8;
 
 const TYPE_TABULAR_SELECT = 4;
 
@@ -278,13 +279,15 @@ class MotionTypeEdit {
         $list.on('change', '.sectionType', function () {
             let $li = $(this).parents('li').first(),
                 val = parseInt($(this).val() as string);
-            $li.removeClass('title textHtml textSimple image tabularData pdfAlternative pdfAttachment videoEmbed');
+            $li.removeClass('title textHtml textSimple textEditorial image tabularData pdfAlternative pdfAttachment videoEmbed');
             if (val === TYPE_TITLE) {
                 $li.addClass('title');
             } else if (val === TYPE_TEXT_SIMPLE) {
                 $li.addClass('textSimple');
             } else if (val === TYPE_TEXT_HTML) {
                 $li.addClass('textHtml');
+            } else if (val === TYPE_TEXT_EDITORIAL) {
+                $li.addClass('textEditorial');
             } else if (val === TYPE_IMAGE) {
                 $li.addClass('image');
             } else if (val === TYPE_TABULAR) {

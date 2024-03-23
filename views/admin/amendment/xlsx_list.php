@@ -2,7 +2,7 @@
 
 use app\components\{HTMLTools, IMotionStatusFilter};
 use app\models\db\{AmendmentSection, Motion};
-use app\models\sectionTypes\{ISectionType, TextSimple};
+use app\models\sectionTypes\{ISectionType, TextSimpleCommon};
 use app\models\supportTypes\SupportBase;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -245,7 +245,7 @@ foreach ($motions as $motion) {
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
                 $originalData = $section->getOriginalMotionSection()->getData();
                 $newData      = $section->getData();
-                $proposal     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                $proposal     .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
             }
         }
         $sheet->setCellValue($COL_PROCEDURE . $row, $htmlHelper->toRichTextObject($proposal));
