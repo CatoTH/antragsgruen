@@ -8,7 +8,7 @@ use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationLog, ConsultationMotionType, ConsultationSettingsTag, Motion, MotionSupporter, User};
 use app\models\exceptions\FormError;
 use app\models\events\MotionEvent;
-use app\models\forms\{MotionEditForm, MotionMover};
+use app\models\forms\{MotionDeepCopy, MotionEditForm, MotionMover};
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 
@@ -219,7 +219,8 @@ class MotionController extends AdminBase
                     if (!$newType || $newType->consultationId !== $motion->consultationId) {
                         throw new FormError('The new motion type was not found');
                     }
-                    $motion->setMotionType($newType);
+                    $sectionMapping = MotionDeepCopy::getMotionSectionMapping($motion->getMyMotionType(), $newType, []);
+                    $motion->setMotionType($newType, $sectionMapping);
                 } catch (FormError $e) {
                     $this->getHttpSession()->setFlash('error', $e->getMessage());
                 }
