@@ -103,6 +103,7 @@ return [
     'merge_new_substatus'          => 'Status of new version',
     'merge_new_orga'               => 'Deciding body',
     'merge_new_resolution_date'    => 'Resolution date',
+    'merge_new_motion_type'        => 'Motion type of the resolution',
     'merge_new_votes_enter'        => 'Voting data',
     'merge_new_votes_yes'          => '"Yes"-Votes',
     'merge_new_votes_no'           => '"No"-Votes',

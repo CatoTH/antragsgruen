@@ -2,6 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
+use app\models\forms\MotionDeepCopy;
 use app\components\{MotionNumbering, RequestContext, Tools};
 use app\models\sectionTypes\TextSimple;
 use app\models\db\{IMotion, Motion, MotionSection, MotionSupporter};
@@ -119,7 +120,7 @@ class Merge
     /**
      * @param int[] $amendmentStatuses
      */
-    public function confirm(Motion $newMotion, array $amendmentStatuses, ?string $resolutionMode, ?string $resolutionSubstatus, string $resolutionBody, array $votes, ?array $amendmentVotes): Motion
+    public function confirm(Motion $newMotion, array $amendmentStatuses, ?string $resolutionMode, ?string $resolutionSubstatus, string $resolutionBody, ?string $newMotionTypeId, array $votes, ?array $amendmentVotes): Motion
     {
         $oldMotion    = $this->origMotion;
         $consultation = $oldMotion->getMyConsultation();
@@ -209,6 +210,20 @@ class Merge
 
         foreach ($oldMotion->getPublicTopicTags() as $tag) {
             $newMotion->link('tags', $tag);
+        }
+
+        if ($newMotionTypeId) {
+            $newMotionType = $newMotion->getMyConsultation()->getMotionType((int) $newMotionTypeId);
+            $sectionMapping = MotionDeepCopy::getMotionSectionMapping($newMotion->getMyMotionType(), $newMotionType, [MotionDeepCopy::SKIP_NON_AMENDABLE]);
+            if ($sectionMapping) {
+                foreach ($newMotion->sections as $section) {
+                    if (!$section->getSettings()->hasAmendments && !isset($sectionMapping[$section->sectionId])) {
+                        $section->delete();
+                    }
+                }
+                $newMotion->refresh();
+                $newMotion->setMotionType($newMotionType, $sectionMapping);
+            }
         }
 
         $mergingDraft = $oldMotion->getMergingDraft(false);

@@ -34,12 +34,26 @@
     padding-top: 22px;
   }
   .newAmendments {
-    .col-md-3, .col-md-1, .col-md-2 {
-      padding-left: 7px;
-      padding-right: 7px;
+    .amendmentStatus {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
     }
-    .statusHolder.col-md-3 {
-      padding-left: 25px;
+    .amendmentStatus > * {
+      padding: 5px;
+    }
+    .titleHolder {
+      flex-basis: 15%;
+    }
+    .amendmentStatus > .statusHolder {
+      padding-left: 30px;
+      flex-basis: 25%;
+    }
+    .commentHolder {
+      flex-basis: 25%;
+    }
+    .votesHolder {
+      flex-basis: 8%;
     }
     .amendmentAjaxTooltip {
       float: left;

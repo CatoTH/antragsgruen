@@ -2,6 +2,7 @@
 
 use app\components\Tools;
 use app\models\db\Motion;
+use app\models\forms\MotionDeepCopy;
 use yii\helpers\Html;
 
 /**
@@ -41,6 +42,18 @@ $statusesAll = $motion->getMyConsultation()->getStatuses()->getStatusNames();
                    value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
         </div>
+        <?php
+        $compatibleTypes = $motion->getMyMotionType()->getCompatibleMotionTypes([MotionDeepCopy::SKIP_NON_AMENDABLE]);
+        if (count($compatibleTypes) > 1) {
+            $options = [];
+            foreach ($compatibleTypes as $motionType) {
+                $options[$motionType->id] = $motionType->titleSingular;
+            }
+            $attrs = ['id' => 'motionType', 'class' => 'stdDropdown fullsize'];
+            echo '<label for="newMotionType">' . Yii::t('amend', 'merge_new_motion_type') . '</label>';
+            echo Html::dropDownList('newMotionType', $motion->motionTypeId, $options, $attrs);
+        }
+        ?>
     </div>
     <div class="newMotionSubstatus">
         <div class="title"><?= Yii::t('amend', 'merge_new_substatus') ?>:</div>

@@ -50,7 +50,7 @@ class MotionMover
     {
         $types = [];
         foreach ($consultation->motionTypes as $motionType) {
-            if ($this->motion->getMyMotionType()->isCompatibleTo($motionType)) {
+            if ($this->motion->getMyMotionType()->isCompatibleTo($motionType, [])) {
                 $types[] = $motionType;
             }
         }
