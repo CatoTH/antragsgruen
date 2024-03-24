@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\forms\MotionDeepCopy;
 use app\models\policies\Nobody;
 use CatoTH\HTML2OpenDocument\Text;
 use app\components\{DateTools, Tools, UrlHelper};
@@ -9,8 +10,7 @@ use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\IPDFLayout;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int|null $id
@@ -121,6 +121,16 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         return $this->hasMany(ConsultationSettingsMotionSection::class, ['motionTypeId' => 'id'])
             ->where('status = ' . ConsultationSettingsMotionSection::STATUS_VISIBLE)
             ->orderBy('position');
+    }
+
+    public function getSectionById(int $sectionId): ?ConsultationSettingsMotionSection
+    {
+        foreach ($this->motionSections as $section) {
+            if ($section->id === $sectionId) {
+                return $section;
+            }
+        }
+        return null;
     }
 
     public function getAgendaItems(): ActiveQuery
@@ -445,27 +455,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
 
     public function isCompatibleTo(ConsultationMotionType $cmpMotionType): bool
     {
-        $mySections  = $this->motionSections;
-        $cmpSections = $cmpMotionType->motionSections;
-
-        if (count($mySections) !== count($cmpSections)) {
-            return false;
-        }
-        for ($i = 0; $i < count($mySections); $i++) {
-            if ($mySections[$i]->type !== $cmpSections[$i]->type) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function getSectionCompatibilityMapping(ConsultationMotionType $cmpMotionType): array
-    {
-        $mapping = [];
-        for ($i = 0; $i < count($this->motionSections); $i++) {
-            $mapping[$this->motionSections[$i]->id] = $cmpMotionType->motionSections[$i]->id;
-        }
-        return $mapping;
+        return (MotionDeepCopy::getMotionSectionMapping($this, $cmpMotionType, []) !== null);
     }
 
     /**
