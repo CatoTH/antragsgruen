@@ -26,7 +26,7 @@ class MotionSectionChanges
      */
     public static function motionToSectionChanges(Motion $oldMotion, Motion $newMotion): array
     {
-        if (!$oldMotion->getMyMotionType()->isCompatibleTo($newMotion->getMyMotionType())) {
+        if (!$oldMotion->getMyMotionType()->isCompatibleTo($newMotion->getMyMotionType(), [])) {
             throw new Inconsistency('The two motions have incompatible types');
         }
 

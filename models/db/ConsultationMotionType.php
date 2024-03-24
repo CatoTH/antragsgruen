@@ -453,19 +453,19 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         }
     }
 
-    public function isCompatibleTo(ConsultationMotionType $cmpMotionType): bool
+    public function isCompatibleTo(ConsultationMotionType $cmpMotionType, array $skip): bool
     {
-        return (MotionDeepCopy::getMotionSectionMapping($this, $cmpMotionType, []) !== null);
+        return (MotionDeepCopy::getMotionSectionMapping($this, $cmpMotionType, $skip) !== null);
     }
 
     /**
      * @return ConsultationMotionType[]
      */
-    public function getCompatibleMotionTypes(): array
+    public function getCompatibleMotionTypes(array $skip): array
     {
         $compatible = [];
         foreach ($this->getConsultation()->motionTypes as $motionType) {
-            if ($motionType->isCompatibleTo($this)) {
+            if ($this->isCompatibleTo($motionType, $skip)) {
                 $compatible[] = $motionType;
             }
         }

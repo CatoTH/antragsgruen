@@ -1055,7 +1055,7 @@ class Motion extends IMotion implements IRSSItem
     {
         foreach ($this->sections as $section) {
             if (!isset($sectionMapping[$section->sectionId])) {
-                throw new FormError('This motion cannot be changed to the type ' . $motionType->titleSingular . ': no complete section mapping found');
+                throw new FormError($motionType->titleSingular . ': no complete section mapping found. Missing: ' . $section->sectionId);
             }
         }
 

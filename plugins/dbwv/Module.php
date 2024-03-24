@@ -230,7 +230,7 @@ class Module extends ModuleBase
     public static function getCorrespondingBundMotionType(ConsultationMotionType $lvType): ConsultationMotionType
     {
         foreach (self::getBundConsultation()->motionTypes as $motionType) {
-            if ($motionType->isCompatibleTo($lvType) && $motionType->titleSingular === $lvType->titleSingular) {
+            if ($motionType->isCompatibleTo($lvType, []) && $motionType->titleSingular === $lvType->titleSingular) {
                 return $motionType;
             }
         }
