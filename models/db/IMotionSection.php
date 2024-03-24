@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\exceptions\Internal;
-use app\models\sectionTypes\{Image, ISectionType, TabularData, TextHTML, TextSimple, Title, PDF, VideoEmbed};
+use app\models\sectionTypes\{Image, ISectionType, TabularData, TextEditorial, TextHTML, TextSimple, Title, PDF, VideoEmbed};
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
@@ -23,24 +23,17 @@ abstract class IMotionSection extends ActiveRecord
      */
     public function getSectionType(): ISectionType
     {
-        switch ($this->getSettings()->type) {
-            case ISectionType::TYPE_TITLE:
-                return new Title($this);
-            case ISectionType::TYPE_TEXT_HTML:
-                return new TextHTML($this);
-            case ISectionType::TYPE_TEXT_SIMPLE:
-                return new TextSimple($this);
-            case ISectionType::TYPE_IMAGE:
-                return new Image($this);
-            case ISectionType::TYPE_TABULAR:
-                return new TabularData($this);
-            case ISectionType::TYPE_PDF_ATTACHMENT:
-            case ISectionType::TYPE_PDF_ALTERNATIVE:
-                return new PDF($this);
-            case ISectionType::TYPE_VIDEO_EMBED:
-                return new VideoEmbed($this);
-        }
-        throw new Internal('Unknown Field Type: ' . $this->getSettings()->type);
+        return match ($this->getSettings()->type) {
+            ISectionType::TYPE_TITLE => new Title($this),
+            ISectionType::TYPE_TEXT_HTML => new TextHTML($this),
+            ISectionType::TYPE_TEXT_SIMPLE => new TextSimple($this),
+            ISectionType::TYPE_TEXT_EDITORIAL => new TextEditorial($this),
+            ISectionType::TYPE_IMAGE => new Image($this),
+            ISectionType::TYPE_TABULAR => new TabularData($this),
+            ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE => new PDF($this),
+            ISectionType::TYPE_VIDEO_EMBED => new VideoEmbed($this),
+            default => throw new Internal('Unknown Field Type: ' . $this->getSettings()->type),
+        };
     }
 
     public function checkLength(): bool

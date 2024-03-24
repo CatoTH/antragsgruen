@@ -22,7 +22,7 @@ $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotion
 $layout->addBreadcrumb(Yii::t('amend', 'merge_confirm_title'));
 $layout->loadDatepicker();
 
-$title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, Yii::t('amend', 'merge_title'));
+$title       = str_replace('%TITLE%', $newMotion->getMyMotionType()->titleSingular, Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 ?>
@@ -86,7 +86,7 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
     ?>
     <section class="newAmendments">
         <h2 class="green"><?= Yii::t('amend', 'merge_amend_statuses') ?></h2>
-        <div class="content form-horizontal">
+        <div class="content">
             <?php
             foreach ($newMotion->replacedMotion->getVisibleAmendments() as $amendment) {
                 //$changeset = (isset($changesets[$amendment->id]) ? $changesets[$amendment->id] : []);
@@ -97,13 +97,13 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
                 $voting    = $mergingDraft->amendmentVotingData[$amendment->id];
                 ?>
                 <div class="form-group amendmentStatus amendmentStatus<?= $amendment->id ?>" <?= $data ?>>
-                    <div class="col-md-2">
+                    <div class="titleHolder">
                         <div class="amendmentName">
                             <?= Html::encode($amendment->getShortTitle()) ?>
                         </div>
                         <div class="amendSubtitle"><?= Html::encode($amendment->getInitiatorsStr()) ?></div>
                     </div>
-                    <div class="col-md-3 statusHolder">
+                    <div class="statusHolder">
                         <?= HTMLTools::amendmentDiffTooltip($amendment) ?>
                         <label for="amendmentStatus<?= $amendment->id ?>">Status:</label><br>
                         <?php
@@ -120,31 +120,31 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
                         echo Html::dropDownList('amendStatus[' . $amendment->id . ']', $statusPre, $statuses, $opts, true);
                         ?>
                     </div>
-                    <div class="col-md-3">
+                    <div class="commentHolder">
                         <label for="votesComment<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][comment]" type="text"
                                id="votesComment<?= $amendment->id ?>"
                                value="<?= Html::encode($voting->comment ?: '') ?>">
                     </div>
-                    <div class="col-md-1">
+                    <div class="votesHolder">
                         <label for="votesYes<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_yes') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][yes]" type="number"
                                id="votesYes<?= $amendment->id ?>"
                                value="<?= Html::encode($voting->votesYes ?: '') ?>">
                     </div>
-                    <div class="col-md-1">
+                    <div class="votesHolder">
                         <label for="votesNo<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_no') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][no]" type="number"
                                id="votesNo<?= $amendment->id ?>"
                                value="<?= Html::encode($voting->votesNo ?: '') ?>">
                     </div>
-                    <div class="col-md-1">
+                    <div class="votesHolder">
                         <label for="votesAbstention<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_abstention') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][abstention]" type="number"
                                id="votesAbstention<?= $amendment->id ?>"
                                value="<?= Html::encode($voting->votesAbstention ?: '') ?>">
                     </div>
-                    <div class="col-md-1">
+                    <div class="votesHolder">
                         <label for="votesInvalid<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_invalid') ?></label>
                         <input class="form-control" name="amendVotes[<?= $amendment->id ?>][invalid]" type="number"
                                id="votesInvalid<?= $amendment->id ?>"

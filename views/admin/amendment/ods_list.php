@@ -1,8 +1,8 @@
 <?php
 
+use app\models\sectionTypes\TextSimpleCommon;
 use app\components\{HTMLTools, IMotionStatusFilter};
 use app\models\db\{AmendmentSection, Motion};
-use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
 
@@ -197,7 +197,7 @@ foreach ($motions as $motion) {
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
                 $originalData = $section->getOriginalMotionSection()->getData();
                 $newData      = $section->getData();
-                $proposal     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                $proposal     .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
             }
         }
         $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);

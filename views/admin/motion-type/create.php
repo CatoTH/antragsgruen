@@ -73,6 +73,16 @@ echo Html::beginForm('', 'post', [
         <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_pdfapplh') ?></div>
 
         <label class="typePreset"
+               data-label-single="<?= Yii::t('structure', 'preset_progress_singular') ?>"
+               data-label-plural="<?= Yii::t('structure', 'preset_progress_plural') ?>"
+               data-label-prefix=""
+               data-label-cta="<?= Yii::t('structure', 'preset_progress_call') ?>">
+            <input type="radio" name="type[preset]" value="progress" class="presetProgress">
+            <span><?= Yii::t('admin', 'motion_type_templ_progress') ?></span>
+        </label>
+        <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_progressh') ?></div>
+
+        <label class="typePreset"
                data-label-single="<?= Yii::t('structure', 'preset_statutes_singular') ?>"
                data-label-plural="<?= Yii::t('structure', 'preset_statutes_plural') ?>"
                data-label-prefix="S"

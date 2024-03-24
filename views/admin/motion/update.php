@@ -103,7 +103,7 @@ echo '<div class="content form-horizontal">';
         <div class="rightColumn">
             <?php
             $options = [];
-            foreach ($motion->motionType->getCompatibleMotionTypes() as $motionType) {
+            foreach ($motion->getMyMotionType()->getCompatibleMotionTypes([]) as $motionType) {
                 $options[$motionType->id] = $motionType->titleSingular;
             }
             $attrs = ['id' => 'motionType', 'class' => 'stdDropdown fullsize'];

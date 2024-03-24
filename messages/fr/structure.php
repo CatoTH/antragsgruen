@@ -72,7 +72,6 @@ return [
     'preset_app_data'      => 'Données',
     'preset_app_signature' => 'Signatures (scannée)',
     'preset_app_age'       => 'Âge',
-    'preset_app_gender'    => 'Sexe/Genre',
     'preset_app_birthcity' => 'Lieu de naissance',
     'preset_app_intro'     => 'Introduction',
 

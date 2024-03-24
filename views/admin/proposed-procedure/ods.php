@@ -2,7 +2,7 @@
 
 use app\models\db\{AmendmentSection, Consultation, IAdminComment};
 use app\models\proposedProcedure\Agenda;
-use app\models\sectionTypes\TextSimple;
+use app\models\sectionTypes\TextSimpleCommon;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
 
@@ -145,7 +145,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
                 $originalData = $section->getOriginalMotionSection()->getData();
                 $newData      = $section->data;
-                $proposal     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                $proposal     .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
                 $minHeight    += 1;
             }
         }

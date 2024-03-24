@@ -2,6 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
+use app\models\forms\MotionDeepCopy;
 use app\models\settings\Privileges;
 use app\plugins\gruene_de_saml\Module;
 use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, MotionSupporter, Site, User};
@@ -458,7 +459,9 @@ class Tools
             return;
         }
 
-        $motion->setMotionType(static::getPetitionType($motion->getMyConsultation()));
+        $newType = static::getPetitionType($motion->getMyConsultation());
+        $sectionMapping = MotionDeepCopy::getMotionSectionMapping($motion->getMyMotionType(), $newType, []);
+        $motion->setMotionType($newType, $sectionMapping);
 
         $motion->status          = Motion::STATUS_COLLECTING_SUPPORTERS;
         $motion->datePublication = null;
