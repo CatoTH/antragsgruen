@@ -10,6 +10,7 @@
 - Exporting "Inactive" motions and amendments from the admin motion list now also includes unpublished items.
 - Bugfix: Several issues with the predefined organisation list for user administration were fixed.
 - Bugfix: CAPTCHAs were sometimes hardly to read.
+- Bugfix: In the support collecting page, for amendments, the required supporters of motions were shown, not of amendments.
 
 ### Version 4.13.2 (2024-02-18)
 

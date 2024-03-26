@@ -100,7 +100,7 @@ if (count($motionsWithAmendments) > 0) {
             echo '<li class="amendment amendmentRow' . $amendment->id . '">';
             echo '<span class="date">' . Tools::formatMysqlDate($amendment->dateCreation) . '</span>' . "\n";
 
-            $max = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
+            $max = $motion->getMyMotionType()->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
             $curr = count($amendment->getSupporters(true));
             $title = str_replace(
                 ['%INITIATOR%', '%LINE%', '%CURR%'],
