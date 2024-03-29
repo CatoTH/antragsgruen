@@ -409,7 +409,7 @@ if ($hasSupporters && !$adminMode) {
         $fullTextSyntax = Yii::t('initiator', 'fullTextSyntax');
         ?>
         <div class="fullTextAdder"><button type="button" class="btn btn-link"><?= Yii::t('initiator', 'fullTextField') ?></button></div>
-        <div class="hidden" id="fullTextHolder">
+        <div class="hidden" id="supporterFullTextHolder">
             <div class="textHolder">
                 <textarea class="form-control" placeholder="<?= Html::encode($fullTextSyntax) ?>" rows="10"
                           title="<?= Html::encode(Yii::t('initiator', 'fullTextField')) ?>"></textarea>

@@ -385,19 +385,19 @@ $voting = $amendment->getVotingData();
     </section>
     <section class="notifyProposerSection hidden">
         <h3><?= Yii::t('amend', 'proposal_notify_text') ?></h3>
-        <div class="row proposalFrom">
+        <div class="proposalFrom">
             <?php
             $replyTo = \app\components\mail\Tools::getDefaultReplyTo($amendment, $consultation, User::getCurrentUser());
             $fromName = \app\components\mail\Tools::getDefaultMailFromName($consultation);
             $placeholderReplyTo = Yii::t('amend', 'proposal_notify_replyto') . ': ' . ($replyTo ? $replyTo : '-');
             $placeholderName = Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;
             ?>
-            <div class="col-md-6">
+            <div>
                 <input type="text" name="proposalNotificationFrom" id="proposalNotificationFrom" class="form-control"
                        title="<?= Yii::t('amend', 'proposal_notify_name') ?>"
                        placeholder="<?= Html::encode($placeholderName) ?>">
             </div>
-            <div class="col-md-6">
+            <div>
                 <input type="text" name="proposalNotificationReply" id="proposalNotificationReply" class="form-control"
                        title="<?= Yii::t('amend', 'proposal_notify_replyto') ?>"
                        placeholder="<?= Html::encode($placeholderReplyTo) ?>">

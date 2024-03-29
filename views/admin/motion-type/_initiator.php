@@ -170,7 +170,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         <label class="leftColumn" for="typeMinSupporters">
             <?= Yii::t('admin', 'motion_type_supp_min') ?>:
         </label>
-        <div class="col-md-2">
+        <div class="rightColumn">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="minSupporters">
             <input type="number" name="motionInitiatorSettings[minSupporters]" class="form-control" id="typeMinSupporters"
                    value="<?= Html::encode($motionSettings->minSupporters) ?>">

@@ -89,12 +89,12 @@ $I->wantTo('add some suporters using full-text');
 
 $I->gotoMotionList()->gotoMotionEdit(116);
 
-$I->dontSeeElement('#fullTextHolder');
+$I->dontSeeElement('#supporterFullTextHolder');
 $I->click('.fullTextAdder button');
-$I->seeElement('#fullTextHolder');
+$I->seeElement('#supporterFullTextHolder');
 
-$I->fillField('#fullTextHolder textarea', 'Yet another name, KV München; Another Name 3');
-$I->click('#fullTextHolder .fullTextAdd');
+$I->fillField('#supporterFullTextHolder textarea', 'Yet another name, KV München; Another Name 3');
+$I->click('#supporterFullTextHolder .fullTextAdd');
 
 $I->submitForm('#motionUpdateForm', [], 'save');
 

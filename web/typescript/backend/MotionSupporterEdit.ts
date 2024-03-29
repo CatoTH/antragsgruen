@@ -17,7 +17,7 @@ export class MotionSupporterEdit {
             $(this).parents("li").first().remove();
         });
 
-        let $fullTextHolder = $("#fullTextHolder");
+        let $fullTextHolder = $("#supporterFullTextHolder");
         $supporterHolder.find(".fullTextAdd").on("click", () => {
             let lines = ($fullTextHolder.find('textarea').val() as string).split(";"),
                 template = $(".supporterRowAdder").data("content"),
