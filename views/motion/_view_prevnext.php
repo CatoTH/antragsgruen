@@ -6,6 +6,7 @@ use yii\helpers\Html;
 
 /**
  * @var Motion $motion
+ * @var bool $top
  */
 
 $consultation = $motion->getMyConsultation();
@@ -29,7 +30,7 @@ foreach ($motions as $idx => $itMotion) {
 }
 
 ?>
-<nav class="motionPrevNextLinks toolbarBelowTitle">
+<nav class="motionPrevNextLinks <?= ($top ? 'toolbarBelowTitle' : 'toolbarAtBottom') ?>">
     <?php
     if ($prevMotion) {
     ?>

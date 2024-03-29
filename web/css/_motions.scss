@@ -896,6 +896,17 @@ iframe.pdfViewer {
   }
 }
 
+.sectionType8 { // Editorials / Progress reports
+  .editCaller {
+    float: right;
+    font-weight: normal;
+    margin-top: -10px;
+  }
+  .textHolder {
+    clear: both;
+  }
+}
+
 .gotoLineNumerPanel {
   position: fixed;
   bottom: 0;

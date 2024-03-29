@@ -41,12 +41,9 @@
 }
 
 .contentSettingsToolbar {
-  padding: 0;
-  .textfield {
-    padding-top: 10px;
-  }
   input[type=text] {
     max-width: 160px;
+    display: inline-block;
   }
   .options {
     padding-top: 5px;
