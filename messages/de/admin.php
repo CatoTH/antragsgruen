@@ -201,6 +201,7 @@ return [
     'filter_na'                   => '- egal -',
     'filter_title'                => 'Titel',
     'filter_status'               => 'Status',
+    'filter_motiontype'           => 'Typ',
     'filter_version'              => 'Version',
     'filter_tag_pp'               => 'Intern',
     'filter_proposal_status'      => 'Verfahrensvorschlag',
