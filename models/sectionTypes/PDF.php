@@ -157,6 +157,11 @@ class PDF extends ISectionType
         return ($this->section->getData() === '');
     }
 
+    public function showIfEmpty(): bool
+    {
+        return false;
+    }
+
     public function isFileUploadType(): bool
     {
         return true;

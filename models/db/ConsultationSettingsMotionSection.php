@@ -159,4 +159,9 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         }
         return $forbidden;
     }
+
+    public function requiresAutoCreationWhenMission(): bool
+    {
+        return $this->type === ISectionType::TYPE_TEXT_EDITORIAL; // Required for editing the text in the frontend
+    }
 }

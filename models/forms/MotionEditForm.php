@@ -59,14 +59,7 @@ class MotionEditForm
             if (isset($motionSections[$sectionType->id])) {
                 $this->sections[] = $motionSections[$sectionType->id];
             } else {
-                $section = new MotionSection();
-                $section->sectionId = $sectionType->id;
-                $section->setData('');
-                $section->dataRaw  = '';
-                $section->public = $sectionType->getSettingsObj()->public;
-                $section->cache = '';
-                $section->refresh();
-                $this->sections[] = $section;
+                $this->sections[] = MotionSection::createEmpty($sectionType->id, $sectionType->getSettingsObj()->public);
             }
         }
     }

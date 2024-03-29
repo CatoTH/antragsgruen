@@ -82,15 +82,7 @@ class Merge
         $newMotion = $this->createMotion();
 
         foreach ($this->origMotion->getActiveSections() as $origSection) {
-            $section = new MotionSection();
-            $section->sectionId = $origSection->sectionId;
-            $section->motionId  = $newMotion->id;
-            $section->refresh();
-
-            $section->cache = '';
-            $section->setData('');
-            $section->dataRaw = '';
-            $section->public = $origSection->public;
+            $section = MotionSection::createEmpty($origSection->sectionId, $origSection->public, $newMotion->id);
 
             if (!in_array($origSection->sectionId, $draft->removedSections)) {
                 if ($section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {

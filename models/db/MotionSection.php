@@ -23,7 +23,7 @@ use yii\db\ActiveQuery;
  */
 class MotionSection extends IMotionSection
 {
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -35,6 +35,24 @@ class MotionSection extends IMotionSection
     public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionSection';
+    }
+
+    public static function createEmpty(int $sectionId, int $public, ?int $motionId = null): self
+    {
+        $section = new self();
+        $section->sectionId = $sectionId;
+        if ($motionId) {
+            $section->motionId = $motionId;
+        }
+        $section->public = $public;
+
+        $section->cache = '';
+        $section->setData('');
+        $section->dataRaw = '';
+
+        $section->refresh();
+
+        return $section;
     }
 
     private function hasExternallySavedData(): bool
@@ -59,7 +77,7 @@ class MotionSection extends IMotionSection
     {
         $app = AntragsgruenApp::getInstance();
         $path = $app->binaryFilePath;
-        if (substr($path, -1, 1) !== '/') {
+        if (!str_ends_with($path, '/')) {
             $path .= '/';
         }
         $path .= ($this->sectionId % 100);

@@ -67,6 +67,11 @@ class TextHTML extends Text
         return ($this->section->getData() === '');
     }
 
+    public function showIfEmpty(): bool
+    {
+        return false;
+    }
+
     public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         if ($this->isEmpty()) {

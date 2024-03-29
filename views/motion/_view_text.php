@@ -56,7 +56,9 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $proce
         }
 
         $sectionType = $section->getSettings()->type;
-        if ($section->getSectionType()->isEmpty() && count($section->getAmendmentSectionsToBeShownInMotionView()) === 0) {
+        if ($section->getSectionType()->isEmpty() && !$section->getSectionType()->showIfEmpty()
+            && count($section->getAmendmentSectionsToBeShownInMotionView()) === 0
+        ) {
             continue;
         }
 

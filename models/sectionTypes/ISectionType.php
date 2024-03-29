@@ -137,6 +137,8 @@ abstract class ISectionType
 
     abstract public function isEmpty(): bool;
 
+    abstract public function showIfEmpty(): bool;
+
     abstract public function isFileUploadType(): bool;
 
     abstract public function getMotionFormField(): string;

@@ -126,11 +126,15 @@ class VideoEmbed extends ISectionType
         return ($this->section->getData() === '');
     }
 
-    public function isFileUploadType(): bool
+    public function showIfEmpty(): bool
     {
         return false;
     }
 
+    public function isFileUploadType(): bool
+    {
+        return false;
+    }
 
     public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {

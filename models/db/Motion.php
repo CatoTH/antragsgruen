@@ -194,7 +194,10 @@ class Motion extends IMotion implements IRSSItem
     {
         $sections = [];
         $hadNonPublicSections = false;
+        $foundSectionTypes = [];
         foreach ($this->sections as $section) {
+            $foundSectionTypes[] = $section->getSettings()->id;
+
             if (!$section->getSettings()) {
                 // Internal problem - maybe an accidentally deleted motion type
                 continue;
@@ -208,6 +211,15 @@ class Motion extends IMotion implements IRSSItem
             }
 
             $sections[] = $section;
+        }
+
+        foreach ($this->getTypeSections() as $typeSection) {
+            if (!in_array($typeSection->id, $foundSectionTypes) && $typeSection->requiresAutoCreationWhenMission()) {
+                $emptySection = MotionSection::createEmpty($typeSection->id, $typeSection->getSettingsObj()->public, $this->id);
+                $emptySection->save();
+
+                $sections[] = $emptySection;
+            }
         }
 
         if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() &&

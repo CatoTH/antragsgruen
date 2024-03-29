@@ -74,6 +74,7 @@ return [
     'privilege_motionusers'   => 'Manage initiators',
     'privilege_motiondelete'  => 'Delete',
     'privilege_proposals'     => 'Manage proposed procedure',
+    'privilege_progress'      => 'Manage editorial sections / Progress reports',
 
     'preset_bdk_name'           => 'German federal convention',
     'preset_bdk_desc'           => 'Presets similar to the federal convention of the German Green Party. This setting does not make sense outside of Germany.',

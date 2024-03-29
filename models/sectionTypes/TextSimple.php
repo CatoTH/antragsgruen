@@ -302,4 +302,9 @@ class TextSimple extends TextSimpleCommon
 
         return implode('<br><br>', $unchanged);
     }
+
+    public function showIfEmpty(): bool
+    {
+        return false;
+    }
 }

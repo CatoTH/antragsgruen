@@ -74,6 +74,7 @@ return [
     'privilege_motionusers'   => 'Antragstellende ändern',
     'privilege_motiondelete'  => 'Löschen',
     'privilege_proposals'     => 'Verfahrensvorschläge bearbeiten',
+    'privilege_progress'      => 'Redaktionelle Antragsabschnitte / Sachstände bearbeiten',
 
     'preset_bdk_name'           => 'BDK-ähnlich',
     'preset_bdk_desc'           => 'Benutzer*innen mit Grüne,-Netz-Zugang können Anträge und Änderungsanträge stellen, die zunächst von der Antragskommission auf Zulässigkeit geprüft werden. Neben der Antragsteller*in müssen 19 Unterstützer*innen angegegeb werden. Das Grüne CI ist standardmäßig voreingestellt.',

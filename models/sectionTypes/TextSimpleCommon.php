@@ -59,8 +59,6 @@ abstract class TextSimpleCommon extends Text {
         });
     }
 
-
-
     /**
      * @throws \app\models\exceptions\Internal
      */
