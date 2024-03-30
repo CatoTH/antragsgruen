@@ -1,0 +1,11 @@
+*
+!.htaccess
+!common.php
+!config.template.json
+!config.template_singlesite.json
+!config_tests.template.json
+!console.php
+!defines.php
+!latex-replaces.template.php
+!urls.php
+!web.php
